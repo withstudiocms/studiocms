@@ -23,7 +23,6 @@ catalogs:
     vite: ^4 || ^5
   landing:
     motion: ^10.18.0
-    powerglitch: ^2.3.4
     tailwindcss: ^3.4.14
     tailwind-merge: ^2.5.4
     tailwind-scrollbar: ^3.1.0

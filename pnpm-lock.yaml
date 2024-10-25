@@ -95,9 +95,6 @@ catalogs:
     motion:
       specifier: ^10.18.0
       version: 10.18.0
-    powerglitch:
-      specifier: ^2.3.4
-      version: 2.3.4
     tailwind-merge:
       specifier: ^2.5.4
       version: 2.5.4
@@ -1056,9 +1053,6 @@ importers:
       motion:
         specifier: catalog:landing
         version: 10.18.0
-      powerglitch:
-        specifier: catalog:landing
-        version: 2.3.4
       satori:
         specifier: ^0.11.1
         version: 0.11.1
@@ -5144,9 +5138,6 @@ packages:
   postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
     engines: {node: ^10 || ^12 || >=14}
-
-  powerglitch@2.3.4:
-    resolution: {integrity: sha512-QVCs/scRcI9caxykt95civDyZ0L0TahFSP2BU/Mn/db4WweKcT8rUwVdp/O+pr9nF744mVMFoYsMh9Zx7nW3vQ==}
 
   preferred-pm@4.0.0:
     resolution: {integrity: sha512-gYBeFTZLu055D8Vv3cSPox/0iTPtkzxpLroSYYA7WXgRi31WCJ51Uyl8ZiPeUUjyvs2MBzK+S8v9JVUgHU/Sqw==}
@@ -11209,8 +11200,6 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.1.0
       source-map-js: 1.2.1
-
-  powerglitch@2.3.4: {}
 
   preferred-pm@4.0.0:
     dependencies:

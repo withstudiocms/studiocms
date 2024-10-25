@@ -20,7 +20,6 @@
     "astro-icon": "catalog:landing",
     "html-entities": "^2.5.2",
     "motion": "catalog:landing",
-    "powerglitch": "catalog:landing",
     "sharp": "catalog:",
     "satori": "^0.11.1",
     "satori-html": "^0.3.2",

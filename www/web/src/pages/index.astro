@@ -19,7 +19,6 @@ const features = (await getCollection('features')).sort(
 ---
 
 <script>
-  import { PowerGlitch } from 'powerglitch'
   import { animate, inView } from 'motion'
 
   // DOM Nodes
@@ -27,7 +26,6 @@ const features = (await getCollection('features')).sort(
   inView(hero, () => {
     animate(hero, { opacity: [0, 1], y: [60, 0] }, { duration: 2 })
   })
-  PowerGlitch.glitch('.glitch')
 </script>
 
 <BaseLayout>
