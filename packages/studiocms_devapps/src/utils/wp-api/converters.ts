@@ -19,11 +19,11 @@ const WPImportFolder = path.resolve(ASTROPUBLICFOLDER, 'wp-import');
 const pagesImagesFolder = path.resolve(WPImportFolder, 'pages');
 const postsImagesFolder = path.resolve(WPImportFolder, 'posts');
 
-export const ConvertToPageData = async (page: unknown): Promise<PageData> => {
+export const ConvertToPageData = async (page: unknown, endpoint: string): Promise<PageData> => {
 	const data = page as Page;
 
 	const titleImageId = data.featured_media;
-	const titleImageURL = apiEndpoint(`${titleImageId}`, 'media');
+	const titleImageURL = apiEndpoint(endpoint, 'media', `${titleImageId}`);
 	const titleImageResponse = await fetch(titleImageURL);
 	const titleImageJson = await titleImageResponse.json();
 	const titleImage = await downloadPostImage(titleImageJson.source_url, pagesImagesFolder);

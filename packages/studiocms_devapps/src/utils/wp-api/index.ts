@@ -18,8 +18,8 @@ const ASTROPUBLICFOLDER = path.resolve(Config.projectRoot, 'public');
 export type PageData = typeof tsPageData.$inferInsert;
 export type PageContent = typeof tsPageContent.$inferInsert;
 
-const generatePageFromData = async (page: unknown) => {
-	const pageData = await ConvertToPageData(page);
+const generatePageFromData = async (page: unknown, endpoint: string) => {
+	const pageData = await ConvertToPageData(page, endpoint);
 	const pageContent = await ConvertToPageContent(pageData, page);
 
 	return { pageData, pageContent };
@@ -32,8 +32,8 @@ const generatePostFromData = async (post: unknown, useBlogPkg: boolean, endpoint
 	return { pageData, pageContent };
 };
 
-const importPage = async (page: unknown) => {
-	const { pageData, pageContent } = await generatePageFromData(page);
+const importPage = async (page: unknown, endpoint: string) => {
+	const { pageData, pageContent } = await generatePageFromData(page, endpoint);
 
 	const pageDataResult = await db
 		.insert(tsPageData)
@@ -70,7 +70,7 @@ export const importPagesFromWPAPI = async (endpoint: string) => {
 	try {
 		for (const page of pages) {
 			console.log('importing page:', page.title.rendered);
-			await importPage(page);
+			await importPage(page, endpoint);
 		}
 	} catch (error) {
 		console.error('Failed to import pages from WP-API:', error);
