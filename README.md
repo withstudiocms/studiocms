@@ -6,7 +6,7 @@
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
 
-This is an SSR CMS built with AstroDB / Lucia Auth / Unpic Image handler for the Astro Ecosystem.
+This is an SSR CMS built with AstroDB for the Astro Ecosystem.
 
 To see how to get started, check out the [StudioCMS README](./packages/studiocms/README.md).
 
@@ -27,11 +27,9 @@ We have an active community of developers on the Astrolicious [Discord Server](h
 
 ## Our ToolSet
 
-- **Node** - 20.12.x
-- **pnpm** - 9.5.0
-- [`BiomeJS`](https://biomejs.dev/) - 1.8.3
-- [`Moon`](https://moonrepo.dev) - 1.27.2
-- [`Proto`](https://moonrepo.dev) - 0.38.3
+For an up-to-date list of our main tools check out our [`.prototools`](.prototools) file
+
+For more information about Proto checkout [Proto's Website](https://moonrepo.dev/proto)
 
 ## This is a [`Moonrepo`](https://moonrepo.dev)
 

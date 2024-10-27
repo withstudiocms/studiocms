@@ -148,13 +148,11 @@ const TypeDocPlugins = (isProd: boolean): StarlightPlugin[] => {
 					dir: 'studiocms_imagehandler',
 					entryPoints: [
 						getFilePathToPackage('studiocms_imagehandler', 'src/index.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/schema.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/integration.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/supportedAdapters.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/components/index.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/cloudflare.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/netlify.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/node.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/vercel.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/components/props.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/plugins/cloudinary.ts'),
 					],
 				})
 			),

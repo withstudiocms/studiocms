@@ -75,65 +75,8 @@ export const imageHandlerStrings = {
 	CloudinaryCDNWarning:
 		'Using the Cloudinary CDN JS SDK Plugin requires the CMS_CLOUDINARY_CLOUDNAME environment variable to be set. Please add this to your .env file.',
 	CustomImageLog: 'Configuring CustomImage Component...',
-	NodeAdapter: 'Node Adapter Detected. Using Node Adapter.',
-	CloudflareAdapter: 'Cloudflare Adapter Detected. Using Cloudflare Adapter.',
-	VercelAdapter: 'Vercel Adapter Detected. Using Vercel Adapter.',
-	NetlifyAdapter: 'Netlify Adapter Detected. Using Netlify Adapter.',
-	UnknownAdapter: {
-		part1: 'Unknown Adapter Detected: ',
-		part2:
-			'. studioCMS Image Handler has not been configured for this adapter. Please open an issue on the studioCMS GitHub Repository. https://github.com/astrolicious/studioCMS/issues',
-	},
-	NoAdapter:
-		'No Adapter Detected. studioCMS Image Handler will only be configured with Known SSR Adapters!',
-};
-
-export const genericAdapterStrings = {
-	Squoosh: 'Using Squoosh Image Service...',
-	Sharp: 'Using Sharp Image Service...',
-	NoOp: 'Using No-Op(Passthrough) Image Service...',
-	cdnPluginStrings: {
-		Squoosh: 'Using Squoosh Image Service as Fallback for Cloudinary CDN Plugin',
-		Sharp: 'Using Sharp Image Service as Fallback for Cloudinary CDN Plugin',
-		NoOp: 'Using No-Op Image Service as Fallback for Cloudinary CDN Plugin',
-	},
-	unpicStrings: {
-		default: 'Loading @unpic/astro Image Service for External Images',
-		NoOp: 'Loading @unpic/astro Image Service for External Images with No-Op Fallback',
-		disabled: '@unpic/astro Image Service Disabled, using Astro Built-in Image Service.',
-	},
-};
-
-export const vercelImageHandlerStrings = {
-	VercelBuildImageServerEnabled: 'Vercel Image Service Enabled. Using Vercel Image Service.',
-	VercelBuildImageServerDisabled:
-		'Vercel Image Service Disabled. Using Astro Built-in Image Service.',
-	...genericAdapterStrings,
-};
-
-export const nodeImageHandlerStrings = {
-	...genericAdapterStrings,
-};
-
-export const netlifyImageHandlerStrings = {
-	NetlifyImageServiceEnabled: 'Netlify Image Service Enabled. Using Netlify Image Service.',
-	NetlifyImageServiceDisabled:
-		'Netlify Image Service Disabled. Using Astro Built-in Image Service.',
-	...genericAdapterStrings,
-};
-
-export const cloudflareImageHandlerStrings = {
-	CloudflareImageServiceEnabled:
-		'Cloudflare Image Service Enabled. Using Cloudflare Image Service.',
-	CloudflareImageServiceDisabled:
-		'Cloudflare Image Service Disabled. Using Astro Built-in Image Service.',
-	unsupported: {
-		Squoosh:
-			"Cloudflare SSR does not support Squoosh Image Service. Using no-op Service as astroImageServiceConfig is set to 'squoosh'",
-		Sharp:
-			"Cloudflare SSR does not support Sharp Image Service. Using no-op Service as astroImageServiceConfig is set to 'sharp'",
-	},
-	...genericAdapterStrings,
+	updateConfig:
+		'Updating Astro Config with Image Service Configuration to allow for remote images...',
 };
 
 export const AuthProviderLogStrings = {

@@ -38,9 +38,7 @@
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/core": "workspace:*",
-    "@unpic/astro": "catalog:studiocms-imagehandler",
-    "astro-integration-kit": "catalog:",
-    "unpic": "catalog:studiocms-shared"
+    "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min"
