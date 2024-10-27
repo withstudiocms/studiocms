@@ -89,16 +89,14 @@ export const generateCatagories = async (categories: number[], endpoint: string)
 			.where(eq(tsPageDataCategories.id, catagoryId))
 			.get();
 
-		if (!catagoryExists) {
-			const catagoryURL = apiEndpoint(endpoint, 'catagories', `${catagoryId}`);
-			const response = await fetch(catagoryURL);
-			const json = await response.json();
-			newCatagories.push(json);
-		}
-
 		if (catagoryExists) {
 			console.log(`Catagory with id ${catagoryId} already exists in the database`);
 		}
+
+		const catagoryURL = apiEndpoint(endpoint, 'catagories', `${catagoryId}`);
+		const response = await fetch(catagoryURL);
+		const json = await response.json();
+		newCatagories.push(json);
 	}
 
 	if (newCatagories.length > 0) {
@@ -136,16 +134,14 @@ export const generateTags = async (tags: number[], endpoint: string) => {
 			.where(eq(tsPageDataTags.id, tagId))
 			.get();
 
-		if (!tagExists) {
-			const tagURL = apiEndpoint(endpoint, 'tags', `${tagId}`);
-			const response = await fetch(tagURL);
-			const json = await response.json();
-			newTags.push(json);
-		}
-
 		if (tagExists) {
 			console.log(`Tag with id ${tagId} already exists in the database`);
 		}
+
+		const tagURL = apiEndpoint(endpoint, 'tags', `${tagId}`);
+		const response = await fetch(tagURL);
+		const json = await response.json();
+		newTags.push(json);
 	}
 
 	if (newTags.length > 0) {
