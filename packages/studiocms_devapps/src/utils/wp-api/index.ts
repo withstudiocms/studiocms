@@ -2,6 +2,7 @@ import path from 'node:path';
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import Config from 'virtual:studiocms-devapps/wp-api/configPath';
+import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsPageContent, tsPageData, tsSiteConfig } from '@studiocms/core/db/tsTables';
 import type { Page, SiteSettings } from '../../schema/wp-api';
 import {
@@ -145,7 +146,7 @@ export const importSettingsFromWPAPI = async (endpoint: string) => {
 	}
 
 	const siteConfig: typeof tsSiteConfig.$inferInsert = {
-		id: 1,
+		id: CMSSiteConfigId,
 		title: settings.name,
 		description: settings.description,
 	};
@@ -158,7 +159,7 @@ export const importSettingsFromWPAPI = async (endpoint: string) => {
 		const insert = await db
 			.update(tsSiteConfig)
 			.set(siteConfig)
-			.where(eq(tsSiteConfig.id, 1))
+			.where(eq(tsSiteConfig.id, CMSSiteConfigId))
 			.returning({ id: tsSiteConfig.id })
 			.get();
 
