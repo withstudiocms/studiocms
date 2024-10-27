@@ -62,7 +62,6 @@
     "@studiocms/robotstxt": "workspace:*",
     "@unocss/astro": "catalog:studiocms-shared",
     "@unocss/reset": "catalog:studiocms-shared",
-    "@unpic/astro": "catalog:studiocms-imagehandler",
     "astro-integration-kit": "catalog:",
     "arctic": "catalog:studiocms-shared",
     "daisyui": "catalog:studiocms-shared",
@@ -78,8 +77,7 @@
     "package-json": "catalog:studiocms",
     "semver": "catalog:studiocms",
     "shiki": "catalog:studiocms-shared",
-    "unocss": "catalog:studiocms-shared",
-    "unpic": "catalog:studiocms-shared"
+    "unocss": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",

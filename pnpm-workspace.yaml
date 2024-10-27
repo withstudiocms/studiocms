@@ -75,7 +75,6 @@ catalogs:
     marked: ^13.0.2
     micromatch: ^4.0.8
     shiki: ^1.14.1
-    unpic: ^3.18.0
     mrmime: ^2.0.0
     unified: ^11.0.5
   studiocms-renderer:
@@ -90,7 +89,6 @@ catalogs:
     rehype-highlight: ^7.0.0
   studiocms-imagehandler:
     '@cloudinary/url-gen': ^1.21.0
-    '@unpic/astro': ^0.0.47
 
 packages:
   - "packages/*"

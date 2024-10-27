@@ -1,18 +1,14 @@
 ---
 import { Image } from 'astro:assets';
-import { CMS_CLOUDINARY_CLOUDNAME } from 'astro:env/server';
 import Config from 'virtual:studiocms/config';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
+import { cloudinaryPlugin } from './plugins/cloudinary';
+import type { SharedProps } from './props';
 
-interface Props {
-	src: string;
-	alt: string;
-	width: number;
-	height: number;
-}
+interface Props extends SharedProps {}
 
 const { src, ...props } = Astro.props;
+
+// Get the current configured image service
 const {
 	imageService: { cdnPlugin },
 } = Config;
@@ -20,31 +16,9 @@ const {
 // Get the current configured image service
 async function getImageSrc() {
 	switch (cdnPlugin) {
-		case 'cloudinary-js': {
-			// Cloudinary Image Service (JavaScript SDK) - https://cloudinary.com/documentation/javascript_integration#landingpage
-
-			// Initialize Cloudinary
-			const cld = new Cloudinary({
-				cloud: {
-					cloudName: CMS_CLOUDINARY_CLOUDNAME || 'demo',
-				},
-			});
-
-			// Configure the image
-			const cldSrc = cld
-				.image(src)
-				.format('auto')
-				.quality('auto')
-				.resize(fill('auto').width(props.width).height(props.height));
-
-			// Set the delivery type to 'fetch' if the image source is an external URL
-			if (src.startsWith('https://') || src.startsWith('http://')) {
-				cldSrc.setDeliveryType('fetch');
-			}
-
-			// Return the Cloudinary image URL
-			return cldSrc.toURL();
-		}
+		case 'cloudinary-js':
+			// Return the Cloudinary image source
+			return cloudinaryPlugin(src, props);
 		default:
 			// Return the original image source if no External image service plugin is configured
 			return src;
@@ -64,7 +38,7 @@ const currentSrcURL = await getImageSrc();
 
 // Set the image properties
 const imageProps = {
-	src: await getImageSrc(),
+	src: currentSrcURL,
 	inferSize: inferSizeNeeded(currentSrcURL),
 	...props,
 };

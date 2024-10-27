@@ -57,7 +57,6 @@
     "marked": "catalog:studiocms-shared",
     "mrmime": "catalog:studiocms-shared",
     "shiki": "catalog:studiocms-shared",
-    "unpic": "catalog:studiocms-shared",
     "unified": "catalog:studiocms-shared",
     "remark-rehype": "catalog:studiocms-core",
     "mdast-util-to-hast": "catalog:studiocms-core"

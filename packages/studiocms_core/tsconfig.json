@@ -23,7 +23,6 @@
   ],
   "include": [
     "./package.json",
-    "../../playgrounds/node/**/*",
     "../../playgrounds/node/.astro/**/*",
     "../studiocms_robotstxt/**/*",
     "./**/*",
