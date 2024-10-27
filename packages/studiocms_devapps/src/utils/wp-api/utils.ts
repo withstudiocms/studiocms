@@ -106,7 +106,11 @@ export const downloadAndUpdateImages = async (html: string, pathToFolder: string
 	return $.html();
 };
 
-export const apiEndpoint = (endpoint: string, type: 'posts' | 'pages' | 'media') => {
+export const apiEndpoint = (
+	endpoint: string,
+	type: 'posts' | 'pages' | 'media' | 'catagories' | 'tags' | 'settings',
+	path?: string
+) => {
 	if (!endpoint) {
 		throw new AstroError(
 			'Missing `endpoint` argument.',
@@ -115,8 +119,15 @@ export const apiEndpoint = (endpoint: string, type: 'posts' | 'pages' | 'media')
 	}
 	let newEndpoint = endpoint;
 	if (!newEndpoint.endsWith('/')) newEndpoint += '/';
+
 	const apiBase = new URL(newEndpoint);
-	apiBase.pathname = `wp-json/wp/v2/${type}`;
+
+	if (type === 'settings') {
+		apiBase.pathname = 'wp-json/';
+		return apiBase;
+	}
+
+	apiBase.pathname = `wp-json/wp/v2/${type}${path ? `/${path}` : ''}`;
 	return apiBase;
 };
 

@@ -2,6 +2,8 @@ import { asDrizzleTable } from '@astrojs/db/utils';
 import {
 	StudioCMSPageContent,
 	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
@@ -19,6 +21,21 @@ export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPag
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
  */
 export const tsPageData = asDrizzleTable('StudioCMSPageData', StudioCMSPageData);
+
+/**
+ * # StudioCMS - Page Data Categories Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsPageDataCategories = asDrizzleTable(
+	'StudioCMSPageDataCategories',
+	StudioCMSPageDataCategories
+);
+
+/**
+ * # StudioCMS - Page Data Tags Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsPageDataTags = asDrizzleTable('StudioCMSPageDataTags', StudioCMSPageDataTags);
 
 /**
  * # StudioCMS - Permissions Table
