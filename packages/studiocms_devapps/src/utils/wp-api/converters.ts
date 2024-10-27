@@ -91,6 +91,7 @@ export const generateCatagories = async (categories: number[], endpoint: string)
 
 		if (catagoryExists) {
 			console.log(`Catagory with id ${catagoryId} already exists in the database`);
+			continue;
 		}
 
 		const catagoryURL = apiEndpoint(endpoint, 'catagories', `${catagoryId}`);
@@ -136,6 +137,7 @@ export const generateTags = async (tags: number[], endpoint: string) => {
 
 		if (tagExists) {
 			console.log(`Tag with id ${tagId} already exists in the database`);
+			continue;
 		}
 
 		const tagURL = apiEndpoint(endpoint, 'tags', `${tagId}`);
