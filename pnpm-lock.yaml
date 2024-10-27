@@ -132,9 +132,6 @@ catalogs:
     '@cloudinary/url-gen':
       specifier: ^1.21.0
       version: 1.21.0
-    '@unpic/astro':
-      specifier: ^0.0.47
-      version: 0.0.47
   studiocms-renderer:
     '@mdx-js/mdx':
       specifier: ^3.0.1
@@ -242,9 +239,6 @@ catalogs:
     unocss:
       specifier: ^0.62.3
       version: 0.62.3
-    unpic:
-      specifier: ^3.18.0
-      version: 3.18.0
 
 importers:
 
@@ -334,9 +328,6 @@ importers:
       '@unocss/reset':
         specifier: catalog:studiocms-shared
         version: 0.62.3
-      '@unpic/astro':
-        specifier: catalog:studiocms-imagehandler
-        version: 0.0.47(astro@4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       arctic:
         specifier: catalog:studiocms-shared
         version: 1.9.2
@@ -388,9 +379,6 @@ importers:
       unocss:
         specifier: catalog:studiocms-shared
         version: 0.62.3(postcss@8.4.47)(rollup@4.21.0)(vite@5.4.8(@types/node@22.0.0))
-      unpic:
-        specifier: catalog:studiocms-shared
-        version: 3.18.0
     devDependencies:
       '@types/micromatch':
         specifier: catalog:studiocms-shared
@@ -564,9 +552,6 @@ importers:
       unified:
         specifier: catalog:studiocms-shared
         version: 11.0.5
-      unpic:
-        specifier: catalog:studiocms-shared
-        version: 3.18.0
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -712,18 +697,12 @@ importers:
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
-      '@unpic/astro':
-        specifier: catalog:studiocms-imagehandler
-        version: 0.0.47(astro@4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       astro:
         specifier: catalog:min
         version: 4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      unpic:
-        specifier: catalog:studiocms-shared
-        version: 3.18.0
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -859,6 +838,9 @@ importers:
       astro:
         specifier: 'catalog:'
         version: 4.16.6(@types/node@20.14.13)(rollup@4.21.0)(typescript@5.6.3)
+      sharp:
+        specifier: 'catalog:'
+        version: 0.33.4
       studiocms:
         specifier: workspace:*
         version: link:../../packages/studiocms
@@ -3046,20 +3028,6 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0
 
-  '@unpic/astro@0.0.47':
-    resolution: {integrity: sha512-V35x+L8hzJ0w+VnoaCNjXOMYbm5B+WTKa3RQxYUw2/hJZ4Jo4a1uqYbiORJO77eGSaJGQBOGB9RT0BWMOmEz9Q==}
-    peerDependencies:
-      astro: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-
-  '@unpic/core@0.0.49':
-    resolution: {integrity: sha512-tAqeJRMPF2TrZbSQe74OZ9O5DzKDDUoFwFbZUpjvLcgwGQ/8aleDCb2Iy3bHFJfzzYZ9iHN0hN1VpTlAGQd+ZA==}
-
-  '@unpic/pixels@1.2.2':
-    resolution: {integrity: sha512-zQWLcz/HX6IF1xQPyo1RtxW5aBkK470p8ZpRTtPidOZ26YAoxJhcW8Y59KzwRQSLdQV9B50V4m30TMgdFNxq1A==}
-
-  '@unpic/placeholder@0.1.2':
-    resolution: {integrity: sha512-O++tS97biojo5sqn5TeTt+jUjl5gWOdIQuOXe8YluTJWq4L0GM6VuTkaspNpsmxHfioJw/6YBirzOpG4t87l8Q==}
-
   '@vitejs/plugin-react@4.3.1':
     resolution: {integrity: sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -3286,9 +3254,6 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
-
-  blurhash@2.0.5:
-    resolution: {integrity: sha512-cRygWd7kGBQO3VEhPiTgq4Wc43ctsM+o46urrmPOiuAe+07fzlSB9OJVdpgDL0jPqXUVQ9ht7aq7kxOeJHRK+w==}
 
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
@@ -4356,9 +4321,6 @@ packages:
     resolution: {integrity: sha512-c+PHQZakiQuMKbnhvrjZUvrK6E/AfmTOf4P+E3Y4FNVHcNMX9e/XrnbEvO+m4wS6ZjsvhHh/POQTlfy8uXFc0A==}
     hasBin: true
 
-  jpeg-js@0.4.4:
-    resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
-
   js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
 
@@ -4895,9 +4857,6 @@ packages:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
 
-  ofetch@1.3.3:
-    resolution: {integrity: sha512-s1ZCMmQWXy4b5K/TW9i/DtiN8Ku+xCiHcjQ6/J/nDdssirrQNOoB165Zu8EqLMA2lln1JUth9a0aW9Ap2ctrUg==}
-
   ofetch@1.3.4:
     resolution: {integrity: sha512-KLIET85ik3vhEfS+3fDlc/BAZiAp+43QEC/yCo5zkNoY2YaKvNkOaFr/6wCFgFH1kuYQM5pMNi0Tg8koiIemtw==}
 
@@ -5089,10 +5048,6 @@ packages:
 
   pkg-types@1.1.3:
     resolution: {integrity: sha512-+JrgthZG6m3ckicaOB74TwQ+tBWsFl3qVQg7mN8ulwSOElJ7gBhKzj2VkCPnZ4NlF6kEquYU+RIYNVAvzd54UA==}
-
-  pngjs@7.0.0:
-    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
-    engines: {node: '>=14.19.0'}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -5810,9 +5765,6 @@ packages:
         optional: true
       vite:
         optional: true
-
-  unpic@3.18.0:
-    resolution: {integrity: sha512-JemzuG3nyKpEQ/DArrYM0l+LDSLLPYiUQvDfGXJY35+r0J0C984vPB4Zh8DyMVip102YSnTeZtZ6Q8OQegQDRQ==}
 
   update-browserslist-db@1.1.0:
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
@@ -8448,28 +8400,6 @@ snapshots:
       - rollup
       - supports-color
 
-  '@unpic/astro@0.0.47(astro@4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))':
-    dependencies:
-      '@unpic/core': 0.0.49
-      '@unpic/pixels': 1.2.2
-      '@unpic/placeholder': 0.1.2
-      astro: 4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
-      blurhash: 2.0.5
-
-  '@unpic/core@0.0.49':
-    dependencies:
-      unpic: 3.18.0
-
-  '@unpic/pixels@1.2.2':
-    dependencies:
-      jpeg-js: 0.4.4
-      ofetch: 1.3.3
-      pngjs: 7.0.0
-
-  '@unpic/placeholder@0.1.2':
-    dependencies:
-      blurhash: 2.0.5
-
   '@vitejs/plugin-react@4.3.1(vite@5.4.8(@types/node@22.0.0))':
     dependencies:
       '@babel/core': 7.25.7
@@ -9042,8 +8972,6 @@ snapshots:
       is-windows: 1.0.2
 
   binary-extensions@2.3.0: {}
-
-  blurhash@2.0.5: {}
 
   boolbase@1.0.0: {}
 
@@ -10145,8 +10073,6 @@ snapshots:
 
   jiti@2.0.0-beta.2: {}
 
-  jpeg-js@0.4.4: {}
-
   js-base64@3.7.7: {}
 
   js-tokens@4.0.0: {}
@@ -10943,12 +10869,6 @@ snapshots:
 
   object-hash@3.0.0: {}
 
-  ofetch@1.3.3:
-    dependencies:
-      destr: 2.0.3
-      node-fetch-native: 1.6.4
-      ufo: 1.5.4
-
   ofetch@1.3.4:
     dependencies:
       destr: 2.0.3
@@ -11156,8 +11076,6 @@ snapshots:
       confbox: 0.1.7
       mlly: 1.7.1
       pathe: 1.1.2
-
-  pngjs@7.0.0: {}
 
   postcss-import@15.1.0(postcss@8.4.47):
     dependencies:
@@ -12082,8 +12000,6 @@ snapshots:
       - postcss
       - rollup
       - supports-color
-
-  unpic@3.18.0: {}
 
   update-browserslist-db@1.1.0(browserslist@4.23.2):
     dependencies:
