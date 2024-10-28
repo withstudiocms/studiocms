@@ -127,7 +127,7 @@ export const apiEndpoint = (
 		return apiBase;
 	}
 
-	apiBase.pathname = `wp-json/wp/v2/${type}${path ? `/${path}` : ''}`;
+	apiBase.pathname = `wp-json/wp/v2/${type}/${path ? `${path}/` : ''}`;
 	return apiBase;
 };
 
