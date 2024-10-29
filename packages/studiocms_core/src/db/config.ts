@@ -3,6 +3,8 @@ import { defineDb } from 'astro:db';
 import {
 	StudioCMSPageContent,
 	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
@@ -14,6 +16,8 @@ export default defineDb({
 	tables: {
 		StudioCMSPageContent,
 		StudioCMSPageData,
+		StudioCMSPageDataCategories,
+		StudioCMSPageDataTags,
 		StudioCMSPermissions,
 		StudioCMSSessionTable,
 		StudioCMSSiteConfig,

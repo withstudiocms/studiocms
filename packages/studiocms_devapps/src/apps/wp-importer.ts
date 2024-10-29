@@ -139,6 +139,7 @@ export default defineToolbarApp({
 									<select id="importer-type" name="importer-type" required>
 									<option value="pages" selected>Pages</option>
 									<option value="posts">Posts</option>
+									<option value="settings">Site Settings (This option will override your StudioCMS Site Config)</option>
 									</select>
 								</div>
 
