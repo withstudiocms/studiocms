@@ -2,7 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { db, eq } from 'astro:db';
 import AuthSecurityConfig from 'studiocms:auth/config';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { scryptAsync } from '@noble/hashes/scrypt';
+// TODO: Update this import to the new system
+// import { scryptAsync } from '@noble/hashes/scrypt';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import {
 	tsPageContent,

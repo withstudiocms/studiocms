@@ -62,18 +62,19 @@ catalogs:
     '@noble/hashes': ^1.5.0
     '@unocss/astro': ^0.62.3
     '@unocss/reset': ^0.62.3
-    '@types/micromatch': ^4.0.9
     "@astrojs/react": ^3.6.2
     "@types/react": ^18.3.5
     "@types/react-dom": ^18.3.0
+    "@oslojs/crypto": ^1.0.1
+    "@oslojs/encoding": ^1.1.0
+    "@oslojs/binary": ^1.0.0
+    "@node-rs/argon2": ^2.0.0
     react: ^18.3.1
     react-dom: ^18.3.1
     unocss: ^0.62.3
     daisyui: ^4.12.10
-    lucia: ^3.2.0
-    arctic: ^1.9.1
+    arctic: ^2.0.1
     marked: ^13.0.2
-    micromatch: ^4.0.8
     shiki: ^1.14.1
     mrmime: ^2.0.0
     unified: ^11.0.5

@@ -6,11 +6,9 @@ import { addVirtualImports, createResolver, defineIntegration } from 'astro-inte
 import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
-import authConfigDTS from './stubs/auth-config';
-import authHelperDTS from './stubs/auth-helpers';
+import authLibDTS from './stubs/auth-lib';
 import { checkEnvKeys } from './utils/checkENV';
 import { injectAuthRouteArray } from './utils/injectAuthRoutes';
-import { usernameAndPasswordAuthConfig } from './utils/studioauth-config';
 
 export default defineIntegration({
 	name,
@@ -40,21 +38,21 @@ export default defineIntegration({
 					// Update Astro Config with Environment Variables (`astro:env`)
 					addAstroEnvConfig(params, astroENV);
 
-					// If Username and Password Auth is enabled Verify the Auth Config File Exists and is setup!
-					usernameAndPasswordAuthConfig(params, { options, name });
-
 					// injectAuthHelper
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'studiocms:auth/helpers': `export { default as authHelper } from '${resolve('./helpers/authHelper.ts')}'`,
+							'studiocms:auth/lib/encryption': `export * from '${resolve('./lib/encryption.ts')}'`,
+							'studiocms:auth/lib/password': `export * from '${resolve('./lib/password.ts')}'`,
+							'studiocms:auth/lib/session': `export * from '${resolve('./lib/session.ts')}'`,
+							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
+							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
 						},
 					});
 
 					// Inject Routes
 					injectAuthRouteArray(params, {
 						options,
-						middleware: resolve('./middleware/index.ts'),
 						providerRoutes: [
 							{
 								enabled: options.dashboardConfig.AuthConfig.providers.github,
@@ -164,8 +162,7 @@ export default defineIntegration({
 				},
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject Types
-					injectTypes(authConfigDTS);
-					injectTypes(authHelperDTS);
+					injectTypes(authLibDTS);
 				},
 			},
 		};

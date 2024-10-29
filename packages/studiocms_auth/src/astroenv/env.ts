@@ -4,6 +4,12 @@ import { envField } from 'astro/config';
 export const astroENV: AstroConfig['experimental']['env'] = {
 	validateSecrets: true,
 	schema: {
+		// Auth Encryption Key
+		CMS_ENCRYPTION_KEY: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: false,
+		}),
 		// GitHub Auth Provider Environment Variables
 		CMS_GITHUB_CLIENT_ID: envField.string({
 			context: 'server',

@@ -45,7 +45,6 @@
     "@studiocms/betaresources": "workspace:*",
     "@studiocms/core": "workspace:*",
     "@studiocms/renderers": "workspace:*",
-    "@noble/hashes": "catalog:studiocms-shared",
     "@unocss/astro": "catalog:studiocms-shared",
     "@unocss/reset": "catalog:studiocms-shared",
     "astro-integration-kit": "catalog:",

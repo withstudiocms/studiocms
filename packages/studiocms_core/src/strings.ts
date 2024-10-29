@@ -129,6 +129,10 @@ export const CheckENVStrings = {
 		ErrorMessage:
 			'The Following Auth0 Keys are Missing and are Required for the Auth0 Authentication to work:',
 	},
+	EncryptionMessages: {
+		CheckMessage: 'Checking Encryption Key...',
+		ErrorMessage: 'The CMS_ENCRYPTION_KEY is Missing and is Required for StudioCMS to work:',
+	},
 };
 
 export const authConfigStrings = {

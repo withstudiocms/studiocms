@@ -9,7 +9,7 @@ export const injectAuthRouteArray = defineUtility('astro:config:setup')(
 		params,
 		opts: {
 			options: StudioCMSAuthOptions;
-			middleware: string;
+			// middleware: string;
 			providerRoutes: {
 				enabled: boolean;
 				logs: {
@@ -23,7 +23,7 @@ export const injectAuthRouteArray = defineUtility('astro:config:setup')(
 			}[];
 		}
 	) => {
-		const { injectRoute, addMiddleware, logger } = params;
+		const { injectRoute, logger } = params;
 		const {
 			options: {
 				dashboardConfig: {
@@ -37,7 +37,7 @@ export const injectAuthRouteArray = defineUtility('astro:config:setup')(
 			options,
 		} = opts;
 
-		const { middleware, providerRoutes } = opts;
+		const { providerRoutes } = opts;
 
 		if (dashboardEnabled && !dbStartPage) {
 			// Log that the Dashboard is enabled
@@ -67,16 +67,6 @@ export const injectAuthRouteArray = defineUtility('astro:config:setup')(
 					DashboardStrings.TestAndDemo
 				);
 			}
-
-			// Add Middleware for Auth Session Handling
-			integrationLogger(
-				{ logger, logLevel: 'info', verbose: options.verbose },
-				DashboardStrings.Middleware
-			);
-			addMiddleware({
-				entrypoint: middleware,
-				order: 'pre',
-			});
 
 			// Make the Default Dashboard Route
 			const defaultDashboardRoute = dashboardRouteOverride

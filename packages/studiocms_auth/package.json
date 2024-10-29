@@ -30,8 +30,7 @@
     "src"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./lucia": "./src/auth/index.ts"
+    ".": "./src/index.ts"
   },
   "type": "module",
   "dependencies": {
@@ -39,11 +38,12 @@
     "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@noble/hashes": "catalog:studiocms-shared",
     "@studiocms/assets": "workspace:*",
     "@studiocms/core": "workspace:*",
-    "micromatch": "catalog:studiocms-shared",
-    "lucia": "catalog:studiocms-shared",
+    "@oslojs/crypto": "catalog:studiocms-shared",
+    "@oslojs/encoding": "catalog:studiocms-shared",
+    "@oslojs/binary": "catalog:studiocms-shared",
+    "@node-rs/argon2": "catalog:studiocms-shared",
     "arctic": "catalog:studiocms-shared",
     "astro-integration-kit": "catalog:"
   },
@@ -55,7 +55,6 @@
   },
   "devDependencies": {
     "vite": "catalog:",
-    "typescript": "catalog:",
-    "@types/micromatch": "catalog:studiocms-shared"
+    "typescript": "catalog:"
   }
 }

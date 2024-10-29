@@ -49,7 +49,6 @@
     "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
-    "@noble/hashes": "catalog:studiocms-shared",
     "@shikijs/transformers": "catalog:studiocms-renderer",
     "@studiocms/assets": "workspace:*",
     "@studiocms/auth": "workspace:*",
@@ -62,17 +61,19 @@
     "@studiocms/robotstxt": "workspace:*",
     "@unocss/astro": "catalog:studiocms-shared",
     "@unocss/reset": "catalog:studiocms-shared",
+    "@oslojs/crypto": "catalog:studiocms-shared",
+    "@oslojs/encoding": "catalog:studiocms-shared",
+    "@oslojs/binary": "catalog:studiocms-shared",
+    "@node-rs/argon2": "catalog:studiocms-shared",
     "astro-integration-kit": "catalog:",
     "arctic": "catalog:studiocms-shared",
     "daisyui": "catalog:studiocms-shared",
-    "lucia": "catalog:studiocms-shared",
     "marked": "catalog:studiocms-shared",
     "marked-alert": "catalog:studiocms-renderer",
     "marked-emoji": "catalog:studiocms-renderer",
     "marked-footnote": "catalog:studiocms-renderer",
     "marked-shiki": "catalog:studiocms-renderer",
     "marked-smartypants": "catalog:studiocms-renderer",
-    "micromatch": "catalog:studiocms-shared",
     "mrmime": "catalog:studiocms-shared",
     "package-json": "catalog:studiocms",
     "semver": "catalog:studiocms",
@@ -92,7 +93,6 @@
   "devDependencies": {
     "vite": "catalog:",
     "typescript": "catalog:",
-    "@types/micromatch": "catalog:studiocms-shared",
     "@types/semver": "catalog:studiocms"
   }
 }
