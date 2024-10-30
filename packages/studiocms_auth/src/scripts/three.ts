@@ -6,8 +6,6 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { fitModelToViewport } from './utils/fitModelToViewport';
 
-import { Pane } from 'tweakpane';
-
 import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png?url';
 import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png?url';
 import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png?url';
@@ -29,30 +27,6 @@ type ValidImage = (typeof validImages)[number];
 const bgPARAMS = {
 	background: 'studiocms-curves',
 	customImageHref: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
-};
-
-const glassPARAMS = {
-	color: '#ffffff',
-	roughness: 0.6,
-	transmission: 1,
-	opacity: 1,
-	transparent: true,
-	thickness: 0.5,
-	envMapIntensity: 1,
-	clearcoat: 1,
-	clearcoatRoughness: 0.2,
-	metalness: 0,
-};
-
-const outlinePARAMS = {
-	outlineColor: '#aa87f4',
-	edgeStrength: 0.6,
-	edgeThickness: 0.1,
-	edgeGlow: 5.0,
-};
-
-const sitePARAMS = {
-	lightMode: false,
 };
 
 /**
@@ -123,7 +97,6 @@ class StudioCMS3DLogo {
 		this.addPostProcessing(true, outlineColor);
 
 		this.addBackgroundImage(image || validImages[0]);
-		this.initTweakpane();
 
 		this.initListeners(reducedMotion);
 		this.registerLoadingCallback();
@@ -171,7 +144,18 @@ class StudioCMS3DLogo {
 
 				if (!isMesh) return;
 
-				const material = new THREE.MeshPhysicalMaterial(glassPARAMS);
+				const material = new THREE.MeshPhysicalMaterial({
+					color: '#ffffff',
+					roughness: 0.6,
+					transmission: 1,
+					opacity: 1,
+					transparent: true,
+					thickness: 0.5,
+					envMapIntensity: 1,
+					clearcoat: 1,
+					clearcoatRoughness: 0.2,
+					metalness: 0,
+				});
 
 				child.material = material;
 			});
@@ -288,143 +272,6 @@ class StudioCMS3DLogo {
 		};
 	};
 
-	initTweakpane = () => {
-		const pane = new Pane({
-			title: 'Dev Settings',
-		});
-
-		const f1 = pane.addFolder({
-			title: 'Background',
-			expanded: false,
-		});
-
-		const imageBlade = f1.addBinding(bgPARAMS, 'background', {
-			options: validImages.map((image) => ({
-				text: image.name,
-				value: image.name,
-			})),
-		});
-
-		imageBlade.on('change', ({ value }) => {
-			if (!this.BackgroundMesh) return;
-
-			const image = validImages.find((x) => x.name === value);
-
-			if (!image) return;
-
-			this.BackgroundMesh?.removeFromParent();
-			this.addBackgroundImage(image);
-		});
-
-		const hrefBlade = f1.addBinding(bgPARAMS, 'customImageHref');
-
-		hrefBlade.on('change', ({ value }) => {
-			if (bgPARAMS.background !== 'custom') return;
-
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			this.addBackgroundImage({ name: value as any, format: 'web' });
-		});
-
-		const f2 = pane.addFolder({
-			title: 'Frosted Glass Material',
-			expanded: false,
-		});
-
-		f2.addBinding(glassPARAMS, 'color').on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'roughness', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'transmission', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'opacity', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'transparent', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'thickness', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'envMapIntensity', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'clearcoat', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'clearcoatRoughness', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		f2.addBinding(glassPARAMS, 'metalness', {
-			min: 0,
-			max: 1,
-		}).on('change', this.recomputeGlassMaterial);
-
-		const f3 = pane.addFolder({
-			title: 'Model Outline',
-			expanded: false,
-		});
-
-		f3.addBinding(outlinePARAMS, 'outlineColor').on('change', ({ value }) => {
-			if (!this.outlinePass) return;
-
-			this.outlinePass.visibleEdgeColor = new THREE.Color(value as THREE.ColorRepresentation);
-		});
-
-		f3.addBinding(outlinePARAMS, 'edgeStrength', {
-			min: 0,
-			max: 5,
-		}).on('change', ({ value }) => {
-			if (!this.outlinePass) return;
-
-			this.outlinePass.edgeStrength = value;
-		});
-
-		f3.addBinding(outlinePARAMS, 'edgeGlow', {
-			min: 0,
-			max: 25,
-		}).on('change', ({ value }) => {
-			if (!this.outlinePass) return;
-
-			this.outlinePass.edgeGlow = value;
-		});
-
-		f3.addBinding(outlinePARAMS, 'edgeThickness', {
-			min: 0.1,
-			max: 1,
-		}).on('change', ({ value }) => {
-			if (!this.outlinePass) return;
-
-			this.outlinePass.edgeThickness = value;
-		});
-
-		const f4 = pane.addFolder({
-			title: 'Site',
-			expanded: false,
-		});
-
-		f4.addBinding(sitePARAMS, 'lightMode').on('change', () => {
-			document.documentElement.classList.toggle('light');
-		});
-	};
-
 	recomputeGlassMaterial = () => {
 		if (!this.model) return;
 
@@ -433,7 +280,18 @@ class StudioCMS3DLogo {
 
 			if (!isMesh) return;
 
-			const material = new THREE.MeshPhysicalMaterial(glassPARAMS);
+			const material = new THREE.MeshPhysicalMaterial({
+				color: '#ffffff',
+				roughness: 0.6,
+				transmission: 1,
+				opacity: 1,
+				transparent: true,
+				thickness: 0.5,
+				envMapIntensity: 1,
+				clearcoat: 1,
+				clearcoatRoughness: 0.2,
+				metalness: 0,
+			});
 
 			child.material = material;
 		});

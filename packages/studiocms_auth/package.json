@@ -45,10 +45,8 @@
     "@oslojs/binary": "catalog:studiocms-shared",
     "@node-rs/argon2": "catalog:studiocms-shared",
     "@fontsource/onest": "5.1.0",
-    "@tweakpane/core": "^2.0.4",
-    "@types/three": "^0.168.0",
-    "three": "^0.168.0",
-    "tweakpane": "^4.0.4",
+    "@types/three": "^0.169.0",
+    "three": "^0.169.0",
     "arctic": "catalog:studiocms-shared",
     "astro-integration-kit": "catalog:",
     "rollup-plugin-copy": "^3.5.0"
