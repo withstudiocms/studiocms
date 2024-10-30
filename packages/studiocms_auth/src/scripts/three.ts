@@ -1,4 +1,5 @@
 import { db, eq } from 'astro:db';
+import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -12,9 +13,9 @@ import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png
 import { fitModelToViewport } from './utils/fitModelToViewport';
 
 /**
- * The built-in images that can be used as a background for the StudioCMS Logo.
+ * The valid images that can be used as a background for the StudioCMS Logo.
  */
-const builtInImages = [
+const validImages = [
 	{ name: 'studiocms-blobs', format: 'png', light: studiocmsBlobsLight, dark: studiocmsBlobsDark },
 	{
 		name: 'studiocms-curves',
@@ -22,17 +23,8 @@ const builtInImages = [
 		light: studiocmsCurvesLight,
 		dark: studiocmsCurvesDark,
 	},
+	{ name: 'custom', format: 'web' },
 ] as const;
-
-/**
- * The valid images that can be used as a background for the StudioCMS Logo.
- */
-const validImages = [...builtInImages, { name: 'custom', format: 'web' }] as const;
-
-/**
- * A built-in image that can be used as a background for the StudioCMS Logo.
- */
-type BuiltInImage = (typeof builtInImages)[number];
 
 /**
  * A valid image that can be used as a background for the StudioCMS Logo.
@@ -40,21 +32,20 @@ type BuiltInImage = (typeof builtInImages)[number];
 type ValidImage = (typeof validImages)[number];
 
 /**
- * The Light/Dark mode of the background image.
- */
-type Mode = 'light' | 'dark';
-
-/**
  * The parameters for the background image.
  */
 type BackgroundParams = {
 	background: ValidImage['name'];
-	mode: Mode;
 	customImageHref: string;
+	mode: 'light' | 'dark';
 };
 
 // Get the site config
-const siteConfig = await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, 1)).get();
+const siteConfig = await db
+	.select()
+	.from(tsSiteConfig)
+	.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+	.get();
 
 // This should never happen
 if (!siteConfig) {
@@ -85,23 +76,18 @@ function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage[
 	return 'studiocms-curves';
 }
 
+function parseToString(value: string | undefined | null): string {
+	return value || '';
+}
+
 /**
  * The parameters for the background image config.
  */
 const backgroundConfig: BackgroundParams = {
 	background: parseBackgroundImageConfig(loginPageBackground),
+	customImageHref: parseToString(loginPageCustomImage),
 	mode: 'dark',
-	customImageHref: loginPageCustomImage || '',
 };
-
-/**
- * Selects the background variant based on the mode.
- * @param image The image to select the background variant for.
- * @param mode The mode to select the background variant for.
- */
-function bgVariantSelector(image: BuiltInImage, mode: Mode) {
-	return mode === 'dark' ? image.dark : image.light;
-}
 
 /**
  * Selects the background based on the image.
@@ -109,7 +95,11 @@ function bgVariantSelector(image: BuiltInImage, mode: Mode) {
  * @param params The parameters to select the background for.
  */
 function bgSelector(image: ValidImage, params: BackgroundParams) {
-	return image.format === 'web' ? params.customImageHref : bgVariantSelector(image, params.mode);
+	return image.format === 'web'
+		? params.customImageHref
+		: params.mode === 'dark'
+			? image.dark
+			: image.light;
 }
 
 /**

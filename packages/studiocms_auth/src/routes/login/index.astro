@@ -19,12 +19,12 @@ const {
 	},
 } = Config;
 
-const { SHOW_OAUTH } = await authEnvCheck(providers);
-
 const {
 	authLinks: { loginAPI, signupURL },
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
+
+const { SHOW_OAUTH } = await authEnvCheck(providers);
 
 let paragraph: string;
 
