@@ -1,22 +1,17 @@
-import { randomUUID } from 'node:crypto';
-import { db, eq } from 'astro:db';
+import { and, db, eq } from 'astro:db';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
-import { tsUsers } from '@studiocms/core/db/tsTables';
-import { Auth0, type Auth0Tokens, OAuth2RequestError } from 'arctic';
+import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
+import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
 import type { APIContext } from 'astro';
-import { lucia } from '../../../auth';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { getUserData } from '../../../lib/user';
+import { type Auth0User, ProviderCookieName, ProviderID, auth0, getClientDomain } from './shared';
 
-const {
-	dashboardConfig: {
-		AuthConfig: { providers },
-	},
-} = Config;
-
-const {
-	AUTH0: { CLIENT_ID, CLIENT_SECRET, DOMAIN, REDIRECT_URI },
-} = await authEnvCheck(providers);
 const {
 	authLinks: { loginURL },
 	mainLinks: { dashboardIndex },
@@ -25,78 +20,117 @@ const {
 export async function GET(context: APIContext): Promise<Response> {
 	const { url, cookies, redirect } = context;
 
-	const cleanDomainslash = DOMAIN ? DOMAIN.replace(/^\//, '') : '';
-	const NoHTTPDOMAIN = cleanDomainslash.replace(/http:\/\//, '').replace(/https:\/\//, '');
-	const clientDomain = `https://${NoHTTPDOMAIN}`;
-
-	const auth0 = new Auth0(
-		clientDomain,
-		CLIENT_ID ? CLIENT_ID : '',
-		CLIENT_SECRET ? CLIENT_SECRET : '',
-		REDIRECT_URI ? REDIRECT_URI : ''
-	);
-
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
-	const storedState = cookies.get('auth0_oauth_state')?.value ?? null;
+	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+
+	const CLIENT_DOMAIN = getClientDomain();
+
 	if (!code || !state || !storedState || state !== storedState) {
 		return redirect(loginURL);
 	}
 
+	let tokens: OAuth2Tokens;
+
 	try {
-		const tokens: Auth0Tokens = await auth0.validateAuthorizationCode(code);
-		const auth0Response = await fetch(`${clientDomain}/userinfo`, {
+		tokens = await auth0.validateAuthorizationCode(code);
+
+		const auth0Response = await fetch(`${CLIENT_DOMAIN}/userinfo`, {
 			headers: {
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		});
 
 		const auth0User: Auth0User = await auth0Response.json();
-		const { sub: auth0Id, name, nickname: username, email, picture: avatar } = auth0User;
+		const auth0UserId = auth0User.sub;
+		const auth0Username = auth0User.nickname;
 
-		const existingUser = await db.select().from(tsUsers).where(eq(tsUsers.auth0Id, auth0Id)).get();
+		// FIRST-TIME-SETUP
+		// if (STUDIOCMS_FIRST_TIME_SETUP) {
+		// 	// TODO: Add first-time setup logic here
+		// }
 
-		if (existingUser) {
-			const session = await lucia.createSession(existingUser.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+		const existingoAuthAccount = await db
+			.select()
+			.from(tsOAuthAccounts)
+			.where(
+				and(
+					eq(tsOAuthAccounts.provider, ProviderID),
+					eq(tsOAuthAccounts.providerUserId, auth0UserId)
+				)
+			)
+			.get();
+
+		if (existingoAuthAccount) {
+			const user = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, existingoAuthAccount.userId))
+				.get();
+
+			if (!user) {
+				return new Response('User not found', {
+					status: 404,
+				});
+			}
+
+			const sessionToken = generateSessionToken();
+			await createSession(sessionToken, user.id);
+			setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
 			return redirect(dashboardIndex);
 		}
 
-		const existingUserName = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.username, username))
-			.get();
-		const existingUserByEmail = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.email, email))
-			.get();
+		const loggedInUser = await getUserData(context);
 
-		if (existingUserName || existingUserByEmail) {
-			return new Response('User already exists', {
-				status: 400,
-			});
+		if (loggedInUser.user) {
+			const exisitingUser = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, loggedInUser.user.id))
+				.get();
+
+			if (exisitingUser) {
+				await db.insert(tsOAuthAccounts).values({
+					provider: ProviderID,
+					providerUserId: auth0UserId,
+					userId: exisitingUser.id,
+				});
+
+				const sessionToken = generateSessionToken();
+				await createSession(sessionToken, exisitingUser.id);
+				setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
+				return redirect(dashboardIndex);
+			}
 		}
-		const createdUser = await db
+
+		const newUser = await db
 			.insert(tsUsers)
 			.values({
-				id: randomUUID(),
-				auth0Id,
-				username,
-				name: name ?? username,
-				email,
-				avatar,
+				id: crypto.randomUUID(),
+				username: auth0Username,
+				name: auth0User.name,
+				email: auth0User.email,
+				avatar: auth0User.picture,
 			})
 			.returning({ id: tsUsers.id })
 			.get();
 
-		const session = await lucia.createSession(createdUser.id, {});
+		const newOAuthAccount = await db
+			.insert(tsOAuthAccounts)
+			.values({
+				provider: ProviderID,
+				providerUserId: auth0UserId,
+				userId: newUser.id,
+			})
+			.returning()
+			.get();
 
-		const sessionCookie = lucia.createSessionCookie(session.id);
+		const sessionToken = generateSessionToken();
+		await createSession(sessionToken, newOAuthAccount.userId);
+		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
-		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return redirect(dashboardIndex);
 	} catch (e) {
 		// the specific error message depends on the provider
@@ -111,12 +145,4 @@ export async function GET(context: APIContext): Promise<Response> {
 			status: 500,
 		});
 	}
-}
-
-interface Auth0User {
-	sub: string;
-	name: string;
-	email: string;
-	picture: string;
-	nickname: string;
 }

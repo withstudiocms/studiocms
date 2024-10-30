@@ -1,39 +1,67 @@
 import { db, eq } from 'astro:db';
-import AuthSecurityConfig from 'studiocms:auth/config';
-import { scryptAsync } from '@noble/hashes/scrypt';
 import { tsUsers } from '@studiocms/core/db/tsTables';
-import { lucia } from '../../../auth';
+import type { APIContext, APIRoute } from 'astro';
+import { verifyPasswordHash, verifyPasswordStrength } from '../../../lib/password';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { verifyUsernameInput } from '../../../lib/user';
 
-const { salt: ScryptSalt, opts: ScryptOpts } = AuthSecurityConfig;
+function parseFormDataEntryToString(formData: FormData, key: string): string | null {
+	const value = formData.get(key);
+	if (typeof value !== 'string') {
+		return null;
+	}
+	return value;
+}
 
-import type { APIContext } from 'astro';
+const badPasswordorUsername = new Response(
+	JSON.stringify({ error: 'Incorrect username or password' }),
+	{
+		status: 400,
+		statusText: 'Bad Request',
+	}
+);
 
-export async function POST(context: APIContext): Promise<Response> {
+export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
+	// Get the form data
 	const formData = await context.request.formData();
-	const username = formData.get('username');
-	if (
-		typeof username !== 'string' ||
-		username.length < 3 ||
-		username.length > 31 ||
-		!/^[a-z0-9_-]+$/.test(username)
-	) {
-		return new Response(JSON.stringify({ error: 'Invalid username' }), {
-			status: 400,
-		});
-	}
-	const password = formData.get('password');
-	if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-		return new Response(JSON.stringify({ error: 'Invalid password' }), {
-			status: 400,
-		});
+
+	// Get the username and password from the form data
+	const username = parseFormDataEntryToString(formData, 'username');
+	const password = parseFormDataEntryToString(formData, 'password');
+
+	// If the username or password is missing, return an error
+	if (!username || !password) {
+		return badPasswordorUsername;
 	}
 
+	// If the username is invalid, return an error
+	if (verifyUsernameInput(username) !== true) {
+		return badPasswordorUsername;
+	}
+
+	// If the password is invalid, return an error
+	if ((await verifyPasswordStrength(password)) !== true) {
+		return badPasswordorUsername;
+	}
+
+	// Get the user from the database
 	const existingUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
 
+	// If the user does not exist, return an error
 	if (!existingUser) {
+		return badPasswordorUsername;
+	}
+
+	// Check if the user has a password or is using a oAuth login
+	if (!existingUser.password) {
 		return new Response(
 			JSON.stringify({
-				error: 'Incorrect username or password',
+				error: 'User is using a oAuth login',
 			}),
 			{
 				status: 400,
@@ -41,25 +69,18 @@ export async function POST(context: APIContext): Promise<Response> {
 		);
 	}
 
-	const serverToken = await scryptAsync(existingUser.id, ScryptSalt, ScryptOpts);
-	const hashedPassword = await scryptAsync(password, serverToken, ScryptOpts);
-	const hashedPasswordString = Buffer.from(hashedPassword.buffer).toString();
-	const validPassword = hashedPasswordString === existingUser.password;
+	// Verify the password
+	const validPassword = await verifyPasswordHash(existingUser.password, password);
 
+	// If the password is invalid, return an error
 	if (!validPassword) {
-		return new Response(
-			JSON.stringify({
-				error: 'Incorrect username or password',
-			}),
-			{
-				status: 400,
-			}
-		);
+		return badPasswordorUsername;
 	}
 
-	const session = await lucia.createSession(existingUser.id, {});
-	const sessionCookie = lucia.createSessionCookie(session.id);
-	context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	// Create a session
+	const sessionToken = generateSessionToken();
+	await createSession(sessionToken, existingUser.id);
+	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
 	return new Response();
-}
+};

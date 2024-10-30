@@ -1,45 +1,38 @@
-import { randomUUID } from 'node:crypto';
-import { db, eq } from 'astro:db';
+import { and, db, eq } from 'astro:db';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
-import { tsUsers } from '@studiocms/core/db/tsTables';
-import { Discord, type DiscordTokens, OAuth2RequestError } from 'arctic';
-import type { APIContext } from 'astro';
-import { lucia } from '../../../auth';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
+import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
+import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
+import type { APIContext, APIRoute } from 'astro';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { getUserData } from '../../../lib/user';
+import { type DiscordUser, ProviderCookieName, ProviderID, discord } from './shared';
 
-const {
-	dashboardConfig: {
-		AuthConfig: { providers },
-	},
-} = Config;
-
-const {
-	DISCORD: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
-} = await authEnvCheck(providers);
 const {
 	authLinks: { loginURL },
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
-export async function GET(context: APIContext): Promise<Response> {
+export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
-
-	const discord = new Discord(
-		CLIENT_ID ? CLIENT_ID : '',
-		CLIENT_SECRET ? CLIENT_SECRET : '',
-		REDIRECT_URI ? REDIRECT_URI : ''
-	);
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
-	const storedState = cookies.get('discord_oauth_state')?.value ?? null;
+	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+
 	if (!code || !state || !storedState || state !== storedState) {
 		return redirect(loginURL);
 	}
 
+	let tokens: OAuth2Tokens;
+
 	try {
-		const tokens: DiscordTokens = await discord.validateAuthorizationCode(code);
+		tokens = await discord.validateAuthorizationCode(code);
+
 		const discordResponse = await fetch('https://discord.com/api/users/@me', {
 			headers: {
 				Authorization: `Bearer ${tokens.accessToken}`,
@@ -47,58 +40,98 @@ export async function GET(context: APIContext): Promise<Response> {
 		});
 
 		const discordUser: DiscordUser = await discordResponse.json();
+		const discordUserId = discordUser.id;
+		const discordUsername = discordUser.username;
 
-		const { id: discordId, avatar: avatarHash, username, global_name, email } = discordUser;
+		// FIRST-TIME-SETUP
+		// if (STUDIOCMS_FIRST_TIME_SETUP) {
+		//  // TODO: Add first-time setup logic here
+		// }
 
-		const avatar = `https://cdn.discordapp.com/avatars/${discordId}/${avatarHash}.png`;
-
-		const existingUserById = await db
+		const existingoAuthAccount = await db
 			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.discordId, discordId))
+			.from(tsOAuthAccounts)
+			.where(
+				and(
+					eq(tsOAuthAccounts.provider, ProviderID),
+					eq(tsOAuthAccounts.providerUserId, discordUserId)
+				)
+			)
 			.get();
 
-		if (existingUserById) {
-			const session = await lucia.createSession(existingUserById.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+		if (existingoAuthAccount) {
+			const user = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, existingoAuthAccount.userId))
+				.get();
+
+			if (!user) {
+				return new Response('User not found', {
+					status: 404,
+				});
+			}
+
+			const sessionToken = generateSessionToken();
+			await createSession(sessionToken, user.id);
+			setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
 			return redirect(dashboardIndex);
 		}
 
-		const existingUserByUsername = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.username, username))
-			.get();
-		const existingUserByEmail = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.email, email))
-			.get();
+		const loggedInUser = await getUserData(context);
 
-		if (existingUserByUsername || existingUserByEmail) {
-			return new Response('User already exists', {
-				status: 400,
-			});
+		if (loggedInUser.user) {
+			const existingUser = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, loggedInUser.user.id))
+				.get();
+
+			if (existingUser) {
+				await db.insert(tsOAuthAccounts).values({
+					provider: ProviderID,
+					providerUserId: discordUserId,
+					userId: existingUser.id,
+				});
+
+				const sessionToken = generateSessionToken();
+				await createSession(sessionToken, existingUser.id);
+				setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
+				return redirect(dashboardIndex);
+			}
 		}
-		const createdUser = await db
+
+		const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
+
+		const newUser = await db
 			.insert(tsUsers)
 			.values({
-				id: randomUUID(),
-				discordId,
-				username,
-				name: global_name ?? username,
-				email,
-				avatar,
+				id: crypto.randomUUID(),
+				username: discordUsername,
+				name: discordUser.global_name ?? discordUsername,
+				email: discordUser.email,
+				avatar: avatar_url,
+				createdAt: new Date(),
 			})
-			.returning({ id: tsUsers.id })
+			.returning()
 			.get();
 
-		const session = await lucia.createSession(createdUser.id, {});
+		const newOAuthAccount = await db
+			.insert(tsOAuthAccounts)
+			.values({
+				provider: ProviderID,
+				providerUserId: discordUserId,
+				userId: newUser.id,
+			})
+			.returning()
+			.get();
 
-		const sessionCookie = lucia.createSessionCookie(session.id);
+		const sessionToken = generateSessionToken();
+		await createSession(sessionToken, newOAuthAccount.userId);
+		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
-		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return redirect(dashboardIndex);
 	} catch (e) {
 		// the specific error message depends on the provider
@@ -113,12 +146,4 @@ export async function GET(context: APIContext): Promise<Response> {
 			status: 500,
 		});
 	}
-}
-
-interface DiscordUser {
-	id: string;
-	avatar: string;
-	username: string;
-	global_name: string;
-	email: string;
-}
+};

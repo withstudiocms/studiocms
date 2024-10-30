@@ -1,106 +1,140 @@
-import { randomUUID } from 'node:crypto';
-import { db, eq } from 'astro:db';
+import { and, db, eq } from 'astro:db';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
-import { tsUsers } from '@studiocms/core/db/tsTables';
-import { Google, OAuth2RequestError } from 'arctic';
-import type { APIContext } from 'astro';
-import { lucia } from '../../../auth';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
-
-const {
-	dashboardConfig: {
-		AuthConfig: { providers },
-	},
-} = Config;
+import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
+import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
+import type { APIContext, APIRoute } from 'astro';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { getUserData } from '../../../lib/user';
+import {
+	type GoogleUser,
+	ProviderCodeVerifier,
+	ProviderCookieName,
+	ProviderID,
+	google,
+} from './shared';
 
 const {
 	authLinks: { loginURL },
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
-const {
-	GOOGLE: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
-} = await authEnvCheck(providers);
 
-export async function GET(context: APIContext): Promise<Response> {
+export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
-
-	const google = new Google(
-		CLIENT_ID ? CLIENT_ID : '',
-		CLIENT_SECRET ? CLIENT_SECRET : '',
-		REDIRECT_URI ? REDIRECT_URI : ''
-	);
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
-	const storedCodeVerifier = cookies.get('google_oauth_code_verifier')?.value ?? null;
-	const storedState = cookies.get('google_oauth_state')?.value ?? null;
-	if (!code || !storedState || !storedCodeVerifier || state !== storedState) {
+	const codeVerifier = cookies.get(ProviderCodeVerifier)?.value ?? null;
+	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+
+	if (!code || !storedState || !codeVerifier || state !== storedState) {
 		return redirect(loginURL);
 	}
 
-	try {
-		const tokens = await google.validateAuthorizationCode(code, storedCodeVerifier);
+	let tokens: OAuth2Tokens;
 
-		const response = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+	try {
+		tokens = await google.validateAuthorizationCode(code, codeVerifier);
+
+		const googleUserResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
 			headers: {
 				Authorization: `Bearer ${tokens.accessToken}`,
 			},
 		});
-		const googleUser: GoogleUser = await response.json();
-		const { sub: googleId, picture: avatar, name, email } = googleUser;
 
-		const existingUser = await db
+		const googleUser: GoogleUser = await googleUserResponse.json();
+		const googleUserId = googleUser.sub;
+		const googleUsername = googleUser.name;
+
+		// FIRST-TIME-SETUP
+		// if (STUDIOCMS_FIRST_TIME_SETUP) {
+		//  // TODO: Add first-time setup logic
+		// }
+
+		const existingoAuthAccount = await db
 			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.googleId, googleId))
+			.from(tsOAuthAccounts)
+			.where(
+				and(
+					eq(tsOAuthAccounts.provider, ProviderID),
+					eq(tsOAuthAccounts.providerUserId, googleUserId)
+				)
+			)
 			.get();
 
-		if (existingUser) {
-			const session = await lucia.createSession(existingUser.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+		if (existingoAuthAccount) {
+			const user = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, existingoAuthAccount.userId))
+				.get();
+
+			if (!user) {
+				return new Response('User not found', { status: 404 });
+			}
+
+			const sessionToken = generateSessionToken();
+			await createSession(sessionToken, user.id);
+			setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
 			return redirect(dashboardIndex);
 		}
 
-		// Google does not provide a username, so we create one based on the name
-		const fixname = name.replace(/\s/g, '').toLowerCase();
-		const username = `g_${fixname}`;
+		const loggedInUser = await getUserData(context);
 
-		const existingUserName = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.username, username))
-			.get();
-		const existingUserByEmail = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.email, email))
-			.get();
+		if (loggedInUser.user) {
+			const existingUser = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, loggedInUser.user.id))
+				.get();
 
-		if (existingUserName || existingUserByEmail) {
-			return new Response('User already exists', {
-				status: 400,
-			});
+			if (existingUser) {
+				await db.insert(tsOAuthAccounts).values({
+					userId: existingUser.id,
+					provider: ProviderID,
+					providerUserId: googleUserId,
+				});
+
+				const sessionToken = generateSessionToken();
+				await createSession(sessionToken, existingUser.id);
+				setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
+				return redirect(dashboardIndex);
+			}
 		}
-		const createdUser = await db
+
+		const newUser = await db
 			.insert(tsUsers)
 			.values({
-				id: randomUUID(),
-				googleId,
-				username,
-				name,
-				email,
-				avatar,
+				id: crypto.randomUUID(),
+				username: googleUsername,
+				email: googleUser.email,
+				name: googleUser.name,
+				avatar: googleUser.picture,
+				createdAt: new Date(),
 			})
-			.returning({ id: tsUsers.id })
+			.returning()
 			.get();
 
-		const session = await lucia.createSession(createdUser.id, {});
+		const newOAuthAccount = await db
+			.insert(tsOAuthAccounts)
+			.values({
+				userId: newUser.id,
+				provider: ProviderID,
+				providerUserId: googleUserId,
+			})
+			.returning()
+			.get();
 
-		const sessionCookie = lucia.createSessionCookie(session.id);
+		const sessionToken = generateSessionToken();
+		await createSession(sessionToken, newOAuthAccount.userId);
+		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
-		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return redirect(dashboardIndex);
 	} catch (e) {
 		// the specific error message depends on the provider
@@ -115,11 +149,4 @@ export async function GET(context: APIContext): Promise<Response> {
 			status: 500,
 		});
 	}
-}
-
-interface GoogleUser {
-	sub: string;
-	picture: string;
-	name: string;
-	email: string;
-}
+};

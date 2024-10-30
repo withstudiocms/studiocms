@@ -12,8 +12,12 @@ export function generateSessionToken(): string {
 	return token;
 }
 
-const expTime = 1000 * 60 * 60 * 24 * 14;
-const expTimeHalf = expTime / 2;
+export const sessionExpTime = 1000 * 60 * 60 * 24 * 14;
+const expTimeHalf = sessionExpTime / 2;
+
+export function makeExpirationDate(): Date {
+	return new Date(Date.now() + sessionExpTime);
+}
 
 export const sessionCookieName = 'auth_session';
 
@@ -22,7 +26,7 @@ export async function createSession(token: string, userId: string): Promise<Sess
 	const session: SessionTable = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + expTime),
+		expiresAt: new Date(Date.now() + sessionExpTime),
 	};
 	const insertedSession = await db
 		.insert(tsSessionTable)
@@ -62,7 +66,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	}
 
 	if (Date.now() >= session.expiresAt.getTime() - expTimeHalf) {
-		session.expiresAt = new Date(Date.now() + expTime);
+		session.expiresAt = new Date(Date.now() + sessionExpTime);
 		await db
 			.update(tsSessionTable)
 			.set({ expiresAt: session.expiresAt })
@@ -93,5 +97,15 @@ export function deleteSessionTokenCookie(context: APIContext | AstroGlobal): voi
 		secure: import.meta.env.PROD,
 		maxAge: 0,
 		path: '/',
+	});
+}
+
+export function setOAuthSessionTokenCookie(context: APIContext, key: string, value: string): void {
+	context.cookies.set(key, value, {
+		path: '/',
+		secure: import.meta.env.PROD,
+		httpOnly: true,
+		maxAge: 60 * 10,
+		sameSite: 'lax',
 	});
 }

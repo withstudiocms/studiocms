@@ -1,25 +1,21 @@
-import Config from 'virtual:studiocms/config';
 import { generateState } from 'arctic';
-import { GitHub } from 'arctic';
-import type { APIRoute } from 'astro';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
+import type { APIContext, APIRoute } from 'astro';
+import { setOAuthSessionTokenCookie } from '../../../lib/session';
+import { ProviderCookieName, github } from './shared';
 
-const {
-	GITHUB: { CLIENT_ID, CLIENT_SECRET },
-} = await authEnvCheck(Config.dashboardConfig.AuthConfig.providers);
-
-export const GET: APIRoute = async ({ redirect, cookies }) => {
-	const github = new GitHub(CLIENT_ID ? CLIENT_ID : '', CLIENT_SECRET ? CLIENT_SECRET : '');
+export const GET: APIRoute = async (context: APIContext) => {
+	// generate a random state
 	const state = generateState();
-	const url = await github.createAuthorizationURL(state);
 
-	cookies.set('github_oauth_state', state, {
-		path: import.meta.env.BASE_URL,
-		secure: import.meta.env.PROD,
-		httpOnly: true,
-		maxAge: 60 * 10,
-		sameSite: 'lax',
-	});
+	// scopes for the GitHub OAuth2 request
+	const scopes = ['user:email', 'repo'];
 
-	return redirect(url.toString());
+	// create the GitHub OAuth2 authorization URL
+	const url = github.createAuthorizationURL(state, scopes);
+
+	// set the state cookie
+	setOAuthSessionTokenCookie(context, ProviderCookieName, state);
+
+	// redirect the user to the GitHub OAuth2 authorization URL
+	return context.redirect(url.toString());
 };

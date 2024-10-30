@@ -1,76 +1,78 @@
-import { randomUUID } from 'node:crypto';
 import { db, eq } from 'astro:db';
-import AuthSecurityConfig from 'studiocms:auth/config';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { scryptAsync } from '@noble/hashes/scrypt';
 import { tsUsers } from '@studiocms/core/db/tsTables';
-import type { APIContext } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { lucia } from '../../../auth';
+import { verifyPasswordStrength } from '../../../lib/password';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { createLocalUser, verifyUsernameInput } from '../../../lib/user';
 
-const { salt: ScryptSalt, opts: ScryptOpts } = AuthSecurityConfig;
+function parseFormDataEntryToString(formData: FormData, key: string): string | null {
+	const value = formData.get(key);
+	if (typeof value !== 'string') {
+		return null;
+	}
+	return value;
+}
 
-export async function POST(context: APIContext): Promise<Response> {
+const badFormDataEntry = new Response(JSON.stringify({ error: 'Invalid form data' }), {
+	status: 400,
+	statusText: 'Bad Request',
+});
+
+export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
+	// Get the form data
 	const formData = await context.request.formData();
-	const username = formData.get('username');
-	// username must be between 3 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-	// keep in mind some database (e.g. mysql) are case insensitive
-	if (
-		typeof username !== 'string' ||
-		username.length < 3 ||
-		username.length > 31 ||
-		!/^[a-z0-9_-]+$/.test(username) ||
-		checkIfUnsafe(username).username()
-	) {
-		return new Response(
-			JSON.stringify({
-				error: 'Invalid username',
-			}),
-			{
-				status: 400,
-			}
-		);
-	}
-	const password = formData.get('password');
-	if (
-		typeof password !== 'string' ||
-		password.length < 6 ||
-		password.length > 255 ||
-		checkIfUnsafe(password).password()
-	) {
-		return new Response(
-			JSON.stringify({
-				error: 'Invalid password',
-			}),
-			{
-				status: 400,
-			}
-		);
+
+	// Get the username and password from the form data
+	const username = parseFormDataEntryToString(formData, 'username');
+	const password = parseFormDataEntryToString(formData, 'password');
+
+	// If the username or password is missing, return an error
+	if (!username || !password) {
+		return badFormDataEntry;
 	}
 
-	const emailFormData = formData.get('email');
+	// If the username is invalid, return an error
+	if (verifyUsernameInput(username) !== true) {
+		return badFormDataEntry;
+	}
+
+	// If the password is invalid, return an error
+	if ((await verifyPasswordStrength(password)) !== true) {
+		return badFormDataEntry;
+	}
+
+	// Get the email and display name from the form data
+	const email = parseFormDataEntryToString(formData, 'email');
+	const name = parseFormDataEntryToString(formData, 'displayname');
+
+	// If the email or display name is missing, return an error
+	if (!email || !name) {
+		return badFormDataEntry;
+	}
+
+	// If the email is invalid, return an error
 	const checkemail = z.coerce
 		.string()
 		.email({ message: 'Email address is invalid' })
-		.safeParse(emailFormData);
+		.safeParse(email);
+
 	if (!checkemail.success) {
-		return new Response(
-			JSON.stringify({
-				error: 'Invalid email',
-			}),
-			{
-				status: 400,
-			}
-		);
+		return badFormDataEntry;
 	}
 
-	const name = formData.get('displayname');
-
+	// Check if the username/email is already used
 	const existingUsername = await db
 		.select()
 		.from(tsUsers)
 		.where(eq(tsUsers.username, username))
 		.get();
+
 	const existingEmail = await db
 		.select()
 		.from(tsUsers)
@@ -78,71 +80,16 @@ export async function POST(context: APIContext): Promise<Response> {
 		.get();
 
 	if (existingUsername || existingEmail) {
-		return new Response(
-			JSON.stringify({
-				error: 'Username/Email already used',
-			}),
-			{
-				status: 400,
-			}
-		);
+		return badFormDataEntry;
 	}
 
-	// Make a gravatar Avatar from the email
-	async function createGravatar(email: string) {
-		// trim and lowercase the email
-		const safeemail = email.trim().toLowerCase();
-		// encode as (utf-8) Uint8Array
-		const msgUint8 = new TextEncoder().encode(safeemail);
-		// hash the message
-		const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-		// convert buffer to byte array
-		const hashArray = Array.from(new Uint8Array(hashBuffer));
-		// convert bytes to hex string
-		const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-		// return the gravatar url
-		return `https://www.gravatar.com/avatar/${hashHex}?s=400&d=mp`;
-	}
-	const avatar = await createGravatar(checkemail.data);
+	// Create a new user
+	const newUser = await createLocalUser(name, username, email, password);
 
-	const newUserId = await db
-		.insert(tsUsers)
-		.values({
-			id: randomUUID(),
-			name: name as string,
-			email: checkemail.data,
-			username,
-			avatar,
-		})
-		.returning({ id: tsUsers.id })
-		.get();
-
-	const serverToken = await scryptAsync(newUserId.id, ScryptSalt, ScryptOpts);
-	const newUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
-	const hashedPassword = await scryptAsync(password, serverToken, ScryptOpts);
-	const hashedPasswordString = Buffer.from(hashedPassword.buffer).toString();
-
-	if (!newUser) {
-		return new Response(
-			JSON.stringify({
-				error: 'User Error',
-			}),
-			{
-				status: 400,
-			}
-		);
-	}
-
-	await db
-		.update(tsUsers)
-		.set({
-			password: hashedPasswordString,
-		})
-		.where(eq(tsUsers.id, newUser.id));
-
-	const session = await lucia.createSession(newUser.id, {});
-	const sessionCookie = lucia.createSessionCookie(session.id);
-	context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	// Create a session
+	const sessionToken = generateSessionToken();
+	await createSession(sessionToken, newUser.id);
+	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
 	return new Response();
-}
+};

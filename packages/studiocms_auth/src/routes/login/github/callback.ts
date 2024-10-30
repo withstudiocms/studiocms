@@ -1,41 +1,38 @@
-import { randomUUID } from 'node:crypto';
-import { db, eq } from 'astro:db';
+import { and, db, eq } from 'astro:db';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
-import { tsUsers } from '@studiocms/core/db/tsTables';
-import { GitHub, OAuth2RequestError } from 'arctic';
-import type { APIContext } from 'astro';
-import { lucia } from '../../../auth';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
+import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
+import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
+import type { APIContext, APIRoute } from 'astro';
+import {
+	createSession,
+	generateSessionToken,
+	makeExpirationDate,
+	setSessionTokenCookie,
+} from '../../../lib/session';
+import { getUserData } from '../../../lib/user';
+import { type GitHubUser, ProviderCookieName, ProviderID, github } from './shared';
 
-const {
-	dashboardConfig: {
-		AuthConfig: { providers },
-	},
-} = Config;
-
-const {
-	GITHUB: { CLIENT_ID, CLIENT_SECRET },
-} = await authEnvCheck(providers);
 const {
 	authLinks: { loginURL },
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
-export async function GET(context: APIContext): Promise<Response> {
+export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
-
-	const github = new GitHub(CLIENT_ID ? CLIENT_ID : '', CLIENT_SECRET ? CLIENT_SECRET : '');
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
-	const storedState = cookies.get('github_oauth_state')?.value ?? null;
+	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+
 	if (!code || !state || !storedState || state !== storedState) {
 		return redirect(loginURL);
 	}
 
+	let tokens: OAuth2Tokens;
+
 	try {
-		const tokens = await github.validateAuthorizationCode(code);
+		tokens = await github.validateAuthorizationCode(code);
+
 		const githubUserResponse = await fetch('https://api.github.com/user', {
 			headers: {
 				Authorization: `Bearer ${tokens.accessToken}`,
@@ -43,85 +40,108 @@ export async function GET(context: APIContext): Promise<Response> {
 		});
 
 		const githubUser: GitHubUser = await githubUserResponse.json();
-		const {
-			id: githubId,
-			html_url: githubURL,
-			login: username,
-			name,
-			email,
-			avatar_url: avatar,
-		} = githubUser;
+		const githubUserId = githubUser.id;
+		const githubUsername = githubUser.login;
 
-		const existingUser = await db
+		// FIRST-TIME-SETUP
+		// if (STUDIOCMS_FIRST_TIME_SETUP) {
+		// 	// TODO: Add first-time setup logic here
+		// }
+
+		const existingoAuthAccount = await db
 			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.githubId, githubId))
+			.from(tsOAuthAccounts)
+			.where(
+				and(
+					eq(tsOAuthAccounts.provider, ProviderID),
+					eq(tsOAuthAccounts.providerUserId, `${githubUserId}`)
+				)
+			)
 			.get();
 
-		if (existingUser) {
-			const session = await lucia.createSession(existingUser.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+		if (existingoAuthAccount) {
+			const user = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, existingoAuthAccount.userId))
+				.get();
+
+			if (!user) {
+				return new Response('User not found', {
+					status: 404,
+				});
+			}
+
+			const sessionToken = generateSessionToken();
+			await createSession(sessionToken, user.id);
+			setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
 			return redirect(dashboardIndex);
 		}
 
-		const existingUserName = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.username, username))
-			.get();
-		const existingUserByEmail = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.email, email))
-			.get();
+		const loggedInUser = await getUserData(context);
 
-		if (existingUserName || existingUserByEmail) {
-			return new Response('User already exists', {
-				status: 400,
-			});
+		if (loggedInUser.user) {
+			const existingUser = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, loggedInUser.user.id))
+				.get();
+
+			if (existingUser) {
+				await db.insert(tsOAuthAccounts).values({
+					provider: ProviderID,
+					providerUserId: `${githubUserId}`,
+					userId: existingUser.id,
+				});
+
+				const sessionToken = generateSessionToken();
+				await createSession(sessionToken, existingUser.id);
+				setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+
+				return redirect(dashboardIndex);
+			}
 		}
-		const createdUser = await db
+
+		const newUser = await db
 			.insert(tsUsers)
 			.values({
-				id: randomUUID(),
-				githubId,
-				githubURL,
-				username,
-				name: name ?? username,
-				email,
-				avatar,
+				id: crypto.randomUUID(),
+				username: githubUsername,
+				email: githubUser.email,
+				name: githubUser.name,
+				avatar: githubUser.avatar_url,
+				createdAt: new Date(),
+				url: githubUser.blog,
 			})
-			.returning({ id: tsUsers.id })
+			.returning()
 			.get();
 
-		const session = await lucia.createSession(createdUser.id, {});
+		const newOAuthAccount = await db
+			.insert(tsOAuthAccounts)
+			.values({
+				provider: ProviderID,
+				providerUserId: `${githubUserId}`,
+				userId: newUser.id,
+			})
+			.returning()
+			.get();
 
-		const sessionCookie = lucia.createSessionCookie(session.id);
+		const sessionToken = generateSessionToken();
+		await createSession(sessionToken, newOAuthAccount.userId);
+		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
-		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return redirect(dashboardIndex);
 	} catch (e) {
-		// the specific error message depends on the provider
 		if (e instanceof OAuth2RequestError) {
-			// invalid code
-			return new Response(null, {
+			const code = e.code;
+			return new Response(code, {
 				status: 400,
 			});
 		}
 		console.error(e);
 		return new Response(null, {
-			status: 500,
+			status: 400,
 		});
 	}
-}
-
-interface GitHubUser {
-	id: number;
-	html_url: string;
-	login: string;
-	avatar_url: string;
-	name: string;
-	blog: string;
-	email: string;
-}
+};

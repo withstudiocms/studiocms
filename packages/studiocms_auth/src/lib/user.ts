@@ -1,7 +1,7 @@
 import { db, eq } from 'astro:db';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { tsPermissions, tsUsers } from '@studiocms/core/db/tsTables';
-import type { AstroGlobal } from 'astro';
+import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session';
 import type { UserSessionData, UserTable } from './types';
@@ -89,7 +89,7 @@ export async function getUserFromEmail(email: string): Promise<UserTable | null>
 	return (await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get()) ?? null;
 }
 
-export async function getUserData(Astro: AstroGlobal): Promise<UserSessionData> {
+export async function getUserData(Astro: AstroGlobal | APIContext): Promise<UserSessionData> {
 	const { cookies } = Astro;
 
 	const sessionToken = cookies.get(sessionCookieName)?.value ?? null;

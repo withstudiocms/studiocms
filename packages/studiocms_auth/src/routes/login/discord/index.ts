@@ -1,28 +1,16 @@
-import Config from 'virtual:studiocms/config';
 import { generateState } from 'arctic';
-import { Discord } from 'arctic';
-import type { APIRoute } from 'astro';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
+import type { APIContext, APIRoute } from 'astro';
+import { setOAuthSessionTokenCookie } from '../../../lib/session';
+import { ProviderCookieName, discord } from './shared';
 
-const {
-	DISCORD: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
-} = await authEnvCheck(Config.dashboardConfig.AuthConfig.providers);
-export const GET: APIRoute = async ({ redirect, cookies }) => {
-	const discord = new Discord(
-		CLIENT_ID ? CLIENT_ID : '',
-		CLIENT_SECRET ? CLIENT_SECRET : '',
-		REDIRECT_URI ? REDIRECT_URI : ''
-	);
-
+export const GET: APIRoute = async (context: APIContext) => {
 	const state = generateState();
-	const url: URL = await discord.createAuthorizationURL(state, { scopes: ['identify', 'email'] });
 
-	cookies.set('discord_oauth_state', state, {
-		path: import.meta.env.BASE_URL,
-		secure: import.meta.env.PROD,
-		httpOnly: true,
-		maxAge: 60 * 10,
-	});
+	const scopes = ['identify', 'email'];
 
-	return redirect(url.toString());
+	const url: URL = discord.createAuthorizationURL(state, scopes);
+
+	setOAuthSessionTokenCookie(context, ProviderCookieName, state);
+
+	return context.redirect(url.toString());
 };
