@@ -2,7 +2,7 @@ import { and, db, eq } from 'astro:db';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
-import type { APIContext } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import {
 	createSession,
 	generateSessionToken,
@@ -17,7 +17,7 @@ const {
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
-export async function GET(context: APIContext): Promise<Response> {
+export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
 
 	const code = url.searchParams.get('code');
@@ -145,4 +145,27 @@ export async function GET(context: APIContext): Promise<Response> {
 			status: 500,
 		});
 	}
-}
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, GET',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
+};

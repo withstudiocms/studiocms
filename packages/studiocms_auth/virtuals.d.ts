@@ -12,8 +12,13 @@
  * }
  */
 declare module 'virtual:studiocms/config' {
-	const Config: import('@studiocms/core/schemas').StudioCMSOptions;
+	const Config: import('@studiocms/core/schemas').StudioCMSConfig;
 	export default Config;
+}
+
+declare module 'virtual:studiocms/version' {
+	const version: string;
+	export default version;
 }
 
 declare module 'virtual:studiocms/astromdremarkConfig' {

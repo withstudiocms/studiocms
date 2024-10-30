@@ -1,0 +1,35 @@
+---
+import GitHubLogo from './GitHubLogo.astro';
+---
+
+<button class="button" type="button">
+  <GitHubLogo />
+  <span>GitHub</span>
+</button>
+<style>
+  .button {
+    background-color: #212121;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    font-size: 1em;
+    align-items: center;
+    justify-content: center;
+    padding: .5rem;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    transition: all .1s ease;
+  }
+
+  .button:hover {
+    background-color: #191919;
+  }
+
+  .button:active {
+    background-color: #171717;
+  }
+</style>

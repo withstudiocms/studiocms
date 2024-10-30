@@ -1,0 +1,46 @@
+---
+type Props = {
+	type: 'button' | 'submit';
+	stretch?: boolean;
+};
+
+const { type, stretch } = Astro.props;
+---
+
+<button class="button" class:list={[stretch && 'full']} type={type}>
+  <slot />
+</button>
+<style>
+  .button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    padding: .5rem .75rem;
+    gap: .5rem;
+    text-align: center;
+    border-radius: .5rem;
+    background-color: var(--primary);
+    font-weight: 500;
+    font-size: .925em;
+    outline: none;
+    border: none;
+    transition: background-color .1s ease;
+    cursor: pointer;
+    margin-top: .5rem;
+    color: var(--text-inverted);
+  }
+
+  .button:hover {
+    background-color: var(--primary-hover);
+  }
+
+  .button:active {
+    background-color: var(--primary-focus);
+  }
+
+  .full {
+    width: 100%;
+    display: inline-block;
+  }
+</style>

@@ -77,8 +77,19 @@ authLib.addModule('studiocms:auth/lib/session', {
 			name: 'deleteSessionTokenCookie',
 			typeDef: `typeof import('${resolve('../lib/session.ts')}').deleteSessionTokenCookie`,
 		},
+		{
+			name: 'setOAuthSessionTokenCookie',
+			typeDef: `typeof import('${resolve('../lib/session.ts')}').setOAuthSessionTokenCookie`,
+		},
+		{
+			name: 'makeExpirationDate',
+			typeDef: `typeof import('${resolve('../lib/session.ts')}').makeExpirationDate`,
+		},
+		{
+			name: 'sessionExpTime',
+			typeDef: `typeof import('${resolve('../lib/session.ts')}').sessionExpTime`,
+		},
 	],
-	typeExports: [],
 });
 
 authLib.addModule('studiocms:auth/lib/types', {
@@ -114,7 +125,46 @@ authLib.addModule('studiocms:auth/lib/types', {
 	],
 });
 
-authLib.addModule('studiocms:auth/lib/user', {});
+authLib.addModule('studiocms:auth/lib/user', {
+	namedExports: [
+		{
+			name: 'verifyUsernameInput',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').verifyUsernameInput`,
+		},
+		{
+			name: 'createUserAvatar',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').createUserAvatar`,
+		},
+		{
+			name: 'createLocalUser',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').createLocalUser`,
+		},
+		{
+			name: 'updateUserPassword',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').updateUserPassword`,
+		},
+		{
+			name: 'getUserPasswordHash',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').getUserPasswordHash`,
+		},
+		{
+			name: 'getUserFromEmail',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').getUserFromEmail`,
+		},
+		{
+			name: 'getUserData',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').getUserData`,
+		},
+		{
+			name: 'permissionRanksMap',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').permissionRanksMap`,
+		},
+		{
+			name: 'verifyUserPermissionLevel',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').verifyUserPermissionLevel`,
+		},
+	],
+});
 
 const dtsFile = authLib.makeAstroInjectedType('auth-lib.d.ts');
 

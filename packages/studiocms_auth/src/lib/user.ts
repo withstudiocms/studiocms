@@ -141,3 +141,23 @@ export async function getUserData(Astro: AstroGlobal | APIContext): Promise<User
 		permissionLevel,
 	};
 }
+
+const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknown'] as const;
+type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
+
+export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
+	owner: ['owner'],
+	admin: ['owner', 'admin'],
+	editor: ['owner', 'admin', 'editor'],
+	visitor: ['owner', 'admin', 'editor', 'visitor'],
+	unknown: ['owner', 'admin', 'editor', 'visitor', 'unknown'],
+};
+
+export async function verifyUserPermissionLevel(
+	userData: UserSessionData,
+	requiredPermission: AvailablePermissionRanks
+): Promise<boolean> {
+	const permissionLevel = userData.permissionLevel;
+
+	return permissionRanksMap[permissionLevel].includes(requiredPermission);
+}

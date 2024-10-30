@@ -1,0 +1,78 @@
+---
+import Config from 'virtual:studiocms/config';
+import version from 'virtual:studiocms/version';
+import '@fontsource-variable/onest';
+import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+
+const {
+	dashboardConfig: { faviconURL },
+} = Config;
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={faviconURL} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="generator" content=`StudioCMS v${version}` />
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+</head>
+  <body>
+    <slot />
+  </body>
+</html>
+<style is:global>
+	:root {
+		--background: #101010;
+		--background-step-2: #191919;
+		--text: #ffffff;
+		--text-muted: #8A8A8A;
+		--text-inverted: #000000;
+		--border: #29292d;
+		--primary: #AA87F4;
+		--primary-hover: #a07cee;
+		--primary-focus: #956fe9;
+	}
+
+	:root.light {
+		--background: #ebebeb;
+		--background-step-2: #d0d0d0;
+		--text: #000000;
+		--text-muted: #3e3e3e;
+		--text-inverted: #ffffff;
+		--border: #adaab2;
+		--primary: #7c45f0;
+		--primary-hover: #8350f1;
+		--primary-focus: #8c5bf7;
+	}
+
+	* {
+		font-family: 'Onest Variable', sans-serif;
+	}
+
+	html {
+		background: var(--background);
+		box-sizing: border-box;
+		color: var(--text);
+	}
+	
+	html, body {
+		margin: 0;
+		padding: 0;
+	}
+
+	.tp-dfwv {
+		width: 300px !important;
+	}
+</style>

@@ -10,19 +10,7 @@ import {
 	setSessionTokenCookie,
 } from '../../../lib/session';
 import { createLocalUser, verifyUsernameInput } from '../../../lib/user';
-
-function parseFormDataEntryToString(formData: FormData, key: string): string | null {
-	const value = formData.get(key);
-	if (typeof value !== 'string') {
-		return null;
-	}
-	return value;
-}
-
-const badFormDataEntry = new Response(JSON.stringify({ error: 'Invalid form data' }), {
-	status: 400,
-	statusText: 'Bad Request',
-});
+import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Get the form data
@@ -92,4 +80,27 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
 	return new Response();
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
 };

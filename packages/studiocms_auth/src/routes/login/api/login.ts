@@ -9,22 +9,7 @@ import {
 	setSessionTokenCookie,
 } from '../../../lib/session';
 import { verifyUsernameInput } from '../../../lib/user';
-
-function parseFormDataEntryToString(formData: FormData, key: string): string | null {
-	const value = formData.get(key);
-	if (typeof value !== 'string') {
-		return null;
-	}
-	return value;
-}
-
-const badPasswordorUsername = new Response(
-	JSON.stringify({ error: 'Incorrect username or password' }),
-	{
-		status: 400,
-		statusText: 'Bad Request',
-	}
-);
+import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Get the form data
@@ -36,17 +21,17 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the username or password is missing, return an error
 	if (!username || !password) {
-		return badPasswordorUsername;
+		return badFormDataEntry;
 	}
 
 	// If the username is invalid, return an error
 	if (verifyUsernameInput(username) !== true) {
-		return badPasswordorUsername;
+		return badFormDataEntry;
 	}
 
 	// If the password is invalid, return an error
 	if ((await verifyPasswordStrength(password)) !== true) {
-		return badPasswordorUsername;
+		return badFormDataEntry;
 	}
 
 	// Get the user from the database
@@ -54,7 +39,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the user does not exist, return an error
 	if (!existingUser) {
-		return badPasswordorUsername;
+		return badFormDataEntry;
 	}
 
 	// Check if the user has a password or is using a oAuth login
@@ -74,7 +59,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the password is invalid, return an error
 	if (!validPassword) {
-		return badPasswordorUsername;
+		return badFormDataEntry;
 	}
 
 	// Create a session
@@ -83,4 +68,27 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
 	return new Response();
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
 };

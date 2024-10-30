@@ -1,0 +1,38 @@
+---
+type Props = {
+	label: string;
+	type: 'text' | 'password';
+};
+
+const { label, type } = Astro.props;
+---
+
+<label for={`input-${label}`} class="input-label">
+  <span class="label">{label}</span>
+  <input name={`input-${label}`} id={`input-${label}`} type={type} class="input" />
+</label>
+<style>
+  .input-label {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+
+  .input {
+    padding: .65rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--background-step-2);
+    color: var(--text);
+  }
+
+  .input:active, .input:focus {
+    border: 1px solid var(--primary);
+    outline: none;
+  }
+</style>

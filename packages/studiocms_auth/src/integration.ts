@@ -3,6 +3,7 @@ import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { AuthProviderLogStrings, DashboardStrings } from '@studiocms/core/strings';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import copy from 'rollup-plugin-copy';
 import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
@@ -21,7 +22,7 @@ export default defineIntegration({
 			hooks: {
 				'astro:config:setup': async (params) => {
 					// Destructure Params
-					const { logger } = params;
+					const { logger, updateConfig } = params;
 
 					// Log that Setup is Starting
 					integrationLogger(
@@ -47,6 +48,27 @@ export default defineIntegration({
 							'studiocms:auth/lib/session': `export * from '${resolve('./lib/session.ts')}'`,
 							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
+						},
+					});
+
+					// Update Astro(vite) Config
+					updateConfig({
+						vite: {
+							optimizeDeps: {
+								exclude: ['astro:db', 'three'],
+							},
+							plugins: [
+								copy({
+									copyOnce: true,
+									hook: 'buildStart',
+									targets: [
+										{
+											src: resolve('./resources'),
+											dest: 'public/studiocms-auth/',
+										},
+									],
+								}),
+							],
 						},
 					});
 
