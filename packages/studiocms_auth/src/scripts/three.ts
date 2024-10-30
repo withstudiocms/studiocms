@@ -27,7 +27,7 @@ const validImages = [
 type ValidImage = (typeof validImages)[number];
 
 const bgPARAMS = {
-	background: 'skyline',
+	background: 'studiocms-curves',
 	customImageHref: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
 };
 
