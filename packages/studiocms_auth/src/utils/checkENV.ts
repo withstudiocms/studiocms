@@ -8,7 +8,11 @@ const env = loadEnv('all', process.cwd(), 'CMS');
 
 type KeyListType = Record<
 	string,
-	{ Keys: string[]; messages: { CheckMessage: string; ErrorMessage: string } }
+	{
+		Keys: string[];
+		optionalKeys?: string[];
+		messages: { CheckMessage: string; ErrorMessage: string };
+	}
 >;
 
 const keyList: KeyListType = {
@@ -18,6 +22,7 @@ const keyList: KeyListType = {
 	},
 	Github: {
 		Keys: ['CMS_GITHUB_CLIENT_ID', 'CMS_GITHUB_CLIENT_SECRET'],
+		optionalKeys: ['CMS_GITHUB_REDIRECT_URI'],
 		messages: CheckENVStrings.GithubMessages,
 	},
 	Discord: {
@@ -98,7 +103,7 @@ export const checkEnvKeys = async (
 			continue;
 		}
 
-		const { messages, Keys } = ProviderItem;
+		const { messages, Keys, optionalKeys } = ProviderItem;
 
 		infoLogger(messages.CheckMessage);
 
@@ -107,6 +112,12 @@ export const checkEnvKeys = async (
 		for (const key of Keys) {
 			if (!env[key]) {
 				missingProviderKeys.push(key);
+			}
+		}
+
+		for (const key of optionalKeys || []) {
+			if (!env[key]) {
+				warnLogger(`The following optional key is missing and may or may not be required: ${key}`);
 			}
 		}
 

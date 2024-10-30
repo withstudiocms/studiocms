@@ -3,14 +3,14 @@ import { GitHub } from 'arctic';
 import { authEnvCheck } from '../../../utils/authEnvCheck';
 
 const {
-	GITHUB: { CLIENT_ID, CLIENT_SECRET },
+	GITHUB: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
 } = await authEnvCheck(Config.dashboardConfig.AuthConfig.providers);
 
 const CLIENT = () => {
 	return {
 		ID: CLIENT_ID || '',
 		SECRET: CLIENT_SECRET || '',
-		URI: null,
+		URI: REDIRECT_URI || null,
 	};
 };
 

@@ -21,6 +21,11 @@ export const astroENV: AstroConfig['experimental']['env'] = {
 			access: 'secret',
 			optional: true,
 		}),
+		CMS_GITHUB_REDIRECT_URI: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
 		// Discord Auth Provider Environment Variables
 		CMS_DISCORD_CLIENT_ID: envField.string({
 			context: 'server',
