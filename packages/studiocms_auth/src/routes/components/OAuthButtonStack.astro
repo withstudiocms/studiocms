@@ -1,0 +1,30 @@
+---
+import Config from 'virtual:studiocms/config';
+import { authEnvCheck } from '../../utils/authEnvCheck';
+import Auth0Button from './Auth0Button.astro';
+import DiscordButton from './DiscordButton.astro';
+import GitHubButton from './GitHubButton.astro';
+import GoogleButton from './GoogleButton.astro';
+
+const {
+	dashboardConfig: {
+		AuthConfig: { providers },
+	},
+} = Config;
+
+const {
+	DISCORD: { ENABLED: discordEnabled },
+	GITHUB: { ENABLED: githubEnabled },
+	GOOGLE: { ENABLED: googleEnabled },
+	AUTH0: { ENABLED: auth0Enabled },
+	SHOW_OAUTH,
+} = await authEnvCheck(providers);
+---
+{ SHOW_OAUTH && ( 
+    <>
+    { githubEnabled && <GitHubButton /> }
+    { discordEnabled && <DiscordButton /> }
+    { googleEnabled && <GoogleButton /> }
+    { auth0Enabled && <Auth0Button /> }
+    </>
+)}

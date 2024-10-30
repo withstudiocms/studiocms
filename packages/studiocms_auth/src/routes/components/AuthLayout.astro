@@ -3,6 +3,8 @@ import Config from 'virtual:studiocms/config';
 import version from 'virtual:studiocms/version';
 import '@fontsource-variable/onest';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import Divider from './Divider.astro';
+import OAuthButtonStack from './OAuthButtonStack.astro';
 
 const {
 	dashboardConfig: { faviconURL },
@@ -29,9 +31,18 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
 </head>
   <body>
-    <slot />
+	<main>
+		<div id="canvas-container" />
+		<div class="login-form-container">
+			<slot />
+			<Divider>or log in using</Divider>
+			<OAuthButtonStack />
+			<slot name="footer" />
+		</div>
+	</main>
   </body>
 </html>
+
 <style is:global>
 	:root {
 		--background: #101010;
@@ -74,5 +85,92 @@ const { title, description } = Astro.props;
 
 	.tp-dfwv {
 		width: 300px !important;
+	}
+
+	main {
+		display: flex;
+		flex-direction: row;
+		height: 100dvh;
+		width: 100dvw;
+		overflow: hidden;
+		color: var(--text);
+	}
+
+	#canvas-container, .login-form-container {
+		width: 50%;
+		height: 100%;
+		position: relative;
+	}
+
+	#canvas-container {
+		opacity: 0;
+		transition: all .15s ease;
+	}
+
+	#canvas-container.loaded {
+		opacity: 1;
+	}
+
+	.login-form-container {
+		border-left: 1px solid var(--border);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.form {
+		width: 50%;
+		display: flex;
+		flex-direction: column;
+		gap: .5rem;
+	}
+
+	@media screen and (max-width: 1100px) {
+		.form {
+			width: 75%;
+		}
+	}
+
+	@media screen and (max-width: 850px) {
+		.form {
+			width: 50%;
+		}
+
+		#canvas-container {
+			display: none;
+		}
+
+		.login-form-container {
+			width: 100%;
+			border: none;
+		}
+	}
+
+	@media screen and (max-width: 660px) {
+		.form {
+			width: 100%;
+		}
+
+		.login-form-container {
+			padding-left: 2rem;
+			padding-right: 2rem;
+		}
+	}
+
+	.form h1, .form p {
+		text-align: center;
+	}
+
+	.form h1 {
+		margin: 0;
+	}
+
+	.form p {
+    	color: var(--text-muted);
+	}
+
+	#canvas {
+		height: 100%;
+		width: 100%;
 	}
 </style>

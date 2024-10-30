@@ -1,0 +1,53 @@
+---
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+
+const {
+	authLinks: { auth0Index },
+} = StudioCMSRoutes;
+---
+
+<button class="button" type="button" id="auth0-oauth-button" data-url={auth0Index}>
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="auth0-logo"><path fill="#fff" d="M29.307 9.932L26.161 0H5.796L2.692 9.932c-1.802 5.75.042 12.271 5.089 16.021L16.01 32l8.208-6.068c5.005-3.75 6.911-10.25 5.089-16.021l-8.214 6.104l3.12 9.938l-8.208-6.13l-8.208 6.104l3.141-9.911l-8.25-6.063l10.177-.063l3.146-9.891l3.141 9.87z"/></svg>
+  <span>Auth0</span>
+</button>
+
+<script>
+  const button = document.getElementById('auth0-oauth-button') as HTMLButtonElement;
+  
+  button.addEventListener('click', () => {
+    window.location.href = button.dataset.url!;
+  });
+</script>
+
+<style>
+  .button {
+    background-color: #212121;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    font-size: 1em;
+    align-items: center;
+    justify-content: center;
+    padding: .5rem;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    transition: all .1s ease;
+  }
+
+  .button:hover {
+    background-color: #191919;
+  }
+
+  .button:active {
+    background-color: #171717;
+  }
+
+  .auth0-logo {
+    width: 1.5rem;
+    height: auto;
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+import { getSiteConfig } from 'studiocms:helpers/contentHelper';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import Config from 'virtual:studiocms/config';
+import { Alert, Button, Divider, Icon, Input } from '@matthiesenxyz/astrolace/components';
+import check2Circle from '@studiocms/assets/svgs/check2-circle.svg';
+import exclamationOctogon from '@studiocms/assets/svgs/exclamation-octagon.svg';
+import loginSvg from '@studiocms/assets/svgs/login.svg';
+import { Layout } from '@studiocms/dashboard/components';
+import { makePageTitle } from '@studiocms/dashboard/utils';
+import OauthProviders from '../components/OauthProviders.astro';
+
+const {
+	dashboardConfig,
+	dashboardConfig: {
+		AuthConfig: {
+			providers: {
+				usernameAndPassword,
+				usernameAndPasswordConfig: { allowUserRegistration },
+			},
+		},
+	},
+} = Config;
+
+const contextConfig = await getSiteConfig();
+const {
+	authLinks: { loginAPI, signupURL },
+	mainLinks: { dashboardIndex },
+} = StudioCMSRoutes;
+
+const locals = Astro.locals;
+
+if (locals.isLoggedIn) {
+	return Astro.redirect(dashboardIndex);
+}
+---
+
+<Layout title={makePageTitle("Login Page", contextConfig)} description="Login Page" sideBarActiveItemID='login' includeSidebar={false}>
+  <div class="px-10 pb-12 mt-5 flex flex-col content-center items-center">
+
+      <div class="text-5xl font-bold">Login</div>
+      <div class="py-2">
+          <span class="text-lg">
+            To access this site, you need to log in!
+          </span>
+      </div>
+
+      <Divider />
+
+      <OauthProviders dashboardConfig={dashboardConfig} />
+
+      { usernameAndPassword && (
+        <div class="py-8">
+          <div class="bg-base-300 p-8 rounded-lg md:w-[32rem]">
+
+            <form method="post" id="login-form" action={loginAPI}>
+
+                <Input name="username" id="username" label='Username' />
+
+                <Divider />
+
+                <Input type="password" name="password" id="password" label="Password" password-toggle />
+
+                <Divider />
+
+              <div class="flex flex-col items-center justify-center">
+                <Button variant="primary" type="submit" outline>Continue <Icon slot="suffix" src={loginSvg.src}/></Button>
+
+                { allowUserRegistration && (
+                      <a href={signupURL} class="py-4 text-lg">Don't have an account? Register here!</a>
+                )}
+              </div>
+
+            </form>
+
+          </div>
+        </div> 
+      )}
+
+      <Alert id="form-error" variant="danger" duration={4000} closable>
+        <Icon slot="icon" src={exclamationOctogon.src} />
+        <strong>Something went wrong!</strong>
+        <Divider />
+        <div id="form-error-message"></div>
+      </Alert>
+      <Alert id="form-success" variant="success" duration={4000} closable>
+        <Icon slot="icon" src={check2Circle.src} />
+        <strong>Success!</strong>
+        <Divider />
+        <div id="form-success-message"></div>
+      </Alert>
+
+  </div>
+</Layout>
+
+<script is:inline>
+	const alertElement = document.getElementById("form-error");
+  const errorMessageElement = document.getElementById("form-error-message");
+	const successAlertElement = document.getElementById("form-success");
+  const successMessageElement = document.getElementById("form-success-message");
+  const formElement = document.getElementById('login-form');
+
+	formElement.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		errorMessageElement.innerText = "";
+		const formElement = e.target;
+		const response = await fetch(formElement.action, {
+			method: formElement.method,
+			body: new FormData(formElement)
+		});
+		if (response.ok) {
+      successMessageElement.innerText = "Login successful! Redirecting...";
+      successAlertElement.toast();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000)
+		} else {
+			errorMessageElement.innerText = (await response.json()).error;
+      alertElement.toast();
+		}
+	});
+</script>
