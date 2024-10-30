@@ -55,7 +55,6 @@ const {
                     role="option"
                     value={x.value}
                     class:list={[
-                        defaultValue === x.value && `selected`,
                         x.disabled && "disabled",
                         i === 0 && 'focused',
                     ]}
@@ -291,13 +290,12 @@ const {
             const element = document.createElement('li');
             element.classList.add(...[
                 'search-select-option', 
-                defaultValue === option.value && 'selected',
                 option.disabled && "disabled",
                 focusIndex === i && 'focused',
             ].filter(Boolean));
             element.role = "option";
             element.value = option.value;
-            element.id = defaultValue === option.value ? `${id}-selected` : "";
+            element.id = "";
             element.dataset.optionIndex = i;
             element.dataset.value = option.value;
             element.textContent = option.label;
