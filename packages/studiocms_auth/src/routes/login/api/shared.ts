@@ -6,7 +6,11 @@ export function parseFormDataEntryToString(formData: FormData, key: string): str
 	return value;
 }
 
-export const badFormDataEntry = new Response(JSON.stringify({ error: 'Invalid form data' }), {
-	status: 400,
-	statusText: 'Bad Request',
-});
+export const badFormDataEntry = (message?: string | undefined): Response => {
+	const error = message || 'Invalid form data';
+
+	return new Response(JSON.stringify({ error }), {
+		status: 400,
+		statusText: 'Bad Request',
+	});
+};

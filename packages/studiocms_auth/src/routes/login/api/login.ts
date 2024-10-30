@@ -1,14 +1,13 @@
 import { db, eq } from 'astro:db';
 import { tsUsers } from '@studiocms/core/db/tsTables';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyPasswordHash, verifyPasswordStrength } from '../../../lib/password';
+import { verifyPasswordHash } from '../../../lib/password';
 import {
 	createSession,
 	generateSessionToken,
 	makeExpirationDate,
 	setSessionTokenCookie,
 } from '../../../lib/session';
-import { verifyUsernameInput } from '../../../lib/user';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
@@ -21,17 +20,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the username or password is missing, return an error
 	if (!username || !password) {
-		return badFormDataEntry;
-	}
-
-	// If the username is invalid, return an error
-	if (verifyUsernameInput(username) !== true) {
-		return badFormDataEntry;
-	}
-
-	// If the password is invalid, return an error
-	if ((await verifyPasswordStrength(password)) !== true) {
-		return badFormDataEntry;
+		return badFormDataEntry('Username or password is missing');
 	}
 
 	// Get the user from the database
@@ -39,19 +28,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the user does not exist, return an error
 	if (!existingUser) {
-		return badFormDataEntry;
+		return badFormDataEntry('Invalid Username or Password');
 	}
 
 	// Check if the user has a password or is using a oAuth login
 	if (!existingUser.password) {
-		return new Response(
-			JSON.stringify({
-				error: 'User is using a oAuth login',
-			}),
-			{
-				status: 400,
-			}
-		);
+		return badFormDataEntry('User is using a oAuth login');
 	}
 
 	// Verify the password
@@ -59,7 +41,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the password is invalid, return an error
 	if (!validPassword) {
-		return badFormDataEntry;
+		return badFormDataEntry('Invalid Username or Password');
 	}
 
 	// Create a session

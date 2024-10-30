@@ -1,33 +1,116 @@
+import { db, eq } from 'astro:db';
+import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import * as THREE from 'three';
-
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { fitModelToViewport } from './utils/fitModelToViewport';
-
 import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png?url';
 import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png?url';
 import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png?url';
 import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png?url';
+import { fitModelToViewport } from './utils/fitModelToViewport';
 
 /**
- * List of valid images.
+ * The built-in images that can be used as a background for the StudioCMS Logo.
  */
-const validImages = [
-	{ name: 'studiocms-blobs', format: 'png', src: studiocmsBlobsDark },
-	{ name: 'studiocms-blobs-light', format: 'png', src: studiocmsBlobsLight },
-	{ name: 'studiocms-curves', format: 'png', src: studiocmsCurvesDark },
-	{ name: 'studiocms-curves-light', format: 'png', src: studiocmsCurvesLight },
-	{ name: 'custom', format: 'web' },
+const builtInImages = [
+	{ name: 'studiocms-blobs', format: 'png', light: studiocmsBlobsLight, dark: studiocmsBlobsDark },
+	{
+		name: 'studiocms-curves',
+		format: 'png',
+		light: studiocmsCurvesLight,
+		dark: studiocmsCurvesDark,
+	},
 ] as const;
 
+/**
+ * The valid images that can be used as a background for the StudioCMS Logo.
+ */
+const validImages = [...builtInImages, { name: 'custom', format: 'web' }] as const;
+
+/**
+ * A built-in image that can be used as a background for the StudioCMS Logo.
+ */
+type BuiltInImage = (typeof builtInImages)[number];
+
+/**
+ * A valid image that can be used as a background for the StudioCMS Logo.
+ */
 type ValidImage = (typeof validImages)[number];
 
-const bgPARAMS = {
-	background: 'studiocms-curves',
-	customImageHref: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa',
+/**
+ * The Light/Dark mode of the background image.
+ */
+type Mode = 'light' | 'dark';
+
+/**
+ * The parameters for the background image.
+ */
+type BackgroundParams = {
+	background: ValidImage['name'];
+	mode: Mode;
+	customImageHref: string;
 };
+
+// Get the site config
+const siteConfig = await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, 1)).get();
+
+// This should never happen
+if (!siteConfig) {
+	throw new Error('Site config not found');
+}
+
+// Get the login page background and custom image from the site config
+const loginPageBackground = siteConfig.loginPageBackground;
+const loginPageCustomImage = siteConfig.loginPageCustomImage;
+
+/**
+ * Parses the background image config.
+ * @param imageName The name of the image to parse.
+ */
+function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage['name'] {
+	// If the image name is not provided, use the default image
+	if (!imageName) {
+		return 'studiocms-curves';
+	}
+
+	// Check if the image name is one of the valid images (built-in or custom)
+	if (validImages.some((validImage) => validImage.name === imageName)) {
+		return imageName as ValidImage['name'];
+	}
+
+	// Use the default image if the image name is invalid
+	// (i.e. someone tampered with the actual database)
+	return 'studiocms-curves';
+}
+
+/**
+ * The parameters for the background image config.
+ */
+const backgroundConfig: BackgroundParams = {
+	background: parseBackgroundImageConfig(loginPageBackground),
+	mode: 'dark',
+	customImageHref: loginPageCustomImage || '',
+};
+
+/**
+ * Selects the background variant based on the mode.
+ * @param image The image to select the background variant for.
+ * @param mode The mode to select the background variant for.
+ */
+function bgVariantSelector(image: BuiltInImage, mode: Mode) {
+	return mode === 'dark' ? image.dark : image.light;
+}
+
+/**
+ * Selects the background based on the image.
+ * @param image The image to select the background for.
+ * @param params The parameters to select the background for.
+ */
+function bgSelector(image: ValidImage, params: BackgroundParams) {
+	return image.format === 'web' ? params.customImageHref : bgVariantSelector(image, params.mode);
+}
 
 /**
  * Creates the StudioCMS Logo along with its background in a specified container.
@@ -206,21 +289,19 @@ class StudioCMS3DLogo {
 		}
 
 		const loader = new THREE.TextureLoader();
-		loader
-			.loadAsync(image.format === 'web' ? bgPARAMS.customImageHref : image.src)
-			.then((texture) => {
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
-				const planeHeight = this.frustumHeight!;
-				const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
+		loader.loadAsync(bgSelector(image, backgroundConfig)).then((texture) => {
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			const planeHeight = this.frustumHeight!;
+			const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
 
-				const bgGeo = new THREE.PlaneGeometry(planeWidth, planeHeight);
-				const bgMat = new THREE.MeshBasicMaterial({ map: texture });
+			const bgGeo = new THREE.PlaneGeometry(planeWidth, planeHeight);
+			const bgMat = new THREE.MeshBasicMaterial({ map: texture });
 
-				this.BackgroundMesh = new THREE.Mesh(bgGeo, bgMat);
+			this.BackgroundMesh = new THREE.Mesh(bgGeo, bgMat);
 
-				this.BackgroundMesh.position.set(0, 0, bgPositionZ);
-				this.scene.add(this.BackgroundMesh);
-			});
+			this.BackgroundMesh.position.set(0, 0, bgPositionZ);
+			this.scene.add(this.BackgroundMesh);
+		});
 	};
 
 	initListeners = (reducedMotion: boolean) => {

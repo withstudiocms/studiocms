@@ -22,17 +22,21 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the username or password is missing, return an error
 	if (!username || !password) {
-		return badFormDataEntry;
+		return badFormDataEntry('Username or password is missing');
 	}
 
 	// If the username is invalid, return an error
 	if (verifyUsernameInput(username) !== true) {
-		return badFormDataEntry;
+		return badFormDataEntry(
+			'Invalid Username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
+		);
 	}
 
 	// If the password is invalid, return an error
 	if ((await verifyPasswordStrength(password)) !== true) {
-		return badFormDataEntry;
+		return badFormDataEntry(
+			'Invalid Password: Password must be between 6 and 255 characters, not be a known unsafe password, and not be in the pwned password database'
+		);
 	}
 
 	// Get the email and display name from the form data
@@ -41,7 +45,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If the email or display name is missing, return an error
 	if (!email || !name) {
-		return badFormDataEntry;
+		return badFormDataEntry('Email or display name is missing');
 	}
 
 	// If the email is invalid, return an error
@@ -51,7 +55,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		.safeParse(email);
 
 	if (!checkemail.success) {
-		return badFormDataEntry;
+		return badFormDataEntry(checkemail.error.message);
 	}
 
 	// Check if the username/email is already used
@@ -68,7 +72,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		.get();
 
 	if (existingUsername || existingEmail) {
-		return badFormDataEntry;
+		return badFormDataEntry('Username or email is already in use');
 	}
 
 	// Create a new user

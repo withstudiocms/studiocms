@@ -29,7 +29,7 @@ const {
 let paragraph: string;
 
 if (usernameAndPassword && SHOW_OAUTH) {
-	paragraph = 'Enter your username & password or log in using one of the options below.';
+	paragraph = 'Create an account or log in using one of the options below.';
 } else if (SHOW_OAUTH) {
 	paragraph = 'Log in using one of the options below.';
 } else {
@@ -42,18 +42,28 @@ if (user.isLoggedIn) {
 	return Astro.redirect(dashboardIndex);
 }
 ---
-<AuthLayout title="Login Page" description="Login Page">
-
+<AuthLayout title="Signup Page" description="Signup Page">
+    
     <div slot="header" class="form-header">
-        <h1>Login</h1>
+        <h1>Sign up</h1>
         <p>{paragraph}</p>
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="login-form" method="post" action={loginAPI}>
+        <form class="form" id="signup-form" method="post" action={loginAPI}>
             <TextInput
                 label='Username'
                 id="username"
+                type='text'
+            />
+            <TextInput
+                label='Email'
+                id="email"
+                type='email'
+            />
+            <TextInput
+                label='Display Name'
+                id="display-name"
                 type='text'
             />
             <TextInput
@@ -61,42 +71,67 @@ if (user.isLoggedIn) {
                 id="password"
                 type='password'
             />
-            <Button type="submit" stretch>Log In</Button>
+            <TextInput
+                label='Confirm Password'
+                id="confirm-password"
+                type='password'
+            />
+            <Button type="submit" stretch>Create Account</Button>
         </form>
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">Don't have an account? <a href={signupURL}>Register here!</a></p>
+        <p slot="footer">Already have an account? <a href={signupURL}>Sign in!</a></p>
     )}
 
 </AuthLayout>
 
 <script>
     import { toast } from '@studiocms/ui/components';
-    const loginForm = document.getElementById('login-form') as HTMLFormElement;
+    const signupForm = document.getElementById('signup-form') as HTMLFormElement;
 
-    loginForm.addEventListener('submit', async (event) => {
+    signupForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const formData = new FormData();
 
-        const username = loginForm.querySelector('input[name="input-username"]') as HTMLInputElement;
-        const password = loginForm.querySelector('input[name="input-password"]') as HTMLInputElement;
+        const username = signupForm.querySelector('input[name="input-username"]') as HTMLInputElement;
+
+        const email = signupForm.querySelector('input[name="input-email"]') as HTMLInputElement;
+
+        const displayName = signupForm.querySelector('input[name="input-display-name"]') as HTMLInputElement;
+
+        const password = signupForm.querySelector('input[name="input-password"]') as HTMLInputElement;
+
+        const confirmPassword = signupForm.querySelector('input[name="input-confirm-password"]') as HTMLInputElement;
+
+        if (password.value !== confirmPassword.value) {
+            toast({
+                title: 'Passwords do not match!',
+                type: 'danger',
+                description: 'Please make sure your passwords match.',
+                closeButton: true,
+                persistent: true,
+            });
+            return;
+        }
 
         formData.append('username', username.value);
+        formData.append('email', email.value);
+        formData.append('displayname', displayName.value);
         formData.append('password', password.value);
 
-        const response = await fetch(loginForm.action, {
-            method: loginForm.method,
+        const response = await fetch(signupForm.action, {
+            method: signupForm.method,
             body: formData,
         });
 
         if (response.ok) {
             toast({
-                title: 'Login successful!',
+                title: 'Signup successful!',
                 type: 'success',
                 description: 'Redirecting...',
-            })
+            });
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
@@ -108,7 +143,7 @@ if (user.isLoggedIn) {
                 description: data.error,
                 closeButton: true,
                 persistent: true,
-            })
+            });
         }
-    })
+    });
 </script>

@@ -35,11 +35,11 @@
   "type": "module",
   "dependencies": {
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/assets": "workspace:*",
     "@studiocms/core": "workspace:*",
+    "@studiocms/ui": "workspace:*",
     "@oslojs/crypto": "catalog:studiocms-shared",
     "@oslojs/encoding": "catalog:studiocms-shared",
     "@oslojs/binary": "catalog:studiocms-shared",
