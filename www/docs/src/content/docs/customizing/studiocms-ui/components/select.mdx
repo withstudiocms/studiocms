@@ -83,10 +83,13 @@ You can set a default value using the `defaultValue` prop:
 You can use the `isRequired` prop to mark the select input as required. This will also add a red `*` to
 the label.
 
+If you need to access the element's value later on, you can pass the `name` prop. It will then appear in any FormData
+you construct.
+
 Additionally, you can either disable the entire select input by using the `disabled` prop, or disable
 individual options by adding `disabled: true` to the option you want to disable:
 
-```astro ins={7-8}
+```astro ins={7-9}
 ---
 import { Select } from '@studiocms/ui/components';
 ---
@@ -96,6 +99,7 @@ import { Select } from '@studiocms/ui/components';
   defaultValue='opt-1'
   isRequired
   disabled
+  name="select-element"
   options={[
     // ...
     { 
@@ -107,6 +111,10 @@ import { Select } from '@studiocms/ui/components';
   ]}
 />
 ```
+
+:::note
+If no name is set, a random one is generated for the component.
+:::
 
 ### Full Width
 
