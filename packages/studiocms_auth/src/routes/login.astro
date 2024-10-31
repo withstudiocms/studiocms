@@ -90,9 +90,7 @@ if (user.isLoggedIn) {
                 type: 'success',
                 description: 'Redirecting...',
             })
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+            window.location.reload();
         } else {
             const data = await response.json();
             toast({

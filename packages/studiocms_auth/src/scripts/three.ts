@@ -71,13 +71,15 @@ function parseToString(value: string | undefined | null): string {
 	return value || '';
 }
 
+const currentMode = document.documentElement.dataset.theme || 'dark';
+
 /**
  * The parameters for the background image config.
  */
 const backgroundConfig: BackgroundParams = {
 	background: parseBackgroundImageConfig(loginPageBackground),
 	customImageHref: parseToString(loginPageCustomImage),
-	mode: 'dark',
+	mode: currentMode as 'light' | 'dark',
 };
 
 /**
