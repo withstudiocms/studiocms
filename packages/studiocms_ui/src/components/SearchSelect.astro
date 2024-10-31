@@ -152,7 +152,10 @@ const {
         option.id = `${id}-selected`;
         option.classList.add("selected");
 
-        const opt = options.find((x) => x.value === option.dataset.value);
+        const index = options.findIndex((x) => x.value === option.dataset.value);
+        focusIndex = index;
+
+        const opt = options[index];
         hiddenSelect.value = opt.value;
 
         searchInput.placeholder = opt.label;
