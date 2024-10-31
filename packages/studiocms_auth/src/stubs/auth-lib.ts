@@ -140,6 +140,10 @@ authLib.addModule('studiocms:auth/lib/user', {
 			typeDef: `typeof import('${resolve('../lib/user.ts')}').createLocalUser`,
 		},
 		{
+			name: 'createOAuthUser',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').createOAuthUser`,
+		},
+		{
 			name: 'updateUserPassword',
 			typeDef: `typeof import('${resolve('../lib/user.ts')}').updateUserPassword`,
 		},
@@ -162,6 +166,10 @@ authLib.addModule('studiocms:auth/lib/user', {
 		{
 			name: 'verifyUserPermissionLevel',
 			typeDef: `typeof import('${resolve('../lib/user.ts')}').verifyUserPermissionLevel`,
+		},
+		{
+			name: 'LinkNewOAuthCookieName',
+			typeDef: `typeof import('${resolve('../lib/user.ts')}').LinkNewOAuthCookieName`,
 		},
 	],
 });

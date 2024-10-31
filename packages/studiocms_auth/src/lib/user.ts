@@ -1,6 +1,6 @@
 import { db, eq } from 'astro:db';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { tsPermissions, tsUsers } from '@studiocms/core/db/tsTables';
+import { tsOAuthAccounts, tsPermissions, tsUsers } from '@studiocms/core/db/tsTables';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session';
@@ -64,6 +64,28 @@ export async function createLocalUser(
 
 	return newUser;
 }
+
+export async function createOAuthUser(
+	userFields: typeof tsUsers.$inferInsert,
+	oAuthFields: { provider: string; providerUserId: string }
+) {
+	try {
+		const newUser = await db.insert(tsUsers).values(userFields).returning().get();
+
+		await db.insert(tsOAuthAccounts).values({
+			userId: newUser.id,
+			provider: oAuthFields.provider,
+			providerUserId: oAuthFields.providerUserId,
+		});
+
+		return newUser;
+	} catch (error) {
+		console.error(error);
+		return { error: 'Error creating user' };
+	}
+}
+
+export const LinkNewOAuthCookieName = 'link-new-o-auth';
 
 export async function updateUserPassword(userId: string, password: string): Promise<void> {
 	const passwordHash = await hashPassword(password);

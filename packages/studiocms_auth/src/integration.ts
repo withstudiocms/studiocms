@@ -8,6 +8,7 @@ import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
 import authLibDTS from './stubs/auth-lib';
+import authScriptsDTS from './stubs/auth-scripts';
 import authUtilsDTS from './stubs/auth-utils';
 import { checkEnvKeys } from './utils/checkENV';
 import { injectAuthRouteArray } from './utils/injectAuthRoutes';
@@ -50,10 +51,11 @@ export default defineIntegration({
 							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
 							'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('./utils/authEnvCheck.ts')}'`,
+							'studiocms:auth/scripts/three': `import '${JSON.stringify(resolve('./scripts/three.ts'))}'`,
 						},
 					});
 
-					// Update Astro(vite) Config
+					// Update Astro Config
 					updateConfig({
 						security: {
 							checkOrigin: true,
@@ -191,6 +193,7 @@ export default defineIntegration({
 					// Inject Types
 					injectTypes(authLibDTS);
 					injectTypes(authUtilsDTS);
+					injectTypes(authScriptsDTS);
 				},
 			},
 		};

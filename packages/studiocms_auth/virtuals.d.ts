@@ -38,16 +38,29 @@ declare module 'studiocms:auth/lib/user' {
 	export const verifyUsernameInput: typeof import('./src/lib/user').verifyUsernameInput;
 	export const createUserAvatar: typeof import('./src/lib/user').createUserAvatar;
 	export const createLocalUser: typeof import('./src/lib/user').createLocalUser;
+	export const createOAuthUser: typeof import('./src/lib/user').createOAuthUser;
 	export const updateUserPassword: typeof import('./src/lib/user').updateUserPassword;
 	export const getUserPasswordHash: typeof import('./src/lib/user').getUserPasswordHash;
 	export const getUserFromEmail: typeof import('./src/lib/user').getUserFromEmail;
 	export const getUserData: typeof import('./src/lib/user').getUserData;
 	export const permissionRanksMap: typeof import('./src/lib/user').permissionRanksMap;
 	export const verifyUserPermissionLevel: typeof import('./src/lib/user').verifyUserPermissionLevel;
+	export const LinkNewOAuthCookieName: typeof import('./src/lib/user').LinkNewOAuthCookieName;
 }
 
 declare module 'studiocms:auth/utils/authEnvCheck' {
 	export const authEnvCheck: typeof import('./src/utils/authEnvCheck').authEnvCheck;
+}
+
+declare module 'studiocms:auth/scripts/three' {
+	/**
+	 * This module should be imported within a script tag.
+	 * @example <script>import "studiocms:auth/scripts/three";</script>
+	 */
+
+	// biome-ignore lint/suspicious/noExplicitAny: this is a module without exports, see example above for usage. (The export is not real and this is just to present the module in the type definitions)
+	const mod: any;
+	export default mod;
 }
 
 /**

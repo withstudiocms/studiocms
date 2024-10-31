@@ -1,3 +1,4 @@
+import { logger } from '@it-astro:logger:studiocms-auth';
 import { and, db, eq } from 'astro:db';
 import {
 	createSession,
@@ -5,7 +6,7 @@ import {
 	makeExpirationDate,
 	setSessionTokenCookie,
 } from 'studiocms:auth/lib/session';
-import { getUserData } from 'studiocms:auth/lib/user';
+import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
@@ -80,8 +81,9 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		}
 
 		const loggedInUser = await getUserData(context);
+		const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
-		if (loggedInUser.user) {
+		if (loggedInUser.user && linkNewOAuth) {
 			const existingUser = await db
 				.select()
 				.from(tsUsers)
@@ -105,31 +107,24 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
 
-		const newUser = await db
-			.insert(tsUsers)
-			.values({
+		const newUser = await createOAuthUser(
+			{
 				id: crypto.randomUUID(),
 				username: discordUsername,
 				name: discordUser.global_name ?? discordUsername,
 				email: discordUser.email,
 				avatar: avatar_url,
 				createdAt: new Date(),
-			})
-			.returning()
-			.get();
+			},
+			{ provider: ProviderID, providerUserId: discordUserId }
+		);
 
-		const newOAuthAccount = await db
-			.insert(tsOAuthAccounts)
-			.values({
-				provider: ProviderID,
-				providerUserId: discordUserId,
-				userId: newUser.id,
-			})
-			.returning()
-			.get();
+		if ('error' in newUser) {
+			return new Response('Error creating user', { status: 500 });
+		}
 
 		const sessionToken = generateSessionToken();
-		await createSession(sessionToken, newOAuthAccount.userId);
+		await createSession(sessionToken, newUser.id);
 		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
 
 		return redirect(dashboardIndex);
@@ -137,11 +132,13 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		// the specific error message depends on the provider
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
-			return new Response(null, {
+			const code = e.code;
+			logger.error(`OAuth2RequestError in Discord OAuth callback: ${code}`);
+			return new Response(code, {
 				status: 400,
 			});
 		}
-		console.error(e);
+		logger.error(`Unexpected error in Discord OAuth callback: ${e}`);
 		return new Response(null, {
 			status: 500,
 		});
