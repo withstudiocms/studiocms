@@ -3,8 +3,7 @@ import { getUserData } from 'studiocms:auth/lib/user';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
-import Button from '../components/Button.astro';
-import TextInput from '../components/TextInput.astro';
+import { Button, Input } from '@studiocms/ui/components';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
 const {
@@ -51,17 +50,11 @@ if (user.isLoggedIn) {
 
     { usernameAndPassword && (
         <form class="form" id="login-form" method="post" action={loginAPI}>
-            <TextInput
-                label='Username'
-                id="username"
-                type='text'
-            />
-            <TextInput
-                label='Password'
-                id="password"
-                type='password'
-            />
-            <Button type="submit" stretch>Log In</Button>
+
+            <Input label="Username" name="username" type="text" />
+            <Input label="Password" name="password" type='password' />
+
+            <Button as="button" type="submit" class="sub-button full" fullWidth color='primary' variant='solid'>Log In</Button>
         </form>
     )}
 
@@ -80,8 +73,8 @@ if (user.isLoggedIn) {
 
         const formData = new FormData();
 
-        const username = loginForm.querySelector('input[name="input-username"]') as HTMLInputElement;
-        const password = loginForm.querySelector('input[name="input-password"]') as HTMLInputElement;
+        const username = loginForm.querySelector('input[name="username"]') as HTMLInputElement;
+        const password = loginForm.querySelector('input[name="password"]') as HTMLInputElement;
 
         formData.append('username', username.value);
         formData.append('password', password.value);

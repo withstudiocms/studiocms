@@ -1,15 +1,12 @@
 ---
-// import { authHelper } from 'studiocms:auth/helpers';
 import { StudioCMSRoutes, sideBarLinkMap } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
 import { Button, Details, Icon } from '@matthiesenxyz/astrolace/components';
 import boxArrowLeft from '@studiocms/assets/svgs/box-arrow-left.svg';
 
-import { getUserData } from 'studiocms:auth/lib/user';
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 
 const user = await getUserData(Astro);
-
-const { permissionLevel } = user;
 
 const {
 	dashboardConfig: {
@@ -20,18 +17,13 @@ const {
 	authLinks: { logoutURL },
 } = StudioCMSRoutes;
 const sideBarLinks = sideBarLinkMap;
-// const { permissionLevel } = await authHelper(Astro.locals);
 ---
 
 <div class="menu menu-md grow shrink">
 
-    { sideBarLinks.map(({ id, href, text, minPermissionLevel, icon, type, dropdownItems }) => {
+    { sideBarLinks.map(async ({ id, href, text, minPermissionLevel, icon, type, dropdownItems }) => {
         if ( type === "link" ) {
-            if ( minPermissionLevel === "unknown" && ( 
-                permissionLevel === "unknown" || 
-                permissionLevel === "admin" || 
-                permissionLevel === "editor" || 
-                permissionLevel === "visitor" ) ) {
+            if ( minPermissionLevel === "unknown" && (await verifyUserPermissionLevel(user, "unknown"))) {
                 return (
                     <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href} outline >
                         <Icon slot="prefix" src={icon} />
@@ -39,10 +31,7 @@ const sideBarLinks = sideBarLinkMap;
                     </Button>
                 );
             }
-            if ( minPermissionLevel === "visitor" && ( 
-                permissionLevel === "admin" || 
-                permissionLevel === "editor" || 
-                permissionLevel === "visitor" ) ) {
+            if ( minPermissionLevel === "visitor" && (await verifyUserPermissionLevel(user, "visitor")) ) {
                 return (
                     <Button variant="success" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href} outline >
                         <Icon slot="prefix" src={icon} />
@@ -53,10 +42,7 @@ const sideBarLinks = sideBarLinkMap;
             if ((
                 testingAndDemoMode || 
                 minPermissionLevel === "editor"
-                ) && (
-                permissionLevel === "editor" || 
-                permissionLevel === "admin" || 
-                testingAndDemoMode )) {
+                ) && (await verifyUserPermissionLevel(user, "editor")) || testingAndDemoMode) {
                 return (
                     <Button variant="primary" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href} outline >
                         <Icon slot="prefix" src={icon} />
@@ -67,9 +53,7 @@ const sideBarLinks = sideBarLinkMap;
             if (( 
                 testingAndDemoMode || 
                 minPermissionLevel === "admin" 
-                ) && ( 
-                permissionLevel === "admin" || 
-                testingAndDemoMode )) {
+                ) && (await verifyUserPermissionLevel(user, "admin")) || testingAndDemoMode) {
                 return (
                     <Button variant="warning" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href} outline >
                         <Icon slot="prefix" src={icon} />
@@ -80,24 +64,16 @@ const sideBarLinks = sideBarLinkMap;
         }
 
         if ( type === "dropdown" ) {
-            if ( minPermissionLevel === "unknown" && ( 
-                permissionLevel === "unknown" || 
-                permissionLevel === "admin" || 
-                permissionLevel === "editor" || 
-                permissionLevel === "visitor" ) ) {
+            if ( minPermissionLevel === "unknown" && (await verifyUserPermissionLevel(user, "unknown")) ) {
                 return (
                     <Details style="width: 100%; padding-right: 1rem; padding-left: 1rem;">
                         <div class="py-3 text-base" slot="summary" id={id}>
                         <Icon slot="prefix" class="inline" src={icon}/>{text}</div>
 
                         { 
-                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(({ id, href, text, minPermissionLevel, icon, type, }) => {
+                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(async ({ id, href, text, minPermissionLevel, icon, type, }) => {
                                 if ( type === "link" ) {
-                                    if ( minPermissionLevel === "unknown" && ( 
-                                        permissionLevel === "unknown" || 
-                                        permissionLevel === "admin" || 
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "visitor" ) ) {
+                                    if ( minPermissionLevel === "unknown" && (await verifyUserPermissionLevel(user, "unknown")) || testingAndDemoMode) {
                                         return (
                                             <Button 
                                                 variant="default" 
@@ -115,10 +91,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if ((
                                         testingAndDemoMode || 
                                         minPermissionLevel === "editor"
-                                        ) && (
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "editor")) || testingAndDemoMode) {
                                         return (
                                             <Button 
                                                 variant="default" 
@@ -136,9 +109,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if (( 
                                         testingAndDemoMode || 
                                         minPermissionLevel === "admin" 
-                                        ) && ( 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "admin")) || testingAndDemoMode) {
                                         return (
                                             <Button 
                                                 variant="default" 
@@ -163,22 +134,15 @@ const sideBarLinks = sideBarLinkMap;
             if ((
                 testingAndDemoMode || 
                 minPermissionLevel === "editor"
-                ) && (
-                permissionLevel === "editor" || 
-                permissionLevel === "admin" || 
-                testingAndDemoMode )) {
+                ) && (await verifyUserPermissionLevel(user, "editor")) || testingAndDemoMode) {
                 return (
                     <Details style="width: 100%; padding-right: 1rem; padding-left: 1rem;">
                         <div class="py-3 text-base flex items-center" slot="summary" id={id}>
                         <Icon class="px-2 object-center" src={icon}/> {text}</div>
                         { 
-                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(({ id, href, text, minPermissionLevel, icon, type, }) => {
+                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(async ({ id, href, text, minPermissionLevel, icon, type, }) => {
                                 if ( type === "link" ) {
-                                    if ( minPermissionLevel === "unknown" && ( 
-                                        permissionLevel === "unknown" || 
-                                        permissionLevel === "admin" || 
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "visitor" ) ) {
+                                    if ( minPermissionLevel === "unknown" && (await verifyUserPermissionLevel(user, "unknown")) || testingAndDemoMode) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />
@@ -189,10 +153,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if ((
                                         testingAndDemoMode || 
                                         minPermissionLevel === "editor"
-                                        ) && (
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "editor")) || testingAndDemoMode) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />
@@ -203,9 +164,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if (( 
                                         testingAndDemoMode || 
                                         minPermissionLevel === "admin" 
-                                        ) && ( 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "admin")) || testingAndDemoMode) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />
@@ -223,21 +182,15 @@ const sideBarLinks = sideBarLinkMap;
             if (( 
                 testingAndDemoMode || 
                 minPermissionLevel === "admin" 
-                ) && ( 
-                permissionLevel === "admin" || 
-                testingAndDemoMode )) {
+                ) && (await verifyUserPermissionLevel(user, "admin")) || testingAndDemoMode) {
                 return (
                     <Details style="width: 100%; padding-right: 1rem; padding-left: 1rem;">
                         <div class="py-3 text-base flex items-center" slot="summary" id={id}>
                         <Icon slot="prefix" class="align-text-center inline" src={icon} />{text}</div>
                         { 
-                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(({ id, href, text, minPermissionLevel, icon, type, }) => {
+                            dropdownItems && dropdownItems.length > 0 && dropdownItems.map(async ({ id, href, text, minPermissionLevel, icon, type, }) => {
                                 if ( type === "link" ) {
-                                    if ( minPermissionLevel === "unknown" && ( 
-                                        permissionLevel === "unknown" || 
-                                        permissionLevel === "admin" || 
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "visitor" ) ) {
+                                    if ( minPermissionLevel === "unknown" && (await verifyUserPermissionLevel(user, "unknown")) || testingAndDemoMode ) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />
@@ -248,10 +201,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if ((
                                         testingAndDemoMode || 
                                         minPermissionLevel === "editor"
-                                        ) && (
-                                        permissionLevel === "editor" || 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "editor")) || testingAndDemoMode) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />
@@ -262,9 +212,7 @@ const sideBarLinks = sideBarLinkMap;
                                     if (( 
                                         testingAndDemoMode || 
                                         minPermissionLevel === "admin" 
-                                        ) && ( 
-                                        permissionLevel === "admin" || 
-                                        testingAndDemoMode )) {
+                                        ) && (await verifyUserPermissionLevel(user, "admin")) || testingAndDemoMode) {
                                         return (
                                             <Button variant="default" size="medium" class="py-1" style="width: 100%; padding-right: 1rem; padding-left: 1rem;" id={id} href={href}>
                                                 <Icon slot="prefix" src={icon} />

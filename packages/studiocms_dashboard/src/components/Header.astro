@@ -1,4 +1,5 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Avatar, Button, Divider, Drawer, IconButton } from '@matthiesenxyz/astrolace/components';
 import githubLogo from '@studiocms/assets/svgs/github-logo.svg';
@@ -6,8 +7,6 @@ import listIcon from '@studiocms/assets/svgs/list.svg';
 import personFillIcon from '@studiocms/assets/svgs/person-fill.svg';
 import type { StudioCMSSocials } from '@studiocms/core/consts';
 import { SideBarMenu, ThemeToggleButton } from '../components';
-
-import { getUserData } from 'studiocms:auth/lib/user';
 
 const user = await getUserData(Astro);
 

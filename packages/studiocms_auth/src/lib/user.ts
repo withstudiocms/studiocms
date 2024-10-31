@@ -131,7 +131,7 @@ export async function getUserData(Astro: AstroGlobal | APIContext): Promise<User
 		return { isLoggedIn: false, user: null, permissionLevel: 'unknown' };
 	}
 
-	const result = await db.select().from(tsPermissions).where(eq(tsUsers.id, user.id)).get();
+	const result = await db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)).get();
 
 	if (!result) {
 		return { isLoggedIn: true, user, permissionLevel: 'unknown' };
@@ -179,5 +179,6 @@ export async function verifyUserPermissionLevel(
 	userData: UserSessionData,
 	requiredPermission: AvailablePermissionRanks
 ): Promise<boolean> {
-	return permissionRanksMap[userData.permissionLevel].includes(requiredPermission);
+	const { permissionLevel } = userData;
+	return permissionRanksMap[requiredPermission].includes(permissionLevel);
 }

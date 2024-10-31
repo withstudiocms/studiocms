@@ -1,6 +1,3 @@
-import { db, eq } from 'astro:db';
-import { CMSSiteConfigId } from '@studiocms/core/consts';
-import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -10,7 +7,10 @@ import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png';
 import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png';
 import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png';
 import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png';
-import { fitModelToViewport } from './utils/fitModelToViewport';
+import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
+
+const loginPageBackground = document.getElementById('login-page-configs')?.dataset.pagebg;
+const loginPageCustomImage = document.getElementById('login-page-configs')?.dataset.pagecustomimage;
 
 /**
  * The valid images that can be used as a background for the StudioCMS Logo.
@@ -45,21 +45,7 @@ type BackgroundParams = {
 	mode: 'light' | 'dark';
 };
 
-// Get the site config
-const siteConfig = await db
-	.select()
-	.from(tsSiteConfig)
-	.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-	.get();
-
-// This should never happen
-if (!siteConfig) {
-	throw new Error('Site config not found');
-}
-
-// Get the login page background and custom image from the site config
-const loginPageBackground = siteConfig.loginPageBackground;
-const loginPageCustomImage = siteConfig.loginPageCustomImage;
+console.log('StudioCMS3DLogo script');
 
 /**
  * Parses the background image config.
@@ -72,7 +58,7 @@ function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage[
 	}
 
 	// Check if the image name is one of the valid images (built-in or custom)
-	if (validImages.some((validImage) => validImage.name === imageName)) {
+	if (imageName) {
 		return imageName as ValidImage['name'];
 	}
 
@@ -93,6 +79,14 @@ const backgroundConfig: BackgroundParams = {
 	customImageHref: parseToString(loginPageCustomImage),
 	mode: 'dark',
 };
+
+/**
+ * Gets the background config based on the parameters.
+ * @param config The config to get the background for.
+ */
+function getBackgroundConfig(config: BackgroundParams): ValidImage {
+	return validImages.find((image) => image.name === config.background) || validImages[0];
+}
 
 /**
  * Selects the background based on the image.
@@ -389,7 +383,7 @@ if (!smallScreen) {
 			logoContainer,
 			new THREE.Color(0xaa87f4),
 			usingReducedMotion,
-			validImages[0]
+			getBackgroundConfig(backgroundConfig)
 		);
 	} catch (err) {
 		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);

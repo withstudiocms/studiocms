@@ -3,8 +3,7 @@ import { getUserData } from 'studiocms:auth/lib/user';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
-import Button from '../components/Button.astro';
-import TextInput from '../components/TextInput.astro';
+import { Button, Input } from '@studiocms/ui/components';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
 const {
@@ -20,7 +19,7 @@ const {
 } = Config;
 
 const {
-	authLinks: { loginAPI, signupURL },
+	authLinks: { loginAPI, loginURL },
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
@@ -51,37 +50,19 @@ if (user.isLoggedIn) {
 
     { usernameAndPassword && (
         <form class="form" id="signup-form" method="post" action={loginAPI}>
-            <TextInput
-                label='Username'
-                id="username"
-                type='text'
-            />
-            <TextInput
-                label='Email'
-                id="email"
-                type='email'
-            />
-            <TextInput
-                label='Display Name'
-                id="display-name"
-                type='text'
-            />
-            <TextInput
-                label='Password'
-                id="password"
-                type='password'
-            />
-            <TextInput
-                label='Confirm Password'
-                id="confirm-password"
-                type='password'
-            />
-            <Button type="submit" stretch>Create Account</Button>
+
+            <Input label="Username" name="username" type="text" />
+            <Input label="Email" name="email" type="email" />
+            <Input label="Display Name" name="displayname" type="text" />
+            <Input label="Password" name="password" type="password" />
+            <Input label="Confirm Password" name="confirm-password" type="password" />
+
+            <Button type="submit" as="button" type="submit" class="sub-button full" fullWidth color='primary' variant='solid'>Create Account</Button>
         </form>
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">Already have an account? <a href={signupURL}>Sign in!</a></p>
+        <p slot="footer">Already have an account? <a href={loginURL}>Sign in!</a></p>
     )}
 
 </AuthLayout>
@@ -95,15 +76,15 @@ if (user.isLoggedIn) {
 
         const formData = new FormData();
 
-        const username = signupForm.querySelector('input[name="input-username"]') as HTMLInputElement;
+        const username = signupForm.querySelector('input[name="username"]') as HTMLInputElement;
 
-        const email = signupForm.querySelector('input[name="input-email"]') as HTMLInputElement;
+        const email = signupForm.querySelector('input[name="email"]') as HTMLInputElement;
 
-        const displayName = signupForm.querySelector('input[name="input-display-name"]') as HTMLInputElement;
+        const displayName = signupForm.querySelector('input[name="displayname"]') as HTMLInputElement;
 
-        const password = signupForm.querySelector('input[name="input-password"]') as HTMLInputElement;
+        const password = signupForm.querySelector('input[name="password"]') as HTMLInputElement;
 
-        const confirmPassword = signupForm.querySelector('input[name="input-confirm-password"]') as HTMLInputElement;
+        const confirmPassword = signupForm.querySelector('input[name="confirm-password"]') as HTMLInputElement;
 
         if (password.value !== confirmPassword.value) {
             toast({
