@@ -53,6 +53,9 @@ export default defineIntegration({
 
 					// Update Astro(vite) Config
 					updateConfig({
+						security: {
+							checkOrigin: true,
+						},
 						vite: {
 							optimizeDeps: {
 								exclude: ['astro:db', 'three'],
@@ -63,7 +66,7 @@ export default defineIntegration({
 									hook: 'buildStart',
 									targets: [
 										{
-											src: resolve('./resources'),
+											src: resolve('./resources/*'),
 											dest: 'public/studiocms-auth/',
 										},
 									],

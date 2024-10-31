@@ -157,7 +157,5 @@ export async function verifyUserPermissionLevel(
 	userData: UserSessionData,
 	requiredPermission: AvailablePermissionRanks
 ): Promise<boolean> {
-	const permissionLevel = userData.permissionLevel;
-
-	return permissionRanksMap[permissionLevel].includes(requiredPermission);
+	return permissionRanksMap[userData.permissionLevel].includes(requiredPermission);
 }
