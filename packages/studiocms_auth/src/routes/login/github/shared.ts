@@ -1,6 +1,6 @@
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import Config from 'virtual:studiocms/config';
 import { GitHub } from 'arctic';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
 
 const {
 	GITHUB: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },

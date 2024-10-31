@@ -1,6 +1,6 @@
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import Config from 'virtual:studiocms/config';
 import { Auth0 } from 'arctic';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
 
 export const {
 	AUTH0: { CLIENT_ID, CLIENT_SECRET, DOMAIN, REDIRECT_URI },

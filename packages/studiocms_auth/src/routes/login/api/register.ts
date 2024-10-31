@@ -1,15 +1,15 @@
 import { db, eq } from 'astro:db';
-import { tsUsers } from '@studiocms/core/db/tsTables';
-import type { APIContext, APIRoute } from 'astro';
-import { z } from 'astro/zod';
-import { verifyPasswordStrength } from '../../../lib/password';
+import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import {
 	createSession,
 	generateSessionToken,
 	makeExpirationDate,
 	setSessionTokenCookie,
-} from '../../../lib/session';
-import { createLocalUser, verifyUsernameInput } from '../../../lib/user';
+} from 'studiocms:auth/lib/session';
+import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
+import { tsUsers } from '@studiocms/core/db/tsTables';
+import type { APIContext, APIRoute } from 'astro';
+import { z } from 'astro/zod';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {

@@ -1,6 +1,6 @@
+import { setOAuthSessionTokenCookie } from 'studiocms:auth/lib/session';
 import { generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { setOAuthSessionTokenCookie } from '../../../lib/session';
 import { ProviderCodeVerifier, ProviderCookieName, google } from './shared';
 
 export const GET: APIRoute = async (context: APIContext) => {

@@ -1,15 +1,15 @@
 import { and, db, eq } from 'astro:db';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
-import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
-import type { APIContext, APIRoute } from 'astro';
 import {
 	createSession,
 	generateSessionToken,
 	makeExpirationDate,
 	setSessionTokenCookie,
-} from '../../../lib/session';
-import { getUserData } from '../../../lib/user';
+} from 'studiocms:auth/lib/session';
+import { getUserData } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
+import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
+import type { APIContext, APIRoute } from 'astro';
 import {
 	type GoogleUser,
 	ProviderCodeVerifier,

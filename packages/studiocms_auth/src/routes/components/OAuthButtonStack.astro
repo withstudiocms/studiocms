@@ -1,10 +1,10 @@
 ---
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import Config from 'virtual:studiocms/config';
-import { authEnvCheck } from '../../utils/authEnvCheck';
-import Auth0Button from './Auth0Button.astro';
-import DiscordButton from './DiscordButton.astro';
-import GitHubButton from './GitHubButton.astro';
-import GoogleButton from './GoogleButton.astro';
+import Auth0Button from './OAuthButtons/Auth0Button.astro';
+import DiscordButton from './OAuthButtons/DiscordButton.astro';
+import GitHubButton from './OAuthButtons/GitHubButton.astro';
+import GoogleButton from './OAuthButtons/GoogleButton.astro';
 
 const {
 	dashboardConfig: {

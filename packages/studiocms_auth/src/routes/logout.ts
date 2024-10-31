@@ -1,11 +1,11 @@
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import type { APIContext, APIRoute } from 'astro';
 import {
 	deleteSessionTokenCookie,
 	invalidateSession,
 	sessionCookieName,
 	validateSessionToken,
-} from '../lib/session';
+} from 'studiocms:auth/lib/session';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import type { APIContext, APIRoute } from 'astro';
 
 const {
 	authLinks: { loginURL },

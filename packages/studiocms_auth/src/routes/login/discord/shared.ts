@@ -1,6 +1,6 @@
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import Config from 'virtual:studiocms/config';
 import { Discord } from 'arctic';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
 
 export const {
 	DISCORD: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },

@@ -1,11 +1,11 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
-import { getUserData } from '../../lib/user';
-import { authEnvCheck } from '../../utils/authEnvCheck';
-import AuthLayout from '../components/AuthLayout.astro';
 import Button from '../components/Button.astro';
 import TextInput from '../components/TextInput.astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
 
 const {
 	dashboardConfig: {

@@ -3,8 +3,8 @@ import Config from 'virtual:studiocms/config';
 import version from 'virtual:studiocms/version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import { Toaster } from '@studiocms/ui/components';
-import Divider from './Divider.astro';
-import OAuthButtonStack from './OAuthButtonStack.astro';
+import Divider from '../components/Divider.astro';
+import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 
 // CSS/Fonts Imports
 import '@fontsource-variable/onest';
@@ -55,4 +55,5 @@ const { title, description, lang = 'en' } = Astro.props;
 		</div>
 	</main>
   </body>
+  <script src="../../scripts/three.ts" />
 </html>

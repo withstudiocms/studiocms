@@ -1,6 +1,6 @@
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import Config from 'virtual:studiocms/config';
 import { Google } from 'arctic';
-import { authEnvCheck } from '../../../utils/authEnvCheck';
 
 export const {
 	GOOGLE: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },

@@ -1,6 +1,6 @@
+import { setOAuthSessionTokenCookie } from 'studiocms:auth/lib/session';
 import { generateState } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { setOAuthSessionTokenCookie } from '../../../lib/session';
 import { ProviderCookieName, discord } from './shared';
 
 export const GET: APIRoute = async (context: APIContext) => {

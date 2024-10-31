@@ -8,6 +8,7 @@ import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
 import authLibDTS from './stubs/auth-lib';
+import authUtilsDTS from './stubs/auth-utils';
 import { checkEnvKeys } from './utils/checkENV';
 import { injectAuthRouteArray } from './utils/injectAuthRoutes';
 
@@ -48,6 +49,7 @@ export default defineIntegration({
 							'studiocms:auth/lib/session': `export * from '${resolve('./lib/session.ts')}'`,
 							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
+							'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('./utils/authEnvCheck.ts')}'`,
 						},
 					});
 
@@ -188,6 +190,7 @@ export default defineIntegration({
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject Types
 					injectTypes(authLibDTS);
+					injectTypes(authUtilsDTS);
 				},
 			},
 		};
