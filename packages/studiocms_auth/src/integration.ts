@@ -69,7 +69,7 @@ export default defineIntegration({
 							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
 							'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('./utils/authEnvCheck.ts')}'`,
-							'studiocms:auth/scripts/three': `import '${JSON.stringify(resolve('./scripts/three.ts'))}'`,
+							'studiocms:auth/scripts/three': `import ${JSON.stringify(resolve('./scripts/three.ts'))}`,
 						},
 					});
 
@@ -77,6 +77,9 @@ export default defineIntegration({
 					updateConfig({
 						security: {
 							checkOrigin: true,
+						},
+						experimental: {
+							directRenderScript: true,
 						},
 						vite: {
 							optimizeDeps: {

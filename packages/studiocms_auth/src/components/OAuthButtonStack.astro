@@ -21,10 +21,10 @@ const {
 } = await authEnvCheck(providers);
 ---
 { SHOW_OAUTH && ( 
-    <>
+    <div class="button-stack">
     { githubEnabled && <GitHubButton /> }
     { discordEnabled && <DiscordButton /> }
     { googleEnabled && <GoogleButton /> }
     { auth0Enabled && <Auth0Button /> }
-    </>
+    </div>
 )}

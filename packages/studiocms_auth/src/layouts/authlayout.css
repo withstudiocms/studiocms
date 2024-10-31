@@ -89,8 +89,17 @@ main {
 .login-form-container {
 	border-left: 1px solid var(--border);
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+
+.login-form-container > .divide-container,
+.login-form-container > .button-stack {
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
 }
 
 .form,

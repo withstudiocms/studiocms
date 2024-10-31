@@ -411,7 +411,7 @@ importers:
       '@astrojs/db':
         specifier: catalog:min
         version: 0.14.2(@cloudflare/workers-types@4.20240725.0)(@types/react@18.3.5)(react@18.3.1)
-      '@fontsource/onest':
+      '@fontsource-variable/onest':
         specifier: 5.1.0
         version: 5.1.0
       '@inox-tools/runtime-logger':
@@ -1910,9 +1910,6 @@ packages:
 
   '@fontsource-variable/onest@5.1.0':
     resolution: {integrity: sha512-8jspwmuPWtC2p4gxmjUIQ2JugqCcClFwlD1DEJt+gARgZMm3PI62rYivoKVUDB3Q6hdQxeL5wdzjxCOnzTU5BA==}
-
-  '@fontsource/onest@5.1.0':
-    resolution: {integrity: sha512-to08IOVv6tag1q0RZvj6XKBff6YL8OF23C3ktxkfrH34TAO54BVDXC7iZHL0GTR5YmjwDLdkCIUOGqtHzg8LDA==}
 
   '@iconify-json/heroicons@1.2.1':
     resolution: {integrity: sha512-TkKfS5U27kE5MXmSGLzPoz95BP5VA9xEJXwJFwmPMVLX+xyWq0OkoiWTUXB0uAoQODpb8BaRpzSydItrq9fIRA==}
@@ -7222,8 +7219,6 @@ snapshots:
   '@floating-ui/utils@0.2.5': {}
 
   '@fontsource-variable/onest@5.1.0': {}
-
-  '@fontsource/onest@5.1.0': {}
 
   '@iconify-json/heroicons@1.2.1':
     dependencies:

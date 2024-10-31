@@ -5,18 +5,11 @@ import Config from 'virtual:studiocms/config';
 import { Button, Details, Icon } from '@matthiesenxyz/astrolace/components';
 import boxArrowLeft from '@studiocms/assets/svgs/box-arrow-left.svg';
 
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { getUserData } from 'studiocms:auth/lib/user';
 
 const user = await getUserData(Astro);
 
-if (!user.user) {
-	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
-}
-
-const {
-	permissionLevel,
-	// user: { name, username, url },
-} = user;
+const { permissionLevel } = user;
 
 const {
 	dashboardConfig: {

@@ -6,22 +6,27 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png?url';
-import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png?url';
-import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png?url';
-import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png?url';
+import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png';
+import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png';
+import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png';
+import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png';
 import { fitModelToViewport } from './utils/fitModelToViewport';
 
 /**
  * The valid images that can be used as a background for the StudioCMS Logo.
  */
 const validImages = [
-	{ name: 'studiocms-blobs', format: 'png', light: studiocmsBlobsLight, dark: studiocmsBlobsDark },
+	{
+		name: 'studiocms-blobs',
+		format: 'png',
+		light: studiocmsBlobsLight.src,
+		dark: studiocmsBlobsDark.src,
+	},
 	{
 		name: 'studiocms-curves',
 		format: 'png',
-		light: studiocmsCurvesLight,
-		dark: studiocmsCurvesDark,
+		light: studiocmsCurvesLight.src,
+		dark: studiocmsCurvesDark.src,
 	},
 	{ name: 'custom', format: 'web' },
 ] as const;
@@ -133,6 +138,8 @@ class StudioCMS3DLogo {
 		reducedMotion: boolean,
 		image: ValidImage
 	) {
+		console.log('StudioCMS3DLogo constructor', containerEl, outlineColor, reducedMotion, image);
+
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color(0x101010);
 
@@ -374,6 +381,8 @@ const logoContainer = document.querySelector<HTMLDivElement>('#canvas-container'
 const usingReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
 const smallScreen = window.matchMedia('(max-width: 850px)').matches === true;
 
+console.log('StudioCMS3DLogo', logoContainer, usingReducedMotion, smallScreen);
+
 if (!smallScreen) {
 	try {
 		new StudioCMS3DLogo(
@@ -383,6 +392,7 @@ if (!smallScreen) {
 			validImages[0]
 		);
 	} catch (err) {
+		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);
 		// TODO: Show static image instead (configured background plus non-transparent logo in the same position, allow for custom bgs)
 	}
 }

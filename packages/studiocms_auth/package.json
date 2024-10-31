@@ -44,7 +44,7 @@
     "@oslojs/encoding": "catalog:studiocms-shared",
     "@oslojs/binary": "catalog:studiocms-shared",
     "@node-rs/argon2": "catalog:studiocms-shared",
-    "@fontsource/onest": "5.1.0",
+    "@fontsource-variable/onest": "5.1.0",
     "@types/three": "^0.169.0",
     "three": "^0.169.0",
     "arctic": "catalog:studiocms-shared",

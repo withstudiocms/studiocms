@@ -1,5 +1,5 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { removeLeadingTrailingSlashes } from '@studiocms/core/lib/removeLeadingTrailingSlashes';
+import { removeLeadingTrailingSlashes } from '@studiocms/core/lib';
 import { DashboardStrings } from '@studiocms/core/strings';
 import { defineUtility } from 'astro-integration-kit';
 import type { StudioCMSAuthOptions } from '../schema';

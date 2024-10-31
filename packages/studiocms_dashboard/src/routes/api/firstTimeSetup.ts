@@ -25,6 +25,8 @@ export async function POST(context: APIContext): Promise<Response> {
 
 	const setupLocalAdmin = formData.get('local-setup');
 
+	console.log(setupLocalAdmin);
+
 	if (setupLocalAdmin === '1') {
 		// Get the formdata
 		const username = parseFormDataEntryToString(formData, 'local-admin-name');
@@ -68,8 +70,6 @@ export async function POST(context: APIContext): Promise<Response> {
 		}
 
 		const newUser = await createLocalUser(name, username, email, password);
-
-		await createUserSession(newUser.id, context);
 
 		await db.insert(tsPermissions).values({
 			user: newUser.id,
