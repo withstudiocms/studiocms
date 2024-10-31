@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { db, eq } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
@@ -31,7 +30,7 @@ export async function POST(context: APIContext): Promise<Response> {
 		const username = parseFormDataEntryToString(formData, 'local-admin-name');
 		const password = parseFormDataEntryToString(formData, 'local-admin-password');
 		const name = parseFormDataEntryToString(formData, 'local-admin-display-name');
-		const email = parseFormDataEntryToString(formData, 'local-admin-email');
+		const email = parseFormDataEntryToString(formData, 'local-admin-email') || 'admin@example.com';
 
 		if (!username || !password || !name) {
 			return new Response(
@@ -68,7 +67,7 @@ export async function POST(context: APIContext): Promise<Response> {
 			);
 		}
 
-		const newUser = await createLocalUser(name, username, email || 'admin@example.com', password);
+		const newUser = await createLocalUser(name, username, email, password);
 
 		await createUserSession(newUser.id, context);
 
@@ -143,7 +142,7 @@ export async function POST(context: APIContext): Promise<Response> {
 
 	await db.insert(tsPageData).values([
 		{
-			id: randomUUID(),
+			id: crypto.randomUUID(),
 			title: 'Home',
 			slug: 'index',
 			showOnNav: true,
@@ -152,7 +151,7 @@ export async function POST(context: APIContext): Promise<Response> {
 			heroImage: HERO_IMAGE,
 		},
 		{
-			id: randomUUID(),
+			id: crypto.randomUUID(),
 			title: 'About',
 			slug: 'about',
 			showOnNav: true,
@@ -181,13 +180,13 @@ export async function POST(context: APIContext): Promise<Response> {
 		.insert(tsPageContent)
 		.values([
 			{
-				id: randomUUID(),
+				id: crypto.randomUUID(),
 				contentId: index.id,
 				contentLang: 'default',
 				content: LOREM_IPSUM,
 			},
 			{
-				id: randomUUID(),
+				id: crypto.randomUUID(),
 				contentId: about.id,
 				contentLang: 'default',
 				content: LOREM_IPSUM,
