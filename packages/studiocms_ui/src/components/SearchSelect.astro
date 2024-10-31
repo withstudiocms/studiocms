@@ -139,6 +139,7 @@ const {
 
     const handleSelection = (e, option) => {
         e.stopImmediatePropagation();
+        
         if (option.id === `${id}-selected` || !id) return;
 
         const currentlySelected = document.getElementById(`${id}-selected`);
@@ -266,10 +267,6 @@ const {
         filteredOptions = options.filter(x => x.label.includes(searchInput.value));
         focusIndex = 0;
 
-        constructOptionsBasedOnOptions(filteredOptions);
-    });
-
-    searchInput.addEventListener('blur', (e) => {
         constructOptionsBasedOnOptions(filteredOptions);
     });
 
@@ -413,7 +410,7 @@ const {
         display: flex;
     }
 
-    .search-select-dropdown:active, .search-select-dropdown:has(*:active) {
+    .search-select-dropdown.active, .search-select-dropdown:has(> li:active) {
         display: flex;
     }
 </style>
