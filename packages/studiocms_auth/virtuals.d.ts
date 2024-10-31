@@ -22,6 +22,7 @@ declare module 'studiocms:auth/lib/session' {
 	export const setOAuthSessionTokenCookie: typeof import('./src/lib/session').setOAuthSessionTokenCookie;
 	export const makeExpirationDate: typeof import('./src/lib/session').makeExpirationDate;
 	export const sessionExpTime: typeof import('./src/lib/session').sessionExpTime;
+	export const createUserSession: typeof import('./src/lib/session').createUserSession;
 }
 
 declare module 'studiocms:auth/lib/types' {

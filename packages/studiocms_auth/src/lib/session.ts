@@ -109,3 +109,9 @@ export function setOAuthSessionTokenCookie(context: APIContext, key: string, val
 		sameSite: 'lax',
 	});
 }
+
+export async function createUserSession(userId: string, context: APIContext): Promise<void> {
+	const sessionToken = generateSessionToken();
+	await createSession(sessionToken, userId);
+	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+}

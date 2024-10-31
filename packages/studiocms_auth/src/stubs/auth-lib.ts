@@ -89,6 +89,10 @@ authLib.addModule('studiocms:auth/lib/session', {
 			name: 'sessionExpTime',
 			typeDef: `typeof import('${resolve('../lib/session.ts')}').sessionExpTime`,
 		},
+		{
+			name: 'createUserSession',
+			typeDef: `typeof import('${resolve('../lib/session.ts')}').createUserSession`,
+		},
 	],
 });
 

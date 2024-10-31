@@ -1,11 +1,6 @@
 import { db, eq } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import {
-	createSession,
-	generateSessionToken,
-	makeExpirationDate,
-	setSessionTokenCookie,
-} from 'studiocms:auth/lib/session';
+import { createUserSession } from 'studiocms:auth/lib/session';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { tsUsers } from '@studiocms/core/db/tsTables';
 import type { APIContext, APIRoute } from 'astro';
@@ -78,10 +73,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	// Create a new user
 	const newUser = await createLocalUser(name, username, email, password);
 
-	// Create a session
-	const sessionToken = generateSessionToken();
-	await createSession(sessionToken, newUser.id);
-	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+	await createUserSession(newUser.id, context);
 
 	return new Response();
 };

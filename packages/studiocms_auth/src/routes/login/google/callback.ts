@@ -1,11 +1,6 @@
 import { logger } from '@it-astro:logger:studiocms-auth';
 import { and, db, eq } from 'astro:db';
-import {
-	createSession,
-	generateSessionToken,
-	makeExpirationDate,
-	setSessionTokenCookie,
-} from 'studiocms:auth/lib/session';
+import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { tsOAuthAccounts, tsUsers } from '@studiocms/core/db/tsTables';
@@ -78,9 +73,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 				return new Response('User not found', { status: 404 });
 			}
 
-			const sessionToken = generateSessionToken();
-			await createSession(sessionToken, user.id);
-			setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+			await createUserSession(user.id, context);
 
 			return redirect(dashboardIndex);
 		}
@@ -102,9 +95,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 					providerUserId: googleUserId,
 				});
 
-				const sessionToken = generateSessionToken();
-				await createSession(sessionToken, existingUser.id);
-				setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+				await createUserSession(existingUser.id, context);
 
 				return redirect(dashboardIndex);
 			}
@@ -126,9 +117,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 			return new Response('Error creating user', { status: 500 });
 		}
 
-		const sessionToken = generateSessionToken();
-		await createSession(sessionToken, newUser.id);
-		setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+		await createUserSession(newUser.id, context);
 
 		return redirect(dashboardIndex);
 	} catch (e) {

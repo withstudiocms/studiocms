@@ -1,11 +1,6 @@
 import { db, eq } from 'astro:db';
 import { verifyPasswordHash } from 'studiocms:auth/lib/password';
-import {
-	createSession,
-	generateSessionToken,
-	makeExpirationDate,
-	setSessionTokenCookie,
-} from 'studiocms:auth/lib/session';
+import { createUserSession } from 'studiocms:auth/lib/session';
 import { tsUsers } from '@studiocms/core/db/tsTables';
 import type { APIContext, APIRoute } from 'astro';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
@@ -44,10 +39,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		return badFormDataEntry('Invalid Username or Password');
 	}
 
-	// Create a session
-	const sessionToken = generateSessionToken();
-	await createSession(sessionToken, existingUser.id);
-	setSessionTokenCookie(context, sessionToken, makeExpirationDate());
+	await createUserSession(existingUser.id, context);
 
 	return new Response();
 };
