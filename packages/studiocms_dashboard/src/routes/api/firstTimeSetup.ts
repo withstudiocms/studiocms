@@ -1,18 +1,25 @@
 import { randomUUID } from 'node:crypto';
 import { db, eq } from 'astro:db';
-// import AuthSecurityConfig from 'studiocms:auth/config';
-// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
+import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
+import { createUserSession } from 'studiocms:auth/lib/session';
+import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import {
 	tsPageContent,
 	tsPageData,
 	tsPermissions,
 	tsSiteConfig,
-	tsUsers,
+	// tsUsers,
 } from '@studiocms/core/db/tsTables';
 import type { APIContext } from 'astro';
 
-// const { salt: ScryptSalt, opts: ScryptOpts } = AuthSecurityConfig;
+function parseFormDataEntryToString(formData: FormData, key: string): string | null {
+	const value = formData.get(key);
+	if (typeof value !== 'string') {
+		return null;
+	}
+	return value;
+}
 
 export async function POST(context: APIContext): Promise<Response> {
 	const formData = await context.request.formData();
@@ -20,92 +27,69 @@ export async function POST(context: APIContext): Promise<Response> {
 	const setupLocalAdmin = formData.get('local-setup');
 
 	if (setupLocalAdmin === '1') {
-		// const username = formData.get('local-admin-name')?.toString();
-		// // username must be between 3 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-		// // keep in mind some database (e.g. mysql) are case insensitive
-		// if (
-		// 	typeof username !== 'string' ||
-		// 	username.length < 3 ||
-		// 	username.length > 31 ||
-		// 	!/^[a-z0-9_-]+$/.test(username) ||
-		// 	checkIfUnsafe(username).username()
-		// ) {
-		// 	return new Response(
-		// 		JSON.stringify({
-		// 			error: 'Invalid username',
-		// 		}),
-		// 		{
-		// 			status: 400,
-		// 		}
-		// 	);
-		// }
-		// const password = formData.get('local-admin-password');
-		// if (
-		// 	typeof password !== 'string' ||
-		// 	password.length < 6 ||
-		// 	password.length > 255 ||
-		// 	checkIfUnsafe(password).password()
-		// ) {
-		// 	return new Response(
-		// 		JSON.stringify({
-		// 			error: 'Invalid password',
-		// 		}),
-		// 		{
-		// 			status: 400,
-		// 		}
-		// 	);
-		// }
-		// const name = formData.get('local-admin-display-name');
-		// const existingUser = await db
-		// 	.select()
-		// 	.from(tsUsers)
-		// 	.where(eq(tsUsers.username, username))
-		// 	.get();
-		// if (existingUser) {
-		// 	return new Response(
-		// 		JSON.stringify({
-		// 			error: 'User Error',
-		// 		}),
-		// 		{
-		// 			status: 400,
-		// 		}
-		// 	);
-		// }
-		// const newCreatedUser = await db
-		// 	.insert(tsUsers)
-		// 	.values({
-		// 		id: randomUUID(),
-		// 		name: name as string,
-		// 		username,
-		// 	})
-		// 	.returning({ id: tsUsers.id })
-		// 	.get();
-		// const serverToken = await scryptAsync(newCreatedUser.id, ScryptSalt, ScryptOpts);
-		// const newUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
-		// const hashedPassword = await scryptAsync(password, serverToken, ScryptOpts);
-		// const hashedPasswordString = Buffer.from(hashedPassword.buffer).toString();
-		// if (!newUser) {
-		// 	return new Response(
-		// 		JSON.stringify({
-		// 			error: 'User Error',
-		// 		}),
-		// 		{
-		// 			status: 400,
-		// 		}
-		// 	);
-		// }
-		// await db
-		// 	.update(tsUsers)
-		// 	.set({
-		// 		password: hashedPasswordString,
-		// 	})
-		// 	.where(eq(tsUsers.id, newUser.id));
-		// await db.insert(tsPermissions).values({
-		// 	username: username,
-		// 	rank: 'admin',
-		// });
+		// Get the formdata
+		const username = parseFormDataEntryToString(formData, 'local-admin-name');
+		const password = parseFormDataEntryToString(formData, 'local-admin-password');
+		const name = parseFormDataEntryToString(formData, 'local-admin-display-name');
+		const email = parseFormDataEntryToString(formData, 'local-admin-email');
+
+		if (!username || !password || !name) {
+			return new Response(
+				JSON.stringify({
+					error: 'Missing Data',
+				}),
+				{
+					status: 400,
+				}
+			);
+		}
+
+		if (verifyUsernameInput(username) !== true) {
+			return new Response(
+				JSON.stringify({
+					error:
+						'Invalid Username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)',
+				}),
+				{
+					status: 400,
+				}
+			);
+		}
+
+		if ((await verifyPasswordStrength(password)) !== true) {
+			return new Response(
+				JSON.stringify({
+					error:
+						'Invalid Password: Password must be between 6 and 255 characters, not be a known unsafe password, and not be in the pwned password database',
+				}),
+				{
+					status: 400,
+				}
+			);
+		}
+
+		const newUser = await createLocalUser(name, username, email || 'admin@example.com', password);
+
+		await createUserSession(newUser.id, context);
+
+		await db.insert(tsPermissions).values({
+			user: newUser.id,
+			rank: 'owner',
+		});
 	} else {
-		// const oAuthAdmin = formData.get('oauth-admin-name');
+		const oAuthAdmin = parseFormDataEntryToString(formData, 'oauth-admin-name');
+
+		if (!oAuthAdmin || oAuthAdmin) {
+			return new Response(
+				JSON.stringify({
+					error: 'oAuth Admin setup not yet implemented',
+				}),
+				{
+					status: 400,
+				}
+			);
+		}
+		// TODO: Implement new OAuth admin setup
 		// await db.insert(tsPermissions).values({
 		// 	username: oAuthAdmin as string,
 		// 	rank: 'admin',
@@ -114,7 +98,7 @@ export async function POST(context: APIContext): Promise<Response> {
 
 	const title = formData.get('title');
 	const description = formData.get('description');
-	// const ogImage = formData.get('ogImage'); // TODO: Implement this
+	const ogImage = formData.get('ogImage');
 
 	const Config = await db
 		.select()
@@ -139,6 +123,7 @@ export async function POST(context: APIContext): Promise<Response> {
 		.values({
 			title: title as string,
 			description: description as string,
+			defaultOgImage: (ogImage as string) || null,
 		})
 		.catch(() => {
 			return new Response(
