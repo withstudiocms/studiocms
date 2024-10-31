@@ -1,9 +1,22 @@
 ---
-import { authHelper } from 'studiocms:auth/helpers';
+// import { authHelper } from 'studiocms:auth/helpers';
 import { StudioCMSRoutes, sideBarLinkMap } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
 import { Button, Details, Icon } from '@matthiesenxyz/astrolace/components';
 import boxArrowLeft from '@studiocms/assets/svgs/box-arrow-left.svg';
+
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+
+const user = await getUserData(Astro);
+
+if (!user.user) {
+	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+}
+
+const {
+	permissionLevel,
+	// user: { name, username, url },
+} = user;
 
 const {
 	dashboardConfig: {
@@ -14,7 +27,7 @@ const {
 	authLinks: { logoutURL },
 } = StudioCMSRoutes;
 const sideBarLinks = sideBarLinkMap;
-const { permissionLevel } = await authHelper(Astro.locals);
+// const { permissionLevel } = await authHelper(Astro.locals);
 ---
 
 <div class="menu menu-md grow shrink">

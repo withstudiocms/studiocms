@@ -1,9 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { db, eq } from 'astro:db';
-import AuthSecurityConfig from 'studiocms:auth/config';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-// TODO: Update this import to the new system
-// import { scryptAsync } from '@noble/hashes/scrypt';
+// import AuthSecurityConfig from 'studiocms:auth/config';
+// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import {
 	tsPageContent,
@@ -14,7 +12,7 @@ import {
 } from '@studiocms/core/db/tsTables';
 import type { APIContext } from 'astro';
 
-const { salt: ScryptSalt, opts: ScryptOpts } = AuthSecurityConfig;
+// const { salt: ScryptSalt, opts: ScryptOpts } = AuthSecurityConfig;
 
 export async function POST(context: APIContext): Promise<Response> {
 	const formData = await context.request.formData();
@@ -22,103 +20,96 @@ export async function POST(context: APIContext): Promise<Response> {
 	const setupLocalAdmin = formData.get('local-setup');
 
 	if (setupLocalAdmin === '1') {
-		const username = formData.get('local-admin-name')?.toString();
-		// username must be between 3 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-		// keep in mind some database (e.g. mysql) are case insensitive
-		if (
-			typeof username !== 'string' ||
-			username.length < 3 ||
-			username.length > 31 ||
-			!/^[a-z0-9_-]+$/.test(username) ||
-			checkIfUnsafe(username).username()
-		) {
-			return new Response(
-				JSON.stringify({
-					error: 'Invalid username',
-				}),
-				{
-					status: 400,
-				}
-			);
-		}
-		const password = formData.get('local-admin-password');
-		if (
-			typeof password !== 'string' ||
-			password.length < 6 ||
-			password.length > 255 ||
-			checkIfUnsafe(password).password()
-		) {
-			return new Response(
-				JSON.stringify({
-					error: 'Invalid password',
-				}),
-				{
-					status: 400,
-				}
-			);
-		}
-		const name = formData.get('local-admin-display-name');
-
-		const existingUser = await db
-			.select()
-			.from(tsUsers)
-			.where(eq(tsUsers.username, username))
-			.get();
-
-		if (existingUser) {
-			return new Response(
-				JSON.stringify({
-					error: 'User Error',
-				}),
-				{
-					status: 400,
-				}
-			);
-		}
-		const newCreatedUser = await db
-			.insert(tsUsers)
-			.values({
-				id: randomUUID(),
-				name: name as string,
-				username,
-			})
-			.returning({ id: tsUsers.id })
-			.get();
-
-		const serverToken = await scryptAsync(newCreatedUser.id, ScryptSalt, ScryptOpts);
-		const newUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
-		const hashedPassword = await scryptAsync(password, serverToken, ScryptOpts);
-		const hashedPasswordString = Buffer.from(hashedPassword.buffer).toString();
-
-		if (!newUser) {
-			return new Response(
-				JSON.stringify({
-					error: 'User Error',
-				}),
-				{
-					status: 400,
-				}
-			);
-		}
-
-		await db
-			.update(tsUsers)
-			.set({
-				password: hashedPasswordString,
-			})
-			.where(eq(tsUsers.id, newUser.id));
-
-		await db.insert(tsPermissions).values({
-			username: username,
-			rank: 'admin',
-		});
+		// const username = formData.get('local-admin-name')?.toString();
+		// // username must be between 3 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
+		// // keep in mind some database (e.g. mysql) are case insensitive
+		// if (
+		// 	typeof username !== 'string' ||
+		// 	username.length < 3 ||
+		// 	username.length > 31 ||
+		// 	!/^[a-z0-9_-]+$/.test(username) ||
+		// 	checkIfUnsafe(username).username()
+		// ) {
+		// 	return new Response(
+		// 		JSON.stringify({
+		// 			error: 'Invalid username',
+		// 		}),
+		// 		{
+		// 			status: 400,
+		// 		}
+		// 	);
+		// }
+		// const password = formData.get('local-admin-password');
+		// if (
+		// 	typeof password !== 'string' ||
+		// 	password.length < 6 ||
+		// 	password.length > 255 ||
+		// 	checkIfUnsafe(password).password()
+		// ) {
+		// 	return new Response(
+		// 		JSON.stringify({
+		// 			error: 'Invalid password',
+		// 		}),
+		// 		{
+		// 			status: 400,
+		// 		}
+		// 	);
+		// }
+		// const name = formData.get('local-admin-display-name');
+		// const existingUser = await db
+		// 	.select()
+		// 	.from(tsUsers)
+		// 	.where(eq(tsUsers.username, username))
+		// 	.get();
+		// if (existingUser) {
+		// 	return new Response(
+		// 		JSON.stringify({
+		// 			error: 'User Error',
+		// 		}),
+		// 		{
+		// 			status: 400,
+		// 		}
+		// 	);
+		// }
+		// const newCreatedUser = await db
+		// 	.insert(tsUsers)
+		// 	.values({
+		// 		id: randomUUID(),
+		// 		name: name as string,
+		// 		username,
+		// 	})
+		// 	.returning({ id: tsUsers.id })
+		// 	.get();
+		// const serverToken = await scryptAsync(newCreatedUser.id, ScryptSalt, ScryptOpts);
+		// const newUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
+		// const hashedPassword = await scryptAsync(password, serverToken, ScryptOpts);
+		// const hashedPasswordString = Buffer.from(hashedPassword.buffer).toString();
+		// if (!newUser) {
+		// 	return new Response(
+		// 		JSON.stringify({
+		// 			error: 'User Error',
+		// 		}),
+		// 		{
+		// 			status: 400,
+		// 		}
+		// 	);
+		// }
+		// await db
+		// 	.update(tsUsers)
+		// 	.set({
+		// 		password: hashedPasswordString,
+		// 	})
+		// 	.where(eq(tsUsers.id, newUser.id));
+		// await db.insert(tsPermissions).values({
+		// 	username: username,
+		// 	rank: 'admin',
+		// });
 	} else {
-		const oAuthAdmin = formData.get('oauth-admin-name');
-
-		await db.insert(tsPermissions).values({
-			username: oAuthAdmin as string,
-			rank: 'admin',
-		});
+		// const oAuthAdmin = formData.get('oauth-admin-name');
+		// await db.insert(tsPermissions).values({
+		// 	username: oAuthAdmin as string,
+		// 	rank: 'admin',
+		// });
 	}
 
 	const title = formData.get('title');
