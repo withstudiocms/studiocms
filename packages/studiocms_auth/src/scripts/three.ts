@@ -11,8 +11,10 @@ import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png';
 import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png';
 import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
 
+// Get the current configuration for the login page
 const loginPageBackground = document.getElementById('login-page-configs')?.dataset.pagebg;
 const loginPageCustomImage = document.getElementById('login-page-configs')?.dataset.pagecustomimage;
+const currentMode = document.documentElement.dataset.theme || 'dark';
 
 /**
  * The valid images that can be used as a background for the StudioCMS Logo.
@@ -53,8 +55,6 @@ type BackgroundParams = {
 	mode: 'light' | 'dark';
 };
 
-console.log('StudioCMS3DLogo script');
-
 /**
  * Parses the background image config.
  * @param imageName The name of the image to parse.
@@ -78,8 +78,6 @@ function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage[
 function parseToString(value: string | undefined | null): string {
 	return value || '';
 }
-
-const currentMode = document.documentElement.dataset.theme || 'dark';
 
 /**
  * The parameters for the background image config.
@@ -142,8 +140,6 @@ class StudioCMS3DLogo {
 		reducedMotion: boolean,
 		image: ValidImage
 	) {
-		console.log('StudioCMS3DLogo constructor', containerEl, outlineColor, reducedMotion, image);
-
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color(0x101010);
 
@@ -384,8 +380,6 @@ class StudioCMS3DLogo {
 const logoContainer = document.querySelector<HTMLDivElement>('#canvas-container')!;
 const usingReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
 const smallScreen = window.matchMedia('(max-width: 850px)').matches === true;
-
-console.log('StudioCMS3DLogo', logoContainer, usingReducedMotion, smallScreen);
 
 if (!smallScreen) {
 	try {

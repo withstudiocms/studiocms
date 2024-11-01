@@ -68,61 +68,8 @@ if (user.isLoggedIn) {
 </AuthLayout>
 
 <script>
-    import { toast } from '@studiocms/ui/components';
+    import { formListener } from 'studiocms:auth/scripts/formListener';
     const signupForm = document.getElementById('signup-form') as HTMLFormElement;
 
-    signupForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData();
-
-        const username = signupForm.querySelector('input[name="username"]') as HTMLInputElement;
-
-        const email = signupForm.querySelector('input[name="email"]') as HTMLInputElement;
-
-        const displayName = signupForm.querySelector('input[name="displayname"]') as HTMLInputElement;
-
-        const password = signupForm.querySelector('input[name="password"]') as HTMLInputElement;
-
-        const confirmPassword = signupForm.querySelector('input[name="confirm-password"]') as HTMLInputElement;
-
-        if (password.value !== confirmPassword.value) {
-            toast({
-                title: 'Passwords do not match!',
-                type: 'danger',
-                description: 'Please make sure your passwords match.',
-                closeButton: true,
-                persistent: true,
-            });
-            return;
-        }
-
-        formData.append('username', username.value);
-        formData.append('email', email.value);
-        formData.append('displayname', displayName.value);
-        formData.append('password', password.value);
-
-        const response = await fetch(signupForm.action, {
-            method: signupForm.method,
-            body: formData,
-        });
-
-        if (response.ok) {
-            toast({
-                title: 'Signup successful!',
-                type: 'success',
-                description: 'Redirecting...',
-            });
-            window.location.reload();
-        } else {
-            const data = await response.json();
-            toast({
-                title: 'Something went wrong!',
-                type: 'danger',
-                description: data.error,
-                closeButton: true,
-                persistent: true,
-            });
-        }
-    });
+    signupForm.addEventListener('submit', async (event) => formListener(event, signupForm, 'register'));
 </script>

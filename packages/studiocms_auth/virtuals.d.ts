@@ -64,6 +64,12 @@ declare module 'studiocms:auth/scripts/three' {
 	export default mod;
 }
 
+declare module 'studiocms:auth/scripts/formListener' {
+	export const formListener: typeof import('./src/scripts/formListener').formListener;
+}
+
+// // // // // End of Auth Module // // // // //
+
 /**
  * # DEV TIP
  *

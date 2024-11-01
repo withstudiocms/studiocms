@@ -65,41 +65,8 @@ if (user.isLoggedIn) {
 </AuthLayout>
 
 <script>
-    import { toast } from '@studiocms/ui/components';
+    import { formListener } from 'studiocms:auth/scripts/formListener';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 
-    loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData();
-
-        const username = loginForm.querySelector('input[name="username"]') as HTMLInputElement;
-        const password = loginForm.querySelector('input[name="password"]') as HTMLInputElement;
-
-        formData.append('username', username.value);
-        formData.append('password', password.value);
-
-        const response = await fetch(loginForm.action, {
-            method: loginForm.method,
-            body: formData,
-        });
-
-        if (response.ok) {
-            toast({
-                title: 'Login successful!',
-                type: 'success',
-                description: 'Redirecting...',
-            })
-            window.location.reload();
-        } else {
-            const data = await response.json();
-            toast({
-                title: 'Something went wrong!',
-                type: 'danger',
-                description: data.error,
-                closeButton: true,
-                persistent: true,
-            })
-        }
-    })
+    loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
 </script>

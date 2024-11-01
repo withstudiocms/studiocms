@@ -1,4 +1,7 @@
 import DTSBuilder from '@matthiesenxyz/astrodtsbuilder';
+import { createResolver } from 'astro-integration-kit';
+
+const { resolve } = createResolver(import.meta.url);
 
 const authScripts = DTSBuilder();
 
@@ -14,6 +17,15 @@ authScripts.addModule('studiocms:auth/scripts/three', {
 			'@example <script>import "studiocms:auth/scripts/three";</script>',
 		],
 	},
+});
+
+authScripts.addModule('studiocms:auth/scripts/formListener', {
+	namedExports: [
+		{
+			name: 'formListener',
+			typeDef: `typeof import('${resolve('../scripts/formListener.ts')}').formListener`,
+		},
+	],
 });
 
 const dtsFile = authScripts.makeAstroInjectedType('auth-scripts.d.ts');
