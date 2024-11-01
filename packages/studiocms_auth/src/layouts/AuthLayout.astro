@@ -3,6 +3,7 @@ import { db, eq } from 'astro:db';
 import Config from 'virtual:studiocms/config';
 import version from 'virtual:studiocms/version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import { Divider, Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
@@ -25,7 +26,11 @@ interface Props {
 const { title, description, lang = 'en' } = Astro.props;
 
 // // Get the site config
-const siteConfig = await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, 1)).get();
+const siteConfig = await db
+	.select()
+	.from(tsSiteConfig)
+	.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+	.get();
 
 // Get the login page background and custom image from the site config
 const loginPageBackground = siteConfig?.loginPageBackground;

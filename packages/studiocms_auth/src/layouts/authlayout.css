@@ -72,13 +72,7 @@ main {
 }
 
 .login-form-container > .divide-container,
-.login-form-container > .button-stack {
-	width: 50%;
-	display: flex;
-	flex-direction: column;
-	gap: .5rem;
-}
-
+.login-form-container > .button-stack,
 .form,
 .form-header {
 	width: 50%;
@@ -86,34 +80,23 @@ main {
 	flex-direction: column;
 	gap: .5rem;
 }
-.sub-button {
-	width: 100% !important;
-	display: inline-block !important;
+
+#login-form > .button {
+	margin-top: .5rem;
+}
+
+.button {
 	align-items: center;
-	height: 40px !important;
-	padding: .5rem .75rem !important;
-	gap: .5rem !important;
+	justify-content: center;
+	width: 100% !important;
 	text-align: center !important;
-	border-radius: .5rem !important;
-	background-color: var(--primary);
 	font-weight: 500 !important;
 	font-size: .925em !important;
-	outline: none !important;
-	border: none !important;
-	transition: background-color .1s ease !important;
-	cursor: pointer;
-	margin-top: .5rem !important;
-}
-
-.sub-button:hover {
-	background-color: var(--primary-hover);
-}
-
-.sub-button:active {
-	background-color: var(--primary-focus);
 }
 
 @media screen and (max-width: 1100px) {
+	.login-form-container > .divide-container,
+	.login-form-container > .button-stack,
 	.form,
 	.form-header {
 		width: 75%;
@@ -121,6 +104,8 @@ main {
 }
 
 @media screen and (max-width: 850px) {
+	.login-form-container > .divide-container,
+	.login-form-container > .button-stack,
 	.form,
 	.form-header {
 		width: 50%;
@@ -137,6 +122,8 @@ main {
 }
 
 @media screen and (max-width: 660px) {
+	.login-form-container > .divide-container,
+	.login-form-container > .button-stack,
 	.form,
 	.form-header {
 		width: 100%;

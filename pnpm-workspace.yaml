@@ -1,7 +1,8 @@
-catalog:
+catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@astrojs/db': ^0.14.2
   '@astrojs/markdown-remark': ^5.2.0
   '@astrojs/rss': ^4.0.7
+  '@astrojs/react': ^3.6.2
   '@astrojs/check': ^0.9.4
   '@astrojs/tailwind': ^5.1.2
   '@astrojs/starlight': ^0.28.3
@@ -16,20 +17,25 @@ catalog:
   vite: ^5.4.8
 
 catalogs:
-  min:
+  min: # Confirmed Current Min Deps - 11.01.2024
     astro: ">=4.16"
     '@astrojs/db': ">=0.14.2"
     astro-integration-kit: ">=0.16"
     vite: ^4 || ^5
-  landing:
+
+  landing: # Confirmed Current Landing Deps - 11.01.2024
     motion: ^10.18.0
     tailwindcss: ^3.4.14
     tailwind-merge: ^2.5.4
     tailwind-scrollbar: ^3.1.0
     '@tailwindcss/typography': ^0.5.15
     astro-icon: ^1.1.1
-    '@iconify-json/heroicons': ^1.2.0
-  docs:
+    '@resvg/resvg-js': ^2.6.2
+    html-entities: ^2.5.2
+    satori: ^0.11.1
+    satori-html: ^0.3.2
+
+  docs: # Confirmed Current Docs Deps - 11.01.2024
     "@11ty/eleventy-fetch": ^4.0.1
     "@lorenzo_lewis/starlight-utils": ^0.2.0
     "@types/hast": ^3.0.4
@@ -38,49 +44,79 @@ catalogs:
     hast-util-select: ^6.0.3
     p-retry: ^6.2.0
     rehype: ^13.0.2
-    starlight-versions: ^0.3.0
-    starlight-package-managers: ^0.7.0
     starlight-typedoc: ^0.16.0
     typedoc: ^0.26.10
     typedoc-plugin-markdown: ^4.2.9
-  studiocms:
+    "@shikijs/transformers": ^1.22.0
+    "@shikijs/twoslash": ^1.22.0
+    shiki: ^1.22.0
+    shiki-transformer-color-highlight: ^0.2.0
+    starlight-image-zoom: ^0.8.0
+    hastscript: ^9.0.0
+    hast-util-to-string: ^3.0.1
+    mdast-util-from-markdown: ^2.0.1
+    mdast-util-gfm: ^3.0.0
+    mdast-util-to-hast: ^13.2.0
+    rehype-slug: ^6.0.0
+    rehype-autolink-headings: ^7.1.0
+    rehype-external-links: ^3.0.0
+    "@types/html-escaper": ^3.0.2
+    html-escaper: ^3.0.3
+
+  studiocms: # Confirmed Current CMS Deps - 11.01.2024
     '@types/semver': ^7.5.8
     package-json: ^10.0.1
     semver: ^7.6.3
-  studiocms-core:
+
+  studiocms-core: # Confirmed Current Core Deps - 11.01.2024
     remark-rehype: ^11.1.0
     mdast-util-to-hast: ^13.2.0
-  studiocms-shared:
+    mrmime: ^2.0.0
+    unified: ^11.0.5
+
+  studiocms-devapps: # Confirmed Current DevApps Deps - 11.01.2024
+    "@libsql/client": ^0.14.0
+    "@types/cheerio": ^0.22.35
+    "@types/turndown": ^5.0.5
+    cheerio: ^1.0.0
+    turndown: ^7.2.0
+    html-entities: ^2.5.2
+
+  studiocms-auth: # Confirmed Current Auth Deps - 11.01.2024
+    '@oslojs/crypto': ^1.0.1
+    '@oslojs/encoding': ^1.1.0
+    '@oslojs/binary': ^1.0.0
+    '@node-rs/argon2': ^2.0.0
+    '@types/three': 0.169.0
+    arctic: ^2.0.1
+    three: 0.170.0
+    
+  studiocms-shared: # Confirmed Current Shared Deps - 11.01.2024
     '@fontsource-variable/onest': 5.1.0
     '@inox-tools/runtime-logger': ^0.3.4
     '@iconify-json/heroicons': ^1.2.1
-    "@matthiesenxyz/astrolace": ^0.3.2
     "@matthiesenxyz/astrodtsbuilder": ^0.1.2
     "@matthiesenxyz/integration-utils": ^0.2.0
+    rollup-plugin-copy: ^3.5.0
+
+    # Needs to be cleaned up once they are no longer needed
+    "@matthiesenxyz/astrolace": ^0.3.2
     '@matthiesenxyz/unocss-preset-daisyui': ^0.1.2
-    '@markdoc/markdoc': ^0.4.0
-    '@noble/hashes': ^1.5.0
     '@unocss/astro': ^0.62.3
     '@unocss/reset': ^0.62.3
-    "@astrojs/react": ^3.6.2
-    "@types/react": ^18.3.5
-    "@types/react-dom": ^18.3.0
-    "@oslojs/crypto": ^1.0.1
-    "@oslojs/encoding": ^1.1.0
-    "@oslojs/binary": ^1.0.0
-    "@node-rs/argon2": ^2.0.0
-    react: ^18.3.1
-    react-dom: ^18.3.1
     unocss: ^0.62.3
     daisyui: ^4.12.10
-    arctic: ^2.0.1
-    marked: ^13.0.2
-    shiki: ^1.14.1
-    mrmime: ^2.0.0
-    unified: ^11.0.5
-  studiocms-renderer:
+
+  studiocms-renderer: # Confirmed Current Renderer Deps - 11.01.2024
     '@shikijs/transformers': ^1.14.1
     "@mdx-js/mdx": ^3.0.1
+    '@markdoc/markdoc': ^0.4.0
+    "@types/react": ^18.3.5
+    "@types/react-dom": ^18.3.0
+    react: ^18.3.1
+    react-dom: ^18.3.1
+    shiki: ^1.14.1
+    marked: ^13.0.2
     marked-alert: ^2.0.1
     marked-emoji: ^1.4.1
     marked-footnote: ^1.2.2
@@ -88,7 +124,8 @@ catalogs:
     marked-smartypants: ^1.1.7
     remark-gfm: ^4.0.0
     rehype-highlight: ^7.0.0
-  studiocms-imagehandler:
+
+  studiocms-imagehandler: # Confirmed Current ImageHandler Deps - 11.01.2024
     '@cloudinary/url-gen': ^1.21.0
 
 packages:

@@ -5,6 +5,8 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png';
 import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png';
+import studiocmsBlocksDark from '../loginBackgrounds/studiocms-blocks-dark.png';
+import studiocmsBlocksLight from '../loginBackgrounds/studiocms-blocks-light.png';
 import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png';
 import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png';
 import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
@@ -21,6 +23,12 @@ const validImages = [
 		format: 'png',
 		light: studiocmsBlobsLight.src,
 		dark: studiocmsBlobsDark.src,
+	},
+	{
+		name: 'studiocms-blocks',
+		format: 'png',
+		light: studiocmsBlocksLight.src,
+		dark: studiocmsBlocksDark.src,
 	},
 	{
 		name: 'studiocms-curves',
