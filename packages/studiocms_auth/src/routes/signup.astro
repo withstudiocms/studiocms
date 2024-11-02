@@ -29,7 +29,9 @@ let paragraph: string;
 
 if (usernameAndPassword && SHOW_OAUTH) {
 	paragraph = 'Create an account or log in using one of the options below.';
-} else if (SHOW_OAUTH) {
+} else if (usernameAndPassword && !SHOW_OAUTH) {
+	paragraph = 'Create an account using the form below.';
+} else if (!usernameAndPassword && SHOW_OAUTH) {
 	paragraph = 'Log in using one of the options below.';
 } else {
 	paragraph = 'No Login provider configured. Please contact your administrator.';
