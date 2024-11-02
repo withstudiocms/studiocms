@@ -15,8 +15,8 @@ export const ViteNodeAddonPlugin = (): Plugin => {
 					fileName: basename(id),
 					source: await readFile(id),
 				});
-				const runtimePath = `./${this.getFileName(refId)}`;
-				return `const id = ${JSON.stringify(runtimePath)};export default require(id);`;
+				const runtimePath = `../${this.getFileName(refId)}`;
+				return `// Processed by ViteNodeAddonPlugin - '@studiocms/auth'\nconst id = ${JSON.stringify(runtimePath)};\nexport default import(id);`;
 			}
 			return null;
 		},
