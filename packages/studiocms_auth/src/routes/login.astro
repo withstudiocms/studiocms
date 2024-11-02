@@ -5,6 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import Config from 'virtual:studiocms/config';
 import { Button, Input } from '@studiocms/ui/components';
 import AuthLayout from '../layouts/AuthLayout.astro';
+import { hashPassword } from '../lib/password';
 
 const {
 	dashboardConfig: {

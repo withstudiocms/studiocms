@@ -48,7 +48,8 @@
     "@types/three": "catalog:studiocms-auth",
     "arctic": "catalog:studiocms-auth",
     "three": "catalog:studiocms-auth",
-    "argon2": "0.41.1"
+    "@types/bcryptjs": "2.4.6",
+    "bcryptjs": "2.4.3"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
