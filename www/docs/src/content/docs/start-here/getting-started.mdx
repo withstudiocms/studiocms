@@ -161,7 +161,7 @@ StudioCMS requires SSR mode to work correctly. Make sure to set `output: 'server
 
 ## Configure authentication
 
-StudioCMS requires atleast one of the [Encryption authentication variable](/start-here/environment-variables/#username-and-password) to be set in your `.env` file.
+StudioCMS Auth requires atleast the [Encryption Key](/start-here/environment-variables/#encryption-key-for-studiocmsauth) to be set in your `.env` file.
 
 The following environment variables are required for StudioCMS authentication:
 
@@ -179,8 +179,34 @@ openssl rand --base64 16
 And set the output as the value for `CMS_ENCRYPTION_KEY`.
 
 <ReadMore>
-For more information about all the available authentication environment variables see, [Authentication Environment Variables](/start-here/environment-variables/#authentication-environment-variables) section.
+For more information about all the available authentication environment variables see, [Envrionment variables](/start-here/environment-variables/) page.
 </ReadMore>
+
+### Optional: Configure oAuth authentication
+
+StudioCMS supports oAuth authentication with GitHub, Discord, Google, and Auth0. To configure oAuth authentication, you'll need to set the [required environment variables in your `.env` file](/start-here/environment-variables/#oauth-authentication-environment-variables), and ensure that the provider is [enabled in your config](/config-reference/dashboard/#authconfig).
+
+For setting up oAuth providers, they require a callback URL. The callback URL is the path where the provider will redirect the user after authentication. 
+
+#### Setting up the callback URL
+
+The callback URL should be set to one of the following paths based on your environment:
+
+| Environment   | Callback URL |
+|---------------|--------------|
+| Production    | `https://your-domain.tld/studiocms_api/auth/<provider>/callback` |
+| Testing & Dev | `http://localhost:4321/studiocms_api/auth/<provider>/callback` |
+
+#### Example callback URL paths
+
+The following paths are examples of the callback URL for each provider:
+
+| Provider | Callback PATH |
+|----------|---------------|
+| GitHub   | `/studiocms_api/auth/github/callback` |
+| Discord  | `/studiocms_api/auth/discord/callback` |
+| Google   | `/studiocms_api/auth/google/callback` |
+| Auth0    | `/studiocms_api/auth/auth0/callback` |
 
 ## Configure your `package.json` scripts
 
@@ -206,9 +232,13 @@ Thanks to the power of Astro running StudioCMS is as easy as running the dev com
 To start your Astro project, run the following commands in your terminal:
 
     <PackageManagers type="exec" args="astro db push --remote" />
-    <PackageManagers type="run" args="dev --remote # '--remote' can be removed if you have set the scripts in your package.json" />
+    <PackageManagers type="run" args="dev --remote" />
 
-After running the commands, you should see a message indicating that your project is running at `localhost:4321`. When first setting up StudioCMS, you will prompted to finish configuring StudioCMS at http://localhost:4321/start
+<Aside type="note">
+The `--remote` flag can be removed if you have set the scripts in your `package.json` file to include the flag. This is explained in the ["Configure your `package.json` scripts"](#configure-your-packagejson-scripts) section.
+</Aside>
+
+After running the commands, you should see a message indicating that your project is running at `localhost:4321`. When first setting up StudioCMS, you will prompted to finish configuring StudioCMS at `http://localhost:4321/start`
 
 ### Running in Astro Development mode locally
 

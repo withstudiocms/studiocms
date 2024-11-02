@@ -51,11 +51,9 @@ openssl rand --base64 16
 
 ## oAuth Authentication Environment Variables
 
-Currently there are 4 ways to authenticate with oAuth using StudioCMS:
-
-<Aside type="note" title="Local Development oAuth">
-Use `http://localhost:4321` for local development and testing callback urls, and `https://your-domain.tld` for your callback urls in production!
-</Aside>
+<ReadMore>
+For more information about setting up oAuth authentication, see the [Configure oAuth Authentication](/start-here/getting-started/#optional-configure-oauth-authentication) documentation.
+</ReadMore>
 
 ### GitHub (Optional)
 
@@ -65,7 +63,7 @@ To authenticate with GitHub, you need to add the following environment variables
 # credentials for GitHub OAuth
 CMS_GITHUB_CLIENT_ID=
 CMS_GITHUB_CLIENT_SECRET=
-CMS_GITHUB_REDIRECT_URI=https://domain.tld/studiocms_api/auth/github/callback
+CMS_GITHUB_REDIRECT_URI=
 ```
 
 <Aside type="note" title="Note">
@@ -78,7 +76,7 @@ CMS_GITHUB_REDIRECT_URI=https://domain.tld/studiocms_api/auth/github/callback
 # credentials for Discord OAuth
 CMS_DISCORD_CLIENT_ID=
 CMS_DISCORD_CLIENT_SECRET=
-CMS_DISCORD_REDIRECT_URI=https://domain.tld/studiocms_api/auth/discord/callback
+CMS_DISCORD_REDIRECT_URI=
 ```
 
 ### Google (Optional)
@@ -87,7 +85,7 @@ CMS_DISCORD_REDIRECT_URI=https://domain.tld/studiocms_api/auth/discord/callback
 # credentials for Google OAuth
 CMS_GOOGLE_CLIENT_ID=
 CMS_GOOGLE_CLIENT_SECRET=
-CMS_GOOGLE_REDIRECT_URI=https://domain.tld/studiocms_api/auth/google/callback
+CMS_GOOGLE_REDIRECT_URI=
 ```
 
 ### Auth0 (Optional)
@@ -97,7 +95,7 @@ CMS_GOOGLE_REDIRECT_URI=https://domain.tld/studiocms_api/auth/google/callback
 CMS_AUTH0_CLIENT_ID=
 CMS_AUTH0_CLIENT_SECRET=
 CMS_AUTH0_DOMAIN=
-CMS_AUTH0_REDIRECT_URI=https://domain.tld/studiocms_api/auth/auth0/callback
+CMS_AUTH0_REDIRECT_URI=
 ```
 
 ## Image Handler Environment Variables
