@@ -64,6 +64,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_auth', 'src/scripts/utils/fitModelToViewport.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/lib/encryption.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/lib/password.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/rate-limit.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/lib/session.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/lib/types.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/lib/user.ts'),
