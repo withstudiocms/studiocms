@@ -8,7 +8,7 @@ import version from 'virtual:studiocms/version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsSiteConfig } from '@studiocms/core/db/tsTables';
-import { Divider, Toaster } from '@studiocms/ui/components';
+import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 
 const {
@@ -56,8 +56,6 @@ const loginPageCustomImage = siteConfig?.loginPageCustomImage;
 			<slot name="header" />
 
 			<slot />
-
-			<Divider>or log in using</Divider>
 			
 			<OAuthButtonStack />
 
