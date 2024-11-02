@@ -71,7 +71,7 @@ const {
     const toastContainer = document.createElement('div');
     const toastID = generateID('toast');
     toastContainer.id = toastID;
-    toastContainer.classList.add('toast-container', props.type, `${props.closeButton || props.persistent && "closeable"}`);
+    toastContainer.classList.add('toast-container', props.type, `${props.closeButton || props.persistent && "closeable"}`, `${props.persistent && 'persistent'}`);
 
     const toastHeader = document.createElement('div');
     toastHeader.classList.add('toast-header');
@@ -260,6 +260,22 @@ const {
 
   .toast-container.closing {
     animation: toast-closing .25s ease forwards;
+  }
+
+  .toast-container.persistent {
+    border: 1px solid hsl(var(--primary-base));
+  }
+
+  .toast-container.persistent.success {
+    border: 1px solid hsl(var(--success-base));
+  }
+
+  .toast-container.persistent.warning {
+    border: 1px solid hsl(var(--warning-base));
+  }
+
+  .toast-container.persistent.danger {
+    border: 1px solid hsl(var(--danger-base));
   }
 
   @keyframes toast-pop-in {
