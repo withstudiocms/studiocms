@@ -86,8 +86,9 @@ catalogs:
     '@oslojs/crypto': ^1.0.1
     '@oslojs/encoding': ^1.1.0
     '@oslojs/binary': ^1.0.0
-    '@node-rs/argon2': ^2.0.0
     '@types/three': 0.169.0
+    '@types/bcryptjs': ^2.4.6
+    bcryptjs: ^2.4.3
     arctic: ^2.0.1
     three: 0.170.0
     
