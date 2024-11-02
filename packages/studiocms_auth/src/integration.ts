@@ -65,6 +65,7 @@ export default defineIntegration({
 						imports: {
 							'studiocms:auth/lib/encryption': `export * from '${resolve('./lib/encryption.ts')}'`,
 							'studiocms:auth/lib/password': `export * from '${resolve('./lib/password.ts')}'`,
+							'studiocms:auth/lib/rate-limit': `export * from '${resolve('./lib/rate-limit.ts')}'`,
 							'studiocms:auth/lib/session': `export * from '${resolve('./lib/session.ts')}'`,
 							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,

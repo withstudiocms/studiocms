@@ -11,6 +11,33 @@ declare module 'studiocms:auth/lib/password' {
 	export const verifyPasswordStrength: typeof import('./src/lib/password').verifyPasswordStrength;
 }
 
+declare module 'studiocms:auth/lib/rate-limit' {
+	export class RefillingTokenBucket<_Key> {
+		public max: number;
+		public refillIntervalSeconds: number;
+		constructor(max: number, refillIntervalSeconds: number);
+		private storage;
+		public check(key: _Key, cost: number): boolean;
+		public consume(key: _Key, cost: number): boolean;
+	}
+
+	export class Throttler<_Key> {
+		public timeoutSeconds: number[];
+		private storage;
+		constructor(timeoutSeconds: number[]);
+		public consume(key: _Key): boolean;
+	}
+
+	export class ExpiringTokenBucket<_Key> {
+		public max: number;
+		public expirationSeconds: number;
+		constructor(max: number, expirationSeconds: number);
+		private storage;
+		public check(key: _Key, cost: number): boolean;
+		public consume(key: _Key, cost: number): boolean;
+	}
+}
+
 declare module 'studiocms:auth/lib/session' {
 	export const generateSessionToken: typeof import('./src/lib/session').generateSessionToken;
 	export const sessionCookieName: typeof import('./src/lib/session').sessionCookieName;
@@ -33,6 +60,9 @@ declare module 'studiocms:auth/lib/types' {
 	export type UserSessionData = import('./src/lib/types').UserSessionData;
 	export type UserSession = import('./src/lib/types').UserSession;
 	export type SessionValidationResult = import('./src/lib/types').SessionValidationResult;
+	export type RefillBucket = import('./src/lib/types').RefillBucket;
+	export type ExpiringBucket = import('./src/lib/types').ExpiringBucket;
+	export type ThrottlingCounter = import('./src/lib/types').ThrottlingCounter;
 }
 
 declare module 'studiocms:auth/lib/user' {

@@ -47,6 +47,33 @@ authLib.addModule('studiocms:auth/lib/password', {
 	],
 });
 
+authLib.addUnformattedString(`declare module 'studiocms:auth/lib/rate-limit' {
+	export class RefillingTokenBucket<_Key> {
+		public max: number;
+		public refillIntervalSeconds: number;
+		constructor(max: number, refillIntervalSeconds: number);
+		private storage;
+		public check(key: _Key, cost: number): boolean;
+		public consume(key: _Key, cost: number): boolean;
+	}
+
+	export class Throttler<_Key> {
+		public timeoutSeconds: number[];
+		private storage;
+		constructor(timeoutSeconds: number[]);
+		public consume(key: _Key): boolean;
+	}
+
+	export class ExpiringTokenBucket<_Key> {
+		public max: number;
+		public expirationSeconds: number;
+		constructor(max: number, expirationSeconds: number);
+		private storage;
+		public check(key: _Key, cost: number): boolean;
+		public consume(key: _Key, cost: number): boolean;
+	}
+}`);
+
 authLib.addModule('studiocms:auth/lib/session', {
 	namedExports: [
 		{
@@ -125,6 +152,18 @@ authLib.addModule('studiocms:auth/lib/types', {
 		{
 			name: 'SessionValidationResult',
 			typeDef: `import('${resolve('../lib/types.ts')}').SessionValidationResult`,
+		},
+		{
+			name: 'RefillBucket',
+			typeDef: `import('${resolve('../lib/types.ts')}').RefillBucket`,
+		},
+		{
+			name: 'ExpiringBucket',
+			typeDef: `import('${resolve('../lib/types.ts')}').ExpiringBucket`,
+		},
+		{
+			name: 'ThrottlingCounter',
+			typeDef: `import('${resolve('../lib/types.ts')}').ThrottlingCounter`,
 		},
 	],
 });
