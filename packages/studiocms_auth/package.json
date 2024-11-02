@@ -42,13 +42,13 @@
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "rollup-plugin-copy": "catalog:studiocms-shared",
-    "@node-rs/argon2": "catalog:studiocms-auth",
     "@oslojs/binary": "catalog:studiocms-auth",
     "@oslojs/crypto": "catalog:studiocms-auth",
     "@oslojs/encoding": "catalog:studiocms-auth",
     "@types/three": "catalog:studiocms-auth",
     "arctic": "catalog:studiocms-auth",
-    "three": "catalog:studiocms-auth"
+    "three": "catalog:studiocms-auth",
+    "argon2": "0.41.1"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
