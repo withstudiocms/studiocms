@@ -6,7 +6,7 @@ import { addVirtualImports, createResolver, defineIntegration } from 'astro-inte
 import copy from 'rollup-plugin-copy';
 import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
-import { ViteNodeAddonPlugin } from './plugins/nodeAddons';
+// import { ViteNodeAddonPlugin } from './plugins/nodeAddons';
 import { StudioCMSAuthOptionsSchema } from './schema';
 import authLibDTS from './stubs/auth-lib';
 import authScriptsDTS from './stubs/auth-scripts';
@@ -85,10 +85,10 @@ export default defineIntegration({
 						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['astro:db', 'three'],
+								exclude: ['astro:db', 'three', '@node-rs/argon2'],
 							},
 							plugins: [
-								ViteNodeAddonPlugin(),
+								// ViteNodeAddonPlugin(),
 								copy({
 									copyOnce: true,
 									hook: 'buildStart',
