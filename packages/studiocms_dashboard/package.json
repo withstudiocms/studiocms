@@ -53,7 +53,9 @@
     "@unocss/reset": "catalog:studiocms-shared"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "@astrojs/db": "catalog:min",
+    "@astrojs/web-vitals": "^3.0.0"
   },
   "devDependencies": {
     "vite": "catalog:",

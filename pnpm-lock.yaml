@@ -669,6 +669,12 @@ importers:
 
   packages/studiocms_dashboard:
     dependencies:
+      '@astrojs/db':
+        specifier: catalog:min
+        version: 0.14.2(@cloudflare/workers-types@4.20240725.0)(@types/react@18.3.5)(react@18.3.1)
+      '@astrojs/web-vitals':
+        specifier: ^3.0.0
+        version: 3.0.0(@astrojs/db@0.14.2(@cloudflare/workers-types@4.20240725.0)(@types/react@18.3.5)(react@18.3.1))
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.3.4(astro@4.16.2(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
