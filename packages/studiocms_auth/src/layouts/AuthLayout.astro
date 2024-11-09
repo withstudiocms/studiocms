@@ -2,7 +2,9 @@
 import '@fontsource-variable/onest/index.css';
 import '@studiocms/ui/css/global.css';
 import './authlayout.css';
+import { Image } from 'astro:assets';
 import { db, eq } from 'astro:db';
+import { validImages } from 'studiocms:auth/utils/validImages';
 import Config from 'virtual:studiocms/config';
 import version from 'virtual:studiocms/version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
@@ -10,6 +12,7 @@ import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
+import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
 
 const {
 	dashboardConfig: { faviconURL },
@@ -33,6 +36,10 @@ const siteConfig = await db
 // Get the login page background and custom image from the site config
 const loginPageBackground = siteConfig?.loginPageBackground;
 const loginPageCustomImage = siteConfig?.loginPageCustomImage;
+
+const fallbackImageSrc = loginPageBackground === 'custom'
+	?	loginPageCustomImage
+	: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark; // TODO: Adapt to theme
 ---
 <!doctype html>
 <html lang={lang} data-theme="dark">
@@ -50,7 +57,30 @@ const loginPageCustomImage = siteConfig?.loginPageCustomImage;
   <body>
 	<Toaster />
 	<main>
-		<div id="canvas-container" />
+		<div id="canvas-container">
+			<div class="fallback-container">
+				<StudioCMSLogoSVG
+					class="static-logo"
+				/>
+				{typeof fallbackImageSrc === 'string' && (
+					<Image 
+						src={fallbackImageSrc || ''}
+						inferSize
+						alt="A fallback image displaying because the interactive wallpaper couldn't be loaded."
+						class={'fallback-image'}
+						quality={100}
+					/>
+				)}
+				{typeof fallbackImageSrc !== 'string' && !!fallbackImageSrc && (
+					<Image 
+						src={fallbackImageSrc}
+						alt="A fallback image displaying because the interactive wallpaper couldn't be loaded."
+						class={'fallback-image'}
+						quality={100}
+					/>
+				)}
+			</div>
+		</div>
 		<div class="login-form-container">
 
 			<slot name="header" />
@@ -70,7 +100,7 @@ const loginPageCustomImage = siteConfig?.loginPageCustomImage;
 		id="login-page-configs" 
 		data-pagebg={loginPageBackground} 
 		data-pagecustomimage={loginPageCustomImage}
-		/>
+	/>
   </body>
   <script>import "studiocms:auth/scripts/three";</script>
 </html>

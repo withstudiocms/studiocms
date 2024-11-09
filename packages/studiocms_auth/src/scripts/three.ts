@@ -3,43 +3,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import studiocmsBlobsDark from '../loginBackgrounds/studiocms-blobs-dark.png';
-import studiocmsBlobsLight from '../loginBackgrounds/studiocms-blobs-light.png';
-import studiocmsBlocksDark from '../loginBackgrounds/studiocms-blocks-dark.png';
-import studiocmsBlocksLight from '../loginBackgrounds/studiocms-blocks-light.png';
-import studiocmsCurvesDark from '../loginBackgrounds/studiocms-curves-dark.png';
-import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png';
 import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
+import { validImages } from '../utils/validImages';
 
 // Get the current configuration for the login page
 const loginPageBackground = document.getElementById('login-page-configs')?.dataset.pagebg;
 const loginPageCustomImage = document.getElementById('login-page-configs')?.dataset.pagecustomimage;
 const currentMode = document.documentElement.dataset.theme || 'dark';
-
-/**
- * The valid images that can be used as a background for the StudioCMS Logo.
- */
-const validImages = [
-	{
-		name: 'studiocms-blobs',
-		format: 'png',
-		light: studiocmsBlobsLight.src,
-		dark: studiocmsBlobsDark.src,
-	},
-	{
-		name: 'studiocms-blocks',
-		format: 'png',
-		light: studiocmsBlocksLight.src,
-		dark: studiocmsBlocksDark.src,
-	},
-	{
-		name: 'studiocms-curves',
-		format: 'png',
-		light: studiocmsCurvesLight.src,
-		dark: studiocmsCurvesDark.src,
-	},
-	{ name: 'custom', format: 'web' },
-] as const;
 
 /**
  * A valid image that can be used as a background for the StudioCMS Logo.
@@ -105,8 +75,8 @@ function bgSelector(image: ValidImage, params: BackgroundParams) {
 	return image.format === 'web'
 		? params.customImageHref
 		: params.mode === 'dark'
-			? image.dark
-			: image.light;
+			? image.dark.src
+			: image.light.src;
 }
 
 /**
@@ -391,6 +361,7 @@ if (!smallScreen) {
 		);
 	} catch (err) {
 		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);
+		logoContainer.classList.add('loaded');
 		// TODO: Show static image instead (configured background plus non-transparent logo in the same position, allow for custom bgs)
 	}
 }

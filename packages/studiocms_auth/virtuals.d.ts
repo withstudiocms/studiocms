@@ -83,6 +83,10 @@ declare module 'studiocms:auth/utils/authEnvCheck' {
 	export const authEnvCheck: typeof import('./src/utils/authEnvCheck').authEnvCheck;
 }
 
+declare module 'studiocms:auth/utils/validImages' {
+	export const validImages: typeof import('./src/utils/validImages').validImages;
+}
+
 declare module 'studiocms:auth/scripts/three' {
 	/**
 	 * This module should be imported within a script tag.

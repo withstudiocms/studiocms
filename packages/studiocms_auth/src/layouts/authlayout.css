@@ -38,6 +38,7 @@ main {
 #canvas-container {
 	opacity: 0;
 	transition: all .15s ease;
+	overflow: hidden;
 }
 
 #canvas-container.loaded {
@@ -133,4 +134,31 @@ main {
 		padding-left: 2rem;
 		padding-right: 2rem;
 	}
+}
+
+.fallback-container {
+	position: relative;
+}
+
+.fallback-image {
+	height: 100vh;
+	width: auto;
+}
+
+.fallback-container:has(+ canvas) {
+	display: none;
+}
+
+#canvas-container:not(:has(canvas)) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.static-logo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 45%;
 }
