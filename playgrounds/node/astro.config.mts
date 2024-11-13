@@ -1,6 +1,6 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
-import webvitals from '@astrojs/web-vitals';
+// import webvitals from '@astrojs/web-vitals';
 import studioCMSBlog from '@studiocms/blog';
 import devapps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
@@ -14,7 +14,7 @@ export default defineConfig({
 	adapter: node({ mode: 'standalone' }),
 	integrations: [
 		db(),
-		webvitals(),
+		// webvitals(),
 		studioCMS(), // StudioCMS Integration options can be found in `studiocms.config.mjs`
 		studioCMSBlog({
 			config: {

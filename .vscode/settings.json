@@ -7,5 +7,6 @@
   "editor.defaultFormatter": "biomejs.biome",
   "[mdx]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "editor.gotoLocation.multipleDefinitions": "goto"
 }

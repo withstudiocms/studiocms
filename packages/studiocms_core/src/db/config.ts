@@ -1,6 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { defineDb } from 'astro:db';
 import {
+	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
@@ -22,5 +23,6 @@ export default defineDb({
 		StudioCMSSessionTable,
 		StudioCMSSiteConfig,
 		StudioCMSUsers,
+		StudioCMSOAuthAccounts,
 	},
 });

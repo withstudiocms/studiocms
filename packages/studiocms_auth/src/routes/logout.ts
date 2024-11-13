@@ -1,40 +1,72 @@
+import {
+	deleteSessionTokenCookie,
+	invalidateSession,
+	sessionCookieName,
+	validateSessionToken,
+} from 'studiocms:auth/lib/session';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import type { APIContext } from 'astro';
-import { lucia } from '../auth';
+import type { APIContext, APIRoute } from 'astro';
 
 const {
 	authLinks: { loginURL },
 	mainLinks: { baseSiteURL },
 } = StudioCMSRoutes;
 
-export async function GET(context: APIContext): Promise<Response> {
+export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	return context.redirect(baseSiteURL);
-}
+};
 
-export async function POST(context: APIContext): Promise<Response> {
-	// Map the Locals type from the schema
-	const locals = context.locals;
+export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
+	const { cookies, redirect } = context;
 
-	// If the user is not logged in, redirect to the login page
-	if (!locals.session) {
-		return context.redirect(loginURL);
+	// Get the current session cookie
+	const sessionToken = cookies.get(sessionCookieName)?.value ?? null;
+
+	// If there is no session token, redirect to the login page
+	if (!sessionToken) {
+		return redirect(loginURL);
 	}
 
-	// Invalidate the session and create a new session cookie
-	await lucia.invalidateSession(locals.session.id);
+	const { session, user } = await validateSessionToken(sessionToken);
 
-	// Create a new session cookie
-	const sessionCookie = lucia.createBlankSessionCookie();
+	// If there is no session, redirect to the login page
+	if (session === null) {
+		deleteSessionTokenCookie(context);
+		return redirect(loginURL);
+	}
 
-	// Set the cookie in the context
-	context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	// If there is no user, redirect to the login page
+	if (!user || user === null) {
+		return redirect(loginURL);
+	}
 
-	// Set the locals to the default values
-	locals.session = null;
-	locals.isLoggedIn = false;
-	locals.user = null;
-	locals.dbUser = null;
+	// Invalidate the session and delete the session token cookie
+	await invalidateSession(user.id);
+	deleteSessionTokenCookie(context);
 
 	// Redirect to the base site URL
-	return context.redirect(baseSiteURL);
-}
+	return redirect(baseSiteURL);
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, GET, POST',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
+};

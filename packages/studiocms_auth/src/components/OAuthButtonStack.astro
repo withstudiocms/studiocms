@@ -1,0 +1,15 @@
+---
+import { Divider } from '@studiocms/ui/components';
+import OAuthButton from './OAuthButton.astro';
+import { providerData, showOAuth } from './oAuthButtonProviders';
+
+const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
+---
+{ shouldShowOAuth && ( 
+	<Divider>or log in using</Divider>
+    <div class="button-stack">
+	{
+		providerData.map(({enabled, ...props}) => enabled && <OAuthButton {...props} />)
+	}
+    </div>
+)}

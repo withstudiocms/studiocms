@@ -36,7 +36,7 @@
     "./types": "./src/types/index.ts"
   },
   "dependencies": {
-    "@fontsource-variable/onest": "5.1.0"
+    "@fontsource-variable/onest": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "astro": "catalog:min"

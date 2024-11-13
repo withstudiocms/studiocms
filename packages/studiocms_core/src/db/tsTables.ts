@@ -1,5 +1,6 @@
 import { asDrizzleTable } from '@astrojs/db/utils';
 import {
+	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
@@ -60,3 +61,9 @@ export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteC
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
  */
 export const tsUsers = asDrizzleTable('StudioCMSUsers', StudioCMSUsers);
+
+/**
+ * # StudioCMS - OAuth Accounts Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCMSOAuthAccounts);
