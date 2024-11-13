@@ -1,12 +1,16 @@
 ---
+import { getLangFromUrl, useTranslations } from 'studiocms:i18n';
 import { Divider } from '@studiocms/ui/components';
 import OAuthButton from './OAuthButton.astro';
 import { providerData, showOAuth } from './oAuthButtonProviders';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, '@studiocms/auth:oauth-stack');
+
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 ---
 { shouldShowOAuth && ( 
-	<Divider>or log in using</Divider>
+	<Divider>{t('or-login-with')}</Divider>
     <div class="button-stack">
 	{
 		providerData.map(({enabled, ...props}) => enabled && <OAuthButton {...props} />)

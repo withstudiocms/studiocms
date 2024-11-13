@@ -1,10 +1,21 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import Config from 'virtual:studiocms/config';
 import { Button, Input } from '@studiocms/ui/components';
+import type { GetStaticPaths } from 'astro';
+import StaticAuthCheck from '../components/StaticAuthCheck.astro';
 import AuthLayout from '../layouts/AuthLayout.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, '@studiocms/auth:signup');
+const tPath = useTranslatedPath(lang);
+
+export const getStaticPaths = (() => {
+	const paths = staticPaths();
+	return paths;
+}) satisfies GetStaticPaths;
 
 const {
 	dashboardConfig: {
@@ -20,7 +31,6 @@ const {
 
 const {
 	authLinks: { loginAPI, loginURL },
-	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
@@ -28,44 +38,40 @@ const { SHOW_OAUTH } = await authEnvCheck(providers);
 let paragraph: string;
 
 if (usernameAndPassword && SHOW_OAUTH) {
-	paragraph = 'Create an account or log in using one of the options below.';
+	paragraph = t('sub-header-usernamepasswordoauth');
 } else if (usernameAndPassword && !SHOW_OAUTH) {
-	paragraph = 'Create an account using the form below.';
+	paragraph = t('sub-header-usernamepassword');
 } else if (!usernameAndPassword && SHOW_OAUTH) {
-	paragraph = 'Log in using one of the options below.';
+	paragraph = t('sub-header-oauth');
 } else {
-	paragraph = 'No Login provider configured. Please contact your administrator.';
-}
-
-const user = await getUserData(Astro);
-
-if (user.isLoggedIn) {
-	return Astro.redirect(dashboardIndex);
+	paragraph = t('sub-header-noprovider');
 }
 ---
-<AuthLayout title="Signup Page" description="Signup Page">
+<AuthLayout title={t('title')} description={t('description')} lang={lang}>
     
     <div slot="header" class="form-header">
-        <h1>Sign up</h1>
+        <h1>{t('header')}</h1>
         <p>{paragraph}</p>
     </div>
 
     { usernameAndPassword && (
         <form class="form" id="signup-form" method="post" action={loginAPI}>
 
-            <Input label="Username" name="username" type="text" />
-            <Input label="Email" name="email" type="email" />
-            <Input label="Display Name" name="displayname" type="text" />
-            <Input label="Password" name="password" type="password" />
-            <Input label="Confirm Password" name="confirm-password" type="password" />
+            <Input label={t('username-label')} name="username" type="text" />
+            <Input label={t('email-label')} name="email" type="email" />
+            <Input label={t('displayname-label')} name="displayname" type="text" />
+            <Input label={t('password-label')} name="password" type="password" />
+            <Input label={t('confirm-password-label')} name="confirm-password" type="password" />
 
-            <Button type="submit" as="button" type="submit" color='primary' variant='solid'>Create Account</Button>
+            <Button type="submit" as="button" type="submit" color='primary' variant='solid'>{t('create-account-button')}</Button>
         </form>
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">Already have an account? <a href={loginURL}>Sign in!</a></p>
+        <p slot="footer">{t('allow-login-haveaccount')} <a href={tPath(loginURL)}>{t('allow-login-login')}</a></p>
     )}
+
+    <StaticAuthCheck server:defer />
 
 </AuthLayout>
 
