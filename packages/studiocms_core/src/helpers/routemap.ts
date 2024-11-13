@@ -50,6 +50,7 @@ export const StudioCMSRoutes = {
 		logoutURL: await makeDashboardRoute('logout'),
 		signupURL: await makeDashboardRoute('signup'),
 		loginAPI: await makeStudioCMSAPIRoute('auth/login'), // /studiocms_api/auth/login
+		logoutAPI: await makeStudioCMSAPIRoute('auth/logout'), // /studiocms_api/auth/logout
 		registerAPI: await makeStudioCMSAPIRoute('auth/register'), // /studiocms_api/auth/register
 		githubIndex: await makeStudioCMSAPIRoute('auth/github'), // /studiocms_api/auth/github
 		githubCallback: await makeStudioCMSAPIRoute('auth/github/callback'), // /studiocms_api/auth/github/callback

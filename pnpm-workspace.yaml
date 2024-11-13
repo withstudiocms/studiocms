@@ -1,5 +1,5 @@
 catalog: # Confirmed Current Master Catalog - 11.01.2024
-  '@astrojs/db': ^0.14.2
+  '@astrojs/db': ^0.14.3
   '@astrojs/markdown-remark': ^5.2.0
   '@astrojs/rss': ^4.0.7
   '@astrojs/react': ^3.6.2
@@ -9,7 +9,7 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@astrojs/web-vitals': ^3.0.0
   '@astrojs/node': ^8.3.4
   '@types/node': ^20.14.11
-  astro: ^4.16.6
+  astro: ^4.16.11
   astro-integration-kit: ^0.16.1
   astro-theme-provider: ^0.6.1
   sharp: ^0.33.4

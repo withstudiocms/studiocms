@@ -21,10 +21,11 @@ const {
 interface Props {
 	title: string;
 	description: string;
-	lang?: string;
+	lang: string;
+	disableScreen?: boolean;
 }
 
-const { title, description, lang = 'en' } = Astro.props;
+const { title, description, lang, disableScreen } = Astro.props;
 
 // Get the site config
 const siteConfig = await db
@@ -37,9 +38,10 @@ const siteConfig = await db
 const loginPageBackground = siteConfig?.loginPageBackground;
 const loginPageCustomImage = siteConfig?.loginPageCustomImage;
 
-const fallbackImageSrc = loginPageBackground === 'custom'
-	?	loginPageCustomImage
-	: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark; // TODO: Adapt to theme
+const fallbackImageSrc =
+	loginPageBackground === 'custom'
+		? loginPageCustomImage
+		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark; // TODO: Adapt to theme
 ---
 <!doctype html>
 <html lang={lang} data-theme="dark">
@@ -87,7 +89,7 @@ const fallbackImageSrc = loginPageBackground === 'custom'
 
 			<slot />
 			
-			<OAuthButtonStack />
+			{ !disableScreen && <OAuthButtonStack /> }
 
 			<div class="form-footer">
 				<slot name="footer" />
