@@ -9,8 +9,23 @@ const uiTranslations = {
 	'en-us': await import('./translations/en-us.json'),
 } as const;
 
+/**
+ * Represents the type of UI translations.
+ * This type is derived from the structure of the `uiTranslations` object.
+ */
 type UiTranslations = typeof uiTranslations;
+
+/**
+ * Represents the keys of the UiTranslations type.
+ * This type is used to define the possible keys for UI language translations.
+ */
 type UiLanguageKeys = keyof UiTranslations;
+
+/**
+ * Represents the keys of the UI component translations for the 'en-us' locale.
+ * This type is derived from the 'translations' property of the 'UiTranslations' interface
+ * for the 'en-us' locale (Source of truth), ensuring that only valid translation keys are used.
+ */
 type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
 
 // Default language - Must match one of the keys in the `ui` object above
@@ -21,43 +36,6 @@ const defaultLang: UiLanguageKeys = 'en-us';
 const showDefaultLang: boolean = false;
 
 // --- i18n Utils --- //
-
-/**
- * Example of how to use this i18n utils on a Static page
- *
- * @example
- * ```ts
- * export async function getStaticPaths() {
- *	const paths = staticPaths();
- *	return paths;
- * }
- * ```
- *
- * If the default language is hidden, the paths for the default language will be generated without the language prefix while all extra languages will have the prefix. (e.g. When `showDefaultLang` is false: `/en/page` will be `/page` and spanish will be `/es/page`)
- *
- * @returns An array of paths for all languages
- */
-export const staticPaths = () => {
-	const paths: { params: { locale: string | undefined } }[] = [];
-	if (!showDefaultLang) paths.push({ params: { locale: undefined } });
-	for (const lang in uiTranslations) {
-		if (lang === defaultLang && !showDefaultLang) continue;
-		paths.push({ params: { locale: lang } });
-	}
-	return paths;
-};
-
-/**
- * Extracts the language key from the given URL's pathname.
- *
- * @param url - The URL object from which to extract the language key.
- * @returns The language key if it exists in the `uiTranslations`, otherwise returns the default language key.
- */
-export function getLangFromUrl(url: URL) {
-	const [, lang] = url.pathname.split('/');
-	if (lang && lang in uiTranslations) return lang as UiLanguageKeys;
-	return defaultLang;
-}
 
 /**
  * Retrieves a translation function for a given language and component.
@@ -115,6 +93,18 @@ export const languageSelectorOptions = Object.keys(uiTranslations).map((key) => 
 });
 
 /**
+ * Extracts the language key from the given URL's pathname.
+ *
+ * @param url - The URL object from which to extract the language key.
+ * @returns The language key if it exists in the `uiTranslations`, otherwise returns the default language key.
+ */
+export function getLangFromUrl(url: URL) {
+	const [, lang] = url.pathname.split('/');
+	if (lang && lang in uiTranslations) return lang as UiLanguageKeys;
+	return defaultLang;
+}
+
+/**
  * Retrieves the current URL path, adjusting for language settings.
  *
  * This function checks if the URL path includes '/_server-islands'. If it does,
@@ -153,3 +143,28 @@ export function switchLanguage(Astro: AstroGlobal): (languageKey: UiLanguageKeys
 		return translatePath(getCurrentURLPath(Astro));
 	};
 }
+
+/**
+ * Example of how to use this i18n utils on a Static page
+ *
+ * @example
+ * ```ts
+ * export async function getStaticPaths() {
+ *	const paths = staticPaths();
+ *	return paths;
+ * }
+ * ```
+ *
+ * If the default language is hidden, the paths for the default language will be generated without the language prefix while all extra languages will have the prefix. (e.g. When `showDefaultLang` is false: `/en/page` will be `/page` and spanish will be `/es/page`)
+ *
+ * @returns An array of paths for all languages
+ */
+export const staticPaths = () => {
+	const paths: { params: { locale: string | undefined } }[] = [];
+	if (!showDefaultLang) paths.push({ params: { locale: undefined } });
+	for (const lang in uiTranslations) {
+		if (lang === defaultLang && !showDefaultLang) continue;
+		paths.push({ params: { locale: lang } });
+	}
+	return paths;
+};
