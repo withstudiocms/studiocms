@@ -103,6 +103,10 @@ export default defineConfig({
 							autogenerate: { directory: 'start-here' },
 						},
 						{
+							label: 'Contributing Guides',
+							autogenerate: { directory: 'contributing' },
+						},
+						{
 							label: 'Understanding StudioCMS',
 							autogenerate: { directory: 'how-it-works' },
 						},

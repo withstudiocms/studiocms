@@ -71,12 +71,16 @@ export function useTranslations(
 	comp: UiComponentKeys
 ): (key: string) => string {
 	return function t(key: string): string {
-		return (
+		// @ts-expect-error - Component key is dynamic depending on the component
+		const translation = uiTranslations[lang].translations[comp][key];
+
+		// If the translation is not found, return the default language translation
+		if (translation === undefined || translation === '') {
 			// @ts-expect-error - Component key is dynamic depending on the component
-			uiTranslations[lang].translations[comp][key] ||
-			// @ts-expect-error - Component key is dynamic depending on the component
-			uiTranslations[defaultLang].translations[comp][key]
-		);
+			return uiTranslations[defaultLang].translations[comp][key];
+		}
+
+		return translation;
 	};
 }
 
