@@ -10,7 +10,7 @@ permissions:
 jobs:
   build-translation-changesets:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'translations')
+    if: contains(github.event.pull_request.labels.*.name, 'translations') && github.event.pull_request.user.login == 'studiocms-no-reply'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
@@ -36,13 +36,6 @@ jobs:
           script: |
             const write = require('@changesets/write')
             const execa = require('execa')
-
-            const creator = context.payload.pull_request.user.login
-
-            if (creator !== 'studiocms-no-reply') {
-                console.log('Not the StudioCMS bot, skipping')
-                return
-            }
 
             const summary = `Translations Updated (PR #${context.payload.pull_request.number})`
 
