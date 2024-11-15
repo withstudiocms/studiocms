@@ -19,7 +19,7 @@ class ThemeHelper {
 
   /**
    * Get the current theme.
-   * @param {boolean} resolveSystemTheme Whether to resolve the `system` theme to the actual them (`dark` or `light`)
+   * @param {boolean} resolveSystemTheme Whether to resolve the `system` theme to the actual theme (`dark` or `light`)
    * @returns {Theme} The current theme.
    */
   public getTheme = <T extends boolean>(resolveSystemTheme?: T): T extends true ? 'dark' | 'light' : Theme => {
