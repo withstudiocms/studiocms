@@ -35,6 +35,8 @@
     "@changesets/cli": "2.27.9",
     "@changesets/config": "3.0.3",
     "@changesets/changelog-github": "^0.5.0",
+    "@changesets/write": "0.3.2",
+    "execa": "9.5.1",
     "typescript": "catalog:"
   }
 }
