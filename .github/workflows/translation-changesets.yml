@@ -31,15 +31,6 @@ jobs:
             const write = require('@changesets/write')
             const execa = require('execa')
 
-            const { base, head } = context.payload?.pull_request || {}
-
-            const res = await github.rest.repos.compareCommits({
-                base: base.sha,
-                head: head.sha,
-                owner: context.repo.owner,
-                repo: context.repo.repo
-            })
-
             const summary = `Translations Updated (PR #${context.payload.pull_request.number})`
 
             const opts = { reject: false }
