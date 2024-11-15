@@ -1,5 +1,5 @@
 ---
-import { authHelper } from 'studiocms:auth/helpers';
+import { getUserData } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Avatar, Button, Divider, Drawer, IconButton } from '@matthiesenxyz/astrolace/components';
 import githubLogo from '@studiocms/assets/svgs/github-logo.svg';
@@ -8,6 +8,13 @@ import personFillIcon from '@studiocms/assets/svgs/person-fill.svg';
 import type { StudioCMSSocials } from '@studiocms/core/consts';
 import { SideBarMenu, ThemeToggleButton } from '../components';
 
+const user = await getUserData(Astro);
+
+const { permissionLevel, user: userData } = user;
+
+const name = userData?.name;
+const avatar = userData?.avatar;
+
 type Props = { studioCMSSocials: StudioCMSSocials };
 const {
 	studioCMSSocials: { github: githubURL },
@@ -15,7 +22,6 @@ const {
 const {
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
-const { avatar, name, permissionLevel } = await authHelper(Astro.locals);
 
 let useName: string;
 

@@ -25,10 +25,13 @@ const [tdDevApps, tdDevApps_SB] = createStarlightTypeDocPlugin();
 // @studiocms/blog
 const [tdBlog, tdBlog_SB] = createStarlightTypeDocPlugin();
 
+// Set to true to enable testing mode for TypeDoc
+const testTypeDoc = false;
+
 const isProd = process.env.NODE_ENV === 'production';
 
-const TypeDocPlugins = (isProd: boolean): StarlightPlugin[] => {
-	if (isProd) {
+const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[] => {
+	if (isProd || testingMode) {
 		return [
 			tdStudioCMS(
 				makeTypedocOpts({
@@ -50,14 +53,18 @@ const TypeDocPlugins = (isProd: boolean): StarlightPlugin[] => {
 					entryPoints: [
 						getFilePathToPackage('studiocms_auth', 'src/index.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/integration.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/middleware/index.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/middleware/router.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/auth/index.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/auth/lucia-astrodb-adapter.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/helpers/authHelper.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/astroenv/env.ts'),
-						getFilePathToPackage('studiocms_auth', 'src/utils/authEnvCheck.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/schema.ts'),
 						getFilePathToPackage('studiocms_auth', 'src/utils/checkENV.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/astroenv/env.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/stubs/auth-lib.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/stubs/auth-scripts.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/stubs/auth-utils.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/encryption.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/password.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/rate-limit.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/session.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/types.ts'),
+						getFilePathToPackage('studiocms_auth', 'src/lib/user.ts'),
 					],
 				})
 			),
@@ -148,13 +155,11 @@ const TypeDocPlugins = (isProd: boolean): StarlightPlugin[] => {
 					dir: 'studiocms_imagehandler',
 					entryPoints: [
 						getFilePathToPackage('studiocms_imagehandler', 'src/index.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/schema.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/integration.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/supportedAdapters.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/components/index.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/cloudflare.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/netlify.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/node.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/adapters/vercel.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/components/props.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/plugins/cloudinary.ts'),
 					],
 				})
 			),
@@ -231,10 +236,10 @@ const TypeDocPlugins = (isProd: boolean): StarlightPlugin[] => {
 	return [] as StarlightPlugin[];
 };
 
-export const typeDocPlugins = TypeDocPlugins(isProd);
+export const typeDocPlugins = TypeDocPlugins(isProd, testTypeDoc);
 
-const TypeDocSideBarEntry = (isProd: boolean) => {
-	if (isProd) {
+const TypeDocSideBarEntry = (isProd: boolean, testingMode: boolean) => {
+	if (isProd || testingMode) {
 		return {
 			label: 'TypeDoc',
 			badge: {
@@ -272,4 +277,4 @@ const TypeDocSideBarEntry = (isProd: boolean) => {
 	};
 };
 
-export const typeDocSideBarEntry = TypeDocSideBarEntry(isProd);
+export const typeDocSideBarEntry = TypeDocSideBarEntry(isProd, testTypeDoc);

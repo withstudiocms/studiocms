@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../.astro/collections/features.schema.json",
+  "sortOrder": 7,
+  "feature": "Custom Image Component",
+  "description": "A custom image component that allows for easy image handling and optimization.",
+  "icon": "heroicons:photo"
+}

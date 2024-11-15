@@ -1,7 +1,6 @@
 ---
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { getWebVitals } from 'studiocms-dashboard:web-vitals';
-import { authHelper } from 'studiocms:auth/helpers';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Alert, Card, Details, Divider, Icon } from '@matthiesenxyz/astrolace/components';
@@ -13,18 +12,25 @@ import DashboardButtons from '../components/DashboardButtons.astro';
 import WebVitalPanel from '../components/WebVitalPanel.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+
+const user = await getUserData(Astro);
+
+if (!user.user) {
+	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+}
+
 const {
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;
 
 const contextConfig = await getSiteConfig();
-const { permissionLevel } = await authHelper(Astro.locals);
 
 // Get the web vitals
 const webVitals = await getWebVitals();
 
 // Check Permission Level
-if (permissionLevel !== 'admin' && permissionLevel !== 'editor') {
+if (!verifyUserPermissionLevel(user, 'editor')) {
 	logger.info('User is not an admin or editor. Redirecting to profile page.');
 	return Astro.redirect(StudioCMSRoutes.mainLinks.userProfile);
 }

@@ -22,6 +22,7 @@
     "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:",
     "studiocms": "workspace:*",
+    "sharp": "catalog:",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*"
   }

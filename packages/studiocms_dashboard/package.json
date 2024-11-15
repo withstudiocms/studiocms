@@ -36,24 +36,26 @@
   },
   "type": "module",
   "dependencies": {
-    "@inox-tools/runtime-logger": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "@studiocms/assets": "workspace:*",
     "@studiocms/betaresources": "workspace:*",
     "@studiocms/core": "workspace:*",
     "@studiocms/renderers": "workspace:*",
-    "@noble/hashes": "catalog:studiocms-shared",
-    "@unocss/astro": "catalog:studiocms-shared",
-    "@unocss/reset": "catalog:studiocms-shared",
     "astro-integration-kit": "catalog:",
+    "@inox-tools/runtime-logger": "catalog:studiocms-shared",
+    "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
+    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
+
+    "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
+    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "daisyui": "catalog:studiocms-shared",
-    "unocss": "catalog:studiocms-shared"
+    "unocss": "catalog:studiocms-shared",
+    "@unocss/astro": "catalog:studiocms-shared",
+    "@unocss/reset": "catalog:studiocms-shared"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "@astrojs/db": "catalog:",
+    "@astrojs/web-vitals": "catalog:"
   },
   "devDependencies": {
     "vite": "catalog:",

@@ -57,6 +57,7 @@ export default defineConfig({
 				discord: 'https://chat.studiocms.xyz',
 				youtube: 'https://www.youtube.com/@StudioCMS',
 				'x.com': 'https://x.com/_studiocms',
+				blueSky: 'https://bsky.app/profile/studiocms.xyz',
 			},
 			customCss: [
 				'@shikijs/twoslash/style-rich.css',
