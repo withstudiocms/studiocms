@@ -31,31 +31,10 @@ jobs:
         run: pnpm ci:install
         shell: bash
 
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
-        with:
-          script: |
-            const write = await import('@changesets/write')
-            const execa = await import('execa')
-
-            const summary = `Translations Updated (PR #${context.payload.pull_request.number})`
-
-            const opts = { reject: false }
-            const { stdout } = await execa('grep', [summary, '-r', '.changeset'], opts)
-
-            if (stdout) {
-                console.log('Changeset already exists')
-                return
-            }
-
-            const releases = [ 
-                { name: "@studiocms/core", type: "patch" }
-            ]
-
-            const cwd = process.cwd()
-            const changesetId = await write.default({ summary, releases }, cwd)
-
-            console.log(`Changeset created: ${changesetId}`)
-
+      - name: Create Translation Changesets
+        run: pnpm translations:changesets
+        env:
+          CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
