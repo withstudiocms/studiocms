@@ -32,7 +32,7 @@ jobs:
         shell: bash
 
       - name: Create Translation Changesets
-        run: pnpm translations:changesets
+        run: pnpm translations:changeset
         env:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
