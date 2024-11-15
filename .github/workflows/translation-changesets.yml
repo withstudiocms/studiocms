@@ -4,6 +4,8 @@ on:
     pull_request:
       types: [labeled, synchronize]
 
+permissions:
+  contents: write
 
 jobs:
   build-translation-changesets:
@@ -12,6 +14,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        with:
+            ref: ${{ github.head_ref }}
+            token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Setup pnpm (corepack enabled)
         uses: pnpm/action-setup@v3
@@ -24,12 +29,20 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm ci:install
+        shell: bash
 
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         with:
           script: |
             const write = require('@changesets/write')
             const execa = require('execa')
+
+            const creator = context.payload.pull_request.user.login
+
+            if (creator !== 'studiocms-no-reply') {
+                console.log('Not the StudioCMS bot, skipping')
+                return
+            }
 
             const summary = `Translations Updated (PR #${context.payload.pull_request.number})`
 
@@ -46,7 +59,9 @@ jobs:
             ]
 
             const cwd = process.cwd()
-            await write.default({ summary, releases }, cwd)
+            const changesetId = await write.default({ summary, releases }, cwd)
+
+            console.log(`Changeset created: ${changesetId}`)
 
     
       - name: Commit changes
