@@ -43,5 +43,35 @@ export const PostSchema = PageSchema.extend({
 	tags: z.array(z.number()),
 });
 
+export const TagSchema = z.object({
+	id: z.number(),
+	count: z.number(),
+	description: z.string(),
+	link: z.string().url(),
+	name: z.string(),
+	slug: z.string(),
+	taxonomy: z.string(),
+	meta: z.array(z.any()).or(z.record(z.any())),
+});
+
+export const CategorySchema = TagSchema.extend({
+	parent: z.number(),
+});
+
+export const SiteSettingsSchema = z.object({
+	name: z.string(),
+	description: z.string(),
+	url: z.string(),
+	home: z.string(),
+	gmt_offset: z.coerce.number(),
+	timezone_string: z.string(),
+	site_logo: z.number().optional(),
+	site_icon: z.number().optional(),
+	site_icon_url: z.string().optional(),
+});
+
 export type Page = typeof PageSchema._output;
 export type Post = typeof PostSchema._output;
+export type Tag = typeof TagSchema._output;
+export type Category = typeof CategorySchema._output;
+export type SiteSettings = typeof SiteSettingsSchema._output;

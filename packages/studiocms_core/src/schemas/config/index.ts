@@ -74,4 +74,4 @@ export const StudioCMSOptionsSchema = z
 	.optional()
 	.default({});
 
-export type StudioCMSOptions = typeof StudioCMSOptionsSchema._input;
+export type StudioCMSConfig = typeof StudioCMSOptionsSchema._output;

@@ -60,6 +60,27 @@ Modules without the `virtual:` prefix have full typings defined and injected int
 - **`studiocms:helpers/headDefaults`**: Provides the exported head defaults for StudioCMS.
 - **`studiocms:helpers/routemap`**: Provides the exported route map for StudioCMS.
 
+### StudioCMS: Auth
+
+The StudioCMS Auth integration provides authentication configuration options for the StudioCMS Dashboard. This integration is used to determine how users can authenticate with the StudioCMS Dashboard.
+
+#### Features
+- **`@oslojs`**: The StudioCMS Auth integration uses the `@oslojs` utilities to handle local authentication options such as username and password.
+- **`arctic`**: The StudioCMS Auth integration uses the `arctic` library to handle OAuth authentication options such as GitHub.
+- **`three`**: The StudioCMS Auth integration uses the ThreeJS library to create a 3D logo animation for the login and signup pages.
+- **`@studiocms/ui`**: The StudioCMS Auth integration uses the `@studiocms/ui` library to provide UI components for the login and signup pages.
+
+#### Auth Virtual Modules
+
+- **`studiocms:auth/lib/encryption`**: Provides encryption functions for the StudioCMS Auth integration.
+- **`studiocms:auth/lib/password`**: Provides password functions for the StudioCMS Auth integration.
+- **`studiocms:auth/lib/session`**: Provides session functions for the StudioCMS Auth integration.
+- **`studiocms:auth/lib/types`**: Provides types for the StudioCMS Auth integration.
+- **`studiocms:auth/lib/user`**: Provides user functions for the StudioCMS Auth integration.
+- **`studiocms:auth/utils/authEnvCheck`**: Provides authentication environment check functions for the StudioCMS Auth integration.
+- **`studiocms:auth/scripts/three`**: Provides ThreeJS scripts for the StudioCMS Auth integration.
+- **`studiocms:auth/scripts/formListener`**: Provides form listener scripts for the StudioCMS Auth integration.
+
 ### StudioCMS: Dashboard
 
 The StudioCMS Dashboard is a web interface that allows you to manage your StudioCMS project. It provides a user-friendly interface for creating, editing, and deleting content for your project. The StudioCMS Dashboard is built with [Astro](https://astro.build) and [DaisyUI](https://daisyui.com/) with [UnoCSS](https://unocss.dev).
@@ -73,13 +94,9 @@ The StudioCMS Dashboard is a web interface that allows you to manage your Studio
 - **Astrolace**: The StudioCMS Dashboard is built using [Astrolace](https://github.com/matthiesenxyz/astrolace) a [Shoelace.style](https://shoelace.style) Astro Integration.
 - **DashboardRouteOverride**: The StudioCMS Dashboard provides a dashboard route override configuration option. Allowing you to change the default route for the StudioCMS Dashboard and API.
 
-#### Dashboard Virtual Modules
-
-- **`studiocms:auth/config`**: Provides the authentication configuration for the dashboard.
-
 ### StudioCMS: ImageHandler
 
-The StudioCMS ImageHandler is an integration that provides a custom image component for your Astro project. This component is used to handle remote images and optimize them in a SSR environment using [@unpic/astro](https://unpic.pics/img/astro/).
+The StudioCMS ImageHandler is an integration that provides a custom image component for your Astro project. This component is used to handle remote images and optimize them in a SSR environment.
 
 #### Features
 

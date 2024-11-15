@@ -37,8 +37,7 @@
     "@studiocms/assets": "workspace:*"
   },
   "peerDependencies": {
-    "astro": "catalog:min",
-    "@studiocms/core": "workspace:*"
+    "astro": "catalog:min"
   },
   "devDependencies": {
     "vite": "catalog:",

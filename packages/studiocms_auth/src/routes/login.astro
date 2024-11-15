@@ -1,0 +1,75 @@
+---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import Config from 'virtual:studiocms/config';
+import { Button, Input } from '@studiocms/ui/components';
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { hashPassword } from '../lib/password';
+
+const {
+	dashboardConfig: {
+		AuthConfig: {
+			providers,
+			providers: {
+				usernameAndPassword,
+				usernameAndPasswordConfig: { allowUserRegistration },
+			},
+		},
+	},
+} = Config;
+
+const {
+	authLinks: { loginAPI, signupURL },
+	mainLinks: { dashboardIndex },
+} = StudioCMSRoutes;
+
+const { SHOW_OAUTH } = await authEnvCheck(providers);
+
+let paragraph: string;
+
+if (usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'Enter your username & password or log in using one of the options below.';
+} else if (usernameAndPassword && !SHOW_OAUTH) {
+	paragraph = 'Enter your username & password.';
+} else if (!usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'Log in using one of the options below.';
+} else {
+	paragraph = 'No Login provider configured. Please contact your administrator.';
+}
+
+const user = await getUserData(Astro);
+
+if (user.isLoggedIn) {
+	return Astro.redirect(dashboardIndex);
+}
+---
+<AuthLayout title="Login Page" description="Login Page">
+
+    <div slot="header" class="form-header">
+        <h1>Login</h1>
+        <p>{paragraph}</p>
+    </div>
+
+    { usernameAndPassword && (
+        <form class="form" id="login-form" method="post" action={loginAPI}>
+
+            <Input label="Username" name="username" type="text" />
+            <Input label="Password" name="password" type='password' />
+
+            <Button as="button" type="submit" color='primary' size='md' variant='solid'><span>Log In</span></Button>
+        </form>
+    )}
+
+    { allowUserRegistration && (
+        <p slot="footer">Don't have an account? <a href={signupURL}>Register here!</a></p>
+    )}
+
+</AuthLayout>
+
+<script>
+    import { formListener } from 'studiocms:auth/scripts/formListener';
+    const loginForm = document.getElementById('login-form') as HTMLFormElement;
+
+    loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+</script>

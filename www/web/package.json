@@ -12,21 +12,21 @@
   "dependencies": {
     "@astrojs/check": "catalog:",
     "@astrojs/tailwind": "catalog:",
+    "astro": "catalog:",
+    "sharp": "catalog:",
+    "typescript": "catalog:",
     "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@iconify-json/heroicons": "catalog:studiocms-shared",
-    "@resvg/resvg-js": "^2.6.2",
+
     "@tailwindcss/typography": "catalog:landing",
-    "astro": "catalog:",
     "astro-icon": "catalog:landing",
-    "html-entities": "^2.5.2",
     "motion": "catalog:landing",
-    "powerglitch": "catalog:landing",
-    "sharp": "catalog:",
-    "satori": "^0.11.1",
-    "satori-html": "^0.3.2",
     "tailwind-merge": "catalog:landing",
     "tailwind-scrollbar": "catalog:landing",
     "tailwindcss": "catalog:landing",
-    "typescript": "catalog:"
+    "@resvg/resvg-js": "catalog:landing",
+    "html-entities": "catalog:landing",
+    "satori": "catalog:landing",
+    "satori-html": "catalog:landing"
   }
 }

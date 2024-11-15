@@ -1,5 +1,9 @@
 import type { APIContext, APIRoute } from 'astro';
-import { importPagesFromWPAPI, importPostsFromWPAPI } from '../utils/wp-api';
+import {
+	importPagesFromWPAPI,
+	importPostsFromWPAPI,
+	importSettingsFromWPAPI,
+} from '../utils/wp-api';
 
 export const POST: APIRoute = async ({ request }: APIContext) => {
 	const data = await request.formData();
@@ -40,6 +44,9 @@ export const POST: APIRoute = async ({ request }: APIContext) => {
 			break;
 		case 'posts':
 			await importPostsFromWPAPI(url, useBlogPluginValue);
+			break;
+		case 'settings':
+			await importSettingsFromWPAPI(url);
 			break;
 		default:
 			throw new Error('Invalid import type');

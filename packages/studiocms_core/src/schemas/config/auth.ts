@@ -18,7 +18,7 @@ const localUsernameAndPasswordConfig = z
 export const authProviderSchema = z
 	.object({
 		/**
-		 * GitHub Auth Provider - Powered by Lucia
+		 * GitHub Auth Provider - Powered by Arctic
 		 *
 		 * Requires a GitHub OAuth App to be created and configured using ENV Variables
 		 *
@@ -26,7 +26,7 @@ export const authProviderSchema = z
 		 */
 		github: z.boolean().optional().default(true),
 		/**
-		 * Discord Auth Provider - Powered by Lucia
+		 * Discord Auth Provider - Powered by Arctic
 		 *
 		 * Requires a Discord OAuth App to be created and configured using ENV Variables
 		 *
@@ -34,7 +34,7 @@ export const authProviderSchema = z
 		 */
 		discord: z.boolean().optional().default(false),
 		/**
-		 * Google Auth Provider - Powered by Lucia
+		 * Google Auth Provider - Powered by Arctic
 		 *
 		 * Requires a Google OAuth App to be created and configured using ENV Variables
 		 *
@@ -42,7 +42,7 @@ export const authProviderSchema = z
 		 */
 		google: z.boolean().optional().default(false),
 		/**
-		 * Auth0 Auth Provider - Powered by Lucia
+		 * Auth0 Auth Provider - Powered by Arctic
 		 *
 		 * Requires an Auth0 Application to be created and configured using ENV Variables
 		 *
@@ -50,7 +50,7 @@ export const authProviderSchema = z
 		 */
 		auth0: z.boolean().optional().default(false),
 		/**
-		 * Username and Password Auth Provider - Powered by Lucia
+		 * Username and Password Auth Provider
 		 *
 		 */
 		usernameAndPassword: z.boolean().optional().default(true),

@@ -153,10 +153,60 @@ If you skipped the npm install step during the CLI wizard, then be sure to insta
 
 </Tabs>
 
+Please note that the `site` option in the `astro.config.mjs` file is required for StudioCMS to work correctly. You can set this to your site's URL or a placeholder URL. (i.e. `https://demo.studiocms.xyz/` or `http://localhost:4321/`)
 
 <Aside type="note" title="SSR Only">
 StudioCMS requires SSR mode to work correctly. Make sure to set `output: 'server'` and an adapter that supports SSR in your `astro.config.mjs` file.
 </Aside>
+
+## Configure authentication
+
+StudioCMS Auth requires atleast the [Encryption Key](/start-here/environment-variables/#encryption-key-for-studiocmsauth) to be set in your `.env` file.
+
+The following environment variables are required for StudioCMS authentication:
+
+```bash title=".env"
+# encryption key for username and password authentication
+CMS_ENCRYPTION_KEY="wqR+w...sRcg=="
+```
+
+You can generate a secure encryption key using the following command: 
+
+```bash
+openssl rand --base64 16
+``` 
+
+And set the output as the value for `CMS_ENCRYPTION_KEY`.
+
+<ReadMore>
+For more information about all the available authentication environment variables see, [Envrionment variables](/start-here/environment-variables/) page.
+</ReadMore>
+
+### Optional: Configure oAuth authentication
+
+StudioCMS supports oAuth authentication with GitHub, Discord, Google, and Auth0. To configure oAuth authentication, you'll need to set the [required environment variables in your `.env` file](/start-here/environment-variables/#oauth-authentication-environment-variables), and ensure that the provider is [enabled in your config](/config-reference/dashboard/#authconfig).
+
+For setting up oAuth providers, they require a callback URL. The callback URL is the path where the provider will redirect the user after authentication. 
+
+#### Setting up the callback URL
+
+The callback URL should be set to one of the following paths based on your environment:
+
+| Environment   | Callback URL |
+|---------------|--------------|
+| Production    | `https://your-domain.tld/studiocms_api/auth/<provider>/callback` |
+| Testing & Dev | `http://localhost:4321/studiocms_api/auth/<provider>/callback` |
+
+#### Example callback URL paths
+
+The following paths are examples of the callback URL for each provider:
+
+| Provider | Callback PATH |
+|----------|---------------|
+| GitHub   | `/studiocms_api/auth/github/callback` |
+| Discord  | `/studiocms_api/auth/discord/callback` |
+| Google   | `/studiocms_api/auth/google/callback` |
+| Auth0    | `/studiocms_api/auth/auth0/callback` |
 
 ## Configure your `package.json` scripts
 
@@ -182,9 +232,13 @@ Thanks to the power of Astro running StudioCMS is as easy as running the dev com
 To start your Astro project, run the following commands in your terminal:
 
     <PackageManagers type="exec" args="astro db push --remote" />
-    <PackageManagers type="run" args="dev --remote # '--remote' can be removed if you have set the scripts in your package.json" />
+    <PackageManagers type="run" args="dev --remote" />
 
-After running the commands, you should see a message indicating that your project is running at `localhost:4321`. When first setting up StudioCMS, you will prompted to finish configuring StudioCMS at http://localhost:4321/start
+<Aside type="note">
+The `--remote` flag can be removed if you have set the scripts in your `package.json` file to include the flag. This is explained in the ["Configure your `package.json` scripts"](#configure-your-packagejson-scripts) section.
+</Aside>
+
+After running the commands, you should see a message indicating that your project is running at `localhost:4321`. When first setting up StudioCMS, you will prompted to finish configuring StudioCMS at `http://localhost:4321/start`
 
 ### Running in Astro Development mode locally
 
@@ -196,9 +250,17 @@ After running the command, you should see a message indicating that your project
 
 **Congratulations!** 🥳 You now have StudioCMS installed in your Astro project.
 
-## Next steps
+### Building and deploying your StudioCMS project
 
-Now that you have StudioCMS installed, you can start building your project with StudioCMS.
+After running the [first time setup steps](#first-time-setup-or-during-updates-if-the-tables-schema-is-updated), you should build and deploy your StudioCMS project to your server.
+
+By default, StudioCMS's dashboard is available at `http://your-domain.tld/dashboard`.
+
+This dashboard will be available for you to manage your content and settings in development mode and production mode. 
+
+It is recommended to use StudioCMS in production mode only, as the dashboard is meant to be used by the built project. (You may see some issues/errors in development mode such as a Vite dep error.)
+
+## Next steps
 
 <ReadMore>
 Check out how to set [Environment Variables](/start-here/environment-variables) in StudioCMS.
@@ -209,5 +271,5 @@ Check out the [Package Catalog](/package-catalog/) to find and use plugins with 
 </ReadMore>
 
 <ReadMore>
-Learn more about the API using the [StudioCMS Reference](/typedoc/studiocms/index/functions/studiocms/) pages.
+Learn more about the StudioCMS Config options using the [StudioCMS Reference](/config-reference/options-schema/) pages.
 </ReadMore>
