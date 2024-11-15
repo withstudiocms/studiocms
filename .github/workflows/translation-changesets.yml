@@ -1,0 +1,68 @@
+name: Translation Changesets
+
+on:
+    pull_request:
+      types: [labeled, synchronize]
+
+
+jobs:
+  build-translation-changesets:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'translations')
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: Setup pnpm (corepack enabled)
+        uses: pnpm/action-setup@v3
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm ci:install
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const write = require('@changesets/write')
+            const execa = require('execa')
+
+            const { base, head } = context.payload?.pull_request || {}
+
+            const res = await github.rest.repos.compareCommits({
+                base: base.sha,
+                head: head.sha,
+                owner: context.repo.owner,
+                repo: context.repo.repo
+            })
+
+            const summary = `Translations Updated (PR #${context.payload.pull_request.number})`
+
+            const opts = { reject: false }
+            const { stdout } = await execa('grep', [summary, '-r', '.changeset'], opts)
+
+            if (stdout) {
+                console.log('Changeset already exists')
+                return
+            }
+
+            const releases = [ 
+                { name: "@studiocms/core", type: "patch" }
+            ]
+
+            const cwd = process.cwd()
+            await write.default({ summary, releases }, cwd)
+
+    
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
+        with:
+          commit_message: '[ci] changesets'
+          branch: ${{ github.head_ref }}
+          commit_user_name: astrolicious
+          commit_user_email: no-reply@studiocms.xyz
+          commit_author: StudioCMS <no-reply@studiocms.xyz>
