@@ -10,7 +10,7 @@ permissions:
 jobs:
   build-translation-changesets:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'translations') && github.event.pull_request.user.login == 'studiocms-no-reply'
+    if: contains(github.event.pull_request.labels.*.name, 'translations') && ${{ github.event.pull_request.user.login == 'studiocms-no-reply' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
