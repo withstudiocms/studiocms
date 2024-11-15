@@ -1,0 +1,95 @@
+---
+title: Theme Helper
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import PreviewCard from '~/components/PreviewCard.astro';
+import ThemeHelperScript from '~/components/ThemeHelperScript.astro';
+
+To make managing the active theme easier, we provide a helper class to get, set and toggle the theme. Additionally,
+you can provide callbacks for when the theme gets changed!
+
+## Usage
+
+:::caution
+The `ThemeHelper` can only be used client-side (in `<script>` tags).
+:::
+```ts title="script.ts" twoslash
+import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.ts';
+
+// Instanciate a new helper
+const themeHelper = new ThemeHelper();
+
+// Get the current theme. (One of `dark`, `light` or `system`)
+const theme = themeHelper.getTheme();
+
+// Get the current theme but resolve the actual theme if `system` is selected
+// @noErrors
+const resolvedTheme = themeHelper.getTheme(true);
+
+// Set the theme to light
+themeHelper.setTheme('light');
+
+// Toggle the theme
+themeHelper.toggleTheme();
+
+// Register an element that should act as a toggle
+const toggleButton = document.querySelector<HTMLButtonElement>('#toggle-button');
+themeHelper.registerToggle(toggleButton);
+```
+
+### Listening for theme changes
+
+Using the `ThemeHelper` class, you can listen to theme changes! This is useful when you have logic that needs to run
+whenever the color scheme changes, for example in a `three.js` canvas where you need to change an image
+(*\*cough cough\* our login page \*cough\**).
+
+```ts title="script.ts" twoslash
+import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.ts';
+
+// Instanciate a new helper
+const themeHelper = new ThemeHelper();
+
+// Add a callback that gets called when the theme changes
+themeHelper.onThemeChange((newTheme) => {
+  // Your logic here!
+});
+```
+
+Here's a live example: Change the theme via the option in the top-right corner of your screen. If you're on mobile,
+open the navbar and scroll all the way down. After you've changed the theme, check the text below:
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <span id="theme-listener-output">
+        Theme hasn't changed yet.
+      </span>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```html
+    <span id="theme-listener-output">
+      Theme hasn't changed yet.
+    </span>
+    ```
+    ```ts twoslash
+    import { ThemeHelper, type Theme } from '@studiocms/ui/utils/ThemeHelper.ts';
+
+    // Instanciate a new helper
+    const themeHelper = new ThemeHelper();
+
+    const outputSpan = document.querySelector<HTMLSpanElement>('#theme-listener-output')!;
+
+    // Add a callback that gets called when the theme changes
+    // @noErrors
+    themeHelper.onThemeChange((newTheme: Theme, oldTheme: Theme) => {
+      // Your logic here!
+      outputSpan.textContent = `Theme is now: ${newTheme}! (Before: ${oldTheme})`;
+    });
+    ```
+  </TabItem>
+</Tabs>
+
+Since `@studiocms/ui` is compatible with Starlight's theme system, this even picks up on those changes.
+
+<ThemeHelperScript />

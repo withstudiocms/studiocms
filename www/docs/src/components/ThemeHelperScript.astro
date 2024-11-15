@@ -1,0 +1,13 @@
+<script>
+  import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.ts';
+
+  const themeHelper = new ThemeHelper();
+
+  const theme = themeHelper.getTheme(true);
+
+  const outputSpan = document.querySelector<HTMLSpanElement>('#theme-listener-output')!;
+
+  themeHelper.onThemeChange((newTheme, oldTheme) => {
+    outputSpan.textContent = `Theme is now: ${newTheme}! (Before: ${oldTheme})`;
+  });
+</script>
