@@ -92,4 +92,22 @@ open the navbar and scroll all the way down. After you've changed the theme, che
 
 Since `@studiocms/ui` is compatible with Starlight's theme system, this even picks up on those changes.
 
+### Remembering a users theme selection
+
+One of the few things the `ThemeHelper` does not do is saving the users theme preference. This is by design, since we don't want to force websites operating in the EU (and other GDPR-enforcing countries) to have to add a cookie notice just for a UI library. Instead, implementation of this functionality is up to the developers themselves.
+
+As a starting point, here's a barebones example of how to implement this:
+
+```ts twoslash
+import { ThemeHelper, type Theme } from '@studiocms/ui/utils/ThemeHelper.ts';
+
+const themeHelper = new ThemeHelper();
+
+themeHelper.onThemeChange((newTheme: Theme) => {
+    localStorage.setItem('theme-selection', newTheme);
+}
+```
+
+If you want to go even further, you can store this information in a cookie to retrieve it server-side.
+
 <ThemeHelperScript />
