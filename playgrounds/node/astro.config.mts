@@ -1,5 +1,6 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
+import sentry from '@sentry/astro';
 // import webvitals from '@astrojs/web-vitals';
 import studioCMSBlog from '@studiocms/blog';
 import devapps from '@studiocms/devapps';
@@ -13,6 +14,13 @@ export default defineConfig({
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	integrations: [
+		sentry({
+			dsn: 'https://34abf40ffdbf5e574344842942046b30@sentry.studiocms.xyz/2',
+			sourceMapsUploadOptions: {
+				project: 'studiocms-playground',
+				authToken: process.env.SENTRY_AUTH_TOKEN,
+			},
+		}),
 		db(),
 		// webvitals(),
 		studioCMS(), // StudioCMS Integration options can be found in `studiocms.config.mjs`
