@@ -105,7 +105,7 @@ const themeHelper = new ThemeHelper();
 
 themeHelper.onThemeChange((newTheme: Theme) => {
     localStorage.setItem('theme-selection', newTheme);
-}
+})
 ```
 
 If you want to go even further, you can store this information in a cookie to retrieve it server-side.
