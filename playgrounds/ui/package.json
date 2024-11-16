@@ -18,6 +18,7 @@
     "@astrojs/node": "catalog:",
     "astro": "catalog:",
     "@studiocms/ui": "workspace:*",
-    "@fontsource-variable/onest": "catalog:studiocms-shared"
+    "@fontsource-variable/onest": "catalog:studiocms-shared",
+    "@sentry/astro": "^8.38.0"
   }
 }
