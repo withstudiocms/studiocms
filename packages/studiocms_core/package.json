@@ -46,20 +46,19 @@
   },
   "type": "module",
   "dependencies": {
-    "@markdoc/markdoc": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@noble/hashes": "catalog:studiocms-shared",
     "@studiocms/robotstxt": "workspace:*",
     "astro-integration-kit": "catalog:",
-    "lucia": "catalog:studiocms-shared",
-    "marked": "catalog:studiocms-shared",
-    "mrmime": "catalog:studiocms-shared",
-    "shiki": "catalog:studiocms-shared",
-    "unified": "catalog:studiocms-shared",
+    "@markdoc/markdoc": "catalog:studiocms-renderer",
+    "marked": "catalog:studiocms-renderer",
+    "shiki": "catalog:studiocms-renderer",
+    "mrmime": "catalog:studiocms-core",
+    "unified": "catalog:studiocms-core",
     "remark-rehype": "catalog:studiocms-core",
-    "mdast-util-to-hast": "catalog:studiocms-core"
+    "mdast-util-to-hast": "catalog:studiocms-core",
+    "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
+    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
+
+    "@matthiesenxyz/astrolace": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",

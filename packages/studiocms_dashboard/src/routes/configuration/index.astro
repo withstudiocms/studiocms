@@ -1,6 +1,5 @@
 ---
 import { logger } from '@it-astro:logger:studiocms-dashboard';
-import { authHelper } from 'studiocms:auth/helpers';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Alert, Button, Divider, Icon, Input } from '@matthiesenxyz/astrolace/components';
@@ -10,6 +9,14 @@ import { Layout } from '../../components';
 import CrumbStack from '../../components/CrumbStack.astro';
 import { makePageTitle } from '../../utils/makePageTitle';
 
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+
+const user = await getUserData(Astro);
+
+if (!user.user) {
+	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+}
+
 const {
 	mainLinks: { dashboardIndex, siteConfiguration, configurationAdmins },
 	endpointLinks: {
@@ -18,10 +25,9 @@ const {
 } = StudioCMSRoutes;
 
 const contextConfig = await getSiteConfig();
-const { permissionLevel } = await authHelper(Astro.locals);
 
 // Check Permission Level
-if (permissionLevel !== 'admin') {
+if (!verifyUserPermissionLevel(user, 'admin')) {
 	logger.info('User is not an admin. Redirecting to profile page.');
 	return Astro.redirect(StudioCMSRoutes.mainLinks.userProfile);
 }

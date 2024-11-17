@@ -29,65 +29,74 @@ StudioCMS makes use of Astro's new Experimental [`astro:env`](https://docs.astro
 
 ```bash title=".env"
 ASTRO_DB_REMOTE_URL=libsql://your.server.io
-ASTRO_DB_APP_TOKEN=token-to-your-remote-url
+ASTRO_DB_APP_TOKEN=eyJh...RUCg
 ```
 
 <ReadMore>For more information about `@astrojs/db` see, the [Astro docs for Astro DB](https://docs.astro.build/en/guides/astro-db/)</ReadMore>
 
-## Authentication Environment Variables
+### Encryption Key for `@studiocms/auth`
 
-Currently there are 5 ways to authenticate with StudioCMS:
+`CMS_ENCRYPTION_KEY` - A secure encryption key for encrypting sensitive data
 
-<Aside type="tip" title="Local Development oAuth">
-Use `http://localhost:4321` for local development and testing callback urls, and `https://your-domain.tld` for your callback urls in production!
+```bash title=".env"
+CMS_ENCRYPTION_KEY="wqR+w...sRcg=="
+```
+
+<Aside type="note" title="Use OpenSSL">
+You can generate a secure encryption key using the following command: 
+```bash
+openssl rand --base64 16
+``` 
 </Aside>
 
-### GitHub
+## oAuth Authentication Environment Variables
+
+<ReadMore>
+For more information about setting up oAuth authentication, see the [Configure oAuth Authentication](/start-here/getting-started/#optional-configure-oauth-authentication) documentation.
+</ReadMore>
+
+### GitHub (Optional)
 
 To authenticate with GitHub, you need to add the following environment variables to your `.env` file:
 
 ```bash title=".env"
 # credentials for GitHub OAuth
-# Callback URL for github (NOT AN ENV VARIABLE): 'http://localhost:4321/dashboard/login/github/callback'
-CMS_GITHUB_CLIENT_ID=your_client_id
-CMS_GITHUB_CLIENT_SECRET=your_client_secret
+CMS_GITHUB_CLIENT_ID=
+CMS_GITHUB_CLIENT_SECRET=
+CMS_GITHUB_REDIRECT_URI=
 ```
 
-### Discord
+<Aside type="note" title="Note">
+`CMS_GITHUB_REDIRECT_URI` is optional if you are using multiple redirect URIs with GitHub oAuth.
+</Aside>
+
+### Discord (Optional)
 
 ```bash title=".env"
 # credentials for Discord OAuth
 CMS_DISCORD_CLIENT_ID=
 CMS_DISCORD_CLIENT_SECRET=
-CMS_DISCORD_REDIRECT_URI=http://localhost:4321/dashboard/login/discord/callback
+CMS_DISCORD_REDIRECT_URI=
 ```
 
-### Google
+### Google (Optional)
 
 ```bash title=".env"
 # credentials for Google OAuth
 CMS_GOOGLE_CLIENT_ID=
 CMS_GOOGLE_CLIENT_SECRET=
-CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/dashboard/login/google/callback
+CMS_GOOGLE_REDIRECT_URI=
 ```
 
-### Auth0
+### Auth0 (Optional)
 
 ```bash title=".env"
 # credentials for auth0 OAuth
 CMS_AUTH0_CLIENT_ID=
 CMS_AUTH0_CLIENT_SECRET=
 CMS_AUTH0_DOMAIN=
-CMS_AUTH0_REDIRECT_URI=http://localhost:4321/dashboard/login/auth0/callback
+CMS_AUTH0_REDIRECT_URI=
 ```
-
-### Username and Password
-
-Alternatively, you can authenticate with StudioCMS using your username and password which doesn't require any additional environment variables.
-
-<Aside type="note">
-When Username and Password authentication is enabled you can modify its configuration and level of security using the generated `studiocms-auth.config.json` file.
-</Aside>
 
 ## Image Handler Environment Variables
 

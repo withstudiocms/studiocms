@@ -1,20 +1,22 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
+// import Config from 'virtual:studiocms/config';
 import profileImg from './avatar.webp';
 
+// const {
+// 	dashboardConfig: {
+// 		AuthConfig: { enabled },
+// 	},
+// } = Config;
 const {
-	dashboardConfig: {
-		AuthConfig: { enabled },
-	},
-} = Config;
-const {
-	mainLinks: { dashboardIndex },
+	// mainLinks: { dashboardIndex },
 	authLinks: { loginURL },
 } = StudioCMSRoutes;
-const { isLoggedIn, dbUser: userProfile } = Astro.locals;
+// const { isLoggedIn, dbUser: userProfile } = Astro.locals;
+
+// TODO: Update this to use the new auth system
 ---
-{ enabled !== false && (isLoggedIn ? (
+{/* enabled !== false && (isLoggedIn ? (
     <a href={dashboardIndex} title="User Dashboard">
         <img
             src={userProfile?.avatar||profileImg.src}
@@ -23,6 +25,7 @@ const { isLoggedIn, dbUser: userProfile } = Astro.locals;
             height="64" />
         </a>
     ) : (
+     */
         <a href={loginURL} title="Login">
         <img 
             src={profileImg.src} 
@@ -30,7 +33,7 @@ const { isLoggedIn, dbUser: userProfile } = Astro.locals;
             width="64" 
             height="64" />
         </a>
-    ))
+    /* )) 
 }
 { enabled === false && (
     <a href="#" aria-disabled="true" title="Please Edit your database through your provider's dashboard">
@@ -40,4 +43,4 @@ const { isLoggedIn, dbUser: userProfile } = Astro.locals;
             width="64" 
             height="64" />	
     </a>
-)}
+)*/}

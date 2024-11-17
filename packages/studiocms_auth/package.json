@@ -30,32 +30,33 @@
     "src"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./lucia": "./src/auth/index.ts"
+    ".": "./src/index.ts"
   },
   "type": "module",
   "dependencies": {
+    "@studiocms/core": "workspace:*",
+    "@studiocms/ui": "workspace:*",
+    "astro-integration-kit": "catalog:",
+    "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@noble/hashes": "catalog:studiocms-shared",
-    "@studiocms/assets": "workspace:*",
-    "@studiocms/core": "workspace:*",
-    "micromatch": "catalog:studiocms-shared",
-    "lucia": "catalog:studiocms-shared",
-    "arctic": "catalog:studiocms-shared",
-    "astro-integration-kit": "catalog:"
+    "rollup-plugin-copy": "catalog:studiocms-shared",
+    "@oslojs/binary": "catalog:studiocms-auth",
+    "@oslojs/crypto": "catalog:studiocms-auth",
+    "@oslojs/encoding": "catalog:studiocms-auth",
+    "@types/three": "catalog:studiocms-auth",
+    "arctic": "catalog:studiocms-auth",
+    "three": "catalog:studiocms-auth",
+    "@types/bcryptjs": "catalog:studiocms-auth",
+    "bcryptjs": "catalog:studiocms-auth"
   },
   "peerDependencies": {
-    "@studiocms/core": "workspace:*",
-    "@studiocms/dashboard": "workspace:*",
     "@astrojs/db": "catalog:min",
     "astro": "catalog:min"
   },
   "devDependencies": {
     "vite": "catalog:",
-    "typescript": "catalog:",
-    "@types/micromatch": "catalog:studiocms-shared"
+    "typescript": "catalog:"
   }
 }

@@ -9,15 +9,18 @@ export const StudioCMSUsers = defineTable({
 		name: column.text(),
 		email: column.text({ unique: true, optional: true }),
 		avatar: column.text({ optional: true }),
-		githubId: column.number({ unique: true, optional: true }),
-		githubURL: column.text({ optional: true }),
-		discordId: column.text({ unique: true, optional: true }),
-		googleId: column.text({ unique: true, optional: true }),
-		auth0Id: column.text({ unique: true, optional: true }),
 		username: column.text(),
 		password: column.text({ optional: true }),
 		updatedAt: column.date({ default: NOW, optional: true }),
 		createdAt: column.date({ default: NOW, optional: true }),
+	},
+});
+
+export const StudioCMSOAuthAccounts = defineTable({
+	columns: {
+		provider: column.text(), // github, google, discord, auth0
+		providerUserId: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 	},
 });
 
@@ -27,6 +30,14 @@ export const StudioCMSSessionTable = defineTable({
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id, optional: false }),
 		expiresAt: column.date(),
+	},
+});
+
+/** StudioCMS - Permissions Table for Astro DB */
+export const StudioCMSPermissions = defineTable({
+	columns: {
+		user: column.text({ references: () => StudioCMSUsers.columns.id }),
+		rank: column.text(),
 	},
 });
 
@@ -90,13 +101,7 @@ export const StudioCMSSiteConfig = defineTable({
 		description: column.text(),
 		defaultOgImage: column.text({ optional: true }),
 		siteIcon: column.text({ optional: true }),
-	},
-});
-
-/** StudioCMS - Permissions Table for Astro DB */
-export const StudioCMSPermissions = defineTable({
-	columns: {
-		username: column.text(),
-		rank: column.text(),
+		loginPageBackground: column.text({ default: 'studiocms-curves' }),
+		loginPageCustomImage: column.text({ optional: true }),
 	},
 });
