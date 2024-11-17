@@ -1,0 +1,157 @@
+---
+title: Select
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import PreviewCard from '~/components/PreviewCard.astro';
+import { Select } from '@studiocms/ui/components';
+
+A custom select element that just works.
+
+## Usage
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Select
+        label='Select Element'
+        options={[
+          { label: "Option 1", value: "opt-1-1" },
+          { label: "Option 2", value: "opt-2-1" },
+          { label: "Option 3", value: "opt-3-1" },
+        ]}
+      />
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Select } from '@studiocms/ui/components';
+    ---
+
+    <Select
+      label='Select Element'
+      options={[
+        { label: "Option 1", value: "opt-1" },
+        { label: "Option 2", value: "opt-2" },
+        { label: "Option 3", value: "opt-3" },
+      ]}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+### Default Value
+
+You can set a default value using the `defaultValue` prop:
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Select
+        label='Select Element'
+        defaultValue='opt-1-1'
+        options={[
+          { label: "Option 1", value: "opt-1-1" },
+          { label: "Option 2", value: "opt-2-1" },
+          { label: "Option 3", value: "opt-3-1" },
+        ]}
+      />
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Select } from '@studiocms/ui/components';
+    ---
+
+    <Select
+      label='Select Element'
+      defaultValue='opt-1'
+      options={[
+        { label: "Option 1", value: "opt-1" },
+        { label: "Option 2", value: "opt-2" },
+        { label: "Option 3", value: "opt-3" },
+      ]}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+### Form Support
+
+You can use the `isRequired` prop to mark the select input as required. This will also add a red `*` to
+the label.
+
+If you need to access the element's value later on, you can pass the `name` prop. It will then appear in any FormData
+you construct. If no name is set, a random one is generated for the component.
+
+Additionally, you can either disable the entire select input by using the `disabled` prop, or disable
+individual options by adding `disabled: true` to the option you want to disable:
+
+```astro ins={7-9}
+---
+import { Select } from '@studiocms/ui/components';
+---
+
+<Select
+  label='Select Element'
+  defaultValue='opt-1'
+  isRequired
+  disabled
+  name="select-element"
+  options={[
+    // ...
+    { 
+      label: "Option X", 
+      value: "opt-x", 
+      disabled: true // [!code ++]
+    },
+    // ...
+  ]}
+/>
+```
+
+
+### Full Width
+
+Normally, the input has a minimum width and extends as needed. You can force it to take up
+the entire width of its parent container by setting the `fullWidth` prop to true:
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Select
+        label='Select Element'
+        fullWidth
+        options={[
+          { label: "Option 1", value: "f-opt-1-1" },
+          { label: "Option 2", value: "f-opt-1-2" },
+          { label: "Option 3", value: "f-opt-1-3" },
+        ]}
+      />
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Select } from '@studiocms/ui/components';
+    ---
+
+    <Select
+      label='Select Element'
+      fullWidth
+      options={[
+        { label: "Option 1", value: "opt-1" },
+        { label: "Option 2", value: "opt-2" },
+        { label: "Option 3", value: "opt-3" },
+      ]}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+:::note[About Accessibility]
+The select element's dropdown can be navigated via tabbing and elements can be selected by hitting the 
+`Enter` key.
+:::
