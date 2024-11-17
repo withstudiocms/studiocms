@@ -15,7 +15,6 @@
     "astro": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
-
     "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@iconify-json/heroicons": "catalog:studiocms-shared",
 

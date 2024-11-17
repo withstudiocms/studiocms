@@ -14,6 +14,7 @@ export { Select } from './components/index';
 export { SearchSelect } from './components/index';
 export { Dropdown, DropdownHelper } from './components/index';
 export { User } from './components/index';
+export { ThemeToggle } from './components/index';
 
 export {
 	Sidebar,
