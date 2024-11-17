@@ -84,7 +84,7 @@ You can use the `isRequired` prop to mark the select input as required. This wil
 the label.
 
 If you need to access the element's value later on, you can pass the `name` prop. It will then appear in any FormData
-you construct.
+you construct. If no name is set, a random one is generated for the component.
 
 Additionally, you can either disable the entire select input by using the `disabled` prop, or disable
 individual options by adding `disabled: true` to the option you want to disable:
@@ -112,9 +112,6 @@ import { Select } from '@studiocms/ui/components';
 />
 ```
 
-:::note
-If no name is set, a random one is generated for the component.
-:::
 
 ### Full Width
 
