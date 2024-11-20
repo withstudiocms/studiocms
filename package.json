@@ -27,7 +27,8 @@
     "update:web": "pnpm --filter web up --latest",
     "update:docs": "pnpm --filter docs up --latest",
     "web:dev": "pnpm --filter web dev",
-    "docs:dev": "pnpm --filter docs dev"
+    "docs:dev": "pnpm --filter docs dev",
+    "translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
@@ -35,6 +36,9 @@
     "@changesets/cli": "2.27.9",
     "@changesets/config": "3.0.3",
     "@changesets/changelog-github": "^0.5.0",
-    "typescript": "catalog:"
+    "@changesets/write": "0.3.2",
+    "execa": "9.5.1",
+    "typescript": "catalog:",
+    "tsm": "2.3.0"
   }
 }

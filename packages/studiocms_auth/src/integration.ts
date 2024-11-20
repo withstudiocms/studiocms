@@ -83,6 +83,7 @@ export default defineIntegration({
 						},
 						experimental: {
 							directRenderScript: true,
+							serverIslands: true,
 						},
 						vite: {
 							optimizeDeps: {
@@ -111,6 +112,11 @@ export default defineIntegration({
 								pattern: 'login',
 								entrypoint: resolve('./routes/api/login.ts'),
 								enabled: usernameAndPasswordAPI,
+							},
+							{
+								pattern: 'logout',
+								entrypoint: resolve('./routes/api/logout.ts'),
+								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
@@ -170,7 +176,7 @@ export default defineIntegration({
 							},
 							{
 								pattern: 'logout/',
-								entrypoint: resolve('./routes/logout.ts'),
+								entrypoint: resolve('./routes/logout.astro'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{

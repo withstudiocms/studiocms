@@ -17,9 +17,13 @@ To see how to get started, check out the [StudioCMS README](./packages/studiocms
 
 <a href="https://turso.tech" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
 
+## StudioCMS Dashboard i18n Status
+
+<a href="https://i18n.studiocms.xyz/engage/studiocms/"><img src="https://i18n.studiocms.xyz/widget/studiocms/287x66-black.png" alt="Translation status" /></a>
+
 ## Contributing
 
-We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better. To get started read our [Contributing Guide](https://docs.studiocms.xyz/start-here/contributing/)
+We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better. To get started read our [Contributing Guide](https://docs.studiocms.xyz/contributing/getting-started/)
 
 ## Chat with Us
 

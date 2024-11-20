@@ -97,6 +97,7 @@ export const coreVirtualModuleGeneration = defineUtility('astro:config:setup')(
 			'studiocms:helpers/contentHelper': `export * from '${contentHelperResolved}';`,
 			'studiocms:helpers/headDefaults': `export * from '${headDefaultsResolved}';`,
 			'studiocms:helpers/routemap': `export * from '${routeMapResolved}';`,
+			'studiocms:i18n': `export * from '${resolve('../i18n/index.ts')}'`,
 		};
 
 		// Inject the Virtual Imports
