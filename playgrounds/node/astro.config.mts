@@ -16,6 +16,8 @@ export default defineConfig({
 	integrations: [
 		sentry({
 			dsn: 'https://34abf40ffdbf5e574344842942046b30@sentry.studiocms.xyz/2',
+			replaysSessionSampleRate: 1.0,
+			replaysOnErrorSampleRate: 1.0,
 			sourceMapsUploadOptions: {
 				project: 'studiocms-playground',
 				authToken: process.env.SENTRY_AUTH_TOKEN,
