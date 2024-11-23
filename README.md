@@ -11,7 +11,7 @@ This is an SSR CMS built with AstroDB / Lucia Auth / Unpic Image handler for the
 To see how to get started, check out the [StudioCMS README](./packages/studiocms/README.md).
 
 > [!IMPORTANT]
-> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/astrolicious/studiocms/issues/new/choose) on our GitHub repository.
+> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
 
 ## Sponsor
 
@@ -23,7 +23,7 @@ We welcome contributions from the community! Whether it's bug reports, feature r
 
 ### Bug Reports and Feature Requests
 
-If you encounter any bugs or have ideas for new features, please open an issue on our [GitHub repository](https://github.com/astrolicious/studiocms). When creating a new issue, please provide as much detail as possible, including steps to reproduce the issue (for bugs) and a clear description of the proposed feature.
+If you encounter any bugs or have ideas for new features, please open an issue on our [GitHub repository](https://github.com/withstudiocms/studiocms). When creating a new issue, please provide as much detail as possible, including steps to reproduce the issue (for bugs) and a clear description of the proposed feature.
 
 ### Code Contributions
 
@@ -38,13 +38,13 @@ If you'd like to contribute code to this project, please follow these steps:
 
 We will review your contribution as soon as possible and provide feedback or merge it into the main codebase if everything looks good.
 
-Please note that by contributing to this project, you agree to our [Code of Conduct](https://github.com/astrolicious/.github/blob/main/.github/CODE_OF_CONDUCT.md).
+Please note that by contributing to this project, you agree to our [Code of Conduct](https://github.com/withstudiocms/.github/blob/main/CODE_OF_CONDUCT.md).
 
 Thank you for your interest in contributing to this project!
 
 ## Chat with Us
 
-We have an active community of developers on the Astrolicious [Discord Server](https://chat.astrolicious.dev/). Feel free to join and connect with other contributors, ask questions, or discuss ideas related to this project or other Astrolicious projects.
+We have an active community of developers on the StudioCMS [Discord Server](https://chat.studiocms.dev/). Feel free to join and connect with other contributors, ask questions, or discuss ideas related to this project or other StudioCMS projects.
 
 ## Our ToolSet
 
