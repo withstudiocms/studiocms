@@ -1,23 +1,22 @@
 # root (Exalted)
-* @adammatthiesen @jdtjenkins @dreyfus92
+* @withstudiocms/exalted
 
 # branding (Exalted)
-/www/assets/ @adammatthiesen @jdtjenkins @dreyfus92
+/www/assets/ @withstudiocms/exalted
 
 # docs and web site (Exalted & Revered(added when they are lead of such feature))
-/www/web/ @adammatthiesen @jdtjenkins @dreyfus92
-/www/docs/ @adammatthiesen @jdtjenkins @dreyfus92
+/www/ @withstudiocms/exalted
 
 # packages (Exalted & Revered(added when they are lead of such feature))
-/packages/studiocms @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_assets @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_auth @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_betaresources @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_blog @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_core @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_dashboard @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_frontend @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_imagehandler @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_renderers @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_robotstxt @adammatthiesen @jdtjenkins @dreyfus92
-/packages/studiocms_ui @louisescher @adammatthiesen @jdtjenkins @dreyfus92
+/packages/studiocms @withstudiocms/exalted
+/packages/studiocms_assets @withstudiocms/exalted
+/packages/studiocms_auth @withstudiocms/exalted
+/packages/studiocms_betaresources @withstudiocms/exalted
+/packages/studiocms_blog @withstudiocms/exalted
+/packages/studiocms_core @withstudiocms/exalted
+/packages/studiocms_dashboard @withstudiocms/exalted
+/packages/studiocms_frontend @withstudiocms/exalted
+/packages/studiocms_imagehandler @withstudiocms/exalted
+/packages/studiocms_renderers @withstudiocms/exalted
+/packages/studiocms_robotstxt @withstudiocms/exalted
+/packages/studiocms_ui @withstudiocms/exalted @louisescher
