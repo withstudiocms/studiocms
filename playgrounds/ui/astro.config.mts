@@ -3,13 +3,13 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://ui-testing.studiocms.xyz',
+	site: 'https://ui-testing.studiocms.dev',
 	output: 'static',
 	integrations: [
 		sentry({
-			dsn: 'https://4ff533e071fe898f4abf1e5b82dcc4d0@sentry.studiocms.xyz/3',
+			dsn: 'https://0f2693e5cc4590650ad844d6ad3f973f@sentry.studiocms.dev/3',
 			sourceMapsUploadOptions: {
-				project: 'studiocms-ui-testing',
+				project: 'ui-testing',
 				authToken: process.env.SENTRY_AUTH_TOKEN,
 			},
 		}),

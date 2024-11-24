@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 3,
-  "feature": "Shiki Syntax Highlighting",
-  "description": "Offers Shiki-powered syntax highlighting, ensuring code is both visually appealing and easy to read. Ideal for non-Cloudflare environments due to bundle size considerations.",
-  "icon": "heroicons:code-bracket-square"
-}

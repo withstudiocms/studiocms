@@ -10,16 +10,16 @@ import { getCoolifyURL } from '../../www/hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true) || 'https://demo.studiocms.xyz/',
+	site: getCoolifyURL(true) || 'https://demo.studiocms.dev/',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	integrations: [
 		sentry({
-			dsn: 'https://34abf40ffdbf5e574344842942046b30@sentry.studiocms.xyz/2',
+			dsn: 'https://71c3c874d5d8ad20486529628ac13aae@sentry.studiocms.dev/4',
 			replaysSessionSampleRate: 1.0,
 			replaysOnErrorSampleRate: 1.0,
 			sourceMapsUploadOptions: {
-				project: 'studiocms-playground',
+				project: 'node-playground',
 				authToken: process.env.SENTRY_AUTH_TOKEN,
 			},
 		}),

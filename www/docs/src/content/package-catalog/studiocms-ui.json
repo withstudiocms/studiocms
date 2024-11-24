@@ -3,7 +3,7 @@
   "name": "@studiocms/ui",
   "description": "The UI library for StudioCMS. Includes the layouts & components we use to build StudioCMS.",
   "docsLink": "/customizing/studiocms-ui/",
-  "githubURL": "https://github.com/astrolicious/studiocms/tree/main/packages/studiocms_ui/",
+  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_ui/",
   "catalog": "studiocms",
   "released": false,
   "publiclyUsable": true

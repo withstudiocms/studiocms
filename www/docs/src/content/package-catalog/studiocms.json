@@ -3,6 +3,6 @@
   "name": "studiocms",
   "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
   "docsLink": "/start-here/getting-started",
-  "githubURL": "https://github.com/astrolicious/studiocms/tree/main/packages/studiocms/",
+  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms/",
   "catalog": "studiocms"
 }

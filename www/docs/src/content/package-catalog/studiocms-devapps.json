@@ -3,7 +3,7 @@
   "name": "@studiocms/devapps",
   "description": "A Collection of useful tools available during dev mode in Astro.",
   "docsLink": "/package-catalog/studiocms-integrations/studiocms-devapps/",
-  "githubURL": "https://github.com/astrolicious/studiocms/tree/main/packages/studiocms_devapps/",
+  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_devapps/",
   "catalog": "studiocms",
   "released": false,
   "publiclyUsable": true

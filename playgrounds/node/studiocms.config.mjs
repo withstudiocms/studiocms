@@ -13,16 +13,16 @@ export default defineStudioCMSConfig({
 	},
 	defaultFrontEndConfig: {
 		favicon: '/favicon.svg',
-		htmlDefaultHead: [
-			{
-				tag: 'script',
-				attrs: {
-					src: 'https://analytics.studiocms.xyz/script.js',
-					'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
-					defer: true,
-				},
-			},
-		],
+		// htmlDefaultHead: [
+		// 	{
+		// 		tag: 'script',
+		// 		attrs: {
+		// 			src: 'https://analytics.studiocms.xyz/script.js',
+		// 			'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
+		// 			defer: true,
+		// 		},
+		// 	},
+		// ],
 	},
 	includedIntegrations: {
 		useAstroRobots: true,
