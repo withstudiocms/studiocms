@@ -1,5 +1,23 @@
 # studiocms
 
+## 0.1.0-beta.8
+
+### Patch Changes
+
+- [#312](https://github.com/withstudiocms/studiocms/pull/312) [`9c59d72`](https://github.com/withstudiocms/studiocms/commit/9c59d7230c86d8122c90c8b42c382a32a6d9820e) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - ♻️ Chore: We are now Turso Sponsored!
+
+- Updated dependencies [[`ebc297f`](https://github.com/withstudiocms/studiocms/commit/ebc297f2818deda6efca880a857f7e0929ad2378)]:
+  - @studiocms/imagehandler@0.1.0-beta.8
+  - @studiocms/dashboard@0.1.0-beta.8
+  - @studiocms/renderers@0.1.0-beta.8
+  - @studiocms/auth@0.1.0-beta.8
+  - @studiocms/core@0.1.0-beta.8
+  - @studiocms/frontend@0.1.0-beta.8
+  - @studiocms/betaresources@0.1.0-beta.8
+  - @studiocms/blog@0.1.0-beta.8
+  - @studiocms/assets@0.1.0-beta.8
+  - @studiocms/robotstxt@0.1.0-beta.8
+
 ## 0.1.0-beta.7
 
 ### Patch Changes
