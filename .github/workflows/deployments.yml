@@ -21,9 +21,8 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Thank you for submitting your Pull Request, the following links will become available for preview shortly:\n\n
-              - [StudioCMS Landing Page](https://pr${context.payload.pull_request.number}.www.studiocms.xyz/)\n
-              - [StudioCMS Documentation](https://pr${context.payload.pull_request.number}.docs.studiocms.xyz/)\n
-              - [StudioCMS Demo (node-playground)](https://pr${context.payload.pull_request.number}.demo.studiocms.xyz/) (Also deployed with package changes)\n
-              - [StudioCMS Ui Demo (ui-playground)](https://pr${context.payload.pull_request.number}.ui-testing.studiocms.xyz/)`
+              body: `Thank you for submitting your Pull Request, the following links will become available for preview shortly:\n
+              - [StudioCMS Documentation](https://pr${context.payload.pull_request.number}.docs.studiocms.dev/)\n
+              - [StudioCMS Demo (node-playground)](https://pr${context.payload.pull_request.number}.demo.studiocms.dev/) (Also deployed with package changes)\n
+              - [StudioCMS Ui Demo (ui-playground)](https://pr${context.payload.pull_request.number}.ui-testing.studiocms.dev/)`
             })
