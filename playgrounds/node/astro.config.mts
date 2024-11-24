@@ -6,7 +6,7 @@ import studioCMSBlog from '@studiocms/blog';
 import devapps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from '../../packages/studiocms/src';
-import { getCoolifyURL } from '../../www/hostUtils';
+import { getCoolifyURL } from '../../www/docs/hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
