@@ -16,29 +16,32 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - name: Check out code using Git
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v3
+
       - name: Setup Node
-        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version-file: '.node-version'
           cache: pnpm
+
       - name: Install dependencies
         run: pnpm ci:install
         shell: bash
 
       - name: Format code
         run: pnpm run lint:fix
+
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
         with:
           commit_message: '[ci] lint'
           branch: ${{ github.head_ref }}
-          commit_user_name: astrolicious
-          commit_user_email: no-reply@studiocms.xyz
-          commit_author: StudioCMS <no-reply@studiocms.xyz>
+          commit_user_name: studiocms-no-reply
+          commit_user_email: no-reply@studiocms.dev
+          commit_author: StudioCMS <no-reply@studiocms.dev>

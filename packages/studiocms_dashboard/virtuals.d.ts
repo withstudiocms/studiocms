@@ -66,8 +66,9 @@ declare module 'studiocms:helpers/contentHelper' {
 	export const getUserList: typeof import('@studiocms/core/helpers').getUserList;
 	export const getUserById: typeof import('@studiocms/core/helpers').getUserById;
 	export const getPermissionsList: typeof import('@studiocms/core/helpers').getPermissionsList;
-	export type ContentHelperTempResponse =
-		import('@studiocms/core/helpers').ContentHelperTempResponse;
+	export type ContentHelperTempResponse = import(
+		'@studiocms/core/helpers'
+	).ContentHelperTempResponse;
 	export type SiteConfigResponse = import('@studiocms/core/helpers').SiteConfigResponse;
 	export type pageDataReponse = import('@studiocms/core/helpers').pageDataReponse;
 	export type UserResponse = import('@studiocms/core/helpers').UserResponse;
@@ -81,15 +82,21 @@ declare module 'studiocms:helpers/routemap' {
 	export const getSluggedRoute: typeof import('@studiocms/core/helpers').getSluggedRoute;
 	export const getEditRoute: typeof import('@studiocms/core/helpers').getEditRoute;
 	export const getDeleteRoute: typeof import('@studiocms/core/helpers').getDeleteRoute;
-	export const makeNonDashboardRoute: typeof import('@studiocms/core/helpers').makeNonDashboardRoute;
+	export const makeNonDashboardRoute: typeof import(
+		'@studiocms/core/helpers'
+	).makeNonDashboardRoute;
 	export const makeDashboardRoute: typeof import('@studiocms/core/helpers').makeDashboardRoute;
-	export const makeAPIDashboardRoute: typeof import('@studiocms/core/helpers').makeAPIDashboardRoute;
+	export const makeAPIDashboardRoute: typeof import(
+		'@studiocms/core/helpers'
+	).makeAPIDashboardRoute;
 	export const StudioCMSRoutes: typeof import('@studiocms/core/helpers').StudioCMSRoutes;
 	export const sideBarLinkMap: typeof import('@studiocms/core/helpers').sideBarLinkMap;
 }
 
 declare module 'studiocms:renderer' {
-	export const StudioCMSRenderer: typeof import('@studiocms/renderers/components').StudioCMSRenderer;
+	export const StudioCMSRenderer: typeof import(
+		'@studiocms/renderers/components'
+	).StudioCMSRenderer;
 }
 
 declare module 'studiocms-dashboard:web-vitals' {

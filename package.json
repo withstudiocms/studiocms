@@ -31,7 +31,7 @@
     "translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@moonrepo/cli": "1.28.3",
     "@changesets/cli": "2.27.9",
     "@changesets/config": "3.0.3",

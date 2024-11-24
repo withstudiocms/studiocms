@@ -11,7 +11,7 @@ This is an SSR CMS built with AstroDB for the Astro Ecosystem.
 To see how to get started, check out the [StudioCMS README](./packages/studiocms/README.md).
 
 > [!IMPORTANT]
-> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/astrolicious/studiocms/issues/new/choose) on our GitHub repository.
+> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
 
 ## Sponsor
 
@@ -23,11 +23,21 @@ To see how to get started, check out the [StudioCMS README](./packages/studiocms
 
 ## Contributing
 
+We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better.
+
+### Bug Reports and Feature Requests
+
+If you encounter any bugs or have ideas for new features, please open an issue on our [GitHub repository](https://github.com/withstudiocms/studiocms). When creating a new issue, please provide as much detail as possible, including steps to reproduce the issue (for bugs) and a clear description of the proposed feature.
+
+### Code Contributions
+
 We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better. To get started read our [Contributing Guide](https://docs.studiocms.xyz/contributing/getting-started/)
+
+Please note that by contributing to this project, you agree to our [Code of Conduct](https://github.com/withstudiocms/.github/blob/main/CODE_OF_CONDUCT.md).
 
 ## Chat with Us
 
-We have an active community of developers on the Astrolicious [Discord Server](https://chat.astrolicious.dev/). Feel free to join and connect with other contributors, ask questions, or discuss ideas related to this project or other Astrolicious projects.
+We have an active community of developers on the StudioCMS [Discord Server](https://chat.studiocms.dev/). Feel free to join and connect with other contributors, ask questions, or discuss ideas related to this project or other StudioCMS projects.
 
 ## Our ToolSet
 
@@ -68,7 +78,7 @@ Once that process completes successfuly you are ready to navigate to http://loca
 
 It will redirect and ask you to shutdown and change the above mentioned config option `dbStartPage` to `false` at which point that will enable full functionality of the CMS. you can now restart the dev server with `astro dev --remote` to continue viewing your new site!
 
-That will give you a running dev environment of what i work with daily... the only other thing to get the full functionality currently is to configure a gitub oAuth app for the [Dashboard and authentication](./packages/studiocms/README.md#authentication)
+That will give you a running dev environment of what we work with daily... the only other thing to get the full functionality currently is to configure a gitub oAuth app for the [Dashboard and authentication](./packages/studiocms/README.md#authentication)
 
 To start the playground again use the command `pnpm playground:dev`
 
