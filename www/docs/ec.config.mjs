@@ -17,7 +17,7 @@ export default defineEcConfig({
 					exactOptionalPropertyTypes: true,
 					downlevelIteration: true,
 					skipLibCheck: true,
-					lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+					lib: ['ES2022', 'DOM', 'DOM.Iterable', 'dom'],
 					noEmit: true,
 				},
 			},
