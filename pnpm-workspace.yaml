@@ -58,7 +58,7 @@ catalogs:
     rehype-external-links: ^3.0.0
     "@types/html-escaper": ^3.0.2
     html-escaper: ^3.0.3
-    expressive-code-twoslash: ^0.2.5
+    expressive-code-twoslash: ^0.2.6
     "@shikijs/colorized-brackets": ^1.23.1
     starlight-package-managers: ^0.8.0
 
