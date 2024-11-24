@@ -1,10 +1,12 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { db } from 'astro:db';
-import { authHelper } from 'studiocms:auth/helpers';
+// import { authHelper } from 'studiocms:auth/helpers';
 import Config from 'virtual:studiocms/config';
 import { tsPermissions } from '@studiocms/core/db/tsTables';
 import type { APIContext } from 'astro';
 import { simpleResponse } from '../../../utils/simpleResponse';
+
+import { getUserData } from 'studiocms:auth/lib/user';
 
 const {
 	dashboardConfig: {
@@ -20,16 +22,17 @@ export async function POST(context: APIContext): Promise<Response> {
 	}
 
 	// Map Locals
-	const locals = context.locals;
+	// const locals = context.locals;
+	const userdata = await getUserData(context);
 
 	// Check if user is logged in
-	if (!locals.isLoggedIn) {
+	if (!userdata.isLoggedIn) {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	if (locals.isLoggedIn) {
-		const { permissionLevel } = await authHelper(locals);
+	if (userdata.isLoggedIn) {
+		const { permissionLevel } = userdata;
 		if (permissionLevel !== 'admin') {
 			return simpleResponse(403, 'Unauthorized');
 		}
@@ -49,7 +52,7 @@ export async function POST(context: APIContext): Promise<Response> {
 	// Check if User already exists
 	const currentAdmins = await db.select().from(tsPermissions);
 	for (const admin of currentAdmins) {
-		if (admin.username === newUser) {
+		if (admin.user === newUser) {
 			logger.error('Admin already exists');
 			return simpleResponse(400, 'Admin already exists');
 		}
@@ -57,7 +60,7 @@ export async function POST(context: APIContext): Promise<Response> {
 
 	// Update Database
 	try {
-		await db.insert(tsPermissions).values({ username: newUser, rank: rank }).returning();
+		await db.insert(tsPermissions).values({ user: newUser, rank: rank }).returning();
 	} catch (error) {
 		// Log error
 		if (error instanceof Error) {

@@ -1,16 +1,8 @@
-type PersistentToastProps = {
-	persistent: true;
-	closeButton: true;
-};
-
-type NormalToastProps = {
-	persistent?: false;
-	closeButton?: boolean;
-};
-
-export type ToastProps = (PersistentToastProps | NormalToastProps) & {
+export type ToastProps = {
 	title: string;
 	description?: string;
 	type: 'success' | 'warning' | 'danger' | 'info';
 	duration?: number;
+	persistent?: boolean;
+	closeButton?: boolean;
 };

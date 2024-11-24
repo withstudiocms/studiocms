@@ -60,18 +60,18 @@ import { makePageTitle } from '../utils';
 
             <Divider />
 
-            <Input name="og-image" id="og-image" label="OG Image URL" placeholder="Coming Soon" disabled />
+            <Input name="og-image" id="og-image" label="OG Image URL" placeholder="Coming Soon" />
 
             <Divider />
 
-            <Switch name="local-setup" id="local-setup" value="1" size="medium" help-text="Would you like to setup a local Admin User or OAuth User?">
+            <Switch name="local-setup" id="local-setup" value="1" checked size="medium" help-text="Would you like to setup a local Admin User or OAuth User?">
               <div class="textlabelinput">
                 <Icon src={personExclamation.src} />
-                Setup Local Admin User?
+                Setup Local Admin User? (OAuth system disabled)
               </div>
             </Switch>
             
-            <Details id="local-admin">
+            <Details id="local-admin" open>
               <div class="textlabelinput" slot="summary">
                 <Icon src={personAdd.src} /> 
                 Local Admin Setup
@@ -85,10 +85,14 @@ import { makePageTitle } from '../utils';
 
               <Divider />
 
+              <Input name="local-admin-email" id="local-admin-email" label="Email for Primary Admin" />
+
+              <Divider />
+
               <Input type="password" name="local-admin-password" id="local-admin-password" label="Password" password-toggle />
             </Details>
 
-            <Details id="oauth-admin" open>
+            <Details id="oauth-admin" disabled>
               <div class="textlabelinput" slot="summary"><Icon src={personRolodex.src} /> oAuth Admin Setup</div>
               <Input name="oauth-admin-name" id="oauth-admin-name" placeholder="Username of Primary Admin (ex. GithubUsername)" label='Username of Primary Admin (ex. GithubUsername)' helpText='( Just set one, You can add more later )' />
             </Details>

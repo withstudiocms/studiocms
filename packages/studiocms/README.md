@@ -39,9 +39,9 @@ StudioCMS is built from the ground up to seamlessly integrate with Astro's robus
 
 ## A Community-Driven Effort
 
-At the heart of Astrolicious is a deep commitment to community involvement and collaboration. We believe that the development of StudioCMS should be a collective effort, drawing on the diverse talents and perspectives of the Astro community.
+We believe that the development of StudioCMS should be a collective effort, drawing on the diverse talents and perspectives of the Astro community.
 
-To that end, we've handed the repository Astrolicious as an open organization, welcoming contributors of all skill levels to get involved and help shape the future of this CMS. Whether you're a seasoned Astro developer or new to the ecosystem, we encourage you to join our [Discord server](https://chat.studiocms.xyz/) and explore ways to contribute.
+To that end, we are welcoming contributors of all skill levels to get involved and help shape the future of this CMS. Whether you're a seasoned Astro developer or new to the ecosystem, we encourage you to join our [Discord server](https://chat.studiocms.dev/) and explore ways to contribute.
 
 By fostering a sense of shared ownership and investment, we aim to create a CMS that truly reflects the needs and desires of the Astro community. Your feedback, ideas, and code contributions will be invaluable as we work to build a feature-rich and user-friendly content management solution for Astro.
 
@@ -49,8 +49,8 @@ So don't be a stranger - come join us on this journey and help us realize the fu
 
 ## Get Started
 
-Follow the documentation to [get started with StudioCMS](https://docs.studiocms.xyz/start-here/getting-started).
+Follow the documentation to [get started with StudioCMS](https://docs.studiocms.dev/start-here/getting-started).
 
 ## Get Involved
 
-As members of [Astrolicious](https://github.com/astrolicious) we are a free and open-source project, and we welcome contributions from the Astro community. If you're interested in getting involved, please visit our [GitHub repository](https://github.com/astrolicious/studiocms) and join our [Discord server](https://chat.studiocms.xyz/). Together, let's build an even stronger and more vibrant Astro ecosystem.
+As members of [withstudiocms](https://github.com/withstudiocms) we are a free and open-source project, and we welcome contributions from the Astro community. If you're interested in getting involved, please visit our [GitHub repository](https://github.com/withstudiocms/studiocms) and join our [Discord server](https://chat.studiocms.dev/). Together, let's build an even stronger and more vibrant Astro ecosystem.

@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**", "**/ogBackgrounds/**"]
+    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**"]
   },
   "formatter": {
     "lineWidth": 100,
@@ -31,7 +31,10 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
     }
   },
   "overrides": [

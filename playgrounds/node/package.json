@@ -22,6 +22,9 @@
     "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:",
     "studiocms": "workspace:*",
-    "@studiocms/blog": "workspace:*"
+    "sharp": "catalog:",
+    "@studiocms/blog": "workspace:*",
+    "@studiocms/devapps": "workspace:*",
+    "@sentry/astro": "^8.38.0"
   }
 }

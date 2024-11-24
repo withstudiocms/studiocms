@@ -3,6 +3,7 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "allowJs": true,
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]

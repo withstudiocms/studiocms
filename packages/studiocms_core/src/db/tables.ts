@@ -9,15 +9,18 @@ export const StudioCMSUsers = defineTable({
 		name: column.text(),
 		email: column.text({ unique: true, optional: true }),
 		avatar: column.text({ optional: true }),
-		githubId: column.number({ unique: true, optional: true }),
-		githubURL: column.text({ optional: true }),
-		discordId: column.text({ unique: true, optional: true }),
-		googleId: column.text({ unique: true, optional: true }),
-		auth0Id: column.text({ unique: true, optional: true }),
 		username: column.text(),
 		password: column.text({ optional: true }),
 		updatedAt: column.date({ default: NOW, optional: true }),
 		createdAt: column.date({ default: NOW, optional: true }),
+	},
+});
+
+export const StudioCMSOAuthAccounts = defineTable({
+	columns: {
+		provider: column.text(), // github, google, discord, auth0
+		providerUserId: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 	},
 });
 
@@ -27,6 +30,14 @@ export const StudioCMSSessionTable = defineTable({
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id, optional: false }),
 		expiresAt: column.date(),
+	},
+});
+
+/** StudioCMS - Permissions Table for Astro DB */
+export const StudioCMSPermissions = defineTable({
+	columns: {
+		user: column.text({ references: () => StudioCMSUsers.columns.id }),
+		rank: column.text(),
 	},
 });
 
@@ -46,6 +57,29 @@ export const StudioCMSPageData = defineTable({
 			default:
 				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 		}),
+		catagories: column.json({ default: [], optional: true }),
+		tags: column.json({ default: [], optional: true }),
+	},
+});
+
+export const StudioCMSPageDataTags = defineTable({
+	columns: {
+		id: column.number({ primaryKey: true }),
+		description: column.text(),
+		name: column.text(),
+		slug: column.text(),
+		meta: column.json({ default: {} }),
+	},
+});
+
+export const StudioCMSPageDataCategories = defineTable({
+	columns: {
+		id: column.number({ primaryKey: true }),
+		parent: column.number({ optional: true }),
+		description: column.text(),
+		name: column.text(),
+		slug: column.text(),
+		meta: column.json({ default: {} }),
 	},
 });
 
@@ -65,13 +99,9 @@ export const StudioCMSSiteConfig = defineTable({
 		id: column.number({ primaryKey: true }),
 		title: column.text(),
 		description: column.text(),
-	},
-});
-
-/** StudioCMS - Permissions Table for Astro DB */
-export const StudioCMSPermissions = defineTable({
-	columns: {
-		username: column.text(),
-		rank: column.text(),
+		defaultOgImage: column.text({ optional: true }),
+		siteIcon: column.text({ optional: true }),
+		loginPageBackground: column.text({ default: 'studiocms-curves' }),
+		loginPageCustomImage: column.text({ optional: true }),
 	},
 });

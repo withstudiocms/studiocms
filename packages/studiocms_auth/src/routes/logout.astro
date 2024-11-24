@@ -1,0 +1,33 @@
+---
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import { getLangFromUrl, staticPaths, useTranslations } from 'studiocms:i18n';
+import type { GetStaticPaths } from 'astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, '@studiocms/auth:logout');
+
+export const getStaticPaths = (() => {
+	const paths = staticPaths();
+	return paths;
+}) satisfies GetStaticPaths;
+
+const {
+	authLinks: { logoutAPI },
+} = StudioCMSRoutes;
+---
+<AuthLayout title={t('title')} description={t('description')} lang={lang} disableScreen>
+
+</AuthLayout>
+
+<div style="display: none;" id="redirect-to-logout" data-redirect={logoutAPI}></div>
+
+<script>
+
+	const redirectElement = document.getElementById('redirect-to-logout') as HTMLDivElement;
+	const redirect = redirectElement.getAttribute('data-redirect') as string;
+
+	setTimeout(() => {
+		window.location.href = redirect;
+	}, 500);
+</script>

@@ -4,9 +4,25 @@ import type { AstroIntegrationLogger } from 'astro';
 import { loadEnv } from 'vite';
 import type { StudioCMSAuthOptions } from '../schema';
 
-const KeyList = {
+const env = loadEnv('all', process.cwd(), 'CMS');
+
+type KeyListType = Record<
+	string,
+	{
+		Keys: string[];
+		optionalKeys?: string[];
+		messages: { CheckMessage: string; ErrorMessage: string };
+	}
+>;
+
+const keyList: KeyListType = {
+	EncryptionKey: {
+		Keys: ['CMS_ENCRYPTION_KEY'],
+		messages: CheckENVStrings.EncryptionMessages,
+	},
 	Github: {
 		Keys: ['CMS_GITHUB_CLIENT_ID', 'CMS_GITHUB_CLIENT_SECRET'],
+		optionalKeys: ['CMS_GITHUB_REDIRECT_URI'],
 		messages: CheckENVStrings.GithubMessages,
 	},
 	Discord: {
@@ -28,7 +44,34 @@ const KeyList = {
 	},
 };
 
-const env = loadEnv('all', process.cwd(), 'CMS');
+function matchAvailableProviders(providers: {
+	github: boolean;
+	discord: boolean;
+	google: boolean;
+	auth0: boolean;
+}) {
+	const { github, discord, google, auth0 } = providers;
+
+	const enabledProviders = ['EncryptionKey'];
+
+	if (github) {
+		enabledProviders.push('Github');
+	}
+
+	if (discord) {
+		enabledProviders.push('Discord');
+	}
+
+	if (google) {
+		enabledProviders.push('Google');
+	}
+
+	if (auth0) {
+		enabledProviders.push('Auth0');
+	}
+
+	return enabledProviders;
+}
 
 export const checkEnvKeys = async (
 	logger: AstroIntegrationLogger,
@@ -44,90 +87,44 @@ export const checkEnvKeys = async (
 	const infoLogger = (message: string) => {
 		integrationLogger({ logger, logLevel: 'info', verbose }, message);
 	};
+
 	const warnLogger = (message: string) => {
-		integrationLogger({ logger, logLevel: 'warn', verbose }, message);
+		integrationLogger({ logger, logLevel: 'warn', verbose: true }, message);
 	};
 
 	infoLogger(CheckENVStrings.CheckStart);
 
-	const { github, discord, google, auth0 } = providers;
+	const enabledProviders = matchAvailableProviders(providers);
 
-	const {
-		Github: GithubKeys,
-		Discord: DiscordKeys,
-		Google: GoogleKeys,
-		Auth0: Auth0Keys,
-	} = KeyList;
+	for (const provider of enabledProviders) {
+		const ProviderItem = keyList[provider];
 
-	// List of all currently missing keys
-	const missingKeys: string[] = [];
+		if (!ProviderItem) {
+			continue;
+		}
 
-	// Check for Github Environment Variables
-	const missingGithubKeys: string[] = [];
-	if (github) {
-		infoLogger(GithubKeys.messages.CheckMessage);
-		// biome-ignore lint/complexity/noForEach: This is a simple loop
-		GithubKeys.Keys.forEach((key) => {
+		const { messages, Keys, optionalKeys } = ProviderItem;
+
+		infoLogger(messages.CheckMessage);
+
+		const missingProviderKeys: string[] = [];
+
+		for (const key of Keys) {
 			if (!env[key]) {
-				missingGithubKeys.push(key);
-				missingKeys.push(key);
+				missingProviderKeys.push(key);
 			}
-		});
-		if (missingGithubKeys.length > 0) {
-			warnLogger(`${GithubKeys.messages.ErrorMessage} ${missingGithubKeys.join(', ')}`);
+		}
+
+		for (const key of optionalKeys || []) {
+			if (!env[key]) {
+				warnLogger(`The following optional key is missing and may or may not be required: ${key}`);
+			}
+		}
+
+		if (missingProviderKeys.length > 0) {
+			warnLogger(`${messages.ErrorMessage} ${missingProviderKeys.join(', ')}`);
 		}
 	}
 
-	// Check for Discord Environment Variables
-	const missingDiscordKeys: string[] = [];
-	if (discord) {
-		infoLogger(DiscordKeys.messages.CheckMessage);
-		// biome-ignore lint/complexity/noForEach: This is a simple loop
-		DiscordKeys.Keys.forEach((key) => {
-			if (!env[key]) {
-				missingDiscordKeys.push(key);
-				missingKeys.push(key);
-			}
-		});
-		if (missingDiscordKeys.length > 0) {
-			warnLogger(`${DiscordKeys.messages.ErrorMessage} ${missingDiscordKeys.join(', ')}`);
-		}
-	}
-
-	// Check for Google Environment Variables
-	const missingGoogleKeys: string[] = [];
-	if (google) {
-		infoLogger(GoogleKeys.messages.CheckMessage);
-		// biome-ignore lint/complexity/noForEach: This is a simple loop
-		GoogleKeys.Keys.forEach((key) => {
-			if (!env[key]) {
-				missingGoogleKeys.push(key);
-				missingKeys.push(key);
-			}
-		});
-		if (missingGoogleKeys.length > 0) {
-			warnLogger(`${GoogleKeys.messages.ErrorMessage} ${missingGoogleKeys.join(', ')}`);
-		}
-	}
-
-	// Check for Auth0 Environment Variables
-	const missingAuth0Keys: string[] = [];
-	if (auth0) {
-		infoLogger(Auth0Keys.messages.CheckMessage);
-		// biome-ignore lint/complexity/noForEach: This is a simple loop
-		Auth0Keys.Keys.forEach((key) => {
-			if (!env[key]) {
-				missingAuth0Keys.push(key);
-				missingKeys.push(key);
-			}
-		});
-		if (missingAuth0Keys.length > 0) {
-			warnLogger(`${Auth0Keys.messages.ErrorMessage} ${missingAuth0Keys.join(', ')}`);
-		}
-	}
-
-	// If all Environment Variables are set log an info message
-	if (missingKeys.length === 0) {
-		infoLogger(CheckENVStrings.CheckComplete);
-	}
+	infoLogger(CheckENVStrings.CheckComplete);
 };

@@ -7,18 +7,33 @@ import ReadMore from '~/components/ReadMore.astro'
 
 StudioCMS comes with a few built-in renderers that you can use to render your content. These renderers are built to be extendable and customizable to fit your needs.
 
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'marked',
+    markedConfig: {},
+    markdocConfig: {},
+    mdxConfig: {},
+  },
+})
+```
+
 ## Marked Renderer
 
 The default renderer for StudioCMS is the `marked` renderer. This renderer is used to render markdown content into HTML. This renderer is used by default when no other renderer is specified.
 
 ### Usage
 
-```js title="astro.config.mjs" {3}
-  studioCMS({
-      rendererConfig: {
-        renderer: 'marked'
-      },
-  })
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'marked'
+  },
+})
 ```
 
 ### Configuration
@@ -31,12 +46,14 @@ Custom MDX renderer that allows the end user to provide a highly customizable MD
 
 ### Usage
 
-```js title="astro.config.mjs" {3}
-  studioCMS({
-      rendererConfig: {
-        renderer: 'mdx'
-      },
-  })
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'mdx'
+  },
+})
 ```
 
 ### Configuration
@@ -49,12 +66,14 @@ In addition to `Marked`, StudioCMS provides an alternative with Markdoc, offerin
 
 ### Usage
 
-```js title="astro.config.mjs" {3}
-  studioCMS({
-      rendererConfig: {
-        renderer: 'markdoc'
-      },
-  })
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'markdoc'
+  },
+})
 ```
 
 ### Configuration
@@ -73,14 +92,40 @@ The default Astro renderer for their markdown content. This renderer adapts the 
 
 ### Usage
 
-```js title="astro.config.mjs" {3}
-  studioCMS({
-      rendererConfig: {
-        renderer: 'astro'
-      },
-  })
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'astro'
+  },
+})
 ```
 
 ### Configuration
 
 <ReadMore>See [Astro's Markdown Configuration](https://docs.astro.build/en/reference/configuration-reference/#markdown-options) for more information on how to configure the Astro Remark renderer.</ReadMore>
+
+## Define a Custom Renderer
+
+StudioCMS allows you to define custom renderers for your content. This allows you to define custom rendering logic for your content. Custom renderers can be used to render content in a way that is not supported by the built-in renderers, such as raw HTML, or another custom format.
+
+### Usage
+
+```ts twoslash {11} title="studiocms.config.mjs"
+import { defineStudioCMSConfig, type CustomRenderer } from 'studiocms';
+// ---cut---
+const customRenderer: CustomRenderer = {
+  name: 'CustomRenderer',
+  renderer: async (content: string) => {
+    // Custom rendering logic here
+    return content;
+  },
+};
+
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: customRenderer
+  },
+})
+```

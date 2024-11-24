@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 2,
-  "feature": "Enhanced Markdown",
-  "description": "Incorporates 'Marked' with support for extensions, enriching the markdown experience with greater flexibility and functionality.",
-  "icon": "markdown"
-}

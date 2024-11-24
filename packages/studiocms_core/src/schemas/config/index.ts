@@ -4,12 +4,22 @@ import { dashboardConfigSchema } from './dashboard';
 import { DefaultFrontEndConfigSchema } from './defaultFrontend';
 import { imageServiceSchema } from './imageService';
 import { includedIntegrationsSchema } from './integrations';
-import { type StudioCMSRendererConfig, StudioCMSRendererConfigSchema } from './rendererConfig';
+import {
+	type CustomRenderer,
+	type Renderer,
+	type StudioCMSRendererConfig,
+	StudioCMSRendererConfigSchema,
+} from './rendererConfig';
 
 //
 // Exported Schemas for use in other internal packages
 //
-export { StudioCMSRendererConfigSchema, type StudioCMSRendererConfig };
+export {
+	StudioCMSRendererConfigSchema,
+	type StudioCMSRendererConfig,
+	type CustomRenderer,
+	type Renderer,
+};
 export { dashboardConfigSchema, DefaultFrontEndConfigSchema, imageServiceSchema, overridesSchema };
 
 //
@@ -64,4 +74,5 @@ export const StudioCMSOptionsSchema = z
 	.optional()
 	.default({});
 
-export type StudioCMSOptions = z.infer<typeof StudioCMSOptionsSchema>;
+export type StudioCMSOptions = typeof StudioCMSOptionsSchema._input;
+export type StudioCMSConfig = typeof StudioCMSOptionsSchema._output;

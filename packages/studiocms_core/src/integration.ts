@@ -5,6 +5,7 @@ import { version } from '../package.json';
 import { name } from '../package.json';
 import { StudioCMSOptionsSchema as optionsSchema } from './schemas';
 import { CoreStrings } from './strings';
+import { i18nDTSOutput } from './stubs/i18n-dts';
 import { coreVirtualModuleGeneration } from './utils/coreVirtualModules';
 
 export default defineIntegration({
@@ -49,6 +50,7 @@ export default defineIntegration({
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject the DTS File
 					injectTypes(coreDtsFile);
+					injectTypes(i18nDTSOutput);
 				},
 			},
 		};

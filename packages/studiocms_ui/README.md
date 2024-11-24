@@ -2,7 +2,7 @@
 
 This is the UI library that we use to build StudioCMS.
 
-All of these components can be tested [here](https://ui-testing.studiocms.xyz).
+All of these components can be tested [here](https://ui-testing.studiocms.dev).
 
 ## Components & how to use them
 All components are exported from `@studiocms/ui/components`.

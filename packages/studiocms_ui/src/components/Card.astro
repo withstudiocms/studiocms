@@ -1,0 +1,62 @@
+---
+import type { HTMLTag, Polymorphic } from 'astro/types';
+
+type Props<As extends HTMLTag = 'div'> = Omit<Polymorphic<{ as: As }>, 'as'> & {
+	as?: As;
+	class?: string;
+	fullWidth?: boolean;
+	fullHeight?: boolean;
+};
+
+const { as: As = 'div', class: className, fullWidth, fullHeight, ...props } = Astro.props;
+---
+<As class="card" {...props} class:list={[fullWidth && "full-w", fullHeight && "full-h", className]}>
+  <div class="card-header">
+    <slot name="header" />
+  </div>
+  <div class="card-body">
+    <slot />
+  </div>
+  <div class="card-footer">
+    <slot name="footer" />
+  </div>
+</As>
+<style>
+  .card {
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background-base));
+    border-radius: .5rem;
+    width: fit-content;
+    height: fit-content;
+  }
+
+  .card.full-w {
+    width: 100%;
+  }
+
+  .card.full-h {
+    height: 100%;
+  }
+
+  .card-header:has(*) {
+    padding: 1rem 1rem 0rem 1rem;
+    * {
+      margin: 0;
+    }
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .card-footer:has(*) {
+    border-top: 1px solid hsl(var(--border));
+    padding: 1rem;
+  }
+
+  @media screen and (max-width: 840px) {
+    .card {
+      width: 100%;
+    }
+  }
+</style>

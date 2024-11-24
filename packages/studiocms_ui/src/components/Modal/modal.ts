@@ -6,7 +6,7 @@ class ModalHelper {
 	private isForm = false;
 	private modalForm: HTMLFormElement;
 
-	constructor(id: string) {
+	constructor(id: string, triggerID?: string) {
 		const element = document.getElementById(id) as HTMLDialogElement;
 
 		if (!element) {
@@ -26,10 +26,14 @@ class ModalHelper {
 		if (isForm) this.isForm = true;
 
 		this.addButtonListeners(id, isDismissable);
+
+		if (triggerID) {
+			this.bindTrigger(triggerID);
+		}
 	}
 
 	private addButtonListeners = (id: string, dismissable: boolean) => {
-		if (dismissable) {
+		if (dismissable || !this.element.dataset.buttons) {
 			const xMarkButton = document.getElementById(`${id}-btn-x`) as HTMLButtonElement;
 			xMarkButton.addEventListener('click', this.hide);
 		}

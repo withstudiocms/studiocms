@@ -9,116 +9,45 @@ export interface Props {
 }
 
 const { galleryImages } = Astro.props;
-
-const galleryImagesMinusFirst = galleryImages.slice(1);
 ---
-
-<sl-carousel class="carousel-thumbnails" navigation loop>
-  {
-    galleryImages.map((image, index) => (
-      <sl-carousel-item id={index}>
-        <Image
-          src={image.imageMetadata}
-          alt={image.alt}
-          width="1280"
-          height="1900"
-        />
-      </sl-carousel-item>
-    ))
-  }
-</sl-carousel>
-
-<div class="thumbnails">
-  <div class="thumbnails__scroller">
-    <Image 
-      src={galleryImages[0].imageMetadata}
-      alt={galleryImages[0].alt + ' ' + 'thumbnail'}
-      width="64"
-      height="64"
-      class="thumbnails__image active"
-    />
-    {
-      galleryImagesMinusFirst.map((image) => (
-        <Image
-          class="thumbnails__image"
-          src={image.imageMetadata}
-          alt={image.alt + ' ' + 'thumbnail'}
-          width="64"
-          height="64"
-        />
-      ))
-    }
-  </div>
+<div class="grid not-content">
+  {galleryImages.map((image) => (
+    <starlight-image-zoom-zoomable>
+      <Image
+        src={image.imageMetadata}
+        alt={image.alt}
+        width="1280"
+        height="1900"
+        class="image"
+      />
+    </starlight-image-zoom-zoomable>
+  ))}
 </div>
 
-<script>
-  import type { SlCarousel } from '@shoelace-style/shoelace';
-  import '@shoelace-style/shoelace/dist/components/carousel/carousel.js';
-
-  const carousel = document.querySelector('.carousel-thumbnails') as SlCarousel;
-  const scroller = document.querySelector('.thumbnails__scroller') as HTMLElement;
-  const thumbnails = document.querySelectorAll('.thumbnails__image') as NodeListOf<HTMLElement>;
-
-  scroller?.addEventListener('click', e => {
-    const target = e.target as HTMLElement;
-
-    if (target?.matches('.thumbnails__image')) {
-      const index = [...thumbnails].indexOf(target);
-      carousel.goToSlide(index);
-    }
-  });
-
-  carousel?.addEventListener('sl-slide-change', e => {
-    const slideIndex = e.detail.index;
-
-    [...thumbnails].forEach((thumb, i) => {
-      thumb.classList.toggle('active', i === slideIndex);
-      if (i === slideIndex) {
-        thumb.scrollIntoView({
-          block: 'nearest'
-        });
-      }
-    });
-  });
-</script>
-
 <style>
-  .carousel-thumbnails {
-    --slide-aspect-ratio: 3 / 2;
-  }
-
-  .thumbnails {
-    display: flex;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto); /* only 3 here */
+    /* grid-auto-rows: 100px; */
+    grid-auto-flow: dense; /* don't forget this */
+    gap: 1rem;
     justify-content: center;
   }
-
-  .thumbnails__scroller {
-    display: flex;
-    /* gap: var(--sl-spacing-small); */
-    gap: 1rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
-    scroll-padding: var(--sl-spacing-small);
+  
+  .image {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: pointer;
   }
-
-  .thumbnails__scroller::-webkit-scrollbar {
-    display: none;
-  }
-
-  .thumbnails__image {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
-
-    opacity: 0.3;
-    will-change: opacity;
-    transition: 250ms opacity;
-
+</style>
+<style is:global>
+  .starlight-image-zoom-control {
+    transition: all .15s ease;
     cursor: pointer;
   }
 
-  .thumbnails__image.active {
-    opacity: 1;
+  .starlight-image-zoom-control:hover {
+    background-color: var(--sl-color-gray-5);
   }
 </style>

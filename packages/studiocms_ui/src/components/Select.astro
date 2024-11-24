@@ -1,0 +1,334 @@
+---
+import Icon from "../utils/Icon.astro";
+import { generateID } from "../utils/generateID";
+
+type Option = {
+    label: string;
+    value: string;
+    disabled?: boolean;
+};
+
+type Props = {
+    label?: string;
+    defaultValue?: string;
+    class?: string;
+    name?: string;
+    isRequired?: boolean;
+    options: Option[];
+    disabled?: boolean;
+    fullWidth?: boolean;
+};
+
+const {
+    label,
+    defaultValue,
+    class: className,
+    name = generateID("select"),
+    isRequired,
+    options = [],
+    disabled,
+    fullWidth,
+} = Astro.props;
+---
+
+<div
+    id={`${name}-container`}
+    class="select-label"
+    class:list={[disabled && "disabled", className, fullWidth && "full"]}
+>
+    <label class="label" for={`${name}-select-btn`}>
+        {label}
+        <span class="req-star">{isRequired && "*"}</span>
+    </label>
+    <button
+        class="select-button"
+        role="combobox"
+        id={`${name}-select-btn`}
+        type="button"
+    >
+        <span id={`${name}-value-span`}>
+            {
+                defaultValue
+                    ? options.find((x) => x.value === defaultValue)?.label
+                    : "Select"
+            }
+        </span>
+        <Icon name="chevron-up-down" width={20} height={20} />
+    </button>
+    <ul class="select-dropdown" role="listbox" id={`${name}-dropdown`}>
+        {
+            options.map((x, i) => (
+                <li
+                    class="select-option"
+                    role="option"
+                    value={x.value}
+                    class:list={[
+                        defaultValue === x.value && `selected`,
+                        x.disabled && "disabled",
+                    ]}
+                    id={defaultValue === x.value ? `${name}-selected` : ""}
+                    data-option-index={i}
+                    tabindex={x.disabled ? -1 : 0}
+                >
+                    {x.label}
+                </li>
+            ))
+        }
+    </ul>
+    <select class="hidden-select" id={name} name={name} required={isRequired}>
+        <option value={""}> Select </option>
+        {
+            options.map((x) => (
+                <option
+                    value={x.value}
+                    selected={defaultValue === x.value}
+                    disabled={x.disabled}
+                >
+                    {x.label}
+                </option>
+            ))
+        }
+    </select>
+</div>
+<script is:inline define:vars={{ id: name, options }}>
+    const container = document.getElementById(`${id}-container`);
+    const hiddenSelect = document.getElementById(id);
+    const button = document.getElementById(`${id}-select-btn`);
+    const valueSpan = document.getElementById(`${id}-value-span`);
+    const dropdown = document.getElementById(`${id}-dropdown`);
+    const optionElements = container.querySelectorAll("li");
+
+    let active = false;
+
+    button.addEventListener("click", () => {
+        const { bottom, left, right, width, x, y, height } =
+            button.getBoundingClientRect();
+
+        const optionHeight = 36;
+        const totalBorderSize = 2;
+        const margin = 4;
+
+        const dropdownHeight =
+            options.length * optionHeight + totalBorderSize + margin;
+
+        const CustomRect = {
+            top: bottom + margin,
+            left,
+            right,
+            bottom: bottom + margin + dropdownHeight,
+            width,
+            height: dropdownHeight,
+            x,
+            y: y + height + margin,
+        };
+
+        if (active) {
+            dropdown.classList.remove("active", "above");
+            active = false;
+            return;
+        }
+
+        active = true;
+
+        if (
+            CustomRect.top >= 0 &&
+            CustomRect.left >= 0 &&
+            CustomRect.bottom <=
+                (window.innerHeight || document.documentElement.clientHeight) &&
+            CustomRect.right <=
+                (window.innerWidth || document.documentElement.clientWidth)
+        ) {
+            dropdown.classList.add("active");
+        } else {
+            dropdown.classList.add("active", "above");
+        }
+    });
+
+    optionElements.forEach((option) => {
+        const handleSelection = (e) => {
+            e.stopImmediatePropagation();
+            if (option.id === `${id}-selected` || !id) return;
+
+            const currentlySelected = document.getElementById(`${id}-selected`);
+
+            if (currentlySelected) {
+                currentlySelected.classList.remove("selected");
+                currentlySelected.id = "";
+            }
+
+            option.id = `${id}-selected`;
+            option.classList.add("selected");
+
+            const opt = options[parseInt(option.dataset.optionIndex)];
+            hiddenSelect.value = opt.value;
+
+            valueSpan.textContent = opt.label;
+            dropdown.classList.remove("active", "above");
+
+            active = false;
+        }
+
+        option.addEventListener("click", handleSelection);
+        option.addEventListener("keydown", (e) => {
+            if (e.key === 'Enter') {
+                handleSelection(e);
+            }
+        });
+    });
+
+    window.addEventListener("scroll", () => {
+        dropdown.classList.remove("active", "above");
+        active = false;
+    });
+
+    hideOnClickOutside(container);
+
+    function hideOnClickOutside(element) {
+        const outsideClickListener = (event) => {
+            if (
+                !element.contains(event.target) &&
+                isVisible(element) &&
+                active === true
+            ) {
+                // or use: event.target.closest(selector) === null
+                dropdown.classList.remove("active", "above");
+                active = false;
+            }
+        };
+
+        const removeClickListener = () => {
+            document.removeEventListener("click", outsideClickListener);
+        };
+
+        document.addEventListener("click", outsideClickListener);
+    }
+
+    // source (2018-03-11): https://github.com/jquery/jquery/blob/master/src/css/hiddenVisibleSelectors.js
+    const isVisible = (elem) =>
+        !!elem &&
+        !!(
+            elem.offsetWidth ||
+            elem.offsetHeight ||
+            elem.getClientRects().length
+        );
+</script>
+<style>
+    .select-label {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 200px;
+        position: relative;
+    }
+
+    .select-label.full {
+        width: 100%;
+    }
+
+    .select-label.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        color: hsl(var(--text-muted));
+    }
+
+    .label {
+        font-size: 14px;
+    }
+
+    .req-star {
+        color: hsl(var(--danger-base));
+        font-weight: 700;
+    }
+
+    .select-button {
+        padding: 0.5rem 0.75rem 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid hsl(var(--border));
+        background: hsl(var(--background-step-2));
+        color: hsl(var(--text-normal));
+        transition: all 0.15s ease;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        gap: 1rem;
+    }
+
+    .select-button:hover {
+        background: hsl(var(--background-step-3));
+    }
+
+    .select-button.active,
+    .select-button:active,
+    .select-button:has(+ .select-dropdown.active) {
+        border: 1px solid hsl(var(--primary-base));
+        background: hsl(var(--background-step-2));
+    }
+
+    .select-dropdown {
+        position: absolute;
+        width: 100%;
+        border: 1px solid hsl(var(--border));
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex-direction: column;
+        border-radius: 0.5rem;
+        background-color: hsl(var(--background-step-2));
+        overflow: hidden;
+        top: calc(100% + 0.25rem);
+        left: 0;
+        display: none;
+        z-index: 90;
+        box-shadow: 0px 4px 8px hsl(var(--shadow), 0.5);
+    }
+
+    .select-dropdown.active {
+        display: flex;
+    }
+
+    .select-dropdown.above {
+        top: auto;
+        bottom: calc(100% - 18px + 0.25rem);
+    }
+
+    .select-option {
+        padding: 0.5rem;
+        cursor: pointer;
+        font-size: 0.975em;
+        transition: all 0.15s ease;
+    }
+
+    .select-option.disabled {
+        pointer-events: none;
+        color: hsl(var(--text-muted));
+    }
+
+    .select-option:hover, .select-option:focus {
+        background-color: hsl(var(--background-step-3));
+    }
+
+    .select-option:focus {
+        outline: none;
+        border: none;
+    }
+
+    .select-option.selected {
+        background-color: hsl(var(--primary-base));
+        color: hsl(var(--text-inverted));
+        cursor: default;
+    }
+
+    .hidden-select {
+        height: 0;
+        width: 0;
+        border: none;
+        outline: none;
+        position: absolute;
+        background-color: transparent;
+        pointer-events: none;
+        opacity: 0;
+    }
+</style>
