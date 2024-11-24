@@ -3,7 +3,7 @@
   "name": "@studiocms/blog",
   "description": "Astro integration that enables the Blog feature in your Astro project.",
   "docsLink": "/package-catalog/studiocms-integrations/studiocms-blog/",
-  "githubURL": "https://github.com/astrolicious/studiocms/tree/main/packages/studiocms_blog/",
+  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_blog/",
   "catalog": "studiocms",
   "isPlugin": true
 }

@@ -23,7 +23,7 @@ export function makeTypedocOpts(o: {
 		pagination: true,
 		typeDoc: {
 			skipErrorChecking: true,
-			gitRemote: 'https://github.com/astrolicious/studiocms/blob',
+			gitRemote: 'https://github.com/withstudiocms/studiocms/blob',
 			gitRevision: 'main',
 			includeVersion: true,
 			expandObjects: true,
@@ -32,7 +32,7 @@ export function makeTypedocOpts(o: {
 			useHTMLAnchors: true,
 			sourceLinkExternal: true,
 			sourceLinkTemplate:
-				'https://github.com/astrolicious/studiocms/blob/{gitRevision}/{path}#L{line}',
+				'https://github.com/withstudiocms/studiocms/blob/{gitRevision}/{path}#L{line}',
 		},
 	};
 }

@@ -4,11 +4,11 @@
   "description": "The UI library for StudioCMS. Includes the layouts & components we use to build StudioCMS.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astrolicious/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git"
   },
   "author": {
     "name": "Louis Escher",
-    "url": "https://studiocms.xyz"
+    "url": "https://studiocms.dev"
   },
   "contributors": [
     "louisescher"
@@ -18,7 +18,7 @@
     "cms",
     "studiocms"
   ],
-  "homepage": "https://studiocms.xyz",
+  "homepage": "https://studiocms.dev",
   "publishConfig": {
     "access": "public"
   },

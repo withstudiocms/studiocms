@@ -4,13 +4,13 @@ import { defineConfig } from 'astro/config';
 import JS from 'shiki/langs/javascript.mjs';
 import TSX from 'shiki/langs/tsx.mjs';
 import starlightImageZoom from 'starlight-image-zoom';
-import getCoolifyURL from '../hostUtils';
+import getCoolifyURL from './hostUtils';
 import rehypePluginKit from './src/plugins/rehypePluginKit';
 import { transformerKit } from './src/shiki';
 import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config';
 
 // Define the Site URL
-const site = getCoolifyURL(true) || 'https://docs.studiocms.xyz/';
+const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';
 
 export default defineConfig({
 	site,
@@ -53,11 +53,11 @@ export default defineConfig({
 				light: '../assets/logo-dark.svg',
 			},
 			social: {
-				github: 'https://github.com/astrolicious/studiocms',
-				discord: 'https://chat.studiocms.xyz',
+				github: 'https://github.com/withstudiocms/studiocms',
+				discord: 'https://chat.studiocms.dev',
 				youtube: 'https://www.youtube.com/@StudioCMS',
-				'x.com': 'https://x.com/_studiocms',
-				blueSky: 'https://bsky.app/profile/studiocms.xyz',
+				'x.com': 'https://x.com/withstudiocms',
+				blueSky: 'https://bsky.app/profile/studiocms.dev',
 			},
 			customCss: [
 				'@shikijs/twoslash/style-rich.css',
@@ -68,17 +68,17 @@ export default defineConfig({
 				'./src/styles/twoslash.css',
 			],
 			editLink: {
-				baseUrl: 'https://github.com/astrolicious/studiocms/tree/main/www/docs',
+				baseUrl: 'https://github.com/withstudiocms/studiocms/tree/main/www/docs',
 			},
 			head: [
-				{
-					tag: 'script',
-					attrs: {
-						src: 'https://analytics.studiocms.xyz/script.js',
-						'data-website-id': '00717cde-0d92-42be-8f49-8de0b1d810b2',
-						defer: true,
-					},
-				},
+				// {
+				// 	tag: 'script',
+				// 	attrs: {
+				// 		src: 'https://analytics.studiocms.xyz/script.js',
+				// 		'data-website-id': '00717cde-0d92-42be-8f49-8de0b1d810b2',
+				// 		defer: true,
+				// 	},
+				// },
 				{
 					tag: 'meta',
 					attrs: {
