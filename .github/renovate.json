@@ -11,7 +11,7 @@
   "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
   "labels": ["dependencies"],
   "additionalBranchPrefix": "{{parentDir}}-",
-  "gitIgnoredAuthors": ["no-reply@studiocms.xyz"],
+  "gitIgnoredAuthors": ["no-reply@studiocms.dev"],
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "reviewers": ["team:exalted"],
