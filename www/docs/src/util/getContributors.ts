@@ -133,10 +133,19 @@ const studiocmsUIPaths: string[] = ['packages/studiocms_ui/', 'playgrounds/ui/']
 
 const studiocmsDocsPaths: string[] = ['www/docs/'] as const;
 
-const studiocmsWebsitePaths: string[] = ['www/'] as const;
+const studiocmsWebsitePaths: string[] = ['src/', 'www/web/'] as const;
+
+const filterOutStudioCMSServiceAccounts = (c: Contributor[]) => {
+	const currentServiceAccounts = ['studiocms-no-reply'];
+
+	return c.filter((contributor) => !currentServiceAccounts.includes(contributor.login));
+};
 
 export async function getContributorBreakdown(githubRepo?: string): Promise<Breakdown[]> {
-	let repo = 'withstudiocms/studiocms';
+	const mainRepo = 'withstudiocms/studiocms';
+	const webRepo = 'withstudiocms/studiocms.dev';
+
+	let repo = mainRepo;
 
 	if (githubRepo) {
 		repo = githubRepo;
@@ -151,30 +160,42 @@ export async function getContributorBreakdown(githubRepo?: string): Promise<Brea
 		getContributorsByPath(studiocmsDevAppsPaths, repo),
 	]);
 
+	const newWebsite = await getContributorsByPath(studiocmsWebsitePaths, webRepo);
+
+	for (const contributor of newWebsite) {
+		const existingContributor = web.find((c) => c.id === contributor.id);
+
+		if (existingContributor) {
+			existingContributor.contributions += contributor.contributions;
+		} else {
+			web.push(contributor);
+		}
+	}
+
 	return [
 		{
 			name: 'StudioCMS Core Packages',
-			contributors: studiocms,
+			contributors: filterOutStudioCMSServiceAccounts(studiocms),
 		},
 		{
 			name: 'StudioCMS UI Library',
-			contributors: studiocms_ui,
+			contributors: filterOutStudioCMSServiceAccounts(studiocms_ui),
 		},
 		{
 			name: 'StudioCMS DevApps',
-			contributors: devapps,
+			contributors: filterOutStudioCMSServiceAccounts(devapps),
 		},
 		{
 			name: 'StudioCMS Plugins',
-			contributors: plugins,
+			contributors: filterOutStudioCMSServiceAccounts(plugins),
 		},
 		{
 			name: 'StudioCMS Documentation',
-			contributors: docs,
+			contributors: filterOutStudioCMSServiceAccounts(docs),
 		},
 		{
 			name: 'StudioCMS Website',
-			contributors: web,
+			contributors: filterOutStudioCMSServiceAccounts(web),
 		},
 	];
 }
