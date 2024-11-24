@@ -19,7 +19,7 @@ To see how to get started, check out the [StudioCMS README](./packages/studiocms
 
 ## StudioCMS Dashboard i18n Status
 
-<a href="https://i18n.studiocms.xyz/engage/studiocms/"><img src="https://i18n.studiocms.xyz/widget/studiocms/287x66-black.png" alt="Translation status" /></a>
+<a href="https://i18n.studiocms.dev/engage/studiocms/"><img src="https://i18n.studiocms.dev/widget/studiocms/287x66-black.png" alt="Translation status" /></a>
 
 ## Contributing
 
