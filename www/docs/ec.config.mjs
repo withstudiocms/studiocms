@@ -13,7 +13,7 @@ export default defineEcConfig({
 				compilerOptions: {
 					strict: true,
 					moduleResolution: 100,
-					target: ts.ScriptTarget.ES2022,
+					target: 99,
 					exactOptionalPropertyTypes: true,
 					downlevelIteration: true,
 					skipLibCheck: true,
