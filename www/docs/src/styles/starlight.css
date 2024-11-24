@@ -195,11 +195,3 @@ button[aria-label="Menu"][aria-controls="starlight__sidebar"] {
 a {
 	text-decoration: none;
 }
-
-aside.right-sidebar-container {
-	z-index: 8;
-}
-
-.main-pane {
-	z-index: 9;
-}

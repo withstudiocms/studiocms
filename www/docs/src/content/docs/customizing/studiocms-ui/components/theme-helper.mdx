@@ -14,6 +14,7 @@ you can provide callbacks for when the theme gets changed!
 The `ThemeHelper` can only be used client-side (in `<script>` tags).
 :::
 ```ts title="script.ts" twoslash
+// @noErrors
 import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.ts';
 
 // Instanciate a new helper
@@ -23,7 +24,6 @@ const themeHelper = new ThemeHelper();
 const theme = themeHelper.getTheme();
 
 // Get the current theme but resolve the actual theme if `system` is selected
-// @noErrors
 const resolvedTheme = themeHelper.getTheme(true);
 
 // Set the theme to light
@@ -44,6 +44,7 @@ whenever the color scheme changes, for example in a `three.js` canvas where you 
 (*\*cough cough\* our login page \*cough\**).
 
 ```ts title="script.ts" twoslash
+// @noErrors
 import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.ts';
 
 // Instanciate a new helper
@@ -73,6 +74,7 @@ open the navbar and scroll all the way down. After you've changed the theme, che
     </span>
     ```
     ```ts twoslash
+    // @noErrors
     import { ThemeHelper, type Theme } from '@studiocms/ui/utils/ThemeHelper.ts';
 
     // Instanciate a new helper
@@ -81,7 +83,6 @@ open the navbar and scroll all the way down. After you've changed the theme, che
     const outputSpan = document.querySelector<HTMLSpanElement>('#theme-listener-output')!;
 
     // Add a callback that gets called when the theme changes
-    // @noErrors
     themeHelper.onThemeChange((newTheme: Theme, oldTheme: Theme) => {
       // Your logic here!
       outputSpan.textContent = `Theme is now: ${newTheme}! (Before: ${oldTheme})`;
@@ -99,6 +100,7 @@ One of the few things the `ThemeHelper` does not do is saving the users theme pr
 As a starting point, here's a barebones example of how to implement this:
 
 ```ts twoslash
+// @noErrors
 import { ThemeHelper, type Theme } from '@studiocms/ui/utils/ThemeHelper.ts';
 
 const themeHelper = new ThemeHelper();

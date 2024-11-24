@@ -9,7 +9,7 @@ sidebar:
     variant: 'caution'
 ---
 
-import PackageManagers from '~/components/PackageManagers.astro';
+import { PackageManagers } from 'starlight-package-managers'
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 # Introduction
@@ -20,36 +20,36 @@ A Collection of useful tools available during dev mode in Astro.
 
 <Tabs syncKey='install-method'>
   <TabItem label="Astro Method" icon='astro'>
-<Steps>
+{/* <Steps> */}
 1. Install the package and add to your astro config using the following command:
 
    <PackageManagers type="exec" pkg="astro" args="add @studiocms/devapps" />
 
 2. Update your config file as shown under [Example Config](#example-config) below.
-</Steps>
+{/* </Steps> */}
   </TabItem>
   <TabItem label="Manual Method" icon='seti:powershell'>
-<Steps>
+{/* <Steps> */}
 1. Install the package using the following command:
 
    <PackageManagers pkg="@studiocms/devapps" />
 
 2. Add `@studiocms/blog` to your astro config file:
 
-   ```ts twoslash title="astro.config.mjs"
+   ```ts twoslash title="astro.config.mjs" ins={3, 9}
    import { defineConfig } from 'astro/config';
    import db from '@astrojs/db';
-   import devApps from '@studiocms/devapps'; // [!code ++]
+   import devApps from '@studiocms/devapps'; 
 
    export default defineConfig({
       site: "https://example.com",
       integrations: [
           db(),
-          devApps(), // [!code ++]
+          devApps(), 
       ],
    });
    ```
-</Steps>
+{/* </Steps> */}
   </TabItem>
 </Tabs>
 
@@ -59,16 +59,16 @@ All tools will only be available during `astro dev` and will not be available du
 
 ### Example config
 
-```ts twoslash title="astro.config.mjs"
+```ts twoslash title="astro.config.mjs" {2, 8} ins={3, 9}
 import { defineConfig } from 'astro/config';
-import db from '@astrojs/db'; // [!code highlight]
-import devApps from '@studiocms/devapps'; // [!code ++]
+import db from '@astrojs/db';
+import devApps from '@studiocms/devapps';
 
 export default defineConfig({
   site: "https://example.com",
   integrations: [
-    db(), // REQUIRED // [!code highlight]
-    devApps(/* See Config Options Below */), // [!code ++]
+    db(), // REQUIRED
+    devApps(/* See Config Options Below */),
   ],
 });
 ```

@@ -9,7 +9,7 @@ sidebar:
     variant: 'tip'
 ---
 
-import PackageManagers from '~/components/PackageManagers.astro';
+import { PackageManagers } from 'starlight-package-managers'
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 # Introduction
@@ -22,28 +22,28 @@ This Astro integration enables the StudioCMS Blog feature in your Astro project.
 
 <Tabs syncKey='install-method'>
   <TabItem label="Astro Method" icon='astro'>
-<Steps>
+{/* <Steps> */}
 1. Install the package and add to your astro config using the following command:
 
    <PackageManagers type="exec" pkg="astro" args="add @studiocms/blog" />
 
 2. Update your config file as shown under [Example Config](#example-config) below.
-</Steps>
+{/* </Steps> */}
   </TabItem>
   <TabItem label="Manual Method" icon='seti:powershell'>
-<Steps>
+{/* <Steps> */}
 1. Install the package using the following command:
 
    <PackageManagers pkg="@studiocms/blog" />
 
 2. Add `@studiocms/blog` to your astro config file:
 
-   ```ts twoslash title="astro.config.mjs"
+   ```ts twoslash title="astro.config.mjs" ins={5, 14-19}
    import { defineConfig } from 'astro/config';
    import node from '@astrojs/node';
    import db from '@astrojs/db';
    import studioCMS from 'studiocms';
-   import studioCMSBlog from '@studiocms/blog'; // [!code ++]
+   import studioCMSBlog from '@studiocms/blog'; 
 
    export default defineConfig({
       site: "https://example.com",
@@ -52,16 +52,16 @@ This Astro integration enables the StudioCMS Blog feature in your Astro project.
       integrations: [
           db(), // REQUIRED
           studioCMS(), // REQUIRED
-          studioCMSBlog({ // [!code ++]
-            config: { // [!code ++]
-              title: "My StudioCMS Blog", // [!code ++]
-              description: "A Simple Blog build with Astro, AstroDB, and StudioCMS.", // [!code ++]
-            }, // [!code ++]
-          }), // [!code ++]
+          studioCMSBlog({ 
+            config: { 
+              title: "My StudioCMS Blog", 
+              description: "A Simple Blog build with Astro, AstroDB, and StudioCMS.",
+            },
+          }),
       ],
    });
    ```
-</Steps>
+{/* </Steps> */}
   </TabItem>
 </Tabs>
 
@@ -77,12 +77,12 @@ This integration will add the following new routes to your StudioCMS Controlled 
 
 ### Example config
 
-```ts twoslash title="astro.config.mjs"
+```ts twoslash title="astro.config.mjs" {3-4, 13-14} ins={5, 15-20}
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
-import db from '@astrojs/db'; // [!code highlight:2]
+import db from '@astrojs/db';
 import studioCMS from 'studiocms'; 
-import studioCMSBlog from '@studiocms/blog'; // [!code ++]
+import studioCMSBlog from '@studiocms/blog'; 
 
 // https://astro.build/config
 export default defineConfig({
@@ -90,14 +90,14 @@ export default defineConfig({
   output: "server",
   adapter: node({ mode: "standalone" }),
   integrations: [ 
-    db(), // REQUIRED // [!code highlight:2]
+    db(), // REQUIRED 
     studioCMS(), // REQUIRED 
-    studioCMSBlog({ // [!code ++]
-      config: { // [!code ++]
-        title: "My StudioCMS Blog", // [!code ++]
-        description: "A Simple Blog build with Astro, Astrojs/DB, and StudioCMS.", // [!code ++]
-      }, // [!code ++]
-    }), // [!code ++]
+    studioCMSBlog({ 
+      config: { 
+        title: "My StudioCMS Blog", 
+        description: "A Simple Blog build with Astro, Astrojs/DB, and StudioCMS.",
+      }, 
+    }), 
   ],
 });
 ```
