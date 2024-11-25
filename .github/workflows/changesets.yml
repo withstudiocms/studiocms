@@ -1,4 +1,4 @@
-name: Changeset Release
+name: Changesets Release or Version Packages
 
 on:
   workflow_dispatch:
@@ -47,20 +47,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Sentry release
-        if: steps.changesets.outputs.published == 'true'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: studiocms
-          SENTRY_URL: https://sentry.studiocms.xyz/
-        with:
-          environment: production
-          projects: studiocms-playground studiocms-ui-testing
-
       - name: Add Label to CI PR
         if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
         run: gh pr edit "$PR_URL" --add-label "ci"
         env:
           PR_URL: ${{ steps.changesets.outputs.pull_request_url }}
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+
+      - name: Create Sentry release
+        if: steps.changesets.outputs.published == 'true'
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: withstudiocms
+          SENTRY_URL: https://sentry.studiocms.dev/
+        with:
+          environment: production
+          projects: node-playground ui-testing

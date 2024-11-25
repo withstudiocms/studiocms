@@ -1,0 +1,27 @@
+name: snapshot Release
+
+on: [pull_request]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Setup pnpm (corepack enabled)
+        uses: pnpm/action-setup@v3
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm ci:install
+  
+      - name: Publish packages
+        run: pnpm ci:snapshot
+        
