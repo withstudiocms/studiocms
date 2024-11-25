@@ -1,0 +1,7 @@
+language: 'typescript'
+tags: ['astro', 'typescript']
+
+project: 
+  name: 'studiocms_devapps'
+  description: 'A CMS that bridges Astro with Astro DB & Studio'
+  maintainers: ['Adammatthiesen','jdtjenkins','dreyfus92']

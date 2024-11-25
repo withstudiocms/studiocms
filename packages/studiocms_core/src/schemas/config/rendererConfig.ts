@@ -6,6 +6,20 @@ import { mdxConfigSchema } from './mdx';
 export type Renderer = (content: string) => Promise<string>;
 export type { markdocRenderer };
 
+/**
+ * Custom Renderer Type
+ * @description A custom renderer that can be used in StudioCMS
+ * @property {string} name - The name of the renderer
+ * @property {Renderer} renderer - The renderer function
+ * @example
+ * ```ts
+ * const customRenderer: CustomRenderer = {
+ * 	name: 'custom',
+ * 	renderer: async (content: string) => {
+ * 		return content;
+ * 	},
+ * };
+ */
 export type CustomRenderer = {
 	name: string;
 	renderer: Renderer;

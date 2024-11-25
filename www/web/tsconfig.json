@@ -1,6 +1,0 @@
-{
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "outDir": "../../.moon/cache/types/www/web"
-  }
-}

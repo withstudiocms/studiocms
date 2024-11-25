@@ -1,0 +1,45 @@
+---
+title: "Getting Started"
+type: integration
+catalogEntry: studiocms-ui
+description: Install @studiocms/ui in your own project and make use of our components!
+---
+
+import { PackageManagers } from 'starlight-package-managers'
+
+`@studiocms/ui` is the UI library that we use to build StudioCMS. The library is agnostic, meaning that you can use it
+in your own Astro projects! 
+
+You can install it from npm:
+
+<PackageManagers type="add" pkg="@studiocms/ui" />
+
+All of these components can be tested in our [UI playground](https://ui-testing.studiocms.dev/).
+
+## Importing Components
+
+All components this library are exported from `@studiocms/ui/components`. You can import and use the components like this:
+
+```astro
+---
+import { Button } from '@studiocms/ui/components';
+---
+
+<Button />
+```
+
+Include the styles by importing `@studiocms/ui/css/global.css` in your page layout.
+
+```astro
+---
+import '@studiocms/ui/css/global.css';
+---
+```
+
+:::danger[About Accessibility]
+As of right now, `@studiocms/ui` is nowhere near being accessible. We are still missing crucial support for keyboard navigation,
+screen readers etc. This is by design, as although this library is publicly accessible, we still focus on building StudioCMS with it.
+
+We will add support for keyboard navigation and screenreaders at a later time, once we perform the planned accessibility audit for StudioCMS.
+Should you however want to contribute, and add these features yourself, feel free to!
+:::

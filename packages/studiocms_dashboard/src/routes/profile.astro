@@ -1,5 +1,4 @@
 ---
-import { authHelper } from 'studiocms:auth/helpers';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Card, Divider } from '@matthiesenxyz/astrolace/components';
@@ -8,14 +7,24 @@ import { Layout } from '../components';
 import CrumbStack from '../components/CrumbStack.astro';
 import { makePageTitle } from '../utils';
 
+import { getUserData } from 'studiocms:auth/lib/user';
+
+const user = await getUserData(Astro);
+
+if (!user.user) {
+	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+}
+
+const {
+	permissionLevel,
+	user: { name, username, url },
+} = user;
+
 const {
 	mainLinks: { dashboardIndex, userProfile },
 } = StudioCMSRoutes;
 
 const contextConfig = await getSiteConfig();
-const { permissionLevel, name, username, currentUserSession, githubURL } = await authHelper(
-	Astro.locals
-);
 ---
 
 <Layout 
@@ -49,17 +58,12 @@ const { permissionLevel, name, username, currentUserSession, githubURL } = await
                     <strong>Role:</strong> {toPascalCase(permissionLevel)}
                 </span>
                 <Divider />
-                { githubURL && (
+                { url && (
                     <span class="text-lg">
-                        <strong>GitHub:</strong> <a class="text-blue" href={githubURL}>{username}</a>
+                        <strong>Url:</strong> <a class="text-blue" href={url}>{url}</a>
                     </span>
                 <Divider />
                 )}
-                <span class="text-lg">
-                    { currentUserSession && (
-                        <><strong>Session Expires:</strong> {new Date(currentUserSession.expiresAt).toLocaleString()}</>
-                    ) } 
-                </span>
             </div>
         </Card>
 

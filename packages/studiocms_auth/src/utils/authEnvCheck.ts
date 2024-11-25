@@ -12,6 +12,7 @@ const AUTHKEYS = {
 	GITHUB: {
 		CLIENT_ID: getSecret('CMS_GITHUB_CLIENT_ID'),
 		CLIENT_SECRET: getSecret('CMS_GITHUB_CLIENT_SECRET'),
+		REDIRECT_URI: getSecret('CMS_GITHUB_REDIRECT_URI'),
 	},
 	DISCORD: {
 		CLIENT_ID: getSecret('CMS_DISCORD_CLIENT_ID'),
@@ -36,6 +37,7 @@ type AuthEnvCheckReponse = {
 		ENABLED: boolean;
 		CLIENT_ID: string | undefined;
 		CLIENT_SECRET: string | undefined;
+		REDIRECT_URI: string | undefined;
 	};
 	DISCORD: {
 		ENABLED: boolean;
@@ -115,6 +117,7 @@ export async function authEnvCheck(providers: Providers): Promise<AuthEnvCheckRe
 			ENABLED: GITHUBENABLED,
 			CLIENT_ID: AUTHKEYS.GITHUB.CLIENT_ID,
 			CLIENT_SECRET: AUTHKEYS.GITHUB.CLIENT_SECRET,
+			REDIRECT_URI: AUTHKEYS.GITHUB.REDIRECT_URI,
 		},
 		DISCORD: {
 			ENABLED: DISCORDENABLED,

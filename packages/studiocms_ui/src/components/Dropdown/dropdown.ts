@@ -1,6 +1,6 @@
 class DropdownHelper {
 	container: HTMLDivElement;
-	toggle: HTMLDivElement;
+	toggleEl: HTMLDivElement;
 	dropdown: HTMLUListElement;
 
 	alignment: 'start' | 'center' | 'end';
@@ -17,25 +17,25 @@ class DropdownHelper {
 		this.alignment = this.container.dataset.align as 'start' | 'center' | 'end';
 		this.triggerOn = this.container.dataset.trigger as 'left' | 'right' | 'both';
 
-		this.toggle = document.getElementById(`${id}-toggle-btn`) as HTMLDivElement;
+		this.toggleEl = document.getElementById(`${id}-toggle-btn`) as HTMLDivElement;
 		this.dropdown = document.getElementById(`${id}-dropdown`) as HTMLUListElement;
 
 		if (this.triggerOn === 'left') {
-			this.toggle.addEventListener('click', this.toggleDropdown);
+			this.toggleEl.addEventListener('click', this.toggle);
 		} else if (this.triggerOn === 'both') {
-			this.toggle.addEventListener('click', this.toggleDropdown);
-			this.toggle.addEventListener('contextmenu', (e) => {
+			this.toggleEl.addEventListener('click', this.toggle);
+			this.toggleEl.addEventListener('contextmenu', (e) => {
 				e.preventDefault();
-				this.toggleDropdown();
+				this.toggle();
 			});
 		} else {
-			this.toggle.addEventListener('contextmenu', (e) => {
+			this.toggleEl.addEventListener('contextmenu', (e) => {
 				e.preventDefault();
-				this.toggleDropdown();
+				this.toggle();
 			});
 		}
 
-		window.addEventListener('scroll', this.hideDropdown);
+		window.addEventListener('scroll', this.hide);
 
 		this.hideOnClickOutside(this.container);
 
@@ -46,11 +46,11 @@ class DropdownHelper {
 		const dropdownOpts = this.dropdown.querySelectorAll('li');
 
 		for (const opt of dropdownOpts) {
-			opt.removeEventListener('click', this.hideDropdown);
+			opt.removeEventListener('click', this.hide);
 
 			opt.addEventListener('click', () => {
 				func(opt.dataset.value || '');
-				this.hideDropdown();
+				this.hide();
 			});
 		}
 	};
@@ -59,16 +59,27 @@ class DropdownHelper {
 		const dropdownOpts = this.dropdown.querySelectorAll('li');
 
 		for (const opt of dropdownOpts) {
-			opt.addEventListener('click', this.hideDropdown);
+			opt.addEventListener('click', this.hide);
 		}
 	};
 
-	public toggleDropdown = () => {
+	public toggle = () => {
 		if (this.active) {
-			this.hideDropdown();
+			this.hide();
 			return;
 		}
 
+		this.show();
+	};
+
+	public hide = () => {
+		this.dropdown.classList.remove('active');
+		this.active = false;
+
+		setTimeout(() => this.dropdown.classList.remove('above', 'below'), 200);
+	};
+
+	public show = () => {
 		const isMobile = window.matchMedia('screen and (max-width: 840px)').matches;
 
 		const {
@@ -79,7 +90,7 @@ class DropdownHelper {
 			x,
 			y,
 			height,
-		} = this.toggle.getBoundingClientRect();
+		} = this.toggleEl.getBoundingClientRect();
 		const { width: dropdownWidth } = this.dropdown.getBoundingClientRect();
 
 		const optionHeight = 44;
@@ -102,7 +113,6 @@ class DropdownHelper {
 		this.active = true;
 
 		if (isMobile) {
-			console.log('match');
 			this.dropdown.style.maxWidth = `${parentWidth}px`;
 			this.dropdown.style.minWidth = 'unset';
 			this.dropdown.style.width = `${parentWidth}px`;
@@ -129,20 +139,13 @@ class DropdownHelper {
 		}
 	};
 
-	public hideDropdown = () => {
-		this.dropdown.classList.remove('active');
-		this.active = false;
-
-		setTimeout(() => this.dropdown.classList.remove('above', 'below'), 200);
-	};
-
 	private hideOnClickOutside = (element: HTMLElement) => {
 		const outsideClickListener = (event: MouseEvent) => {
 			if (!event.target) return;
 
 			if (!element.contains(event.target as Node) && isVisible(element) && this.active === true) {
 				// or use: event.target.closest(selector) === null
-				this.hideDropdown();
+				this.hide();
 			}
 		};
 

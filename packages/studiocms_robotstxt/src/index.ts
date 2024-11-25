@@ -123,7 +123,7 @@ export interface PolicyOptions {
 	 * [ Optional ] Indicates to the robot that the page URL contains parameters (like UTM tags) that should be ignored when indexing it.
 	 *
 	 * @example
-	 * ```hash
+	 * ```bash
 	 * # for URLs like:
 	 * www.example2.com/index.php?page=1&sid=2564126ebdec301c607e5df
 	 * www.example2.com/index.php?page=1&sid=974017dcd170d6c4a5d76ae

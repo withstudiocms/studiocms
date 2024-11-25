@@ -1,0 +1,50 @@
+---
+import { Row, SearchSelect } from '@studiocms/ui/components';
+---
+<Row>
+  <SearchSelect
+    label='Required Select'
+    options={[
+      { label: "Option 1", value: "sopt-1-1" },
+      { label: "Option 2", value: "sopt-2-1" },
+      { label: "Option 3", value: "sopt-3-1" },
+    ]}
+    isRequired
+  />
+  <SearchSelect
+    label='Select with default value'
+    options={[
+      { label: "Option 1", value: "sopt-1-2" },
+      { label: "Option 2", value: "sopt-2-2" },
+      { label: "Option 3", value: "sopt-3-2" },
+    ]}
+    defaultValue='opt-1-2'
+  />
+  <SearchSelect
+    label='Select with disabled options'
+    options={[
+      { label: "Option 1", value: "sopt-1-3" },
+      { label: "Option 2", value: "sopt-2-3", disabled: true },
+      { label: "Option 3", value: "sopt-3-3", disabled: true },
+    ]}
+  />
+  <SearchSelect
+    label='Disabled Select'
+    options={[
+      { label: "Option 1", value: "sopt-1-4" },
+      { label: "Option 2", value: "sopt-2-4" },
+      { label: "Option 3", value: "sopt-3-4" },
+    ]}
+    disabled
+  />
+</Row>
+<SearchSelect
+  class='mt'
+  label='Full width select'
+  options={[
+    { label: "Option 1", value: "sopt-1-5" },
+    { label: "Option 2", value: "sopt-2-5" },
+    { label: "Option 3", value: "sopt-3-5" },
+  ]}
+  fullWidth
+/>

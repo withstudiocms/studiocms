@@ -9,74 +9,20 @@ sidebar:
 
 ## Usage
 
-```js title="astro.config.mjs"  {2-11}
-studioCMS({
+```ts twoslash {2-4} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
   imageService: {
-    useUnpic: false,
-    unpicConfig {
-        fallbackService: "unsplash",
-        placeholder: 'blurhash',
-        layout: 'constrained',
-    },
-    astroImageServiceConfig: "squoosh",
-    cdnPlugin: "cloudinary",
+    cdnPlugin: "cloudinary-js",
   },
-}),
+})
 ```
-
-### `useUnpic`
-
-- **Type:** `boolean | undefined`
-- **Default:** `true`
-
-Allows the user to enable/disable the use of the `@unpic/astro` image optimization service for external images.
-
-### `unpicConfig`
-
-- **Type:** `unpicConfigSchema{} | undefined{}`
-- **Default:** `undefined{}`
-
-Allows the user to customize the `@unpic/astro` image optimization service.
-
-#### `fallbackService`
-
-- **Type:** `'sharp' | undefined`
-- **Default:** `undefined`
-
-Falls back to the value of `astroImageServiceConfig` if not set here.
-
-#### `placeholder`
-
-- **Type:** `'blurhash' | 'dominantColor' | 'lqlip' | undefined`
-- **Default:** `'blurhash'`
-
-The default placeholder background to use for images.
-
-#### `layout`
-
-- **Type:** `'constrained' | 'fixed' | 'fullWidth' | undefined`
-- **Default:** `'constrained'`
-
-The default layout to use for images. 
-
-#### `cdnOptions`
-
-- **Type:** `cdnOptionsSchema{} | undefined{}`
-- **Default:** `undefined{}`
-
-CDN-specific options for the `@unpic/astro` image optimization service.
-
-### `astroImageServiceConfig`
-
-- **Type:** `'sharp' | undefined`
-- **Default:** `'sharp'`
-
-If the `useUnpic` option is enabled, this option allows the user to choose between the `sharp` image optimization services.
 
 ### `cdnPlugin`
 
 - **Type:** `'cloudinary-js'| undefined`
-- **Default:** `'cloudinary-js'`
+- **Default:** `undefined`
 
 Allows the user to use a custom Supported CDN Plugin, so it can be specified here.
 

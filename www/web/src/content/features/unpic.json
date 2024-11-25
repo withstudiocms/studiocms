@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 7,
-  "feature": "Unpic Image Service",
-  "description": "A free and efficient image service, Unpic makes managing external URLs straightforward, with support for major CDNs.",
-  "icon": "heroicons:photo"
-}

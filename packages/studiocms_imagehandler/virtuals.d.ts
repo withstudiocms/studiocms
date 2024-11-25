@@ -7,11 +7,11 @@
  *
  * @example
  * declare module 'virtual:studiocms/config' {
- * const Config: import('@studiocms/core').StudioCMSOptions;
+ * const Config: import('@studiocms/core').StudioCMSConfig;
  * export default Config;
  * }
  */
 declare module 'virtual:studiocms/config' {
-	const Config: import('@studiocms/core/schemas').StudioCMSOptions;
+	const Config: import('@studiocms/core/schemas').StudioCMSConfig;
 	export default Config;
 }

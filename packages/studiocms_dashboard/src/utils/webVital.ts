@@ -1,5 +1,6 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
-import { AstrojsWebVitals_Metric, db } from 'astro:db';
+import { column, db, defineTable } from 'astro:db';
+import { asDrizzleTable } from '@astrojs/db/utils';
 
 export type WebVitalsResponseItem = {
 	id: string;
@@ -11,26 +12,38 @@ export type WebVitalsResponseItem = {
 	timestamp: Date;
 };
 
+// Table definition from `@astrojs/web-vitals` db-config
+const Metric = defineTable({
+	columns: {
+		pathname: column.text(),
+		route: column.text(),
+		name: column.text(),
+		id: column.text({ primaryKey: true }),
+		value: column.number(),
+		rating: column.text(),
+		timestamp: column.date(),
+	},
+	deprecated: Boolean(process.env.DEPRECATE_WEB_VITALS) ?? false,
+});
+
+const tsMetric = asDrizzleTable('AstrojsWebVitals_Metric', Metric);
+
 export async function getWebVitals(): Promise<WebVitalsResponseItem[]> {
-	// Check if AstrojsWebVitals exists
-	if (!AstrojsWebVitals_Metric) {
-		logger.warn(
-			'@astrojs/web-vitals table not found.  If you have not installed the package you can disregard this warning.'
-		);
-		return [] as WebVitalsResponseItem[];
-	}
-
 	try {
-		// Execute the database query
-		const webVitals: WebVitalsResponseItem[] = await db.select().from(AstrojsWebVitals_Metric);
+		const AstroDB = await import('astro:db');
 
-		// Return the results if successful
-		return webVitals;
+		if ('AstrojsWebVitals_Metric' in AstroDB) {
+			if (AstroDB.AstrojsWebVitals_Metric) {
+				const webVitals = await db.select().from(tsMetric);
+				return webVitals as WebVitalsResponseItem[];
+			}
+		}
 	} catch (error) {
-		// Log the error for debugging purposes
 		logger.error(
 			`Error getting @astrojs/web-vitals table data.  If you have not installed the package you can disregard this error.\n - ${error}`
 		);
 		return [] as WebVitalsResponseItem[];
 	}
+
+	return [] as WebVitalsResponseItem[];
 }

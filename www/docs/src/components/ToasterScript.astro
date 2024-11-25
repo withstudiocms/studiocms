@@ -1,0 +1,11 @@
+<script>
+  import { toast } from '@studiocms/ui/components';
+
+  document.getElementById('usage-trigger')!.addEventListener('click', () => {
+    toast({
+      title: "This is a toast!",
+      description: "Hi there!",
+      type: 'info',
+    });
+  });
+</script>

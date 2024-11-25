@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 6,
-  "feature": "Built-in Authentication",
-  "description": "Features built-in authentication with support for multiple platforms including Local and Github, enhancing security and user management.",
-  "icon": "heroicons:lock-closed"
-}

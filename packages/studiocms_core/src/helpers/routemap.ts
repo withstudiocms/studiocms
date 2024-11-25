@@ -31,6 +31,10 @@ export async function makeAPIDashboardRoute(route: string): Promise<string> {
 	return await urlGenFactory(true, `api/${route}`, dashboardRouteOverride);
 }
 
+export async function makeStudioCMSAPIRoute(route: string): Promise<string> {
+	return await urlGenFactory(false, `studiocms_api/${route}`);
+}
+
 export const StudioCMSRoutes = {
 	mainLinks: {
 		baseSiteURL: await makeNonDashboardRoute(),
@@ -44,30 +48,31 @@ export const StudioCMSRoutes = {
 	authLinks: {
 		loginURL: await makeDashboardRoute('login'),
 		logoutURL: await makeDashboardRoute('logout'),
-		signupURL: await makeDashboardRoute('signup/'),
-		loginAPI: await makeDashboardRoute('login/api/login'),
-		registerAPI: await makeDashboardRoute('login/api/register'),
-		githubIndex: await makeDashboardRoute('login/github'),
-		githubCallback: await makeDashboardRoute('login/github/callback'),
-		discordIndex: await makeDashboardRoute('login/discord'),
-		discordCallback: await makeDashboardRoute('login/discord/callback'),
-		googleIndex: await makeDashboardRoute('login/google'),
-		googleCallback: await makeDashboardRoute('login/google/callback'),
-		auth0Index: await makeDashboardRoute('login/auth0'),
-		auth0Callback: await makeDashboardRoute('login/auth0/callback'),
+		signupURL: await makeDashboardRoute('signup'),
+		loginAPI: await makeStudioCMSAPIRoute('auth/login'), // /studiocms_api/auth/login
+		logoutAPI: await makeStudioCMSAPIRoute('auth/logout'), // /studiocms_api/auth/logout
+		registerAPI: await makeStudioCMSAPIRoute('auth/register'), // /studiocms_api/auth/register
+		githubIndex: await makeStudioCMSAPIRoute('auth/github'), // /studiocms_api/auth/github
+		githubCallback: await makeStudioCMSAPIRoute('auth/github/callback'), // /studiocms_api/auth/github/callback
+		discordIndex: await makeStudioCMSAPIRoute('auth/discord'), // /studiocms_api/auth/discord
+		discordCallback: await makeStudioCMSAPIRoute('auth/discord/callback'), // /studiocms_api/auth/discord/callback
+		googleIndex: await makeStudioCMSAPIRoute('auth/google'), // /studiocms_api/auth/google
+		googleCallback: await makeStudioCMSAPIRoute('auth/google/callback'), // /studiocms_api/auth/google/callback
+		auth0Index: await makeStudioCMSAPIRoute('auth/auth0'), // /studiocms_api/auth/auth0
+		auth0Callback: await makeStudioCMSAPIRoute('auth/auth0/callback'), // /studiocms_api/auth/auth0/callback
 	},
 	endpointLinks: {
 		partials: {
-			livePreviewBox: await makeAPIDashboardRoute('liverender'),
+			livePreviewBox: await makeAPIDashboardRoute('liverender'), // /studiocms_api/render/preview
 		},
 		config: {
-			siteConfig: await makeAPIDashboardRoute('config/site'),
-			adminConfig: await makeAPIDashboardRoute('config/admin'),
+			siteConfig: await makeAPIDashboardRoute('config/site'), // /studiocms_api/config/site
+			adminConfig: await makeAPIDashboardRoute('config/admin'), // /studiocms_api/config/admin
 		},
 		pages: {
-			createPages: await makeAPIDashboardRoute('pages/create'),
-			editPages: await makeAPIDashboardRoute('pages/edit'),
-			deletePages: await makeAPIDashboardRoute('pages/delete'),
+			createPages: await makeAPIDashboardRoute('pages/create'), // /studiocms_api/pages/create
+			editPages: await makeAPIDashboardRoute('pages/edit'), // /studiocms_api/pages/edit
+			deletePages: await makeAPIDashboardRoute('pages/delete'), // /studiocms_api/pages/delete
 		},
 	},
 };

@@ -1,5 +1,6 @@
 # build output
 dist/
+
 # generated types
 .astro/
 
@@ -22,3 +23,6 @@ pnpm-debug.log*
 
 # TypeDoc documentation
 src/content/docs/typedoc/*
+
+# Eleventy cache
+.cache/

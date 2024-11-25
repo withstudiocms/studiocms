@@ -1,9 +1,11 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
-import { authHelper } from 'studiocms:auth/helpers';
+// import { authHelper } from 'studiocms:auth/helpers';
 import Config from 'virtual:studiocms/config';
 import type { APIContext } from 'astro';
 import { astroDb } from '../../../utils/astroDb';
 import { simpleResponse } from '../../../utils/simpleResponse';
+
+import { getUserData } from 'studiocms:auth/lib/user';
 
 const {
 	dashboardConfig: {
@@ -19,16 +21,17 @@ export async function POST(context: APIContext): Promise<Response> {
 	}
 
 	// Map Locals
-	const locals = context.locals;
+	// const locals = context.locals;
+	const userdata = await getUserData(context);
 
 	// Check if user is logged in
-	if (!locals.isLoggedIn) {
+	if (!userdata.isLoggedIn) {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	if (locals.isLoggedIn) {
-		const { permissionLevel } = await authHelper(locals);
+	if (userdata.isLoggedIn) {
+		const { permissionLevel } = userdata;
 		if (permissionLevel !== 'admin' && permissionLevel !== 'editor') {
 			return simpleResponse(403, 'Unauthorized');
 		}

@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 5,
-  "feature": "Secure libSQL Database",
-  "description": "All data is securely housed within your libSQL database, ensuring accessibility to your data to only authorized users to your libSQL provider or Self-hosted server.",
-  "icon": "heroicons:circle-stack"
-}

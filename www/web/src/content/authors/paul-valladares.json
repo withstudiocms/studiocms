@@ -1,6 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/authors.schema.json",
-  "name": "Paul Valladares",
-  "link": "https://github.com/dreyfus92",
-  "avatar": "./avatars/paul-valladares.jpg"
-}

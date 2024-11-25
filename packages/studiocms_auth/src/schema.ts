@@ -13,4 +13,4 @@ export const StudioCMSAuthOptionsSchema = z.object({
 /**
  * StudioCMS Auth Integration Options Type
  */
-export type StudioCMSAuthOptions = z.infer<typeof StudioCMSAuthOptionsSchema>;
+export type StudioCMSAuthOptions = typeof StudioCMSAuthOptionsSchema._output;

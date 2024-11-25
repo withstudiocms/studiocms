@@ -1,14 +1,27 @@
 ---
-import { authHelper } from 'studiocms:auth/helpers';
+// import { authHelper } from 'studiocms:auth/helpers';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { Avatar, Tooltip } from '@matthiesenxyz/astrolace/components';
 import personFillIcon from '@studiocms/assets/svgs/person-fill.svg';
 import type { StudioCMSSocials } from '@studiocms/core/consts';
 import { SideBarFooter, SideBarMenu } from '../components';
 
+import { getUserData } from 'studiocms:auth/lib/user';
+
+const user = await getUserData(Astro);
+
+// if (!user.user) {
+// 	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+// }
+
+const { permissionLevel, user: userData } = user;
+
+const name = userData?.name;
+const avatar = userData?.avatar;
+
 type Props = { studioCMSSocials: StudioCMSSocials };
 const { studioCMSSocials } = Astro.props as Props;
-const { avatar, name, permissionLevel } = await authHelper(Astro.locals);
+// const { avatar, name, permissionLevel } = await authHelper(Astro.locals);
 const {
 	mainLinks: { dashboardIndex },
 } = StudioCMSRoutes;

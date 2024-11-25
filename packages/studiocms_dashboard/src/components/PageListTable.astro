@@ -54,7 +54,7 @@ const { permissionLevel, pages } = Astro.props;
                             </Button>
                         </td>
                         <td class="px-6 py-4">
-                            { permissionLevel === 'admin' && (
+                            { (permissionLevel === 'admin' || permissionLevel === 'owner') && (
                                 <Button variant="danger" href={await getDeleteRoute(page.id)} size="small" pill outline>
                                     Delete
                                 </Button> )

@@ -1,39 +1,130 @@
 ---
-import Default from '@astrojs/starlight/components/SiteTitle.astro';
-
+import config from 'virtual:starlight/user-config';
+import { logos } from 'virtual:starlight/user-images';
 import type { Props } from '@astrojs/starlight/props';
+import { Toaster } from '@studiocms/ui/components';
+
+const { siteTitle, siteTitleHref } = Astro.props;
 ---
 
-<div>
-    <Default {...Astro.props} />
-    <ul>
-        <li>
-          <a href="https://studiocms.dev">Landing</a>
-        </li>
-        <li>
-          <a href="https://next-demo.studiocms.dev">Demo</a>
-        </li>
-    </ul>
+<Toaster />
+
+<div class="site-title sl-flex">
+  <a href={siteTitleHref}>
+    {
+      config.logo && logos.dark && (
+        <>
+          <img
+            class:list={{ 'light:sl-hidden': !('src' in config.logo) }}
+            alt={config.logo.alt}
+            src={logos.dark.src}
+            width={logos.dark.width}
+            height={logos.dark.height}
+          />
+          {/* Show light alternate if a user configure both light and dark logos. */}
+          {!('src' in config.logo) && (
+            <img
+              class="dark:sl-hidden"
+              alt={config.logo.alt}
+              src={logos.light?.src}
+              width={logos.light?.width}
+              height={logos.light?.height}
+            />
+          )}
+        </>
+      )
+    }
+    <span class:list={[ config.logo?.replacesTitle && 'sr-only' ]}>
+      {siteTitle} 
+    </span>
+  </a>
+
+  <a href="/start-here/getting-started/">Docs</a>
+</div>
+    
+<div class="external-links">
+  <a href="https://studiocms.dev">Main Site</a>
+</div>
+<div class="external-links">
+  <a href="https://demo.studiocms.dev">Live Demo</a>
 </div>
 
 <style>
-  div {
+	.site-title {
+		justify-self: flex-start;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+		max-width: 100%;
+		overflow: hidden;
+		align-items: center;
+    color: var(--sl-color-accent-high);
+		gap: 0.5rem;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+    padding-inline-end: 1rem;
+    padding-left: 0;
+    margin-left: 0;
+	}
+
+  .site-title > a {
     display: flex;
     align-items: center;
     gap: var(--sl-nav-gap);
-  }
-  ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    gap: var(--sl-nav-gap);
-  }
-  a {
-    text-decoration: none;
-    font-weight: 600;
-    color: var(--sl-color-text-accent);
+    font-size: var(--sl-text-h4);
   }
 
+
+
+  @media screen and (max-width: 520px) {
+    .site-title a:first-of-type {
+      border-right: 1px solid var(--sl-color-gray-5);
+      padding-right: 1rem;
+    }
+
+    .site-title a:first-of-type span {
+      display: none;
+    }
+
+    .site-title a:last-of-type {
+      margin-left: .5rem;
+    }
+  }
+
+	img {
+		height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
+		width: auto;
+		max-width: 100%;
+		object-fit: contain;
+		object-position: 0 50%;
+	}
+
+  div:not(:last-child) {
+    border-inline-end: 1px solid var(--sl-color-gray-5);
+  }
+
+  div {
+    margin-left: 1rem;
+    align-self: center;
+    gap: 1rem;
+    height: 100%;
+    padding-inline-end: 1rem;
+  }
+
+  @media (min-width: 50rem) {
+    div {
+      align-items: center;
+    }
+  }
+  a {
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .external-links > a {
+    font-size: var(--sl-text-h6);
+  }
   a:hover,
   a:focus {
     color: var(--sl-color-white);
@@ -45,9 +136,31 @@ import type { Props } from '@astrojs/starlight/props';
     font-weight: 600;
   }
 
-  @media (min-width: 50rem) {
-    a {
+  @media (max-width: 78rem) {
+    .external-links > a {
       font-size: var(--sl-text-sm);
+    }
+    .site-title > a{
+      font-size: var(--sl-text-sm);
+    }
+  }
+
+  @media screen and (max-width: 440px) {
+    .external-links {
+      margin-left: .5rem;
+      padding-right: .5rem;
+    }
+
+    .site-title {
+      padding-right: .5rem;
+    }
+
+    .site-title > a:first-of-type {
+      padding-right: .5rem;
+    }
+
+    .site-title > a:last-of-type {
+      margin-left: 0;
     }
   }
 </style>

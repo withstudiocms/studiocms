@@ -1,0 +1,25 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@lorenzo_lewis/starlight-utils/components/Sidebar.astro';
+import Sponsors from '../components/Sponsors.astro';
+---
+
+<div class="sidebar-custom">
+    <Default {...Astro.props}><slot /></Default>
+    
+    <div class="sl-hidden md:sl-block sidebar-footer">
+        <Sponsors />
+    </div>
+</div>
+
+<style>
+    .sidebar-custom {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 98%;
+    }
+    .sidebar-footer {
+        margin-top: auto;
+    }
+</style>

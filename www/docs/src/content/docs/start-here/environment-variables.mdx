@@ -7,9 +7,8 @@ sidebar:
      text: "Updated"
      variant: "success"
 ---
-import StudioHeading from '~/components/StudioHeading.astro';
-import StudioSunset from '~/components/StudioSunset.astro';
 import { Aside } from '@astrojs/starlight/components';
+import ReadMore from '~/components/ReadMore.astro';
 
 For StudioCMS to work correctly, you must set up the correct environment variables. These variables are essential for establishing a secure connection to Astro DB and authenticating with the StudioCMS API. Without correctly configuring these environment variables, the application will not function as intended.
 
@@ -18,87 +17,86 @@ You can create a `.env` file in the root directory of your project and add the r
 For future reference on how to work with environment variables within Astro you can checkout [Environment Variables](https://docs.astro.build/guides/environment-variables) from the Astro documentation.
 
 <Aside type="note" title="[Experimental] astro:env">
-StudioCMS makes use of Astro's new Experimental [`astro:env`](https://docs.astro.build/en/reference/configuration-reference/#experimentalenv) for handling all of its Environment Variables. If you face any issues with environment variables please submit an [issue on Github](https://github.com/astrolicious/studiocms/issues/new/choose)
+StudioCMS makes use of Astro's new Experimental [`astro:env`](https://docs.astro.build/en/reference/configuration-reference/#experimentalenv) for handling all of its Environment Variables. If you face any issues with environment variables please submit an [issue on Github](https://github.com/withstudiocms/studiocms/issues/new/choose)
 </Aside>
 
 ## Required Environment Variables
 
-<StudioHeading>
-### If using Astro's `Studio` with `@astrojs/db`
-</StudioHeading>
-
-<StudioSunset />
-
-`ASTRO_STUDIO_APP_TOKEN` - Token provided from the [Astro Studio Dashboard](https://studio.astro.build)
-
-```bash title=".env"
-ASTRO_STUDIO_APP_TOKEN=your_app_token
-```
-
-### If using `libSQL` with `@astrojs/db`
+### Database URL and Token for `@astrojs/db`
 
 `ASTRO_DB_REMOTE_URL` - The connection URL to your libSQL server
 `ASTRO_DB_APP_TOKEN` - The app token for your libSQL server
 
 ```bash title=".env"
-ASTRO_DB_REMOTE_URL=file://local-copy.db?encryptionKey=your-encryption-key&syncInterval=60&syncUrl=libsql%3A%2F%2Fyour.server.io
-ASTRO_DB_APP_TOKEN=token-to-your-remote-url
+ASTRO_DB_REMOTE_URL=libsql://your.server.io
+ASTRO_DB_APP_TOKEN=eyJh...RUCg
 ```
 
-## Authentication Environment Variables
+<ReadMore>For more information about `@astrojs/db` see, the [Astro docs for Astro DB](https://docs.astro.build/en/guides/astro-db/)</ReadMore>
 
-Currently there are 5 ways to authenticate with StudioCMS:
+### Encryption Key for `@studiocms/auth`
 
-<Aside type="tip" title="Local Development oAuth">
-Use `http://localhost:4321` for local development and testing callback urls, and `https://your-domain.tld` for your callback urls in production!
+`CMS_ENCRYPTION_KEY` - A secure encryption key for encrypting sensitive data
+
+```bash title=".env"
+CMS_ENCRYPTION_KEY="wqR+w...sRcg=="
+```
+
+<Aside type="note" title="Use OpenSSL">
+You can generate a secure encryption key using the following command: 
+```bash
+openssl rand --base64 16
+``` 
 </Aside>
 
-### GitHub
+## oAuth Authentication Environment Variables
+
+<ReadMore>
+For more information about setting up oAuth authentication, see the [Configure oAuth Authentication](/start-here/getting-started/#optional-configure-oauth-authentication) documentation.
+</ReadMore>
+
+### GitHub (Optional)
 
 To authenticate with GitHub, you need to add the following environment variables to your `.env` file:
 
 ```bash title=".env"
 # credentials for GitHub OAuth
-# Callback URL for github (NOT AN ENV VARIABLE): 'http://localhost:4321/dashboard/login/github/callback'
-CMS_GITHUB_CLIENT_ID=your_client_id
-CMS_GITHUB_CLIENT_SECRET=your_client_secret
+CMS_GITHUB_CLIENT_ID=
+CMS_GITHUB_CLIENT_SECRET=
+CMS_GITHUB_REDIRECT_URI=
 ```
 
-### Discord
+<Aside type="note" title="Note">
+`CMS_GITHUB_REDIRECT_URI` is optional if you are using multiple redirect URIs with GitHub oAuth.
+</Aside>
+
+### Discord (Optional)
 
 ```bash title=".env"
 # credentials for Discord OAuth
 CMS_DISCORD_CLIENT_ID=
 CMS_DISCORD_CLIENT_SECRET=
-CMS_DISCORD_REDIRECT_URI=http://localhost:4321/dashboard/login/discord/callback
+CMS_DISCORD_REDIRECT_URI=
 ```
 
-### Google
+### Google (Optional)
 
 ```bash title=".env"
 # credentials for Google OAuth
 CMS_GOOGLE_CLIENT_ID=
 CMS_GOOGLE_CLIENT_SECRET=
-CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/dashboard/login/google/callback
+CMS_GOOGLE_REDIRECT_URI=
 ```
 
-### Auth0
+### Auth0 (Optional)
 
 ```bash title=".env"
 # credentials for auth0 OAuth
 CMS_AUTH0_CLIENT_ID=
 CMS_AUTH0_CLIENT_SECRET=
 CMS_AUTH0_DOMAIN=
-CMS_AUTH0_REDIRECT_URI=http://localhost:4321/dashboard/login/auth0/callback
+CMS_AUTH0_REDIRECT_URI=
 ```
-
-### Username and Password
-
-Alternatively, you can authenticate with StudioCMS using your username and password which doesn't require any additional environment variables.
-
-<Aside type="note">
-When Username and Password authentication is enabled you can modify its configuration and level of security using the generated `studiocms-auth.config.json` file.
-</Aside>
 
 ## Image Handler Environment Variables
 

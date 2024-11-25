@@ -1,7 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/features.schema.json",
-  "sortOrder": 1,
-  "feature": "Astro Foundation",
-  "description": "StudioCMS leverages Astro's robust and efficient framework, providing a solid base for building and scaling applications.",
-  "icon": "astro"
-}

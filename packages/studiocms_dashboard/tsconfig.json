@@ -38,7 +38,6 @@
   ],
   "include": [
     "./package.json",
-    "../../playgrounds/node/**/*",
     "../../playgrounds/node/.astro/**/*",
     "../studiocms_assets/**/*",
     "../studiocms_betaresources/**/*",
