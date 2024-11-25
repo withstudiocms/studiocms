@@ -23,9 +23,9 @@ body:
       description: Which package is the bug report for?
       options:
         - studiocms
-        - @studiocms/blog
-        - @studiocms/devapps
-        - @studiocms/ui
+        - "@studiocms/blog"
+        - "@studiocms/devapps"
+        - "@studiocms/ui"
       default: 0
     validations:
       required: true
