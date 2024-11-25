@@ -41,6 +41,6 @@ jobs:
         with:
           commit_message: '[ci] changesets'
           branch: ${{ github.head_ref }}
-          commit_user_name: astrolicious
-          commit_user_email: no-reply@studiocms.xyz
-          commit_author: StudioCMS <no-reply@studiocms.xyz>
+          commit_user_name: studiocms-no-reply
+          commit_user_email: no-reply@studiocms.dev
+          commit_author: StudioCMS <no-reply@studiocms.dev>
