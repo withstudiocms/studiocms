@@ -1,5 +1,14 @@
 # @studiocms/imagehandler
 
+## 0.1.0-beta.8
+
+### Patch Changes
+
+- [#301](https://github.com/withstudiocms/studiocms/pull/301) [`ebc297f`](https://github.com/withstudiocms/studiocms/commit/ebc297f2818deda6efca880a857f7e0929ad2378) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Update `.d.ts` file generation (non breaking)
+
+- Updated dependencies [[`ebc297f`](https://github.com/withstudiocms/studiocms/commit/ebc297f2818deda6efca880a857f7e0929ad2378)]:
+  - @studiocms/core@0.1.0-beta.8
+
 ## 0.1.0-beta.7
 
 ### Patch Changes
