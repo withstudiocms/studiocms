@@ -1,4 +1,5 @@
 import { cachedFetch } from '../util-server';
+import { StudioCMSServiceAccounts, contributorConfig } from './contributors.config';
 
 export interface Contributor {
 	login: string;
@@ -25,11 +26,24 @@ type Breakdown = {
 const printError = (e: Error) =>
 	console.warn(`[error]  /src/util/getContributors.ts\n         ${e?.message ?? e}`);
 
-async function recursiveFetch(endpoint: string, page = 1) {
+/**
+ * Fetches data from a GitHub API endpoint recursively, handling pagination.
+ *
+ * @param {string} endpoint - The GitHub API endpoint to fetch data from.
+ * @param {number} [page=1] - The current page number for pagination.
+ * @returns {Promise<any[]>} - A promise that resolves to an array of fetched data.
+ *
+ * @throws {Error} - Throws an error if the request to the endpoint fails.
+ */
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+async function recursiveFetch(endpoint: string, page?: number): Promise<any[]> {
+	const pageNumber = page || 1;
+
 	try {
 		const queryParam = endpoint.includes('?') ? '&' : '?';
 		const pageSize = 100;
-		const url = `https://api.github.com/${endpoint}${queryParam}per_page=${pageSize}&page=${page}`;
+		const url = `https://api.github.com/${endpoint}${queryParam}per_page=${pageSize}&page=${pageNumber}`;
 
 		const token = import.meta.env.PUBLIC_GITHUB_TOKEN;
 
@@ -39,7 +53,7 @@ async function recursiveFetch(endpoint: string, page = 1) {
 				method: 'GET',
 				headers: {
 					Authorization: token && `Basic ${Buffer.from(token, 'binary').toString('base64')}`,
-					'User-Agent': 'astro-docs/1.0',
+					'User-Agent': 'studiocms-docs/1.0',
 				},
 			},
 			{ duration: '15m' }
@@ -56,7 +70,7 @@ async function recursiveFetch(endpoint: string, page = 1) {
 
 		// Fetch more data recursively if there are more than GitHub’s per-page response limit.
 		if (data.length === pageSize) {
-			const rest = await recursiveFetch(endpoint, page + 1);
+			const rest = await recursiveFetch(endpoint, pageNumber + 1);
 			data.push(...rest);
 		}
 
@@ -67,13 +81,40 @@ async function recursiveFetch(endpoint: string, page = 1) {
 	}
 }
 
+function filterOutBots(c: Contributor[]): Contributor[] {
+	return c.filter((contributor) => !contributor.login.includes('[bot]'));
+}
+
+/**
+ * Fetches all contributors for a given repository, excluding bot accounts.
+ *
+ * @param repo - The name of the repository to fetch contributors from.
+ * @returns A promise that resolves to an array of contributors, excluding those with '[bot]' in their login.
+ */
 export async function getAllContributors(repo: string) {
 	const endpoint = `repos/${repo}/contributors`;
 	const contributors: Contributor[] = await recursiveFetch(endpoint);
 
-	return contributors.filter((c) => !c.login.includes('[bot]'));
+	return filterOutBots(contributors);
 }
 
+/**
+ * Retrieves the list of contributors for the specified paths in a given repository.
+ *
+ * @param paths - An array of file paths to get contributors for.
+ * @param repo - The repository name in the format "owner/repo".
+ * @returns A promise that resolves to an array of contributors sorted by the number of contributions in descending order.
+ *
+ * @remarks
+ * This function fetches the commit history for each specified path and aggregates the contributors.
+ * Contributors with usernames containing '[bot]' are filtered out.
+ *
+ * @example
+ * ```typescript
+ * const contributors = await getContributorsByPath(['src/index.ts', 'src/util.ts'], 'owner/repo');
+ * console.log(contributors);
+ * ```
+ */
 export async function getContributorsByPath(paths: string[], repo: string) {
 	const contributors: Contributor[] = [];
 
@@ -97,84 +138,80 @@ export async function getContributorsByPath(paths: string[], repo: string) {
 		}
 	}
 
-	return contributors
-		.filter((c) => !c.login.includes('[bot]'))
-		.sort((a, b) => b.contributions - a.contributions);
+	return filterOutBots(contributors);
 }
 
-const studiocmsPaths: string[] = [
-	// OLD Paths
-	'packages/studioCMS/',
-	// NEW Paths
-	'README.md',
-	'playgrounds/node/',
-	'packages/studiocms/',
-	'packages/studiocms_assets/',
-	'packages/studiocms_auth/',
-	'packages/studiocms_betaresources/',
-	'packages/studiocms_core/',
-	'packages/studiocms_dashboard/',
-	'packages/studiocms_frontend/',
-	'packages/studiocms_imagehandler/',
-	'packages/studiocms_renderers/',
-	'packages/studiocms_robotstxt/',
-] as const;
+/**
+ * Filters out StudioCMS service accounts from the list of contributors.
+ *
+ * @param {Contributor[]} c - The list of contributors to filter.
+ * @returns {Contributor[]} The filtered list of contributors excluding service accounts.
+ */
+const filterOutStudioCMSServiceAccounts = (c: Contributor[]): Contributor[] => {
+	const currentServiceAccounts = StudioCMSServiceAccounts;
 
-const studiocmsPluginPaths: string[] = [
-	// OLD Paths
-	'packages/studioCMSBlog/',
-	// NEW Paths
-	'packages/studiocms_blog/',
-] as const;
+	return c.filter((contributor) => !currentServiceAccounts.includes(contributor.login));
+};
 
-const studiocmsDevAppsPaths: string[] = ['packages/studiocms_devapps/'] as const;
+/**
+ * Checks if contributors exist in the existing contributors list and updates the list accordingly.
+ *
+ * If a contributor from the new contributors list does not exist in the existing contributors list,
+ * it adds the contributor to the existing list. If the contributor already exists, it updates the
+ * contributions count by adding the contributions from the new contributor.
+ *
+ * @param existingContributors - The list of existing contributors.
+ * @param newContributors - The list of new contributors to be checked and added or updated.
+ */
+function checkIfContributorExists(
+	existingContributors: Contributor[],
+	newContributors: Contributor[]
+) {
+	for (const contributor of newContributors) {
+		const existingContributor = existingContributors.find((c) => c.id === contributor.id);
 
-const studiocmsUIPaths: string[] = ['packages/studiocms_ui/', 'playgrounds/ui/'] as const;
+		if (!existingContributor) {
+			existingContributors.push(contributor);
+		} else {
+			existingContributor.contributions += contributor.contributions;
+		}
+	}
+}
 
-const studiocmsDocsPaths: string[] = ['www/docs/'] as const;
+/**
+ * Retrieves a breakdown of contributors for various repositories and paths as specified in the configuration.
+ *
+ * @returns {Promise<Breakdown[]>} A promise that resolves to an array of breakdowns, each containing a name and a list of contributors.
+ *
+ * The function iterates over a configuration object, which contains a list of repositories and paths.
+ * For each repository and path, it fetches the contributors either by path or for the entire repository.
+ * The contributors are then filtered to remove service accounts specific to StudioCMS.
+ */
+export async function getContributorBreakdown(): Promise<Breakdown[]> {
+	const config = contributorConfig;
 
-const studiocmsWebsitePaths: string[] = ['www/'] as const;
+	const breakdowns: Breakdown[] = [];
 
-export async function getContributorBreakdown(githubRepo?: string): Promise<Breakdown[]> {
-	let repo = 'withstudiocms/studiocms';
+	for (const { name, list } of config) {
+		const contributors: Contributor[] = [];
 
-	if (githubRepo) {
-		repo = githubRepo;
+		for (const { repo, type, paths } of list) {
+			if (type === 'byPath' && paths) {
+				const data = await getContributorsByPath(paths, repo);
+				checkIfContributorExists(contributors, data);
+			} else {
+				const data = await getAllContributors(repo);
+				checkIfContributorExists(contributors, data);
+			}
+		}
+
+		breakdowns.push({
+			name,
+			contributors: filterOutStudioCMSServiceAccounts(contributors).sort(
+				(a, b) => b.contributions - a.contributions
+			),
+		});
 	}
 
-	const [studiocms, studiocms_ui, docs, web, plugins, devapps] = await Promise.all([
-		getContributorsByPath(studiocmsPaths, repo),
-		getContributorsByPath(studiocmsUIPaths, repo),
-		getContributorsByPath(studiocmsDocsPaths, repo),
-		getContributorsByPath(studiocmsWebsitePaths, repo),
-		getContributorsByPath(studiocmsPluginPaths, repo),
-		getContributorsByPath(studiocmsDevAppsPaths, repo),
-	]);
-
-	return [
-		{
-			name: 'StudioCMS Core Packages',
-			contributors: studiocms,
-		},
-		{
-			name: 'StudioCMS UI Library',
-			contributors: studiocms_ui,
-		},
-		{
-			name: 'StudioCMS DevApps',
-			contributors: devapps,
-		},
-		{
-			name: 'StudioCMS Plugins',
-			contributors: plugins,
-		},
-		{
-			name: 'StudioCMS Documentation',
-			contributors: docs,
-		},
-		{
-			name: 'StudioCMS Website',
-			contributors: web,
-		},
-	];
+	return breakdowns;
 }

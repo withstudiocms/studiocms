@@ -9,7 +9,7 @@ sidebar:
     variant: 'tip'
 ---
 
-import PackageManagers from '~/components/PackageManagers.astro';
+import { PackageManagers } from 'starlight-package-managers'
 import Gallery from '~/components/Gallery.astro';
 import { webVitalsImages } from "~/assets/index.ts";
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
@@ -21,7 +21,7 @@ This Astro integration enables tracking real-world website performance and stori
 ## Installation
 <Tabs syncKey='install-method'>
   <TabItem label="Astro Method" icon='astro'>
-<Steps>
+{/* <Steps> */}
 
 1. Install the package and add to your astro config using the following command:
 
@@ -31,10 +31,10 @@ This Astro integration enables tracking real-world website performance and stori
 
    <PackageManagers type="exec" pkg="astro" args="db push" />
 
-</Steps>
+{/* </Steps> */}
   </TabItem>
   <TabItem label="Manual Method" icon='seti:powershell'>
-<Steps>
+{/* <Steps> */}
 
 1. Install the package using the following command:
 
@@ -42,11 +42,11 @@ This Astro integration enables tracking real-world website performance and stori
 
 2. Add `@astrojs/web-vitals` to your astro config file:
 
-   ```ts twoslash title="astro.config.mjs"
+   ```ts twoslash title="astro.config.mjs" {12} ins={4, 13}
    import node from '@astrojs/node';
    import studioCMS from 'studiocms';
    import db from '@astrojs/db';
-   import webVitals from '@astrojs/web-vitals'; // [!code ++]
+   import webVitals from '@astrojs/web-vitals';
    import { defineConfig } from 'astro/config';
 
    export default defineConfig({
@@ -54,8 +54,8 @@ This Astro integration enables tracking real-world website performance and stori
       output: 'server',
       adapter: node({ mode: "standalone" }),
       integrations: [
-          db(), // REQUIRED // [!code highlight]
-          webVitals(), // [!code ++]
+          db(), // REQUIRED 
+          webVitals(), 
           studioCMS(),
       ],
    });
@@ -67,7 +67,7 @@ This Astro integration enables tracking real-world website performance and stori
 
    <PackageManagers type="exec" pkg="astro" args="db push" />
 
-</Steps>
+{/* </Steps> */}
 </TabItem>
 </Tabs>
 

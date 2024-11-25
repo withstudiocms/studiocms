@@ -1,12 +1,9 @@
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import { defineConfig } from 'astro/config';
-import JS from 'shiki/langs/javascript.mjs';
-import TSX from 'shiki/langs/tsx.mjs';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils';
 import rehypePluginKit from './src/plugins/rehypePluginKit';
-import { transformerKit } from './src/shiki';
 import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config';
 
 // Define the Site URL
@@ -22,16 +19,6 @@ export default defineConfig({
 	},
 	markdown: {
 		rehypePlugins: rehypePluginKit,
-		syntaxHighlight: 'shiki',
-		shikiConfig: {
-			wrap: true,
-			langs: [...JS, ...TSX],
-			themes: {
-				light: 'light-plus',
-				dark: 'dark-plus',
-			},
-			transformers: transformerKit,
-		},
 	},
 	integrations: [
 		starlight({
@@ -41,7 +28,6 @@ export default defineConfig({
 			lastUpdated: true,
 			credits: true,
 			tagline: 'A dedicated CMS for Astro DB. Built from the ground up by the Astro community.',
-			expressiveCode: false,
 			components: {
 				SiteTitle: './src/starlightOverrides/SiteTitle.astro',
 				PageTitle: './src/starlightOverrides/PageTitle.astro',
@@ -58,14 +44,12 @@ export default defineConfig({
 				youtube: 'https://www.youtube.com/@StudioCMS',
 				'x.com': 'https://x.com/withstudiocms',
 				blueSky: 'https://bsky.app/profile/studiocms.dev',
+				patreon: 'https://patreon.com/StudioCMS',
 			},
 			customCss: [
-				'@shikijs/twoslash/style-rich.css',
 				'@studiocms/ui/css/global.css',
-				'./src/styles/shiki.css',
 				'./src/styles/sponsorcolors.css',
 				'./src/styles/starlight.css',
-				'./src/styles/twoslash.css',
 			],
 			editLink: {
 				baseUrl: 'https://github.com/withstudiocms/studiocms/tree/main/www/docs',

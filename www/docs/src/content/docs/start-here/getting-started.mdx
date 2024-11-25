@@ -8,7 +8,7 @@ sidebar:
      variant: "success"
 ---
 
-import PackageManagers from '~/components/PackageManagers.astro';
+import { PackageManagers } from 'starlight-package-managers'
 import TursoCLI from '~/components/TursoCLI.astro';
 import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 import ReadMore from '~/components/ReadMore.astro';
@@ -91,38 +91,37 @@ If you skipped the npm install step during the CLI wizard, then be sure to insta
 
 <TabItem label="Astro Method" icon='astro'>
 
-    <Steps>
+    {/* <Steps> Note: For some reason this breaks placement of EC-Twoslash popups... must investigate */}
     1. To add the StudioCMS integration to your project, you'll need to install the StudioCMS package and it's dependencies:
 
        <PackageManagers type="exec" pkg="astro" args="add db node studiocms" />
 
     2. After installing the package, make sure that your `astro.config.mjs` file is correctly importing and calling the integration:
 
-       ```ts twoslash title="astro.config.mjs"
-       // [!code word:server]
+       ```ts twoslash title="astro.config.mjs" {2-4,11-12}
        import { defineConfig } from 'astro/config';
-       import db from '@astrojs/db'; // [!code highlight]
-       import node from '@astrojs/node'; // [!code highlight]
-       import studioCMS from 'studiocms'; // [!code highlight]
+       import db from '@astrojs/db';
+       import node from '@astrojs/node';
+       import studioCMS from 'studiocms';
 
        export default defineConfig({
-           site: 'https://demo.studiocms.dev/', // [!code highlight]
+           site: 'https://demo.studiocms.dev/',
            output: 'server',
-           adapter: node({ mode: "standalone" }), // [!code highlight]
+           adapter: node({ mode: "standalone" }),
            integrations: [
-               db(), // [!code highlight]
-               studioCMS(), // [!code highlight]
+               db(),
+               studioCMS(),
            ],
        });
        ```
 
-    </Steps>
+    {/* </Steps> */}
 
 </TabItem>
 
 <TabItem label="Manual Method" icon='seti:powershell'>
 
-    <Steps>
+    {/* <Steps> */}
 
     1. To add the StudioCMS integration to your project, you'll need to install the Astro StudioCMS package and it's dependencies:
 
@@ -130,24 +129,23 @@ If you skipped the npm install step during the CLI wizard, then be sure to insta
 
     2. Update your `astro.config.mjs` file:
 
-       ```ts twoslash title="astro.config.mjs" 
-       // [!code word:server]
+       ```ts twoslash title="astro.config.mjs" {2-4,11-12}
        import { defineConfig } from 'astro/config';
-       import db from '@astrojs/db'; // [!code ++]
-       import node from '@astrojs/node'; // [!code ++]
-       import studioCMS from 'studiocms'; // [!code ++]
+       import db from '@astrojs/db'; 
+       import node from '@astrojs/node'; 
+       import studioCMS from 'studiocms';
 
        export default defineConfig({
-           site: 'https://demo.studiocms.dev/', // [!code highlight]
+           site: 'https://demo.studiocms.dev/',
            output: 'server', 
-           adapter: node({ mode: "standalone" }), // [!code ++]
+           adapter: node({ mode: "standalone" }), 
            integrations: [
-               db(), // [!code ++]
-               studioCMS(), // [!code ++]
+               db(), 
+               studioCMS(),
            ],
        });
        ```
-    </Steps>
+    {/* </Steps> */}
 
 </TabItem>
 

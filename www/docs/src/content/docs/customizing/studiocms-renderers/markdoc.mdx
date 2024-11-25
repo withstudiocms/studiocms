@@ -9,7 +9,7 @@ sidebar:
 
 import ReadMore from '~/components/ReadMore.astro'
 import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
-import PackageManagers from '~/components/PackageManagers.astro';
+import { PackageManagers } from 'starlight-package-managers'
 
 StudioCMS's MarkDoc renderer allows you to define custom renderers for your content. This allows you to define custom rendering logic for your content.
 
@@ -21,7 +21,7 @@ A custom renderer for StudioCMS's MarkDoc renderer that allows the user to use M
 
 Normally, users will not need to install the `@studiocms/renderers` package directly, as it is included as a dependency in the `studiocms` package. However, defining a custom renderer provided by `@studiocms/renderers` is possible.
 
-<Steps>
+{/* <Steps> */}
 
 1. Install `@astrojs/react` using the following command:
 
@@ -38,13 +38,13 @@ Normally, users will not need to install the `@studiocms/renderers` package dire
 
         When using only the `astro.config.mjs` file, you can add the MarkDoc React renderer to your configuration like so:
 
-        ```ts twoslash title="astro.config.mjs"
+        ```ts twoslash title="astro.config.mjs" {17} ins={5-6, 14, 19}
         import { defineConfig } from 'astro/config';
         import db from '@astrojs/db';
         import node from '@astrojs/node';
         import studioCMS from 'studiocms';
-        import react from '@astrojs/react'; // [!code ++]
-        import markDocRenderReact from '@studiocms/renderers/exports/markdoc/react'; // [!code ++]
+        import react from '@astrojs/react'; 
+        import markDocRenderReact from '@studiocms/renderers/exports/markdoc/react'; 
 
         export default defineConfig({
             site: 'https://demo.studiocms.dev/',
@@ -52,12 +52,12 @@ Normally, users will not need to install the `@studiocms/renderers` package dire
             adapter: node({ mode: "standalone" }),
             integrations: [
                 db(),
-                react(), // [!code ++]
+                react(), 
                 studioCMS({
                     rendererConfig: {
-                        renderer: "markdoc", // [!code highlight]
+                        renderer: "markdoc",
                         markdocConfig: {
-                            renderType: markDocRenderReact(), // [!code ++]
+                            renderType: markDocRenderReact(),
                         }
                     },
                 }),
@@ -70,12 +70,12 @@ Normally, users will not need to install the `@studiocms/renderers` package dire
 
         When using the `studiocms.config.mjs` file alongside your `astro.config.mjs`, you can add the MarkDoc React renderer to your configuration like so:
 
-        ```ts twoslash title="astro.config.mjs"
+        ```ts twoslash title="astro.config.mjs" ins={5, 13}
         import { defineConfig } from 'astro/config';
         import db from '@astrojs/db';
         import node from '@astrojs/node';
         import studioCMS from 'studiocms';
-        import react from '@astrojs/react'; // [!code ++]
+        import react from '@astrojs/react'; 
 
         export default defineConfig({
             site: 'https://demo.studiocms.dev/',
@@ -83,28 +83,28 @@ Normally, users will not need to install the `@studiocms/renderers` package dire
             adapter: node({ mode: "standalone" }),
             integrations: [
                 db(),
-                react(), // [!code ++]
+                react(),
                 studioCMS(),
             ],
         });
         ```
 
-        ```ts twoslash title="studiocms.config.mjs"
+        ```ts twoslash title="studiocms.config.mjs" {7} ins={2, 9}
         import { defineStudioCMSConfig } from "studiocms";
-        import markDocRenderReact from '@studiocms/renderers/exports/markdoc/react'; // [!code ++]
+        import markDocRenderReact from '@studiocms/renderers/exports/markdoc/react';
 
         export default defineStudioCMSConfig({
             //...Rest of your StudioCMS configuration
             rendererConfig: {
-                renderer: "markdoc", // [!code highlight]
+                renderer: "markdoc",
                 markdocConfig: {
-                    renderType: markDocRenderReact(), // [!code ++]
+                    renderType: markDocRenderReact(),
                 }
             },
         });
         ```
     </TabItem>
     </Tabs>
-</Steps>
+{/* </Steps> */}
 
 <ReadMore>For more information on how to configure the MarkDoc renderer, see the [MarkDoc Configuration](/config-reference/markdoc-config/) documentation.</ReadMore>
