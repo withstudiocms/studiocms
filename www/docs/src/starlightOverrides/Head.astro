@@ -7,27 +7,5 @@ import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal
 
 <Default {...Astro.props}><slot /></Default>
 <link rel="preload" as="font" type="font/woff2" href={onestWoff2} crossorigin="anonymous" />
-<meta name="twitter:site" content="_studiocms" />
-<script>
-  const calculateTwoslashPopupSize = () => {
-    const codeBlocks = document.querySelectorAll<HTMLPreElement>('pre.astro-code:has(.twoslash-popup-container)');
-
-    for (const block of codeBlocks) {
-      const twoslashPopups = block.querySelectorAll<HTMLSpanElement>('.twoslash-popup-container');
-
-      for (const container of twoslashPopups) {
-        const parentWidth = block.clientWidth;
-        const containerPos = (container.getBoundingClientRect().left - block.getBoundingClientRect().left) + 16;
-        const containerWidth = container.clientWidth;
-
-        if (containerWidth > parentWidth - containerPos) {
-          container.style.setProperty('width', `${parentWidth - containerPos}px`, 'important');
-        }
-      }
-    }
-  }
-
-  calculateTwoslashPopupSize();
-
-  document.addEventListener('resize', calculateTwoslashPopupSize);
-</script>
+<meta name="twitter:site" content="withstudiocms" />
+<meta name="twitter:creator" content="withstudiocms" />
