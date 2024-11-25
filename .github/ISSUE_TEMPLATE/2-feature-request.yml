@@ -1,0 +1,32 @@
+name: Feature Request
+description: Suggest an idea/feature for StudioCMS
+title: '[Feature Request]: '
+labels: feat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new feature for StudioCMS!
+  - type: textarea
+    id: idea
+    attributes:
+      label: Describe your feature request
+      description: Try to give as much detail as possible.
+      placeholder: Tell us what you want!
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Other examples?
+      description: Has there been something similar made for other highlighters such as Shiki?
+      placeholder: If not just respond no
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the plugin request here.
+    validations:
+      required: false
