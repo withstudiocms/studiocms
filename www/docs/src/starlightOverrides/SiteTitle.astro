@@ -39,14 +39,14 @@ const { siteTitle, siteTitleHref } = Astro.props;
     </span>
   </a>
 
-  <a href="/start-here/getting-started/">Docs</a>
+  <a href="/start-here/getting-started/">{Astro.locals.t('site-title.labels.docs')}</a>
 </div>
     
 <div class="external-links">
-  <a href="https://studiocms.dev">Main Site</a>
+  <a href="https://studiocms.dev">{Astro.locals.t('site-title.labels.main-site')}</a>
 </div>
 <div class="external-links">
-  <a href="https://demo.studiocms.dev">Live Demo</a>
+  <a href="https://demo.studiocms.dev">{Astro.locals.t('site-title.labels.live-demo')}</a>
 </div>
 
 <style>

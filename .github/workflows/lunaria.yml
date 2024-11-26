@@ -1,0 +1,36 @@
+name: Lunaria
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+    # TODO: Remove issue-304 from the list of branches once PR#333 is merged
+    branches: [main, issue-304]
+
+jobs:
+  lunaria-overview:
+    name: Generate Lunaria Overview
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+
+      - run: pnpm install
+
+      - name: Generate Lunaria Overview
+        uses: yanthomasdev/lunaria-action@v0.1.0
+        with:
+          working-directory: www/docs
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
