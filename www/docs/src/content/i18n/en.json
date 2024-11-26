@@ -1,0 +1,16 @@
+{
+  "site-title.labels.docs": "Docs",
+  "site-title.labels.main-site": "Main Site",
+  "site-title.labels.live-demo": "Live Demo",
+  "sponsors.sponsoredby": "Sponsored by",
+  "package-catalog.readmore.start": "For more information checkout the",
+  "package-catalog.readmore.end": "documentation page",
+  "integration-labels.changelog": "Changelog",
+  "contributors.core-packages": "StudioCMS Core Packages",
+  "contributors.ui-library": "StudioCMS UI Library",
+  "contributors.devapps": "StudioCMS DevApps",
+  "contributors.plugins": "StudioCMS Plugins",
+  "contributors.documentation": "StudioCMS Documentation",
+  "contributors.website": "StudioCMS Website",
+  "contributors.bots": "StudioCMS Bots"
+}

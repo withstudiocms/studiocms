@@ -9,6 +9,25 @@ import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config';
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';
 
+export const locales = {
+	root: { label: 'English', lang: 'en' },
+	es: { label: 'Español', lang: 'es' },
+	// de: { label: 'Deutsch', lang: 'de' },
+	// ja: { label: '日本語', lang: 'ja' },
+	// fr: { label: 'Français', lang: 'fr' },
+	// it: { label: 'Italiano', lang: 'it' },
+	// id: { label: 'Bahasa Indonesia', lang: 'id' },
+	// 'zh-cn': { label: '简体中文', lang: 'zh-CN' },
+	// 'pt-br': { label: 'Português do Brasil', lang: 'pt-BR' },
+	// 'pt-pt': { label: 'Português', lang: 'pt-PT' },
+	// ko: { label: '한국어', lang: 'ko' },
+	// tr: { label: 'Türkçe', lang: 'tr' },
+	// ru: { label: 'Русский', lang: 'ru' },
+	// hi: { label: 'हिंदी', lang: 'hi' },
+	// da: { label: 'Dansk', lang: 'da' },
+	// uk: { label: 'Українська', lang: 'uk' },
+};
+
 export default defineConfig({
 	site,
 	experimental: {
@@ -38,6 +57,8 @@ export default defineConfig({
 				dark: '../assets/logo-light.svg',
 				light: '../assets/logo-dark.svg',
 			},
+			defaultLocale: 'root',
+			locales,
 			social: {
 				github: 'https://github.com/withstudiocms/studiocms',
 				discord: 'https://chat.studiocms.dev',
@@ -149,7 +170,6 @@ export default defineConfig({
 							autogenerate: { directory: 'config-reference' },
 							collapsed: false,
 						},
-						// @ts-expect-error - This is not a publicly available type
 						typeDocSideBarEntry,
 					],
 				},

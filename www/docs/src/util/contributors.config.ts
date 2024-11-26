@@ -1,3 +1,5 @@
+import type { AstroGlobal } from 'astro';
+
 type RepoListItem = {
 	repo: string;
 	type: 'all' | 'byPath';
@@ -11,9 +13,9 @@ type ContributorConfig = {
 
 export const StudioCMSServiceAccounts: string[] = ['studiocms-no-reply'];
 
-export const contributorConfig: ContributorConfig[] = [
+export const contributorConfig = (Astro: AstroGlobal): ContributorConfig[] => [
 	{
-		name: 'StudioCMS Core Packages',
+		name: Astro.locals.t('contributors.core-packages'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -39,7 +41,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS UI Library',
+		name: Astro.locals.t('contributors.ui-library'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -49,7 +51,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS DevApps',
+		name: Astro.locals.t('contributors.devapps'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -59,7 +61,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS Plugins',
+		name: Astro.locals.t('contributors.plugins'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -74,7 +76,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS Documentation',
+		name: Astro.locals.t('contributors.documentation'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -84,7 +86,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS Website',
+		name: Astro.locals.t('contributors.website'),
 		list: [
 			{
 				repo: 'withstudiocms/studiocms',
@@ -98,7 +100,7 @@ export const contributorConfig: ContributorConfig[] = [
 		],
 	},
 	{
-		name: 'StudioCMS Bots',
+		name: Astro.locals.t('contributors.bots'),
 		list: [
 			{
 				repo: 'withstudiocms/apollo',
