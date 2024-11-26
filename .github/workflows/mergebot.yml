@@ -7,6 +7,6 @@ on:
 jobs:
   mergebot:
     if: ${{ github.repository_owner == 'withstudiocms' }}
-    uses: withstudiocms/mergebot@main
+    uses: withstudiocms/mergebot/.github/workflows/mergebot.yml@main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
