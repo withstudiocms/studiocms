@@ -1,6 +1,5 @@
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
-import lunaria from '@lunariajs/starlight';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils';
@@ -181,7 +180,6 @@ export default defineConfig({
 				}),
 				...typeDocPlugins,
 				starlightImageZoom(),
-				lunaria(),
 			],
 		}),
 	],
