@@ -1,6 +1,9 @@
 name: snapshot Release
 
-on: [pull_request]
+on: 
+  pull_request:
+    paths:
+        - 'packages/**'
 
 jobs:
   release:
@@ -19,7 +22,7 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
-      - name: Install Dependencies
+      - name: Install Dependencies 
         run: pnpm ci:install
   
       - name: Publish packages
