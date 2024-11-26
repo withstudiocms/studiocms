@@ -30,6 +30,7 @@
     "typescript": "catalog:",
 
     "@lunariajs/core": "^0.1.1",
+    "@lunariajs/starlight": "^0.1.1",
     "expressive-code-twoslash": "catalog:docs",
     "@shikijs/colorized-brackets": "catalog:docs",
     "starlight-package-managers": "catalog:docs",

@@ -1000,6 +1000,9 @@ importers:
       '@lunariajs/core':
         specifier: ^0.1.1
         version: 0.1.1
+      '@lunariajs/starlight':
+        specifier: ^0.1.1
+        version: 0.1.1(@astrojs/starlight@0.29.2(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)))(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       '@shikijs/colorized-brackets':
         specifier: catalog:docs
         version: 1.23.1
@@ -2116,6 +2119,13 @@ packages:
     resolution: {integrity: sha512-sAqM9+DVsLe3xHM9wu2pEnKGYMs/bWS9qpR+CGHol3RihOELnOQTzHddXbdB1MtgesbI8dnQuG64Ocd8KkWsng==}
     engines: {node: '>=18.17.0'}
     hasBin: true
+
+  '@lunariajs/starlight@0.1.1':
+    resolution: {integrity: sha512-tpkqv8TCGUvz0z5nVk1ACb/2bT3seqDx+CHimNQugcpAFSip9BqDPOiWqaCujzZFajfR/L4mUsPAnavnnE8KVw==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.14.0'
+      astro: '>=4.0.0'
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -7421,6 +7431,14 @@ snapshots:
       simple-git: 3.27.0
       ultramatter: 0.0.4
       zod: 3.23.8
+    transitivePeerDependencies:
+      - supports-color
+
+  '@lunariajs/starlight@0.1.1(@astrojs/starlight@0.29.2(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)))(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))':
+    dependencies:
+      '@astrojs/starlight': 0.29.2(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
+      '@lunariajs/core': 0.1.1
+      astro: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
     transitivePeerDependencies:
       - supports-color
 

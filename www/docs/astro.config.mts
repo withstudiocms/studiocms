@@ -1,5 +1,6 @@
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
+import lunaria from '@lunariajs/starlight';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils';
@@ -170,7 +171,6 @@ export default defineConfig({
 							autogenerate: { directory: 'config-reference' },
 							collapsed: false,
 						},
-						// @ts-expect-error - This is not a publicly available type
 						typeDocSideBarEntry,
 					],
 				},
@@ -181,6 +181,7 @@ export default defineConfig({
 				}),
 				...typeDocPlugins,
 				starlightImageZoom(),
+				lunaria(),
 			],
 		}),
 	],
