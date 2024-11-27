@@ -24,7 +24,6 @@
     "update:docs": "pnpm --filter docs up --latest",
     "web:dev": "pnpm --filter web dev",
     "docs:dev": "pnpm --filter docs dev",
-    "lunaria:preview": "pnpm --filter docs lunaria:preview",
     "lunaria:build": "pnpm --filter docs lunaria:build",
     "translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
     "ci:lint": "biome ci --formatter-enabled=true --organize-imports-enabled=true  --reporter=github",
