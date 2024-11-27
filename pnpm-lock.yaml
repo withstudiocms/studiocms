@@ -998,8 +998,8 @@ importers:
         specifier: catalog:docs
         version: 0.2.0(@astrojs/starlight@0.29.2(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)))(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       '@lunariajs/core':
-        specifier: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f
-        version: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f
+        specifier: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
+        version: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
       '@shikijs/colorized-brackets':
         specifier: catalog:docs
         version: 1.23.1
@@ -2112,8 +2112,8 @@ packages:
       '@astrojs/starlight': '>=0.28.0'
       astro: '>=4.14.0'
 
-  '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f':
-    resolution: {tarball: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f}
+  '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0':
+    resolution: {tarball: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0}
     version: 0.1.1
     engines: {node: '>=18.17.0'}
 
@@ -7404,7 +7404,7 @@ snapshots:
       astro: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
       astro-integration-kit: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
 
-  '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f':
+  '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0':
     dependencies:
       consola: 3.2.3
       jiti: 2.3.3

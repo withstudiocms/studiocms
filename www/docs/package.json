@@ -29,7 +29,7 @@
     "typescript": "catalog:",
 
     "tsm": "2.3.0",
-    "@lunariajs/core": "https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f",
+    "@lunariajs/core": "https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0",
     "expressive-code-twoslash": "catalog:docs",
     "@shikijs/colorized-brackets": "catalog:docs",
     "starlight-package-managers": "catalog:docs",

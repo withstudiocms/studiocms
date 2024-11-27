@@ -125,7 +125,7 @@ export default defineConfig({
 	files: [
 		{
 			include: ['src/content/docs/**/*.(md|mdx)'],
-			exclude: ['src/content/docs/typedoc/**/*.(md|mdx)'],
+			// exclude: ['src/content/docs/typedoc/**/*.(md|mdx)'],
 			pattern: {
 				source: 'src/content/docs/@path',
 				locales: 'src/content/docs/@lang/@path',
