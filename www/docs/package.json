@@ -9,8 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lunaria:preview": "lunaria preview",
-    "lunaria:build": "lunaria build"
+    "lunaria:build": "tsm ./scripts/lunaria.mts"
   },
   "dependencies": {
     "studiocms": "workspace:*",
@@ -29,8 +28,8 @@
     "sharp": "catalog:",
     "typescript": "catalog:",
 
-    "@lunariajs/core": "^0.1.1",
-    "@lunariajs/starlight": "^0.1.1",
+    "tsm": "2.3.0",
+    "@lunariajs/core": "https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@62a858f",
     "expressive-code-twoslash": "catalog:docs",
     "@shikijs/colorized-brackets": "catalog:docs",
     "starlight-package-managers": "catalog:docs",
