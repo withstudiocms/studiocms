@@ -138,6 +138,7 @@ export default defineConfig({
 			type: 'dictionary',
 		},
 	],
+	cacheDir: './lunaria/cache',
 	tracking: {
 		localizableProperty: 'i18nReady',
 		ignoredKeywords: [
