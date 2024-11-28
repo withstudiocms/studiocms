@@ -5,7 +5,7 @@ export default defineConfig({
 		name: 'withstudiocms/studiocms',
 		rootDir: 'www/docs',
 		hosting: 'github',
-		// TODO: Change/Remove this once the branch is ready to merge
+		// TODO: Change to 'main' this once the branch is ready to merge
 		branch: 'issue-0304',
 	},
 	sourceLocale: {
