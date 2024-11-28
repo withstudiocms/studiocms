@@ -1,0 +1,54 @@
+name: Lunaria Deployments
+
+on:
+  push:
+    branches:
+      - main
+      - issue-0304
+
+jobs:
+  build-overview:
+    name: Build Lunaria Overview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Lunaria Overview
+        run: pnpm lunaria:build
+
+      - name: Upload Overview
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "www/docs/dist/lunaria/"
+
+  deploy-overview:
+    runs-on: ubuntu-latest
+    needs: build-overview
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.build-overview.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
