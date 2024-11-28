@@ -24,108 +24,108 @@ export default defineConfig({
 			},
 		},
 		{
-			label: 'Deutsch',
-			lang: 'de',
-			parameters: {
-				tag: 'de',
-			},
-		},
-		{
-			label: '日本語',
-			lang: 'ja',
-			parameters: {
-				tag: 'ja',
-			},
-		},
-		{
 			label: 'Français',
 			lang: 'fr',
 			parameters: {
 				tag: 'fr',
 			},
 		},
-		{
-			label: 'Italiano',
-			lang: 'it',
-			parameters: {
-				tag: 'it',
-			},
-		},
-		{
-			label: 'Bahasa Indonesia',
-			lang: 'id',
-			parameters: {
-				tag: 'id',
-			},
-		},
-		{
-			label: '简体中文',
-			lang: 'zh-cn',
-			parameters: {
-				tag: 'zh-CN',
-			},
-		},
-		{
-			label: 'Português do Brasil',
-			lang: 'pt-br',
-			parameters: {
-				tag: 'pt-BR',
-			},
-		},
-		{
-			label: 'Português',
-			lang: 'pt-pt',
-			parameters: {
-				tag: 'pt-PT',
-			},
-		},
-		{
-			label: '한국어',
-			lang: 'ko',
-			parameters: {
-				tag: 'ko',
-			},
-		},
-		{
-			label: 'Türkçe',
-			lang: 'tr',
-			parameters: {
-				tag: 'tr',
-			},
-		},
-		{
-			label: 'Русский',
-			lang: 'ru',
-			parameters: {
-				tag: 'ru',
-			},
-		},
-		{
-			label: 'हिंदी',
-			lang: 'hi',
-			parameters: {
-				tag: 'hi',
-			},
-		},
-		{
-			label: 'Dansk',
-			lang: 'da',
-			parameters: {
-				tag: 'da',
-			},
-		},
-		{
-			label: 'Українська',
-			lang: 'uk',
-			parameters: {
-				tag: 'uk',
-			},
-		},
+		// {
+		// 	label: 'Deutsch',
+		// 	lang: 'de',
+		// 	parameters: {
+		// 		tag: 'de',
+		// 	},
+		// },
+		// {
+		// 	label: '日本語',
+		// 	lang: 'ja',
+		// 	parameters: {
+		// 		tag: 'ja',
+		// 	},
+		// },
+		// {
+		// 	label: 'Italiano',
+		// 	lang: 'it',
+		// 	parameters: {
+		// 		tag: 'it',
+		// 	},
+		// },
+		// {
+		// 	label: 'Bahasa Indonesia',
+		// 	lang: 'id',
+		// 	parameters: {
+		// 		tag: 'id',
+		// 	},
+		// },
+		// {
+		// 	label: '简体中文',
+		// 	lang: 'zh-cn',
+		// 	parameters: {
+		// 		tag: 'zh-CN',
+		// 	},
+		// },
+		// {
+		// 	label: 'Português do Brasil',
+		// 	lang: 'pt-br',
+		// 	parameters: {
+		// 		tag: 'pt-BR',
+		// 	},
+		// },
+		// {
+		// 	label: 'Português',
+		// 	lang: 'pt-pt',
+		// 	parameters: {
+		// 		tag: 'pt-PT',
+		// 	},
+		// },
+		// {
+		// 	label: '한국어',
+		// 	lang: 'ko',
+		// 	parameters: {
+		// 		tag: 'ko',
+		// 	},
+		// },
+		// {
+		// 	label: 'Türkçe',
+		// 	lang: 'tr',
+		// 	parameters: {
+		// 		tag: 'tr',
+		// 	},
+		// },
+		// {
+		// 	label: 'Русский',
+		// 	lang: 'ru',
+		// 	parameters: {
+		// 		tag: 'ru',
+		// 	},
+		// },
+		// {
+		// 	label: 'हिंदी',
+		// 	lang: 'hi',
+		// 	parameters: {
+		// 		tag: 'hi',
+		// 	},
+		// },
+		// {
+		// 	label: 'Dansk',
+		// 	lang: 'da',
+		// 	parameters: {
+		// 		tag: 'da',
+		// 	},
+		// },
+		// {
+		// 	label: 'Українська',
+		// 	lang: 'uk',
+		// 	parameters: {
+		// 		tag: 'uk',
+		// 	},
+		// },
 	],
 	files: [
 		{
 			include: ['src/content/docs/**/*.(md|mdx)'],
-			// exclude: ['src/content/docs/typedoc/**/*.(md|mdx)'],
+			exclude: ['src/content/docs/typedoc/**/*.(md|mdx)'],
 			pattern: {
 				source: 'src/content/docs/@path',
 				locales: 'src/content/docs/@lang/@path',
