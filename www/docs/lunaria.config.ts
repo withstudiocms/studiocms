@@ -135,18 +135,18 @@ export default defineConfig({
 		{
 			include: ['src/content/i18n/*.json'],
 			pattern: 'src/content/i18n/@lang.json',
-			type: 'dictionary',
+			type: 'universal',
 		},
 	],
-	tracking: {
-		localizableProperty: 'i18nReady',
-		ignoredKeywords: [
-			'lunaria-ignore',
-			'typo',
-			'en-only',
-			'broken link',
-			'i18nReady',
-			'i18nIgnore',
-		],
-	},
+	// tracking: {
+	// 	localizableProperty: 'i18nReady',
+	// 	ignoredKeywords: [
+	// 		'lunaria-ignore',
+	// 		'typo',
+	// 		'en-only',
+	// 		'broken link',
+	// 		'i18nReady',
+	// 		'i18nIgnore',
+	// 	],
+	// },
 });
