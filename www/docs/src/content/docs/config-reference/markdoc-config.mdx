@@ -11,8 +11,10 @@ import ReadMore from '~/components/ReadMore.astro';
 
 ## Usage
 
-```js title="astro.config.mjs"  {3-7}
-studioCMS({
+```ts twoslash {3-7} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
   rendererConfig: {
     markdocConfig: {
       renderType: 'html',
@@ -20,7 +22,7 @@ studioCMS({
       transformConfig: {}
     },
   }
-}),
+})
 ```
 
 This property has the following options:

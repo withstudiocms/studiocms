@@ -1,50 +1,86 @@
 ---
-title: Welcome to StudioCMS
+title: StudioCMS Documentation
 description: Get started building with StudioCMS.
 template: splash
-banner:
-  content: |
-    We've renamed the package to <strong>studiocms</strong> 🎉
+editUrl: false
+lastUpdated: false
 hero:
-  tagline: A dedicated CMS for Studio. Built from the ground up by the Astro community.
+  tagline: Guides and resources for learning how to use StudioCMS.
   image:
     alt: StudioCMS Logo
     dark: ./studioCMS.png
     light: ./studioCMS-dark.png
   actions:
     - text: Get started
-      link: /start-here/getting-started
+      link: /start-here/getting-started/
       icon: right-arrow
       variant: primary
     - text: GitHub repository
-      link: https://github.com/astrolicious/studiocms
+      link: https://github.com/withstudiocms/studiocms/
       icon: github
 ---
 
-import { CardGrid, Card } from '@astrojs/starlight/components';
-import Youtube from '~/components/Youtube.astro'
+import { CardGrid, LinkButton } from '@astrojs/starlight/components';
+import Youtube from '~/components/Youtube.astro';
+import Card from '~/components/landing/Card.astro';
+import ListCard from '~/components/landing/ListCard.astro';
+import SplitCard from '~/components/landing/SplitCard.astro';
+import { Center } from '@studiocms/ui/components';
 
-<Youtube id="Ukh3Zb9VjIM" title="Welcome to StudioCMS" />
+<Card title="Welcome to StudioCMS" icon='seti:video'>
+  <Youtube id="Ukh3Zb9VjIM"/>
+</Card>
 
-<CardGrid stagger>
-  <Card title="Built with Astro" icon="astro">
-    Leverages [Astro's](https://astro.build) robust and efficient framework, providing a solid base for building and scaling applications.
-  </Card>
-  <Card title="Native Markdown Support with Realtime preview" icon="seti:markdown">
-    Incorporates [`MarkedJS`](https://marked.js.org/) with support for extensions, enriching the markdown experience with greater flexibility and functionality. Also supports MarkDoc and native Astro Markdown. Allowing for a seamless transition between markdown formats, and see your changes in realtime as your writing.
-  </Card>
-  <Card title="Secure libSQL Database" icon="seti:db">
-    All data is securely housed within the Astro Studio's libSQL database. Or you can bring your own libSQL server through another provider such as [`Turso`](https://turso.tech/). Or self-host your own libSQL server.
-  </Card>
-  <Card title="Built-in Authentication" icon="seti:lock">
-    Features built-in authentication with support for multiple platforms including Local and Github, enhancing security and user management capabilities. Built using the [`Lucia Auth`](https://lucia-auth.com/) library.
-  </Card>
-  <Card title="Unpic Image Service" icon="seti:image">
-    A free and efficient image service, Unpic makes managing external URLs straightforward, with support for major CDNs.
+<CardGrid>
 
-    - See [Unpic's Website](https://unpic.pics/about/) for more information about Unpic's options.
-  </Card>
-  <Card title="Web Vitals" icon="seti:code-search">
-    Integration with [`@astrojs/web-vitals`](/plugins/web-vitals/) for monitoring and providing insights into web performance metrics, ensuring optimal user experiences. Directly integrated into the StudioCMS dashboard.
-  </Card>
+  <SplitCard title="Quick Start" icon="rocket">
+    ```sh
+    # Create a new Astro project
+    pnpm create astro@latest
+    # Add StudioCMS and Astro DB to your project
+    pnpm astro add db studiocms
+
+    # Setup your Turso database with the Turso CLI
+    # Optional - You can use any libSQL provider
+    turso db create my-database
+    ```
+    
+    <div style="padding: 0;">
+    For more information about required environment variables, see the [Environment Variables](/start-here/environment-variables) page.
+
+    For a more in-depth guide, check out the [Getting Started](/start-here/getting-started) guide.
+    
+    Looking for a libSQL database? Check out [Turso](https://turso.tech).
+    </div>
+     
+  </SplitCard>
+
+  <ListCard title="Learn about StudioCMS" icon="information">
+    - [Getting Started](/start-here/getting-started)
+    - [Environment Variables](/start-here/environment-variables)
+    - [Why StudioCMS?](/start-here/why-studiocms)
+    - [Understanding StudioCMS](/how-it-works/)
+  </ListCard>
+
+  <ListCard title="Customizing StudioCMS" icon="puzzle">
+    - [Customizing the Renderer](/customizing/studiocms-renderers/)
+    - [Using the StudioCMS UI Library](/customizing/studiocms-ui/)
+    - [Finding and Using Plugins](/package-catalog/)
+  </ListCard>
+
 </CardGrid>
+
+<Center>
+  <div style="display: flex; flex-direction: column; margin-top: 3rem;">
+    Want to get involved with the StudioCMS community?
+
+    <LinkButton 
+      href='https://chat.studiocms.dev' 
+      icon='discord' 
+      iconPlacement='end'
+      class='discord-button'
+      style='width: fit-content; margin-left: auto; margin-right: auto;'>
+        Join our Discord!
+    </LinkButton>
+  </div>
+</Center>

@@ -1,0 +1,279 @@
+---
+title: Modal
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import PreviewCard from '~/components/PreviewCard.astro';
+import ModalScript from '~/components/ModalScript.astro';
+import { Modal, Button, Row } from '@studiocms/ui/components';
+
+
+A dropdown component that takes care of all the annoying bits for you, with added support for programmatic triggers on top.
+
+## Usage
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Modal id="usage-modal">
+        <h2 slot="header">Header Content</h2>
+        <div>Modal Content</div>
+      </Modal>
+      <Button color="primary" id="usage-modal-trigger">
+        Trigger Modal
+      </Button>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Modal, Button } from '@studiocms/ui/components';
+    ---
+
+    <Modal id="modal">
+      <h2 slot="header">Header Content</h2>
+      <div>Modal Content</div>
+    </Modal>
+    <Button color="primary" id="modal-trigger">
+      Trigger Modal
+    </Button>
+    ```
+    ```ts twoslash
+    import { ModalHelper } from '@studiocms/ui/components';
+
+    const modal = new ModalHelper('modal', 'modal-trigger');
+    ```
+  </TabItem>
+</Tabs>
+
+### Size
+
+You can change the modal's size to one of three presets.
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Modal id="sizes-modal-sm" size="sm">
+        <h2 slot="header">Small Modal</h2>
+        <div>
+          Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+          Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+        </div>
+      </Modal>
+      <Modal id="sizes-modal-md">
+        <h2 slot="header">Medium Content</h2>
+        <div>
+          Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+          Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+        </div>
+      </Modal>
+      <Modal id="sizes-modal-lg" size="lg">
+        <h2 slot="header">Large Content</h2>
+        <div>
+          Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+          Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+        </div>
+      </Modal>
+
+      <Row alignCenter>
+        <Button color="primary" id="sm-modal-trigger">
+          Small
+        </Button>
+        <Button color="primary" id="md-modal-trigger">
+          Medium
+        </Button>
+        <Button color="primary" id="lg-modal-trigger">
+          Large
+        </Button>
+      </Row>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro /size="[a-z]+"/
+    ---
+    import { Modal, Button } from '@studiocms/ui/components';
+    ---
+
+    <Modal id="modal" size="sm">
+      <h2 slot="header">Small Modal</h2>
+      <div>
+        Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+        Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+      </div>
+    </Modal>
+    <Button color="primary" id="modal-trigger">
+      Small
+    </Button>
+
+    <!-- Other modals and triggers omitted for simplicity -->
+    ```
+    ```ts twoslash
+    import { ModalHelper } from '@studiocms/ui/components';
+
+    const modal = new ModalHelper('modal', 'modal-trigger');
+    ```
+  </TabItem>
+</Tabs>
+
+### Dismissable
+
+You can change whether a modal can be dismissed by clicking outside of it via the `dismissable` prop.
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Modal id="dismissable-modal" dismissable={false}>
+        <h2 slot="header">Non-dismissable</h2>
+        <div>
+          Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+          Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+        </div>
+      </Modal>
+
+      <Button color="primary" id="dismissable-modal-trigger">
+        Non-Dismissable
+      </Button>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro "dismissable={false}"
+    ---
+    import { Modal, Button } from '@studiocms/ui/components';
+    ---
+
+    <Modal id="modal" dismissable={false}>
+      <h2 slot="header">Non-dismissable</h2>
+      <div>
+        Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+        Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+      </div>
+    </Modal>
+    <Button color="primary" id="modal-trigger">
+      Non-Dismissable
+    </Button>
+    ```
+    ```ts twoslash
+    import { ModalHelper } from '@studiocms/ui/components';
+
+    const modal = new ModalHelper('modal', 'modal-trigger');
+    ```
+  </TabItem>
+</Tabs>
+
+If a modal has buttons (see below), the `x` button in the top right corner will disappear as well.
+
+### Buttons
+
+Modals support both a `Cancel` and a `Confirm` button. You can use both at the same time, or one of them on it's own.
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Modal id="buttons-modal" buttons={['cancel','confirm']} class="not-content">
+        <h2 slot="header">Buttons</h2>
+        <div>
+          Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+          Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+        </div>
+      </Modal>
+
+      <Button color="primary" id="buttons-modal-trigger">
+        Buttons
+      </Button>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro "buttons={['cancel','confirm']}"
+    ---
+    import { Modal, Button } from '@studiocms/ui/components';
+    ---
+
+    <Modal id="modal" buttons={['cancel','confirm']}>
+      <h2 slot="header">Buttons</h2>
+      <div>
+        Lorem ipsum dolor sit amet. Est corporis rerum est reprehenderit nesciunt qui quibusdam quam non totam quia. 
+        Et porro unde et rerum aliquam nam consectetur dolorum et unde optio At delectus alias.
+      </div>
+    </Modal>
+    <Button color="primary" id="modal-trigger">
+      Buttons
+    </Button>
+    ```
+    ```ts twoslash
+    // @noErrors
+    import { ModalHelper } from '@studiocms/ui/components';
+
+    const modal = new ModalHelper('modal', 'modal-trigger');
+    ```
+  </TabItem>
+</Tabs>
+
+:::note
+The order of the `button` prop array does not influence the order of the buttons on the form.
+:::
+
+### Registering Callbacks
+
+If you want to implement functionality based on which of the buttons is clicked, you can register a callback on each of them. 
+
+```ts twoslash ins={5-7,9-11}
+// @noErrors
+import { ModalHelper } from '@studiocms/ui/components';
+
+const modal = new ModalHelper('modal', 'modal-trigger');
+
+modal.registerCancelCallback(() => {
+  // Your logic here
+});
+
+modal.registerConfirmCallback(() => {
+  // Your logic here
+});
+```
+
+### Form Support
+
+You can turn your modals into forms by supplying the `isForm` prop! This turns the `Cancel` button into a reset button and the `Confirm` button into a submission button.
+This only changes their types, not their text.
+
+By using the `registerConfirmCallback` function, you can retrieve the `FormData` after the `Confirm` button is clicked. Any inputs in the modal will be included.
+
+```ts twoslash "formData"
+// @noErrors
+import { ModalHelper } from '@studiocms/ui/components';
+
+const modal = new ModalHelper('modal', 'modal-trigger');
+
+modal.registerConfirmCallback((formData) => {
+  // Your logic here
+});
+```
+
+### Binding Triggers
+
+You can add multiple triggers to your modal by using the `bindTrigger` function in combination with an element's ID.
+
+```ts twoslash ins={4-5}
+// @noErrors
+import { ModalHelper } from '@studiocms/ui/components';
+
+const modal = new ModalHelper('modal', 'modal-trigger');
+modal.bindTrigger('modal-trigger-two');
+modal.bindTrigger('modal-trigger-three');
+```
+
+### Controlling Modals Programatically
+
+Similar to [dropdowns](/customizing/studiocms-ui/components/dropdown), modals can be shown and hidden programatically:
+
+```ts twoslash ins={5-6}
+// @noErrors
+import { ModalHelper } from '@studiocms/ui/components';
+
+const modal = new ModalHelper('modal', 'modal-trigger');
+
+modal.show();
+modal.hide();
+```
+
+<ModalScript />

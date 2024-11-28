@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Integration from './Integration.astro';
+import ReadMore from './ReadMore.astro';
+
+interface Props {
+	catalog: CollectionEntry<'package-catalog'>['data']['catalog'];
+}
+
+const { catalog } = Astro.props;
+
+const packages = (await getCollection('package-catalog'))
+	.filter(({ data }) => data.catalog === catalog)
+	.sort(({ data: { name: a } }, { data: { name: b } }) => {
+		const isScopedA = a.startsWith('@');
+		const isScopedB = b.startsWith('@');
+
+		// Non-scoped packages come first
+		if (!isScopedA && isScopedB) return -1;
+		if (isScopedA && !isScopedB) return 1;
+
+		// If both are scoped or non-scoped, sort alphabetically
+		return a.localeCompare(b);
+	})
+	.map(({ data }) => data);
+---
+
+<div>
+
+    { 
+        packages.map(({ 
+            name: title, 
+            githubURL, 
+            released, 
+            isPlugin, 
+            description, 
+            docsLink: href,
+            publiclyUsable
+        }, index) => (
+            <Integration {title} {githubURL} {released} {isPlugin} {publiclyUsable} />
+
+            <p>{description}</p>
+
+            <ReadMore>For more information checkout the <a {href}>documentation page</a></ReadMore>
+
+            <>{ index < packages.length - 1 && <hr /> }</>
+        )) 
+    }
+
+</div>

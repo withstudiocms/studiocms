@@ -1,0 +1,119 @@
+---
+title: Checkbox
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import PreviewCard from '~/components/PreviewCard.astro';
+import { Checkbox, Row } from '@studiocms/ui/components';
+
+A custom checkbox component with support for sizes and colors. Form compatible.
+
+## Usage
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Checkbox label="Label" color="primary" />
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Checkbox } from '@studiocms/ui/components';
+    ---
+
+    <Checkbox label="Label" color="primary" />
+    ```
+  </TabItem>
+</Tabs>
+
+### Sizes
+
+There's three different sizes for checkboxes:
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Row>
+        <Checkbox label="Small" color="primary" size="sm" defaultChecked />
+        <Checkbox label="Medium" color="primary" defaultChecked />
+        <Checkbox label="Large" color="primary" size="lg" defaultChecked />
+      </Row>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro /size="[a-z]+"/
+    ---
+    import { Checkbox } from '@studiocms/ui/components';
+    ---
+
+    <Checkbox label="Small" color="primary" size="sm" defaultChecked />
+    <Checkbox label="Medium" color="primary" defaultChecked />
+    <Checkbox label="Large" color="primary" size="lg" defaultChecked />
+    ```
+  </TabItem>
+</Tabs>
+
+### Colors
+
+The checkbox component supports all default colorways.
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Row>
+        <Checkbox label="Default" defaultChecked />
+        <Checkbox label="Primary" color="primary" defaultChecked />
+        <Checkbox label="Success" color="success" defaultChecked />
+        <Checkbox label="Warning" color="warning" defaultChecked />
+        <Checkbox label="Danger" color="danger" defaultChecked />
+      </Row>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro /color="[a-z]+"/
+    ---
+    import { Checkbox } from '@studiocms/ui/components';
+    ---
+
+    <Checkbox label="Default" defaultChecked />
+    <Checkbox label="Primary" color="primary" defaultChecked />
+    <Checkbox label="Success" color="success" defaultChecked />
+    <Checkbox label="Warning" color="warning" defaultChecked />
+    <Checkbox label="Danger" color="danger" defaultChecked />
+    ```
+  </TabItem>
+</Tabs>
+
+### Form Support
+
+If you want to use this component in a form, you're in luck! There's two props you can pass: `isRequired` and `name`.
+
+The first one does what it says it does, while the latter sets the `name` attribute so you can access the checkbox in, for example,
+the `FormData` returned by a submission. Here's an example showing how to set both of them:
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Checkbox label="Required & Custom Name" color="primary" isRequired name='required-checkbox' />
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro ins={8-9}
+    ---
+    import { Checkbox } from '@studiocms/ui/components';
+    ---
+
+    <Checkbox 
+      label="Required & Custom Name"
+      color="primary"
+      isRequired
+      name='required-checkbox'
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+:::note
+If no name is set, a random one is generated for the component.
+:::

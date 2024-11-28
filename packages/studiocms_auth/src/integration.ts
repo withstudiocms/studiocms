@@ -1,21 +1,40 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { AuthProviderLogStrings, DashboardStrings } from '@studiocms/core/strings';
+import { DashboardStrings } from '@studiocms/core/strings';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import copy from 'rollup-plugin-copy';
 import { name } from '../package.json';
 import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
-import authConfigDTS from './stubs/auth-config';
-import authHelperDTS from './stubs/auth-helpers';
+import authLibDTS from './stubs/auth-lib';
+import authScriptsDTS from './stubs/auth-scripts';
+import authUtilsDTS from './stubs/auth-utils';
 import { checkEnvKeys } from './utils/checkENV';
-import { injectAuthRouteArray } from './utils/injectAuthRoutes';
-import { usernameAndPasswordAuthConfig } from './utils/studioauth-config';
+import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder';
 
 export default defineIntegration({
 	name,
 	optionsSchema: StudioCMSAuthOptionsSchema,
-	setup({ name, options }) {
+	setup({
+		name,
+		options,
+		options: {
+			dashboardConfig: {
+				dashboardEnabled,
+				AuthConfig: {
+					providers: {
+						github: githubAPI,
+						discord: discordAPI,
+						google: googleAPI,
+						auth0: auth0API,
+						usernameAndPassword: usernameAndPasswordAPI,
+						usernameAndPasswordConfig: { allowUserRegistration },
+					},
+				},
+			},
+		},
+	}) {
 		// Create resolver relative to this file
 		const { resolve } = createResolver(import.meta.url);
 
@@ -23,7 +42,7 @@ export default defineIntegration({
 			hooks: {
 				'astro:config:setup': async (params) => {
 					// Destructure Params
-					const { logger } = params;
+					const { logger, updateConfig } = params;
 
 					// Log that Setup is Starting
 					integrationLogger(
@@ -40,132 +59,139 @@ export default defineIntegration({
 					// Update Astro Config with Environment Variables (`astro:env`)
 					addAstroEnvConfig(params, astroENV);
 
-					// If Username and Password Auth is enabled Verify the Auth Config File Exists and is setup!
-					usernameAndPasswordAuthConfig(params, { options, name });
-
 					// injectAuthHelper
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'studiocms:auth/helpers': `export { default as authHelper } from '${resolve('./helpers/authHelper.ts')}'`,
+							'studiocms:auth/lib/encryption': `export * from '${resolve('./lib/encryption.ts')}'`,
+							'studiocms:auth/lib/password': `export * from '${resolve('./lib/password.ts')}'`,
+							'studiocms:auth/lib/rate-limit': `export * from '${resolve('./lib/rate-limit.ts')}'`,
+							'studiocms:auth/lib/session': `export * from '${resolve('./lib/session.ts')}'`,
+							'studiocms:auth/lib/types': `export * from '${resolve('./lib/types.ts')}'`,
+							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
+							'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('./utils/authEnvCheck.ts')}'`,
+							'studiocms:auth/utils/validImages': `export * from '${resolve('./utils/validImages.ts')}'`,
+							'studiocms:auth/scripts/three': `import ${JSON.stringify(resolve('./scripts/three.ts'))}`,
+							'studiocms:auth/scripts/formListener': `export * from '${resolve('./scripts/formListener.ts')}'`,
 						},
 					});
 
-					// Inject Routes
-					injectAuthRouteArray(params, {
+					// Update Astro Config
+					updateConfig({
+						security: {
+							checkOrigin: true,
+						},
+						experimental: {
+							directRenderScript: true,
+							serverIslands: true,
+						},
+						vite: {
+							optimizeDeps: {
+								exclude: ['astro:db', 'three'],
+							},
+							plugins: [
+								copy({
+									copyOnce: true,
+									hook: 'buildStart',
+									targets: [
+										{
+											src: resolve('./resources/*'),
+											dest: 'public/studiocms-auth/',
+										},
+									],
+								}),
+							],
+						},
+					});
+
+					// Inject API Routes
+					injectAuthAPIRoutes(params, {
 						options,
-						middleware: resolve('./middleware/index.ts'),
-						providerRoutes: [
+						routes: [
 							{
-								enabled: options.dashboardConfig.AuthConfig.providers.github,
-								logs: AuthProviderLogStrings.githubLogs,
-								routes: [
-									{
-										pattern: 'login/github',
-										entrypoint: resolve('./routes/login/github/index.ts'),
-									},
-									{
-										pattern: 'login/github/callback',
-										entrypoint: resolve('./routes/login/github/callback.ts'),
-									},
-								],
+								pattern: 'login',
+								entrypoint: resolve('./routes/api/login.ts'),
+								enabled: usernameAndPasswordAPI,
 							},
 							{
-								enabled: options.dashboardConfig.AuthConfig.providers.discord,
-								logs: AuthProviderLogStrings.discordLogs,
-								routes: [
-									{
-										pattern: 'login/discord',
-										entrypoint: resolve('./routes/login/discord/index.ts'),
-									},
-									{
-										pattern: 'login/discord/callback',
-										entrypoint: resolve('./routes/login/discord/callback.ts'),
-									},
-								],
+								pattern: 'logout',
+								entrypoint: resolve('./routes/api/logout.ts'),
+								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
-								enabled: options.dashboardConfig.AuthConfig.providers.google,
-								logs: AuthProviderLogStrings.googleLogs,
-								routes: [
-									{
-										pattern: 'login/google',
-										entrypoint: resolve('./routes/login/google/index.ts'),
-									},
-									{
-										pattern: 'login/google/callback',
-										entrypoint: resolve('./routes/login/google/callback.ts'),
-									},
-								],
+								pattern: 'register',
+								entrypoint: resolve('./routes/api/register.ts'),
+								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
-								enabled: options.dashboardConfig.AuthConfig.providers.auth0,
-								logs: AuthProviderLogStrings.auth0Logs,
-								routes: [
-									{
-										pattern: 'login/auth0',
-										entrypoint: resolve('./routes/login/auth0/index.ts'),
-									},
-									{
-										pattern: 'login/auth0/callback',
-										entrypoint: resolve('./routes/login/auth0/callback.ts'),
-									},
-								],
+								pattern: 'github',
+								entrypoint: resolve('./routes/api/github/index.ts'),
+								enabled: githubAPI,
 							},
 							{
-								enabled: options.dashboardConfig.AuthConfig.providers.usernameAndPassword,
-								logs: AuthProviderLogStrings.usernameAndPasswordLogs,
-								routes: [
-									{
-										pattern: 'login/api/login',
-										entrypoint: resolve('./routes/login/api/login.ts'),
-									},
-								],
+								pattern: 'github/callback',
+								entrypoint: resolve('./routes/api/github/callback.ts'),
+								enabled: githubAPI,
 							},
 							{
-								enabled:
-									options.dashboardConfig.AuthConfig.providers.usernameAndPassword &&
-									options.dashboardConfig.AuthConfig.providers.usernameAndPasswordConfig
-										.allowUserRegistration,
-								logs: AuthProviderLogStrings.allowUserRegistration,
-								routes: [
-									{
-										pattern: 'signup/',
-										entrypoint: resolve('./routes/login/signup.astro'),
-									},
-									{
-										pattern: 'login/api/register',
-										entrypoint: resolve('./routes/login/api/register.ts'),
-									},
-								],
+								pattern: 'discord',
+								entrypoint: resolve('./routes/api/discord/index.ts'),
+								enabled: discordAPI,
 							},
 							{
-								enabled:
-									options.dashboardConfig.dashboardEnabled &&
-									!options.dbStartPage &&
-									options.dashboardConfig.AuthConfig.enabled,
-								logs: {
-									enabledMessage: 'Auth Enabled, Injecting Login and Logout Pages',
-									disabledMessage: 'Auth Disabled',
-								},
-								routes: [
-									{
-										pattern: 'login/',
-										entrypoint: resolve('./routes/login/index.astro'),
-									},
-									{
-										pattern: 'logout/',
-										entrypoint: resolve('./routes/logout.ts'),
-									},
-								],
+								pattern: 'discord/callback',
+								entrypoint: resolve('./routes/api/discord/callback.ts'),
+								enabled: discordAPI,
+							},
+							{
+								pattern: 'google',
+								entrypoint: resolve('./routes/api/google/index.ts'),
+								enabled: googleAPI,
+							},
+							{
+								pattern: 'google/callback',
+								entrypoint: resolve('./routes/api/google/callback.ts'),
+								enabled: googleAPI,
+							},
+							{
+								pattern: 'auth0',
+								entrypoint: resolve('./routes/api/auth0/index.ts'),
+								enabled: auth0API,
+							},
+							{
+								pattern: 'auth0/callback',
+								entrypoint: resolve('./routes/api/auth0/callback.ts'),
+								enabled: auth0API,
+							},
+						],
+					});
+
+					injectAuthPageRoutes(params, {
+						options,
+						routes: [
+							{
+								pattern: 'login/',
+								entrypoint: resolve('./routes/login.astro'),
+								enabled: dashboardEnabled && !options.dbStartPage,
+							},
+							{
+								pattern: 'logout/',
+								entrypoint: resolve('./routes/logout.astro'),
+								enabled: dashboardEnabled && !options.dbStartPage,
+							},
+							{
+								pattern: 'signup/',
+								entrypoint: resolve('./routes/signup.astro'),
+								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 						],
 					});
 				},
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject Types
-					injectTypes(authConfigDTS);
-					injectTypes(authHelperDTS);
+					injectTypes(authLibDTS);
+					injectTypes(authUtilsDTS);
+					injectTypes(authScriptsDTS);
 				},
 			},
 		};

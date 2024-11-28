@@ -1,4 +1,4 @@
-import { defineStudioCMSConfig } from 'studiocms';
+import { defineStudioCMSConfig } from '../../packages/studiocms/src';
 
 export default defineStudioCMSConfig({
 	dbStartPage: false,
@@ -13,24 +13,20 @@ export default defineStudioCMSConfig({
 	},
 	defaultFrontEndConfig: {
 		favicon: '/favicon.svg',
-		htmlDefaultHead: [
-			{
-				tag: 'script',
-				attrs: {
-					src: 'https://analytics.studiocms.xyz/script.js',
-					'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
-					defer: true,
-				},
-			},
-		],
+		// htmlDefaultHead: [
+		// 	{
+		// 		tag: 'script',
+		// 		attrs: {
+		// 			src: 'https://analytics.studiocms.xyz/script.js',
+		// 			'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
+		// 			defer: true,
+		// 		},
+		// 	},
+		// ],
 	},
 	includedIntegrations: {
 		useAstroRobots: true,
 		useInoxSitemap: true,
-	},
-	imageService: {
-		useUnpic: false,
-		astroImageServiceConfig: 'no-op',
 	},
 	dashboardConfig: {
 		AuthConfig: {

@@ -1,0 +1,174 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>libSQL Database Viewer</title>
+  <link rel="icon" type="image/x-icon" href="https://libsqlstudio.com/icons/outerbase.ico">
+</head>
+<body style="background: black;">
+  <iframe 
+    id="sqlIframe" 
+    title="libSQL Database Viewer"
+    src="https://libsqlstudio.com/embed/sqlite?name=libSQLDatabase&theme=dark" 
+    data-url={import.meta.env.ASTRO_DB_REMOTE_URL} 
+    data-authtoken={import.meta.env.ASTRO_DB_APP_TOKEN}
+    style="height: 94vh; width: 98vw; border: 0;"
+    ></iframe>
+
+  <script>
+    import { createClient } from "@libsql/client/web";
+    
+    // Define types for incoming messages
+    interface ClientRequest {
+      type: "query" | "transaction";
+      id: number;
+      statement?: string;
+      statements?: string[];
+    }
+    
+    interface ResultHeader {
+      name: string;
+      displayName: string;
+      originalType: string | null;
+      type: ColumnType;
+    }
+    
+    interface Result {
+      rows: Record<string, unknown>[];
+      headers: ResultHeader[];
+      stat: {
+        rowsAffected: number;
+        rowsRead: number | null;
+        rowsWritten: number | null;
+        queryDurationMs: number | null;
+      };
+      lastInsertRowid?: number | undefined; // Explicitly include undefined
+    }
+    
+    enum ColumnType {
+      TEXT = 1,
+      INTEGER = 2,
+      REAL = 3,
+      BLOB = 4,
+    }
+
+    // Get reference to the iframe
+    const iframe = document.getElementById('sqlIframe') as HTMLIFrameElement;
+
+    // Initialize the client outside any lifecycle
+    const client = createClient({
+    url: iframe.dataset.url!,
+    authToken: iframe.dataset.authtoken!,
+    });
+
+    // Function to transform raw SQL result
+    function transformRawResult(raw: any): Result {
+      const headerSet = new Set<string>();
+
+      const headers: ResultHeader[] = raw.columns.map((colName: any, colIdx: string | number) => {
+        const colType = raw.columnTypes[colIdx];
+        let renameColName = colName;
+
+        for (let i = 0; i < 20; i++) {
+          if (!headerSet.has(renameColName)) break;
+          renameColName = `__${colName}_${i}`;
+        }
+
+        headerSet.add(renameColName);
+
+        return {
+          name: renameColName,
+          displayName: colName,
+          originalType: colType,
+          type: convertSqliteType(colType),
+        };
+      });
+
+      const rows = raw.rows.map((r: unknown[]) =>
+        headers.reduce((a, b, idx) => {
+          a[b.name] = r[idx];
+          return a;
+        }, {} as Record<string, unknown>)
+      );
+
+      return {
+        rows,
+        stat: {
+          rowsAffected: raw.rowsAffected,
+          rowsRead: null,
+          rowsWritten: null,
+          queryDurationMs: 0,
+        },
+        headers,
+        lastInsertRowid:
+          raw.lastInsertRowid === undefined
+            ? undefined
+            : Number(raw.lastInsertRowid),
+      };
+    }
+
+    // Function to convert SQLite types to ColumnType enum
+    function convertSqliteType(type: string | undefined): ColumnType {
+      if (type === undefined) return ColumnType.BLOB;
+      type = type.toUpperCase();
+
+      if (type.includes("CHAR") || type.includes("TEXT") || type.includes("CLOB") || type.includes("STRING")) {
+        return ColumnType.TEXT;
+      }
+
+      if (type.includes("INT")) return ColumnType.INTEGER;
+      if (type.includes("BLOB")) return ColumnType.BLOB;
+      if (type.includes("REAL") || type.includes("DOUBLE") || type.includes("FLOAT")) return ColumnType.REAL;
+
+      return ColumnType.TEXT;
+    }
+
+    // Event listener to handle postMessage events
+    window.addEventListener("message", async function(e: MessageEvent<ClientRequest>) {
+      const contentWindow = iframe.contentWindow;
+
+      if (contentWindow && e.data) {
+        const { type, id, statement, statements } = e.data;
+
+        if (type === "query" && statement) {
+          // Execute a single SQL query
+          try {
+            const result = await client.execute(statement);
+            contentWindow.postMessage({
+              type,
+              id,
+              data: transformRawResult(result)
+            }, "*");
+          } catch (err) {
+            contentWindow.postMessage({
+              type,
+              id,
+              error: (err as Error).message
+            }, "*");
+          }
+        } else if (type === "transaction" && statements) {
+          // Execute a batch of SQL statements in a transaction
+          try {
+            const result = await client.batch(statements, "write");
+            contentWindow.postMessage({
+              type,
+              id,
+              data: result.map(transformRawResult)
+            }, "*");
+          } catch (err) {
+            contentWindow.postMessage({
+              type,
+              id,
+              error: (err as Error).message
+            }, "*");
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

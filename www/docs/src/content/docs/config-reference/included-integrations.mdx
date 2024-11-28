@@ -9,14 +9,16 @@ sidebar:
 
 ## Usage
 
-```js title="astro.config.mjs"  {2-6}
-studioCMS({
+```ts twoslash {2-6} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
   includedIntegrations: {
     useAstroRobots: true,
     astroRobotsConfig: {},
     useInoxSitemap: true,
   },
-}),
+})
 ```
 
 ### `useAstroRobots`

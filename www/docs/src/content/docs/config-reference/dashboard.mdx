@@ -9,31 +9,25 @@ sidebar:
 
 ## Usage
 
-```js title="astro.config.mjs"  {2-24}
-studioCMS({
+```ts twoslash {2-16} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
   dashboardConfig: {
     dashboardEnabled: true,
     faviconURL: "/favicon.ico",
-    dashboardRouteOverride: "/components/dashboard",
+    dashboardRouteOverride: "/dashboard",
     AuthConfig: {
         providers: {
             github: true,
-            usernameAndPassword: true
+            usernameAndPassword: true,
         },
-        enabled: true
+        enabled: true,
     },
-    UnoCSSConfigOverride: {
-        injectReset: true,
-        injectEntry: true,
-        presetsConfig: {
-            presetDaisyUI: {
-                themes: ['dark', 'light'],
-                lightTheme: ['light'],
-                darkTheme: ['dark'],
-            }
-        }
-    }
-  }, // DEFAULT - This injects a dashboard to setup your dashboard data.
+    developerConfig: {
+        testingAndDemoMode: false,
+    },
+  },
 })
 ```
 
@@ -42,7 +36,7 @@ studioCMS({
 - **Type:** `boolean | undefined`
 - **Default:** `true`
 
-Allows enabling or disabling of the Astro StudioCMS dashboard but still provide all the helpers and utilities to those who are customizing their setup. By disabling it will disable the dashboard and you will need to manage your content via the Astro Studio Dashboard at [Astro Studio](http://studio.astro.build) or with whatever access your libSQL server provides.
+Allows enabling or disabling of the StudioCMS dashboard but still provide all the helpers and utilities to those who are customizing their setup. By disabling it will disable the dashboard and you will need to manage your content via your database's dashboard with whatever access your libSQL server provides.
 
 
 ### `faviconURL`
@@ -65,32 +59,24 @@ Allows the user to override the default dashboard route to a custom route.
 
 Allows customization of the Authentication Configuration.
 
-#### `providers`
-
-- **Type:** `authProviderSchema{} | undefined{}`
-
-Allows enabling or disabling of the Authentication Providers.
-
-##### `github`
-
-- **Type:** `boolean | undefined`
-- **Default:** `true`
-
-Allows enabling or disabling of the Github Authentication Provider.
-
-##### `usernameAndPassword`
-
-- **Type:** `boolean | undefined`
-- **Default:** `false`
-
-Allows enabling or disabling of the Username and Password Authentication Provider.
-
-#### `enabled`
-
-- **Type:** `boolean | undefined`
-- **Default:** `true`
-
-Allows enabling or disabling of the Authentication Configuration.
+```ts twoslash {3-12} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    AuthConfig: {
+        providers: {
+            github: false,
+            discord: false,
+            google: false,
+            auth0: false,
+            usernameAndPassword: true,
+        },
+        enabled: true,
+    },
+  },
+})
+```
 
 ### `UnoCSSConfigOverride`
 
@@ -151,16 +137,14 @@ Allows the user to set the default dark theme.
 
 Developer Options/Configuration.
 
-#### `viewTransitionsAPI`
-
-- **Type:** `boolean | undefined`
-- **Default:** `false`
-
-Allows the user to enable Astro's ZeroJS View Transition API for the Studio CMS Dashboard.
-
-#### `testingAndDemoMode`
-
-- **Type:** `boolean | undefined`
-- **Default:** `false`
-
-Enables Testing and Demo Mode
+```ts twoslash {3-5} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    developerConfig: {
+        testingAndDemoMode: false,
+    },
+  },
+})
+```

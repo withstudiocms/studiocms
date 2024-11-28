@@ -10,6 +10,7 @@
       "@studiocms/betaresources",
       "@studiocms/core",
       "@studiocms/dashboard",
+      "@studiocms/devapps",
       "@studiocms/frontend",
       "@studiocms/imagehandler",
       "@studiocms/renderers",
@@ -21,5 +22,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["web", "docs", "node-playground", "ui-playground"]
+  "ignore": ["docs", "node-playground", "ui-playground"]
 }

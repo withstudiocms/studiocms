@@ -9,16 +9,30 @@ sidebar:
 
 ## Usage
 
-```js title="astro.config.mjs"  {3-7}
-studioCMS({
+```ts twoslash {3-19} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
   rendererConfig: {
     markedConfig: {
       highlighterConfig: {
         highlighter: "disabled",
+        shikiConfig: {
+          theme: "houston",
+          loadThemes: [],
+          loadLangs: [],
+        },
       },
+      includedExtensions: {
+        markedAlert: true,
+        markedFootnote: true,
+        markedSmartypants: true,
+        markedEmoji: true,
+      },
+      loadmarkedExtensions: [],
     },
   }
-}),
+})
 ```
 
 This property has the following options:

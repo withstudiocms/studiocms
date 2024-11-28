@@ -1,0 +1,90 @@
+---
+title: Row
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import PreviewCard from '~/components/PreviewCard.astro';
+import { Row } from '@studiocms/ui/components';
+
+A small `flex: row` wrapper. Abstracts all the flex weirdness away into a component.
+
+## Usage
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard>
+      <Row>
+        <span>Row Item 1</span>
+        <span>Row Item 2</span>
+        <span>Row Item 3</span>
+      </Row>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro
+    ---
+    import { Row } from '@studiocms/ui/components';
+    ---
+
+    <Row>
+      <span>Row Item 1</span>
+      <span>Row Item 2</span>
+      <span>Row Item 3</span>
+    </Row>
+    ```
+  </TabItem>
+</Tabs>
+
+### `align-items: center`
+
+You can pass the `alignCenter` prop to add the `align-items: center` CSS property to the row.
+
+```astro "alignCenter"
+---
+import { Row } from '@studiocms/ui/components';
+---
+
+<Row alignCenter>
+  <!-- Content -->
+</Row>
+```
+
+### Gap Size
+
+You can change the gap size of the row via the `gapSize` prop, which can be set to one of `sm`, `md` or `lg`.
+
+<Tabs>
+  <TabItem label="Preview">
+    <PreviewCard vertical gapSize="lg">
+      <Row gapSize="sm">
+        <span>Small Row</span>
+        <span>Small Row</span>
+        <span>Small Row</span>
+      </Row>
+      <Row gapSize="md">
+        <span>Medium Row</span>
+        <span>Medium Row</span>
+        <span>Medium Row</span>
+      </Row>
+      <Row gapSize="lg">
+        <span>Large Row</span>
+        <span>Large Row</span>
+        <span>Large Row</span>
+      </Row>
+    </PreviewCard>
+  </TabItem>
+  <TabItem label="Code">
+    ```astro "gapSize=\"sm\""
+    ---
+    import { Row } from '@studiocms/ui/components';
+    ---
+
+    <Row gapSize="sm">
+      <span>Small Row</span>
+      <span>Small Row</span>
+      <span>Small Row</span>
+    </Row>
+    <!-- Other examples omitted for simplicity -->
+    ```
+  </TabItem>
+</Tabs>

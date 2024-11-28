@@ -6,28 +6,33 @@ sidebar:
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
+import ReadMore from '~/components/ReadMore.astro';
 
 # Available Options
 
 There are two ways to configure the StudioCMS Integration, below are examples of how to configure based on if you choose to use the `astro.config.mjs` or the dedicated `studiocms.config.mjs` file.
 
+<ReadMore>
+This page shows you how and where to define the StudioCMS Config. For more information on the StudioCMS config options, see the [Reference pages](/config-reference/options-schema/).
+</ReadMore>
+
 ## Using the `astro.config.mjs` file:
 
-```js title="astro.config.mjs"
+```ts twoslash title="astro.config.mjs"
 import db from '@astrojs/db';
 import node from '@astrojs/node';
 import studioCMS from 'studiocms';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-    site: 'https://demo.astro-studiocms.xyz/',
+    site: 'https://demo.studiocms.dev/',
     output: 'server',
     adapter: node({ mode: "standalone" }),
     integrations: [
         db(),
         studioCMS({
             dbStartPage: false,
-            ...OtherConfigOptions
+            // ...OtherConfigOptions
         }),
     ],
 });
@@ -54,25 +59,25 @@ This file will be automatically picked up and will overwrite any options passed 
 
 ### Example Config
 
-```js title="astro.config.mjs"
+```ts twoslash title="astro.config.mjs"
 import db from '@astrojs/db';
 import node from '@astrojs/node';
 import studioCMS from 'studiocms';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-    site: 'https://demo.astro-studiocms.xyz/',
+    site: 'https://demo.studiocms.dev/',
     output: 'server',
     adapter: node({ mode: "standalone" }),
     integrations: [ db(), studioCMS() ],
 });
 ```
 
-```js title="studiocms.config.mjs"
+```ts twoslash title="studiocms.config.mjs"
 import { defineStudioCMSConfig } from "studiocms";
 
 export default defineStudioCMSConfig({
     dbStartPage: false,
-    ...OtherConfigoptions
+    // ...OtherConfigOptions
 })
 ```

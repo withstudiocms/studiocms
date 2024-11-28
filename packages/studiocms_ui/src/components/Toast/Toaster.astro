@@ -1,6 +1,4 @@
 ---
-import './Toaster.css';
-
 type Props = {
 	position?:
 		| 'top-left'
@@ -9,9 +7,7 @@ type Props = {
 		| 'bottom-left'
 		| 'bottom-right'
 		| 'bottom-center';
-	class?: string;
 	duration?: number;
-	expand?: boolean;
 	closeButton?: boolean;
 	offset?: number;
 	gap?: number;
@@ -19,9 +15,7 @@ type Props = {
 
 const {
 	position = 'top-center',
-	class: className,
 	duration = 4000,
-	expand = false,
 	closeButton = false,
 	offset = 32,
 	gap = 8,
@@ -30,13 +24,9 @@ const {
 <div 
   id="toaster" 
   class:list={[
-    expand && "expand",
     closeButton && "closeable",
     position,
-    className,
   ]},
-  style={[
-  ].filter(Boolean).join("")}
 >
   <div 
     id="toast-drawer"
@@ -56,8 +46,10 @@ const {
 </div>
 <script>
   import type { ToastProps } from '../../types';
+  import type { ValidIconString } from '../../utils/iconStrings';
+
   import { generateID } from '../../utils/generateID';
-  import { getIconString, type ValidIconString } from '../../utils/iconStrings';
+  import { getIconString } from '../../utils/iconStrings';
 
   let activeToasts: string[] = [];
 
@@ -79,7 +71,7 @@ const {
     const toastContainer = document.createElement('div');
     const toastID = generateID('toast');
     toastContainer.id = toastID;
-    toastContainer.classList.add('toast-container', props.type, `${props.closeButton && "closeable"}`);
+    toastContainer.classList.add('toast-container', props.type, `${props.closeButton || props.persistent && "closeable"}`, `${props.persistent && 'persistent'}`);
 
     const toastHeader = document.createElement('div');
     toastHeader.classList.add('toast-header');
@@ -109,7 +101,7 @@ const {
     toastHeaderLeftSide.appendChild(toastTitle);
     toastHeader.appendChild(toastHeaderLeftSide);
     
-    if (props.closeButton) {
+    if (props.closeButton || props.persistent) {
       const closeIconContainer = document.createElement('button');
       closeIconContainer.classList.add('close-icon-container')
       closeIconContainer.addEventListener('click', () => removeToast(toastID));
@@ -153,3 +145,183 @@ const {
     createToast(e.detail);
   });
 </script>
+<style>
+  #toaster {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  #toast-drawer {
+    max-width: 420px;
+    width: 100%;
+    height: fit-content;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #toaster.top-left #toast-drawer,
+  #toaster.bottom-left #toast-drawer {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+<style is:global>
+  .toast-container {
+    pointer-events: all;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background-base));
+    box-shadow: 0px 4px 8px hsl(var(--shadow), 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--gap);
+    animation: toast-pop-in .25s ease forwards;
+    z-index: 90;
+  }
+
+  .toast-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .toast-header-left-side {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1.125em;
+  }
+
+  .toast-header-left-side svg {
+    color: hsl(var(--primary-base));
+  }
+
+  .toast-container.success .toast-header-left-side svg {
+    color: hsl(var(--success-base));
+  }
+
+  .toast-container.warning .toast-header-left-side svg {
+    color: hsl(var(--warning-base));
+  }
+
+  .toast-container.danger .toast-header-left-side svg {
+    color: hsl(var(--danger-base));
+  }
+
+  .toast-progress-bar {
+    position: absolute;
+    height: 4px;
+    width: 100%;
+    bottom: 0;
+    left: 0%;
+    background-color: hsl(var(--primary-base));
+    animation: toast-progress forwards linear;
+  }
+
+  .toast-container.success .toast-progress-bar {
+    background-color: hsl(var(--success-base));
+  }
+
+  .toast-container.warning .toast-progress-bar {
+    background-color: hsl(var(--warning-base));
+  }
+
+  .toast-container.danger .toast-progress-bar {
+    background-color: hsl(var(--danger-base));
+  }
+
+  .close-icon-container {
+    cursor: pointer;
+    height: 1.5rem;
+    width: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .15s ease;
+    border-radius: .25rem;
+  }
+
+  .close-icon-container:hover {
+    background-color: hsl(var(--default-base));
+  }
+
+  .toast-container.closing {
+    animation: toast-closing .25s ease forwards;
+  }
+
+  .toast-container.persistent {
+    border: 1px solid hsl(var(--primary-base));
+  }
+
+  .toast-container.persistent.success {
+    border: 1px solid hsl(var(--success-base));
+  }
+
+  .toast-container.persistent.warning {
+    border: 1px solid hsl(var(--warning-base));
+  }
+
+  .toast-container.persistent.danger {
+    border: 1px solid hsl(var(--danger-base));
+  }
+
+  @keyframes toast-pop-in {
+    0% {
+      opacity: 0;
+      scale: 0.75;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  @keyframes toast-closing {
+    0% {
+      opacity: 1;
+      scale: 1;
+      max-height: 500px;
+      margin-bottom: var(--gap);
+      padding: 1rem;
+      border: 1px solid hsl(var(--border));
+    }
+    62.5% {
+      scale: 0.75;
+      opacity: 0;
+      max-height: 500px;
+      margin-bottom: var(--gap);
+      padding: 1rem;
+      border: 1px solid hsl(var(--border));
+    }
+    100% {
+      scale: 0.75;
+      opacity: 0;
+      max-height: 0px;
+      margin-bottom: 0;
+      padding: 0;
+      border: 0px solid hsl(var(--border));
+    }
+  }
+
+  @keyframes toast-progress {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: -100%;
+    }
+  }
+</style>

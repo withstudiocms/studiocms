@@ -9,6 +9,22 @@ import ReadMore from '~/components/ReadMore.astro';
 
 StudioCMS Integration config options schema Reference
 
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+// Default Values shown
+export default defineStudioCMSConfig({
+  dbStartPage: true,
+  rendererConfig: {},
+  imageService: {},
+  defaultFrontEndConfig: {},
+  dashboardConfig: {},
+  includedIntegrations: {},
+  dateLocale: 'en-us',
+  verbose: false,
+});
+```
+
 ## `dbStartPage`
 
 Project Initialization Page - Used during First time setup to create your database configuration.
@@ -20,8 +36,10 @@ Project Initialization Page - Used during First time setup to create your databa
 
 ### Usage
 
-```js title="astro.config.mjs" {2}
-studioCMS({
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
     dbStartPage: true, // DEFAULT - This injects a start page to setup your DB data.
 })
 ```
@@ -77,8 +95,10 @@ Date locale used for formatting dates
 
 ### Usage
 
-```js title="astro.config.mjs"  {2}
-studioCMS({
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
     dateLocale: 'en-us',
 })
 ```
@@ -93,15 +113,17 @@ studioCMS({
 
 ## `verbose`
 
-- **Type:** `boolean| undefined`
-- **Default:** `true`
+- **Type:** `boolean | undefined`
+- **Default:** `false`
 
 `verbose` enables verbose logging.
 
 ### Usage
 
-```js title="astro.config.mjs"  {2}
-studioCMS({
-  verbose: true, // DEFAULT - This enables verbose logging in studioCMS.
-}),
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  verbose: true,
+})
 ```

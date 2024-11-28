@@ -1,0 +1,36 @@
+---
+type Props = {
+	alignCenter?: boolean;
+	gapSize?: 'sm' | 'md' | 'lg';
+};
+
+const { alignCenter, gapSize = 'md' } = Astro.props;
+---
+
+<div class="row" class:list={[alignCenter && "align", gapSize]}>
+  <slot />
+</div>
+<style>
+	.row {
+		display: flex;
+		flex-direction: row;
+		position: relative;
+		flex-wrap: wrap;
+	}
+
+	.row.align {
+		align-items: center;
+	}
+
+	.row.sm {
+		gap: .5rem;
+	}
+
+	.row.md {
+		gap: 1rem;
+	}
+
+	.row.lg {
+		gap: 2rem;
+	}
+</style>

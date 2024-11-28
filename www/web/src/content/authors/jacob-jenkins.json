@@ -1,6 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/authors.schema.json",
-  "name": "Jacob Jenkins",
-  "link": "https://github.com/jdtjenkins",
-  "avatar": "./avatars/jacob-jenkins.jpg"
-}

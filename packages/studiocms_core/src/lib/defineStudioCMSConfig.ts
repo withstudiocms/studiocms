@@ -16,7 +16,7 @@ import type { StudioCMSOptions } from '../schemas';
  * @example
  * ```js
  * // studiocms.config.mjs
- * import { defineStudioCMSConfig } from '@astrolicious/studiocms';
+ * import { defineStudioCMSConfig } from 'studiocms';
  *
  * export default defineStudioCMSConfig({
  *  dbStartPage: true,

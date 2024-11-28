@@ -6,7 +6,7 @@ import { unocssConfigSchema } from './unocss';
 export const dashboardConfigSchema = z
 	.object({
 		/**
-		 * OPTIONAL - This allows the user to enable or disable the Astro Studio CMS Dashboard but still provide all the helper's and utilities to those who are customizing their setup, doing so will disable the dashboard and you will need to manage your content via the Astro Studio Dashboard at http://studio.astro.build
+		 * OPTIONAL - This allows the user to enable or disable the Astro StudioCMS dashboard but still provide all the helper's and utilities to those who are customizing their setup, doing so will disable the dashboard and you will need to manage your content via your database
 		 *
 		 * @default true
 		 */

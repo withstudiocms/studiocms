@@ -16,8 +16,7 @@
     "@studiocms/ui": "0.1.0-beta.7",
     "node-playground": "0.0.1",
     "ui-playground": "0.0.1",
-    "docs": "0.0.1",
-    "web": "0.0.1"
+    "docs": "0.0.1"
   },
   "changesets": [
     "breezy-rockets-lie",

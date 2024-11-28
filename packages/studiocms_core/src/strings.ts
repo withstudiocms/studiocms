@@ -9,9 +9,9 @@ export const CoreStrings = {
 };
 
 export const DbErrors = {
-	AstroConfigOutput: "Astro Studio CMS is only supported in 'Output: server' SSR mode.",
+	AstroConfigOutput: "StudioCMS is only supported in 'Output: server' SSR mode.",
 	AstroConfigSiteURL:
-		"Astro Studio CMS requires a 'site' configuration in your Astro Config. This can be your domain ( 'https://example.com' ) or localhost ( 'http://localhost:4321' - localhost should only be used during development and should not be used in production).",
+		"StudioCMS requires a 'site' configuration in your Astro Config. This can be your domain ( 'https://example.com' ) or localhost ( 'http://localhost:4321' - localhost should only be used during development and should not be used in production).",
 	DbStartPage:
 		'Start Page is Enabled.  This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.',
 	astroDbMissingMessage: 'Astro DB Integration not found in Astro Config',
@@ -39,10 +39,10 @@ export const DashboardStrings = {
 	Setup: 'Setting up StudioCMS Dashboard...',
 	AddIntegrations: 'Adding Dashboard Integrations...',
 	TestAndDemo:
-		'Testing and Demo Mode is Enabled, Authentication will not be required to access dashboard pages.  But you will only be able to edit the database from the Astro Studio Dashboard, https://studio.astro.build/',
+		'Testing and Demo Mode is Enabled, Authentication will not be required to access dashboard pages.  But you will only be able to edit the database directly',
 	AuthEnabled: 'Auth is Enabled, Setting Up...',
 	AuthDisabled:
-		'Auth is Disabled by the User Configuration.  You will only be able to edit the database from the Astro Studio Dashboard, https://studio.astro.build/',
+		'Auth is Disabled by the User Configuration.  You will only be able to edit the database directly',
 	AuthRoutes: 'Setting up Auth Routes...',
 	DashboardEnabled: 'Dashboard is Enabled.',
 	DashboardDisabled:
@@ -75,65 +75,8 @@ export const imageHandlerStrings = {
 	CloudinaryCDNWarning:
 		'Using the Cloudinary CDN JS SDK Plugin requires the CMS_CLOUDINARY_CLOUDNAME environment variable to be set. Please add this to your .env file.',
 	CustomImageLog: 'Configuring CustomImage Component...',
-	NodeAdapter: 'Node Adapter Detected. Using Node Adapter.',
-	CloudflareAdapter: 'Cloudflare Adapter Detected. Using Cloudflare Adapter.',
-	VercelAdapter: 'Vercel Adapter Detected. Using Vercel Adapter.',
-	NetlifyAdapter: 'Netlify Adapter Detected. Using Netlify Adapter.',
-	UnknownAdapter: {
-		part1: 'Unknown Adapter Detected: ',
-		part2:
-			'. studioCMS Image Handler has not been configured for this adapter. Please open an issue on the studioCMS GitHub Repository. https://github.com/astrolicious/studioCMS/issues',
-	},
-	NoAdapter:
-		'No Adapter Detected. studioCMS Image Handler will only be configured with Known SSR Adapters!',
-};
-
-export const genericAdapterStrings = {
-	Squoosh: 'Using Squoosh Image Service...',
-	Sharp: 'Using Sharp Image Service...',
-	NoOp: 'Using No-Op(Passthrough) Image Service...',
-	cdnPluginStrings: {
-		Squoosh: 'Using Squoosh Image Service as Fallback for Cloudinary CDN Plugin',
-		Sharp: 'Using Sharp Image Service as Fallback for Cloudinary CDN Plugin',
-		NoOp: 'Using No-Op Image Service as Fallback for Cloudinary CDN Plugin',
-	},
-	unpicStrings: {
-		default: 'Loading @unpic/astro Image Service for External Images',
-		NoOp: 'Loading @unpic/astro Image Service for External Images with No-Op Fallback',
-		disabled: '@unpic/astro Image Service Disabled, using Astro Built-in Image Service.',
-	},
-};
-
-export const vercelImageHandlerStrings = {
-	VercelBuildImageServerEnabled: 'Vercel Image Service Enabled. Using Vercel Image Service.',
-	VercelBuildImageServerDisabled:
-		'Vercel Image Service Disabled. Using Astro Built-in Image Service.',
-	...genericAdapterStrings,
-};
-
-export const nodeImageHandlerStrings = {
-	...genericAdapterStrings,
-};
-
-export const netlifyImageHandlerStrings = {
-	NetlifyImageServiceEnabled: 'Netlify Image Service Enabled. Using Netlify Image Service.',
-	NetlifyImageServiceDisabled:
-		'Netlify Image Service Disabled. Using Astro Built-in Image Service.',
-	...genericAdapterStrings,
-};
-
-export const cloudflareImageHandlerStrings = {
-	CloudflareImageServiceEnabled:
-		'Cloudflare Image Service Enabled. Using Cloudflare Image Service.',
-	CloudflareImageServiceDisabled:
-		'Cloudflare Image Service Disabled. Using Astro Built-in Image Service.',
-	unsupported: {
-		Squoosh:
-			"Cloudflare SSR does not support Squoosh Image Service. Using no-op Service as astroImageServiceConfig is set to 'squoosh'",
-		Sharp:
-			"Cloudflare SSR does not support Sharp Image Service. Using no-op Service as astroImageServiceConfig is set to 'sharp'",
-	},
-	...genericAdapterStrings,
+	updateConfig:
+		'Updating Astro Config with Image Service Configuration to allow for remote images...',
 };
 
 export const AuthProviderLogStrings = {
@@ -185,6 +128,10 @@ export const CheckENVStrings = {
 		CheckMessage: 'Auth0 Auth Enabled, Checking Auth0 Environment Variables...',
 		ErrorMessage:
 			'The Following Auth0 Keys are Missing and are Required for the Auth0 Authentication to work:',
+	},
+	EncryptionMessages: {
+		CheckMessage: 'Checking Encryption Key...',
+		ErrorMessage: 'The CMS_ENCRYPTION_KEY is Missing and is Required for StudioCMS to work:',
 	},
 };
 

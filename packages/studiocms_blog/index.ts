@@ -14,12 +14,14 @@ const studioCMSBlogTheme = defineTheme({
 export type ATP_ThemeOptions = Parameters<typeof studioCMSBlogTheme>[0];
 
 /**
- * # StudioCMS Blog Theme(Integration)
- * #### Powered by [`astro-theme-provider`](https://github.com/astrolicious/astro-theme-provider) by [Bryce Russell](https://github.com/BryceRussell)
+ * **StudioCMS Blog Theme(Integration)**
+ *
+ * **Powered by [`astro-theme-provider`](https://github.com/astrolicious/astro-theme-provider) by [Bryce Russell](https://github.com/BryceRussell)**
  *
  * This theme provides a Blog Index Page and RSS Feed for your StudioCMS Site as well as route handling for Blog Posts.
  *
  * @example
+ * ```js
  * import { defineConfig } from 'astro/config';
  * import db from '@astrojs/db';
  * import studioCMS from 'studiocms';
@@ -41,8 +43,9 @@ export type ATP_ThemeOptions = Parameters<typeof studioCMSBlogTheme>[0];
  *     }),
  *   ],
  * });
+ * ```
  */
-export function studioCMSBlog(options: ATP_ThemeOptions) {
+export function studioCMSBlog(options?: ATP_ThemeOptions) {
 	let slug: string;
 
 	if (typeof options?.pages?.['/blog'] === 'string') {

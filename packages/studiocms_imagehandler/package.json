@@ -4,11 +4,11 @@
   "description": "Image Handler for the StudioCMS Integration",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
-    "url": "https://studiocms.xyz"
+    "url": "https://studiocms.dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astrolicious/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git"
   },
   "contributors": [
     "Adammatthiesen",
@@ -21,7 +21,7 @@
     "cms",
     "studiocms"
   ],
-  "homepage": "https://studiocms.xyz",
+  "homepage": "https://studiocms.dev",
   "publishConfig": {
     "access": "public"
   },
@@ -38,9 +38,7 @@
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/core": "workspace:*",
-    "@unpic/astro": "catalog:studiocms-imagehandler",
-    "astro-integration-kit": "catalog:",
-    "unpic": "catalog:studiocms-shared"
+    "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min"

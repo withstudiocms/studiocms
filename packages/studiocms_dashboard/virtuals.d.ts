@@ -1,3 +1,5 @@
+/// <reference types="../studiocms_auth/virtuals.d.ts" />
+
 /**
  * # DEV TIP
  *
@@ -40,11 +42,6 @@ interface Window {
 		getSystemTheme: () => 'light' | 'dark';
 		getDefaultTheme: () => 'auto' | 'dark' | 'light';
 	};
-}
-
-declare module 'studiocms:auth/config' {
-	const AuthSecurityConfig: import('@studiocms/core/types').usernameAndPasswordConfig;
-	export default AuthSecurityConfig;
 }
 
 declare module 'studiocms:components' {
