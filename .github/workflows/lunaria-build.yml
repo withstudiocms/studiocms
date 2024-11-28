@@ -20,14 +20,14 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+
       - name: Setup Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
 
       - name: Install Dependencies
         run: pnpm install
