@@ -1,12 +1,10 @@
 name: Lunaria Deployments
 
 on:
-  pull_request:
-    branches:
-      - issue-0304
   push:
     branches:
-      - main
+      # - main
+      # TODO: Remove issue-304 from the list of branches and enable main once PR#333 is ready to merged
       - issue-0304
 
 jobs:
