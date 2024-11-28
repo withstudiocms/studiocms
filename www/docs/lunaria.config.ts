@@ -6,7 +6,7 @@ export default defineConfig({
 		rootDir: 'www/docs',
 		hosting: 'github',
 		// TODO: Change/Remove this once the branch is ready to merge
-		branch: 'docs-i18n',
+		branch: 'issue-0304',
 	},
 	sourceLocale: {
 		label: 'English',
