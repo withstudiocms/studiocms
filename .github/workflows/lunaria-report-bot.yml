@@ -1,0 +1,42 @@
+name: Translation Report Bot
+
+on:
+  schedule:
+    - cron:  '0 10 * * TUE'
+  workflow_dispatch:
+
+jobs:
+  translation:
+    name: translation_report
+    if: ${{ github.repository_owner == 'withstudiocms' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - id: message
+        name: Format Discord message
+        run: pnpm tsm --require=./scripts/filter-warnings.cjs ./www/docs/scripts/lunaria-report-bot.ts
+
+  discord_message:
+    uses: withstudiocms/automations/.github/workflows/discord-msg.yml@main
+    needs: translation
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_I18N_REPORT }}
+    with:
+      DISCORD_MESSAGE: ${{ needs.translation.outputs.DISCORD_MESSAGE }}
+      DISCORD_MESSAGE_EMBEDS: ${{ needs.translation.outputs.DISCORD_MESSAGE_EMBEDS }}
