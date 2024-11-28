@@ -18,6 +18,7 @@ const packageCatalogSchema = z.object({
 
 const baseSchema = z.object({
 	type: z.literal('base').optional().default('base'),
+	i18nReady: z.boolean().optional().default(false),
 });
 
 const integrationSchema = baseSchema.extend({
