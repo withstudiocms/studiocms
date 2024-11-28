@@ -159,7 +159,7 @@ export const LocaleDetails = (
 			${
 				// biome-ignore lint/suspicious/noDoubleEquals: <explanation>
 				missingFiles.length == 0 && outdatedFiles.length == 0
-					? html`<p>"This translation is complete, amazing job! 🎉"</p>`
+					? html`<p>This translation is complete, amazing job! 🎉</p>`
 					: ''
 			}
 		</details>
