@@ -14,7 +14,7 @@ jobs:
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           message: |
             Thanks for opening this pull request! 🎉
 
