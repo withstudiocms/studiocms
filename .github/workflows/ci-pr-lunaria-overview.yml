@@ -1,4 +1,4 @@
-name: Lunaria
+name: CI - Lunaria Overview Generation on PRs
 
 on:
   pull_request_target:
@@ -20,16 +20,8 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
-      - name: Setup Node
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-
-      - run: pnpm install
+      - name: Install Tools & Dependencies
+        uses: ./.github/actions/install
 
       - name: Generate Lunaria Overview
         uses: lunariajs/action@astro-docs

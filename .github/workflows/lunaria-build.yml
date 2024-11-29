@@ -1,10 +1,10 @@
 name: Lunaria Deployments
 
+# TODO: Remove this once PR#333 is ready to merged and uncomment in .github/workflows/ci-push-main.yml
+
 on:
   push:
     branches:
-      # - main
-      # TODO: Remove issue-304 from the list of branches and enable main once PR#333 is ready to merged
       - issue-0304
 
 jobs:
@@ -13,22 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install
+      - name: Install Tools & Dependencies
+        uses: ./.github/actions/install
 
       - name: Build Lunaria Overview
         run: pnpm lunaria:build
