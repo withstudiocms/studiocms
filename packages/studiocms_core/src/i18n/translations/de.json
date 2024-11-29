@@ -21,7 +21,7 @@
             "header": "Registrierung",
             "sub-header-usernamepasswordoauth": "Erstelle einen Account mit einer der vorliegenden Optionen.",
             "sub-header-usernamepassword": "Erstelle einen Account mit dem Registrierungs-Formular.",
-            "sub-header-oauth": "",
+            "sub-header-oauth": "Nutze eine der Optionen, um dich einzuloggen.",
             "sub-header-noprovider": "",
             "username-label": "",
             "email-label": "",
