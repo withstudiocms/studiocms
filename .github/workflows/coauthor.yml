@@ -1,15 +1,16 @@
 name: Write coauthors to a pull request
-permissions:
-  pull-requests: write
   
 on:
   issue_comment:
     types:
       - created
       
+permissions:
+  pull-requests: write
+
 jobs:
   generate-coauthors:
-    name: Generate Coauthor
+    name: Generate Coauthor List
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:

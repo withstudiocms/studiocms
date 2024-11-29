@@ -1,17 +1,29 @@
-name: Remove labels from merged PRs and issues
+name: CI - Label Management
+
 on:
   pull_request_target:
-    types:
-      - closed
   issues:
     types:
       - closed
-      
+
 permissions:
+  contents: read
   pull-requests: write
   issues: write
-  
+
 jobs:
+  add-labels:
+    name: Label PRs
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PRs
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.STUDIOCMS_SERVICE_TOKEN }}"
+          configuration-path: .github/labeler.yml
+          sync-labels: true
+
   remove-merged-pr-labels:
     name: Remove merged pull request labels
     if: github.event.pull_request.merged
