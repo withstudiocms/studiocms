@@ -311,9 +311,6 @@ importers:
       '@changesets/write':
         specifier: 0.3.2
         version: 0.3.2
-      '@lunariajs/core':
-        specifier: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
-        version: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
       '@moonrepo/cli':
         specifier: 1.28.3
         version: 1.28.3
