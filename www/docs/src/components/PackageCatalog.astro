@@ -42,7 +42,7 @@ const packages = (await getCollection('package-catalog'))
 
             <p>{description}</p>
 
-            <ReadMore>{Astro.locals.t('package-catalog.readmore.start')} <a {href}>{Astro.locals.t('package-catalog.readmore.end')}</a></ReadMore>
+            <ReadMore>{Astro.locals.t('package-catalog.readmore.start')} <a {href}> {Astro.locals.t('package-catalog.readmore.end')}</a></ReadMore>
 
             <>{ index < packages.length - 1 && <hr /> }</>
         )) 
