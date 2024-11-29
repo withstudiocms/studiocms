@@ -1,6 +1,7 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types';
 import { createStarlightTypeDocPlugin } from 'starlight-typedoc';
 import { getFilePathToPackage, makeTypedocOpts } from './src/typedocHelpers';
+import type { SidebarGroup } from './starlight-types';
 
 // Create Starlight TypeDoc Plugins for different parts of the Astro StudioCMS Project
 
@@ -238,7 +239,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 
 export const typeDocPlugins = TypeDocPlugins(isProd, testTypeDoc);
 
-const TypeDocSideBarEntry = (isProd: boolean, testingMode: boolean) => {
+export const TypeDocSideBarEntry = (isProd: boolean, testingMode: boolean): SidebarGroup => {
 	if (isProd || testingMode) {
 		return {
 			label: 'TypeDoc',
@@ -273,7 +274,8 @@ const TypeDocSideBarEntry = (isProd: boolean, testingMode: boolean) => {
 			text: 'Auto Generated',
 			variant: 'tip',
 		},
-		link: '#',
+		collapsed: true,
+		items: [],
 	};
 };
 

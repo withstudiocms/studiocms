@@ -8,7 +8,8 @@
     "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lunaria:build": "tsm ./scripts/lunaria.mts"
   },
   "dependencies": {
     "studiocms": "workspace:*",
@@ -27,6 +28,8 @@
     "sharp": "catalog:",
     "typescript": "catalog:",
 
+    "tsm": "2.3.0",
+    "@lunariajs/core": "https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0",
     "expressive-code-twoslash": "catalog:docs",
     "@shikijs/colorized-brackets": "catalog:docs",
     "starlight-package-managers": "catalog:docs",

@@ -64,7 +64,7 @@ const { scoped, scope, name } = parsePackageName(entryData.name);
 					npm
 				</a>
 				<a href={entryData.githubURL + 'CHANGELOG.md'}>
-					<Icon size="1rem" name="list-format" /> Changelog
+					<Icon size="1rem" name="list-format" /> {Astro.locals.t('integration-labels.changelog')}
 				</a>
 			</div>
 		</div>

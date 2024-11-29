@@ -1,3 +1,4 @@
+import type { AstroGlobal } from 'astro';
 import { cachedFetch } from '../util-server';
 import { StudioCMSServiceAccounts, contributorConfig } from './contributors.config';
 
@@ -187,8 +188,8 @@ function checkIfContributorExists(
  * For each repository and path, it fetches the contributors either by path or for the entire repository.
  * The contributors are then filtered to remove service accounts specific to StudioCMS.
  */
-export async function getContributorBreakdown(): Promise<Breakdown[]> {
-	const config = contributorConfig;
+export async function getContributorBreakdown(Astro: AstroGlobal): Promise<Breakdown[]> {
+	const config = contributorConfig(Astro);
 
 	const breakdowns: Breakdown[] = [];
 

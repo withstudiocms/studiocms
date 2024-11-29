@@ -2,7 +2,7 @@
 import { getContributorBreakdown } from '../util/getContributors';
 import FacePile from './FacePile.astro';
 
-const breakdown = await getContributorBreakdown();
+const breakdown = await getContributorBreakdown(Astro);
 ---
 
 <div class="not-content">
