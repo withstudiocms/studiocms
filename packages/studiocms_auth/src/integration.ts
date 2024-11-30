@@ -71,6 +71,7 @@ export default defineIntegration({
 							'studiocms:auth/lib/user': `export * from '${resolve('./lib/user.ts')}'`,
 							'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('./utils/authEnvCheck.ts')}'`,
 							'studiocms:auth/utils/validImages': `export * from '${resolve('./utils/validImages.ts')}'`,
+							'studiocms:auth/utils/getLabelForPermissionLevel': `export * from '${resolve('./utils/getLabelForPermissionLevel.ts')}'`,
 							'studiocms:auth/scripts/three': `import ${JSON.stringify(resolve('./scripts/three.ts'))}`,
 							'studiocms:auth/scripts/formListener': `export * from '${resolve('./scripts/formListener.ts')}'`,
 						},

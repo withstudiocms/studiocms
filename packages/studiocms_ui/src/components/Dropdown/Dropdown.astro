@@ -1,11 +1,14 @@
 ---
+import Icon from '../../utils/Icon.astro';
 import type { StudioCMSColorway } from '../../utils/colors';
+import type { HeroIconName } from '../../utils/iconType';
 
 type Option = {
 	label: string;
 	value: string;
 	disabled?: boolean;
 	color?: StudioCMSColorway;
+  icon?: HeroIconName;
 };
 
 type Props = {
@@ -14,9 +17,10 @@ type Props = {
 	id: string;
 	align?: 'start' | 'center' | 'end';
 	triggerOn?: 'left' | 'right' | 'both';
+  offset?: number;
 };
 
-const { options, disabled = false, align = 'center', id, triggerOn = 'left' } = Astro.props;
+const { options, disabled = false, align = 'center', id, triggerOn = 'left', offset = 0 } = Astro.props;
 ---
 <div 
   class="dropdown-container"
@@ -29,21 +33,22 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left' } = 
     <slot />
   </div>
   <ul class="dropdown" class:list={[align]} role="listbox" id={`${id}-dropdown`}>
-    {options.map((x) => (
+    {options.map(({ value, disabled, color, label, icon }) => (
       <li
         class="dropdown-option"
         role="option"
-        data-value={x.value}
-        class:list={[x.disabled && "disabled", x.color]}
+        data-value={value}
+        class:list={[disabled && "disabled", icon && "has-icon", color]}
       >
-        <slot name="icon-start" />
-        <span>{x.label}</span>
-        <slot name="icon-end" />
+        {icon && (
+          <Icon width={24} height={24} name={icon} />
+        )}
+        <span>{label}</span>
       </li>
     ))}
   </ul>
 </div>
-<style>
+<style define:vars={{ offset: `${offset}px` }}>
   .dropdown-toggle {
     width: fit-content;
   }
@@ -132,7 +137,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left' } = 
   }
 
   .dropdown.below {
-    top: calc(100% + .25rem) !important;
+    top: calc(100% + .25rem + var(--offset)) !important;
     bottom: auto;
 
     transform-origin: top center;
@@ -148,7 +153,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left' } = 
 
   .dropdown.above {
     top: auto;
-    bottom: calc(100% + .25rem) !important;
+    bottom: calc(100% + .25rem + var(--offset)) !important;
     transform-origin: bottom center;
   }
 
@@ -220,5 +225,9 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left' } = 
 
   .dropdown-option.end {
     justify-content: space-between;
+  }
+
+  .dropdown-option.has-icon {
+    padding-left: .5rem;
   }
 </style>

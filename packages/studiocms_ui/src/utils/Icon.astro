@@ -18,7 +18,8 @@ if (!iconData) {
 	throw new Error(`Icon "${name}" is missing`);
 }
 const renderData = iconToSVG(iconData, {
-	height: attributes.height || 'auto',
+	height: attributes.height || 24,
+	width: attributes.width || 24,
 });
 const body = replaceIDs(renderData.body);
 let renderAttribsHTML =

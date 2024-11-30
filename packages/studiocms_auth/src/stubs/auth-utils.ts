@@ -18,6 +18,24 @@ authUtils.addModule('studiocms:auth/utils/authEnvCheck', {
 	],
 });
 
+authUtils.addModule('studiocms:auth/utils/validImages', {
+	namedExports: [
+		{
+			name: 'validImages',
+			typeDef: `typeof import('${resolve('../utils/validImages.ts')}').validImages`,
+		},
+	],
+});
+
+authUtils.addModule('studiocms:auth/utils/getLabelForPermissionLevel', {
+	namedExports: [
+		{
+			name: 'getLabelForPermissionLevel',
+			typeDef: `typeof import('${resolve('../utils/getLabelForPermissionLevel.ts')}').getLabelForPermissionLevel`,
+		},
+	],
+});
+
 const dtsFile = authUtils.makeAstroInjectedType('auth-utils.d.ts');
 
 export default dtsFile;

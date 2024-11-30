@@ -1,9 +1,13 @@
 ---
 import Config from 'virtual:studiocms/config';
-import { studioCMSSocials } from '@studiocms/core/consts';
-import { BaseHead, Header } from '../components';
+import { Button } from '@studiocms/ui/components';
+import Icon from '@studiocms/ui/utils/Icon.astro';
+import { BaseHead } from '../components';
+import SingleSidebar from './SingleSidebar.astro';
 
-const socialLinks = studioCMSSocials;
+import '@studiocms/ui/css/global.css';
+import '@fontsource-variable/onest/index.css';
+import '../styles/layout.css';
 
 const {
 	dashboardConfig: {
@@ -21,7 +25,7 @@ type Props = {
 const { title, description } = Astro.props;
 ---
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme={'dark'}>
   <head>
     <BaseHead title={title} description={description} />
@@ -34,13 +38,12 @@ const { title, description } = Astro.props;
     )}
   </head>
   <body>
-    <div class="bg-base-100 drawer">
-      <div class="drawer-content bg-base-100">
-        <Header studioCMSSocials={socialLinks}/>
-          <main class="p-6 pt-10">
-            <slot />
-          </main>
-      </div>
-    </div>
+    <SingleSidebar />
+    <main class="p-6 pt-10">
+      <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
+        <Icon name="bars-3" height={24} width={24} />
+      </Button>
+      <slot />
+    </main>
   </body>
 </html>

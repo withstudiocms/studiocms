@@ -6,8 +6,9 @@ class DropdownHelper {
 	alignment: 'start' | 'center' | 'end';
 	triggerOn: 'left' | 'right' | 'both';
 	active = false;
+	fullWidth = false;
 
-	constructor(id: string) {
+	constructor(id: string, fullWidth?: boolean) {
 		this.container = document.getElementById(`${id}-container`) as HTMLDivElement;
 
 		if (!this.container) {
@@ -34,6 +35,8 @@ class DropdownHelper {
 				this.toggle();
 			});
 		}
+
+		if (fullWidth) this.fullWidth = true;
 
 		window.addEventListener('scroll', this.hide);
 
@@ -104,7 +107,7 @@ class DropdownHelper {
 			left,
 			right,
 			bottom: bottom + margin + dropdownHeight,
-			width: isMobile ? parentWidth : dropdownWidth, // Account for scaling of animation
+			width: isMobile || this.fullWidth ? parentWidth : dropdownWidth, // Account for scaling of animation
 			height: dropdownHeight,
 			x,
 			y: y + height + margin,
@@ -112,7 +115,7 @@ class DropdownHelper {
 
 		this.active = true;
 
-		if (isMobile) {
+		if (isMobile || this.fullWidth) {
 			this.dropdown.style.maxWidth = `${parentWidth}px`;
 			this.dropdown.style.minWidth = 'unset';
 			this.dropdown.style.width = `${parentWidth}px`;

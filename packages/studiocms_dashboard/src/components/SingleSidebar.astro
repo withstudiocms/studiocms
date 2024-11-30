@@ -1,0 +1,134 @@
+---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import pluginList from 'studiocms:plugins';
+import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
+import StudioCMSLogo from '../components/StudioCMSLogo.astro';
+import SidebarLink from './SidebarLink.astro';
+import SidebarPluginLink from './SidebarPluginLink.astro';
+
+const data = await getUserData(Astro);
+
+if (!data.user) {
+	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
+}
+
+const isAdmin = await verifyUserPermissionLevel(data, 'admin');
+
+const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
+---
+
+<Sidebar class='sidebar'>
+  <div class="sidebar-links-container">
+    <div class="sidebar-header">
+      <StudioCMSLogo class={'sidebar-logo'} />
+      <span class="sidebar-title">StudioCMS</span>
+    </div>
+    <Divider background='background-step-1'>Dashboard</Divider>
+    <div class="sidebar-link-group">
+      <SidebarLink icon='home' href='/dashboard'>
+        Dashboard
+      </SidebarLink>
+      <SidebarLink icon='pencil-square' href='/dashboard/content'>
+        Content Management
+      </SidebarLink>
+    </div>
+    {isAdmin && (
+      <Divider background='background-step-1'>Admin</Divider>
+      <div class="sidebar-link-group">
+        <SidebarLink icon='cog-6-tooth' href='/dashboard/some-route'>
+          Site Configuration
+        </SidebarLink>
+        <SidebarLink icon='user-group' href='/dashboard/some-other-route'>
+          User Management
+        </SidebarLink>
+      </div>
+      <Divider background='background-step-1'>Plugins</Divider>
+      <div class="sidebar-link-group">
+        {filteredPluginList.map((plugin) => (
+          <SidebarPluginLink 
+            href='/dashboard/plugins/some-plugin'
+            identifier={plugin.identifier}
+            name={plugin.name}
+          />
+        ))}
+        {filteredPluginList.length === 0 && (
+          <span 
+            class="empty-placeholder-span"
+          >
+            No plugins with settings pages found.
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+  <Dropdown
+    id='sidebar-user-dropdown'
+    options={[
+      { label: 'User Settings', value: 'user-settings', icon: "user" },
+      { label: 'View Site', value: 'view-site', icon: "globe-alt" },
+      { label: 'Log Out', value: 'log-out', icon: "arrow-left-start-on-rectangle" },
+    ]}
+    offset={8}
+  >
+    <div class="user-dropdown-trigger-container">
+      <User name={data.user.name} description={getLabelForPermissionLevel(data.permissionLevel)} />
+    </div>
+  </Dropdown>
+</Sidebar>
+<script>
+  import { SingleSidebarHelper } from "@studiocms/ui/components";
+  import { DropdownHelper } from "@studiocms/ui/components";
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new SingleSidebarHelper('nav-toggle');
+    new DropdownHelper('sidebar-user-dropdown', true);
+  });
+</script>
+<style>
+  .sidebar-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: .375rem;
+    width: 100%;
+  }
+
+  .sidebar-link-group.hidden {
+    display: none;
+  }
+
+  .empty-placeholder-span {
+    width: 100%;
+    text-align: center;
+    color: hsl(var(--text-muted));
+    font-size: .875em;
+  }
+
+  .user-dropdown-trigger-container {
+    width: calc(280px - 3rem);
+    cursor: pointer;
+    border: 1px solid hsl(var(--border));
+    padding: .5rem;
+    border-radius: .5rem;
+    transition: all .15s ease;
+  }
+
+  .user-dropdown-trigger-container:hover {
+    background-color: hsla(var(--border), .5);
+  }
+
+  .sidebar {
+    justify-content: space-between;
+  }
+
+  .sidebar-links-container {
+    gap: .75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+<script>
+</script>

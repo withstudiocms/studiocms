@@ -1,6 +1,6 @@
 class SingleSidebarHelper {
 	sidebar: HTMLElement;
-	navbarToggle?: HTMLElement | undefined;
+	sidebarToggle?: HTMLElement | undefined;
 
 	constructor(toggleID?: string) {
 		const sidebarContainer = document.getElementById('sidebar');
@@ -20,12 +20,26 @@ class SingleSidebarHelper {
 				throw new Error(`No item with ID ${toggleID} found.`);
 			}
 
-			this.navbarToggle = navToggle;
+			this.sidebarToggle = navToggle;
 
-			this.navbarToggle.addEventListener('click', () => {
+			this.sidebarToggle.addEventListener('click', () => {
 				this.sidebar.classList.toggle('active');
 			});
 		}
+	}
+
+	public toggleSidebarOnClick = (elementID: string) => {
+		const navToggle = document.getElementById(elementID);
+
+		if (!navToggle) {
+			throw new Error(`No item with ID ${elementID} found.`);
+		}
+
+		this.sidebarToggle = navToggle;
+
+		this.sidebarToggle.addEventListener('click', () => {
+			this.sidebar.classList.toggle('active');
+		});
 	}
 
 	public hideSidebarOnClick = (elementID: string) => {

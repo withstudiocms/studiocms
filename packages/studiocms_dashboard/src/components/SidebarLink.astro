@@ -1,0 +1,52 @@
+---
+import Icon from '@studiocms/ui/utils/Icon.astro';
+import type { HeroIconName } from '@studiocms/ui/utils/iconType.ts';
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  /**
+   * ONLY USE OUTLINED ICONS! Shit will break otherwise
+   */
+  icon: HeroIconName;
+  href: string;
+}
+
+const { icon, ...props } = Astro.props;
+
+const isActive = Astro.url.pathname === props.href && 'active';
+
+const iconName = isActive ? `${icon}-solid` as HeroIconName : icon;
+---
+
+<a class="sidebar-link" {...props} class:list={[ isActive && 'active' ]}>
+  <Icon name={iconName} class='sidebar-link-icon' width={24} height={24} />
+  <span class="sidebar-link-text">
+    <slot />
+  </span>
+</a>
+<style>
+  .sidebar-link {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    border-radius: .5rem;
+    transition: all .15s ease;
+    width: 100%;
+    padding: .375rem .5rem;
+    text-decoration: none;
+    color: hsl(var(--text-muted));
+  }
+
+  .sidebar-link:hover {
+    background-color: hsl(var(--background-step-2));
+  }
+
+  .sidebar-link.active {
+    color: hsl(var(--text));
+  }
+
+  .sidebar-link.active .sidebar-link-icon {
+    color: hsl(var(--primary-base));
+  }
+</style>

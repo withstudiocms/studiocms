@@ -1,9 +1,3 @@
 export { default as BaseHead } from './BaseHead.astro';
-export { default as Footer } from './Footer.astro';
 export { default as Header } from './Header.astro';
 export { default as Layout } from './Layout.astro';
-export { default as SideBar } from './SideBar.astro';
-export { default as SideBarMenu } from './SideBarMenu.astro';
-export { default as SideBarFooter } from './SideBarFooter.astro';
-export { default as ThemeManager } from './ThemeManager.astro';
-export { default as ThemeToggleButton } from './ThemeToggleButton.astro';

@@ -620,6 +620,9 @@ importers:
       '@astrojs/web-vitals':
         specifier: 'catalog:'
         version: 3.0.0(@astrojs/db@0.14.3(@cloudflare/workers-types@4.20240725.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.5)(react@18.3.1))
+      '@fontsource-variable/onest':
+        specifier: catalog:studiocms-shared
+        version: 5.1.0
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.3.4(astro@4.16.13(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
@@ -641,6 +644,9 @@ importers:
       '@studiocms/renderers':
         specifier: workspace:*
         version: link:../studiocms_renderers
+      '@studiocms/ui':
+        specifier: workspace:*
+        version: link:../studiocms_ui
       astro:
         specifier: catalog:min
         version: 4.16.13(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)

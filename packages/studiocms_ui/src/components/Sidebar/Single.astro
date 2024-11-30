@@ -1,4 +1,11 @@
-<aside id="sidebar">
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends Exclude<HTMLAttributes<'aside'>, 'id'> {};
+
+const props = Astro.props;
+---
+<aside id="sidebar" {...props}>
   <slot />
 </aside>
 <style>

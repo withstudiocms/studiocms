@@ -87,6 +87,10 @@ declare module 'studiocms:auth/utils/validImages' {
 	export const validImages: typeof import('./src/utils/validImages').validImages;
 }
 
+declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
+	export const validImages: typeof import('./src/utils/getLabelForPermissionLevel').getLabelForPermissionLevel;
+}
+
 declare module 'studiocms:auth/scripts/three' {
 	/**
 	 * This module should be imported within a script tag.

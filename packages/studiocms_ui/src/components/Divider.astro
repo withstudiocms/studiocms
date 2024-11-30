@@ -1,6 +1,13 @@
+---
+type Props = {
+  background?: 'background-base' | 'background-step-1' | 'background-step-2' | 'background-step-3';
+};
+
+const { background = 'background-base' } = Astro.props;
+---
 <div class="divide-container">
   <div class="line" />
-  <div class="content">
+  <div class="content" style={`background-color: hsl(var(--${background}));`}>
     <slot />
   </div>
 </div>
@@ -25,7 +32,6 @@
   }
 
   .content {
-    background-color: hsl(var(--background-base));
     padding: .25rem .5rem;
     z-index: 2;
     color: hsl(var(--text-muted));
