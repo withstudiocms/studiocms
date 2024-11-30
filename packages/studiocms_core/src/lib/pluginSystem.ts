@@ -10,6 +10,7 @@ import { convertDashboardLinksType } from './convertDashboardLinksType';
  * @param options.opts.pluginLabel {string} - The Label for the Plugin
  * @param options.opts.navigationLinks Array<{ text: string, slug: string }> - The Navigation Links for the Plugin
  * @param options.opts.customRendererPluginPath { string } - The Custom Renderer Plugin Path - This is used to replace the built-in Markdown Renderer. Recommended for Advanced Users.
+ * @deprecated This function has been deprecated in favor of the `definePlugin` function.
  */
 export function defineStudioCMSPlugin(options: StudioCMSPluginOptions) {
 	// Extract the options

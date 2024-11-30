@@ -13,6 +13,9 @@ export type DashboardPageLink = {
 	dropdownChildren?: DashboardPageLink[];
 };
 
+/**
+ * @deprecated
+ */
 export type StudioCMSPluginOptions = {
 	/**
 	 * The package name of the plugin
