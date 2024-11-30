@@ -28,6 +28,17 @@ type UiLanguageKeys = keyof UiTranslations;
  */
 type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
 
+// God please forgive me for what I am about to do
+type UiTranslationComponent<
+	L extends UiLanguageKeys,
+	T extends UiComponentKeys
+> = typeof uiTranslations[L]['translations'][T];
+
+type UiTranslationKey<
+	L extends UiLanguageKeys,
+	T extends UiComponentKeys
+> = keyof UiTranslationComponent<L, T>;
+
 // Default language - Must match one of the keys in the `ui` object above
 const defaultLang: UiLanguageKeys = 'en-us';
 
@@ -41,21 +52,24 @@ const showDefaultLang: boolean = false;
  * Retrieves a translation function for a given language and component.
  *
  * @param lang - The language key to use for translations.
- * @param comp - The component key to use for translations.
+ * @param component - The component key to use for translations.
  * @returns A function that takes a translation key and returns the corresponding translated string.
  */
-export function useTranslations(
-	lang: UiLanguageKeys,
-	comp: UiComponentKeys
-): (key: string) => string {
-	return function t(key: string): string {
-		// @ts-expect-error - Component key is dynamic depending on the component
-		const translation = uiTranslations[lang].translations[comp][key];
+export function useTranslations<
+	L extends UiLanguageKeys,
+	T extends UiComponentKeys
+>(
+	lang: L,
+	component: T
+) {
+	return function t(
+		key: UiTranslationKey<L, T>
+	): UiTranslationComponent<L, T>[UiTranslationKey<L, T>] {
+		const translation = uiTranslations[lang].translations[component][key];
 
 		// If the translation is not found, return the default language translation
 		if (translation === undefined || translation === '') {
-			// @ts-expect-error - Component key is dynamic depending on the component
-			return uiTranslations[defaultLang].translations[comp][key];
+			return uiTranslations[defaultLang].translations[component][key];
 		}
 
 		return translation;

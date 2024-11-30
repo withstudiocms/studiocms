@@ -23,7 +23,7 @@ export default defineIntegration({
 			hooks: {
 				'astro:config:setup': async (params) => {
 					// Destructure Params
-					const { logger, injectRoute } = params;
+					const { logger, injectRoute, addMiddleware } = params;
 
 					// Destructure Options
 					const { verbose } = options;
@@ -114,8 +114,18 @@ export default defineIntegration({
 								pattern: '/',
 								entrypoint: resolve('./routes/index.astro'),
 							},
+							{
+								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+								pattern: '/test',
+								entrypoint: resolve('./routes/test.astro'),
+							},
 						],
 					});
+
+					// addMiddleware({
+					// 	order: "pre",
+					// 	entrypoint: resolve('./middleware.ts'),
+					// });
 
 					// // OLD ROUTES - TO BE REMOVED
 					// injectRouteArray(params, {

@@ -10,7 +10,8 @@
     "dev": "astro dev --remote",
     "start": "astro dev --remote",
     "build": "astro build --remote",
-    "astro": "astro"
+    "astro": "astro",
+    "preview": "astro preview --remote"
   },
   "devDependencies": {
     "@types/node": "catalog:",

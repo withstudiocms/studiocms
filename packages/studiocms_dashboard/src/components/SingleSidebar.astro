@@ -1,9 +1,14 @@
 ---
+import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import { Divider, Dropdown, Sidebar } from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
+const tPath = useTranslatedPath(lang);
 ---
 
 <Sidebar class='sidebar'>
@@ -12,23 +17,25 @@ import UserAccount from './islands/sidebar/UserAccount.astro';
       <StudioCMSLogo class={'sidebar-logo'} />
       <span class="sidebar-title">StudioCMS</span>
     </div>
-    <Divider background='background-step-1'>Dashboard</Divider>
+    <Divider background='background-step-1'>{t("category-1-header")}</Divider>
     <div class="sidebar-link-group">
-      <SidebarLink icon='home' href='/dashboard'>
-        Dashboard
+      <SidebarLink icon='home' href={tPath('/dashboard')}>
+        {t("dashboard-link-label")}
       </SidebarLink>
-      <SidebarLink icon='pencil-square' href='/dashboard/content'>
-        Content Management
+      <SidebarLink icon='pencil-square' href={tPath('/dashboard/test')}>
+        {t("content-management-label")}
       </SidebarLink>
     </div>
-    <Admin server:defer />
+    <Admin server:defer>
+      <span slot="fallback">Loading</span>
+    </Admin>
   </div>
   <Dropdown
     id='sidebar-user-dropdown'
     options={[
-      { label: 'User Settings', value: 'user-settings', icon: "user" },
-      { label: 'View Site', value: 'view-site', icon: "globe-alt" },
-      { label: 'Log Out', value: 'log-out', icon: "arrow-left-start-on-rectangle" },
+      { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user" },
+      { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt" },
+      { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle" },
     ]}
     offset={8}
   >
@@ -87,5 +94,6 @@ import UserAccount from './islands/sidebar/UserAccount.astro';
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
 </style>
