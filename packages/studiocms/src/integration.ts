@@ -155,7 +155,7 @@ export default defineIntegration({
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'studiocms:plugins': `export default = ${JSON.stringify(SafePluginList)};`,
+							'studiocms:plugins': `export default ${JSON.stringify(SafePluginList)};`,
 						},
 					});
 				},
