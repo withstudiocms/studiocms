@@ -5,7 +5,7 @@ import {
 } from '@matthiesenxyz/integration-utils/astroUtils';
 import studioCMSAuth from '@studiocms/auth';
 import studioCMSCore from '@studiocms/core';
-import { getStudioConfigFileUrl, studioCMSPluginList } from '@studiocms/core/lib';
+import { getStudioConfigFileUrl } from '@studiocms/core/lib';
 import {
 	type SafePluginListType,
 	type StudioCMSOptions,
@@ -33,9 +33,6 @@ export default defineIntegration({
 	name,
 	optionsSchema,
 	setup({ name, options }) {
-		// Register StudioCMS into the StudioCMS Plugin List
-		studioCMSPluginList.set(name, { name, label: 'StudioCMS' });
-
 		// Resolve Options
 		let resolvedOptions: StudioCMSOptions;
 
@@ -149,6 +146,11 @@ export default defineIntegration({
 							settingsPage,
 						})
 					);
+
+					SafePluginList.push({
+						name: 'StudioCMS (Default)',
+						identifier: 'studiocms',
+					});
 
 					addVirtualImports(params, {
 						name,

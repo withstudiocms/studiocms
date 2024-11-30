@@ -1,11 +1,10 @@
-import { defineStudioCMSConfig, defineStudioCMSPlugin } from '@studiocms/core/lib';
+import { defineStudioCMSConfig } from '@studiocms/core/lib';
 import type {
 	CustomRenderer,
 	Renderer,
 	StudioCMSOptions,
 	StudioCMSPluginInput,
 } from '@studiocms/core/schemas';
-import type { StudioCMSPluginOptions } from '@studiocms/core/types';
 import integration from './integration';
 
 /**
@@ -21,13 +20,11 @@ export const studioCMS = integration;
 
 export default studioCMS;
 
-// Config Utility
+// Config Utilities
 export { defineStudioCMSConfig, type StudioCMSOptions };
-
-// Plugin System
-
 export type { CustomRenderer, Renderer };
 
+// Plugin System
 /**
  * Defines a plugin for StudioCMS.
  *
@@ -37,6 +34,3 @@ export type { CustomRenderer, Renderer };
 export function definePlugin(options: StudioCMSPluginInput) {
 	return options;
 }
-
-//// DEPRECATED: Use `definePlugin` instead
-export { defineStudioCMSPlugin, type StudioCMSPluginOptions };
