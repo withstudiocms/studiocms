@@ -1,34 +1,34 @@
 ---
-import Icon from "../utils/Icon.astro";
-import { generateID } from "../utils/generateID";
-import Input from "./Input.astro";
+import Icon from '../utils/Icon.astro';
+import { generateID } from '../utils/generateID';
+import Input from './Input.astro';
 
 type Option = {
-    label: string;
-    value: string;
-    disabled?: boolean;
+	label: string;
+	value: string;
+	disabled?: boolean;
 };
 
 type Props = {
-    label?: string;
-    defaultValue?: string;
-    class?: string;
-    name?: string;
-    isRequired?: boolean;
-    options: Option[];
-    disabled?: boolean;
-    fullWidth?: boolean;
+	label?: string;
+	defaultValue?: string;
+	class?: string;
+	name?: string;
+	isRequired?: boolean;
+	options: Option[];
+	disabled?: boolean;
+	fullWidth?: boolean;
 };
 
 const {
-    label,
-    defaultValue,
-    class: className,
-    name = generateID("search-select"),
-    isRequired,
-    options = [],
-    disabled,
-    fullWidth,
+	label,
+	defaultValue,
+	class: className,
+	name = generateID('search-select'),
+	isRequired,
+	options = [],
+	disabled,
+	fullWidth,
 } = Astro.props;
 ---
 
@@ -45,7 +45,7 @@ const {
         <Input
             placeholder={options.find((x) => x.value === defaultValue)?.label || "Select"}
         />
-        <Icon name="chevron-up-down" class="search-select-indicator" width={20} height={20} />
+        <Icon name="chevron-up-down" class="search-select-indicator" width={24} height={24} />
     </div>
     <ul class="search-select-dropdown" role="listbox" id={`${name}-dropdown`}>
         {

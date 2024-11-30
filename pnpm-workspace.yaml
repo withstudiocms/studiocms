@@ -58,7 +58,7 @@ catalogs:
     rehype-external-links: ^3.0.0
     "@types/html-escaper": ^3.0.2
     html-escaper: ^3.0.3
-    expressive-code-twoslash: ^0.2.6
+    expressive-code-twoslash: ^0.3.0
     "@shikijs/colorized-brackets": ^1.23.1
     starlight-package-managers: ^0.8.0
 
@@ -98,14 +98,6 @@ catalogs:
     "@matthiesenxyz/astrodtsbuilder": ^0.1.2
     "@matthiesenxyz/integration-utils": ^0.2.0
     rollup-plugin-copy: ^3.5.0
-
-    # Needs to be cleaned up once they are no longer needed
-    "@matthiesenxyz/astrolace": ^0.3.2
-    '@matthiesenxyz/unocss-preset-daisyui': ^0.1.2
-    '@unocss/astro': ^0.62.3
-    '@unocss/reset': ^0.62.3
-    unocss: ^0.62.3
-    daisyui: ^4.12.10
 
   studiocms-renderer: # Confirmed Current Renderer Deps - 11.01.2024
     '@shikijs/transformers': ^1.14.1

@@ -87,14 +87,7 @@
     "shiki": "catalog:studiocms-renderer",
     "@shikijs/transformers": "catalog:studiocms-renderer",
 
-    "@cloudinary/url-gen": "catalog:studiocms-imagehandler",
-
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
-    "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
-    "@unocss/astro": "catalog:studiocms-shared",
-    "@unocss/reset": "catalog:studiocms-shared",
-    "daisyui": "catalog:studiocms-shared",
-    "unocss": "catalog:studiocms-shared"
+    "@cloudinary/url-gen": "catalog:studiocms-imagehandler"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",

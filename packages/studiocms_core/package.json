@@ -46,6 +46,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@studiocms/ui": "workspace:*",
     "@studiocms/robotstxt": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@markdoc/markdoc": "catalog:studiocms-renderer",
@@ -56,9 +57,7 @@
     "remark-rehype": "catalog:studiocms-core",
     "mdast-util-to-hast": "catalog:studiocms-core",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared"
+    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",

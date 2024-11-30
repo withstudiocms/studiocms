@@ -13,11 +13,10 @@ const { name, description, avatar, class: className } = Astro.props;
 ---
 <div class="user-container" class:list={[ className ]}>
   <div class="avatar-container">
-    <!-- Astro Image or Unpic -->
     {avatar ? (
       <Image src={avatar} inferSize alt={name} class="avatar-img" />
     ) : (
-      <Icon name='user' width={32} height={32} />
+      <Icon name='user' width={24} height={24} />
     )}
   </div>
   <div class="text-content">

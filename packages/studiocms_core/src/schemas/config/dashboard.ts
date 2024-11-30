@@ -1,7 +1,6 @@
 import { z } from 'astro/zod';
 import { authConfigSchema } from './auth';
 import { developerConfigSchema } from './developer';
-import { unocssConfigSchema } from './unocss';
 
 export const dashboardConfigSchema = z
 	.object({
@@ -29,14 +28,6 @@ export const dashboardConfigSchema = z
 		 * Auth Configuration - Allows customization of the Authentication Configuration
 		 */
 		AuthConfig: authConfigSchema,
-		/**
-		 * UnoCSS Configuration - Allows customization of the UnoCSS Configuration
-		 *
-		 * **Note: Use with caution, this is an advanced feature**
-		 *
-		 * StudioCMS uses UnoCSS+DaisyUI to provide a TailwindCSS-like experience with minimal CSS+prebuilt theme options!. This configuration allows you to override the default configuration.
-		 */
-		UnoCSSConfigOverride: unocssConfigSchema,
 		/**
 		 * Developer Options/Configuration
 		 */

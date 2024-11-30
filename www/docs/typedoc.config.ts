@@ -97,7 +97,6 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/markdoc.ts'),
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/marked.ts'),
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/rendererConfig.ts'),
-						getFilePathToPackage('studiocms_core', 'src/schemas/config/unocss.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/index.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/configManager.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/convertDashboardLinksType.ts'),

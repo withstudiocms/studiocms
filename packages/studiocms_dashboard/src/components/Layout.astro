@@ -1,17 +1,12 @@
 ---
 import Config from 'virtual:studiocms/config';
 import { studioCMSSocials } from '@studiocms/core/consts';
-import { BaseHead, Footer, Header, SideBar, ThemeManager } from '../components';
+import { BaseHead, Header } from '../components';
 
 const socialLinks = studioCMSSocials;
 
 const {
 	dashboardConfig: {
-		UnoCSSConfigOverride: {
-			presetsConfig: {
-				presetDaisyUI: { lightTheme },
-			},
-		},
 		developerConfig: { viewTransitionAPI },
 	},
 } = Config;
@@ -23,13 +18,12 @@ type Props = {
 	sideBarActiveItemID: string;
 };
 
-const { title, description, includeSidebar = true } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme={lightTheme}>
+<html lang="en" data-theme={'dark'}>
   <head>
-    <ThemeManager defaultTheme="auto" />
     <BaseHead title={title} description={description} />
     {viewTransitionAPI && (
       <style>
@@ -46,9 +40,7 @@ const { title, description, includeSidebar = true } = Astro.props;
           <main class="p-6 pt-10">
             <slot />
           </main>
-        <Footer studioCMSSocials={socialLinks}/>
       </div>
-      { includeSidebar && <SideBar studioCMSSocials={socialLinks}/> }
     </div>
   </body>
 </html>

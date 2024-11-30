@@ -77,9 +77,11 @@
 	border-radius: 8px;
 }
 
-code,
+div.expressive-code,
 starlight-file-tree {
-	border-radius: 4px;
+	border-radius: 8px;
+	overflow: hidden;
+	border: 1px solid var(--ec-brdCol);
 }
 
 aside.starlight-aside {
@@ -194,4 +196,11 @@ button[aria-label="Menu"][aria-controls="starlight__sidebar"] {
 
 a {
 	text-decoration: none;
+}
+
+.expressive-code figcaption,
+.expressive-code figcaption::before,
+.expressive-code pre,
+.expressive-code span.title {
+	border: none !important;
 }

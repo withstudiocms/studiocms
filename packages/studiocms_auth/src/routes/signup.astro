@@ -30,7 +30,7 @@ const {
 } = Config;
 
 const {
-	authLinks: { loginAPI, loginURL },
+	authLinks: { registerAPI, loginURL },
 } = StudioCMSRoutes;
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
@@ -55,7 +55,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="signup-form" method="post" action={loginAPI}>
+        <form class="form" id="signup-form" method="post" action={registerAPI}>
 
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('email-label')} name="email" type="email" />

@@ -11,11 +11,11 @@ import { pathWithBase } from './pathGenerators';
  * @param DashboardRouteOverride
  * @returns
  */
-export default async function urlGenFactory(
+export default function urlGenFactory(
 	isDashboardRoute: boolean,
 	path: string | undefined,
 	DashboardRouteOverride?: string
-): Promise<string> {
+): string {
 	let url: string;
 	let dashboardRoute = 'dashboard';
 

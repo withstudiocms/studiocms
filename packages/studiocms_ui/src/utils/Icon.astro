@@ -1,27 +1,32 @@
 ---
+import { icons } from '@iconify-json/heroicons';
+import { getIconData, iconToSVG, replaceIDs } from '@iconify/utils';
 import type { HTMLAttributes } from 'astro/types';
+import { type HeroIconName } from './iconType';
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type AstroComponent = (_props: Record<string, any>) => any;
-
-type UIIcons = 'checkmark' | 'x-mark' | 'chevron-up-down' | 'user';
-
-// Map of icon names to Astro components
-const Components: Record<UIIcons, AstroComponent> = {
-	checkmark: (await import('../icons/Checkmark.astro')).default,
-	'x-mark': (await import('../icons/X-Mark.astro')).default,
-	'chevron-up-down': (await import('../icons/ChevronUpDown.astro')).default,
-	user: (await import('../icons/User.astro')).default,
-};
-
-interface Props extends HTMLAttributes<'svg'> {
-	name: UIIcons;
-	width?: number;
-	height?: number;
+interface SVGAttributes extends HTMLAttributes<'svg'> {
+	// biome-ignore lint/suspicious/noExplicitAny: Allow any string index
+	[key: string]: any;
 }
-
-const { name, width, height, ...props } = Astro.props;
-
-const Tag = Components[name];
+interface Props extends HTMLAttributes<'svg'> {
+	name: HeroIconName;
+}
+const { name, ...props } = Astro.props;
+const attributes = props as SVGAttributes;
+const iconData = getIconData(icons, name);
+if (!iconData) {
+	throw new Error(`Icon "${name}" is missing`);
+}
+const renderData = iconToSVG(iconData, {
+	height: attributes.height || 'auto',
+});
+const body = replaceIDs(renderData.body);
+let renderAttribsHTML =
+	body.indexOf('xlink:') === -1 ? '' : ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+for (const attr in attributes) {
+	renderAttribsHTML += ` ${attr}="${attributes[attr]}"`;
+}
+const svg = `<svg xmlns="http://www.w3.org/2000/svg"${renderAttribsHTML}>${body}</svg>`;
 ---
-<Tag width={width} height={height} {...props} />
+
+<Fragment set:html={svg} />

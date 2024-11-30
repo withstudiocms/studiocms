@@ -24,7 +24,9 @@ export default defineEcConfig({
 		}),
 	],
 	styleOverrides: {
-		// @ts-expect-error - This is not a Standard EC config option, but it's a valid one from a plugin
+		frames: {
+			editorActiveTabIndicatorBottomColor: 'var(--sl-color-accent)',
+		},
 		twoSlash: {
 			cursorColor: '#f8f8f2',
 		},

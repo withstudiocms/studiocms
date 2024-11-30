@@ -1,33 +1,33 @@
 ---
-import Icon from "../utils/Icon.astro";
-import { generateID } from "../utils/generateID";
+import Icon from '../utils/Icon.astro';
+import { generateID } from '../utils/generateID';
 
 type Option = {
-    label: string;
-    value: string;
-    disabled?: boolean;
+	label: string;
+	value: string;
+	disabled?: boolean;
 };
 
 type Props = {
-    label?: string;
-    defaultValue?: string;
-    class?: string;
-    name?: string;
-    isRequired?: boolean;
-    options: Option[];
-    disabled?: boolean;
-    fullWidth?: boolean;
+	label?: string;
+	defaultValue?: string;
+	class?: string;
+	name?: string;
+	isRequired?: boolean;
+	options: Option[];
+	disabled?: boolean;
+	fullWidth?: boolean;
 };
 
 const {
-    label,
-    defaultValue,
-    class: className,
-    name = generateID("select"),
-    isRequired,
-    options = [],
-    disabled,
-    fullWidth,
+	label,
+	defaultValue,
+	class: className,
+	name = generateID('select'),
+	isRequired,
+	options = [],
+	disabled,
+	fullWidth,
 } = Astro.props;
 ---
 
@@ -53,7 +53,7 @@ const {
                     : "Select"
             }
         </span>
-        <Icon name="chevron-up-down" width={20} height={20} />
+        <Icon name="chevron-up-down" width={24} height={24} />
     </button>
     <ul class="select-dropdown" role="listbox" id={`${name}-dropdown`}>
         {

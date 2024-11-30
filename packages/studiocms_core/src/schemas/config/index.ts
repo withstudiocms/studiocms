@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import { StudioCMSPluginSchema } from '../plugins';
 import { overridesSchema } from './componentoverrides';
 import { dashboardConfigSchema } from './dashboard';
 import { DefaultFrontEndConfigSchema } from './defaultFrontend';
@@ -70,6 +71,10 @@ export const StudioCMSOptionsSchema = z
 		 * @default false
 		 */
 		verbose: z.boolean().optional().default(false),
+		/**
+		 * Add Plugins to the StudioCMS
+		 */
+		plugins: z.array(StudioCMSPluginSchema).optional().default([]),
 	})
 	.optional()
 	.default({});
