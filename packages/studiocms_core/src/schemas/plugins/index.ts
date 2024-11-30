@@ -113,13 +113,13 @@ const StudioCMS_PageTypeSchema = z
 
 export const StudioCMSPluginSchema = z.object({
 	/**
-	 * Name of the plugin from the package.json
+	 * Identifier of the plugin from the package.json
 	 */
-	name: z.string(),
+	identifier: z.string(),
 	/**
 	 * Label of the plugin to be displayed in the StudioCMS Dashboard
 	 */
-	label: z.string(),
+	name: z.string(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */

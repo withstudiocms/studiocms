@@ -142,7 +142,12 @@ export default defineIntegration({
 					}
 
 					const SafePluginList: SafePluginListType = StudioCMSPluginList.map(
-						({ name, label, pageType, settingsPage }) => ({ name, label, pageType, settingsPage })
+						({ name, identifier, pageType, settingsPage }) => ({
+							name,
+							identifier,
+							pageType,
+							settingsPage,
+						})
 					);
 
 					addVirtualImports(params, {
