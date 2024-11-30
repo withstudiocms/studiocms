@@ -11,7 +11,7 @@ const contextConfig = await getSiteConfig();
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, '@studiocms/dashboard:index');
-// const tPath = useTranslatedPath(lang);
+const tPath = useTranslatedPath(lang);
 
 export const getStaticPaths = (() => {
 	const paths = staticPaths();
