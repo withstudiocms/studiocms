@@ -38,6 +38,13 @@
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "or log in using"
+    },
+    "@studiocms/dashboard:index": {
+      "title": "Dashboard",
+      "welcome-title": "Welcome",
+      "title-button:discord": "Join the Community",
+      "title-button:feedback": "Give Feedback",
+      "sub-header": "StudioCMS is a free and open-source content management system built from the ground up by the Astro community."
     }
   }
 }

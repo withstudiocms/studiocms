@@ -1,50 +1,32 @@
 ---
-import { logger } from '@it-astro:logger:studiocms-dashboard';
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 // import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import DiscordLogo from '@studiocms/assets/svgs/discord.svg?raw';
-import { Button } from '@studiocms/ui/components';
-import Icon from '@studiocms/ui/utils/Icon.astro';
+import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
+import type { GetStaticPaths } from 'astro';
 import { Layout } from '../components';
-import PageHeader from '../components/PageHeader.astro';
+import PageHeader from '../components/islands/dashboard/PageHeader.astro';
 import { makePageTitle } from '../utils/makePageTitle';
-
-const user = await getUserData(Astro);
-
-if (!user.user) {
-	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
-}
 
 const contextConfig = await getSiteConfig();
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, '@studiocms/dashboard:index');
+// const tPath = useTranslatedPath(lang);
+
+export const getStaticPaths = (() => {
+	const paths = staticPaths();
+	return paths;
+}) satisfies GetStaticPaths;
+
 // Get the web vitals
 // const webVitals = await getWebVitals();
-
-// Check Permission Level
-if (!verifyUserPermissionLevel(user, 'editor')) {
-	logger.info('User is not an admin or editor. Redirecting to profile page.');
-	return Astro.redirect(StudioCMSRoutes.mainLinks.userProfile);
-}
 ---
 
 <Layout 
   sideBarActiveItemID="dashboard" 
-  title={makePageTitle("Dashboard", contextConfig)}
+  title={makePageTitle(t('title'), contextConfig)}
   description={contextConfig.description}
 >
-  <PageHeader
-    title={`Welcome, ${user.user.name}`}
-  >
-    <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>
-      <Fragment set:html={DiscordLogo} slot='start-content' />
-      Join the Community
-    </Button>
-    <Button color='success' variant='flat'>
-      <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
-      Give Feedback
-    </Button>
-  </PageHeader>
-  <span>StudioCMS is a free and open-source content management system built from the ground up by the Astro community.</span>
+  <PageHeader server:defer />
+  <span>{t('sub-header')}</span>
 </Layout>

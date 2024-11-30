@@ -7,7 +7,7 @@ import { name } from '../package.json';
 import { StudioCMSDashboardOptionsSchema } from './schema';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes';
 import { checkForWebVitals } from './utils/checkForWebVitalsPlugin';
-import { injectRouteArray } from './utils/injectRouteArray';
+import { injectDashboardRoute } from './utils/injectRouteArray';
 
 export default defineIntegration({
 	name,
@@ -23,7 +23,7 @@ export default defineIntegration({
 			hooks: {
 				'astro:config:setup': async (params) => {
 					// Destructure Params
-					const { logger } = params;
+					const { logger, injectRoute } = params;
 
 					// Destructure Options
 					const { verbose } = options;
@@ -83,73 +83,81 @@ export default defineIntegration({
 								pattern: 'pages/delete',
 								entrypoint: resolve('./routes/studiocms_api/pages/delete.ts'),
 							},
+							{
+								enabled: options.dbStartPage,
+								pattern: 'liverender',
+								entrypoint: resolve('./routes/api/firstTimeSetup.ts'),
+							},
 						],
 					});
 
+					// Inject First Time Setup Routes if dbStartPage is enabled
+					if (options.dbStartPage) {
+						injectRoute({
+							pattern: 'start',
+							entrypoint: resolve('./firstTimeSetupRoutes/main.astro'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: 'done',
+							entrypoint: resolve('./firstTimeSetupRoutes/done.astro'),
+							prerender: false,
+						});
+					}
+
 					// Inject Routes
-					injectRouteArray(params, {
+					injectDashboardRoute(params, {
 						options,
 						routes: [
-							{
-								enabled: options.dbStartPage,
-								pattern: 'start',
-								entrypoint: resolve('./firstTimeSetupRoutes/main.astro'),
-								_non_dashboard: true,
-							},
-							{
-								enabled: options.dbStartPage,
-								pattern: 'done',
-								entrypoint: resolve('./firstTimeSetupRoutes/done.astro'),
-								_non_dashboard: true,
-							},
-							{
-								enabled: options.dbStartPage,
-								pattern: 'api/setup',
-								entrypoint: resolve('./routes/api/firstTimeSetup.ts'),
-								_non_dashboard: true,
-							},
 							{
 								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
 								pattern: '/',
 								entrypoint: resolve('./routes/index.astro'),
 							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'profile/',
-								entrypoint: resolve('./routes/profile.astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'configuration',
-								entrypoint: resolve('./routes/configuration/index.astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'configuration/admins',
-								entrypoint: resolve('./routes/configuration/admins.astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'new/page',
-								entrypoint: resolve('./routes/create-page.astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'page-list',
-								entrypoint: resolve('./routes/page-list.astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'edit/pages/[...id]',
-								entrypoint: resolve('./routes/edit-pages/[...id].astro'),
-							},
-							{
-								enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-								pattern: 'delete/pages/[...id]',
-								entrypoint: resolve('./routes/delete-pages/[...id].astro'),
-							},
 						],
 					});
+
+					// // OLD ROUTES - TO BE REMOVED
+					// injectRouteArray(params, {
+					// 	options,
+					// 	routes: [
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'profile/',
+					// 			entrypoint: resolve('./routes/profile.astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'configuration',
+					// 			entrypoint: resolve('./routes/configuration/index.astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'configuration/admins',
+					// 			entrypoint: resolve('./routes/configuration/admins.astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'new/page',
+					// 			entrypoint: resolve('./routes/create-page.astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'page-list',
+					// 			entrypoint: resolve('./routes/page-list.astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'edit/pages/[...id]',
+					// 			entrypoint: resolve('./routes/edit-pages/[...id].astro'),
+					// 		},
+					// 		{
+					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+					// 			pattern: 'delete/pages/[...id]',
+					// 			entrypoint: resolve('./routes/delete-pages/[...id].astro'),
+					// 		},
+					// 	],
+					// });
 
 					// Check for `@astrojs/web-vitals` Integration
 					const { webVitalDtsFile } = checkForWebVitals(params, { name, verbose });
