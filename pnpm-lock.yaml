@@ -555,6 +555,9 @@ importers:
       astro-theme-provider:
         specifier: 'catalog:'
         version: 0.6.1(astro@4.16.13(@types/node@20.14.13)(rollup@4.21.0)(typescript@5.6.3))
+      studiocms:
+        specifier: workspace:*
+        version: link:../studiocms
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

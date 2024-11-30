@@ -132,6 +132,17 @@ export const StudioCMSPluginSchema = z.object({
 	 * Astro Integration
 	 */
 	integration: z.array(z.custom<AstroIntegration>()).or(z.custom<AstroIntegration>()),
+	/**
+	 * Navigation Links for the frontend
+	 */
+	frontendNavigationLinks: z
+		.array(
+			z.object({
+				label: z.string(),
+				href: z.string(),
+			})
+		)
+		.optional(),
 });
 
 export type StudioCMSPluginInput = typeof StudioCMSPluginSchema._input;
