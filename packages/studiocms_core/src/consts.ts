@@ -23,8 +23,8 @@ export type StudioCMSSocials = {
  * StudioCMS Social Links
  */
 export const studioCMSSocials: StudioCMSSocials = {
-	github: 'https://github.com/astrolicious/studiocms',
-	githubLicense: 'https://github.com/astrolicious/studiocms?tab=MIT-1-ov-file#readme',
-	githubContributors: 'https://github.com/astrolicious/studiocms/graphs/contributors',
-	discord: 'https://chat.astrolicious.dev',
+	github: 'https://github.com/withstudiocms/studiocms',
+	githubLicense: 'https://github.com/withstudiocms/studiocms?tab=MIT-1-ov-file#readme',
+	githubContributors: 'https://github.com/withstudiocms/studiocms/graphs/contributors',
+	discord: 'https://chat.studiocms.dev',
 };

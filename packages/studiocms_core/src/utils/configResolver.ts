@@ -37,7 +37,7 @@ export const configResolver = defineUtility('astro:config:setup')(
 
 			// Log that the StudioCMS config file is being used if verbose
 			integrationLogger(
-				{ logger, logLevel: 'warn', verbose: resolvedOptions.verbose },
+				{ logger, logLevel: 'warn', verbose: resolvedOptions.verbose || false },
 				warnings.StudioCMSConfigPresent
 			);
 		}

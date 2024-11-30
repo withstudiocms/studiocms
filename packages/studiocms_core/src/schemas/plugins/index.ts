@@ -134,5 +134,7 @@ export const StudioCMSPluginSchema = z.object({
 	integration: z.array(z.custom<AstroIntegration>()).or(z.custom<AstroIntegration>()),
 });
 
-export type StudioCMSPlugin = typeof StudioCMSPluginSchema._input;
+export type StudioCMSPluginInput = typeof StudioCMSPluginSchema._input;
 export type StudioCMSPluginOptions = typeof StudioCMSPluginSchema._output;
+
+export type SafePluginListType = Omit<StudioCMSPluginOptions, 'integration'>[];

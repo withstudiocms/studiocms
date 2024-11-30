@@ -7,7 +7,9 @@ import studioCMSAuth from '@studiocms/auth';
 import studioCMSCore from '@studiocms/core';
 import { getStudioConfigFileUrl, studioCMSPluginList } from '@studiocms/core/lib';
 import {
+	type SafePluginListType,
 	type StudioCMSOptions,
+	type StudioCMSPluginOptions,
 	StudioCMSOptionsSchema as optionsSchema,
 } from '@studiocms/core/schemas';
 import { CoreStrings, robotsTXTPreset } from '@studiocms/core/strings';
@@ -21,8 +23,9 @@ import studioCMSFrontend from '@studiocms/frontend';
 import studioCMSImageHandler from '@studiocms/imagehandler';
 import studioCMSRenderers from '@studiocms/renderers';
 import studioCMSRobotsTXT from '@studiocms/robotstxt';
-import { defineIntegration } from 'astro-integration-kit';
+import { addIntegration, addVirtualImports, defineIntegration } from 'astro-integration-kit';
 import { name, version } from '../package.json';
+import { generateStubs } from './stubs';
 import { updateCheck } from './updateCheck';
 
 // Main Integration
@@ -68,7 +71,10 @@ export default defineIntegration({
 					} = ResolvedOptions;
 
 					// Setup Logger
-					integrationLogger({ logger, logLevel: 'info', verbose }, CoreStrings.Start);
+					integrationLogger(
+						{ logger, logLevel: 'info', verbose: verbose || false },
+						CoreStrings.Start
+					);
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
@@ -111,14 +117,43 @@ export default defineIntegration({
 					// Setup Integrations (External / Optional)
 					addIntegrationArrayWithCheck(params, [
 						{
-							enabled: includedIntegrations.useAstroRobots,
+							enabled: includedIntegrations?.useAstroRobots || false,
 							knownSimilar: ['astro-robots', 'astro-robots-txt'],
 							integration: studioCMSRobotsTXT({
 								...robotsTXTPreset,
-								...includedIntegrations.astroRobotsConfig,
+								...includedIntegrations?.astroRobotsConfig,
 							}),
 						},
 					]);
+
+					// Setup StudioCMS Plugins
+					const StudioCMSPluginList: StudioCMSPluginOptions[] = [];
+
+					for (const plugin of options.plugins) {
+						if (plugin.integration && Array.isArray(plugin.integration)) {
+							addIntegrationArray(
+								params,
+								plugin.integration.map((i) => ({ integration: i }))
+							);
+						} else if (plugin.integration) {
+							addIntegration(params, { integration: plugin.integration });
+						}
+						StudioCMSPluginList.push(plugin);
+					}
+
+					const SafePluginList: SafePluginListType = StudioCMSPluginList.map(
+						({ name, label, pageType, settingsPage }) => ({ name, label, pageType, settingsPage })
+					);
+
+					addVirtualImports(params, {
+						name,
+						imports: {
+							'studiocms:plugins': `export default = ${JSON.stringify(SafePluginList)};`,
+						},
+					});
+				},
+				'astro:config:done': ({ injectTypes }) => {
+					injectTypes(generateStubs());
 				},
 				'astro:server:start': async (params) => {
 					// Check for Updates on Development Server Start

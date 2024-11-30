@@ -1,40 +1,13 @@
 {
   "extends": "astro/tsconfigs/strictest",
-  "files": [],
   "compilerOptions": {
     "outDir": "../../.moon/cache/types/packages/studiocms",
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"],
-      "@studiocms/assets": ["../studiocms_assets/src/index.ts"],
-      "@studiocms/assets/*": ["../studiocms_assets/src/*"],
-      "@studiocms/auth": ["../studiocms_auth/src/index.ts"],
-      "@studiocms/auth/*": ["../studiocms_auth/src/*"],
-      "@studiocms/betaresources": ["../studiocms_betaresources/src/index.ts"],
-      "@studiocms/betaresources/*": ["../studiocms_betaresources/src/*"],
-      "@studiocms/blog": ["../studiocms_blog/index.ts"],
-      "@studiocms/blog/*": ["../studiocms_blog/src/*"],
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"],
-      "@studiocms/dashboard": ["../studiocms_dashboard/src/index.ts"],
-      "@studiocms/dashboard/*": ["../studiocms_dashboard/src/*"],
-      "@studiocms/frontend": ["../studiocms_frontend/src/index.ts"],
-      "@studiocms/frontend/*": ["../studiocms_frontend/src/*"],
-      "@studiocms/imagehandler": ["../studiocms_imagehandler/src/index.ts"],
-      "@studiocms/imagehandler/*": ["../studiocms_imagehandler/src/*"],
-      "@studiocms/renderers": ["../studiocms_renderers/src/index.ts"],
-      "@studiocms/renderers/*": ["../studiocms_renderers/src/*"],
-      "@studiocms/robotstxt": ["../studiocms_robotstxt/src/index.ts"],
-      "@studiocms/robotstxt/*": ["../studiocms_robotstxt/src/*"]
-    }
+    "emitDeclarationOnly": false
   },
   "references": [
-    {
-      "path": "../../playgrounds/node"
-    },
     {
       "path": "../studiocms_assets"
     },
@@ -66,21 +39,5 @@
       "path": "../studiocms_robotstxt"
     }
   ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/**/*",
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_assets/**/*",
-    "../studiocms_auth/**/*",
-    "../studiocms_betaresources/**/*",
-    "../studiocms_blog/**/*",
-    "../studiocms_core/**/*",
-    "../studiocms_dashboard/**/*",
-    "../studiocms_frontend/**/*",
-    "../studiocms_imagehandler/**/*",
-    "../studiocms_renderers/**/*",
-    "../studiocms_robotstxt/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+  "include": ["./package.json", "../../playgrounds/node/.astro/**/*", "./**/*", "./src/**/*.json"]
 }
