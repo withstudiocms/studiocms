@@ -75,7 +75,7 @@ export async function createLocalUser(
 	email: string,
 	password: string
 ): Promise<UserTable> {
-	const passwordHash = await hashPassword(password);
+	const passwordHash = hashPassword(password);
 
 	const avatar = await createUserAvatar(email);
 

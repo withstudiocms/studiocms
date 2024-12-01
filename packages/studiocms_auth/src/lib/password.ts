@@ -9,8 +9,8 @@ import bcrypt from 'bcryptjs';
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
-export async function hashPassword(password: string): Promise<string> {
-	const hashedPassword = await bcrypt.hash(password, 10);
+export function hashPassword(password: string): string {
+	const hashedPassword = bcrypt.hashSync(password, 10);
 	return hashedPassword;
 }
 
