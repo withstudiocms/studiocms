@@ -46,10 +46,5 @@ export default defineConfig({
 				protocol: 'https',
 			},
 		],
-	},
-	vite: {
-		optimizeDeps: {
-			exclude: ['astro:db', 'three', '@node-rs/argon2'],
-		}
 	}
 });
