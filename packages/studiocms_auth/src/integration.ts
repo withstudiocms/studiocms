@@ -88,7 +88,8 @@ export default defineIntegration({
 						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['astro:db', 'three', '@node-rs/argon2-linux-x64-gnu'],
+								include: ['@node-rs/argon2 > @node-rs/argon2-linux-x64-gnu'],
+								exclude: ['astro:db', 'three', '@node-rs/argon2'],
 							},
 							plugins: [
 								copy({
