@@ -65,8 +65,6 @@
     "@oslojs/crypto": "catalog:studiocms-auth",
     "@oslojs/encoding": "catalog:studiocms-auth",
     "@oslojs/binary": "catalog:studiocms-auth",
-    "@types/bcryptjs": "catalog:studiocms-auth",
-    "bcryptjs": "catalog:studiocms-auth",
     "@types/three": "catalog:studiocms-auth",
     "arctic": "catalog:studiocms-auth",
     "three": "catalog:studiocms-auth",
