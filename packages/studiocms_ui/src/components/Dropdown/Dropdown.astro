@@ -28,11 +28,12 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
   data-align={align}
   id={`${id}-container`}
   data-trigger={triggerOn}
+  transition:persist transition:persist-props
 >
   <div class="dropdown-toggle" id={`${id}-toggle-btn`}>
     <slot />
   </div>
-  <ul class="dropdown" class:list={[align]} role="listbox" id={`${id}-dropdown`}>
+  <ul class="dropdown above" class:list={[align]} role="listbox" id={`${id}-dropdown`} transition:persist transition:persist-props>
     {options.map(({ value, disabled, color, label, icon }) => (
       <li
         class="dropdown-option"
@@ -69,7 +70,6 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
     border-radius: .5rem;
     background-color: hsl(var(--background-step-2));
     overflow: hidden;
-    top: calc(100% + .25rem);
     left: 0;
     z-index: 90;
     min-width: 200px;
@@ -78,8 +78,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
     height: 0;
     border: none;
     pointer-events: none;
-
-    animation: pop-down .15s ease forwards;
+    user-select: none;
 
     box-shadow: 0px 4px 8px hsl(var(--shadow), 0.5);
   }
@@ -93,6 +92,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
     100% {
       scale: 1;
       opacity: 1;
+      user-select: all;
     }
   }
 
@@ -106,6 +106,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
       bottom: auto;
       border: 1px solid hsl(var(--border));
       opacity: 1;
+      user-select: all;
     }
 
     99.9999% {
@@ -124,10 +125,15 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
       height: 0;
       border: none;
       pointer-events: none;
+      user-select: none;
     }
   }
 
-  .dropdown.active {
+  .dropdown.initialized {
+    animation: pop-down .15s ease forwards;
+  }
+
+  .dropdown.initialized.active {
     display: flex;
     border: 1px solid hsl(var(--border));
     height: auto;
@@ -136,7 +142,7 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
     animation: pop-up .15s ease forwards;
   }
 
-  .dropdown.below {
+  .dropdown.initialized.below {
     top: calc(100% + .25rem + var(--offset)) !important;
     bottom: auto;
 

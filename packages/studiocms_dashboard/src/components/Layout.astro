@@ -1,5 +1,6 @@
 ---
-import Config from 'virtual:studiocms/config';
+import { ViewTransitions } from 'astro:transitions';
+// import Config from 'virtual:studiocms/config';
 import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
@@ -9,11 +10,11 @@ import '@studiocms/ui/css/global.css';
 import '@fontsource-variable/onest/index.css';
 import '../styles/layout.css';
 
-const {
-	dashboardConfig: {
-		developerConfig: { viewTransitionAPI },
-	},
-} = Config;
+// const {
+// 	dashboardConfig: {
+// 		developerConfig: { viewTransitionAPI },
+// 	},
+// } = Config;
 
 type Props = {
 	title: string;
@@ -29,16 +30,17 @@ const { title, description } = Astro.props;
 <html lang="en" data-theme={'dark'}>
   <head>
     <BaseHead title={title} description={description} />
-    {viewTransitionAPI && (
+    <ViewTransitions />
+    <!-- {viewTransitionAPI && (
       <style>
         @view-transition {
           navigation: auto; /* enabled! */
         }
       </style>
-    )}
+    )} -->
   </head>
   <body>
-    <SingleSidebar />
+    <SingleSidebar transition:persist transition:persist-props />
     <main class="p-6 pt-10">
       <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
         <Icon name="bars-3" height={24} width={24} />

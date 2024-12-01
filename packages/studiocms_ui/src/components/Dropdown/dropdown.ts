@@ -39,6 +39,9 @@ class DropdownHelper {
 		if (fullWidth) this.fullWidth = true;
 
 		window.addEventListener('scroll', this.hide);
+		document.addEventListener('astro:before-preparation', () => {
+			this.dropdown.classList.remove('initialized');
+		});
 
 		this.hideOnClickOutside(this.container);
 
@@ -128,6 +131,10 @@ class DropdownHelper {
 			if (this.alignment === 'center') {
 				this.dropdown.style.left = `calc(${parentWidth / 2}px - ${CustomRect.width / 2}px)`;
 			}
+		}
+
+		if (!this.dropdown.classList.contains('initialized')) {
+			this.dropdown.classList.add('initialized');
 		}
 
 		if (

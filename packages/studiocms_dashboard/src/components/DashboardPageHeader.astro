@@ -10,21 +10,21 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
 <header class="page-header">
-    <div class="page-title-container">
-      <h1 class="page-title">{t("welcome-title")}, <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName></h1>
-    </div>
-    <div class="page-actions-container">
-        <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>
-          <Fragment set:html={DiscordLogo} slot='start-content' />
-          {t("title-button:discord")}
-        </Button>
-        <Button color='success' variant='flat'>
-          <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
-          {t("title-button:feedback")}
-        </Button>
-    </div>
-  </header>
-  <style>
+  <div class="page-title-container">
+    <h1 class="page-title">{t("welcome-title")}, <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName></h1>
+  </div>
+  <div class="page-actions-container">
+    <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>
+      <Fragment set:html={DiscordLogo} slot='start-content' />
+      {t("title-button:discord")}
+    </Button>
+    <Button color='success' variant='flat'>
+      <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
+      {t("title-button:feedback")}
+    </Button>
+  </div>
+</header>
+<style>
   .page-header {
     display: flex;
     flex-direction: row;
@@ -53,4 +53,4 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
     align-items: center;
     gap: 1rem;
   }
-  </style>
+</style>
