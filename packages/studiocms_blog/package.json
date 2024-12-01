@@ -55,7 +55,6 @@
   "type": "module",
   "dependencies": {
     "studiocms": "workspace:*",
-    "@studiocms/core": "workspace:*",
     "@studiocms/frontend": "workspace:*",
     "@astrojs/rss": "catalog:",
     "astro-theme-provider": "catalog:"

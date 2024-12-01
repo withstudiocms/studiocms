@@ -347,9 +347,6 @@ importers:
       '@studiocms/betaresources':
         specifier: workspace:*
         version: link:../studiocms_betaresources
-      '@studiocms/blog':
-        specifier: workspace:*
-        version: link:../studiocms_blog
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
@@ -525,9 +522,6 @@ importers:
       '@astrojs/rss':
         specifier: 'catalog:'
         version: 4.0.7
-      '@studiocms/core':
-        specifier: workspace:*
-        version: link:../studiocms_core
       '@studiocms/frontend':
         specifier: workspace:*
         version: link:../studiocms_frontend
