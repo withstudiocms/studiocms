@@ -92,7 +92,7 @@ export default defineIntegration({
 							},
 							build: {
 								rollupOptions: {
-									external: ['@node-rs/argon2-linux-x64-gnu']
+									// external: ['@node-rs/argon2-linux-x64-gnu']
 								}
 							},
 							plugins: [
