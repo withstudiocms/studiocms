@@ -37,7 +37,7 @@ export async function formListener(
 		});
 		window.location.reload();
 	} else {
-		const { title, description } = await response.json();
+		const { error: { title, description } } = await response.json();
 		toast({
 			title,
 			type: 'danger',
