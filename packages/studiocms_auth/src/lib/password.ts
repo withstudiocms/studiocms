@@ -1,5 +1,5 @@
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import argon2 from '@node-rs/argon2';
+import { hashSync, verify } from '@node-rs/argon2';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 
@@ -10,7 +10,7 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
  * @returns A promise that resolves to the hashed password.
  */
 export function hashPassword(password: string): string {
-	const hashedPassword = argon2.hashSync(password);
+	const hashedPassword = hashSync(password);
 	return hashedPassword;
 }
 
@@ -22,7 +22,7 @@ export function hashPassword(password: string): string {
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
-	const passwordMatch = await argon2.verify(password, hash);
+	const passwordMatch = await verify(password, hash);
 	return passwordMatch;
 }
 
