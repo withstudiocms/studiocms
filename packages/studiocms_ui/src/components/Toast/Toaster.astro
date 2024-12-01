@@ -103,7 +103,7 @@ const {
     
     if (props.closeButton || props.persistent) {
       const closeIconContainer = document.createElement('button');
-      closeIconContainer.classList.add('close-icon-container')
+      closeIconContainer.classList.add('close-icon-container');
       closeIconContainer.addEventListener('click', () => removeToast(toastID));
       closeIconContainer.innerHTML = getIconString('x-mark', 'close-icon', 24, 24);
 
@@ -114,7 +114,7 @@ const {
 
     if (props.description) {
       const toastDesc = document.createElement('span');
-      toastDesc.textContent = props.description;
+      toastDesc.innerHTML = props.description;
       toastDesc.classList.add('toast-desc');
 
       toastContainer.appendChild(toastDesc);
