@@ -1,7 +1,19 @@
+import { scrypt as nodeScrypt } from 'node:crypto';
+import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { hashSync, verify } from '@node-rs/argon2';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
+
+type RemoveLast<T extends unknown[]> = T extends [...infer Rest, infer _Last] ? Rest : never;
+
+function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buffer> {
+	return new Promise((res, rej) => {
+		nodeScrypt(...opts, (err, derivedKey) => {
+			if (err) rej(err)
+			else res(derivedKey)
+		});
+	});
+}
 
 /**
  * Hashes a plain text password using bcrypt.
@@ -9,9 +21,9 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
-export function hashPassword(password: string): string {
-	const hashedPassword = hashSync(password);
-	return hashedPassword;
+export async function hashPassword(password: string): Promise<string> {
+	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
+	return hashedPassword.toString();
 }
 
 /**
@@ -22,8 +34,8 @@ export function hashPassword(password: string): string {
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
-	const passwordMatch = await verify(password, hash);
-	return passwordMatch;
+	const passwordHash = await hashPassword(password);
+	return passwordHash === hash;
 }
 
 /**
