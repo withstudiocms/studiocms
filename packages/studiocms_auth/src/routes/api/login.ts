@@ -14,30 +14,23 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	const password = parseFormDataEntryToString(formData, 'password');
 
 	// If the username or password is missing, return an error
-	if (!username || !password) {
-		return badFormDataEntry('Username or password is missing');
-	}
+	if (!username) return badFormDataEntry('Missing field', 'Username is required');
+	if (!password) return badFormDataEntry('Missing field', 'Password is required');
 
 	// Get the user from the database
 	const existingUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
 
-	// If the user does not exist, return an error
-	if (!existingUser) {
-		return badFormDataEntry('Invalid Username or Password');
-	}
+	// If the user does not exist, return an ambiguous error
+	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Invalid username or password');
 
 	// Check if the user has a password or is using a oAuth login
-	if (!existingUser.password) {
-		return badFormDataEntry('User is using a oAuth login');
-	}
+	if (!existingUser.password) return badFormDataEntry('Incorrect method', 'User is using OAuth login');
 
 	// Verify the password
 	const validPassword = await verifyPasswordHash(existingUser.password, password);
 
 	// If the password is invalid, return an error
-	if (!validPassword) {
-		return badFormDataEntry('Invalid Username or Password');
-	}
+	if (!validPassword) return badFormDataEntry('Invalid credentials', 'Invalid username or password');
 
 	await createUserSession(existingUser.id, context);
 
