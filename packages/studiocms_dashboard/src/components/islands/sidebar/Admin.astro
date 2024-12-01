@@ -26,10 +26,10 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
 {isAdmin && (
   <Divider background='background-step-1'>{t('category-2-header')}</Divider>
   <div class="sidebar-link-group">
-    <SidebarLink icon='cog-6-tooth' href='/dashboard/some-route'>
+    <SidebarLink icon='cog-6-tooth' href={tPath('/dashboard/some-route')}>
       {t('site-configuration-label')}
     </SidebarLink>
-    <SidebarLink icon='user-group' href='/dashboard/some-other-route'>
+    <SidebarLink icon='user-group' href={tPath('/dashboard/some-other-route')}>
       {t('user-management-label')}
     </SidebarLink>
   </div>
@@ -37,7 +37,7 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
   <div class="sidebar-link-group">
     {filteredPluginList.map((plugin) => (
       <SidebarPluginLink 
-        href='/dashboard/plugins/some-plugin'
+        href={tPath('/dashboard/plugins/some-plugin')}
         identifier={plugin.identifier}
         name={plugin.name}
       />

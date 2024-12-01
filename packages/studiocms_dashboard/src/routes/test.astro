@@ -1,10 +1,9 @@
 ---
 // import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
-import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
+import { getLangFromUrl, staticPaths, useTranslations } from 'studiocms:i18n';
 import type { GetStaticPaths } from 'astro';
 import { Layout } from '../components';
-import PageHeader from '../components/islands/dashboard/PageHeader.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
 const contextConfig = await getSiteConfig();

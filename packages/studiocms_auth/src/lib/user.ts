@@ -139,7 +139,7 @@ export const LinkNewOAuthCookieName = 'link-new-o-auth';
  * @returns A promise that resolves when the password has been successfully updated.
  */
 export async function updateUserPassword(userId: string, password: string): Promise<void> {
-	const passwordHash = await hashPassword(password);
+	const passwordHash = hashPassword(password);
 
 	await db.update(tsUsers).set({ password: passwordHash }).where(eq(tsUsers.id, userId));
 }

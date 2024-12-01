@@ -14,6 +14,7 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
 ---
 
 <div 
+id="login-checker"
 style="display: hidden;" 
 data-isLoggedIn={user.isLoggedIn}
 data-authorized={isAuthorized} 
@@ -22,13 +23,13 @@ data-redirectlogin={StudioCMSRoutes.authLinks.loginURL}
 />
 
 <script>
-const authorized = document.querySelector('[data-authorized]') as HTMLDivElement;
+const authorized = document.getElementById('login-checker') as HTMLDivElement;
 
-if (authorized && authorized.dataset.isLoggedIn === 'false') {
+if (authorized.dataset.isLoggedIn === 'false') {
     window.location.href = authorized.dataset.redirectlogin!;
 }
 
-if (authorized && authorized.dataset.authorized === 'false') {
+if (authorized.dataset.authorized === 'false') {
     window.location.href = authorized.dataset.redirectprofile!;
 }
 </script>
