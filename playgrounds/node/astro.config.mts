@@ -47,4 +47,9 @@ export default defineConfig({
 			},
 		],
 	},
+	vite: {
+		optimizeDeps: {
+			exclude: ['astro:db', 'three', '@node-rs/argon2'],
+		}
+	}
 });
