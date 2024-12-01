@@ -4,7 +4,8 @@ import { getSiteConfig } from 'studiocms:helpers/contentHelper';
 import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import type { GetStaticPaths } from 'astro';
 import { Layout } from '../components';
-import PageHeader from '../components/islands/dashboard/PageHeader.astro';
+import PageHeader from '../components/DashboardPageHeader.astro';
+import LoginChecker from '../components/islands/LoginChecker.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
 const contextConfig = await getSiteConfig();
@@ -22,11 +23,13 @@ export const getStaticPaths = (() => {
 // const webVitals = await getWebVitals();
 ---
 
+<LoginChecker server:defer requiredPermission='editor' />
+
 <Layout 
   sideBarActiveItemID="dashboard" 
   title={makePageTitle(t('title'), contextConfig)}
   description={contextConfig.description}
 >
-  <PageHeader server:defer />
+  <PageHeader />
   <span>{t('sub-header')}</span>
 </Layout>

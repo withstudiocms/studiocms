@@ -1,6 +1,6 @@
 ---
 import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
-import { Divider, Dropdown, Sidebar } from '@studiocms/ui/components';
+import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
@@ -40,7 +40,9 @@ const tPath = useTranslatedPath(lang);
     offset={8}
   >
     <div class="user-dropdown-trigger-container">
-      <UserAccount server:defer />
+      <UserAccount server:defer>
+        <User slot="fallback" name={"Visitor"} description={'Unknown'} />
+      </UserAccount>
     </div>
   </Dropdown>
 </Sidebar>

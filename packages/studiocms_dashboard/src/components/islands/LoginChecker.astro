@@ -1,0 +1,35 @@
+---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+
+interface Props {
+	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+}
+
+const { requiredPermission } = Astro.props;
+
+const user = await getUserData(Astro);
+
+const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
+---
+
+<div 
+style="display: hidden;" 
+data-isLoggedIn={user.isLoggedIn}
+data-authorized={isAuthorized} 
+data-redirectprofile={StudioCMSRoutes.mainLinks.userProfile}
+data-redirectlogin={StudioCMSRoutes.authLinks.loginURL}
+/>
+
+<script>
+const authorized = document.querySelector('[data-authorized]') as HTMLDivElement;
+
+if (authorized && authorized.dataset.isLoggedIn === 'false') {
+    window.location.href = authorized.dataset.redirectlogin!;
+}
+
+if (authorized && authorized.dataset.authorized === 'false') {
+    window.location.href = authorized.dataset.redirectprofile!;
+}
+</script>
+

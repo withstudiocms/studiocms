@@ -1,7 +1,6 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
 import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import { Divider } from '@studiocms/ui/components';
@@ -13,10 +12,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const tPath = useTranslatedPath(lang);
 
 const data = await getUserData(Astro);
-
-if (!data.user) {
-	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
-}
 
 const isAdmin = await verifyUserPermissionLevel(data, 'admin');
 

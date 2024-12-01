@@ -1,13 +1,8 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { User } from '@studiocms/ui/components';
 
 const data = await getUserData(Astro);
-
-if (!data.user) {
-	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
-}
 ---
-<User name={data.user.name} description={getLabelForPermissionLevel(data.permissionLevel)} />
+<User name={data.user?.name || "Visitor"} description={getLabelForPermissionLevel(data.permissionLevel)} />
