@@ -30,7 +30,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	// If the password is invalid, return an error
 	if ((await verifyPasswordStrength(password)) !== true) {
 		return badFormDataEntry(
-			'Invalid Password: Password must be between 6 and 255 characters, not be a known unsafe password, and not be in the pwned password database'
+			'Invalid Password: Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
 		);
 	}
 
