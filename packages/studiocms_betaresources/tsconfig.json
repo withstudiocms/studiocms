@@ -6,14 +6,7 @@
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"],
-      "@studiocms/assets": ["../studiocms_assets/src/index.ts"],
-      "@studiocms/assets/*": ["../studiocms_assets/src/*"],
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"]
-    }
+    "emitDeclarationOnly": false
   },
   "references": [
     {
@@ -26,13 +19,5 @@
       "path": "../studiocms_core"
     }
   ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/**/*",
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_assets/**/*",
-    "../studiocms_core/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+  "include": ["./package.json", "../../playgrounds/node/.astro/**/*", "./**/*", "./src/**/*.json"]
 }

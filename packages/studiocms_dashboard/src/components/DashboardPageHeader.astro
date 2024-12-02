@@ -11,7 +11,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 <header class="page-header">
   <div class="page-title-container">
-    <h1 class="page-title">{t("welcome-title")}, <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName></h1>
+    <h1 class="page-title">{t("welcome-title")}, <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName>.</h1>
   </div>
   <div class="page-actions-container">
     <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>

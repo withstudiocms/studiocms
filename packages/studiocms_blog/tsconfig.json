@@ -6,21 +6,9 @@
     "composite": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": false,
-    "paths": {
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"],
-      "@studiocms/frontend": ["../studiocms_frontend/src/index.ts"],
-      "@studiocms/frontend/*": ["../studiocms_frontend/src/*"]
-    }
+    "allowImportingTsExtensions": false
   },
-  "include": [
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_core/**/*",
-    "../studiocms_frontend/**/*",
-    "./**/*",
-    "./**/*.json"
-  ],
+  "include": ["../../playgrounds/node/.astro/**/*", "./**/*", "./**/*.json"],
   "references": [
     {
       "path": "../studiocms_core"

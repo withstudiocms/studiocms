@@ -13,7 +13,7 @@ const {
 } = StudioCMSRoutes;
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
-	return context.redirect(baseSiteURL);
+	return POST(context);
 };
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {

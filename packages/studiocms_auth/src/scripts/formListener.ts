@@ -37,11 +37,11 @@ export async function formListener(
 		});
 		window.location.reload();
 	} else {
-		const data = await response.json();
+		const { error: { title, description } } = await response.json();
 		toast({
-			title: 'Something went wrong!',
+			title,
 			type: 'danger',
-			description: data.error,
+			description,
 			closeButton: true,
 			persistent: true,
 		});

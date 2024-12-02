@@ -46,5 +46,5 @@ export default defineConfig({
 				protocol: 'https',
 			},
 		],
-	},
+	}
 });

@@ -38,8 +38,7 @@
     "src"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./blog": "./src/blog/index.ts"
+    ".": "./src/index.ts"
   },
   "type": "module",
   "dependencies": {
@@ -65,8 +64,6 @@
     "@oslojs/crypto": "catalog:studiocms-auth",
     "@oslojs/encoding": "catalog:studiocms-auth",
     "@oslojs/binary": "catalog:studiocms-auth",
-    "@types/bcryptjs": "catalog:studiocms-auth",
-    "bcryptjs": "catalog:studiocms-auth",
     "@types/three": "catalog:studiocms-auth",
     "arctic": "catalog:studiocms-auth",
     "three": "catalog:studiocms-auth",
@@ -91,13 +88,7 @@
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
-    "astro": "catalog:min",
-    "@studiocms/blog": "workspace:*"
-  },
-  "peerDependenciesMeta": {
-    "@studiocms/blog": {
-      "optional": true
-    }
+    "astro": "catalog:min"
   },
   "devDependencies": {
     "vite": "catalog:",

@@ -16,21 +16,22 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	const password = parseFormDataEntryToString(formData, 'password');
 
 	// If the username or password is missing, return an error
-	if (!username || !password) {
-		return badFormDataEntry('Username or password is missing');
-	}
+	if (!username) return badFormDataEntry('Missing field', 'Username is required');
+	if (!password) return badFormDataEntry('Missing field', 'Password is required');
 
 	// If the username is invalid, return an error
 	if (verifyUsernameInput(username) !== true) {
 		return badFormDataEntry(
-			'Invalid Username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
+			'Invalid username',
+			'Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
 		);
 	}
 
 	// If the password is invalid, return an error
 	if ((await verifyPasswordStrength(password)) !== true) {
 		return badFormDataEntry(
-			'Invalid Password: Password must be between 6 and 255 characters, not be a known unsafe password, and not be in the pwned password database'
+			'Invalid password',
+			'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
 		);
 	}
 
@@ -39,9 +40,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	const name = parseFormDataEntryToString(formData, 'displayname');
 
 	// If the email or display name is missing, return an error
-	if (!email || !name) {
-		return badFormDataEntry('Email or display name is missing');
-	}
+	if (!email) return badFormDataEntry('Missing entry', 'Email is required');
+	if (!name) return badFormDataEntry('Missing entry', 'Display name is required');
 
 	// If the email is invalid, return an error
 	const checkemail = z.coerce
@@ -49,26 +49,17 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		.email({ message: 'Email address is invalid' })
 		.safeParse(email);
 
-	if (!checkemail.success) {
-		return badFormDataEntry(checkemail.error.message);
-	}
+	if (!checkemail.success) return badFormDataEntry('Invalid email', checkemail.error.message);
 
-	// Check if the username/email is already used
-	const existingUsername = await db
-		.select()
-		.from(tsUsers)
-		.where(eq(tsUsers.username, username))
-		.get();
+	// Check if the username or email is already used by another user
+	const [usernameSearch, emailSearch] = await db.batch([
+		db.select().from(tsUsers).where(eq(tsUsers.username, username)),
+		db.select().from(tsUsers).where(eq(tsUsers.email, checkemail.data)),
+	]);
 
-	const existingEmail = await db
-		.select()
-		.from(tsUsers)
-		.where(eq(tsUsers.email, checkemail.data))
-		.get();
-
-	if (existingUsername || existingEmail) {
-		return badFormDataEntry('Username or email is already in use');
-	}
+	if (usernameSearch.length > 0)
+		return badFormDataEntry('Invalid username', 'Username is already in use');
+	if (emailSearch.length > 0) return badFormDataEntry('Invalid email', 'Email is already in use');
 
 	// Create a new user
 	const newUser = await createLocalUser(name, username, email, password);

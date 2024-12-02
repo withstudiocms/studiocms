@@ -6,12 +6,7 @@
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"],
-      "@studiocms/robotstxt": ["../studiocms_robotstxt/src/index.ts"],
-      "@studiocms/robotstxt/*": ["../studiocms_robotstxt/src/*"]
-    }
+    "emitDeclarationOnly": false
   },
   "references": [
     {
