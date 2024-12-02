@@ -10,12 +10,6 @@ import UserAccount from './islands/sidebar/UserAccount.astro';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const tPath = useTranslatedPath(lang);
-
-const dropdownOptions: Record<string, string> = {
-	'user-settings': StudioCMSRoutes.mainLinks.userProfile,
-	'view-site': StudioCMSRoutes.mainLinks.baseSiteURL,
-	'log-out': StudioCMSRoutes.authLinks.logoutURL,
-};
 ---
 
 <Sidebar class='sidebar' transition:persist transition:persist-props>
@@ -57,9 +51,9 @@ const dropdownOptions: Record<string, string> = {
 
 <div style="display: none;" 
   id="dropdown-options" 
-  data-usersettings={StudioCMSRoutes.mainLinks.userProfile} 
-  data-viewsite={StudioCMSRoutes.mainLinks.baseSiteURL}
-  data-logout={StudioCMSRoutes.authLinks.logoutURL}
+  data-usersettings={tPath(StudioCMSRoutes.mainLinks.userProfile)} 
+  data-viewsite={tPath(StudioCMSRoutes.mainLinks.baseSiteURL)}
+  data-logout={tPath(StudioCMSRoutes.authLinks.logoutURL)}
   />
 
 <script>
@@ -93,9 +87,7 @@ const dropdownOptions: Record<string, string> = {
       item.addEventListener('click', () => {
         const value = item.dataset.value!;
 
-        if (value === links[value]) {
-          window.location.href = `${links[value]}`,true;
-        }
+        window.location.href = `${links[value]}`;
 
         console.log("Clicked", value, links[value]);  
       })
