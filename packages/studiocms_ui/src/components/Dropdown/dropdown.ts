@@ -118,7 +118,6 @@ class DropdownHelper {
 
 		this.active = true;
 
-		// this.dropdown.style.height = `${this.dropdown.children.length * optionHeight}px`;
 		if (isMobile || this.fullWidth) {
 			this.dropdown.style.maxWidth = `${parentWidth}px`;
 			this.dropdown.style.minWidth = 'unset';
