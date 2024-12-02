@@ -64,32 +64,24 @@ const tPath = useTranslatedPath(lang);
     new SingleSidebarHelper('nav-toggle');
     new DropdownHelper('sidebar-user-dropdown', true);
 
-    const dropdownList = document.querySelector<HTMLUListElement>('#sidebar-user-dropdown-dropdown');
+    // Get the dropdown list items
+    const dropdownListItems = document.querySelector<HTMLUListElement>('#sidebar-user-dropdown-dropdown')!.querySelectorAll<HTMLLIElement>('li');
 
-    if (!dropdownList) return;
+    // Get the dropdown options (URLs for each dropdown item)
+    const { dataset: linkData } = document.querySelector<HTMLDivElement>('#dropdown-options')!;
 
-    const dropdownListItems = dropdownList.querySelectorAll<HTMLLIElement>('li');
-
-    const dropdownOptions = document.querySelector<HTMLDivElement>('#dropdown-options')!;
-
-    console.log(dropdownOptions);
-
+    // Create a record of links (key: dropdown item value, value: URL)
     const links: Record<string, string> = {
-      'user-settings': dropdownOptions.dataset.usersettings!,
-      'view-site': dropdownOptions.dataset.viewsite!,
-      'log-out': dropdownOptions.dataset.logout!,
+      'user-settings': linkData.usersettings!,
+      'view-site': linkData.viewsite!,
+      'log-out': linkData.logout!,
     };
 
     for (const item of dropdownListItems) {
-
-      console.log(item);
-
       item.addEventListener('click', () => {
         const value = item.dataset.value!;
 
         window.location.href = `${links[value]}`;
-
-        console.log("Clicked", value, links[value]);  
       })
     }
 
