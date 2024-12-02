@@ -9,6 +9,7 @@ type Option = {
 	disabled?: boolean;
 	color?: StudioCMSColorway;
   icon?: HeroIconName;
+  href?: string;
 };
 
 type Props = {
@@ -34,17 +35,21 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
     <slot />
   </div>
   <ul class="dropdown above" class:list={[align]} role="listbox" id={`${id}-dropdown`} transition:persist transition:persist-props>
-    {options.map(({ value, disabled, color, label, icon }) => (
+    {options.map(({ value, disabled, color, label, icon, href }) => (
       <li
         class="dropdown-option"
         role="option"
         data-value={value}
-        class:list={[disabled && "disabled", icon && "has-icon", color]}
+        class:list={[disabled && "disabled", icon && "has-icon", color, href && "has-href"]}
       >
         {icon && (
           <Icon width={24} height={24} name={icon} />
         )}
-        <span>{label}</span>
+        {href ? (
+          <a href={href} class="dropdown-link">{label}</a>
+        ) : (
+          <span>{label}</span>
+        )}
       </li>
     ))}
   </ul>
@@ -186,6 +191,15 @@ const { options, disabled = false, align = 'center', id, triggerOn = 'left', off
 
   .dropdown-option:hover {
     background-color: hsl(var(--background-step-3));
+  }
+
+  .dropdown-option.has-href {
+    padding: 0;
+  }
+
+  .dropdown-link {
+    padding: .5rem .75rem;
+    width: 100%;
   }
 
   .dropdown-option.primary {
