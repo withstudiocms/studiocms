@@ -1,4 +1,5 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
@@ -9,6 +10,12 @@ import UserAccount from './islands/sidebar/UserAccount.astro';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const tPath = useTranslatedPath(lang);
+
+const dropdownOptions: Record<string, string> = {
+	'user-settings': StudioCMSRoutes.mainLinks.userProfile,
+	'view-site': StudioCMSRoutes.mainLinks.baseSiteURL,
+	'log-out': StudioCMSRoutes.authLinks.logoutURL,
+};
 ---
 
 <Sidebar class='sidebar' transition:persist transition:persist-props>
@@ -47,6 +54,14 @@ const tPath = useTranslatedPath(lang);
     </div>
   </Dropdown>
 </Sidebar>
+
+<div style="display: none;" 
+  id="dropdown-options" 
+  data-usersettings={StudioCMSRoutes.mainLinks.userProfile} 
+  data-viewsite={StudioCMSRoutes.mainLinks.baseSiteURL}
+  data-logout={StudioCMSRoutes.authLinks.logoutURL}
+  />
+
 <script>
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
@@ -54,6 +69,37 @@ const tPath = useTranslatedPath(lang);
   document.addEventListener('astro:page-load', () => {
     new SingleSidebarHelper('nav-toggle');
     new DropdownHelper('sidebar-user-dropdown', true);
+
+    const dropdownList = document.querySelector<HTMLUListElement>('#sidebar-user-dropdown-dropdown');
+
+    if (!dropdownList) return;
+
+    const dropdownListItems = dropdownList.querySelectorAll<HTMLLIElement>('li');
+
+    const dropdownOptions = document.querySelector<HTMLDivElement>('#dropdown-options')!;
+
+    console.log(dropdownOptions);
+
+    const links: Record<string, string> = {
+      'user-settings': dropdownOptions.dataset.usersettings!,
+      'view-site': dropdownOptions.dataset.viewsite!,
+      'log-out': dropdownOptions.dataset.logout!,
+    };
+
+    for (const item of dropdownListItems) {
+
+      console.log(item);
+
+      item.addEventListener('click', () => {
+        const value = item.dataset.value!;
+
+        if (value === links[value]) {
+          window.location.href = `${links[value]}`,true;
+        }
+
+        console.log("Clicked", value, links[value]);  
+      })
+    }
 
     const sidebar = document.querySelector<HTMLElement>('.sidebar');
 
@@ -63,8 +109,6 @@ const tPath = useTranslatedPath(lang);
       
     for (const link of sidebarLinks) {
       link.classList.remove('active');
-
-      console.log(window.location.pathname, new URL(link.href).pathname);
       if (window.location.pathname === new URL(link.href).pathname) {
         link.classList.add('active');
       }

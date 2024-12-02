@@ -176,7 +176,7 @@ export default defineIntegration({
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
-								pattern: 'logout/',
+								pattern: 'logout',
 								entrypoint: resolve('./routes/logout.astro'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},

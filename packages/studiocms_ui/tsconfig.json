@@ -6,22 +6,12 @@
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "ui-playground/*": ["../../playgrounds/ui/src/*"]
-    }
+    "emitDeclarationOnly": false
   },
   "references": [
     {
       "path": "../../playgrounds/ui"
     }
   ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/ui/**/*",
-    "../../playgrounds/ui/.astro/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ],
-  "exclude": ["../../playgrounds/ui/dist/**"]
+  "include": ["./package.json", "../../playgrounds/ui/.astro/**/*", "./**/*", "./src/**/*.json"]
 }

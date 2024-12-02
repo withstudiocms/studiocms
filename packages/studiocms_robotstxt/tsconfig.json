@@ -6,21 +6,12 @@
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"]
-    }
+    "emitDeclarationOnly": false
   },
   "references": [
     {
       "path": "../../playgrounds/node"
     }
   ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/**/*",
-    "../../playgrounds/node/.astro/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+  "include": ["./package.json", "../../playgrounds/node/.astro/**/*", "./**/*", "./src/**/*.json"]
 }

@@ -16,11 +16,5 @@
       "path": "../../playgrounds/node"
     }
   ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/**/*",
-    "../../playgrounds/node/.astro/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+  "include": ["./package.json", "../../playgrounds/node/.astro/**/*", "./**/*", "./src/**/*.json"]
 }
