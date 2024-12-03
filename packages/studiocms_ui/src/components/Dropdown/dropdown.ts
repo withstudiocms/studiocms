@@ -99,7 +99,7 @@ class DropdownHelper {
 		} = this.toggleEl.getBoundingClientRect();
 		const { width: dropdownWidth } = this.dropdown.getBoundingClientRect();
 
-		const optionHeight = 44;
+		const optionHeight = 43.28;
 		const totalBorderSize = 2;
 		const margin = 4;
 

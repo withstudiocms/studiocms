@@ -167,7 +167,7 @@ You can disable a dropdown by passing the `disabled` prop.
 
 ### Option Options
 
-No, you read that right. You can customize the options too. You can individually disable them and also change their color to any of the default colors:
+No, you read that right. You can customize the options too. You can individually disable them, turn them into links and also change their color to any of the default colors:
 
 <Tabs>
   <TabItem label="Preview">
@@ -175,12 +175,13 @@ No, you read that right. You can customize the options too. You can individually
       <Dropdown 
         id='options-dropdown' 
         options={[
-          { label: 'Default', value: 'default', color: 'default'},
-          { label: 'Primary', value: 'primary', color: 'primary'},
-          { label: 'Success', value: 'success', color: 'success'},
-          { label: 'Warning', value: 'warning', color: 'warning'},
-          { label: 'Danger', value: 'danger', color: 'danger'},
-          { label: 'Disabled', value: 'disabled', disabled: 'true'},
+          { label: 'Default', value: 'default', color: 'default' },
+          { label: 'Primary', value: 'primary', color: 'primary' },
+          { label: 'Success', value: 'success', color: 'success' },
+          { label: 'Warning', value: 'warning', color: 'warning' },
+          { label: 'Danger', value: 'danger', color: 'danger' },
+          { label: 'Disabled', value: 'disabled', disabled: true },
+          { label: 'As Link', value: 'custom-href', href: '/' },
         ]}
       >
         <Button color="primary">
@@ -198,12 +199,13 @@ No, you read that right. You can customize the options too. You can individually
     <Dropdown 
       id='dropdown' 
       options={[
-        { label: 'Default', value: 'default', color: 'default'},
-        { label: 'Primary', value: 'primary', color: 'primary'},
-        { label: 'Success', value: 'success', color: 'success'},
-        { label: 'Warning', value: 'warning', color: 'warning'},
-        { label: 'Danger', value: 'danger', color: 'danger'},
-        { label: 'Disabled', value: 'disabled', disabled: 'true'},
+        { label: 'Default', value: 'default', color: 'default' },
+        { label: 'Primary', value: 'primary', color: 'primary' },
+        { label: 'Success', value: 'success', color: 'success' },
+        { label: 'Warning', value: 'warning', color: 'warning' },
+        { label: 'Danger', value: 'danger', color: 'danger' },
+        { label: 'Disabled', value: 'disabled', disabled: true },
+        { label: 'As Link', value: 'custom-href', href: '/' },
       ]}
     >
       <Button color="primary">
