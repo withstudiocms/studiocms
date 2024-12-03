@@ -79,59 +79,6 @@ export default defineStudioCMSConfig({
 })
 ```
 
-### `UnoCSSConfigOverride`
-
-- **Type:** `unocssConfigSchema{} | undefined{}`
-
-Allows customization of the UnoCSS Configuration.
-
-#### `injectReset`
-
-- **Type:** `boolean | undefined`
-- **Default:** `false`
-
-Allows the user to enable or disable the UnoCSS Default Reset import.
-
-#### `injectEntry`
-
-- **Type:** `boolean | undefined`
-- **Default:** `false`
-
-Allows the user to enable or disable the UnoCSS Default Entry import.
-
-#### `presetsConfig`
-
-- **Type:** `unocssPresetsSchema{} | undefined{}`
-
-Allows the user to modify the included UnoCSS Presets.
-
-##### `presetDaisyUI`
-
-- **Type:** `unocssDaisyUISchema{} | undefined{}`
-
-Allows the user to enable or disable the UnoCSS DaisyUI Preset.
-
-###### `themes`
-
-- **Type:** `Array<string> | undefined`
-- **Default:** `['dark', 'light']`
-
-Allows the user to use any of the available DaisyUI themes.
-
-###### `lightTheme`
-
-- **Type:** `string | undefined`
-- **Default:** `'light'`
-
-Allows the user to set the default light theme.
-
-###### `darkTheme`
-
-- **Type:** `string | undefined`
-- **Default:** `'dark'`
-
-Allows the user to set the default dark theme.
-
 ### `developerConfig`
 
 - **Type:** `developerConfigSchema{} | undefined{}`

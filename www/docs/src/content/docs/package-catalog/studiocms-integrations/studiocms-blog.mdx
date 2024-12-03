@@ -39,7 +39,7 @@ This Astro integration enables the StudioCMS Blog feature in your Astro project.
 
 2. Add `@studiocms/blog` to your astro config file:
 
-   ```ts twoslash title="astro.config.mjs" ins={5, 14-19}
+   ```ts twoslash title="astro.config.mjs" ins={5, 14-21}
    import { defineConfig } from 'astro/config';
    import node from '@astrojs/node';
    import db from '@astrojs/db';
@@ -52,12 +52,15 @@ This Astro integration enables the StudioCMS Blog feature in your Astro project.
       adapter: node({ mode: "standalone" }),
       integrations: [
           db(), // REQUIRED
-          studioCMS(), // REQUIRED
-          studioCMSBlog({ 
-            config: { 
-              title: "My StudioCMS Blog", 
-              description: "A Simple Blog build with Astro, AstroDB, and StudioCMS.",
-            },
+          studioCMS({
+            plugins: [
+              studioCMSBlog({ 
+                config: { 
+                  title: "My StudioCMS Blog", 
+                  description: "A Simple Blog build with Astro, AstroDB, and StudioCMS.",
+                },
+              }),
+            ],
           }),
       ],
    });
@@ -78,7 +81,7 @@ This integration will add the following new routes to your StudioCMS Controlled 
 
 ### Example config
 
-```ts twoslash title="astro.config.mjs" {3-4, 13-14} ins={5, 15-20}
+```ts twoslash title="astro.config.mjs" {3-4, 13-14} ins={5, 15-22}
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import db from '@astrojs/db';
@@ -92,13 +95,16 @@ export default defineConfig({
   adapter: node({ mode: "standalone" }),
   integrations: [ 
     db(), // REQUIRED 
-    studioCMS(), // REQUIRED 
-    studioCMSBlog({ 
-      config: { 
-        title: "My StudioCMS Blog", 
-        description: "A Simple Blog build with Astro, Astrojs/DB, and StudioCMS.",
-      }, 
-    }), 
+    studioCMS({
+      plugins: [
+        studioCMSBlog({ 
+          config: { 
+            title: "My StudioCMS Blog", 
+            description: "A Simple Blog build with Astro, AstroDB, and StudioCMS.",
+          },
+        }),
+      ],
+    }),
   ],
 });
 ```
