@@ -99,7 +99,7 @@ class ThemeHelper {
   };
 
   /**
-   * Allows for adding a callback that gets called whenever the theme changes,
+   * Allows for adding a callback that gets called whenever the theme changes.
    * @param callback The callback to be executed
    */
   public onThemeChange = (callback: ThemeChangeCallback): void => {
