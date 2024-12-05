@@ -3,7 +3,7 @@ import type {
 	CustomRenderer,
 	Renderer,
 	StudioCMSOptions,
-	StudioCMSPluginInput,
+	StudioCMSPluginOptions,
 } from '@studiocms/core/schemas';
 import integration from './integration';
 
@@ -31,6 +31,6 @@ export type { CustomRenderer, Renderer };
  * @param options - The configuration options for the plugin.
  * @returns The provided plugin options.
  */
-export function definePlugin(options: StudioCMSPluginInput) {
+export function definePlugin(options: StudioCMSPluginOptions) {
 	return options;
 }

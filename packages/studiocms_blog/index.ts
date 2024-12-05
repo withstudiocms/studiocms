@@ -30,6 +30,7 @@ export function blogPlugin(options?: ATP_ThemeOptions) {
 	}
 	return definePlugin({
 		name,
+		studiocmsMinimumVersion: '0.1.0-beta.8',
 		identifier: 'StudioCMS Blog',
 		integration: studioCMSBlogTheme(options),
 		frontendNavigationLinks: [{ label: 'Blog', href: slug }],

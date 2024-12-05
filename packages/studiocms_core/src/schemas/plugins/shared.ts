@@ -61,16 +61,6 @@ export const SettingsFieldSchema = z
 	.union([SettingsFieldPreSchema, RowSettingsFieldSchema])
 	.and(DefaultSettingsFieldOptionsSchema);
 
-export const StudioCMS_SettingsPageSchema = z
-	.object({
-		/**
-		 * Fields according to specification
-		 */
-		fields: z.array(SettingsFieldSchema),
-		/**
-		 * Validation function that runs on save
-		 */
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		validate: z.custom<(values: any) => string | true>(),
-	})
-	.optional();
+export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
+
+export const TransformFunction = z.function().args(z.any()).returns(z.any());
