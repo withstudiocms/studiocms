@@ -34,3 +34,5 @@ export type { CustomRenderer, Renderer };
 export function definePlugin(options: StudioCMSPluginOptions) {
 	return options;
 }
+
+export type { StudioCMSPluginOptions };

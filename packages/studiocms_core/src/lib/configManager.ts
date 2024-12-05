@@ -1,3 +1,4 @@
+import { statSync } from 'node:fs';
 import type { StudioCMSOptions } from '../schemas';
 import { studioErrors } from '../strings';
 
@@ -5,10 +6,47 @@ import { studioErrors } from '../strings';
 // see: https://expressive-code.com/ & https://github.com/expressive-code/expressive-code
 
 /**
+ * Paths to search for the Lunaria config file,
+ * sorted by how likely they're to appear.
+ */
+const configPaths = Object.freeze([
+	'studiocms.config.mjs',
+	'studiocms.config.js',
+	'studiocms.config.ts',
+	'studiocms.config.mts',
+	'studiocms.config.cjs',
+	'studiocms.config.cts',
+]);
+
+function findConfig(projectRootUrl: string) {
+	for (const path of configPaths) {
+		const configUrl = `${projectRootUrl}${path}`;
+		if (exists(configUrl)) {
+			return path;
+		}
+	}
+
+	return undefined;
+}
+
+export function exists(path: string) {
+	try {
+		statSync(path);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
  * Returns a URL to the optional StudioCMS config file in the Astro project root.
  */
-export function getStudioConfigFileUrl(projectRootUrl: URL | string) {
-	return new URL('./studiocms.config.mjs', projectRootUrl);
+export function getStudioConfigFileUrl(projectRootUrl: string) {
+	const configPath = findConfig(projectRootUrl);
+	if (configPath) {
+		return `${projectRootUrl}${configPath}`;
+	}
+	return `${projectRootUrl}studiocms.config.mjs`;
 }
 
 /**
@@ -16,19 +54,15 @@ export function getStudioConfigFileUrl(projectRootUrl: URL | string) {
  *
  * If no config file is found, an empty object is returned.
  */
-export async function loadStudioCMSConfigFile(
-	projectRootUrl: URL | string
-): Promise<StudioCMSOptions> {
-	const pathsToTry = [
-		// This path works in most scenarios, but not when the integration is processed by Vite
-		// due to a Vite bug affecting import URLs using the "file:" protocol
-		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
-	];
-	// Detect if the integration is processed by Vite
-	if (import.meta.env?.BASE_URL?.length) {
-		// Add a fallback path starting with "/", which Vite treats as relative to the project root
-		pathsToTry.push(`/studiocms.config.mjs?t=${Date.now()}`);
-	}
+export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<StudioCMSOptions> {
+	// Find the config file path using the findConfig function
+	const configPath = findConfig(projectRootUrl);
+
+	// Construct the file URL for import attempts
+	const fileUrl = configPath
+		? `${projectRootUrl}${configPath}`
+		: `${projectRootUrl}studiocms.config.mjs`;
+
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.
 	 * Bun's choice to throw ResolveMessage for import resolver messages means
@@ -42,22 +76,19 @@ export async function loadStudioCMSConfigFile(
 		}
 		return { message: error as string };
 	}
-	for (const path of pathsToTry) {
-		try {
-			const module = (await import(/* @vite-ignore */ path)) as { default: StudioCMSOptions };
-			if (!module.default) {
-				throw new Error(studioErrors.invalidOrMissingExport);
-			}
-			return module.default;
-		} catch (error) {
-			const { message, code } = coerceError(error);
-			// If the config file was not found, continue with the next path (if any)
-			if (code === 'ERR_MODULE_NOT_FOUND' || code === 'ERR_LOAD_URL') {
-				// Ignore the error only if the config file itself was not found,
-				// not if the config file failed to import another module
-				if (message.replace(/(imported )?from .*$/, '').includes('studiocms.config.mjs')) continue;
-			}
-			// If the config file exists, but there was a problem loading it, rethrow the error
+
+	try {
+		// Attempt to import the config file dynamically
+		const module = (await import(/* @vite-ignore */ fileUrl)) as { default: StudioCMSOptions };
+		if (!module.default) {
+			throw new Error(studioErrors.invalidOrMissingExport);
+		}
+		return module.default;
+	} catch (error) {
+		const { message, code } = coerceError(error);
+
+		// If the config file exists but fails to load, throw an error
+		if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
 			throw new Error(
 				`${studioErrors.loadingError} ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
 					/\s+/g,
@@ -67,5 +98,7 @@ export async function loadStudioCMSConfigFile(
 			);
 		}
 	}
+
+	// Return an empty object if no config file is found or if all attempts fail
 	return {} as StudioCMSOptions;
 }

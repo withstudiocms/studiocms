@@ -46,7 +46,7 @@ export default defineIntegration({
 					const { config: astroConfig, addWatchFile, logger } = params;
 
 					// Watch the StudioCMS Config File for changes (including creation/deletion)
-					addWatchFile(getStudioConfigFileUrl(astroConfig.root));
+					addWatchFile(getStudioConfigFileUrl(astroConfig.root.pathname));
 
 					// Resolve Options
 					const ResolvedOptions = await configResolver(params, options);

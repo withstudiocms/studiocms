@@ -74,7 +74,7 @@ export const StudioCMSOptionsSchema = z
 		/**
 		 * Add Plugins to the StudioCMS
 		 */
-		plugins: z.array(StudioCMSPluginSchema).optional().default([]),
+		plugins: z.array(StudioCMSPluginSchema).optional(),
 	})
 	.optional()
 	.default({});
