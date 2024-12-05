@@ -61,7 +61,8 @@
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "drizzle-orm": "^0.31.2"
   },
   "devDependencies": {
     "vite": "catalog:",

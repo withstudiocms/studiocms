@@ -85,7 +85,7 @@ export default defineIntegration({
 							},
 							{
 								enabled: options.dbStartPage,
-								pattern: 'liverender',
+								pattern: 'setup',
 								entrypoint: resolve('./routes/api/firstTimeSetup.ts'),
 							},
 						],

@@ -1,4 +1,3 @@
-import type { StudioCMSPluginOptions } from '@studiocms/core/schemas';
+import type { SafePluginListType, StudioCMSPluginOptions } from '@studiocms/core/schemas';
 
-export type SafePluginListType = Omit<StudioCMSPluginOptions, 'integration'>[];
-export type { StudioCMSPluginOptions };
+export type { StudioCMSPluginOptions, SafePluginListType };

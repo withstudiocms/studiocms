@@ -110,7 +110,7 @@ export default defineIntegration({
 						},
 					]);
 
-					pluginsResolver(params, name, resolvedOptions);
+					pluginsResolver(params, name, version, resolvedOptions);
 
 					// Setup Integrations (External / Optional)
 					addIntegrationArrayWithCheck(params, [
