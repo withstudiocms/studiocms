@@ -8,7 +8,7 @@ import type { StudioCMSOptions } from '../schemas';
  * to the Astro project's `astro.config.mjs` file.
  *
  * StudioCMS will attempt to import this file and use the default
- * export as the StudioCMS config object authomatically if it exists.
+ * export as the StudioCMS config object automatically if it exists.
  *
  * Using this function is optional, but it can be useful for IDEs
  * to provide better intellisense and type checking.

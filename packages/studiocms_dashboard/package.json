@@ -40,7 +40,6 @@
     "@studiocms/assets": "workspace:*",
     "@studiocms/betaresources": "workspace:*",
     "@studiocms/core": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
@@ -53,7 +52,6 @@
     "@astrojs/web-vitals": "catalog:"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

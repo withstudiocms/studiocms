@@ -57,34 +57,10 @@
     "package-json": "catalog:studiocms",
     "semver": "catalog:studiocms",
 
-    "mrmime": "catalog:studiocms-core",
-    "remark-rehype": "catalog:studiocms-core",
-    "mdast-util-to-hast": "catalog:studiocms-core",
-
-    "@oslojs/crypto": "catalog:studiocms-auth",
-    "@oslojs/encoding": "catalog:studiocms-auth",
-    "@oslojs/binary": "catalog:studiocms-auth",
-    "@types/three": "catalog:studiocms-auth",
-    "arctic": "catalog:studiocms-auth",
-    "three": "catalog:studiocms-auth",
-
-    "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "rollup-plugin-copy": "catalog:studiocms-shared",
-
-    "marked": "catalog:studiocms-renderer",
-    "marked-alert": "catalog:studiocms-renderer",
-    "marked-emoji": "catalog:studiocms-renderer",
-    "marked-footnote": "catalog:studiocms-renderer",
-    "marked-shiki": "catalog:studiocms-renderer",
-    "marked-smartypants": "catalog:studiocms-renderer",
-    "@markdoc/markdoc": "catalog:studiocms-renderer",
-    "shiki": "catalog:studiocms-renderer",
-    "@shikijs/transformers": "catalog:studiocms-renderer",
-
-    "@cloudinary/url-gen": "catalog:studiocms-imagehandler"
+    "rollup-plugin-copy": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",

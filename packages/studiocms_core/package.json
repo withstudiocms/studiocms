@@ -50,8 +50,6 @@
     "@studiocms/robotstxt": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@markdoc/markdoc": "catalog:studiocms-renderer",
-    "marked": "catalog:studiocms-renderer",
-    "shiki": "catalog:studiocms-renderer",
     "mrmime": "catalog:studiocms-core",
     "unified": "catalog:studiocms-core",
     "remark-rehype": "catalog:studiocms-core",
@@ -61,11 +59,9 @@
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
-    "astro": "catalog:min",
-    "drizzle-orm": "^0.31.2"
+    "astro": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

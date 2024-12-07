@@ -39,21 +39,16 @@
   "type": "module",
   "dependencies": {
     "@studiocms/core": "workspace:*",
+
     "astro-integration-kit": "catalog:",
     "@astrojs/markdown-remark": "catalog:",
+    
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
+    
     "@markdoc/markdoc": "catalog:studiocms-renderer",
     "@mdx-js/mdx": "catalog:studiocms-renderer",
-    "@shikijs/transformers": "catalog:studiocms-renderer",
-    "marked": "catalog:studiocms-renderer",
-    "marked-alert": "catalog:studiocms-renderer",
-    "marked-emoji": "catalog:studiocms-renderer",
-    "marked-footnote": "catalog:studiocms-renderer",
-    "marked-shiki": "catalog:studiocms-renderer",
-    "marked-smartypants": "catalog:studiocms-renderer",
-    "shiki": "catalog:studiocms-renderer",
     "react-dom": "catalog:studiocms-renderer",
     "react": "catalog:studiocms-renderer",
     "remark-gfm": "catalog:studiocms-renderer",
@@ -72,7 +67,6 @@
   "devDependencies": {
     "@types/react-dom": "catalog:studiocms-renderer",
     "@types/react": "catalog:studiocms-renderer",
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

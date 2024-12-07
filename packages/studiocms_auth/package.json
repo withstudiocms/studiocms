@@ -51,10 +51,10 @@
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

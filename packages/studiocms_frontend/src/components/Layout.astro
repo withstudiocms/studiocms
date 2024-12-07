@@ -7,9 +7,20 @@ import Footer from './Footer.astro';
 
 const { title: SiteTitle, description: SiteDescription } = await getSiteConfig();
 
-const {
-	defaultFrontEndConfig: { htmlDefaultLanguage },
-} = Config;
+// const {
+// 	defaultFrontEndConfig: { htmlDefaultLanguage },
+// } = Config;
+
+let htmlDefaultLanguage = 'en';
+
+if (Config?.defaultFrontEndConfig) {
+	if (
+		typeof Config.defaultFrontEndConfig === 'object' &&
+		Config.defaultFrontEndConfig.htmlDefaultLanguage
+	) {
+		htmlDefaultLanguage = Config.defaultFrontEndConfig.htmlDefaultLanguage;
+	}
+}
 
 type Props = {
 	title: string;

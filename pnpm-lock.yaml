@@ -134,6 +134,13 @@ catalogs:
     astro:
       specifier: '>=4.16'
       version: 4.16.14
+    vite:
+      specifier: ^4 || ^5
+      version: 5.4.11
+  peer-robots:
+    astro:
+      specifier: ^4.16 || ^5
+      version: 4.16.14
   studiocms:
     '@types/semver':
       specifier: ^7.5.8
@@ -206,33 +213,12 @@ catalogs:
     '@mdx-js/mdx':
       specifier: ^3.0.1
       version: 3.0.1
-    '@shikijs/transformers':
-      specifier: ^1.14.1
-      version: 1.22.0
     '@types/react':
       specifier: ^18.3.5
       version: 18.3.5
     '@types/react-dom':
       specifier: ^18.3.0
       version: 18.3.0
-    marked:
-      specifier: ^13.0.2
-      version: 13.0.3
-    marked-alert:
-      specifier: ^2.0.1
-      version: 2.0.1
-    marked-emoji:
-      specifier: ^1.4.1
-      version: 1.4.1
-    marked-footnote:
-      specifier: ^1.2.2
-      version: 1.2.2
-    marked-shiki:
-      specifier: ^1.1.0
-      version: 1.1.0
-    marked-smartypants:
-      specifier: ^1.1.7
-      version: 1.1.7
     react:
       specifier: ^18.3.1
       version: 18.3.1
@@ -245,9 +231,6 @@ catalogs:
     remark-gfm:
       specifier: ^4.0.0
       version: 4.0.0
-    shiki:
-      specifier: ^1.14.1
-      version: 1.23.1
   studiocms-shared:
     '@fontsource-variable/onest':
       specifier: 5.1.0
@@ -308,36 +291,15 @@ importers:
       '@astrojs/db':
         specifier: catalog:min
         version: 0.14.3(@cloudflare/workers-types@4.20240725.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.5)(react@18.3.1)
-      '@cloudinary/url-gen':
-        specifier: catalog:studiocms-imagehandler
-        version: 1.21.0
-      '@fontsource-variable/onest':
-        specifier: catalog:studiocms-shared
-        version: 5.1.0
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.3.4(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      '@markdoc/markdoc':
-        specifier: catalog:studiocms-renderer
-        version: 0.4.0(@types/react@18.3.5)(react@18.3.1)
       '@matthiesenxyz/astrodtsbuilder':
         specifier: catalog:studiocms-shared
         version: 0.1.2(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       '@matthiesenxyz/integration-utils':
         specifier: catalog:studiocms-shared
         version: 0.2.0(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      '@oslojs/binary':
-        specifier: catalog:studiocms-auth
-        version: 1.0.0
-      '@oslojs/crypto':
-        specifier: catalog:studiocms-auth
-        version: 1.0.1
-      '@oslojs/encoding':
-        specifier: catalog:studiocms-auth
-        version: 1.1.0
-      '@shikijs/transformers':
-        specifier: catalog:studiocms-renderer
-        version: 1.22.0
       '@studiocms/assets':
         specifier: workspace:*
         version: link:../studiocms_assets
@@ -365,60 +327,21 @@ importers:
       '@studiocms/robotstxt':
         specifier: workspace:*
         version: link:../studiocms_robotstxt
-      '@types/three':
-        specifier: catalog:studiocms-auth
-        version: 0.169.0
-      arctic:
-        specifier: catalog:studiocms-auth
-        version: 2.0.1
       astro:
         specifier: catalog:min
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      marked:
-        specifier: catalog:studiocms-renderer
-        version: 13.0.3
-      marked-alert:
-        specifier: catalog:studiocms-renderer
-        version: 2.0.1(marked@13.0.3)
-      marked-emoji:
-        specifier: catalog:studiocms-renderer
-        version: 1.4.1(marked@13.0.3)
-      marked-footnote:
-        specifier: catalog:studiocms-renderer
-        version: 1.2.2(marked@13.0.3)
-      marked-shiki:
-        specifier: catalog:studiocms-renderer
-        version: 1.1.0(marked@13.0.3)(shiki@1.23.1)
-      marked-smartypants:
-        specifier: catalog:studiocms-renderer
-        version: 1.1.7(marked@13.0.3)
-      mdast-util-to-hast:
-        specifier: catalog:studiocms-core
-        version: 13.2.0
-      mrmime:
-        specifier: catalog:studiocms-core
-        version: 2.0.0
       package-json:
         specifier: catalog:studiocms
         version: 10.0.1
-      remark-rehype:
-        specifier: catalog:studiocms-core
-        version: 11.1.1
       rollup-plugin-copy:
         specifier: catalog:studiocms-shared
         version: 3.5.0
       semver:
         specifier: catalog:studiocms
         version: 7.6.3
-      shiki:
-        specifier: catalog:studiocms-renderer
-        version: 1.23.1
-      three:
-        specifier: catalog:studiocms-auth
-        version: 0.170.0
     devDependencies:
       '@types/semver':
         specifier: catalog:studiocms
@@ -439,9 +362,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_auth:
     dependencies:
@@ -493,13 +413,13 @@ importers:
       three:
         specifier: catalog:studiocms-auth
         version: 0.170.0
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_betaresources:
     dependencies:
@@ -565,12 +485,6 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      drizzle-orm:
-        specifier: ^0.31.2
-        version: 0.31.4(@cloudflare/workers-types@4.20240725.0)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.5)(react@18.3.1)
-      marked:
-        specifier: catalog:studiocms-renderer
-        version: 13.0.3
       mdast-util-to-hast:
         specifier: catalog:studiocms-core
         version: 13.2.0
@@ -580,9 +494,6 @@ importers:
       remark-rehype:
         specifier: catalog:studiocms-core
         version: 11.1.1
-      shiki:
-        specifier: catalog:studiocms-renderer
-        version: 1.23.1
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5
@@ -590,9 +501,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_dashboard:
     dependencies:
@@ -623,9 +531,6 @@ importers:
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
-      '@studiocms/renderers':
-        specifier: workspace:*
-        version: link:../studiocms_renderers
       '@studiocms/ui':
         specifier: workspace:*
         version: link:../studiocms_ui
@@ -639,9 +544,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_devapps:
     dependencies:
@@ -679,9 +581,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_frontend:
     dependencies:
@@ -691,9 +590,6 @@ importers:
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
-      '@studiocms/renderers':
-        specifier: workspace:*
-        version: link:../studiocms_renderers
       astro:
         specifier: catalog:min
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
@@ -704,9 +600,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_imagehandler:
     dependencies:
@@ -728,13 +621,13 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_renderers:
     dependencies:
@@ -759,9 +652,6 @@ importers:
       '@mdx-js/mdx':
         specifier: catalog:studiocms-renderer
         version: 3.0.1
-      '@shikijs/transformers':
-        specifier: catalog:studiocms-renderer
-        version: 1.22.0
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
@@ -771,24 +661,6 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
-      marked:
-        specifier: catalog:studiocms-renderer
-        version: 13.0.3
-      marked-alert:
-        specifier: catalog:studiocms-renderer
-        version: 2.0.1(marked@13.0.3)
-      marked-emoji:
-        specifier: catalog:studiocms-renderer
-        version: 1.4.1(marked@13.0.3)
-      marked-footnote:
-        specifier: catalog:studiocms-renderer
-        version: 1.2.2(marked@13.0.3)
-      marked-shiki:
-        specifier: catalog:studiocms-renderer
-        version: 1.1.0(marked@13.0.3)(shiki@1.23.1)
-      marked-smartypants:
-        specifier: catalog:studiocms-renderer
-        version: 1.1.7(marked@13.0.3)
       react:
         specifier: catalog:studiocms-renderer
         version: 18.3.1
@@ -801,9 +673,6 @@ importers:
       remark-gfm:
         specifier: catalog:studiocms-renderer
         version: 4.0.0
-      shiki:
-        specifier: catalog:studiocms-renderer
-        version: 1.23.1
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5
@@ -817,14 +686,11 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_robotstxt:
     dependencies:
       astro:
-        specifier: catalog:min
+        specifier: catalog:peer-robots
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
 
   packages/studiocms_ui:
@@ -845,9 +711,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   playgrounds/node:
     dependencies:
@@ -2499,29 +2362,14 @@ packages:
   '@shikijs/colorized-brackets@1.23.1':
     resolution: {integrity: sha512-f9aa1fB1NkqnL4Xu8CmklE7amPanX1BU6L+YKWralZxMI8pZsdF8MzA59GbinQBfrZCRP0R4WD/WleFCv3AaXQ==}
 
-  '@shikijs/core@1.22.0':
-    resolution: {integrity: sha512-S8sMe4q71TJAW+qG93s5VaiihujRK6rqDFqBnxqvga/3LvqHEnxqBIOPkt//IdXVtHkQWKu4nOQNk0uBGicU7Q==}
-
   '@shikijs/core@1.23.1':
     resolution: {integrity: sha512-NuOVgwcHgVC6jBVH5V7iblziw6iQbWWHrj5IlZI3Fqu2yx9awH7OIQkXIcsHsUmY19ckwSgUMgrqExEyP5A0TA==}
-
-  '@shikijs/engine-javascript@1.22.0':
-    resolution: {integrity: sha512-AeEtF4Gcck2dwBqCFUKYfsCq0s+eEbCEbkUuFou53NZ0sTGnJnJ/05KHQFZxpii5HMXbocV9URYVowOP2wH5kw==}
 
   '@shikijs/engine-javascript@1.23.1':
     resolution: {integrity: sha512-i/LdEwT5k3FVu07SiApRFwRcSJs5QM9+tod5vYCPig1Ywi8GR30zcujbxGQFJHwYD7A5BUqagi8o5KS+LEVgBg==}
 
-  '@shikijs/engine-oniguruma@1.22.0':
-    resolution: {integrity: sha512-5iBVjhu/DYs1HB0BKsRRFipRrD7rqjxlWTj4F2Pf+nQSPqc3kcyqFFeZXnBMzDf0HdqaFVvhDRAGiYNvyLP+Mw==}
-
   '@shikijs/engine-oniguruma@1.23.1':
     resolution: {integrity: sha512-KQ+lgeJJ5m2ISbUZudLR1qHeH3MnSs2mjFg7bnencgs5jDVPeJ2NVDJ3N5ZHbcTsOIh0qIueyAJnwg7lg7kwXQ==}
-
-  '@shikijs/transformers@1.22.0':
-    resolution: {integrity: sha512-k7iMOYuGQA62KwAuJOQBgH2IQb5vP8uiB3lMvAMGUgAMMurePOx3Z7oNqJdcpxqZP6I9cc7nc4DNqSKduCxmdg==}
-
-  '@shikijs/types@1.22.0':
-    resolution: {integrity: sha512-Fw/Nr7FGFhlQqHfxzZY8Cwtwk5E9nKDUgeLjZgt3UuhcM3yJR9xj3ZGNravZZok8XmEZMiYkSMTPlPkULB8nww==}
 
   '@shikijs/types@1.23.1':
     resolution: {integrity: sha512-98A5hGyEhzzAgQh2dAeHKrWW4HfCMeoFER2z16p5eJ+vmPeF6lZ/elEne6/UCU551F/WqkopqRsr1l2Yu6+A0g==}
@@ -4106,37 +3954,6 @@ packages:
   markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
 
-  marked-alert@2.0.1:
-    resolution: {integrity: sha512-dREhBjpPEN87b5AdlpETVoEpYiROQJ2M01sqjvQetKqpfi92BQRfSFKPIEkm90RnMpv5CFLNpWfGO6bx+tnayQ==}
-    peerDependencies:
-      marked: '>=7.0.0'
-
-  marked-emoji@1.4.1:
-    resolution: {integrity: sha512-3xHWQn8XD1LyhMpHxWpHTDWBZ9bpXLlW8JIqvyXTO6he7okKIB/W9fD/3fTg0DQuZlSQvPZ6Ub5hN6Rnmn7j9g==}
-    peerDependencies:
-      marked: '>=4 <14'
-
-  marked-footnote@1.2.2:
-    resolution: {integrity: sha512-TFBEHwHLSSedub7P6XHHs+dMMOnDeNV5+kFDo4trU//gDd8iM57lg9jr9NGwDifPwLllHwKmFcRNp5uYvO2Fnw==}
-    peerDependencies:
-      marked: '>=7.0.0'
-
-  marked-shiki@1.1.0:
-    resolution: {integrity: sha512-PNiC0X4rYnzF63T6CDscwTxQB8l5Aur9XR7MRNBi/Y9nSxmPxasWT+V5OVam8Pj+NycWjzG6idO7fbc2bDD16w==}
-    peerDependencies:
-      marked: '>=7.0.0'
-      shiki: '>=1.0.0'
-
-  marked-smartypants@1.1.7:
-    resolution: {integrity: sha512-GXtR6UfyZ3NXkmdwUWnM+MFrmxvF1HA2KzTGB+vGoWc7K829CgSs/wlDOz2MK/peujK866X2650HJhrnXQBpiA==}
-    peerDependencies:
-      marked: '>=4 <14'
-
-  marked@13.0.3:
-    resolution: {integrity: sha512-rqRix3/TWzE9rIoFGIn8JmsVfhiuC8VIQ8IdX5TfzmeBucdY05/0UlzKaw0eVtpcN/OdVFpBk7CjKGo9iHJ/zA==}
-    engines: {node: '>= 18'}
-    hasBin: true
-
   mdast-util-definitions@6.0.0:
     resolution: {integrity: sha512-scTllyX6pnYNZH/AIp/0ePz6s4cZtARxImwoPJ7kS42n+MnVsI4XbnG6d4ibehRIldYMWM2LD7ImQblVhUejVQ==}
 
@@ -4431,9 +4248,6 @@ packages:
 
   oniguruma-to-es@0.4.1:
     resolution: {integrity: sha512-rNcEohFz095QKGRovP/yqPIKc+nP+Sjs4YTHMv33nMePGKrq/r2eu9Yh4646M5XluGJsUnmwoXuiXE69KDs+fQ==}
-
-  oniguruma-to-js@0.4.3:
-    resolution: {integrity: sha512-X0jWUcAlxORhOqqBREgPMgnshB7ZGYszBNspP+tS9hPD3l13CdaXcHbgImoHUHlrvGx/7AvFEkTRhAGYh+jzjQ==}
 
   open@10.1.0:
     resolution: {integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==}
@@ -4755,9 +4569,6 @@ packages:
   regex-utilities@2.3.0:
     resolution: {integrity: sha512-8VhliFJAWRaUiVvREIiW2NXXTmHs4vMNnSzuJVhscgmGav3g9VDxLrQndI3dZZVVdp0ZO/5v0xmX516/7M9cng==}
 
-  regex@4.4.0:
-    resolution: {integrity: sha512-uCUSuobNVeqUupowbdZub6ggI5/JZkYyJdDogddJr60L764oxC2pMZov1fQ3wM9bdyzUILDG+Sqx6NAKAz9rKQ==}
-
   regex@5.0.2:
     resolution: {integrity: sha512-/pczGbKIQgfTMRV0XjABvc5RzLqQmwqxLHdQao2RTXPk+pmTXB2P0IaUHYdYyk412YLwUIkaeMd5T+RzVgTqnQ==}
 
@@ -4947,9 +4758,6 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shiki@1.22.0:
-    resolution: {integrity: sha512-/t5LlhNs+UOKQCYBtl5ZsH/Vclz73GIqT2yQsCBygr8L/ppTdmpL4w3kPLoZJbMKVWtoG77Ue1feOjZfDxvMkw==}
-
   shiki@1.23.1:
     resolution: {integrity: sha512-8kxV9TH4pXgdKGxNOkrSMydn1Xf6It8lsle0fiqxf7a1149K1WGtdOu3Zb91T5r1JpvRPxqxU3C2XdZZXQnrig==}
 
@@ -4980,10 +4788,6 @@ packages:
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
-
-  smartypants@0.2.2:
-    resolution: {integrity: sha512-TzobUYoEft/xBtb2voRPryAUIvYguG0V7Tt3de79I1WfXgCwelqVsGuZSnu3GFGRZhXR90AeEYIM+icuB/S06Q==}
-    hasBin: true
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -7491,15 +7295,6 @@ snapshots:
     dependencies:
       shiki: 1.23.1
 
-  '@shikijs/core@1.22.0':
-    dependencies:
-      '@shikijs/engine-javascript': 1.22.0
-      '@shikijs/engine-oniguruma': 1.22.0
-      '@shikijs/types': 1.22.0
-      '@shikijs/vscode-textmate': 9.3.0
-      '@types/hast': 3.0.4
-      hast-util-to-html: 9.0.3
-
   '@shikijs/core@1.23.1':
     dependencies:
       '@shikijs/engine-javascript': 1.23.1
@@ -7509,36 +7304,16 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.3
 
-  '@shikijs/engine-javascript@1.22.0':
-    dependencies:
-      '@shikijs/types': 1.22.0
-      '@shikijs/vscode-textmate': 9.3.0
-      oniguruma-to-js: 0.4.3
-
   '@shikijs/engine-javascript@1.23.1':
     dependencies:
       '@shikijs/types': 1.23.1
       '@shikijs/vscode-textmate': 9.3.0
       oniguruma-to-es: 0.4.1
 
-  '@shikijs/engine-oniguruma@1.22.0':
-    dependencies:
-      '@shikijs/types': 1.22.0
-      '@shikijs/vscode-textmate': 9.3.0
-
   '@shikijs/engine-oniguruma@1.23.1':
     dependencies:
       '@shikijs/types': 1.23.1
       '@shikijs/vscode-textmate': 9.3.0
-
-  '@shikijs/transformers@1.22.0':
-    dependencies:
-      shiki: 1.22.0
-
-  '@shikijs/types@1.22.0':
-    dependencies:
-      '@shikijs/vscode-textmate': 9.3.0
-      '@types/hast': 3.0.4
 
   '@shikijs/types@1.23.1':
     dependencies:
@@ -9293,30 +9068,6 @@ snapshots:
 
   markdown-table@3.0.3: {}
 
-  marked-alert@2.0.1(marked@13.0.3):
-    dependencies:
-      marked: 13.0.3
-
-  marked-emoji@1.4.1(marked@13.0.3):
-    dependencies:
-      marked: 13.0.3
-
-  marked-footnote@1.2.2(marked@13.0.3):
-    dependencies:
-      marked: 13.0.3
-
-  marked-shiki@1.1.0(marked@13.0.3)(shiki@1.23.1):
-    dependencies:
-      marked: 13.0.3
-      shiki: 1.23.1
-
-  marked-smartypants@1.1.7(marked@13.0.3):
-    dependencies:
-      marked: 13.0.3
-      smartypants: 0.2.2
-
-  marked@13.0.3: {}
-
   mdast-util-definitions@6.0.0:
     dependencies:
       '@types/mdast': 4.0.4
@@ -9885,10 +9636,6 @@ snapshots:
       regex: 5.0.2
       regex-recursion: 4.2.1
 
-  oniguruma-to-js@0.4.3:
-    dependencies:
-      regex: 4.4.0
-
   open@10.1.0:
     dependencies:
       default-browser: 5.2.1
@@ -10222,8 +9969,6 @@ snapshots:
 
   regex-utilities@2.3.0: {}
 
-  regex@4.4.0: {}
-
   regex@5.0.2:
     dependencies:
       regex-utilities: 2.3.0
@@ -10550,15 +10295,6 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shiki@1.22.0:
-    dependencies:
-      '@shikijs/core': 1.22.0
-      '@shikijs/engine-javascript': 1.22.0
-      '@shikijs/engine-oniguruma': 1.22.0
-      '@shikijs/types': 1.22.0
-      '@shikijs/vscode-textmate': 9.3.0
-      '@types/hast': 3.0.4
-
   shiki@1.23.1:
     dependencies:
       '@shikijs/core': 1.23.1
@@ -10596,8 +10332,6 @@ snapshots:
       sax: 1.4.1
 
   slash@3.0.0: {}
-
-  smartypants@0.2.2: {}
 
   source-map-js@1.2.1: {}
 

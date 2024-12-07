@@ -2,16 +2,33 @@
 import { fileWithBase } from 'studiocms:helpers';
 import { headDefaults } from 'studiocms:helpers/headDefaults';
 import Config from 'virtual:studiocms/config';
-import { type HeadConfigSchema, createHead } from '@studiocms/core/lib';
+import {
+	type HeadConfig,
+	type HeadConfigSchema,
+	type HeadUserConfig,
+	createHead,
+} from '@studiocms/core/lib';
 import type { z } from 'astro/zod';
 
 // // Import the global.css file here so that it is included on
 // // all pages through the use of the <BaseHead /> component.
 import './global.css';
 
-const {
-	defaultFrontEndConfig: { htmlDefaultHead, favicon },
-} = Config;
+let htmlDefaultHead: HeadUserConfig = [];
+let favicon = '';
+
+if (Config?.defaultFrontEndConfig) {
+	if (
+		typeof Config.defaultFrontEndConfig === 'object' &&
+		Config.defaultFrontEndConfig.htmlDefaultHead
+	) {
+		htmlDefaultHead.push(...Config.defaultFrontEndConfig.htmlDefaultHead);
+	}
+
+	if (typeof Config.defaultFrontEndConfig === 'object' && Config.defaultFrontEndConfig.favicon) {
+		favicon = Config.defaultFrontEndConfig.favicon;
+	}
+}
 
 interface Props {
 	title: string;
@@ -57,7 +74,7 @@ if (Astro.site) {
 	});
 }
 
-const head = createHead(makeHeader, htmlDefaultHead);
+const head = createHead(makeHeader, htmlDefaultHead as HeadConfig);
 ---
 
 {head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}

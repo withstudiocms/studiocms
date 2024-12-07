@@ -17,6 +17,9 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   vite: ^5.4.8
 
 catalogs:
+  peer-robots: # Peer Dependencies for @studiocms/robotstxt
+    astro: ^4.16 || ^5
+
   min: # Confirmed Current Min Deps - 11.01.2024
     astro: ">=4.16"
     '@astrojs/db': ">=0.14.2"

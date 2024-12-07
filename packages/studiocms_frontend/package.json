@@ -37,14 +37,12 @@
   "dependencies": {
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/core": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
     "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

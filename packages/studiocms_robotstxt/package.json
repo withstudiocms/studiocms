@@ -35,7 +35,7 @@
   "type": "module",
   "dependencies": {},
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:peer-robots"
   },
   "devDependencies": {}
 }
