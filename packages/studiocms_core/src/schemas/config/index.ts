@@ -46,12 +46,14 @@ export const StudioCMSOptionsSchema = z
 		imageService: imageServiceSchema,
 		/**
 		 * Default Frontend Configuration
+		 *
+		 * Allows customization of the default frontend configuration
+		 *
+		 * @default true
 		 */
 		defaultFrontEndConfig: DefaultFrontEndConfigSchema,
 		/**
 		 * Allows customization of the Dashboard Configuration
-		 *
-		 * Coming soon....
 		 */
 		dashboardConfig: dashboardConfigSchema,
 		/**

@@ -1,6 +1,6 @@
 import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
-import Markdoc from '@markdoc/markdoc';
+import Markdoc, { type ConfigType, type ParserArgs } from '@markdoc/markdoc';
 import type { markdocRenderer } from '@studiocms/core/schemas/renderer';
 import renderHTML from './markdocHTML';
 import renderReactStatic from './markdocReactStatic';
@@ -23,14 +23,14 @@ const renderers: markdocRenderer[] = [renderHTML(), renderReactStatic()];
  */
 export async function renderMarkDoc(input: string): Promise<string> {
 	// Parse the input string into an AST
-	const ast = Markdoc.parse(input, argParse);
+	const ast = Markdoc.parse(input, argParse as ParserArgs);
 
 	// Transform the AST into content
-	const content = Markdoc.transform(ast, transformConfig);
+	const content = Markdoc.transform(ast, transformConfig as ConfigType);
 	const renderer = renderers.find((r) => r.name === renderType);
 	if (renderer) {
 		logger.debug(`Rendering content with built-in renderer: ${renderer.name}`);
-		return renderer.renderer(content);
+		return renderer.renderer(content as string);
 	}
 	if (
 		renderType !== 'html' &&
@@ -39,7 +39,7 @@ export async function renderMarkDoc(input: string): Promise<string> {
 		renderType.renderer
 	) {
 		logger.debug(`Rendering content with custom renderer: ${renderType.name}`);
-		return renderType.renderer(content).catch((e) => {
+		return renderType.renderer(content as string).catch((e) => {
 			throw new Error(`Failed to render content with custom renderer: [${renderType.name}]: ${e}`);
 		});
 	}

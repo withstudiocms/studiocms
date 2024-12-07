@@ -1,13 +1,13 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { MakeFrontendStrings } from '@studiocms/core/strings';
 import { defineUtility } from 'astro-integration-kit';
-import type { StudioCMSDashboardOptions } from '../integration';
+import type { StudioCMSFrontEndOptions } from '../schema';
 
 export const makeFrontend = defineUtility('astro:config:setup')(
 	(
 		params,
 		options: {
-			options: StudioCMSDashboardOptions;
+			options: StudioCMSFrontEndOptions;
 			routes: {
 				pattern: string;
 				entrypoint: string;
@@ -22,12 +22,28 @@ export const makeFrontend = defineUtility('astro:config:setup')(
 		const {
 			routes,
 			default404Route,
-			options: {
-				dbStartPage,
-				verbose,
-				defaultFrontEndConfig: { injectDefaultFrontEndRoutes, inject404Route },
-			},
+			options: { dbStartPage, verbose, defaultFrontEndConfig: config },
 		} = options;
+
+		let injectDefaultFrontEndRoutes = false;
+		let inject404Route = false;
+
+		switch (typeof config) {
+			case 'boolean':
+				if (config === false) {
+					return;
+				}
+
+				if (config === true) {
+					injectDefaultFrontEndRoutes = true;
+					inject404Route = true;
+				}
+				break;
+			case 'object':
+				injectDefaultFrontEndRoutes = config.injectDefaultFrontEndRoutes;
+				inject404Route = config.inject404Route;
+				break;
+		}
 
 		// Check if DB Start Page is enabled
 		if (dbStartPage) {

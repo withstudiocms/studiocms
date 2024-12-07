@@ -5,7 +5,6 @@ import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
 import renderAstroMD from '../lib/astro-remark';
 import builtInContentRenderer from '../lib/contentRenderer';
 import renderMarkDoc from '../lib/markdoc';
-// import renderMarked from '../lib/marked';
 import renderAstroMDX from '../lib/mdx';
 
 type Props = {
@@ -39,7 +38,10 @@ function rendererSelect(renderer: StudioCMSRendererConfig['renderer']) {
 	return renderAstroMD;
 }
 
-const renderedContent = builtInContentRenderer({ content, renderer: rendererSelect(renderer) });
+const renderedContent = await builtInContentRenderer({
+	content,
+	renderer: rendererSelect(renderer),
+});
 ---
 
 <Fragment set:html={renderedContent} />
