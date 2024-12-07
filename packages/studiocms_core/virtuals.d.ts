@@ -121,3 +121,13 @@ declare module 'studiocms:helpers/routemap' {
 	export const StudioCMSRoutes: typeof import('./src/helpers').StudioCMSRoutes;
 	export const sideBarLinkMap: typeof import('./src/helpers').sideBarLinkMap;
 }
+
+declare module 'studiocms:i18n' {
+	export const staticPaths: typeof import('./src/i18n').staticPaths;
+	export const getLangFromUrl: typeof import('./src/i18n').getLangFromUrl;
+	export const useTranslations: typeof import('./src/i18n').useTranslations;
+	export const useTranslatedPath: typeof import('./src/i18n').useTranslatedPath;
+	export const languageSelectorOptions: typeof import('./src/i18n').languageSelectorOptions;
+	export const getCurrentURLPath: typeof import('./src/i18n').getCurrentURLPath;
+	export const switchLanguage: typeof import('./src/i18n').switchLanguage;
+}

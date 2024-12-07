@@ -14,8 +14,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "jsx": "preserve",
-    "strict": true,
-    "outDir": "../../.moon/cache/types/playgrounds/node"
+    "strict": true
   },
   "exclude": ["dist"],
   "include": ["src/**/*", ".astro/**/*"]

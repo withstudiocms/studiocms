@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/install
 
       - name: Build Lunaria Overview
-        run: pnpm lunaria:build
+        run: pnpm ci:lunaria:build
 
       - name: Upload Overview
         uses: actions/upload-pages-artifact@v3

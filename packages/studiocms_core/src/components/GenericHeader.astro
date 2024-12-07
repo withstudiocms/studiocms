@@ -1,11 +1,23 @@
 ---
 import Config from 'virtual:studiocms/config';
 import { headDefaults } from '../helpers/headDefaults';
-import { createHead } from '../lib';
+import { type HeadConfig, type HeadUserConfig, createHead } from '../lib';
 
-const {
-	defaultFrontEndConfig: { htmlDefaultHead, favicon: configFav },
-} = Config;
+let htmlDefaultHead: HeadUserConfig = [];
+let configFav = '';
+
+if (Config?.defaultFrontEndConfig) {
+	if (
+		typeof Config.defaultFrontEndConfig === 'object' &&
+		Config.defaultFrontEndConfig.htmlDefaultHead
+	) {
+		htmlDefaultHead.push(...Config.defaultFrontEndConfig.htmlDefaultHead);
+	}
+
+	if (typeof Config.defaultFrontEndConfig === 'object' && Config.defaultFrontEndConfig.favicon) {
+		configFav = Config.defaultFrontEndConfig.favicon;
+	}
+}
 
 interface Props {
 	title: string;
@@ -29,7 +41,7 @@ const {
 
 const genericHead = headDefaults(title, description, lang, Astro, favicon, ogImage, canonicalURL);
 
-const head = createHead(genericHead, htmlDefaultHead);
+const head = createHead(genericHead, htmlDefaultHead as HeadConfig);
 ---
 
 {head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}

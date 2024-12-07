@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/install
 
       - name: Create Translation Changesets
-        run: pnpm translations:changeset
+        run: pnpm ci:translations:changeset
         env:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     

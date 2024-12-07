@@ -72,12 +72,12 @@ function throwMsg(
 ) {
 	const sentenceHead = '\x1b[1mRefer:\x1b[22m';
 
-	const failured = (message: string) => {
-		logger.info(`\x1b[31mFailured! [${message}]\x1b[39m`);
+	const failure = (message: string) => {
+		logger.info(`\x1b[31mFailure! [${message}]\x1b[39m`);
 	};
 
 	const warn = (message: string) => {
-		logger.warn(`Skiped! [${message}].`);
+		logger.warn(`Skipped! [${message}].`);
 	};
 
 	switch (type) {
@@ -85,15 +85,15 @@ function throwMsg(
 			warn(msg);
 			break;
 		case 'error':
-			failured(msg);
+			failure(msg);
 			throw new Error(`${msg}`);
 		case true:
-			failured(msg);
+			failure(msg);
 			throw new Error(
 				`${msg}\n${sentenceHead}\n  Visit \x1b[4m${'https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt#useful-robots.txt-rules'}\x1b[24m for instructions.`
 			);
 		default:
-			failured(msg);
+			failure(msg);
 			throw new Error(
 				`${msg}\n${sentenceHead}\n  Visit \x1b[4m${'https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend'}\x1b[24m for instructions.`
 			);

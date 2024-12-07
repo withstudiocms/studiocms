@@ -7,7 +7,6 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]
-    },
-    "outDir": "../../.moon/cache/types/www/docs"
+    }
   }
 }

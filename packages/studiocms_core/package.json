@@ -46,7 +46,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/ui": "workspace:*",
+    "@studiocms/ui": "https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1",
     "@studiocms/robotstxt": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@markdoc/markdoc": "catalog:studiocms-renderer",

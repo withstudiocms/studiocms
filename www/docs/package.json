@@ -16,7 +16,7 @@
     "@studiocms/renderers": "workspace:*",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
-    "@studiocms/ui": "workspace:*",
+    "@studiocms/ui": "https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1",
 
     "astro": "catalog:",
     "@astrojs/check": "catalog:",

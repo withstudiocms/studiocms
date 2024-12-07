@@ -35,7 +35,7 @@
   "type": "module",
   "dependencies": {
     "@studiocms/core": "workspace:*",
-    "@studiocms/ui": "workspace:*",
+    "@studiocms/ui": "https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1",
     "astro-integration-kit": "catalog:",
     "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",

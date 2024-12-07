@@ -270,9 +270,6 @@ importers:
       '@changesets/write':
         specifier: 0.3.2
         version: 0.3.2
-      '@moonrepo/cli':
-        specifier: 1.28.3
-        version: 1.28.3
       execa:
         specifier: 9.5.1
         version: 9.5.1
@@ -393,8 +390,8 @@ importers:
         specifier: workspace:*
         version: link:../studiocms_core
       '@studiocms/ui':
-        specifier: workspace:*
-        version: link:../studiocms_ui
+        specifier: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1
+        version: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       '@types/three':
         specifier: catalog:studiocms-auth
         version: 0.169.0
@@ -474,8 +471,8 @@ importers:
         specifier: workspace:*
         version: link:../studiocms_robotstxt
       '@studiocms/ui':
-        specifier: workspace:*
-        version: link:../studiocms_ui
+        specifier: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1
+        version: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       astro:
         specifier: catalog:min
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
@@ -529,8 +526,8 @@ importers:
         specifier: workspace:*
         version: link:../studiocms_core
       '@studiocms/ui':
-        specifier: workspace:*
-        version: link:../studiocms_ui
+        specifier: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1
+        version: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       astro:
         specifier: catalog:min
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
@@ -690,25 +687,6 @@ importers:
         specifier: catalog:peer-robots
         version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
 
-  packages/studiocms_ui:
-    dependencies:
-      '@fontsource-variable/onest':
-        specifier: catalog:studiocms-shared
-        version: 5.1.0
-      '@iconify-json/heroicons':
-        specifier: ^1.2.1
-        version: 1.2.1
-      '@iconify/utils':
-        specifier: ^2.1.33
-        version: 2.1.33
-      astro:
-        specifier: catalog:min
-        version: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 5.6.3
-
   playgrounds/node:
     dependencies:
       '@astrojs/db':
@@ -738,31 +716,6 @@ importers:
       studiocms:
         specifier: workspace:*
         version: link:../../packages/studiocms
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 20.14.13
-      typescript:
-        specifier: 'catalog:'
-        version: 5.6.3
-
-  playgrounds/ui:
-    dependencies:
-      '@astrojs/node':
-        specifier: 'catalog:'
-        version: 8.3.4(astro@4.16.14(@types/node@20.14.13)(rollup@4.21.0)(typescript@5.6.3))
-      '@fontsource-variable/onest':
-        specifier: catalog:studiocms-shared
-        version: 5.1.0
-      '@sentry/astro':
-        specifier: ^8.38.0
-        version: 8.38.0(astro@4.16.14(@types/node@20.14.13)(rollup@4.21.0)(typescript@5.6.3))
-      '@studiocms/ui':
-        specifier: workspace:*
-        version: link:../../packages/studiocms_ui
-      astro:
-        specifier: 'catalog:'
-        version: 4.16.14(@types/node@20.14.13)(rollup@4.21.0)(typescript@5.6.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -816,8 +769,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/studiocms_renderers
       '@studiocms/ui':
-        specifier: workspace:*
-        version: link:../../packages/studiocms_ui
+        specifier: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1
+        version: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
       '@types/hast':
         specifier: catalog:docs
         version: 3.0.4
@@ -1761,45 +1714,6 @@ packages:
   '@mixmark-io/domino@2.2.0':
     resolution: {integrity: sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw==}
 
-  '@moonrepo/cli@1.28.3':
-    resolution: {integrity: sha512-/zBs8RPOsGddZ5KmzQsoE9DPWN67+nVcF6nPFipNNe7ufC876SoVR7n4kkyMOzcgfoF+c/NEv+5fFPweKsmAsA==}
-    hasBin: true
-
-  '@moonrepo/core-linux-arm64-gnu@1.28.3':
-    resolution: {integrity: sha512-nf+V/0yuMftZHPoQObzpLQJSh4g3tdF3ssgNSxoEBaY0JZaYiEvdGx0M9VYCg9WlJEFquH3NErhapqEi5pV+Sg==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@moonrepo/core-linux-arm64-musl@1.28.3':
-    resolution: {integrity: sha512-mzUfVbjxL+/GESTO/4WwS7zpXwmiOKFmRJjpBjBv2kxplbj46jQUXyvGXm2VjB40+0EYJjq+9g3rhKeE5mmzTQ==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@moonrepo/core-linux-x64-gnu@1.28.3':
-    resolution: {integrity: sha512-UbHtZK+NS9T76uNEvw66RjaCPUwkkekIWBn7ma88W8LXC7onoKfPsQtMHO7XD50XlRuGonzZONY7Wq4wSJprcA==}
-    cpu: [x64]
-    os: [linux]
-
-  '@moonrepo/core-linux-x64-musl@1.28.3':
-    resolution: {integrity: sha512-vbg9Wih32mYShTinPDU7A5Yg/5XWojFjMc8IQ8KPVNdCPGEuk2f6s6yWMc5iOX9s0LCkZ88kZpGMhWi2EaPWaw==}
-    cpu: [x64]
-    os: [linux]
-
-  '@moonrepo/core-macos-arm64@1.28.3':
-    resolution: {integrity: sha512-d8FOQyOW77AolThZqFYFVabWTAr+4GsVY0nybZR3zIKd47++hCPCGnus2XA5uuf08chsYK3wi5w2TkHSKtN7gw==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@moonrepo/core-macos-x64@1.28.3':
-    resolution: {integrity: sha512-0iEfr2JvE4JVEG6CoA9rWD5zUI5xQev9gnOdTmGeXvrrzOASM3bnp8C9jqDu++o4K3jMRWpgNFTIyz5vWIAXKw==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@moonrepo/core-windows-x64-msvc@1.28.3':
-    resolution: {integrity: sha512-ix+82sXXq4dH9CSM2xYLlQ1wqFHX1l+rsw86YjoSy+K48vbpvTvKqkQP7trs0EQMlrW25sNJRiuEebdtm9/CLg==}
-    cpu: [x64]
-    os: [win32]
-
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
 
@@ -2377,6 +2291,12 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@studiocms/ui@https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1':
+    resolution: {tarball: https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1}
+    version: 0.0.1
+    peerDependencies:
+      astro: ^4.5 || ^5.0.0-beta.0
 
   '@tweenjs/tween.js@23.1.3':
     resolution: {integrity: sha512-vJmvvwFxYuGnF2axRtPYocag6Clbb5YS7kLL+SO/TeVFzHqDIWrNKYtcsPMibjDx9O+bu+psAy9NKfWklassUA==}
@@ -6320,7 +6240,7 @@ snapshots:
       debug: 4.3.7
       kolorist: 1.8.0
       local-pkg: 0.5.1
-      mlly: 1.7.1
+      mlly: 1.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -6585,39 +6505,6 @@ snapshots:
       - supports-color
 
   '@mixmark-io/domino@2.2.0': {}
-
-  '@moonrepo/cli@1.28.3':
-    dependencies:
-      detect-libc: 2.0.3
-    optionalDependencies:
-      '@moonrepo/core-linux-arm64-gnu': 1.28.3
-      '@moonrepo/core-linux-arm64-musl': 1.28.3
-      '@moonrepo/core-linux-x64-gnu': 1.28.3
-      '@moonrepo/core-linux-x64-musl': 1.28.3
-      '@moonrepo/core-macos-arm64': 1.28.3
-      '@moonrepo/core-macos-x64': 1.28.3
-      '@moonrepo/core-windows-x64-msvc': 1.28.3
-
-  '@moonrepo/core-linux-arm64-gnu@1.28.3':
-    optional: true
-
-  '@moonrepo/core-linux-arm64-musl@1.28.3':
-    optional: true
-
-  '@moonrepo/core-linux-x64-gnu@1.28.3':
-    optional: true
-
-  '@moonrepo/core-linux-x64-musl@1.28.3':
-    optional: true
-
-  '@moonrepo/core-macos-arm64@1.28.3':
-    optional: true
-
-  '@moonrepo/core-macos-x64@1.28.3':
-    optional: true
-
-  '@moonrepo/core-windows-x64-msvc@1.28.3':
-    optional: true
 
   '@neon-rs/load@0.0.4': {}
 
@@ -7320,6 +7207,15 @@ snapshots:
   '@shikijs/vscode-textmate@9.3.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@studiocms/ui@https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))':
+    dependencies:
+      '@fontsource-variable/onest': 5.1.0
+      '@iconify-json/heroicons': 1.2.1
+      '@iconify/utils': 2.1.33
+      astro: 4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3)
+    transitivePeerDependencies:
+      - supports-color
 
   '@tweenjs/tween.js@23.1.3': {}
 

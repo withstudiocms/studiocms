@@ -21,7 +21,7 @@ jobs:
 
       - id: message
         name: Format Discord message
-        run: pnpm tsm --require=./scripts/filter-warnings.cjs ./www/docs/scripts/lunaria-report-bot.ts
+        run: pnpm ci:lunaria:report
 
   discord_message:
     name: Send Discord Message

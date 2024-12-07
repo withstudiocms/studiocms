@@ -2,19 +2,10 @@
   "extends": "astro/tsconfigs/strictest",
   "files": [],
   "compilerOptions": {
-    "outDir": "../../.moon/cache/types/packages/studiocms_renderers",
     "composite": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
     "emitDeclarationOnly": false
   },
-  "references": [
-    {
-      "path": "../../playgrounds/node"
-    },
-    {
-      "path": "../studiocms_core"
-    }
-  ],
-  "include": ["./package.json", "../../playgrounds/node/.astro/**/*", "./**/*", "./src/**/*.json"]
+  "include": ["./package.json", "./**/*", "./src/**/*.json"]
 }

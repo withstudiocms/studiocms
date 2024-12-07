@@ -159,7 +159,7 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
 	let finalSiteMapHref: string;
 	let executionTime: number;
 
-	const megeredConfig = { ...defaultConfig, ...astroConfig };
+	const mergedConfig = { ...defaultConfig, ...astroConfig };
 
 	return {
 		name,
@@ -174,7 +174,7 @@ export default function createRobotsIntegration(astroConfig: RobotsConfig): Astr
 				executionTime = measureExecutionTime(() => {
 					fs.writeFileSync(
 						new URL('robots.txt', dir),
-						generateContent(megeredConfig, finalSiteMapHref, logger),
+						generateContent(mergedConfig, finalSiteMapHref, logger),
 						'utf-8'
 					);
 				});
