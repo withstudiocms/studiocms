@@ -1,6 +1,8 @@
 import type { RobotsConfig } from '@studiocms/robotstxt';
 import { z } from 'astro/zod';
 
+const RobotsConfigSchema = z.custom<RobotsConfig>().or(z.boolean()).default({});
+
 //
 // INTEGRATIONS CONFIG SCHEMA
 //
@@ -8,11 +10,8 @@ export const includedIntegrationsSchema = z
 	.object({
 		/**
 		 * Allows the user to enable/disable the use of the StudioCMS Custom `astro-robots-txt` Integration
-		 *
-		 * @default true
 		 */
-		useAstroRobots: z.boolean().optional().default(true),
-		astroRobotsConfig: z.custom<RobotsConfig>().default({}),
+		robotsTXT: RobotsConfigSchema,
 		/**
 		 * Allows the user to enable/disable the use of the Inox-tools Sitemap Plugin
 		 * For more information on the Inox-tools Sitemap Plugin, visit:

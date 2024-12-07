@@ -11,11 +11,7 @@ import {
 	StudioCMSOptionsSchema as optionsSchema,
 } from '@studiocms/core/schemas';
 import { CoreStrings, robotsTXTPreset } from '@studiocms/core/strings';
-import {
-	addIntegrationArrayWithCheck,
-	checkAstroConfig,
-	configResolver,
-} from '@studiocms/core/utils';
+import { checkAstroConfig, configResolver } from '@studiocms/core/utils';
 import studioCMSDashboard from '@studiocms/dashboard';
 import studioCMSFrontend from '@studiocms/frontend';
 import studioCMSImageHandler from '@studiocms/imagehandler';
@@ -112,17 +108,25 @@ export default defineIntegration({
 
 					pluginsResolver(params, name, version, resolvedOptions);
 
-					// Setup Integrations (External / Optional)
-					addIntegrationArrayWithCheck(params, [
-						{
-							enabled: includedIntegrations?.useAstroRobots || false,
-							knownSimilar: ['astro-robots', 'astro-robots-txt'],
-							integration: studioCMSRobotsTXT({
-								...robotsTXTPreset,
-								...includedIntegrations?.astroRobotsConfig,
-							}),
-						},
-					]);
+					// Setup Integrations (External)
+
+					// Robots.txt
+					if (
+						includedIntegrations?.robotsTXT === true ||
+						typeof includedIntegrations?.robotsTXT === 'object'
+					) {
+						const robotsTXTConfig =
+							includedIntegrations?.robotsTXT === true ? {} : includedIntegrations?.robotsTXT;
+
+						addIntegrationArray(params, [
+							{
+								integration: studioCMSRobotsTXT({
+									...robotsTXTPreset,
+									...robotsTXTConfig,
+								}),
+							},
+						]);
+					}
 				},
 				'astro:config:done': ({ injectTypes }) => {
 					injectTypes(stubs);

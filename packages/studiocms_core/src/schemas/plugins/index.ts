@@ -1,6 +1,22 @@
-import type { AstroIntegration } from 'astro';
+import type { asDrizzleTable } from '@astrojs/db/runtime';
 import { z } from 'astro/zod';
 import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared';
+
+export interface AstroIntegration {
+	/** The name of the integration. */
+	name: string;
+	/** The different hooks available to extend. */
+	hooks: {
+		[K in keyof Astro.IntegrationHooks]?: Astro.IntegrationHooks[K];
+	} & Partial<Record<string, unknown>>;
+}
+
+const DrizzleTableSchema = z.custom<typeof asDrizzleTable>();
+
+const AstroIntegrationSchema = z.union([
+	z.custom<AstroIntegration>(),
+	z.array(z.custom<AstroIntegration>()),
+]);
 
 export const StudioCMSPluginSchema = z.object({
 	/**
@@ -18,7 +34,7 @@ export const StudioCMSPluginSchema = z.object({
 	/**
 	 * Astro Integration(s) for the plugin
 	 */
-	integration: z.union([z.custom<AstroIntegration>(), z.array(z.custom<AstroIntegration>())]),
+	integration: AstroIntegrationSchema,
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
@@ -90,8 +106,7 @@ export const StudioCMSPluginSchema = z.object({
 						 * table: asDrizzleTable('myTable', myTable),
 						 * }
 						 */
-						// TODO: Figure out a way to type this
-						table: z.any(),
+						table: DrizzleTableSchema,
 					})
 					.optional(),
 				/**
@@ -115,8 +130,7 @@ export const StudioCMSPluginSchema = z.object({
 						 * table: asDrizzleTable('myTable', myTable),
 						 * }
 						 */
-						// TODO: Figure out a way to type this
-						table: z.any(),
+						table: DrizzleTableSchema,
 					})
 					.optional(),
 				/**

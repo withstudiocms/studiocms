@@ -1,6 +1,5 @@
 import { z } from 'astro/zod';
 import { markdocConfigSchema, type markdocRenderer } from './markdoc';
-import { markedConfigSchema } from './marked';
 import { mdxConfigSchema } from './mdx';
 
 export type Renderer = (content: string) => Promise<string>;
@@ -35,9 +34,6 @@ export const StudioCMSRendererConfigSchema = z
 		/**
 		 * The Markdown Content Renderer to use for rendering pages and posts
 		 *
-		 * Marked is A markdown parser and compiler. Built for speed.
-		 * @see https://marked.js.org/ for more info about marked.
-		 *
 		 * Astro is the built-in Astro remark-markdown plugin.
 		 * @see https://www.npmjs.com/package/@astrojs/markdown-remark
 		 *
@@ -47,21 +43,13 @@ export const StudioCMSRendererConfigSchema = z
 		 */
 		renderer: z
 			.union([
-				z.literal('marked'),
 				z.literal('astro'),
 				z.literal('markdoc'),
 				z.literal('mdx'),
 				z.custom<CustomRenderer>(),
 			])
 			.optional()
-			.default('marked'),
-		/**
-		 * Allows customization of the Marked Configuration
-		 *
-		 * Marked is a markdown parser and compiler. Built for speed. It is used to convert markdown strings into HTML for rendering content on StudioCMS pages.
-		 * @see https://marked.js.org/ for more info about marked.
-		 */
-		markedConfig: markedConfigSchema,
+			.default('astro'),
 		/**
 		 * Allows customization of the Markdoc Configuration
 		 *

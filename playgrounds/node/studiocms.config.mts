@@ -1,15 +1,11 @@
-import { defineStudioCMSConfig } from '../../packages/studiocms/src';
+import { defineStudioCMSConfig } from 'studiocms';
 
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
 	dateLocale: 'en-us',
 	rendererConfig: {
-		markedConfig: {
-			highlighterConfig: {
-				highlighter: 'disabled',
-			},
-		},
+		renderer: 'astro',
 	},
 	defaultFrontEndConfig: {
 		favicon: '/favicon.svg',
@@ -25,8 +21,7 @@ export default defineStudioCMSConfig({
 		// ],
 	},
 	includedIntegrations: {
-		useAstroRobots: true,
-		useInoxSitemap: true,
+		robotsTXT: true,
 	},
 	dashboardConfig: {
 		AuthConfig: {
@@ -44,7 +39,6 @@ export default defineStudioCMSConfig({
 		},
 		dashboardEnabled: true,
 		developerConfig: {
-			viewTransitionAPI: false,
 			testingAndDemoMode: false,
 		},
 	},

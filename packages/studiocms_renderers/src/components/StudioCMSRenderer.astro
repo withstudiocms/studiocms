@@ -5,7 +5,7 @@ import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
 import renderAstroMD from '../lib/astro-remark';
 import builtInContentRenderer from '../lib/contentRenderer';
 import renderMarkDoc from '../lib/markdoc';
-import renderMarked from '../lib/marked';
+// import renderMarked from '../lib/marked';
 import renderAstroMDX from '../lib/mdx';
 
 type Props = {
@@ -16,10 +16,10 @@ type Props = {
 const { content, renderer = rendererConfig.renderer } = Astro.props;
 
 function rendererSelect(renderer: StudioCMSRendererConfig['renderer']) {
-	if (renderer === 'marked') {
-		logger.debug('Using built-in renderer: marked');
-		return renderMarked;
-	}
+	// if (renderer === 'marked') {
+	// 	logger.debug('Using built-in renderer: marked');
+	// 	return renderMarked;
+	// }
 	if (renderer === 'astro') {
 		logger.debug('Using built-in renderer: astro remark');
 		return renderAstroMD;
@@ -36,7 +36,7 @@ function rendererSelect(renderer: StudioCMSRendererConfig['renderer']) {
 		logger.debug(`Using custom renderer: ${renderer.name}`);
 		return renderer.renderer;
 	}
-	return renderMarked;
+	return renderAstroMD;
 }
 
 const renderedContent = builtInContentRenderer({ content, renderer: rendererSelect(renderer) });
