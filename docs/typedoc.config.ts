@@ -95,8 +95,9 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/index.ts'),
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/integrations.ts'),
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/markdoc.ts'),
-						getFilePathToPackage('studiocms_core', 'src/schemas/config/marked.ts'),
 						getFilePathToPackage('studiocms_core', 'src/schemas/config/rendererConfig.ts'),
+						getFilePathToPackage('studiocms_core', 'src/schemas/plugins/shared.ts'),
+						getFilePathToPackage('studiocms_core', 'src/schemas/plugins/index.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/index.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/configManager.ts'),
 						getFilePathToPackage('studiocms_core', 'src/lib/convertDashboardLinksType.ts'),
@@ -115,6 +116,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_core', 'src/db/tables.ts'),
 						getFilePathToPackage('studiocms_core', 'src/db/tsTables.ts'),
 						getFilePathToPackage('studiocms_core', 'src/components/index.ts'),
+						getFilePathToPackage('studiocms_core', 'src/i18n/index.ts'),
 					],
 				})
 			),
@@ -144,6 +146,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 					entryPoints: [
 						getFilePathToPackage('studiocms_frontend', 'src/index.ts'),
 						getFilePathToPackage('studiocms_frontend', 'src/integration.ts'),
+						getFilePathToPackage('studiocms_frontend', 'src/schema.ts'),
 						getFilePathToPackage('studiocms_frontend', 'src/components/index.ts'),
 					],
 				})
@@ -159,7 +162,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_imagehandler', 'src/integration.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/components/index.ts'),
 						getFilePathToPackage('studiocms_imagehandler', 'src/components/props.ts'),
-						getFilePathToPackage('studiocms_imagehandler', 'src/plugins/cloudinary.ts'),
+						getFilePathToPackage('studiocms_imagehandler', 'src/components/plugins/cloudinary.ts'),
 					],
 				})
 			),
@@ -182,7 +185,6 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms_renderers', 'src/lib/markdoc/index.ts'),
 						getFilePathToPackage('studiocms_renderers', 'src/lib/markdoc/markdocHTML.ts'),
 						getFilePathToPackage('studiocms_renderers', 'src/lib/markdoc/markdocReactStatic.ts'),
-						getFilePathToPackage('studiocms_renderers', 'src/lib/marked/index.ts'),
 						getFilePathToPackage('studiocms_renderers', 'src/lib/mdx/index.ts'),
 					],
 				})
@@ -208,15 +210,16 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 					entryPoints: [
 						getFilePathToPackage('studiocms_devapps', 'src/index.ts'),
 						getFilePathToPackage('studiocms_devapps', 'src/integration.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/apps/libsqlViewer.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/apps/wp-importer.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/apps/utils/index.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/schema/index.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/schema/appsConfig.ts'),
+						getFilePathToPackage('studiocms_devapps', 'src/schema/wp-api/index.ts'),
 						getFilePathToPackage('studiocms_devapps', 'src/utils/pathGenerator.ts'),
 						getFilePathToPackage('studiocms_devapps', 'src/utils/wp-api/utils.ts'),
 						getFilePathToPackage('studiocms_devapps', 'src/utils/wp-api/converters.ts'),
 						getFilePathToPackage('studiocms_devapps', 'src/utils/wp-api/index.ts'),
-						getFilePathToPackage('studiocms_devapps', 'src/schema/index.ts'),
-						getFilePathToPackage('studiocms_devapps', 'src/schema/appsConfig.ts'),
-						getFilePathToPackage('studiocms_devapps', 'src/schema/wp-api/index.ts'),
-						getFilePathToPackage('studiocms_devapps', 'src/apps/libsqlViewer.ts'),
-						getFilePathToPackage('studiocms_devapps', 'src/apps/wp-importer.ts'),
 					],
 				})
 			),

@@ -57,7 +57,8 @@
   },
   "peerDependencies": {
     "@astrojs/react": "catalog:",
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   },
   "peerDependenciesMeta": {
     "@astrojs/react": {

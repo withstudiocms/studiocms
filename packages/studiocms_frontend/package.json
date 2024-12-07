@@ -40,7 +40,8 @@
     "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   },
   "devDependencies": {
     "typescript": "catalog:"

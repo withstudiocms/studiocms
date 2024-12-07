@@ -48,9 +48,6 @@ catalogs:
     typescript:
       specifier: ^5.6.3
       version: 5.6.3
-    vite:
-      specifier: ^5.4.8
-      version: 5.4.11
   docs:
     '@11ty/eleventy-fetch':
       specifier: ^4.0.1
@@ -471,6 +468,9 @@ importers:
       semver:
         specifier: catalog:studiocms
         version: 7.6.3
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       '@types/semver':
         specifier: catalog:studiocms
@@ -478,9 +478,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_assets:
     dependencies:
@@ -580,6 +577,9 @@ importers:
       studiocms:
         specifier: workspace:*
         version: link:../studiocms
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@20.14.13)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -623,6 +623,9 @@ importers:
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -666,6 +669,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -703,6 +709,9 @@ importers:
       turndown:
         specifier: catalog:studiocms-devapps
         version: 7.2.0
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -722,6 +731,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.16.1(astro@4.16.14(@types/node@22.0.0)(rollup@4.21.0)(typescript@5.6.3))
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -802,6 +814,9 @@ importers:
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5
+      vite:
+        specifier: catalog:min
+        version: 5.4.11(@types/node@22.0.0)
     devDependencies:
       '@types/react':
         specifier: catalog:studiocms-renderer
