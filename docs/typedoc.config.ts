@@ -1,7 +1,7 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types';
 import { createStarlightTypeDocPlugin } from 'starlight-typedoc';
-import { getFilePathToPackage, makeTypedocOpts } from './src/typedocHelpers';
-import type { SidebarGroup } from './starlight-types';
+import { getFilePathToPackage, makeTypedocOpts } from './src/typedocHelpers.ts';
+import type { SidebarGroup } from './starlight-types.ts';
 
 // Create Starlight TypeDoc Plugins for different parts of the Astro StudioCMS Project
 

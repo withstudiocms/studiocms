@@ -1,5 +1,5 @@
 import rehypeExternal from 'rehype-external-links';
-import type { RehypePlugin } from './rehype.types';
+import type { RehypePlugin } from './rehype.types.ts';
 
 // biome-ignore lint/suspicious/noExplicitAny: any is used to match the generic type
 export const rehypeExternalLinks: [RehypePlugin, any] = [

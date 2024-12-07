@@ -3,7 +3,7 @@ import { h } from 'hastscript';
 import { escape as esc } from 'html-escaper';
 import rehypeAutoLink from 'rehype-autolink-headings';
 import type { Options as rehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings';
-import type { RehypePlugin } from './rehype.types';
+import type { RehypePlugin } from './rehype.types.ts';
 
 const AnchorLinkIcon = h(
 	'span',

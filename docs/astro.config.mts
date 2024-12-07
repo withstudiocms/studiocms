@@ -2,9 +2,9 @@ import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
-import getCoolifyURL from './hostUtils';
-import rehypePluginKit from './src/plugins/rehypePluginKit';
-import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config';
+import getCoolifyURL from './hostUtils.ts';
+import rehypePluginKit from './src/plugins/rehypePluginKit.ts';
+import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';

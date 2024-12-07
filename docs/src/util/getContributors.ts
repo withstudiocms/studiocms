@@ -1,6 +1,6 @@
 import type { AstroGlobal } from 'astro';
-import { cachedFetch } from '../util-server';
-import { StudioCMSServiceAccounts, contributorConfig } from './contributors.config';
+import { cachedFetch } from '../util-server.ts';
+import { StudioCMSServiceAccounts, contributorConfig } from './contributors.config.ts';
 
 export interface Contributor {
 	login: string;
