@@ -134,7 +134,7 @@ jobs:
 #       - name: Upload Overview
 #         uses: actions/upload-pages-artifact@v3
 #         with:
-#           path: "www/docs/dist/lunaria/"
+#           path: "docs/dist/lunaria/"
 
 #   lunaria-deploy:
 #     name: Deploy Lunaria Overview
