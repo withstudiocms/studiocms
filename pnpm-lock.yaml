@@ -433,9 +433,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.6.3
-      vite:
-        specifier: 'catalog:'
-        version: 5.4.11(@types/node@22.0.0)
 
   packages/studiocms_blog:
     dependencies:
