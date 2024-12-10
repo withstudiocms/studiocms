@@ -4,72 +4,21 @@ import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsPageContent, tsPageData, tsSiteConfig } from '@studiocms/core/db/tsTables';
 
-type PageDataType = {
-	id: string;
-	package: string;
-	title: string;
-	description: string;
-	showOnNav: boolean;
-	publishedAt: Date;
-	updatedAt: Date | null;
-	slug: string;
-	contentLang: string;
-	heroImage: string;
-};
+type PageDataInsert = typeof tsPageData.$inferInsert;
+type PageDataSelect = typeof tsPageData.$inferSelect;
+type PageDataReturnID = Pick<PageDataSelect, 'id'>;
 
-type PageDataInsert = {
-	title: string;
-	description: string;
-	slug: string;
-	package: string;
-	showOnNav: boolean;
-	publishedAt: Date;
-	contentLang: string;
-	heroImage: string;
-};
+type PageContentInsert = typeof tsPageContent.$inferInsert;
+type PageContentSelect = typeof tsPageContent.$inferSelect;
 
-type PageDataUpdate = {
-	id: string;
-	package: string;
-	title: string;
-	description: string;
-	showOnNav: boolean;
-	updatedAt: Date | null;
-	slug: string;
-	heroImage: string;
-};
-
-type PageDataReturnID = {
-	id: string;
-};
-
-type PageContentInsert = {
-	id: string;
-	lang: string;
-	content: string;
-};
-
-type PageContentUpdate = {
-	content: string;
-	id: string;
-};
-
-type SiteConfigUpdate = {
-	title: string;
-	description: string;
-};
-
-type SiteConfigReturn = {
-	id: number;
-	title: string;
-	description: string;
-};
+type SiteConfigInsert = typeof tsSiteConfig.$inferInsert;
+type SiteConfigSelect = typeof tsSiteConfig.$inferSelect;
 
 export const astroDb = () => {
 	return {
 		pageData() {
 			return {
-				async getBySlug(slug: string, pkg: string): Promise<PageDataType | undefined> {
+				async getBySlug(slug: string, pkg: string): Promise<PageDataSelect | undefined> {
 					const pageData = await db
 						.select()
 						.from(tsPageData)
@@ -91,12 +40,15 @@ export const astroDb = () => {
 							id: randomUUID(),
 							slug: data.slug,
 							title: data.title,
-							package: data.package,
+							package: data.package || 'studiocms',
 							description: data.description,
 							contentLang: contentLang,
-							heroImage: data.heroImage,
-							publishedAt: data.publishedAt,
-							showOnNav: data.showOnNav,
+							heroImage: data.heroImage || '',
+							publishedAt: data.publishedAt || new Date(),
+							showOnNav: data.showOnNav || false,
+							catagories: data.catagories || [],
+							tags: data.tags || [],
+							updatedAt: new Date(),
 						})
 						.returning({ id: tsPageData.id })
 						.catch((error) => {
@@ -106,7 +58,7 @@ export const astroDb = () => {
 
 					return newEntry.pop();
 				},
-				async update(data: PageDataUpdate) {
+				async update(data: PageDataSelect) {
 					await db
 						.update(tsPageData)
 						.set({
@@ -135,15 +87,15 @@ export const astroDb = () => {
 						.insert(tsPageContent)
 						.values({
 							id: randomUUID(),
-							contentId: data.id,
-							contentLang: data.lang,
-							content: data.content,
+							contentId: data.contentId,
+							contentLang: data.contentLang || 'default',
+							content: data.content || '',
 						})
 						.catch((error) => {
 							logger.error(error);
 						});
 				},
-				async update(data: PageContentUpdate) {
+				async update(data: PageContentSelect) {
 					await db
 						.update(tsPageContent)
 						.set({ content: data.content })
@@ -156,7 +108,7 @@ export const astroDb = () => {
 		},
 		siteConfig() {
 			return {
-				async update(data: SiteConfigUpdate): Promise<SiteConfigReturn | undefined> {
+				async update(data: SiteConfigInsert): Promise<SiteConfigSelect | undefined> {
 					return await db
 						.update(tsSiteConfig)
 						.set(data)

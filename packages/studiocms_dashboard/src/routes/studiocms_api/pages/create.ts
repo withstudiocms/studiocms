@@ -98,7 +98,9 @@ export async function POST(context: APIContext): Promise<Response> {
 			return simpleResponse(500, 'Error creating page');
 		}
 
-		await astroDb().pageContent().insert({ id: newPage.id, lang: 'default', content });
+		await astroDb()
+			.pageContent()
+			.insert({ contentId: newPage.id, contentLang: 'default', content });
 	} catch (error) {
 		if (error instanceof Error) {
 			logger.error(error.message);
