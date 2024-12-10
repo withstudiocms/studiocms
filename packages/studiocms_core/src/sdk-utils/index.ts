@@ -1,4 +1,4 @@
-import { addDatabaseEntry } from './add/addDatabaseEntry';
+import { addDatabaseEntry } from './add';
 import {
 	getDatabase,
 	getDatabaseEntry,

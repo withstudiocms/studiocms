@@ -163,3 +163,5 @@ export const addDatabaseEntry: AddDatabaseEntry = {
 		},
 	},
 };
+
+export default addDatabaseEntry;
