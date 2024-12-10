@@ -9,7 +9,7 @@ import type {
 	tsUsers,
 } from '../db/tsTables';
 
-const currentTables = [
+export const currentTables = [
 	'users',
 	'oAuthAccounts',
 	'sessionTable',
