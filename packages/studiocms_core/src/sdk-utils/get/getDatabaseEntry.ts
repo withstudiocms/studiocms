@@ -207,6 +207,9 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				},
 			};
 		}
+		default: {
+			throw new Error(`Unknown database table: ${database}`);
+		}
 	}
 }
 

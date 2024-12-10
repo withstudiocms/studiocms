@@ -71,6 +71,8 @@ export async function getPermissionsLists(list: AvailableLists): Promise<Permiss
 
 			return verifyRank(existingUsers, currentPermittedUsers, 'visitor');
 		}
+		default:
+			throw new Error(`Unknown list type: ${list}`);
 	}
 }
 
