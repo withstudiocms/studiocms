@@ -140,3 +140,14 @@ export function verifyRank(
 export function combineRanks(rank: string, users: SingleRank[]): CombinedRank[] {
 	return users.map((user) => ({ rank, ...user }));
 }
+
+/**
+ * Generates a random ID number with the specified length for Tags and Categories.
+ *
+ * @param length - The length of the random ID number to generate.
+ *
+ * @returns A random ID number with the specified length.
+ */
+export function generateRandomIDNumber(length: number): number {
+	return Math.floor(Math.random() * 10 ** length);
+}
