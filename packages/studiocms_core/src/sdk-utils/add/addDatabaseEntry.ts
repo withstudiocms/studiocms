@@ -5,7 +5,9 @@ import type { addDatabaseEntryInsertPage, tsPageContentInsert, tsPageDataInsert 
 /**
  * Adds a new entry to the specified database table.
  */
-export function addDatabaseEntry(database: 'pages') {
+export function addDatabaseEntry(
+	database: 'pages' | 'pageContent' | 'tags' | 'categories' | 'permissions'
+) {
 	switch (database) {
 		case 'pages': {
 			return {
