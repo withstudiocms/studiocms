@@ -158,6 +158,19 @@ export async function getDatabase(database: SimplifiedTables) {
 				.from(tsSiteConfig)
 				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
 				.get();
+
+			if (!siteConfig) {
+				return {
+					id: CMSSiteConfigId,
+					description: '',
+					title: 'StudioCMS',
+					defaultOgImage: null,
+					siteIcon: null,
+					loginPageBackground: 'studiocms-curves',
+					loginPageCustomImage: null,
+				};
+			}
+
 			return siteConfig;
 		}
 	}
