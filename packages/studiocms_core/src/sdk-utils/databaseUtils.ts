@@ -104,7 +104,7 @@ export async function getDatabase(database: SimplifiedTables) {
 					db.select().from(tsPageDataTags),
 				]);
 
-				for (const category of page.catagories as number[]) {
+				for (const category of page.categories as number[]) {
 					const categoryData = allCategories.find((cat) => cat.id === category);
 					if (categoryData) {
 						categories.push(categoryData);

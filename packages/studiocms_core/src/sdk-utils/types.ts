@@ -35,7 +35,7 @@ export type tsPageDataTagsSelect = typeof tsPageDataTags.$inferSelect;
 export type tsPageDataCategoriesSelect = typeof tsPageDataCategories.$inferSelect;
 export type tsPageContentSelect = typeof tsPageContent.$inferSelect;
 
-export type PageDataStripped = Omit<tsPageDataSelect, 'catagories' | 'tags'>;
+export type PageDataStripped = Omit<tsPageDataSelect, 'categories' | 'tags'>;
 
 export interface CombinedUserData extends tsUsersSelect {
 	oAuthData: tsOAuthAccountsSelect[] | undefined;
