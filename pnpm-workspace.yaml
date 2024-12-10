@@ -9,6 +9,7 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@astrojs/web-vitals': ^3.0.0
   '@astrojs/node': ^8.3.4
   '@types/node': ^20.14.11
+  "@studiocms/ui": ^0.1.0
   astro: ^4.16.14
   astro-integration-kit: ^0.16.1
   astro-theme-provider: ^0.6.1

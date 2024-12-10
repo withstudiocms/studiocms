@@ -36,7 +36,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/ui": "https://pkg.pr.new/withstudiocms/ui/@studiocms/ui@1",
+    "@studiocms/ui": "catalog:",
     "@studiocms/assets": "workspace:*",
     "@studiocms/betaresources": "workspace:*",
     "@studiocms/core": "workspace:*",
