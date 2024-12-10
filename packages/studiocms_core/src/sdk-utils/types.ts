@@ -10,58 +10,53 @@ import type {
 } from '../db/tsTables';
 
 /**
- * A constant array of strings representing the current tables used in the application.
+ * Represents the possible table names in the current database schema.
  *
- * The tables included are:
- * - 'users'
- * - 'oAuthAccounts'
- * - 'sessionTable'
- * - 'permissions'
- * - 'pageData'
- * - 'pageDataTags'
- * - 'pageDataCategories'
- * - 'pageContent'
- * - 'siteConfig'
- * - 'diffTracking'
- *
- * This array is marked as `const` to ensure its values are read-only.
+ * @property {'users'} users - Table for user information.
+ * @property {'oAuthAccounts'} oAuthAccounts - Table for OAuth account details.
+ * @property {'sessionTable'} sessionTable - Table for session information.
+ * @property {'permissions'} permissions - Table for user permissions.
+ * @property {'pageData'} pageData - Table for page data.
+ * @property {'pageDataTags'} pageDataTags - Table for tags associated with page data.
+ * @property {'pageDataCategories'} pageDataCategories - Table for categories associated with page data.
+ * @property {'pageContent'} pageContent - Table for page content.
+ * @property {'siteConfig'} siteConfig - Table for site configuration.
+ * @property {'diffTracking'} diffTracking - Table for tracking differences.
  */
-export const currentTables = [
-	'users',
-	'oAuthAccounts',
-	'sessionTable',
-	'permissions',
-	'pageData',
-	'pageDataTags',
-	'pageDataCategories',
-	'pageContent',
-	'siteConfig',
-	'diffTracking',
-] as const;
+export type CurrentTables =
+	| 'users'
+	| 'oAuthAccounts'
+	| 'sessionTable'
+	| 'permissions'
+	| 'pageData'
+	| 'pageDataTags'
+	| 'pageDataCategories'
+	| 'pageContent'
+	| 'siteConfig'
+	| 'diffTracking';
 
 /**
- * A constant array of table names that are simplified for the SDK.
+ * Represents a simplified view of the tables in the system.
  *
- * @constant
- * @default ['users', 'pages', 'config']
+ * The `SimplifiedTables` type is a union of string literals that correspond
+ * to the names of the tables in the system. This type is used to restrict
+ * the values to a predefined set of table names.
+ *
+ * Possible values:
+ * - `'users'`: Represents the users table.
+ * - `'pages'`: Represents the pages table.
+ * - `'config'`: Represents the config table.
  */
-export const simplifiedTables = ['users', 'pages', 'config'] as const;
+export type SimplifiedTables = 'users' | 'pages' | 'config';
 
 /**
- * Represents the type of the elements in the `currentTables` array.
+ * Represents the types of tables available in the database.
  *
- * This type is derived from the `currentTables` array, allowing you to use
- * the type of its elements without explicitly defining them.
+ * @example
+ * // Example usage:
+ * const table: DatabaseEntryTables = 'users';
  */
-export type CurrentTables = (typeof currentTables)[number];
-
-/**
- * Represents a type that extracts the types of elements from the `simplifiedTables` array.
- *
- * This type is useful for defining variables or parameters that should be constrained
- * to one of the values present in the `simplifiedTables` array.
- */
-export type SimplifiedTables = (typeof simplifiedTables)[number];
+export type DatabaseEntryTables = 'users' | 'pages';
 
 /**
  * Type alias for the inferred select type of `tsUsers`.
@@ -165,5 +160,6 @@ export interface CombinedPageData extends PageDataStripped {
 	contributorIds: string[];
 	categories: tsPageDataCategoriesSelect[];
 	tags: tsPageDataTagsSelect[];
-	content: tsPageContentSelect[];
+	multiLangContent: tsPageContentSelect[];
+	defaultContent: tsPageContentSelect | undefined;
 }
