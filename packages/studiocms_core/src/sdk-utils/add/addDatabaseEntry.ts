@@ -1,14 +1,17 @@
 /// <reference types="@astrojs/db" />
 import { db } from 'astro:db';
 import { tsPageContent, tsPageData } from '../../db/tsTables';
-import type { addDatabaseEntryInsertPage, tsPageContentInsert, tsPageDataInsert } from '../types';
+import type {
+	addDatabaseEntryDatabase,
+	addDatabaseEntryInsertPage,
+	tsPageContentInsert,
+	tsPageDataInsert,
+} from '../types';
 
 /**
  * Adds a new entry to the specified database table.
  */
-export function addDatabaseEntry(
-	database: 'pages' | 'pageContent' | 'tags' | 'categories' | 'permissions'
-) {
+export function addDatabaseEntry(database: addDatabaseEntryDatabase) {
 	switch (database) {
 		case 'pages': {
 			return {
@@ -88,6 +91,21 @@ export function addDatabaseEntry(
 						pageContent: newPageContent,
 					};
 				},
+			};
+		}
+		case 'tags': {
+			return {
+				insert: async () => {},
+			};
+		}
+		case 'categories': {
+			return {
+				insert: async () => {},
+			};
+		}
+		case 'permissions': {
+			return {
+				insert: async () => {},
 			};
 		}
 		default: {
