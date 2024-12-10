@@ -227,22 +227,6 @@ export type addDatabaseEntryInsertPage = {
 };
 
 /**
- * Represents the possible database entries that can be added.
- *
- * @property {'pages'} pages - Represents the pages database entry.
- * @property {'pageContent'} pageContent - Represents the page content database entry.
- * @property {'tags'} tags - Represents the tags database entry.
- * @property {'categories'} categories - Represents the categories database entry.
- * @property {'permissions'} permissions - Represents the permissions database entry.
- */
-export type addDatabaseEntryDatabase =
-	| 'pages'
-	| 'pageContent'
-	| 'tags'
-	| 'categories'
-	| 'permissions';
-
-/**
  * Interface for retrieving user data from the database.
  * Provides methods to fetch user data by different identifiers.
  */

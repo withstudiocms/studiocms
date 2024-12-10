@@ -1,3 +1,4 @@
+/// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import {
 	tsOAuthAccounts,
