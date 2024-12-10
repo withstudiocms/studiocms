@@ -74,29 +74,15 @@ export async function getDatabase(database: SimplifiedTables) {
 			const users = await db.select().from(tsUsers);
 
 			for (const user of users) {
-				const oAuthData = await db
-					.select()
-					.from(tsOAuthAccounts)
-					.where(eq(tsOAuthAccounts.userId, user.id))
-					.get();
-
-				const sessionData = await db
-					.select()
-					.from(tsSessionTable)
-					.where(eq(tsSessionTable.userId, user.id))
-					.get();
-
-				const permissionsData = await db
-					.select()
-					.from(tsPermissions)
-					.where(eq(tsPermissions.user, user.id))
-					.get();
+				const [oAuthData, permissionData] = await db.batch([
+					db.select().from(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, user.id)),
+					db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)),
+				]);
 
 				const UserData: CombinedUserData = {
 					...user,
 					oAuthData: oAuthData,
-					sessionData: sessionData,
-					permissionsData: permissionsData,
+					permissionsData: permissionData.pop(),
 				};
 
 				combinedUserData.push(UserData);
@@ -113,23 +99,20 @@ export async function getDatabase(database: SimplifiedTables) {
 				const categories: tsPageDataCategoriesSelect[] = [];
 				const tags: tsPageDataTagsSelect[] = [];
 
+				const [allCategories, allTags] = await db.batch([
+					db.select().from(tsPageDataCategories),
+					db.select().from(tsPageDataTags),
+				]);
+
 				for (const category of page.catagories as number[]) {
-					const categoryData = await db
-						.select()
-						.from(tsPageDataCategories)
-						.where(eq(tsPageDataCategories.id, category))
-						.get();
+					const categoryData = allCategories.find((cat) => cat.id === category);
 					if (categoryData) {
 						categories.push(categoryData);
 					}
 				}
 
 				for (const tag of page.tags as number[]) {
-					const tagData = await db
-						.select()
-						.from(tsPageDataTags)
-						.where(eq(tsPageDataTags.id, tag))
-						.get();
+					const tagData = allTags.find((t) => t.id === tag);
 					if (tagData) {
 						tags.push(tagData);
 					}
@@ -158,18 +141,6 @@ export async function getDatabase(database: SimplifiedTables) {
 				.from(tsSiteConfig)
 				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
 				.get();
-
-			if (!siteConfig) {
-				return {
-					id: CMSSiteConfigId,
-					description: '',
-					title: 'StudioCMS',
-					defaultOgImage: null,
-					siteIcon: null,
-					loginPageBackground: 'studiocms-curves',
-					loginPageCustomImage: null,
-				};
-			}
 
 			return siteConfig;
 		}
