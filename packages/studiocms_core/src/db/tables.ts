@@ -57,8 +57,6 @@ export const StudioCMSPageData = defineTable({
 			default:
 				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 		}),
-		// TODO: Remove typo column name once new onboarding page is ready to use
-		catagories: column.json({ default: [], optional: true }),
 		categories: column.json({ default: [], optional: true }),
 		tags: column.json({ default: [], optional: true }),
 		authorId: column.text({ optional: true }),

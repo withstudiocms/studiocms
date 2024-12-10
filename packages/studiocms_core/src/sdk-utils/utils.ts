@@ -12,6 +12,7 @@ import type {
 	CombinedPageData,
 	CombinedRank,
 	CombinedUserData,
+	GenericTable,
 	SingleRank,
 	tsPageDataCategoriesSelect,
 	tsPageDataSelect,
@@ -40,6 +41,35 @@ export async function collectUserData(user: tsUsersSelect): Promise<CombinedUser
 }
 
 /**
+ * Executes a batch query on the database for the given IDs and table.
+ *
+ * @template returnType - The type of the return value.
+ * @param {Array<number | string>} ids - An array of IDs to query.
+ * @param {GenericTable} table - The table to query against.
+ * @returns {Promise<returnType[]>} A promise that resolves to an array of results of type `returnType`.
+ */
+export async function runDbBatchQuery<returnType>(
+	ids: Array<number | string>,
+	table: GenericTable
+): Promise<returnType[]> {
+	const batchQueries = [];
+
+	for (const id of ids) {
+		batchQueries.push(db.select().from(table).where(eq(table.id, id)));
+	}
+
+	const [head, ...tail] = batchQueries;
+
+	if (head) {
+		const queryResults = await db.batch([head, ...tail]);
+		// Flatten and filter the results
+		return queryResults.flat().filter(Boolean) as returnType[];
+	}
+
+	return [] as returnType[];
+}
+
+/**
  * Collects and combines page data including categories, tags, contributors, and multilingual content.
  *
  * @param {tsPageDataSelect} page - The page data to collect information for.
@@ -54,36 +84,14 @@ export async function collectUserData(user: tsUsersSelect): Promise<CombinedUser
  * 6. Returns the combined page data including categories, tags, contributors, multilingual content, and default content.
  */
 export async function collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
-	const categories: tsPageDataCategoriesSelect[] = [];
-	const tags: tsPageDataTagsSelect[] = [];
-	const contributors: string[] = [];
+	const categories = await runDbBatchQuery<tsPageDataCategoriesSelect>(
+		page.categories as number[],
+		tsPageDataCategories
+	);
 
-	const [allCategories, allTags, allUsers] = await db.batch([
-		db.select().from(tsPageDataCategories),
-		db.select().from(tsPageDataTags),
-		db.select().from(tsUsers),
-	]);
+	const tags = await runDbBatchQuery<tsPageDataTagsSelect>(page.tags as number[], tsPageDataTags);
 
-	for (const category of page.categories as number[]) {
-		const categoryData = allCategories.find((cat) => cat.id === category);
-		if (categoryData) {
-			categories.push(categoryData);
-		}
-	}
-
-	for (const tag of page.tags as number[]) {
-		const tagData = allTags.find((t) => t.id === tag);
-		if (tagData) {
-			tags.push(tagData);
-		}
-	}
-
-	for (const contributor of page.contributorIds as string[]) {
-		const contributorData = allUsers.find((user) => user.id === contributor);
-		if (contributorData) {
-			contributors.push(contributorData.id);
-		}
-	}
+	const contributors = await runDbBatchQuery<string>(page.contributorIds as string[], tsUsers);
 
 	const multiLangContentData = await db
 		.select()

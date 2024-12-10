@@ -70,10 +70,7 @@ export type SiteConfig = Omit<tsSiteConfigSelect, 'id'>;
  * Represents a stripped-down version of the `tsPageDataSelect` type,
  * excluding the properties 'catagories', 'categories', 'tags', and 'contributorIds'.
  */
-export type PageDataStripped = Omit<
-	tsPageDataSelect,
-	'catagories' | 'categories' | 'tags' | 'contributorIds'
->;
+export type PageDataStripped = Omit<tsPageDataSelect, 'categories' | 'tags' | 'contributorIds'>;
 
 /**
  * Represents a type that picks the 'id' property from the tsPageContentSelect type.

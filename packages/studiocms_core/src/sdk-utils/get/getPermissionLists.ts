@@ -30,8 +30,10 @@ import { combineRanks, verifyRank } from '../utils';
 export async function getPermissionsLists(list: AvailableLists): Promise<PermissionsList[]> {
 	switch (list) {
 		case 'all': {
-			const currentPermittedUsers = await db.select().from(tsPermissions);
-			const existingUsers = await db.select().from(tsUsers);
+			const [currentPermittedUsers, existingUsers] = await db.batch([
+				db.select().from(tsPermissions),
+				db.select().from(tsUsers),
+			]);
 
 			const owners = verifyRank(existingUsers, currentPermittedUsers, 'owner');
 
@@ -49,27 +51,31 @@ export async function getPermissionsLists(list: AvailableLists): Promise<Permiss
 			];
 		}
 		case 'owners': {
-			const currentPermittedUsers = await db.select().from(tsPermissions);
-			const existingUsers = await db.select().from(tsUsers);
-
+			const [currentPermittedUsers, existingUsers] = await db.batch([
+				db.select().from(tsPermissions),
+				db.select().from(tsUsers),
+			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'owner');
 		}
 		case 'admins': {
-			const currentPermittedUsers = await db.select().from(tsPermissions);
-			const existingUsers = await db.select().from(tsUsers);
-
+			const [currentPermittedUsers, existingUsers] = await db.batch([
+				db.select().from(tsPermissions),
+				db.select().from(tsUsers),
+			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'admin');
 		}
 		case 'editors': {
-			const currentPermittedUsers = await db.select().from(tsPermissions);
-			const existingUsers = await db.select().from(tsUsers);
-
+			const [currentPermittedUsers, existingUsers] = await db.batch([
+				db.select().from(tsPermissions),
+				db.select().from(tsUsers),
+			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'editor');
 		}
 		case 'visitors': {
-			const currentPermittedUsers = await db.select().from(tsPermissions);
-			const existingUsers = await db.select().from(tsUsers);
-
+			const [currentPermittedUsers, existingUsers] = await db.batch([
+				db.select().from(tsPermissions),
+				db.select().from(tsUsers),
+			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'visitor');
 		}
 		default:

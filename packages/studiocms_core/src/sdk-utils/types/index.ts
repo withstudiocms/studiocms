@@ -1,3 +1,4 @@
+import type { Table } from '@astrojs/db/runtime';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -63,6 +64,26 @@ export type {
 	tsSiteConfigSelect,
 	tsUsersSelect,
 };
+
+export type GenericTable = Table<
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	any,
+	{
+		id: {
+			type: 'text' | 'number';
+			schema: {
+				unique: false;
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				deprecated: any;
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				name: any;
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				collection: any;
+				primaryKey: true;
+			};
+		};
+	}
+>;
 
 /**
  * Represents the structure for adding a database entry for a page.
