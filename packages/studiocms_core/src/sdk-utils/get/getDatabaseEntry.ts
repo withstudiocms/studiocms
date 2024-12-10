@@ -1,8 +1,13 @@
 /// <reference types="@astrojs/db" />
 import { and, db, eq } from 'astro:db';
-import { tsPageData, tsUsers } from '../db/tsTables';
-import type { CombinedPageData, CombinedUserData, DatabaseEntryTables } from './types';
-import { collectPageData, collectUserData } from './utils';
+import { tsPageData, tsUsers } from '../../db/tsTables';
+import type {
+	CombinedPageData,
+	CombinedUserData,
+	DatabaseEntryTables,
+	GetDatabaseEntry,
+} from '../types';
+import { collectPageData, collectUserData } from '../utils';
 
 /**
  * Retrieves a database entry based on the specified table.
@@ -33,7 +38,7 @@ import { collectPageData, collectUserData } from './utils';
  * }
  * ```
  */
-export function getDatabaseEntry(database: DatabaseEntryTables) {
+export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntry {
 	switch (database) {
 		case 'users': {
 			return {
@@ -204,3 +209,5 @@ export function getDatabaseEntry(database: DatabaseEntryTables) {
 		}
 	}
 }
+
+export default getDatabaseEntry;

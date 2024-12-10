@@ -1,9 +1,15 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
-import { CMSSiteConfigId } from '../consts';
-import { tsPageData, tsSiteConfig, tsUsers } from '../db/tsTables';
-import type { CombinedPageData, CombinedUserData, SimplifiedTables } from './types';
-import { collectPageData, collectUserData } from './utils';
+import { CMSSiteConfigId } from '../../consts';
+import { tsPageData, tsSiteConfig, tsUsers } from '../../db/tsTables';
+import type {
+	CombinedPageData,
+	CombinedUserData,
+	GetDatabase,
+	SimplifiedTables,
+	SiteConfig,
+} from '../types';
+import { collectPageData, collectUserData } from '../utils';
 
 /**
  * Retrieves data from the database based on the specified table.
@@ -19,7 +25,7 @@ import { collectPageData, collectUserData } from './utils';
  *
  * @throws Will throw an error if the specified database table is not recognized.
  */
-export async function getDatabase(database: SimplifiedTables) {
+export async function getDatabase(database: SimplifiedTables): Promise<GetDatabase> {
 	switch (database) {
 		case 'users': {
 			const combinedUserData: CombinedUserData[] = [];
@@ -48,9 +54,19 @@ export async function getDatabase(database: SimplifiedTables) {
 			return pages;
 		}
 		case 'config': {
-			return await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get();
+			const siteConfig = await db
+				.select()
+				.from(tsSiteConfig)
+				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+				.get();
+
+			if (!siteConfig) return undefined;
+
+			return siteConfig as SiteConfig;
 		}
 		default:
 			throw new Error(`Database table '${database}' not recognized.`);
 	}
 }
+
+export default getDatabase;

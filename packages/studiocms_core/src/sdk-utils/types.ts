@@ -1,4 +1,5 @@
 import type {
+	tsDiffTracking,
 	tsOAuthAccounts,
 	tsPageContent,
 	tsPageData,
@@ -6,6 +7,7 @@ import type {
 	tsPageDataTags,
 	tsPermissions,
 	tsSessionTable,
+	tsSiteConfig,
 	tsUsers,
 } from '../db/tsTables';
 
@@ -111,6 +113,8 @@ export type tsPageDataTagsSelect = typeof tsPageDataTags.$inferSelect;
  */
 export type tsPageDataCategoriesSelect = typeof tsPageDataCategories.$inferSelect;
 
+export type tsDiffTrackingSelect = typeof tsDiffTracking.$inferSelect;
+
 /**
  * Type alias for the inferred select type of `tsPageContent`.
  *
@@ -118,6 +122,26 @@ export type tsPageDataCategoriesSelect = typeof tsPageDataCategories.$inferSelec
  * It is used to represent the structure of the selected content from `tsPageContent`.
  */
 export type tsPageContentSelect = typeof tsPageContent.$inferSelect;
+
+/**
+ * Type representing the selection of site configuration data.
+ *
+ * This type is inferred from the `$inferSelect` property of the `tsSiteConfig` object.
+ */
+export type tsSiteConfigSelect = typeof tsSiteConfig.$inferSelect;
+
+/**
+ * Type representing the insertion of site configuration data.
+ *
+ * This type is inferred from the `$inferInsert` property of the `tsSiteConfig` object.
+ */
+export type tsSiteConfigInsert = typeof tsSiteConfig.$inferInsert;
+
+/**
+ * Represents a stripped-down version of the `tsSiteConfigSelect` type,
+ * excluding the property 'id'.
+ */
+export type SiteConfig = Omit<tsSiteConfigSelect, 'id'>;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
@@ -162,4 +186,104 @@ export interface CombinedPageData extends PageDataStripped {
 	tags: tsPageDataTagsSelect[];
 	multiLangContent: tsPageContentSelect[];
 	defaultContent: tsPageContentSelect | undefined;
+}
+
+interface GetDatabaseEntryUser {
+	byId: (id: string) => Promise<CombinedUserData | undefined>;
+	byUsername: (username: string) => Promise<CombinedUserData | undefined>;
+	byEmail: (email: string) => Promise<CombinedUserData | undefined>;
+}
+
+interface GetDatabaseEntryPage {
+	byId: (id: string) => Promise<CombinedPageData | undefined>;
+	bySlug: (slug: string, pkg: string) => Promise<CombinedPageData | undefined>;
+}
+
+export type GetDatabaseEntry = GetDatabaseEntryUser | GetDatabaseEntryPage;
+
+export type DatabaseTables =
+	| tsUsersSelect[]
+	| tsOAuthAccountsSelect[]
+	| tsSessionTableSelect[]
+	| tsPermissionsSelect[]
+	| tsSiteConfigSelect
+	| tsPageDataSelect[]
+	| tsPageDataTagsSelect[]
+	| tsPageDataCategoriesSelect[]
+	| tsPageContentSelect[]
+	| tsDiffTrackingSelect[]
+	| undefined;
+
+export type GetDatabase = SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined;
+
+/**
+ * Interface representing the STUDIOCMS SDK.
+ */
+export interface STUDIOCMS_SDK {
+	/**
+	 * Contains methods for getting data from the database.
+	 */
+	GET: {
+		/**
+		 * Retrieves data from the database based on the specified table.
+		 *
+		 * @param database - The name of the database table to retrieve data from.
+		 *                   It can be one of the following values: 'users', 'pages', or 'config'.
+		 *
+		 * @returns A promise that resolves to the data retrieved from the specified table.
+		 *
+		 * - If `database` is 'users', it returns an array of `CombinedUserData` objects.
+		 * - If `database` is 'pages', it returns an array of `CombinedPageData` objects.
+		 * - If `database` is 'config', it returns the site configuration object.
+		 *
+		 * @throws Will throw an error if the specified database table is not recognized.
+		 */
+		database: (database: SimplifiedTables) => Promise<GetDatabase>;
+
+		/**
+		 * Retrieves a database entry based on the specified table.
+		 *
+		 * @param database - The name of the database table to retrieve the entry from.
+		 * @returns An object containing methods to retrieve entries by different criteria.
+		 *
+		 * The function supports the following tables:
+		 * - 'users': Provides methods to retrieve user data by ID, username, or email.
+		 * - 'pages': Provides methods to retrieve page data by ID or slug and optionally package.
+		 *
+		 * @example
+		 * ```typescript
+		 * const userEntry = getDatabaseEntry('users');
+		 * const userData = await userEntry.byId('example-id');
+		 * if (userData) {
+		 *   console.log(userData);
+		 * } else {
+		 *   console.log('User not found');
+		 * }
+		 *
+		 * const pageEntry = getDatabaseEntry('pages');
+		 * const pageData = await pageEntry.byId('example-id');
+		 * if (pageData) {
+		 *   console.log(pageData);
+		 * } else {
+		 *   console.log('Page not found');
+		 * }
+		 * ```
+		 */
+		databaseEntry: (database: DatabaseEntryTables) => GetDatabaseEntry;
+
+		/**
+		 * Retrieves raw data from the specified database table.
+		 *
+		 * @param database - The name of the database table to retrieve data from.
+		 * @returns A promise that resolves to the data from the specified database table.
+		 * @throws An error if the specified database table is unknown.
+		 *
+		 * @example
+		 * ```typescript
+		 * const users = await getDatabaseRaw('users');
+		 * console.log(users);
+		 * ```
+		 */
+		databaseTable: (database: CurrentTables) => Promise<DatabaseTables>;
+	};
 }

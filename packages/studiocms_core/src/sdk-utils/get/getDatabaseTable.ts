@@ -1,6 +1,6 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
-import { CMSSiteConfigId } from '../consts';
+import { CMSSiteConfigId } from '../../consts';
 import {
 	tsDiffTracking,
 	tsOAuthAccounts,
@@ -12,8 +12,8 @@ import {
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
-} from '../db/tsTables';
-import type { CurrentTables } from './types';
+} from '../../db/tsTables';
+import type { CurrentTables, DatabaseTables } from '../types';
 
 /**
  * Retrieves raw data from the specified database table.
@@ -28,7 +28,7 @@ import type { CurrentTables } from './types';
  * console.log(users);
  * ```
  */
-export async function getDatabaseRaw(database: CurrentTables) {
+export async function getDatabaseTable(database: CurrentTables): Promise<DatabaseTables> {
 	switch (database) {
 		case 'users':
 			return await db.select().from(tsUsers);
@@ -54,3 +54,5 @@ export async function getDatabaseRaw(database: CurrentTables) {
 			throw new Error(`Unknown database table: ${database}`);
 	}
 }
+
+export default getDatabaseTable;
