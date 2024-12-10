@@ -287,6 +287,43 @@ export type DatabaseTables =
 export type GetDatabase = SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined;
 
 /**
+ * Represents a combined rank with associated details.
+ *
+ * @property {string} rank - The rank of the entity.
+ * @property {string} id - The unique identifier for the rank.
+ * @property {string} name - The name associated with the rank.
+ */
+export type CombinedRank = {
+	rank: string;
+	id: string;
+	name: string;
+};
+
+/**
+ * Represents a single rank with an identifier and a name.
+ */
+export type SingleRank = {
+	id: string;
+	name: string;
+};
+
+/**
+ * Represents a list of permissions which can be either a combined rank or a single rank.
+ */
+export type PermissionsList = CombinedRank | SingleRank;
+
+/**
+ * Represents the different types of user lists available in the system.
+ *
+ * - 'owners': List of owners.
+ * - 'admins': List of administrators.
+ * - 'editors': List of editors.
+ * - 'visitors': List of visitors.
+ * - 'all': List of all users.
+ */
+export type AvailableLists = 'owners' | 'admins' | 'editors' | 'visitors' | 'all';
+
+/**
  * Interface representing the STUDIOCMS SDK.
  */
 export interface STUDIOCMS_SDK {
@@ -363,5 +400,30 @@ export interface STUDIOCMS_SDK {
 		 * @returns A promise that resolves to an array of CombinedPageData objects.
 		 */
 		packagePages: (packageName: string) => Promise<CombinedPageData[]>;
+
+		/**
+		 * Retrieves a list of permissions based on the specified list type.
+		 *
+		 * @param list - The type of list to retrieve. Can be one of 'all', 'owners', 'admins', 'editors', or 'visitors'.
+		 * @returns A promise that resolves to an array of permissions lists.
+		 *
+		 * The function performs the following actions based on the list type:
+		 * - 'all': Retrieves all users and their permissions, then categorizes them into owners, admins, editors, and visitors.
+		 * - 'owners': Retrieves users with 'owner' permissions.
+		 * - 'admins': Retrieves users with 'admin' permissions.
+		 * - 'editors': Retrieves users with 'editor' permissions.
+		 * - 'visitors': Retrieves users with 'visitor' permissions.
+		 *
+		 * The function uses the following helper functions:
+		 * - `verifyRank`: Verifies the rank of users based on the existing users and current permitted users.
+		 * - `combineRanks`: Combines users of a specific rank into a single list.
+		 *
+		 * @example
+		 * ```typescript
+		 * const owners = await getPermissionsLists('owners');
+		 * console.log(owners);
+		 * ```
+		 */
+		permissionsLists: (list: AvailableLists) => Promise<PermissionsList[]>;
 	};
 }
