@@ -61,6 +61,22 @@ export const StudioCMSPageData = defineTable({
 		catagories: column.json({ default: [], optional: true }),
 		categories: column.json({ default: [], optional: true }),
 		tags: column.json({ default: [], optional: true }),
+		authorId: column.text({ optional: true }),
+		contributorIds: column.json({ default: [], optional: true }),
+		showAuthor: column.boolean({ default: false, optional: true }),
+		showContributors: column.boolean({ default: false, optional: true }),
+	},
+});
+
+export const StudioCMSDiffTracking = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		pageId: column.text({ references: () => StudioCMSPageData.columns.id }),
+		timestamp: column.date({ default: NOW, optional: true }),
+		pageMetaData: column.json({ default: {}, optional: true }),
+		pageContentStart: column.text({ multiline: true }),
+		diff: column.text({ multiline: true, optional: true }),
 	},
 });
 

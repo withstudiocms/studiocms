@@ -19,6 +19,7 @@ const currentTables = [
 	'pageDataCategories',
 	'pageContent',
 	'siteConfig',
+	'diffTracking',
 ] as const;
 
 export const simplifiedTables = ['users', 'pages', 'config'] as const;
@@ -35,7 +36,10 @@ export type tsPageDataTagsSelect = typeof tsPageDataTags.$inferSelect;
 export type tsPageDataCategoriesSelect = typeof tsPageDataCategories.$inferSelect;
 export type tsPageContentSelect = typeof tsPageContent.$inferSelect;
 
-export type PageDataStripped = Omit<tsPageDataSelect, 'categories' | 'tags'>;
+export type PageDataStripped = Omit<
+	tsPageDataSelect,
+	'catagories' | 'categories' | 'tags' | 'contributorIds'
+>;
 
 export interface CombinedUserData extends tsUsersSelect {
 	oAuthData: tsOAuthAccountsSelect[] | undefined;
@@ -43,6 +47,7 @@ export interface CombinedUserData extends tsUsersSelect {
 }
 
 export interface CombinedPageData extends PageDataStripped {
+	contributorIds: string[];
 	categories: tsPageDataCategoriesSelect[];
 	tags: tsPageDataTagsSelect[];
 	content: tsPageContentSelect[];

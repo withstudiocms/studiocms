@@ -8,64 +8,31 @@ import {
 	tsPageDataCategories,
 	tsPageDataTags,
 	tsPermissions,
-	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
 } from '../db/tsTables';
 import type {
 	CombinedPageData,
 	CombinedUserData,
-	CurrentTables,
 	SimplifiedTables,
 	tsPageDataCategoriesSelect,
 	tsPageDataTagsSelect,
 } from './types';
 
-export async function getDatabaseRaw(database: CurrentTables) {
-	switch (database) {
-		case 'users': {
-			const users = await db.select().from(tsUsers);
-			return users;
-		}
-		case 'oAuthAccounts': {
-			const oAuthAccounts = await db.select().from(tsOAuthAccounts);
-			return oAuthAccounts;
-		}
-		case 'sessionTable': {
-			const sessionTable = await db.select().from(tsSessionTable);
-			return sessionTable;
-		}
-		case 'permissions': {
-			const permissions = await db.select().from(tsPermissions);
-			return permissions;
-		}
-		case 'pageData': {
-			const pageData = await db.select().from(tsPageData);
-			return pageData;
-		}
-		case 'pageDataTags': {
-			const pageDataTags = await db.select().from(tsPageDataTags);
-			return pageDataTags;
-		}
-		case 'pageDataCategories': {
-			const pageDataCategories = await db.select().from(tsPageDataCategories);
-			return pageDataCategories;
-		}
-		case 'pageContent': {
-			const pageContent = await db.select().from(tsPageContent);
-			return pageContent;
-		}
-		case 'siteConfig': {
-			const siteConfig = await db
-				.select()
-				.from(tsSiteConfig)
-				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-				.get();
-			return siteConfig;
-		}
-	}
-}
-
+/**
+ * Retrieves data from the database based on the specified table.
+ *
+ * @param database - The name of the database table to retrieve data from.
+ *                   It can be one of the following values: 'users', 'pages', or 'config'.
+ *
+ * @returns A promise that resolves to the data retrieved from the specified table.
+ *
+ * - If `database` is 'users', it returns an array of `CombinedUserData` objects.
+ * - If `database` is 'pages', it returns an array of `CombinedPageData` objects.
+ * - If `database` is 'config', it returns the site configuration object.
+ *
+ * @throws Will throw an error if the specified database table is not recognized.
+ */
 export async function getDatabase(database: SimplifiedTables) {
 	switch (database) {
 		case 'users': {
@@ -98,10 +65,12 @@ export async function getDatabase(database: SimplifiedTables) {
 			for (const page of pageData) {
 				const categories: tsPageDataCategoriesSelect[] = [];
 				const tags: tsPageDataTagsSelect[] = [];
+				const contributors: string[] = [];
 
-				const [allCategories, allTags] = await db.batch([
+				const [allCategories, allTags, allUsers] = await db.batch([
 					db.select().from(tsPageDataCategories),
 					db.select().from(tsPageDataTags),
+					db.select().from(tsUsers),
 				]);
 
 				for (const category of page.categories as number[]) {
@@ -118,6 +87,13 @@ export async function getDatabase(database: SimplifiedTables) {
 					}
 				}
 
+				for (const contributor of page.contributorIds as string[]) {
+					const contributorData = allUsers.find((user) => user.id === contributor);
+					if (contributorData) {
+						contributors.push(contributorData.id);
+					}
+				}
+
 				const contentData = await db
 					.select()
 					.from(tsPageContent)
@@ -125,6 +101,7 @@ export async function getDatabase(database: SimplifiedTables) {
 
 				const PageData: CombinedPageData = {
 					...page,
+					contributorIds: contributors,
 					categories: categories,
 					tags: tags,
 					content: contentData,
@@ -135,14 +112,9 @@ export async function getDatabase(database: SimplifiedTables) {
 
 			return pages;
 		}
-		case 'config': {
-			const siteConfig = await db
-				.select()
-				.from(tsSiteConfig)
-				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-				.get();
-
-			return siteConfig;
-		}
+		case 'config':
+			return await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get();
+		default:
+			throw new Error(`Database table '${database}' not recognized.`);
 	}
 }

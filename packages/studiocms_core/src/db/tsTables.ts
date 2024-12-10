@@ -1,5 +1,6 @@
 import { asDrizzleTable } from '@astrojs/db/utils';
 import {
+	StudioCMSDiffTracking,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -67,3 +68,9 @@ export const tsUsers = asDrizzleTable('StudioCMSUsers', StudioCMSUsers);
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
  */
 export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCMSOAuthAccounts);
+
+/**
+ * # StudioCMS - Diff Tracking Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSDiffTracking);
