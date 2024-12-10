@@ -1,3 +1,4 @@
+/// <reference types="@astrojs/db" />
 import { db } from 'astro:db';
 import { tsPageContent, tsPageData } from '../../db/tsTables';
 import type { addDatabaseEntryInsertPage, tsPageContentInsert, tsPageDataInsert } from '../types';
@@ -53,7 +54,7 @@ export function addDatabaseEntry(
 						content: pageContent.content || '',
 					};
 
-					const TODAY = new Date();
+					const NOW = new Date();
 
 					const [newPageData, newPageContent] = await db
 						.batch([
@@ -71,8 +72,8 @@ export function addDatabaseEntry(
 									showContributors,
 									showOnNav,
 									package: packageName,
-									publishedAt: TODAY,
-									updatedAt: TODAY,
+									publishedAt: NOW,
+									updatedAt: NOW,
 									...stringified,
 								})
 								.returning({ id: tsPageData.id }),

@@ -1,3 +1,4 @@
+/// <reference types="@astrojs/db" />
 import { db } from 'astro:db';
 import { tsPermissions, tsUsers } from '../../db/tsTables';
 import type { AvailableLists, PermissionsList } from '../types';

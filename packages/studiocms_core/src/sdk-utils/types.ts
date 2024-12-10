@@ -188,14 +188,39 @@ export interface CombinedPageData extends PageDataStripped {
 	defaultContent: tsPageContentSelect | undefined;
 }
 
+/**
+ * Type alias for the inferred insert type of `tsPageData`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsPageData`.
+ * It represents the shape of data that can be inserted into the `tsPageData` structure.
+ */
 export type tsPageDataInsert = typeof tsPageData.$inferInsert;
 
+/**
+ * Type alias for the inferred insert type of `tsPageContent`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsPageContent`.
+ * It represents the structure of data that can be inserted into the `tsPageContent`.
+ */
 export type tsPageContentInsert = typeof tsPageContent.$inferInsert;
 
+/**
+ * Represents a type that picks the 'id' property from the tsPageContentSelect type.
+ */
 export type PageDataReturnId = Pick<tsPageContentSelect, 'id'>;
 
+/**
+ * Represents a type that picks the 'id' property from the tsPageDataSelect type.
+ * This type is used to return only the 'id' field from a tsPageDataSelect object.
+ */
 export type PageContentReturnId = Pick<tsPageDataSelect, 'id'>;
 
+/**
+ * Represents the structure for adding a database entry for a page.
+ *
+ * @property {PageDataReturnId[]} pageData - An array of page data objects with return IDs.
+ * @property {PageContentReturnId[]} pageContent - An array of page content objects with return IDs.
+ */
 export type addDatabaseEntryInsertPage = {
 	pageData: PageDataReturnId[];
 	pageContent: PageContentReturnId[];
