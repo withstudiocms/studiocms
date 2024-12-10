@@ -188,19 +188,79 @@ export interface CombinedPageData extends PageDataStripped {
 	defaultContent: tsPageContentSelect | undefined;
 }
 
+/**
+ * Interface for retrieving user data from the database.
+ * Provides methods to fetch user data by different identifiers.
+ */
 interface GetDatabaseEntryUser {
+	/**
+	 * Fetches user data by user ID.
+	 * @param id - The unique identifier of the user.
+	 * @returns A promise that resolves to the combined user data or undefined if not found.
+	 */
 	byId: (id: string) => Promise<CombinedUserData | undefined>;
+
+	/**
+	 * Fetches user data by username.
+	 * @param username - The username of the user.
+	 * @returns A promise that resolves to the combined user data or undefined if not found.
+	 */
 	byUsername: (username: string) => Promise<CombinedUserData | undefined>;
+
+	/**
+	 * Fetches user data by email.
+	 * @param email - The email address of the user.
+	 * @returns A promise that resolves to the combined user data or undefined if not found.
+	 */
 	byEmail: (email: string) => Promise<CombinedUserData | undefined>;
 }
 
+/**
+ * Interface representing methods to retrieve database entries for pages.
+ */
 interface GetDatabaseEntryPage {
+	/**
+	 * Retrieves a page entry by its unique identifier.
+	 *
+	 * @param id - The unique identifier of the page.
+	 * @returns A promise that resolves to the combined page data or undefined if not found.
+	 */
 	byId: (id: string) => Promise<CombinedPageData | undefined>;
+
+	/**
+	 * Retrieves a page entry by its slug and package name.
+	 *
+	 * @param slug - The slug of the page.
+	 * @param pkg - The package name associated with the page.
+	 * @returns A promise that resolves to the combined page data or undefined if not found.
+	 */
 	bySlug: (slug: string, pkg: string) => Promise<CombinedPageData | undefined>;
 }
 
+/**
+ * Represents a database entry which can be either a user or a page.
+ *
+ * @typedef {GetDatabaseEntryUser | GetDatabaseEntryPage} GetDatabaseEntry
+ */
 export type GetDatabaseEntry = GetDatabaseEntryUser | GetDatabaseEntryPage;
 
+/**
+ * Represents the possible types of database tables used in the application.
+ *
+ * This type is a union of several specific table selection types, each representing
+ * a different table in the database. The possible types include:
+ * - `tsUsersSelect[]`: An array of user selection objects.
+ * - `tsOAuthAccountsSelect[]`: An array of OAuth account selection objects.
+ * - `tsSessionTableSelect[]`: An array of session table selection objects.
+ * - `tsPermissionsSelect[]`: An array of permission selection objects.
+ * - `tsSiteConfigSelect`: A site configuration selection object.
+ * - `tsPageDataSelect[]`: An array of page data selection objects.
+ * - `tsPageDataTagsSelect[]`: An array of page data tags selection objects.
+ * - `tsPageDataCategoriesSelect[]`: An array of page data categories selection objects.
+ * - `tsPageContentSelect[]`: An array of page content selection objects.
+ * - `tsDiffTrackingSelect[]`: An array of diff tracking selection objects.
+ * - `undefined`: Represents an undefined state.
+ */
 export type DatabaseTables =
 	| tsUsersSelect[]
 	| tsOAuthAccountsSelect[]
@@ -214,6 +274,16 @@ export type DatabaseTables =
 	| tsDiffTrackingSelect[]
 	| undefined;
 
+/**
+ * Represents the possible return types for a database query.
+ *
+ * @type {SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined}
+ *
+ * @property {SiteConfig} SiteConfig - Configuration settings for the site.
+ * @property {CombinedUserData[]} CombinedUserData - Array of combined user data.
+ * @property {CombinedPageData[]} CombinedPageData - Array of combined page data.
+ * @property {undefined} undefined - Indicates that the database query returned no results.
+ */
 export type GetDatabase = SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined;
 
 /**
