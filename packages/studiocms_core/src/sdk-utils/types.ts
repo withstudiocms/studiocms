@@ -216,6 +216,34 @@ export type PageDataReturnId = Pick<tsPageContentSelect, 'id'>;
 export type PageContentReturnId = Pick<tsPageDataSelect, 'id'>;
 
 /**
+ * Type alias for the inferred insert type of `tsPageDataTags`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsPageDataTags`.
+ * It represents the shape of data that can be inserted into the `tsPageDataTags` table.
+ */
+export type tsPageDataTagsInsert = typeof tsPageDataTags.$inferInsert;
+
+/**
+ * Represents the response type for inserting page data tags.
+ * This type is a subset of `tsPageDataTagsSelect` containing only the `id` field.
+ */
+export type PageDataTagsInsertResponse = Pick<tsPageDataTagsSelect, 'id'>;
+
+/**
+ * Type alias for the inferred insert type of `tsPageDataCategories`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsPageDataCategories`.
+ * It represents the structure of data that can be inserted into the `tsPageDataCategories` table.
+ */
+export type tsPageDataCategoriesInsert = typeof tsPageDataCategories.$inferInsert;
+
+/**
+ * Represents the response type for inserting a new page data category.
+ * This type is a subset of `tsPageDataCategoriesSelect` containing only the 'id' field.
+ */
+export type PageDataCategoriesInsertResponse = Pick<tsPageDataCategoriesSelect, 'id'>;
+
+/**
  * Represents the structure for adding a database entry for a page.
  *
  * @property {PageDataReturnId[]} pageData - An array of page data objects with return IDs.
@@ -362,6 +390,73 @@ export type PermissionsList = CombinedRank | SingleRank;
 export type AvailableLists = 'owners' | 'admins' | 'editors' | 'visitors' | 'all';
 
 /**
+ * Interface representing the methods to add entries to various database tables.
+ */
+export interface AddDatabaseEntry {
+	/**
+	 * Methods related to the `pages` table.
+	 */
+	pages: {
+		/**
+		 * Inserts a new page entry into the database.
+		 * @param pageData - The data for the page to be inserted.
+		 * @param pageContent - The content for the page to be inserted.
+		 * @returns A promise that resolves to the result of the page insertion.
+		 */
+		insert: (
+			pageData: tsPageDataInsert,
+			pageContent: tsPageContentInsert
+		) => Promise<addDatabaseEntryInsertPage>;
+	};
+	/**
+	 * Methods related to the `pageContent` table.
+	 */
+	pageContent: {
+		/**
+		 * Inserts new content for a specific page into the database.
+		 * @param pageId - The ID of the page to which the content belongs.
+		 * @param pageContent - The content to be inserted.
+		 * @returns A promise that resolves to an array of inserted content IDs.
+		 */
+		insert: (pageId: string, pageContent: tsPageContentInsert) => Promise<PageContentReturnId[]>;
+	};
+	/**
+	 * Methods related to the `tags` table.
+	 */
+	tags: {
+		/**
+		 * Inserts a new tag into the database.
+		 * @param tag - The tag data to be inserted.
+		 * @returns A promise that resolves to an array of inserted tag responses.
+		 */
+		insert: (tag: tsPageDataTagsInsert) => Promise<PageDataTagsInsertResponse[]>;
+	};
+	/**
+	 * Methods related to the `categories` table.
+	 */
+	categories: {
+		/**
+		 * Inserts a new category into the database.
+		 * @param category - The category data to be inserted.
+		 * @returns A promise that resolves to an array of inserted category responses.
+		 */
+		insert: (category: tsPageDataCategoriesInsert) => Promise<PageDataCategoriesInsertResponse[]>;
+	};
+	/**
+	 * Methods related to the `permissions` table.
+	 */
+	permissions: {
+		/**
+		 * Inserts a new permission for a user into the database.
+		 * @param userId - The ID of the user to whom the permission is granted.
+		 * @param rank - The rank or level of the permission.
+		 * @returns A promise that resolves to an array of selected permissions.
+		 */
+		insert: (userId: string, rank: string) => Promise<tsPermissionsSelect[]>;
+	};
+}
+
+/**
  * Interface representing the STUDIOCMS SDK.
  */
 export interface STUDIOCMS_SDK {
@@ -463,5 +558,14 @@ export interface STUDIOCMS_SDK {
 		 * ```
 		 */
 		permissionsLists: (list: AvailableLists) => Promise<PermissionsList[]>;
+	};
+	/**
+	 * Contains methods for adding data to the database.
+	 */
+	ADD: {
+		/**
+		 * Methods related to adding entries to the database.
+		 */
+		databaseEntry: AddDatabaseEntry;
 	};
 }

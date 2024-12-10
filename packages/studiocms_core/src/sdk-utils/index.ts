@@ -1,3 +1,4 @@
+import { addDatabaseEntry } from './add/addDatabaseEntry';
 import {
 	getDatabase,
 	getDatabaseEntry,
@@ -31,6 +32,9 @@ export const StudioCMS_SDK: STUDIOCMS_SDK = {
 		databaseTable: async (database) => await getDatabaseTable(database),
 		packagePages: async (packageName) => await getPackagePages(packageName),
 		permissionsLists: async (list) => await getPermissionsLists(list),
+	},
+	ADD: {
+		databaseEntry: addDatabaseEntry,
 	},
 };
 

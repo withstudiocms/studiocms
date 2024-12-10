@@ -1,28 +1,14 @@
 /// <reference types="@astrojs/db" />
-import { db } from 'astro:db';
-import { tsPageContent, tsPageData } from '../../db/tsTables';
-import type { addDatabaseEntryInsertPage, tsPageContentInsert, tsPageDataInsert } from '../types';
-
-interface AddDatabaseEntry {
-	pages: {
-		insert: (
-			pageData: tsPageDataInsert,
-			pageContent: tsPageContentInsert
-		) => Promise<addDatabaseEntryInsertPage>;
-	};
-	pageContent: {
-		insert: () => void;
-	};
-	tags: {
-		insert: () => void;
-	};
-	categories: {
-		insert: () => void;
-	};
-	permissions: {
-		insert: () => void;
-	};
-}
+import { db, eq } from 'astro:db';
+import {
+	tsPageContent,
+	tsPageData,
+	tsPageDataCategories,
+	tsPageDataTags,
+	tsPermissions,
+} from '../../db/tsTables';
+import type { AddDatabaseEntry } from '../types';
+import { generateRandomIDNumber } from '../utils';
 
 export const addDatabaseEntry: AddDatabaseEntry = {
 	pages: {
@@ -36,10 +22,7 @@ export const addDatabaseEntry: AddDatabaseEntry = {
 		 *
 		 * @throws Will throw an error if there is an error during the insertion process.
 		 */
-		insert: async (
-			pageData: tsPageDataInsert,
-			pageContent: tsPageContentInsert
-		): Promise<addDatabaseEntryInsertPage> => {
+		insert: async (pageData, pageContent) => {
 			const newContentID = crypto.randomUUID().toString();
 
 			const {
@@ -104,15 +87,79 @@ export const addDatabaseEntry: AddDatabaseEntry = {
 		},
 	},
 	pageContent: {
-		insert: async () => {},
+		insert: async (pageId, pageContent) => {
+			return await db
+				.insert(tsPageContent)
+				.values({
+					id: crypto.randomUUID().toString(),
+					contentId: pageId,
+					contentLang: pageContent.contentLang || 'default',
+					content: pageContent.content || '',
+				})
+				.returning({ id: tsPageContent.id })
+				.catch((error) => {
+					throw new Error(error);
+				});
+		},
 	},
 	tags: {
-		insert: async () => {},
+		insert: async (tag) => {
+			return await db
+				.insert(tsPageDataTags)
+				.values({
+					name: tag.name,
+					description: tag.description,
+					slug: tag.slug,
+					meta: JSON.stringify(tag.meta),
+					id: generateRandomIDNumber(9),
+				})
+				.returning({ id: tsPageDataTags.id })
+				.catch((error) => {
+					throw new Error(error);
+				});
+		},
 	},
 	categories: {
-		insert: async () => {},
+		insert: async (category) => {
+			return await db
+				.insert(tsPageDataCategories)
+				.values({
+					name: category.name,
+					description: category.description,
+					slug: category.slug,
+					meta: JSON.stringify(category.meta),
+					id: generateRandomIDNumber(9),
+				})
+				.returning({ id: tsPageDataCategories.id })
+				.catch((error) => {
+					throw new Error(error);
+				});
+		},
 	},
 	permissions: {
-		insert: async () => {},
+		insert: async (userId, rank) => {
+			const userAlreadyExists = await db
+				.select()
+				.from(tsPermissions)
+				.where(eq(tsPermissions.user, userId))
+				.get();
+
+			if (userAlreadyExists) {
+				throw new Error(
+					'User already is already assigned a rank, please update the existing rank instead.'
+				);
+			}
+
+			return await db
+				.insert(tsPermissions)
+				.values({
+					user: userId,
+					rank,
+				})
+				.returning({ user: tsPermissions.user, rank: tsPermissions.rank })
+				.catch((error) => {
+					throw new Error(error);
+				});
+		},
 	},
 };
