@@ -355,5 +355,13 @@ export interface STUDIOCMS_SDK {
 		 * ```
 		 */
 		databaseTable: (database: CurrentTables) => Promise<DatabaseTables>;
+
+		/**
+		 * Retrieves the pages associated with a given package name.
+		 *
+		 * @param packageName - The name of the package for which to retrieve pages.
+		 * @returns A promise that resolves to an array of CombinedPageData objects.
+		 */
+		packagePages: (packageName: string) => Promise<CombinedPageData[]>;
 	};
 }

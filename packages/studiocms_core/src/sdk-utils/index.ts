@@ -1,4 +1,4 @@
-import { getDatabase, getDatabaseEntry, getDatabaseTable } from './get';
+import { getDatabase, getDatabaseEntry, getDatabaseTable, getPackagePages } from './get';
 import type { STUDIOCMS_SDK } from './types';
 
 /**
@@ -23,6 +23,7 @@ export const StudioCMS_SDK: STUDIOCMS_SDK = {
 		database: async (database) => await getDatabase(database),
 		databaseEntry: (database) => getDatabaseEntry(database),
 		databaseTable: async (database) => await getDatabaseTable(database),
+		packagePages: async (packageName) => await getPackagePages(packageName),
 	},
 };
 
