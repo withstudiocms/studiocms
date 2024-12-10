@@ -188,6 +188,19 @@ export interface CombinedPageData extends PageDataStripped {
 	defaultContent: tsPageContentSelect | undefined;
 }
 
+export type tsPageDataInsert = typeof tsPageData.$inferInsert;
+
+export type tsPageContentInsert = typeof tsPageContent.$inferInsert;
+
+export type PageDataReturnId = Pick<tsPageContentSelect, 'id'>;
+
+export type PageContentReturnId = Pick<tsPageDataSelect, 'id'>;
+
+export type addDatabaseEntryInsertPage = {
+	pageData: PageDataReturnId[];
+	pageContent: PageContentReturnId[];
+};
+
 /**
  * Interface for retrieving user data from the database.
  * Provides methods to fetch user data by different identifiers.
