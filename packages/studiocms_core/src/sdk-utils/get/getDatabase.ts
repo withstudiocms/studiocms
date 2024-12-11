@@ -1,14 +1,8 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '../../consts';
-import { tsPageData, tsSiteConfig, tsUsers } from '../../db/tsTables';
-import type {
-	CombinedPageData,
-	CombinedUserData,
-	GetDatabase,
-	SimplifiedTables,
-	SiteConfig,
-} from '../types';
+import { tsPageData, tsSiteConfig, tsUsers } from '../tables';
+import type { CombinedPageData, CombinedUserData, STUDIOCMS_SDK, SiteConfig } from '../types';
 import { collectPageData, collectUserData } from '../utils';
 
 /**
@@ -25,7 +19,9 @@ import { collectPageData, collectUserData } from '../utils';
  *
  * @throws Will throw an error if the specified database table is not recognized.
  */
-export async function getDatabase(database: SimplifiedTables): Promise<GetDatabase> {
+export async function getDatabase(
+	database: Parameters<STUDIOCMS_SDK['GET']['database']>[0]
+): ReturnType<STUDIOCMS_SDK['GET']['database']> {
 	switch (database) {
 		case 'users': {
 			const combinedUserData: CombinedUserData[] = [];

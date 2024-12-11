@@ -9,7 +9,7 @@ import type {
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
-} from '../../db/tsTables';
+} from '../tables';
 
 /**
  * Type alias for the inferred select type of `tsUsers`.

@@ -10,7 +10,7 @@ export const PLUGIN_INTEGRATION_ICON: string =
 export const CMSSiteConfigId: number = 1;
 
 /**
- * StudioCMS Site Config Table Entry ID
+ * StudioCMS Social Links Type
  */
 export type StudioCMSSocials = {
 	github: string;

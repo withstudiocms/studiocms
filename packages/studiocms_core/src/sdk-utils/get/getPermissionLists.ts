@@ -1,7 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { db } from 'astro:db';
-import { tsPermissions, tsUsers } from '../../db/tsTables';
-import type { AvailableLists, PermissionsList } from '../types';
+import { tsPermissions, tsUsers } from '../tables';
+import type { STUDIOCMS_SDK } from '../types';
 import { combineRanks, verifyRank } from '../utils';
 
 /**
@@ -27,7 +27,9 @@ import { combineRanks, verifyRank } from '../utils';
  * console.log(owners);
  * ```
  */
-export async function getPermissionsLists(list: AvailableLists): Promise<PermissionsList[]> {
+export async function getPermissionsLists(
+	list: Parameters<STUDIOCMS_SDK['GET']['permissionsLists']>[0]
+): ReturnType<STUDIOCMS_SDK['GET']['permissionsLists']> {
 	switch (list) {
 		case 'all': {
 			const [currentPermittedUsers, existingUsers] = await db.batch([

@@ -1,12 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { and, db, eq } from 'astro:db';
-import { tsPageData, tsUsers } from '../../db/tsTables';
-import type {
-	CombinedPageData,
-	CombinedUserData,
-	DatabaseEntryTables,
-	GetDatabaseEntry,
-} from '../types';
+import { tsPageData, tsUsers } from '../tables';
+import type { STUDIOCMS_SDK } from '../types';
 import { collectPageData, collectUserData } from '../utils';
 
 /**
@@ -38,7 +33,9 @@ import { collectPageData, collectUserData } from '../utils';
  * }
  * ```
  */
-export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntry {
+export function getDatabaseEntry(
+	database: Parameters<STUDIOCMS_SDK['GET']['databaseEntry']>[0]
+): ReturnType<STUDIOCMS_SDK['GET']['databaseEntry']> {
 	switch (database) {
 		case 'users': {
 			return {
@@ -64,7 +61,7 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				 * }
 				 * ```
 				 */
-				async byId(id: string): Promise<CombinedUserData | undefined> {
+				async byId(id) {
 					const user = await db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
 
 					if (!user) return undefined;
@@ -93,7 +90,7 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				 * }
 				 * ```
 				 */
-				async byUsername(username: string): Promise<CombinedUserData | undefined> {
+				async byUsername(username) {
 					const user = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
 
 					if (!user) return undefined;
@@ -121,7 +118,7 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				 * console.log('User not found');
 				 * }
 				 */
-				async byEmail(email: string): Promise<CombinedUserData | undefined> {
+				async byEmail(email) {
 					const user = await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
 
 					if (!user) return undefined;
@@ -158,7 +155,7 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				 * }
 				 * ```
 				 */
-				async byId(id: string): Promise<CombinedPageData | undefined> {
+				async byId(id) {
 					const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
 
 					if (!page) return undefined;
@@ -192,7 +189,7 @@ export function getDatabaseEntry(database: DatabaseEntryTables): GetDatabaseEntr
 				 * }
 				 * ```
 				 */
-				async bySlug(slug: string, pkg?: string): Promise<CombinedPageData | undefined> {
+				async bySlug(slug, pkg?) {
 					const pkgToGet = pkg || 'studiocms';
 
 					const page = await db

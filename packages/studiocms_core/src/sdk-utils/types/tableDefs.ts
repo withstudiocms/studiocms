@@ -9,7 +9,7 @@ import type {
 	tsSessionTableSelect,
 	tsSiteConfigSelect,
 	tsUsersSelect,
-} from './tsAlias.types';
+} from './tsAlias';
 
 /**
  * Represents the possible table names in the current database schema.
@@ -68,7 +68,7 @@ export type SiteConfig = Omit<tsSiteConfigSelect, 'id'>;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
- * excluding the properties 'catagories', 'categories', 'tags', and 'contributorIds'.
+ * excluding the properties 'categories', 'tags', and 'contributorIds'.
  */
 export type PageDataStripped = Omit<tsPageDataSelect, 'categories' | 'tags' | 'contributorIds'>;
 

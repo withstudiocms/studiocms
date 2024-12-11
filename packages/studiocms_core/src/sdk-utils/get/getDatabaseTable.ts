@@ -12,8 +12,8 @@ import {
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
-} from '../../db/tsTables';
-import type { CurrentTables, DatabaseTables } from '../types';
+} from '../tables';
+import type { STUDIOCMS_SDK } from '../types';
 
 /**
  * Retrieves raw data from the specified database table.
@@ -28,7 +28,9 @@ import type { CurrentTables, DatabaseTables } from '../types';
  * console.log(users);
  * ```
  */
-export async function getDatabaseTable(database: CurrentTables): Promise<DatabaseTables> {
+export async function getDatabaseTable(
+	database: Parameters<STUDIOCMS_SDK['GET']['databaseTable']>[0]
+): ReturnType<STUDIOCMS_SDK['GET']['databaseTable']> {
 	switch (database) {
 		case 'users':
 			return await db.select().from(tsUsers);

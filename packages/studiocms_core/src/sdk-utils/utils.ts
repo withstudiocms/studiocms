@@ -7,7 +7,7 @@ import {
 	tsPageDataTags,
 	tsPermissions,
 	tsUsers,
-} from '../db/tsTables';
+} from './tables';
 import type {
 	CombinedPageData,
 	CombinedRank,
