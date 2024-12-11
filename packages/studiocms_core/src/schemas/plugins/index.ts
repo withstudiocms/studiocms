@@ -1,5 +1,6 @@
-import type { asDrizzleTable } from '@astrojs/db/runtime';
 import { z } from 'astro/zod';
+import type { ColumnDataType } from 'drizzle-orm';
+import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared';
 
 export interface AstroIntegration {
@@ -11,7 +12,30 @@ export interface AstroIntegration {
 	} & Partial<Record<string, unknown>>;
 }
 
-const DrizzleTableSchema = z.custom<typeof asDrizzleTable>();
+type AsDrizzleTable = SQLiteTableWithColumns<{
+	name: string;
+	schema: undefined;
+	columns: {
+		[x: string]: SQLiteColumn<
+			{
+				name: string;
+				tableName: string;
+				dataType: ColumnDataType;
+				columnType: string;
+				data: unknown;
+				driverParam: unknown;
+				notNull: false;
+				hasDefault: false;
+				enumValues: string[] | undefined;
+				baseColumn: never;
+			},
+			object
+		>;
+	};
+	dialect: 'sqlite';
+}>;
+
+const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
 
 const AstroIntegrationSchema = z.union([
 	z.custom<AstroIntegration>(),
@@ -99,11 +123,10 @@ export const StudioCMSPluginSchema = z.object({
 						 *
 						 * @example
 						 * ```ts
-						 * import { asDrizzleTable } from '@astrojs/db/utils';
 						 * import { myTable } from '../dbTables';
 						 *
 						 * {
-						 * table: asDrizzleTable('myTable', myTable),
+						 * table: { name: 'myTable', table: myTable },
 						 * }
 						 */
 						table: DrizzleTableSchema,
@@ -123,11 +146,10 @@ export const StudioCMSPluginSchema = z.object({
 						 *
 						 * @example
 						 * ```ts
-						 * import { asDrizzleTable } from '@astrojs/db/utils';
 						 * import { myTable } from '../dbTables';
 						 *
 						 * {
-						 * table: asDrizzleTable('myTable', myTable),
+						 * table: { name: 'myTable', table: myTable },
 						 * }
 						 */
 						table: DrizzleTableSchema,

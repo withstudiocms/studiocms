@@ -63,7 +63,8 @@
     "remark-rehype": "catalog:studiocms-core",
     "mdast-util-to-hast": "catalog:studiocms-core",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared"
+    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
+    "drizzle-orm": "^0.31.2"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
