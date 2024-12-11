@@ -15,18 +15,21 @@ import {
 /**
  * # StudioCMS - Page Content Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPageContent);
 
 /**
  * # StudioCMS - Page Data Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsPageData = asDrizzleTable('StudioCMSPageData', StudioCMSPageData);
 
 /**
  * # StudioCMS - Page Data Categories Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsPageDataCategories = asDrizzleTable(
 	'StudioCMSPageDataCategories',
@@ -36,41 +39,48 @@ export const tsPageDataCategories = asDrizzleTable(
 /**
  * # StudioCMS - Page Data Tags Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsPageDataTags = asDrizzleTable('StudioCMSPageDataTags', StudioCMSPageDataTags);
 
 /**
  * # StudioCMS - Permissions Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsPermissions = asDrizzleTable('StudioCMSPermissions', StudioCMSPermissions);
 
 /**
  * # StudioCMS - Session Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsSessionTable = asDrizzleTable('StudioCMSSessionTable', StudioCMSSessionTable);
 
 /**
  * # StudioCMS - Site Config Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
 
 /**
  * # StudioCMS - Users Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsUsers = asDrizzleTable('StudioCMSUsers', StudioCMSUsers);
 
 /**
  * # StudioCMS - OAuth Accounts Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCMSOAuthAccounts);
 
 /**
  * # StudioCMS - Diff Tracking Table
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ * @deprecated Will be moved to `@studiocms/sdk-utils/tables`
  */
 export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSDiffTracking);

@@ -1,7 +1,7 @@
 import Config from 'virtual:studiocms/config';
-// import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
-import type { SideBarLink } from '@studiocms/core/types';
 import urlGenFactory from '../helpers/urlGen';
+// import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
+import type { SideBarLink } from '../schemas';
 
 const {
 	dashboardConfig: { dashboardRouteOverride },
@@ -81,7 +81,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'View Site',
 		minPermissionLevel: 'unknown',
 		icon: 'globe-alt',
-		type: 'link',
 	},
 	{
 		id: 'dashboard',
@@ -89,7 +88,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'Dashboard',
 		minPermissionLevel: 'visitor',
 		icon: 'home',
-		type: 'link',
 	},
 	{
 		id: 'profile',
@@ -97,7 +95,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'User Profile',
 		minPermissionLevel: 'visitor',
 		icon: 'user',
-		type: 'link',
 	},
 	{
 		id: 'new-page',
@@ -105,7 +102,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'Create New Page',
 		minPermissionLevel: 'editor',
 		icon: 'plus',
-		type: 'link',
 	},
 	{
 		id: 'edit-pages',
@@ -113,7 +109,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'Edit Pages',
 		minPermissionLevel: 'editor',
 		icon: 'pencil-square',
-		type: 'link',
 	},
 	{
 		id: 'site-config',
@@ -121,7 +116,6 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		text: 'Site Configuration',
 		minPermissionLevel: 'admin',
 		icon: 'cog-6-tooth',
-		type: 'link',
 	},
 ];
 

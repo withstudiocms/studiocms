@@ -131,3 +131,31 @@ declare module 'studiocms:i18n' {
 	export const getCurrentURLPath: typeof import('./src/i18n').getCurrentURLPath;
 	export const switchLanguage: typeof import('./src/i18n').switchLanguage;
 }
+
+declare module 'studiocms:sdk' {
+	export const studioCMS_SDK: import('./src/sdk-utils').STUDIOCMS_SDK;
+}
+
+declare module 'studiocms:sdk/get' {
+	export const studioCMS_SDK_GET: import('./src/sdk-utils/get').default;
+}
+
+declare module 'studiocms:sdk/post' {
+	export const studioCMS_SDK_POST: import('./src/sdk-utils/post').default;
+}
+
+declare module 'studiocms:sdk/update' {
+	export const studioCMS_SDK_UPDATE: import('./src/sdk-utils/update').default;
+}
+
+declare module 'studiocms:sdk/delete' {
+	export const studioCMS_SDK_DELETE: import('./src/sdk-utils/delete').default;
+}
+
+declare module 'studiocms:sdk/auth' {
+	export const studioCMS_SDK_AUTH: import('./src/sdk-utils/auth').default;
+}
+
+declare module 'studiocms:sdk/types' {
+	export type STUDIOCMS_SDK = import('./src/sdk-utils/types').STUDIOCMS_SDK;
+}
