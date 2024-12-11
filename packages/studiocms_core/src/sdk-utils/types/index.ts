@@ -134,55 +134,6 @@ export interface CombinedPageData extends PageDataStripped {
 }
 
 /**
- * Interface for retrieving user data from the database.
- * Provides methods to fetch user data by different identifiers.
- */
-interface GetDatabaseEntryUser {
-	/**
-	 * Fetches user data by user ID.
-	 * @param id - The unique identifier of the user.
-	 * @returns A promise that resolves to the combined user data or undefined if not found.
-	 */
-	byId: (id: string) => Promise<CombinedUserData | undefined>;
-
-	/**
-	 * Fetches user data by username.
-	 * @param username - The username of the user.
-	 * @returns A promise that resolves to the combined user data or undefined if not found.
-	 */
-	byUsername: (username: string) => Promise<CombinedUserData | undefined>;
-
-	/**
-	 * Fetches user data by email.
-	 * @param email - The email address of the user.
-	 * @returns A promise that resolves to the combined user data or undefined if not found.
-	 */
-	byEmail: (email: string) => Promise<CombinedUserData | undefined>;
-}
-
-/**
- * Interface representing methods to retrieve database entries for pages.
- */
-interface GetDatabaseEntryPage {
-	/**
-	 * Retrieves a page entry by its unique identifier.
-	 *
-	 * @param id - The unique identifier of the page.
-	 * @returns A promise that resolves to the combined page data or undefined if not found.
-	 */
-	byId: (id: string) => Promise<CombinedPageData | undefined>;
-
-	/**
-	 * Retrieves a page entry by its slug and package name.
-	 *
-	 * @param slug - The slug of the page.
-	 * @param pkg - The package name associated with the page.
-	 * @returns A promise that resolves to the combined page data or undefined if not found.
-	 */
-	bySlug: (slug: string, pkg: string) => Promise<CombinedPageData | undefined>;
-}
-
-/**
  * Interface representing the STUDIOCMS SDK.
  */
 export interface STUDIOCMS_SDK {
@@ -253,12 +204,50 @@ export interface STUDIOCMS_SDK {
 			/**
 			 * Provides methods to retrieve user data by different identifiers.
 			 */
-			users: GetDatabaseEntryUser;
+			users: {
+				/**
+				 * Fetches user data by user ID.
+				 * @param id - The unique identifier of the user.
+				 * @returns A promise that resolves to the combined user data or undefined if not found.
+				 */
+				byId: (id: string) => Promise<CombinedUserData | undefined>;
+
+				/**
+				 * Fetches user data by username.
+				 * @param username - The username of the user.
+				 * @returns A promise that resolves to the combined user data or undefined if not found.
+				 */
+				byUsername: (username: string) => Promise<CombinedUserData | undefined>;
+
+				/**
+				 * Fetches user data by email.
+				 * @param email - The email address of the user.
+				 * @returns A promise that resolves to the combined user data or undefined if not found.
+				 */
+				byEmail: (email: string) => Promise<CombinedUserData | undefined>;
+			};
 
 			/**
 			 * Provides methods to retrieve page data by different identifiers.
 			 */
-			pages: GetDatabaseEntryPage;
+			pages: {
+				/**
+				 * Retrieves a page entry by its unique identifier.
+				 *
+				 * @param id - The unique identifier of the page.
+				 * @returns A promise that resolves to the combined page data or undefined if not found.
+				 */
+				byId: (id: string) => Promise<CombinedPageData | undefined>;
+
+				/**
+				 * Retrieves a page entry by its slug and package name.
+				 *
+				 * @param slug - The slug of the page.
+				 * @param pkg - The package name associated with the page.
+				 * @returns A promise that resolves to the combined page data or undefined if not found.
+				 */
+				bySlug: (slug: string, pkg: string) => Promise<CombinedPageData | undefined>;
+			};
 		};
 
 		/**
