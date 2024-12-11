@@ -21,7 +21,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  *
  * @todo Implement the delete function to safely remove user records without causing errors due to references in other tables.
  */
-export const StudioCMS_SDK_AUTHUser: STUDIOCMS_SDK['AUTH']['user'] = {
+export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
 	create: async (newUserData: tsUsersInsert) => {
 		try {
 			return await db.insert(tsUsers).values(newUserData).returning().get();
@@ -47,4 +47,4 @@ export const StudioCMS_SDK_AUTHUser: STUDIOCMS_SDK['AUTH']['user'] = {
 	// delete: async () => {},
 };
 
-export default StudioCMS_SDK_AUTHUser;
+export default authUser;

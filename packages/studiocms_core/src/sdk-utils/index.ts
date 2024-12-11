@@ -1,9 +1,9 @@
-import StudioCMS_SDK_AUTH from './auth';
-import StudioCMS_SDK_DELETE from './delete';
-import StudioCMS_SDK_GET from './get';
-import StudioCMS_SDK_POST from './post';
+import studioCMS_SDK_AUTH from './auth';
+import studioCMS_SDK_DELETE from './delete';
+import studioCMS_SDK_GET from './get';
+import studioCMS_SDK_POST from './post';
 import type { STUDIOCMS_SDK } from './types';
-import StudioCMS_SDK_UPDATE from './update';
+import studioCMS_SDK_UPDATE from './update';
 
 /**
  * ## The StudioCMS SDK
@@ -22,12 +22,12 @@ import StudioCMS_SDK_UPDATE from './update';
  * console.log(users);
  * ```
  */
-export const StudioCMS_SDK: STUDIOCMS_SDK = {
-	GET: StudioCMS_SDK_GET,
-	POST: StudioCMS_SDK_POST,
-	UPDATE: StudioCMS_SDK_UPDATE,
-	DELETE: StudioCMS_SDK_DELETE,
-	AUTH: StudioCMS_SDK_AUTH,
+export const studioCMS_SDK: STUDIOCMS_SDK = {
+	GET: studioCMS_SDK_GET,
+	POST: studioCMS_SDK_POST,
+	UPDATE: studioCMS_SDK_UPDATE,
+	DELETE: studioCMS_SDK_DELETE,
+	AUTH: studioCMS_SDK_AUTH,
 };
 
-export default StudioCMS_SDK;
+export default studioCMS_SDK;

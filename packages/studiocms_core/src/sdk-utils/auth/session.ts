@@ -27,7 +27,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<Object>} The updated session object.
  * @throws {StudioCMS_SDK_Error} If an error occurs while updating the session.
  */
-export const StudioCMS_SDK_AUTHSession: STUDIOCMS_SDK['AUTH']['session'] = {
+export const authSession: STUDIOCMS_SDK['AUTH']['session'] = {
 	create: async (data) => {
 		try {
 			return await db
@@ -105,4 +105,4 @@ export const StudioCMS_SDK_AUTHSession: STUDIOCMS_SDK['AUTH']['session'] = {
 	},
 };
 
-export default StudioCMS_SDK_AUTHSession;
+export default authSession;

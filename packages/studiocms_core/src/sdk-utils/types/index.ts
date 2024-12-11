@@ -174,12 +174,14 @@ export interface STUDIOCMS_SDK {
 			 * @returns A promise that resolves to an array of CombinedUserData objects.
 			 */
 			users: () => Promise<CombinedUserData[]>;
+
 			/**
 			 * Retrieves data from the Page metadata and content tables.
 			 *
 			 * @returns A promise that resolves to an array of CombinedPageData objects.
 			 */
 			pages: () => Promise<CombinedPageData[]>;
+
 			/**
 			 * Retrieves the site configuration data.
 			 *
@@ -282,15 +284,54 @@ export interface STUDIOCMS_SDK {
 		 * @property {Function} diffTracking - Fetches the diff tracking table.
 		 */
 		databaseTable: {
+			/**
+			 * Fetches the users table.
+			 */
 			users: () => Promise<tsUsersSelect[]>;
+
+			/**
+			 * Fetches the OAuth accounts table.
+			 */
 			oAuthAccounts: () => Promise<tsOAuthAccountsSelect[]>;
+
+			/**
+			 * Fetches the session table.
+			 */
 			sessionTable: () => Promise<tsSessionTableSelect[]>;
+
+			/**
+			 * Fetches the permissions table.
+			 */
 			permissions: () => Promise<tsPermissionsSelect[]>;
+
+			/**
+			 * Fetches the page data table.
+			 */
 			pageData: () => Promise<tsPageDataSelect[]>;
+
+			/**
+			 * Fetches the page data tags table.
+			 */
 			pageDataTags: () => Promise<tsPageDataTagsSelect[]>;
+
+			/**
+			 * Fetches the page data categories table.
+			 */
 			pageDataCategories: () => Promise<tsPageDataCategoriesSelect[]>;
+
+			/**
+			 * Fetches the page content table.
+			 */
 			pageContent: () => Promise<tsPageContentSelect[]>;
+
+			/**
+			 * Fetches the site configuration table with a specific site config ID.
+			 */
 			siteConfig: () => Promise<tsSiteConfigSelect | undefined>;
+
+			/**
+			 * Fetches the diff tracking table.
+			 */
 			diffTracking: () => Promise<tsDiffTrackingSelect[]>;
 		};
 
@@ -306,10 +347,29 @@ export interface STUDIOCMS_SDK {
 		 * @returns {Promise<Array>} - A promise that resolves to an array of users with the specified permission level.
 		 */
 		permissionsLists: {
+			/**
+			 * Retrieves all users categorized by their permission levels.
+			 */
 			all: () => Promise<CombinedRank[]>;
+
+			/**
+			 * Retrieves users with 'owner' permission level.
+			 */
 			owners: () => Promise<SingleRank[]>;
+
+			/**
+			 * Retrieves users with 'admin' permission level.
+			 */
 			admins: () => Promise<SingleRank[]>;
+
+			/**
+			 * Retrieves users with 'editor' permission level.
+			 */
 			editors: () => Promise<SingleRank[]>;
+
+			/**
+			 * Retrieves users with 'visitor' permission level.
+			 */
 			visitors: () => Promise<SingleRank[]>;
 		};
 
@@ -404,12 +464,14 @@ export interface STUDIOCMS_SDK {
 			 * Asynchronously inserts an array of tag objects into the `tsPageDataTags` table.
 			 */
 			tags: (data: tsPageDataTagsInsert[]) => Promise<PageDataTagsInsertResponse[]>;
+
 			/**
 			 * Asynchronously inserts an array of category objects into the `tsPageDataCategories` table.
 			 */
 			categories: (
 				data: tsPageDataCategoriesInsert[]
 			) => Promise<PageDataCategoriesInsertResponse[]>;
+
 			/**
 			 * Asynchronously inserts an array of permission objects into the `tsPermissions` table.
 			 */
@@ -432,11 +494,34 @@ export interface STUDIOCMS_SDK {
 	 * The methods use the `db.update` function to perform the update operation, and the `returning().get()` chain to return the updated record.
 	 */
 	UPDATE: {
+		/**
+		 * Updates a page record in the `tsPageData` table.
+		 */
 		page: (data: tsPageDataSelect) => Promise<tsPageDataSelect>;
+
+		/**
+		 * Updates a page content record in the `tsPageContent` table.
+		 */
 		pageContent: (data: tsPageContentSelect) => Promise<tsPageContentSelect>;
+
+		/**
+		 * Updates a tag record in the `tsPageDataTags` table.
+		 */
 		tags: (data: tsPageDataTagsSelect) => Promise<tsPageDataTagsSelect>;
+
+		/**
+		 * Updates a category record in the `tsPageDataCategories` table.
+		 */
 		categories: (data: tsPageDataCategoriesSelect) => Promise<tsPageDataCategoriesSelect>;
+
+		/**
+		 * Updates a permission record in the `tsPermissions` table.
+		 */
 		permissions: (data: tsPermissionsSelect) => Promise<tsPermissionsSelect>;
+
+		/**
+		 * Updates a site configuration record in the `tsSiteConfig` table.
+		 */
 		siteConfig: (data: tsSiteConfigSelect) => Promise<tsSiteConfigSelect>;
 	};
 
@@ -478,16 +563,22 @@ export interface STUDIOCMS_SDK {
 	DELETE: {
 		/** Delete page and all page content */
 		page: (id: string) => Promise<DeletionResponse>;
+
 		/** Delete all page content entries for an ID */
 		pageContent: (id: string) => Promise<DeletionResponse>;
+
 		/** Delete page content for a specific language */
 		pageContentLang: (id: string, lang: string) => Promise<DeletionResponse>;
+
 		/** Delete a tag from the Database */
 		tags: (id: number) => Promise<DeletionResponse>;
+
 		/** Delete a category from the Database */
 		categories: (id: number) => Promise<DeletionResponse>;
+
 		/** Delete a user permission from the Database */
 		permissions: (userId: string) => Promise<DeletionResponse>;
+
 		/** Delete a diff from the tracking database */
 		diffTracking: (id: string) => Promise<DeletionResponse>;
 	};
@@ -549,8 +640,21 @@ export interface STUDIOCMS_SDK {
 		 * @todo Implement the delete function to safely remove user records without causing errors due to references in other tables.
 		 */
 		user: {
+			/**
+			 * Asynchronously creates a new user record in the database.
+			 * @param newUserData - The data for the new user to be created.
+			 * @returns A promise that resolves to the created user record.
+			 */
 			create: (newUserData: tsUsersInsert) => Promise<tsUsersSelect>;
+
+			/**
+			 * Asynchronously updates an existing user record in the database.
+			 * @param userId - The ID of the user to be updated.
+			 * @param userData - The new data for the user.
+			 * @returns A promise that resolves to the updated user record.
+			 */
 			update: (userId: string, userData: tsUsersSelect) => Promise<tsUsersSelect>;
+
 			// delete: async () => {},
 		};
 
@@ -572,7 +676,19 @@ export interface STUDIOCMS_SDK {
 		 * @throws {StudioCMS_SDK_Error} Throws an error if the account deletion fails.
 		 */
 		oAuth: {
+			/**
+			 * Asynchronously creates a new OAuth account with the provided data.
+			 * @param data - The data for the new OAuth account.
+			 * @returns A promise that resolves to the created OAuth account.
+			 */
 			create: (data: tsOAuthAccountsSelect) => Promise<tsOAuthAccountsSelect>;
+
+			/**
+			 * Asynchronously deletes an existing OAuth account based on user ID and provider.
+			 * @param userId - The ID of the user whose OAuth account is to be deleted.
+			 * @param provider - The provider of the OAuth account to be deleted.
+			 * @returns A promise that resolves to an object containing the status and message of the deletion operation.
+			 */
 			delete: (userId: string, provider: string) => Promise<DeletionResponse>;
 		};
 

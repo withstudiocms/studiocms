@@ -1,18 +1,20 @@
 import type { STUDIOCMS_SDK } from '../types';
-import StudioCMS_SDK_AUTHOAuth from './oAuth';
-import StudioCMS_SDK_AUTHPermission from './permission';
-import StudioCMS_SDK_AUTHSession from './session';
-import StudioCMS_SDK_AUTHUser from './user';
+import authOAuth from './oAuth';
+import authPermission from './permission';
+import authSession from './session';
+import authUser from './user';
+
+export { authUser, authOAuth, authPermission, authSession };
 
 /**
  * Utilities for the `@studiocms/auth` package to interact
  * 		with the StudioCMS SDK
  */
-export const StudioCMS_SDK_AUTH: STUDIOCMS_SDK['AUTH'] = {
-	session: StudioCMS_SDK_AUTHSession,
-	user: StudioCMS_SDK_AUTHUser,
-	permission: StudioCMS_SDK_AUTHPermission,
-	oAuth: StudioCMS_SDK_AUTHOAuth,
+export const studioCMS_SDK_AUTH: STUDIOCMS_SDK['AUTH'] = {
+	session: authSession,
+	user: authUser,
+	permission: authPermission,
+	oAuth: authOAuth,
 };
 
-export default StudioCMS_SDK_AUTH;
+export default studioCMS_SDK_AUTH;

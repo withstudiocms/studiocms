@@ -11,7 +11,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<any>} - A promise that resolves to the user's permissions.
  * @throws {StudioCMS_SDK_Error} - Throws an error if there is an issue retrieving the user's permissions.
  */
-export const StudioCMS_SDK_AUTHPermission: STUDIOCMS_SDK['AUTH']['permission'] = {
+export const authPermission: STUDIOCMS_SDK['AUTH']['permission'] = {
 	currentStatus: async (userId) => {
 		try {
 			return await db.select().from(tsPermissions).where(eq(tsPermissions.user, userId)).get();
@@ -30,4 +30,4 @@ export const StudioCMS_SDK_AUTHPermission: STUDIOCMS_SDK['AUTH']['permission'] =
 	},
 };
 
-export default StudioCMS_SDK_AUTHPermission;
+export default authPermission;

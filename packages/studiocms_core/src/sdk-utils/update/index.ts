@@ -24,7 +24,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * Each method accepts a `data` parameter which contains the fields to be updated and the identifier of the record to be updated.
  * The methods use the `db.update` function to perform the update operation, and the `returning().get()` chain to return the updated record.
  */
-export const StudioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = {
+export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = {
 	page: async (data) => {
 		try {
 			return await db
@@ -132,4 +132,4 @@ export const StudioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = {
 	},
 };
 
-export default StudioCMS_SDK_UPDATE;
+export default studioCMS_SDK_UPDATE;

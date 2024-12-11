@@ -7,9 +7,9 @@ export { postDatabaseEntry, postDatabaseEntries };
 /**
  * Contains methods for adding data to the database.
  */
-export const StudioCMS_SDK_POST: STUDIOCMS_SDK['POST'] = {
+export const studioCMS_SDK_POST: STUDIOCMS_SDK['POST'] = {
 	databaseEntry: postDatabaseEntry,
 	databaseEntries: postDatabaseEntries,
 };
 
-export default StudioCMS_SDK_POST;
+export default studioCMS_SDK_POST;

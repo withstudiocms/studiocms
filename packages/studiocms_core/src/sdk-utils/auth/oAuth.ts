@@ -20,7 +20,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<Object>} An object containing the status and message of the deletion operation.
  * @throws {StudioCMS_SDK_Error} Throws an error if the account deletion fails.
  */
-export const StudioCMS_SDK_AUTHOAuth: STUDIOCMS_SDK['AUTH']['oAuth'] = {
+export const authOAuth: STUDIOCMS_SDK['AUTH']['oAuth'] = {
 	create: async (data) => {
 		try {
 			return await db.insert(tsOAuthAccounts).values(data).returning().get();
@@ -63,4 +63,4 @@ export const StudioCMS_SDK_AUTHOAuth: STUDIOCMS_SDK['AUTH']['oAuth'] = {
 	},
 };
 
-export default StudioCMS_SDK_AUTHOAuth;
+export default authOAuth;

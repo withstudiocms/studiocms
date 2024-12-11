@@ -10,7 +10,7 @@ export { getDatabase, getDatabaseEntry, getDatabaseTable, getPackagePages, getPe
 /**
  * Contains methods for getting data from the database.
  */
-export const StudioCMS_SDK_GET: STUDIOCMS_SDK['GET'] = {
+export const studioCMS_SDK_GET: STUDIOCMS_SDK['GET'] = {
 	database: getDatabase,
 	databaseEntry: getDatabaseEntry,
 	databaseTable: getDatabaseTable,
@@ -18,4 +18,4 @@ export const StudioCMS_SDK_GET: STUDIOCMS_SDK['GET'] = {
 	packagePages: async (packageName) => await getPackagePages(packageName),
 };
 
-export default StudioCMS_SDK_GET;
+export default studioCMS_SDK_GET;

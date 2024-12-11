@@ -45,7 +45,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @param {string} id - The ID of the diff tracking to delete.
  * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
  */
-export const StudioCMS_SDK_DELETE: STUDIOCMS_SDK['DELETE'] = {
+export const studioCMS_SDK_DELETE: STUDIOCMS_SDK['DELETE'] = {
 	page: async (id) => {
 		try {
 			return await db
@@ -212,4 +212,4 @@ export const StudioCMS_SDK_DELETE: STUDIOCMS_SDK['DELETE'] = {
 	},
 };
 
-export default StudioCMS_SDK_DELETE;
+export default studioCMS_SDK_DELETE;
