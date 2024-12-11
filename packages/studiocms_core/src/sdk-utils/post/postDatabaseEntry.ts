@@ -158,7 +158,10 @@ export const postDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 				pageContentStart: diffData.pageContentStart,
 				pageMetaData: JSON.stringify(diffData.pageMetaData || {}),
 			})
-			.returning();
+			.returning()
+			.catch((error) => {
+				throw new Error(error);
+			});
 	},
 };
 
