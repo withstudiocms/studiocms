@@ -137,6 +137,11 @@ export interface CombinedPageData extends PageDataStripped {
 	defaultContent: tsPageContentSelect | undefined;
 }
 
+export interface DeletionResponse {
+	status: string;
+	message: string;
+}
+
 /**
  * Interface representing the STUDIOCMS SDK.
  */
@@ -404,29 +409,78 @@ export interface STUDIOCMS_SDK {
 		};
 	};
 
-	// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+	/**
+	 * The `StudioCMS_SDK_UPDATE` object provides methods to update various entities in the StudioCMS system.
+	 * Each method performs an update operation on a specific table and returns the updated record.
+	 *
+	 * @property {Function} page - Updates a page record in the `tsPageData` table.
+	 * @property {Function} pageContent - Updates a page content record in the `tsPageContent` table.
+	 * @property {Function} tags - Updates a tag record in the `tsPageDataTags` table.
+	 * @property {Function} categories - Updates a category record in the `tsPageDataCategories` table.
+	 * @property {Function} permissions - Updates a permission record in the `tsPermissions` table.
+	 * @property {Function} siteConfig - Updates a site configuration record in the `tsSiteConfig` table.
+	 *
+	 * Each method accepts a `data` parameter which contains the fields to be updated and the identifier of the record to be updated.
+	 * The methods use the `db.update` function to perform the update operation, and the `returning().get()` chain to return the updated record.
+	 */
 	UPDATE: {
-		// page: (id: string, data: tsPageDataInsert) => Promise<void>;
-		// pageContent: (id: string, data: tsPageContentInsert) => Promise<void>;
-		// tags: (id: number, data: tsPageDataTagsInsert) => Promise<void>;
-		// categories: (id: number, data: tsPageDataCategoriesInsert) => Promise<void>;
-		// permissions: (user: string, data: tsPermissionsSelect) => Promise<void>;
-		// siteConfig: (data: tsSiteConfigInsert) => Promise<void>;
+		page: (data: tsPageDataSelect) => Promise<tsPageDataSelect>;
+		pageContent: (data: tsPageContentSelect) => Promise<tsPageContentSelect>;
+		tags: (data: tsPageDataTagsSelect) => Promise<tsPageDataTagsSelect>;
+		categories: (data: tsPageDataCategoriesSelect) => Promise<tsPageDataCategoriesSelect>;
+		permissions: (data: tsPermissionsSelect) => Promise<tsPermissionsSelect>;
+		siteConfig: (data: tsSiteConfigSelect) => Promise<tsSiteConfigSelect>;
 	};
 
-	// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+	/**
+	 * StudioCMS_SDK_DELETE provides methods to delete various entities in the StudioCMS system.
+	 * Each method returns a promise that resolves to an object indicating the status and message of the operation.
+	 *
+	 * @type {STUDIOCMS_SDK['DELETE']}
+	 *
+	 * @property {Function} page - Deletes a page by its ID.
+	 * @param {string} id - The ID of the page to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} pageContent - Deletes page content by its ID.
+	 * @param {string} id - The ID of the page content to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} pageContentLang - Deletes page content by its ID and language.
+	 * @param {string} id - The ID of the page content to delete.
+	 * @param {string} lang - The language of the page content to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} tags - Deletes a tag by its ID.
+	 * @param {string} id - The ID of the tag to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} categories - Deletes a category by its ID.
+	 * @param {string} id - The ID of the category to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} permissions - Deletes permissions for a user by their ID.
+	 * @param {string} userId - The ID of the user whose permissions to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 *
+	 * @property {Function} diffTracking - Deletes diff tracking by its ID.
+	 * @param {string} id - The ID of the diff tracking to delete.
+	 * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
+	 */
 	DELETE: {
 		/** Delete page and all page content */
-		// page: (id: string) => Promise<void>;
-		/** Delete a specific page content entry */
-		// pageContent: (id: string) => Promise<void>;
+		page: (id: string) => Promise<DeletionResponse>;
+		/** Delete all page content entries for an ID */
+		pageContent: (id: string) => Promise<DeletionResponse>;
+		/** Delete page content for a specific language */
+		pageContentLang: (id: string, lang: string) => Promise<DeletionResponse>;
 		/** Delete a tag from the Database */
-		// tags: (id: number) => Promise<void>;
+		tags: (id: number) => Promise<DeletionResponse>;
 		/** Delete a category from the Database */
-		// categories: (id: number) => Promise<void>;
+		categories: (id: number) => Promise<DeletionResponse>;
 		/** Delete a user permission from the Database */
-		// permissions: (userId: string) => Promise<void>;
+		permissions: (userId: string) => Promise<DeletionResponse>;
 		/** Delete a diff from the tracking database */
-		// diffTracking: (id: string) => Promise<void>;
+		diffTracking: (id: string) => Promise<DeletionResponse>;
 	};
 }

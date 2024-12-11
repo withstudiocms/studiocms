@@ -1,6 +1,8 @@
+import StudioCMS_SDK_DELETE from './delete';
 import StudioCMS_SDK_GET from './get';
 import StudioCMS_SDK_POST from './post';
 import type { STUDIOCMS_SDK } from './types';
+import StudioCMS_SDK_UPDATE from './update';
 
 /**
  * ## The StudioCMS SDK
@@ -22,8 +24,8 @@ import type { STUDIOCMS_SDK } from './types';
 export const StudioCMS_SDK: STUDIOCMS_SDK = {
 	GET: StudioCMS_SDK_GET,
 	POST: StudioCMS_SDK_POST,
-	UPDATE: {},
-	DELETE: {},
+	UPDATE: StudioCMS_SDK_UPDATE,
+	DELETE: StudioCMS_SDK_DELETE,
 };
 
 export default StudioCMS_SDK;
