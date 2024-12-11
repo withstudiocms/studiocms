@@ -2,8 +2,6 @@ import type { Table } from '@astrojs/db/runtime';
 import type {
 	AvailableLists,
 	CombinedRank,
-	CurrentTables,
-	DatabaseEntryTables,
 	DatabaseTables,
 	PageContentReturnId,
 	PageDataCategoriesInsertResponse,
@@ -11,7 +9,6 @@ import type {
 	PageDataStripped,
 	PageDataTagsInsertResponse,
 	PermissionsList,
-	SimplifiedTables,
 	SingleRank,
 	SiteConfig,
 } from './tableDefs';
@@ -38,8 +35,6 @@ import type {
 export type {
 	AvailableLists,
 	CombinedRank,
-	CurrentTables,
-	DatabaseEntryTables,
 	DatabaseTables,
 	PageContentReturnId,
 	PageDataCategoriesInsertResponse,
@@ -47,7 +42,6 @@ export type {
 	PageDataStripped,
 	PageDataTagsInsertResponse,
 	PermissionsList,
-	SimplifiedTables,
 	SingleRank,
 	SiteConfig,
 };
@@ -189,23 +183,6 @@ interface GetDatabaseEntryPage {
 }
 
 /**
- * Represents a database entry which can be either a user or a page.
- */
-export type GetDatabaseEntry = GetDatabaseEntryUser | GetDatabaseEntryPage;
-
-/**
- * Represents the possible return types for a database query.
- *
- * @type {SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined}
- *
- * @property {SiteConfig} SiteConfig - Configuration settings for the site.
- * @property {CombinedUserData[]} CombinedUserData - Array of combined user data.
- * @property {CombinedPageData[]} CombinedPageData - Array of combined page data.
- * @property {undefined} undefined - Indicates that the database query returned no results.
- */
-export type GetDatabase = SiteConfig | CombinedUserData[] | CombinedPageData[] | undefined;
-
-/**
  * Interface representing the STUDIOCMS SDK.
  */
 export interface STUDIOCMS_SDK {
@@ -214,25 +191,39 @@ export interface STUDIOCMS_SDK {
 	 */
 	GET: {
 		/**
-		 * Retrieves data from the database based on the specified table.
+		 * Provides methods to retrieve various types of data from the database.
 		 *
-		 * @param database - The name of the database table to retrieve data from.
-		 *                   It can be one of the following values: 'users', 'pages', or 'config'.
+		 * @type {STUDIOCMS_SDK['GET']['database']}
 		 *
-		 * @returns A promise that resolves to the data retrieved from the specified table.
-		 *
-		 * - If `database` is 'users', it returns an array of `CombinedUserData` objects.
-		 * - If `database` is 'pages', it returns an array of `CombinedPageData` objects.
-		 * - If `database` is 'config', it returns the site configuration object.
-		 *
-		 * @throws Will throw an error if the specified database table is not recognized.
+		 * @property {Function} users - Asynchronously retrieves and combines user data from the database.
+		 * @property {Function} pages - Asynchronously retrieves and combines page data from the database.
+		 * @property {Function} config - Asynchronously retrieves the site configuration from the database.
 		 */
-		database: (database: SimplifiedTables) => Promise<GetDatabase>;
+		database: {
+			/**
+			 * Retrieves data from the Users table.
+			 *
+			 * @returns A promise that resolves to an array of CombinedUserData objects.
+			 */
+			users: () => Promise<CombinedUserData[]>;
+			/**
+			 * Retrieves data from the Page metadata and content tables.
+			 *
+			 * @returns A promise that resolves to an array of CombinedPageData objects.
+			 */
+			pages: () => Promise<CombinedPageData[]>;
+			/**
+			 * Retrieves the site configuration data.
+			 *
+			 * @returns A promise that resolves to the site configuration object.
+			 */
+			config: () => Promise<SiteConfig | undefined>;
+		};
 
 		/**
 		 * Retrieves a database entry based on the specified table.
 		 *
-		 * @param database - The name of the database table to retrieve the entry from.
+		 * @param table - The name of the database table to retrieve the entry from.
 		 * @returns An object containing methods to retrieve entries by different criteria.
 		 *
 		 * The function supports the following tables:
@@ -258,22 +249,63 @@ export interface STUDIOCMS_SDK {
 		 * }
 		 * ```
 		 */
-		databaseEntry: (database: DatabaseEntryTables) => GetDatabaseEntry;
+		databaseEntry: {
+			/**
+			 * Provides methods to retrieve user data by different identifiers.
+			 */
+			users: GetDatabaseEntryUser;
+
+			/**
+			 * Provides methods to retrieve page data by different identifiers.
+			 */
+			pages: GetDatabaseEntryPage;
+		};
 
 		/**
-		 * Retrieves raw data from the specified database table.
+		 * Retrieves various database tables
 		 *
-		 * @param database - The name of the database table to retrieve data from.
-		 * @returns A promise that resolves to the data from the specified database table.
-		 * @throws An error if the specified database table is unknown.
-		 *
-		 * @example
-		 * ```typescript
-		 * const users = await getDatabaseRaw('users');
-		 * console.log(users);
-		 * ```
+		 * @property {Function} users - Fetches the users table.
+		 * @property {Function} oAuthAccounts - Fetches the OAuth accounts table.
+		 * @property {Function} sessionTable - Fetches the session table.
+		 * @property {Function} permissions - Fetches the permissions table.
+		 * @property {Function} pageData - Fetches the page data table.
+		 * @property {Function} pageDataTags - Fetches the page data tags table.
+		 * @property {Function} pageDataCategories - Fetches the page data categories table.
+		 * @property {Function} pageContent - Fetches the page content table.
+		 * @property {Function} siteConfig - Fetches the site configuration table with a specific site config ID.
+		 * @property {Function} diffTracking - Fetches the diff tracking table.
 		 */
-		databaseTable: (database: CurrentTables) => Promise<DatabaseTables>;
+		databaseTable: {
+			users: () => Promise<tsUsersSelect[]>;
+			oAuthAccounts: () => Promise<tsOAuthAccountsSelect[]>;
+			sessionTable: () => Promise<tsSessionTableSelect[]>;
+			permissions: () => Promise<tsPermissionsSelect[]>;
+			pageData: () => Promise<tsPageDataSelect[]>;
+			pageDataTags: () => Promise<tsPageDataTagsSelect[]>;
+			pageDataCategories: () => Promise<tsPageDataCategoriesSelect[]>;
+			pageContent: () => Promise<tsPageContentSelect[]>;
+			siteConfig: () => Promise<tsSiteConfigSelect | undefined>;
+			diffTracking: () => Promise<tsDiffTrackingSelect[]>;
+		};
+
+		/**
+		 * Provides methods to retrieve lists of users with different permission levels.
+		 *
+		 * @property {Function} all - Retrieves all users categorized by their permission levels.
+		 * @property {Function} owners - Retrieves users with 'owner' permission level.
+		 * @property {Function} admins - Retrieves users with 'admin' permission level.
+		 * @property {Function} editors - Retrieves users with 'editor' permission level.
+		 * @property {Function} visitors - Retrieves users with 'visitor' permission level.
+		 *
+		 * @returns {Promise<Array>} - A promise that resolves to an array of users with the specified permission level.
+		 */
+		permissionsLists: {
+			all: () => Promise<PermissionsList[]>;
+			owners: () => Promise<PermissionsList[]>;
+			admins: () => Promise<PermissionsList[]>;
+			editors: () => Promise<PermissionsList[]>;
+			visitors: () => Promise<PermissionsList[]>;
+		};
 
 		/**
 		 * Retrieves the pages associated with a given package name.
@@ -282,31 +314,6 @@ export interface STUDIOCMS_SDK {
 		 * @returns A promise that resolves to an array of CombinedPageData objects.
 		 */
 		packagePages: (packageName: string) => Promise<CombinedPageData[]>;
-
-		/**
-		 * Retrieves a list of permissions based on the specified list type.
-		 *
-		 * @param list - The type of list to retrieve. Can be one of 'all', 'owners', 'admins', 'editors', or 'visitors'.
-		 * @returns A promise that resolves to an array of permissions lists.
-		 *
-		 * The function performs the following actions based on the list type:
-		 * - 'all': Retrieves all users and their permissions, then categorizes them into owners, admins, editors, and visitors.
-		 * - 'owners': Retrieves users with 'owner' permissions.
-		 * - 'admins': Retrieves users with 'admin' permissions.
-		 * - 'editors': Retrieves users with 'editor' permissions.
-		 * - 'visitors': Retrieves users with 'visitor' permissions.
-		 *
-		 * The function uses the following helper functions:
-		 * - `verifyRank`: Verifies the rank of users based on the existing users and current permitted users.
-		 * - `combineRanks`: Combines users of a specific rank into a single list.
-		 *
-		 * @example
-		 * ```typescript
-		 * const owners = await getPermissionsLists('owners');
-		 * console.log(owners);
-		 * ```
-		 */
-		permissionsLists: (list: AvailableLists) => Promise<PermissionsList[]>;
 	};
 	/**
 	 * Contains methods for adding data to the database.

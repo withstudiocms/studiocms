@@ -20,18 +20,18 @@ import type { STUDIOCMS_SDK } from './types';
  * // or using the virtual module (Included by default in StudioCMS)
  * import StudioCMS_SDK from 'studiocms:sdk';
  *
- * const users = await StudioCMS_SDK.GET.database('users');
+ * const users = await StudioCMS_SDK.GET.database.users();
  *
  * console.log(users);
  * ```
  */
 export const StudioCMS_SDK: STUDIOCMS_SDK = {
 	GET: {
-		database: async (database) => await getDatabase(database),
-		databaseEntry: (database) => getDatabaseEntry(database),
-		databaseTable: async (database) => await getDatabaseTable(database),
+		database: getDatabase,
+		databaseEntry: getDatabaseEntry,
+		databaseTable: getDatabaseTable,
+		permissionsLists: getPermissionsLists,
 		packagePages: async (packageName) => await getPackagePages(packageName),
-		permissionsLists: async (list) => await getPermissionsLists(list),
 	},
 	POST: {
 		databaseEntry: addDatabaseEntry,

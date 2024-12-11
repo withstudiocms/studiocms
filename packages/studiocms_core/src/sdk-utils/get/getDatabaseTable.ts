@@ -16,43 +16,31 @@ import {
 import type { STUDIOCMS_SDK } from '../types';
 
 /**
- * Retrieves raw data from the specified database table.
+ * Retrieves various database tables
  *
- * @param database - The name of the database table to retrieve data from.
- * @returns A promise that resolves to the data from the specified database table.
- * @throws An error if the specified database table is unknown.
- *
- * @example
- * ```typescript
- * const users = await getDatabaseRaw('users');
- * console.log(users);
- * ```
+ * @property {Function} users - Fetches the users table.
+ * @property {Function} oAuthAccounts - Fetches the OAuth accounts table.
+ * @property {Function} sessionTable - Fetches the session table.
+ * @property {Function} permissions - Fetches the permissions table.
+ * @property {Function} pageData - Fetches the page data table.
+ * @property {Function} pageDataTags - Fetches the page data tags table.
+ * @property {Function} pageDataCategories - Fetches the page data categories table.
+ * @property {Function} pageContent - Fetches the page content table.
+ * @property {Function} siteConfig - Fetches the site configuration table with a specific site config ID.
+ * @property {Function} diffTracking - Fetches the diff tracking table.
  */
-export const getDatabaseTable: STUDIOCMS_SDK['GET']['databaseTable'] = async (database) => {
-	switch (database) {
-		case 'users':
-			return await db.select().from(tsUsers);
-		case 'oAuthAccounts':
-			return await db.select().from(tsOAuthAccounts);
-		case 'sessionTable':
-			return await db.select().from(tsSessionTable);
-		case 'permissions':
-			return await db.select().from(tsPermissions);
-		case 'pageData':
-			return await db.select().from(tsPageData);
-		case 'pageDataTags':
-			return await db.select().from(tsPageDataTags);
-		case 'pageDataCategories':
-			return await db.select().from(tsPageDataCategories);
-		case 'pageContent':
-			return await db.select().from(tsPageContent);
-		case 'siteConfig':
-			return await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get();
-		case 'diffTracking':
-			return await db.select().from(tsDiffTracking);
-		default:
-			throw new Error(`Unknown database table: ${database}`);
-	}
+export const getDatabaseTable: STUDIOCMS_SDK['GET']['databaseTable'] = {
+	users: async () => await db.select().from(tsUsers),
+	oAuthAccounts: async () => await db.select().from(tsOAuthAccounts),
+	sessionTable: async () => await db.select().from(tsSessionTable),
+	permissions: async () => await db.select().from(tsPermissions),
+	pageData: async () => await db.select().from(tsPageData),
+	pageDataTags: async () => await db.select().from(tsPageDataTags),
+	pageDataCategories: async () => await db.select().from(tsPageDataCategories),
+	pageContent: async () => await db.select().from(tsPageContent),
+	siteConfig: async () =>
+		await db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get(),
+	diffTracking: async () => await db.select().from(tsDiffTracking),
 };
 
 export default getDatabaseTable;

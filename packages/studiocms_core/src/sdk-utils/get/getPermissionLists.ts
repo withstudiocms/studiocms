@@ -5,82 +5,66 @@ import type { STUDIOCMS_SDK } from '../types';
 import { combineRanks, verifyRank } from '../utils';
 
 /**
- * Retrieves a list of permissions based on the specified list type.
+ * Provides methods to retrieve lists of users with different permission levels.
  *
- * @param list - The type of list to retrieve. Can be one of 'all', 'owners', 'admins', 'editors', or 'visitors'.
- * @returns A promise that resolves to an array of permissions lists.
+ * @property {Function} all - Retrieves all users categorized by their permission levels.
+ * @property {Function} owners - Retrieves users with 'owner' permission level.
+ * @property {Function} admins - Retrieves users with 'admin' permission level.
+ * @property {Function} editors - Retrieves users with 'editor' permission level.
+ * @property {Function} visitors - Retrieves users with 'visitor' permission level.
  *
- * The function performs the following actions based on the list type:
- * - 'all': Retrieves all users and their permissions, then categorizes them into owners, admins, editors, and visitors.
- * - 'owners': Retrieves users with 'owner' permissions.
- * - 'admins': Retrieves users with 'admin' permissions.
- * - 'editors': Retrieves users with 'editor' permissions.
- * - 'visitors': Retrieves users with 'visitor' permissions.
- *
- * The function uses the following helper functions:
- * - `verifyRank`: Verifies the rank of users based on the existing users and current permitted users.
- * - `combineRanks`: Combines users of a specific rank into a single list.
- *
- * @example
- * ```typescript
- * const owners = await getPermissionsLists('owners');
- * console.log(owners);
- * ```
+ * @returns {Promise<Array>} - A promise that resolves to an array of users with the specified permission level.
  */
-export const getPermissionsLists: STUDIOCMS_SDK['GET']['permissionsLists'] = async (list) => {
-	switch (list) {
-		case 'all': {
-			const [currentPermittedUsers, existingUsers] = await db.batch([
-				db.select().from(tsPermissions),
-				db.select().from(tsUsers),
-			]);
+export const getPermissionsLists: STUDIOCMS_SDK['GET']['permissionsLists'] = {
+	all: async () => {
+		const [currentPermittedUsers, existingUsers] = await db.batch([
+			db.select().from(tsPermissions),
+			db.select().from(tsUsers),
+		]);
 
-			const owners = verifyRank(existingUsers, currentPermittedUsers, 'owner');
+		const owners = verifyRank(existingUsers, currentPermittedUsers, 'owner');
 
-			const admins = verifyRank(existingUsers, currentPermittedUsers, 'admin');
+		const admins = verifyRank(existingUsers, currentPermittedUsers, 'admin');
 
-			const editors = verifyRank(existingUsers, currentPermittedUsers, 'editor');
+		const editors = verifyRank(existingUsers, currentPermittedUsers, 'editor');
 
-			const visitors = verifyRank(existingUsers, currentPermittedUsers, 'visitor');
+		const visitors = verifyRank(existingUsers, currentPermittedUsers, 'visitor');
 
-			return [
-				...combineRanks('owner', owners),
-				...combineRanks('admin', admins),
-				...combineRanks('editor', editors),
-				...combineRanks('visitor', visitors),
-			];
-		}
-		case 'owners': {
-			const [currentPermittedUsers, existingUsers] = await db.batch([
-				db.select().from(tsPermissions),
-				db.select().from(tsUsers),
-			]);
-			return verifyRank(existingUsers, currentPermittedUsers, 'owner');
-		}
-		case 'admins': {
-			const [currentPermittedUsers, existingUsers] = await db.batch([
-				db.select().from(tsPermissions),
-				db.select().from(tsUsers),
-			]);
-			return verifyRank(existingUsers, currentPermittedUsers, 'admin');
-		}
-		case 'editors': {
-			const [currentPermittedUsers, existingUsers] = await db.batch([
-				db.select().from(tsPermissions),
-				db.select().from(tsUsers),
-			]);
-			return verifyRank(existingUsers, currentPermittedUsers, 'editor');
-		}
-		case 'visitors': {
-			const [currentPermittedUsers, existingUsers] = await db.batch([
-				db.select().from(tsPermissions),
-				db.select().from(tsUsers),
-			]);
-			return verifyRank(existingUsers, currentPermittedUsers, 'visitor');
-		}
-		default:
-			throw new Error(`Unknown list type: ${list}`);
-	}
+		return [
+			...combineRanks('owner', owners),
+			...combineRanks('admin', admins),
+			...combineRanks('editor', editors),
+			...combineRanks('visitor', visitors),
+		];
+	},
+	owners: async () => {
+		const [currentPermittedUsers, existingUsers] = await db.batch([
+			db.select().from(tsPermissions),
+			db.select().from(tsUsers),
+		]);
+		return verifyRank(existingUsers, currentPermittedUsers, 'owner');
+	},
+	admins: async () => {
+		const [currentPermittedUsers, existingUsers] = await db.batch([
+			db.select().from(tsPermissions),
+			db.select().from(tsUsers),
+		]);
+		return verifyRank(existingUsers, currentPermittedUsers, 'admin');
+	},
+	editors: async () => {
+		const [currentPermittedUsers, existingUsers] = await db.batch([
+			db.select().from(tsPermissions),
+			db.select().from(tsUsers),
+		]);
+		return verifyRank(existingUsers, currentPermittedUsers, 'editor');
+	},
+	visitors: async () => {
+		const [currentPermittedUsers, existingUsers] = await db.batch([
+			db.select().from(tsPermissions),
+			db.select().from(tsUsers),
+		]);
+		return verifyRank(existingUsers, currentPermittedUsers, 'visitor');
+	},
 };
 
 export default getPermissionsLists;

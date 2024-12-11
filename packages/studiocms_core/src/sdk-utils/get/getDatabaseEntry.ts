@@ -33,179 +33,170 @@ import { collectPageData, collectUserData } from '../utils';
  * }
  * ```
  */
-export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = (database) => {
-	switch (database) {
-		case 'users': {
-			return {
-				/**
-				 * Retrieves a database entry by its ID.
-				 *
-				 * @param id - The ID of the user to retrieve.
-				 * @returns A promise that resolves to the combined user data or undefined if no user is found.
-				 *
-				 * The function performs the following steps:
-				 * 1. Retrieves the user data from the database using the provided ID.
-				 * 2. If no user is found, returns undefined.
-				 * 3. Retrieves OAuth account data and permissions data for the user.
-				 * 4. Returns the combined user data including OAuth data and permissions data.
-				 *
-				 * @example
-				 * ```typescript
-				 * const userData = await byId('example-id');
-				 * if (userData) {
-				 *  console.log(userData);
-				 * } else {
-				 * console.log('User not found');
-				 * }
-				 * ```
-				 */
-				async byId(id) {
-					const user = await db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
+export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
+	users: {
+		/**
+		 * Retrieves a database entry by its ID.
+		 *
+		 * @param id - The ID of the user to retrieve.
+		 * @returns A promise that resolves to the combined user data or undefined if no user is found.
+		 *
+		 * The function performs the following steps:
+		 * 1. Retrieves the user data from the database using the provided ID.
+		 * 2. If no user is found, returns undefined.
+		 * 3. Retrieves OAuth account data and permissions data for the user.
+		 * 4. Returns the combined user data including OAuth data and permissions data.
+		 *
+		 * @example
+		 * ```typescript
+		 * const userData = await byId('example-id');
+		 * if (userData) {
+		 *  console.log(userData);
+		 * } else {
+		 * console.log('User not found');
+		 * }
+		 * ```
+		 */
+		async byId(id) {
+			const user = await db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
 
-					if (!user) return undefined;
+			if (!user) return undefined;
 
-					return await collectUserData(user);
-				},
-				/**
-				 * Retrieves a database entry by its username.
-				 *
-				 * @param username - The username of the user to retrieve.
-				 * @returns A promise that resolves to the combined user data or undefined if no user is found.
-				 *
-				 * The function performs the following steps:
-				 * 1. Retrieves the user data from the database using the provided username.
-				 * 2. If no user is found, returns undefined.
-				 * 3. Retrieves OAuth account data and permissions data for the user.
-				 * 4. Returns the combined user data including OAuth data and permissions data.
-				 *
-				 * @example
-				 * ```typescript
-				 * const userData = await byUsername('john_doe');
-				 * if (userData) {
-				 * console.log(userData);
-				 * } else {
-				 * console.log('User not found');
-				 * }
-				 * ```
-				 */
-				async byUsername(username) {
-					const user = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
+			return await collectUserData(user);
+		},
+		/**
+		 * Retrieves a database entry by its username.
+		 *
+		 * @param username - The username of the user to retrieve.
+		 * @returns A promise that resolves to the combined user data or undefined if no user is found.
+		 *
+		 * The function performs the following steps:
+		 * 1. Retrieves the user data from the database using the provided username.
+		 * 2. If no user is found, returns undefined.
+		 * 3. Retrieves OAuth account data and permissions data for the user.
+		 * 4. Returns the combined user data including OAuth data and permissions data.
+		 *
+		 * @example
+		 * ```typescript
+		 * const userData = await byUsername('john_doe');
+		 * if (userData) {
+		 * console.log(userData);
+		 * } else {
+		 * console.log('User not found');
+		 * }
+		 * ```
+		 */
+		async byUsername(username) {
+			const user = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
 
-					if (!user) return undefined;
+			if (!user) return undefined;
 
-					return await collectUserData(user);
-				},
-				/**
-				 * Retrieves a database entry by its email.
-				 *
-				 * @param email - The email of the user to retrieve.
-				 * @returns A promise that resolves to the combined user data or undefined if no user is found.
-				 *
-				 * The function performs the following steps:
-				 * 1. Retrieves the user data from the database using the provided email.
-				 * 2. If no user is found, returns undefined.
-				 * 3. Retrieves OAuth account data and permissions data for the user.
-				 * 4. Returns the combined user data including OAuth data and permissions data.
-				 *
-				 * @example
-				 * ```typescript
-				 * const userData = await byEmail('john@doe.xyz');
-				 * if (userData) {
-				 *  console.log(userData);
-				 * } else {
-				 * console.log('User not found');
-				 * }
-				 */
-				async byEmail(email) {
-					const user = await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
+			return await collectUserData(user);
+		},
+		/**
+		 * Retrieves a database entry by its email.
+		 *
+		 * @param email - The email of the user to retrieve.
+		 * @returns A promise that resolves to the combined user data or undefined if no user is found.
+		 *
+		 * The function performs the following steps:
+		 * 1. Retrieves the user data from the database using the provided email.
+		 * 2. If no user is found, returns undefined.
+		 * 3. Retrieves OAuth account data and permissions data for the user.
+		 * 4. Returns the combined user data including OAuth data and permissions data.
+		 *
+		 * @example
+		 * ```typescript
+		 * const userData = await byEmail('john@doe.xyz');
+		 * if (userData) {
+		 *  console.log(userData);
+		 * } else {
+		 * console.log('User not found');
+		 * }
+		 */
+		async byEmail(email) {
+			const user = await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
 
-					if (!user) return undefined;
+			if (!user) return undefined;
 
-					return await collectUserData(user);
-				},
-			};
-		}
-		case 'pages': {
-			return {
-				/**
-				 * Retrieves a database entry by its ID.
-				 *
-				 * @param id - The ID of the page to retrieve.
-				 * @returns A promise that resolves to the combined page data or undefined if no page is found.
-				 *
-				 * The function performs the following steps:
-				 * 1. Retrieves the page data from the database using the provided ID.
-				 * 2. If no page is found, returns undefined.
-				 * 3. Initializes arrays for categories, tags, and contributors.
-				 * 4. Retrieves all categories, tags, and users from the database.
-				 * 5. Maps the category IDs, tag IDs, and contributor IDs from the page data to their respective data objects.
-				 * 6. Retrieves multi-language content data for the page.
-				 * 7. Finds the default content data from the multi-language content data.
-				 * 8. Returns the combined page data including categories, tags, contributors, multi-language content, and default content.
-				 *
-				 * @example
-				 * ```typescript
-				 * const pageData = await byId('example-id');
-				 * if (pageData) {
-				 *  console.log(pageData);
-				 * } else {
-				 * console.log('Page not found');
-				 * }
-				 * ```
-				 */
-				async byId(id) {
-					const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
+			return await collectUserData(user);
+		},
+	},
+	pages: {
+		/**
+		 * Retrieves a database entry by its ID.
+		 *
+		 * @param id - The ID of the page to retrieve.
+		 * @returns A promise that resolves to the combined page data or undefined if no page is found.
+		 *
+		 * The function performs the following steps:
+		 * 1. Retrieves the page data from the database using the provided ID.
+		 * 2. If no page is found, returns undefined.
+		 * 3. Initializes arrays for categories, tags, and contributors.
+		 * 4. Retrieves all categories, tags, and users from the database.
+		 * 5. Maps the category IDs, tag IDs, and contributor IDs from the page data to their respective data objects.
+		 * 6. Retrieves multi-language content data for the page.
+		 * 7. Finds the default content data from the multi-language content data.
+		 * 8. Returns the combined page data including categories, tags, contributors, multi-language content, and default content.
+		 *
+		 * @example
+		 * ```typescript
+		 * const pageData = await byId('example-id');
+		 * if (pageData) {
+		 *  console.log(pageData);
+		 * } else {
+		 * console.log('Page not found');
+		 * }
+		 * ```
+		 */
+		async byId(id) {
+			const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
 
-					if (!page) return undefined;
+			if (!page) return undefined;
 
-					return await collectPageData(page);
-				},
-				/**
-				 * Retrieves a database entry by its slug and optional package name.
-				 *
-				 * @param slug - The slug of the page to retrieve.
-				 * @param pkg - Optional package name to filter the page by. Defaults to 'studiocms'.
-				 * @returns A promise that resolves to the combined page data or undefined if no page is found.
-				 *
-				 * The function performs the following steps:
-				 * 1. Retrieves the page data from the database using the provided slug and package name.
-				 * 2. If no page is found, returns undefined.
-				 * 3. Initializes arrays for categories, tags, and contributors.
-				 * 4. Retrieves all categories, tags, and users from the database.
-				 * 5. Maps the category IDs, tag IDs, and contributor IDs from the page data to their respective data objects.
-				 * 6. Retrieves multi-language content data for the page.
-				 * 7. Finds the default content data from the multi-language content data.
-				 * 8. Returns the combined page data including categories, tags, contributors, multi-language content, and default content.
-				 *
-				 * @example
-				 * ```typescript
-				 * const pageData = await bySlug('example-slug');
-				 * if (pageData) {
-				 *   console.log(pageData);
-				 * } else {
-				 *   console.log('Page not found');
-				 * }
-				 * ```
-				 */
-				async bySlug(slug, pkg?) {
-					const pkgToGet = pkg || 'studiocms';
+			return await collectPageData(page);
+		},
+		/**
+		 * Retrieves a database entry by its slug and optional package name.
+		 *
+		 * @param slug - The slug of the page to retrieve.
+		 * @param pkg - Optional package name to filter the page by. Defaults to 'studiocms'.
+		 * @returns A promise that resolves to the combined page data or undefined if no page is found.
+		 *
+		 * The function performs the following steps:
+		 * 1. Retrieves the page data from the database using the provided slug and package name.
+		 * 2. If no page is found, returns undefined.
+		 * 3. Initializes arrays for categories, tags, and contributors.
+		 * 4. Retrieves all categories, tags, and users from the database.
+		 * 5. Maps the category IDs, tag IDs, and contributor IDs from the page data to their respective data objects.
+		 * 6. Retrieves multi-language content data for the page.
+		 * 7. Finds the default content data from the multi-language content data.
+		 * 8. Returns the combined page data including categories, tags, contributors, multi-language content, and default content.
+		 *
+		 * @example
+		 * ```typescript
+		 * const pageData = await bySlug('example-slug');
+		 * if (pageData) {
+		 *   console.log(pageData);
+		 * } else {
+		 *   console.log('Page not found');
+		 * }
+		 * ```
+		 */
+		async bySlug(slug, pkg?) {
+			const pkgToGet = pkg || 'studiocms';
 
-					const page = await db
-						.select()
-						.from(tsPageData)
-						.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
-						.get();
+			const page = await db
+				.select()
+				.from(tsPageData)
+				.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
+				.get();
 
-					if (!page) return undefined;
+			if (!page) return undefined;
 
-					return await collectPageData(page);
-				},
-			};
-		}
-		default: {
-			throw new Error(`Unknown database table: ${database}`);
-		}
-	}
+			return await collectPageData(page);
+		},
+	},
 };
 
 export default getDatabaseEntry;

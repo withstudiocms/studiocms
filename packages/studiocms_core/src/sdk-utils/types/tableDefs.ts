@@ -12,55 +12,6 @@ import type {
 } from './tsAlias';
 
 /**
- * Represents the possible table names in the current database schema.
- *
- * @property {'users'} users - Table for user information.
- * @property {'oAuthAccounts'} oAuthAccounts - Table for OAuth account details.
- * @property {'sessionTable'} sessionTable - Table for session information.
- * @property {'permissions'} permissions - Table for user permissions.
- * @property {'pageData'} pageData - Table for page data.
- * @property {'pageDataTags'} pageDataTags - Table for tags associated with page data.
- * @property {'pageDataCategories'} pageDataCategories - Table for categories associated with page data.
- * @property {'pageContent'} pageContent - Table for page content.
- * @property {'siteConfig'} siteConfig - Table for site configuration.
- * @property {'diffTracking'} diffTracking - Table for tracking differences.
- */
-export type CurrentTables =
-	| 'users'
-	| 'oAuthAccounts'
-	| 'sessionTable'
-	| 'permissions'
-	| 'pageData'
-	| 'pageDataTags'
-	| 'pageDataCategories'
-	| 'pageContent'
-	| 'siteConfig'
-	| 'diffTracking';
-
-/**
- * Represents a simplified view of the tables in the system.
- *
- * The `SimplifiedTables` type is a union of string literals that correspond
- * to the names of the tables in the system. This type is used to restrict
- * the values to a predefined set of table names.
- *
- * Possible values:
- * - `'users'`: Represents the users table.
- * - `'pages'`: Represents the pages table.
- * - `'config'`: Represents the config table.
- */
-export type SimplifiedTables = 'users' | 'pages' | 'config';
-
-/**
- * Represents the types of tables available in the database.
- *
- * @example
- * // Example usage:
- * const table: DatabaseEntryTables = 'users';
- */
-export type DatabaseEntryTables = 'users' | 'pages';
-
-/**
  * Represents a stripped-down version of the `tsSiteConfigSelect` type,
  * excluding the property 'id'.
  */
