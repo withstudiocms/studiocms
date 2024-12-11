@@ -371,7 +371,7 @@ export interface STUDIOCMS_SDK {
 	/**
 	 * Contains methods for adding data to the database.
 	 */
-	ADD: {
+	POST: {
 		/**
 		 * Methods related to adding entries to the database.
 		 */

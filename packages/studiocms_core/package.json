@@ -42,7 +42,12 @@
     "./helpers": "./src/helpers/index.ts",
     "./db/config": "./src/db/config.ts",
     "./db/tables": "./src/db/tables.ts",
-    "./db/tsTables": "./src/db/tsTables.ts"
+    "./db/tsTables": "./src/db/tsTables.ts",
+    "./sdk-utils": "./src/sdk-utils/index.ts",
+    "./sdk-utils/post": "./src/sdk-utils/post/index.ts",
+    "./sdk-utils/get": "./src/sdk-utils/get/index.ts",
+    "./sdk-utils/types": "./src/sdk-utils/types/index.ts",
+    "./sdk-utils/utils": "./src/sdk-utils/utils.ts"
   },
   "type": "module",
   "dependencies": {
