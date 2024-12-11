@@ -13,7 +13,7 @@ import { generateRandomIDNumber } from '../utils';
 /**
  * Utility functions for adding various entries to the database.
  */
-export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
+export const postDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 	pages: async (pageData, pageContent) => {
 		const newContentID = pageData.id || crypto.randomUUID().toString();
 
@@ -147,4 +147,4 @@ export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 	},
 };
 
-export default addDatabaseEntry;
+export default postDatabaseEntry;

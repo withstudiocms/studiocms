@@ -1,1 +1,1 @@
-export { default as addDatabaseEntry } from './addDatabaseEntry';
+export { default as postDatabaseEntry } from './postDatabaseEntry';
