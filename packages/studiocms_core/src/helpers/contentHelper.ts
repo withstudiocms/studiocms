@@ -5,9 +5,21 @@ import { CMSSiteConfigId } from '../consts';
 import { tsPageContent, tsPageData, tsPermissions, tsSiteConfig, tsUsers } from '../db/tsTables';
 import type { PageDataAndContent } from '../types';
 
+/**
+ * @deprecated
+ */
 export type UserResponse = PageDataAndContent['User'];
+/**
+ * @deprecated
+ */
 export type pageDataReponse = PageDataAndContent['PageData'];
+/**
+ * @deprecated
+ */
 export type pageContentReponse = PageDataAndContent['PageContent'];
+/**
+ * @deprecated
+ */
 export type SiteConfigResponse = PageDataAndContent['SiteConfig'];
 
 // To be used in the future
@@ -17,6 +29,9 @@ export type SiteConfigResponse = PageDataAndContent['SiteConfig'];
 //     pageContent: pageContentReponse[];
 // }
 
+/**
+ * @deprecated
+ */
 export type ContentHelperTempResponse = {
 	id: string;
 	package: string;
@@ -55,6 +70,9 @@ export type ContentHelperTempResponse = {
  *
  * ```
  */
+/**
+ * @deprecated
+ */
 export async function contentHelper(
 	slug: string,
 	pkg?: string
@@ -92,6 +110,9 @@ export async function contentHelper(
 	return { ...pageData, content: pageContent.content || 'Failed to fetch Content' };
 }
 
+/**
+ * @deprecated
+ */
 export async function getPageById(id: string): Promise<ContentHelperTempResponse> {
 	const pageData = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
 
@@ -121,6 +142,9 @@ export async function getPageById(id: string): Promise<ContentHelperTempResponse
  *
  * @returns A Array of all pages in the database in ascending order of their published date.
  */
+/**
+ * @deprecated
+ */
 export async function getPageList(): Promise<pageDataReponse[]> {
 	const pageData = await db.select().from(tsPageData).orderBy(asc(tsPageData.publishedAt));
 
@@ -135,6 +159,9 @@ export async function getPageList(): Promise<pageDataReponse[]> {
  * Site Configuration helper function to get the site configuration data from Astro Studio's Database.
  *
  * @returns The site configuration data. (Title, Description)
+ */
+/**
+ * @deprecated
  */
 export async function getSiteConfig(): Promise<SiteConfigResponse> {
 	const config: PageDataAndContent['SiteConfig'] | undefined = await db
@@ -164,6 +191,9 @@ export async function getSiteConfig(): Promise<SiteConfigResponse> {
  * @param userId The ID of the user to get. You can get this from `Astro.locals.dbUser.id` when StudioCMS Auth middleware is used.
  * @returns The user data.
  */
+/**
+ * @deprecated
+ */
 export async function getUserById(userId: string): Promise<UserResponse> {
 	const user = await db.select().from(tsUsers).where(eq(tsUsers.id, userId)).get();
 
@@ -179,6 +209,9 @@ export async function getUserById(userId: string): Promise<UserResponse> {
  *
  * @returns A Array of all users in the database.
  */
+/**
+ * @deprecated
+ */
 export async function getUserList(): Promise<UserResponse[]> {
 	const users: UserResponse[] = await db.select().from(tsUsers).orderBy(desc(tsUsers.name));
 
@@ -193,6 +226,9 @@ export async function getUserList(): Promise<UserResponse[]> {
  * Get permissions list helper function to get a list of all permissions from Astro Studio's Database.
  *
  * @returns An Array of all permissions in the database.
+ */
+/**
+ * @deprecated
  */
 export async function getPermissionsList(): Promise<PageDataAndContent['Permissions'][]> {
 	const permissions = await db.select().from(tsPermissions);

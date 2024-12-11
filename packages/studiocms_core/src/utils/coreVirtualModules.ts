@@ -1,12 +1,5 @@
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
-import {
-	customRendererPlugin,
-	dashboardPageLinksMap,
-	externalNavigation,
-	stringify,
-	stringifyMap,
-	studioCMSPluginList,
-} from '../lib';
+import { stringify } from '../lib';
 import type { StudioCMSOptions } from '../schemas';
 import { dtsFile } from '../stubs/dts';
 
@@ -34,21 +27,6 @@ export const coreVirtualModuleGeneration = defineUtility('astro:config:setup')(
 
 		// Create Resolver for Virtual Imports
 		const { resolve } = createResolver(import.meta.url);
-
-		// Get customRendererPlugin
-		let customRenderPlugin: string[] | undefined;
-		if (customRendererPlugin) {
-			customRenderPlugin = Array.from(customRendererPlugin);
-		} else {
-			customRenderPlugin = undefined;
-		}
-
-		// Setup the Plugin Module
-		let pluginModule = '';
-		pluginModule += `export const externalNav = new Map(${stringifyMap(externalNavigation)});\n`;
-		pluginModule += `export const dashboardPageLinks = new Map(${stringifyMap(dashboardPageLinksMap)});\n`;
-		pluginModule += `export const pluginList = new Map(${stringifyMap(studioCMSPluginList)});\n`;
-		pluginModule += `export const customRenderers = ${stringify(customRenderPlugin)};\n`;
 
 		// Setup the Resolvers
 		const contentHelperResolved = resolve('../helpers/contentHelper.ts');
@@ -91,7 +69,6 @@ export const coreVirtualModuleGeneration = defineUtility('astro:config:setup')(
 		const imports: Record<string, string> = {
 			'virtual:studiocms/config': `export default ${stringify(StudioCMSConfig)}`,
 			'virtual:studiocms/version': `export default '${currentVersion}'`,
-			'virtual:studiocms/pluginSystem': pluginModule,
 			'studiocms:components': virtualComponents,
 			'studiocms:helpers': virtualHelpers,
 			'studiocms:helpers/contentHelper': `export * from '${contentHelperResolved}';`,

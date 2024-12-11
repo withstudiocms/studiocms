@@ -1,5 +1,5 @@
 import Config from 'virtual:studiocms/config';
-import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
+// import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
 import type { SideBarLink } from '@studiocms/core/types';
 import urlGenFactory from '../helpers/urlGen';
 
@@ -125,31 +125,31 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 	},
 ];
 
-// Add custom dashboard page links
-const customDashboardPageLinks: SideBarLink[] = [];
-
-const customDashboardRoutes = Array.from(dashboardPageLinks.values());
-
-for (const links of customDashboardRoutes) {
-	customDashboardPageLinks.push(...links);
-}
-
-const customDashboardDropdown = {
-	id: 'integrations',
-	href: '',
-	text: 'Integration Configs',
-	minPermissionLevel: 'editor',
-	icon: 'question-mark-circle',
-	type: 'dropdown',
-	dropdownItems: customDashboardPageLinks,
-} satisfies SideBarLink;
-
 // Side bar links map
 const finalSideBarLinkMap: SideBarLink[] = [...defaultDashboardPageLinks];
 
-// Merge custom dashboard page links
-if (customDashboardDropdown.dropdownItems.length > 0) {
-	finalSideBarLinkMap.push(customDashboardDropdown);
-}
-
 export const sideBarLinkMap: SideBarLink[] = finalSideBarLinkMap;
+
+// // Add custom dashboard page links
+// const customDashboardPageLinks: SideBarLink[] = [];
+
+// const customDashboardRoutes = Array.from(dashboardPageLinks.values());
+
+// for (const links of customDashboardRoutes) {
+// 	customDashboardPageLinks.push(...links);
+// }
+
+// const customDashboardDropdown = {
+// 	id: 'integrations',
+// 	href: '',
+// 	text: 'Integration Configs',
+// 	minPermissionLevel: 'editor',
+// 	icon: 'question-mark-circle',
+// 	type: 'dropdown',
+// 	dropdownItems: customDashboardPageLinks,
+// } satisfies SideBarLink;
+
+// Merge custom dashboard page links
+// if (customDashboardDropdown.dropdownItems.length > 0) {
+// 	finalSideBarLinkMap.push(customDashboardDropdown);
+// }

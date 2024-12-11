@@ -34,6 +34,7 @@ export default defineIntegration({
 		return {
 			hooks: {
 				// Configure `@astrojs/db` integration to include the StudioCMS Database Tables
+				// @ts-ignore
 				'astro:db:setup': ({ extendDb }) => {
 					extendDb({ configEntrypoint: '@studiocms/core/db/config' });
 				},
