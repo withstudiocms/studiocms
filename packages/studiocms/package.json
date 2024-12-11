@@ -1,7 +1,7 @@
 {
   "name": "studiocms",
   "version": "0.1.0-beta.7",
-  "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
+  "description": "A dedicated CMS for Astro and Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
     "url": "https://studiocms.dev"
@@ -17,17 +17,17 @@
   ],
   "license": "MIT",
   "keywords": [
-    "astro",
+    "cms",
     "astrocms",
     "astrodb",
-    "astrolicious",
     "astrostudio",
-    "astro-integration",
+    "astrostudiocms",
+    "studiocms",
     "astro-studio",
     "astro-studiocms",
-    "cms",
-    "studiocms",
-    "withastro"
+    "astro",
+    "withastro",
+    "astro-integration"
   ],
   "homepage": "https://studiocms.dev",
   "publishConfig": {

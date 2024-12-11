@@ -7,7 +7,7 @@ import * as semver from 'semver';
  * @param packageName - The name of the package.
  * @returns A promise that resolves to the latest version of the package.
  */
-async function fetchlatestVersion(packageName: string): Promise<string> {
+async function fetchLatestVersion(packageName: string): Promise<string> {
 	const { version } = await packageJson(packageName.toLowerCase());
 	return version;
 }
@@ -22,7 +22,7 @@ export const updateCheck = defineUtility('astro:server:start')(
 		const logger = params.logger.fork(`${name}:update-check`);
 
 		try {
-			const latestVersion = await fetchlatestVersion(name);
+			const latestVersion = await fetchLatestVersion(name);
 
 			const comparison = semver.compare(currentVersion, latestVersion);
 

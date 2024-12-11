@@ -27,8 +27,8 @@ const validImages = [
 		light: studiocmsCurvesLight,
 		dark: studiocmsCurvesDark,
 	},
-	{ 
-		name: 'custom', 
+	{
+		name: 'custom',
 		format: 'web',
 		light: null,
 		dark: null,
