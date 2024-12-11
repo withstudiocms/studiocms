@@ -2,7 +2,7 @@
 import { db, eq } from 'astro:db';
 import { tsPageData } from '../tables';
 import type { CombinedPageData, STUDIOCMS_SDK } from '../types';
-import { collectPageData } from '../utils';
+import { StudioCMS_SDK_Error, collectPageData } from '../utils';
 
 /**
  * Retrieves the pages associated with a given package name.
@@ -11,17 +11,24 @@ import { collectPageData } from '../utils';
  * @returns A promise that resolves to an array of CombinedPageData objects.
  */
 export const getPackagePages: STUDIOCMS_SDK['GET']['packagePages'] = async (packageName) => {
-	const pages: CombinedPageData[] = [];
+	try {
+		const pages: CombinedPageData[] = [];
 
-	const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.package, packageName));
+		const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.package, packageName));
 
-	for (const page of pagesRaw) {
-		const PageData = await collectPageData(page);
+		for (const page of pagesRaw) {
+			const PageData = await collectPageData(page);
 
-		pages.push(PageData);
+			pages.push(PageData);
+		}
+
+		return pages;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
+		}
+		throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.', `${error}`);
 	}
-
-	return pages;
 };
 
 export default getPackagePages;

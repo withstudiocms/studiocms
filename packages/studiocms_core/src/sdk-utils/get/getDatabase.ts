@@ -3,7 +3,7 @@ import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '../../consts';
 import { tsPageData, tsSiteConfig, tsUsers } from '../tables';
 import type { CombinedPageData, CombinedUserData, STUDIOCMS_SDK, SiteConfig } from '../types';
-import { collectPageData, collectUserData } from '../utils';
+import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
 
 /**
  * Provides methods to retrieve various types of data from the database.
@@ -16,41 +16,68 @@ import { collectPageData, collectUserData } from '../utils';
  */
 export const getDatabase: STUDIOCMS_SDK['GET']['database'] = {
 	users: async () => {
-		const combinedUserData: CombinedUserData[] = [];
+		try {
+			const combinedUserData: CombinedUserData[] = [];
 
-		const users = await db.select().from(tsUsers);
+			const users = await db.select().from(tsUsers);
 
-		for (const user of users) {
-			const UserData = await collectUserData(user);
+			for (const user of users) {
+				const UserData = await collectUserData(user);
 
-			combinedUserData.push(UserData);
+				combinedUserData.push(UserData);
+			}
+
+			return combinedUserData;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
 		}
-
-		return combinedUserData;
 	},
 	pages: async () => {
-		const pages: CombinedPageData[] = [];
+		try {
+			const pages: CombinedPageData[] = [];
 
-		const pagesRaw = await db.select().from(tsPageData);
+			const pagesRaw = await db.select().from(tsPageData);
 
-		for (const page of pagesRaw) {
-			const PageData = await collectPageData(page);
+			for (const page of pagesRaw) {
+				const PageData = await collectPageData(page);
 
-			pages.push(PageData);
+				pages.push(PageData);
+			}
+
+			return pages;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.', `${error}`);
 		}
-
-		return pages;
 	},
 	config: async () => {
-		const siteConfig = await db
-			.select()
-			.from(tsSiteConfig)
-			.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-			.get();
+		try {
+			const siteConfig = await db
+				.select()
+				.from(tsSiteConfig)
+				.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+				.get();
 
-		if (!siteConfig) return undefined;
+			if (!siteConfig) return undefined;
 
-		return siteConfig as SiteConfig;
+			return siteConfig as SiteConfig;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error getting site configuration: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error getting site configuration: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 };
 

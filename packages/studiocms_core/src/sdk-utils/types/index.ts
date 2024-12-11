@@ -8,7 +8,6 @@ import type {
 	PageDataReturnId,
 	PageDataStripped,
 	PageDataTagsInsertResponse,
-	PermissionsList,
 	SingleRank,
 	SiteConfig,
 } from './tableDefs';
@@ -43,7 +42,6 @@ export type {
 	PageDataReturnId,
 	PageDataStripped,
 	PageDataTagsInsertResponse,
-	PermissionsList,
 	SingleRank,
 	SiteConfig,
 };
@@ -137,8 +135,14 @@ export interface CombinedPageData extends PageDataStripped {
 	defaultContent: tsPageContentSelect | undefined;
 }
 
+/**
+ * Interface representing the response received after a deletion operation.
+ *
+ * @property {string} status - The status of the deletion operation.
+ * @property {string} message - A message providing additional information about the deletion operation.
+ */
 export interface DeletionResponse {
-	status: string;
+	status: 'success' | 'error';
 	message: string;
 }
 
@@ -298,11 +302,11 @@ export interface STUDIOCMS_SDK {
 		 * @returns {Promise<Array>} - A promise that resolves to an array of users with the specified permission level.
 		 */
 		permissionsLists: {
-			all: () => Promise<PermissionsList[]>;
-			owners: () => Promise<PermissionsList[]>;
-			admins: () => Promise<PermissionsList[]>;
-			editors: () => Promise<PermissionsList[]>;
-			visitors: () => Promise<PermissionsList[]>;
+			all: () => Promise<CombinedRank[]>;
+			owners: () => Promise<SingleRank[]>;
+			admins: () => Promise<SingleRank[]>;
+			editors: () => Promise<SingleRank[]>;
+			visitors: () => Promise<SingleRank[]>;
 		};
 
 		/**

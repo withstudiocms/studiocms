@@ -1,7 +1,7 @@
 import { db } from 'astro:db';
 import { tsPageDataCategories, tsPageDataTags, tsPermissions } from '../tables';
 import type { STUDIOCMS_SDK } from '../types';
-import { generateRandomIDNumber } from '../utils';
+import { StudioCMS_SDK_Error, generateRandomIDNumber } from '../utils';
 
 /**
  * The `postDatabaseEntries` object provides methods to insert various types of entries into the database.
@@ -27,70 +27,90 @@ import { generateRandomIDNumber } from '../utils';
  */
 export const postDatabaseEntries: STUDIOCMS_SDK['POST']['databaseEntries'] = {
 	tags: async (tags) => {
-		return await db
-			.insert(tsPageDataTags)
-			.values(
-				tags.map((tag) => {
-					return {
-						id: tag.id || generateRandomIDNumber(9),
-						name: tag.name,
-						slug: tag.slug,
-						description: tag.description,
-						meta: JSON.stringify(tag.meta),
-					};
-				})
-			)
-			.returning({ id: tsPageDataTags.id })
-			.catch((error) => {
-				throw new Error(error);
-			});
+		try {
+			return await db
+				.insert(tsPageDataTags)
+				.values(
+					tags.map((tag) => {
+						return {
+							id: tag.id || generateRandomIDNumber(9),
+							name: tag.name,
+							slug: tag.slug,
+							description: tag.description,
+							meta: JSON.stringify(tag.meta),
+						};
+					})
+				)
+				.returning({ id: tsPageDataTags.id });
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error inserting tags: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error inserting tags: An unknown error occurred.', `${error}`);
+		}
 	},
 	categories: async (categories) => {
-		return await db
-			.insert(tsPageDataCategories)
-			.values(
-				categories.map((category) => {
-					return {
-						id: category.id || generateRandomIDNumber(9),
-						name: category.name,
-						slug: category.slug,
-						description: category.description,
-						meta: JSON.stringify(category.meta),
-					};
-				})
-			)
-			.returning({ id: tsPageDataCategories.id })
-			.catch((error) => {
-				throw new Error(error);
-			});
+		try {
+			return await db
+				.insert(tsPageDataCategories)
+				.values(
+					categories.map((category) => {
+						return {
+							id: category.id || generateRandomIDNumber(9),
+							name: category.name,
+							slug: category.slug,
+							description: category.description,
+							meta: JSON.stringify(category.meta),
+						};
+					})
+				)
+				.returning({ id: tsPageDataCategories.id });
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error inserting categories: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error inserting categories: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 	permissions: async (permissions) => {
-		const currentPermittedUsers = await db.select().from(tsPermissions);
+		try {
+			const currentPermittedUsers = await db.select().from(tsPermissions);
 
-		for (const permission of permissions) {
-			const userAlreadyExists = currentPermittedUsers.find((user) => user.user === permission.user);
-
-			if (userAlreadyExists) {
-				throw new Error(
-					`User with ID ${permission.user} already has a rank assigned. Please update the existing rank instead.`
+			for (const permission of permissions) {
+				const userAlreadyExists = currentPermittedUsers.find(
+					(user) => user.user === permission.user
 				);
-			}
-		}
 
-		return await db
-			.insert(tsPermissions)
-			.values(
-				permissions.map((permission) => {
-					return {
-						user: permission.user,
-						rank: permission.rank,
-					};
-				})
-			)
-			.returning({ user: tsPermissions.user, rank: tsPermissions.rank })
-			.catch((error) => {
-				throw new Error(error);
-			});
+				if (userAlreadyExists) {
+					throw new Error(
+						`User with ID ${permission.user} already has a rank assigned. Please update the existing rank instead.`
+					);
+				}
+			}
+
+			return await db
+				.insert(tsPermissions)
+				.values(
+					permissions.map((permission) => {
+						return {
+							user: permission.user,
+							rank: permission.rank,
+						};
+					})
+				)
+				.returning({ user: tsPermissions.user, rank: tsPermissions.rank });
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error inserting permissions: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error inserting permissions: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 };
 

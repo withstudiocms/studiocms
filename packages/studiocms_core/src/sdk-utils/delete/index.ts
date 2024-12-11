@@ -8,6 +8,7 @@ import {
 	tsPermissions,
 } from '../tables';
 import type { STUDIOCMS_SDK } from '../types';
+import { StudioCMS_SDK_Error } from '../utils';
 
 /**
  * StudioCMS_SDK_DELETE provides methods to delete various entities in the StudioCMS system.
@@ -46,104 +47,168 @@ import type { STUDIOCMS_SDK } from '../types';
  */
 export const StudioCMS_SDK_DELETE: STUDIOCMS_SDK['DELETE'] = {
 	page: async (id) => {
-		return await db
-			.batch([
-				db.delete(tsPageContent).where(eq(tsPageContent.contentId, id)),
-				db.delete(tsPageData).where(eq(tsPageData.id, id)),
-			])
-			.catch((error) => {
-				return { status: 'error', message: `Error deleting page with ID ${id}: ${error}` };
-			})
-			.then(() => {
-				return { status: 'success', message: `Page with ID ${id} has been deleted successfully` };
-			});
+		try {
+			return await db
+				.batch([
+					db.delete(tsPageContent).where(eq(tsPageContent.contentId, id)),
+					db.delete(tsPageData).where(eq(tsPageData.id, id)),
+				])
+				.then(() => {
+					return { status: 'success', message: `Page with ID ${id} has been deleted successfully` };
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting page with ID ${id}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting page with ID ${id}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	pageContent: async (id) => {
-		return await db
-			.delete(tsPageContent)
-			.where(eq(tsPageContent.contentId, id))
-			.catch((error) => {
-				return { status: 'error', message: `Error deleting page content with ID ${id}: ${error}` };
-			})
-			.then(() => {
-				return {
-					status: 'success',
-					message: `Page content with ID ${id} has been deleted successfully`,
-				};
-			});
+		try {
+			return await db
+				.delete(tsPageContent)
+				.where(eq(tsPageContent.contentId, id))
+				.then(() => {
+					return {
+						status: 'success',
+						message: `Page content with ID ${id} has been deleted successfully`,
+					};
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting page content with ID ${id}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting page content with ID ${id}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	pageContentLang: async (id, lang) => {
-		return await db
-			.delete(tsPageContent)
-			.where(and(eq(tsPageContent.contentId, id), eq(tsPageContent.contentLang, lang)))
-			.catch((error) => {
-				return {
-					status: 'error',
-					message: `Error deleting page content with ID ${id} and lang ${lang}: ${error}`,
-				};
-			})
-			.then(() => {
-				return {
-					status: 'success',
-					message: `Page content with ID ${id} and lang ${lang} has been deleted successfully`,
-				};
-			});
+		try {
+			return await db
+				.delete(tsPageContent)
+				.where(and(eq(tsPageContent.contentId, id), eq(tsPageContent.contentLang, lang)))
+				.then(() => {
+					return {
+						status: 'success',
+						message: `Page content with ID ${id} and lang ${lang} has been deleted successfully`,
+					};
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting page content with ID ${id} and lang ${lang}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting page content with ID ${id} and lang ${lang}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	tags: async (id) => {
-		return await db
-			.delete(tsPageDataTags)
-			.where(eq(tsPageDataTags.id, id))
-			.catch((error) => {
-				return { status: 'error', message: `Error deleting tag with ID ${id}: ${error}` };
-			})
-			.then(() => {
-				return { status: 'success', message: `Tag with ID ${id} has been deleted successfully` };
-			});
+		try {
+			return await db
+				.delete(tsPageDataTags)
+				.where(eq(tsPageDataTags.id, id))
+				.then(() => {
+					return { status: 'success', message: `Tag with ID ${id} has been deleted successfully` };
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting tag with ID ${id}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting tag with ID ${id}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	categories: async (id) => {
-		return await db
-			.delete(tsPageDataCategories)
-			.where(eq(tsPageDataCategories.id, id))
-			.catch((error) => {
-				return { status: 'error', message: `Error deleting category with ID ${id}: ${error}` };
-			})
-			.then(() => {
-				return {
-					status: 'success',
-					message: `Category with ID ${id} has been deleted successfully`,
-				};
-			});
+		try {
+			return await db
+				.delete(tsPageDataCategories)
+				.where(eq(tsPageDataCategories.id, id))
+				.then(() => {
+					return {
+						status: 'success',
+						message: `Category with ID ${id} has been deleted successfully`,
+					};
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting category with ID ${id}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting category with ID ${id}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	permissions: async (userId) => {
-		return await db
-			.delete(tsPermissions)
-			.where(eq(tsPermissions.user, userId))
-			.catch((error) => {
-				return {
-					status: 'error',
-					message: `Error deleting permissions for user with ID ${userId}: ${error}`,
-				};
-			})
-			.then(() => {
-				return {
-					status: 'success',
-					message: `Permissions for user with ID ${userId} have been deleted successfully`,
-				};
-			});
+		try {
+			return await db
+				.delete(tsPermissions)
+				.where(eq(tsPermissions.user, userId))
+				.then(() => {
+					return {
+						status: 'success',
+						message: `Permissions for user with ID ${userId} have been deleted successfully`,
+					};
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting permissions for user with ID ${userId}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting permissions for user with ID ${userId}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 	diffTracking: async (id) => {
-		return await db
-			.delete(tsDiffTracking)
-			.where(eq(tsDiffTracking.id, id))
-			.catch((error) => {
-				return { status: 'error', message: `Error deleting diff tracking with ID ${id}: ${error}` };
-			})
-			.then(() => {
-				return {
-					status: 'success',
-					message: `Diff tracking with ID ${id} has been deleted successfully`,
-				};
-			});
+		try {
+			return await db
+				.delete(tsDiffTracking)
+				.where(eq(tsDiffTracking.id, id))
+				.then(() => {
+					return {
+						status: 'success',
+						message: `Diff tracking with ID ${id} has been deleted successfully`,
+					};
+				});
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error deleting diff tracking with ID ${id}: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				`Error deleting diff tracking with ID ${id}: An unknown error occurred.`,
+				`${error}`
+			);
+		}
 	},
 };
 

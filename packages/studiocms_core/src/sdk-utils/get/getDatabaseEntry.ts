@@ -2,7 +2,7 @@
 import { and, db, eq } from 'astro:db';
 import { tsPageData, tsUsers } from '../tables';
 import type { STUDIOCMS_SDK } from '../types';
-import { collectPageData, collectUserData } from '../utils';
+import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
 
 /**
  * Retrieves a database entry based on the specified table.
@@ -58,11 +58,21 @@ export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
 		 * ```
 		 */
 		async byId(id) {
-			const user = await db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
+			try {
+				const user = await db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
 
-			if (!user) return undefined;
+				if (!user) return undefined;
 
-			return await collectUserData(user);
+				return await collectUserData(user);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(`Error getting user by ID: ${error.message}`, error.stack);
+				}
+				throw new StudioCMS_SDK_Error(
+					'Error getting user by ID: An unknown error occurred.',
+					`${error}`
+				);
+			}
 		},
 		/**
 		 * Retrieves a database entry by its username.
@@ -87,11 +97,24 @@ export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
 		 * ```
 		 */
 		async byUsername(username) {
-			const user = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
+			try {
+				const user = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
 
-			if (!user) return undefined;
+				if (!user) return undefined;
 
-			return await collectUserData(user);
+				return await collectUserData(user);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(
+						`Error getting user by username: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMS_SDK_Error(
+					'Error getting user by username: An unknown error occurred.',
+					`${error}`
+				);
+			}
 		},
 		/**
 		 * Retrieves a database entry by its email.
@@ -115,11 +138,24 @@ export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
 		 * }
 		 */
 		async byEmail(email) {
-			const user = await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
+			try {
+				const user = await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
 
-			if (!user) return undefined;
+				if (!user) return undefined;
 
-			return await collectUserData(user);
+				return await collectUserData(user);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(
+						`Error getting user by email: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMS_SDK_Error(
+					'Error getting user by email: An unknown error occurred.',
+					`${error}`
+				);
+			}
 		},
 	},
 	pages: {
@@ -150,11 +186,21 @@ export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
 		 * ```
 		 */
 		async byId(id) {
-			const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
+			try {
+				const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
 
-			if (!page) return undefined;
+				if (!page) return undefined;
 
-			return await collectPageData(page);
+				return await collectPageData(page);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
+				}
+				throw new StudioCMS_SDK_Error(
+					'Error getting page by ID: An unknown error occurred.',
+					`${error}`
+				);
+			}
 		},
 		/**
 		 * Retrieves a database entry by its slug and optional package name.
@@ -184,17 +230,30 @@ export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
 		 * ```
 		 */
 		async bySlug(slug, pkg?) {
-			const pkgToGet = pkg || 'studiocms';
+			try {
+				const pkgToGet = pkg || 'studiocms';
 
-			const page = await db
-				.select()
-				.from(tsPageData)
-				.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
-				.get();
+				const page = await db
+					.select()
+					.from(tsPageData)
+					.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
+					.get();
 
-			if (!page) return undefined;
+				if (!page) return undefined;
 
-			return await collectPageData(page);
+				return await collectPageData(page);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(
+						`Error getting page by slug: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMS_SDK_Error(
+					'Error getting page by slug: An unknown error occurred.',
+					`${error}`
+				);
+			}
 		},
 	},
 };

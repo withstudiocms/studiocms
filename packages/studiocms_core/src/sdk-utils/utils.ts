@@ -1,5 +1,6 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
+import { AstroError } from 'astro/errors';
 import {
 	tsOAuthAccounts,
 	tsPageContent,
@@ -21,6 +22,10 @@ import type {
 	tsUsersSelect,
 } from './types';
 
+export class StudioCMS_SDK_Error extends AstroError {
+	override name = 'StudioCMS SDK Error';
+}
+
 /**
  * Collects user data by fetching OAuth data and permission data for the given user.
  *
@@ -28,16 +33,26 @@ import type {
  * @returns A promise that resolves to an object containing combined user data, including OAuth data and permission data.
  */
 export async function collectUserData(user: tsUsersSelect): Promise<CombinedUserData> {
-	const [oAuthData, permissionData] = await db.batch([
-		db.select().from(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, user.id)),
-		db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)),
-	]);
+	try {
+		const [oAuthData, permissionData] = await db.batch([
+			db.select().from(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, user.id)),
+			db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)),
+		]);
 
-	return {
-		...user,
-		oAuthData: oAuthData,
-		permissionsData: permissionData.pop(),
-	};
+		return {
+			...user,
+			oAuthData: oAuthData,
+			permissionsData: permissionData.pop(),
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMS_SDK_Error(`Error collecting user data: ${error.message}`, error.stack);
+		}
+		throw new StudioCMS_SDK_Error(
+			'Error collecting user data: An unknown error occurred.',
+			`${error}`
+		);
+	}
 }
 
 /**
@@ -52,21 +67,31 @@ export async function runDbBatchQuery<returnType>(
 	ids: Array<number | string>,
 	table: GenericTable
 ): Promise<returnType[]> {
-	const batchQueries = [];
+	try {
+		const batchQueries = [];
 
-	for (const id of ids) {
-		batchQueries.push(db.select().from(table).where(eq(table.id, id)));
+		for (const id of ids) {
+			batchQueries.push(db.select().from(table).where(eq(table.id, id)));
+		}
+
+		const [head, ...tail] = batchQueries;
+
+		if (head) {
+			const queryResults = await db.batch([head, ...tail]);
+			// Flatten and filter the results
+			return queryResults.flat().filter(Boolean) as returnType[];
+		}
+
+		return [] as returnType[];
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMS_SDK_Error(`Error running batch query: ${error.message}`, error.stack);
+		}
+		throw new StudioCMS_SDK_Error(
+			'Error running batch query: An unknown error occurred.',
+			`${error}`
+		);
 	}
-
-	const [head, ...tail] = batchQueries;
-
-	if (head) {
-		const queryResults = await db.batch([head, ...tail]);
-		// Flatten and filter the results
-		return queryResults.flat().filter(Boolean) as returnType[];
-	}
-
-	return [] as returnType[];
 }
 
 export function parseIdNumberArray(ids: unknown): number[] {
@@ -92,35 +117,45 @@ export function parseIdStringArray(ids: unknown): string[] {
  * 6. Returns the combined page data including categories, tags, contributors, multilingual content, and default content.
  */
 export async function collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
-	const categoryIds = parseIdNumberArray(page.categories);
-	const categories = await runDbBatchQuery<tsPageDataCategoriesSelect>(
-		categoryIds,
-		tsPageDataCategories
-	);
+	try {
+		const categoryIds = parseIdNumberArray(page.categories);
+		const categories = await runDbBatchQuery<tsPageDataCategoriesSelect>(
+			categoryIds,
+			tsPageDataCategories
+		);
 
-	const tagIds = parseIdNumberArray(page.tags);
-	const tags = await runDbBatchQuery<tsPageDataTagsSelect>(tagIds, tsPageDataTags);
+		const tagIds = parseIdNumberArray(page.tags);
+		const tags = await runDbBatchQuery<tsPageDataTagsSelect>(tagIds, tsPageDataTags);
 
-	const contributorIds = parseIdStringArray(page.contributorIds);
-	const contributors = await runDbBatchQuery<string>(contributorIds, tsUsers);
+		const contributorIds = parseIdStringArray(page.contributorIds);
+		const contributors = await runDbBatchQuery<string>(contributorIds, tsUsers);
 
-	const multiLangContentData = await db
-		.select()
-		.from(tsPageContent)
-		.where(eq(tsPageContent.contentId, page.id));
+		const multiLangContentData = await db
+			.select()
+			.from(tsPageContent)
+			.where(eq(tsPageContent.contentId, page.id));
 
-	const defaultContentData = multiLangContentData.find(
-		(content) => content.contentLang === 'default'
-	);
+		const defaultContentData = multiLangContentData.find(
+			(content) => content.contentLang === 'default'
+		);
 
-	return {
-		...page,
-		categories,
-		tags,
-		contributorIds: contributors,
-		multiLangContent: multiLangContentData,
-		defaultContent: defaultContentData,
-	};
+		return {
+			...page,
+			categories,
+			tags,
+			contributorIds: contributors,
+			multiLangContent: multiLangContentData,
+			defaultContent: defaultContentData,
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMS_SDK_Error(`Error collecting page data: ${error.message}`, error.stack);
+		}
+		throw new StudioCMS_SDK_Error(
+			'Error collecting page data: An unknown error occurred.',
+			`${error}`
+		);
+	}
 }
 
 /**
@@ -136,18 +171,25 @@ export function verifyRank(
 	permissions: tsPermissionsSelect[],
 	rank: string
 ): SingleRank[] {
-	const filteredUsers = permissions.filter((user) => user.rank === rank);
-	const permitted: { id: string; name: string }[] = [];
+	try {
+		const filteredUsers = permissions.filter((user) => user.rank === rank);
+		const permitted: { id: string; name: string }[] = [];
 
-	for (const user of filteredUsers) {
-		const foundUser = users.find((u) => u.id === user.user);
+		for (const user of filteredUsers) {
+			const foundUser = users.find((u) => u.id === user.user);
 
-		if (foundUser) {
-			permitted.push({ id: foundUser.id, name: foundUser.name });
+			if (foundUser) {
+				permitted.push({ id: foundUser.id, name: foundUser.name });
+			}
 		}
-	}
 
-	return permitted;
+		return permitted;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMS_SDK_Error(`Error verifying rank: ${error.message}`, error.stack);
+		}
+		throw new StudioCMS_SDK_Error('Error verifying rank: An unknown error occurred.', `${error}`);
+	}
 }
 
 /**

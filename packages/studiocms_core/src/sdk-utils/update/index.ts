@@ -8,6 +8,7 @@ import {
 	tsSiteConfig,
 } from '../tables';
 import type { STUDIOCMS_SDK } from '../types';
+import { StudioCMS_SDK_Error } from '../utils';
 
 /**
  * The `StudioCMS_SDK_UPDATE` object provides methods to update various entities in the StudioCMS system.
@@ -25,52 +26,109 @@ import type { STUDIOCMS_SDK } from '../types';
  */
 export const StudioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = {
 	page: async (data) => {
-		return await db
-			.update(tsPageData)
-			.set(data)
-			.where(eq(tsPageData.id, data.id))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsPageData)
+				.set(data)
+				.where(eq(tsPageData.id, data.id))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error updating page: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error updating page: An unknown error occurred.', `${error}`);
+		}
 	},
 	pageContent: async (data) => {
-		return await db
-			.update(tsPageContent)
-			.set(data)
-			.where(eq(tsPageContent.id, data.id))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsPageContent)
+				.set(data)
+				.where(eq(tsPageContent.id, data.id))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error updating page content: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error updating page content: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 	tags: async (data) => {
-		return await db
-			.update(tsPageDataTags)
-			.set(data)
-			.where(eq(tsPageDataTags.id, data.id))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsPageDataTags)
+				.set(data)
+				.where(eq(tsPageDataTags.id, data.id))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error updating tags: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error updating tags: An unknown error occurred.', `${error}`);
+		}
 	},
 	categories: async (data) => {
-		return await db
-			.update(tsPageDataCategories)
-			.set(data)
-			.where(eq(tsPageDataCategories.id, data.id))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsPageDataCategories)
+				.set(data)
+				.where(eq(tsPageDataCategories.id, data.id))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error updating categories: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error updating categories: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 	permissions: async (data) => {
-		return await db
-			.update(tsPermissions)
-			.set(data)
-			.where(eq(tsPermissions.user, data.user))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsPermissions)
+				.set(data)
+				.where(eq(tsPermissions.user, data.user))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error updating permissions: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error updating permissions: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 	siteConfig: async (data) => {
-		return await db
-			.update(tsSiteConfig)
-			.set(data)
-			.where(eq(tsSiteConfig.id, data.id))
-			.returning()
-			.get();
+		try {
+			return await db
+				.update(tsSiteConfig)
+				.set(data)
+				.where(eq(tsSiteConfig.id, data.id))
+				.returning()
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error updating site configuration: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error updating site configuration: An unknown error occurred.',
+				`${error}`
+			);
+		}
 	},
 };
 

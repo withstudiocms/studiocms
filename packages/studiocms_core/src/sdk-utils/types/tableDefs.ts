@@ -77,30 +77,23 @@ export type DatabaseTables =
 	| undefined;
 
 /**
+ * Represents a single rank with an identifier and a name.
+ */
+export interface SingleRank {
+	id: string;
+	name: string;
+}
+
+/**
  * Represents a combined rank with associated details.
  *
  * @property {string} rank - The rank of the entity.
  * @property {string} id - The unique identifier for the rank.
  * @property {string} name - The name associated with the rank.
  */
-export type CombinedRank = {
+export interface CombinedRank extends SingleRank {
 	rank: string;
-	id: string;
-	name: string;
-};
-
-/**
- * Represents a single rank with an identifier and a name.
- */
-export type SingleRank = {
-	id: string;
-	name: string;
-};
-
-/**
- * Represents a list of permissions which can be either a combined rank or a single rank.
- */
-export type PermissionsList = CombinedRank | SingleRank;
+}
 
 /**
  * Represents the different types of user lists available in the system.
