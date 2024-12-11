@@ -1,9 +1,40 @@
+declare module 'virtual:studiocms/pluginSystem' {
+	/** @deprecated */
+	export const externalNav: typeof import('./src/lib').externalNavigation;
+	/** @deprecated */
+	export const dashboardPageLinks: typeof import('./src/lib').dashboardPageLinksMap;
+	/** @deprecated */
+	export const pluginList: typeof import('./src/lib').studioCMSPluginList;
+	/** @deprecated */
+	export const customRenderers: string[];
+}
+declare module 'studiocms:helpers/contentHelper' {
+	/** @deprecated */
+	export const contentHelper: typeof import('./src/helpers').contentHelper;
+	/** @deprecated */
+	export const getSiteConfig: typeof import('./src/helpers').getSiteConfig;
+	/** @deprecated */
+	export const getPageList: typeof import('./src/helpers').getPageList;
+	/** @deprecated */
+	export const getUserList: typeof import('./src/helpers').getUserList;
+	/** @deprecated */
+	export const getUserById: typeof import('./src/helpers').getUserById;
+	/** @deprecated */
+	export type ContentHelperTempResponse = import('./src/helpers').ContentHelperTempResponse;
+	/** @deprecated */
+	export type SiteConfigResponse = import('./src/helpers').SiteConfigResponse;
+	/** @deprecated */
+	export type pageDataReponse = import('./src/helpers').pageDataReponse;
+	/** @deprecated */
+	export type UserResponse = import('./src/helpers').UserResponse;
+}
+
 /**
  * # DEV TIP
  *
  * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
  *
- * This module can also be delcared from `studiocms`.
+ * This module can also be declared from `studiocms`.
  *
  * @example
  * declare module 'virtual:studiocms/config' {
@@ -31,22 +62,7 @@ declare module 'virtual:studiocms/astromdremarkConfig' {
  *
  * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
  *
- * This module can also be delcared from `@studiocms/core/lib`.
- *
- */
-declare module 'virtual:studiocms/pluginSystem' {
-	export const externalNav: typeof import('./src/lib').externalNavigation;
-	export const dashboardPageLinks: typeof import('./src/lib').dashboardPageLinksMap;
-	export const pluginList: typeof import('./src/lib').studioCMSPluginList;
-	export const customRenderers: string[];
-}
-
-/**
- * # DEV TIP
- *
- * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
- *
- * This module can also be delcared from `@studiocms/core/components`.
+ * This module can also be declared from `@studiocms/core/components`.
  * }
  */
 declare module 'studiocms:components' {
@@ -61,11 +77,10 @@ declare module 'studiocms:components' {
  *
  * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
  *
- * This module can also be delcared from `@studiocms/core/helpers`.
+ * This module can also be declared from `@studiocms/core/helpers`.
  * }
  */
 declare module 'studiocms:helpers' {
-	export const authHelper: typeof import('./src/helpers').authHelper;
 	export const urlGenFactory: typeof import('./src/helpers').urlGenFactory;
 	export const pathWithBase: typeof import('./src/helpers').pathWithBase;
 	export const fileWithBase: typeof import('./src/helpers').fileWithBase;
@@ -76,27 +91,7 @@ declare module 'studiocms:helpers' {
  *
  * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
  *
- * This module can also be delcared from `@studiocms/core/helpers`.
- * }
- */
-declare module 'studiocms:helpers/contentHelper' {
-	export const contentHelper: typeof import('./src/helpers').contentHelper;
-	export const getSiteConfig: typeof import('./src/helpers').getSiteConfig;
-	export const getPageList: typeof import('./src/helpers').getPageList;
-	export const getUserList: typeof import('./src/helpers').getUserList;
-	export const getUserById: typeof import('./src/helpers').getUserById;
-	export type ContentHelperTempResponse = import('./src/helpers').ContentHelperTempResponse;
-	export type SiteConfigResponse = import('./src/helpers').SiteConfigResponse;
-	export type pageDataReponse = import('./src/helpers').pageDataReponse;
-	export type UserResponse = import('./src/helpers').UserResponse;
-}
-
-/**
- * # DEV TIP
- *
- * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
- *
- * This module can also be delcared from `@studiocms/core/helpers`.
+ * This module can also be declared from `@studiocms/core/helpers`.
  * }
  */
 declare module 'studiocms:helpers/headDefaults' {
@@ -108,7 +103,7 @@ declare module 'studiocms:helpers/headDefaults' {
  *
  * Wanting to extend StudioCMS? You can do so by defining a new module in the `virtual:studiocms` namespace within your project with the following format:
  *
- * This module can also be delcared from `@studiocms/core/helpers`.
+ * This module can also be declared from `@studiocms/core/helpers`.
  * }
  */
 declare module 'studiocms:helpers/routemap' {
