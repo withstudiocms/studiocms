@@ -1,11 +1,5 @@
-import {
-	getDatabase,
-	getDatabaseEntry,
-	getDatabaseTable,
-	getPackagePages,
-	getPermissionsLists,
-} from './get';
-import { postDatabaseEntry } from './post';
+import StudioCMS_SDK_GET from './get';
+import StudioCMS_SDK_POST from './post';
 import type { STUDIOCMS_SDK } from './types';
 
 /**
@@ -26,16 +20,10 @@ import type { STUDIOCMS_SDK } from './types';
  * ```
  */
 export const StudioCMS_SDK: STUDIOCMS_SDK = {
-	GET: {
-		database: getDatabase,
-		databaseEntry: getDatabaseEntry,
-		databaseTable: getDatabaseTable,
-		permissionsLists: getPermissionsLists,
-		packagePages: async (packageName) => await getPackagePages(packageName),
-	},
-	POST: {
-		databaseEntry: postDatabaseEntry,
-	},
+	GET: StudioCMS_SDK_GET,
+	POST: StudioCMS_SDK_POST,
+	UPDATE: {},
+	DELETE: {},
 };
 
 export default StudioCMS_SDK;

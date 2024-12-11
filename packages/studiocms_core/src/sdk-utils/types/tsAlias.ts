@@ -72,6 +72,13 @@ export type tsPageDataCategoriesSelect = typeof tsPageDataCategories.$inferSelec
 export type tsDiffTrackingSelect = typeof tsDiffTracking.$inferSelect;
 
 /**
+ * Type alias for the inferred Insert type of `tsDiffTracking`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsDiffTracking`.
+ */
+export type tsDiffTrackingInsert = typeof tsDiffTracking.$inferInsert;
+
+/**
  * Type alias for the inferred select type of `tsPageContent`.
  *
  * This type is derived from the `$inferSelect` property of `tsPageContent`.

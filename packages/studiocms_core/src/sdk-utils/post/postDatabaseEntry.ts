@@ -1,6 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import {
+	tsDiffTracking,
 	tsPageContent,
 	tsPageData,
 	tsPageDataCategories,
@@ -144,6 +145,20 @@ export const postDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 			.catch((error) => {
 				throw new Error(error);
 			});
+	},
+	diffTracking: async (diffData) => {
+		return await db
+			.insert(tsDiffTracking)
+			.values({
+				id: diffData.id || crypto.randomUUID().toString(),
+				userId: diffData.userId,
+				pageId: diffData.pageId,
+				diff: diffData.diff || '',
+				timestamp: new Date(),
+				pageContentStart: diffData.pageContentStart,
+				pageMetaData: JSON.stringify(diffData.pageMetaData as string),
+			})
+			.returning();
 	},
 };
 

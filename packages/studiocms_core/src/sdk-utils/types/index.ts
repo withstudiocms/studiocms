@@ -14,6 +14,7 @@ import type {
 } from './tableDefs';
 import type {
 	CombinedInsertContent,
+	tsDiffTrackingInsert,
 	tsDiffTrackingSelect,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
@@ -48,6 +49,7 @@ export type {
 
 // tsAlias.ts
 export type {
+	tsDiffTrackingInsert,
 	tsDiffTrackingSelect,
 	CombinedInsertContent,
 	tsOAuthAccountsSelect,
@@ -350,6 +352,47 @@ export interface STUDIOCMS_SDK {
 			 * @returns A promise that resolves to an array of selected permissions.
 			 */
 			permissions: (userId: string, rank: string) => Promise<tsPermissionsSelect[]>;
+
+			/**
+			 * Inserts a new Diff Tracking entry into the database.
+			 *
+			 * @param diff - The diff tracking data to be inserted.
+			 * @returns A promise that resolves to an array of inserted diff tracking responses.
+			 */
+			diffTracking: (diff: tsDiffTrackingInsert) => Promise<tsDiffTrackingSelect[]>;
 		};
+
+		// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+		databaseEntries: {
+			// tags: (data: tsPageDataTagsInsert[]) => Promise<void>;
+			// categories: (data: tsPageDataCategoriesInsert[]) => Promise<void>;
+			// permissions: (data: tsPermissionsSelect[]) => Promise<void>;
+		};
+	};
+
+	// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+	UPDATE: {
+		// page: (id: string, data: tsPageDataInsert) => Promise<void>;
+		// pageContent: (id: string, data: tsPageContentInsert) => Promise<void>;
+		// tags: (id: number, data: tsPageDataTagsInsert) => Promise<void>;
+		// categories: (id: number, data: tsPageDataCategoriesInsert) => Promise<void>;
+		// permissions: (user: string, data: tsPermissionsSelect) => Promise<void>;
+		// siteConfig: (data: tsSiteConfigInsert) => Promise<void>;
+	};
+
+	// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+	DELETE: {
+		/** Delete page and all page content */
+		// page: (id: string) => Promise<void>;
+		/** Delete a specific page content entry */
+		// pageContent: (id: string) => Promise<void>;
+		/** Delete a tag from the Database */
+		// tags: (id: number) => Promise<void>;
+		/** Delete a category from the Database */
+		// categories: (id: number) => Promise<void>;
+		/** Delete a user permission from the Database */
+		// permissions: (userId: string) => Promise<void>;
+		/** Delete a diff from the tracking database */
+		// diffTracking: (id: string) => Promise<void>;
 	};
 }
