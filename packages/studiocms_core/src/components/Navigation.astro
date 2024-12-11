@@ -1,7 +1,7 @@
 ---
 import { Avatar } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import { externalNav } from 'virtual:studiocms/pluginSystem';
+// import { externalNav } from 'virtual:studiocms/pluginSystem';
 import './navigation.css';
 import { pathWithBase } from 'studiocms:helpers';
 import { getPageList, getSiteConfig } from 'studiocms:helpers/contentHelper';
@@ -50,14 +50,14 @@ for (const page of restOfPages) {
 	});
 }
 
-const externalLinks = Array.from(externalNav.values());
+// const externalLinks = Array.from(externalNav.values());
 
-for (const link of externalLinks) {
-	links.push({
-		text: link.text,
-		href: pathWithBase(link.slug),
-	});
-}
+// for (const link of externalLinks) {
+// 	links.push({
+// 		text: link.text,
+// 		href: pathWithBase(link.slug),
+// 	});
+// }
 ---
 
 <!-- If no dropdown items -->
