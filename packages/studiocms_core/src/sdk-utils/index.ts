@@ -13,11 +13,11 @@ import studioCMS_SDK_UPDATE from './update';
  * @example
  * ```typescript
  * // Install and import the SDK `npm install @studiocms/core`
- * import StudioCMS_SDK from '@studiocms/core/sdk-utils';
+ * import studioCMS_SDK from '@studiocms/core/sdk-utils';
  * // or using the virtual module (Included by default in StudioCMS)
- * import StudioCMS_SDK from 'studiocms:sdk';
+ * import studioCMS_SDK from 'studiocms:sdk';
  *
- * const users = await StudioCMS_SDK.GET.database.users();
+ * const users = await studioCMS_SDK.GET.database.users();
  *
  * console.log(users);
  * ```
