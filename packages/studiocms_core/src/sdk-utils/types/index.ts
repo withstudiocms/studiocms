@@ -26,9 +26,11 @@ import type {
 	tsPageDataTagsSelect,
 	tsPermissionsInsert,
 	tsPermissionsSelect,
+	tsSessionTableInsert,
 	tsSessionTableSelect,
 	tsSiteConfigInsert,
 	tsSiteConfigSelect,
+	tsUsersInsert,
 	tsUsersSelect,
 } from './tsAlias';
 
@@ -66,6 +68,8 @@ export type {
 	tsSessionTableSelect,
 	tsSiteConfigSelect,
 	tsUsersSelect,
+	tsUsersInsert,
+	tsSessionTableInsert,
 };
 
 export type GenericTable = Table<
@@ -486,5 +490,108 @@ export interface STUDIOCMS_SDK {
 		permissions: (userId: string) => Promise<DeletionResponse>;
 		/** Delete a diff from the tracking database */
 		diffTracking: (id: string) => Promise<DeletionResponse>;
+	};
+
+	/**
+	 * Utilities for the `@studiocms/auth` package to interact
+	 * 		with the StudioCMS SDK
+	 */
+	AUTH: {
+		/**
+		 * StudioCMS_SDK_authSession provides methods to manage authentication sessions.
+		 *
+		 * @property {Function} create - Creates a new session.
+		 * @param {tsSessionTableInsert} data - The data to insert into the session table.
+		 * @returns {Promise<Object>} The created session object.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the session.
+		 *
+		 * @property {Function} sessionWithUser - Retrieves a session along with the associated user.
+		 * @param {string} sessionId - The ID of the session to retrieve.
+		 * @returns {Promise<Object>} The session and associated user object.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while retrieving the session with user.
+		 *
+		 * @property {Function} delete - Deletes a session.
+		 * @param {string} sessionId - The ID of the session to delete.
+		 * @returns {Promise<Object>} An object indicating the status of the deletion.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the session.
+		 *
+		 * @property {Function} update - Updates the expiration date of a session.
+		 * @param {string} sessionId - The ID of the session to update.
+		 * @param {Date} newDate - The new expiration date.
+		 * @returns {Promise<Object>} The updated session object.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the session.
+		 */
+		session: {
+			create: (data: tsSessionTableInsert) => Promise<tsSessionTableSelect>;
+			sessionWithUser: (
+				sessionId: string
+			) => Promise<{ user: tsUsersSelect; session: tsSessionTableSelect }[]>;
+			delete: (sessionId: string) => Promise<DeletionResponse>;
+			update: (sessionId: string, newDate: Date) => Promise<tsSessionTableSelect[]>;
+		};
+
+		/**
+		 * The `StudioCMS_SDK_authUser` object provides methods for creating and updating user records
+		 * in the StudioCMS system. It interacts with the database to perform these operations and
+		 * handles errors by throwing `StudioCMS_SDK_Error` with appropriate messages.
+		 *
+		 * @property {Function} create - Asynchronously creates a new user record in the database.
+		 * @param {tsUsersInsert} newUserData - The data for the new user to be created.
+		 * @returns {Promise<any>} - A promise that resolves to the created user record.
+		 * @throws {StudioCMS_SDK_Error} - Throws an error if the creation process fails.
+		 *
+		 * @property {Function} update - Asynchronously updates an existing user record in the database.
+		 * @param {string} userId - The ID of the user to be updated.
+		 * @param {tsUsersSelect} userData - The new data for the user.
+		 * @returns {Promise<any>} - A promise that resolves to the updated user record.
+		 * @throws {StudioCMS_SDK_Error} - Throws an error if the update process fails.
+		 *
+		 * @todo Implement the delete function to safely remove user records without causing errors due to references in other tables.
+		 */
+		user: {
+			create: (newUserData: tsUsersInsert) => Promise<tsUsersSelect>;
+			update: (userId: string, userData: tsUsersSelect) => Promise<tsUsersSelect>;
+			// delete: async () => {},
+		};
+
+		/**
+		 * The `StudioCMS_SDK_authOAuth` object provides methods to handle OAuth authentication
+		 * within the StudioCMS SDK. It includes methods to create and delete OAuth accounts.
+		 *
+		 * @type {STUDIOCMS_SDK['auth']['oAuth']}
+		 *
+		 * @property {Function} create - Asynchronously creates a new OAuth account with the provided data.
+		 * @param {Object} data - The data for the new OAuth account.
+		 * @returns {Promise<Object>} The created OAuth account.
+		 * @throws {StudioCMS_SDK_Error} Throws an error if the account creation fails.
+		 *
+		 * @property {Function} delete - Asynchronously deletes an existing OAuth account based on user ID and provider.
+		 * @param {string} userId - The ID of the user whose OAuth account is to be deleted.
+		 * @param {string} provider - The provider of the OAuth account to be deleted.
+		 * @returns {Promise<Object>} An object containing the status and message of the deletion operation.
+		 * @throws {StudioCMS_SDK_Error} Throws an error if the account deletion fails.
+		 */
+		oAuth: {
+			create: (data: tsOAuthAccountsSelect) => Promise<tsOAuthAccountsSelect>;
+			delete: (userId: string, provider: string) => Promise<DeletionResponse>;
+		};
+
+		/**
+		 * An object representing the authentication permissions for the StudioCMS SDK.
+		 *
+		 * @property {Function} currentStatus - Asynchronously retrieves the current permissions status for a given user.
+		 * @param {string} userId - The ID of the user whose permissions are being retrieved.
+		 * @returns {Promise<any>} - A promise that resolves to the user's permissions.
+		 * @throws {StudioCMS_SDK_Error} - Throws an error if there is an issue retrieving the user's permissions.
+		 */
+		permission: {
+			/**
+			 * Retrieves the current permission status for a user.
+			 *
+			 * @param userId - The ID of the user to check permissions for.
+			 * @returns A promise that resolves to the current permission status for the user.
+			 */
+			currentStatus: (userId: string) => Promise<tsPermissionsSelect | undefined>;
+		};
 	};
 }

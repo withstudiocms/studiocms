@@ -46,6 +46,7 @@
     "./sdk-utils": "./src/sdk-utils/index.ts",
     "./sdk-utils/tables": "./src/sdk-utils/tables.ts",
     "./sdk-utils/utils": "./src/sdk-utils/utils.ts",
+    "./sdk-utils/auth": "./src/sdk-utils/auth/index.ts",
     "./sdk-utils/delete": "./src/sdk-utils/delete/index.ts",
     "./sdk-utils/get": "./src/sdk-utils/get/index.ts",
     "./sdk-utils/post": "./src/sdk-utils/post/index.ts",

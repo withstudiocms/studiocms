@@ -1,3 +1,4 @@
+import StudioCMS_SDK_AUTH from './auth';
 import StudioCMS_SDK_DELETE from './delete';
 import StudioCMS_SDK_GET from './get';
 import StudioCMS_SDK_POST from './post';
@@ -26,6 +27,7 @@ export const StudioCMS_SDK: STUDIOCMS_SDK = {
 	POST: StudioCMS_SDK_POST,
 	UPDATE: StudioCMS_SDK_UPDATE,
 	DELETE: StudioCMS_SDK_DELETE,
+	AUTH: StudioCMS_SDK_AUTH,
 };
 
 export default StudioCMS_SDK;

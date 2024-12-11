@@ -19,6 +19,8 @@ import type {
  */
 export type tsUsersSelect = typeof tsUsers.$inferSelect;
 
+export type tsUsersInsert = typeof tsUsers.$inferInsert;
+
 /**
  * Type alias for the inferred select type of the `tsOAuthAccounts` object.
  *
@@ -34,6 +36,8 @@ export type tsOAuthAccountsSelect = typeof tsOAuthAccounts.$inferSelect;
  * which represents the structure of a selected row from the `tsSessionTable`.
  */
 export type tsSessionTableSelect = typeof tsSessionTable.$inferSelect;
+
+export type tsSessionTableInsert = typeof tsSessionTable.$inferInsert;
 
 /**
  * Type alias for the inferred select type of `tsPermissions`.
