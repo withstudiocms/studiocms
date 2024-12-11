@@ -154,9 +154,9 @@ export const postDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 				userId: diffData.userId,
 				pageId: diffData.pageId,
 				diff: diffData.diff || '',
-				timestamp: new Date(),
+				timestamp: diffData.timestamp || new Date(),
 				pageContentStart: diffData.pageContentStart,
-				pageMetaData: JSON.stringify(diffData.pageMetaData as string),
+				pageMetaData: JSON.stringify(diffData.pageMetaData || {}),
 			})
 			.returning();
 	},
