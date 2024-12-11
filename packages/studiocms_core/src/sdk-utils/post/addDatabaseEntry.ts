@@ -15,7 +15,7 @@ import { generateRandomIDNumber } from '../utils';
  */
 export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 	pages: async (pageData, pageContent) => {
-		const newContentID = crypto.randomUUID().toString();
+		const newContentID = pageData.id || crypto.randomUUID().toString();
 
 		const {
 			title,
@@ -31,9 +31,9 @@ export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 		} = pageData;
 
 		const stringified = {
-			categories: JSON.stringify(pageData.categories),
-			tags: JSON.stringify(pageData.tags),
-			contributorIds: JSON.stringify(pageData.contributorIds),
+			categories: JSON.stringify(pageData.categories || []),
+			tags: JSON.stringify(pageData.tags || []),
+			contributorIds: JSON.stringify(pageData.contributorIds || []),
 		};
 
 		const contentData = {
@@ -77,12 +77,12 @@ export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 			pageContent: newPageContent,
 		};
 	},
-	pageContent: async (pageId, pageContent) => {
+	pageContent: async (pageContent) => {
 		return await db
 			.insert(tsPageContent)
 			.values({
-				id: crypto.randomUUID().toString(),
-				contentId: pageId,
+				id: pageContent.id || crypto.randomUUID().toString(),
+				contentId: pageContent.contentId,
 				contentLang: pageContent.contentLang || 'default',
 				content: pageContent.content || '',
 			})
@@ -99,7 +99,7 @@ export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 				description: tag.description,
 				slug: tag.slug,
 				meta: JSON.stringify(tag.meta),
-				id: generateRandomIDNumber(9),
+				id: tag.id || generateRandomIDNumber(9),
 			})
 			.returning({ id: tsPageDataTags.id })
 			.catch((error) => {
@@ -114,7 +114,7 @@ export const addDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
 				description: category.description,
 				slug: category.slug,
 				meta: JSON.stringify(category.meta),
-				id: generateRandomIDNumber(9),
+				id: category.id || generateRandomIDNumber(9),
 			})
 			.returning({ id: tsPageDataCategories.id })
 			.catch((error) => {

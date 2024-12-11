@@ -28,9 +28,7 @@ import type { STUDIOCMS_SDK } from '../types';
  * console.log(users);
  * ```
  */
-export async function getDatabaseTable(
-	database: Parameters<STUDIOCMS_SDK['GET']['databaseTable']>[0]
-): ReturnType<STUDIOCMS_SDK['GET']['databaseTable']> {
+export const getDatabaseTable: STUDIOCMS_SDK['GET']['databaseTable'] = async (database) => {
 	switch (database) {
 		case 'users':
 			return await db.select().from(tsUsers);
@@ -55,6 +53,6 @@ export async function getDatabaseTable(
 		default:
 			throw new Error(`Unknown database table: ${database}`);
 	}
-}
+};
 
 export default getDatabaseTable;

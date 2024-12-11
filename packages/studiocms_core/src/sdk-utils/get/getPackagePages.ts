@@ -10,9 +10,7 @@ import { collectPageData } from '../utils';
  * @param packageName - The name of the package for which to retrieve pages.
  * @returns A promise that resolves to an array of CombinedPageData objects.
  */
-export async function getPackagePages(
-	packageName: Parameters<STUDIOCMS_SDK['GET']['packagePages']>[0]
-): ReturnType<STUDIOCMS_SDK['GET']['packagePages']> {
+export const getPackagePages: STUDIOCMS_SDK['GET']['packagePages'] = async (packageName) => {
 	const pages: CombinedPageData[] = [];
 
 	const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.package, packageName));
@@ -24,6 +22,6 @@ export async function getPackagePages(
 	}
 
 	return pages;
-}
+};
 
 export default getPackagePages;

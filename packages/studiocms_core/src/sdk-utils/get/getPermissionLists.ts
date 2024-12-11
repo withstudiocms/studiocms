@@ -27,9 +27,7 @@ import { combineRanks, verifyRank } from '../utils';
  * console.log(owners);
  * ```
  */
-export async function getPermissionsLists(
-	list: Parameters<STUDIOCMS_SDK['GET']['permissionsLists']>[0]
-): ReturnType<STUDIOCMS_SDK['GET']['permissionsLists']> {
+export const getPermissionsLists: STUDIOCMS_SDK['GET']['permissionsLists'] = async (list) => {
 	switch (list) {
 		case 'all': {
 			const [currentPermittedUsers, existingUsers] = await db.batch([
@@ -83,6 +81,6 @@ export async function getPermissionsLists(
 		default:
 			throw new Error(`Unknown list type: ${list}`);
 	}
-}
+};
 
 export default getPermissionsLists;

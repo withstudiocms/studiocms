@@ -109,6 +109,8 @@ export type tsPageDataInsert = typeof tsPageData.$inferInsert;
  */
 export type tsPageContentInsert = typeof tsPageContent.$inferInsert;
 
+export type CombinedInsertContent = Omit<tsPageContentInsert, 'id' | 'contentId'>;
+
 /**
  * Type alias for the inferred insert type of `tsPageDataTags`.
  *

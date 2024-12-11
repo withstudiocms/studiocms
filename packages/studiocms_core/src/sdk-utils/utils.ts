@@ -69,6 +69,14 @@ export async function runDbBatchQuery<returnType>(
 	return [] as returnType[];
 }
 
+export function parseIdNumberArray(ids: unknown): number[] {
+	return JSON.parse(ids as string) as number[];
+}
+
+export function parseIdStringArray(ids: unknown): string[] {
+	return JSON.parse(ids as string) as string[];
+}
+
 /**
  * Collects and combines page data including categories, tags, contributors, and multilingual content.
  *
@@ -84,14 +92,17 @@ export async function runDbBatchQuery<returnType>(
  * 6. Returns the combined page data including categories, tags, contributors, multilingual content, and default content.
  */
 export async function collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
+	const categoryIds = parseIdNumberArray(page.categories);
 	const categories = await runDbBatchQuery<tsPageDataCategoriesSelect>(
-		page.categories as number[],
+		categoryIds,
 		tsPageDataCategories
 	);
 
-	const tags = await runDbBatchQuery<tsPageDataTagsSelect>(page.tags as number[], tsPageDataTags);
+	const tagIds = parseIdNumberArray(page.tags);
+	const tags = await runDbBatchQuery<tsPageDataTagsSelect>(tagIds, tsPageDataTags);
 
-	const contributors = await runDbBatchQuery<string>(page.contributorIds as string[], tsUsers);
+	const contributorIds = parseIdStringArray(page.contributorIds);
+	const contributors = await runDbBatchQuery<string>(contributorIds, tsUsers);
 
 	const multiLangContentData = await db
 		.select()

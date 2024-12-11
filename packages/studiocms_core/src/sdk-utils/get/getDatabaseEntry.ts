@@ -33,9 +33,7 @@ import { collectPageData, collectUserData } from '../utils';
  * }
  * ```
  */
-export function getDatabaseEntry(
-	database: Parameters<STUDIOCMS_SDK['GET']['databaseEntry']>[0]
-): ReturnType<STUDIOCMS_SDK['GET']['databaseEntry']> {
+export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = (database) => {
 	switch (database) {
 		case 'users': {
 			return {
@@ -208,6 +206,6 @@ export function getDatabaseEntry(
 			throw new Error(`Unknown database table: ${database}`);
 		}
 	}
-}
+};
 
 export default getDatabaseEntry;

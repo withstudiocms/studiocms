@@ -19,9 +19,7 @@ import { collectPageData, collectUserData } from '../utils';
  *
  * @throws Will throw an error if the specified database table is not recognized.
  */
-export async function getDatabase(
-	database: Parameters<STUDIOCMS_SDK['GET']['database']>[0]
-): ReturnType<STUDIOCMS_SDK['GET']['database']> {
+export const getDatabase: STUDIOCMS_SDK['GET']['database'] = async (database) => {
 	switch (database) {
 		case 'users': {
 			const combinedUserData: CombinedUserData[] = [];
@@ -63,6 +61,6 @@ export async function getDatabase(
 		default:
 			throw new Error(`Database table '${database}' not recognized.`);
 	}
-}
+};
 
 export default getDatabase;

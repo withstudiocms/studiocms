@@ -16,6 +16,7 @@ import type {
 	SiteConfig,
 } from './tableDefs';
 import type {
+	CombinedInsertContent,
 	tsDiffTrackingSelect,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
@@ -33,8 +34,8 @@ import type {
 	tsUsersSelect,
 } from './tsAlias';
 
+// tableDefs.ts
 export type {
-	// tables.ts
 	AvailableLists,
 	CombinedRank,
 	CurrentTables,
@@ -49,8 +50,12 @@ export type {
 	SimplifiedTables,
 	SingleRank,
 	SiteConfig,
-	// tsAlias.ts
+};
+
+// tsAlias.ts
+export type {
 	tsDiffTrackingSelect,
+	CombinedInsertContent,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
 	tsPageContentSelect,
@@ -319,7 +324,7 @@ export interface STUDIOCMS_SDK {
 			 */
 			pages: (
 				pageData: tsPageDataInsert,
-				pageContent: tsPageContentInsert
+				pageContent: CombinedInsertContent
 			) => Promise<addDatabaseEntryInsertPage>;
 			/**
 			 * Inserts new content for a specific page into the database.
@@ -327,10 +332,7 @@ export interface STUDIOCMS_SDK {
 			 * @param pageContent - The content to be inserted.
 			 * @returns A promise that resolves to an array of inserted content IDs.
 			 */
-			pageContent: (
-				pageId: string,
-				pageContent: tsPageContentInsert
-			) => Promise<PageContentReturnId[]>;
+			pageContent: (pageContent: tsPageContentInsert) => Promise<PageContentReturnId[]>;
 			/**
 			 * Inserts a new tag into the database.
 			 * @param tag - The tag data to be inserted.
