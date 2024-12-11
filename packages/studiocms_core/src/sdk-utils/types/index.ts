@@ -25,6 +25,7 @@ import type {
 	tsPageDataSelect,
 	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
+	tsPermissionsInsert,
 	tsPermissionsSelect,
 	tsSessionTableSelect,
 	tsSiteConfigInsert,
@@ -62,6 +63,7 @@ export type {
 	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
 	tsPermissionsSelect,
+	tsPermissionsInsert,
 	tsSiteConfigInsert,
 	tsSessionTableSelect,
 	tsSiteConfigSelect,
@@ -362,11 +364,43 @@ export interface STUDIOCMS_SDK {
 			diffTracking: (diff: tsDiffTrackingInsert) => Promise<tsDiffTrackingSelect[]>;
 		};
 
-		// biome-ignore lint/complexity/noBannedTypes: This is temporary while the SDK is being developed
+		/**
+		 * The `postDatabaseEntries` object provides methods to insert various types of entries into the database.
+		 *
+		 * @type {STUDIOCMS_SDK['POST']['databaseEntries']}
+		 *
+		 * @property {Function} tags - Asynchronously inserts an array of tag objects into the `tsPageDataTags` table.
+		 * @property {Function} categories - Asynchronously inserts an array of category objects into the `tsPageDataCategories` table.
+		 * @property {Function} permissions - Asynchronously inserts an array of permission objects into the `tsPermissions` table.
+		 *
+		 * @method tags
+		 * @param {Array} tags - An array of tag objects to be inserted.
+		 * @returns {Promise<Array>} - A promise that resolves to an array of inserted tag IDs.
+		 *
+		 * @method categories
+		 * @param {Array} categories - An array of category objects to be inserted.
+		 * @returns {Promise<Array>} - A promise that resolves to an array of inserted category IDs.
+		 *
+		 * @method permissions
+		 * @param {Array} permissions - An array of permission objects to be inserted.
+		 * @returns {Promise<Array>} - A promise that resolves to an array of inserted permission objects.
+		 * @throws {Error} - Throws an error if a user already has a rank assigned.
+		 */
 		databaseEntries: {
-			// tags: (data: tsPageDataTagsInsert[]) => Promise<void>;
-			// categories: (data: tsPageDataCategoriesInsert[]) => Promise<void>;
-			// permissions: (data: tsPermissionsSelect[]) => Promise<void>;
+			/**
+			 * Asynchronously inserts an array of tag objects into the `tsPageDataTags` table.
+			 */
+			tags: (data: tsPageDataTagsInsert[]) => Promise<PageDataTagsInsertResponse[]>;
+			/**
+			 * Asynchronously inserts an array of category objects into the `tsPageDataCategories` table.
+			 */
+			categories: (
+				data: tsPageDataCategoriesInsert[]
+			) => Promise<PageDataCategoriesInsertResponse[]>;
+			/**
+			 * Asynchronously inserts an array of permission objects into the `tsPermissions` table.
+			 */
+			permissions: (data: tsPermissionsInsert[]) => Promise<tsPermissionsSelect[]>;
 		};
 	};
 

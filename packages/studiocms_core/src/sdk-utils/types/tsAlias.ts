@@ -43,6 +43,8 @@ export type tsSessionTableSelect = typeof tsSessionTable.$inferSelect;
  */
 export type tsPermissionsSelect = typeof tsPermissions.$inferSelect;
 
+export type tsPermissionsInsert = typeof tsPermissions.$inferInsert;
+
 /**
  * Type alias for the inferred select type of `tsPageData`.
  *
