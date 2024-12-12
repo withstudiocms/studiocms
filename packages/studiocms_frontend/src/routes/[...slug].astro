@@ -1,6 +1,6 @@
 ---
-import { contentHelper } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRenderer } from 'studiocms:renderer';
+import studioCMS_SDK from 'studiocms:sdk';
 import Layout from '../components/Layout.astro';
 
 const { slug } = Astro.params;
@@ -9,11 +9,19 @@ if (!slug) {
 	return new Response(null, { status: 404 });
 }
 
-const { title, description, heroImage, content, id } = await contentHelper(slug);
+const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, 'studiocms');
 
-if (!id) {
+if (!page) {
 	return new Response(null, { status: 404 });
 }
+
+const { title, description, heroImage, defaultContent } = page;
+
+if (!defaultContent) {
+	return new Response(null, { status: 404 });
+}
+
+const content = defaultContent.content || '';
 ---
 
 <Layout title={title} description={description} heroImage={heroImage}>

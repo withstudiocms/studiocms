@@ -1,13 +1,21 @@
 ---
-import { contentHelper } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRenderer } from 'studiocms:renderer';
+import studioCMS_SDK from 'studiocms:sdk';
 import Layout from '../components/Layout.astro';
 
-const { title, description, heroImage, content, id } = await contentHelper('index');
+const index = await studioCMS_SDK.GET.databaseEntry.pages.bySlug('index', 'studiocms');
 
-if (!id) {
+if (!index) {
 	return new Response(null, { status: 404 });
 }
+
+const { title, description, heroImage, defaultContent } = index;
+
+if (!defaultContent) {
+	return new Response(null, { status: 404 });
+}
+
+const content = defaultContent.content || '';
 ---
 
 <Layout title={title} description={description} heroImage={heroImage}>

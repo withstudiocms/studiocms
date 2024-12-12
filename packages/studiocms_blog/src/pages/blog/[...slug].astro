@@ -1,8 +1,8 @@
 ---
 import { PostHeader } from '@studiocms:blog/components';
 import { BlogLayout } from '@studiocms:blog/layouts';
-import { contentHelper } from 'studiocms:helpers/contentHelper';
 import { StudioCMSRenderer } from 'studiocms:renderer';
+import studioCMS_SDK from 'studiocms:sdk';
 import { name } from '../../../package.json';
 
 // Get the slug from the URL
@@ -14,15 +14,22 @@ if (!slug) {
 }
 
 // Fetch the blog post content
-const { id, title, description, heroImage, publishedAt, updatedAt, content } = await contentHelper(
-	slug,
-	name
-);
+
+const post = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, name);
 
 // If no content is found, redirect to 404
-if (!id) {
+if (!post) {
 	return new Response(null, { status: 404 });
 }
+
+const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post;
+
+// If no content is found, redirect to 404
+if (!defaultContent) {
+	return new Response(null, { status: 404 });
+}
+
+const content = defaultContent.content || '';
 ---
 <BlogLayout {title} {description} {heroImage}>
     <main>
