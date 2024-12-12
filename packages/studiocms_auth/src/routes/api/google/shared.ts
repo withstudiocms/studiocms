@@ -1,24 +1,16 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import Config from 'studiocms:config';
+import { AuthConfig } from 'studiocms:config';
 import { Google } from 'arctic';
 
 export const {
-	GOOGLE: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
-} = await authEnvCheck(Config.dashboardConfig.AuthConfig.providers);
-
-const CLIENT = () => {
-	return {
-		ID: CLIENT_ID || '',
-		SECRET: CLIENT_SECRET || '',
-		URI: REDIRECT_URI || '',
-	};
-};
+	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
+} = await authEnvCheck(AuthConfig.providers);
 
 export const ProviderID = 'google';
 export const ProviderCookieName = 'google_oauth_state';
 export const ProviderCodeVerifier = 'google_oauth_code_verifier';
 
-export const google = new Google(CLIENT().ID, CLIENT().SECRET, CLIENT().URI);
+export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 export interface GoogleUser {
 	sub: string;

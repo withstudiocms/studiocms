@@ -1,17 +1,11 @@
 import { logger } from '@it-astro:logger:studiocms-auth';
-import { and, db, eq } from 'astro:db';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { tsOAuthAccounts, tsUsers } from '@studiocms/core/sdk-utils/tables';
+import studioCMS_SDK from 'studiocms:sdk';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
 import { type DiscordUser, ProviderCookieName, ProviderID, discord } from './shared';
-
-const {
-	authLinks: { loginURL },
-	mainLinks: { dashboardIndex },
-} = StudioCMSRoutes;
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
@@ -21,7 +15,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 	if (!code || !state || !storedState || state !== storedState) {
-		return redirect(loginURL);
+		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	let tokens: OAuth2Tokens;
@@ -44,23 +38,13 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		//  // TODO: Add first-time setup logic here
 		// }
 
-		const existingoAuthAccount = await db
-			.select()
-			.from(tsOAuthAccounts)
-			.where(
-				and(
-					eq(tsOAuthAccounts.provider, ProviderID),
-					eq(tsOAuthAccounts.providerUserId, discordUserId)
-				)
-			)
-			.get();
+		const existingOAuthAccount = await studioCMS_SDK.AUTH.oAuth.searchProvidersForId(
+			ProviderID,
+			discordUserId
+		);
 
-		if (existingoAuthAccount) {
-			const user = await db
-				.select()
-				.from(tsUsers)
-				.where(eq(tsUsers.id, existingoAuthAccount.userId))
-				.get();
+		if (existingOAuthAccount) {
+			const user = await studioCMS_SDK.GET.databaseEntry.users.byId(existingOAuthAccount.userId);
 
 			if (!user) {
 				return new Response('User not found', {
@@ -70,29 +54,25 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 			await createUserSession(user.id, context);
 
-			return redirect(dashboardIndex);
+			return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 		}
 
 		const loggedInUser = await getUserData(context);
 		const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
 		if (loggedInUser.user && linkNewOAuth) {
-			const existingUser = await db
-				.select()
-				.from(tsUsers)
-				.where(eq(tsUsers.id, loggedInUser.user.id))
-				.get();
+			const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(loggedInUser.user.id);
 
 			if (existingUser) {
-				await db.insert(tsOAuthAccounts).values({
+				await studioCMS_SDK.AUTH.oAuth.create({
+					userId: existingUser.id,
 					provider: ProviderID,
 					providerUserId: discordUserId,
-					userId: existingUser.id,
 				});
 
 				await createUserSession(existingUser.id, context);
 
-				return redirect(dashboardIndex);
+				return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 			}
 		}
 
@@ -116,7 +96,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		await createUserSession(newUser.id, context);
 
-		return redirect(dashboardIndex);
+		return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 	} catch (e) {
 		// the specific error message depends on the provider
 		if (e instanceof OAuth2RequestError) {

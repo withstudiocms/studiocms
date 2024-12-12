@@ -697,6 +697,11 @@ export interface STUDIOCMS_SDK {
 			 * @returns A promise that resolves to an object containing the status and message of the deletion operation.
 			 */
 			delete: (userId: string, provider: string) => Promise<DeletionResponse>;
+
+			searchProvidersForId: (
+				provider: string,
+				userId: string
+			) => Promise<tsOAuthAccountsSelect | undefined>;
 		};
 
 		/**

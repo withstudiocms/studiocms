@@ -61,6 +61,28 @@ export const authOAuth: STUDIOCMS_SDK['AUTH']['oAuth'] = {
 			);
 		}
 	},
+	searchProvidersForId: async (providerId, userId) => {
+		try {
+			return await db
+				.select()
+				.from(tsOAuthAccounts)
+				.where(
+					and(eq(tsOAuthAccounts.providerUserId, providerId), eq(tsOAuthAccounts.userId, userId))
+				)
+				.get();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error searching for OAuth account: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error searching for OAuth account: An unknown error occurred.',
+				`${error}`
+			);
+		}
+	},
 };
 
 export default authOAuth;

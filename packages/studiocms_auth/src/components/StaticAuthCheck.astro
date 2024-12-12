@@ -7,14 +7,14 @@ const { isLoggedIn } = await getUserData(Astro);
 <div 
   id="login-check" 
   style="display: none;" 
-  data-isloggedin={`${isLoggedIn}`}
-  data-redirectroute={StudioCMSRoutes.mainLinks.dashboardIndex}
+  data-isLoggedIn={`${isLoggedIn}`}
+  data-redirectRoute={StudioCMSRoutes.mainLinks.dashboardIndex}
   ></div>
 
 <script is:inline>
   const loginCheck = document.getElementById('login-check');
 
-  if (loginCheck.dataset.isloggedin === 'true') {
-    window.location.href = loginCheck.dataset.redirectroute;
+  if (loginCheck.dataset.isLoggedIn === 'true') {
+    window.location.href = loginCheck.dataset.redirectRoute;
   }
 </script>

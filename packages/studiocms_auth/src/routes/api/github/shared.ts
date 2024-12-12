@@ -1,23 +1,15 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import Config from 'studiocms:config';
+import { AuthConfig } from 'studiocms:config';
 import { GitHub } from 'arctic';
 
 const {
-	GITHUB: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI },
-} = await authEnvCheck(Config.dashboardConfig.AuthConfig.providers);
-
-const CLIENT = () => {
-	return {
-		ID: CLIENT_ID || '',
-		SECRET: CLIENT_SECRET || '',
-		URI: REDIRECT_URI || null,
-	};
-};
+	GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
+} = await authEnvCheck(AuthConfig.providers);
 
 export const ProviderID = 'github';
 export const ProviderCookieName = 'github_oauth_state';
 
-export const github = new GitHub(CLIENT().ID, CLIENT().SECRET, CLIENT().URI);
+export const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 export interface GitHubUser {
 	id: number;

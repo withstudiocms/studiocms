@@ -7,11 +7,6 @@ import {
 import { StudioCMSRoutes } from 'studiocms:lib';
 import type { APIContext, APIRoute } from 'astro';
 
-const {
-	authLinks: { loginURL },
-	mainLinks: { baseSiteURL },
-} = StudioCMSRoutes;
-
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	return POST(context);
 };
@@ -24,7 +19,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If there is no session token, redirect to the login page
 	if (!sessionToken) {
-		return redirect(loginURL);
+		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	const { session, user } = await validateSessionToken(sessionToken);
@@ -32,12 +27,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	// If there is no session, redirect to the login page
 	if (session === null) {
 		deleteSessionTokenCookie(context);
-		return redirect(loginURL);
+		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	// If there is no user, redirect to the login page
 	if (!user || user === null) {
-		return redirect(loginURL);
+		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	// Invalidate the session and delete the session token cookie
@@ -45,7 +40,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	deleteSessionTokenCookie(context);
 
 	// Redirect to the base site URL
-	return redirect(baseSiteURL);
+	return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
 };
 
 export const OPTIONS: APIRoute = async () => {
