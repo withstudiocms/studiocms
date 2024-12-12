@@ -3,12 +3,7 @@ import { defineStudioCMSConfig } from 'studiocms';
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
-	dateLocale: 'en-us',
-	rendererConfig: {
-		renderer: 'astro',
-	},
 	defaultFrontEndConfig: {
-		favicon: '/favicon.svg',
 		// htmlDefaultHead: [
 		// 	{
 		// 		tag: 'script',
@@ -20,26 +15,11 @@ export default defineStudioCMSConfig({
 		// 	},
 		// ],
 	},
-	includedIntegrations: {
-		robotsTXT: true,
-	},
 	dashboardConfig: {
 		AuthConfig: {
-			enabled: true,
 			providers: {
-				auth0: false,
-				discord: false,
 				github: true,
-				google: false,
-				usernameAndPassword: true,
-				usernameAndPasswordConfig: {
-					allowUserRegistration: true,
-				},
 			},
-		},
-		dashboardEnabled: true,
-		developerConfig: {
-			testingAndDemoMode: false,
 		},
 	},
 });

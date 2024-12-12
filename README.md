@@ -65,13 +65,12 @@ Steps to get a running playground should be the following:
 
 - clone repo
 - run `pnpm i --frozen-lockfile`
-- change `dbStartPage` in the [node playground's](./playgrounds/node/studiocms.config.mjs) config to `true`
+- change `dbStartPage` in the [node playground's](./playground/studiocms.config.mts) config to `true`
 - read the first time setup instructions listed in the [main package readme](./packages/studiocms/README.md#first-start-and-setup) then replace the astro db commands with the following:
 
   Commands to run:
 
-  - `pnpm playground:login` - Login your CLI to Astro Studio
-  - `pnpm playground:push` - Creates the base tables on the remote database.
+  - `pnpm playground:push` - Push to your libSQL database assigned via environment variables
   - `pnpm playground:dev` - Starts the Dev server connected to the linked database
 
 Once that process completes successfully you are ready to navigate to http://localhost:4321/start and follow the instructions to get started.

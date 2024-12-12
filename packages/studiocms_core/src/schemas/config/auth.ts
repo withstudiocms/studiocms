@@ -7,7 +7,7 @@ const localUsernameAndPasswordConfig = z
 		 *
 		 * @default false
 		 */
-		allowUserRegistration: z.boolean().optional().default(false),
+		allowUserRegistration: z.boolean().optional().default(true),
 	})
 	.optional()
 	.default({});
