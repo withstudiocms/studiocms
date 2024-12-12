@@ -51,6 +51,153 @@ sdkDTS.addModule('studiocms:sdk/types', {
 			name: 'STUDIOCMS_SDK',
 			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').STUDIOCMS_SDK`,
 		},
+		// tableDefs
+		{
+			name: 'AvailableLists',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').AvailableLists`,
+		},
+		{
+			name: 'CombinedRank',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedRank`,
+		},
+		{
+			name: 'DatabaseTables',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').DatabaseTables`,
+		},
+		{
+			name: 'PageContentReturnId',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageContentReturnId`,
+		},
+		{
+			name: 'PageDataCategoriesInsertResponse',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataCategoriesInsertResponse`,
+		},
+		{
+			name: 'PageDataReturnId',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataReturnId`,
+		},
+		{
+			name: 'PageDataStripped',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataStripped`,
+		},
+		{
+			name: 'PageDataTagsInsertResponse',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataTagsInsertResponse`,
+		},
+		{
+			name: 'SingleRank',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').SingleRank`,
+		},
+		{
+			name: 'SiteConfig',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').SiteConfig`,
+		},
+		// tsAliases
+		{
+			name: 'tsDiffTrackingInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsDiffTrackingInsert`,
+		},
+		{
+			name: 'tsDiffTrackingSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsDiffTrackingSelect`,
+		},
+		{
+			name: 'CombinedInsertContent',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedInsertContent`,
+		},
+		{
+			name: 'tsOAuthAccountsSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsOAuthAccountsSelect`,
+		},
+		{
+			name: 'tsPageContentInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageContentInsert`,
+		},
+		{
+			name: 'tsPageContentSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageContentSelect`,
+		},
+		{
+			name: 'tsPageDataCategoriesInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataCategoriesInsert`,
+		},
+		{
+			name: 'tsPageDataCategoriesSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataCategoriesSelect`,
+		},
+		{
+			name: 'tsPageDataInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataInsert`,
+		},
+		{
+			name: 'tsPageDataSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataSelect`,
+		},
+		{
+			name: 'tsPageDataTagsInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataTagsInsert`,
+		},
+		{
+			name: 'tsPageDataTagsSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataTagsSelect`,
+		},
+		{
+			name: 'tsSiteConfigInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSiteConfigInsert`,
+		},
+		{
+			name: 'tsSiteConfigSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSiteConfigSelect`,
+		},
+		{
+			name: 'tsUsersInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersInsert`,
+		},
+		{
+			name: 'tsUsersSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersSelect`,
+		},
+		{
+			name: 'tsUsersUpdate',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersUpdate`,
+		},
+		{
+			name: 'tsPermissionsInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPermissionsInsert`,
+		},
+		{
+			name: 'tsPermissionsSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPermissionsSelect`,
+		},
+		{
+			name: 'tsSessionTableInsert',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSessionTableInsert`,
+		},
+		{
+			name: 'tsSessionTableSelect',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSessionTableSelect`,
+		},
+		// Extras
+		{
+			name: 'GenericTable',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').GenericTable`,
+		},
+		{
+			name: 'addDatabaseEntryInsertPage',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').addDatabaseEntryInsertPage`,
+		},
+		{
+			name: 'CombinedUserData',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedUserData`,
+		},
+		{
+			name: 'CombinedPageData',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedPageData`,
+		},
+		{
+			name: 'DeletionResponse',
+			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').DeletionResponse`,
+		},
 	],
 });
 

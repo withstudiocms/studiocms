@@ -1,9 +1,9 @@
-import { db, eq } from 'astro:db';
+import studioCMS_SDK from 'studiocms:sdk';
+import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
-import { tsSessionTable, tsUsers } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext, AstroGlobal } from 'astro';
-import type { SessionTable, SessionValidationResult, UserSession } from './types';
+import type { SessionValidationResult, UserSession } from './types';
 
 /**
  * Generates a session token.
@@ -56,23 +56,14 @@ export const sessionCookieName = 'auth_session';
  * @param userId - The ID of the user for whom the session is being created.
  * @returns A promise that resolves to the created session object.
  */
-export async function createSession(token: string, userId: string): Promise<SessionTable> {
+export async function createSession(token: string, userId: string): Promise<tsSessionTableSelect> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const session: SessionTable = {
+	const session: tsSessionTableSelect = {
 		id: sessionId,
 		userId,
 		expiresAt: new Date(Date.now() + sessionExpTime),
 	};
-	const insertedSession = await db
-		.insert(tsSessionTable)
-		.values(session)
-		.returning({
-			id: tsSessionTable.id,
-			userId: tsSessionTable.userId,
-			expiresAt: tsSessionTable.expiresAt,
-		})
-		.get();
-	return insertedSession;
+	return await studioCMS_SDK.AUTH.session.create(session);
 }
 
 /**
@@ -86,11 +77,8 @@ export async function createSession(token: string, userId: string): Promise<Sess
  */
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const result = await db
-		.select({ user: tsUsers, session: tsSessionTable })
-		.from(tsSessionTable)
-		.innerJoin(tsUsers, eq(tsSessionTable.userId, tsUsers.id))
-		.where(eq(tsSessionTable.id, sessionId));
+
+	const result = await studioCMS_SDK.AUTH.session.sessionWithUser(sessionId);
 
 	if (result.length < 1) {
 		return { session: null, user: null };
@@ -105,16 +93,13 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const { user, session }: UserSession = userSession;
 
 	if (Date.now() >= session.expiresAt.getTime()) {
-		await db.delete(tsSessionTable).where(eq(tsSessionTable.id, session.id));
+		await studioCMS_SDK.AUTH.session.delete(session.id);
 		return { session: null, user: null };
 	}
 
 	if (Date.now() >= session.expiresAt.getTime() - expTimeHalf) {
 		session.expiresAt = new Date(Date.now() + sessionExpTime);
-		await db
-			.update(tsSessionTable)
-			.set({ expiresAt: session.expiresAt })
-			.where(eq(tsSessionTable.id, session.id));
+		await studioCMS_SDK.AUTH.session.update(session.id, session.expiresAt);
 	}
 
 	return { session, user };
@@ -127,7 +112,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
  * @returns A promise that resolves when the session has been successfully deleted.
  */
 export async function invalidateSession(sessionId: string): Promise<void> {
-	await db.delete(tsSessionTable).where(eq(tsSessionTable.id, sessionId));
+	await studioCMS_SDK.AUTH.session.delete(sessionId);
 }
 
 /**

@@ -21,6 +21,8 @@ export type tsUsersSelect = typeof tsUsers.$inferSelect;
 
 export type tsUsersInsert = typeof tsUsers.$inferInsert;
 
+export type tsUsersUpdate = Partial<tsUsersInsert>;
+
 /**
  * Type alias for the inferred select type of the `tsOAuthAccounts` object.
  *

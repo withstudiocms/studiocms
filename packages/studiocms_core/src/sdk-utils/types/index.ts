@@ -32,6 +32,7 @@ import type {
 	tsSiteConfigSelect,
 	tsUsersInsert,
 	tsUsersSelect,
+	tsUsersUpdate,
 } from './tsAlias';
 
 // tableDefs.ts
@@ -70,6 +71,7 @@ export type {
 	tsUsersSelect,
 	tsUsersInsert,
 	tsSessionTableInsert,
+	tsUsersUpdate,
 };
 
 export type GenericTable = Table<
@@ -653,7 +655,7 @@ export interface STUDIOCMS_SDK {
 			 * @param userData - The new data for the user.
 			 * @returns A promise that resolves to the updated user record.
 			 */
-			update: (userId: string, userData: tsUsersSelect) => Promise<tsUsersSelect>;
+			update: (userId: string, userData: tsUsersUpdate) => Promise<tsUsersSelect>;
 
 			// delete: async () => {},
 		};

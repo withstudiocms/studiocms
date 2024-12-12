@@ -9,5 +9,5 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.gotoLocation.multipleDefinitions": "goto",
-  "cSpell.words": ["astrojs", "robotstxt", "studiocms", "withstudiocms"]
+  "cSpell.words": ["astrojs", "Libravatar", "robotstxt", "studiocms", "withstudiocms"]
 }

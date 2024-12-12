@@ -1,6 +1,6 @@
 import { db, eq } from 'astro:db';
 import { tsUsers } from '../tables';
-import type { STUDIOCMS_SDK, tsUsersInsert, tsUsersSelect } from '../types';
+import type { STUDIOCMS_SDK } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -22,7 +22,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @todo Implement the delete function to safely remove user records without causing errors due to references in other tables.
  */
 export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
-	create: async (newUserData: tsUsersInsert) => {
+	create: async (newUserData) => {
 		try {
 			return await db.insert(tsUsers).values(newUserData).returning().get();
 		} catch (error) {
@@ -32,7 +32,7 @@ export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
 			throw new StudioCMS_SDK_Error('Error creating user: An unknown error occurred.', `${error}`);
 		}
 	},
-	update: async (userId: string, userData: tsUsersSelect) => {
+	update: async (userId, userData) => {
 		try {
 			return await db.update(tsUsers).set(userData).where(eq(tsUsers.id, userId)).returning().get();
 		} catch (error) {

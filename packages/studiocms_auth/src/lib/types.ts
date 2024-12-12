@@ -1,28 +1,9 @@
-/**
- * Represents a user in the user table.
- *
- * @interface UserTable
- * @property {string} id - The unique identifier for the user.
- * @property {string | null} url - The URL of the user's profile.
- * @property {string} name - The name of the user.
- * @property {string | null} email - The email address of the user.
- * @property {string | null} avatar - The URL of the user's avatar.
- * @property {string} username - The username of the user.
- * @property {string | null} password - The hashed password of the user.
- * @property {Date | null} updatedAt - The date and time when the user was last updated.
- * @property {Date | null} createdAt - The date and time when the user was created.
- */
-export interface UserTable {
-	id: string;
-	url: string | null;
-	name: string;
-	email: string | null;
-	avatar: string | null;
-	username: string;
-	password: string | null;
-	updatedAt: Date | null;
-	createdAt: Date | null;
-}
+import type {
+	tsOAuthAccountsSelect,
+	tsPermissionsSelect,
+	tsSessionTableSelect,
+	tsUsersSelect,
+} from 'studiocms:sdk/types';
 
 /**
  * Represents a table of OAuth accounts.
@@ -32,25 +13,7 @@ export interface UserTable {
  * @property {string} providerUserId - The unique identifier for the user provided by the OAuth provider.
  * @property {string} userId - The unique identifier for the user within the application.
  */
-export interface OAuthAccountsTable {
-	provider: string;
-	providerUserId: string;
-	userId: string;
-}
-
-/**
- * Represents a session table in the authentication system.
- *
- * @interface SessionTable
- * @property {string} id - The unique identifier for the session.
- * @property {string} userId - The unique identifier for the user associated with the session.
- * @property {Date} expiresAt - The expiration date and time of the session.
- */
-export interface SessionTable {
-	id: string;
-	userId: string;
-	expiresAt: Date;
-}
+export interface OAuthAccountsTable extends tsOAuthAccountsSelect {}
 
 /**
  * Interface representing a table of user permissions.
@@ -58,10 +21,7 @@ export interface SessionTable {
  * @property {string} user - The username of the individual.
  * @property {string} rank - The rank or role assigned to the user.
  */
-export interface PermissionsTable {
-	user: string;
-	rank: string;
-}
+export interface PermissionsTable extends tsPermissionsSelect {}
 
 /**
  * Represents the session data for a user.
@@ -72,7 +32,7 @@ export interface PermissionsTable {
  */
 export type UserSessionData = {
 	isLoggedIn: boolean;
-	user: UserTable | null;
+	user: tsUsersSelect | null;
 	permissionLevel: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
 };
 
@@ -83,8 +43,8 @@ export type UserSessionData = {
  * @property {SessionTable} session - The session details.
  */
 export type UserSession = {
-	user: UserTable;
-	session: SessionTable;
+	user: tsUsersSelect;
+	session: tsSessionTableSelect;
 };
 
 /**
