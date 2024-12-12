@@ -1,6 +1,6 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 // import { authHelper } from 'studiocms:auth/helpers';
-import Config from 'virtual:studiocms/config';
+import Config from 'studiocms:config';
 import type { APIContext } from 'astro';
 import { astroDb } from '../../../utils/astroDb';
 import { simpleResponse } from '../../../utils/simpleResponse';
