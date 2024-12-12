@@ -3,13 +3,11 @@ import '@fontsource-variable/onest/index.css';
 import '@studiocms/ui/css/global.css';
 import './authlayout.css';
 import { Image } from 'astro:assets';
-import { db, eq } from 'astro:db';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import Config from 'virtual:studiocms/config';
-import version from 'virtual:studiocms/version';
+import Config from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk';
+import version from 'studiocms:version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
-import { CMSSiteConfigId } from '@studiocms/core/consts';
-import { tsSiteConfig } from '@studiocms/core/db/tsTables';
 import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
@@ -28,11 +26,7 @@ interface Props {
 const { title, description, lang, disableScreen } = Astro.props;
 
 // Get the site config
-const siteConfig = await db
-	.select()
-	.from(tsSiteConfig)
-	.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-	.get();
+const siteConfig = await studioCMS_SDK.GET.database.config();
 
 // Get the login page background and custom image from the site config
 const loginPageBackground = siteConfig?.loginPageBackground;

@@ -1,7 +1,7 @@
 import config from '@studiocms/blog:config';
 import { pages } from '@studiocms/blog:context';
-import { pathWithBase } from 'studiocms:helpers';
 import { contentHelper, getPageList, getSiteConfig } from 'studiocms:helpers/contentHelper';
+import { pathWithBase } from 'studiocms:lib';
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';

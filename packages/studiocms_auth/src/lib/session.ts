@@ -1,7 +1,7 @@
 import { db, eq } from 'astro:db';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
-import { tsSessionTable, tsUsers } from '@studiocms/core/db/tsTables';
+import { tsSessionTable, tsUsers } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext, AstroGlobal } from 'astro';
 import type { SessionTable, SessionValidationResult, UserSession } from './types';
 

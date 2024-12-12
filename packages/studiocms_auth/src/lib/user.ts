@@ -1,6 +1,6 @@
 import { db, eq } from 'astro:db';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { tsOAuthAccounts, tsPermissions, tsUsers } from '@studiocms/core/db/tsTables';
+import { tsOAuthAccounts, tsPermissions, tsUsers } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session';

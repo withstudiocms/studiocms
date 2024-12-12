@@ -6,18 +6,9 @@ import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
 import type { HeadConfigSchema } from '../schemas/config/defaultFrontend';
 
-/**
- * @deprecated moved to lib/
- */
 type faviconTypeMap = '.ico' | '.gif' | '.jpeg' | '.jpg' | '.png' | '.svg';
-/**
- * @deprecated moved to lib/
- */
 const faviconTypes: faviconTypeMap[] = ['.ico', '.gif', '.jpeg', '.jpg', '.png', '.svg'];
 
-/**
- * @deprecated moved to lib/
- */
 function isFaviconExt(ext: string): ext is faviconTypeMap {
 	if (faviconTypes.includes(ext as faviconTypeMap)) {
 		return true;
@@ -25,9 +16,6 @@ function isFaviconExt(ext: string): ext is faviconTypeMap {
 	return false;
 }
 
-/**
- * @deprecated moved to lib/
- */
 const makeFavicon = (favicon: string) => {
 	const ext = extname(favicon).toLocaleLowerCase();
 	if (isFaviconExt(ext)) {
@@ -52,7 +40,6 @@ const makeFavicon = (favicon: string) => {
  * @param ogImage
  * @param canonical
  * @returns
- * @deprecated moved to lib/
  */
 export const headDefaults = (
 	title: string,

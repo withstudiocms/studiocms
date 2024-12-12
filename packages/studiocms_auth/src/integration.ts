@@ -3,9 +3,9 @@ import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { DashboardStrings } from '@studiocms/core/strings';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import { envField } from 'astro/config';
 import copy from 'rollup-plugin-copy';
 import { name } from '../package.json';
-import { astroENV } from './astroenv/env';
 import { StudioCMSAuthOptionsSchema } from './schema';
 import authLibDTS from './stubs/auth-lib';
 import authScriptsDTS from './stubs/auth-scripts';
@@ -57,7 +57,86 @@ export default defineIntegration({
 					checkEnvKeys(logger, options);
 
 					// Update Astro Config with Environment Variables (`astro:env`)
-					addAstroEnvConfig(params, astroENV);
+					addAstroEnvConfig(params, {
+						validateSecrets: true,
+						schema: {
+							// Auth Encryption Key
+							CMS_ENCRYPTION_KEY: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: false,
+							}),
+							// GitHub Auth Provider Environment Variables
+							CMS_GITHUB_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Discord Auth Provider Environment Variables
+							CMS_DISCORD_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Google Auth Provider Environment Variables
+							CMS_GOOGLE_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Auth0 Auth Provider Environment Variables
+							CMS_AUTH0_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_DOMAIN: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+						},
+					});
 
 					// injectAuthHelper
 					addVirtualImports(params, {

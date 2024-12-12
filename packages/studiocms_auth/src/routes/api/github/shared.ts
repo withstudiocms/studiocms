@@ -1,5 +1,5 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import Config from 'virtual:studiocms/config';
+import Config from 'studiocms:config';
 import { GitHub } from 'arctic';
 
 const {

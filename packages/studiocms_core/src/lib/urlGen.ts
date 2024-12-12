@@ -1,5 +1,5 @@
-import { removeLeadingTrailingSlashes } from '../lib/removeLeadingTrailingSlashes';
 import { pathWithBase } from './pathGenerators';
+import { removeLeadingTrailingSlashes } from './removeLeadingTrailingSlashes';
 
 /**
  * # urlGenFactory Helper Function
@@ -10,7 +10,6 @@ import { pathWithBase } from './pathGenerators';
  * @param path
  * @param DashboardRouteOverride
  * @returns
- * @deprecated moved to lib/
  */
 export default function urlGenFactory(
 	isDashboardRoute: boolean,

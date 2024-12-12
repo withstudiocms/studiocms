@@ -1,21 +1,19 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import type { InjectedType } from 'astro';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
-import { version } from '../package.json';
-import { name } from '../package.json';
+import { name, version } from '../package.json';
 import { StudioCMSOptionsSchema as optionsSchema } from './schemas';
 import { CoreStrings } from './strings';
-import { i18nDTSOutput } from './stubs/i18n-dts';
-import { sdkDtsFile } from './stubs/sdk';
-import { coreVirtualModuleGeneration } from './utils/coreVirtualModules';
+import componentsDtsFileOutput from './stubs/components';
+import coreDtsFileOutput from './stubs/core';
+import helpersDtsFileOutput from './stubs/helpers';
+import i18nDTSOutput from './stubs/i18n-dts';
+import libDtsFileOutput from './stubs/lib';
+import sdkDtsFile from './stubs/sdk';
 
 export default defineIntegration({
 	name,
 	optionsSchema,
 	setup({ name, options }) {
-		// Declaration for Core DTS File
-		let coreDtsFile: InjectedType;
-
 		const { resolve } = createResolver(import.meta.url);
 
 		return {
@@ -37,19 +35,68 @@ export default defineIntegration({
 
 					// Setup Virtual Imports
 					integrationLogger({ logger, logLevel: 'info', verbose }, CoreStrings.AddVirtualImports);
-					const { dtsFileOutput } = coreVirtualModuleGeneration(params, name, {
-						StudioCMSConfig: options,
-						currentVersion: version,
-						overrides: {
-							FormattedDateOverride:
-								options.overrides.FormattedDateOverride &&
-								astroConfigResolved(options.overrides.FormattedDateOverride),
-						},
-					});
 
 					addVirtualImports(params, {
 						name,
 						imports: {
+							'virtual:studiocms/config': `
+								export default ${JSON.stringify(options)};
+							`,
+							'virtual:studiocms/version': `
+								export default '${version}';
+							`,
+
+							// Core Virtual Modules
+							'studiocms:config': `
+								export default ${JSON.stringify(options)};
+							`,
+							'studiocms:version': `
+								export default '${version}';
+							`,
+
+							// Old Virtual helpers - TO BE REMOVED
+							'studiocms:helpers': `
+								export { default as pathGenerators } from '${resolve('./lib/pathGenerators.ts')}';
+							`,
+							'studiocms:helpers/contentHelper': `
+								export * from '${resolve('./helpers/contentHelper.ts')}';
+							`,
+							'studiocms:helpers/headDefaults': `
+								export * from '${resolve('./lib/headDefaults.ts')}';
+							`,
+							'studiocms:helpers/routemap': `
+								export * from '${resolve('./lib/routeMap.ts')}';
+							`,
+
+							// Core Virtual Components
+							'studiocms:components': `
+								export { default as Avatar } from '${resolve('./components/Avatar.astro')}';
+								export { default as FormattedDate } from '${
+									options.overrides.FormattedDateOverride
+										? astroConfigResolved(options.overrides.FormattedDateOverride)
+										: resolve('./components/FormattedDate.astro')
+								}';
+								export { default as GenericHeader } from '${resolve('./components/GenericHeader.astro')}';
+								export { default as Navigation } from '${resolve('./components/Navigation.astro')}';
+							`,
+
+							// StudioCMS lib
+							'studiocms:lib': `
+								export * from '${resolve('./lib/head.ts')}';
+								export * from '${resolve('./lib/headDefaults.ts')}';
+								export * from '${resolve('./lib/jsonUtils.ts')}';
+								export * from '${resolve('./lib/pathGenerators.ts')}';
+								export * from '${resolve('./lib/removeLeadingTrailingSlashes.ts')}';
+								export * from '${resolve('./lib/routeMap.ts')}';
+								export * from '${resolve('./lib/urlGen.ts')}';
+							`,
+
+							// StudioCMS Core i18n
+							'studiocms:i18n': `
+								export * from '${resolve('./i18n/index.ts')}';
+							`,
+
+							// StudioCMS SDK
 							'studiocms:sdk': `
 								import studioCMS_SDK from '${resolve('./sdk-utils/index.ts')}';
 								export default studioCMS_SDK;
@@ -80,15 +127,16 @@ export default defineIntegration({
 							`,
 						},
 					});
-
-					// Set the DTS File
-					coreDtsFile = dtsFileOutput;
 				},
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject the DTS File
-					injectTypes(coreDtsFile);
+					injectTypes(componentsDtsFileOutput);
+					injectTypes(coreDtsFileOutput);
 					injectTypes(i18nDTSOutput);
 					injectTypes(sdkDtsFile);
+					injectTypes(libDtsFileOutput);
+					// TODO Remove the following once the new helpers are in place
+					injectTypes(helpersDtsFileOutput);
 				},
 			},
 		};

@@ -2,7 +2,7 @@ import { db, eq } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
-import { tsUsers } from '@studiocms/core/db/tsTables';
+import { tsUsers } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';

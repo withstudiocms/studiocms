@@ -1,6 +1,6 @@
 ---
 import type { ContentHelperTempResponse } from 'studiocms:helpers/contentHelper';
-import { pluginList } from 'virtual:studiocms/pluginSystem';
+// import { pluginList } from 'studiocms/pluginSystem';
 import {
 	Alert,
 	Button,
@@ -25,7 +25,7 @@ interface Props {
 	isEditPage?: boolean;
 	formActionURL?: string;
 }
-const studioCMSPluginList = pluginList;
+// const studioCMSPluginList = pluginList;
 
 const { pageData, livePreviewBox, isEditPage = false, formActionURL, pageEdit } = Astro.props;
 ---
@@ -64,11 +64,12 @@ const { pageData, livePreviewBox, isEditPage = false, formActionURL, pageEdit } 
                     name="package"
                     label='Package Relation' 
                     value={pageData && pageData.package || "studiocms"}>
-                    {
+                    <Option value="studiocms">StudioCMS</Option>
+                    <!-- {
                         Array.from(studioCMSPluginList.values()).map((plugin) => (
                             <Option value={plugin.name}>{plugin.label}</Option>
                         ))
-                    }
+                    } -->
                 </Select>
 
                 <Select 

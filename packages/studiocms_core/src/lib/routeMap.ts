@@ -1,57 +1,36 @@
 import Config from 'studiocms:config';
-import urlGenFactory from '../helpers/urlGen';
 // import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
 import type { SideBarLink } from '../schemas';
+import urlGenFactory from './urlGen';
 
 const {
 	dashboardConfig: { dashboardRouteOverride },
 } = Config;
 
-/**
- * @deprecated moved to lib/
- */
 export function getSluggedRoute(url: string, slug: string): string {
 	return urlGenFactory(true, url + slug, dashboardRouteOverride);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export function getEditRoute(slug: string): string {
 	return getSluggedRoute('edit/pages/', slug);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export function getDeleteRoute(slug: string): string {
 	return getSluggedRoute('delete/pages/', slug);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export function makeNonDashboardRoute(route?: string | undefined): string {
 	return urlGenFactory(false, route);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export function makeDashboardRoute(route?: string | undefined): string {
 	return urlGenFactory(true, route, dashboardRouteOverride);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export function makeStudioCMSAPIRoute(route: string): string {
 	return urlGenFactory(false, `studiocms_api/${route}`);
 }
 
-/**
- * @deprecated moved to lib/
- */
 export const StudioCMSRoutes = {
 	mainLinks: {
 		baseSiteURL: makeNonDashboardRoute(),
@@ -95,9 +74,6 @@ export const StudioCMSRoutes = {
 };
 
 // Add default dashboard page links
-/**
- * @deprecated moved to lib/
- */
 const defaultDashboardPageLinks: SideBarLink[] = [
 	{
 		id: 'home',
@@ -144,14 +120,8 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 ];
 
 // Side bar links map
-/**
- * @deprecated moved to lib/
- */
 const finalSideBarLinkMap: SideBarLink[] = [...defaultDashboardPageLinks];
 
-/**
- * @deprecated moved to lib/
- */
 export const sideBarLinkMap: SideBarLink[] = finalSideBarLinkMap;
 
 // // Add custom dashboard page links

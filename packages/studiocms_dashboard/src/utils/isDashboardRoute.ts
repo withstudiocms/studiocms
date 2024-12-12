@@ -1,5 +1,5 @@
-import Config from 'virtual:studiocms/config';
-import { removeLeadingTrailingSlashes } from '@studiocms/core/lib';
+import Config from 'studiocms:config';
+import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 
 const {
 	dashboardConfig: { dashboardRouteOverride },

@@ -1,9 +1,9 @@
 ---
 import { pages } from '@studiocms/blog:context';
 import { FormattedDate } from 'studiocms:components';
-import { pathWithBase } from 'studiocms:helpers';
 import type { pageDataReponse } from 'studiocms:helpers/contentHelper';
 import { CustomImage } from 'studiocms:imageHandler/components';
+import { pathWithBase } from 'studiocms:lib';
 
 const blogRouteFullPath = pages.get('/blog/[...slug]');
 

@@ -105,3 +105,5 @@ i18nDTS.addModule('studiocms:i18n', {
 });
 
 export const i18nDTSOutput = i18nDTS.makeAstroInjectedType('i18n.d.ts');
+
+export default i18nDTSOutput;

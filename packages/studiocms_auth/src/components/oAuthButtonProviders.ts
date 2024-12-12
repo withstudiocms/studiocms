@@ -1,6 +1,6 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import Config from 'virtual:studiocms/config';
+import Config from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 
 const {
 	dashboardConfig: {

@@ -1,8 +1,8 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import Config from 'studiocms:config';
 import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
-import Config from 'virtual:studiocms/config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Input } from '@studiocms/ui/components';
 import type { GetStaticPaths } from 'astro';
 import StaticAuthCheck from '../components/StaticAuthCheck.astro';

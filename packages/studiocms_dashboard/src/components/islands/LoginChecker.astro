@@ -1,6 +1,6 @@
 ---
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import { StudioCMSRoutes } from 'studiocms:lib';
 
 interface Props {
 	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';

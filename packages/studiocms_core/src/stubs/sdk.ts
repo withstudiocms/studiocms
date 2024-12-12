@@ -55,3 +55,5 @@ sdkDTS.addModule('studiocms:sdk/types', {
 });
 
 export const sdkDtsFile = sdkDTS.makeAstroInjectedType('sdk.d.ts');
+
+export default sdkDtsFile;

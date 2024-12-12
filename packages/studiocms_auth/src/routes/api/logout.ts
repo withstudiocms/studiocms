@@ -4,7 +4,7 @@ import {
 	sessionCookieName,
 	validateSessionToken,
 } from 'studiocms:auth/lib/session';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import type { APIContext, APIRoute } from 'astro';
 
 const {

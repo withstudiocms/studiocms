@@ -1,9 +1,9 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
 import { AstroError } from 'astro/errors';
-import { loadStudioCMSConfigFile } from '../lib';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
 import { studioErrors, warnings } from '../strings';
+import { loadStudioCMSConfigFile } from './configManager';
 
 /**
  * Resolves the StudioCMS Options

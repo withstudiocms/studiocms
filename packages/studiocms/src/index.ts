@@ -1,10 +1,10 @@
-import { defineStudioCMSConfig } from '@studiocms/core/lib';
 import type {
 	CustomRenderer,
 	Renderer,
 	StudioCMSOptions,
 	StudioCMSPluginOptions,
 } from '@studiocms/core/schemas';
+import { defineStudioCMSConfig } from '@studiocms/core/utils';
 import integration from './integration';
 
 /**

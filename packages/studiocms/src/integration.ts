@@ -5,13 +5,12 @@ import {
 } from '@matthiesenxyz/integration-utils/astroUtils';
 import studioCMSAuth from '@studiocms/auth';
 import studioCMSCore from '@studiocms/core';
-import { getStudioConfigFileUrl } from '@studiocms/core/lib';
 import {
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema as optionsSchema,
 } from '@studiocms/core/schemas';
 import { CoreStrings, robotsTXTPreset } from '@studiocms/core/strings';
-import { checkAstroConfig, configResolver } from '@studiocms/core/utils';
+import { checkAstroConfig, configResolver, getStudioConfigFileUrl } from '@studiocms/core/utils';
 import studioCMSDashboard from '@studiocms/dashboard';
 import studioCMSFrontend from '@studiocms/frontend';
 import studioCMSImageHandler from '@studiocms/imagehandler';

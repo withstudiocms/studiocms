@@ -1,6 +1,6 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
+// import { StudioCMSRoutes } from 'studiocms:lib';
 import type { StudioCMSSocials } from '@studiocms/core/consts';
 
 const user = await getUserData(Astro);
@@ -8,15 +8,15 @@ const user = await getUserData(Astro);
 const { permissionLevel, user: userData } = user;
 
 const name = userData?.name;
-const avatar = userData?.avatar;
+// const avatar = userData?.avatar;
 
 type Props = { studioCMSSocials: StudioCMSSocials };
-const {
-	studioCMSSocials: { github: githubURL },
-} = Astro.props;
-const {
-	mainLinks: { dashboardIndex },
-} = StudioCMSRoutes;
+// const {
+// 	studioCMSSocials: { github: githubURL },
+// } = Astro.props;
+// const {
+// 	mainLinks: { dashboardIndex },
+// } = StudioCMSRoutes;
 
 let useName: string;
 

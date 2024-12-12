@@ -4,16 +4,40 @@ import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import { tsPageContent, tsPageData, tsSiteConfig } from '@studiocms/core/db/tsTables';
 
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type PageDataInsert = typeof tsPageData.$inferInsert;
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type PageDataSelect = typeof tsPageData.$inferSelect;
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type PageDataReturnID = Pick<PageDataSelect, 'id'>;
 
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type PageContentInsert = typeof tsPageContent.$inferInsert;
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type PageContentSelect = typeof tsPageContent.$inferSelect;
 
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type SiteConfigInsert = typeof tsSiteConfig.$inferInsert;
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 type SiteConfigSelect = typeof tsSiteConfig.$inferSelect;
 
+/**
+ * @deprecated moved into StudioCMS SDK
+ */
 export const astroDb = () => {
 	return {
 		pageData() {

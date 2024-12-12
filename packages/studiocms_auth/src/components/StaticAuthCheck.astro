@@ -1,7 +1,7 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
 import { getLangFromUrl, useTranslatedPath } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
 
 const { isLoggedIn } = await getUserData(Astro);
 // Get the language and translations

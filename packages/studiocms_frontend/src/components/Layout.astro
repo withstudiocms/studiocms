@@ -1,11 +1,15 @@
 ---
 import { Navigation } from 'studiocms:components';
-import { getSiteConfig } from 'studiocms:helpers/contentHelper';
-import Config from 'virtual:studiocms/config';
+import Config from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk';
 import BaseHead from './BaseHead.astro';
 import Footer from './Footer.astro';
 
-const { title: SiteTitle, description: SiteDescription } = await getSiteConfig();
+const { title: SiteTitle, description: SiteDescription } =
+	(await studioCMS_SDK.GET.database.config()) || {
+		title: 'StudioCMS - Database Unavailable',
+		description: 'StudioCMS - Database Unavailable',
+	};
 
 // const {
 // 	defaultFrontEndConfig: { htmlDefaultLanguage },

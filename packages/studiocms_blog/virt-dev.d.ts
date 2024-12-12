@@ -1,6 +1,5 @@
-/// <reference types="../studiocms_core/virtuals.d.ts" />
-/// <reference types="../studiocms_imagehandler/virtuals.d.ts" />
-/// <reference types="../studiocms_renderers/virtuals.d.ts" />
+/// <reference types="../../playground/.astro/types.d.ts" />
+/// <reference types="../../playground/.astro/@studiocms/blog.d.ts" />
 
 interface ImportMetaEnv {
 	readonly PROD: boolean;

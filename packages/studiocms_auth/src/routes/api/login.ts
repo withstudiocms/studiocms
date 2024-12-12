@@ -1,7 +1,7 @@
 import { db, eq } from 'astro:db';
 import { verifyPasswordHash } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
-import { tsUsers } from '@studiocms/core/db/tsTables';
+import { tsUsers } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext, APIRoute } from 'astro';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
@@ -24,13 +24,15 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Invalid username or password');
 
 	// Check if the user has a password or is using a oAuth login
-	if (!existingUser.password) return badFormDataEntry('Incorrect method', 'User is using OAuth login');
+	if (!existingUser.password)
+		return badFormDataEntry('Incorrect method', 'User is using OAuth login');
 
 	// Verify the password
 	const validPassword = await verifyPasswordHash(existingUser.password, password);
 
 	// If the password is invalid, return an error
-	if (!validPassword) return badFormDataEntry('Invalid credentials', 'Invalid username or password');
+	if (!validPassword)
+		return badFormDataEntry('Invalid credentials', 'Invalid username or password');
 
 	await createUserSession(existingUser.id, context);
 
