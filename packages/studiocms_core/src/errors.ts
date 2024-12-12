@@ -1,7 +1,4 @@
 import { AstroError } from 'astro/errors';
-import { StudioCMS_SDK_Error } from './sdk-utils/utils';
-
-export { StudioCMS_SDK_Error };
 
 /**
  * Represents an error specific to the StudioCMS SDK.
