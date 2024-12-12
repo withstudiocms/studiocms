@@ -50,8 +50,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 
 <div style="display: none;" 
   id="dropdown-options" 
-  data-usersettings={StudioCMSRoutes.mainLinks.userProfile} 
-  data-viewsite={StudioCMSRoutes.mainLinks.baseSiteURL}
+  data-userSettings={StudioCMSRoutes.mainLinks.userProfile} 
+  data-viewSite={StudioCMSRoutes.mainLinks.baseSiteURL}
   data-logout={StudioCMSRoutes.authLinks.logoutURL}
   />
 
@@ -71,8 +71,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 
     // Create a record of links (key: dropdown item value, value: URL)
     const links: Record<string, string> = {
-      'user-settings': linkData.usersettings!,
-      'view-site': linkData.viewsite!,
+      'user-settings': linkData.userSettings!,
+      'view-site': linkData.viewSite!,
       'log-out': linkData.logout!,
     };
 

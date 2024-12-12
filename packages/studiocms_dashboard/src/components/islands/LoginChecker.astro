@@ -18,19 +18,19 @@ id="login-checker"
 style="display: hidden;" 
 data-isLoggedIn={user.isLoggedIn}
 data-authorized={isAuthorized} 
-data-redirectprofile={StudioCMSRoutes.mainLinks.userProfile}
-data-redirectlogin={StudioCMSRoutes.authLinks.loginURL}
+data-redirectProfile={StudioCMSRoutes.mainLinks.userProfile}
+data-redirectLogin={StudioCMSRoutes.authLinks.loginURL}
 />
 
 <script>
 const authorized = document.getElementById('login-checker') as HTMLDivElement;
 
 if (authorized.dataset.isLoggedIn === 'false') {
-    window.location.href = authorized.dataset.redirectlogin!;
+    window.location.href = authorized.dataset.redirectLogin!;
 }
 
 if (authorized.dataset.authorized === 'false') {
-    window.location.href = authorized.dataset.redirectprofile!;
+    window.location.href = authorized.dataset.redirectProfile!;
 }
 </script>
 

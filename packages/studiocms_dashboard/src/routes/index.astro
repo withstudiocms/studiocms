@@ -1,13 +1,16 @@
 ---
 // import { getWebVitals } from 'studiocms-dashboard:web-vitals';
-import { getSiteConfig } from 'studiocms:helpers/contentHelper';
 import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
 import PageHeader from '../components/DashboardPageHeader.astro';
 import LoginChecker from '../components/islands/LoginChecker.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
-const contextConfig = await getSiteConfig();
+const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
+	title: 'StudioCMS',
+	description: 'StudioCMS',
+};
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
@@ -20,8 +23,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 <Layout 
   sideBarActiveItemID="dashboard" 
-  title={makePageTitle(t('title'), contextConfig)}
-  description={contextConfig.description}
+  title={makePageTitle(t('title'), dbConfig)}
+  description={dbConfig.description}
 >
   <PageHeader />
   <span>{t('sub-header')}</span>
