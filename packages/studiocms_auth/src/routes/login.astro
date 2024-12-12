@@ -1,21 +1,14 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { AuthConfig } from 'studiocms:config';
-import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Input } from '@studiocms/ui/components';
-import type { GetStaticPaths } from 'astro';
 import StaticAuthCheck from '../components/StaticAuthCheck.astro';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/auth:login');
-const tPath = useTranslatedPath(lang);
-
-export const getStaticPaths = (() => {
-	const paths = staticPaths();
-	return paths;
-}) satisfies GetStaticPaths;
 
 const {
 	providers,
@@ -24,10 +17,6 @@ const {
 		usernameAndPasswordConfig: { allowUserRegistration },
 	},
 } = AuthConfig;
-
-const {
-	authLinks: { loginAPI, signupURL },
-} = StudioCMSRoutes;
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
 
@@ -51,7 +40,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="login-form" method="post" action={loginAPI}>
+        <form class="form" id="login-form" method="post" action={StudioCMSRoutes.authLinks.loginAPI}>
 
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('password-label')} name="password" type='password' />
@@ -61,7 +50,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">{t('allow-registration-noaccount')} <a href={tPath(signupURL)}>{t('allow-registration-register')}</a></p>
+        <p slot="footer">{t('allow-registration-noaccount')} <a href={StudioCMSRoutes.authLinks.signupURL}>{t('allow-registration-register')}</a></p>
     )}
 
     <StaticAuthCheck server:defer />

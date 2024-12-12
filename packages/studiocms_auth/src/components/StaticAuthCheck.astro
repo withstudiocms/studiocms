@@ -1,27 +1,14 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
-import { getLangFromUrl, useTranslatedPath } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
 const { isLoggedIn } = await getUserData(Astro);
-// Get the language and translations
-const referer = Astro.request.headers.get('referer');
-
-if (!referer) {
-	throw new Error('No referer found');
-}
-
-const lang = getLangFromUrl(new URL(referer));
-const translatePath = useTranslatedPath(lang);
-const {
-	mainLinks: { dashboardIndex },
-} = StudioCMSRoutes;
 ---
 <div 
   id="login-check" 
   style="display: none;" 
   data-isloggedin={`${isLoggedIn}`}
-  data-redirectroute={translatePath(dashboardIndex)}
+  data-redirectroute={StudioCMSRoutes.mainLinks.dashboardIndex}
   ></div>
 
 <script is:inline>

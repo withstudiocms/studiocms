@@ -78,7 +78,7 @@ export const injectDashboardRoute = defineUtility('astro:config:setup')(
 			: 'dashboard';
 
 		const makeDashboardRoute = (path: string) => {
-			return `[...locale]/${defaultDashboardRoute}/${path}`;
+			return `${defaultDashboardRoute}/${path}`;
 		};
 
 		for (const route of routes) {

@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
@@ -7,9 +7,8 @@ import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
-const tPath = useTranslatedPath(lang);
 ---
 
 <Sidebar class='sidebar' transition:persist transition:persist-props>
@@ -20,10 +19,10 @@ const tPath = useTranslatedPath(lang);
     </div>
     <Divider background='background-step-1'>{t("category-1-header")}</Divider>
     <div class="sidebar-link-group">
-      <SidebarLink icon='home' href={tPath('/dashboard')}>
+      <SidebarLink icon='home' href={'/dashboard'}>
         {t("dashboard-link-label")}
       </SidebarLink>
-      <SidebarLink icon='pencil-square' href={tPath('/dashboard/test')}>
+      <SidebarLink icon='pencil-square' href={'/dashboard/test'}>
         {t("content-management-label")}
       </SidebarLink>
     </div>
@@ -51,9 +50,9 @@ const tPath = useTranslatedPath(lang);
 
 <div style="display: none;" 
   id="dropdown-options" 
-  data-usersettings={tPath(StudioCMSRoutes.mainLinks.userProfile)} 
-  data-viewsite={tPath(StudioCMSRoutes.mainLinks.baseSiteURL)}
-  data-logout={tPath(StudioCMSRoutes.authLinks.logoutURL)}
+  data-usersettings={StudioCMSRoutes.mainLinks.userProfile} 
+  data-viewsite={StudioCMSRoutes.mainLinks.baseSiteURL}
+  data-logout={StudioCMSRoutes.authLinks.logoutURL}
   />
 
 <script>

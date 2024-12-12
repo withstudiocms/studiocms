@@ -12,8 +12,6 @@ import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
 
-const { faviconURL } = dashboardConfig;
-
 interface Props {
 	title: string;
 	description: string;
@@ -24,11 +22,11 @@ interface Props {
 const { title, description, lang, disableScreen } = Astro.props;
 
 // Get the site config
-const siteConfig = await studioCMS_SDK.GET.database.config();
+const dbConfig = await studioCMS_SDK.GET.database.config();
 
 // Get the login page background and custom image from the site config
-const loginPageBackground = siteConfig?.loginPageBackground;
-const loginPageCustomImage = siteConfig?.loginPageCustomImage;
+const loginPageBackground = dbConfig?.loginPageBackground;
+const loginPageCustomImage = dbConfig?.loginPageCustomImage;
 
 const fallbackImageSrc =
 	loginPageBackground === 'custom'
@@ -40,7 +38,7 @@ const fallbackImageSrc =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={faviconURL} />
+    <link rel="icon" type="image/svg+xml" href={dashboardConfig.faviconURL} />
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
     <meta name="generator" content={Astro.generator} />
     <meta name="generator" content=`StudioCMS v${version}` />

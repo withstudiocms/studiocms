@@ -2,6 +2,14 @@ import type { AstroGlobal } from 'astro';
 
 export { default as LanguageSelector } from './LanguageSelector.astro';
 
+// Note: Translations are not currently used in StudioCMS, so we
+// will only allow 'en-us' to be used for now on the Dashboard.
+
+// If you still want to help translate our library while we
+// prepare to implement i18n, feel free to add the new translations on
+// https://i18n.studiocms.dev/ or PR them into the `translations` folder:
+// `packages/studiocms_core/src/i18n/translations/` on https://github.com/withstudiocms/studiocms
+
 // --- i18n Config --- //
 
 // Translations
@@ -31,12 +39,12 @@ type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
 // God please forgive me for what I am about to do
 type UiTranslationComponent<
 	L extends UiLanguageKeys,
-	T extends UiComponentKeys
-> = typeof uiTranslations[L]['translations'][T];
+	T extends UiComponentKeys,
+> = (typeof uiTranslations)[L]['translations'][T];
 
 type UiTranslationKey<
 	L extends UiLanguageKeys,
-	T extends UiComponentKeys
+	T extends UiComponentKeys,
 > = keyof UiTranslationComponent<L, T>;
 
 // Default language - Must match one of the keys in the `ui` object above
@@ -55,10 +63,7 @@ const showDefaultLang: boolean = false;
  * @param component - The component key to use for translations.
  * @returns A function that takes a translation key and returns the corresponding translated string.
  */
-export function useTranslations<
-	L extends UiLanguageKeys,
-	T extends UiComponentKeys
->(
+export function useTranslations<L extends UiLanguageKeys, T extends UiComponentKeys>(
 	lang: L,
 	component: T
 ) {

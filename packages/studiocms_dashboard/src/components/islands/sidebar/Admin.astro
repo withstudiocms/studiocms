@@ -1,15 +1,14 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
 import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { getLangFromUrl, useTranslatedPath, useTranslations } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import { Divider } from '@studiocms/ui/components';
 import SidebarLink from '../../SidebarLink.astro';
 import SidebarPluginLink from '../../SidebarPluginLink.astro';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
-const tPath = useTranslatedPath(lang);
 
 const data = await getUserData(Astro);
 
@@ -26,10 +25,10 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
 {isAdmin && (
   <Divider background='background-step-1'>{t('category-2-header')}</Divider>
   <div class="sidebar-link-group">
-    <SidebarLink icon='cog-6-tooth' href={tPath('/dashboard/some-route')}>
+    <SidebarLink icon='cog-6-tooth' href={'/dashboard/some-route'}>
       {t('site-configuration-label')}
     </SidebarLink>
-    <SidebarLink icon='user-group' href={tPath('/dashboard/some-other-route')}>
+    <SidebarLink icon='user-group' href={'/dashboard/some-other-route'}>
       {t('user-management-label')}
     </SidebarLink>
   </div>
@@ -37,7 +36,7 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
   <div class="sidebar-link-group">
     {filteredPluginList.map((plugin) => (
       <SidebarPluginLink 
-        href={tPath('/dashboard/plugins/some-plugin')}
+        href={'/dashboard/plugins/some-plugin'}
         identifier={plugin.identifier}
         name={plugin.name}
       />

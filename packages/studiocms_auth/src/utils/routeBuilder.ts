@@ -19,7 +19,7 @@ export const makeDashboardRoute = (route: string, options: StudioCMSAuthOptions)
 		? removeLeadingTrailingSlashes(dashboardRouteOverride)
 		: 'dashboard';
 
-	return `[...locale]/${defaultDashboardRoute}/${route}`;
+	return `${defaultDashboardRoute}/${route}`;
 };
 
 export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(

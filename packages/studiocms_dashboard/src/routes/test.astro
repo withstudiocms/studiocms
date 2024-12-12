@@ -1,23 +1,13 @@
 ---
-// import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { getSiteConfig } from 'studiocms:helpers/contentHelper';
-import { getLangFromUrl, staticPaths, useTranslations } from 'studiocms:i18n';
-import type { GetStaticPaths } from 'astro';
+import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
 import { makePageTitle } from '../utils/makePageTitle';
 
 const contextConfig = await getSiteConfig();
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
-
-export const getStaticPaths = (() => {
-	const paths = staticPaths();
-	return paths;
-}) satisfies GetStaticPaths;
-
-// Get the web vitals
-// const webVitals = await getWebVitals();
 ---
 
 <Layout 

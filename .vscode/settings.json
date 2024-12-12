@@ -9,5 +9,13 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.gotoLocation.multipleDefinitions": "goto",
-  "cSpell.words": ["astrojs", "Libravatar", "oslojs", "robotstxt", "studiocms", "withstudiocms"]
+  "cSpell.words": [
+    "astrojs",
+    "Libravatar",
+    "onest",
+    "oslojs",
+    "robotstxt",
+    "studiocms",
+    "withstudiocms"
+  ]
 }

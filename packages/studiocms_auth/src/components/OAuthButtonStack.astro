@@ -1,10 +1,10 @@
 ---
-import { getLangFromUrl, useTranslations } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
 import { Divider } from '@studiocms/ui/components';
 import OAuthButton from './OAuthButton.astro';
 import { providerData, showOAuth } from './oAuthButtonProviders';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/auth:oauth-stack');
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);

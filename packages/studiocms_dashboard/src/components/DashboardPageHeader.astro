@@ -1,11 +1,11 @@
 ---
-import { getLangFromUrl, useTranslations } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
 import DiscordLogo from '@studiocms/assets/svgs/discord.svg?raw';
 import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import UserName from './islands/dashboard/UserName.astro';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
