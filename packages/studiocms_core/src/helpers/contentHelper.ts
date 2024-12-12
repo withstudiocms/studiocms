@@ -1,8 +1,7 @@
-/// <reference types="@astrojs/db" />
 import { asc, db, desc, eq } from 'astro:db';
-import { AstroError } from 'astro/errors';
 import { CMSSiteConfigId } from '../consts';
 import { tsPageContent, tsPageData, tsPermissions, tsSiteConfig, tsUsers } from '../db/tsTables';
+import { StudioCMSError } from '../errors';
 import type { PageDataAndContent } from '../types';
 
 /**
@@ -87,7 +86,7 @@ export async function contentHelper(
 	}
 
 	if (pageData.package && pageData.package !== packageToGet) {
-		throw new AstroError(
+		throw new StudioCMSError(
 			`Page not found: ${slug} in package ${packageToGet}`,
 			`studioCMS contentHelper Failed to get page data for page ${slug} in package ${packageToGet}`
 		);
@@ -102,7 +101,7 @@ export async function contentHelper(
 		.get();
 
 	if (!pageContent) {
-		throw new AstroError(
+		throw new StudioCMSError(
 			`Page Content not found: ${slug} with language ${langToGet}`,
 			`studioCMS contentHelper Failed to get page content for page ${slug} with language ${langToGet}`
 		);
@@ -129,7 +128,7 @@ export async function getPageById(id: string): Promise<ContentHelperTempResponse
 		.get();
 
 	if (!pageContent) {
-		throw new AstroError(
+		throw new StudioCMSError(
 			`Page Content not found: ${id} with language ${langToGet}`,
 			`studioCMS contentHelper Failed to get page content for page ${id} with language ${langToGet}`
 		);

@@ -1,12 +1,13 @@
 import { statSync } from 'node:fs';
+import { defineUtility } from 'astro-integration-kit';
+import { StudioCMSCoreError } from '../errors';
 import type { StudioCMSOptions } from '../schemas';
-import { studioErrors } from '../strings';
 
 // This File was created based on Expressive Code's Astro Integration by Hippotastic on github
 // see: https://expressive-code.com/ & https://github.com/expressive-code/expressive-code
 
 /**
- * Paths to search for the Lunaria config file,
+ * Paths to search for the StudioCMS config file,
  * sorted by how likely they're to appear.
  */
 const configPaths = Object.freeze([
@@ -37,6 +38,21 @@ export function exists(path: string) {
 		return false;
 	}
 }
+
+/**
+ * Watches the StudioCMS configuration file for changes and adds it to the watch list.
+ * This utility is defined for the 'astro:config:setup' event.
+ *
+ * @param params - The parameters provided by the Astro configuration setup event.
+ * @param params.addWatchFile - Function to add a file to the watch list.
+ * @param params.config - The current Astro configuration object.
+ * @returns void
+ */
+export const watchStudioCMSConfig = defineUtility('astro:config:setup')((params) => {
+	const { addWatchFile, config } = params;
+	const configFileUrl = getStudioConfigFileUrl(config.root.pathname);
+	addWatchFile(configFileUrl);
+});
 
 /**
  * Returns a URL to the optional StudioCMS config file in the Astro project root.
@@ -81,7 +97,9 @@ export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<S
 		// Attempt to import the config file dynamically
 		const module = (await import(/* @vite-ignore */ fileUrl)) as { default: StudioCMSOptions };
 		if (!module.default) {
-			throw new Error(studioErrors.invalidOrMissingExport);
+			throw new Error(
+				'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
+			);
 		}
 		return module.default;
 	} catch (error) {
@@ -89,12 +107,12 @@ export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<S
 
 		// If the config file exists but fails to load, throw an error
 		if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
-			throw new Error(
-				`${studioErrors.loadingError} ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
+			throw new StudioCMSCoreError(
+				`Your project includes an StudioCMS config file ("studiocms.config.mjs") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
 					/\s+/g,
 					' '
 				),
-				error instanceof Error ? { cause: error } : undefined
+				error instanceof Error ? error.message : ''
 			);
 		}
 	}

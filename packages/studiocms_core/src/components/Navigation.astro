@@ -1,9 +1,9 @@
 ---
 import { Avatar } from 'studiocms:components';
 import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
-// import { externalNav } from 'virtual:studiocms/pluginSystem';
+import plugins from 'studiocms:plugins';
 import './navigation.css';
-import { getPageList, getSiteConfig } from 'studiocms:helpers/contentHelper';
+import studioCMS_SDK from 'studiocms:sdk';
 
 type Props = {
 	topLevelLinkCount?: number;
@@ -12,10 +12,10 @@ type Props = {
 
 const { hideAvatar, topLevelLinkCount = 3 } = Astro.props;
 
-const config = await getSiteConfig();
-const pageList = await getPageList();
+const config = await studioCMS_SDK.GET.database.config();
+const pageList = await studioCMS_SDK.GET.database.pages();
 
-const { title } = config;
+const { title } = config || { title: 'StudioCMS' };
 const {
 	mainLinks: { baseSiteURL },
 } = StudioCMSRoutes;
@@ -49,33 +49,40 @@ for (const page of restOfPages) {
 	});
 }
 
-// const externalLinks = Array.from(externalNav.values());
+const pluginsLinks = plugins.map(({ frontendNavigationLinks }) => {
+	if (frontendNavigationLinks) {
+		return frontendNavigationLinks;
+	}
+	return [];
+});
 
-// for (const link of externalLinks) {
-// 	links.push({
-// 		text: link.text,
-// 		href: pathWithBase(link.slug),
-// 	});
-// }
+for (const pluginLinks of pluginsLinks) {
+	for (const link of pluginLinks) {
+		links.push({
+			text: link.label,
+			href: pathWithBase(link.href),
+		});
+	}
+}
 ---
 
 <!-- If no dropdown items -->
 { ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
     <div class="navigation">
         <div class="title"><a href={baseSiteURL}>{title}</a></div>
-        <div class="mininav">
+        <div class="mini-nav">
             <button>Menu</button>
-            <div class="mininav-content">
+            <div class="mini-nav-content">
             { 
                 links.map(({ text, href }) => (
-                    <a href={href}>{text}</a>
+                    <a {href}>{text}</a>
                 )) 
             }
             </div>
         </div>
         { 
             links.map(({ text, href }) => (
-                <a class="links" href={href}>{text}</a>
+                <a class="links" {href}>{text}</a>
             )) 
         }
 
@@ -88,26 +95,26 @@ for (const page of restOfPages) {
     <div class="navigation">
         <div class="title"><a href={baseSiteURL}>{title}</a></div>
 
-        <div class="mininav">
+        <div class="mini-nav">
             <button>Menu</button>
-            <div class="mininav-content">
+            <div class="mini-nav-content">
             { 
                 links.map(({ text, href }) => (
-                    <a href={href}>{text}</a>
+                    <a {href}>{text}</a>
                 )) 
             }
             </div>
         </div>
         { 
             links.slice(0, topLevelLinkCount).map(({ text, href }) => (
-                    <a class="links" href={href}>{text}</a>
+                    <a class="links" {href}>{text}</a>
             ))
         }
             <div class="dropdown">
                 <button>More ▼</button>
                 <div class="dropdown-content">
                     { links.slice(topLevelLinkCount).map(({ text, href }) => (
-                        <a href={href}>{text}</a>
+                        <a {href}>{text}</a>
                     )) }
                 </div>
             </div>

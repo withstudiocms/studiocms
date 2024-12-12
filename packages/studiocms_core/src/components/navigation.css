@@ -21,12 +21,12 @@
 	font-weight: bold;
 }
 
-.navigation .mininav {
+.navigation .mini-nav {
 	display: hidden;
 	visibility: hidden;
 }
 
-.navigation .mininav button {
+.navigation .mini-nav button {
 	background-color: hsl(0, 0%, 95%);
 	color: back;
 	font-size: larger;
@@ -38,14 +38,14 @@
 	visibility: hidden;
 }
 
-.navigation .mininav a {
+.navigation .mini-nav a {
 	display: block;
 	padding: 10px 15px;
 	text-decoration: none;
 	color: black;
 }
 
-.navigation .mininav-content {
+.navigation .mini-nav-content {
 	display: none;
 	position: absolute;
 	background-color: hsl(0, 0%, 90%);
@@ -53,20 +53,20 @@
 	box-shadow: 2px 2px 5px hsla(0, 0%, 0%, 0.8);
 }
 
-.navigation .mininav:hover .mininav-content {
+.navigation .mini-nav:hover .mini-nav-content {
 	display: block;
 }
 
-.navigation .mininav:hover button {
+.navigation .mini-nav:hover button {
 	background-color: hsl(0, 0%, 80%);
 }
 
 @media (max-width: 720px) {
-	.navigation .mininav {
+	.navigation .mini-nav {
 		display: inline-block;
 		visibility: visible;
 	}
-	.navigation .mininav button {
+	.navigation .mini-nav button {
 		display: inline-block;
 		visibility: visible;
 	}
@@ -99,11 +99,11 @@
 		position: relative;
 		justify-self: center;
 	}
-	.navigation .mininav {
+	.navigation .mini-nav {
 		display: flex;
 		position: relative;
 	}
-	.navigation .mininav button {
+	.navigation .mini-nav button {
 		display: flex;
 		position: relative;
 	}

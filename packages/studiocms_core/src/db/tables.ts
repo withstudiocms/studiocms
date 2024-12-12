@@ -1,4 +1,3 @@
-/// <reference types="@astrojs/db" />
 import { NOW, column, defineTable } from 'astro:db';
 
 /** StudioCMS - Users Table for Astro DB */

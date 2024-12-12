@@ -10,7 +10,7 @@ import {
 	StudioCMSOptionsSchema as optionsSchema,
 } from '@studiocms/core/schemas';
 import { CoreStrings, robotsTXTPreset } from '@studiocms/core/strings';
-import { checkAstroConfig, configResolver, getStudioConfigFileUrl } from '@studiocms/core/utils';
+import { checkAstroConfig, configResolver, watchStudioCMSConfig } from '@studiocms/core/utils';
 import studioCMSDashboard from '@studiocms/dashboard';
 import studioCMSFrontend from '@studiocms/frontend';
 import studioCMSImageHandler from '@studiocms/imagehandler';
@@ -33,16 +33,15 @@ export default defineIntegration({
 		return {
 			hooks: {
 				// Configure `@astrojs/db` integration to include the StudioCMS Database Tables
-				// @ts-ignore
 				'astro:db:setup': ({ extendDb }) => {
 					extendDb({ configEntrypoint: '@studiocms/core/db/config' });
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure Params
-					const { config: astroConfig, addWatchFile, logger } = params;
+					const { logger } = params;
 
 					// Watch the StudioCMS Config File for changes (including creation/deletion)
-					addWatchFile(getStudioConfigFileUrl(astroConfig.root.pathname));
+					watchStudioCMSConfig(params);
 
 					// Resolve Options
 					const ResolvedOptions = await configResolver(params, options);

@@ -1,22 +1,6 @@
 ---
-import Config from 'studiocms:config';
-import { type HeadConfig, type HeadUserConfig, createHead, headDefaults } from 'studiocms:lib';
-
-let htmlDefaultHead: HeadUserConfig = [];
-let configFav = '';
-
-if (Config?.defaultFrontEndConfig) {
-	if (
-		typeof Config.defaultFrontEndConfig === 'object' &&
-		Config.defaultFrontEndConfig.htmlDefaultHead
-	) {
-		htmlDefaultHead.push(...Config.defaultFrontEndConfig.htmlDefaultHead);
-	}
-
-	if (typeof Config.defaultFrontEndConfig === 'object' && Config.defaultFrontEndConfig.favicon) {
-		configFav = Config.defaultFrontEndConfig.favicon;
-	}
-}
+import { defaultFrontEndConfig } from 'studiocms:config';
+import { createHead, headDefaults } from 'studiocms:lib';
 
 interface Props {
 	title: string;
@@ -27,20 +11,27 @@ interface Props {
 	canonicalURL?: URL;
 }
 
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
-
 const {
 	title,
 	description,
-	favicon = configFav,
-	canonicalURL = canonical,
+	favicon = defaultFrontEndConfig &&
+	typeof defaultFrontEndConfig === 'object' &&
+	defaultFrontEndConfig.favicon
+		? defaultFrontEndConfig.favicon
+		: '/favicon.svg',
+	canonicalURL = Astro.url,
 	lang = 'en',
 	ogImage,
 } = Astro.props;
 
-const genericHead = headDefaults(title, description, lang, Astro, favicon, ogImage, canonicalURL);
-
-const head = createHead(genericHead, htmlDefaultHead as HeadConfig);
+const head = createHead(
+	headDefaults(title, description, lang, Astro, favicon, ogImage, canonicalURL),
+	defaultFrontEndConfig &&
+		typeof defaultFrontEndConfig === 'object' &&
+		defaultFrontEndConfig.htmlDefaultHead
+		? defaultFrontEndConfig.htmlDefaultHead
+		: []
+);
 ---
 
 {head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}

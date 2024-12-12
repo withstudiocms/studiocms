@@ -32,6 +32,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./components": "./src/components/index.ts",
+    "./errors": "./src/errors.ts",
     "./lib": "./src/lib/index.ts",
     "./schemas": "./src/schemas/index.ts",
     "./schemas/renderer": "./src/schemas/config/rendererConfig.ts",

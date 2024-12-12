@@ -1,46 +1,38 @@
 ---
+import { Image } from 'astro:assets';
 import { StudioCMSRoutes } from 'studiocms:lib';
-// import Config from 'virtual:studiocms/config';
 import profileImg from './avatar.webp';
 
-// const {
-// 	dashboardConfig: {
-// 		AuthConfig: { enabled },
-// 	},
-// } = Config;
-const {
-	// mainLinks: { dashboardIndex },
-	authLinks: { loginURL },
-} = StudioCMSRoutes;
-// const { isLoggedIn, dbUser: userProfile } = Astro.locals;
-
-// TODO: Update this to use the new auth system
----
-{/* enabled !== false && (isLoggedIn ? (
-    <a href={dashboardIndex} title="User Dashboard">
-        <img
-            src={userProfile?.avatar||profileImg.src}
-            alt={userProfile?.name||"Logged In User"}
-            width="64"
-            height="64" />
-        </a>
-    ) : (
-     */
-        <a href={loginURL} title="Login">
-        <img 
-            src={profileImg.src} 
-            alt="Logged Out user" 
-            width="64" 
-            height="64" />
-        </a>
-    /* )) 
+interface Props {
+	/**
+	 * Allows Overriding the default link description
+	 * @default "Login"
+	 */
+	title?: string | undefined;
+	/**
+	 * Allows Overriding the default alt text for a logged out user
+	 * @default "Logged Out user"
+	 */
+	alt?: string | undefined;
+	/**
+	 * Allows Overriding the default image src
+	 */
+	src?: string | undefined;
 }
-{ enabled === false && (
-    <a href="#" aria-disabled="true" title="Please Edit your database through your provider's dashboard">
-        <img 
-            src={profileImg.src} 
-            alt="Authentication Disabled" 
-            width="64" 
-            height="64" />	
-    </a>
-)*/}
+
+const attrs = {
+	a: {
+		href: StudioCMSRoutes.authLinks.loginURL,
+		title: Astro.props.title || 'Login',
+	},
+	img: {
+		src: Astro.props.src || profileImg.src,
+		alt: Astro.props.alt || 'Logged Out user',
+		width: 64,
+		height: 64,
+	},
+};
+---
+<a {...attrs.a}>
+    <Image {...attrs.img} />
+</a>

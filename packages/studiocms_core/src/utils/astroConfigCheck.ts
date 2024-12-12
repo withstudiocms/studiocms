@@ -1,7 +1,6 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
-import { AstroError } from 'astro/errors';
-import { CoreStrings, DbErrors } from '../strings';
+import { StudioCMSCoreError } from '../errors';
 
 /**
  * Checks the Users Astro Config for the following:
@@ -16,24 +15,38 @@ export const checkAstroConfig = defineUtility('astro:config:setup')(async (param
 
 	// Check for Astro:DB Integration
 	if (!astroConfig.integrations.find(({ name }) => name === 'astro:db')) {
-		integrationLogger({ logger, logLevel: 'error', verbose: true }, DbErrors.astroDbMissingMessage);
-		throw new AstroError(DbErrors.astroDbMissingMessage, DbErrors.astroDbMissingHint);
+		integrationLogger(
+			{ logger, logLevel: 'error', verbose: true },
+			'Astro DB Integration not found in Astro Config'
+		);
+		throw new StudioCMSCoreError(
+			'Astro DB Integration not found in Astro Config',
+			'Run `astro add db` to install `@astrojs/db` and add it to your Astro config.'
+		);
 	}
 
 	// Check for SSR Mode (output: "server")
 	if (astroConfig.output !== 'server') {
-		integrationLogger({ logger, logLevel: 'error', verbose: true }, DbErrors.AstroConfigOutput);
-		throw new AstroError(DbErrors.AstroConfigOutput);
+		integrationLogger(
+			{ logger, logLevel: 'error', verbose: true },
+			"StudioCMS is only supported in 'Output: server' SSR mode."
+		);
+		throw new StudioCMSCoreError("StudioCMS is only supported in 'Output: server' SSR mode.");
 	}
 
 	// Check for Site URL
 	if (!astroConfig.site) {
-		integrationLogger({ logger, logLevel: 'error', verbose: true }, DbErrors.AstroConfigSiteURL);
-		throw new AstroError(DbErrors.AstroConfigSiteURL);
+		integrationLogger(
+			{ logger, logLevel: 'error', verbose: true },
+			"StudioCMS requires a 'site' configuration in your Astro Config. This can be your domain ( 'https://example.com' ) or localhost ( 'http://localhost:4321' - localhost should only be used during development and should not be used in production)."
+		);
+		throw new StudioCMSCoreError(
+			"StudioCMS requires a 'site' configuration in your Astro Config. This can be your domain ( 'https://example.com' ) or localhost ( 'http://localhost:4321' - localhost should only be used during development and should not be used in production)."
+		);
 	}
 
 	return integrationLogger(
 		{ logger, logLevel: 'info', verbose: true },
-		CoreStrings.AstroConfigCheck
+		'Astro Config `output` & `site` options valid'
 	);
 });

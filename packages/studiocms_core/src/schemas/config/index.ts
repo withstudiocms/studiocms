@@ -65,6 +65,14 @@ export const StudioCMSOptionsSchema = z
 		 */
 		dateLocale: z.string().optional().default('en-us'),
 		/**
+		 * DateTime Format Options
+		 */
+		dateTimeFormat: z.custom<Intl.DateTimeFormatOptions>().optional().default({
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		}),
+		/**
 		 * Component Overrides - Allows for customizing the components used in StudioCMS
 		 */
 		overrides: overridesSchema,

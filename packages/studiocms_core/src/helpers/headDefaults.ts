@@ -1,9 +1,9 @@
 import { extname } from 'node:path';
 import version from 'studiocms:version';
 import type { AstroGlobalPartial } from 'astro';
-import { AstroError } from 'astro/errors';
 import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
+import { StudioCMSError } from '../errors';
 import type { HeadConfigSchema } from '../schemas/config/defaultFrontend';
 
 /**
@@ -35,7 +35,7 @@ const makeFavicon = (favicon: string) => {
 		const faviconType = lookup(ext);
 		return { href: faviconHref, type: faviconType };
 	}
-	throw new AstroError(
+	throw new StudioCMSError(
 		`Unsupported favicon extension: ${ext}`,
 		`The favicon must be one of the following types: ${faviconTypes.join(', ')}`
 	);

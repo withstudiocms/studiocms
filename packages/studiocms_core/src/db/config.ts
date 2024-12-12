@@ -1,4 +1,3 @@
-/// <reference types="@astrojs/db" />
 import { defineDb } from 'astro:db';
 import {
 	StudioCMSDiffTracking,

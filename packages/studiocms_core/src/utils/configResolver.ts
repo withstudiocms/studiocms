@@ -1,8 +1,7 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
-import { AstroError } from 'astro/errors';
+import { StudioCMSCoreError } from '../errors';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
-import { studioErrors, warnings } from '../strings';
 import { loadStudioCMSConfigFile } from './configManager';
 
 /**
@@ -28,8 +27,8 @@ export const configResolver = defineUtility('astro:config:setup')(
 			if (!parsedOptions.success || parsedOptions.error || !parsedOptions.data) {
 				const parsedErrors = parsedOptions.error.errors;
 				const parsedErrorMap = parsedErrors.map((e) => ` - ${e.message}`).join('\n');
-				const parsedErrorString = `${studioErrors.failedToParseConfig}\n${parsedErrorMap}`;
-				throw new AstroError(studioErrors.invalidConfigFile, parsedErrorString);
+				const parsedErrorString = `The StudioCMS config file was found but the following errors where encountered while parsing it: \n${parsedErrorMap}`;
+				throw new StudioCMSCoreError('Invalid StudioCMS Config File', parsedErrorString);
 			}
 
 			// Merge the options with Defaults
@@ -38,7 +37,7 @@ export const configResolver = defineUtility('astro:config:setup')(
 			// Log that the StudioCMS config file is being used if verbose
 			integrationLogger(
 				{ logger, logLevel: 'warn', verbose: resolvedOptions.verbose || false },
-				warnings.StudioCMSConfigPresent
+				'Your project includes a StudioCMS config file ("studiocms.config.{mjs|js|ts|mts|cjs|cts}"). To avoid unexpected results from merging multiple config sources, move all StudioCMS options to the StudioCMS config file. Or remove the file to use only the options provided in the Astro config.'
 			);
 		}
 

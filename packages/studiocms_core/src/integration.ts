@@ -2,7 +2,6 @@ import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { name, version } from '../package.json';
 import { StudioCMSOptionsSchema as optionsSchema } from './schemas';
-import { CoreStrings } from './strings';
 import componentsDtsFileOutput from './stubs/components';
 import coreDtsFileOutput from './stubs/core';
 import helpersDtsFileOutput from './stubs/helpers';
@@ -34,7 +33,7 @@ export default defineIntegration({
 					const { resolve: astroConfigResolved } = createResolver(astroConfigPath);
 
 					// Setup Virtual Imports
-					integrationLogger({ logger, logLevel: 'info', verbose }, CoreStrings.AddVirtualImports);
+					integrationLogger({ logger, logLevel: 'info', verbose }, 'Adding Virtual Imports...');
 
 					addVirtualImports(params, {
 						name,
