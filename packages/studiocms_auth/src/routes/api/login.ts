@@ -1,7 +1,6 @@
-import { db, eq } from 'astro:db';
 import { verifyPasswordHash } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
-import { tsUsers } from '@studiocms/core/sdk-utils/tables';
+import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
 
@@ -18,7 +17,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (!password) return badFormDataEntry('Missing field', 'Password is required');
 
 	// Get the user from the database
-	const existingUser = await db.select().from(tsUsers).where(eq(tsUsers.username, username)).get();
+	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byUsername(username);
 
 	// If the user does not exist, return an ambiguous error
 	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Invalid username or password');

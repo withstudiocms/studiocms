@@ -4,7 +4,7 @@ import '@studiocms/ui/css/global.css';
 import './authlayout.css';
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import Config from 'studiocms:config';
+import { dashboardConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import version from 'studiocms:version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
@@ -12,9 +12,7 @@ import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
 
-const {
-	dashboardConfig: { faviconURL },
-} = Config;
+const { faviconURL } = dashboardConfig;
 
 interface Props {
 	title: string;

@@ -657,6 +657,11 @@ export interface STUDIOCMS_SDK {
 			 */
 			update: (userId: string, userData: tsUsersUpdate) => Promise<tsUsersSelect>;
 
+			searchUsersForUsernameOrEmail: (
+				username: string,
+				email: string
+			) => Promise<{ usernameSearch: tsUsersSelect[]; emailSearch: tsUsersSelect[] }>;
+
 			// delete: async () => {},
 		};
 

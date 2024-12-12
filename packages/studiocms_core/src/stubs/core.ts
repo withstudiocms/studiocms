@@ -13,6 +13,28 @@ dtsFile.addModule('studiocms:config', {
 	defaultExport: {
 		typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig`,
 	},
+	namedExports: [
+		{
+			name: 'config',
+			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig`,
+		},
+		{
+			name: 'dashboardConfig',
+			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']`,
+		},
+		{
+			name: 'AuthConfig',
+			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']['AuthConfig']`,
+		},
+		{
+			name: 'developerConfig',
+			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']['developerConfig']`,
+		},
+		{
+			name: 'defaultFrontEndConfig',
+			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['defaultFrontEndConfig']`,
+		},
+	],
 });
 
 dtsFile.addModule('studiocms:version', {

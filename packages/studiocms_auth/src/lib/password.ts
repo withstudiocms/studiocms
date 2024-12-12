@@ -9,8 +9,8 @@ type RemoveLast<T extends unknown[]> = T extends [...infer Rest, infer _Last] ? 
 function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buffer> {
 	return new Promise((res, rej) => {
 		nodeScrypt(...opts, (err, derivedKey) => {
-			if (err) rej(err)
-			else res(derivedKey)
+			if (err) rej(err);
+			else res(derivedKey);
 		});
 	});
 }

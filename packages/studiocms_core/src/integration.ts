@@ -39,21 +39,6 @@ export default defineIntegration({
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'virtual:studiocms/config': `
-								export default ${JSON.stringify(options)};
-							`,
-							'virtual:studiocms/version': `
-								export default '${version}';
-							`,
-
-							// Core Virtual Modules
-							'studiocms:config': `
-								export default ${JSON.stringify(options)};
-							`,
-							'studiocms:version': `
-								export default '${version}';
-							`,
-
 							// Old Virtual helpers - TO BE REMOVED
 							'studiocms:helpers': `
 								export { default as pathGenerators } from '${resolve('./lib/pathGenerators.ts')}';
@@ -66,6 +51,19 @@ export default defineIntegration({
 							`,
 							'studiocms:helpers/routemap': `
 								export * from '${resolve('./lib/routeMap.ts')}';
+							`,
+
+							// Core Virtual Modules
+							'studiocms:config': `
+								export default ${JSON.stringify(options)};
+								export const config = ${JSON.stringify(options)};
+								export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
+								export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
+								export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
+								export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
+							`,
+							'studiocms:version': `
+								export default '${version}';
 							`,
 
 							// Core Virtual Components
@@ -122,8 +120,7 @@ export default defineIntegration({
 								export default studioCMS_SDK_AUTH;
 							`,
 							'studiocms:sdk/types': `
-								import type { STUDIOCMS_SDK } from '${resolve('./sdk-utils/types.ts')}';
-								export type { STUDIOCMS_SDK };
+								export * from '${resolve('./sdk-utils/types.ts')}';
 							`,
 						},
 					});

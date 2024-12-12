@@ -1,6 +1,6 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import Config from 'studiocms:config';
+import { AuthConfig } from 'studiocms:config';
 import { getLangFromUrl, staticPaths, useTranslatedPath, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Input } from '@studiocms/ui/components';
@@ -18,16 +18,12 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const {
-	dashboardConfig: {
-		AuthConfig: {
-			providers,
-			providers: {
-				usernameAndPassword,
-				usernameAndPasswordConfig: { allowUserRegistration },
-			},
-		},
+	providers,
+	providers: {
+		usernameAndPassword,
+		usernameAndPasswordConfig: { allowUserRegistration },
 	},
-} = Config;
+} = AuthConfig;
 
 const {
 	authLinks: { loginAPI, signupURL },

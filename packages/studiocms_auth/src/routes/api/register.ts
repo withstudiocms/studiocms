@@ -1,8 +1,7 @@
-import { db, eq } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
-import { tsUsers } from '@studiocms/core/sdk-utils/tables';
+import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared';
@@ -44,18 +43,15 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (!name) return badFormDataEntry('Missing entry', 'Display name is required');
 
 	// If the email is invalid, return an error
-	const checkemail = z.coerce
+	const checkEmail = z.coerce
 		.string()
 		.email({ message: 'Email address is invalid' })
 		.safeParse(email);
 
-	if (!checkemail.success) return badFormDataEntry('Invalid email', checkemail.error.message);
+	if (!checkEmail.success) return badFormDataEntry('Invalid email', checkEmail.error.message);
 
-	// Check if the username or email is already used by another user
-	const [usernameSearch, emailSearch] = await db.batch([
-		db.select().from(tsUsers).where(eq(tsUsers.username, username)),
-		db.select().from(tsUsers).where(eq(tsUsers.email, checkemail.data)),
-	]);
+	const { usernameSearch, emailSearch } =
+		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
 
 	if (usernameSearch.length > 0)
 		return badFormDataEntry('Invalid username', 'Username is already in use');

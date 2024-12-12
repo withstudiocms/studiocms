@@ -1,12 +1,8 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import Config from 'studiocms:config';
+import { AuthConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
-const {
-	dashboardConfig: {
-		AuthConfig: { providers },
-	},
-} = Config;
+const { providers } = AuthConfig;
 
 const {
 	authLinks: { googleIndex, auth0Index, discordIndex, githubIndex },

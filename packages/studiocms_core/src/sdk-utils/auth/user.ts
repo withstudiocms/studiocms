@@ -42,6 +42,27 @@ export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
 			throw new StudioCMS_SDK_Error('Error updating user: An unknown error occurred.', `${error}`);
 		}
 	},
+	searchUsersForUsernameOrEmail: async (username, email) => {
+		try {
+			const [usernameSearch, emailSearch] = await db.batch([
+				db.select().from(tsUsers).where(eq(tsUsers.username, username)),
+				db.select().from(tsUsers).where(eq(tsUsers.email, email)),
+			]);
+
+			return { usernameSearch, emailSearch };
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error searching for username or email: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error(
+				'Error searching for username or email: An unknown error occurred.',
+				`${error}`
+			);
+		}
+	},
 	// TODO: Implement delete function that wont error since
 	// there could be references to the user in other tables
 	// delete: async () => {},
