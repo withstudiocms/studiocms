@@ -2,6 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
+import TestIsland from '../components/islands/TestIsland.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
 const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
@@ -19,4 +20,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
   description={dbConfig.description}
 >
   Sus
+
+  <div>
+    <TestIsland server:defer />
+  </div>
 </Layout>

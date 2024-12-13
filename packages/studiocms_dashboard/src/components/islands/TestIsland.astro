@@ -1,0 +1,35 @@
+---
+import studioCMS_SDK from 'studiocms:sdk';
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
+const referer = Astro.request.headers.get('Referer')!;
+const url = new URL(referer);
+
+const test = url.searchParams.get('id');
+
+const pageList = await studioCMS_SDK.GET.database.pages();
+
+let currentDisplay = 'N/A';
+
+if (test) {
+	const currentData = await studioCMS_SDK.GET.databaseEntry.pages.byId(test);
+
+	if (currentData) {
+		currentDisplay = `${currentData.title} ( ${currentData.id} )`;
+	}
+}
+---
+<div>
+  <h2>Test Island</h2>
+
+  <p>
+    This is a test island, to demonstrate how we can create a server island that can read and use query parameters.
+    <br />
+    The idea is to generate a list of pages using the SDK on the inner sidebar, and then use the query parameter to select 
+    which page to display as two separate islands.
+  </p>
+
+  <p>Current Selected: {currentDisplay}</p>
+  <ul>
+    {pageList.map(({ id, title }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
+  </ul>
+</div>

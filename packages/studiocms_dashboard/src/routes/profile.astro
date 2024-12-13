@@ -1,72 +1,31 @@
 ---
-import { getSiteConfig } from 'studiocms:helpers/contentHelper';
-import { StudioCMSRoutes } from 'studiocms:helpers/routemap';
-import { Card, Divider } from '@matthiesenxyz/astrolace/components';
-import { toPascalCase } from '@matthiesenxyz/integration-utils/textFormatters';
+// import { getWebVitals } from 'studiocms-dashboard:web-vitals';
+import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
-import CrumbStack from '../components/CrumbStack.astro';
-import { makePageTitle } from '../utils';
+import PageHeader from '../components/DashboardPageHeader.astro';
+import LoginChecker from '../components/islands/LoginChecker.astro';
+import { makePageTitle } from '../utils/makePageTitle';
 
-import { getUserData } from 'studiocms:auth/lib/user';
+const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
+	title: 'StudioCMS',
+	description: 'StudioCMS',
+};
 
-const user = await getUserData(Astro);
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:index');
 
-if (!user.user) {
-	return Astro.redirect(StudioCMSRoutes.authLinks.loginURL);
-}
-
-const {
-	permissionLevel,
-	user: { name, username, url },
-} = user;
-
-const {
-	mainLinks: { dashboardIndex, userProfile },
-} = StudioCMSRoutes;
-
-const contextConfig = await getSiteConfig();
+// Get the web vitals
+// const webVitals = await getWebVitals();
 ---
 
+<LoginChecker server:defer requiredPermission='editor' />
+
 <Layout 
-    sideBarActiveItemID="profile" 
-    title={makePageTitle("User Profile", contextConfig)}
-    description={contextConfig.description} >
-
-    <CrumbStack
-        isDashboard 
-        items={[
-            { href: dashboardIndex, text: 'Dashboard' },
-            { href: userProfile, text: 'User Profile' }
-        ]} />
-
-    <div class="container">
-
-        <h1 class="text-5xl font-bold py-8">User Profile</h1>
-
-
-        <Card class="card-header">
-            <div slot="header" class="text-5xl font-bold">
-                {username}'s Profile
-            </div>
-            <Divider class="divider" />
-            <div class="py-2">
-                <span class="text-lg">
-                    <strong>Display Name:</strong> {name}
-                </span>
-                <Divider />
-                <span class="text-lg">
-                    <strong>Role:</strong> {toPascalCase(permissionLevel)}
-                </span>
-                <Divider />
-                { url && (
-                    <span class="text-lg">
-                        <strong>Url:</strong> <a class="text-blue" href={url}>{url}</a>
-                    </span>
-                <Divider />
-                )}
-            </div>
-        </Card>
-
-
-    </div>
+  sideBarActiveItemID="dashboard" 
+  title={makePageTitle(t('title'), dbConfig)}
+  description={dbConfig.description}
+>
+  <PageHeader />
+  <span>{t('sub-header')}</span>
 </Layout>
