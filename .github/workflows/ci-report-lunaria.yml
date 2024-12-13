@@ -17,8 +17,8 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: ./.github/actions/install
-
+        uses: withstudiocms/automations/.github/actions/install
+        
       - id: message
         name: Format Discord message
         run: pnpm ci:lunaria:report

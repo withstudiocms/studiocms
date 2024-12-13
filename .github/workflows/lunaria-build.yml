@@ -19,7 +19,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: ./.github/actions/install
+        uses: withstudiocms/automations/.github/actions/install
 
       - name: Build Lunaria Overview
         run: pnpm ci:lunaria:build
