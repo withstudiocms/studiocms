@@ -1,13 +1,8 @@
-import { db, eq } from 'astro:db';
+import { db } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
-import { CMSSiteConfigId } from '@studiocms/core/consts';
-import {
-	tsPageContent,
-	tsPageData,
-	tsPermissions,
-	tsSiteConfig,
-} from '@studiocms/core/db/tsTables';
+import studioCMS_SDK from 'studiocms:sdk';
+import { tsSiteConfig } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext } from 'astro';
 
 function parseFormDataEntryToString(formData: FormData, key: string): string | null {
@@ -52,6 +47,8 @@ export async function POST(context: APIContext): Promise<Response> {
 	// Generate the page IDs
 	const homePageID = crypto.randomUUID();
 	const aboutPageID = crypto.randomUUID();
+
+	let userId = '';
 
 	if (!title || !description) {
 		return new Response(
@@ -103,12 +100,8 @@ export async function POST(context: APIContext): Promise<Response> {
 		try {
 			// Create the new user
 			const newUser = await createLocalUser(name, username, email, password);
-
-			// Insert the new user into the permissions table
-			await db.insert(tsPermissions).values({
-				user: newUser.id,
-				rank: 'owner',
-			});
+			await studioCMS_SDK.POST.databaseEntry.permissions(newUser.id, 'owner');
+			userId = newUser.id;
 		} catch (error) {
 			return new Response(
 				JSON.stringify({
@@ -137,11 +130,7 @@ export async function POST(context: APIContext): Promise<Response> {
 		// });
 	}
 
-	const Config = await db
-		.select()
-		.from(tsSiteConfig)
-		.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-		.get();
+	const Config = await studioCMS_SDK.GET.database.config();
 
 	if (Config) {
 		return new Response(
@@ -154,15 +143,9 @@ export async function POST(context: APIContext): Promise<Response> {
 			}
 		);
 	}
-
-	// Insert Site Config
 	await db
 		.insert(tsSiteConfig)
-		.values({
-			title: title,
-			description: description,
-			defaultOgImage: DefaultHeroOrUserSetOgImage,
-		})
+		.values({ title, description, defaultOgImage: DefaultHeroOrUserSetOgImage })
 		.catch(() => {
 			return new Response(
 				JSON.stringify({
@@ -174,9 +157,8 @@ export async function POST(context: APIContext): Promise<Response> {
 			);
 		});
 
-	await db
-		.insert(tsPageData)
-		.values([
+	await studioCMS_SDK.POST.databaseEntry
+		.pages(
 			{
 				id: homePageID,
 				title: 'Home',
@@ -185,7 +167,31 @@ export async function POST(context: APIContext): Promise<Response> {
 				contentLang: 'default',
 				description: 'Index page',
 				heroImage: DefaultHeroOrUserSetOgImage,
+				authorId: userId,
+				package: 'studiocms',
+				publishedAt: new Date(),
+				showAuthor: false,
+				showContributors: false,
+				updatedAt: new Date(),
 			},
+			{
+				content: LOREM_IPSUM,
+				contentLang: 'default',
+			}
+		)
+		.catch(() => {
+			return new Response(
+				JSON.stringify({
+					error: 'Home Page Insert Error',
+				}),
+				{
+					status: 400,
+				}
+			);
+		});
+
+	await studioCMS_SDK.POST.databaseEntry
+		.pages(
 			{
 				id: aboutPageID,
 				title: 'About',
@@ -194,40 +200,22 @@ export async function POST(context: APIContext): Promise<Response> {
 				contentLang: 'default',
 				description: 'About page',
 				heroImage: DefaultHeroOrUserSetOgImage,
+				authorId: userId,
+				package: 'studiocms',
+				publishedAt: new Date(),
+				showAuthor: false,
+				showContributors: false,
+				updatedAt: new Date(),
 			},
-		])
+			{
+				content: LOREM_IPSUM,
+				contentLang: 'default',
+			}
+		)
 		.catch(() => {
 			return new Response(
 				JSON.stringify({
-					error: 'Page Data Error',
-				}),
-				{
-					status: 400,
-				}
-			);
-		});
-
-	// Insert Page Content
-	await db
-		.insert(tsPageContent)
-		.values([
-			{
-				id: crypto.randomUUID(),
-				contentId: homePageID,
-				contentLang: 'default',
-				content: LOREM_IPSUM,
-			},
-			{
-				id: crypto.randomUUID(),
-				contentId: aboutPageID,
-				contentLang: 'default',
-				content: LOREM_IPSUM,
-			},
-		])
-		.catch(() => {
-			return new Response(
-				JSON.stringify({
-					error: 'Page Content Error',
+					error: 'About Page Insert Error',
 				}),
 				{
 					status: 400,

@@ -4,7 +4,6 @@ import { name, version } from '../package.json';
 import { StudioCMSOptionsSchema as optionsSchema } from './schemas';
 import componentsDtsFileOutput from './stubs/components';
 import coreDtsFileOutput from './stubs/core';
-import helpersDtsFileOutput from './stubs/helpers';
 import i18nDTSOutput from './stubs/i18n-dts';
 import libDtsFileOutput from './stubs/lib';
 import sdkDtsFile from './stubs/sdk';
@@ -38,20 +37,6 @@ export default defineIntegration({
 					addVirtualImports(params, {
 						name,
 						imports: {
-							// Old Virtual helpers - TO BE REMOVED
-							'studiocms:helpers': `
-								export { default as pathGenerators } from '${resolve('./lib/pathGenerators.ts')}';
-							`,
-							'studiocms:helpers/contentHelper': `
-								export * from '${resolve('./helpers/contentHelper.ts')}';
-							`,
-							'studiocms:helpers/headDefaults': `
-								export * from '${resolve('./lib/headDefaults.ts')}';
-							`,
-							'studiocms:helpers/routemap': `
-								export * from '${resolve('./lib/routeMap.ts')}';
-							`,
-
 							// Core Virtual Modules
 							'studiocms:config': `
 								export default ${JSON.stringify(options)};
@@ -131,8 +116,6 @@ export default defineIntegration({
 					injectTypes(i18nDTSOutput);
 					injectTypes(sdkDtsFile);
 					injectTypes(libDtsFileOutput);
-					// TODO Remove the following once the new helpers are in place
-					injectTypes(helpersDtsFileOutput);
 				},
 			},
 		};

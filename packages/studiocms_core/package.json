@@ -39,7 +39,6 @@
     "./utils": "./src/utils/index.ts",
     "./strings": "./src/strings.ts",
     "./consts": "./src/consts.ts",
-    "./helpers": "./src/helpers/index.ts",
     "./db/config": "./src/db/config.ts",
     "./db/tables": "./src/db/tables.ts",
     "./db/tsTables": "./src/db/tsTables.ts",

@@ -1,6 +1,6 @@
 ---
 import { Navigation } from 'studiocms:components';
-import Config from 'studiocms:config';
+import { defaultFrontEndConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import BaseHead from './BaseHead.astro';
 import Footer from './Footer.astro';
@@ -11,18 +11,11 @@ const { title: SiteTitle, description: SiteDescription } =
 		description: 'StudioCMS - Database Unavailable',
 	};
 
-// const {
-// 	defaultFrontEndConfig: { htmlDefaultLanguage },
-// } = Config;
-
 let htmlDefaultLanguage = 'en';
 
-if (Config?.defaultFrontEndConfig) {
-	if (
-		typeof Config.defaultFrontEndConfig === 'object' &&
-		Config.defaultFrontEndConfig.htmlDefaultLanguage
-	) {
-		htmlDefaultLanguage = Config.defaultFrontEndConfig.htmlDefaultLanguage;
+if (defaultFrontEndConfig) {
+	if (typeof defaultFrontEndConfig === 'object' && defaultFrontEndConfig.htmlDefaultLanguage) {
+		htmlDefaultLanguage = defaultFrontEndConfig.htmlDefaultLanguage;
 	}
 }
 

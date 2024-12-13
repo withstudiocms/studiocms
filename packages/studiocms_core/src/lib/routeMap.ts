@@ -1,12 +1,10 @@
-import Config from 'studiocms:config';
+import { dashboardConfig } from 'studiocms:config';
 // import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
 import type { SideBarLink } from '../schemas';
 import { makeAPIRoute } from './makeAPIRoute';
 import urlGenFactory from './urlGen';
 
-const {
-	dashboardConfig: { dashboardRouteOverride },
-} = Config;
+const { dashboardRouteOverride } = dashboardConfig;
 
 export function getSluggedRoute(url: string, slug: string): string {
 	return urlGenFactory(true, url + slug, dashboardRouteOverride);
