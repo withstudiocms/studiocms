@@ -61,5 +61,5 @@ if (usernameAndPassword && SHOW_OAUTH) {
     import { formListener } from '../scripts/formListener';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 
-    loginForm.addEventListener('submit', async (event) => await formListener(event, loginForm, 'register'));
+    loginForm.addEventListener('submit', async (event) => await formListener(event, loginForm, 'login'));
 </script>
