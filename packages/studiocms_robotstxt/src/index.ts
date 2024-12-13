@@ -154,6 +154,14 @@ const defaultConfig: RobotsConfig = {
 	],
 };
 
+/**
+ * **Robots.txt Integration**
+ *
+ * A simple integration to generate a `robots.txt` file for your Astro project.
+ *
+ * @param astroConfig Robots Configuration
+ * @returns AstroIntegration
+ */
 export default function createRobotsIntegration(astroConfig: RobotsConfig): AstroIntegration {
 	let config: AstroConfig;
 	let finalSiteMapHref: string;

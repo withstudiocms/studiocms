@@ -9,6 +9,14 @@ import i18nDTSOutput from './stubs/i18n-dts';
 import libDtsFileOutput from './stubs/lib';
 import sdkDtsFile from './stubs/sdk';
 
+/**
+ * **StudioCMS Core Integration**
+ *
+ * @param options StudioCMS Configuration
+ * @returns AstroIntegration
+ *
+ * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
+ */
 export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
 	return {
 		name: pkgName,
