@@ -64,5 +64,5 @@ if (usernameAndPassword && SHOW_OAUTH) {
     import { formListener } from 'studiocms:auth/scripts/formListener';
     const signUpForm = document.getElementById('sign-up-form') as HTMLFormElement;
 
-    signUpForm.addEventListener('submit', async (event) => formListener(event, signUpForm, 'register'));
+    signUpForm.addEventListener('submit', async (event) => await formListener(event, signUpForm, 'register'));
 </script>
