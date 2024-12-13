@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import profileImg from './avatar.webp';
 
@@ -34,5 +33,5 @@ const attrs = {
 };
 ---
 <a {...attrs.a}>
-    <Image {...attrs.img} />
+    <img {...attrs.img} />
 </a>

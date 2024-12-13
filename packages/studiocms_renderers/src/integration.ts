@@ -22,7 +22,7 @@ export default defineIntegration({
 
 		return {
 			hooks: {
-				'astro:config:setup': async (params) => {
+				'astro:config:setup': (params) => {
 					// Destructure the params
 					const {
 						config: { markdown: astroMarkdown },
@@ -41,7 +41,7 @@ export default defineIntegration({
 						},
 					});
 				},
-				'astro:config:done': async ({ injectTypes }) => {
+				'astro:config:done': ({ injectTypes }) => {
 					// Inject Types for Renderer
 					injectTypes(rendererDTS(RendererComponent));
 

@@ -4,8 +4,8 @@ import {
 	integrationLogger,
 	nodeNamespaceBuiltinsAstro,
 } from '@matthiesenxyz/integration-utils/astroUtils';
-import studioCMSAuth from '@studiocms/auth';
-import studioCMSCore from '@studiocms/core';
+import auth from '@studiocms/auth';
+import core from '@studiocms/core';
 import { StudioCMSError } from '@studiocms/core/errors';
 import { definePlugin } from '@studiocms/core/schemas';
 import type {
@@ -18,13 +18,13 @@ import type {
 import { robotsTXTPreset } from '@studiocms/core/strings';
 import { defineStudioCMSConfig } from '@studiocms/core/utils';
 import { checkAstroConfig, configResolver, watchStudioCMSConfig } from '@studiocms/core/utils';
-import studioCMSDashboard from '@studiocms/dashboard';
-import studioCMSFrontend from '@studiocms/frontend';
-import studioCMSImageHandler from '@studiocms/imagehandler';
-import studioCMSRenderers from '@studiocms/renderers';
-import studioCMSRobotsTXT from '@studiocms/robotstxt';
+import dashboard from '@studiocms/dashboard';
+import frontend from '@studiocms/frontend';
+import imageHandler from '@studiocms/imagehandler';
+import renderers from '@studiocms/renderers';
+import robotsTXT from '@studiocms/robotstxt';
 import type { AstroIntegration } from 'astro';
-import { addIntegration, addVirtualImports, createResolver } from 'astro-integration-kit';
+import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import packageJson from 'package-json';
 import * as semver from 'semver';
 import packageJsonData from '../package.json';
@@ -66,40 +66,31 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 				// Check Astro Config for required settings
 				checkAstroConfig(params);
 
-				// Setup Integrations (Internal)
-				addIntegrationArray(params, [
+				// Setup StudioCMS Integrations
+				const integrations = [
 					{ integration: nodeNamespaceBuiltinsAstro() },
-					{ integration: studioCMSCore(resolvedOptions) },
-					{ integration: studioCMSRenderers(resolvedOptions.rendererConfig) },
-					{
-						integration: studioCMSFrontend({
-							verbose: resolvedOptions.verbose,
-							dbStartPage: resolvedOptions.dbStartPage,
-							defaultFrontEndConfig: resolvedOptions.defaultFrontEndConfig,
+					{ integration: core(resolvedOptions) },
+					{ integration: renderers(resolvedOptions.rendererConfig) },
+					{ integration: frontend(resolvedOptions) },
+					{ integration: imageHandler(resolvedOptions) },
+					{ integration: auth(resolvedOptions) },
+					{ integration: dashboard(resolvedOptions) },
+				];
+
+				// Robots.txt
+				if (
+					resolvedOptions.includedIntegrations?.robotsTXT === true ||
+					typeof resolvedOptions.includedIntegrations?.robotsTXT === 'object'
+				) {
+					integrations.push({
+						integration: robotsTXT({
+							...robotsTXTPreset,
+							...(resolvedOptions.includedIntegrations?.robotsTXT === true
+								? {}
+								: resolvedOptions.includedIntegrations?.robotsTXT),
 						}),
-					},
-					{
-						integration: studioCMSImageHandler({
-							verbose: resolvedOptions.verbose,
-							imageService: resolvedOptions.imageService,
-							overrides: resolvedOptions.overrides,
-						}),
-					},
-					{
-						integration: studioCMSAuth({
-							verbose: resolvedOptions.verbose,
-							dbStartPage: resolvedOptions.dbStartPage,
-							dashboardConfig: resolvedOptions.dashboardConfig,
-						}),
-					},
-					{
-						integration: studioCMSDashboard({
-							verbose: resolvedOptions.verbose,
-							dbStartPage: resolvedOptions.dbStartPage,
-							dashboardConfig: resolvedOptions.dashboardConfig,
-						}),
-					},
-				]);
+					});
+				}
 
 				// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 				const safePluginList: SafePluginListType = [
@@ -134,12 +125,9 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 
 					// Add the plugin Integration to the Astro config
 					if (plugin.integration && Array.isArray(plugin.integration)) {
-						addIntegrationArray(
-							params,
-							plugin.integration.map((integration) => ({ integration }))
-						);
+						integrations.push(...plugin.integration.map((integration) => ({ integration })));
 					} else if (plugin.integration) {
-						addIntegration(params, { integration: plugin.integration });
+						integrations.push({ integration: plugin.integration });
 					}
 
 					safePluginList.push({
@@ -150,6 +138,9 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 						settingsPage: plugin.settingsPage,
 					});
 				}
+
+				// Setup Integrations
+				addIntegrationArray(params, integrations);
 
 				// Generate the Virtual Imports for the plugins
 				addVirtualImports(params, {
@@ -168,38 +159,18 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 					},
 					`Current Installed Plugins:\n Plugin Label - Plugin Identifier\n${safePluginList.map((p) => ` > ${p.name} - ${p.identifier}`).join('\n')}`
 				);
-
-				// Robots.txt
-				if (
-					resolvedOptions.includedIntegrations?.robotsTXT === true ||
-					typeof resolvedOptions.includedIntegrations?.robotsTXT === 'object'
-				) {
-					const robotsTXTConfig =
-						resolvedOptions.includedIntegrations?.robotsTXT === true
-							? {}
-							: resolvedOptions.includedIntegrations?.robotsTXT;
-
-					addIntegrationArray(params, [
-						{
-							integration: studioCMSRobotsTXT({
-								...robotsTXTPreset,
-								...robotsTXTConfig,
-							}),
-						},
-					]);
-				}
 			},
 			'astro:config:done': ({ injectTypes }) => {
 				// Make DTS file for StudioCMS Plugins Virtual Module
 				const dtsFile = astroDTSBuilder();
 
 				dtsFile.addSingleLineNote(
-					'// This file is auto-generated by StudioCMS and should not be modified.'
+					'This file is auto-generated by StudioCMS and should not be modified.'
 				);
 
 				dtsFile.addModule('studiocms:plugins', {
 					defaultExport: {
-						typeDef: `import('${resolve('./types')}').SafePluginListType`,
+						typeDef: `import('${resolve('./index.ts')}').SafePluginListType`,
 					},
 				});
 
@@ -216,7 +187,7 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 
 					if (comparison === -1) {
 						log.warn(
-							`A new version of 'studiocms' is available. Please update to ${latestVersion} using your favorite package manager.`
+							`A new version of '${packageJsonData.name}' is available. Please update to ${latestVersion} using your favorite package manager.`
 						);
 					} else if (comparison === 0) {
 						log.info(
@@ -224,7 +195,7 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 						);
 					} else {
 						log.info(
-							`You are using a newer version (${packageJsonData.version}) of '${name}' than the latest release (${latestVersion})`
+							`You are using a newer version (${packageJsonData.version}) of '${packageJsonData.name}' than the latest release (${latestVersion})`
 						);
 					}
 				} catch (error) {

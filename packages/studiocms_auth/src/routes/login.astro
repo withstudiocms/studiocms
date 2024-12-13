@@ -40,7 +40,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="login-form" method="post" action={StudioCMSRoutes.authLinks.loginAPI}>
+        <form class="form" id="login-form" method="post">
 
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('password-label')} name="password" type='password' />
@@ -58,8 +58,8 @@ if (usernameAndPassword && SHOW_OAUTH) {
 </AuthLayout>
 
 <script>
-    import { formListener } from 'studiocms:auth/scripts/formListener';
+    import { formListener } from '../scripts/formListener';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 
-    loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+    loginForm.addEventListener('submit', async (event) => formListener(event, loginForm, 'register'));
 </script>

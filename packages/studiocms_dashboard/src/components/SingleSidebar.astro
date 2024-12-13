@@ -30,12 +30,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       <span slot="fallback">Loading</span>
     </Admin>
   </div>
-  <Dropdown
+  <Dropdown 
     id='sidebar-user-dropdown'
     options={[
-      { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user" },
-      { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt" },
-      { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle" },
+      { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
+      { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
+      { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL },
     ]}
     offset={8}
     transition:persist transition:persist-props
@@ -48,46 +48,19 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   </Dropdown>
 </Sidebar>
 
-<div style="display: none;" 
-  id="dropdown-options" 
-  data-userSettings={StudioCMSRoutes.mainLinks.userProfile} 
-  data-viewSite={StudioCMSRoutes.mainLinks.baseSiteURL}
-  data-logout={StudioCMSRoutes.authLinks.logoutURL}
-  />
-
 <script>
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
 
+  console.log('Setting up sidebar');
+
   document.addEventListener('astro:page-load', () => {
+    console.log('Page loaded');
     new SingleSidebarHelper('nav-toggle');
     new DropdownHelper('sidebar-user-dropdown', true);
 
-    // Get the dropdown list items
-    const dropdownListItems = document.querySelector<HTMLUListElement>('#sidebar-user-dropdown-dropdown')!.querySelectorAll<HTMLLIElement>('li');
-
-    // Get the dropdown options (URLs for each dropdown item)
-    const { dataset: linkData } = document.querySelector<HTMLDivElement>('#dropdown-options')!;
-
-    // Create a record of links (key: dropdown item value, value: URL)
-    const links: Record<string, string> = {
-      'user-settings': linkData.userSettings!,
-      'view-site': linkData.viewSite!,
-      'log-out': linkData.logout!,
-    };
-
-    for (const item of dropdownListItems) {
-      item.addEventListener('click', () => {
-        const value = item.dataset.value!;
-
-        window.location.href = `${links[value]}`;
-      })
-    }
-
-    const sidebar = document.querySelector<HTMLElement>('.sidebar');
-
-    if (!sidebar) return;
-    
+    console.log('Setting active link');
+    const sidebar = document.querySelector<HTMLElement>('.sidebar')!;
     const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
       
     for (const link of sidebarLinks) {

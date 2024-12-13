@@ -7,17 +7,13 @@ import {
 	tsPageDataCategories,
 	tsPageDataTags,
 	tsPermissions,
-	tsUsers,
 } from './tables';
 import type {
 	CombinedPageData,
 	CombinedRank,
 	CombinedUserData,
-	GenericTable,
 	SingleRank,
-	tsPageDataCategoriesSelect,
 	tsPageDataSelect,
-	tsPageDataTagsSelect,
 	tsPermissionsSelect,
 	tsUsersSelect,
 } from './types';
@@ -49,7 +45,7 @@ export async function collectUserData(user: tsUsersSelect): Promise<CombinedUser
 		return {
 			...user,
 			oAuthData: oAuthData,
-			permissionsData: permissionData.pop(),
+			permissionsData: permissionData[0],
 		};
 	} catch (error) {
 		if (error instanceof Error) {
@@ -62,51 +58,12 @@ export async function collectUserData(user: tsUsersSelect): Promise<CombinedUser
 	}
 }
 
-/**
- * Executes a batch query on the database for the given IDs and table.
- *
- * @template returnType - The type of the return value.
- * @param {Array<number | string>} ids - An array of IDs to query.
- * @param {GenericTable} table - The table to query against.
- * @returns {Promise<returnType[]>} A promise that resolves to an array of results of type `returnType`.
- */
-export async function runDbBatchQuery<returnType>(
-	ids: Array<number | string>,
-	table: GenericTable
-): Promise<returnType[]> {
-	try {
-		const batchQueries = [];
-
-		for (const id of ids) {
-			batchQueries.push(db.select().from(table).where(eq(table.id, id)));
-		}
-
-		const [head, ...tail] = batchQueries;
-
-		if (head) {
-			const queryResults = await db.batch([head, ...tail]);
-			// Flatten and filter the results
-			return queryResults.flat().filter(Boolean) as returnType[];
-		}
-
-		return [] as returnType[];
-	} catch (error) {
-		if (error instanceof Error) {
-			throw new StudioCMS_SDK_Error(`Error running batch query: ${error.message}`, error.stack);
-		}
-		throw new StudioCMS_SDK_Error(
-			'Error running batch query: An unknown error occurred.',
-			`${error}`
-		);
-	}
-}
-
 export function parseIdNumberArray(ids: unknown): number[] {
-	return JSON.parse(ids as string) as number[];
+	return ids as number[];
 }
 
 export function parseIdStringArray(ids: unknown): string[] {
-	return JSON.parse(ids as string) as string[];
+	return ids as string[];
 }
 
 /**
@@ -125,17 +82,31 @@ export function parseIdStringArray(ids: unknown): string[] {
  */
 export async function collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
 	try {
-		const categoryIds = parseIdNumberArray(page.categories);
-		const categories = await runDbBatchQuery<tsPageDataCategoriesSelect>(
-			categoryIds,
-			tsPageDataCategories
+		const categoryIds = parseIdNumberArray(page.categories || []);
+		const categories: CombinedPageData['categories'] = [];
+
+		const [head, ...tail] = categoryIds.map((id) =>
+			db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
 		);
 
-		const tagIds = parseIdNumberArray(page.tags);
-		const tags = await runDbBatchQuery<tsPageDataTagsSelect>(tagIds, tsPageDataTags);
+		if (head) {
+			const categoryResults = await db.batch([head, ...tail]);
+			categories.push(...categoryResults.flat().filter((result) => result !== undefined));
+		}
 
-		const contributorIds = parseIdStringArray(page.contributorIds);
-		const contributors = await runDbBatchQuery<string>(contributorIds, tsUsers);
+		const tagIds = parseIdNumberArray(page.tags || []);
+		const tags: CombinedPageData['tags'] = [];
+
+		const [headTag, ...tailTag] = tagIds.map((id) =>
+			db.select().from(tsPageDataTags).where(eq(tsPageDataTags.id, id))
+		);
+
+		if (headTag) {
+			const tagResults = await db.batch([headTag, ...tailTag]);
+			tags.push(...tagResults.flat().filter((result) => result !== undefined));
+		}
+
+		const contributorIds = parseIdStringArray(page.contributorIds || []);
 
 		const multiLangContentData = await db
 			.select()
@@ -150,7 +121,7 @@ export async function collectPageData(page: tsPageDataSelect): Promise<CombinedP
 			...page,
 			categories,
 			tags,
-			contributorIds: contributors,
+			contributorIds: contributorIds,
 			multiLangContent: multiLangContentData,
 			defaultContent: defaultContentData,
 		};
