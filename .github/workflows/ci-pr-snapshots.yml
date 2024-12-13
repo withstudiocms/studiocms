@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install
+        uses: withstudiocms/automations/.github/actions/install@main
   
       - name: Publish packages
         run: pnpm ci:snapshot

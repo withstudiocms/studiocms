@@ -21,7 +21,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install
+        uses: withstudiocms/automations/.github/actions/install@main
 
       - name: Generate Lunaria Overview
         uses: lunariajs/action@astro-docs
