@@ -1,11 +1,10 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
+import { makeAPIRoute } from '@studiocms/core/lib';
 import { DashboardStrings } from '@studiocms/core/strings';
 import { defineUtility } from 'astro-integration-kit';
 import type { StudioCMSDashboardOptions } from '../schema';
 
-export const makeStudioCMSDashboardAPIRoute = (route: string) => {
-	return `studiocms_api/dashboard/${route}`;
-};
+const apiRoute = makeAPIRoute('dashboard');
 
 export const injectDashboardAPIRoutes = defineUtility('astro:config:setup')(
 	(
@@ -65,7 +64,7 @@ export const injectDashboardAPIRoutes = defineUtility('astro:config:setup')(
 			}
 
 			injectRoute({
-				pattern: makeStudioCMSDashboardAPIRoute(pattern),
+				pattern: apiRoute(pattern),
 				entrypoint,
 				prerender: false,
 			});

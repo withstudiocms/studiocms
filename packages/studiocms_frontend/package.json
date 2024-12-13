@@ -37,6 +37,7 @@
   "dependencies": {
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/core": "workspace:*",
+    "@studiocms/ui": "catalog:",
     "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {

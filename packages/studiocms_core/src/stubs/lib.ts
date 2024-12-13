@@ -96,10 +96,6 @@ dtsFile.addModule('studiocms:lib', {
 			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').makeDashboardRoute`,
 		},
 		{
-			name: 'makeStudioCMSAPIRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').makeStudioCMSAPIRoute`,
-		},
-		{
 			name: 'StudioCMSRoutes',
 			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').StudioCMSRoutes`,
 		},

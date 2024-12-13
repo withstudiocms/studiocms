@@ -17,7 +17,7 @@ export default defineIntegration({
 		const { resolve } = createResolver(import.meta.url);
 
 		// Declaration for Web Vitals DTS File
-		let WEBVITALSDTSFILE: InjectedType;
+		let WebVitalsDtsFile: InjectedType;
 
 		return {
 			hooks: {
@@ -119,63 +119,46 @@ export default defineIntegration({
 								pattern: '/test',
 								entrypoint: resolve('./routes/test.astro'),
 							},
+							// {
+							// 	enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+							// 	pattern: '/content-management',
+							// 	entrypoint: resolve('./routes/content-management.astro'),
+							// },
+							// {
+							// 	enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+							// 	pattern: '/create-page',
+							// 	entrypoint: resolve('./routes/create-page.astro'),
+							// },
+							// {
+							// 	enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+							// 	pattern: '/profile',
+							// 	entrypoint: resolve('./routes/profile.astro'),
+							// },
+							// {
+							// 	enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+							// 	pattern: '/configuration',
+							// 	entrypoint: resolve('./routes/configuration.astro'),
+							// },
+							// {
+							// 	enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
+							// 	pattern: '/user-management',
+							// 	entrypoint: resolve('./routes/user-management.astro'),
+							// },
 						],
 					});
-
-					// // OLD ROUTES - TO BE REMOVED
-					// injectRouteArray(params, {
-					// 	options,
-					// 	routes: [
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'profile/',
-					// 			entrypoint: resolve('./routes/profile.astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'configuration',
-					// 			entrypoint: resolve('./routes/configuration/index.astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'configuration/admins',
-					// 			entrypoint: resolve('./routes/configuration/admins.astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'new/page',
-					// 			entrypoint: resolve('./routes/create-page.astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'page-list',
-					// 			entrypoint: resolve('./routes/page-list.astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'edit/pages/[...id]',
-					// 			entrypoint: resolve('./routes/edit-pages/[...id].astro'),
-					// 		},
-					// 		{
-					// 			enabled: options.dashboardConfig.dashboardEnabled && !options.dbStartPage,
-					// 			pattern: 'delete/pages/[...id]',
-					// 			entrypoint: resolve('./routes/delete-pages/[...id].astro'),
-					// 		},
-					// 	],
-					// });
 
 					// Check for `@astrojs/web-vitals` Integration
 					const { webVitalDtsFile } = checkForWebVitals(params, { name, verbose });
 
 					// Set the Web Vitals DTS File
-					WEBVITALSDTSFILE = webVitalDtsFile;
+					WebVitalsDtsFile = webVitalDtsFile;
 
 					// Log that the setup is complete
 					integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.SetupComplete);
 				},
 				'astro:config:done': async ({ injectTypes }) => {
 					// Inject the Web Vitals DTS File
-					injectTypes(WEBVITALSDTSFILE);
+					injectTypes(WebVitalsDtsFile);
 				},
 				'astro:server:start': async ({ logger }) => {
 					// Display Console Message if dbStartPage(First Time DB Initialization) is enabled

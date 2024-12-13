@@ -1,17 +1,12 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
-// import { authHelper } from 'studiocms:auth/helpers';
-import Config from 'studiocms:config';
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { developerConfig } from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk';
+import { CMSSiteConfigId } from '@studiocms/core/consts';
 import type { APIContext } from 'astro';
-import { astroDb } from '../../../utils/astroDb';
 import { simpleResponse } from '../../../utils/simpleResponse';
 
-import { getUserData } from 'studiocms:auth/lib/user';
-
-const {
-	dashboardConfig: {
-		developerConfig: { testingAndDemoMode },
-	},
-} = Config;
+const { testingAndDemoMode } = developerConfig;
 
 export async function POST(context: APIContext): Promise<Response> {
 	// Check if testing and demo mode is enabled
@@ -22,35 +17,55 @@ export async function POST(context: APIContext): Promise<Response> {
 
 	// Map Locals
 	// const locals = context.locals;
-	const userdata = await getUserData(context);
+	const userData = await getUserData(context);
 
 	// Check if user is logged in
-	if (!userdata.isLoggedIn) {
+	if (!userData.isLoggedIn) {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	if (userdata.isLoggedIn) {
-		const { permissionLevel } = userdata;
-		if (permissionLevel !== 'admin') {
-			return simpleResponse(403, 'Unauthorized');
-		}
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
 	}
 
 	// Get form data
 	const formData = await context.request.formData();
 	const title = formData.get('title')?.toString();
 	const description = formData.get('description')?.toString();
+	const defaultOgImage = formData.get('defaultOgImage')?.toString();
+	const loginPageBackground = formData.get('loginPageBackground')?.toString();
+	const loginPageCustomImage = formData.get('loginPageCustomImage')?.toString();
+	const siteIcon = formData.get('siteIcon')?.toString();
 
 	// Check if title and description exists
-	if (!title || !description) {
-		logger.error('Invalid title or description');
-		return simpleResponse(400, 'Invalid title or description');
+	if (
+		!title ||
+		!description ||
+		!defaultOgImage ||
+		!loginPageBackground ||
+		!loginPageCustomImage ||
+		!siteIcon
+	) {
+		logger.error('Invalid form data');
+		return simpleResponse(400, 'Invalid form data');
 	}
 
 	// Update Database
 	try {
-		await astroDb().siteConfig().update({ title, description });
+		await studioCMS_SDK.UPDATE.siteConfig({
+			title,
+			description,
+			id: CMSSiteConfigId,
+			defaultOgImage,
+			loginPageBackground,
+			loginPageCustomImage,
+			siteIcon,
+		});
+
+		logger.info('Site config updated');
+		return simpleResponse(200, 'Site config updated');
 	} catch (error) {
 		// Log error
 		if (error instanceof Error) {
@@ -59,8 +74,4 @@ export async function POST(context: APIContext): Promise<Response> {
 		// Return Error Response
 		return simpleResponse(500, 'Error updating site config');
 	}
-
-	// Return Response
-	logger.info('Site config updated');
-	return simpleResponse(200, 'Site config updated');
 }

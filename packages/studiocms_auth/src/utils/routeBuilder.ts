@@ -1,12 +1,10 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { removeLeadingTrailingSlashes } from '@studiocms/core/lib';
+import { makeAPIRoute, removeLeadingTrailingSlashes } from '@studiocms/core/lib';
 import { DashboardStrings } from '@studiocms/core/strings';
 import { defineUtility } from 'astro-integration-kit';
 import type { StudioCMSAuthOptions } from '../schema';
 
-export const makeStudioCMSAuthAPIRoute = (route: string) => {
-	return `studiocms_api/auth/${route}`;
-};
+const apiRoute = makeAPIRoute('auth');
 
 export const makeDashboardRoute = (route: string, options: StudioCMSAuthOptions) => {
 	// Get the dashboard route override from the options
@@ -80,7 +78,7 @@ export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(
 			}
 
 			injectRoute({
-				pattern: makeStudioCMSAuthAPIRoute(pattern),
+				pattern: apiRoute(pattern),
 				entrypoint,
 				prerender: false,
 			});

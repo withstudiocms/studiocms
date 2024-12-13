@@ -1,6 +1,7 @@
 import Config from 'studiocms:config';
 // import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
 import type { SideBarLink } from '../schemas';
+import { makeAPIRoute } from './makeAPIRoute';
 import urlGenFactory from './urlGen';
 
 const {
@@ -27,48 +28,47 @@ export function makeDashboardRoute(route?: string | undefined): string {
 	return urlGenFactory(true, route, dashboardRouteOverride);
 }
 
-export function makeStudioCMSAPIRoute(route: string): string {
-	return urlGenFactory(false, `studiocms_api/${route}`);
-}
+const authAPIRoute = makeAPIRoute('auth');
+const dashboardAPIRoute = makeAPIRoute('dashboard');
 
 export const StudioCMSRoutes = {
 	mainLinks: {
 		baseSiteURL: makeNonDashboardRoute(),
 		dashboardIndex: makeDashboardRoute(),
 		userProfile: makeDashboardRoute('profile/'),
-		pageNew: makeDashboardRoute('new/page/'),
-		pageEdit: makeDashboardRoute('page-list/'),
+		contentManagement: makeDashboardRoute('content-management/'),
+		createPage: makeDashboardRoute('create-page/'),
 		siteConfiguration: makeDashboardRoute('configuration/'),
-		configurationAdmins: makeDashboardRoute('configuration/admins/'),
+		userManagement: makeDashboardRoute('user-management/'),
 	},
 	authLinks: {
 		loginURL: makeDashboardRoute('login'),
 		logoutURL: makeDashboardRoute('logout'),
 		signupURL: makeDashboardRoute('signup'),
-		loginAPI: makeStudioCMSAPIRoute('auth/login'), // /studiocms_api/auth/login
-		logoutAPI: makeStudioCMSAPIRoute('auth/logout'), // /studiocms_api/auth/logout
-		registerAPI: makeStudioCMSAPIRoute('auth/register'), // /studiocms_api/auth/register
-		githubIndex: makeStudioCMSAPIRoute('auth/github'), // /studiocms_api/auth/github
-		githubCallback: makeStudioCMSAPIRoute('auth/github/callback'), // /studiocms_api/auth/github/callback
-		discordIndex: makeStudioCMSAPIRoute('auth/discord'), // /studiocms_api/auth/discord
-		discordCallback: makeStudioCMSAPIRoute('auth/discord/callback'), // /studiocms_api/auth/discord/callback
-		googleIndex: makeStudioCMSAPIRoute('auth/google'), // /studiocms_api/auth/google
-		googleCallback: makeStudioCMSAPIRoute('auth/google/callback'), // /studiocms_api/auth/google/callback
-		auth0Index: makeStudioCMSAPIRoute('auth/auth0'), // /studiocms_api/auth/auth0
-		auth0Callback: makeStudioCMSAPIRoute('auth/auth0/callback'), // /studiocms_api/auth/auth0/callback
+		loginAPI: authAPIRoute('login'),
+		logoutAPI: authAPIRoute('logout'),
+		registerAPI: authAPIRoute('register'),
+		githubIndex: authAPIRoute('github'),
+		githubCallback: authAPIRoute('github/callback'),
+		discordIndex: authAPIRoute('discord'),
+		discordCallback: authAPIRoute('discord/callback'),
+		googleIndex: authAPIRoute('google'),
+		googleCallback: authAPIRoute('google/callback'),
+		auth0Index: authAPIRoute('auth0'),
+		auth0Callback: authAPIRoute('auth0/callback'),
 	},
 	endpointLinks: {
 		partials: {
-			livePreviewBox: makeStudioCMSAPIRoute('dashboard/liverender'), // /studiocms_api/dashboard/liverender
+			livePreviewBox: dashboardAPIRoute('liverender'),
 		},
 		config: {
-			siteConfig: makeStudioCMSAPIRoute('dashboard/config/site'), // /studiocms_api/dashboard/config/site
-			adminConfig: makeStudioCMSAPIRoute('dashboard/config/admin'), // /studiocms_api/dashboard/config/admin
+			siteConfig: dashboardAPIRoute('config/site'),
+			adminConfig: dashboardAPIRoute('config/admin'),
 		},
 		pages: {
-			createPages: makeStudioCMSAPIRoute('dashboard/pages/create'), // /studiocms_api/dashboard/pages/create
-			editPages: makeStudioCMSAPIRoute('dashboard/pages/edit'), // /studiocms_api/dashboard/pages/edit
-			deletePages: makeStudioCMSAPIRoute('dashboard/pages/delete'), // /studiocms_api/dashboard/pages/delete
+			createPages: dashboardAPIRoute('pages/create'),
+			editPages: dashboardAPIRoute('pages/edit'),
+			deletePages: dashboardAPIRoute('pages/delete'),
 		},
 	},
 };
@@ -97,16 +97,16 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		icon: 'user',
 	},
 	{
-		id: 'new-page',
-		href: StudioCMSRoutes.mainLinks.pageNew,
-		text: 'Create New Page',
+		id: 'content-management',
+		href: StudioCMSRoutes.mainLinks.contentManagement,
+		text: 'Content Management',
 		minPermissionLevel: 'editor',
 		icon: 'plus',
 	},
 	{
 		id: 'edit-pages',
-		href: StudioCMSRoutes.mainLinks.pageEdit,
-		text: 'Edit Pages',
+		href: StudioCMSRoutes.mainLinks.createPage,
+		text: 'Create Page',
 		minPermissionLevel: 'editor',
 		icon: 'pencil-square',
 	},
@@ -114,6 +114,13 @@ const defaultDashboardPageLinks: SideBarLink[] = [
 		id: 'site-config',
 		href: StudioCMSRoutes.mainLinks.siteConfiguration,
 		text: 'Site Configuration',
+		minPermissionLevel: 'admin',
+		icon: 'cog-6-tooth',
+	},
+	{
+		id: 'user-management',
+		href: StudioCMSRoutes.mainLinks.userManagement,
+		text: 'User Management',
 		minPermissionLevel: 'admin',
 		icon: 'cog-6-tooth',
 	},
