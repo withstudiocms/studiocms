@@ -1,12 +1,13 @@
 ---
 import '../styles/base.css';
-import Config from 'studiocms:config';
+import '../styles/layout.css';
+import '@studiocms/ui/css/global.css';
+import '@fontsource-variable/onest/index.css';
+import { dashboardConfig } from 'studiocms:config';
 import version from 'studiocms:version';
 import { isDashboardRoute } from '../utils';
 
-const {
-	dashboardConfig: { faviconURL },
-} = Config;
+const { faviconURL } = dashboardConfig;
 
 export interface Props {
 	title: string;

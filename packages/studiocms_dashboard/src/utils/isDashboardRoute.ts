@@ -1,9 +1,7 @@
-import Config from 'studiocms:config';
+import { dashboardConfig } from 'studiocms:config';
 import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 
-const {
-	dashboardConfig: { dashboardRouteOverride },
-} = Config;
+const { dashboardRouteOverride } = dashboardConfig;
 
 // Get the User set or Default dashboard URL
 const dashboardURL = dashboardRouteOverride

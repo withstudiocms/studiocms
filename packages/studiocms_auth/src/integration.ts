@@ -40,13 +40,10 @@ export default defineIntegration({
 
 		return {
 			hooks: {
-				'astro:config:setup': async (params) => {
-					// Destructure Params
-					const { logger, updateConfig } = params;
-
+				'astro:config:setup': (params) => {
 					// Log that Setup is Starting
 					integrationLogger(
-						{ logger, logLevel: 'info', verbose: options.verbose },
+						{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
 						DashboardStrings.Setup
 					);
 
@@ -54,7 +51,7 @@ export default defineIntegration({
 					runtimeLogger(params, { name: 'studiocms-auth' });
 
 					// Check for Authentication Environment Variables
-					checkEnvKeys(logger, options);
+					checkEnvKeys(params.logger, options);
 
 					// Update Astro Config with Environment Variables (`astro:env`)
 					addAstroEnvConfig(params, {
@@ -157,7 +154,7 @@ export default defineIntegration({
 					});
 
 					// Update Astro Config
-					updateConfig({
+					params.updateConfig({
 						security: {
 							checkOrigin: true,
 						},
@@ -267,7 +264,7 @@ export default defineIntegration({
 						],
 					});
 				},
-				'astro:config:done': async ({ injectTypes }) => {
+				'astro:config:done': ({ injectTypes }) => {
 					// Inject Types
 					injectTypes(authLibDTS);
 					injectTypes(authUtilsDTS);

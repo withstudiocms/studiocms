@@ -15,7 +15,7 @@ export default defineIntegration({
 
 		return {
 			hooks: {
-				'astro:config:setup': async (params) => {
+				'astro:config:setup': (params) => {
 					// Create the default frontend Routes
 					makeFrontend(params, {
 						options,

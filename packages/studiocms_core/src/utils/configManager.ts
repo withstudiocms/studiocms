@@ -48,11 +48,17 @@ export function exists(path: string) {
  * @param params.config - The current Astro configuration object.
  * @returns void
  */
-export const watchStudioCMSConfig = defineUtility('astro:config:setup')((params) => {
-	const { addWatchFile, config } = params;
-	const configFileUrl = getStudioConfigFileUrl(config.root.pathname);
-	addWatchFile(configFileUrl);
-});
+export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
+	({
+		addWatchFile,
+		config: {
+			root: { pathname },
+		},
+	}) => {
+		const configFileUrl = getStudioConfigFileUrl(pathname);
+		addWatchFile(configFileUrl);
+	}
+);
 
 /**
  * Returns a URL to the optional StudioCMS config file in the Astro project root.

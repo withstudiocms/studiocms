@@ -2,7 +2,7 @@ import astroDTSBuilder from '@matthiesenxyz/astrodtsbuilder';
 import { addIntegrationArray } from '@matthiesenxyz/integration-utils/aikUtils';
 import {
 	integrationLogger,
-	nodeNamespaceBuiltinsAstro,
+	nodeNamespaceBuiltinsAstro as nodeNamespace,
 } from '@matthiesenxyz/integration-utils/astroUtils';
 import auth from '@studiocms/auth';
 import core from '@studiocms/core';
@@ -26,8 +26,8 @@ import robotsTXT from '@studiocms/robotstxt';
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import packageJson from 'package-json';
-import * as semver from 'semver';
-import packageJsonData from '../package.json';
+import { compare as semCompare } from 'semver';
+import { name as pkgName, version as pkgVersion } from '../package.json';
 
 /**
  * **StudioCMS Integration**
@@ -38,28 +38,25 @@ import packageJsonData from '../package.json';
  * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  *
  */
-const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {} => {
+const studioCMSIntegration = (opts?: StudioCMSOptions): AstroIntegration & {} => {
 	// Setup the Resolver for the current file
 	const { resolve } = createResolver(import.meta.url);
 	return {
-		name: packageJsonData.name,
+		name: pkgName,
 		hooks: {
 			'astro:db:setup': ({ extendDb }) => {
 				extendDb({ configEntrypoint: '@studiocms/core/db/config' });
 			},
 			'astro:config:setup': async (params) => {
-				// Destructure Params
-				const { logger } = params;
-
 				// Watch the StudioCMS Config File for changes (including creation/deletion)
 				watchStudioCMSConfig(params);
 
 				// Resolve Options
-				const resolvedOptions = await configResolver(params, options);
+				const options = await configResolver(params, opts);
 
 				// Setup Logger
 				integrationLogger(
-					{ logger, logLevel: 'info', verbose: resolvedOptions.verbose || false },
+					{ logger: params.logger, logLevel: 'info', verbose: options.verbose || false },
 					'Setting up StudioCMS Core...'
 				);
 
@@ -68,26 +65,26 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 
 				// Setup StudioCMS Integrations
 				const integrations = [
-					{ integration: nodeNamespaceBuiltinsAstro() },
-					{ integration: core(resolvedOptions) },
-					{ integration: renderers(resolvedOptions.rendererConfig) },
-					{ integration: frontend(resolvedOptions) },
-					{ integration: imageHandler(resolvedOptions) },
-					{ integration: auth(resolvedOptions) },
-					{ integration: dashboard(resolvedOptions) },
+					{ integration: nodeNamespace() },
+					{ integration: core(options) },
+					{ integration: renderers(options.rendererConfig) },
+					{ integration: frontend(options) },
+					{ integration: imageHandler(options) },
+					{ integration: auth(options) },
+					{ integration: dashboard(options) },
 				];
 
 				// Robots.txt
 				if (
-					resolvedOptions.includedIntegrations?.robotsTXT === true ||
-					typeof resolvedOptions.includedIntegrations?.robotsTXT === 'object'
+					options.includedIntegrations?.robotsTXT === true ||
+					typeof options.includedIntegrations?.robotsTXT === 'object'
 				) {
 					integrations.push({
 						integration: robotsTXT({
 							...robotsTXTPreset,
-							...(resolvedOptions.includedIntegrations?.robotsTXT === true
+							...(options.includedIntegrations?.robotsTXT === true
 								? {}
-								: resolvedOptions.includedIntegrations?.robotsTXT),
+								: options.includedIntegrations?.robotsTXT),
 						}),
 					});
 				}
@@ -101,41 +98,46 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 				];
 
 				// Resolve StudioCMS Plugins
-				for (const plugin of resolvedOptions.plugins || []) {
+				for (const {
+					name,
+					identifier,
+					studiocmsMinimumVersion,
+					integration,
+					frontendNavigationLinks,
+					pageTypes,
+					settingsPage,
+				} of options.plugins || []) {
 					// Check if the identifier is reserved
-					if (plugin.identifier === 'studiocms') {
+					if (identifier === 'studiocms') {
 						throw new StudioCMSError(
 							'Plugin Identifier "studiocms" is reserved for the default StudioCMS package.',
-							`Plugin ${plugin.name} has the identifier "studiocms" which is reserved for the default StudioCMS package, please change the identifier to something else, if the plugin is from a third party, please contact the author to change the identifier.`
+							`Plugin ${name} has the identifier "studiocms" which is reserved for the default StudioCMS package, please change the identifier to something else, if the plugin is from a third party, please contact the author to change the identifier.`
 						);
 					}
 
 					// Check if the plugin has a minimum version requirement
-					const comparison = semver.compare(
-						plugin.studiocmsMinimumVersion,
-						packageJsonData.version
-					);
+					const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
 
 					if (comparison === 1) {
 						throw new StudioCMSError(
-							`Plugin ${plugin.name} requires StudioCMS version ${plugin.studiocmsMinimumVersion} or higher.`,
-							`Plugin ${plugin.name} requires StudioCMS version ${plugin.studiocmsMinimumVersion} or higher, please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
+							`Plugin ${name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
+							`Plugin ${name} requires StudioCMS version ${studiocmsMinimumVersion} or higher, please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
 						);
 					}
 
 					// Add the plugin Integration to the Astro config
-					if (plugin.integration && Array.isArray(plugin.integration)) {
-						integrations.push(...plugin.integration.map((integration) => ({ integration })));
-					} else if (plugin.integration) {
-						integrations.push({ integration: plugin.integration });
+					if (integration && Array.isArray(integration)) {
+						integrations.push(...integration.map((integration) => ({ integration })));
+					} else if (integration) {
+						integrations.push({ integration });
 					}
 
 					safePluginList.push({
-						identifier: plugin.identifier,
-						name: plugin.name,
-						frontendNavigationLinks: plugin.frontendNavigationLinks,
-						pageTypes: plugin.pageTypes,
-						settingsPage: plugin.settingsPage,
+						identifier,
+						name,
+						frontendNavigationLinks,
+						pageTypes,
+						settingsPage,
 					});
 				}
 
@@ -144,7 +146,7 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 
 				// Generate the Virtual Imports for the plugins
 				addVirtualImports(params, {
-					name: packageJsonData.name,
+					name: pkgName,
 					imports: {
 						'studiocms:plugins': `export default ${JSON.stringify(safePluginList)};`,
 					},
@@ -153,7 +155,7 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 				// Log the current plugins
 				integrationLogger(
 					{
-						logger: params.logger.fork('studiocms/plugins'),
+						logger: params.logger.fork('studiocms:plugins'),
 						logLevel: 'info',
 						verbose: options?.verbose || false,
 					},
@@ -177,33 +179,31 @@ const studioCMSIntegration = (options?: StudioCMSOptions): AstroIntegration & {}
 				// Inject the DTS file
 				injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
 			},
-			'astro:server:start': async ({ logger }) => {
-				const log = logger.fork(`${packageJsonData.name}:update-check`);
+			'astro:server:start': async ({ logger: l }) => {
+				const logger = l.fork(`${pkgName}:update-check`);
 
 				try {
-					const { version: latestVersion } = await packageJson(packageJsonData.name.toLowerCase());
+					const { version: latestVersion } = await packageJson(pkgName.toLowerCase());
 
-					const comparison = semver.compare(packageJsonData.version, latestVersion);
+					const comparison = semCompare(pkgVersion, latestVersion);
 
 					if (comparison === -1) {
-						log.warn(
-							`A new version of '${packageJsonData.name}' is available. Please update to ${latestVersion} using your favorite package manager.`
+						logger.warn(
+							`A new version of '${pkgName}' is available. Please update to ${latestVersion} using your favorite package manager.`
 						);
 					} else if (comparison === 0) {
-						log.info(
-							`You are using the latest version of '${packageJsonData.name}' (${packageJsonData.version})`
-						);
+						logger.info(`You are using the latest version of '${pkgName}' (${pkgVersion})`);
 					} else {
-						log.info(
-							`You are using a newer version (${packageJsonData.version}) of '${packageJsonData.name}' than the latest release (${latestVersion})`
+						logger.info(
+							`You are using a newer version (${pkgVersion}) of '${pkgName}' than the latest release (${latestVersion})`
 						);
 					}
 				} catch (error) {
 					if (error instanceof Error) {
-						log.error(`Error fetching latest version from npm registry: ${error.message}`);
+						logger.error(`Error fetching latest version from npm registry: ${error.message}`);
 					} else {
 						// Handle the case where error is not an Error object
-						log.error(
+						logger.error(
 							'An unknown error occurred while fetching the latest version from the npm registry.'
 						);
 					}

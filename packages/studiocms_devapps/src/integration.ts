@@ -29,7 +29,7 @@ export default defineIntegration({
 
 		return {
 			hooks: {
-				'astro:config:setup': async (params) => {
+				'astro:config:setup': (params) => {
 					// Destructure Params
 					const { logger, addDevToolbarApp, command, config } = params;
 

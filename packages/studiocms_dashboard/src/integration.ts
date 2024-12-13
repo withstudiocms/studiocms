@@ -21,7 +21,7 @@ export default defineIntegration({
 
 		return {
 			hooks: {
-				'astro:config:setup': async (params) => {
+				'astro:config:setup': (params) => {
 					// Destructure Params
 					const { logger, injectRoute } = params;
 
@@ -156,11 +156,11 @@ export default defineIntegration({
 					// Log that the setup is complete
 					integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.SetupComplete);
 				},
-				'astro:config:done': async ({ injectTypes }) => {
+				'astro:config:done': ({ injectTypes }) => {
 					// Inject the Web Vitals DTS File
 					injectTypes(WebVitalsDtsFile);
 				},
-				'astro:server:start': async ({ logger }) => {
+				'astro:server:start': ({ logger }) => {
 					// Display Console Message if dbStartPage(First Time DB Initialization) is enabled
 					if (options.dbStartPage) {
 						integrationLogger({ logger, logLevel: 'warn', verbose: true }, DbErrors.DbStartPage);
