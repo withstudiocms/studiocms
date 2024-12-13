@@ -39,11 +39,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 					name: 'studiocms',
 					output: 'studiocms',
 					dir: 'studiocms',
-					entryPoints: [
-						getFilePathToPackage('studiocms', 'src/index.ts'),
-						getFilePathToPackage('studiocms', 'src/integration.ts'),
-						getFilePathToPackage('studiocms', 'src/updateCheck.ts'),
-					],
+					entryPoints: [getFilePathToPackage('studiocms', 'src/index.ts')],
 				})
 			),
 			tdAuth(

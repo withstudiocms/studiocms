@@ -38,7 +38,7 @@ import { name as pkgName, version as pkgVersion } from '../package.json';
  * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  *
  */
-const studioCMSIntegration = (opts?: StudioCMSOptions): AstroIntegration & {} => {
+export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration {
 	// Setup the Resolver for the current file
 	const { resolve } = createResolver(import.meta.url);
 	return {
@@ -211,14 +211,13 @@ const studioCMSIntegration = (opts?: StudioCMSOptions): AstroIntegration & {} =>
 			},
 		},
 	};
-};
+}
 
 export default studioCMSIntegration;
 
 export {
 	defineStudioCMSConfig,
 	definePlugin,
-	studioCMSIntegration,
 	type CustomRenderer,
 	type Renderer,
 	type StudioCMSOptions,

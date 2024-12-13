@@ -1,7 +1,7 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
 import { StudioCMSCoreError } from '../errors';
-import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
+import { type StudioCMSConfig, type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
 import { loadStudioCMSConfigFile } from './configManager';
 
 /**
@@ -17,9 +17,10 @@ export const configResolver = defineUtility('astro:config:setup')(
 		// Destructure Params
 		const { logger, config: astroConfig } = params;
 
+		let resolvedOptions: StudioCMSConfig = StudioCMSOptionsSchema.parse(options);
+
 		// Merge the given options with the ones from a potential StudioCMS config file
 		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root.pathname);
-		let resolvedOptions: StudioCMSOptions = { ...options };
 		if (studioCMSConfigFile && Object.keys(studioCMSConfigFile).length > 0) {
 			const parsedOptions = StudioCMSOptionsSchema.safeParse(studioCMSConfigFile);
 
