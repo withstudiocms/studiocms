@@ -18,9 +18,9 @@ import {
 	definePlugin,
 } from '@studiocms/core/schemas';
 import {
-	// watchStudioCMSConfig,
 	// configResolver,
 	defineStudioCMSConfig,
+	// watchStudioCMSConfig,
 	parseConfig,
 } from '@studiocms/core/utils';
 import { checkAstroConfig } from '@studiocms/core/utils';
@@ -63,7 +63,7 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 				// watchStudioCMSConfig(params);
 
 				// Resolve Options
-				// const options = await configResolver(params, opts);
+				// options = await configResolver(params, opts);
 				// Disabled the above due to a vite processing error with dynamic imports
 				options = parseConfig(opts);
 

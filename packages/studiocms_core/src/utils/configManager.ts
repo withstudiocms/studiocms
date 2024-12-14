@@ -23,7 +23,7 @@ function findConfig(projectRootUrl: string) {
 	for (const path of configPaths) {
 		const configUrl = `${projectRootUrl}${path}`;
 		if (exists(configUrl)) {
-			return path;
+			return configUrl;
 		}
 	}
 
@@ -46,7 +46,7 @@ export function exists(path: string | undefined) {
 export function getStudioConfigFileUrl(projectRootUrl: string) {
 	const configPath = findConfig(projectRootUrl);
 	if (configPath) {
-		return `${projectRootUrl}${configPath}`;
+		return configPath;
 	}
 	return `${projectRootUrl}studiocms.config.mjs`;
 }
@@ -79,7 +79,17 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
  */
 export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
 	// Find the StudioCMS config file in the project root
-	const configPath = findConfig(projectRootUrl.pathname);
+	// const configPath = findConfig(projectRootUrl.pathname);
+	const pathsToTry = [
+		// This path works in most scenarios, but not when the integration is processed by Vite
+		// due to a Vite bug affecting import URLs using the "file:" protocol
+		new URL('./studiocms.config.mjs', projectRootUrl).href,
+	];
+	// Detect if the integration is processed by Vite
+	if (import.meta.env?.BASE_URL?.length) {
+		// Add a fallback path starting with "/", which Vite treats as relative to the project root
+		pathsToTry.push('/studiocms.config.mjs');
+	}
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.
@@ -94,16 +104,17 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		}
 		return { message: error as string };
 	}
-	if (configPath && exists(configPath)) {
+	for (const path of pathsToTry) {
 		try {
 			// Attempt to import the config file dynamically
-			const module = (await import(/* @vite-ignore */ configPath)) as { default: StudioCMSOptions };
+			console.log('configPath', path);
+			const module = await import(/* @vite-ignore */ path);
 			if (!module.default) {
-				throw new Error(
+				throw new StudioCMSCoreError(
 					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
 				);
 			}
-			return module.default;
+			return module.default as StudioCMSOptions;
 		} catch (error) {
 			const { message, code } = coerceError(error);
 

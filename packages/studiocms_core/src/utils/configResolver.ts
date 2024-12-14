@@ -23,9 +23,15 @@ export const configResolver = defineUtility('astro:config:setup')(
 
 		let resolvedOptions: StudioCMSConfig = parseConfig(options);
 
+		console.log('Checking for StudioCMS Config File');
+
 		// Merge the given options with the ones from a potential StudioCMS config file
 		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root);
-		if (studioCMSConfigFile && Object.keys(studioCMSConfigFile).length > 0) {
+
+		console.log('studioCMSConfigFile', studioCMSConfigFile);
+
+		if (studioCMSConfigFile) {
+			console.log('There is a config file');
 			const parsedOptions = StudioCMSOptionsSchema.safeParse(studioCMSConfigFile);
 
 			// If the StudioCMS config file is invalid, throw an error
