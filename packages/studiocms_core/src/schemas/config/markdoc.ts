@@ -20,12 +20,16 @@ const RenderableTreeNodesSchema = z.union([
 	RenderableTreeNodeSchema,
 ]);
 
+type CustomMarkDocRendererNodes = z.infer<typeof RenderableTreeNodesSchema>;
+
+export type markdocRenderer = (nodes: CustomMarkDocRendererNodes) => Promise<string>;
+
 const MarkdocRendererSchema = z.object({
 	name: z.string(),
-	renderer: z.function().args(RenderableTreeNodesSchema).returns(z.promise(z.string())),
+	renderer: z.custom<markdocRenderer>(),
 });
 
-export type markdocRenderer = typeof MarkdocRendererSchema._input;
+export interface MarkdocRenderer extends z.infer<typeof MarkdocRendererSchema> {}
 
 const ParserArgsSchema = z.object({
 	file: z.string().optional(),
@@ -67,7 +71,7 @@ export const markdocConfigSchema = z
 		 * Can be one of the following: `html`, `react-static`, or a custom renderer
 		 */
 		renderType: z
-			.union([z.literal('html'), z.literal('react-static'), MarkdocRendererSchema])
+			.union([z.literal('html'), z.literal('react-static'), z.custom<MarkdocRenderer>()])
 			.optional()
 			.default('html'),
 		/**

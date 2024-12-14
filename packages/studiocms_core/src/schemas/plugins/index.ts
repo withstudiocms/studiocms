@@ -185,7 +185,7 @@ export const SafePluginListSchema = z.array(SafePluginListItemSchema);
 export type StudioCMSPluginOptions = z.infer<typeof StudioCMSPluginSchema>;
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
-export type StudioCMSPlugin = StudioCMSPluginOptions;
+export interface StudioCMSPlugin extends StudioCMSPluginOptions {}
 
 /**
  * Defines a plugin for StudioCMS.

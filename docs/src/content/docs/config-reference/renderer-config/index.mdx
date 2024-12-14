@@ -12,10 +12,10 @@ import ReadMore from '~/components/ReadMore.astro';
 
 The Markdown Content Renderer to use for rendering pages within StudioCMS
 
-- **Type:** `'marked'` | `'markdoc'` | `'astro'` | `'mdx'` | `CustomRenderer`
-- **Default:** `'marked'`
+- **Type:** `'astro'` | `'markdoc'` | `'mdx'` | `CustomRenderer`
+- **Default:** `'astro'`
 
-`renderer` determines how Markdown content should be rendered in `studioCMS`. This is used to setup your content data. The default value is `marked` but you can also use `markdoc` or `astro` which uses Astro's built-in Remark processor.
+`renderer` determines how Markdown content should be rendered in `studioCMS`. This is used to setup your content data. The default value is `astro` which uses the Astro built-in markdown processor but you can also use `markdoc`, `mdx` or define a Custom Renderer.
 
 ### Usage
 
@@ -24,21 +24,12 @@ import { defineStudioCMSConfig } from 'studiocms';
 // ---cut---
 export default defineStudioCMSConfig({
   rendererConfig: {
-    renderer: 'marked',
-    markedConfig: {},
+    renderer: 'astro',
     markdocConfig: {},
     mdxConfig: {},
   },
 })
 ```
-
-## `markedConfig`
-
-`markedConfig` is an object that is used to determine how content should be rendered in the `studioCMS`. This is used to setup your content data.
-
-### Usage
-
-<ReadMore>[See `markedConfig` for full options](/config-reference/marked-config)</ReadMore>
 
 ## `markdocConfig`
 

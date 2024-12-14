@@ -81,4 +81,4 @@ export const FrontEndConfigSchema = z
 export const DefaultFrontEndConfigSchema = z
 	.union([FrontEndConfigSchema, z.boolean()])
 	.optional()
-	.default(true);
+	.default({});

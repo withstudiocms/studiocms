@@ -1,5 +1,3 @@
-import type { RobotsConfig } from '@studiocms/robotstxt';
-
 export const CoreStrings = {
 	Start: 'Setting up StudioCMS Core...',
 	AddVirtualImports: 'Adding Virtual Imports...',
@@ -49,26 +47,6 @@ export const DashboardStrings = {
 		'Dashboard is Disabled, Some tools and Utilities are still available for developers who are customizing their setup!',
 	Middleware: 'Adding Dashboard Middleware...',
 	SetupComplete: 'StudioCMS Dashboard is Setup and Ready to Go!',
-};
-
-export const MakeFrontendStrings = {
-	NoDBStartPage:
-		'Database Start Page disabled, skipping Database Setup and injecting Default Frontend Routes...',
-	InjectDefaultFrontendRoutes: 'Injecting Default Frontend Routes...',
-	Inject404Route: 'Injecting 404 Route...',
-	DefaultRoutesInjected: 'StudioCMS Default Routes Injected!',
-	DBStartPageEnabled:
-		'Database Start Page enabled, skipping Default Frontend Routes Injection... Please follow the Database Setup Guide to create your Frontend.',
-};
-
-export const robotsTXTPreset: Partial<RobotsConfig> = {
-	policy: [
-		{
-			userAgent: ['*'],
-			allow: ['/'],
-			disallow: ['/dashboard/'],
-		},
-	],
 };
 
 export const imageHandlerStrings = {

@@ -33,13 +33,6 @@ export default defineConfig({
 				// 	},
 				// ],
 			},
-			dashboardConfig: {
-				AuthConfig: {
-					providers: {
-						github: true,
-					},
-				},
-			},
 		}),
 		// sentry({
 		// 	dsn: 'https://71c3c874d5d8ad20486529628ac13aae@sentry.studiocms.dev/4',

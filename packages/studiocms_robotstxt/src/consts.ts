@@ -126,7 +126,7 @@ export type SearchEngineOptimization = {
 	PrerenderLLC: 'prerender';
 };
 
-export type UsertAgentType =
+export type UserAgentType =
 	| '*'
 	| SearchEngines[keyof SearchEngines]
 	| SocialNetwork[keyof SocialNetwork]

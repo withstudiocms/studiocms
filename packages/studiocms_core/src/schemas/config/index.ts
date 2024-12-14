@@ -1,8 +1,8 @@
 import { z } from 'astro/zod';
-import { StudioCMSPluginSchema } from '../plugins';
+import type { StudioCMSPlugin } from '../plugins';
 import { overridesSchema } from './componentoverrides';
 import { dashboardConfigSchema } from './dashboard';
-import { DefaultFrontEndConfigSchema } from './defaultFrontend';
+import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFrontend';
 import { imageServiceSchema } from './imageService';
 import { includedIntegrationsSchema } from './integrations';
 import {
@@ -17,6 +17,7 @@ import {
 //
 export {
 	StudioCMSRendererConfigSchema,
+	FrontEndConfigSchema,
 	type StudioCMSRendererConfig,
 	type CustomRenderer,
 	type Renderer,
@@ -84,7 +85,7 @@ export const StudioCMSOptionsSchema = z
 		/**
 		 * Add Plugins to the StudioCMS
 		 */
-		plugins: z.array(StudioCMSPluginSchema).optional(),
+		plugins: z.custom<StudioCMSPlugin[]>().optional(),
 	})
 	.optional()
 	.default({});

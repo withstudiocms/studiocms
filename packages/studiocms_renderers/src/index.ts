@@ -1,4 +1,5 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
+import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { stringify } from '@studiocms/core/lib';
 import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
 import type { AstroIntegration } from 'astro';
@@ -16,7 +17,10 @@ import { rendererAstroMarkdownDTS } from './stubs/renderer-markdownConfig';
  *
  * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  */
-export function studioCMSRenderers(options: StudioCMSRendererConfig): AstroIntegration {
+export function studioCMSRenderers(
+	options: StudioCMSRendererConfig,
+	verbose: boolean
+): AstroIntegration {
 	// Create resolver relative to this file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -26,6 +30,10 @@ export function studioCMSRenderers(options: StudioCMSRendererConfig): AstroInteg
 		name: pkgName,
 		hooks: {
 			'astro:config:setup': (params) => {
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'Setting up StudioCMS Renderer...'
+				);
 				// Setup the runtime logger
 				runtimeLogger(params, { name: 'studiocms-renderer' });
 
@@ -38,6 +46,10 @@ export function studioCMSRenderers(options: StudioCMSRendererConfig): AstroInteg
 						'studiocms:renderer/astroMarkdownConfig': `export default ${stringify(params.config.markdown)}`,
 					},
 				});
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'StudioCMS Renderer Virtual Imports Added...'
+				);
 			},
 			'astro:config:done': ({ injectTypes }) => {
 				// Inject Types for Renderer

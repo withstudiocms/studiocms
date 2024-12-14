@@ -22,6 +22,11 @@ export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
 		name: pkgName,
 		hooks: {
 			'astro:config:setup': (params) => {
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
+					'Setting up StudioCMS Core...'
+				);
+
 				// Create resolvers
 				const { resolve } = createResolver(import.meta.url);
 				const { resolve: userSrcDir } = createResolver(params.config.root.pathname);
@@ -106,6 +111,11 @@ export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
 						`,
 					},
 				});
+
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
+					'Core Setup Complete...'
+				);
 			},
 			'astro:config:done': ({ injectTypes }) => {
 				// Inject the DTS File

@@ -19,10 +19,10 @@ export type { markdocRenderer };
  * 	},
  * };
  */
-export type CustomRenderer = {
+export interface CustomRenderer {
 	name: string;
 	renderer: Renderer;
-};
+}
 
 /**
  * StudioCMS Renderer Configuration Schema

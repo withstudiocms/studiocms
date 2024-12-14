@@ -15,33 +15,14 @@ import { defineStudioCMSConfig } from 'studiocms';
 // ---cut---
 export default defineStudioCMSConfig({
   includedIntegrations: {
-    useAstroRobots: true,
-    astroRobotsConfig: {},
-    useInoxSitemap: true,
+    robotsTXT: true,
   },
 })
 ```
 
-### `useAstroRobots`
+### `robotsTXT`
 
-- **Type:** `boolean | undefined`
+- **Type:** `boolean` | `RobotsConfig{}` | `undefined`
 - **Default:** `true`
 
-Allows the user to enable/disable the use of the StudioCMS Custom `astro-robots-txt` Integration.
-
-### `astroRobotsConfig`
-
-- **Type:** `RobotsConfig{} | undefined{}`
-
-Allows you to modify the default behaviour of the this Integration. For more information on this Integration please visit the [Astro Robots Integration](https://www.npmjs.com/package/astro-robots).
-
-### `useInoxSitemap` 
-
-#### TEMPORARILY DISABLED
-
-If you would like to still use the Inox-tools Sitemap Plugin, you can manually add it to your project's Integrations.
-
-- **Type:** `boolean | undefined`
-- **Default:** `true`
-
-Allows the user to enable/disable the use of the Inox-tools Sitemap Plugin. For more information on this Integration please visit the [Inox-tools Sitemap Integration](https://inox-tools.vercel.app/sitemap-ext).
+Allows the user to enable/disable the use of the StudioCMS Custom `astro-robots-txt` Integration. For more information on this Integration please visit the [Astro Robots Integration](https://www.npmjs.com/package/astro-robots).

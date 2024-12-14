@@ -11,12 +11,12 @@ import {
 	type CustomRenderer,
 	type Renderer,
 	type SafePluginListType,
+	type StudioCMSConfig,
 	type StudioCMSOptions,
 	type StudioCMSPlugin,
 	type StudioCMSPluginOptions,
 	definePlugin,
 } from '@studiocms/core/schemas';
-import { robotsTXTPreset } from '@studiocms/core/strings';
 import {
 	// watchStudioCMSConfig,
 	// configResolver,
@@ -47,6 +47,11 @@ import { name as pkgName, version as pkgVersion } from '../package.json';
 export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration {
 	// Setup the Resolver for the current file
 	const { resolve } = createResolver(import.meta.url);
+
+	let pluginListLength = 0;
+	let pluginListMessage = '';
+	let options: StudioCMSConfig;
+
 	return {
 		name: pkgName,
 		hooks: {
@@ -60,12 +65,15 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 				// Resolve Options
 				// const options = await configResolver(params, opts);
 				// Disabled the above due to a vite processing error with dynamic imports
-				const options = parseConfig(opts);
+				options = parseConfig(opts);
+
+				const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
+					options;
 
 				// Setup Logger
 				integrationLogger(
-					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
-					'Setting up StudioCMS Core...'
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'Setting up StudioCMS...'
 				);
 
 				// Check Astro Config for required settings
@@ -73,34 +81,35 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 
 				// Setup Logger
 				integrationLogger(
-					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
-					'Setting up StudioCMS Integrations and Plugins...'
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'Setting up StudioCMS internals...'
 				);
 
-				// Setup StudioCMS Integrations
+				// Setup StudioCMS Integrations Array (Default Integrations)
 				const integrations = [
 					{ integration: nodeNamespace() },
 					{ integration: core(options) },
-					{ integration: renderers(options.rendererConfig) },
-					{ integration: frontend(options) },
+					{ integration: renderers(rendererConfig, verbose) },
 					{ integration: imageHandler(options) },
 					{ integration: auth(options) },
 					{ integration: dashboard(options) },
 				];
 
-				// Robots.txt
-				if (
-					options.includedIntegrations?.robotsTXT === true ||
-					typeof options.includedIntegrations?.robotsTXT === 'object'
-				) {
-					integrations.push({
-						integration: robotsTXT({
-							...robotsTXTPreset,
-							...(options.includedIntegrations?.robotsTXT === true
-								? {}
-								: options.includedIntegrations?.robotsTXT),
-						}),
-					});
+				// Frontend Integration (Default)
+				if (defaultFrontEndConfig !== false) {
+					integrations.push({ integration: frontend(options) });
+				}
+
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'Adding optional integrations...'
+				);
+
+				// Robots.txt Integration (Default)
+				if (includedIntegrations.robotsTXT === true) {
+					integrations.push({ integration: robotsTXT() });
+				} else if (typeof includedIntegrations.robotsTXT === 'object') {
+					integrations.push({ integration: robotsTXT(includedIntegrations.robotsTXT) });
 				}
 
 				// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
@@ -111,6 +120,11 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 					},
 				];
 
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose },
+					'Setting up StudioCMS plugins...'
+				);
+
 				// Resolve StudioCMS Plugins
 				for (const {
 					name,
@@ -120,7 +134,7 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 					frontendNavigationLinks,
 					pageTypes,
 					settingsPage,
-				} of options.plugins || []) {
+				} of plugins || []) {
 					// Check if the identifier is reserved
 					if (identifier === 'studiocms') {
 						throw new StudioCMSError(
@@ -166,15 +180,8 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 					},
 				});
 
-				// Log the current plugins
-				integrationLogger(
-					{
-						logger: params.logger.fork('studiocms:plugins'),
-						logLevel: 'info',
-						verbose: options?.verbose || false,
-					},
-					`Current Installed Plugins:\n Plugin Label - Plugin Identifier\n${safePluginList.map((p) => ` > ${p.name} - ${p.identifier}`).join('\n')}`
-				);
+				pluginListLength = safePluginList.length;
+				pluginListMessage = safePluginList.map((p, i) => ` ${i + 1}. ${p.name}`).join('\n');
 			},
 			'astro:config:done': ({ injectTypes }) => {
 				// Make DTS file for StudioCMS Plugins Virtual Module
@@ -194,6 +201,16 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 				injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
 			},
 			'astro:server:start': async ({ logger: l }) => {
+				// Log the current plugins
+				integrationLogger(
+					{
+						logger: l.fork('studiocms:plugins'),
+						logLevel: 'info',
+						verbose: options.verbose,
+					},
+					`Currently Installed StudioCMS Plugins: (${pluginListLength})\n${pluginListMessage}`
+				);
+
 				const logger = l.fork(`${pkgName}:update-check`);
 
 				try {
