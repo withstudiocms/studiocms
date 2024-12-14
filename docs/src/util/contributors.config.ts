@@ -48,6 +48,10 @@ export const contributorConfig = (Astro: AstroGlobal): ContributorConfig[] => [
 				type: 'byPath',
 				paths: ['packages/studiocms_ui/', 'playgrounds/ui/'],
 			},
+			{
+				repo: 'withstudiocms/ui',
+				type: 'all',
+			},
 		],
 	},
 	{
