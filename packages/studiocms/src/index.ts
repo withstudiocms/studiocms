@@ -7,16 +7,21 @@ import {
 import auth from '@studiocms/auth';
 import core from '@studiocms/core';
 import { StudioCMSError } from '@studiocms/core/errors';
-import { definePlugin } from '@studiocms/core/schemas';
-import type {
-	CustomRenderer,
-	Renderer,
-	SafePluginListType,
-	StudioCMSOptions,
-	StudioCMSPluginOptions,
+import {
+	type CustomRenderer,
+	type Renderer,
+	type SafePluginListType,
+	type StudioCMSOptions,
+	type StudioCMSPluginOptions,
+	definePlugin,
 } from '@studiocms/core/schemas';
 import { robotsTXTPreset } from '@studiocms/core/strings';
-import { configResolver, defineStudioCMSConfig, watchStudioCMSConfig } from '@studiocms/core/utils';
+import {
+	// watchStudioCMSConfig,
+	// configResolver,
+	defineStudioCMSConfig,
+	parseConfig,
+} from '@studiocms/core/utils';
 import { checkAstroConfig } from '@studiocms/core/utils';
 import dashboard from '@studiocms/dashboard';
 import frontend from '@studiocms/frontend';
@@ -49,19 +54,27 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 			},
 			'astro:config:setup': async (params) => {
 				// Watch the StudioCMS Config File for changes (including creation/deletion)
-				watchStudioCMSConfig(params);
+				// watchStudioCMSConfig(params);
 
 				// Resolve Options
-				const options = await configResolver(params, opts);
+				// const options = await configResolver(params, opts);
+				// Disabled the above due to a vite processing error with dynamic imports
+				const options = parseConfig(opts);
 
 				// Setup Logger
 				integrationLogger(
-					{ logger: params.logger, logLevel: 'info', verbose: options.verbose || false },
+					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
 					'Setting up StudioCMS Core...'
 				);
 
 				// Check Astro Config for required settings
 				checkAstroConfig(params);
+
+				// Setup Logger
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
+					'Setting up StudioCMS Integrations and Plugins...'
+				);
 
 				// Setup StudioCMS Integrations
 				const integrations = [

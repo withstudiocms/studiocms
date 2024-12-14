@@ -41,6 +41,17 @@ export function exists(path: string | undefined) {
 }
 
 /**
+ * Returns a URL to the optional StudioCMS config file in the Astro project root.
+ */
+export function getStudioConfigFileUrl(projectRootUrl: string) {
+	const configPath = findConfig(projectRootUrl);
+	if (configPath) {
+		return `${projectRootUrl}${configPath}`;
+	}
+	return `${projectRootUrl}studiocms.config.mjs`;
+}
+
+/**
  * Watches the StudioCMS configuration file for changes and adds it to the watch list.
  * This utility is defined for the 'astro:config:setup' event.
  *
@@ -60,17 +71,6 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 		addWatchFile(configFileUrl);
 	}
 );
-
-/**
- * Returns a URL to the optional StudioCMS config file in the Astro project root.
- */
-export function getStudioConfigFileUrl(projectRootUrl: string) {
-	const configPath = findConfig(projectRootUrl);
-	if (configPath) {
-		return `${projectRootUrl}${configPath}`;
-	}
-	return `${projectRootUrl}studiocms.config.mjs`;
-}
 
 /**
  * Attempts to import an StudioCMS  config file in the Astro project root and returns its default export.

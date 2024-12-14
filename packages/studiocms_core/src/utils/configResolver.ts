@@ -4,6 +4,10 @@ import { StudioCMSCoreError } from '../errors';
 import { type StudioCMSConfig, type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
 import { loadStudioCMSConfigFile } from './configManager';
 
+export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {
+	return StudioCMSOptionsSchema.parse(opts);
+}
+
 /**
  * Resolves the StudioCMS Options
  *
@@ -17,7 +21,7 @@ export const configResolver = defineUtility('astro:config:setup')(
 		// Destructure Params
 		const { logger, config: astroConfig } = params;
 
-		let resolvedOptions: StudioCMSConfig = StudioCMSOptionsSchema.parse(options);
+		let resolvedOptions: StudioCMSConfig = parseConfig(options);
 
 		// Merge the given options with the ones from a potential StudioCMS config file
 		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root);
