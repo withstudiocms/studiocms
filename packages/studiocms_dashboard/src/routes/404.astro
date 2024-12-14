@@ -20,7 +20,9 @@ import { Layout } from '../components';
     <h1>Error 404</h1>
     <h2>Page not found</h2>
     <p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.</p>
-    <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth><span>Go back</span></Button>
+    <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth>
+      <span>Go back</span>
+    </Button>
   </div>
 </div>
 
@@ -28,8 +30,6 @@ import { Layout } from '../components';
   document.getElementById('back-button')!.addEventListener('click', () => {
     window.history.back();
   });
-
-  
 </script>
 
 <style>

@@ -91,6 +91,15 @@ export default defineIntegration({
 						],
 					});
 
+					// Inject 404 Route if Dashboard is enabled and inject404Route is enabled
+					if (options.dashboardConfig.dashboardEnabled && options.dashboardConfig.inject404Route) {
+						injectRoute({
+							pattern: '404',
+							entrypoint: resolve('./routes/404.astro'),
+							prerender: true,
+						});
+					}
+
 					// Inject First Time Setup Routes if dbStartPage is enabled
 					if (options.dbStartPage) {
 						injectRoute({
@@ -102,14 +111,6 @@ export default defineIntegration({
 							pattern: 'done',
 							entrypoint: resolve('./firstTimeSetupRoutes/done.astro'),
 							prerender: false,
-						});
-					}
-
-					if (options.dashboardConfig.dashboardEnabled && !options.dbStartPage) {
-						injectRoute({
-							pattern: '404',
-							entrypoint: resolve('./routes/404.astro'),
-							prerender: true,
 						});
 					}
 

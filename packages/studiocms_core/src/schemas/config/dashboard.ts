@@ -11,6 +11,12 @@ export const dashboardConfigSchema = z
 		 */
 		dashboardEnabled: z.boolean().optional().default(true),
 		/**
+		 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
+		 *
+		 * @default true
+		 */
+		inject404Route: z.boolean().optional().default(true),
+		/**
 		 * OPTIONAL - This allows the user to override the default Favicon URL to a custom URL
 		 */
 		faviconURL: z.string().optional().default('/favicon.svg'),
