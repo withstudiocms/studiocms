@@ -7,6 +7,7 @@ body {
 	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-width: thin;
+	font-family: "Onest Variable", sans-serif;
 }
 
 main {
