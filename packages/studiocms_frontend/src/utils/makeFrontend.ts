@@ -12,7 +12,7 @@ export const makeFrontend = defineUtility('astro:config:setup')(
 				pattern: string;
 				entrypoint: string;
 			}[];
-			default404Route: string;
+			// default404Route: string;
 		}
 	) => {
 		// Destructure Params
@@ -21,12 +21,12 @@ export const makeFrontend = defineUtility('astro:config:setup')(
 		// Destructure Options
 		const {
 			routes,
-			default404Route,
+			// default404Route,
 			options: { dbStartPage, verbose, defaultFrontEndConfig: config },
 		} = options;
 
 		let injectDefaultFrontEndRoutes = false;
-		let inject404Route = false;
+		// let inject404Route = false;
 
 		switch (typeof config) {
 			case 'boolean':
@@ -36,12 +36,12 @@ export const makeFrontend = defineUtility('astro:config:setup')(
 
 				if (config === true) {
 					injectDefaultFrontEndRoutes = true;
-					inject404Route = true;
+					// inject404Route = true;
 				}
 				break;
 			case 'object':
 				injectDefaultFrontEndRoutes = config.injectDefaultFrontEndRoutes;
-				inject404Route = config.inject404Route;
+				// inject404Route = config.inject404Route;
 				break;
 		}
 
@@ -70,16 +70,16 @@ export const makeFrontend = defineUtility('astro:config:setup')(
 			}
 
 			// Inject 404 Route
-			if (inject404Route) {
-				integrationLogger(
-					{ logger, logLevel: 'info', verbose },
-					MakeFrontendStrings.Inject404Route
-				);
-				injectRoute({
-					pattern: '404',
-					entrypoint: default404Route,
-				});
-			}
+			// if (inject404Route) {
+			// 	integrationLogger(
+			// 		{ logger, logLevel: 'info', verbose },
+			// 		MakeFrontendStrings.Inject404Route
+			// 	);
+			// 	injectRoute({
+			// 		pattern: '404',
+			// 		entrypoint: default404Route,
+			// 	});
+			// }
 			integrationLogger(
 				{ logger, logLevel: 'info', verbose },
 				MakeFrontendStrings.DefaultRoutesInjected

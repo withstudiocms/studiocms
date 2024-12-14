@@ -105,6 +105,14 @@ export default defineIntegration({
 						});
 					}
 
+					if (options.dashboardConfig.dashboardEnabled && !options.dbStartPage) {
+						injectRoute({
+							pattern: '404',
+							entrypoint: resolve('./routes/404.astro'),
+							prerender: true,
+						});
+					}
+
 					// Inject Routes
 					injectDashboardRoute(params, {
 						options,

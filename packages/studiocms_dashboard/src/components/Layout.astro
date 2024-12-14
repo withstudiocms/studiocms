@@ -10,11 +10,10 @@ type Props = {
 	title: string;
 	description: string;
 	sidebar?: boolean | 'single' | 'double';
-	sideBarActiveItemID: string;
-	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
 };
 
-const { title, description, requiredPermission, sidebar = 'single' } = Astro.props;
+const { title, description, requiredPermission = 'unknown', sidebar = 'single' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -24,7 +23,7 @@ const { title, description, requiredPermission, sidebar = 'single' } = Astro.pro
     <ClientRouter />
   </head>
   <body>
-    <LoginChecker server:defer {requiredPermission} />
+    { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
     { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
     <!-- { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> } -->
     <main class="p-6 pt-10">
