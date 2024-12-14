@@ -16,8 +16,8 @@ import type {
 	StudioCMSPluginOptions,
 } from '@studiocms/core/schemas';
 import { robotsTXTPreset } from '@studiocms/core/strings';
-import { defineStudioCMSConfig } from '@studiocms/core/utils';
-import { checkAstroConfig, configResolver, watchStudioCMSConfig } from '@studiocms/core/utils';
+import { configResolver, defineStudioCMSConfig, watchStudioCMSConfig } from '@studiocms/core/utils';
+import { checkAstroConfig } from '@studiocms/core/utils';
 import dashboard from '@studiocms/dashboard';
 import frontend from '@studiocms/frontend';
 import imageHandler from '@studiocms/imagehandler';

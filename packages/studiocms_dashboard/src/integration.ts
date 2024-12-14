@@ -86,7 +86,7 @@ export default defineIntegration({
 							{
 								enabled: options.dbStartPage,
 								pattern: 'setup',
-								entrypoint: resolve('./routes/api/firstTimeSetup.ts'),
+								entrypoint: resolve('./routes/studiocms_api/firstTimeSetup.ts'),
 							},
 						],
 					});

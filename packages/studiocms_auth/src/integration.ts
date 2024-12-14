@@ -155,16 +155,9 @@ export default defineIntegration({
 
 					// Update Astro Config
 					params.updateConfig({
-						security: {
-							checkOrigin: true,
-						},
-						experimental: {
-							directRenderScript: true,
-							serverIslands: true,
-						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['astro:db', 'three'],
+								exclude: ['three'],
 							},
 							plugins: [
 								copy({

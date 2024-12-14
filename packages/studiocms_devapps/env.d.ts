@@ -1,3 +1,6 @@
+/// <reference types="astro/client" />
+/// <reference types="../../playground/.astro/types.d.ts" />
+
 interface ImportMetaEnv {
 	readonly PROD: boolean;
 	readonly BASE_URL: string;

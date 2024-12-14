@@ -1,5 +1,4 @@
 import path from 'node:path';
-/// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import Config from 'virtual:studiocms-devapps/wp-api/configPath';
 import { CMSSiteConfigId } from '@studiocms/core/consts';

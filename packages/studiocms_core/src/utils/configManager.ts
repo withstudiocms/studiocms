@@ -30,7 +30,8 @@ function findConfig(projectRootUrl: string) {
 	return undefined;
 }
 
-export function exists(path: string) {
+export function exists(path: string | undefined) {
+	if (!path) return false;
 	try {
 		statSync(path);
 		return true;
@@ -76,14 +77,9 @@ export function getStudioConfigFileUrl(projectRootUrl: string) {
  *
  * If no config file is found, an empty object is returned.
  */
-export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<StudioCMSOptions> {
-	// Find the config file path using the findConfig function
-	const configPath = findConfig(projectRootUrl);
-
-	// Construct the file URL for import attempts
-	const fileUrl = configPath
-		? `${projectRootUrl}${configPath}`
-		: `${projectRootUrl}studiocms.config.mjs`;
+export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
+	// Find the StudioCMS config file in the project root
+	const configPath = findConfig(projectRootUrl.pathname);
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.
@@ -98,28 +94,29 @@ export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<S
 		}
 		return { message: error as string };
 	}
+	if (configPath && exists(configPath)) {
+		try {
+			// Attempt to import the config file dynamically
+			const module = (await import(/* @vite-ignore */ configPath)) as { default: StudioCMSOptions };
+			if (!module.default) {
+				throw new Error(
+					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
+				);
+			}
+			return module.default;
+		} catch (error) {
+			const { message, code } = coerceError(error);
 
-	try {
-		// Attempt to import the config file dynamically
-		const module = (await import(/* @vite-ignore */ fileUrl)) as { default: StudioCMSOptions };
-		if (!module.default) {
-			throw new Error(
-				'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
-			);
-		}
-		return module.default;
-	} catch (error) {
-		const { message, code } = coerceError(error);
-
-		// If the config file exists but fails to load, throw an error
-		if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
-			throw new StudioCMSCoreError(
-				`Your project includes an StudioCMS config file ("studiocms.config.mjs") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
-					/\s+/g,
-					' '
-				),
-				error instanceof Error ? error.message : ''
-			);
+			// If the config file exists but fails to load, throw an error
+			if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
+				throw new StudioCMSCoreError(
+					`Your project includes an StudioCMS config file ("studiocms.config.{mjs|js|ts|mts|cjs|cts}") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
+						/\s+/g,
+						' '
+					),
+					error instanceof Error ? error.stack : ''
+				);
+			}
 		}
 	}
 

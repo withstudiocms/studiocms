@@ -20,7 +20,7 @@ export const configResolver = defineUtility('astro:config:setup')(
 		let resolvedOptions: StudioCMSConfig = StudioCMSOptionsSchema.parse(options);
 
 		// Merge the given options with the ones from a potential StudioCMS config file
-		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root.pathname);
+		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root);
 		if (studioCMSConfigFile && Object.keys(studioCMSConfigFile).length > 0) {
 			const parsedOptions = StudioCMSOptionsSchema.safeParse(studioCMSConfigFile);
 
