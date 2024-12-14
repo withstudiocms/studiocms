@@ -5,6 +5,6 @@
   "docsLink": "https://ui.studiocms.dev",
   "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_ui/",
   "catalog": "studiocms",
-  "released": false,
+  "released": true,
   "publiclyUsable": true
 }
