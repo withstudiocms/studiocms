@@ -9,12 +9,12 @@ import LoginChecker from './islands/LoginChecker.astro';
 type Props = {
 	title: string;
 	description: string;
-	includeSidebar?: boolean;
+	sidebar?: boolean | 'single' | 'double';
 	sideBarActiveItemID: string;
 	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
 };
 
-const { title, description, requiredPermission } = Astro.props;
+const { title, description, requiredPermission, sidebar = 'single' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -25,11 +25,14 @@ const { title, description, requiredPermission } = Astro.props;
   </head>
   <body>
     <LoginChecker server:defer {requiredPermission} />
-    <SingleSidebar transition:persist transition:persist-props />
+    { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
+    <!-- { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> } -->
     <main class="p-6 pt-10">
-      <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
-        <Icon name="bars-3" height={24} width={24} />
-      </Button>
+      { sidebar !== false && (
+        <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
+          <Icon name="bars-3" height={24} width={24} />
+        </Button>
+      )}
       <slot />
     </main>
   </body>
