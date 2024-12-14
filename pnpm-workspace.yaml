@@ -18,26 +18,11 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   vite: ^5.4.8
 
 catalogs:
-  peer-robots: # Peer Dependencies for @studiocms/robotstxt - 12.06.2024
-    astro: ^4.16 || ^5
-
   min: # Confirmed Current Min Deps - 11.01.2024
     astro: ">=4.16"
     '@astrojs/db': ">=0.14.2"
     astro-integration-kit: ">=0.16"
     vite: ^4 || ^5
-
-  landing: # Confirmed Current Landing Deps - 11.01.2024
-    motion: ^10.18.0
-    tailwindcss: ^3.4.14
-    tailwind-merge: ^2.5.4
-    tailwind-scrollbar: ^3.1.0
-    '@tailwindcss/typography': ^0.5.15
-    astro-icon: ^1.1.1
-    '@resvg/resvg-js': ^2.6.2
-    html-entities: ^2.5.2
-    satori: ^0.11.1
-    satori-html: ^0.3.2
 
   docs: # Confirmed Current Docs Deps - 11.01.2024
     "@11ty/eleventy-fetch": ^4.0.1

@@ -52,6 +52,7 @@
     "@studiocms/renderers": "workspace:*",
     "@studiocms/robotstxt": "workspace:*",
 
+    "@studiocms/ui": "catalog:",
     "astro-integration-kit": "catalog:",
 
     "package-json": "catalog:studiocms",
