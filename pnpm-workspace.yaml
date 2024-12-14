@@ -14,14 +14,14 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   astro-integration-kit: ^0.16.1
   astro-theme-provider: ^0.6.1
   sharp: ^0.33.4
-  typescript: ^5.6.3
+  typescript: ^5.6
   vite: ^5.4.8
 
 catalogs:
   min: # Confirmed Current Min Deps - 11.01.2024
-    astro: ">=4.16"
-    '@astrojs/db': ">=0.14.2"
-    astro-integration-kit: ">=0.16"
+    astro: ^4.16
+    '@astrojs/db': ^0.14.2
+    astro-integration-kit: ^0.16
     vite: ^4 || ^5
 
   docs: # Confirmed Current Docs Deps - 11.01.2024
@@ -34,7 +34,7 @@ catalogs:
     p-retry: ^6.2.0
     rehype: ^13.0.2
     starlight-typedoc: ^0.16.0
-    typedoc: ^0.26.10
+    typedoc: ^0.27
     typedoc-plugin-markdown: ^4.2.9
     starlight-image-zoom: ^0.8.0
     hastscript: ^9.0.0
@@ -80,7 +80,7 @@ catalogs:
     
   studiocms-shared: # Confirmed Current Shared Deps - 11.01.2024
     '@fontsource-variable/onest': 5.1.0
-    '@inox-tools/runtime-logger': ^0.3.4
+    '@inox-tools/runtime-logger': 0.3.4
     '@iconify-json/heroicons': ^1.2.1
     "@matthiesenxyz/astrodtsbuilder": ^0.1.2
     "@matthiesenxyz/integration-utils": ^0.2.0
