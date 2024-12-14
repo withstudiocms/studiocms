@@ -12,6 +12,7 @@ import {
 	type Renderer,
 	type SafePluginListType,
 	type StudioCMSOptions,
+	type StudioCMSPlugin,
 	type StudioCMSPluginOptions,
 	definePlugin,
 } from '@studiocms/core/schemas';
@@ -231,6 +232,7 @@ export default studioCMSIntegration;
 export {
 	defineStudioCMSConfig,
 	definePlugin,
+	type StudioCMSPlugin,
 	type CustomRenderer,
 	type Renderer,
 	type StudioCMSOptions,
