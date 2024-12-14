@@ -19,9 +19,18 @@ import { Layout } from '../components';
     </div>
     <h2>Page not found</h2>
     <p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.</p>
-    <Button as="a" href="/" variant={'outlined'} color="primary" class="return"><span>Back to Homepage</span></Button>
+    <Button id="back-button" variant={'outlined'} color="primary" class="return"><span>Go back</span></Button>
   </div>
 </div>
+
+<script>
+  document.getElementById('back-button')!.addEventListener('click', () => {
+    window.history.back();
+  });
+
+  
+</script>
+
 <style>
   #notfound {
   position: relative;
