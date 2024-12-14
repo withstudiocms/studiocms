@@ -30,9 +30,6 @@ export const locales = {
 
 export default defineConfig({
 	site,
-	experimental: {
-		directRenderScript: true,
-	},
 	image: {
 		remotePatterns: [{ protocol: 'https' }],
 	},
@@ -73,7 +70,7 @@ export default defineConfig({
 				'./src/styles/starlight.css',
 			],
 			editLink: {
-				baseUrl: 'https://github.com/withstudiocms/studiocms/tree/main/www/docs',
+				baseUrl: 'https://github.com/withstudiocms/studiocms/tree/main/docs',
 			},
 			head: [
 				// {
@@ -141,21 +138,6 @@ export default defineConfig({
 								{
 									label: '@studiocms/renderers',
 									autogenerate: { directory: 'customizing/studiocms-renderers' },
-									collapsed: true,
-								},
-								{
-									label: '@studiocms/ui',
-									badge: { text: 'New', variant: 'success' },
-									items: [
-										{ label: 'Getting Started', link: 'customizing/studiocms-ui/' },
-										{
-											label: 'Components',
-											autogenerate: {
-												directory: 'customizing/studiocms-ui/components',
-												collapsed: true,
-											},
-										},
-									],
 									collapsed: true,
 								},
 							],
