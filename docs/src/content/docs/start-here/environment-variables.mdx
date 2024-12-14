@@ -17,11 +17,9 @@ You can create a `.env` file in the root directory of your project and add the r
 
 For future reference on how to work with environment variables within Astro you can checkout [Environment Variables](https://docs.astro.build/guides/environment-variables) from the Astro documentation.
 
-<Aside type="note" title="[Experimental] astro:env">
-StudioCMS makes use of Astro's new Experimental [`astro:env`](https://docs.astro.build/en/reference/configuration-reference/#experimentalenv) for handling all of its Environment Variables. If you face any issues with environment variables please submit an [issue on Github](https://github.com/withstudiocms/studiocms/issues/new/choose)
-</Aside>
-
 ## Required Environment Variables
+
+In order to use StudioCMS, there are a few required environment variables that you must set up in your `.env` file.
 
 ### Database URL and Token for `@astrojs/db`
 
@@ -50,13 +48,15 @@ openssl rand --base64 16
 ``` 
 </Aside>
 
-## oAuth Authentication Environment Variables
+## Optional Environment Variables
+
+### oAuth Authentication Environment Variables
 
 <ReadMore>
 For more information about setting up oAuth authentication, see the [Configure oAuth Authentication](/start-here/getting-started/#optional-configure-oauth-authentication) documentation.
 </ReadMore>
 
-### GitHub (Optional)
+#### GitHub (Optional)
 
 To authenticate with GitHub, you need to add the following environment variables to your `.env` file:
 
@@ -71,7 +71,7 @@ CMS_GITHUB_REDIRECT_URI=
 `CMS_GITHUB_REDIRECT_URI` is optional if you are using multiple redirect URIs with GitHub oAuth.
 </Aside>
 
-### Discord (Optional)
+#### Discord (Optional)
 
 ```bash title=".env"
 # credentials for Discord OAuth
@@ -80,7 +80,7 @@ CMS_DISCORD_CLIENT_SECRET=
 CMS_DISCORD_REDIRECT_URI=
 ```
 
-### Google (Optional)
+#### Google (Optional)
 
 ```bash title=".env"
 # credentials for Google OAuth
@@ -89,7 +89,7 @@ CMS_GOOGLE_CLIENT_SECRET=
 CMS_GOOGLE_REDIRECT_URI=
 ```
 
-### Auth0 (Optional)
+#### Auth0 (Optional)
 
 ```bash title=".env"
 # credentials for auth0 OAuth
@@ -99,9 +99,9 @@ CMS_AUTH0_DOMAIN=
 CMS_AUTH0_REDIRECT_URI=
 ```
 
-## Image Handler Environment Variables
+### Image Handler Environment Variables
 
-### Cloudinary (Optional)
+#### Cloudinary (Optional)
 
 If you choose to use the built-in Cloudinary plugin, you will need to define the following:
 
