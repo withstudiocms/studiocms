@@ -10,5 +10,9 @@ export const badFormDataEntry = (title: string, description: string): Response =
 	return new Response(JSON.stringify({ error: { title, description } }), {
 		status: 400,
 		statusText: 'Bad Request',
+		headers: {
+			'Content-Type': 'application/json',
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
 	});
 };
