@@ -37,7 +37,6 @@
     "./schemas": "./src/schemas/index.ts",
     "./schemas/renderer": "./src/schemas/config/rendererConfig.ts",
     "./utils": "./src/utils/index.ts",
-    "./strings": "./src/strings.ts",
     "./consts": "./src/consts.ts",
     "./db/config": "./src/db/config.ts",
     "./db/tables": "./src/db/tables.ts",

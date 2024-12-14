@@ -20,8 +20,8 @@ import {
 import {
 	// configResolver,
 	defineStudioCMSConfig,
-	// watchStudioCMSConfig,
 	parseConfig,
+	watchStudioCMSConfig,
 } from '@studiocms/core/utils';
 import { checkAstroConfig } from '@studiocms/core/utils';
 import dashboard from '@studiocms/dashboard';
@@ -40,17 +40,21 @@ import { name as pkgName, version as pkgVersion } from '../package.json';
  *
  * A CMS built for Astro by the Astro Community for the Astro Community.
  *
- * @see [GitHub Repo: 'withstudiocms/studiocms'](https://github.com/withstudiocms/studiocms) for more information on how to contribute to StudioCMS.
- * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
+ * @see The [GitHub Repo: `withstudiocms/studiocms`](https://github.com/withstudiocms/studiocms) for more information on how to contribute to StudioCMS.
+ * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  *
  */
 export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration {
 	// Setup the Resolver for the current file
 	const { resolve } = createResolver(import.meta.url);
 
-	let pluginListLength = 0;
-	let pluginListMessage = '';
 	let options: StudioCMSConfig;
+
+	const messages: {
+		label: string;
+		logLevel: 'info' | 'warn' | 'error' | 'debug';
+		message: string;
+	}[] = [];
 
 	return {
 		name: pkgName,
@@ -59,12 +63,21 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 				extendDb({ configEntrypoint: '@studiocms/core/db/config' });
 			},
 			'astro:config:setup': async (params) => {
-				// Watch the StudioCMS Config File for changes (including creation/deletion)
-				// watchStudioCMSConfig(params);
+				// Watch the StudioCMS Config File(s) for changes (including creation/deletion)
+				const configFileResponse = watchStudioCMSConfig(params);
+				if (configFileResponse) {
+					messages.push({
+						label: 'studiocms:config',
+						logLevel: 'error',
+						message: configFileResponse,
+					});
+				}
 
 				// Resolve Options
 				// options = await configResolver(params, opts);
-				// Disabled the above due to a vite processing error with dynamic imports
+
+				// Disabled the above due to a vite processing error with dynamic imports, for now
+				// we will use the parseConfig function instead to parse the options with zod
 				options = parseConfig(opts);
 
 				const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
@@ -180,8 +193,17 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 					},
 				});
 
+				let pluginListLength = 0;
+				let pluginListMessage = '';
+
 				pluginListLength = safePluginList.length;
 				pluginListMessage = safePluginList.map((p, i) => ` ${i + 1}. ${p.name}`).join('\n');
+
+				messages.push({
+					label: 'studiocms:plugins',
+					logLevel: 'info',
+					message: `Currently Installed StudioCMS Plugins: (${pluginListLength})\n${pluginListMessage}`,
+				});
 			},
 			'astro:config:done': ({ injectTypes }) => {
 				// Make DTS file for StudioCMS Plugins Virtual Module
@@ -199,18 +221,16 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 
 				// Inject the DTS file
 				injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
-			},
-			'astro:server:start': async ({ logger: l }) => {
-				// Log the current plugins
-				integrationLogger(
-					{
-						logger: l.fork('studiocms:plugins'),
-						logLevel: 'info',
-						verbose: options.verbose,
-					},
-					`Currently Installed StudioCMS Plugins: (${pluginListLength})\n${pluginListMessage}`
-				);
 
+				// Log Setup Complete
+				messages.push({
+					label: 'studiocms:setup',
+					logLevel: 'info',
+					message: 'Setup Complete. 🚀',
+				});
+			},
+			// DEV SERVER: Check for updates on server start and log messages
+			'astro:server:start': async ({ logger: l }) => {
 				const logger = l.fork(`${pkgName}:update-check`);
 
 				try {
@@ -238,6 +258,32 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 							'An unknown error occurred while fetching the latest version from the npm registry.'
 						);
 					}
+				}
+
+				// Log all messages
+				for (const { label, message, logLevel } of messages) {
+					integrationLogger(
+						{
+							logger: l.fork(label),
+							logLevel,
+							verbose: logLevel === 'info' ? options.verbose : true,
+						},
+						message
+					);
+				}
+			},
+			// BUILD: Log messages at the end of the build
+			'astro:build:done': ({ logger }) => {
+				// Log messages at the end of the build
+				for (const { label, message, logLevel } of messages) {
+					integrationLogger(
+						{
+							logger: logger.fork(label),
+							logLevel,
+							verbose: logLevel === 'info' ? options.verbose : true,
+						},
+						message
+					);
 				}
 			},
 		},

@@ -1,6 +1,5 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { DashboardStrings, DbErrors } from '@studiocms/core/strings';
 import type { InjectedType } from 'astro';
 import { createResolver, defineIntegration } from 'astro-integration-kit';
 import { name } from '../package.json';
@@ -29,7 +28,10 @@ export default defineIntegration({
 					const { verbose } = options;
 
 					// Log that the setup has started
-					integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.Setup);
+					integrationLogger(
+						{ logger, logLevel: 'info', verbose },
+						'Setting up StudioCMS Dashboard...'
+					);
 
 					// Inject `@it-astro:logger:{name}` Logger for runtime logging
 					runtimeLogger(params, { name: 'studiocms-dashboard' });
@@ -93,6 +95,10 @@ export default defineIntegration({
 
 					// Inject 404 Route if Dashboard is enabled and inject404Route is enabled
 					if (options.dashboardConfig.dashboardEnabled && options.dashboardConfig.inject404Route) {
+						integrationLogger(
+							{ logger, logLevel: 'info', verbose },
+							'Injecting default 404 Route...'
+						);
 						injectRoute({
 							pattern: '404',
 							entrypoint: resolve('./routes/404.astro'),
@@ -102,6 +108,10 @@ export default defineIntegration({
 
 					// Inject First Time Setup Routes if dbStartPage is enabled
 					if (options.dbStartPage) {
+						integrationLogger(
+							{ logger, logLevel: 'info', verbose },
+							'Injecting First Time Setup Routes...'
+						);
 						injectRoute({
 							pattern: 'start',
 							entrypoint: resolve('./firstTimeSetupRoutes/main.astro'),
@@ -163,7 +173,10 @@ export default defineIntegration({
 					WebVitalsDtsFile = webVitalDtsFile;
 
 					// Log that the setup is complete
-					integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.SetupComplete);
+					integrationLogger(
+						{ logger, logLevel: 'info', verbose },
+						'StudioCMS Dashboard is Setup and Ready to Go!'
+					);
 				},
 				'astro:config:done': ({ injectTypes }) => {
 					// Inject the Web Vitals DTS File
@@ -172,7 +185,10 @@ export default defineIntegration({
 				'astro:server:start': ({ logger }) => {
 					// Display Console Message if dbStartPage(First Time DB Initialization) is enabled
 					if (options.dbStartPage) {
-						integrationLogger({ logger, logLevel: 'warn', verbose: true }, DbErrors.DbStartPage);
+						integrationLogger(
+							{ logger, logLevel: 'warn', verbose: true },
+							'Start Page is Enabled.  This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.'
+						);
 					}
 				},
 			},

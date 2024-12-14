@@ -48,7 +48,7 @@ export function getStudioConfigFileUrl(projectRootUrl: string) {
 	if (configPath) {
 		return configPath;
 	}
-	return `${projectRootUrl}studiocms.config.mjs`;
+	return undefined;
 }
 
 /**
@@ -62,13 +62,18 @@ export function getStudioConfigFileUrl(projectRootUrl: string) {
  */
 export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 	({
-		addWatchFile,
+		// addWatchFile,
 		config: {
 			root: { pathname },
 		},
 	}) => {
 		const configFileUrl = getStudioConfigFileUrl(pathname);
-		addWatchFile(configFileUrl);
+		if (configFileUrl) {
+			// addWatchFile(configFileUrl);
+			// This has been disabled due to a Vite dynamic import issue preventing loading the config file
+			return `There is a StudioCMS config file at ${configFileUrl}, due to a vite bug, this file will be ignored. Please use the Astro config file for StudioCMS options for the time being.`;
+		}
+		return;
 	}
 );
 
@@ -79,16 +84,25 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
  */
 export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
 	// Find the StudioCMS config file in the project root
-	// const configPath = findConfig(projectRootUrl.pathname);
 	const pathsToTry = [
 		// This path works in most scenarios, but not when the integration is processed by Vite
 		// due to a Vite bug affecting import URLs using the "file:" protocol
-		new URL('./studiocms.config.mjs', projectRootUrl).href,
+		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.js?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
 	];
 	// Detect if the integration is processed by Vite
 	if (import.meta.env?.BASE_URL?.length) {
 		// Add a fallback path starting with "/", which Vite treats as relative to the project root
-		pathsToTry.push('/studiocms.config.mjs');
+		pathsToTry.push(`/studiocms.config.mts?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.mjs?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.js?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.ts?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.cjs?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.cts?t=${Date.now()}`);
 	}
 
 	/**
@@ -108,13 +122,13 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		try {
 			// Attempt to import the config file dynamically
 			console.log('configPath', path);
-			const module = await import(/* @vite-ignore */ path);
+			const module = (await import(/* @vite-ignore */ path)) as { default: StudioCMSOptions };
 			if (!module.default) {
-				throw new StudioCMSCoreError(
+				throw new Error(
 					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
 				);
 			}
-			return module.default as StudioCMSOptions;
+			return module.default;
 		} catch (error) {
 			const { message, code } = coerceError(error);
 

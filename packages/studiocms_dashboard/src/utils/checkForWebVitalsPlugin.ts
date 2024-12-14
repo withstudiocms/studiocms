@@ -1,6 +1,5 @@
 import DTSBuilder from '@matthiesenxyz/astrodtsbuilder';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { webVitalStrings } from '@studiocms/core/strings';
 import {
 	addVirtualImports,
 	createResolver,
@@ -20,7 +19,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 	) => {
 		integrationLogger(
 			{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-			webVitalStrings.checkForWebVitals
+			"Checking for '@astrojs/web-vitals' integration..."
 		);
 
 		// Check for Web Vitals
@@ -28,13 +27,13 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			// Log that the Web Vitals Integration is Present
 			integrationLogger(
 				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-				webVitalStrings.webVitalsFound
+				'Web Vitals Integration Found!'
 			);
 		} else {
 			// Log that the Web Vitals Integration is Missing
 			integrationLogger(
-				{ logger: params.logger, logLevel: 'warn', verbose: opts.verbose },
-				webVitalStrings.webVitalsMissing
+				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
+				'Web Vitals integration not found. If you wish to use Web Vitals, please install the `@astrojs/web-vitals` package.'
 			);
 		}
 
