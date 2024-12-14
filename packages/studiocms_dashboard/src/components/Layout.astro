@@ -4,15 +4,17 @@ import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
 import SingleSidebar from './SingleSidebar.astro';
+import LoginChecker from './islands/LoginChecker.astro';
 
 type Props = {
 	title: string;
 	description: string;
 	includeSidebar?: boolean;
 	sideBarActiveItemID: string;
+	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
 };
 
-const { title, description } = Astro.props;
+const { title, description, requiredPermission } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -22,6 +24,7 @@ const { title, description } = Astro.props;
     <ClientRouter />
   </head>
   <body>
+    <LoginChecker server:defer {requiredPermission} />
     <SingleSidebar transition:persist transition:persist-props />
     <main class="p-6 pt-10">
       <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
