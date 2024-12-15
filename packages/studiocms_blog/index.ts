@@ -21,13 +21,10 @@ export type ATP_ThemeOptions = Parameters<typeof studioCMSBlogTheme>[0];
  * This theme provides a Blog Index Page and RSS Feed for your StudioCMS Site as well as route handling for Blog Posts.
  */
 export function blogPlugin(options?: ATP_ThemeOptions) {
-	let slug: string;
+	// User definable options for the StudioCMS Blog Theme
+	const slug = typeof options?.pages?.['/blog'] === 'string' ? options.pages['/blog'] : 'blog/';
 
-	if (typeof options?.pages?.['/blog'] === 'string') {
-		slug = options.pages['/blog'];
-	} else {
-		slug = 'blog/';
-	}
+	// Return the StudioCMS Plugin
 	return definePlugin({
 		name,
 		studiocmsMinimumVersion: '0.1.0-beta.8',

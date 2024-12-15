@@ -1,13 +1,9 @@
-import { runtimeLogger } from '@inox-tools/runtime-logger';
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { stringify } from '@studiocms/core/lib';
 import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
+import { createResolver } from 'astro-integration-kit';
 import { name as pkgName } from '../package.json';
-import { rendererDTS } from './stubs/renderer';
-import { rendererConfigDTS } from './stubs/renderer-config';
-import { rendererAstroMarkdownDTS } from './stubs/renderer-markdownConfig';
+import configDone from './hooks/config-done';
+import configSetup from './hooks/config-setup';
 
 /**
  * **StudioCMS Renderers Integration**
@@ -29,38 +25,9 @@ export function studioCMSRenderers(
 	return {
 		name: pkgName,
 		hooks: {
-			'astro:config:setup': (params) => {
-				integrationLogger(
-					{ logger: params.logger, logLevel: 'info', verbose },
-					'Setting up StudioCMS Renderer...'
-				);
-				// Setup the runtime logger
-				runtimeLogger(params, { name: 'studiocms-renderer' });
-
-				// Add Virtual Imports
-				addVirtualImports(params, {
-					name: pkgName,
-					imports: {
-						'studiocms:renderer': `export { default as StudioCMSRenderer } from '${RendererComponent}';`,
-						'studiocms:renderer/config': `export default ${stringify(options)}`,
-						'studiocms:renderer/astroMarkdownConfig': `export default ${stringify(params.config.markdown)}`,
-					},
-				});
-				integrationLogger(
-					{ logger: params.logger, logLevel: 'info', verbose },
-					'StudioCMS Renderer Virtual Imports Added...'
-				);
-			},
-			'astro:config:done': ({ injectTypes }) => {
-				// Inject Types for Renderer
-				injectTypes(rendererDTS(RendererComponent));
-
-				// Inject Types for Renderer Config
-				injectTypes(rendererConfigDTS());
-
-				// Inject Types for Astro Markdown Config
-				injectTypes(rendererAstroMarkdownDTS());
-			},
+			'astro:config:setup': (params) =>
+				configSetup(params, { options, verbose, RendererComponent, pkgName }),
+			'astro:config:done': (params) => configDone(params, RendererComponent),
 		},
 	};
 }
