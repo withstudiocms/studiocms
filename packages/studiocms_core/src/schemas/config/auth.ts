@@ -22,9 +22,9 @@ export const authProviderSchema = z
 		 *
 		 * Requires a GitHub OAuth App to be created and configured using ENV Variables
 		 *
-		 * @default true
+		 * @default false
 		 */
-		github: z.boolean().optional().default(true),
+		github: z.boolean().optional().default(false),
 		/**
 		 * Discord Auth Provider - Powered by Arctic
 		 *

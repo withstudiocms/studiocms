@@ -1,9 +1,9 @@
 import { z } from 'astro/zod';
-import { markdocConfigSchema, type markdocRenderer } from './markdoc';
+import { type MarkdocRenderer, markdocConfigSchema, type markdocRenderer } from './markdoc';
 import { mdxConfigSchema } from './mdx';
 
 export type Renderer = (content: string) => Promise<string>;
-export type { markdocRenderer };
+export type { markdocRenderer, MarkdocRenderer };
 
 /**
  * Custom Renderer Type
@@ -19,10 +19,10 @@ export type { markdocRenderer };
  * 	},
  * };
  */
-export type CustomRenderer = {
+export interface CustomRenderer {
 	name: string;
 	renderer: Renderer;
-};
+}
 
 /**
  * StudioCMS Renderer Configuration Schema

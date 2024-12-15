@@ -23,20 +23,32 @@ function findConfig(projectRootUrl: string) {
 	for (const path of configPaths) {
 		const configUrl = `${projectRootUrl}${path}`;
 		if (exists(configUrl)) {
-			return path;
+			return configUrl;
 		}
 	}
 
 	return undefined;
 }
 
-export function exists(path: string) {
+export function exists(path: string | undefined) {
+	if (!path) return false;
 	try {
 		statSync(path);
 		return true;
 	} catch {
 		return false;
 	}
+}
+
+/**
+ * Returns a URL to the optional StudioCMS config file in the Astro project root.
+ */
+export function getStudioConfigFileUrl(projectRootUrl: string) {
+	const configPath = findConfig(projectRootUrl);
+	if (configPath) {
+		return configPath;
+	}
+	return undefined;
 }
 
 /**
@@ -50,40 +62,48 @@ export function exists(path: string) {
  */
 export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 	({
-		addWatchFile,
+		// addWatchFile,
 		config: {
 			root: { pathname },
 		},
 	}) => {
 		const configFileUrl = getStudioConfigFileUrl(pathname);
-		addWatchFile(configFileUrl);
+		if (configFileUrl) {
+			// addWatchFile(configFileUrl);
+			// This has been disabled due to a Vite dynamic import issue preventing loading the config file
+			return `There is a StudioCMS config file at ${configFileUrl}, due to a vite bug, this file will be ignored. Please use the Astro config file for StudioCMS options for the time being.`;
+		}
+		return;
 	}
 );
-
-/**
- * Returns a URL to the optional StudioCMS config file in the Astro project root.
- */
-export function getStudioConfigFileUrl(projectRootUrl: string) {
-	const configPath = findConfig(projectRootUrl);
-	if (configPath) {
-		return `${projectRootUrl}${configPath}`;
-	}
-	return `${projectRootUrl}studiocms.config.mjs`;
-}
 
 /**
  * Attempts to import an StudioCMS  config file in the Astro project root and returns its default export.
  *
  * If no config file is found, an empty object is returned.
  */
-export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<StudioCMSOptions> {
-	// Find the config file path using the findConfig function
-	const configPath = findConfig(projectRootUrl);
-
-	// Construct the file URL for import attempts
-	const fileUrl = configPath
-		? `${projectRootUrl}${configPath}`
-		: `${projectRootUrl}studiocms.config.mjs`;
+export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
+	// Find the StudioCMS config file in the project root
+	const pathsToTry = [
+		// This path works in most scenarios, but not when the integration is processed by Vite
+		// due to a Vite bug affecting import URLs using the "file:" protocol
+		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.js?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
+	];
+	// Detect if the integration is processed by Vite
+	if (import.meta.env?.BASE_URL?.length) {
+		// Add a fallback path starting with "/", which Vite treats as relative to the project root
+		pathsToTry.push(`/studiocms.config.mts?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.mjs?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.js?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.ts?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.cjs?t=${Date.now()}`);
+		pathsToTry.push(`/studiocms.config.cts?t=${Date.now()}`);
+	}
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.
@@ -98,28 +118,30 @@ export async function loadStudioCMSConfigFile(projectRootUrl: string): Promise<S
 		}
 		return { message: error as string };
 	}
+	for (const path of pathsToTry) {
+		try {
+			// Attempt to import the config file dynamically
+			console.log('configPath', path);
+			const module = (await import(/* @vite-ignore */ path)) as { default: StudioCMSOptions };
+			if (!module.default) {
+				throw new Error(
+					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
+				);
+			}
+			return module.default;
+		} catch (error) {
+			const { message, code } = coerceError(error);
 
-	try {
-		// Attempt to import the config file dynamically
-		const module = (await import(/* @vite-ignore */ fileUrl)) as { default: StudioCMSOptions };
-		if (!module.default) {
-			throw new Error(
-				'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
-			);
-		}
-		return module.default;
-	} catch (error) {
-		const { message, code } = coerceError(error);
-
-		// If the config file exists but fails to load, throw an error
-		if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
-			throw new StudioCMSCoreError(
-				`Your project includes an StudioCMS config file ("studiocms.config.mjs") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
-					/\s+/g,
-					' '
-				),
-				error instanceof Error ? error.message : ''
-			);
+			// If the config file exists but fails to load, throw an error
+			if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
+				throw new StudioCMSCoreError(
+					`Your project includes an StudioCMS config file ("studiocms.config.{mjs|js|ts|mts|cjs|cts}") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
+						/\s+/g,
+						' '
+					),
+					error instanceof Error ? error.stack : ''
+				);
+			}
 		}
 	}
 

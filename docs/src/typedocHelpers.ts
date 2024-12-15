@@ -2,7 +2,7 @@ import type { StarlightTypeDocOptions } from 'starlight-typedoc';
 
 // Utility function to create TypeDoc related paths
 export function getFilePathToPackage(name: string, path: string) {
-	return `../../packages/${name}/${path}`;
+	return `../packages/${name}/${path}`;
 }
 
 // Utility function to create TypeDoc options for the StudioCMS packages so that each package documentation is the same when generated

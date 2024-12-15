@@ -158,7 +158,7 @@ export function generateContent(
 				? policy.userAgent
 				: [policy.userAgent || '*'];
 			for (const userAgent of userAgents) {
-				// skiped
+				// skipped
 				if (userAgent) {
 					content += `User-agent: ${userAgent}\n`;
 				}

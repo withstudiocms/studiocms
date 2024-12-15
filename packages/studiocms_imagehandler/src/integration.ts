@@ -1,5 +1,4 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { imageHandlerStrings } from '@studiocms/core/strings';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import type { InjectedType } from 'astro';
 import { defineIntegration } from 'astro-integration-kit';
@@ -49,7 +48,7 @@ export default defineIntegration({
 						if (!env.CMS_CLOUDINARY_CLOUDNAME) {
 							integrationLogger(
 								{ logger, logLevel: 'warn', verbose: true },
-								imageHandlerStrings.CloudinaryCDNWarning
+								'Using the Cloudinary CDN JS SDK Plugin requires the CMS_CLOUDINARY_CLOUDNAME environment variable to be set. Please add this to your .env file.'
 							);
 						}
 					}
@@ -57,7 +56,7 @@ export default defineIntegration({
 					// Setup and Configure CustomImage Component
 					integrationLogger(
 						{ logger, logLevel: 'info', verbose },
-						imageHandlerStrings.CustomImageLog
+						'Configuring CustomImage Component...'
 					);
 					const { imageHandlerDtsFile } = componentResolver(params, {
 						name,
@@ -67,7 +66,7 @@ export default defineIntegration({
 					// Update the Astro Config with the Image Service Configuration to allow for remote images
 					integrationLogger(
 						{ logger, logLevel: 'info', verbose },
-						imageHandlerStrings.updateConfig
+						'Updating Astro Config with Image Service Configuration to allow for remote images...'
 					);
 					updateConfig({
 						image: {

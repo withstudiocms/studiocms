@@ -1,6 +1,5 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { makeAPIRoute } from '@studiocms/core/lib';
-import { DashboardStrings } from '@studiocms/core/strings';
 import { defineUtility } from 'astro-integration-kit';
 import type { StudioCMSDashboardOptions } from '../schema';
 
@@ -23,11 +22,7 @@ export const injectDashboardAPIRoutes = defineUtility('astro:config:setup')(
 		const {
 			options: {
 				verbose,
-				dashboardConfig: {
-					dashboardEnabled,
-					AuthConfig: { enabled: authEnabled },
-					developerConfig: { testingAndDemoMode },
-				},
+				dashboardConfig: { dashboardEnabled },
 			},
 			routes,
 		} = opts;
@@ -35,39 +30,21 @@ export const injectDashboardAPIRoutes = defineUtility('astro:config:setup')(
 		// Check if the Dashboard is enabled
 		if (dashboardEnabled) {
 			// Log that the Dashboard is enabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardEnabled);
-		} else {
-			// Log that the Dashboard is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardDisabled);
-		}
+			integrationLogger({ logger, logLevel: 'info', verbose }, 'Injecting Up API Routes...');
+			// Inject the API routes
+			for (const route of routes) {
+				const { enabled, pattern, entrypoint } = route;
 
-		if (!authEnabled) {
-			// Log that the Auth is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthDisabled);
-			return;
-		}
+				if (!enabled) {
+					continue;
+				}
 
-		// Log that the Auth is enabled
-		integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthEnabled);
-
-		// If Testing and Demo Mode is enabled, log that it is enabled
-		if (testingAndDemoMode) {
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.TestAndDemo);
-		}
-
-		// Inject the API routes
-		for (const route of routes) {
-			const { enabled, pattern, entrypoint } = route;
-
-			if (!enabled) {
-				continue;
+				injectRoute({
+					pattern: apiRoute(pattern),
+					entrypoint,
+					prerender: false,
+				});
 			}
-
-			injectRoute({
-				pattern: apiRoute(pattern),
-				entrypoint,
-				prerender: false,
-			});
 		}
 	}
 );

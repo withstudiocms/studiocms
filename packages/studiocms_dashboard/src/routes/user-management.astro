@@ -4,7 +4,6 @@ import { useTranslations } from 'studiocms:i18n';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
 import PageHeader from '../components/DashboardPageHeader.astro';
-import LoginChecker from '../components/islands/LoginChecker.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
 const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
@@ -18,13 +17,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 // Get the web vitals
 // const webVitals = await getWebVitals();
 ---
-
-<LoginChecker server:defer requiredPermission='admin' />
-
 <Layout 
-  sideBarActiveItemID="dashboard" 
   title={makePageTitle(t('title'), dbConfig)}
   description={dbConfig.description}
+  requiredPermission='admin'
 >
   <PageHeader />
   <span>{t('sub-header')}</span>

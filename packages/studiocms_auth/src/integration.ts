@@ -1,6 +1,5 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { DashboardStrings } from '@studiocms/core/strings';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
@@ -44,7 +43,7 @@ export default defineIntegration({
 					// Log that Setup is Starting
 					integrationLogger(
 						{ logger: params.logger, logLevel: 'info', verbose: options.verbose },
-						DashboardStrings.Setup
+						'Setting up StudioCMS Auth...'
 					);
 
 					// Inject `@it-astro:logger:{name}` Logger for runtime logging
@@ -155,16 +154,9 @@ export default defineIntegration({
 
 					// Update Astro Config
 					params.updateConfig({
-						security: {
-							checkOrigin: true,
-						},
-						experimental: {
-							directRenderScript: true,
-							serverIslands: true,
-						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['astro:db', 'three'],
+								exclude: ['three'],
 							},
 							plugins: [
 								copy({

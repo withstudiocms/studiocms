@@ -41,6 +41,8 @@ export const FrontEndConfigSchema = z
 		/**
 		 * Inject 404 Route - Injects a 404 route for handling unknown routes
 		 * @default true
+		 *
+		 * @deprecated Moved to dashboardConfig
 		 */
 		inject404Route: z.boolean().optional().default(true),
 		/**
@@ -79,4 +81,4 @@ export const FrontEndConfigSchema = z
 export const DefaultFrontEndConfigSchema = z
 	.union([FrontEndConfigSchema, z.boolean()])
 	.optional()
-	.default(true);
+	.default({});

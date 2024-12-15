@@ -15,11 +15,4 @@ export default defineStudioCMSConfig({
 		// 	},
 		// ],
 	},
-	dashboardConfig: {
-		AuthConfig: {
-			providers: {
-				github: true,
-			},
-		},
-	},
 });

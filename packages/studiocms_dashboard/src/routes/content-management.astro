@@ -3,7 +3,6 @@
 import { useTranslations } from 'studiocms:i18n';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
-import LoginChecker from '../components/islands/LoginChecker.astro';
 import TestIsland from '../components/islands/TestIsland.astro';
 import { makePageTitle } from '../utils/makePageTitle';
 
@@ -16,12 +15,10 @@ const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
-<LoginChecker server:defer requiredPermission='editor' />
-
 <Layout 
-  sideBarActiveItemID="dashboard" 
   title={makePageTitle(t('title'), dbConfig)}
-  description={dbConfig.description}
+  description={dbConfig.description} 
+  requiredPermission='editor'
 >
 Sus
 

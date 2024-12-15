@@ -1,6 +1,6 @@
 import type { AstroConfig, AstroIntegration } from 'astro';
 import { name } from '../package.json';
-import type { UsertAgentType } from './consts';
+import type { UserAgentType } from './consts';
 
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -79,7 +79,7 @@ export interface PolicyOptions {
 	 * ```
 	 * Verified bots, refer to [DITIG](https://www.ditig.com/robots-txt-template#regular-template) or [Cloudflare Radar](https://radar.cloudflare.com/traffic/verified-bots).
 	 */
-	userAgent?: UsertAgentType | UsertAgentType[];
+	userAgent?: UserAgentType | UserAgentType[];
 	/**
 	 * @description
 	 * [ At least one or more `allow` or `disallow` entries per rule ] Allows indexing site sections or individual pages.
@@ -148,8 +148,9 @@ const defaultConfig: RobotsConfig = {
 	host: false,
 	policy: [
 		{
-			userAgent: '*',
-			allow: '/',
+			userAgent: ['*'],
+			allow: ['/'],
+			disallow: ['/dashboard/'],
 		},
 	],
 };
@@ -162,27 +163,27 @@ const defaultConfig: RobotsConfig = {
  * @param astroConfig Robots Configuration
  * @returns AstroIntegration
  */
-export default function createRobotsIntegration(astroConfig: RobotsConfig): AstroIntegration {
-	let config: AstroConfig;
+export default function createRobotsIntegration(options?: RobotsConfig): AstroIntegration {
+	let astroConfig: AstroConfig;
 	let finalSiteMapHref: string;
 	let executionTime: number;
 
-	const mergedConfig = { ...defaultConfig, ...astroConfig };
+	const config = { ...defaultConfig, ...options };
 
 	return {
 		name,
 		hooks: {
 			'astro:config:setup': ({ config: cfg }) => {
-				config = cfg;
+				astroConfig = cfg;
 			},
 			'astro:build:start': () => {
-				finalSiteMapHref = new URL(config.base, config.site).href;
+				finalSiteMapHref = new URL(astroConfig.base, astroConfig.site).href;
 			},
 			'astro:build:done': async ({ dir, logger }) => {
 				executionTime = measureExecutionTime(() => {
 					fs.writeFileSync(
 						new URL('robots.txt', dir),
-						generateContent(mergedConfig, finalSiteMapHref, logger),
+						generateContent(config, finalSiteMapHref, logger),
 						'utf-8'
 					);
 				});

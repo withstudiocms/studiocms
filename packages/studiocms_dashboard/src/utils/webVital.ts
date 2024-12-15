@@ -39,7 +39,7 @@ export async function getWebVitals(): Promise<WebVitalsResponseItem[]> {
 			}
 		}
 	} catch (error) {
-		logger.error(
+		logger.warn(
 			`Error getting @astrojs/web-vitals table data.  If you have not installed the package you can disregard this error.\n - ${error}`
 		);
 		return [] as WebVitalsResponseItem[];

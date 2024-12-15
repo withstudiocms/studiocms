@@ -52,14 +52,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
 
-  console.log('Setting up sidebar');
-
   document.addEventListener('astro:page-load', () => {
-    console.log('Page loaded');
     new SingleSidebarHelper('nav-toggle');
     new DropdownHelper('sidebar-user-dropdown', true);
-
-    console.log('Setting active link');
     const sidebar = document.querySelector<HTMLElement>('.sidebar')!;
     const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
       

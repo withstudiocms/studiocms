@@ -1,6 +1,6 @@
 import reactRenderer from '@astrojs/react/server.js';
 import Markdoc, { type RenderableTreeNode } from '@markdoc/markdoc';
-import type { markdocRenderer } from '@studiocms/core/schemas/renderer';
+import type { MarkdocRenderer } from '@studiocms/core/schemas/renderer';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import React from 'react';
 import ReactWrapper from './markdocReact-components/MarkDocReactWrapper.astro';
@@ -22,7 +22,7 @@ export type markdocReactComponents = {} | undefined;
  * @param components - The React components to use for rendering the content
  * @returns The MarkDoc React Renderer for StudioCMS MarkDoc
  */
-export function markDocRenderReact(components?: markdocReactComponents): markdocRenderer {
+export function markDocRenderReact(components?: markdocReactComponents): MarkdocRenderer {
 	return {
 		name: 'react',
 		renderer: async (content: RenderableTreeNode) => {

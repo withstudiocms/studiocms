@@ -15,10 +15,6 @@ type Props = {
 const { content, renderer = rendererConfig.renderer } = Astro.props;
 
 function rendererSelect(renderer: StudioCMSRendererConfig['renderer']) {
-	// if (renderer === 'marked') {
-	// 	logger.debug('Using built-in renderer: marked');
-	// 	return renderMarked;
-	// }
 	if (renderer === 'astro') {
 		logger.debug('Using built-in renderer: astro remark');
 		return renderAstroMD;

@@ -6,16 +6,34 @@ import node from '@astrojs/node';
 // import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
-import { getCoolifyURL } from './hostUtils';
+// import { getCoolifyURL } from './hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true) || 'https://demo.studiocms.dev/',
+	site: 'https://next-demo.studiocms.dev/',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
+	security: {
+		checkOrigin: false,
+	},
 	integrations: [
 		db(),
-		studioCMS(), // StudioCMS Integration options can be found in `studiocms.config.mjs`
+		studioCMS({
+			dbStartPage: false,
+			verbose: true,
+			defaultFrontEndConfig: {
+				// htmlDefaultHead: [
+				// 	{
+				// 		tag: 'script',
+				// 		attrs: {
+				// 			src: 'https://analytics.studiocms.xyz/script.js',
+				// 			'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
+				// 			defer: true,
+				// 		},
+				// 	},
+				// ],
+			},
+		}),
 		// sentry({
 		// 	dsn: 'https://71c3c874d5d8ad20486529628ac13aae@sentry.studiocms.dev/4',
 		// 	replaysSessionSampleRate: 1.0,
@@ -40,11 +58,4 @@ export default defineConfig({
 		// 	},
 		// }),
 	],
-	image: {
-		remotePatterns: [
-			{
-				protocol: 'https',
-			},
-		],
-	},
 });
