@@ -50,9 +50,7 @@ export async function renderAstroMDX(content: string) {
 	});
 
 	// Render the MDX content to a string
-	const renderedContent = renderToString(createElement(MDXContent));
-
-	return renderedContent;
+	return renderToString(createElement(MDXContent));
 }
 
 export default renderAstroMDX;
