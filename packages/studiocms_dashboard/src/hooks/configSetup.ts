@@ -116,42 +116,39 @@ export const configSetup = defineUtility('astro:config:setup')(
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage,
-					pattern: '/test',
+					pattern: 'test',
 					entrypoint: resolve('../routes/test.astro'),
 				},
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: '/content-management',
+				// 	pattern: 'content-management',
 				// 	entrypoint: resolve('../routes/content-management.astro'),
 				// },
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: '/create-page',
+				// 	pattern: 'create-page',
 				// 	entrypoint: resolve('../routes/create-page.astro'),
 				// },
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: '/profile',
+				// 	pattern: 'profile',
 				// 	entrypoint: resolve('../routes/profile.astro'),
 				// },
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: '/configuration',
+				// 	pattern: 'configuration',
 				// 	entrypoint: resolve('../routes/configuration.astro'),
 				// },
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: '/user-management',
+				// 	pattern: 'user-management',
 				// 	entrypoint: resolve('../routes/user-management.astro'),
 				// },
 			],
 		});
 
 		// Log that the setup is complete
-		integrationLogger(
-			{ logger, logLevel: 'info', verbose },
-			'StudioCMS Dashboard is Setup and Ready to Go!'
-		);
+		integrationLogger({ logger, logLevel: 'info', verbose }, 'StudioCMS Dashboard complete!');
 	}
 );
 
