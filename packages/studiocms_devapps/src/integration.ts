@@ -64,7 +64,7 @@ export default defineIntegration({
 						if (libSQLViewer.enabled) {
 							verbose && logger.info('Adding Dev Toolbar App: libSQLViewer');
 							injectDevRoute(params, {
-								entrypoint: resolve('routes/libsql-viewer.astro'),
+								entrypoint: resolve('./routes/libsql-viewer.astro'),
 								pattern: EndpointPath(libSQLViewer.endpoint),
 							});
 							addDevToolbarApp({
@@ -79,7 +79,7 @@ export default defineIntegration({
 						if (wpApiImporter.enabled) {
 							verbose && logger.info('Adding Dev Toolbar App: WP-API Importer');
 							injectDevRoute(params, {
-								entrypoint: resolve('routes/wp-api-importer.ts'),
+								entrypoint: resolve('./routes/wp-api-importer.ts'),
 								pattern: WP_API_URL,
 							});
 							addDevToolbarApp({
