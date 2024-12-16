@@ -3,7 +3,7 @@ import rendererConfig from 'studiocms:renderer/config';
 import { HTMLString, renderSlot } from 'astro/runtime/server/index.js';
 import builtInContentRenderer from '../lib/contentRenderer';
 
-async function render(content) {
+async function renderToHTML(content) {
 	const result = await builtInContentRenderer(content);
 
 	return new HTMLString(result);
@@ -17,7 +17,7 @@ export const Renderer = Object.assign(
 			},
 			async *[Symbol.asyncIterator]() {
 				const content = attributes.content;
-				yield await render(content);
+				yield await renderToHTML(content);
 			},
 		};
 	},
