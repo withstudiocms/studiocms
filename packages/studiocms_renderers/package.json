@@ -31,7 +31,10 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
+    "./components/Renderer": {
+      "default": "./src/components/Renderer.js",
+      "types": "./src/components/Renderer.d.ts"
+    },
     "./contentrenderer": "./src/lib/contentrenderer.ts",
     "./exports": "./src/exports/index.ts",
     "./exports/markdoc/react": "./src/exports/markdocRenderers/markdocReact.ts"

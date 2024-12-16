@@ -2,17 +2,20 @@ import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { stringify } from '@studiocms/core/lib';
 import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 
 type ConfigSetupOptions = {
 	options: StudioCMSRendererConfig;
-	verbose: boolean;
-	RendererComponent: string;
+	verbose?: boolean | undefined;
 	pkgName: string;
 };
 
+const { resolve } = createResolver(import.meta.url);
+
+const RendererComponent = resolve('../components/Renderer.js');
+
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, { verbose, options, RendererComponent, pkgName }: ConfigSetupOptions) => {
+	(params, { verbose = false, options, pkgName }: ConfigSetupOptions) => {
 		// Destructure the params
 		const { logger, config } = params;
 

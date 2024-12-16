@@ -1,7 +1,7 @@
 import Markdoc, { type RenderableTreeNode } from '@markdoc/markdoc';
-import type { markdocRenderer } from '@studiocms/core/schemas/renderer';
+import type { MarkdocRenderer } from '@studiocms/core/schemas/renderer';
 
-export function renderReactStatic(): markdocRenderer {
+export function renderReactStatic(): MarkdocRenderer {
 	return {
 		name: 'react-static',
 		renderer: async (content: RenderableTreeNode) => {

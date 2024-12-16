@@ -1,16 +1,16 @@
 import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
 import Markdoc, { type ConfigType, type ParserArgs } from '@markdoc/markdoc';
-import type { markdocRenderer } from '@studiocms/core/schemas/renderer';
-import renderHTML from './markdocHTML';
-import renderReactStatic from './markdocReactStatic';
+import type { MarkdocRenderer } from '@studiocms/core/schemas/renderer';
+import renderHTML from './markdoc-renderers/markdocHTML';
+import renderReactStatic from './markdoc-renderers/markdocReactStatic';
 
 // Destructure the Markdoc configuration from the rendererConfig
 const {
 	markdocConfig: { argParse, transformConfig, renderType },
 } = rendererConfig;
 
-const renderers: markdocRenderer[] = [renderHTML(), renderReactStatic()];
+const renderers: MarkdocRenderer[] = [renderHTML(), renderReactStatic()];
 
 /**
  * Render a Markdown string into HTML using the Markdoc renderer

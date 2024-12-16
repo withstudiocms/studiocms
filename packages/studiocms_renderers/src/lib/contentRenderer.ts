@@ -1,14 +1,10 @@
-import type { Renderer } from '@studiocms/core/schemas/renderer';
+import { logger } from '@it-astro:logger:studiocms-renderer';
+import rendererConfig from 'studiocms:renderer/config';
+import renderAstroMD from './astro-remark';
+import renderMarkDoc from './markdoc';
+import renderAstroMDX from './mdx';
 
-/**
- * Content Renderer Type
- *
- * Renders content based on the renderer configuration
- */
-export type ContentRenderer = {
-	content: string;
-	renderer: Renderer;
-};
+const { renderer } = rendererConfig;
 
 /**
  * Content Renderer
@@ -30,9 +26,25 @@ export type ContentRenderer = {
  *   renderer: sampleRenderer,
  * });
  */
-export async function contentRenderer({ content, renderer }: ContentRenderer): Promise<string> {
-	// Assuming the renderer function processes the content and returns a string
-	return renderer(content);
+export async function contentRenderer(content: string): Promise<string> {
+	switch (renderer) {
+		case 'astro':
+			logger.debug('Using built-in renderer: astro remark');
+			return await renderAstroMD(content);
+		case 'markdoc':
+			logger.debug('Using built-in renderer: markdoc');
+			return await renderMarkDoc(content);
+		case 'mdx':
+			logger.debug('Using built-in renderer: mdx');
+			return await renderAstroMDX(content);
+		default:
+			if (renderer.renderer) {
+				logger.debug(`Using custom renderer: ${renderer.name}`);
+				return await renderer.renderer(content);
+			}
+			logger.debug('Using built-in renderer: astro remark');
+			return await renderAstroMD(content);
+	}
 }
 
 export default contentRenderer;
