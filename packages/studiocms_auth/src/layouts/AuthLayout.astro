@@ -10,6 +10,7 @@ import version from 'studiocms:version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
+import StaticAuthCheck from '../components/StaticAuthCheck.astro';
 import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
 
 interface Props {
@@ -17,9 +18,10 @@ interface Props {
 	description: string;
 	lang: string;
 	disableScreen?: boolean;
+	checkLogin?: boolean;
 }
 
-const { title, description, lang, disableScreen } = Astro.props;
+const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 
 // Get the site config
 const dbConfig = await studioCMS_SDK.GET.database.config();
@@ -87,11 +89,12 @@ const fallbackImageSrc =
 
 		</div>
 	</main>
-	<div 
+	{ checkLogin && <StaticAuthCheck server:defer /> }
+	<div
 		style="display: none;" 
-		id="login-page-configs" 
-		data-pagebg={loginPageBackground} 
-		data-pagecustomimage={loginPageCustomImage}
+		id="auth-pages-config" 
+		data-config_background={loginPageBackground} 
+		data-config_custom_image={loginPageCustomImage}
 	/>
   </body>
   <script>import "studiocms:auth/scripts/three";</script>

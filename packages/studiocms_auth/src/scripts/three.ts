@@ -7,8 +7,10 @@ import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
 import { validImages } from '../utils/validImages';
 
 // Get the current configuration for the login page
-const loginPageBackground = document.getElementById('login-page-configs')?.dataset.pagebg;
-const loginPageCustomImage = document.getElementById('login-page-configs')?.dataset.pagecustomimage;
+const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
+
+const loginPageBackground = configElement.dataset.config_background;
+const loginPageCustomImage = configElement.dataset.config_custom_image;
 const currentMode = document.documentElement.dataset.theme || 'dark';
 
 /**

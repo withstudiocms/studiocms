@@ -4,7 +4,6 @@ import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Input } from '@studiocms/ui/components';
-import StaticAuthCheck from '../components/StaticAuthCheck.astro';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
 const lang = 'en-us';
@@ -32,7 +31,12 @@ if (usernameAndPassword && SHOW_OAUTH) {
 	paragraph = t('sub-header-noprovider');
 }
 ---
-<AuthLayout title={t('title')} description={t('description')} lang={lang}>
+<AuthLayout 
+    title={t('title')} 
+    description={t('description')} 
+    lang={lang}
+    checkLogin
+    >
 
     <div slot="header" class="form-header">
         <h1>{t('header')}</h1>
@@ -52,8 +56,6 @@ if (usernameAndPassword && SHOW_OAUTH) {
     { allowUserRegistration && (
         <p slot="footer">{t('allow-registration-noaccount')} <a href={StudioCMSRoutes.authLinks.signupURL}>{t('allow-registration-register')}</a></p>
     )}
-
-    <StaticAuthCheck server:defer />
 
 </AuthLayout>
 
