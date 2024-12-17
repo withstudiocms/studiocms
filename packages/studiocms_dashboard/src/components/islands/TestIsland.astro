@@ -1,7 +1,7 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk/cache';
-const pageList = await studioCMS_SDK.GET.pages();
+import studioCMS_Cache from 'studiocms:sdk/cache';
+const pageList = await studioCMS_Cache.GET.pages();
 ---
 <div>
   <h2>Test Island</h2>
