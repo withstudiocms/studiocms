@@ -113,7 +113,7 @@ export interface SiteConfigCacheObject extends BaseCacheObject {
 /**
  * Represents a cache object that stores pages and site configuration data.
  */
-export interface CacheObject {
+export interface StudioCMSCacheObject {
 	pages: PageDataCacheObject[];
 	siteConfig: SiteConfigCacheObject | undefined;
 }

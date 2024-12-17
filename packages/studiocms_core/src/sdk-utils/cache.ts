@@ -2,10 +2,10 @@ import { sdk } from 'studiocms:config';
 import { CMSSiteConfigId } from '../consts';
 import studioCMS_SDK_GET from './get';
 import type {
-	CacheObject,
 	PageDataCacheObject,
 	STUDIOCMS_SDK_CACHE,
 	SiteConfigCacheObject,
+	StudioCMSCacheObject,
 } from './types';
 import studioCMS_SDK_UPDATE from './update';
 import { Expire, StudioCMS_SDK_Error } from './utils';
@@ -20,7 +20,7 @@ const {
 /**
  * Cache object to store content retrieved from the database.
  */
-const cache: CacheObject = {
+const cache: StudioCMSCacheObject = {
 	pages: [],
 	siteConfig: undefined,
 };
