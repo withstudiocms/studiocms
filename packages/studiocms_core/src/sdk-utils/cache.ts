@@ -6,13 +6,6 @@ import { Expire, StudioCMS_SDK_Error } from './utils';
 
 export type { STUDIOCMS_SDK_CACHE };
 
-/**
- * Configuration object for cache settings.
- *
- * @property {boolean} enabled - Indicates whether caching is enabled.
- * @property {string} lifetime - Specifies the duration for which the cache is valid.
- *                               The value should be in a human-readable format (e.g., '5m' for 5 minutes).
- */
 const cacheConfig: CacheConfig = {
 	enabled: true,
 	// TODO: Determine appropriate cache lifetime value to use.
