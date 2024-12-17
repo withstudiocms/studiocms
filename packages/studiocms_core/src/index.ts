@@ -1,5 +1,5 @@
 import type { AstroIntegration } from 'astro';
-import pkgJson, { name as pkgName } from '../package.json';
+import { name as pkgName } from '../package.json';
 import configDone from './hooks/config-done';
 import configSetup from './hooks/config-setup';
 import type { StudioCMSConfig } from './schemas';
@@ -16,7 +16,7 @@ export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
 	return {
 		name: pkgName,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, options, pkgJson),
+			'astro:config:setup': (params) => configSetup(params, options),
 			'astro:config:done': (params) => configDone(params),
 		},
 	};

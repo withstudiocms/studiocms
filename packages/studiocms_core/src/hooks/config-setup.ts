@@ -1,28 +1,32 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
-import type packageJson from '../../package.json';
+import { name, version } from '../../package.json';
 import { makeAPIRoute } from '../lib';
 import type { StudioCMSConfig } from '../schemas';
 
-type PackageJson = typeof packageJson;
-
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, options: StudioCMSConfig, { name, version }: PackageJson) => {
+	(params, options: StudioCMSConfig) => {
 		// Destructure the params
-		const { logger, injectRoute } = params;
+		const {
+			logger,
+			injectRoute,
+			config: {
+				root: { pathname: userSrcDir },
+			},
+		} = params;
 
-		// Destructure the options
-		const { verbose } = options;
+		// Create logInfo object
+		const logInfo = { logger, logLevel: 'info' as const, verbose: options.verbose };
 
 		// Log the setup
-		integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Core...');
+		integrationLogger(logInfo, 'Setting up StudioCMS Core...');
 
 		// Create resolvers
 		const { resolve } = createResolver(import.meta.url);
-		const { resolve: userSrcDir } = createResolver(params.config.root.pathname);
+		const { resolve: userSrcDirResolve } = createResolver(userSrcDir);
 
 		// Setup Virtual Imports
-		integrationLogger({ logger, logLevel: 'info', verbose }, 'Adding Virtual Imports...');
+		integrationLogger(logInfo, 'Adding Virtual Imports...');
 
 		addVirtualImports(params, {
 			name,
@@ -45,7 +49,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export { default as Avatar } from '${resolve('../components/Avatar.astro')}';
 				export { default as FormattedDate } from '${
 					options.overrides.FormattedDateOverride
-						? userSrcDir(options.overrides.FormattedDateOverride)
+						? userSrcDirResolve(options.overrides.FormattedDateOverride)
 						: resolve('../components/FormattedDate.astro')
 				}';
 				export { default as GenericHeader } from '${resolve('../components/GenericHeader.astro')}';
@@ -96,7 +100,6 @@ export const configSetup = defineUtility('astro:config:setup')(
 				'studiocms:sdk/types': `
 				export * from '${resolve('../sdk-utils/types.ts')}';
 				`,
-
 				'studiocms:sdk/cache': `
 				export * from '${resolve('../sdk-utils/cache.ts')}';
 				import studioCMS_Cache from '${resolve('../sdk-utils/cache.ts')}';
@@ -106,7 +109,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 		});
 
 		// Inject SDK API Routes
-		integrationLogger({ logger, logLevel: 'info', verbose }, 'Injecting SDK Routes...');
+		integrationLogger(logInfo, 'Injecting SDK Routes...');
 
 		const sdkRouteResolver = makeAPIRoute('sdk');
 
@@ -122,7 +125,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 			prerender: true,
 		});
 
-		integrationLogger({ logger, logLevel: 'info', verbose }, 'Core Setup Complete...');
+		integrationLogger(logInfo, 'Core Setup Complete...');
 	}
 );
 

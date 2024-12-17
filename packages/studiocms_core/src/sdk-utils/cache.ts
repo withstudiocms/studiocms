@@ -100,20 +100,10 @@ export interface STUDIOCMS_SDK_CACHE {
 
 const cache: {
 	pages: PageDataCacheObject[];
-	siteConfig: SiteConfigCacheObject;
+	siteConfig: SiteConfigCacheObject | undefined;
 } = {
 	pages: [],
-	siteConfig: {
-		lastCacheUpdate: new Date('2021-01-01T00:00:00Z'), // Default to a date in the past to force an update on first request.
-		data: {
-			title: 'StudioCMS',
-			description: 'StudioCMS',
-			defaultOgImage: null,
-			loginPageBackground: 'studiocms-curves',
-			loginPageCustomImage: null,
-			siteIcon: null,
-		},
-	},
+	siteConfig: undefined,
 };
 
 // Calculations for cache lifetime in milliseconds
@@ -247,6 +237,15 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			return cache.pages.map((cachedObject) => cachedObject);
 		},
 		siteConfig: async () => {
+			if (!cache.siteConfig) {
+				const updatedData = await studioCMS_SDK_GET.database.config();
+				if (updatedData) {
+					cache.siteConfig = { lastCacheUpdate: new Date(), data: updatedData };
+					return cache.siteConfig;
+				}
+				throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
+			}
+
 			if (isEntryExpired(cache.siteConfig)) {
 				const updatedData = await studioCMS_SDK_GET.database.config();
 				if (updatedData) {
