@@ -28,6 +28,21 @@ export interface SiteConfigCacheObject {
 	data: SiteConfig;
 }
 
+// Calculations for cache lifetime in milliseconds
+
+// TODO: Determine appropriate cache lifetime value to use.
+// Need to either pick "The best" value or allow the user to configure it.
+
+// const oneMinute = 1000 * 60;
+// fiveMinutes = 1000 * 60 * 5;
+// tenMinutes = 1000 * 60 * 10;
+// fifteenMinutes = 1000 * 60 * 15;
+// thirtyMinutes = 1000 * 60 * 30;
+// oneHour = 1000 * 60 * 60;
+// twentyFourHours = 1000 * 60 * 60 * 24;
+
+const cacheLifetime = 1000 * 60 * 5;
+
 /**
  * Interface representing the cache utility for the STUDIOCMS SDK.
  */
@@ -105,21 +120,6 @@ const cache: {
 	pages: [],
 	siteConfig: undefined,
 };
-
-// Calculations for cache lifetime in milliseconds
-
-// TODO: Determine appropriate cache lifetime value to use.
-// Need to either pick "The best" value or allow the user to configure it.
-
-// const oneMinute = 1000 * 60;
-// fiveMinutes = 1000 * 60 * 5;
-// tenMinutes = 1000 * 60 * 10;
-// fifteenMinutes = 1000 * 60 * 15;
-// thirtyMinutes = 1000 * 60 * 30;
-// oneHour = 1000 * 60 * 60;
-// twentyFourHours = 1000 * 60 * 60 * 24;
-
-const cacheLifetime = 1000 * 60 * 5;
 
 /**
  * Checks if a cache entry has expired based on the current time and the cache lifetime.
