@@ -118,27 +118,6 @@ export interface StudioCMSCacheObject {
 	siteConfig: SiteConfigCacheObject | undefined;
 }
 
-/**
- * Represents a unit of time.
- *
- * @remarks
- * Allowed units are:
- * - 'm' for minutes
- * - 'h' for hours
- */
-export type TimeUnit = 'm' | 'h';
-
-/**
- * Represents a time string pattern consisting of a numeric value followed by a time unit.
- *
- * @example
- * ```typescript
- * const time: TimeString = "10m"; // 10 minutes
- * const time: TimeString = "5m";  // 5 minutes
- * ```
- */
-export type TimeString = `${number}${TimeUnit}`;
-
 export type GenericTable = Table<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	any,

@@ -15,8 +15,6 @@ import type {
 	CombinedRank,
 	CombinedUserData,
 	SingleRank,
-	TimeString,
-	TimeUnit,
 	tsPageDataSelect,
 	tsPermissionsSelect,
 	tsUsersSelect,
@@ -197,53 +195,6 @@ export function generateRandomIDNumber(length: number): number {
 }
 
 /**
- * Converts a time string to milliseconds.
- *
- * @param timeString - A string representing the time duration.
- *                     It should be in the format of a number followed by a unit,
- *                     such as '5m' for 5 minutes or '1h' for 1 hour.
- *
- * @returns The time duration in milliseconds.
- *
- * @throws Will throw an error if the input string is not in the correct format.
- *
- * @example
- * ```typescript
- * timeToMilliseconds('5m'); // Returns 300000
- * timeToMilliseconds('1h'); // Returns 3600000
- * ```
- */
-export function timeToMilliseconds(timeString: TimeString): number {
-	if (typeof timeString !== 'string') {
-		throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
-	}
-
-	// Define time multipliers
-	const timeUnits: Record<TimeUnit, number> = {
-		m: 60 * 1000, // Minutes to milliseconds
-		h: 60 * 60 * 1000, // Hours to milliseconds
-	};
-
-	// Extract the numeric value and unit from the input string
-	const match = timeString.match(/^(\d+)([mh])$/);
-	if (!match) {
-		throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
-	}
-
-	const valMatch = match[1];
-
-	if (!valMatch) {
-		throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
-	}
-
-	const value = Number.parseInt(valMatch, 10); // Numeric portion
-	const unit = match[2] as TimeUnit; // Unit portion, safely cast to TimeUnit
-
-	// Return the converted time in milliseconds
-	return value * timeUnits[unit];
-}
-
-/**
  * Creates a function to check if a cache entry has expired based on the current time and the cache lifetime.
  *
  * @param cacheConfig - The configuration object for the cache, which includes the lifetime of the cache.
@@ -251,9 +202,6 @@ export function timeToMilliseconds(timeString: TimeString): number {
  */
 export function Expire(cacheConfig: CacheConfig) {
 	return function isEntryExpired(entry: BaseCacheObject): boolean {
-		return (
-			new Date().getTime() - entry.lastCacheUpdate.getTime() >
-			timeToMilliseconds(cacheConfig.lifetime)
-		);
+		return new Date().getTime() - entry.lastCacheUpdate.getTime() > cacheConfig.lifetime;
 	};
 }

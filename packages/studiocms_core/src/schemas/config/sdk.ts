@@ -1,6 +1,36 @@
 import { z } from 'astro/zod';
 import { defaultCacheLifeTime } from '../../consts';
-import type { TimeString } from '../../sdk-utils/types';
+
+const TimeUnitSchema = z.union([z.literal('m'), z.literal('h')]);
+
+type TimeUnit = z.infer<typeof TimeUnitSchema>;
+
+const TimeStringSchema = z
+	.string()
+	.regex(/^\d+(m|h)$/, {
+		message: "Invalid time string format. Must be a number followed by 'm' or 'h'.",
+	})
+	.transform<number>((value) => {
+		// Define time multipliers
+		const timeUnits: Record<TimeUnit, number> = {
+			m: 60 * 1000, // Minutes to milliseconds
+			h: 60 * 60 * 1000, // Hours to milliseconds
+		};
+
+		// Extract the numeric value and unit from the input string
+		const match = value.match(/^(\d+)([mh])$/);
+
+		if (!match) {
+			throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
+		}
+
+		const val = Number.parseInt(match[1] as string, 10);
+		const unit = match[2] as TimeUnit;
+
+		return val * timeUnits[unit];
+	});
+
+export type TimeString = typeof TimeStringSchema._input;
 
 /**
  * Schema for cache configuration.
@@ -12,7 +42,7 @@ const CacheConfigSchema = z.object({
 	 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
 	 * @default '5m'
 	 */
-	lifetime: z.custom<TimeString>().optional().default(defaultCacheLifeTime),
+	lifetime: TimeStringSchema.optional().default(defaultCacheLifeTime),
 });
 
 /**
@@ -24,13 +54,20 @@ const CacheConfigSchema = z.object({
  * - `enabled` (boolean): Indicates if the cache is enabled.
  *   - @default true
  */
-const ProcessedCacheConfigSchema = CacheConfigSchema.extend({
+const ProcessedCacheConfigSchema = z.object({
 	/**
 	 * Cache Enabled
 	 *
 	 * @default true
 	 */
 	enabled: z.boolean().default(true),
+	/**
+	 * Cache Lifetime
+	 *
+	 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
+	 * @default '5m'
+	 */
+	lifetime: TimeStringSchema.default(defaultCacheLifeTime),
 });
 
 /**
@@ -73,7 +110,7 @@ const SDKCacheSchema = z
 		if (typeof cacheConfig === 'boolean') {
 			return {
 				enabled: cacheConfig,
-				lifetime: defaultCacheLifeTime,
+				lifetime: TimeStringSchema.parse(defaultCacheLifeTime),
 			};
 		}
 		return { enabled: true, lifetime: cacheConfig.lifetime };
@@ -128,7 +165,7 @@ export const SDKSchema = z
 			return {
 				cacheConfig: {
 					enabled: sdkConfig,
-					lifetime: defaultCacheLifeTime,
+					lifetime: TimeStringSchema.parse(defaultCacheLifeTime),
 				},
 			};
 		}
