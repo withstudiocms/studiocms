@@ -52,13 +52,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
 
+  function removeTrailingSlash(url: string) {
+    return url.replace(/\/$/, '');
+  }
+
   function sidebarLinks() {
     const sidebar = document.querySelector<HTMLElement>('.sidebar')!;
     const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
       
     for (const link of sidebarLinks) {
       link.classList.remove('active');
-      if (window.location.pathname === new URL(link.href).pathname) {
+      if (removeTrailingSlash(window.location.pathname) === removeTrailingSlash(new URL(link.href).pathname)) {
         link.classList.add('active');
       }
     }
