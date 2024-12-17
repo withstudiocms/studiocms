@@ -1,6 +1,7 @@
 import studioCMS_SDK_AUTH from './auth';
 import studioCMS_SDK_DELETE from './delete';
 import studioCMS_SDK_GET from './get';
+import studioCMS_SDK_INIT from './init';
 import studioCMS_SDK_POST from './post';
 import type { STUDIOCMS_SDK } from './types';
 import studioCMS_SDK_UPDATE from './update';
@@ -28,6 +29,7 @@ export const studioCMS_SDK: STUDIOCMS_SDK = {
 	UPDATE: studioCMS_SDK_UPDATE,
 	DELETE: studioCMS_SDK_DELETE,
 	AUTH: studioCMS_SDK_AUTH,
+	INIT: studioCMS_SDK_INIT,
 };
 
 export default studioCMS_SDK;

@@ -1,7 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { db, eq } from 'astro:db';
 import { tsPageData } from '../tables';
-import type { CombinedPageData, STUDIOCMS_SDK } from '../types';
+import type { CombinedPageData, STUDIOCMS_SDK_GET } from '../types';
 import { StudioCMS_SDK_Error, collectPageData } from '../utils';
 
 /**
@@ -10,7 +10,7 @@ import { StudioCMS_SDK_Error, collectPageData } from '../utils';
  * @param packageName - The name of the package for which to retrieve pages.
  * @returns A promise that resolves to an array of CombinedPageData objects.
  */
-export const getPackagePages: STUDIOCMS_SDK['GET']['packagePages'] = async (packageName) => {
+export const getPackagePages: STUDIOCMS_SDK_GET['packagePages'] = async (packageName) => {
 	try {
 		const pages: CombinedPageData[] = [];
 

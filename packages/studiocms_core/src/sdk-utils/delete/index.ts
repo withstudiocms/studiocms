@@ -7,7 +7,7 @@ import {
 	tsPageDataTags,
 	tsPermissions,
 } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_DELETE } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -45,7 +45,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @param {string} id - The ID of the diff tracking to delete.
  * @returns {Promise<{status: string, message: string}>} - The result of the delete operation.
  */
-export const studioCMS_SDK_DELETE: STUDIOCMS_SDK['DELETE'] = {
+export const studioCMS_SDK_DELETE: STUDIOCMS_SDK_DELETE = {
 	page: async (id) => {
 		try {
 			return await db

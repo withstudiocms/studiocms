@@ -1,4 +1,4 @@
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_GET } from '../types';
 import getDatabase from './getDatabase';
 import getDatabaseEntry from './getDatabaseEntry';
 import getDatabaseTable from './getDatabaseTable';
@@ -10,7 +10,7 @@ export { getDatabase, getDatabaseEntry, getDatabaseTable, getPackagePages, getPe
 /**
  * Contains methods for getting data from the database.
  */
-export const studioCMS_SDK_GET: STUDIOCMS_SDK['GET'] = {
+export const studioCMS_SDK_GET: STUDIOCMS_SDK_GET = {
 	database: getDatabase,
 	databaseEntry: getDatabaseEntry,
 	databaseTable: getDatabaseTable,

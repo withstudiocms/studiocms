@@ -1,8 +1,6 @@
-import { db } from 'astro:db';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import studioCMS_SDK from 'studiocms:sdk';
-import { tsSiteConfig } from '@studiocms/core/sdk-utils/tables';
 import type { APIContext } from 'astro';
 
 function parseFormDataEntryToString(formData: FormData, key: string): string | null {
@@ -44,16 +42,12 @@ export async function POST(context: APIContext): Promise<Response> {
 	// Set the default og image to the hero image if not provided
 	const DefaultHeroOrUserSetOgImage = ogImage || HERO_IMAGE;
 
-	// Generate the page IDs
-	const homePageID = crypto.randomUUID();
-	const aboutPageID = crypto.randomUUID();
-
 	let userId = '';
 
 	if (!title || !description) {
 		return new Response(
 			JSON.stringify({
-				error: 'Missing Data: Title and Description are required',
+				error: 'Missing Data: Site Title and Description are required',
 			}),
 			{
 				status: 400,
@@ -89,7 +83,7 @@ export async function POST(context: APIContext): Promise<Response> {
 			return new Response(
 				JSON.stringify({
 					error:
-						'Invalid Password: Password must be between 6 and 255 characters, not be a known unsafe password, and not be in the pwned password database',
+						'Invalid Password: Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.',
 				}),
 				{
 					status: 400,
@@ -116,7 +110,7 @@ export async function POST(context: APIContext): Promise<Response> {
 		if (!oAuthAdmin || oAuthAdmin) {
 			return new Response(
 				JSON.stringify({
-					error: 'oAuth Admin setup not yet implemented',
+					error: 'Initial oAuth admin setup is not yet implemented',
 				}),
 				{
 					status: 400,
@@ -143,79 +137,80 @@ export async function POST(context: APIContext): Promise<Response> {
 			}
 		);
 	}
-	await db
-		.insert(tsSiteConfig)
-		.values({ title, description, defaultOgImage: DefaultHeroOrUserSetOgImage })
-		.catch(() => {
-			return new Response(
-				JSON.stringify({
-					error: 'Config Error',
-				}),
-				{
-					status: 400,
-				}
-			);
-		});
 
-	await studioCMS_SDK.POST.databaseEntry
-		.pages(
+	await studioCMS_SDK.INIT.siteConfig({
+		title,
+		description,
+		defaultOgImage: DefaultHeroOrUserSetOgImage,
+	}).catch(() => {
+		return new Response(
+			JSON.stringify({
+				error: 'Config insert error',
+			}),
 			{
-				id: homePageID,
-				title: 'Home',
-				slug: 'index',
-				showOnNav: true,
-				contentLang: 'default',
-				description: 'Index page',
-				heroImage: DefaultHeroOrUserSetOgImage,
-				authorId: userId,
-				package: 'studiocms',
-				publishedAt: new Date(),
-				showAuthor: false,
-				showContributors: false,
-				updatedAt: new Date(),
+				status: 400,
+			}
+		);
+	});
+
+	await studioCMS_SDK.INIT.ghostUser().catch(() => {
+		return new Response(
+			JSON.stringify({
+				error: 'Default Ghost user insert error',
+			}),
+			{
+				status: 400,
+			}
+		);
+	});
+
+	await studioCMS_SDK.POST.databaseEntries
+		.pages([
+			{
+				pageData: {
+					title: 'Home',
+					slug: 'index',
+					showOnNav: true,
+					contentLang: 'default',
+					description: 'Index page',
+					heroImage: DefaultHeroOrUserSetOgImage,
+					authorId: userId,
+					package: 'studiocms',
+					publishedAt: new Date(),
+					showAuthor: false,
+					showContributors: false,
+					updatedAt: new Date(),
+				},
+				pageContent: {
+					content: LOREM_IPSUM,
+					contentLang: 'default',
+				},
 			},
 			{
-				content: LOREM_IPSUM,
-				contentLang: 'default',
-			}
-		)
-		.catch(() => {
-			return new Response(
-				JSON.stringify({
-					error: 'Home Page Insert Error',
-				}),
-				{
-					status: 400,
-				}
-			);
-		});
-
-	await studioCMS_SDK.POST.databaseEntry
-		.pages(
-			{
-				id: aboutPageID,
-				title: 'About',
-				slug: 'about',
-				showOnNav: true,
-				contentLang: 'default',
-				description: 'About page',
-				heroImage: DefaultHeroOrUserSetOgImage,
-				authorId: userId,
-				package: 'studiocms',
-				publishedAt: new Date(),
-				showAuthor: false,
-				showContributors: false,
-				updatedAt: new Date(),
+				pageData: {
+					title: 'About',
+					slug: 'about',
+					showOnNav: true,
+					contentLang: 'default',
+					description: 'About page',
+					heroImage: DefaultHeroOrUserSetOgImage,
+					authorId: userId,
+					package: 'studiocms',
+					publishedAt: new Date(),
+					showAuthor: false,
+					showContributors: false,
+					updatedAt: new Date(),
+				},
+				pageContent: {
+					content: LOREM_IPSUM,
+					contentLang: 'default',
+				},
 			},
-			{
-				content: LOREM_IPSUM,
-				contentLang: 'default',
-			}
-		)
+		])
 		.catch(() => {
 			return new Response(
 				JSON.stringify({
-					error: 'About Page Insert Error',
+					error: 'Default pages insert error',
 				}),
 				{
 					status: 400,

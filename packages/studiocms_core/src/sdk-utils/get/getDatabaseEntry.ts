@@ -1,7 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { and, db, eq } from 'astro:db';
 import { tsPageData, tsUsers } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_GET } from '../types';
 import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
 
 /**
@@ -33,7 +33,7 @@ import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils'
  * }
  * ```
  */
-export const getDatabaseEntry: STUDIOCMS_SDK['GET']['databaseEntry'] = {
+export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 	users: {
 		/**
 		 * Retrieves a database entry by its ID.

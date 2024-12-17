@@ -1,7 +1,7 @@
 /// <reference types="@astrojs/db" />
 import { db } from 'astro:db';
 import { tsPermissions, tsUsers } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_GET } from '../types';
 import { StudioCMS_SDK_Error, combineRanks, verifyRank } from '../utils';
 
 /**
@@ -15,7 +15,7 @@ import { StudioCMS_SDK_Error, combineRanks, verifyRank } from '../utils';
  *
  * @returns {Promise<Array>} - A promise that resolves to an array of users with the specified permission level.
  */
-export const getPermissionsLists: STUDIOCMS_SDK['GET']['permissionsLists'] = {
+export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 	all: async () => {
 		try {
 			const [currentPermittedUsers, existingUsers] = await db.batch([

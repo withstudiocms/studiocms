@@ -22,3 +22,10 @@ export const studioCMSSocials: StudioCMSSocials = {
 	githubContributors: 'https://github.com/withstudiocms/studiocms/graphs/contributors',
 	discord: 'https://chat.studiocms.dev',
 };
+
+export const GhostUserDefaults = {
+	id: '_StudioCMS_Ghost_User_',
+	name: 'Ghost (deleted user)',
+	username: 'studiocms_ghost_user',
+	avatar: 'https://seccdn.libravatar.org/static/img/mm/80.png',
+};

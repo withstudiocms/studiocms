@@ -1,6 +1,6 @@
 import { db, eq } from 'astro:db';
 import { tsPermissions } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_AUTH } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -11,7 +11,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<any>} - A promise that resolves to the user's permissions.
  * @throws {StudioCMS_SDK_Error} - Throws an error if there is an issue retrieving the user's permissions.
  */
-export const authPermission: STUDIOCMS_SDK['AUTH']['permission'] = {
+export const authPermission: STUDIOCMS_SDK_AUTH['permission'] = {
 	currentStatus: async (userId) => {
 		try {
 			return await db.select().from(tsPermissions).where(eq(tsPermissions.user, userId)).get();

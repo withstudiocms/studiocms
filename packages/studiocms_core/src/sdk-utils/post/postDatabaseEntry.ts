@@ -8,13 +8,13 @@ import {
 	tsPageDataTags,
 	tsPermissions,
 } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_POST } from '../types';
 import { StudioCMS_SDK_Error, generateRandomIDNumber } from '../utils';
 
 /**
  * Utility functions for adding various entries to the database.
  */
-export const postDatabaseEntry: STUDIOCMS_SDK['POST']['databaseEntry'] = {
+export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 	pages: async (pageData, pageContent) => {
 		try {
 			const newContentID = pageData.id || crypto.randomUUID().toString();

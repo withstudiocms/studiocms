@@ -1,6 +1,6 @@
 import { and, db, eq } from 'astro:db';
 import { tsOAuthAccounts } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_AUTH } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -20,7 +20,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<Object>} An object containing the status and message of the deletion operation.
  * @throws {StudioCMS_SDK_Error} Throws an error if the account deletion fails.
  */
-export const authOAuth: STUDIOCMS_SDK['AUTH']['oAuth'] = {
+export const authOAuth: STUDIOCMS_SDK_AUTH['oAuth'] = {
 	create: async (data) => {
 		try {
 			return await db.insert(tsOAuthAccounts).values(data).returning().get();

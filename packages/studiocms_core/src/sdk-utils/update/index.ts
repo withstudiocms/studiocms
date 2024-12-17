@@ -7,7 +7,7 @@ import {
 	tsPermissions,
 	tsSiteConfig,
 } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_UPDATE } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -24,7 +24,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * Each method accepts a `data` parameter which contains the fields to be updated and the identifier of the record to be updated.
  * The methods use the `db.update` function to perform the update operation, and the `returning().get()` chain to return the updated record.
  */
-export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = {
+export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 	page: async (data) => {
 		try {
 			return await db

@@ -2,7 +2,7 @@
 import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '../../consts';
 import { tsPageData, tsSiteConfig, tsUsers } from '../tables';
-import type { CombinedPageData, CombinedUserData, STUDIOCMS_SDK, SiteConfig } from '../types';
+import type { CombinedPageData, CombinedUserData, STUDIOCMS_SDK_GET, SiteConfig } from '../types';
 import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
 
 /**
@@ -14,7 +14,7 @@ import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils'
  * @property {Function} pages - Asynchronously retrieves and combines page data from the database.
  * @property {Function} config - Asynchronously retrieves the site configuration from the database.
  */
-export const getDatabase: STUDIOCMS_SDK['GET']['database'] = {
+export const getDatabase: STUDIOCMS_SDK_GET['database'] = {
 	users: async () => {
 		try {
 			const combinedUserData: CombinedUserData[] = [];

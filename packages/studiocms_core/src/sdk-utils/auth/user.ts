@@ -1,6 +1,7 @@
 import { db, eq } from 'astro:db';
-import { tsUsers } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import { GhostUserDefaults } from '../../consts';
+import { tsPermissions, tsUsers } from '../tables';
+import type { STUDIOCMS_SDK_AUTH } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -21,10 +22,12 @@ import { StudioCMS_SDK_Error } from '../utils';
  *
  * @todo Implement the delete function to safely remove user records without causing errors due to references in other tables.
  */
-export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
+export const authUser: STUDIOCMS_SDK_AUTH['user'] = {
 	create: async (newUserData) => {
 		try {
-			return await db.insert(tsUsers).values(newUserData).returning().get();
+			const newUser = await db.insert(tsUsers).values(newUserData).returning().get();
+			await db.insert(tsPermissions).values({ user: newUser.id, rank: 'visitor' });
+			return newUser;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error creating user: ${error.message}`, error.stack);
@@ -62,6 +65,22 @@ export const authUser: STUDIOCMS_SDK['AUTH']['user'] = {
 				`${error}`
 			);
 		}
+	},
+	ghost: {
+		verifyExists: async () => {
+			const ghostUser = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, GhostUserDefaults.id))
+				.get();
+			if (!ghostUser) {
+				return false;
+			}
+			return true;
+		},
+		create: async () => await db.insert(tsUsers).values(GhostUserDefaults).returning().get(),
+		get: async () =>
+			await db.select().from(tsUsers).where(eq(tsUsers.id, GhostUserDefaults.id)).get(),
 	},
 	// TODO: Implement delete function that wont error since
 	// there could be references to the user in other tables

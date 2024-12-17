@@ -49,7 +49,8 @@
     "./sdk-utils/get": "./src/sdk-utils/get/index.ts",
     "./sdk-utils/post": "./src/sdk-utils/post/index.ts",
     "./sdk-utils/types": "./src/sdk-utils/types/index.ts",
-    "./sdk-utils/update": "./src/sdk-utils/update/index.ts"
+    "./sdk-utils/update": "./src/sdk-utils/update/index.ts",
+    "./sdk-utils/init": "./src/sdk-utils/init/index.ts"
   },
   "type": "module",
   "dependencies": {

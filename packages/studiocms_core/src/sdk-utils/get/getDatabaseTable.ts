@@ -13,7 +13,7 @@ import {
 	tsSiteConfig,
 	tsUsers,
 } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_GET } from '../types';
 
 /**
  * Retrieves various database tables
@@ -29,7 +29,7 @@ import type { STUDIOCMS_SDK } from '../types';
  * @property {Function} siteConfig - Fetches the site configuration table with a specific site config ID.
  * @property {Function} diffTracking - Fetches the diff tracking table.
  */
-export const getDatabaseTable: STUDIOCMS_SDK['GET']['databaseTable'] = {
+export const getDatabaseTable: STUDIOCMS_SDK_GET['databaseTable'] = {
 	users: async () => await db.select().from(tsUsers),
 	oAuthAccounts: async () => await db.select().from(tsOAuthAccounts),
 	sessionTable: async () => await db.select().from(tsSessionTable),

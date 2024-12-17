@@ -1,6 +1,6 @@
 import { db, eq } from 'astro:db';
 import { tsSessionTable, tsUsers } from '../tables';
-import type { STUDIOCMS_SDK } from '../types';
+import type { STUDIOCMS_SDK_AUTH } from '../types';
 import { StudioCMS_SDK_Error } from '../utils';
 
 /**
@@ -27,7 +27,7 @@ import { StudioCMS_SDK_Error } from '../utils';
  * @returns {Promise<Object>} The updated session object.
  * @throws {StudioCMS_SDK_Error} If an error occurs while updating the session.
  */
-export const authSession: STUDIOCMS_SDK['AUTH']['session'] = {
+export const authSession: STUDIOCMS_SDK_AUTH['session'] = {
 	create: async (data) => {
 		try {
 			return await db
