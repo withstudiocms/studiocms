@@ -95,7 +95,6 @@ export interface BaseCacheObject {
  * @property {CombinedPageData} data - The combined data of the page stored in the cache.
  */
 export interface PageDataCacheObject extends BaseCacheObject {
-	id: string;
 	data: CombinedPageData;
 }
 
@@ -114,7 +113,7 @@ export interface SiteConfigCacheObject extends BaseCacheObject {
  * Represents a cache object that stores pages and site configuration data.
  */
 export interface StudioCMSCacheObject {
-	pages: PageDataCacheObject[];
+	pages: Map<string, PageDataCacheObject>;
 	siteConfig: SiteConfigCacheObject | undefined;
 }
 

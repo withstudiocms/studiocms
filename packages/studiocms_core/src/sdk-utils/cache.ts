@@ -17,11 +17,13 @@ const {
 	cacheConfig: { enabled: isEnabled },
 } = sdk;
 
+const pagesCacheMap = new Map<string, PageDataCacheObject>();
+
 /**
  * Cache object to store content retrieved from the database.
  */
 const cache: StudioCMSCacheObject = {
-	pages: [],
+	pages: pagesCacheMap,
 	siteConfig: undefined,
 };
 
@@ -51,7 +53,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						};
 					}
 
-					const isCached = cache.pages.find((cachedObject) => cachedObject.id === id);
+					const isCached = cache.pages.get(id);
 
 					if (isCached && !isEntryExpired(isCached)) {
 						return isCached;
@@ -72,8 +74,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!newData) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
-					const dataToInsert = { id, lastCacheUpdate: new Date(), data: newData };
-					cache.pages.push(dataToInsert);
+					const dataToInsert = { lastCacheUpdate: new Date(), data: newData };
+					cache.pages.set(id, dataToInsert);
 					return dataToInsert;
 				} catch (error) {
 					if (error instanceof StudioCMS_SDK_Error) {
@@ -96,10 +98,11 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 							data: pageData,
 						};
 					}
-					const isCached = cache.pages.find(
+					const cacheMap = cache.pages.values();
+					const cacheArray = Array.from(cacheMap);
+					const isCached = cacheArray.find(
 						(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 					);
-
 					if (isCached && !isEntryExpired(isCached)) {
 						return isCached;
 					}
@@ -120,8 +123,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
 
-					const dataToInsert = { id: newData.id, lastCacheUpdate: new Date(), data: newData };
-					cache.pages.push(dataToInsert);
+					const dataToInsert = { lastCacheUpdate: new Date(), data: newData };
+					cache.pages.set(newData.id, dataToInsert);
 					return dataToInsert;
 				} catch (error) {
 					if (error instanceof StudioCMS_SDK_Error) {
@@ -139,26 +142,24 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!pages) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
-					return pages.map((data) => ({ id: data.id, lastCacheUpdate: new Date(), data }));
+					return pages.map((data) => ({ lastCacheUpdate: new Date(), data }));
 				}
 				// Check if cache is empty
-				if (cache.pages.length === 0) {
+				if (cache.pages.size === 0) {
 					const updatedData = await studioCMS_SDK_GET.database.pages();
 					if (updatedData) {
-						cache.pages = updatedData.map((data) => ({
-							id: data.id,
-							lastCacheUpdate: new Date(),
-							data,
-						}));
-						return cache.pages;
+						for (const data of updatedData) {
+							cache.pages.set(data.id, { lastCacheUpdate: new Date(), data });
+						}
+						return updatedData.map((data) => ({ lastCacheUpdate: new Date(), data }));
 					}
 					throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
 				}
 
 				// Check if any cache entry is expired
-				for (const page of cache.pages) {
+				for (const [, page] of cache.pages) {
 					if (isEntryExpired(page)) {
-						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(page.id);
+						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(page.data.id);
 						if (updatedData) {
 							page.lastCacheUpdate = new Date();
 							page.data = updatedData;
@@ -170,20 +171,23 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				const currentPagesInDB = await studioCMS_SDK_GET.database.pages();
 
 				// Check if the number of pages in the database has changed
-				if (currentPagesInDB.length !== cache.pages.length) {
+				if (currentPagesInDB.length !== cache.pages.size) {
 					const updatedData = await studioCMS_SDK_GET.database.pages();
 					if (updatedData) {
-						cache.pages = updatedData.map((data) => ({
-							id: data.id,
-							lastCacheUpdate: new Date(),
-							data,
-						}));
-						return cache.pages;
+						cache.pages.clear();
+						for (const data of updatedData) {
+							cache.pages.set(data.id, { lastCacheUpdate: new Date(), data });
+						}
+						return updatedData.map((data) => ({ id: data.id, lastCacheUpdate: new Date(), data }));
 					}
 					throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 				}
 
-				return cache.pages.map((cachedObject) => cachedObject);
+				// Return all cached pages
+				const cacheMap = cache.pages.values();
+				const cacheArray = Array.from(cacheMap);
+				const cacheRemapped = cacheArray.map((cachedObject) => cachedObject.data);
+				return cacheRemapped.map((data) => ({ lastCacheUpdate: new Date(), data }));
 			} catch (error) {
 				if (error instanceof StudioCMS_SDK_Error) {
 					throw new StudioCMS_SDK_Error(error.message);
@@ -237,10 +241,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!isEnabled) {
 						return;
 					}
-					const index = cache.pages.findIndex((cachedObject) => cachedObject.id === id);
-					if (index !== -1) {
-						cache.pages.splice(index, 1);
-					}
+					cache.pages.delete(id);
 				} catch (error) {
 					if (error instanceof Error) {
 						throw new StudioCMS_SDK_Error(`Error clearing cache: ${error.message}`, error.stack);
@@ -253,11 +254,14 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!isEnabled) {
 						return;
 					}
-					const index = cache.pages.findIndex(
-						(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
-					);
-					if (index !== -1) {
-						cache.pages.splice(index, 1);
+					const index = [];
+					for (const [key, cachedObject] of cache.pages.entries()) {
+						if (cachedObject.data.slug === slug && cachedObject.data.package === pkg) {
+							index.push(key);
+						}
+					}
+					for (const i of index) {
+						cache.pages.delete(i);
 					}
 				} catch (error) {
 					if (error instanceof Error) {
@@ -272,7 +276,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				if (!isEnabled) {
 					return;
 				}
-				cache.pages = [];
+				cache.pages.clear();
 			} catch (error) {
 				if (error instanceof Error) {
 					throw new StudioCMS_SDK_Error(`Error clearing cache: ${error.message}`, error.stack);
@@ -297,7 +301,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 
 						return { id, lastCacheUpdate: new Date(), data: updatedData };
 					}
-					const isCached = cache.pages.find((cachedObject) => cachedObject.id === id);
+					const isCached = cache.pages.get(id);
 					if (!isCached) {
 						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 					}
@@ -310,10 +314,9 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
-					isCached.lastCacheUpdate = new Date();
-					isCached.data = updatedData;
+					cache.pages.set(id, { lastCacheUpdate: new Date(), data: updatedData });
 
-					return isCached;
+					return { id, lastCacheUpdate: new Date(), data: updatedData };
 				} catch (error) {
 					if (error instanceof StudioCMS_SDK_Error) {
 						throw new StudioCMS_SDK_Error(error.message);
@@ -335,7 +338,9 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 
 						return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
 					}
-					const isCached = cache.pages.find(
+					const cacheMap = cache.pages.values();
+					const cacheArray = Array.from(cacheMap);
+					const isCached = cacheArray.find(
 						(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 					);
 
@@ -359,10 +364,11 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
-					isCached.lastCacheUpdate = new Date();
-					isCached.data = updatedData;
+					const dataToInsert = { lastCacheUpdate: new Date(), data: updatedData };
 
-					return isCached;
+					cache.pages.set(updatedData.id, dataToInsert);
+
+					return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
 				} catch (error) {
 					if (error instanceof StudioCMS_SDK_Error) {
 						throw new StudioCMS_SDK_Error(error.message);

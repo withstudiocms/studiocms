@@ -17,7 +17,7 @@ const pageList = await studioCMS_SDK_Cache.GET.pages();
     <h3>Page List</h3>
   </div>
   <ul>
-    {pageList.map(({ id, data: { title } }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
+    {pageList.map(({ data: { id, title } }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
   </ul>
 
   <p>Last Database Update: <span id="current-display-last-update">N/A</span></p>
@@ -49,7 +49,7 @@ const pageList = await studioCMS_SDK_Cache.GET.pages();
 
     if (id) {
       // find the page data from the list
-      const pageData = pageDataResponse.pages.find((page) => page.id === id);
+      const pageData = pageDataResponse.pages.find((page) => page.data.id === id);
 
       if (pageData) {
         currentDisplayData.innerHTML = `
