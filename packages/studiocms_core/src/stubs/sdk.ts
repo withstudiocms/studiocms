@@ -201,6 +201,32 @@ sdkDTS.addModule('studiocms:sdk/types', {
 	],
 });
 
+sdkDTS.addModule('studiocms:sdk/cache', {
+	defaultExport: {
+		typeDef: 'STUDIOCMS_SDK_CACHE',
+	},
+	namedExports: [
+		{
+			name: 'studioCMS_Cache',
+			typeDef: 'STUDIOCMS_SDK_CACHE',
+		},
+	],
+	typeExports: [
+		{
+			name: 'PageDataCacheObject',
+			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').PageDataCacheObject`,
+		},
+		{
+			name: 'SiteConfigCacheObject',
+			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').SiteConfigCacheObject`,
+		},
+		{
+			name: 'STUDIOCMS_SDK_CACHE',
+			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').STUDIOCMS_SDK_CACHE`,
+		},
+	],
+});
+
 export const sdkDtsFile = sdkDTS.makeAstroInjectedType('sdk.d.ts');
 
 export default sdkDtsFile;

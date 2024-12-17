@@ -1,15 +1,19 @@
-import studioCMS_SDK from 'studiocms:sdk';
+// import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async (): Promise<Response> => {
-	const pages = await studioCMS_SDK.GET.database.pages();
+	// const pages = await studioCMS_SDK.GET.database.pages();
+	const pages = await studioCMS_Cache.GET.pages();
 
-	return new Response(JSON.stringify(pages), {
+	// last updated date
+	const lastUpdated = new Date().toISOString();
+
+	return new Response(JSON.stringify({ lastUpdated, pages }, null, 2), {
 		headers: {
 			'Content-Type': 'application/json',
 			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
+			Date: lastUpdated,
 		},
 	});
 };
@@ -20,7 +24,6 @@ export const OPTIONS: APIRoute = async () => {
 		statusText: 'No Content',
 		headers: {
 			Allow: 'OPTIONS, GET',
-			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
 			'Cache-Control': 'public, max-age=604800, immutable',
 			Date: new Date().toUTCString(),
 		},
@@ -31,8 +34,5 @@ export const ALL: APIRoute = async () => {
 	return new Response(null, {
 		status: 405,
 		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
 	});
 };

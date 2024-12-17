@@ -35,10 +35,10 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
 				export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
 				export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-			`,
+				`,
 				'studiocms:version': `
 				export default '${version}';
-			`,
+				`,
 
 				// Core Virtual Components
 				'studiocms:components': `
@@ -50,7 +50,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 				}';
 				export { default as GenericHeader } from '${resolve('../components/GenericHeader.astro')}';
 				export { default as Navigation } from '${resolve('../components/Navigation.astro')}';
-			`,
+				`,
 
 				// StudioCMS lib
 				'studiocms:lib': `
@@ -61,41 +61,47 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export * from '${resolve('../lib/removeLeadingTrailingSlashes.ts')}';
 				export * from '${resolve('../lib/routeMap.ts')}';
 				export * from '${resolve('../lib/urlGen.ts')}';
-			`,
+				`,
 
 				// StudioCMS Core i18n
 				'studiocms:i18n': `
 				export * from '${resolve('../i18n/index.ts')}';
-			`,
+				`,
 
 				// StudioCMS SDK
 				'studiocms:sdk': `
 				import studioCMS_SDK from '${resolve('../sdk-utils/index.ts')}';
 				export default studioCMS_SDK;
-			`,
+				`,
 				'studiocms:sdk/get': `
 				import studioCMS_SDK_GET from '${resolve('../sdk-utils/get/index.ts')}';
 				export default studioCMS_SDK_GET;
-			`,
+				`,
 				'studiocms:sdk/post': `
 				import studioCMS_SDK_POST from '${resolve('../sdk-utils/post/index.ts')}';
 				export default studioCMS_SDK_POST;
-			`,
+				`,
 				'studiocms:sdk/update': `
 				import studioCMS_SDK_UPDATE from '${resolve('../sdk-utils/update/index.ts')}';
 				export default studioCMS_SDK_UPDATE;
-			`,
+				`,
 				'studiocms:sdk/delete': `
 				import studioCMS_SDK_DELETE from '${resolve('../sdk-utils/delete/index.ts')}';
 				export default studioCMS_SDK_DELETE;
-			`,
+				`,
 				'studiocms:sdk/auth': `
 				import studioCMS_SDK_AUTH from '${resolve('../sdk-utils/auth/index.ts')}';
 				export default studioCMS_SDK_AUTH;
-			`,
+				`,
 				'studiocms:sdk/types': `
 				export * from '${resolve('../sdk-utils/types.ts')}';
-			`,
+				`,
+
+				'studiocms:sdk/cache': `
+				export * from '${resolve('../sdk-utils/cache.ts')}';
+				import studioCMS_Cache from '${resolve('../sdk-utils/cache.ts')}';
+				export default studioCMS_Cache;
+				`,
 			},
 		});
 
@@ -108,6 +114,12 @@ export const configSetup = defineUtility('astro:config:setup')(
 			pattern: sdkRouteResolver('list-pages'),
 			entrypoint: resolve('../routes/list-pages.ts'),
 			prerender: false,
+		});
+
+		injectRoute({
+			pattern: sdkRouteResolver('fallback-list-pages.json'),
+			entrypoint: resolve('../routes/fallback-list-pages.json.ts'),
+			prerender: true,
 		});
 
 		integrationLogger({ logger, logLevel: 'info', verbose }, 'Core Setup Complete...');
