@@ -224,8 +224,6 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 						page.lastCacheUpdate = new Date();
 						page.data = updatedData;
 					}
-
-					throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 				}
 			}
 
