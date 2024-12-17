@@ -73,6 +73,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					entrypoint: resolve('../routes/studiocms_api/LiveRender.astro'),
 				},
 				{
+					enabled: dashboardEnabled && !dbStartPage,
+					pattern: 'list-pages',
+					entrypoint: resolve('../routes/studiocms_api/list-pages.ts'),
+				},
+				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'config/site',
 					entrypoint: resolve('../routes/studiocms_api/config/site.ts'),

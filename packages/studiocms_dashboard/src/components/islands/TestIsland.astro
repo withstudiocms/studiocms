@@ -1,22 +1,6 @@
 ---
 import studioCMS_SDK from 'studiocms:sdk';
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-const referer = Astro.request.headers.get('Referer')!;
-const url = new URL(referer);
-
-const test = url.searchParams.get('id');
-
 const pageList = await studioCMS_SDK.GET.database.pages();
-
-let currentDisplay = 'N/A';
-
-if (test) {
-	const currentData = await studioCMS_SDK.GET.databaseEntry.pages.byId(test);
-
-	if (currentData) {
-		currentDisplay = `${currentData.title} ( ${currentData.id} )`;
-	}
-}
 ---
 <div>
   <h2>Test Island</h2>
@@ -28,9 +12,53 @@ if (test) {
     which page to display as two separate islands.
   </p>
 
-  <p>Current Selected: {currentDisplay}</p>
+  <p>Current Selected: <span id="current-display-id">N/A</span></p>
+
+  <div id="current-display-data"></div>
+
+  <div>
+    <h3>Page List</h3>
+  </div>
   <ul>
-    {pageList.map(({ id, title }) => <li><a href={`?id=${id}`} data-astro-reload>{title}</a></li>)}
+    {pageList.map(({ id, title }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
   </ul>
 </div>
+
+<script is:inline>
+  async function listener() {
+    // listen for query parameter changes
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const id = urlParams.get('id');
+
+    const currentDisplay = document.getElementById('current-display-id');
+    const currentDisplayData = document.getElementById('current-display-data');
+
+    currentDisplay.innerText = id || 'N/A';
+
+    const pageDataResponse = await (await fetch(`/studiocms_api/dashboard/list-pages`)).json();
+
+    if (id) {
+      const pageData = pageDataResponse.find((page) => page.id === id);
+
+      if (pageData) {
+        currentDisplayData.innerHTML = `
+          <h1>${pageData.title}</h1>
+          <p>${JSON.stringify(pageData, null, 2)}</p>  
+        `;
+      } else {
+        currentDisplayData.innerHTML = `
+          <p>Page not found</p>
+        `;
+      }
+    } else {
+      currentDisplayData.innerHTML = `
+        <p>Select a page from the list to display</p>
+      `;
+    }
+
+  }
+
+  listener();
+</script>
 
