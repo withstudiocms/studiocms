@@ -1,5 +1,9 @@
 import type { Table } from '@astrojs/db/runtime';
-import type { CacheConfig, ProcessedCacheConfig } from '../../schemas/config/sdk';
+import type {
+	CacheConfig,
+	ProcessedCacheConfig,
+	ProcessedSDKConfig,
+} from '../../schemas/config/sdk';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -75,8 +79,8 @@ export type {
 	tsUsersUpdate,
 };
 
-// sdk-utils/types/index.ts
-export type { CacheConfig, ProcessedCacheConfig };
+// ../../schemas/config/sdk.ts
+export type { CacheConfig, ProcessedCacheConfig, ProcessedSDKConfig };
 
 export interface BaseCacheObject {
 	lastCacheUpdate: Date;

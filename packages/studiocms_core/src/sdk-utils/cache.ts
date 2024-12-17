@@ -1,4 +1,4 @@
-import config from 'studiocms:config';
+import { sdkConfig } from 'studiocms:config';
 import { CMSSiteConfigId } from '../consts';
 import studioCMS_SDK_GET from './get';
 import type {
@@ -13,11 +13,9 @@ import { Expire, StudioCMS_SDK_Error } from './utils';
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject };
 
 const {
-	sdk: {
-		cacheConfig,
-		cacheConfig: { enabled: isEnabled },
-	},
-} = config;
+	cacheConfig,
+	cacheConfig: { enabled: isEnabled },
+} = sdkConfig;
 
 /**
  * Cache object to store content retrieved from the database.
