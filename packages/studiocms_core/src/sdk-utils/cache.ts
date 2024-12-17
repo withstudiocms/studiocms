@@ -17,6 +17,12 @@ const {
 	cacheConfig: { enabled: isEnabled },
 } = sdk;
 
+/**
+ * A map that caches page data objects.
+ *
+ * The key is a string representing the page identifier.
+ * The value is a `PageDataCacheObject` containing the cached data for the page.
+ */
 const pagesCacheMap = new Map<string, PageDataCacheObject>();
 
 /**
