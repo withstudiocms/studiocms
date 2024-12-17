@@ -1,10 +1,16 @@
 import { CMSSiteConfigId } from '../consts';
 import studioCMS_SDK_GET from './get';
-import type { CacheConfig, CacheObject, STUDIOCMS_SDK_CACHE } from './types';
+import type {
+	CacheConfig,
+	CacheObject,
+	PageDataCacheObject,
+	STUDIOCMS_SDK_CACHE,
+	SiteConfigCacheObject,
+} from './types';
 import studioCMS_SDK_UPDATE from './update';
 import { Expire, StudioCMS_SDK_Error } from './utils';
 
-export type { STUDIOCMS_SDK_CACHE };
+export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject };
 
 const cacheConfig: CacheConfig = {
 	enabled: true,

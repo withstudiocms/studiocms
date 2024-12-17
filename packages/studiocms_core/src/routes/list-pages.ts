@@ -1,9 +1,7 @@
-// import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async (): Promise<Response> => {
-	// const pages = await studioCMS_SDK.GET.database.pages();
 	const pages = await studioCMS_Cache.GET.pages();
 
 	// last updated date
