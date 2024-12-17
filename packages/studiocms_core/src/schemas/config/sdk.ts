@@ -4,17 +4,12 @@ import type { TimeString } from '../../sdk-utils/types';
 
 /**
  * Schema for cache configuration.
- *
- * @property {TimeString} [lifetime] - Cache Lifetime
- * @default '5m'
  */
 const CacheConfigSchema = z.object({
 	/**
 	 * Cache Lifetime
 	 *
 	 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
-	 *
-	 * @param {TimeString} [lifetime] - Cache Lifetime
 	 * @default '5m'
 	 */
 	lifetime: z.custom<TimeString>().optional().default(defaultCacheLifeTime),

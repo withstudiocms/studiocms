@@ -207,7 +207,7 @@ sdkDTS.addModule('studiocms:sdk/cache', {
 	},
 	namedExports: [
 		{
-			name: 'studioCMS_Cache',
+			name: 'studioCMS_SDK_Cache',
 			typeDef: 'STUDIOCMS_SDK_CACHE',
 		},
 	],

@@ -103,8 +103,8 @@ export const configSetup = defineUtility('astro:config:setup')(
 				`,
 				'studiocms:sdk/cache': `
 				export * from '${resolve('../sdk-utils/cache.ts')}';
-				import studioCMS_Cache from '${resolve('../sdk-utils/cache.ts')}';
-				export default studioCMS_Cache;
+				import studioCMS_SDK_Cache from '${resolve('../sdk-utils/cache.ts')}';
+				export default studioCMS_SDK_Cache;
 				`,
 			},
 		});

@@ -33,7 +33,7 @@ const cache: StudioCMSCacheObject = {
  */
 const isEntryExpired = Expire(cacheConfig);
 
-export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
+export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 	GET: {
 		page: {
 			byId: async (id) => {
@@ -396,4 +396,4 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 	},
 };
 
-export default studioCMS_Cache;
+export default studioCMS_SDK_Cache;

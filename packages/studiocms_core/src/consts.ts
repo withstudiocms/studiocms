@@ -1,3 +1,5 @@
+import type { TimeString } from './sdk-utils/types';
+
 /**
  * StudioCMS Site Config Table Entry ID
  */
@@ -6,9 +8,9 @@ export const CMSSiteConfigId: number = 1;
 /**
  * The default lifetime for cached items.
  * This value is used to determine how long an item should remain in the cache before it is considered expired.
- * The lifetime is specified as a string, typically in a format like '5m' for 5 minutes.
+ * This value is used in ./schemas/config/sdk.ts to set the default cache lifetime.
  */
-export const defaultCacheLifeTime = '5m';
+export const defaultCacheLifeTime: TimeString = '5m';
 
 /**
  * StudioCMS Social Links Type

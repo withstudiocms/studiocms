@@ -88,7 +88,14 @@ export const StudioCMSOptionsSchema = z
 		 */
 		plugins: z.custom<StudioCMSPlugin[]>().optional(),
 		/**
-		 * SDK Configuration
+		 * SDKSchema is a Zod schema that validates the SDK configuration.
+		 * It can either be a boolean or an object containing cache configuration.
+		 *
+		 * If it is a boolean, it defaults to `true` and transforms into an object
+		 * with default cache configuration.
+		 *
+		 * If it is an object, it must contain the `cacheConfig` property which is
+		 * validated by the `SDKCacheSchema`.
 		 */
 		sdk: SDKSchema,
 	})
