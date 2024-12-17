@@ -8,7 +8,14 @@ import type {
 	StudioCMSCacheObject,
 } from './types';
 import studioCMS_SDK_UPDATE from './update';
-import { Expire, StudioCMS_SDK_Error } from './utils';
+import {
+	Expire,
+	StudioCMS_SDK_Error,
+	cacheMapSet,
+	handleError,
+	transformNewDataReturn,
+	transformSiteConfigReturn,
+} from './utils';
 
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject };
 
@@ -46,19 +53,13 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: async (id) => {
 				try {
-					console.log('Getting page by ID', id);
 					if (!isEnabled) {
-						console.log('Cache is disabled');
 						const pageData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 
 						if (!pageData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 						}
-						return {
-							id,
-							lastCacheUpdate: new Date(),
-							data: pageData,
-						};
+						return transformNewDataReturn(pageData);
 					}
 
 					const isCached = cache.pages.get(id);
@@ -66,8 +67,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!isCached) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 						if (updatedData) {
-							cache.pages.set(id, { lastCacheUpdate: new Date(), data: updatedData });
-							return { id, lastCacheUpdate: new Date(), data: updatedData };
+							cacheMapSet(cache.pages, id, updatedData);
+							return transformNewDataReturn(updatedData);
 						}
 						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 					}
@@ -75,18 +76,15 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (isEntryExpired(isCached)) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 						if (updatedData) {
-							cache.pages.set(id, { lastCacheUpdate: new Date(), data: updatedData });
-							return { id, lastCacheUpdate: new Date(), data: updatedData };
+							cacheMapSet(cache.pages, id, updatedData);
+							return transformNewDataReturn(updatedData);
 						}
 						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 					}
 
 					return isCached;
 				} catch (error) {
-					if (error instanceof StudioCMS_SDK_Error) {
-						throw new StudioCMS_SDK_Error(error.message);
-					}
-					throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+					throw handleError(error, 'Could not retrieve data from the database.');
 				}
 			},
 			bySlug: async (slug, pkg) => {
@@ -97,11 +95,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						if (!pageData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 						}
-						return {
-							id: pageData.id,
-							lastCacheUpdate: new Date(),
-							data: pageData,
-						};
+						return transformNewDataReturn(pageData);
 					}
 					const cacheMap = cache.pages.values();
 					const cacheArray = Array.from(cacheMap);
@@ -112,8 +106,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!isCached) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 						if (updatedData) {
-							cache.pages.set(updatedData.id, { lastCacheUpdate: new Date(), data: updatedData });
-							return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
+							cacheMapSet(cache.pages, updatedData.id, updatedData);
+							return transformNewDataReturn(updatedData);
 						}
 						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 					}
@@ -121,18 +115,15 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (isEntryExpired(isCached)) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 						if (updatedData) {
-							cache.pages.set(updatedData.id, { lastCacheUpdate: new Date(), data: updatedData });
-							return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
+							cacheMapSet(cache.pages, updatedData.id, updatedData);
+							return transformNewDataReturn(updatedData);
 						}
 						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 					}
 
 					return isCached;
 				} catch (error) {
-					if (error instanceof StudioCMS_SDK_Error) {
-						throw new StudioCMS_SDK_Error(error.message);
-					}
-					throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+					throw handleError(error, 'Could not retrieve data from the database.');
 				}
 			},
 		},
@@ -144,7 +135,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!pages) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
-					return pages.map((data) => ({ lastCacheUpdate: new Date(), data }));
+					return pages.map((data) => transformNewDataReturn(data));
 				}
 
 				// Check if cache is empty
@@ -152,9 +143,9 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					const updatedData = await studioCMS_SDK_GET.database.pages();
 					if (updatedData) {
 						for (const data of updatedData) {
-							cache.pages.set(data.id, { lastCacheUpdate: new Date(), data });
+							cacheMapSet(cache.pages, data.id, data);
 						}
-						return updatedData.map((data) => ({ lastCacheUpdate: new Date(), data }));
+						return updatedData.map((data) => transformNewDataReturn(data));
 					}
 					throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
 				}
@@ -169,10 +160,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 							cachedObject.data.id
 						);
 						if (updatedData) {
-							cache.pages.set(cachedObject.data.id, {
-								lastCacheUpdate: new Date(),
-								data: updatedData,
-							});
+							cacheMapSet(cache.pages, updatedData.id, updatedData);
 						}
 					}
 				}
@@ -181,10 +169,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				const recentCacheArray = Array.from(grabRecentCache);
 				return recentCacheArray;
 			} catch (error) {
-				if (error instanceof StudioCMS_SDK_Error) {
-					throw new StudioCMS_SDK_Error(error.message);
-				}
-				throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+				throw handleError(error, 'Could not retrieve data from the database.');
 			}
 		},
 		siteConfig: async () => {
@@ -195,13 +180,13 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (!siteConfig) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
-					return { lastCacheUpdate: new Date(), data: siteConfig };
+					return transformSiteConfigReturn(siteConfig);
 				}
 
 				if (!cache.siteConfig) {
 					const updatedData = await studioCMS_SDK_GET.database.config();
 					if (updatedData) {
-						cache.siteConfig = { lastCacheUpdate: new Date(), data: updatedData };
+						cache.siteConfig = transformSiteConfigReturn(updatedData);
 						return cache.siteConfig;
 					}
 					throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
@@ -219,10 +204,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 
 				return cache.siteConfig;
 			} catch (error) {
-				if (error instanceof StudioCMS_SDK_Error) {
-					throw new StudioCMS_SDK_Error(error.message);
-				}
-				throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+				throw handleError(error, 'Could not retrieve data from the database.');
 			}
 		},
 	},
@@ -235,10 +217,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					}
 					cache.pages.delete(id);
 				} catch (error) {
-					if (error instanceof Error) {
-						throw new StudioCMS_SDK_Error(`Error clearing cache: ${error.message}`, error.stack);
-					}
-					throw new StudioCMS_SDK_Error('Error clearing cache: An unknown error occurred.');
+					throw handleError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 			bySlug: (slug, pkg) => {
@@ -256,10 +235,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						cache.pages.delete(i);
 					}
 				} catch (error) {
-					if (error instanceof Error) {
-						throw new StudioCMS_SDK_Error(`Error clearing cache: ${error.message}`, error.stack);
-					}
-					throw new StudioCMS_SDK_Error('Error clearing cache: An unknown error occurred.');
+					throw handleError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 		},
@@ -270,10 +246,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				}
 				cache.pages.clear();
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error clearing cache: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error('Error clearing cache: An unknown error occurred.');
+				throw handleError(error, 'Error clearing cache: An unknown error occurred.');
 			}
 		},
 	},
@@ -291,7 +264,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 							throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 						}
 
-						return { id, lastCacheUpdate: new Date(), data: updatedData };
+						return transformNewDataReturn(updatedData);
 					}
 					const isCached = cache.pages.get(id);
 					if (!isCached) {
@@ -306,14 +279,11 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
-					cache.pages.set(id, { lastCacheUpdate: new Date(), data: updatedData });
+					cacheMapSet(cache.pages, id, updatedData);
 
-					return { id, lastCacheUpdate: new Date(), data: updatedData };
+					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					if (error instanceof StudioCMS_SDK_Error) {
-						throw new StudioCMS_SDK_Error(error.message);
-					}
-					throw new StudioCMS_SDK_Error('Could not update page data in the database.');
+					throw handleError(error, 'Could not update page data in the database.');
 				}
 			},
 			bySlug: async (slug, pkg, { pageData, pageContent }) => {
@@ -328,7 +298,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 							throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 						}
 
-						return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
+						return transformNewDataReturn(updatedData);
 					}
 					const cacheMap = cache.pages.values();
 					const cacheArray = Array.from(cacheMap);
@@ -356,16 +326,11 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
-					const dataToInsert = { lastCacheUpdate: new Date(), data: updatedData };
+					cacheMapSet(cache.pages, updatedData.id, updatedData);
 
-					cache.pages.set(updatedData.id, dataToInsert);
-
-					return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
+					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					if (error instanceof StudioCMS_SDK_Error) {
-						throw new StudioCMS_SDK_Error(error.message);
-					}
-					throw new StudioCMS_SDK_Error('Could not update page data in the database.');
+					throw handleError(error, 'Could not update page data in the database.');
 				}
 			},
 		},
@@ -378,17 +343,14 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				}
 
 				if (!isEnabled) {
-					return { lastCacheUpdate: new Date(), data: newConfig };
+					return transformSiteConfigReturn(newConfig);
 				}
 
-				cache.siteConfig = { lastCacheUpdate: new Date(), data: newConfig };
+				cache.siteConfig = transformSiteConfigReturn(newConfig);
 
 				return cache.siteConfig;
 			} catch (error) {
-				if (error instanceof StudioCMS_SDK_Error) {
-					throw new StudioCMS_SDK_Error(error.message);
-				}
-				throw new StudioCMS_SDK_Error('Could not update site config in the database.');
+				throw handleError(error, 'Could not update site config in the database.');
 			}
 		},
 	},

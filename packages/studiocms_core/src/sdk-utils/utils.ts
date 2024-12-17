@@ -14,7 +14,11 @@ import type {
 	CombinedPageData,
 	CombinedRank,
 	CombinedUserData,
+	PageDataCacheObject,
 	SingleRank,
+	SiteConfig,
+	SiteConfigCacheObject,
+	StudioCMSCacheObject,
 	tsPageDataSelect,
 	tsPermissionsSelect,
 	tsUsersSelect,
@@ -204,4 +208,67 @@ export function Expire(cacheConfig: CacheConfig) {
 	return function isEntryExpired(entry: BaseCacheObject): boolean {
 		return new Date().getTime() - entry.lastCacheUpdate.getTime() > cacheConfig.lifetime;
 	};
+}
+
+/**
+ * Transforms the provided CombinedPageData into a PageDataCacheObject.
+ *
+ * @param data - The combined page data to be transformed.
+ * @returns An object containing the last cache update timestamp and the provided data.
+ */
+export function transformNewDataReturn(data: CombinedPageData): PageDataCacheObject {
+	return { lastCacheUpdate: new Date(), data };
+}
+
+/**
+ * Sets a new entry in the cache map with the provided key and transformed data.
+ *
+ * @param cache - The cache Map object where the data will be stored.
+ * @param key - The key under which the data will be stored in the cache.
+ * @param data - The data to be transformed and stored in the cache.
+ */
+export function cacheMapSet(
+	cache: StudioCMSCacheObject['pages'],
+	key: string,
+	data: CombinedPageData
+): void {
+	cache.set(key, transformNewDataReturn(data));
+}
+
+/**
+ * Transforms the given site configuration data into a cache object.
+ *
+ * @param data - The site configuration data to be transformed.
+ * @returns An object containing the last cache update timestamp and the transformed site configuration data.
+ */
+export function transformSiteConfigReturn(data: SiteConfig): SiteConfigCacheObject {
+	return { lastCacheUpdate: new Date(), data };
+}
+
+/**
+ * Handles an error by throwing a `StudioCMS_SDK_Error`.
+ *
+ * @param error - The error to handle. If the error is an instance of `StudioCMS_SDK_Error`,
+ *                it rethrows the error. Otherwise, it wraps the error in a new `StudioCMS_SDK_Error`
+ *                with the provided message and optional hint.
+ * @param message - The message to use if the error is not an instance of `StudioCMS_SDK_Error`.
+ * @param hint - Optional. A hint to help the user fix the error.
+ *
+ * @throws {StudioCMS_SDK_Error} - Throws an error with the appropriate message and hint.
+ */
+export function handleError(error: unknown, message: string): never {
+	if (error instanceof StudioCMS_SDK_Error) {
+		// If it's already a StudioCMS_SDK_Error, rethrow it
+		throw error;
+	}
+
+	// Extract original error details if available
+	const originalMessage = error instanceof Error ? error.message : String(error);
+	const originalStack = error instanceof Error ? error.stack : undefined;
+
+	// Create and throw a new StudioCMS_SDK_Error
+	throw new StudioCMS_SDK_Error(
+		`${message}${originalMessage ? `: ${originalMessage}` : ''}`,
+		originalStack
+	);
 }
