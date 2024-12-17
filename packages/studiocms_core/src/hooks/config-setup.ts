@@ -39,7 +39,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
 				export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
 				export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-				export const sdkConfig = ${JSON.stringify(options.sdk)};
+				export const sdk = ${JSON.stringify(options.sdk)};
 				`,
 				'studiocms:version': `
 				export default '${version}';

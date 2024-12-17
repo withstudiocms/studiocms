@@ -35,7 +35,7 @@ dtsFile.addModule('studiocms:config', {
 			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['defaultFrontEndConfig']`,
 		},
 		{
-			name: 'sdkConfig',
+			name: 'sdk',
 			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['sdk']`,
 		},
 	],
