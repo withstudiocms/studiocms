@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = async (): Promise<Response> => {
 	const pages = await studioCMS_SDK.GET.database.pages();
 
-	return new Response(JSON.stringify(pages, null, 2), {
+	return new Response(JSON.stringify(pages), {
 		headers: {
 			'Content-Type': 'application/json',
 			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',

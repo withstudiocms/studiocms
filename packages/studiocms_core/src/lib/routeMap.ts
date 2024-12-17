@@ -28,6 +28,7 @@ export function makeDashboardRoute(route?: string | undefined): string {
 
 const authAPIRoute = makeAPIRoute('auth');
 const dashboardAPIRoute = makeAPIRoute('dashboard');
+const sdkRoute = makeAPIRoute('sdk');
 
 export const StudioCMSRoutes = {
 	mainLinks: {
@@ -68,6 +69,9 @@ export const StudioCMSRoutes = {
 			editPages: dashboardAPIRoute('pages/edit'),
 			deletePages: dashboardAPIRoute('pages/delete'),
 		},
+	},
+	sdk: {
+		pages: sdkRoute('list-pages'),
 	},
 };
 

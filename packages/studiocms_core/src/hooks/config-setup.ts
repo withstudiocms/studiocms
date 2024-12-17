@@ -1,6 +1,7 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import type packageJson from '../../package.json';
+import { makeAPIRoute } from '../lib';
 import type { StudioCMSConfig } from '../schemas';
 
 type PackageJson = typeof packageJson;
@@ -8,7 +9,7 @@ type PackageJson = typeof packageJson;
 export const configSetup = defineUtility('astro:config:setup')(
 	(params, options: StudioCMSConfig, { name, version }: PackageJson) => {
 		// Destructure the params
-		const { logger } = params;
+		const { logger, injectRoute } = params;
 
 		// Destructure the options
 		const { verbose } = options;
@@ -96,6 +97,17 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export * from '${resolve('../sdk-utils/types.ts')}';
 			`,
 			},
+		});
+
+		// Inject SDK API Routes
+		integrationLogger({ logger, logLevel: 'info', verbose }, 'Injecting SDK Routes...');
+
+		const sdkRouteResolver = makeAPIRoute('sdk');
+
+		injectRoute({
+			pattern: sdkRouteResolver('list-pages'),
+			entrypoint: resolve('../routes/list-pages.ts'),
+			prerender: false,
 		});
 
 		integrationLogger({ logger, logLevel: 'info', verbose }, 'Core Setup Complete...');

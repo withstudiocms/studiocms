@@ -1,4 +1,4 @@
-export function makeAPIRoute(path: 'auth' | 'dashboard') {
+export function makeAPIRoute(path: string) {
 	return function api(route: string) {
 		return `/studiocms_api/${path}/${route}`;
 	};

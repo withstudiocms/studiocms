@@ -1,4 +1,5 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 const pageList = await studioCMS_SDK.GET.database.pages();
 ---
@@ -24,6 +25,8 @@ const pageList = await studioCMS_SDK.GET.database.pages();
   </ul>
 </div>
 
+<div style="display: none;" id="sdk-api-pages" data-link={StudioCMSRoutes.sdk.pages}/>
+
 <script is:inline>
   async function listener() {
     // listen for query parameter changes
@@ -34,9 +37,11 @@ const pageList = await studioCMS_SDK.GET.database.pages();
     const currentDisplay = document.getElementById('current-display-id');
     const currentDisplayData = document.getElementById('current-display-data');
 
+    const sdkApiPagesLink = document.getElementById('sdk-api-pages').dataset.link;
+
     currentDisplay.innerText = id || 'N/A';
 
-    const pageDataResponse = await (await fetch(`/studiocms_api/dashboard/list-pages`)).json();
+    const pageDataResponse = await (await fetch(sdkApiPagesLink)).json();
 
     if (id) {
       const pageData = pageDataResponse.find((page) => page.id === id);
