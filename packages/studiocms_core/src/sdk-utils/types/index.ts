@@ -74,6 +74,10 @@ export type {
 	tsUsersUpdate,
 };
 
+export interface BaseCacheObject {
+	lastCacheUpdate: Date;
+}
+
 /**
  * Represents a cache object for page data.
  *
@@ -82,9 +86,8 @@ export type {
  * @property {Date} lastCacheUpdate - The date and time when the cache was last updated.
  * @property {CombinedPageData} data - The combined data of the page stored in the cache.
  */
-export interface PageDataCacheObject {
+export interface PageDataCacheObject extends BaseCacheObject {
 	id: string;
-	lastCacheUpdate: Date;
 	data: CombinedPageData;
 }
 
@@ -95,8 +98,7 @@ export interface PageDataCacheObject {
  * @property {Date} lastCacheUpdate - The date when the cache was last updated.
  * @property {SiteConfig} data - The site configuration data.
  */
-export interface SiteConfigCacheObject {
-	lastCacheUpdate: Date;
+export interface SiteConfigCacheObject extends BaseCacheObject {
 	data: SiteConfig;
 }
 

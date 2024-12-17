@@ -9,13 +9,12 @@ import {
 	tsPermissions,
 } from './tables';
 import type {
+	BaseCacheObject,
 	CacheConfig,
 	CombinedPageData,
 	CombinedRank,
 	CombinedUserData,
-	PageDataCacheObject,
 	SingleRank,
-	SiteConfigCacheObject,
 	TimeString,
 	TimeUnit,
 	tsPageDataSelect,
@@ -251,13 +250,7 @@ export function timeToMilliseconds(timeString: TimeString): number {
  * @returns A function that checks if a given cache entry has expired.
  */
 export function Expire(cacheConfig: CacheConfig) {
-	/**
-	 * Checks if a cache entry has expired based on the current time and the cache lifetime.
-	 *
-	 * @param entry - The cache entry to check, which includes the last updated timestamp.
-	 * @returns `true` if the entry has expired, `false` otherwise.
-	 */
-	return function isEntryExpired(entry: PageDataCacheObject | SiteConfigCacheObject): boolean {
+	return function isEntryExpired(entry: BaseCacheObject): boolean {
 		return (
 			new Date().getTime() - entry.lastCacheUpdate.getTime() >
 			timeToMilliseconds(cacheConfig.lifetime)

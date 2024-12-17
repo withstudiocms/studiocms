@@ -27,6 +27,12 @@ const cache: CacheObject = {
 	siteConfig: undefined,
 };
 
+/**
+ * Checks if a cache entry has expired based on the current time and the cache lifetime.
+ *
+ * @param entry - The cache entry to check, which includes the last updated timestamp.
+ * @returns `true` if the entry has expired, `false` otherwise.
+ */
 const isEntryExpired = Expire(cacheConfig);
 
 export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
