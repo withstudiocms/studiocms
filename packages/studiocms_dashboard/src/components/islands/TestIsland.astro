@@ -1,7 +1,7 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk';
-const pageList = await studioCMS_SDK.GET.database.pages();
+import studioCMS_SDK from 'studiocms:sdk/cache';
+const pageList = await studioCMS_SDK.GET.pages();
 ---
 <div>
   <h2>Test Island</h2>
@@ -17,7 +17,7 @@ const pageList = await studioCMS_SDK.GET.database.pages();
     <h3>Page List</h3>
   </div>
   <ul>
-    {pageList.map(({ id, title }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
+    {pageList.map(({ id, data: { title } }) => <li><a href={`?id=${id}`}>{title}</a></li>)}
   </ul>
 
   <p>Last Database Update: <span id="current-display-last-update">N/A</span></p>
