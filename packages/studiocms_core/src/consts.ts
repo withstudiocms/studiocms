@@ -4,6 +4,13 @@
 export const CMSSiteConfigId: number = 1;
 
 /**
+ * The default lifetime for cached items.
+ * This value is used to determine how long an item should remain in the cache before it is considered expired.
+ * The lifetime is specified as a string, typically in a format like '5m' for 5 minutes.
+ */
+export const defaultCacheLifeTime = '5m';
+
+/**
  * StudioCMS Social Links Type
  */
 export type StudioCMSSocials = {

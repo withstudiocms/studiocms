@@ -1,4 +1,5 @@
 import type { Table } from '@astrojs/db/runtime';
+import type { CacheConfig, ProcessedCacheConfig } from '../../schemas/config/sdk';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -74,6 +75,9 @@ export type {
 	tsUsersUpdate,
 };
 
+// sdk-utils/types/index.ts
+export type { CacheConfig, ProcessedCacheConfig };
+
 export interface BaseCacheObject {
 	lastCacheUpdate: Date;
 }
@@ -130,28 +134,6 @@ export type TimeUnit = 'm' | 'h';
  * ```
  */
 export type TimeString = `${number}${TimeUnit}`;
-
-/**
- * Configuration object for cache settings.
- *
- * @property {boolean} enabled - Indicates whether caching is enabled.
- * @property {string} lifetime - Specifies the duration for which the cache is valid.
- *                               The value should be in a human-readable format (e.g., '5m' for 5 minutes).
- */
-export interface CacheConfig {
-	/**
-	 * Determines whether the cache is enabled.
-	 *
-	 * @default true
-	 */
-	enabled: boolean;
-	/**
-	 * The lifetime of the cache in milliseconds.
-	 *
-	 * @default 5m
-	 */
-	lifetime: TimeString;
-}
 
 export type GenericTable = Table<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -1,7 +1,7 @@
+import config from 'studiocms:config';
 import { CMSSiteConfigId } from '../consts';
 import studioCMS_SDK_GET from './get';
 import type {
-	CacheConfig,
 	CacheObject,
 	PageDataCacheObject,
 	STUDIOCMS_SDK_CACHE,
@@ -12,12 +12,12 @@ import { Expire, StudioCMS_SDK_Error } from './utils';
 
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject };
 
-const cacheConfig: CacheConfig = {
-	enabled: true,
-	// TODO: Determine appropriate cache lifetime value to use.
-	// Need to either pick "The best" value or allow the user to configure it.
-	lifetime: '5m',
-};
+const {
+	sdk: {
+		cacheConfig,
+		cacheConfig: { enabled: isEnabled },
+	},
+} = config;
 
 /**
  * Cache object to store content retrieved from the database.
@@ -40,7 +40,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: async (id) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						const pageData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 
 						if (!pageData) {
@@ -86,7 +86,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			},
 			bySlug: async (slug, pkg) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						const pageData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 
 						if (!pageData) {
@@ -135,7 +135,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		},
 		pages: async () => {
 			try {
-				if (!cacheConfig.enabled) {
+				if (!isEnabled) {
 					const pages = await studioCMS_SDK_GET.database.pages();
 
 					if (!pages) {
@@ -195,7 +195,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		},
 		siteConfig: async () => {
 			try {
-				if (!cacheConfig.enabled) {
+				if (!isEnabled) {
 					const siteConfig = await studioCMS_SDK_GET.database.config();
 
 					if (!siteConfig) {
@@ -236,7 +236,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: (id) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						return;
 					}
 					const index = cache.pages.findIndex((cachedObject) => cachedObject.id === id);
@@ -252,7 +252,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			},
 			bySlug: (slug, pkg) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						return;
 					}
 					const index = cache.pages.findIndex(
@@ -271,7 +271,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		},
 		pages: () => {
 			try {
-				if (!cacheConfig.enabled) {
+				if (!isEnabled) {
 					return;
 				}
 				cache.pages = [];
@@ -287,7 +287,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: async (id, { pageData, pageContent }) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 
@@ -325,7 +325,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			},
 			bySlug: async (slug, pkg, { pageData, pageContent }) => {
 				try {
-					if (!cacheConfig.enabled) {
+					if (!isEnabled) {
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 
@@ -381,7 +381,7 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 					throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 				}
 
-				if (!cacheConfig.enabled) {
+				if (!isEnabled) {
 					return { lastCacheUpdate: new Date(), data: newConfig };
 				}
 

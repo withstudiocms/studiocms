@@ -11,6 +11,7 @@ import {
 	type StudioCMSRendererConfig,
 	StudioCMSRendererConfigSchema,
 } from './rendererConfig';
+import { SDKSchema } from './sdk';
 
 //
 // Exported Schemas for use in other internal packages
@@ -86,9 +87,13 @@ export const StudioCMSOptionsSchema = z
 		 * Add Plugins to the StudioCMS
 		 */
 		plugins: z.custom<StudioCMSPlugin[]>().optional(),
+		/**
+		 * SDK Configuration
+		 */
+		sdk: SDKSchema,
 	})
 	.optional()
 	.default({});
 
 export type StudioCMSOptions = typeof StudioCMSOptionsSchema._input;
-export type StudioCMSConfig = z.infer<typeof StudioCMSOptionsSchema>;
+export type StudioCMSConfig = typeof StudioCMSOptionsSchema._output;
