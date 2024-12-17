@@ -52,9 +52,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
 
-  document.addEventListener('astro:page-load', () => {
-    new SingleSidebarHelper('nav-toggle');
-    new DropdownHelper('sidebar-user-dropdown', true);
+  function sidebarLinks() {
     const sidebar = document.querySelector<HTMLElement>('.sidebar')!;
     const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
       
@@ -64,6 +62,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
         link.classList.add('active');
       }
     }
+  }
+
+  sidebarLinks();
+
+  document.addEventListener('astro:page-load', () => {
+    new SingleSidebarHelper('nav-toggle');
+    new DropdownHelper('sidebar-user-dropdown', true);
+    sidebarLinks();
   });
 </script>
 <style>
