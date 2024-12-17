@@ -62,9 +62,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (isCached && isEntryExpired(isCached)) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 						if (updatedData) {
-							isCached.lastCacheUpdate = new Date();
-							isCached.data = updatedData;
-							return isCached;
+							cache.pages.set(id, { lastCacheUpdate: new Date(), data: updatedData });
+							return { id, lastCacheUpdate: new Date(), data: updatedData };
 						}
 						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 					}
@@ -110,9 +109,8 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					if (isCached && isEntryExpired(isCached)) {
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 						if (updatedData) {
-							isCached.lastCacheUpdate = new Date();
-							isCached.data = updatedData;
-							return isCached;
+							cache.pages.set(updatedData.id, { lastCacheUpdate: new Date(), data: updatedData });
+							return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
 						}
 						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 					}
