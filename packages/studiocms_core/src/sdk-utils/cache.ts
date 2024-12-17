@@ -1,140 +1,52 @@
+import { CMSSiteConfigId } from '../consts';
 import studioCMS_SDK_GET from './get';
-import type { CombinedPageData, SiteConfig } from './types';
-import { StudioCMS_SDK_Error } from './utils';
+import type { CacheConfig, CacheObject, STUDIOCMS_SDK_CACHE } from './types';
+import studioCMS_SDK_UPDATE from './update';
+import { Expire, StudioCMS_SDK_Error } from './utils';
+
+export type { STUDIOCMS_SDK_CACHE };
 
 /**
- * Represents a cache object for page data.
+ * Configuration object for cache settings.
  *
- * @interface PageDataCacheObject
- * @property {string} id - The unique identifier for the cache object.
- * @property {Date} lastCacheUpdate - The date and time when the cache was last updated.
- * @property {CombinedPageData} data - The combined data of the page stored in the cache.
+ * @property {boolean} enabled - Indicates whether caching is enabled.
+ * @property {string} lifetime - Specifies the duration for which the cache is valid.
+ *                               The value should be in a human-readable format (e.g., '5m' for 5 minutes).
  */
-export interface PageDataCacheObject {
-	id: string;
-	lastCacheUpdate: Date;
-	data: CombinedPageData;
-}
+const cacheConfig: CacheConfig = {
+	enabled: true,
+	// TODO: Determine appropriate cache lifetime value to use.
+	// Need to either pick "The best" value or allow the user to configure it.
+	lifetime: '5m',
+};
 
 /**
- * Represents a cache object for site configuration.
- *
- * @interface SiteConfigCacheObject
- * @property {Date} lastCacheUpdate - The date when the cache was last updated.
- * @property {SiteConfig} data - The site configuration data.
+ * Cache object to store content retrieved from the database.
  */
-export interface SiteConfigCacheObject {
-	lastCacheUpdate: Date;
-	data: SiteConfig;
-}
-
-// Calculations for cache lifetime in milliseconds
-
-// TODO: Determine appropriate cache lifetime value to use.
-// Need to either pick "The best" value or allow the user to configure it.
-
-// const oneMinute = 1000 * 60;
-// fiveMinutes = 1000 * 60 * 5;
-// tenMinutes = 1000 * 60 * 10;
-// fifteenMinutes = 1000 * 60 * 15;
-// thirtyMinutes = 1000 * 60 * 30;
-// oneHour = 1000 * 60 * 60;
-// twentyFourHours = 1000 * 60 * 60 * 24;
-
-const cacheLifetime = 1000 * 60 * 5;
-
-/**
- * Interface representing the cache utility for the STUDIOCMS SDK.
- */
-export interface STUDIOCMS_SDK_CACHE {
-	/**
-	 * Cache retrieval operations.
-	 */
-	GET: {
-		/**
-		 * Cache operations related to individual pages.
-		 */
-		page: {
-			/**
-			 * Retrieves a page from the cache by its ID.
-			 * @param id - The ID of the page.
-			 * @returns A promise that resolves to the cached page data.
-			 */
-			byId: (id: string) => Promise<PageDataCacheObject>;
-
-			/**
-			 * Retrieves a page from the cache by its slug and package.
-			 * @param slug - The slug of the page.
-			 * @param pkg - The package of the page.
-			 * @returns A promise that resolves to the cached page data.
-			 */
-			bySlug: (slug: string, pkg: string) => Promise<PageDataCacheObject>;
-		};
-
-		/**
-		 * Retrieves all pages from the cache.
-		 * @returns A promise that resolves to an array of cached page data.
-		 */
-		pages: () => Promise<PageDataCacheObject[]>;
-
-		/**
-		 * Retrieves the site configuration from the cache.
-		 * @returns A promise that resolves to the cached site configuration data.
-		 */
-		siteConfig: () => Promise<SiteConfigCacheObject>;
-	};
-
-	/**
-	 * Cache clearing operations.
-	 */
-	CLEAR: {
-		/**
-		 * Cache clearing operations related to individual pages.
-		 */
-		page: {
-			/**
-			 * Clears a page from the cache by its ID.
-			 * @param id - The ID of the page.
-			 */
-			byId: (id: string) => void;
-
-			/**
-			 * Clears a page from the cache by its slug and package.
-			 * @param slug - The slug of the page.
-			 * @param pkg - The package of the page.
-			 */
-			bySlug: (slug: string, pkg: string) => void;
-		};
-
-		/**
-		 * Clears all pages from the cache.
-		 */
-		pages: () => void;
-	};
-}
-
-const cache: {
-	pages: PageDataCacheObject[];
-	siteConfig: SiteConfigCacheObject | undefined;
-} = {
+const cache: CacheObject = {
 	pages: [],
 	siteConfig: undefined,
 };
 
-/**
- * Checks if a cache entry has expired based on the current time and the cache lifetime.
- *
- * @param entry - The cache entry to check, which includes the last updated timestamp.
- * @returns `true` if the entry has expired, `false` otherwise.
- */
-function isEntryExpired(entry: PageDataCacheObject | SiteConfigCacheObject): boolean {
-	return new Date().getTime() - entry.lastCacheUpdate.getTime() > cacheLifetime;
-}
+const isEntryExpired = Expire(cacheConfig);
 
 export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 	GET: {
 		page: {
 			byId: async (id) => {
+				if (!cacheConfig.enabled) {
+					const pageData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
+
+					if (!pageData) {
+						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+					}
+					return {
+						id,
+						lastCacheUpdate: new Date(),
+						data: pageData,
+					};
+				}
+
 				const isCached = cache.pages.find((cachedObject) => cachedObject.id === id);
 
 				if (isCached && !isEntryExpired(isCached)) {
@@ -162,6 +74,18 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 				throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 			},
 			bySlug: async (slug, pkg) => {
+				if (!cacheConfig.enabled) {
+					const pageData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
+
+					if (!pageData) {
+						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+					}
+					return {
+						id: pageData.id,
+						lastCacheUpdate: new Date(),
+						data: pageData,
+					};
+				}
 				const isCached = cache.pages.find(
 					(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 				);
@@ -192,6 +116,14 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			},
 		},
 		pages: async () => {
+			if (!cacheConfig.enabled) {
+				const pages = await studioCMS_SDK_GET.database.pages();
+
+				if (!pages) {
+					throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+				}
+				return pages.map((data) => ({ id: data.id, lastCacheUpdate: new Date(), data }));
+			}
 			// Check if cache is empty
 			if (cache.pages.length === 0) {
 				const updatedData = await studioCMS_SDK_GET.database.pages();
@@ -237,6 +169,15 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			return cache.pages.map((cachedObject) => cachedObject);
 		},
 		siteConfig: async () => {
+			if (!cacheConfig.enabled) {
+				const siteConfig = await studioCMS_SDK_GET.database.config();
+
+				if (!siteConfig) {
+					throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
+				}
+				return { lastCacheUpdate: new Date(), data: siteConfig };
+			}
+
 			if (!cache.siteConfig) {
 				const updatedData = await studioCMS_SDK_GET.database.config();
 				if (updatedData) {
@@ -262,12 +203,18 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 	CLEAR: {
 		page: {
 			byId: (id) => {
+				if (!cacheConfig.enabled) {
+					return;
+				}
 				const index = cache.pages.findIndex((cachedObject) => cachedObject.id === id);
 				if (index !== -1) {
 					cache.pages.splice(index, 1);
 				}
 			},
 			bySlug: (slug, pkg) => {
+				if (!cacheConfig.enabled) {
+					return;
+				}
 				const index = cache.pages.findIndex(
 					(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 				);
@@ -277,7 +224,102 @@ export const studioCMS_Cache: STUDIOCMS_SDK_CACHE = {
 			},
 		},
 		pages: () => {
+			if (!cacheConfig.enabled) {
+				return;
+			}
 			cache.pages = [];
+		},
+	},
+	UPDATE: {
+		page: {
+			byId: async (id, { pageData, pageContent }) => {
+				if (!cacheConfig.enabled) {
+					await studioCMS_SDK_UPDATE.page(pageData);
+					await studioCMS_SDK_UPDATE.pageContent(pageContent);
+
+					const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
+
+					if (!updatedData) {
+						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
+					}
+
+					return { id, lastCacheUpdate: new Date(), data: updatedData };
+				}
+				const isCached = cache.pages.find((cachedObject) => cachedObject.id === id);
+				if (!isCached) {
+					throw new StudioCMS_SDK_Error('Cache entry does not exist.');
+				}
+				await studioCMS_SDK_UPDATE.page(pageData);
+				await studioCMS_SDK_UPDATE.pageContent(pageContent);
+
+				const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
+
+				if (!updatedData) {
+					throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
+				}
+
+				isCached.lastCacheUpdate = new Date();
+				isCached.data = updatedData;
+
+				return isCached;
+			},
+			bySlug: async (slug, pkg, { pageData, pageContent }) => {
+				if (!cacheConfig.enabled) {
+					await studioCMS_SDK_UPDATE.page(pageData);
+					await studioCMS_SDK_UPDATE.pageContent(pageContent);
+
+					const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
+
+					if (!updatedData) {
+						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
+					}
+
+					return { id: updatedData.id, lastCacheUpdate: new Date(), data: updatedData };
+				}
+				const isCached = cache.pages.find(
+					(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
+				);
+
+				if (!isCached) {
+					throw new StudioCMS_SDK_Error('Cache entry does not exist.');
+				}
+
+				try {
+					await studioCMS_SDK_UPDATE.page(pageData);
+					await studioCMS_SDK_UPDATE.pageContent(pageContent);
+				} catch (error) {
+					if (error instanceof StudioCMS_SDK_Error) {
+						throw new StudioCMS_SDK_Error(error.message);
+					}
+					throw new StudioCMS_SDK_Error('Could not update page data in the database.');
+				}
+
+				const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
+
+				if (!updatedData) {
+					throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
+				}
+
+				isCached.lastCacheUpdate = new Date();
+				isCached.data = updatedData;
+
+				return isCached;
+			},
+		},
+		siteConfig: async (data) => {
+			const newConfig = await studioCMS_SDK_UPDATE.siteConfig({ ...data, id: CMSSiteConfigId });
+
+			if (!newConfig) {
+				throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
+			}
+
+			if (!cacheConfig.enabled) {
+				return { lastCacheUpdate: new Date(), data: newConfig };
+			}
+
+			cache.siteConfig = { lastCacheUpdate: new Date(), data: newConfig };
+
+			return cache.siteConfig;
 		},
 	},
 };

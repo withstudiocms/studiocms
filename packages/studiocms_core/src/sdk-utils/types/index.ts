@@ -74,6 +74,83 @@ export type {
 	tsUsersUpdate,
 };
 
+/**
+ * Represents a cache object for page data.
+ *
+ * @interface PageDataCacheObject
+ * @property {string} id - The unique identifier for the cache object.
+ * @property {Date} lastCacheUpdate - The date and time when the cache was last updated.
+ * @property {CombinedPageData} data - The combined data of the page stored in the cache.
+ */
+export interface PageDataCacheObject {
+	id: string;
+	lastCacheUpdate: Date;
+	data: CombinedPageData;
+}
+
+/**
+ * Represents a cache object for site configuration.
+ *
+ * @interface SiteConfigCacheObject
+ * @property {Date} lastCacheUpdate - The date when the cache was last updated.
+ * @property {SiteConfig} data - The site configuration data.
+ */
+export interface SiteConfigCacheObject {
+	lastCacheUpdate: Date;
+	data: SiteConfig;
+}
+
+/**
+ * Represents a cache object that stores pages and site configuration data.
+ */
+export interface CacheObject {
+	pages: PageDataCacheObject[];
+	siteConfig: SiteConfigCacheObject | undefined;
+}
+
+/**
+ * Represents a unit of time.
+ *
+ * @remarks
+ * Allowed units are:
+ * - 'm' for minutes
+ * - 'h' for hours
+ */
+export type TimeUnit = 'm' | 'h';
+
+/**
+ * Represents a time string pattern consisting of a numeric value followed by a time unit.
+ *
+ * @example
+ * ```typescript
+ * const time: TimeString = "10m"; // 10 minutes
+ * const time: TimeString = "5m";  // 5 minutes
+ * ```
+ */
+export type TimeString = `${number}${TimeUnit}`;
+
+/**
+ * Configuration object for cache settings.
+ *
+ * @property {boolean} enabled - Indicates whether caching is enabled.
+ * @property {string} lifetime - Specifies the duration for which the cache is valid.
+ *                               The value should be in a human-readable format (e.g., '5m' for 5 minutes).
+ */
+export interface CacheConfig {
+	/**
+	 * Determines whether the cache is enabled.
+	 *
+	 * @default true
+	 */
+	enabled: boolean;
+	/**
+	 * The lifetime of the cache in milliseconds.
+	 *
+	 * @default 5m
+	 */
+	lifetime: TimeString;
+}
+
 export type GenericTable = Table<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	any,
@@ -717,4 +794,115 @@ export interface STUDIOCMS_SDK {
 	 * An object containing utility functions for initializing site configurations and managing ghost users.
 	 */
 	INIT: STUDIOCMS_SDK_INIT;
+}
+
+/**
+ * Interface representing the cache utility for the STUDIOCMS SDK.
+ */
+export interface STUDIOCMS_SDK_CACHE {
+	/**
+	 * Cache retrieval operations.
+	 */
+	GET: {
+		/**
+		 * Cache operations related to individual pages.
+		 */
+		page: {
+			/**
+			 * Retrieves a page from the cache by its ID.
+			 * @param id - The ID of the page.
+			 * @returns A promise that resolves to the cached page data.
+			 */
+			byId: (id: string) => Promise<PageDataCacheObject>;
+
+			/**
+			 * Retrieves a page from the cache by its slug and package.
+			 * @param slug - The slug of the page.
+			 * @param pkg - The package of the page.
+			 * @returns A promise that resolves to the cached page data.
+			 */
+			bySlug: (slug: string, pkg: string) => Promise<PageDataCacheObject>;
+		};
+
+		/**
+		 * Retrieves all pages from the cache.
+		 * @returns A promise that resolves to an array of cached page data.
+		 */
+		pages: () => Promise<PageDataCacheObject[]>;
+
+		/**
+		 * Retrieves the site configuration from the cache.
+		 * @returns A promise that resolves to the cached site configuration data.
+		 */
+		siteConfig: () => Promise<SiteConfigCacheObject>;
+	};
+
+	/**
+	 * Cache clearing operations.
+	 */
+	CLEAR: {
+		/**
+		 * Cache clearing operations related to individual pages.
+		 */
+		page: {
+			/**
+			 * Clears a page from the cache by its ID.
+			 * @param id - The ID of the page.
+			 */
+			byId: (id: string) => void;
+
+			/**
+			 * Clears a page from the cache by its slug and package.
+			 * @param slug - The slug of the page.
+			 * @param pkg - The package of the page.
+			 */
+			bySlug: (slug: string, pkg: string) => void;
+		};
+
+		/**
+		 * Clears all pages from the cache.
+		 */
+		pages: () => void;
+	};
+
+	/**
+	 * Cache update operations.
+	 */
+	UPDATE: {
+		/**
+		 * Cache update operations related to individual pages.
+		 */
+		page: {
+			/**
+			 * Updates a page in the cache by its ID.
+			 * @param id - The ID of the page.
+			 * @param data - The updated page data.
+			 * @returns A promise that resolves to the updated cached page data.
+			 */
+			byId: (
+				id: string,
+				data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+			) => Promise<PageDataCacheObject>;
+
+			/**
+			 * Updates a page in the cache by its slug and package.
+			 * @param slug - The slug of the page.
+			 * @param pkg - The package of the page.
+			 * @param data - The updated page data.
+			 * @returns A promise that resolves to the updated cached page data.
+			 */
+			bySlug: (
+				slug: string,
+				pkg: string,
+				data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+			) => Promise<PageDataCacheObject>;
+		};
+
+		/**
+		 * Updates the site configuration in the cache.
+		 * @param data - The updated site configuration data.
+		 * @returns A promise that resolves to the updated cached site configuration data.
+		 */
+		siteConfig: (data: SiteConfig) => Promise<SiteConfigCacheObject>;
+	};
 }
