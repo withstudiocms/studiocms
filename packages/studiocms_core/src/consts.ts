@@ -12,6 +12,8 @@ export const CMSSiteConfigId: number = 1;
  */
 export const defaultCacheLifeTime: TimeString = '5m';
 
+export const versionCacheLifetime = 1000 * 60 * 60 * 24 * 7; // 1 week
+
 /**
  * StudioCMS Social Links Type
  */

@@ -233,6 +233,10 @@ export function Expire(cacheConfig: CacheConfig) {
 	};
 }
 
+export function isCacheExpired(lastCacheUpdate: Date, lifetime: number): boolean {
+	return new Date().getTime() - lastCacheUpdate.getTime() > lifetime;
+}
+
 /**
  * Transforms the provided CombinedPageData into a PageDataCacheObject.
  *
@@ -266,4 +270,10 @@ export function cacheMapSet(
  */
 export function transformSiteConfigReturn(data: SiteConfig): SiteConfigCacheObject {
 	return { lastCacheUpdate: new Date(), data };
+}
+
+export async function getLatestVersion() {
+	const npmResponse = await fetch('https://registry.npmjs.org/studiocms/latest');
+	const npmData = await npmResponse.json();
+	return npmData.version as string;
 }

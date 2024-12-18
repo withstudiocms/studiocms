@@ -1,5 +1,5 @@
 import { sdk } from 'studiocms:config';
-import { CMSSiteConfigId } from '../consts';
+import { CMSSiteConfigId, versionCacheLifetime } from '../consts';
 import studioCMS_SDK_GET from './get';
 import type {
 	PageDataCacheObject,
@@ -12,7 +12,9 @@ import {
 	Expire,
 	StudioCMS_SDK_Error,
 	cacheMapSet,
+	getLatestVersion,
 	handleSDKError,
+	isCacheExpired,
 	transformNewDataReturn,
 	transformSiteConfigReturn,
 } from './utils';
@@ -38,6 +40,7 @@ const pagesCacheMap = new Map<string, PageDataCacheObject>();
 const cache: StudioCMSCacheObject = {
 	pages: pagesCacheMap,
 	siteConfig: undefined,
+	versionCache: undefined,
 };
 
 /**
@@ -299,6 +302,35 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				return cache.siteConfig;
 			} catch (error) {
 				handleSDKError(error, 'Could not retrieve data from the database.');
+			}
+		},
+		latestVersion: async () => {
+			try {
+				if (!cache.versionCache) {
+					const version = await getLatestVersion();
+
+					cache.versionCache = {
+						lastCacheUpdate: new Date(),
+						version: version,
+					};
+
+					return cache.versionCache;
+				}
+
+				if (isCacheExpired(cache.versionCache.lastCacheUpdate, versionCacheLifetime)) {
+					const version = await getLatestVersion();
+
+					cache.versionCache = {
+						lastCacheUpdate: new Date(),
+						version: version,
+					};
+
+					return cache.versionCache;
+				}
+
+				return cache.versionCache;
+			} catch (error) {
+				handleSDKError(error, 'Could not retrieve version data from the database.');
 			}
 		},
 	},

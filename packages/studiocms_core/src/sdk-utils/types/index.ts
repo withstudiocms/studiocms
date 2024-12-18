@@ -109,12 +109,18 @@ export interface SiteConfigCacheObject extends BaseCacheObject {
 	data: SiteConfig;
 }
 
+export interface VersionCacheObject {
+	lastCacheUpdate: Date;
+	version: string;
+}
+
 /**
  * Represents a cache object that stores pages and site configuration data.
  */
 export interface StudioCMSCacheObject {
 	pages: Map<string, PageDataCacheObject>;
 	siteConfig: SiteConfigCacheObject | undefined;
+	versionCache: VersionCacheObject | undefined;
 }
 
 export type GenericTable = Table<
@@ -801,6 +807,12 @@ export interface STUDIOCMS_SDK_CACHE {
 		 * @returns A promise that resolves to the cached site configuration data.
 		 */
 		siteConfig: () => Promise<SiteConfigCacheObject>;
+
+		/**
+		 * Retrieves the latest version information from the cache.
+		 * @returns A promise that resolves to the cached version information.
+		 */
+		latestVersion: () => Promise<VersionCacheObject>;
 	};
 
 	/**
