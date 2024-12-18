@@ -680,10 +680,16 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.17.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      semver:
+        specifier: catalog:studiocms
+        version: 7.6.3
       vite:
         specifier: catalog:min
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
     devDependencies:
+      '@types/semver':
+        specifier: catalog:studiocms
+        version: 7.5.8
       typescript:
         specifier: 'catalog:'
         version: 5.7.2

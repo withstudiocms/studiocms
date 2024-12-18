@@ -44,7 +44,8 @@
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@fontsource-variable/onest": "catalog:studiocms-shared"
+    "@fontsource-variable/onest": "catalog:studiocms-shared",
+    "semver": "catalog:studiocms"
   },
   "peerDependencies": {
     "astro": "catalog:min",
@@ -53,6 +54,7 @@
     "vite": "catalog:min"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/semver": "catalog:studiocms"
   }
 }

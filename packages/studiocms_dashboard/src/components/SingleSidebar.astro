@@ -1,11 +1,15 @@
 ---
+import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
+import VersionCheck from './islands/VersionCheck.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
+
+const { versionCheck } = dashboardConfig;
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
@@ -29,7 +33,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
     <Admin server:defer transition:persist transition:persist-props>
       <span slot="fallback">Loading</span>
     </Admin>
-  </div>
+  </div>  
   <Dropdown 
     id='sidebar-user-dropdown'
     options={[
@@ -40,6 +44,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
     offset={8}
     transition:persist transition:persist-props
   >
+    { versionCheck && ( 
+        <VersionCheck server:defer>
+          <span slot="fallback"></span>
+        </VersionCheck>
+    )}
     <div class="user-dropdown-trigger-container">
       <UserAccount server:defer transition:persist transition:persist-props>
         <User slot="fallback" name={"Visitor"} description={'Unknown'} />

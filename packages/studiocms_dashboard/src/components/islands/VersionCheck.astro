@@ -1,0 +1,126 @@
+---
+import currentVersion from 'studiocms:version';
+import { Divider } from '@studiocms/ui/components';
+import { compare } from 'semver';
+
+const jsonRes = await (await fetch('https://registry.npmjs.org/studiocms/latest')).json();
+
+const latestVersion = jsonRes.version;
+
+const comparison = compare(currentVersion, latestVersion);
+
+const classList = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
+
+const titleString =
+	comparison === -1
+		? 'There is a new version available'
+		: comparison === 0
+			? 'You are up to date'
+			: 'You are using a unreleased version';
+---
+
+<Divider background='background-step-1'>
+    Current Version
+</Divider>
+
+<div class="version-container">
+    <code class="version-check" title={titleString} aria-label={titleString}>
+        <span>{currentVersion}</span>
+        <span class="status" class:list={[classList]} />
+    </code>
+
+    { comparison === -1 && (
+        <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="outdated-message">
+            There is a new version of StudioCMS available, please consider updating.
+        </a>
+    )}
+
+    { comparison === 1 && (
+        <span class="future-message">
+            You are currently using a pre-release version of StudioCMS.
+        </span>
+    )}
+</div>
+
+<style>
+    .version-container {
+        display: flex;
+        flex-direction: column;
+        gap: .375rem;
+        width: 100%;
+        padding-bottom: 1rem;
+        color: hsl(var(--text-muted));
+    }
+
+    .version-check {
+        display: flex;
+        flex-direction: row;
+        gap: .375rem;
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        vertical-align: middle;
+        color: hsl(var(--text-muted));
+        font-size: .875em;
+        font-weight: 700;
+        cursor: default;
+    }
+
+    .outdated-message {
+        color: hsl(var(--text-muted));
+        font-size: .75em;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .future-message {
+        color: hsl(var(--text-muted));
+        font-size: .75em;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .outdated {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0'/%3E%3C/svg%3E");
+        background-color: hsl(var(--warning-base));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .latest {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0'/%3E%3C/svg%3E");
+        background-color: hsl(var(--success-base));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .future {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104q-.376.034-.75.082m.75-.082a24.3 24.3 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104q.377.034.75.082M19.8 15.3l-1.57.393A9.07 9.07 0 0 1 12 15a9.07 9.07 0 0 0-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.3 48.3 0 0 1 12 21a48 48 0 0 1-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'/%3E%3C/svg%3E");
+        background-color: hsl(var(--primary-base));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+</style>
