@@ -233,6 +233,13 @@ export function Expire(cacheConfig: CacheConfig) {
 	};
 }
 
+/**
+ * Checks if the cache has expired based on the last cache update time and the specified lifetime.
+ *
+ * @param lastCacheUpdate - The date and time when the cache was last updated.
+ * @param lifetime - The lifetime of the cache in milliseconds.
+ * @returns `true` if the cache has expired, otherwise `false`.
+ */
 export function isCacheExpired(lastCacheUpdate: Date, lifetime: number): boolean {
 	return new Date().getTime() - lastCacheUpdate.getTime() > lifetime;
 }

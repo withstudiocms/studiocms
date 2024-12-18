@@ -1,11 +1,14 @@
 import { sdk } from 'studiocms:config';
+import studioCMS_SDK from '.';
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts';
+import { StudioCMSCache } from './StudioCMSCache';
 import studioCMS_SDK_GET from './get';
 import type {
 	PageDataCacheObject,
 	STUDIOCMS_SDK_CACHE,
 	SiteConfigCacheObject,
 	StudioCMSCacheObject,
+	VersionCacheObject,
 } from './types';
 import studioCMS_SDK_UPDATE from './update';
 import {
@@ -34,13 +37,27 @@ const {
  */
 const pagesCacheMap = new Map<string, PageDataCacheObject>();
 
+const siteConfigCacheMap = new Map<string, SiteConfigCacheObject>();
+
+const versionCacheMap = new Map<string, VersionCacheObject>();
+
+const VirtualCache = new StudioCMSCache(
+	pagesCacheMap,
+	siteConfigCacheMap,
+	versionCacheMap,
+	cacheConfig,
+	studioCMS_SDK,
+	CMSSiteConfigId,
+	versionCacheLifetime
+);
+
 /**
  * Cache object to store content retrieved from the database.
  */
 const cache: StudioCMSCacheObject = {
 	pages: pagesCacheMap,
 	siteConfig: undefined,
-	versionCache: undefined,
+	version: undefined,
 };
 
 /**
@@ -306,29 +323,37 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		},
 		latestVersion: async () => {
 			try {
-				if (!cache.versionCache) {
+				if (!isEnabled) {
 					const version = await getLatestVersion();
 
-					cache.versionCache = {
+					return {
+						lastCacheUpdate: new Date(),
+						version: version,
+					};
+				}
+				if (!cache.version) {
+					const version = await getLatestVersion();
+
+					cache.version = {
 						lastCacheUpdate: new Date(),
 						version: version,
 					};
 
-					return cache.versionCache;
+					return cache.version;
 				}
 
-				if (isCacheExpired(cache.versionCache.lastCacheUpdate, versionCacheLifetime)) {
+				if (isCacheExpired(cache.version.lastCacheUpdate, versionCacheLifetime)) {
 					const version = await getLatestVersion();
 
-					cache.versionCache = {
+					cache.version = {
 						lastCacheUpdate: new Date(),
 						version: version,
 					};
 
-					return cache.versionCache;
+					return cache.version;
 				}
 
-				return cache.versionCache;
+				return cache.version;
 			} catch (error) {
 				handleSDKError(error, 'Could not retrieve version data from the database.');
 			}
@@ -388,6 +413,19 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				}
 				// if caching is enabled, clear the cache
 				cache.pages.clear();
+			} catch (error) {
+				handleSDKError(error, 'Error clearing cache: An unknown error occurred.');
+			}
+		},
+		latestVersion: () => {
+			try {
+				// Check if caching is disabled
+				if (!isEnabled) {
+					// if caching is disabled, return
+					return;
+				}
+				// if caching is enabled, clear the cache
+				cache.version = undefined;
 			} catch (error) {
 				handleSDKError(error, 'Error clearing cache: An unknown error occurred.');
 			}
@@ -533,14 +571,22 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		},
 		latestVersion: async () => {
 			try {
+				if (!isEnabled) {
+					const version = await getLatestVersion();
+
+					return {
+						lastCacheUpdate: new Date(),
+						version: version,
+					};
+				}
 				const version = await getLatestVersion();
 
-				cache.versionCache = {
+				cache.version = {
 					lastCacheUpdate: new Date(),
 					version: version,
 				};
 
-				return cache.versionCache;
+				return cache.version;
 			} catch (error) {
 				handleSDKError(error, 'Could not retrieve version data from the database.');
 			}
