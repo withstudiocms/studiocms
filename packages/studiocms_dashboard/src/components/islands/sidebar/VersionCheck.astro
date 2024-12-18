@@ -100,22 +100,24 @@ function timeAgo(date: Date) {
             Version Information
         </h2>
         <div class="version-modal-content">
-            <div>
-                <h3>Currently Installed Version</h3>
-                <p><code>StudioCMS v{currentVersion}</code></p>
+            <h3>Currently Installed Version</h3>
+            <p>
+                <code>StudioCMS v{currentVersion}</code>
+            </p>
 
-                <h3>Latest Published Version</h3>
-                <p><code>StudioCMS v{latestVersion.version}</code></p>
+            <h3>Latest Published Version</h3>
+            <p>
+                <code>StudioCMS v{latestVersion.version}</code>
+            </p>
 
-                <h3>Links</h3>
-                <div class="version-modal-links">
-                    <span>
-                        <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">StudioCMS Releases on GitHub</a>
-                    </span>
-                    <span>
-                        <a href="https://npm.im/studiocms" target="_blank" class="version-link">StudioCMS on NPM</a>
-                    </span>
-                </div>
+            <h3>Links</h3>
+            <div class="version-modal-links">
+                <span>
+                    <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">StudioCMS Releases on GitHub</a>
+                </span>
+                <span>
+                    <a href="https://npm.im/studiocms" target="_blank" class="version-link">StudioCMS on NPM</a>
+                </span>
             </div>
         </div>
     </Modal>
@@ -134,6 +136,12 @@ function timeAgo(date: Date) {
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    .version-modal-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .version-check-container {
