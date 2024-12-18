@@ -3,6 +3,7 @@ import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user'
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
+import { Button, Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
 
 const data = await getUserData(Astro);
@@ -10,6 +11,8 @@ const data = await getUserData(Astro);
 const isAdmin = await verifyUserPermissionLevel(data, 'admin');
 
 const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
+
+const lastChecked = latestVersion.lastCacheUpdate;
 
 const comparison = compare(currentVersion, latestVersion.version);
 
@@ -49,9 +52,19 @@ function timeAgo(date: Date) {
 	return `${parts.join(', ')} ago`;
 }
 ---
+  
 { isAdmin && ( 
 
+
     <div class="version-check-container">
+
+        <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
+            data-astro-prefetch="tap" 
+            data-astro-reload class="reload-button" 
+            title="Check for updates" 
+            aria-label="Check for updates"
+            ><span class="reload"></span>
+        </a>
 
         <span class="version-title">Current Version</span>
 
@@ -76,24 +89,29 @@ function timeAgo(date: Date) {
 
                 <div class="update-footer">
                     <span class="latest-update-check">
-                        Last checked: {timeAgo(latestVersion.lastCacheUpdate)}
+                        Last checked: <time datetime={lastChecked.toISOString()}>{timeAgo(lastChecked)}</time>
                     </span>
                 </div>
             </div>
 
-            <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
-                data-astro-prefetch="tap" 
-                data-astro-reload class="reload-button" 
-                title="Check for updates" 
-                aria-label="Check for updates"
-                ><span class="reload"></span>
-            </a>
-
         </div>
     </div>
+<Modal id="modal">
+    <h2 slot="header">Header Content</h2>
+    <div>Modal Content</div>
+  </Modal>
+  <Button color="primary" id="modal-trigger">
+    Trigger Modal
+  </Button>
 
 )}
 
+
+<script>
+    import { ModalHelper } from '@studiocms/ui/components';
+
+    new ModalHelper('modal', 'modal-trigger');
+</script>
 <style>
 
     .version-check-container {
@@ -108,6 +126,7 @@ function timeAgo(date: Date) {
         display: flex;
         flex-direction: column;
         gap: 0.25rem;
+        position: relative;
     }
 
     .version-title {
@@ -219,6 +238,9 @@ function timeAgo(date: Date) {
         cursor: pointer;
         transition: all 0.15s ease;
         margin-left: 0.25rem;
+        position: absolute;
+        right: 0.25rem;
+        top: 0.25rem;
 
         &:hover {
             background-color: hsl(var(--border));
