@@ -34,27 +34,29 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       <span slot="fallback">Loading</span>
     </Admin>
   </div>  
-  <Dropdown 
-    id='sidebar-user-dropdown'
-    options={[
-      { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
-      { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
-      { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL },
-    ]}
-    offset={8}
-    transition:persist transition:persist-props
-  >
+  <div>
     { versionCheck && ( 
         <VersionCheck server:defer>
           <span slot="fallback"></span>
         </VersionCheck>
     )}
-    <div class="user-dropdown-trigger-container">
-      <UserAccount server:defer transition:persist transition:persist-props>
-        <User slot="fallback" name={"Visitor"} description={'Unknown'} />
-      </UserAccount>
-    </div>
-  </Dropdown>
+    <Dropdown 
+      id='sidebar-user-dropdown'
+      options={[
+        { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
+        { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
+        { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL },
+      ]}
+      offset={8}
+      transition:persist transition:persist-props
+    >
+      <div class="user-dropdown-trigger-container">
+        <UserAccount server:defer transition:persist transition:persist-props>
+          <User slot="fallback" name={"Visitor"} description={'Unknown'} />
+        </UserAccount>
+      </div>
+    </Dropdown>
+  </div>
 </Sidebar>
 
 <script>
