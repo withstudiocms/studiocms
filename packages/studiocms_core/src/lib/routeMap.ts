@@ -73,6 +73,7 @@ export const StudioCMSRoutes = {
 	sdk: {
 		pages: sdkRoute('list-pages'),
 		fallback_pages: sdkRoute('fallback-list-pages.json'),
+		updateLatestVersionCache: sdkRoute('update-latest-version-cache'),
 	},
 };
 

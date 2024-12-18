@@ -1,8 +1,14 @@
 ---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
 import { Divider } from '@studiocms/ui/components';
 import { compare } from 'semver';
+
+const data = await getUserData(Astro);
+
+const isAdmin = await verifyUserPermissionLevel(data, 'admin');
 
 const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
 
@@ -12,10 +18,10 @@ const classList = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' :
 
 const titleString =
 	comparison === -1
-		? 'There is a new version available'
+		? 'There is a new version available, click to see npm page'
 		: comparison === 0
-			? 'You are up to date'
-			: 'You are using a unreleased version';
+			? 'You are up to date, click to see npm page'
+			: 'You are using a unreleased version, click to see npm page';
 
 function timeAgo(date: Date) {
 	const now = new Date();
@@ -40,33 +46,35 @@ function timeAgo(date: Date) {
 	return `${parts.join(', ')} ago`;
 }
 ---
-
-<Divider background='background-step-1'>
-    Current Version
-</Divider>
-
-<div class="version-container">
-    <code class="version-check" title={titleString} aria-label={titleString}>
-        <span>StudioCMS v{currentVersion}</span>
-        <span class="status" class:list={[classList]} />
-    </code>
-
-    { comparison === -1 && (
-        <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="message">
-            There is a new version of StudioCMS available, please consider updating.
-        </a>
-    )}
-
-    { comparison === 1 && (
-        <span class="message">
-            You are currently using a pre-release version of StudioCMS.
-        </span>
-    )}
-
-    <span class="latest-update-check">
-        Last checked: {timeAgo(latestVersion.lastCacheUpdate)}
-    </span>
-</div>
+{ isAdmin && ( 
+    <Divider background='background-step-1'>Current Version</Divider>
+    
+    <div class="version-container">
+        <code class="version-check" title={titleString} aria-label={titleString}>
+            <a class="version-line" href="https://npm.im/studiocms">StudioCMS v{currentVersion}</a>
+            <span class="status" class:list={[classList]} />
+        </code>
+    
+        { comparison === -1 && (
+            <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="message">
+                There is a new version of StudioCMS available, please consider updating.
+            </a>
+        )}
+    
+        { comparison === 1 && (
+            <span class="message">
+                You are currently using a pre-release version of StudioCMS.
+            </span>
+        )}
+    
+        <div class="update-footer">
+            <span class="latest-update-check">
+                Last checked: {timeAgo(latestVersion.lastCacheUpdate)}
+            </span>
+            <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} data-astro-prefetch="tap" data-astro-reload class="reload-button" title="Check for updates" aria-label="Check for updates"><div class="reload"></div></a>
+        </div>
+    </div>
+)}
 
 <style>
     .version-container {
@@ -94,6 +102,20 @@ function timeAgo(date: Date) {
         font-weight: 700;
     }
 
+    .version-link {
+        text-decoration: none !important;
+    }
+
+    a:-webkit-any-link:hover {
+        text-decoration: underline;
+        color: hsl(var(--primary-base));
+    }
+
+    a:-webkit-any-link {
+        color: hsl(var(--text-muted));
+        text-decoration: none;
+    }
+
     .version-container .message {
         color: hsl(var(--text-muted));
         font-size: .75em;
@@ -101,11 +123,63 @@ function timeAgo(date: Date) {
         text-align: center;
     }
 
+    .update-footer {
+        display: flex;
+        flex-direction: row;
+        gap: .375rem;
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        vertical-align: middle;
+    }
+
     .latest-update-check {
         color: hsl(var(--text-muted));
         font-size: .6em;
         font-weight: 700;
         text-align: center;
+    }
+
+    .reload-button {
+        padding: 0.125rem;
+        border: 2px solid hsl(var(--border));
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+            background-color: hsl(var(--border));
+
+            .reload {
+                background-color: hsl(var(--primary-base));
+            }
+        }
+    }
+
+    .reload {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99'/%3E%3C/svg%3E");
+        background-color: hsl(var(--text-muted));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .reload {
+
+        &:focus {
+            outline: none;
+        }
     }
 
     .outdated {
@@ -138,8 +212,8 @@ function timeAgo(date: Date) {
 
     .future {
         display: inline-block;
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104q-.376.034-.75.082m.75-.082a24.3 24.3 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104q.377.034.75.082M19.8 15.3l-1.57.393A9.07 9.07 0 0 1 12 15a9.07 9.07 0 0 0-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.3 48.3 0 0 1 12 21a48 48 0 0 1-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'/%3E%3C/svg%3E");
         background-color: hsl(var(--primary-base));
         -webkit-mask-image: var(--svg);

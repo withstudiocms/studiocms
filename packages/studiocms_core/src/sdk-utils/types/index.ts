@@ -882,5 +882,7 @@ export interface STUDIOCMS_SDK_CACHE {
 		 * @returns A promise that resolves to the updated cached site configuration data.
 		 */
 		siteConfig: (data: SiteConfig) => Promise<SiteConfigCacheObject>;
+
+		latestVersion: () => Promise<VersionCacheObject>;
 	};
 }

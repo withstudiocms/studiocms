@@ -272,8 +272,18 @@ export function transformSiteConfigReturn(data: SiteConfig): SiteConfigCacheObje
 	return { lastCacheUpdate: new Date(), data };
 }
 
-export async function getLatestVersion() {
-	const npmResponse = await fetch('https://registry.npmjs.org/studiocms/latest');
-	const npmData = await npmResponse.json();
-	return npmData.version as string;
+/**
+ * Fetches the latest version of the 'studiocms' package from the npm registry.
+ *
+ * @returns {Promise<string>} A promise that resolves to the latest version string of the 'studiocms' package.
+ * @throws Will throw an error if the fetch operation fails.
+ */
+export async function getLatestVersion(): Promise<string> {
+	try {
+		const npmResponse = await fetch('https://registry.npmjs.org/studiocms/latest');
+		const npmData = await npmResponse.json();
+		return npmData.version as string;
+	} catch (error) {
+		handleSDKError(error, 'Error fetching latest version: An unknown error occurred.');
+	}
 }

@@ -126,6 +126,12 @@ export const configSetup = defineUtility('astro:config:setup')(
 			prerender: true,
 		});
 
+		injectRoute({
+			pattern: sdkRouteResolver('update-latest-version-cache'),
+			entrypoint: resolve('../routes/update-latest-version-cache.ts'),
+			prerender: false,
+		});
+
 		integrationLogger(logInfo, 'Core Setup Complete...');
 	}
 );

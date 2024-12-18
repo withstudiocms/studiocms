@@ -531,6 +531,20 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				handleSDKError(error, 'Could not update site config in the database.');
 			}
 		},
+		latestVersion: async () => {
+			try {
+				const version = await getLatestVersion();
+
+				cache.versionCache = {
+					lastCacheUpdate: new Date(),
+					version: version,
+				};
+
+				return cache.versionCache;
+			} catch (error) {
+				handleSDKError(error, 'Could not retrieve version data from the database.');
+			}
+		},
 	},
 };
 
