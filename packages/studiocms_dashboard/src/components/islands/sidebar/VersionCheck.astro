@@ -18,13 +18,6 @@ const comparison = compare(currentVersion, latestVersion.version);
 
 const classList = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
 
-const titleString =
-	comparison === -1
-		? 'There is a new version available, click to see npm page'
-		: comparison === 0
-			? 'You are up to date, click to see npm page'
-			: 'You are using a unreleased version, click to see npm page';
-
 function timeAgo(date: Date) {
 	const now = new Date();
 	const past = new Date(date);
@@ -70,7 +63,7 @@ function timeAgo(date: Date) {
 
         <div class="version-checker">
             <div class="version-container">
-                <code class="version-check" title={titleString} aria-label={titleString}>
+                <code class="version-check">
                     <span class="version-line">StudioCMS v{currentVersion}</span>
                     <span class="status" class:list={[classList]} />
                 </code>
