@@ -2,7 +2,7 @@ import { db, eq } from 'astro:db';
 import { GhostUserDefaults } from '../../consts';
 import { tsPermissions, tsUsers } from '../tables';
 import type { STUDIOCMS_SDK_AUTH } from '../types';
-import { StudioCMS_SDK_Error } from '../utils';
+import { handleSDKError } from '../utils';
 
 /**
  * The `StudioCMS_SDK_authUser` object provides methods for creating and updating user records
@@ -29,20 +29,14 @@ export const authUser: STUDIOCMS_SDK_AUTH['user'] = {
 			await db.insert(tsPermissions).values({ user: newUser.id, rank: 'visitor' });
 			return newUser;
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error creating user: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error creating user: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error creating user: An unknown error occurred.');
 		}
 	},
 	update: async (userId, userData) => {
 		try {
 			return await db.update(tsUsers).set(userData).where(eq(tsUsers.id, userId)).returning().get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating user: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error updating user: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error updating user: An unknown error occurred.');
 		}
 	},
 	searchUsersForUsernameOrEmail: async (username, email) => {
@@ -54,33 +48,39 @@ export const authUser: STUDIOCMS_SDK_AUTH['user'] = {
 
 			return { usernameSearch, emailSearch };
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error searching for username or email: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error searching for username or email: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error searching for username or email: An unknown error occurred.');
 		}
 	},
 	ghost: {
 		verifyExists: async () => {
-			const ghostUser = await db
-				.select()
-				.from(tsUsers)
-				.where(eq(tsUsers.id, GhostUserDefaults.id))
-				.get();
-			if (!ghostUser) {
-				return false;
+			try {
+				const ghostUser = await db
+					.select()
+					.from(tsUsers)
+					.where(eq(tsUsers.id, GhostUserDefaults.id))
+					.get();
+				if (!ghostUser) {
+					return false;
+				}
+				return true;
+			} catch (error) {
+				handleSDKError(error, 'Error verifying ghost user exists: An unknown error occurred.');
 			}
-			return true;
 		},
-		create: async () => await db.insert(tsUsers).values(GhostUserDefaults).returning().get(),
-		get: async () =>
-			await db.select().from(tsUsers).where(eq(tsUsers.id, GhostUserDefaults.id)).get(),
+		create: async () => {
+			try {
+				return await db.insert(tsUsers).values(GhostUserDefaults).returning().get();
+			} catch (error) {
+				handleSDKError(error, 'Error creating ghost user: An unknown error occurred.');
+			}
+		},
+		get: async () => {
+			try {
+				return await db.select().from(tsUsers).where(eq(tsUsers.id, GhostUserDefaults.id)).get();
+			} catch (error) {
+				handleSDKError(error, 'Error getting ghost user: An unknown error occurred.');
+			}
+		},
 	},
 	// TODO: Implement delete function that wont error since
 	// there could be references to the user in other tables

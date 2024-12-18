@@ -8,7 +8,7 @@ import {
 	tsSiteConfig,
 } from '../tables';
 import type { STUDIOCMS_SDK_UPDATE } from '../types';
-import { StudioCMS_SDK_Error } from '../utils';
+import { handleSDKError } from '../utils';
 
 /**
  * The `StudioCMS_SDK_UPDATE` object provides methods to update various entities in the StudioCMS system.
@@ -34,10 +34,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating page: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error updating page: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error updating page: An unknown error occurred.');
 		}
 	},
 	pageContent: async (data) => {
@@ -49,13 +46,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating page content: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error updating page content: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error updating page content: An unknown error occurred.');
 		}
 	},
 	tags: async (data) => {
@@ -67,10 +58,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating tags: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error updating tags: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error updating tags: An unknown error occurred.');
 		}
 	},
 	categories: async (data) => {
@@ -82,13 +70,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating categories: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error updating categories: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error updating categories: An unknown error occurred.');
 		}
 	},
 	permissions: async (data) => {
@@ -100,13 +82,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating permissions: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error updating permissions: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error updating permissions: An unknown error occurred.');
 		}
 	},
 	siteConfig: async (data) => {
@@ -118,16 +94,7 @@ export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = {
 				.returning()
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error updating site configuration: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error updating site configuration: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error updating site configuration: An unknown error occurred.');
 		}
 	},
 };

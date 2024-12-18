@@ -3,7 +3,7 @@ import { db, eq } from 'astro:db';
 import { CMSSiteConfigId } from '../../consts';
 import { tsPageData, tsSiteConfig, tsUsers } from '../tables';
 import type { CombinedPageData, CombinedUserData, STUDIOCMS_SDK_GET, SiteConfig } from '../types';
-import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
+import { collectPageData, collectUserData, handleSDKError } from '../utils';
 
 /**
  * Provides methods to retrieve various types of data from the database.
@@ -29,10 +29,7 @@ export const getDatabase: STUDIOCMS_SDK_GET['database'] = {
 
 			return combinedUserData;
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 	pages: async () => {
@@ -49,10 +46,7 @@ export const getDatabase: STUDIOCMS_SDK_GET['database'] = {
 
 			return pages;
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting pages: An unknown error occurred.');
 		}
 	},
 	config: async () => {
@@ -67,16 +61,7 @@ export const getDatabase: STUDIOCMS_SDK_GET['database'] = {
 
 			return siteConfig as SiteConfig;
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error getting site configuration: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error getting site configuration: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error getting site configuration: An unknown error occurred.');
 		}
 	},
 };

@@ -12,7 +12,7 @@ import {
 	Expire,
 	StudioCMS_SDK_Error,
 	cacheMapSet,
-	handleError,
+	handleSDKError,
 	transformNewDataReturn,
 	transformSiteConfigReturn,
 } from './utils';
@@ -106,7 +106,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					// Return the cached data
 					return isCached;
 				} catch (error) {
-					handleError(error, 'Could not retrieve data from the database.');
+					handleSDKError(error, 'Could not retrieve data from the database.');
 				}
 			},
 			bySlug: async (slug, pkg) => {
@@ -173,7 +173,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					// Return the cached data
 					return isCached;
 				} catch (error) {
-					handleError(error, 'Could not retrieve data from the database.');
+					handleSDKError(error, 'Could not retrieve data from the database.');
 				}
 			},
 		},
@@ -241,7 +241,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				// Transform and return the data
 				return recentCacheArray;
 			} catch (error) {
-				handleError(error, 'Could not retrieve data from the database.');
+				handleSDKError(error, 'Could not retrieve data from the database.');
 			}
 		},
 		siteConfig: async () => {
@@ -298,7 +298,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				// Return the cached data
 				return cache.siteConfig;
 			} catch (error) {
-				handleError(error, 'Could not retrieve data from the database.');
+				handleSDKError(error, 'Could not retrieve data from the database.');
 			}
 		},
 	},
@@ -314,7 +314,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					// if caching is enabled, delete the cache entry
 					cache.pages.delete(id);
 				} catch (error) {
-					handleError(error, 'Error clearing cache: An unknown error occurred.');
+					handleSDKError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 			bySlug: (slug, pkg) => {
@@ -343,7 +343,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						cache.pages.delete(key);
 					}
 				} catch (error) {
-					handleError(error, 'Error clearing cache: An unknown error occurred.');
+					handleSDKError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 		},
@@ -357,7 +357,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				// if caching is enabled, clear the cache
 				cache.pages.clear();
 			} catch (error) {
-				handleError(error, 'Error clearing cache: An unknown error occurred.');
+				handleSDKError(error, 'Error clearing cache: An unknown error occurred.');
 			}
 		},
 	},
@@ -409,7 +409,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					// Return the transformed data
 					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					handleError(error, 'Could not update page data in the database.');
+					handleSDKError(error, 'Could not update page data in the database.');
 				}
 			},
 			bySlug: async (slug, pkg, { pageData, pageContent }) => {
@@ -453,7 +453,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 					} catch (error) {
-						handleError(error, 'Could not update page data in the database.');
+						handleSDKError(error, 'Could not update page data in the database.');
 					}
 
 					// Retrieve the updated data from the database
@@ -470,7 +470,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 					// Return the transformed data
 					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					handleError(error, 'Could not update page data in the database.');
+					handleSDKError(error, 'Could not update page data in the database.');
 				}
 			},
 		},
@@ -496,7 +496,7 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 				// Return the updated data
 				return cache.siteConfig;
 			} catch (error) {
-				handleError(error, 'Could not update site config in the database.');
+				handleSDKError(error, 'Could not update site config in the database.');
 			}
 		},
 	},

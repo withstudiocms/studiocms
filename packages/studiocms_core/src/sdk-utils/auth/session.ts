@@ -1,7 +1,7 @@
 import { db, eq } from 'astro:db';
 import { tsSessionTable, tsUsers } from '../tables';
 import type { STUDIOCMS_SDK_AUTH } from '../types';
-import { StudioCMS_SDK_Error } from '../utils';
+import { handleSDKError } from '../utils';
 
 /**
  * StudioCMS_SDK_authSession provides methods to manage authentication sessions.
@@ -40,13 +40,7 @@ export const authSession: STUDIOCMS_SDK_AUTH['session'] = {
 				})
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error creating session: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error creating session: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error creating session: An unknown error occurred.');
 		}
 	},
 	sessionWithUser: async (sessionId) => {
@@ -57,16 +51,7 @@ export const authSession: STUDIOCMS_SDK_AUTH['session'] = {
 				.innerJoin(tsUsers, eq(tsSessionTable.userId, tsUsers.id))
 				.where(eq(tsSessionTable.id, sessionId));
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error getting session with user: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error getting session with user: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error getting session with user: An unknown error occurred.');
 		}
 	},
 	delete: async (sessionId) => {
@@ -77,13 +62,7 @@ export const authSession: STUDIOCMS_SDK_AUTH['session'] = {
 				message: 'Session deleted',
 			};
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error deleting session: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error deleting session: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error deleting session: An unknown error occurred.');
 		}
 	},
 	update: async (sessionId, newDate) => {
@@ -94,13 +73,7 @@ export const authSession: STUDIOCMS_SDK_AUTH['session'] = {
 				.where(eq(tsSessionTable.id, sessionId))
 				.returning();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error updating session: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error updating session: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error updating session: An unknown error occurred.');
 		}
 	},
 };

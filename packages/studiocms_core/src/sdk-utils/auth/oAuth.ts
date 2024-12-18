@@ -1,7 +1,7 @@
 import { and, db, eq } from 'astro:db';
 import { tsOAuthAccounts } from '../tables';
 import type { STUDIOCMS_SDK_AUTH } from '../types';
-import { StudioCMS_SDK_Error } from '../utils';
+import { handleSDKError } from '../utils';
 
 /**
  * The `StudioCMS_SDK_authOAuth` object provides methods to handle OAuth authentication
@@ -25,16 +25,7 @@ export const authOAuth: STUDIOCMS_SDK_AUTH['oAuth'] = {
 		try {
 			return await db.insert(tsOAuthAccounts).values(data).returning().get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error creating OAuth account: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error creating OAuth account: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error creating OAuth account: An unknown error occurred.');
 		}
 	},
 	delete: async (userId, provider) => {
@@ -49,16 +40,7 @@ export const authOAuth: STUDIOCMS_SDK_AUTH['oAuth'] = {
 					};
 				});
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error deleting OAuth account: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error deleting OAuth account: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error deleting OAuth account: An unknown error occurred.');
 		}
 	},
 	searchProvidersForId: async (providerId, userId) => {
@@ -71,16 +53,7 @@ export const authOAuth: STUDIOCMS_SDK_AUTH['oAuth'] = {
 				)
 				.get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error searching for OAuth account: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error searching for OAuth account: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error searching for OAuth account: An unknown error occurred.');
 		}
 	},
 };

@@ -9,7 +9,7 @@ import {
 	tsPermissions,
 } from '../tables';
 import type { STUDIOCMS_SDK_POST } from '../types';
-import { StudioCMS_SDK_Error, generateRandomIDNumber } from '../utils';
+import { generateRandomIDNumber, handleSDKError } from '../utils';
 
 /**
  * Utility functions for adding various entries to the database.
@@ -75,10 +75,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				pageContent: newPageContent,
 			};
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting page: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error inserting page: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error inserting page: An unknown error occurred.');
 		}
 	},
 	pageContent: async (pageContent) => {
@@ -93,16 +90,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				})
 				.returning({ id: tsPageContent.id });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error inserting page content: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting page content: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting page content: An unknown error occurred.');
 		}
 	},
 	tags: async (tag) => {
@@ -118,10 +106,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				})
 				.returning({ id: tsPageDataTags.id });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting tags: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error inserting tags: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error inserting tags: An unknown error occurred.');
 		}
 	},
 	categories: async (category) => {
@@ -137,13 +122,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				})
 				.returning({ id: tsPageDataCategories.id });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting categories: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting categories: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting categories: An unknown error occurred.');
 		}
 	},
 	permissions: async (userId, rank) => {
@@ -168,13 +147,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				})
 				.returning({ user: tsPermissions.user, rank: tsPermissions.rank });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting permissions: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting permissions: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting permissions: An unknown error occurred.');
 		}
 	},
 	diffTracking: async (diffData) => {
@@ -192,16 +165,7 @@ export const postDatabaseEntry: STUDIOCMS_SDK_POST['databaseEntry'] = {
 				})
 				.returning();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error inserting diff tracking: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting diff tracking: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting diff tracking: An unknown error occurred.');
 		}
 	},
 };

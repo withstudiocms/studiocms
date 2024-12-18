@@ -2,7 +2,7 @@
 import { and, db, eq } from 'astro:db';
 import { tsPageData, tsUsers } from '../tables';
 import type { STUDIOCMS_SDK_GET } from '../types';
-import { StudioCMS_SDK_Error, collectPageData, collectUserData } from '../utils';
+import { collectPageData, collectUserData, handleSDKError } from '../utils';
 
 /**
  * Retrieves a database entry based on the specified table.
@@ -65,13 +65,7 @@ export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 
 				return await collectUserData(user);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error getting user by ID: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error getting user by ID: An unknown error occurred.',
-					`${error}`
-				);
+				handleSDKError(error, 'Error getting user by ID: An unknown error occurred.');
 			}
 		},
 		/**
@@ -104,16 +98,7 @@ export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 
 				return await collectUserData(user);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(
-						`Error getting user by username: ${error.message}`,
-						error.stack
-					);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error getting user by username: An unknown error occurred.',
-					`${error}`
-				);
+				handleSDKError(error, 'Error getting user by username: An unknown error occurred.');
 			}
 		},
 		/**
@@ -145,16 +130,7 @@ export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 
 				return await collectUserData(user);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(
-						`Error getting user by email: ${error.message}`,
-						error.stack
-					);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error getting user by email: An unknown error occurred.',
-					`${error}`
-				);
+				handleSDKError(error, 'Error getting user by email: An unknown error occurred.');
 			}
 		},
 	},
@@ -193,13 +169,7 @@ export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 
 				return await collectPageData(page);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error getting page by ID: An unknown error occurred.',
-					`${error}`
-				);
+				handleSDKError(error, 'Error getting page by ID: An unknown error occurred.');
 			}
 		},
 		/**
@@ -243,16 +213,7 @@ export const getDatabaseEntry: STUDIOCMS_SDK_GET['databaseEntry'] = {
 
 				return await collectPageData(page);
 			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(
-						`Error getting page by slug: ${error.message}`,
-						error.stack
-					);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error getting page by slug: An unknown error occurred.',
-					`${error}`
-				);
+				handleSDKError(error, 'Error getting page by slug: An unknown error occurred.');
 			}
 		},
 	},

@@ -1,7 +1,7 @@
 import { db, eq } from 'astro:db';
 import { tsPermissions } from '../tables';
 import type { STUDIOCMS_SDK_AUTH } from '../types';
-import { StudioCMS_SDK_Error } from '../utils';
+import { handleSDKError } from '../utils';
 
 /**
  * An object representing the authentication permissions for the StudioCMS SDK.
@@ -16,16 +16,7 @@ export const authPermission: STUDIOCMS_SDK_AUTH['permission'] = {
 		try {
 			return await db.select().from(tsPermissions).where(eq(tsPermissions.user, userId)).get();
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(
-					`Error getting user permissions: ${error.message}`,
-					error.stack
-				);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error getting user permissions: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error getting user permissions: An unknown error occurred.');
 		}
 	},
 };

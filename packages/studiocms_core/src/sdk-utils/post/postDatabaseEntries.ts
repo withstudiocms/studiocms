@@ -7,7 +7,7 @@ import {
 	tsPermissions,
 } from '../tables';
 import type { STUDIOCMS_SDK_POST } from '../types';
-import { StudioCMS_SDK_Error, generateRandomIDNumber } from '../utils';
+import { generateRandomIDNumber, handleSDKError } from '../utils';
 
 /**
  * The `postDatabaseEntries` object provides methods to insert various types of entries into the database.
@@ -30,10 +30,7 @@ export const postDatabaseEntries: STUDIOCMS_SDK_POST['databaseEntries'] = {
 				)
 				.returning({ id: tsPageDataTags.id });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting tags: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error inserting tags: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error inserting tags: An unknown error occurred.');
 		}
 	},
 	categories: async (categories) => {
@@ -53,13 +50,7 @@ export const postDatabaseEntries: STUDIOCMS_SDK_POST['databaseEntries'] = {
 				)
 				.returning({ id: tsPageDataCategories.id });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting categories: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting categories: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting categories: An unknown error occurred.');
 		}
 	},
 	permissions: async (permissions) => {
@@ -90,13 +81,7 @@ export const postDatabaseEntries: STUDIOCMS_SDK_POST['databaseEntries'] = {
 				)
 				.returning({ user: tsPermissions.user, rank: tsPermissions.rank });
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting permissions: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error(
-				'Error inserting permissions: An unknown error occurred.',
-				`${error}`
-			);
+			handleSDKError(error, 'Error inserting permissions: An unknown error occurred.');
 		}
 	},
 	pages: async (pages) => {
@@ -164,10 +149,7 @@ export const postDatabaseEntries: STUDIOCMS_SDK_POST['databaseEntries'] = {
 				await db.batch([head, ...tail]);
 			}
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error inserting page: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error inserting page: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error inserting page: An unknown error occurred.');
 		}
 	},
 };

@@ -36,6 +36,44 @@ export class StudioCMS_SDK_Error extends AstroError {
 }
 
 /**
+ * Handles an error by throwing a `StudioCMS_SDK_Error`.
+ *
+ * @param error - The error to handle. If the error is an instance of `StudioCMS_SDK_Error`,
+ *                it rethrows the error. Otherwise, it wraps the error in a new `StudioCMS_SDK_Error`
+ *                with the provided message and optional hint.
+ * @param message - The message to use if the error is not an instance of `StudioCMS_SDK_Error`.
+ * @param hint - Optional. A hint to help the user fix the error.
+ *
+ * @throws {StudioCMS_SDK_Error} - Throws an error with the appropriate message and hint.
+ */
+export function handleSDKError(error: unknown, message: string): never {
+	// Check if the error is already a StudioCMS_SDK_Error
+	if (error instanceof StudioCMS_SDK_Error) {
+		// If it's already a StudioCMS_SDK_Error, rethrow it
+		throw error;
+	}
+
+	// Check if the error is an instance of Error
+	if (error instanceof Error) {
+		// Extract original error details if available
+		const originalMessage = error.message;
+		const originalStack = error.stack;
+
+		// Create and throw a new StudioCMS_SDK_Error
+		throw new StudioCMS_SDK_Error(
+			`${message}${originalMessage ? `: ${originalMessage}` : ''}`,
+			originalStack
+		);
+	}
+
+	// Extract original error details if available
+	const originalMessage = error instanceof Error ? error.message : String(error);
+
+	// Create and throw a new StudioCMS_SDK_Error
+	throw new StudioCMS_SDK_Error(`${message}${originalMessage ? `: ${originalMessage}` : ''}`);
+}
+
+/**
  * Collects user data by fetching OAuth data and permission data for the given user.
  *
  * @param user - The user object containing user information.
@@ -54,13 +92,7 @@ export async function collectUserData(user: tsUsersSelect): Promise<CombinedUser
 			permissionsData: permissionData[0],
 		};
 	} catch (error) {
-		if (error instanceof Error) {
-			throw new StudioCMS_SDK_Error(`Error collecting user data: ${error.message}`, error.stack);
-		}
-		throw new StudioCMS_SDK_Error(
-			'Error collecting user data: An unknown error occurred.',
-			`${error}`
-		);
+		handleSDKError(error, 'Error collecting user data: An unknown error occurred.');
 	}
 }
 
@@ -132,13 +164,7 @@ export async function collectPageData(page: tsPageDataSelect): Promise<CombinedP
 			defaultContent: defaultContentData,
 		};
 	} catch (error) {
-		if (error instanceof Error) {
-			throw new StudioCMS_SDK_Error(`Error collecting page data: ${error.message}`, error.stack);
-		}
-		throw new StudioCMS_SDK_Error(
-			'Error collecting page data: An unknown error occurred.',
-			`${error}`
-		);
+		handleSDKError(error, 'Error collecting page data: An unknown error occurred.');
 	}
 }
 
@@ -169,10 +195,7 @@ export function verifyRank(
 
 		return permitted;
 	} catch (error) {
-		if (error instanceof Error) {
-			throw new StudioCMS_SDK_Error(`Error verifying rank: ${error.message}`, error.stack);
-		}
-		throw new StudioCMS_SDK_Error('Error verifying rank: An unknown error occurred.', `${error}`);
+		handleSDKError(error, 'Error verifying rank: An unknown error occurred.');
 	}
 }
 
@@ -243,42 +266,4 @@ export function cacheMapSet(
  */
 export function transformSiteConfigReturn(data: SiteConfig): SiteConfigCacheObject {
 	return { lastCacheUpdate: new Date(), data };
-}
-
-/**
- * Handles an error by throwing a `StudioCMS_SDK_Error`.
- *
- * @param error - The error to handle. If the error is an instance of `StudioCMS_SDK_Error`,
- *                it rethrows the error. Otherwise, it wraps the error in a new `StudioCMS_SDK_Error`
- *                with the provided message and optional hint.
- * @param message - The message to use if the error is not an instance of `StudioCMS_SDK_Error`.
- * @param hint - Optional. A hint to help the user fix the error.
- *
- * @throws {StudioCMS_SDK_Error} - Throws an error with the appropriate message and hint.
- */
-export function handleError(error: unknown, message: string): never {
-	// Check if the error is already a StudioCMS_SDK_Error
-	if (error instanceof StudioCMS_SDK_Error) {
-		// If it's already a StudioCMS_SDK_Error, rethrow it
-		throw error;
-	}
-
-	// Check if the error is an instance of Error
-	if (error instanceof Error) {
-		// Extract original error details if available
-		const originalMessage = error.message;
-		const originalStack = error.stack;
-
-		// Create and throw a new StudioCMS_SDK_Error
-		throw new StudioCMS_SDK_Error(
-			`${message}${originalMessage ? `: ${originalMessage}` : ''}`,
-			originalStack
-		);
-	}
-
-	// Extract original error details if available
-	const originalMessage = error instanceof Error ? error.message : String(error);
-
-	// Create and throw a new StudioCMS_SDK_Error
-	throw new StudioCMS_SDK_Error(`${message}${originalMessage ? `: ${originalMessage}` : ''}`);
 }

@@ -2,7 +2,7 @@
 import { db } from 'astro:db';
 import { tsPermissions, tsUsers } from '../tables';
 import type { STUDIOCMS_SDK_GET } from '../types';
-import { StudioCMS_SDK_Error, combineRanks, verifyRank } from '../utils';
+import { combineRanks, handleSDKError, verifyRank } from '../utils';
 
 /**
  * Provides methods to retrieve lists of users with different permission levels.
@@ -38,10 +38,7 @@ export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 				...combineRanks('visitor', visitors),
 			];
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 	owners: async () => {
@@ -52,10 +49,7 @@ export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'owner');
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 	admins: async () => {
@@ -66,10 +60,7 @@ export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'admin');
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 	editors: async () => {
@@ -80,10 +71,7 @@ export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'editor');
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 	visitors: async () => {
@@ -94,10 +82,7 @@ export const getPermissionsLists: STUDIOCMS_SDK_GET['permissionsLists'] = {
 			]);
 			return verifyRank(existingUsers, currentPermittedUsers, 'visitor');
 		} catch (error) {
-			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting users: ${error.message}`, error.stack);
-			}
-			throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.', `${error}`);
+			handleSDKError(error, 'Error getting users: An unknown error occurred.');
 		}
 	},
 };
