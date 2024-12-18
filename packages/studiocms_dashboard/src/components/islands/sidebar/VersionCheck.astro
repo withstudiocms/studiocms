@@ -75,21 +75,15 @@ function timeAgo(date: Date) {
                     <span class="status" class:list={[classList]} />
                 </code>
 
-                <span class="version-message" id="version-modal-trigger">
-                    Click for more information.
-                </span>
-
-                { comparison === -1 && (
-                    <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="new-version-message">
-                        There is a new version available, consider updating.
-                    </a>
-                )}
-
                 { comparison === 1 && (
                     <span class="pre-release-message">
                         You are currently on a prerelease.
                     </span>
                 )}
+
+                <span class="version-message" id="version-modal-trigger">
+                    Click for more information.
+                </span>
 
                 <div class="update-footer">
                     <span class="latest-update-check">
@@ -112,19 +106,11 @@ function timeAgo(date: Date) {
             <h3>Latest Published Version</h3>
             <p><code>StudioCMS v{latestVersion.version}</code></p>
 
-            <h4>Links</h4>
-            <ul>
-                <li>
-                    <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">
-                        StudioCMS Releases
-                    </a>
-                </li>
-                <li>
-                    <a href="https://npm.im/studiocms" target="_blank" class="version-link">
-                        StudioCMS NPM
-                    </a>
-                </li>
-            </ul>
+            <h3>Links</h3>
+            <div class="version-modal-links">
+                <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">StudioCMS Releases on GitHub</a>
+                <a href="https://npm.im/studiocms" target="_blank" class="version-link">StudioCMS on NPM</a>
+            </div>
         </div>
     </div>
 </Modal>
