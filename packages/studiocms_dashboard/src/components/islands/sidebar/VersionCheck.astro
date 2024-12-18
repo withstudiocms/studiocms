@@ -3,7 +3,7 @@ import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user'
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
-import { Button, Modal } from '@studiocms/ui/components';
+import { Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
 
 const data = await getUserData(Astro);
@@ -94,26 +94,27 @@ function timeAgo(date: Date) {
 
         </div>
     </div>
-<Modal id="version-modal" size="sm">
-    <h2 slot="header">
-        Version Information
-    </h2>
-    <div class="version-modal-content">
-        <div>
-            <h3>Currently Installed Version</h3>
-            <p><code>StudioCMS v{currentVersion}</code></p>
 
-            <h3>Latest Published Version</h3>
-            <p><code>StudioCMS v{latestVersion.version}</code></p>
+    <Modal id="version-modal" size="sm">
+        <h2 slot="header">
+            Version Information
+        </h2>
+        <div class="version-modal-content">
+            <div>
+                <h3>Currently Installed Version</h3>
+                <p><code>StudioCMS v{currentVersion}</code></p>
 
-            <h3>Links</h3>
-            <div class="version-modal-links">
-                <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">StudioCMS Releases on GitHub</a>
-                <a href="https://npm.im/studiocms" target="_blank" class="version-link">StudioCMS on NPM</a>
+                <h3>Latest Published Version</h3>
+                <p><code>StudioCMS v{latestVersion.version}</code></p>
+
+                <h3>Links</h3>
+                <div class="version-modal-links">
+                    <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">StudioCMS Releases on GitHub</a>
+                    <a href="https://npm.im/studiocms" target="_blank" class="version-link">StudioCMS on NPM</a>
+                </div>
             </div>
         </div>
-    </div>
-</Modal>
+    </Modal>
 
 )}
 
@@ -124,6 +125,12 @@ function timeAgo(date: Date) {
     new ModalHelper('version-modal', 'version-modal-trigger');
 </script>
 <style>
+
+    .version-modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 
     .version-check-container {
         justify-content: center;
@@ -203,17 +210,9 @@ function timeAgo(date: Date) {
         text-decoration: none;
     }
 
-    .version-container .new-version-message {
-        color: hsl(var(--warning-base));
-        font-size: .75em;
-        font-weight: 700;
-        text-align: center;
-        text-wrap: pretty;
-    }
-
     .version-container .pre-release-message {
         color: hsl(var(--text-muted));
-        font-size: .75em;
+        font-size: .7em;
         font-weight: 700;
         text-align: center;
         text-wrap: balance;
@@ -221,7 +220,7 @@ function timeAgo(date: Date) {
 
     .version-container .version-message {
         color: hsl(var(--text-muted));
-        font-size: .75em;
+        font-size: .7em;
         font-weight: 700;
         text-align: center;
         text-wrap: balance;
@@ -287,13 +286,6 @@ function timeAgo(date: Date) {
         mask-repeat: no-repeat;
         -webkit-mask-size: 100% 100%;
         mask-size: 100% 100%;
-    }
-
-    .reload {
-
-        &:focus {
-            outline: none;
-        }
     }
 
     .outdated {
