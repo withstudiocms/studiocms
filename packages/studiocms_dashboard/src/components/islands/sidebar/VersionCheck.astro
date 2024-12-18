@@ -71,9 +71,13 @@ function timeAgo(date: Date) {
         <div class="version-checker">
             <div class="version-container">
                 <code class="version-check" title={titleString} aria-label={titleString}>
-                    <a class="version-line" href="https://npm.im/studiocms">StudioCMS v{currentVersion}</a>
+                    <span class="version-line">StudioCMS v{currentVersion}</span>
                     <span class="status" class:list={[classList]} />
                 </code>
+
+                <span class="version-message" id="version-modal-trigger">
+                    Click for more information.
+                </span>
 
                 { comparison === -1 && (
                     <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="new-version-message">
@@ -96,13 +100,20 @@ function timeAgo(date: Date) {
 
         </div>
     </div>
-<Modal id="modal">
-    <h2 slot="header">Header Content</h2>
-    <div>Modal Content</div>
-  </Modal>
-  <Button color="primary" id="modal-trigger">
-    Trigger Modal
-  </Button>
+<Modal id="version-modal" size="sm" cancelButton="Cancel">
+    <h2 slot="header">
+        Version Information
+    </h2>
+    <div class="version-modal-content">
+        <div>
+            <h3>Current Version</h3>
+            <p>StudioCMS v{currentVersion}</p>
+
+            <h3>Latest Version</h3>
+            <p>StudioCMS v{latestVersion.version}</p>
+        </div>
+    </div>
+</Modal>
 
 )}
 
@@ -110,7 +121,7 @@ function timeAgo(date: Date) {
 <script>
     import { ModalHelper } from '@studiocms/ui/components';
 
-    new ModalHelper('modal', 'modal-trigger');
+    new ModalHelper('version-modal', 'version-modal-trigger');
 </script>
 <style>
 
@@ -206,6 +217,19 @@ function timeAgo(date: Date) {
         font-weight: 700;
         text-align: center;
         text-wrap: balance;
+    }
+
+    .version-container .version-message {
+        color: hsl(var(--text-muted));
+        font-size: .75em;
+        font-weight: 700;
+        text-align: center;
+        text-wrap: balance;
+    }
+
+    .version-container .version-message:hover {
+        color: hsl(var(--primary-base));
+        cursor: pointer;
     }
 
     .update-footer {
