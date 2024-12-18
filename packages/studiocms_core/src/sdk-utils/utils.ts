@@ -257,18 +257,28 @@ export function transformSiteConfigReturn(data: SiteConfig): SiteConfigCacheObje
  * @throws {StudioCMS_SDK_Error} - Throws an error with the appropriate message and hint.
  */
 export function handleError(error: unknown, message: string): never {
+	// Check if the error is already a StudioCMS_SDK_Error
 	if (error instanceof StudioCMS_SDK_Error) {
 		// If it's already a StudioCMS_SDK_Error, rethrow it
 		throw error;
 	}
 
+	// Check if the error is an instance of Error
+	if (error instanceof Error) {
+		// Extract original error details if available
+		const originalMessage = error.message;
+		const originalStack = error.stack;
+
+		// Create and throw a new StudioCMS_SDK_Error
+		throw new StudioCMS_SDK_Error(
+			`${message}${originalMessage ? `: ${originalMessage}` : ''}`,
+			originalStack
+		);
+	}
+
 	// Extract original error details if available
 	const originalMessage = error instanceof Error ? error.message : String(error);
-	const originalStack = error instanceof Error ? error.stack : undefined;
 
 	// Create and throw a new StudioCMS_SDK_Error
-	throw new StudioCMS_SDK_Error(
-		`${message}${originalMessage ? `: ${originalMessage}` : ''}`,
-		originalStack
-	);
+	throw new StudioCMS_SDK_Error(`${message}${originalMessage ? `: ${originalMessage}` : ''}`);
 }

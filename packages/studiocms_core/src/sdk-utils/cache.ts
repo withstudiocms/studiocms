@@ -53,158 +53,252 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: async (id) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// Retrieve the data from the database
 						const pageData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 
+						// Check if the data was retrieved successfully
 						if (!pageData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 						}
+
+						// Transform and return the data
 						return transformNewDataReturn(pageData);
 					}
 
+					// Check if the cache entry exists
 					const isCached = cache.pages.get(id);
 
+					// If the cache entry does not exist, retrieve the data from the database
 					if (!isCached) {
+						// Retrieve the data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
-						if (updatedData) {
-							cacheMapSet(cache.pages, id, updatedData);
-							return transformNewDataReturn(updatedData);
+
+						// Check if the data was retrieved successfully
+						if (!updatedData) {
+							throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 						}
-						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
+						// Store the data in the cache
+						cacheMapSet(cache.pages, id, updatedData);
+
+						// Return the transformed data
+						return transformNewDataReturn(updatedData);
 					}
 
+					// If the cache entry is expired, update the data
 					if (isEntryExpired(isCached)) {
+						// Retrieve the data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
-						if (updatedData) {
-							cacheMapSet(cache.pages, id, updatedData);
-							return transformNewDataReturn(updatedData);
+
+						// Check if the data was retrieved successfully
+						if (!updatedData) {
+							throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 						}
-						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
+
+						// Store the updated data in the cache
+						cacheMapSet(cache.pages, id, updatedData);
+
+						// Return the transformed data
+						return transformNewDataReturn(updatedData);
 					}
 
+					// Return the cached data
 					return isCached;
 				} catch (error) {
-					throw handleError(error, 'Could not retrieve data from the database.');
+					handleError(error, 'Could not retrieve data from the database.');
 				}
 			},
 			bySlug: async (slug, pkg) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// Retrieve the data from the database
 						const pageData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 
+						// Check if the data was retrieved successfully
 						if (!pageData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 						}
+
+						// Transform and return the data
 						return transformNewDataReturn(pageData);
 					}
+
+					// Get the cache map
 					const cacheMap = cache.pages.values();
+
+					// Convert the cache map to an array
 					const cacheArray = Array.from(cacheMap);
+
+					// Check if the cache entry exists
 					const isCached = cacheArray.find(
 						(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 					);
 
+					// If the cache entry does not exist, retrieve the data from the database
 					if (!isCached) {
+						// Retrieve the data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
-						if (updatedData) {
-							cacheMapSet(cache.pages, updatedData.id, updatedData);
-							return transformNewDataReturn(updatedData);
+
+						// Check if the data was retrieved successfully
+						if (!updatedData) {
+							throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 						}
-						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
+
+						// Store the data in the cache
+						cacheMapSet(cache.pages, updatedData.id, updatedData);
+
+						// Return the transformed data
+						return transformNewDataReturn(updatedData);
 					}
 
+					// Check if the cache entry is expired
 					if (isEntryExpired(isCached)) {
+						// Retrieve the data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
-						if (updatedData) {
-							cacheMapSet(cache.pages, updatedData.id, updatedData);
-							return transformNewDataReturn(updatedData);
+
+						// Check if the data was retrieved successfully
+						if (!updatedData) {
+							throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 						}
-						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
+
+						// Store the updated data in the cache
+						cacheMapSet(cache.pages, updatedData.id, updatedData);
+
+						// Return the transformed data
+						return transformNewDataReturn(updatedData);
 					}
 
+					// Return the cached data
 					return isCached;
 				} catch (error) {
-					throw handleError(error, 'Could not retrieve data from the database.');
+					handleError(error, 'Could not retrieve data from the database.');
 				}
 			},
 		},
 		pages: async () => {
 			try {
+				// Check if caching is disabled
 				if (!isEnabled) {
+					// Retrieve the data from the database
 					const pages = await studioCMS_SDK_GET.database.pages();
 
+					// Check if the data was retrieved successfully
 					if (!pages) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
+
+					// Transform and return the data
 					return pages.map((data) => transformNewDataReturn(data));
 				}
 
 				// Check if cache is empty
 				if (cache.pages.size === 0) {
+					// Retrieve the data from the database
 					const updatedData = await studioCMS_SDK_GET.database.pages();
-					if (updatedData) {
-						for (const data of updatedData) {
-							cacheMapSet(cache.pages, data.id, data);
-						}
-						return updatedData.map((data) => transformNewDataReturn(data));
+
+					// Check if the data was retrieved successfully
+					if (!updatedData) {
+						throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
 					}
-					throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
+
+					// Loop through the updated data and store it in the cache
+					for (const data of updatedData) {
+						cacheMapSet(cache.pages, data.id, data);
+					}
+
+					// Transform and return the data
+					return updatedData.map((data) => transformNewDataReturn(data));
 				}
 
+				// Get the cache map
 				const cacheMap = cache.pages.values();
+
+				// Convert the cache map to an array
 				const cacheArray = Array.from(cacheMap);
 
-				// Check if any cache entry is expired
+				// Loop through the cache array and update expired entries
 				for (const cachedObject of cacheArray) {
 					if (isEntryExpired(cachedObject)) {
+						// Retrieve the data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(
 							cachedObject.data.id
 						);
+						// Check if the data was retrieved successfully and update the cache
 						if (updatedData) {
 							cacheMapSet(cache.pages, updatedData.id, updatedData);
 						}
 					}
 				}
 
+				// Grab the values from the cache map
 				const grabRecentCache = cache.pages.values();
+
+				// Convert the cache map to an array
 				const recentCacheArray = Array.from(grabRecentCache);
+
+				// Transform and return the data
 				return recentCacheArray;
 			} catch (error) {
-				throw handleError(error, 'Could not retrieve data from the database.');
+				handleError(error, 'Could not retrieve data from the database.');
 			}
 		},
 		siteConfig: async () => {
 			try {
+				// Check if caching is disabled
 				if (!isEnabled) {
+					// Retrieve the data from the database
 					const siteConfig = await studioCMS_SDK_GET.database.config();
 
+					// Check if the data was retrieved successfully
 					if (!siteConfig) {
 						throw new StudioCMS_SDK_Error('Could not retrieve data from the database.');
 					}
+
+					// Transform and return
 					return transformSiteConfigReturn(siteConfig);
 				}
 
+				// Check if the cache entry exists
 				if (!cache.siteConfig) {
+					// Retrieve the data from the database
 					const updatedData = await studioCMS_SDK_GET.database.config();
-					if (updatedData) {
-						cache.siteConfig = transformSiteConfigReturn(updatedData);
-						return cache.siteConfig;
+
+					// Check if the data was retrieved successfully
+					if (!updatedData) {
+						throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
 					}
-					throw new StudioCMS_SDK_Error('Cache is empty and could not be updated.');
+
+					// Store the data in the cache
+					cache.siteConfig = transformSiteConfigReturn(updatedData);
+
+					// Return the data
+					return cache.siteConfig;
 				}
 
+				// Check if the cache entry is expired
 				if (isEntryExpired(cache.siteConfig)) {
+					// Retrieve the data from the database
 					const updatedData = await studioCMS_SDK_GET.database.config();
-					if (updatedData) {
-						cache.siteConfig.lastCacheUpdate = new Date();
-						cache.siteConfig.data = updatedData;
-						return cache.siteConfig;
+
+					// Check if the data was retrieved successfully
+					if (!updatedData) {
+						throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
 					}
-					throw new StudioCMS_SDK_Error('Cache entry expired and could not be updated.');
+
+					// Update the cache entry
+					cache.siteConfig.lastCacheUpdate = new Date();
+					cache.siteConfig.data = updatedData;
+
+					// Return the data
+					return cache.siteConfig;
 				}
 
+				// Return the cached data
 				return cache.siteConfig;
 			} catch (error) {
-				throw handleError(error, 'Could not retrieve data from the database.');
+				handleError(error, 'Could not retrieve data from the database.');
 			}
 		},
 	},
@@ -212,41 +306,58 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: (id) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// if caching is disabled, return
 						return;
 					}
+					// if caching is enabled, delete the cache entry
 					cache.pages.delete(id);
 				} catch (error) {
-					throw handleError(error, 'Error clearing cache: An unknown error occurred.');
+					handleError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 			bySlug: (slug, pkg) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// if caching is disabled, return
 						return;
 					}
-					const index = [];
+
+					// Key index to store the keys of the cache entries to be deleted
+					const keyIndex = [];
+
+					// Loop through the cache entries and store the keys of the cache entries to be deleted
 					for (const [key, cachedObject] of cache.pages.entries()) {
+						// Check if the cache entry matches the slug and package identifier
 						if (cachedObject.data.slug === slug && cachedObject.data.package === pkg) {
-							index.push(key);
+							// Store the key of the cache entry to be deleted
+							keyIndex.push(key);
 						}
 					}
-					for (const i of index) {
-						cache.pages.delete(i);
+
+					// Loop through the key index and delete the cache entries
+					for (const key of keyIndex) {
+						// Delete the cache entry
+						cache.pages.delete(key);
 					}
 				} catch (error) {
-					throw handleError(error, 'Error clearing cache: An unknown error occurred.');
+					handleError(error, 'Error clearing cache: An unknown error occurred.');
 				}
 			},
 		},
 		pages: () => {
 			try {
+				// Check if caching is disabled
 				if (!isEnabled) {
+					// if caching is disabled, return
 					return;
 				}
+				// if caching is enabled, clear the cache
 				cache.pages.clear();
 			} catch (error) {
-				throw handleError(error, 'Error clearing cache: An unknown error occurred.');
+				handleError(error, 'Error clearing cache: An unknown error occurred.');
 			}
 		},
 	},
@@ -254,103 +365,138 @@ export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = {
 		page: {
 			byId: async (id, { pageData, pageContent }) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// Update the page data in the database
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 
+						// Retrieve the updated data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 
+						// Check if the data was retrieved successfully
 						if (!updatedData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 						}
 
+						// Transform and return the data
 						return transformNewDataReturn(updatedData);
 					}
+
+					// Check if the cache entry exists
 					const isCached = cache.pages.get(id);
+
+					// If the cache entry does not exist, throw an error
 					if (!isCached) {
 						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 					}
+
+					// Update the page data in the database
 					await studioCMS_SDK_UPDATE.page(pageData);
 					await studioCMS_SDK_UPDATE.pageContent(pageContent);
 
+					// Retrieve the updated data from the database
 					const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.byId(id);
 
+					// Check if the data was retrieved successfully
 					if (!updatedData) {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
+					// Store the updated data in the cache
 					cacheMapSet(cache.pages, id, updatedData);
 
+					// Return the transformed data
 					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					throw handleError(error, 'Could not update page data in the database.');
+					handleError(error, 'Could not update page data in the database.');
 				}
 			},
 			bySlug: async (slug, pkg, { pageData, pageContent }) => {
 				try {
+					// Check if caching is disabled
 					if (!isEnabled) {
+						// Update the page data in the database
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 
+						// Retrieve the updated data from the database
 						const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 
+						// Check if the data was retrieved successfully
 						if (!updatedData) {
 							throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 						}
 
+						// Transform and return the data
 						return transformNewDataReturn(updatedData);
 					}
+
+					// Get the cache map
 					const cacheMap = cache.pages.values();
+
+					// Convert the cache map to an array
 					const cacheArray = Array.from(cacheMap);
+
+					// Check if the cache entry exists
 					const isCached = cacheArray.find(
 						(cachedObject) => cachedObject.data.slug === slug && cachedObject.data.package === pkg
 					);
 
+					// If the cache entry does not exist, throw an error
 					if (!isCached) {
 						throw new StudioCMS_SDK_Error('Cache entry does not exist.');
 					}
 
+					// Update the page data in the database
 					try {
 						await studioCMS_SDK_UPDATE.page(pageData);
 						await studioCMS_SDK_UPDATE.pageContent(pageContent);
 					} catch (error) {
-						if (error instanceof StudioCMS_SDK_Error) {
-							throw new StudioCMS_SDK_Error(error.message);
-						}
-						throw new StudioCMS_SDK_Error('Could not update page data in the database.');
+						handleError(error, 'Could not update page data in the database.');
 					}
 
+					// Retrieve the updated data from the database
 					const updatedData = await studioCMS_SDK_GET.databaseEntry.pages.bySlug(slug, pkg);
 
+					// Check if the data was retrieved successfully
 					if (!updatedData) {
 						throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 					}
 
+					// Store the updated data in the cache
 					cacheMapSet(cache.pages, updatedData.id, updatedData);
 
+					// Return the transformed data
 					return transformNewDataReturn(updatedData);
 				} catch (error) {
-					throw handleError(error, 'Could not update page data in the database.');
+					handleError(error, 'Could not update page data in the database.');
 				}
 			},
 		},
 		siteConfig: async (data) => {
 			try {
+				// Update the site config in the database
 				const newConfig = await studioCMS_SDK_UPDATE.siteConfig({ ...data, id: CMSSiteConfigId });
 
+				// Check if the data was returned successfully
 				if (!newConfig) {
 					throw new StudioCMS_SDK_Error('Could not retrieve updated data from the database.');
 				}
 
+				// Check if caching is disabled
 				if (!isEnabled) {
+					// Transform and return the data
 					return transformSiteConfigReturn(newConfig);
 				}
 
+				// Update the cache entry
 				cache.siteConfig = transformSiteConfigReturn(newConfig);
 
+				// Return the updated data
 				return cache.siteConfig;
 			} catch (error) {
-				throw handleError(error, 'Could not update site config in the database.');
+				handleError(error, 'Could not update site config in the database.');
 			}
 		},
 	},
