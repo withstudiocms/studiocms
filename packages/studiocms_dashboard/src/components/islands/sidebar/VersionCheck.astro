@@ -100,17 +100,31 @@ function timeAgo(date: Date) {
 
         </div>
     </div>
-<Modal id="version-modal" size="sm" cancelButton="Cancel">
+<Modal id="version-modal" size="sm">
     <h2 slot="header">
         Version Information
     </h2>
     <div class="version-modal-content">
         <div>
-            <h3>Current Version</h3>
-            <p>StudioCMS v{currentVersion}</p>
+            <h3>Currently Installed Version</h3>
+            <p><code>StudioCMS v{currentVersion}</code></p>
 
-            <h3>Latest Version</h3>
-            <p>StudioCMS v{latestVersion.version}</p>
+            <h3>Latest Published Version</h3>
+            <p><code>StudioCMS v{latestVersion.version}</code></p>
+
+            <h4>Links</h4>
+            <ul>
+                <li>
+                    <a href="https://github.com/withstudiocms/studiocms/releases" target="_blank" class="version-link">
+                        StudioCMS Releases
+                    </a>
+                </li>
+                <li>
+                    <a href="https://npm.im/studiocms" target="_blank" class="version-link">
+                        StudioCMS NPM
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </Modal>
