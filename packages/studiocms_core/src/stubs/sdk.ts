@@ -213,6 +213,10 @@ sdkDTS.addModule('studiocms:sdk/cache', {
 	],
 	typeExports: [
 		{
+			name: 'STUDIOCMS_SDK_CACHE',
+			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').STUDIOCMS_SDK_CACHE`,
+		},
+		{
 			name: 'PageDataCacheObject',
 			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').PageDataCacheObject`,
 		},
@@ -221,8 +225,8 @@ sdkDTS.addModule('studiocms:sdk/cache', {
 			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').SiteConfigCacheObject`,
 		},
 		{
-			name: 'STUDIOCMS_SDK_CACHE',
-			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').STUDIOCMS_SDK_CACHE`,
+			name: 'VersionCacheObject',
+			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').VersionCacheObject`,
 		},
 	],
 });
