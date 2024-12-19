@@ -1,6 +1,6 @@
-import { db } from 'astro:db';
+import * as AstroDB from 'astro:db';
 import { sdk } from 'studiocms:config';
-import StudioCMSSDK from './StudioCMSSDK';
+import SDK from './StudioCMSSDK';
 import StudioCMSVirtualCache from './StudioCMSVirtualCache';
 import type {
 	PageDataCacheObject,
@@ -13,7 +13,7 @@ export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject, V
 
 const { cacheConfig } = sdk;
 
-const sdkCore = new StudioCMSSDK(db);
+const sdkCore = new SDK(AstroDB);
 
 // Create the virtual cache
 const VirtualCache = new StudioCMSVirtualCache(cacheConfig, sdkCore);

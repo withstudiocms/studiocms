@@ -1,3 +1,4 @@
+/// <reference types="@astrojs/db" />
 import type {
 	CacheConfig,
 	ProcessedCacheConfig,
@@ -79,6 +80,8 @@ export type {
 	tsSessionTableInsert,
 	tsUsersUpdate,
 };
+
+export type AstroDBVirtualModule = typeof import('astro:db');
 
 // ../../schemas/config/sdk.ts
 export type { CacheConfig, ProcessedCacheConfig, ProcessedSDKConfig };

@@ -1,6 +1,3 @@
-/// <reference types="@astrojs/db" />
-import { and, eq } from 'astro:db';
-import type { Database } from '@astrojs/db/runtime';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts';
 import { StudioCMS_SDK_Error } from './errors';
 import {
@@ -16,6 +13,7 @@ import {
 	tsUsers,
 } from './tables';
 import type {
+	AstroDBVirtualModule,
 	CombinedInsertContent,
 	CombinedPageData,
 	CombinedRank,
@@ -55,13 +53,25 @@ import type {
  * authentication and authorization, and performing CRUD operations on various database tables.
  *
  * @class StudioCMSSDK
- * @property {Database} db - The database instance used for executing queries.
+ * @param AstroDB - The AstroDB virtual module to interact with the database.
+ *
+ * @example
+ * ```ts
+ * import * as AstroDB from 'astro:db';
+ * import { uninitializedStudioCMSSDK } from '@studiocms/core/sdk-utils';
+ *
+ * const sdkCore = new uninitializedStudioCMSSDK(AstroDB);
+ * ```
  */
 export class StudioCMSSDK {
-	private readonly db: Database;
+	private db: AstroDBVirtualModule['db'];
+	private and: AstroDBVirtualModule['and'];
+	private eq: AstroDBVirtualModule['eq'];
 
-	constructor(db: Database) {
-		this.db = db;
+	constructor(AstroDB: AstroDBVirtualModule) {
+		this.db = AstroDB.db;
+		this.and = AstroDB.and;
+		this.eq = AstroDB.eq;
 	}
 
 	/**
@@ -96,7 +106,7 @@ export class StudioCMSSDK {
 			const categories: CombinedPageData['categories'] = [];
 
 			const [categoryHead, ...categoryTail] = categoryIds.map((id) =>
-				this.db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
+				this.db.select().from(tsPageDataCategories).where(this.eq(tsPageDataCategories.id, id))
 			);
 
 			if (categoryHead) {
@@ -125,7 +135,7 @@ export class StudioCMSSDK {
 			const tags: CombinedPageData['tags'] = [];
 
 			const [tagHead, ...tagTail] = tagIds.map((id) =>
-				this.db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
+				this.db.select().from(tsPageDataCategories).where(this.eq(tsPageDataCategories.id, id))
 			);
 
 			if (tagHead) {
@@ -162,7 +172,7 @@ export class StudioCMSSDK {
 			const multiLanguageContentData = await this.db
 				.select()
 				.from(tsPageContent)
-				.where(eq(tsPageContent.contentId, page.id));
+				.where(this.eq(tsPageContent.contentId, page.id));
 
 			const defaultLanguageContentData = multiLanguageContentData.find(
 				(content) => content.contentLang === page.contentLang
@@ -194,8 +204,8 @@ export class StudioCMSSDK {
 	private async collectUserData(user: tsUsersSelect): Promise<CombinedUserData> {
 		try {
 			const [oAuthData, permissionData] = await this.db.batch([
-				this.db.select().from(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, user.id)),
-				this.db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)),
+				this.db.select().from(tsOAuthAccounts).where(this.eq(tsOAuthAccounts.userId, user.id)),
+				this.db.select().from(tsPermissions).where(this.eq(tsPermissions.user, user.id)),
 			]);
 
 			return {
@@ -375,7 +385,12 @@ export class StudioCMSSDK {
 				try {
 					return await this.db
 						.delete(tsOAuthAccounts)
-						.where(and(eq(tsOAuthAccounts.userId, userId), eq(tsOAuthAccounts.provider, provider)))
+						.where(
+							this.and(
+								this.eq(tsOAuthAccounts.userId, userId),
+								this.eq(tsOAuthAccounts.provider, provider)
+							)
+						)
 						.then(() => {
 							return {
 								status: 'success',
@@ -410,9 +425,9 @@ export class StudioCMSSDK {
 						.select()
 						.from(tsOAuthAccounts)
 						.where(
-							and(
-								eq(tsOAuthAccounts.providerUserId, providerId),
-								eq(tsOAuthAccounts.userId, userId)
+							this.and(
+								this.eq(tsOAuthAccounts.providerUserId, providerId),
+								this.eq(tsOAuthAccounts.userId, userId)
 							)
 						)
 						.get();
@@ -442,7 +457,7 @@ export class StudioCMSSDK {
 					return await this.db
 						.select()
 						.from(tsPermissions)
-						.where(eq(tsPermissions.user, userId))
+						.where(this.eq(tsPermissions.user, userId))
 						.get();
 				} catch (error) {
 					if (error instanceof Error) {
@@ -507,8 +522,8 @@ export class StudioCMSSDK {
 					return await this.db
 						.select({ user: tsUsers, session: tsSessionTable })
 						.from(tsSessionTable)
-						.innerJoin(tsUsers, eq(tsSessionTable.userId, tsUsers.id))
-						.where(eq(tsSessionTable.id, sessionId));
+						.innerJoin(tsUsers, this.eq(tsSessionTable.userId, tsUsers.id))
+						.where(this.eq(tsSessionTable.id, sessionId));
 				} catch (error) {
 					if (error instanceof Error) {
 						throw new StudioCMS_SDK_Error(
@@ -531,7 +546,7 @@ export class StudioCMSSDK {
 			 */
 			delete: async (sessionId: string): Promise<DeletionResponse> => {
 				try {
-					await this.db.delete(tsSessionTable).where(eq(tsSessionTable.id, sessionId));
+					await this.db.delete(tsSessionTable).where(this.eq(tsSessionTable.id, sessionId));
 					return {
 						status: 'success',
 						message: 'Session deleted',
@@ -557,7 +572,7 @@ export class StudioCMSSDK {
 					return await this.db
 						.update(tsSessionTable)
 						.set({ expiresAt: newDate })
-						.where(eq(tsSessionTable.id, sessionId))
+						.where(this.eq(tsSessionTable.id, sessionId))
 						.returning();
 				} catch (error) {
 					if (error instanceof Error) {
@@ -605,7 +620,7 @@ export class StudioCMSSDK {
 					return await this.db
 						.update(tsUsers)
 						.set(userData)
-						.where(eq(tsUsers.id, userId))
+						.where(this.eq(tsUsers.id, userId))
 						.returning()
 						.get();
 				} catch (error) {
@@ -633,8 +648,8 @@ export class StudioCMSSDK {
 			}> => {
 				try {
 					const [usernameSearch, emailSearch] = await this.db.batch([
-						this.db.select().from(tsUsers).where(eq(tsUsers.username, username)),
-						this.db.select().from(tsUsers).where(eq(tsUsers.email, email)),
+						this.db.select().from(tsUsers).where(this.eq(tsUsers.username, username)),
+						this.db.select().from(tsUsers).where(this.eq(tsUsers.email, email)),
 					]);
 
 					return { usernameSearch, emailSearch };
@@ -666,7 +681,7 @@ export class StudioCMSSDK {
 						const ghostUser = await this.db
 							.select()
 							.from(tsUsers)
-							.where(eq(tsUsers.id, GhostUserDefaults.id))
+							.where(this.eq(tsUsers.id, GhostUserDefaults.id))
 							.get();
 						if (!ghostUser) {
 							return false;
@@ -716,7 +731,7 @@ export class StudioCMSSDK {
 						return await this.db
 							.select()
 							.from(tsUsers)
-							.where(eq(tsUsers.id, GhostUserDefaults.id))
+							.where(this.eq(tsUsers.id, GhostUserDefaults.id))
 							.get();
 					} catch (error) {
 						if (error instanceof Error) {
@@ -805,7 +820,7 @@ export class StudioCMSSDK {
 					return await this.db
 						.select()
 						.from(tsSiteConfig)
-						.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+						.where(this.eq(tsSiteConfig.id, CMSSiteConfigId))
 						.get();
 				} catch (error) {
 					if (error instanceof Error) {
@@ -838,7 +853,7 @@ export class StudioCMSSDK {
 				 */
 				byId: async (id: string): Promise<CombinedUserData | undefined> => {
 					try {
-						const user = await this.db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
+						const user = await this.db.select().from(tsUsers).where(this.eq(tsUsers.id, id)).get();
 
 						if (!user) return undefined;
 
@@ -866,7 +881,7 @@ export class StudioCMSSDK {
 						const user = await this.db
 							.select()
 							.from(tsUsers)
-							.where(eq(tsUsers.username, username))
+							.where(this.eq(tsUsers.username, username))
 							.get();
 
 						if (!user) return undefined;
@@ -894,7 +909,11 @@ export class StudioCMSSDK {
 				 */
 				byEmail: async (email: string): Promise<CombinedUserData | undefined> => {
 					try {
-						const user = await this.db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
+						const user = await this.db
+							.select()
+							.from(tsUsers)
+							.where(this.eq(tsUsers.email, email))
+							.get();
 
 						if (!user) return undefined;
 
@@ -926,7 +945,11 @@ export class StudioCMSSDK {
 				 */
 				byId: async (id: string): Promise<CombinedPageData | undefined> => {
 					try {
-						const page = await this.db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
+						const page = await this.db
+							.select()
+							.from(tsPageData)
+							.where(this.eq(tsPageData.id, id))
+							.get();
 
 						if (!page) return undefined;
 
@@ -957,7 +980,9 @@ export class StudioCMSSDK {
 						const page = await this.db
 							.select()
 							.from(tsPageData)
-							.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
+							.where(
+								this.and(this.eq(tsPageData.slug, slug), this.eq(tsPageData.package, pkgToGet))
+							)
 							.get();
 
 						if (!page) return undefined;
@@ -1051,7 +1076,11 @@ export class StudioCMSSDK {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
 			 */
 			siteConfig: async () =>
-				await this.db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get(),
+				await this.db
+					.select()
+					.from(tsSiteConfig)
+					.where(this.eq(tsSiteConfig.id, CMSSiteConfigId))
+					.get(),
 
 			/**
 			 * Retrieves all data from the diff tracking table.
@@ -1200,7 +1229,7 @@ export class StudioCMSSDK {
 				const pagesRaw = await this.db
 					.select()
 					.from(tsPageData)
-					.where(eq(tsPageData.package, packageName));
+					.where(this.eq(tsPageData.package, packageName));
 
 				for (const page of pagesRaw) {
 					const PageData = await this.collectPageData(page);
@@ -1403,7 +1432,7 @@ export class StudioCMSSDK {
 					const userAlreadyExists = await this.db
 						.select()
 						.from(tsPermissions)
-						.where(eq(tsPermissions.user, userId))
+						.where(this.eq(tsPermissions.user, userId))
 						.get();
 
 					if (userAlreadyExists) {
@@ -1678,7 +1707,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsPageData)
 					.set(data)
-					.where(eq(tsPageData.id, data.id))
+					.where(this.eq(tsPageData.id, data.id))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1701,7 +1730,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsPageContent)
 					.set(data)
-					.where(eq(tsPageContent.id, data.id))
+					.where(this.eq(tsPageContent.id, data.id))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1727,7 +1756,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsPageDataTags)
 					.set(data)
-					.where(eq(tsPageDataTags.id, data.id))
+					.where(this.eq(tsPageDataTags.id, data.id))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1750,7 +1779,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsPageDataCategories)
 					.set(data)
-					.where(eq(tsPageDataCategories.id, data.id))
+					.where(this.eq(tsPageDataCategories.id, data.id))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1773,7 +1802,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsPermissions)
 					.set(data)
-					.where(eq(tsPermissions.user, data.user))
+					.where(this.eq(tsPermissions.user, data.user))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1799,7 +1828,7 @@ export class StudioCMSSDK {
 				return await this.db
 					.update(tsSiteConfig)
 					.set(data)
-					.where(eq(tsSiteConfig.id, data.id))
+					.where(this.eq(tsSiteConfig.id, data.id))
 					.returning()
 					.get();
 			} catch (error) {
@@ -1829,9 +1858,9 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.batch([
-						this.db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, id)),
-						this.db.delete(tsPageContent).where(eq(tsPageContent.contentId, id)),
-						this.db.delete(tsPageData).where(eq(tsPageData.id, id)),
+						this.db.delete(tsDiffTracking).where(this.eq(tsDiffTracking.pageId, id)),
+						this.db.delete(tsPageContent).where(this.eq(tsPageContent.contentId, id)),
+						this.db.delete(tsPageData).where(this.eq(tsPageData.id, id)),
 					])
 					.then(() => {
 						return {
@@ -1863,7 +1892,7 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsPageContent)
-					.where(eq(tsPageContent.contentId, id))
+					.where(this.eq(tsPageContent.contentId, id))
 					.then(() => {
 						return {
 							status: 'success',
@@ -1895,7 +1924,9 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsPageContent)
-					.where(and(eq(tsPageContent.contentId, id), eq(tsPageContent.contentLang, lang)))
+					.where(
+						this.and(this.eq(tsPageContent.contentId, id), this.eq(tsPageContent.contentLang, lang))
+					)
 					.then(() => {
 						return {
 							status: 'success',
@@ -1926,7 +1957,7 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsPageDataTags)
-					.where(eq(tsPageDataTags.id, id))
+					.where(this.eq(tsPageDataTags.id, id))
 					.then(() => {
 						return {
 							status: 'success',
@@ -1957,7 +1988,7 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsPageDataCategories)
-					.where(eq(tsPageDataCategories.id, id))
+					.where(this.eq(tsPageDataCategories.id, id))
 					.then(() => {
 						return {
 							status: 'success',
@@ -1988,7 +2019,7 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsPermissions)
-					.where(eq(tsPermissions.user, userId))
+					.where(this.eq(tsPermissions.user, userId))
 					.then(() => {
 						return {
 							status: 'success',
@@ -2019,7 +2050,7 @@ export class StudioCMSSDK {
 			try {
 				return await this.db
 					.delete(tsDiffTracking)
-					.where(eq(tsDiffTracking.id, id))
+					.where(this.eq(tsDiffTracking.id, id))
 					.then(() => {
 						return {
 							status: 'success',
