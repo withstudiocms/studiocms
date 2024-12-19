@@ -132,30 +132,11 @@ function dateWithTimeAndZone(date: Date) {
 
 <script>
     import { ModalHelper } from '@studiocms/ui/components';
+    import { makeClientRoutable } from '../../component-scripts/makeClientRoutable';
+    import { dateTimeListener } from '../../component-scripts/dateTimeListener';
 
     new ModalHelper('version-modal', 'version-modal-trigger');
-
-    function modalDateTimeListener() {
-        const lastCheckedDate = document.getElementById('version-modal-last-checked-date') as HTMLTimeElement;
-
-        lastCheckedDate.textContent = new Date(lastCheckedDate.dateTime).toLocaleString(undefined, {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            timeZoneName: 'short',
-        });
-    }
-
-    function makeClientRoutable(func: Function | Function[] | any) {
-        for (const f of Array.isArray(func) ? func : [func]) {
-            f();
-            document.addEventListener('astro:page-load', () => f());
-        }
-    }
-
-    makeClientRoutable(modalDateTimeListener());
+    makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
 
 </script>
 
