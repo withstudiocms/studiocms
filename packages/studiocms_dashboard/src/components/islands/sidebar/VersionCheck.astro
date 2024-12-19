@@ -148,11 +148,14 @@ function dateWithTimeAndZone(date: Date) {
         });
     }
 
-    modalDateTimeListener();
+    function makeClientRoutable(func: Function | Function[] | any) {
+        for (const f of Array.isArray(func) ? func : [func]) {
+            f();
+            document.addEventListener('astro:page-load', () => f());
+        }
+    }
 
-    document.addEventListener('astro:page-load', () => {
-        modalDateTimeListener();
-    })
+    makeClientRoutable(modalDateTimeListener());
 
 </script>
 
