@@ -686,3 +686,5 @@ export class StudioCMSVirtualCache {
 		};
 	}
 }
+
+export default StudioCMSVirtualCache;

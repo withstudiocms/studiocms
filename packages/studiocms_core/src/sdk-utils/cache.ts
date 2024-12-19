@@ -1,6 +1,6 @@
 import { sdk } from 'studiocms:config';
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts';
-import { StudioCMSVirtualCache } from './cache/StudioCMSVirtualCache';
+import StudioCMSVirtualCache from './cache/StudioCMSVirtualCache';
 import studioCMS_SDK from './index';
 import type {
 	PageDataCacheObject,
