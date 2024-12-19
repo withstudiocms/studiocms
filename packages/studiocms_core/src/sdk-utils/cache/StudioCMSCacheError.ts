@@ -1,4 +1,4 @@
-import { StudioCMS_SDK_Error } from '../utils';
+import StudioCMS_SDK_Error from '../errors';
 
 /**
  * Represents an error specific to the StudioCMS cache operations.
@@ -10,3 +10,5 @@ import { StudioCMS_SDK_Error } from '../utils';
 export class StudioCMSCacheError extends StudioCMS_SDK_Error {
 	override name = 'StudioCMS Cache Error';
 }
+
+export default StudioCMSCacheError;

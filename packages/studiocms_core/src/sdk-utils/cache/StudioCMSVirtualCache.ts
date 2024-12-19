@@ -12,7 +12,7 @@ import type {
 	tsPageContentSelect,
 	tsPageDataSelect,
 } from '../types';
-import { StudioCMSCacheError } from './StudioCMSCacheError';
+import StudioCMSCacheError from './StudioCMSCacheError';
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.

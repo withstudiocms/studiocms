@@ -19,8 +19,18 @@ import type {
  */
 export type tsUsersSelect = typeof tsUsers.$inferSelect;
 
+/**
+ * Type alias for inserting users.
+ *
+ * This type is inferred from the `tsUsers` object, specifically its `$inferInsert` property.
+ * It represents the structure of data required to insert a new user into the system.
+ */
 export type tsUsersInsert = typeof tsUsers.$inferInsert;
 
+/**
+ * Represents a type for updating users, where all properties are optional.
+ * This type is a partial version of the `tsUsersInsert` type.
+ */
 export type tsUsersUpdate = Partial<tsUsersInsert>;
 
 /**
@@ -39,6 +49,12 @@ export type tsOAuthAccountsSelect = typeof tsOAuthAccounts.$inferSelect;
  */
 export type tsSessionTableSelect = typeof tsSessionTable.$inferSelect;
 
+/**
+ * Type alias for the inferred insert type of the `tsSessionTable`.
+ *
+ * This type is derived from the `$inferInsert` property of the `tsSessionTable` object,
+ * which represents the structure of data that can be inserted into the session table.
+ */
 export type tsSessionTableInsert = typeof tsSessionTable.$inferInsert;
 
 /**
@@ -49,6 +65,12 @@ export type tsSessionTableInsert = typeof tsSessionTable.$inferInsert;
  */
 export type tsPermissionsSelect = typeof tsPermissions.$inferSelect;
 
+/**
+ * Type alias for inserting permissions.
+ *
+ * This type is inferred from the `tsPermissions` object, specifically its `$inferInsert` property.
+ * It represents the structure of data required to insert new permissions.
+ */
 export type tsPermissionsInsert = typeof tsPermissions.$inferInsert;
 
 /**
@@ -124,6 +146,14 @@ export type tsPageDataInsert = typeof tsPageData.$inferInsert;
  */
 export type tsPageContentInsert = typeof tsPageContent.$inferInsert;
 
+/**
+ * Represents a type that combines the properties of `tsPageContentInsert`
+ * excluding 'id' and 'contentId'.
+ *
+ * This type is useful when you need to insert content without specifying
+ * the 'id' and 'contentId' fields, which might be auto-generated or
+ * handled separately.
+ */
 export type CombinedInsertContent = Omit<tsPageContentInsert, 'id' | 'contentId'>;
 
 /**
