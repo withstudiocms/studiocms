@@ -79,23 +79,23 @@ export const configSetup = defineUtility('astro:config:setup')(
 				export default studioCMS_SDK;
 				`,
 				'studiocms:sdk/get': `
-				import studioCMS_SDK_GET from '${resolve('../sdk-utils/get/index.ts')}';
+				import studioCMS_SDK_GET from '${resolve('../sdk-utils/get.ts')}';
 				export default studioCMS_SDK_GET;
 				`,
 				'studiocms:sdk/post': `
-				import studioCMS_SDK_POST from '${resolve('../sdk-utils/post/index.ts')}';
+				import studioCMS_SDK_POST from '${resolve('../sdk-utils/post.ts')}';
 				export default studioCMS_SDK_POST;
 				`,
 				'studiocms:sdk/update': `
-				import studioCMS_SDK_UPDATE from '${resolve('../sdk-utils/update/index.ts')}';
+				import studioCMS_SDK_UPDATE from '${resolve('../sdk-utils/update.ts')}';
 				export default studioCMS_SDK_UPDATE;
 				`,
 				'studiocms:sdk/delete': `
-				import studioCMS_SDK_DELETE from '${resolve('../sdk-utils/delete/index.ts')}';
+				import studioCMS_SDK_DELETE from '${resolve('../sdk-utils/delete.ts')}';
 				export default studioCMS_SDK_DELETE;
 				`,
 				'studiocms:sdk/auth': `
-				import studioCMS_SDK_AUTH from '${resolve('../sdk-utils/auth/index.ts')}';
+				import studioCMS_SDK_AUTH from '${resolve('../sdk-utils/auth.ts')}';
 				export default studioCMS_SDK_AUTH;
 				`,
 				'studiocms:sdk/types': `
