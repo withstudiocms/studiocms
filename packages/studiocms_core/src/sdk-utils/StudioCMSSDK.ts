@@ -2,7 +2,7 @@
 import { and, eq } from 'astro:db';
 import type { Database } from '@astrojs/db/runtime';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts';
-import StudioCMS_SDK_Error from './errors';
+import { StudioCMS_SDK_Error } from './errors';
 import {
 	tsDiffTracking,
 	tsOAuthAccounts,
@@ -25,12 +25,6 @@ import type {
 	PageContentReturnId,
 	PageDataCategoriesInsertResponse,
 	PageDataTagsInsertResponse,
-	STUDIOCMS_SDK_AUTH,
-	STUDIOCMS_SDK_DELETE,
-	STUDIOCMS_SDK_GET,
-	STUDIOCMS_SDK_INIT,
-	STUDIOCMS_SDK_POST,
-	STUDIOCMS_SDK_UPDATE,
 	SingleRank,
 	addDatabaseEntryInsertPage,
 	tsDiffTrackingInsert,
@@ -56,81 +50,19 @@ import type {
 } from './types';
 
 /**
- * Utility functions for managing the ghost user in the StudioCMS SDK.
+ * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.
+ * It includes functionalities for parsing input data, collecting and combining page and user data, managing
+ * authentication and authorization, and performing CRUD operations on various database tables.
  *
- * @property {Function} verifyExists - Verifies if the ghost user exists in the database.
- * @property {Function} create - Creates a new ghost user in the database.
- * @property {Function} get - Retrieves the ghost user from the database.
+ * @class StudioCMSSDK
+ * @property {Database} db - The database instance used for executing queries.
  */
-interface GhostUserUtils {
-	verifyExists: () => Promise<boolean>;
-	create: () => Promise<tsUsersSelect>;
-	get: () => Promise<tsUsersSelect | undefined>;
-}
-
 export class StudioCMSSDK {
-	private db: Database;
+	private readonly db: Database;
 
 	constructor(db: Database) {
 		this.db = db;
 	}
-
-	/**
-	 * Utility functions for managing the ghost user in the StudioCMS SDK.
-	 *
-	 * @property {Function} verifyExists - Verifies if the ghost user exists in the database.
-	 * @property {Function} create - Creates a new ghost user in the database.
-	 * @property {Function} get - Retrieves the ghost user from the database.
-	 */
-	private ghostUserUtils: GhostUserUtils = {
-		verifyExists: async () => {
-			try {
-				const ghostUser = await this.db
-					.select()
-					.from(tsUsers)
-					.where(eq(tsUsers.id, GhostUserDefaults.id))
-					.get();
-				if (!ghostUser) {
-					return false;
-				}
-				return true;
-			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(
-						`Error verifying ghost user exists: ${error.message}`,
-						error.stack
-					);
-				}
-				throw new StudioCMS_SDK_Error(
-					'Error verifying ghost user exists: An unknown error occurred.'
-				);
-			}
-		},
-		create: async () => {
-			try {
-				return await this.db.insert(tsUsers).values(GhostUserDefaults).returning().get();
-			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error creating ghost user: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error('Error creating ghost user: An unknown error occurred.');
-			}
-		},
-		get: async () => {
-			try {
-				return await this.db
-					.select()
-					.from(tsUsers)
-					.where(eq(tsUsers.id, GhostUserDefaults.id))
-					.get();
-			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error getting ghost user: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error('Error getting ghost user: An unknown error occurred.');
-			}
-		},
-	};
 
 	/**
 	 * Parses an unknown input and casts it to an array of numbers.
@@ -338,7 +270,14 @@ export class StudioCMSSDK {
 	/**
 	 * Initializes the StudioCMS SDK with various utility functions.
 	 */
-	public INIT: STUDIOCMS_SDK_INIT = {
+	public INIT = {
+		/**
+		 * Initializes the StudioCMS SiteConfig table with the provided configuration.
+		 *
+		 * @param config - The configuration to insert into the SiteConfig table.
+		 * @returns A promise that resolves to the inserted site configuration.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
+		 */
 		siteConfig: async (config: tsSiteConfigInsert): Promise<tsSiteConfigSelect> => {
 			try {
 				return await this.db
@@ -358,17 +297,26 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Initializes the StudioCMS Ghost User.
+		 *
+		 * The ghost user is a default user that is used to perform actions on behalf of the system as well as to replace deleted users.
+		 *
+		 * @returns A promise that resolves to the ghost user record.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the ghost user.
+		 */
 		ghostUser: async (): Promise<tsUsersSelect> => {
 			try {
 				// Check if the ghost user already exists in the database.
-				const ghostUser = await this.ghostUserUtils.verifyExists();
+				const ghostUser = await this.AUTH.user.ghost.verifyExists();
 
 				// If the ghost user does not exist, create it and return the inserted record
 				if (!ghostUser) {
-					return await this.ghostUserUtils.create();
+					return await this.AUTH.user.ghost.create();
 				}
 
-				const ghostUserRecord = await this.ghostUserUtils.get();
+				const ghostUserRecord = await this.AUTH.user.ghost.get();
 
 				if (!ghostUserRecord) {
 					throw new StudioCMS_SDK_Error(
@@ -389,8 +337,18 @@ export class StudioCMSSDK {
 	/**
 	 * The AUTH object provides various authentication and authorization utilities for the StudioCMS SDK.
 	 */
-	public AUTH: STUDIOCMS_SDK_AUTH = {
+	public AUTH = {
+		/**
+		 * Provides various methods to create, delete, and search for OAuth accounts in the StudioCMS database.
+		 */
 		oAuth: {
+			/**
+			 * Creates a new OAuth account in the database.
+			 *
+			 * @param data - The data to insert into the OAuth account table.
+			 * @returns A promise that resolves to the inserted OAuth account.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the OAuth account.
+			 */
 			create: async (data: tsOAuthAccountsSelect): Promise<tsOAuthAccountsSelect> => {
 				try {
 					return await this.db.insert(tsOAuthAccounts).values(data).returning().get();
@@ -404,6 +362,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error creating OAuth account: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Deletes an OAuth account from the database.
+			 *
+			 * @param userId - The ID of the user associated with the OAuth account.
+			 * @param provider - The provider of the OAuth account.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the OAuth account.
+			 */
 			delete: async (userId: string, provider: string): Promise<DeletionResponse> => {
 				try {
 					return await this.db
@@ -425,6 +392,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error deleting OAuth account: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Searches for OAuth accounts based on the provider ID and user ID.
+			 *
+			 * @param providerId - The provider ID to search for.
+			 * @param userId - The user ID to search for.
+			 * @returns A promise that resolves to the OAuth account data if found, otherwise undefined.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the OAuth account.
+			 */
 			searchProvidersForId: async (
 				providerId: string,
 				userId: string
@@ -453,7 +429,14 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Provides various methods to get and update permissions for users in the StudioCMS database.
+		 */
 		permission: {
+			/**
+			 * Checks the current status of a user's permissions.
+			 */
 			currentStatus: async (userId: string): Promise<tsPermissionsSelect | undefined> => {
 				try {
 					return await this.db
@@ -474,7 +457,18 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Provides various methods to create, delete, and update sessions in the StudioCMS database.
+		 */
 		session: {
+			/**
+			 * Creates a new session in the database.
+			 *
+			 * @param data - The data to insert into the session table.
+			 * @returns A promise that resolves to the inserted session.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the session.
+			 */
 			create: async (data: tsSessionTableInsert): Promise<tsSessionTableSelect> => {
 				try {
 					return await this.db
@@ -493,6 +487,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error creating session: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Gets a session with the associated user.
+			 *
+			 * @param sessionId - The ID of the session to search for.
+			 * @returns A promise that resolves to the session with the associated user.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the session with the user.
+			 */
 			sessionWithUser: async (
 				sessionId: string
 			): Promise<
@@ -519,6 +521,14 @@ export class StudioCMSSDK {
 					);
 				}
 			},
+
+			/**
+			 * Deletes a session from the database.
+			 *
+			 * @param sessionId - The ID of the session to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the session.
+			 */
 			delete: async (sessionId: string): Promise<DeletionResponse> => {
 				try {
 					await this.db.delete(tsSessionTable).where(eq(tsSessionTable.id, sessionId));
@@ -533,6 +543,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error deleting session: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Updates the expiration date of a session.
+			 *
+			 * @param sessionId - The ID of the session to update.
+			 * @param newDate - The new expiration date for the session.
+			 * @returns A promise that resolves to the updated session.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the session.
+			 */
 			update: async (sessionId: string, newDate: Date): Promise<tsSessionTableSelect[]> => {
 				try {
 					return await this.db
@@ -548,7 +567,18 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Provides various methods to create, update, and search for users in the StudioCMS database.
+		 */
 		user: {
+			/**
+			 * Creates a new user in the database.
+			 *
+			 * @param newUserData - The data to insert into the users table.
+			 * @returns A promise that resolves to the inserted user.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the user.
+			 */
 			create: async (newUserData: tsUsersInsert): Promise<tsUsersSelect> => {
 				try {
 					const newUser = await this.db.insert(tsUsers).values(newUserData).returning().get();
@@ -561,6 +591,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error creating user: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Updates a user in the database.
+			 *
+			 * @param userId - The ID of the user to update.
+			 * @param userData - The data to update the user with.
+			 * @returns A promise that resolves to the updated user.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the user.
+			 */
 			update: async (userId: string, userData: tsUsersUpdate): Promise<tsUsersSelect> => {
 				try {
 					return await this.db
@@ -576,6 +615,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error updating user: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Searches for users based on the provided username or email.
+			 *
+			 * @param username - The username to search for.
+			 * @param email - The email to search for.
+			 * @returns A promise that resolves to an object containing the search results for the username and email.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the username or email.
+			 */
 			searchUsersForUsernameOrEmail: async (
 				username: string,
 				email: string
@@ -602,15 +650,102 @@ export class StudioCMSSDK {
 					);
 				}
 			},
-			ghost: this.ghostUserUtils,
+
+			/**
+			 * Ghost user utilities.
+			 */
+			ghost: {
+				/**
+				 * Verifies if the ghost user exists in the database.
+				 *
+				 * @returns A promise that resolves to a boolean indicating if the ghost user exists.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while verifying the ghost user.
+				 */
+				verifyExists: async () => {
+					try {
+						const ghostUser = await this.db
+							.select()
+							.from(tsUsers)
+							.where(eq(tsUsers.id, GhostUserDefaults.id))
+							.get();
+						if (!ghostUser) {
+							return false;
+						}
+						return true;
+					} catch (error) {
+						if (error instanceof Error) {
+							throw new StudioCMS_SDK_Error(
+								`Error verifying ghost user exists: ${error.message}`,
+								error.stack
+							);
+						}
+						throw new StudioCMS_SDK_Error(
+							'Error verifying ghost user exists: An unknown error occurred.'
+						);
+					}
+				},
+
+				/**
+				 * Creates the ghost user in the database.
+				 *
+				 * @returns A promise that resolves to the inserted ghost user.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the ghost user.
+				 */
+				create: async () => {
+					try {
+						return await this.db.insert(tsUsers).values(GhostUserDefaults).returning().get();
+					} catch (error) {
+						if (error instanceof Error) {
+							throw new StudioCMS_SDK_Error(
+								`Error creating ghost user: ${error.message}`,
+								error.stack
+							);
+						}
+						throw new StudioCMS_SDK_Error('Error creating ghost user: An unknown error occurred.');
+					}
+				},
+
+				/**
+				 * Gets the ghost user from the database.
+				 *
+				 * @returns A promise that resolves to the ghost user.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the ghost user.
+				 */
+				get: async () => {
+					try {
+						return await this.db
+							.select()
+							.from(tsUsers)
+							.where(eq(tsUsers.id, GhostUserDefaults.id))
+							.get();
+					} catch (error) {
+						if (error instanceof Error) {
+							throw new StudioCMS_SDK_Error(
+								`Error getting ghost user: ${error.message}`,
+								error.stack
+							);
+						}
+						throw new StudioCMS_SDK_Error('Error getting ghost user: An unknown error occurred.');
+					}
+				},
+			},
 		},
 	};
 
 	/**
 	 * Provides various methods to get data from the StudioCMS database.
 	 */
-	public GET: STUDIOCMS_SDK_GET = {
+	public GET = {
+		/**
+		 * Retrieves data from the database
+		 */
 		database: {
+			/**
+			 * Retrieves all users from the database.
+			 *
+			 * @returns A promise that resolves to an array of combined user data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the users.
+			 */
 			users: async (): Promise<CombinedUserData[]> => {
 				try {
 					const combinedUserData: CombinedUserData[] = [];
@@ -631,6 +766,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves all pages from the database.
+			 *
+			 * @returns A promise that resolves to an array of combined page data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
+			 */
 			pages: async (): Promise<CombinedPageData[]> => {
 				try {
 					const pages: CombinedPageData[] = [];
@@ -651,6 +793,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves the site configuration from the database.
+			 *
+			 * @returns A promise that resolves to the site configuration.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
+			 */
 			config: async (): Promise<tsSiteConfigSelect | undefined> => {
 				try {
 					return await this.db
@@ -671,8 +820,22 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Retrieves data from the database by ID.
+		 */
 		databaseEntry: {
+			/**
+			 * Retrieves a user from the database
+			 */
 			users: {
+				/**
+				 * Retrieves a user by ID.
+				 *
+				 * @param id - The ID of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
 				byId: async (id: string): Promise<CombinedUserData | undefined> => {
 					try {
 						const user = await this.db.select().from(tsUsers).where(eq(tsUsers.id, id)).get();
@@ -690,6 +853,14 @@ export class StudioCMSSDK {
 						throw new StudioCMS_SDK_Error('Error getting user by ID: An unknown error occurred.');
 					}
 				},
+
+				/**
+				 * Retrieves a user by username.
+				 *
+				 * @param username - The username of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
 				byUsername: async (username: string): Promise<CombinedUserData | undefined> => {
 					try {
 						const user = await this.db
@@ -713,6 +884,14 @@ export class StudioCMSSDK {
 						);
 					}
 				},
+
+				/**
+				 * Retrieves a user by email.
+				 *
+				 * @param email - The email of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
 				byEmail: async (email: string): Promise<CombinedUserData | undefined> => {
 					try {
 						const user = await this.db.select().from(tsUsers).where(eq(tsUsers.email, email)).get();
@@ -733,7 +912,18 @@ export class StudioCMSSDK {
 					}
 				},
 			},
+
+			/**
+			 * Retrieves a page from the database
+			 */
 			pages: {
+				/**
+				 * Retrieves a page by ID.
+				 *
+				 * @param id - The ID of the page to retrieve.
+				 * @returns A promise that resolves to the page data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
+				 */
 				byId: async (id: string): Promise<CombinedPageData | undefined> => {
 					try {
 						const page = await this.db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
@@ -751,6 +941,15 @@ export class StudioCMSSDK {
 						throw new StudioCMS_SDK_Error('Error getting page by ID: An unknown error occurred.');
 					}
 				},
+
+				/**
+				 * Retrieves a page by slug.
+				 *
+				 * @param slug - The slug of the page to retrieve.
+				 * @param pkg - The package of the page to retrieve.
+				 * @returns A promise that resolves to the page data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
+				 */
 				bySlug: async (slug: string, pkg?: string): Promise<CombinedPageData | undefined> => {
 					try {
 						const pkgToGet = pkg || 'studiocms';
@@ -776,20 +975,103 @@ export class StudioCMSSDK {
 				},
 			},
 		},
+
+		/**
+		 * Retrieves data from the database tables without any additional processing.
+		 */
 		databaseTable: {
+			/**
+			 * Retrieves all data from the users table.
+			 *
+			 * @returns A promise that resolves to an array of user data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the users.
+			 */
 			users: async () => await this.db.select().from(tsUsers),
+
+			/**
+			 * Retrieves all data from the OAuth accounts table.
+			 *
+			 * @returns A promise that resolves to an array of OAuth account data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the OAuth accounts.
+			 */
 			oAuthAccounts: async () => await this.db.select().from(tsOAuthAccounts),
+
+			/**
+			 * Retrieves all data from the session table.
+			 *
+			 * @returns A promise that resolves to an array of session data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the sessions.
+			 */
 			sessionTable: async () => await this.db.select().from(tsSessionTable),
+
+			/**
+			 * Retrieves all data from the permissions table.
+			 *
+			 * @returns A promise that resolves to an array of permission data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the permissions.
+			 */
 			permissions: async () => await this.db.select().from(tsPermissions),
+
+			/**
+			 * Retrieves all data from the page data table.
+			 *
+			 * @returns A promise that resolves to an array of page data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
+			 */
 			pageData: async () => await this.db.select().from(tsPageData),
+
+			/**
+			 * Retrieves all data from the page data tags table.
+			 *
+			 * @returns A promise that resolves to an array of page data tags.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page data tags.
+			 */
 			pageDataTags: async () => await this.db.select().from(tsPageDataTags),
+
+			/**
+			 * Retrieves all data from the page data categories table.
+			 *
+			 * @returns A promise that resolves to an array of page data categories.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page data categories.
+			 */
 			pageDataCategories: async () => await this.db.select().from(tsPageDataCategories),
+
+			/**
+			 * Retrieves all data from the page content table.
+			 *
+			 * @returns A promise that resolves to an array of page content.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page content.
+			 */
 			pageContent: async () => await this.db.select().from(tsPageContent),
+
+			/**
+			 * Retrieves all data from the site config table.
+			 *
+			 * @returns A promise that resolves to an array of site configuration data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
+			 */
 			siteConfig: async () =>
 				await this.db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get(),
+
+			/**
+			 * Retrieves all data from the diff tracking table.
+			 *
+			 * @returns A promise that resolves to an array of diff tracking data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the diff tracking data.
+			 */
 			diffTracking: async () => await this.db.select().from(tsDiffTracking),
 		},
+
+		/**
+		 * Retrieve Permission Lists
+		 */
 		permissionsLists: {
+			/**
+			 * Retrieves all permissions for users in the database.
+			 *
+			 * @returns A promise that resolves to an array of combined rank data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the permissions.
+			 */
 			all: async (): Promise<CombinedRank[]> => {
 				try {
 					const [currentPermittedUsers, existingUsers] = await this.db.batch([
@@ -818,6 +1100,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves all owners in the database.
+			 *
+			 * @returns A promise that resolves to an array of combined rank data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the owners.
+			 */
 			owners: async (): Promise<SingleRank[]> => {
 				try {
 					const [currentPermittedUsers, existingUsers] = await this.db.batch([
@@ -833,6 +1122,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves all admins in the database.
+			 *
+			 * @returns A promise that resolves to an array of combined rank data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the admins.
+			 */
 			admins: async (): Promise<SingleRank[]> => {
 				try {
 					const [currentPermittedUsers, existingUsers] = await this.db.batch([
@@ -848,6 +1144,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves all editors in the database.
+			 *
+			 * @returns A promise that resolves to an array of combined rank data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the editors.
+			 */
 			editors: async (): Promise<SingleRank[]> => {
 				try {
 					const [currentPermittedUsers, existingUsers] = await this.db.batch([
@@ -863,6 +1166,13 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error getting users: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Retrieves all visitors in the database.
+			 *
+			 * @returns A promise that resolves to an array of combined rank data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the visitors.
+			 */
 			visitors: async (): Promise<SingleRank[]> => {
 				try {
 					const [currentPermittedUsers, existingUsers] = await this.db.batch([
@@ -879,6 +1189,10 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Retrieves data from the database by package.
+		 */
 		packagePages: async (packageName: string): Promise<CombinedPageData[]> => {
 			try {
 				const pages: CombinedPageData[] = [];
@@ -907,8 +1221,19 @@ export class StudioCMSSDK {
 	/**
 	 * Provides various methods to post data to the StudioCMS database.
 	 */
-	public POST: STUDIOCMS_SDK_POST = {
+	public POST = {
+		/**
+		 * Inserts data into the database by Entry
+		 */
 		databaseEntry: {
+			/**
+			 * Insert a new page into the database.
+			 *
+			 * @param pageData - The data to insert into the page data table.
+			 * @param pageContent - The data to insert into the page content table.
+			 * @returns A promise that resolves to the inserted page data and page content.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
+			 */
 			pages: async (
 				pageData: tsPageDataInsert,
 				pageContent: CombinedInsertContent
@@ -978,6 +1303,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting page: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts a new user into the database.
+			 *
+			 * @param userData - The data to insert into the users table.
+			 * @returns A promise that resolves to the inserted user.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the user.
+			 */
 			pageContent: async (pageContent: tsPageContentInsert): Promise<PageContentReturnId[]> => {
 				try {
 					return await this.db
@@ -999,6 +1332,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting page content: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts a new tag into the database.
+			 *
+			 * @param tag - The data to insert into the page data tags table.
+			 * @returns A promise that resolves to the inserted tag.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tag.
+			 */
 			tags: async (tag: tsPageDataTagsInsert): Promise<PageDataTagsInsertResponse[]> => {
 				try {
 					return await this.db
@@ -1018,6 +1359,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting tag: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts a new category into the database.
+			 *
+			 * @param category - The data to insert into the page data categories table.
+			 * @returns A promise that resolves to the inserted category.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the category.
+			 */
 			categories: async (category: tsPageDataCategoriesInsert) => {
 				try {
 					return await this.db
@@ -1040,6 +1389,15 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting category: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts a new permission into the database.
+			 *
+			 * @param userId - The ID of the user to assign the rank to.
+			 * @param rank - The rank to assign to the user.
+			 * @returns A promise that resolves to the inserted permission.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permission.
+			 */
 			permissions: async (userId: string, rank: string): Promise<tsPermissionsSelect[]> => {
 				try {
 					const userAlreadyExists = await this.db
@@ -1071,6 +1429,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting permissions: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts a new site configuration into the database.
+			 *
+			 * @param siteConfig - The data to insert into the site config table.
+			 * @returns A promise that resolves to the inserted site configuration.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the site configuration.
+			 */
 			diffTracking: async (diff: tsDiffTrackingInsert): Promise<tsDiffTrackingSelect[]> => {
 				try {
 					return await this.db
@@ -1098,7 +1464,18 @@ export class StudioCMSSDK {
 				}
 			},
 		},
+
+		/**
+		 * Inserts data into the database by Array of Entries
+		 */
 		databaseEntries: {
+			/**
+			 * Inserts multiple tags into the database.
+			 *
+			 * @param data - The data to insert into the page data tags table.
+			 * @returns A promise that resolves to the inserted tags.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tags.
+			 */
 			tags: async (data: tsPageDataTagsInsert[]): Promise<PageDataTagsInsertResponse[]> => {
 				try {
 					return await this.db
@@ -1122,6 +1499,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting tags: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts multiple categories into the database.
+			 *
+			 * @param data - The data to insert into the page data categories table.
+			 * @returns A promise that resolves to the inserted categories.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the categories.
+			 */
 			categories: async (
 				data: tsPageDataCategoriesInsert[]
 			): Promise<PageDataCategoriesInsertResponse[]> => {
@@ -1150,6 +1535,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting categories: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts multiple permissions into the database.
+			 *
+			 * @param data - The data to insert into the permissions table.
+			 * @returns A promise that resolves to the inserted permissions.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permissions.
+			 */
 			permissions: async (data: tsPermissionsInsert[]): Promise<tsPermissionsSelect[]> => {
 				try {
 					const currentPermittedUsers = await this.db.select().from(tsPermissions);
@@ -1187,6 +1580,14 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Error inserting permissions: An unknown error occurred.');
 				}
 			},
+
+			/**
+			 * Inserts multiple pages into the database.
+			 *
+			 * @param pages - The data to insert into the page data and page content tables.
+			 * @returns A promise that resolves to the inserted pages.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the pages.
+			 */
 			pages: async (pages: MultiPageInsert): Promise<void> => {
 				try {
 					const queries = [];
@@ -1264,7 +1665,14 @@ export class StudioCMSSDK {
 	/**
 	 * Provides various methods to update data in the StudioCMS database.
 	 */
-	public UPDATE: STUDIOCMS_SDK_UPDATE = {
+	public UPDATE = {
+		/**
+		 * Updates a page in the database.
+		 *
+		 * @param data - The data to update in the page data table.
+		 * @returns A promise that resolves to the updated page data.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the page.
+		 */
 		page: async (data: tsPageDataSelect): Promise<tsPageDataSelect> => {
 			try {
 				return await this.db
@@ -1280,6 +1688,14 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating page: An unknown error occurred.');
 			}
 		},
+
+		/**
+		 * Updates a page content in the database.
+		 *
+		 * @param data - The data to update in the page content table.
+		 * @returns A promise that resolves to the updated page content.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the page content.
+		 */
 		pageContent: async (data: tsPageContentSelect): Promise<tsPageContentSelect> => {
 			try {
 				return await this.db
@@ -1298,6 +1714,14 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating page content: An unknown error occurred.');
 			}
 		},
+
+		/**
+		 * Updates a tag in the database.
+		 *
+		 * @param data - The data to update in the page data tags table.
+		 * @returns A promise that resolves to the updated tag.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the tag.
+		 */
 		tags: async (data: tsPageDataTagsSelect): Promise<tsPageDataTagsSelect> => {
 			try {
 				return await this.db
@@ -1313,6 +1737,14 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating tags: An unknown error occurred.');
 			}
 		},
+
+		/**
+		 * Updates a category in the database.
+		 *
+		 * @param data - The data to update in the page data categories table.
+		 * @returns A promise that resolves to the updated category.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the category.
+		 */
 		categories: async (data: tsPageDataCategoriesSelect): Promise<tsPageDataCategoriesSelect> => {
 			try {
 				return await this.db
@@ -1328,6 +1760,14 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating categories: An unknown error occurred.');
 			}
 		},
+
+		/**
+		 * Updates a permission in the database.
+		 *
+		 * @param data - The data to update in the permissions table.
+		 * @returns A promise that resolves to the updated permission.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the permission.
+		 */
 		permissions: async (data: tsPermissionsSelect): Promise<tsPermissionsSelect> => {
 			try {
 				return await this.db
@@ -1346,6 +1786,14 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating permissions: An unknown error occurred.');
 			}
 		},
+
+		/**
+		 * Updates a site configuration in the database.
+		 *
+		 * @param data - The data to update in the site config table.
+		 * @returns A promise that resolves to the updated site configuration.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the site configuration.
+		 */
 		siteConfig: async (data: tsSiteConfigSelect): Promise<tsSiteConfigSelect> => {
 			try {
 				return await this.db
@@ -1369,7 +1817,14 @@ export class StudioCMSSDK {
 	/**
 	 * Provides various methods to delete data from the StudioCMS database.
 	 */
-	public DELETE: STUDIOCMS_SDK_DELETE = {
+	public DELETE = {
+		/**
+		 * Deletes a page from the database.
+		 *
+		 * @param id - The ID of the page to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page.
+		 */
 		page: async (id: string): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1396,6 +1851,14 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a page content from the database.
+		 *
+		 * @param id - The ID of the page content to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content.
+		 */
 		pageContent: async (id: string): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1419,6 +1882,15 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a page content lang from the database.
+		 *
+		 * @param id - The ID of the page content to delete.
+		 * @param lang - The lang of the page content to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content lang.
+		 */
 		pageContentLang: async (id: string, lang: string): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1442,6 +1914,14 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a tag from the database.
+		 *
+		 * @param id - The ID of the tag to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the tag.
+		 */
 		tags: async (id: number): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1465,6 +1945,14 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a category from the database.
+		 *
+		 * @param id - The ID of the category to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the category.
+		 */
 		categories: async (id: number): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1488,6 +1976,14 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a permission from the database.
+		 *
+		 * @param userId - The ID of the user to delete the permission for.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the permission.
+		 */
 		permissions: async (userId: string): Promise<DeletionResponse> => {
 			try {
 				return await this.db
@@ -1511,6 +2007,14 @@ export class StudioCMSSDK {
 				);
 			}
 		},
+
+		/**
+		 * Deletes a site configuration from the database.
+		 *
+		 * @param id - The ID of the site configuration to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the site configuration.
+		 */
 		diffTracking: async (id: string): Promise<DeletionResponse> => {
 			try {
 				return await this.db

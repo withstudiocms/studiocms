@@ -1,9 +1,9 @@
 import { db } from 'astro:db';
 import StudioCMSSDK from './StudioCMSSDK';
-import type { STUDIOCMS_SDK_UPDATE } from './types';
+import type { STUDIOCMS_SDK } from './types';
 
-const sdk = new StudioCMSSDK(db);
+const sdkCore = new StudioCMSSDK(db);
 
-export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK_UPDATE = sdk.UPDATE;
+export const studioCMS_SDK_UPDATE: STUDIOCMS_SDK['UPDATE'] = sdkCore.UPDATE;
 
 export default studioCMS_SDK_UPDATE;

@@ -1,18 +1,17 @@
-import { CMSSiteConfigId, versionCacheLifetime } from '../../consts';
+import { CMSSiteConfigId, versionCacheLifetime } from '../consts';
+import { StudioCMSCacheError } from './errors';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
 	PageDataCacheObject,
 	ProcessedCacheConfig,
 	STUDIOCMS_SDK,
-	STUDIOCMS_SDK_CACHE,
 	SiteConfig,
 	SiteConfigCacheObject,
 	VersionCacheObject,
 	tsPageContentSelect,
 	tsPageDataSelect,
-} from '../types';
-import StudioCMSCacheError from './StudioCMSCacheError';
+} from './types';
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
@@ -40,9 +39,9 @@ export class StudioCMSVirtualCache {
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
 	private version = new Map<string, VersionCacheObject>();
 
-	constructor(cacheConfig: ProcessedCacheConfig, studioCMS_SDK: STUDIOCMS_SDK) {
+	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: STUDIOCMS_SDK) {
 		this.cacheConfig = cacheConfig;
-		this.sdk = studioCMS_SDK;
+		this.sdk = sdkCore;
 	}
 
 	// Misc Utils
@@ -630,48 +629,41 @@ export class StudioCMSVirtualCache {
 
 	/**
 	 * Returns an object containing methods to interact with the cache.
-	 *
-	 * @returns {Object} An object with the following methods:
-	 * - `GET`: Retrieves data from the cache.
-	 * - `CLEAR`: Clears the cache.
-	 * - `UPDATE`: Updates the cache with new data.
 	 */
-	public cacheModule(): STUDIOCMS_SDK_CACHE {
-		return {
-			GET: {
-				page: {
-					byId: async (id: string) => await this.getPageById(id),
-					bySlug: async (slug: string, pkg: string) => await this.getPageBySlug(slug, pkg),
-				},
-				pages: async () => await this.getAllPages(),
-				siteConfig: async () => await this.getSiteConfig(),
-				latestVersion: async () => await this.getVersion(),
+	public cacheModule = {
+		GET: {
+			page: {
+				byId: async (id: string) => await this.getPageById(id),
+				bySlug: async (slug: string, pkg: string) => await this.getPageBySlug(slug, pkg),
 			},
-			CLEAR: {
-				page: {
-					byId: (id: string) => this.clearPageById(id),
-					bySlug: (slug: string, pkg: string) => this.clearPageBySlug(slug, pkg),
-				},
-				pages: () => this.clearAllPages(),
-				latestVersion: () => this.clearVersion(),
+			pages: async () => await this.getAllPages(),
+			siteConfig: async () => await this.getSiteConfig(),
+			latestVersion: async () => await this.getVersion(),
+		},
+		CLEAR: {
+			page: {
+				byId: (id: string) => this.clearPageById(id),
+				bySlug: (slug: string, pkg: string) => this.clearPageBySlug(slug, pkg),
 			},
-			UPDATE: {
-				page: {
-					byId: async (
-						id: string,
-						data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
-					) => await this.updatePageById(id, data),
-					bySlug: async (
-						slug: string,
-						pkg: string,
-						data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
-					) => await this.updatePageBySlug(slug, pkg, data),
-				},
-				siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
-				latestVersion: async () => await this.updateVersion(),
+			pages: () => this.clearAllPages(),
+			latestVersion: () => this.clearVersion(),
+		},
+		UPDATE: {
+			page: {
+				byId: async (
+					id: string,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => await this.updatePageById(id, data),
+				bySlug: async (
+					slug: string,
+					pkg: string,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => await this.updatePageBySlug(slug, pkg, data),
 			},
-		};
-	}
+			siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
+			latestVersion: async () => await this.updateVersion(),
+		},
+	};
 }
 
 export default StudioCMSVirtualCache;

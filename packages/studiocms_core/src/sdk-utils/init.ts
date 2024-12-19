@@ -1,9 +1,9 @@
 import { db } from 'astro:db';
+import type { STUDIOCMS_SDK } from 'studiocms:sdk/types';
 import StudioCMSSDK from './StudioCMSSDK';
-import type { STUDIOCMS_SDK_INIT } from './types';
 
-const sdk = new StudioCMSSDK(db);
+const sdkCore = new StudioCMSSDK(db);
 
-export const studioCMS_SDK_INIT: STUDIOCMS_SDK_INIT = sdk.INIT;
+export const studioCMS_SDK_INIT: STUDIOCMS_SDK['INIT'] = sdkCore.INIT;
 
 export default studioCMS_SDK_INIT;
