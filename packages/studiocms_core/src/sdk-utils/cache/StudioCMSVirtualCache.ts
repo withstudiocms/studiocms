@@ -1,3 +1,4 @@
+import { CMSSiteConfigId, versionCacheLifetime } from '../../consts';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
@@ -14,57 +15,34 @@ import type {
 import { StudioCMSCacheError } from './StudioCMSCacheError';
 
 /**
- * The StudioCMSCache class provides caching functionality for StudioCMS.
- * It manages the caching of pages, site configurations, and version information.
- * The class interacts with the StudioCMS SDK to fetch and update data from the database.
+ * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
+ * It supports caching for site configurations, versions, and page data.
  *
- * @class StudioCMSCache
- * @property {Map<string, PageDataCacheObject>} pages - A map to store cached page data.
- * @property {Map<string, SiteConfigCacheObject>} siteConfig - A map to store cached site configuration data.
- * @property {Map<string, VersionCacheObject>} version - A map to store cached version information.
- * @property {ProcessedCacheConfig} cacheConfig - Configuration settings for the cache.
- * @property {STUDIOCMS_SDK} sdk - The StudioCMS SDK instance for interacting with the database.
- * @property {number} CMSSiteConfigId - The ID of the CMS site configuration.
- * @property {number} versionCacheLifetime - The lifetime of the version cache in milliseconds.
- * @property {string} SiteConfigMapID - The identifier for the site configuration map.
- * @property {string} VersionMapID - The identifier for the version map.
+ * @class
+ * @classdesc This class handles caching operations for the StudioCMS SDK, including
+ * fetching, updating, and clearing cache entries for site configurations, versions,
+ * and page data.
  *
- * @constructor
- * @param {Map<string, PageDataCacheObject>} pagesCacheMap - A map to store cached page data.
- * @param {Map<string, SiteConfigCacheObject>} siteConfigCacheMap - A map to store cached site configuration data.
- * @param {Map<string, VersionCacheObject>} versionCacheMap - A map to store cached version information.
- * @param {ProcessedCacheConfig} cacheConfig - Configuration settings for the cache.
- * @param {STUDIOCMS_SDK} studioCMS_SDK - The StudioCMS SDK instance for interacting with the database.
- * @param {number} CMSSiteConfigId - The ID of the CMS site configuration.
- * @param {number} versionCacheLifetime - The lifetime of the version cache in milliseconds.
+ * @param {ProcessedCacheConfig} cacheConfig - The configuration for the cache.
+ * @param {STUDIOCMS_SDK} studioCMS_SDK - The StudioCMS SDK instance.
  */
 export class StudioCMSVirtualCache {
-	private pages: Map<string, PageDataCacheObject>;
-	private siteConfig: Map<string, SiteConfigCacheObject>;
-	private version: Map<string, VersionCacheObject>;
-	private cacheConfig: ProcessedCacheConfig;
-	private sdk: STUDIOCMS_SDK;
-	private CMSSiteConfigId: number;
-	private versionCacheLifetime: number;
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';
 	private readonly VersionMapID: string = '__StudioCMS_Latest_Version';
+	private readonly StudioCMSPkgId: string = 'studiocms';
+	private readonly CMSSiteConfigId = CMSSiteConfigId;
+	private readonly versionCacheLifetime = versionCacheLifetime;
 
-	constructor(
-		pagesCacheMap: Map<string, PageDataCacheObject>,
-		siteConfigCacheMap: Map<string, SiteConfigCacheObject>,
-		versionCacheMap: Map<string, VersionCacheObject>,
-		cacheConfig: ProcessedCacheConfig,
-		studioCMS_SDK: STUDIOCMS_SDK,
-		CMSSiteConfigId: number,
-		versionCacheLifetime: number
-	) {
-		this.pages = pagesCacheMap;
-		this.siteConfig = siteConfigCacheMap;
-		this.version = versionCacheMap;
+	private readonly cacheConfig: ProcessedCacheConfig;
+	private readonly sdk: STUDIOCMS_SDK;
+
+	private pages = new Map<string, PageDataCacheObject>();
+	private siteConfig = new Map<string, SiteConfigCacheObject>();
+	private version = new Map<string, VersionCacheObject>();
+
+	constructor(cacheConfig: ProcessedCacheConfig, studioCMS_SDK: STUDIOCMS_SDK) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = studioCMS_SDK;
-		this.CMSSiteConfigId = CMSSiteConfigId;
-		this.versionCacheLifetime = versionCacheLifetime;
 	}
 
 	// Misc Utils
@@ -81,14 +59,23 @@ export class StudioCMSVirtualCache {
 	}
 
 	/**
+	 * Checks if the cache is enabled based on the cache configuration.
+	 *
+	 * @returns {boolean} True if the cache is enabled, false otherwise.
+	 */
+	private isEnabled(): boolean {
+		return this.cacheConfig.enabled;
+	}
+
+	/**
 	 * Fetches the latest version of the StudioCMS package from the NPM registry.
 	 *
 	 * @returns {Promise<string>} A promise that resolves to the latest version string of the StudioCMS package.
 	 * @throws {StudioCMSCacheError} If there is an error fetching the latest version from NPM.
 	 */
-	private async getLatestVersionFromNPM(): Promise<string> {
+	private async getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
 		try {
-			const npmResponse = await fetch('https://registry.npmjs.org/studiocms/latest');
+			const npmResponse = await fetch(`https://registry.npmjs.org/${pkg}/${ver}`);
 			const npmData = await npmResponse.json();
 			return npmData.version as string;
 		} catch (error) {
@@ -144,8 +131,8 @@ export class StudioCMSVirtualCache {
 	 */
 	public async getVersion(): Promise<VersionCacheObject> {
 		try {
-			if (!this.cacheConfig.enabled) {
-				const version = await this.getLatestVersionFromNPM();
+			if (!this.isEnabled()) {
+				const version = await this.getLatestVersionFromNPM(this.StudioCMSPkgId);
 
 				return this.versionReturn(version);
 			}
@@ -153,7 +140,7 @@ export class StudioCMSVirtualCache {
 			const latestVersion = this.version.get(this.VersionMapID);
 
 			if (!latestVersion || this.isCacheExpired(latestVersion, this.versionCacheLifetime)) {
-				const version = await this.getLatestVersionFromNPM();
+				const version = await this.getLatestVersionFromNPM(this.StudioCMSPkgId);
 
 				const latestVersion = this.versionReturn(version);
 
@@ -177,11 +164,11 @@ export class StudioCMSVirtualCache {
 	 */
 	public async updateVersion(): Promise<VersionCacheObject> {
 		try {
-			const latestVersion = await this.getLatestVersionFromNPM();
+			const latestVersion = await this.getLatestVersionFromNPM(this.StudioCMSPkgId);
 
 			const newVersion = this.versionReturn(latestVersion);
 
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				return newVersion;
 			}
 
@@ -201,7 +188,7 @@ export class StudioCMSVirtualCache {
 	 */
 	public clearVersion(): void {
 		// Check if caching is disabled
-		if (!this.cacheConfig.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 
@@ -226,7 +213,7 @@ export class StudioCMSVirtualCache {
 	 */
 	public async getSiteConfig(): Promise<SiteConfigCacheObject> {
 		try {
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				const newSiteConfig = await this.sdk.GET.database.config();
 
 				if (!newSiteConfig) {
@@ -278,7 +265,7 @@ export class StudioCMSVirtualCache {
 			const returnConfig: SiteConfigCacheObject = this.siteConfigReturn(newSiteConfig);
 
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				// Transform and return the data
 				return returnConfig;
 			}
@@ -303,7 +290,7 @@ export class StudioCMSVirtualCache {
 	 */
 	public clearPageById(id: string): void {
 		// Check if caching is disabled
-		if (!this.cacheConfig.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 
@@ -323,7 +310,7 @@ export class StudioCMSVirtualCache {
 	 */
 	public clearPageBySlug(slug: string, pkg: string): void {
 		// Check if caching is disabled
-		if (!this.cacheConfig.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 
@@ -353,7 +340,7 @@ export class StudioCMSVirtualCache {
 	 */
 	public clearAllPages(): void {
 		// Check if caching is disabled
-		if (!this.cacheConfig.enabled) {
+		if (!this.isEnabled()) {
 			return;
 		}
 
@@ -379,7 +366,7 @@ export class StudioCMSVirtualCache {
 	public async getAllPages(): Promise<PageDataCacheObject[]> {
 		try {
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				const pages = await this.sdk.GET.database.pages();
 				return pages.map((page) => this.pageDataReturn(page));
 			}
@@ -437,7 +424,7 @@ export class StudioCMSVirtualCache {
 	public async getPageById(id: string): Promise<PageDataCacheObject> {
 		try {
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				const page = await this.sdk.GET.databaseEntry.pages.byId(id);
 
 				if (!page) {
@@ -483,7 +470,7 @@ export class StudioCMSVirtualCache {
 	public async getPageBySlug(slug: string, pkg: string): Promise<PageDataCacheObject> {
 		try {
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg);
 
 				if (!page) {
@@ -539,7 +526,7 @@ export class StudioCMSVirtualCache {
 	): Promise<PageDataCacheObject> {
 		try {
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				await this.sdk.UPDATE.page(data.pageData);
 				await this.sdk.UPDATE.pageContent(data.pageContent);
 
@@ -595,7 +582,7 @@ export class StudioCMSVirtualCache {
 	): Promise<PageDataCacheObject> {
 		try {
 			// Check if caching is disabled
-			if (!this.cacheConfig.enabled) {
+			if (!this.isEnabled()) {
 				await this.sdk.UPDATE.page(data.pageData);
 				await this.sdk.UPDATE.pageContent(data.pageContent);
 
