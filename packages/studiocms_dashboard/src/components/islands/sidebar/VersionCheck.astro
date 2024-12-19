@@ -44,6 +44,17 @@ function timeAgo(date: Date) {
 
 	return `${parts.join(', ')} ago`;
 }
+
+function dateWithTimeAndZone(date: Date) {
+	return date.toLocaleString(undefined, {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		timeZoneName: 'short',
+	});
+}
 ---
   
 { isAdmin && ( 
@@ -99,6 +110,13 @@ function timeAgo(date: Date) {
             <h3>Latest Published Version</h3>
             <p>
                 <code>StudioCMS v{latestVersion.version}</code>
+            </p>
+
+            <h3>Last Checked</h3>
+            <p>
+                <time datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
+                <br />
+                <time datetime={lastChecked.toISOString()}>{timeAgo(lastChecked)}</time>
             </p>
 
             <h3>Links</h3>
