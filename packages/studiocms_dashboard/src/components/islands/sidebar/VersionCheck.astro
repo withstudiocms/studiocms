@@ -58,27 +58,21 @@ function dateWithTimeAndZone(date: Date) {
 ---
   
 { isAdmin && ( 
-    <div class="version-check-container">
+    <div class="version-checker">
+        <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
+            <code class="version-check">
+                <span class="version-line">StudioCMS v{currentVersion}</span>
+                <span class="status" class:list={[classList]} />
+            </code>
 
-        <div class="version-checker">
-            <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
-                <code class="version-check">
-                    <span class="version-line">StudioCMS v{currentVersion}</span>
-                    <span class="status" class:list={[classList]} />
-                </code>
-                <span class="version-caption">
-                    More info
-                </span>
-
-                { comparison === -1 
-                    ? <span class="pre-release-message">You are currently on an outdated version.</span> 
-                    : comparison === 0 
-                        ? undefined 
-                        : <span class="pre-release-message">You are currently on a prerelease.</span>
-                }
-            </div>
-
+            { comparison === -1 
+                ? <span class="pre-release-message">You are currently on an outdated version.</span> 
+                : comparison === 0 
+                    ? undefined 
+                    : <span class="pre-release-message">You are currently on a prerelease.</span>
+            }
         </div>
+
     </div>
 
     <Modal id="version-modal" size="sm">
@@ -96,13 +90,7 @@ function dateWithTimeAndZone(date: Date) {
                 <code>StudioCMS v{latestVersion.version}</code>
             </p>
 
-            <h3>Last Update Check</h3>
-            <div class="last-update-container">
-                <p>
-                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                    <span class="latest-update-check">({timeAgo(lastChecked)})</span>
-                </p>
-
+            <h3>Last Update Check    
                 <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
                     data-astro-prefetch="tap" 
                     data-astro-reload class="reload-button" 
@@ -110,6 +98,14 @@ function dateWithTimeAndZone(date: Date) {
                     aria-label="Check for updates"
                     ><span class="reload"></span>
                 </a>
+            </h3>
+            <div class="last-update-container">
+                <p>
+                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
+                    <span class="latest-update-check">({timeAgo(lastChecked)})</span>
+                </p>
+
+                
             </div>
 
             <h3>Links</h3>
@@ -167,30 +163,6 @@ function dateWithTimeAndZone(date: Date) {
         gap: 0.5rem;
     }
 
-    .version-check-container {
-        justify-content: center;
-        text-align: center;
-        align-items: center;
-        align-content: center;
-        margin-bottom: 0.5rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        position: relative;
-    }
-
-    .version-title {
-        color: hsl(var(--text-muted));
-        font-size: 1em;
-        font-weight: 600;
-        text-align: center;
-        border-bottom: 1px solid hsl(var(--border));
-        width: 100%;
-        padding: 0.5rem;
-        padding-bottom: 0.25rem;
-        cursor: default;
-    }
-
     .version-checker {
         display: flex;
         flex-direction: row;
@@ -202,14 +174,7 @@ function dateWithTimeAndZone(date: Date) {
         align-content: center;
         vertical-align: middle;
         padding: .5rem;
-    }
-
-    .version-caption {
-        color: hsl(var(--text-muted));
-        font-size: .6em;
-        font-weight: 700;
-        text-align: center;
-        text-wrap: balance;
+        font-weight: 400;
     }
 
     .version-container {
@@ -233,7 +198,6 @@ function dateWithTimeAndZone(date: Date) {
         vertical-align: middle;
         color: hsl(var(--text-muted));
         font-size: .8em;
-        font-weight: 700;
     }
 
     .version-link {
@@ -294,10 +258,6 @@ function dateWithTimeAndZone(date: Date) {
         cursor: pointer;
         transition: all 0.15s ease;
         margin-left: 0.25rem;
-        /* position: absolute;
-        right: 0.25rem;
-        top: 0.25rem; */
-
         &:hover {
             background-color: hsl(var(--border));
 
