@@ -129,11 +129,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 				// 	pattern: 'create-page',
 				// 	entrypoint: resolve('../routes/create-page.astro'),
 				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: 'profile',
-				// 	entrypoint: resolve('../routes/profile.astro'),
-				// },
+				{
+					enabled: dashboardEnabled && !dbStartPage,
+					pattern: 'profile',
+					entrypoint: resolve('../routes/profile.astro'),
+				},
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
 				// 	pattern: 'configuration',

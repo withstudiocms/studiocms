@@ -35,7 +35,7 @@ function stripZodSchemaDefaults<T extends z.ZodTypeAny>(schema: T): T {
 		);
 		return z.object(newShape) as unknown as T;
 	}
-	throw new Error('stripDefaults only works on Zod objects');
+	throw new StudioCMSCoreError('stripZodSchemaDefaults only works on Zod objects');
 }
 
 function parseAndMerge<T extends z.ZodTypeAny>(

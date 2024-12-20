@@ -71,7 +71,8 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 		if (configFileUrl) {
 			// addWatchFile(configFileUrl);
 			// This has been disabled due to a Vite dynamic import issue preventing loading the config file
-			return `There is a StudioCMS config file at ${configFileUrl}, due to a vite bug, this file will be ignored. Please use the Astro config file for StudioCMS options for the time being. (You can ignore the warning above about the inline config being ignored while this is in place.)`;
+			const configFilePath = configFileUrl.replace(pathname, '');
+			return `There is a StudioCMS config file detected ('${configFilePath}'), due to a vite bug, this file will be ignored. Please use the Astro config file for StudioCMS options for the time being. (You can ignore the warning above about the inline config being ignored while this is in place.)`;
 		}
 		return;
 	}
@@ -87,9 +88,9 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 	const configPath = findConfig(projectRootUrl.pathname);
 
 	// Return undefined for now if there is a config file, due to vite processing issues
-	// if (configPath) {
-	// 	return undefined;
-	// }
+	if (configPath) {
+		return undefined;
+	}
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.

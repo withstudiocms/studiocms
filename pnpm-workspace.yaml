@@ -11,12 +11,12 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@types/node': ^20.14.11
   "@studiocms/ui": ^0.3.1
   "@sentry/astro": ^8.45.0
-  astro: ^5.1.0
+  astro: ^5.1.1
   astro-integration-kit: ^0.18
   astro-theme-provider: ^0.7.0
   sharp: ^0.33.5
   typescript: ^5.7
-  vite: ^6.0.4
+  vite: ^6.0.5
 
 catalogs:
   min: # Confirmed Current Min Deps - 11.01.2024

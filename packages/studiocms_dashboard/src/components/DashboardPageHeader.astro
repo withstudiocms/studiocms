@@ -18,7 +18,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
       <Fragment set:html={DiscordLogo} slot='start-content' />
       {t("title-button:discord")}
     </Button>
-    <Button color='success' variant='flat'>
+    <Button color='success' variant='flat' as="a" href={'https://github.com/withstudiocms/studiocms/discussions/new?category=feedback'} target='_blank' rel='noreferrer,noopener'>
       <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
       {t("title-button:feedback")}
     </Button>

@@ -7,11 +7,15 @@ body {
 	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-width: thin;
+	display: flex;
+	align-items: center;
 	font-family: "Onest Variable", sans-serif;
 }
 
 main {
 	min-height: 100vh;
+	width: 100%;
+	padding: 1.5rem;
 }
 
 :root,
@@ -27,4 +31,83 @@ main {
 
 .scrollbar ::-webkit-scrollbar {
 	width: 2px;
+}
+
+.sidebar-header {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+}
+
+.sidebar-logo {
+	width: 2.75rem;
+	height: auto;
+}
+
+.sidebar-title {
+	font-size: 1.75em;
+	font-weight: 700;
+}
+
+.nav-toggle {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	display: none !important;
+	z-index: 40 !important;
+}
+
+@media screen and (max-width: 840px) {
+	.nav-toggle {
+		display: flex !important;
+	}
+}
+
+.sidebar-header-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-link-group {
+	display: flex;
+	flex-direction: column;
+	gap: .375rem;
+	width: 100%;
+}
+
+.sidebar-link-group.hidden {
+	display: none;
+}
+
+.empty-placeholder-span {
+	width: 100%;
+	text-align: center;
+	color: hsl(var(--text-muted));
+	font-size: .875em;
+}
+
+.user-dropdown-trigger-container {
+	width: calc(280px - 3rem);
+	cursor: pointer;
+	border: 1px solid hsl(var(--border));
+	padding: .5rem;
+	border-radius: .5rem;
+	transition: all .15s ease;
+}
+
+.user-dropdown-trigger-container:hover {
+	background-color: hsla(var(--border), 0.5);
+}
+
+.sidebar {
+	justify-content: space-between;
+}
+
+.sidebar-links-container {
+	gap: .75rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
 }

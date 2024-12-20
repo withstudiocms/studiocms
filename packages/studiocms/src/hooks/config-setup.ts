@@ -13,6 +13,7 @@ import frontend from '@studiocms/frontend';
 import imageHandler from '@studiocms/imagehandler';
 import renderers from '@studiocms/renderers';
 import robotsTXT from '@studiocms/robotstxt';
+import ui from '@studiocms/ui';
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import { compare as semCompare } from 'semver';
 import type { ConfigSetupOptions } from '../types';
@@ -55,6 +56,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 		// Setup StudioCMS Integrations Array (Default Integrations)
 		const integrations = [
 			{ integration: nodeNamespace() },
+			{ integration: ui() },
 			{ integration: core(options) },
 			{ integration: renderers(rendererConfig, verbose) },
 			{ integration: imageHandler(options) },

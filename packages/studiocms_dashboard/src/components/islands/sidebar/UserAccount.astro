@@ -8,7 +8,9 @@ const data = await getUserData(Astro);
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 
-const userProps: PropsOf<typeof User> = {
+type UserProps = PropsOf<typeof User>;
+
+const userProps: UserProps = {
 	name: data.user?.name || 'Visitor',
 	description: getLabelForPermissionLevel(data.permissionLevel),
 	loading: 'eager',
