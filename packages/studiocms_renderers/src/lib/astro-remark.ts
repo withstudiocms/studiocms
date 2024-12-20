@@ -13,7 +13,12 @@ import { type AstroMarkdownOptions, createMarkdownProcessor } from '@astrojs/mar
  * @returns The rendered content
  */
 export async function renderAstroMD(content: string) {
-	const processor = await createMarkdownProcessor(astroMarkdownConfig as AstroMarkdownOptions);
+	const mergedConfig: AstroMarkdownOptions = {
+		syntaxHighlight: false,
+		...(astroMarkdownConfig as AstroMarkdownOptions),
+	};
+
+	const processor = await createMarkdownProcessor(mergedConfig);
 
 	return (await processor.render(content)).code;
 }
