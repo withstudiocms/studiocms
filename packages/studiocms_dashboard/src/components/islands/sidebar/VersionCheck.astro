@@ -63,13 +63,6 @@ function dateWithTimeAndZone(date: Date) {
             <span class="version-line">Version {currentVersion}</span>
             <span class="status" class:list={[classList]} />
         </code>
-
-        { comparison === -1 
-            ? <span class="pre-release-message">Outdated</span> 
-            : comparison === 0 
-                ? undefined 
-                : <span class="pre-release-message">Prerelease</span>
-        }
     </div>
 
     <Modal id="version-modal" size="sm">
@@ -161,14 +154,6 @@ function dateWithTimeAndZone(date: Date) {
         text-decoration: none;
     }
 
-    .version-container .pre-release-message {
-        color: hsl(var(--text-muted));
-        font-size: .7em;
-        font-weight: 700;
-        text-align: center;
-        text-wrap: balance;
-    }
-
     .version-container:hover, .version-check:hover {
         color: hsl(var(--primary-base));
         cursor: pointer;
@@ -225,9 +210,9 @@ function dateWithTimeAndZone(date: Date) {
 
     .outdated {
         display: inline-block;
-        width: 20px;
-        height: 20px;
-        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0'/%3E%3C/svg%3E");
+        width: 14px;
+        height: 14px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775a5.25 5.25 0 0 1 10.233-2.33a3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5z'/%3E%3C/svg%3E");
         background-color: hsl(var(--warning-base));
         -webkit-mask-image: var(--svg);
         mask-image: var(--svg);
@@ -239,9 +224,9 @@ function dateWithTimeAndZone(date: Date) {
 
     .latest {
         display: inline-block;
-        width: 20px;
-        height: 20px;
-        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0'/%3E%3C/svg%3E");
+        width: 14px;
+        height: 14px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4.5 12.75l6 6l9-13.5'/%3E%3C/svg%3E");
         background-color: hsl(var(--success-base));
         -webkit-mask-image: var(--svg);
         mask-image: var(--svg);
@@ -253,8 +238,8 @@ function dateWithTimeAndZone(date: Date) {
 
     .future {
         display: inline-block;
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
         --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104q-.376.034-.75.082m.75-.082a24.3 24.3 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104q.377.034.75.082M19.8 15.3l-1.57.393A9.07 9.07 0 0 1 12 15a9.07 9.07 0 0 0-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.3 48.3 0 0 1 12 21a48 48 0 0 1-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'/%3E%3C/svg%3E");
         background-color: hsl(var(--primary-base));
         -webkit-mask-image: var(--svg);
