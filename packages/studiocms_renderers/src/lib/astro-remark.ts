@@ -14,8 +14,8 @@ import { type AstroMarkdownOptions, createMarkdownProcessor } from '@astrojs/mar
  */
 export async function renderAstroMD(content: string) {
 	const mergedConfig: AstroMarkdownOptions = {
-		syntaxHighlight: false,
 		...(astroMarkdownConfig as AstroMarkdownOptions),
+		syntaxHighlight: false,
 	};
 
 	const processor = await createMarkdownProcessor(mergedConfig);
