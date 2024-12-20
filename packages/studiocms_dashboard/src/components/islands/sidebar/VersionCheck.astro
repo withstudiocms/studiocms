@@ -61,11 +61,14 @@ function dateWithTimeAndZone(date: Date) {
     <div class="version-check-container">
 
         <div class="version-checker">
-            <div class="version-container">
-                <code class="version-check" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
+            <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
+                <code class="version-check">
                     <span class="version-line">StudioCMS v{currentVersion}</span>
                     <span class="status" class:list={[classList]} />
                 </code>
+                <span class="version-caption">
+                    More info
+                </span>
 
                 { comparison === -1 
                     ? <span class="pre-release-message">You are currently on an outdated version.</span> 
@@ -96,7 +99,7 @@ function dateWithTimeAndZone(date: Date) {
             <h3>Last Update Check</h3>
             <div class="last-update-container">
                 <p>
-                    <span id="version-modal-last-checked-date">{dateWithTimeAndZone(lastChecked)}</span>
+                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
                     <span class="latest-update-check">({timeAgo(lastChecked)})</span>
                 </p>
 
@@ -201,10 +204,18 @@ function dateWithTimeAndZone(date: Date) {
         padding: .5rem;
     }
 
+    .version-caption {
+        color: hsl(var(--text-muted));
+        font-size: .6em;
+        font-weight: 700;
+        text-align: center;
+        text-wrap: balance;
+    }
+
     .version-container {
         display: flex;
         flex-direction: column;
-        gap: .175rem;
+        gap: .05rem;
         width: 100%;
         color: hsl(var(--text-muted));
         cursor: default;
@@ -247,7 +258,7 @@ function dateWithTimeAndZone(date: Date) {
         text-wrap: balance;
     }
 
-    .version-container .version-check:hover {
+    .version-container:hover, .version-check:hover {
         color: hsl(var(--primary-base));
         cursor: pointer;
     }
