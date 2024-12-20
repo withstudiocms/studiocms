@@ -69,26 +69,26 @@ function dateWithTimeAndZone(date: Date) {
         </h2>
         <div>
             <Row>
-            <h3>Currently Installed Version</h3>
-            <p>
-                <code>StudioCMS v{currentVersion}</code>
-            </p>
-
-            <h3 class="inline-title"><span>Last Update Check</span>    
-                <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
-                    data-astro-prefetch="tap" 
-                    data-astro-reload class="reload-button" 
-                    title="Check for updates" 
-                    aria-label="Check for updates"
-                    ><span class="reload"></span>
-                </a>
-            </h3>
-            <div class="last-update-container">
+                <h3>Currently Installed Version</h3>
                 <p>
-                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                    <span class="latest-update-check">({timeAgo(lastChecked)})</span>
+                    <code>StudioCMS v{currentVersion}</code>
                 </p>
-            </div>
+
+                <h3 class="inline-title"><span>Last Update Check</span>    
+                    <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
+                        data-astro-prefetch="tap" 
+                        data-astro-reload class="reload-button" 
+                        title="Check for updates" 
+                        aria-label="Check for updates"
+                        ><span class="reload"></span>
+                    </a>
+                </h3>
+                <div class="last-update-container">
+                    <p>
+                        <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
+                        <span class="latest-update-check">({timeAgo(lastChecked)})</span>
+                    </p>
+                </div>
             </Row>
 
             <h3>Latest Published Version</h3>
