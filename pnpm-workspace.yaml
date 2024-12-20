@@ -1,5 +1,5 @@
 catalog: # Confirmed Current Master Catalog - 11.01.2024
-  '@astrojs/db': ^0.14.3
+  '@astrojs/db': ^0.14.4
   '@astrojs/markdown-remark': ^6.0.1
   '@astrojs/rss': ^4.0.7
   '@astrojs/react': ^4.1.0
@@ -11,16 +11,16 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@types/node': ^20.14.11
   "@studiocms/ui": ^0.3.1
   "@sentry/astro": ^8.45.0
-  astro: ^5.0.5
-  astro-integration-kit: ^0.17
+  astro: ^5.1.0
+  astro-integration-kit: ^0.18
   astro-theme-provider: ^0.7.0
   sharp: ^0.33.5
   typescript: ^5.7
-  vite: ^5.4.8
+  vite: ^6.0.4
 
 catalogs:
   min: # Confirmed Current Min Deps - 11.01.2024
-    astro: ^5.0
+    astro: ^5.0.0
     '@astrojs/db': ^0.14.3
     vite: ^6.0
 

@@ -1,11 +1,23 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
 import { StudioCMSCoreError } from '../errors';
 import { type StudioCMSConfig, type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas';
 import { loadStudioCMSConfigFile } from './configManager';
 
 export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {
-	return StudioCMSOptionsSchema.parse(opts);
+	try {
+		return StudioCMSOptionsSchema.parse(opts);
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new StudioCMSCoreError(
+				`Invalid StudioCMS Config Options: ${error.message}`,
+				error.stack
+			);
+		}
+		throw new StudioCMSCoreError(
+			'Invalid StudioCMS Options',
+			'An unknown error occurred while parsing the StudioCMS options.'
+		);
+	}
 }
 
 /**
@@ -19,37 +31,40 @@ export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {
 export const configResolver = defineUtility('astro:config:setup')(
 	async (params, options: StudioCMSOptions) => {
 		// Destructure Params
-		const { logger, config: astroConfig } = params;
+		const { logger: l, config: astroConfig } = params;
 
-		let resolvedOptions: StudioCMSConfig = parseConfig(options);
+		const logger = l.fork('studiocms:config');
 
-		console.log('Checking for StudioCMS Config File');
+		const inlineConfigExists = options !== undefined;
+
+		const resolvedOptions: StudioCMSConfig = parseConfig(options);
 
 		// Merge the given options with the ones from a potential StudioCMS config file
 		const studioCMSConfigFile = await loadStudioCMSConfigFile(astroConfig.root);
 
-		console.log('studioCMSConfigFile', studioCMSConfigFile);
-
 		if (studioCMSConfigFile) {
-			console.log('There is a config file');
-			const parsedOptions = StudioCMSOptionsSchema.safeParse(studioCMSConfigFile);
+			try {
+				const parsedOptions = StudioCMSOptionsSchema.parse(studioCMSConfigFile);
 
-			// If the StudioCMS config file is invalid, throw an error
-			if (!parsedOptions.success || parsedOptions.error || !parsedOptions.data) {
-				const parsedErrors = parsedOptions.error.errors;
-				const parsedErrorMap = parsedErrors.map((e) => ` - ${e.message}`).join('\n');
-				const parsedErrorString = `The StudioCMS config file was found but the following errors where encountered while parsing it: \n${parsedErrorMap}`;
-				throw new StudioCMSCoreError('Invalid StudioCMS Config File', parsedErrorString);
+				if (inlineConfigExists) {
+					logger.warn(
+						'Both an inline StudioCMS config (in your Astro config file) and a StudioCMS config file (studiocms.config.{js|mjs|cjs|ts|mts|cts}) were found. The StudioCMS config file will override the inline config.'
+					);
+				}
+
+				return parsedOptions;
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMSCoreError(
+						`Invalid StudioCMS Config Options: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMSCoreError(
+					'Invalid StudioCMS Options',
+					'An unknown error occurred while parsing the StudioCMS options.'
+				);
 			}
-
-			// Merge the options with Defaults
-			resolvedOptions = { ...StudioCMSOptionsSchema._def.defaultValue, ...parsedOptions.data };
-
-			// Log that the StudioCMS config file is being used if verbose
-			integrationLogger(
-				{ logger, logLevel: 'warn', verbose: resolvedOptions.verbose || false },
-				'Your project includes a StudioCMS config file ("studiocms.config.{mjs|js|ts|mts|cjs|cts}"). To avoid unexpected results from merging multiple config sources, move all StudioCMS options to the StudioCMS config file. Or remove the file to use only the options provided in the Astro config.'
-			);
 		}
 
 		return resolvedOptions;
