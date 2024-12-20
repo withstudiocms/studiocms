@@ -4,5 +4,22 @@ import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPerm
 import { User } from '@studiocms/ui/components';
 
 const data = await getUserData(Astro);
+
+interface UserProps {
+	name: string;
+	description: string;
+	avatar?: string;
+	class?: string;
+	loading?: 'eager' | 'lazy';
+}
+
+const userProps: UserProps = {
+	name: data.user?.name || 'Visitor',
+	description: getLabelForPermissionLevel(data.permissionLevel),
+};
+
+if (data.user?.avatar) {
+	userProps.avatar = data.user.avatar;
+}
 ---
-<User name={data.user?.name || "Visitor"} description={getLabelForPermissionLevel(data.permissionLevel)} />
+<User {...userProps} />
