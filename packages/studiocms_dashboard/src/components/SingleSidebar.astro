@@ -19,7 +19,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   <div class="sidebar-links-container">
     <div class="sidebar-header">
       <StudioCMSLogo class={'sidebar-logo'} />
-      <span class="sidebar-title">StudioCMS</span>
+      <div class="sidebar-header-text">
+        <span class="sidebar-title">StudioCMS</span>
+        { versionCheck && ( 
+            <VersionCheck server:defer>
+              <span slot="fallback"></span>
+            </VersionCheck>
+        )}
+      </div>
     </div>
     <Divider background='background-step-1'>{t("category-1-header")}</Divider>
     <div class="sidebar-link-group">
@@ -35,11 +42,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
     </Admin>
   </div>  
   <div>
-    { versionCheck && ( 
-        <VersionCheck server:defer>
-          <span slot="fallback"></span>
-        </VersionCheck>
-    )}
     <Dropdown 
       id='sidebar-user-dropdown'
       options={[
@@ -88,6 +90,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   });
 </script>
 <style>
+
+  .sidebar-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+  }
+
   .sidebar-link-group {
     display: flex;
     flex-direction: column;
