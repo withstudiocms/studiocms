@@ -87,9 +87,9 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 	const configPath = findConfig(projectRootUrl.pathname);
 
 	// Return undefined for now if there is a config file, due to vite processing issues
-	if (configPath) {
-		return undefined;
-	}
+	// if (configPath) {
+	// 	return undefined;
+	// }
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.
@@ -117,10 +117,12 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		} catch (error) {
 			const { message, code } = coerceError(error);
 
+			const configFilePath = configPath.replace(projectRootUrl.pathname, '');
+
 			// If the config file exists but fails to load, throw an error
 			if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
 				throw new StudioCMSCoreError(
-					`Your project includes an StudioCMS config file ("studiocms.config.{mjs|js|ts|mts|cjs|cts}") that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
+					`Your project includes an StudioCMS config file (${configFilePath}) that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
 						/\s+/g,
 						' '
 					),
