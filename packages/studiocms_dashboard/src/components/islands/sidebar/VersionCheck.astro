@@ -1,5 +1,4 @@
 ---
-import { undefined } from 'astro:schema';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
@@ -63,17 +62,16 @@ function dateWithTimeAndZone(date: Date) {
 
         <div class="version-checker">
             <div class="version-container">
-                <code class="version-check" id="version-modal-trigger">
+                <code class="version-check" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
                     <span class="version-line">StudioCMS v{currentVersion}</span>
                     <span class="status" class:list={[classList]} />
                 </code>
 
-                {
-                    comparison === -1 
-                        ? <span class="pre-release-message">You are currently on an outdated version.</span> 
-                        : comparison === 0 
-                            ? undefined 
-                            : <span class="pre-release-message">You are currently on a prerelease.</span>
+                { comparison === -1 
+                    ? <span class="pre-release-message">You are currently on an outdated version.</span> 
+                    : comparison === 0 
+                        ? undefined 
+                        : <span class="pre-release-message">You are currently on a prerelease.</span>
                 }
             </div>
 
