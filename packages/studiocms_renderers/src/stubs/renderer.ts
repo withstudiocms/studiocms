@@ -34,6 +34,18 @@ renderer.addModule('studiocms:renderer', {
 	],
 });
 
+renderer.addModule('studiocms:renderer/current', {
+	namedExports: [
+		{
+			name: 'contentRenderer',
+			typeDef: `typeof import('${resolve('../lib/contentRenderer.ts')}').contentRenderer`,
+		},
+	],
+	defaultExport: {
+		typeDef: `typeof import('${resolve('../lib/contentRenderer.ts')}').default`,
+	},
+});
+
 const rendererDTS = renderer.makeAstroInjectedType('renderer.d.ts');
 
 export default rendererDTS;

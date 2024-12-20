@@ -31,6 +31,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 				'studiocms:renderer': `export { default as StudioCMSRenderer } from '${RendererComponent}';`,
 				'studiocms:renderer/config': `export default ${stringify(options)}`,
 				'studiocms:renderer/astroMarkdownConfig': `export default ${stringify(config.markdown)}`,
+				'studiocms:renderer/current': `
+				export * from '${resolve('../lib/contentRenderer.ts')}';
+				import contentRenderer from '${resolve('../lib/contentRenderer.ts')}';
+				export default contentRenderer;
+				`,
 			},
 		});
 		integrationLogger(
