@@ -1,5 +1,6 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
+import { makePublicRoute } from '@studiocms/core/lib';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import { envField } from 'astro/config';
@@ -157,8 +158,8 @@ export const configSetup = defineUtility('astro:config:setup')(
 						hook: 'buildStart',
 						targets: [
 							{
-								src: resolve('../resources/*'),
-								dest: 'public/studiocms-auth/',
+								src: resolve('../public/*'),
+								dest: makePublicRoute('auth'),
 							},
 						],
 					}),

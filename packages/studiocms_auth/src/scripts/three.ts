@@ -188,7 +188,7 @@ class StudioCMS3DLogo {
 		const loader = new GLTFLoader();
 
 		// Load the GLTF Model from the public dir & apply the material to all children
-		loader.loadAsync('/studiocms-auth/studiocms-logo.glb').then((gltf) => {
+		loader.loadAsync('/studiocms-resources/auth/studiocms-logo.glb').then((gltf) => {
 			this.model = gltf.scene;
 
 			this.model.traverse((child) => {

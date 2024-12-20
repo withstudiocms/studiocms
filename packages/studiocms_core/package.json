@@ -63,6 +63,7 @@
     "unified": "catalog:studiocms-core",
     "remark-rehype": "catalog:studiocms-core",
     "mdast-util-to-hast": "catalog:studiocms-core",
+    "rollup-plugin-copy": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "drizzle-orm": "catalog:studiocms-core"

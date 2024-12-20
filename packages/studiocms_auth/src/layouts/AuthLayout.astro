@@ -4,7 +4,6 @@ import '@studiocms/ui/css/global.css';
 import './authlayout.css';
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import { dashboardConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import version from 'studiocms:version';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
@@ -40,7 +39,9 @@ const fallbackImageSrc =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={dashboardConfig.faviconURL} />
+	<link rel="icon" href="/studiocms-resources/core/favicon.svg" type="image/svg+xml" />
+	<link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+	<link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
     <meta name="generator" content={Astro.generator} />
     <meta name="generator" content=`StudioCMS v${version}` />

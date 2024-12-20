@@ -631,6 +631,9 @@ importers:
       remark-rehype:
         specifier: catalog:studiocms-core
         version: 11.1.1
+      rollup-plugin-copy:
+        specifier: catalog:studiocms-shared
+        version: 3.5.0
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5

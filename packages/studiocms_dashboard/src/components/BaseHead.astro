@@ -3,11 +3,8 @@ import '../styles/base.css';
 import '../styles/layout.css';
 import '@studiocms/ui/css/global.css';
 import '@fontsource-variable/onest/index.css';
-import { dashboardConfig } from 'studiocms:config';
 import version from 'studiocms:version';
 import { isDashboardRoute } from '../utils';
-
-const { faviconURL } = dashboardConfig;
 
 export interface Props {
 	title: string;
@@ -23,9 +20,13 @@ const { title, description } = Astro.props;
 {/* Global Metadata */}
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href={faviconURL} />
 <meta name="generator" content={Astro.generator} />
 <meta name="generator" content=`StudioCMS v${version}` />
+
+{/* Favicon */}
+<link rel="icon" href="/studiocms-resources/core/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
 
 {/* Primary Meta Tags */}
 <title>{title}</title>

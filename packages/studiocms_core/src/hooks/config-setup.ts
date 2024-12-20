@@ -1,7 +1,8 @@
 import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
+import copy from 'rollup-plugin-copy';
 import { name, version } from '../../package.json';
-import { makeAPIRoute } from '../lib';
+import { makeAPIRoute, makePublicRoute } from '../lib';
 import type { StudioCMSConfig } from '../schemas';
 
 export const configSetup = defineUtility('astro:config:setup')(
@@ -10,6 +11,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 		const {
 			logger,
 			injectRoute,
+			updateConfig,
 			config: {
 				root: { pathname: userSrcDir },
 			},
@@ -24,6 +26,23 @@ export const configSetup = defineUtility('astro:config:setup')(
 		// Create resolvers
 		const { resolve } = createResolver(import.meta.url);
 		const { resolve: userSrcDirResolve } = createResolver(userSrcDir);
+
+		updateConfig({
+			vite: {
+				plugins: [
+					copy({
+						copyOnce: true,
+						hook: 'buildStart',
+						targets: [
+							{
+								src: resolve('../public/*'),
+								dest: makePublicRoute('core'),
+							},
+						],
+					}),
+				],
+			},
+		});
 
 		// Setup Virtual Imports
 		integrationLogger(logInfo, 'Adding Virtual Imports...');
