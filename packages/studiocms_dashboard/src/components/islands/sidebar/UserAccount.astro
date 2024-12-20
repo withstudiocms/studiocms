@@ -11,6 +11,7 @@ type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 const userProps: PropsOf<typeof User> = {
 	name: data.user?.name || 'Visitor',
 	description: getLabelForPermissionLevel(data.permissionLevel),
+	loading: 'eager',
 };
 
 if (data.user?.avatar) {

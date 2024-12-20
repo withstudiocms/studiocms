@@ -622,6 +622,9 @@ importers:
       drizzle-orm:
         specifier: catalog:studiocms-core
         version: 0.31.4(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.16)(react@19.0.0)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       mdast-util-to-hast:
         specifier: catalog:studiocms-core
         version: 13.2.0
@@ -641,6 +644,9 @@ importers:
         specifier: catalog:min
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
     devDependencies:
+      '@types/lodash':
+        specifier: ^4.17.13
+        version: 4.17.13
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
@@ -2586,6 +2592,9 @@ packages:
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+
+  '@types/lodash@4.17.13':
+    resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
 
   '@types/markdown-it@12.2.3':
     resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
@@ -7808,6 +7817,8 @@ snapshots:
 
   '@types/linkify-it@5.0.0':
     optional: true
+
+  '@types/lodash@4.17.13': {}
 
   '@types/markdown-it@12.2.3':
     dependencies:

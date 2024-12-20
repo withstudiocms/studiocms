@@ -82,15 +82,13 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
  *
  * If no config file is found, an empty object is returned.
  */
-export async function loadStudioCMSConfigFile(
-	projectRootUrl: URL
-): Promise<StudioCMSOptions | undefined> {
+export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
 	// Find the StudioCMS config file in the project root
 	const configPath = findConfig(projectRootUrl.pathname);
 
-	// Return an empty object for now if there is a config file, due to vite processing issues
+	// Return undefined for now if there is a config file, due to vite processing issues
 	if (configPath) {
-		return {};
+		return undefined;
 	}
 
 	/**

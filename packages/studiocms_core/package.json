@@ -66,7 +66,8 @@
     "rollup-plugin-copy": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "drizzle-orm": "catalog:studiocms-core"
+    "drizzle-orm": "catalog:studiocms-core",
+    "lodash": "^4.17.21"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -74,6 +75,7 @@
     "vite": "catalog:min"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/lodash": "^4.17.13"
   }
 }

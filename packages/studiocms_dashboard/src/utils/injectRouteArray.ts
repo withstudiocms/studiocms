@@ -62,6 +62,7 @@ export const injectDashboardRoute = defineUtility('astro:config:setup')(
 				enabled: boolean;
 				pattern: string;
 				entrypoint: string;
+				prerender?: boolean;
 			}[];
 		}
 	) => {
@@ -89,13 +90,13 @@ export const injectDashboardRoute = defineUtility('astro:config:setup')(
 			};
 
 			for (const route of routes) {
-				const { enabled, pattern, entrypoint } = route;
+				const { enabled, pattern, entrypoint, prerender = true } = route;
 
 				if (enabled) {
 					injectRoute({
 						pattern: makeDashboardRoute(pattern),
 						entrypoint,
-						prerender: true,
+						prerender,
 					});
 				}
 			}

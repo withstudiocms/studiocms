@@ -7,12 +7,7 @@ import auth from '@studiocms/auth';
 import core from '@studiocms/core';
 import { StudioCMSError } from '@studiocms/core/errors';
 import type { SafePluginListType, StudioCMSConfig } from '@studiocms/core/schemas';
-import {
-	checkAstroConfig,
-	configResolver,
-	parseConfig,
-	watchStudioCMSConfig,
-} from '@studiocms/core/utils';
+import { checkAstroConfig, configResolver, watchStudioCMSConfig } from '@studiocms/core/utils';
 import dashboard from '@studiocms/dashboard';
 import frontend from '@studiocms/frontend';
 import imageHandler from '@studiocms/imagehandler';
@@ -43,11 +38,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 		}
 
 		// Resolve Options
-		const Roptions = await configResolver(params, opts);
-
-		// Disabled the above due to a vite processing error with dynamic imports, for now
-		// we will use the parseConfig function instead to parse the options with zod
-		const options = parseConfig(opts);
+		const options: StudioCMSConfig = await configResolver(params, opts);
 
 		const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
 			options;
