@@ -5,15 +5,10 @@ import { User } from '@studiocms/ui/components';
 
 const data = await getUserData(Astro);
 
-interface UserProps {
-	name: string;
-	description: string;
-	avatar?: string;
-	class?: string;
-	loading?: 'eager' | 'lazy';
-}
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 
-const userProps: UserProps = {
+const userProps: PropsOf<typeof User> = {
 	name: data.user?.name || 'Visitor',
 	description: getLabelForPermissionLevel(data.permissionLevel),
 };
