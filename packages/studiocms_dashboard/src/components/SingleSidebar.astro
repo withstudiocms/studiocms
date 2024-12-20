@@ -8,7 +8,6 @@ import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
 import VersionCheck from './islands/sidebar/VersionCheck.astro';
-import VersionCheckPart from './shared-parts/VersionCheck.astro';
 
 const { versionCheck } = dashboardConfig;
 
@@ -22,11 +21,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       <StudioCMSLogo class={'sidebar-logo'} />
       <div class="sidebar-header-text">
         <span class="sidebar-title">StudioCMS</span>
-        { versionCheck && ( 
-            <VersionCheck server:defer>
-              <span slot="fallback"><VersionCheckPart /></span>
-            </VersionCheck>
-        )}
+        { versionCheck && <VersionCheck server:defer />}
       </div>
     </div>
     <Divider background='background-step-1'>{t("category-1-header")}</Divider>
@@ -38,9 +33,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
         {t("content-management-label")}
       </SidebarLink>
     </div>
-    <Admin server:defer transition:persist transition:persist-props>
-      <span slot="fallback">Loading</span>
-    </Admin>
+    <Admin server:defer transition:persist transition:persist-props />
+    { /* 
+      Fallback slot removed from <Admin /> component to prevent the sidebar
+      from displaying the fallback content when the user is not an admin.
+     */}
   </div>  
   <div>
     <Dropdown 
