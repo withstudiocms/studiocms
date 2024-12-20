@@ -34,8 +34,8 @@ catalogs:
       specifier: ^8.45.0
       version: 8.45.0
     '@studiocms/ui':
-      specifier: ^0.1.0
-      version: 0.1.0
+      specifier: ^0.3.1
+      version: 0.3.1
     '@types/node':
       specifier: ^20.14.11
       version: 20.17.10
@@ -331,7 +331,7 @@ importers:
         version: link:../packages/studiocms_renderers
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       '@types/hast':
         specifier: catalog:docs
         version: 3.0.4
@@ -460,7 +460,7 @@ importers:
         version: link:../studiocms_robotstxt
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -528,7 +528,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       '@types/three':
         specifier: catalog:studiocms-auth
         version: 0.169.0
@@ -612,7 +612,7 @@ importers:
         version: link:../studiocms_robotstxt
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -676,7 +676,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -747,7 +747,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+        version: 0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -2434,8 +2434,8 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@studiocms/ui@0.1.0':
-    resolution: {integrity: sha512-0ZqAIi7bPbQKcClVkocW4/AymApe2aO0xFLebYe4Mr3mMqQJYbulOxZD8gzYPHVpuP1VqXfL7RGOALpoGvrYSg==}
+  '@studiocms/ui@0.3.1':
+    resolution: {integrity: sha512-Z77+yZvdHnvRH/xQsUlvhVWh4BhvocgETZETRVrfQJshTY752KMShhoeRXTfZi43hbUE61MPUhIr7+QgtUJyDA==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
 
@@ -7320,12 +7320,12 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@studiocms/ui@0.1.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
+  '@studiocms/ui@0.3.1(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
     dependencies:
-      '@fontsource-variable/onest': 5.1.0
       '@iconify-json/heroicons': 1.2.1
       '@iconify/utils': 2.2.0
       astro: 5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      pathe: 1.1.2
     transitivePeerDependencies:
       - supports-color
 
