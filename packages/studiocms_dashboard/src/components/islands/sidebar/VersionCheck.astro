@@ -77,11 +77,13 @@ function dateWithTimeAndZone(date: Date) {
                     <span class="status" class:list={[classList]} />
                 </code>
 
-                { comparison === 1 && (
-                    <span class="pre-release-message">
-                        You are currently on a prerelease.
-                    </span>
-                )}
+                {
+                    comparison === -1 
+                        ? <span class="pre-release-message">You are currently on an outdated version.</span> 
+                        : comparison === 0 
+                            ? null 
+                            : <span class="pre-release-message">You are currently on a prerelease.</span>
+                }
 
                 <span class="version-message" id="version-modal-trigger">
                     Click for more information.
