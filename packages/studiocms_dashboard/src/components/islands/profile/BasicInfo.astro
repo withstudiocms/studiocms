@@ -11,7 +11,7 @@ const data = await getUserData(Astro);
         <h2>Basic Info</h2>
     
         <div class="form-header">
-            <Button type='submit' variant={'solid'} color='primary'>Update</Button> 
+            <Button type='submit' size='sm' variant={'solid'} color='primary'>Save</Button> 
         </div>
     </div>
 
@@ -34,7 +34,7 @@ const data = await getUserData(Astro);
 
     basicInfoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-    })
+    });
 </script>
 
 <style>
