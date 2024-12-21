@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
 import contentRenderer from 'studiocms:renderer/current';
 import { HTMLString } from 'astro/runtime/server/index.js';
