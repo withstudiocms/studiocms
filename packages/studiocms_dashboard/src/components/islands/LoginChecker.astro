@@ -26,6 +26,10 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
     function check() {
         const authorized = document.getElementById('login-checker') as HTMLDivElement;
 
+        if (window.location.pathname === authorized.dataset.redirect_profile) {
+            return;
+        }
+
         if (authorized.dataset.is_logged_in === 'false') {
             window.location.href = authorized.dataset.redirect_login!;
         }
