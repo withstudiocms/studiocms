@@ -18,15 +18,15 @@ type Props = {
 };
 
 const {
-	title: Title,
-	description: Description,
+	title: propTitle,
+	description: propDescription,
 	lang = 'en-us',
 	requiredPermission = 'unknown',
 	sidebar = 'single',
 } = Astro.props;
 
-const title = makePageTitle(Title, dbConfig);
-const description = Description ?? dbConfig.description;
+const title = makePageTitle(propTitle, dbConfig);
+const description = propDescription ?? dbConfig.description;
 ---
 
 <!DOCTYPE html>
