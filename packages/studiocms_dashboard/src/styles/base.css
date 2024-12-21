@@ -16,6 +16,7 @@ main {
 	min-height: 100vh;
 	width: 100%;
 	padding: 1.5rem;
+	position: relative;
 }
 
 :root,
@@ -51,14 +52,17 @@ main {
 }
 
 .nav-toggle {
-	position: absolute;
-	top: 1rem;
-	left: 1rem;
+	position: absolute !important;
+	top: 1rem !important;
+	left: 1rem !important;
 	display: none !important;
 	z-index: 40 !important;
 }
 
 @media screen and (max-width: 840px) {
+	main {
+		padding-top: 4rem;
+	}
 	.nav-toggle {
 		display: flex !important;
 	}

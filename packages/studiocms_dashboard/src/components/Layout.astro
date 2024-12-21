@@ -36,7 +36,7 @@ const description = Description ?? dbConfig.description;
     { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
     { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
     <!-- { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> } -->
-    <main class="p-6 pt-10">
+    <main>
       { sidebar !== false && (
         <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
           <Icon name="bars-3" height={24} width={24} />

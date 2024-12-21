@@ -69,16 +69,13 @@ function dateWithTimeAndZone(date: Date) {
         </h2>
         <div>
             <h3>Currently Installed Version</h3>
-            <p>
-                <code>StudioCMS v{currentVersion}</code>
-            </p>
+            <p><code>StudioCMS v{currentVersion}</code></p>
 
             <h3>Latest Published Version</h3>
-            <p>
-                <code>StudioCMS v{latestVersion.version}</code>
-            </p>
+            <p><code>StudioCMS v{latestVersion.version}</code></p>
 
-            <h3 class="inline-title"><span>Last Update Check</span>    
+            <h3 class="inline-title">
+                <span>Last Update Check</span>    
                 <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
                     data-astro-prefetch="tap" 
                     data-astro-reload class="reload-button" 
@@ -92,21 +89,17 @@ function dateWithTimeAndZone(date: Date) {
                     <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
                     <span class="latest-update-check">({timeAgo(lastChecked)})</span>
                 </p>
-
-                
             </div>
 
             <div class="version-modal-links">
-                <a 
-                    href="https://github.com/withstudiocms/studiocms/releases" 
+                <a href="https://github.com/withstudiocms/studiocms/releases" 
                     target="_blank" 
                     class="version-link"
                     title="View Releases on GitHub"
                     aria-label="View Releases on GitHub"
                     ><span class="brand--github"></span>
                 </a>
-                <a 
-                    href="https://npm.im/studiocms" 
+                <a href="https://npm.im/studiocms" 
                     target="_blank" 
                     class="version-link"
                     title="View on NPM"
@@ -154,7 +147,7 @@ function dateWithTimeAndZone(date: Date) {
 
     .latest-update-check {
         color: hsl(var(--text-muted));
-        font-size: .6em;
+        font-size: .7em;
         font-weight: 700;
         text-align: center;
     }
