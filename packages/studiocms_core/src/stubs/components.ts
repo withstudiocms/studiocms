@@ -52,6 +52,15 @@ dtsFile.addModule('studiocms:components', {
 			],
 			typeDef: `typeof import('${resolve('../components/Navigation.astro')}').default`,
 		},
+		{
+			name: 'Generator',
+			typeDef: `typeof import('${resolve('../components/Generator.astro')}').default`,
+			multiLineDescription: [
+				'Component used for the generator meta tag',
+				'',
+				'Useful for providing the current version of the StudioCMS package in the meta tags of your site',
+			],
+		},
 	],
 });
 

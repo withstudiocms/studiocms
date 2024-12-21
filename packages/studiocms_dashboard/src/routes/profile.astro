@@ -1,37 +1,20 @@
 ---
-// import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 // import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
 import { Layout } from '../components';
+import PageHeader from '../components/PageHeader.astro';
 import DisplayName from '../components/islands/profile/DisplayName.astro';
 import UpdatePassword from '../components/islands/profile/UpdatePassword.astro';
-import { makePageTitle } from '../utils/makePageTitle';
 
-const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
-	title: 'StudioCMS',
-	description: 'StudioCMS',
-};
-
-// const lang = 'en-us';
+const lang = 'en-us';
 // const t = useTranslations(lang, '@studiocms/dashboard:index');
-
-// Get the web vitals
-// const webVitals = await getWebVitals();
 ---
 
 <Layout 
-  title={makePageTitle('User Profile', dbConfig)}
-  description={dbConfig.description}
+  title={'User Profile'}
   requiredPermission="visitor"
+  {lang}
 >
-<header class="page-header">
-  <div class="page-title-container">
-    <h1 class="page-title">Your Profile</h1>
-  </div>
-  <div class="page-actions-container">
-
-  </div>
-</header>
+<PageHeader title="Your Profile" />
 
 <div class="page-content">
   <div class="page-content-section">
@@ -46,36 +29,4 @@ const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
     
   </div>
 </div>
-
-
-<style>
-  .page-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-  
-  .page-title-container {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    width: fit-content;
-  }
-  
-  .page-title {
-    display: block;
-    width: fit-content;
-    margin: 0;
-  }
-  
-  .page-actions-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
-</style>
 </Layout>

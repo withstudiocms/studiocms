@@ -4,8 +4,8 @@ import '@studiocms/ui/css/global.css';
 import './authlayout.css';
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import studioCMS_SDK from 'studiocms:sdk';
-import version from 'studiocms:version';
+import { Generator } from 'studiocms:components';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
@@ -23,11 +23,9 @@ interface Props {
 const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 
 // Get the site config
-const dbConfig = await studioCMS_SDK.GET.database.config();
-
-// Get the login page background and custom image from the site config
-const loginPageBackground = dbConfig?.loginPageBackground;
-const loginPageCustomImage = dbConfig?.loginPageCustomImage;
+const {
+	data: { loginPageBackground, loginPageCustomImage },
+} = await studioCMS_SDK_Cache.GET.siteConfig();
 
 const fallbackImageSrc =
 	loginPageBackground === 'custom'
@@ -43,8 +41,7 @@ const fallbackImageSrc =
 	<link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
 	<link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="generator" content=`StudioCMS v${version}` />
+    <Generator />
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />

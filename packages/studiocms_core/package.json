@@ -50,8 +50,7 @@
     "./sdk-utils/get": "./src/sdk-utils/get.ts",
     "./sdk-utils/post": "./src/sdk-utils/post.ts",
     "./sdk-utils/update": "./src/sdk-utils/update.ts",
-
-    "./sdk-utils/init": "./src/sdk-utils/init/index.ts"
+    "./sdk-utils/init": "./src/sdk-utils/init.ts"
   },
   "type": "module",
   "dependencies": {

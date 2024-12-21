@@ -1,27 +1,37 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
+import { makePageTitle } from '../utils';
 import SingleSidebar from './SingleSidebar.astro';
 import LoginChecker from './islands/LoginChecker.astro';
 
+const { data: dbConfig } = await studioCMS_SDK_Cache.GET.siteConfig();
+
 type Props = {
 	title: string;
-	description: string;
-	sidebar?: boolean | 'single' | 'double';
+	description?: string;
+	lang?: string;
+	sidebar?: false | 'single' | 'double';
 	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
 };
 
-const { title, description, requiredPermission = 'unknown', sidebar = 'single' } = Astro.props;
+const {
+	title: Title,
+	description: Description,
+	lang = 'en-us',
+	requiredPermission = 'unknown',
+	sidebar = 'single',
+} = Astro.props;
+
+const title = makePageTitle(Title, dbConfig);
+const description = Description ?? dbConfig.description;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <BaseHead title={title} description={description} />
-    <ClientRouter />
-  </head>
+<html {lang}>
+  <BaseHead {title} {description} />
   <body>
     { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
     { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }

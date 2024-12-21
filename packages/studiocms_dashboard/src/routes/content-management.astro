@@ -1,28 +1,15 @@
 ---
-// import { getWebVitals } from 'studiocms-dashboard:web-vitals';
-import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
+// import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
-import TestIsland from '../components/islands/TestIsland.astro';
-import { makePageTitle } from '../utils/makePageTitle';
-
-const dbConfig = (await studioCMS_SDK.GET.database.config()) || {
-	title: 'StudioCMS',
-	description: 'StudioCMS',
-};
 
 const lang = 'en-us';
-const t = useTranslations(lang, '@studiocms/dashboard:index');
+// const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
 <Layout 
-  title={makePageTitle(t('title'), dbConfig)}
-  description={dbConfig.description} 
+  title="Content Management"
   requiredPermission='editor'
+  {lang}
 >
-Sus
 
-<div>
-  <TestIsland server:defer />
-</div>
 </Layout>

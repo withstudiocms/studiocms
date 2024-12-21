@@ -1,7 +1,8 @@
 ---
 import '../styles/base.css';
 import '@fontsource-variable/onest/index.css';
-import version from 'studiocms:version';
+import { ClientRouter } from 'astro:transitions';
+import { Generator } from 'studiocms:components';
 import { isDashboardRoute } from '../utils';
 
 export interface Props {
@@ -12,34 +13,40 @@ export interface Props {
 const { title, description } = Astro.props;
 ---
 
-{/* HTMX - v2.0.2 */}
-<script is:inline src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous" />
+<head>
 
-{/* Global Metadata */}
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="generator" content={Astro.generator} />
-<meta name="generator" content=`StudioCMS v${version}` />
+  {/* HTMX - v2.0.2 */}
+  <!-- <script is:inline src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous" /> -->
 
-{/* Favicon */}
-<link rel="icon" href="/studiocms-resources/core/favicon.svg" type="image/svg+xml" />
-<link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
-<link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
+  {/* Global Metadata */}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <Generator />
 
-{/* Primary Meta Tags */}
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
+  {/* Favicon */}
+  <link rel="icon" href="/studiocms-resources/core/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
 
-{/* Open Graph / Facebook / Twitter */}
-{ !isDashboardRoute(Astro.url.pathname) && (
-  <meta property="og:type" content='website' />
-  <meta property="og:url" content={Astro.url} />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content={Astro.url} />
-  <meta property="twitter:title" content={title} />
-  <meta property="twitter:description" content={description} />
-)}
+  {/* Primary Meta Tags */}
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+
+  {/* Open Graph / Facebook / Twitter */}
+  { !isDashboardRoute(Astro.url.pathname) && (
+    <meta property="og:type" content='website' />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+  )}
+
+  {/* Astro Client Router (ViewTransitions) */}
+  <ClientRouter />
+
+</head>

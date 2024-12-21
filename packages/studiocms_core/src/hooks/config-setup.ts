@@ -74,6 +74,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 				}';
 				export { default as GenericHeader } from '${resolve('../components/GenericHeader.astro')}';
 				export { default as Navigation } from '${resolve('../components/Navigation.astro')}';
+				export { default as Generator } from '${resolve('../components/Generator.astro')}';
 				`,
 
 				// StudioCMS lib
