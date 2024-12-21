@@ -23,14 +23,20 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
 />
 
 <script>
-    const authorized = document.getElementById('login-checker') as HTMLDivElement;
+    function check() {
+        const authorized = document.getElementById('login-checker') as HTMLDivElement;
 
-    if (authorized.dataset.is_logged_in === 'false') {
-        window.location.href = authorized.dataset.redirect_login!;
+        if (authorized.dataset.is_logged_in === 'false') {
+            window.location.href = authorized.dataset.redirect_login!;
+        }
+
+        if (authorized.dataset.authorized === 'false') {
+            window.location.href = authorized.dataset.redirect_profile!;
+        }
     }
 
-    if (authorized.dataset.authorized === 'false') {
-        window.location.href = authorized.dataset.redirect_profile!;
-    }
+    check();
+
+    document.addEventListener('astro:page-load', check);
 </script>
 
