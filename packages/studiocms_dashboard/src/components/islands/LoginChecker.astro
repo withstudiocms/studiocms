@@ -30,6 +30,10 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
             window.location.href = authorized.dataset.redirect_login!;
         }
 
+        if (window.location.pathname === authorized.dataset.redirect_profile) {
+            return;
+        }
+
         if (authorized.dataset.authorized === 'false') {
             window.location.href = authorized.dataset.redirect_profile!;
         }
