@@ -4,6 +4,7 @@ import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
 import { makePageTitle } from '../utils';
+import DoubleSidebar from './DoubleSidebar.astro';
 import SingleSidebar from './SingleSidebar.astro';
 import LoginChecker from './islands/LoginChecker.astro';
 
@@ -35,7 +36,7 @@ const description = propDescription ?? dbConfig.description;
   <body>
     { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
     { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
-    <!-- { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> } -->
+    { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> }
     <main>
       { sidebar !== false && (
         <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>

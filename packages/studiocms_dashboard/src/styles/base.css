@@ -115,3 +115,10 @@ main {
 	align-items: center;
 	width: 100%;
 }
+
+.outer-sidebar-container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
