@@ -45,7 +45,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       options={[
         { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
         { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
-        { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL },
+        { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL, color: 'danger' },
       ]}
       offset={8}
       transition:persist transition:persist-props
