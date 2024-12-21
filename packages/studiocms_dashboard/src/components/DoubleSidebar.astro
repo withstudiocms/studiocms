@@ -1,0 +1,94 @@
+---
+import { dashboardConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { Divider, Dropdown, DoubleSidebar as SuiDoubleSidebar, User } from '@studiocms/ui/components';
+import StudioCMSLogo from '../components/StudioCMSLogo.astro';
+import SidebarLink from './SidebarLink.astro';
+import Admin from './islands/sidebar/Admin.astro';
+import UserAccount from './islands/sidebar/UserAccount.astro';
+import VersionCheck from './islands/sidebar/VersionCheck.astro';
+
+const { versionCheck } = dashboardConfig;
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
+---
+
+<SuiDoubleSidebar class='sidebar' transition:persist transition:persist-props>
+  <div slot="outer" class="outer-sidebar-container">
+    <div class="sidebar-links-container">
+      <div class="sidebar-header">
+        <StudioCMSLogo class={'sidebar-logo'} />
+        <div class="sidebar-header-text">
+          <span class="sidebar-title">StudioCMS</span>
+          { versionCheck && <VersionCheck server:defer />}
+        </div>
+      </div>
+      <Divider background='background-step-1'>{t("category-1-header")}</Divider>
+      <div class="sidebar-link-group">
+        <SidebarLink icon='home' href={'/dashboard/'}>
+          {t("dashboard-link-label")}
+        </SidebarLink>
+        <SidebarLink icon='pencil-square' href={'/dashboard/content-management'}>
+          {t("content-management-label")}
+        </SidebarLink>
+      </div>
+      <Admin server:defer transition:persist transition:persist-props />
+      { /* 
+        Fallback slot removed from <Admin /> component to prevent the sidebar
+        from displaying the fallback content when the user is not an admin.
+      */}
+    </div>  
+    <div>
+      <Dropdown 
+        id='sidebar-user-dropdown'
+        options={[
+          { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
+          { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
+          { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL, color: 'danger' },
+        ]}
+        offset={8}
+        transition:persist transition:persist-props
+      >
+        <div class="user-dropdown-trigger-container">
+          <UserAccount server:defer transition:persist transition:persist-props>
+            <User slot="fallback" name={"Visitor"} description={'Unknown'} />
+          </UserAccount>
+        </div>
+      </Dropdown>
+    </div>
+  </div>
+  <div slot="inner">
+    Content yepyep
+  </div>
+</SuiDoubleSidebar>
+
+<script>
+  import { SingleSidebarHelper } from "@studiocms/ui/components";
+  import { DropdownHelper } from "@studiocms/ui/components";
+
+  function removeTrailingSlash(url: string) {
+    return url.replace(/\/$/, '');
+  }
+
+  function sidebarLinks() {
+    const sidebar = document.querySelector<HTMLElement>('.sidebar')!;
+    const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
+      
+    for (const link of sidebarLinks) {
+      link.classList.remove('active');
+      if (removeTrailingSlash(window.location.pathname) === removeTrailingSlash(new URL(link.href).pathname)) {
+        link.classList.add('active');
+      }
+    }
+  }
+
+  sidebarLinks();
+
+  document.addEventListener('astro:page-load', () => {
+    new SingleSidebarHelper('nav-toggle');
+    new DropdownHelper('sidebar-user-dropdown', true);
+    sidebarLinks();
+  });
+</script>

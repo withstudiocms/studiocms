@@ -58,11 +58,11 @@ function dateWithTimeAndZone(date: Date) {
 }
 ---
   
-{ isAdmin && ( 
     <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
         <VersionCheckPart {status} />
     </div>
 
+{ isAdmin && ( 
     <Modal id="version-modal" size="sm">
         <h2 slot="header">
             Version Information
@@ -116,8 +116,11 @@ function dateWithTimeAndZone(date: Date) {
     import { makeClientRoutable } from '../../component-scripts/makeClientRoutable';
     import { dateTimeListener } from '../../component-scripts/dateTimeListener';
 
-    new ModalHelper('version-modal', 'version-modal-trigger');
     makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
+
+    if (document.getElementById('version-modal')) {
+        new ModalHelper('version-modal', 'version-modal-trigger');
+    }
 </script>
 
 <style>

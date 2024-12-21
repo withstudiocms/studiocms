@@ -119,11 +119,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					pattern: 'test',
 					entrypoint: resolve('../routes/test.astro'),
 				},
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: 'content-management',
-				// 	entrypoint: resolve('../routes/content-management.astro'),
-				// },
+				{
+					enabled: dashboardEnabled && !dbStartPage,
+					pattern: 'content-management',
+					entrypoint: resolve('../routes/content-management.astro'),
+				},
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage,
 				// 	pattern: 'create-page',
