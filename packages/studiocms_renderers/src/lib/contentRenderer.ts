@@ -9,24 +9,20 @@ const { renderer } = rendererConfig;
 /**
  * Content Renderer
  *
- * Renders content based on the renderer configuration
+ * Renders content using the specified renderer from the StudioCMS configuration
  *
  * @param content - The content to render
- * @param renderer - The renderer function to use
- * @returns The rendered content
- *
- * @example
- * function sampleRenderer(content: string): Promise<string> {
- *   // Assuming the renderer function processes the content and returns a string
- *   return `<p>${content}</p>`;
- * }
- *
- * const renderedContent = contentRenderer({
- *   content: 'Hello, world!',
- *   renderer: sampleRenderer,
- * });
+ * @returns The rendered content as a HTML string
  */
 export async function contentRenderer(content: string): Promise<string> {
+	if (typeof renderer === 'object') {
+		if (!renderer.renderer || !renderer.name) {
+			throw new Error('Invalid custom renderer');
+		}
+		logger.debug(`Using custom renderer: ${renderer.name}`);
+		return await renderer.renderer(content);
+	}
+
 	switch (renderer) {
 		case 'astro':
 			logger.debug('Using built-in renderer: astro remark');
@@ -38,18 +34,8 @@ export async function contentRenderer(content: string): Promise<string> {
 			logger.debug('Using built-in renderer: mdx');
 			return await renderAstroMDX(content);
 		default:
-			try {
-				logger.debug(`Using custom renderer: ${renderer.name}`);
-				return await renderer.renderer(content);
-			} catch (e) {
-				if (e instanceof Error) {
-					logger.error(
-						`Error rendering with ${renderer.name}: ${e.message}, falling back to astro remark\n\n${e.stack}`
-					);
-				}
-				logger.error(`Error rendering with ${renderer.name}: ${e}, falling back to astro remark`);
-				return await renderAstroMD(content);
-			}
+			logger.error(`Unknown renderer: ${renderer}, falling back to astro remark`);
+			return await renderAstroMD(content);
 	}
 }
 
