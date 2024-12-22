@@ -14,7 +14,7 @@ export const GET: APIRoute = async (): Promise<Response> => {
 		});
 	});
 
-	logger.info('Manually updated latest version cache');
+	logger.info(`Latest version cache updated: ${latestVersion}`);
 
 	return new Response(JSON.stringify({ success: true, latestVersion }), {
 		status: 200,
