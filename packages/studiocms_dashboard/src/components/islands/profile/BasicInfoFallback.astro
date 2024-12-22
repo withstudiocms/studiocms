@@ -1,0 +1,40 @@
+---
+import { Button, Card, Input } from '@studiocms/ui/components';
+---
+<Card fullWidth class="basic-info-form">
+    <div slot="header">
+        <h2>Basic Info</h2>
+        <div class="form-header">
+            <Button type='submit' size='sm' variant={'solid'} color='primary' disabled>Save</Button> 
+        </div>
+    </div>
+    <div class="form-inputs">
+        <Input label='Display Name' placeholder='John Doe' disabled isRequired name='display-name' />
+        <Input label='Username' placeholder='johndoe' disabled isRequired name='username' />
+        <Input label='Email' placeholder='john@doe.com' disabled isRequired name='email' />        
+        <Input label='Website' placeholder='https://doe.com' disabled name='account-url' />
+    </div>
+</Card>
+
+<style>
+    .basic-info-form {
+        position: relative;
+    }
+    
+    .basic-info-form .form-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    
+        @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+        }
+    }
+    
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+</style>
