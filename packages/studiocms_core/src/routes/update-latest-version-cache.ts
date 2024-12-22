@@ -7,8 +7,6 @@ export const GET: APIRoute = async (): Promise<Response> => {
 
 	logger.info('Manually updated latest version cache');
 
-	latestVersion.version;
-
 	return new Response(JSON.stringify({ success: true, latestVersion }), {
 		status: 200,
 		headers: {

@@ -8,6 +8,7 @@ import currentVersion from 'studiocms:version';
 import { Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
 import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
+import { timeAgo } from '../../component-scripts/timeAgo';
 import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
 
 const data = await getUserData(Astro);
@@ -21,33 +22,6 @@ const lastChecked = latestVersion.lastCacheUpdate;
 const comparison = compare(currentVersion, latestVersion.version);
 
 const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
-
-function timeAgo(date: Date) {
-	const now = new Date();
-	const past = new Date(date);
-	const diffInMs = now.getTime() - past.getTime();
-
-	if (Number.isNaN(diffInMs)) {
-		return 'Invalid date';
-	}
-
-	const minutes = Math.floor(diffInMs / (1000 * 60)) % 60;
-	const hours = Math.floor(diffInMs / (1000 * 60 * 60)) % 24;
-	const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-	const parts = [];
-
-	// If days is greater than 0, add days to parts array
-	if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
-
-	// If days is 0, add hours and minutes to parts array
-	if (days === 0) {
-		if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
-		if (minutes > 0 || parts.length === 0) parts.push(`${minutes} min${minutes > 1 ? 's' : ''}`);
-	}
-
-	return `${parts.join(', ')} ago`;
-}
 ---
 <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
     <VersionCheckPart {status} />
@@ -90,6 +64,9 @@ function timeAgo(date: Date) {
 
             <div class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
+                <span class="release-notes-read-more">
+                    <a href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" title="Read More" aria-label="Read More">See More</a>
+                </span>
             </div>
 
             <div class="version-modal-links">
@@ -117,6 +94,7 @@ function timeAgo(date: Date) {
     import { makeClientRoutable } from '../../component-scripts/makeClientRoutable';
     import { dateTimeListener } from '../../component-scripts/dateTimeListener';
     import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
+    import { timeAgo } from '../../component-scripts/timeAgo';
 
     makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
 
@@ -136,9 +114,9 @@ function timeAgo(date: Date) {
 
             if (data.success) {
                 latestVersionElem.textContent = `v${data.version}`;
-                timeElem.setAttribute('datetime', new Date(data.lastCacheUpdate).toISOString());
-                timeElem.textContent = dateWithTimeAndZone(new Date(data.lastCacheUpdate));
-                latestUpdateCheck.textContent = '(Just now)';
+                timeElem.setAttribute('datetime', data.lastCacheUpdate.toISOString());
+                timeElem.textContent = dateWithTimeAndZone(data.lastCacheUpdate);
+                latestUpdateCheck.textContent = `(${timeAgo(data.lastCacheUpdate)})`;
             }
         }
     });
@@ -166,6 +144,22 @@ function timeAgo(date: Date) {
             grid-template-columns: 1fr;
         }
         
+    }
+
+    .release-notes-read-more {
+        display: block;
+        text-align: right;
+        margin-top: 1rem;
+
+        a {
+            color: hsl(var(--text-muted));
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        a:hover {
+            color: hsl(var(--primary-base));
+        }
     }
 
     .version-modal-col {
