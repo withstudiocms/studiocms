@@ -58,6 +58,8 @@ const { link } = Astro.props;
                 frameContent.style.overflowX = 'none';
                 frameContent.style.overflowWrap = 'break-word';
                 frameContent.style.overflowY = 'auto';
+                frameContent.style.scrollbarWidth = 'thin';
+                frameContent.style.scrollbarColor = 'hsl(var(--background-step-3)) hsl(var(--background-step-1))';
 
                 frameContainer.appendChild(frameButton);
                 frameContainer.appendChild(frameContent);
