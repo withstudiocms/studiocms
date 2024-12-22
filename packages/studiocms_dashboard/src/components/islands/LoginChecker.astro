@@ -21,25 +21,30 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
     style="display: hidden;" 
 ></login-check>
 
-<script>
+<script is:inline>
     if (!customElements.get('login-check')) {
         class LoginCheck extends HTMLElement {
             constructor() {
                 super();
-                const authorized = this.dataset.authorized!;
-                const isLoggedIn = this.dataset.is_logged_in!;
-                const redirectProfile = this.dataset.redirect_profile!;
-                const redirectLogin = this.dataset.redirect_login!;
+                const authorized = this.dataset.authorized;
+                const isLoggedIn = this.dataset.is_logged_in;
+                const redirectProfile = this.dataset.redirect_profile;
+                const redirectLogin = this.dataset.redirect_login;
+
+                console.log('Checking user permissions and login status');
 
                 if (isLoggedIn === 'false') {
+                    console.log('redirecting to login');
                     window.location.href = redirectLogin;
                 }
 
                 if (window.location.pathname === redirectProfile) {
+                    console.log('User is on profile page');
                     return;
                 }
 
                 if (authorized === 'false') {
+                    console.log('redirecting to profile');
                     window.location.href = redirectProfile;
                 }
             }
