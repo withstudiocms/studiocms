@@ -1,4 +1,4 @@
-// import { logger } from '@it-astro:logger:studiocms-renderer';
+import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
 import renderAstroMD from './astro-remark';
 import renderMarkDoc from './markdoc';
@@ -29,21 +29,27 @@ const { renderer } = rendererConfig;
 export async function contentRenderer(content: string): Promise<string> {
 	switch (renderer) {
 		case 'astro':
-			// logger.debug('Using built-in renderer: astro remark');
+			logger.debug('Using built-in renderer: astro remark');
 			return await renderAstroMD(content);
 		case 'markdoc':
-			// logger.debug('Using built-in renderer: markdoc');
+			logger.debug('Using built-in renderer: markdoc');
 			return await renderMarkDoc(content);
 		case 'mdx':
-			// logger.debug('Using built-in renderer: mdx');
+			logger.debug('Using built-in renderer: mdx');
 			return await renderAstroMDX(content);
 		default:
-			if (renderer.renderer) {
-				// logger.debug(`Using custom renderer: ${renderer.name}`);
+			try {
+				logger.debug(`Using custom renderer: ${renderer.name}`);
 				return await renderer.renderer(content);
+			} catch (e) {
+				if (e instanceof Error) {
+					logger.error(
+						`Error rendering with ${renderer.name}: ${e.message}, falling back to astro remark\n\n${e.stack}`
+					);
+				}
+				logger.error(`Error rendering with ${renderer.name}: ${e}, falling back to astro remark`);
+				return await renderAstroMD(content);
 			}
-			// logger.debug('Using built-in renderer: astro remark');
-			return await renderAstroMD(content);
 	}
 }
 
