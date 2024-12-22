@@ -65,11 +65,18 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
             <div class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
                 <span class="release-notes-read-more">
-                    <a href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" title="Read More" aria-label="Read More">See More</a>
+                    <a 
+                        href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" 
+                        title="Read More" 
+                        aria-label="Read More"
+                        target="_blank"
+                        >See More
+                    </a>
                 </span>
             </div>
 
             <div class="version-modal-links">
+                <span class="version-modal-row-title">View on:</span>
                 <a href="https://github.com/withstudiocms/studiocms/releases" 
                     target="_blank" 
                     class="version-link"
@@ -173,8 +180,13 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
         font-weight: 700;
     }
 
-    .version-modal-col-value {
+    .version-modal-row-title {
         font-weight: 700;
+        color: hsl(var(--text-muted));
+    }
+
+    .version-modal-col-value {
+        font-weight: 500;
     }
 
     .version-modal-release-notes {
