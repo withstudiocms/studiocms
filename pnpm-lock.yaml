@@ -643,9 +643,21 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      mdast:
+        specifier: 3.0.0
+        version: 3.0.0
+      mdast-util-from-markdown:
+        specifier: 2.0.2
+        version: 2.0.2
       mdast-util-to-hast:
         specifier: catalog:studiocms-core
         version: 13.2.0
+      mdast-util-to-markdown:
+        specifier: 2.1.2
+        version: 2.1.2
+      mdast-util-to-string:
+        specifier: 4.0.0
+        version: 4.0.0
       mrmime:
         specifier: catalog:studiocms-core
         version: 2.0.0
@@ -658,6 +670,9 @@ importers:
       unified:
         specifier: catalog:studiocms-core
         version: 11.0.5
+      unist-util-visit:
+        specifier: 5.0.0
+        version: 5.0.0
       vite:
         specifier: catalog:min
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
@@ -665,6 +680,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.13
         version: 4.17.13
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
       typescript:
         specifier: 'catalog:'
         version: 5.7.2

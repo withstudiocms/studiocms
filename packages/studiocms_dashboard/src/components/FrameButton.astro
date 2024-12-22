@@ -86,6 +86,7 @@ const { link } = Astro.props;
                     const jsonRes = await linkResponse.json();
 
                     frameContent.innerHTML = `
+                        <h1>Full Changelog</h1>
                         <a href="${link}" target="_blank">Read more on GitHub</a>
                         ${jsonRes.changelog}
                     `;
