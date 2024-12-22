@@ -115,9 +115,9 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
 
             if (data.success) {
                 latestVersionElem.textContent = `v${data.latestVersion.version}`;
-                timeElem.dateTime = data.latestVersion.lastCacheUpdate.toISOString();
-                timeElem.textContent = dateWithTimeAndZone(data.latestVersion.lastCacheUpdate);
-                latestUpdateCheck.textContent = `(${timeAgo(data.latestVersion.lastCacheUpdate)})`;
+                timeElem.dateTime = new Date(data.latestVersion.lastCacheUpdate).toISOString();
+                timeElem.textContent = dateWithTimeAndZone(new Date(data.latestVersion.lastCacheUpdate));
+                latestUpdateCheck.textContent = `(${timeAgo(new Date(data.latestVersion.lastCacheUpdate))})`;
             }
         }
     });
