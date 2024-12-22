@@ -32,6 +32,7 @@ const { link } = Astro.props;
                 frameContainer.style.left = '0';
                 frameContainer.style.zIndex = '1000';
                 frameContainer.style.borderRadius = '1rem';
+                frameContainer.style.overflow = 'hidden';
 
                 const frameButton = document.createElement('button');
                 frameButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
@@ -54,13 +55,11 @@ const { link } = Astro.props;
                 frameContent.style.padding = '1.5rem';
                 frameContent.style.width = '100%';
                 frameContent.style.height = '90%';
-                frameContainer.style.borderRadius = '1rem';
                 frameContent.style.overflowX = 'none';
                 frameContent.style.overflowWrap = 'break-word';
                 frameContent.style.overflowY = 'auto';
                 frameContent.style.scrollbarWidth = 'thin';
                 frameContent.style.scrollbarColor = 'hsl(var(--background-step-3)) hsl(var(--background-step-1))';
-                frameContent.style.scrollbarGutter = 'stable both-edges';
 
                 frameButton.addEventListener('mouseenter', () => {
                     frameButton.style.backgroundColor = 'hsl(var(--default-base))';
