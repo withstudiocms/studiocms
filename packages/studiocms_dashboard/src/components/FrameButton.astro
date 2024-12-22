@@ -36,7 +36,7 @@ const { link } = Astro.props;
                 frameContainer.style.borderRadius = '1rem';
 
                 const frameButton = document.createElement('button');
-                frameButton.textContent = 'Close';
+                frameButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="dismiss-icon" data-astro-cid-dx5ijzvz="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
                 frameButton.style.position = 'absolute';
                 frameButton.style.top = '1rem';
                 frameButton.style.right = '1rem';
@@ -46,6 +46,11 @@ const { link } = Astro.props;
                 frameButton.style.border = 'none';
                 frameButton.style.cursor = 'pointer';
                 frameButton.style.borderRadius = '0.5rem';
+                frameButton.style.height = '2.5rem';
+                frameButton.style.width = '2.5rem';
+                frameButton.style.display = 'flex';
+                frameButton.style.justifyContent = 'center';
+                frameButton.style.alignItems = 'center';
 
                 frameButton.addEventListener('click', () => {
                     frameContainer.style.display = 'none';
