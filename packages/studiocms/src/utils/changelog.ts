@@ -61,7 +61,7 @@ export const changelogHelper = defineUtility('astro:config:setup')(async (params
 	addVirtualImports(params, {
 		name: 'studiocms/changelog',
 		imports: {
-			'studiocms:changelog': `export default "${markdownString}";`,
+			'studiocms:changelog': `export default ${JSON.stringify(markdownString)};`,
 		},
 	});
 });
