@@ -77,12 +77,8 @@ const { link } = Astro.props;
                 frameContainer.appendChild(frameContent);
                 
                 slot.addEventListener('click', async () => {
-
-                    console.log('clicked');
-
                     const link = this.getAttribute('data-link')!;
                     const linkResponse = await fetch(link);
-
                     const jsonRes = await linkResponse.json();
 
                     frameContent.innerHTML = `
@@ -92,7 +88,6 @@ const { link } = Astro.props;
                     `;
 
                     frameContainer.style.display = 'flex';
-
                 });
 
                 const shadow = this.attachShadow({ mode: 'open' });

@@ -1,7 +1,6 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import FrameButton from '../FrameButton.astro';
 const pageList = await studioCMS_SDK_Cache.GET.pages();
 ---
 <div>
@@ -13,8 +12,6 @@ const pageList = await studioCMS_SDK_Cache.GET.pages();
     The idea is to generate a list of pages using the SDK on the inner sidebar, and then use the query parameter to select 
     which page to display as two separate islands.
   </p>
-
-  <FrameButton link="/studiocms_api/sdk/full-changelog.json">See More</FrameButton>
 
   <div>
     <h3>Page List</h3>

@@ -7,10 +7,10 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
 import { Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
-import FrameButton from '../../FrameButton.astro';
 import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
 import { timeAgo } from '../../component-scripts/timeAgo';
 import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
+import VersionCheckChangelog from './VersionCheckChangelog.astro';
 
 const data = await getUserData(Astro);
 
@@ -66,7 +66,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
             <div class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
                 <span class="release-notes-read-more">
-                    <FrameButton link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full changelog</span></FrameButton>
+                    <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full changelog</span></VersionCheckChangelog>
                 </span>
             </div>
 
