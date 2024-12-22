@@ -136,6 +136,10 @@ function dateWithTimeAndZone(date: Date) {
 
 <style>
 
+    .sui-modal.lg {
+        width: 650px !important;
+    }
+
     .inline-title {
         display: flex;
         flex-direction: row;
@@ -147,8 +151,15 @@ function dateWithTimeAndZone(date: Date) {
 
     .version-modal-top-row {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: 1fr 1fr 2fr;
         gap: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .version-modal-top-row {
+            grid-template-columns: 1fr;
+        }
+        
     }
 
     .version-modal-col {
