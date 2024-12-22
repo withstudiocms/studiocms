@@ -8,6 +8,7 @@ import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
 import VersionCheck from './islands/sidebar/VersionCheck.astro';
+import VersionCheckPart from './shared-parts/VersionCheck.astro';
 
 const { versionCheck } = dashboardConfig;
 
@@ -21,7 +22,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       <StudioCMSLogo class={'sidebar-logo'} />
       <div class="sidebar-header-text">
         <span class="sidebar-title">StudioCMS</span>
-        { versionCheck && <VersionCheck server:defer />}
+        { versionCheck && <VersionCheck server:defer><VersionCheckPart slot="fallback" /></VersionCheck>}
       </div>
     </div>
     <Divider background='background-step-1'>{t("category-1-header")}</Divider>

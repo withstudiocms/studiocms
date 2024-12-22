@@ -1,5 +1,6 @@
 ---
 // import { useTranslations } from 'studiocms:i18n';
+import { Button, Card, Input } from '@studiocms/ui/components';
 import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
 import BasicInfo from '../components/islands/profile/BasicInfo.astro';
@@ -18,9 +19,84 @@ const lang = 'en-us';
 
   <div class="page-content">
     
-    <BasicInfo server:defer />
+    <BasicInfo server:defer>
+      <Card slot="fallback" fullWidth class="basic-info-form">
+
+        <div slot="header">
+            <h2>Basic Info</h2>
+        
+            <div class="form-header">
+                <Button type='submit' size='sm' variant={'solid'} color='primary' disabled>Save</Button> 
+            </div>
+        </div>
     
-    <UpdatePassword server:defer />
+        <div class="form-inputs">
+    
+            <Input label='Display Name' placeholder='John Doe' disabled isRequired name='display-name' />
+    
+            <Input label='Username' placeholder='johndoe' disabled isRequired name='username' />
+        
+            <Input label='Email' placeholder='john@doe.com' disabled isRequired name='email' />
+        
+            <Input label='Website' placeholder='https://doe.com' disabled name='account-url' />
+    
+        </div>
+      </Card>
+    </BasicInfo>
+    
+    <UpdatePassword server:defer>
+      <Card fullWidth slot="fallback" class="password-update-form">
+
+        <div slot="header">
+          <h2>Update Password</h2>
+      
+          <div class="form-header">
+              <Button 
+                  type='submit' 
+                  variant='solid' 
+                  color='primary' 
+                  disabled
+                   size='sm'
+                  >Save
+              </Button> 
+          </div>
+      </div>
+  
+      <div class="password-form-entries">
+  
+          <Input 
+              label='Current Password' 
+              type='password'
+              placeholder='********' 
+              isRequired
+              disabled
+              name='current-password' 
+              autocomplete='current-password'
+              />
+  
+          <Input 
+              label='New Password' 
+              type='password'
+              placeholder='********' 
+              isRequired 
+              disabled
+              autocomplete='password new_password'
+              name='new-password' 
+              />
+  
+          <Input 
+              label='Confirm New Password' 
+              type='password'
+              placeholder='********' 
+              isRequired 
+              disabled
+              autocomplete='password new_password'
+              name='confirm-new-password' 
+              />
+  
+        </div>
+      </Card>
+    </UpdatePassword>
       
   </div>
 </Layout>
@@ -31,4 +107,49 @@ const lang = 'en-us';
     flex-direction: column;
     gap: 1rem;
   }
+
+  .basic-info-form {
+    position: relative;
+  }
+
+  .basic-info-form .form-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-header {
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+    .password-update-form {
+        position: relative;
+    }
+
+    .password-update-form .password-form-entries {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        @media (max-width: 1024px) {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
 </style>
