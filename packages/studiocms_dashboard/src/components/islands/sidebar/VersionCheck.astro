@@ -7,6 +7,7 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
 import { Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
+import FrameButton from '../../FrameButton.astro';
 import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
 import { timeAgo } from '../../component-scripts/timeAgo';
 import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
@@ -65,13 +66,14 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
             <div class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
                 <span class="release-notes-read-more">
-                    <a 
+                    <FrameButton>See More</FrameButton>
+                    {/* <a 
                         href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" 
                         title="Read More" 
                         aria-label="Read More"
                         target="_blank"
                         >See More
-                    </a>
+                    </a> */}
                 </span>
             </div>
 

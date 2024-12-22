@@ -1,0 +1,21 @@
+---
+---
+
+<frame-button>
+    <slot />
+</frame-button>
+
+<script>
+
+    class FrameButton extends HTMLDivElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            this.addEventListener('click', () => {
+                console.log('FrameButton clicked');
+            });
+        }
+    }
+</script>
