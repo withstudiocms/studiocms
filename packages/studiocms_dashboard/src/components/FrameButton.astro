@@ -1,21 +1,76 @@
 ---
+
+interface Props {
+	link: string;
+}
+
+const { link } = Astro.props;
 ---
 
-<frame-button>
+<frame-button data-link={link}>
     <slot />
 </frame-button>
 
 <script>
+    if (!customElements.get('frame-button')) {
+        
+        class FrameButton extends HTMLElement {
+            constructor() {
+                super();
+                const text = this.getAttribute('data-text') || 'Click me';
 
-    class FrameButton extends HTMLDivElement {
-        constructor() {
-            super();
+                // Get the slot element
+                const slot = document.createElement('slot');
+
+                const iFrameContainer = document.createElement('div');
+                iFrameContainer.style.position = 'absolute';
+                iFrameContainer.style.top = '0';
+                iFrameContainer.style.left = '0';
+                iFrameContainer.style.width = '100%';
+                iFrameContainer.style.height = '100%';
+                iFrameContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                iFrameContainer.style.display = 'none';
+                iFrameContainer.style.justifyContent = 'center';
+                iFrameContainer.style.alignItems = 'center';
+
+                const iFrameButton = document.createElement('button');
+                iFrameButton.textContent = 'Close';
+                iFrameButton.style.position = 'absolute';
+                iFrameButton.style.top = '0';
+                iFrameButton.style.right = '0';
+                iFrameButton.style.backgroundColor = 'transparent';
+                iFrameButton.style.color = 'white';
+                iFrameButton.style.padding = '0.5rem';
+                iFrameButton.style.border = 'none';
+                iFrameButton.style.cursor = 'pointer';
+
+                iFrameButton.addEventListener('click', () => {
+                    iFrameContainer.style.display = 'none';
+                });
+
+                const iFrame = document.createElement('iframe');
+                iFrame.src = this.getAttribute('data-link') || '';
+                iFrame.style.width = '90%';
+                iFrame.style.height = '90%';
+
+                iFrameContainer.appendChild(iFrameButton);
+                iFrameContainer.appendChild(iFrame);
+                
+                slot.addEventListener('click', () => {
+
+                    console.log('clicked');
+
+                    iFrameContainer.style.display = 'flex';
+
+                });
+
+                const shadow = this.attachShadow({ mode: 'open' });
+                shadow.appendChild(iFrameContainer);
+                shadow.appendChild(slot);
+            }
         }
 
-        connectedCallback() {
-            this.addEventListener('click', () => {
-                console.log('FrameButton clicked');
-            });
-        }
+        customElements.define('frame-button', FrameButton);
+
     }
 </script>
