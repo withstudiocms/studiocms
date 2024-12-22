@@ -66,11 +66,11 @@
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "rollup-plugin-copy": "catalog:studiocms-shared",
 
-    "mdast": "3.0.0",
-    "mdast-util-from-markdown": "2.0.2",
-    "mdast-util-to-markdown": "2.1.2",
-    "mdast-util-to-string": "4.0.0",
-    "unist-util-visit": "5.0.0"
+    "mdast": "catalog:studiocms-shared",
+    "mdast-util-from-markdown": "catalog:studiocms-shared",
+    "mdast-util-to-markdown": "catalog:studiocms-shared",
+    "mdast-util-to-string": "catalog:studiocms-shared",
+    "unist-util-visit": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -80,6 +80,6 @@
   "devDependencies": {
     "typescript": "catalog:",
     "@types/semver": "catalog:studiocms",
-    "@types/mdast": "4.0.4"
+    "@types/mdast": "catalog:studiocms-shared"
   }
 }

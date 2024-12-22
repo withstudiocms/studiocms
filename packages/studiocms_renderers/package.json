@@ -44,7 +44,6 @@
     "@studiocms/core": "workspace:*",
 
     "astro-integration-kit": "catalog:",
-    "@astrojs/markdown-remark": "catalog:",
     
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
@@ -60,6 +59,7 @@
   },
   "peerDependencies": {
     "@astrojs/react": "catalog:",
+    "@astrojs/markdown-remark": "catalog:min",
     "astro": "catalog:min",
     "vite": "catalog:min"
   },

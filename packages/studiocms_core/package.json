@@ -66,12 +66,12 @@
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "drizzle-orm": "catalog:studiocms-core",
-    "lodash": "^4.17.21",
-    "mdast": "3.0.0",
-    "mdast-util-from-markdown": "2.0.2",
-    "mdast-util-to-markdown": "2.1.2",
-    "mdast-util-to-string": "4.0.0",
-    "unist-util-visit": "5.0.0"
+    "lodash": "catalog:studiocms-shared",
+    "mdast": "catalog:studiocms-shared",
+    "mdast-util-from-markdown": "catalog:studiocms-shared",
+    "mdast-util-to-markdown": "catalog:studiocms-shared",
+    "mdast-util-to-string": "catalog:studiocms-shared",
+    "unist-util-visit": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "@types/lodash": "^4.17.13",
-    "@types/mdast": "4.0.4"
+    "@types/lodash": "catalog:studiocms-shared",
+    "@types/mdast": "catalog:studiocms-shared"
   }
 }
