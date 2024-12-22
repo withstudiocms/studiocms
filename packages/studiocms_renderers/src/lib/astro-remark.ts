@@ -1,6 +1,12 @@
 import astroMarkdownConfig from 'studiocms:renderer/astroMarkdownConfig';
 import { type AstroMarkdownOptions, createMarkdownProcessor } from '@astrojs/markdown-remark';
 
+const mergedConfig: AstroMarkdownOptions = {
+	...(astroMarkdownConfig as AstroMarkdownOptions),
+};
+
+const processor = await createMarkdownProcessor(mergedConfig);
+
 /**
  * Render Astro Markdown
  *
@@ -13,12 +19,6 @@ import { type AstroMarkdownOptions, createMarkdownProcessor } from '@astrojs/mar
  * @returns The rendered content
  */
 export async function renderAstroMD(content: string) {
-	const mergedConfig: AstroMarkdownOptions = {
-		...(astroMarkdownConfig as AstroMarkdownOptions),
-	};
-
-	const processor = await createMarkdownProcessor(mergedConfig);
-
 	return (await processor.render(content)).code;
 }
 
