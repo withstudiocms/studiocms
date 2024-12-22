@@ -3,6 +3,8 @@ import { StudioCMSCacheError } from './errors';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
+	FolderNode,
+	FolderTreeCacheObject,
 	PageDataCacheObject,
 	ProcessedCacheConfig,
 	STUDIOCMS_SDK,
@@ -28,6 +30,7 @@ import type {
 export class StudioCMSVirtualCache {
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';
 	private readonly VersionMapID: string = '__StudioCMS_Latest_Version';
+	private readonly FolderTreeMapID: string = '__StudioCMS_Folder_Tree';
 	private readonly StudioCMSPkgId: string = 'studiocms';
 	private readonly CMSSiteConfigId = CMSSiteConfigId;
 	private readonly versionCacheLifetime = versionCacheLifetime;
@@ -38,6 +41,7 @@ export class StudioCMSVirtualCache {
 	private pages = new Map<string, PageDataCacheObject>();
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
 	private version = new Map<string, VersionCacheObject>();
+	private folderTree = new Map<string, FolderTreeCacheObject>();
 
 	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: STUDIOCMS_SDK) {
 		this.cacheConfig = cacheConfig;
@@ -119,6 +123,97 @@ export class StudioCMSVirtualCache {
 			data,
 			lastCacheUpdate: new Date(),
 		};
+	}
+
+	/**
+	 * Returns a FolderTreeCacheObject containing the provided folder tree data and the current date as the last cache update.
+	 *
+	 * @param data - The folder tree data to be cached.
+	 * @returns An object containing the provided data and the current date as the last cache update.
+	 */
+	private folderTreeReturn(data: FolderNode[]): FolderTreeCacheObject {
+		return {
+			data,
+			lastCacheUpdate: new Date(),
+		};
+	}
+
+	// Folder Tree Utils
+
+	/**
+	 * Retrieves the folder tree from the cache or the database.
+	 *
+	 * @returns {Promise<FolderTreeCacheObject>} A promise that resolves to the folder tree.
+	 * @throws {StudioCMSCacheError} If the folder tree is not found in the database or if there is an error fetching the folder tree.
+	 */
+	public async getFolderTree(): Promise<FolderTreeCacheObject> {
+		try {
+			if (!this.isEnabled()) {
+				const folderTree = await this.sdk.buildFolderTree();
+
+				if (!folderTree) {
+					throw new StudioCMSCacheError('Folder tree not found in database');
+				}
+
+				return this.folderTreeReturn(folderTree);
+			}
+
+			const tree = this.folderTree.get(this.FolderTreeMapID);
+
+			if (!tree || this.isCacheExpired(tree)) {
+				const folderTree = await this.sdk.buildFolderTree();
+
+				if (!folderTree) {
+					throw new StudioCMSCacheError('Folder tree not found in database');
+				}
+
+				this.folderTree.set(this.FolderTreeMapID, this.folderTreeReturn(folderTree));
+
+				return this.folderTreeReturn(folderTree);
+			}
+
+			return tree;
+		} catch (error) {
+			throw new StudioCMSCacheError('Error fetching folder tree');
+		}
+	}
+
+	/**
+	 * Updates the folder tree in the cache and database.
+	 *
+	 * @returns {Promise<FolderTreeCacheObject>} A promise that resolves to the updated folder tree.
+	 * @throws {StudioCMSCacheError} If there is an error updating the folder tree.
+	 */
+	public async updateFolderTree(): Promise<FolderTreeCacheObject> {
+		try {
+			const folderTree = await this.sdk.buildFolderTree();
+
+			if (!this.isEnabled()) {
+				return this.folderTreeReturn(folderTree);
+			}
+
+			this.folderTree.set(this.FolderTreeMapID, this.folderTreeReturn(folderTree));
+
+			return this.folderTreeReturn(folderTree);
+		} catch (error) {
+			throw new StudioCMSCacheError('Error updating folder tree');
+		}
+	}
+
+	/**
+	 * Clears the folder tree from the cache.
+	 */
+	public clearFolderTree(): void {
+		// Check if caching is disabled
+		if (!this.isEnabled()) {
+			return;
+		}
+
+		// Clear the folder tree cache
+		this.folderTree.clear();
+
+		// Return void
+		return;
 	}
 
 	// Version Utils
@@ -370,10 +465,12 @@ export class StudioCMSVirtualCache {
 				return pages.map((page) => this.pageDataReturn(page));
 			}
 
+			const { data: tree } = await this.getFolderTree();
+
 			// Check if the cache is empty
 			if (this.pages.size === 0) {
 				// Retrieve the data from the database
-				const updatedData = await this.sdk.GET.database.pages();
+				const updatedData = await this.sdk.GET.database.pages(tree);
 
 				// Check if the data was retrieved successfully
 				if (!updatedData) {
@@ -396,7 +493,7 @@ export class StudioCMSVirtualCache {
 			for (const object of cacheMap) {
 				// Check if the cache is expired
 				if (this.isCacheExpired(object)) {
-					const updatedData = await this.sdk.GET.databaseEntry.pages.byId(object.data.id);
+					const updatedData = await this.sdk.GET.databaseEntry.pages.byId(object.data.id, tree);
 
 					if (!updatedData) {
 						throw new StudioCMSCacheError('Cache is expired and could not be updated.');
@@ -433,12 +530,14 @@ export class StudioCMSVirtualCache {
 				return this.pageDataReturn(page);
 			}
 
+			const { data: tree } = await this.getFolderTree();
+
 			// Retrieve the cached page
 			const cachedPage = this.pages.get(id);
 
 			// Check if the page is not cached or the cache is expired
 			if (!cachedPage || this.isCacheExpired(cachedPage)) {
-				const page = await this.sdk.GET.databaseEntry.pages.byId(id);
+				const page = await this.sdk.GET.databaseEntry.pages.byId(id, tree);
 
 				if (!page) {
 					throw new StudioCMSCacheError('Page not found in database');
@@ -479,6 +578,8 @@ export class StudioCMSVirtualCache {
 				return this.pageDataReturn(page);
 			}
 
+			const { data: tree } = await this.getFolderTree();
+
 			// Retrieve the cached page
 			const cachedPage = Array.from(this.pages.values()).find(
 				(page) => page.data.slug === slug && page.data.package === pkg
@@ -486,7 +587,7 @@ export class StudioCMSVirtualCache {
 
 			// Check if the page is not cached or the cache is expired
 			if (!cachedPage || this.isCacheExpired(cachedPage)) {
-				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg);
+				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg, tree);
 
 				if (!page) {
 					throw new StudioCMSCacheError('Page not found in database');
@@ -538,12 +639,14 @@ export class StudioCMSVirtualCache {
 				return this.pageDataReturn(updatedData);
 			}
 
+			const { data: tree } = await this.updateFolderTree();
+
 			// Update the page in the database
 			await this.sdk.UPDATE.page(data.pageData);
 			await this.sdk.UPDATE.pageContent(data.pageContent);
 
 			// Retrieve the updated data
-			const updatedData = await this.sdk.GET.databaseEntry.pages.byId(id);
+			const updatedData = await this.sdk.GET.databaseEntry.pages.byId(id, tree);
 
 			if (!updatedData) {
 				throw new StudioCMSCacheError('Page not found in database');
@@ -594,6 +697,8 @@ export class StudioCMSVirtualCache {
 				return this.pageDataReturn(updatedData);
 			}
 
+			const { data: tree } = await this.updateFolderTree();
+
 			// Retrieve the cached page
 			const cachedPage = Array.from(this.pages.values()).find(
 				(page) => page.data.slug === slug && page.data.package === pkg
@@ -609,7 +714,7 @@ export class StudioCMSVirtualCache {
 			await this.sdk.UPDATE.pageContent(data.pageContent);
 
 			// Retrieve the updated data
-			const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg);
+			const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg, tree);
 
 			// Check if the data was returned successfully
 			if (!updatedData) {
@@ -639,6 +744,7 @@ export class StudioCMSVirtualCache {
 			pages: async () => await this.getAllPages(),
 			siteConfig: async () => await this.getSiteConfig(),
 			latestVersion: async () => await this.getVersion(),
+			folderTree: async () => await this.getFolderTree(),
 		},
 		CLEAR: {
 			page: {
@@ -647,6 +753,7 @@ export class StudioCMSVirtualCache {
 			},
 			pages: () => this.clearAllPages(),
 			latestVersion: () => this.clearVersion(),
+			folderTree: () => this.clearFolderTree(),
 		},
 		UPDATE: {
 			page: {
@@ -662,6 +769,7 @@ export class StudioCMSVirtualCache {
 			},
 			siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
 			latestVersion: async () => await this.updateVersion(),
+			folderTree: async () => await this.updateFolderTree(),
 		},
 	};
 }

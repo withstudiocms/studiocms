@@ -170,6 +170,10 @@ export interface VersionCacheObject extends BaseCacheObject {
 	version: string;
 }
 
+export interface FolderTreeCacheObject extends BaseCacheObject {
+	data: FolderNode[];
+}
+
 /**
  * Represents a cache object that stores pages and site configuration data.
  */

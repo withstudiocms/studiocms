@@ -70,7 +70,6 @@ export class StudioCMSSDK {
 	private db: AstroDBVirtualModule['db'];
 	private and: AstroDBVirtualModule['and'];
 	private eq: AstroDBVirtualModule['eq'];
-	private readonly FolderStructureRootId = '__StudioCMS_Root_Folder__';
 
 	constructor(AstroDB: AstroDBVirtualModule) {
 		this.db = AstroDB.db;
@@ -104,7 +103,7 @@ export class StudioCMSSDK {
 	 * @param folders - An array of folder data to build the folder structure from.
 	 * @returns An array of folder nodes representing the folder structure.
 	 */
-	public buildFolderStructure(folders: tsPageFolderSelect[]): FolderNode[] {
+	public generateFolderTree(folders: tsPageFolderSelect[]): FolderNode[] {
 		// Create a lookup table
 		const folderMap: Record<string, FolderNode> = {};
 
@@ -139,49 +138,123 @@ export class StudioCMSSDK {
 	 *
 	 * @returns A promise that resolves to an array of folder nodes representing the folder structure.
 	 */
-	public async getFolderStructure(): Promise<FolderNode[]> {
+	public async buildFolderTree(): Promise<FolderNode[]> {
 		const currentFolders = await this.db.select().from(tsPageFolderStructure);
-		return this.buildFolderStructure(currentFolders);
+		return this.generateFolderTree(currentFolders);
 	}
 
 	/**
-	 * Gets the URL of a page based on the provided page data.
-	 *
-	 * @param page - The page data to get the URL for.
-	 * @returns A promise that resolves to the URL of the page.
+	 * Finds a node in the tree that matches the given URL path.
+	 * @param tree - The root of the folder tree.
+	 * @param path - The URL path to locate.
+	 * @returns The matching node or null if not found.
 	 */
-	public async getPageUrl(page: tsPageDataSelect): Promise<string> {
-		const slug = page.slug;
-		const folderStructure = await this.getFolderStructure();
-		const folder = folderStructure.find(
-			(folder) => folder.id === page.parentFolder || this.FolderStructureRootId
-		);
+	public findNodeByPath(tree: FolderNode[], path: string[]): FolderNode | null {
+		if (path.length === 0) return null;
 
-		if (!folder || folder.id === this.FolderStructureRootId) {
-			return slug;
+		const [current, ...rest] = path;
+
+		for (const node of tree) {
+			if (node.name === current) {
+				if (rest.length === 0) return node;
+				return this.findNodeByPath(node.children, rest);
+			}
 		}
 
-		return `${folder.name}/${slug}`;
+		return null;
 	}
 
-	public getSlugFromUrl(url: string): string {
-		if (typeof url !== 'string' || !url.trim()) {
-			throw new StudioCMS_SDK_Error('Error getting slug from URL: URL must be a non-empty string.');
+	/**
+	 * Finds all nodes along the path to a specific node by its ID.
+	 * @param tree - The root of the folder tree.
+	 * @param id - The ID of the target node.
+	 * @returns An array of nodes along the path or an empty array if the node is not found.
+	 */
+	public findNodesAlongPathToId(tree: FolderNode[], id: string): FolderNode[] {
+		const path: FolderNode[] = [];
+
+		function helper(nodes: FolderNode[], targetId: string): boolean {
+			for (const node of nodes) {
+				path.push(node); // Add the current node to the path
+
+				if (node.id === targetId) {
+					return true; // Target found, stop recursion
+				}
+
+				if (helper(node.children, targetId)) {
+					return true; // Target found in descendants, propagate success
+				}
+
+				path.pop(); // Backtrack if target is not found in this branch
+			}
+
+			return false; // Target not found in this branch
 		}
 
-		// Normalize and trim slashes
-		const trimmedUrl = url.replace(/^\/+|\/+$/g, '');
+		helper(tree, id);
+		return path;
+	}
 
-		// Extract the last segment
-		const slug = trimmedUrl.split('/').pop();
+	/**
+	 * Finds the full path to a node based on its URL.
+	 * @param tree - The root of the folder tree.
+	 * @param path - The URL path to locate.
+	 * @returns The full path as an array of node names.
+	 */
+	public getFullPath(tree: FolderNode[], path: string[]): string[] {
+		const result: string[] = [];
 
-		if (!slug) {
-			throw new StudioCMS_SDK_Error(
-				'Error getting slug from URL: No slug found in the provided URL.'
-			);
+		function helper(nodes: FolderNode[], pathParts: string[]): boolean {
+			if (pathParts.length === 0) return false;
+
+			const [current, ...rest] = pathParts;
+
+			for (const node of nodes) {
+				if (node.name === current) {
+					result.push(node.name);
+					if (rest.length === 0 || helper(node.children, rest)) {
+						return true;
+					}
+					result.pop(); // Backtrack if not found
+				}
+			}
+
+			return false;
 		}
 
-		return slug;
+		helper(tree, path);
+		return result;
+	}
+
+	/**
+	 * Finds all nodes along the path to a given URL.
+	 * @param tree - The root of the folder tree.
+	 * @param path - The URL path to locate.
+	 * @returns The nodes along the path.
+	 */
+	public findNodesAlongPath(tree: FolderNode[], path: string[]): FolderNode[] {
+		const result: FolderNode[] = [];
+
+		function helper(nodes: FolderNode[], pathParts: string[]): boolean {
+			if (pathParts.length === 0) return false;
+
+			const [current, ...rest] = pathParts;
+
+			for (const node of nodes) {
+				if (node.name === current) {
+					result.push(node);
+					if (rest.length === 0 || helper(node.children, rest)) {
+						return true;
+					}
+					result.pop(); // Backtrack if not found
+				}
+			}
+
+			return false;
+		}
+
+		helper(tree, path);
+		return result;
 	}
 
 	/**
@@ -249,7 +322,10 @@ export class StudioCMSSDK {
 	 * @returns A promise that resolves to the combined page data.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs while collecting page data.
 	 */
-	public async collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
+	public async collectPageData(
+		page: tsPageDataSelect,
+		tree: FolderNode[]
+	): Promise<CombinedPageData> {
 		try {
 			const categoryIds = this.parseIdNumberArray(page.categories || []);
 			const categories = await this.collectCategories(categoryIds);
@@ -268,16 +344,23 @@ export class StudioCMSSDK {
 				(content) => content.contentLang === page.contentLang
 			);
 
-			const urlRoute = await this.getPageUrl(page);
+			const safeSlug = page.slug === 'index' ? '/' : `/${page.slug}`;
+
+			let urlRoute = safeSlug;
+
+			if (page.parentFolder) {
+				const urlParts = this.findNodesAlongPathToId(tree, page.parentFolder);
+				urlRoute = urlParts.map((part) => part.name).join('/') + safeSlug;
+			}
 
 			return {
 				...page,
+				urlRoute,
 				categories,
 				tags,
 				contributorIds,
 				multiLangContent: multiLanguageContentData,
 				defaultContent: defaultLanguageContentData,
-				urlRoute,
 			};
 		} catch (error) {
 			if (error instanceof Error) {
@@ -881,14 +964,15 @@ export class StudioCMSSDK {
 			 * @returns A promise that resolves to an array of combined page data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
-			pages: async (): Promise<CombinedPageData[]> => {
+			pages: async (tree?: FolderNode[]): Promise<CombinedPageData[]> => {
 				try {
 					const pages: CombinedPageData[] = [];
 
 					const pagesRaw = await this.db.select().from(tsPageData);
+					const folders = tree || (await this.buildFolderTree());
 
 					for (const page of pagesRaw) {
-						const PageData = await this.collectPageData(page);
+						const PageData = await this.collectPageData(page, folders);
 
 						pages.push(PageData);
 					}
@@ -1036,7 +1120,7 @@ export class StudioCMSSDK {
 				 * @returns A promise that resolves to the page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
 				 */
-				byId: async (id: string): Promise<CombinedPageData | undefined> => {
+				byId: async (id: string, tree?: FolderNode[]): Promise<CombinedPageData | undefined> => {
 					try {
 						const page = await this.db
 							.select()
@@ -1045,8 +1129,9 @@ export class StudioCMSSDK {
 							.get();
 
 						if (!page) return undefined;
+						const folders = tree || (await this.buildFolderTree());
 
-						return await this.collectPageData(page);
+						return await this.collectPageData(page, folders);
 					} catch (error) {
 						if (error instanceof Error) {
 							throw new StudioCMS_SDK_Error(
@@ -1066,7 +1151,11 @@ export class StudioCMSSDK {
 				 * @returns A promise that resolves to the page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
 				 */
-				bySlug: async (slug: string, pkg?: string): Promise<CombinedPageData | undefined> => {
+				bySlug: async (
+					slug: string,
+					pkg?: string,
+					tree?: FolderNode[]
+				): Promise<CombinedPageData | undefined> => {
 					try {
 						const pkgToGet = pkg || 'studiocms';
 
@@ -1079,8 +1168,9 @@ export class StudioCMSSDK {
 							.get();
 
 						if (!page) return undefined;
+						const folders = tree || (await this.buildFolderTree());
 
-						return await this.collectPageData(page);
+						return await this.collectPageData(page, folders);
 					} catch (error) {
 						if (error instanceof Error) {
 							throw new StudioCMS_SDK_Error(
@@ -1315,7 +1405,7 @@ export class StudioCMSSDK {
 		/**
 		 * Retrieves data from the database by package.
 		 */
-		packagePages: async (packageName: string): Promise<CombinedPageData[]> => {
+		packagePages: async (packageName: string, tree?: FolderNode[]): Promise<CombinedPageData[]> => {
 			try {
 				const pages: CombinedPageData[] = [];
 
@@ -1323,9 +1413,10 @@ export class StudioCMSSDK {
 					.select()
 					.from(tsPageData)
 					.where(this.eq(tsPageData.package, packageName));
+				const folders = tree || (await this.buildFolderTree());
 
 				for (const page of pagesRaw) {
-					const PageData = await this.collectPageData(page);
+					const PageData = await this.collectPageData(page, folders);
 
 					pages.push(PageData);
 				}
