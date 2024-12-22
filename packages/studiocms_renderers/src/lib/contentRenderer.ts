@@ -7,12 +7,14 @@ import renderAstroMDX from './mdx';
 const { renderer } = rendererConfig;
 
 /**
- * Content Renderer
+ * Renders the given content using a specified renderer.
  *
- * Renders content using the specified renderer from the StudioCMS configuration
+ * The renderer can be a custom object with a `renderer` function and a `name` property,
+ * or a string indicating one of the built-in renderers ('astro', 'markdoc', 'mdx').
  *
- * @param content - The content to render
- * @returns The rendered content as a HTML string
+ * @param content - The content to be rendered.
+ * @returns A promise that resolves to the rendered content as a string.
+ * @throws Will throw an error if the custom renderer object is invalid.
  */
 export async function contentRenderer(content: string): Promise<string> {
 	if (typeof renderer === 'object') {
