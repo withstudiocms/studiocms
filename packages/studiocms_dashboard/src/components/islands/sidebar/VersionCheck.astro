@@ -7,6 +7,7 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
 import { Modal } from '@studiocms/ui/components';
 import { compare } from 'semver';
+import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
 import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
 
 const data = await getUserData(Astro);
@@ -47,17 +48,6 @@ function timeAgo(date: Date) {
 
 	return `${parts.join(', ')} ago`;
 }
-
-function dateWithTimeAndZone(date: Date) {
-	return date.toLocaleString(undefined, {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-		timeZoneName: 'short',
-	});
-}
 ---
 <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
     <VersionCheckPart {status} />
@@ -68,13 +58,13 @@ function dateWithTimeAndZone(date: Date) {
 
         <h2 slot="header" class="inline-title">
             <span>Version Information</span>
-            <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
-                data-astro-prefetch="tap" 
-                data-astro-reload class="reload-button" 
+            <button data-link={StudioCMSRoutes.sdk.updateLatestVersionCache} 
+                id="version-modal-reload"
+                class="reload-button" 
                 title="Check for updates" 
                 aria-label="Check for updates"
                 ><span class="reload"></span>
-            </a>
+            </button>
         </h2>
 
         <div>
@@ -86,14 +76,14 @@ function dateWithTimeAndZone(date: Date) {
 
                 <div class="version-modal-col">
                     <span class="version-modal-col-title">Latest Version</span>
-                    <code class="version-modal-col-value">v{latestVersion.version}</code>
+                    <code id="latest-version" class="version-modal-col-value">v{latestVersion.version}</code>
                 </div>
 
                 <div class="version-modal-col">
                     <span class="version-modal-col-title">Last Update Check</span>
                     <span class="version-modal-col-value">
                         <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                        <span class="latest-update-check">({timeAgo(lastChecked)})</span>
+                        <span id="latest-update-check" class="latest-update-check">({timeAgo(lastChecked)})</span>
                     </span>
                 </div>
             </div>
@@ -126,12 +116,32 @@ function dateWithTimeAndZone(date: Date) {
     import { ModalHelper } from '@studiocms/ui/components';
     import { makeClientRoutable } from '../../component-scripts/makeClientRoutable';
     import { dateTimeListener } from '../../component-scripts/dateTimeListener';
+    import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
 
     makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
 
     if (document.getElementById('version-modal')) {
         new ModalHelper('version-modal', 'version-modal-trigger');
     }
+
+    const reloadButton = document.getElementById('version-modal-reload') as HTMLButtonElement;
+    const timeElem = document.getElementById('version-modal-last-checked-date') as HTMLTimeElement;
+    const latestUpdateCheck = document.getElementById('latest-update-check') as HTMLSpanElement;
+    const latestVersionElem = document.getElementById('latest-version') as HTMLElement;
+
+    reloadButton.addEventListener('click', async () => {
+        const response = await fetch(reloadButton.dataset.link!);
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.success) {
+                latestVersionElem.textContent = `v${data.version}`;
+                timeElem.setAttribute('datetime', new Date(data.lastCacheUpdate).toISOString());
+                timeElem.textContent = dateWithTimeAndZone(new Date(data.lastCacheUpdate));
+                latestUpdateCheck.textContent = '(Just now)';
+            }
+        }
+    });
 </script>
 
 <style>
@@ -173,12 +183,12 @@ function dateWithTimeAndZone(date: Date) {
     }
 
     .version-modal-release-notes {
-        margin-top: 1rem;
         border: 1px solid hsl(var(--border));
         border-radius: 0.5rem;
         padding: 1rem;
         overflow: auto;
         max-height: 20vh;
+        margin-top: 1rem;
         margin-bottom: 1rem;
     }
 

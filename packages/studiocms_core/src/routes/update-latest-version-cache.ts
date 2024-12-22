@@ -1,20 +1,21 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIRoute } from 'astro';
 
-export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
-	await studioCMS_SDK_Cache.UPDATE.latestVersion();
+export const GET: APIRoute = async (): Promise<Response> => {
+	const latestVersion = await studioCMS_SDK_Cache.UPDATE.latestVersion();
 
 	logger.info('Manually updated latest version cache');
 
-	const originLink = context.request.headers.get('Referer');
+	latestVersion.version;
 
-	if (originLink) {
-		return context.redirect(originLink);
-	}
-
-	return context.redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+	return new Response(JSON.stringify({ success: true, latestVersion }), {
+		status: 200,
+		headers: {
+			'Content-Type': 'application/json',
+			Date: new Date().toUTCString(),
+		},
+	});
 };
 
 export const OPTIONS: APIRoute = async () => {
