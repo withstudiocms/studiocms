@@ -31,20 +31,15 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
                 const redirectProfile = this.dataset.redirect_profile;
                 const redirectLogin = this.dataset.redirect_login;
 
-                console.debug('Checking user permissions and login status');
-
                 if (isLoggedIn === 'false') {
-                    console.debug('redirecting to login');
                     window.location.href = redirectLogin;
                 }
 
                 if (window.location.pathname === redirectProfile) {
-                    console.debug('User is on profile page');
                     return;
                 }
 
                 if (authorized === 'false') {
-                    console.debug('redirecting to profile');
                     window.location.href = redirectProfile;
                 }
             }
