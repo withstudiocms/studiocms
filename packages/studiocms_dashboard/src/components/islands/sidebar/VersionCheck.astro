@@ -66,7 +66,7 @@ function dateWithTimeAndZone(date: Date) {
 { isAdmin && ( 
     <Modal id="version-modal" size="lg">
 
-        <h2 slot="header inline-title">
+        <h2 slot="header" class="inline-title">
             <span>Version Information</span>
             <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
                 data-astro-prefetch="tap" 
@@ -91,16 +91,16 @@ function dateWithTimeAndZone(date: Date) {
 
                 <div class="version-modal-col">
                     <span class="version-modal-col-title">Last Update Check</span>
-                    <code class="version-modal-col-value">
+                    <span class="version-modal-col-value">
                         <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
                         <span class="latest-update-check">({timeAgo(lastChecked)})</span>
-                    </code>
+                    </span>
                 </div>
             </div>
 
-            <div class="version-modal-release-notes">
+            <code class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
-            </div>
+            </code>
 
             <div class="version-modal-links">
                 <a href="https://github.com/withstudiocms/studiocms/releases" 
