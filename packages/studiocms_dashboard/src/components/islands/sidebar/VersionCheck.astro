@@ -1,6 +1,8 @@
 ---
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import changelog from 'studiocms:changelog';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import currentVersion from 'studiocms:version';
 import { Modal } from '@studiocms/ui/components';
@@ -57,23 +59,15 @@ function dateWithTimeAndZone(date: Date) {
 	});
 }
 ---
-  
-    <div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
-        <VersionCheckPart {status} />
-    </div>
+<div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
+    <VersionCheckPart {status} />
+</div>
 
 { isAdmin && ( 
-    <Modal id="version-modal" size="sm">
+    <Modal id="version-modal" size="md">
+
         <h2 slot="header">
             Version Information
-        </h2>
-        <div>
-            <h3>Currently Installed Version</h3>
-            <p><code>StudioCMS v{currentVersion}</code></p>
-
-            <h3>Latest Published Version</h3>
-            <p><code>StudioCMS v{latestVersion.version}</code></p>
-
             <h3 class="inline-title">
                 <span>Last Update Check</span>    
                 <a href={StudioCMSRoutes.sdk.updateLatestVersionCache} 
@@ -84,11 +78,31 @@ function dateWithTimeAndZone(date: Date) {
                     ><span class="reload"></span>
                 </a>
             </h3>
-            <div class="last-update-container">
-                <p>
-                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                    <span class="latest-update-check">({timeAgo(lastChecked)})</span>
-                </p>
+        </h2>
+
+        <div>
+            <div class="version-modal-top-row">
+                <div class="version-modal-col">
+                    <span class="version-modal-col-title">Current Version</span>
+                    <span class="version-modal-col-value">v{currentVersion}</span>
+                </div>
+
+                <div class="version-modal-col">
+                    <span class="version-modal-col-title">Latest Version</span>
+                    <span class="version-modal-col-value">v{latestVersion.version}</span>
+                </div>
+
+                <div class="version-modal-col">
+                    <span class="version-modal-col-title">Last Update Check</span>
+                    <span class="version-modal-col-value">
+                        <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
+                        <span class="latest-update-check">({timeAgo(lastChecked)})</span>
+                    </span>
+                </div>
+            </div>
+
+            <div>
+                <StudioCMSRenderer content={changelog} />
             </div>
 
             <div class="version-modal-links">
@@ -124,6 +138,43 @@ function dateWithTimeAndZone(date: Date) {
 </script>
 
 <style>
+
+    .inline-title {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        virtual-align: middle;
+        align-items: center;
+        justify-content: start;
+    }
+
+    .version-modal-top-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .version-modal-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .version-modal-col-title {
+        font-weight: 700;
+    }
+
+    .version-modal-col-value {
+        font-weight: 700;
+    }
+
+    .latest-update-check {
+        color: hsl(var(--text-muted));
+        font-size: .7em;
+        font-weight: 700;
+        text-align: center;
+    }
+
     .version-container {
         display: flex;
         flex-direction: column;
@@ -147,22 +198,6 @@ function dateWithTimeAndZone(date: Date) {
         text-decoration: none;
     }
 
-
-    .latest-update-check {
-        color: hsl(var(--text-muted));
-        font-size: .7em;
-        font-weight: 700;
-        text-align: center;
-    }
-
-    .inline-title {
-        display: flex;
-        flex-direction: row;
-        gap: 0.5rem;
-        virtual-align: middle;
-        align-items: center;
-        justify-content: start;
-    }
 
     .version-modal-links {
         display: flex;

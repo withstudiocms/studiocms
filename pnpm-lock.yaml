@@ -467,6 +467,18 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.0.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      mdast:
+        specifier: 3.0.0
+        version: 3.0.0
+      mdast-util-from-markdown:
+        specifier: 2.0.2
+        version: 2.0.2
+      mdast-util-to-markdown:
+        specifier: 2.1.2
+        version: 2.1.2
+      mdast-util-to-string:
+        specifier: 4.0.0
+        version: 4.0.0
       package-json:
         specifier: catalog:studiocms
         version: 10.0.1
@@ -476,10 +488,16 @@ importers:
       semver:
         specifier: catalog:studiocms
         version: 7.6.3
+      unist-util-visit:
+        specifier: 5.0.0
+        version: 5.0.0
       vite:
         specifier: catalog:min
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
     devDependencies:
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
       '@types/semver':
         specifier: catalog:studiocms
         version: 7.5.8
@@ -4227,6 +4245,10 @@ packages:
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
+
+  mdast@3.0.0:
+    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
+    deprecated: '`mdast` was renamed to `remark`'
 
   mdurl@2.0.0:
     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
@@ -10042,6 +10064,8 @@ snapshots:
   mdast-util-to-string@4.0.0:
     dependencies:
       '@types/mdast': 4.0.4
+
+  mdast@3.0.0: {}
 
   mdurl@2.0.0: {}
 

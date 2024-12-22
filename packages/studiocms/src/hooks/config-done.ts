@@ -19,6 +19,12 @@ export const configDone = defineUtility('astro:config:done')(
 			},
 		});
 
+		dtsFile.addModule('studiocms:changelog', {
+			defaultExport: {
+				typeDef: 'string',
+			},
+		});
+
 		// Inject the DTS file
 		injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
 

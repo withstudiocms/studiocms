@@ -35,7 +35,10 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "src",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
   ],
   "exports": {
     ".": "./src/index.ts"
@@ -61,7 +64,13 @@
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "rollup-plugin-copy": "catalog:studiocms-shared"
+    "rollup-plugin-copy": "catalog:studiocms-shared",
+
+    "mdast": "3.0.0",
+    "mdast-util-from-markdown": "2.0.2",
+    "mdast-util-to-markdown": "2.1.2",
+    "mdast-util-to-string": "4.0.0",
+    "unist-util-visit": "5.0.0"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -70,6 +79,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "@types/semver": "catalog:studiocms"
+    "@types/semver": "catalog:studiocms",
+    "@types/mdast": "4.0.4"
   }
 }

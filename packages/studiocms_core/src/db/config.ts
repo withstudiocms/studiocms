@@ -6,6 +6,7 @@ import {
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
+	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
@@ -25,5 +26,6 @@ export default defineDb({
 		StudioCMSUsers,
 		StudioCMSOAuthAccounts,
 		StudioCMSDiffTracking,
+		StudioCMSPageFolderStructure,
 	},
 });

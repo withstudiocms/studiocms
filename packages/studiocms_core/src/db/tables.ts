@@ -15,6 +15,7 @@ export const StudioCMSUsers = defineTable({
 	},
 });
 
+/** StudioCMS - OAuth Accounts Table for Astro DB */
 export const StudioCMSOAuthAccounts = defineTable({
 	columns: {
 		provider: column.text(), // github, google, discord, auth0
@@ -40,6 +41,16 @@ export const StudioCMSPermissions = defineTable({
 	},
 });
 
+// TODO: Ensure there is always a root folder added to the table
+/** StudioCMS - Page Folder Structure */
+export const StudioCMSPageFolderStructure = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		name: column.text(),
+		parent: column.text({ optional: true }),
+	},
+});
+
 /** StudioCMS - Pages Data Table for Astro DB */
 export const StudioCMSPageData = defineTable({
 	columns: {
@@ -62,9 +73,11 @@ export const StudioCMSPageData = defineTable({
 		contributorIds: column.json({ default: [], optional: true }),
 		showAuthor: column.boolean({ default: false, optional: true }),
 		showContributors: column.boolean({ default: false, optional: true }),
+		parentFolder: column.text({ optional: true }),
 	},
 });
 
+/** StudioCMS - Diff Tracking Table for Astro DB */
 export const StudioCMSDiffTracking = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -77,6 +90,7 @@ export const StudioCMSDiffTracking = defineTable({
 	},
 });
 
+/** StudioCMS - Page Data Tags Table for Astro DB */
 export const StudioCMSPageDataTags = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),
@@ -87,6 +101,7 @@ export const StudioCMSPageDataTags = defineTable({
 	},
 });
 
+/** StudioCMS - Page Data Categories Table for Astro DB */
 export const StudioCMSPageDataCategories = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),

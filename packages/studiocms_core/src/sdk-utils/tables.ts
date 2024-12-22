@@ -6,6 +6,7 @@ import {
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
+	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
@@ -74,3 +75,12 @@ export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCM
  * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
  */
 export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSDiffTracking);
+
+/**
+ * # StudioCMS - Page Folder Structure Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsPageFolderStructure = asDrizzleTable(
+	'StudioCMSPageFolderStructure',
+	StudioCMSPageFolderStructure
+);

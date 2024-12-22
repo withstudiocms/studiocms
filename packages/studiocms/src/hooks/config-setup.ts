@@ -17,6 +17,7 @@ import ui from '@studiocms/ui';
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import { compare as semCompare } from 'semver';
 import type { ConfigSetupOptions } from '../types';
+import { changelogHelper } from '../utils/changelog';
 
 export const configSetup = defineUtility('astro:config:setup')(
 	async (params, o: ConfigSetupOptions) => {
@@ -154,6 +155,8 @@ export const configSetup = defineUtility('astro:config:setup')(
 			logLevel: 'info',
 			message: `Currently Installed StudioCMS Plugins: (${pluginListLength})\n${pluginListMessage}`,
 		});
+
+		changelogHelper(params);
 
 		return options as StudioCMSConfig;
 	}
