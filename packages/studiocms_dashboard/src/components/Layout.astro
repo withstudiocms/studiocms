@@ -1,6 +1,6 @@
 ---
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Button } from '@studiocms/ui/components';
+import { Button, Toaster } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
 import { makePageTitle } from '../utils';
@@ -34,6 +34,7 @@ const description = propDescription ?? dbConfig.description;
 <html {lang}>
   <BaseHead {title} {description} />
   <body>
+    <Toaster />
     { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
     { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
     { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> }

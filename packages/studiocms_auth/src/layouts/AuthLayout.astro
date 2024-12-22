@@ -35,16 +35,23 @@ const fallbackImageSrc =
 <!doctype html>
 <html lang={lang} data-theme="dark">
   <head>
+	{/* Global Metadata */}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <Generator />
+
+	{/* Favicon */}
 	<link rel="icon" href="/studiocms-resources/core/favicon.svg" type="image/svg+xml" />
 	<link rel="icon" href="/studiocms-resources/core/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
 	<link rel="icon" href="/studiocms-resources/core/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
-    <Generator />
+
+  	{/* Primary Meta Tags */}
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+
+    {/* Fonts */}
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
 </head>
   <body>
 	<Toaster />

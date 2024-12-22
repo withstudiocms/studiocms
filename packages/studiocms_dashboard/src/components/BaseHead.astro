@@ -3,7 +3,7 @@ import '../styles/base.css';
 import '@fontsource-variable/onest/index.css';
 import { ClientRouter } from 'astro:transitions';
 import { Generator } from 'studiocms:components';
-import { isDashboardRoute } from '../utils';
+import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 
 export interface Props {
 	title: string;
@@ -16,7 +16,11 @@ const { title, description } = Astro.props;
 <head>
 
   {/* HTMX - v2.0.2 */}
-  <!-- <script is:inline src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous" /> -->
+  {/* 
+  
+  <script is:inline src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous" /> 
+  
+  */}
 
   {/* Global Metadata */}
   <meta charset="utf-8" />
@@ -33,20 +37,10 @@ const { title, description } = Astro.props;
   <meta name="title" content={title} />
   <meta name="description" content={description} />
 
-  {/* Open Graph / Facebook / Twitter */}
-  { !isDashboardRoute(Astro.url.pathname) && (
-    <meta property="og:type" content='website' />
-    <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-  )}
-
   {/* Astro Client Router (ViewTransitions) */}
   <ClientRouter />
+
+  {/* Fonts */}
+  <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
 
 </head>
