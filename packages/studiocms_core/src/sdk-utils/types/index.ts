@@ -214,6 +214,7 @@ export interface CombinedPageData extends PageDataStripped {
 	tags: tsPageDataTagsSelect[];
 	multiLangContent: tsPageContentSelect[];
 	defaultContent: tsPageContentSelect | undefined;
+	urlRoute: string;
 }
 
 /**

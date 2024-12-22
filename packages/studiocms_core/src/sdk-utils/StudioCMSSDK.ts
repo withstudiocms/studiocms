@@ -1,3 +1,4 @@
+import { th } from '@markdoc/markdoc/dist/src/schema';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts';
 import { StudioCMS_SDK_Error } from './errors';
 import {
@@ -7,6 +8,7 @@ import {
 	tsPageData,
 	tsPageDataCategories,
 	tsPageDataTags,
+	tsPageFolderStructure,
 	tsPermissions,
 	tsSessionTable,
 	tsSiteConfig,
@@ -47,6 +49,12 @@ import type {
 	tsUsersUpdate,
 } from './types';
 
+interface FolderNode {
+	id: string;
+	name: string;
+	children: FolderNode[];
+}
+
 /**
  * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.
  * It includes functionalities for parsing input data, collecting and combining page and user data, managing
@@ -67,6 +75,7 @@ export class StudioCMSSDK {
 	private db: AstroDBVirtualModule['db'];
 	private and: AstroDBVirtualModule['and'];
 	private eq: AstroDBVirtualModule['eq'];
+	private readonly FolderStructureRootId = '__StudioCMS_Root_Folder__';
 
 	constructor(AstroDB: AstroDBVirtualModule) {
 		this.db = AstroDB.db;
@@ -92,6 +101,77 @@ export class StudioCMSSDK {
 	 */
 	private parseIdStringArray(ids: unknown): string[] {
 		return ids as string[];
+	}
+
+	private buildFolderStructure(
+		folders: (typeof tsPageFolderStructure.$inferSelect)[]
+	): FolderNode[] {
+		// Create a lookup table
+		const folderMap: Record<string, FolderNode> = {};
+
+		for (const folder of folders) {
+			folderMap[folder.id] = { id: folder.id, name: folder.name, children: [] };
+		}
+
+		// Build the tree
+		const rootFolders: FolderNode[] = [];
+
+		for (const folder of folders) {
+			const childFolder = folderMap[folder.id];
+			if (!childFolder) continue; // Skip if childFolder is undefined
+
+			if (folder.parent === null) {
+				// Root-level folder
+				rootFolders.push(childFolder);
+			} else {
+				const parentFolder = folderMap[folder.parent];
+				if (parentFolder) {
+					// Add to parent's children
+					parentFolder.children.push(childFolder);
+				}
+			}
+		}
+
+		return rootFolders;
+	}
+
+	private async getFolderStructure(): Promise<FolderNode[]> {
+		const currentFolders = await this.db.select().from(tsPageFolderStructure);
+		return this.buildFolderStructure(currentFolders);
+	}
+
+	private async getPageUrl(page: tsPageDataSelect): Promise<string> {
+		const slug = page.slug;
+		const folderStructure = await this.getFolderStructure();
+		const folder = folderStructure.find(
+			(folder) => folder.id === page.parentFolder || this.FolderStructureRootId
+		);
+
+		if (!folder || folder.id === this.FolderStructureRootId) {
+			return slug;
+		}
+
+		return `${folder.name}/${slug}`;
+	}
+
+	public getSlugFromUrl(url: string): string {
+		if (typeof url !== 'string' || !url.trim()) {
+			throw new StudioCMS_SDK_Error('Error getting slug from URL: URL must be a non-empty string.');
+		}
+
+		// Normalize and trim slashes
+		const trimmedUrl = url.replace(/^\/+|\/+$/g, '');
+
+		// Extract the last segment
+		const slug = trimmedUrl.split('/').pop();
+
+		if (!slug) {
+			throw new StudioCMS_SDK_Error(
+				'Error getting slug from URL: No slug found in the provided URL.'
+			);
+		}
+
+		return slug;
 	}
 
 	/**
@@ -178,6 +258,8 @@ export class StudioCMSSDK {
 				(content) => content.contentLang === page.contentLang
 			);
 
+			const urlRoute = await this.getPageUrl(page);
+
 			return {
 				...page,
 				categories,
@@ -185,6 +267,7 @@ export class StudioCMSSDK {
 				contributorIds,
 				multiLangContent: multiLanguageContentData,
 				defaultContent: defaultLanguageContentData,
+				urlRoute,
 			};
 		} catch (error) {
 			if (error instanceof Error) {
