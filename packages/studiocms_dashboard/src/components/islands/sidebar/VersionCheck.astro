@@ -95,6 +95,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     import { dateTimeListener } from '../../component-scripts/dateTimeListener';
     import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
     import { timeAgo } from '../../component-scripts/timeAgo';
+    import type { VersionCacheObject } from 'studiocms:sdk/cache';
 
     makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
 
@@ -110,11 +111,11 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     reloadButton.addEventListener('click', async () => {
         const response = await fetch(reloadButton.dataset.link!);
         if (response.ok) {
-            const data = await response.json();
+            const data: VersionCacheObject & { success: boolean } = await response.json();
 
             if (data.success) {
                 latestVersionElem.textContent = `v${data.version}`;
-                timeElem.setAttribute('datetime', data.lastCacheUpdate.toISOString());
+                timeElem.dateTime = data.lastCacheUpdate.toISOString();
                 timeElem.textContent = dateWithTimeAndZone(data.lastCacheUpdate);
                 latestUpdateCheck.textContent = `(${timeAgo(data.lastCacheUpdate)})`;
             }

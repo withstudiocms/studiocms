@@ -3,7 +3,16 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async (): Promise<Response> => {
-	const latestVersion = await studioCMS_SDK_Cache.UPDATE.latestVersion();
+	const latestVersion = await studioCMS_SDK_Cache.UPDATE.latestVersion().catch((err) => {
+		logger.error(`Error updating latest version cache: ${err}`);
+		return new Response(JSON.stringify({ success: false, error: err }), {
+			status: 500,
+			headers: {
+				'Content-Type': 'application/json',
+				Date: new Date().toUTCString(),
+			},
+		});
+	});
 
 	logger.info('Manually updated latest version cache');
 
