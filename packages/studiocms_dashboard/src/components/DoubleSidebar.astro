@@ -92,7 +92,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   sidebarLinks();
 
   document.addEventListener('astro:page-load', () => {
-    new DoubleSidebarHelper();
+    if (document.getElementById('sui-sidebars')) {
+      new DoubleSidebarHelper();
+    }
     new DropdownHelper('sidebar-user-dropdown', true);
     sidebarLinks();
   });
