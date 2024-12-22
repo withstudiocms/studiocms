@@ -39,7 +39,6 @@ const { link } = Astro.props;
                 frameButton.style.top = '1rem';
                 frameButton.style.right = '1rem';
                 frameButton.style.backgroundColor = 'transparent';
-                frameButton.style.color = 'white';
                 frameButton.style.padding = '0.5rem';
                 frameButton.style.border = 'none';
                 frameButton.style.cursor = 'pointer';
@@ -49,10 +48,10 @@ const { link } = Astro.props;
                 frameButton.style.display = 'flex';
                 frameButton.style.justifyContent = 'center';
                 frameButton.style.alignItems = 'center';
-                frameButton.classList.add('dismiss-button');
 
                 frameButton.addEventListener('mouseenter', () => {
-                    frameButton.style.backgroundColor = 'hsl(var(--background-step-2));';
+                    console.log('hovered');
+                    frameButton.style.backgroundColor = 'hsl(var(--default-base))';
                 });
 
                 frameButton.addEventListener('mouseleave', () => {
