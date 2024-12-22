@@ -5,11 +5,28 @@ import type {
 	tsPageData,
 	tsPageDataCategories,
 	tsPageDataTags,
+	tsPageFolderStructure,
 	tsPermissions,
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
 } from '../tables';
+
+/**
+ * Type alias for the inferred select type of `tsPageFolderStructure`.
+ *
+ * This type is derived from the `$inferSelect` property of `tsPageFolderStructure`.
+ * It represents the structure of data that can be selected from the folder structure.
+ */
+export type tsPageFolderSelect = typeof tsPageFolderStructure.$inferSelect;
+
+/**
+ * Type alias for the inferred insert type of `tsPageFolderStructure`.
+ *
+ * This type is derived from the `$inferInsert` property of `tsPageFolderStructure`.
+ * It represents the structure of data that can be inserted into the folder structure.
+ */
+export type tsPageFolderInsert = typeof tsPageFolderStructure.$inferInsert;
 
 /**
  * Type alias for the inferred select type of `tsUsers`.

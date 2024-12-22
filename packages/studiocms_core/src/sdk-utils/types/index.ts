@@ -31,6 +31,8 @@ import type {
 	tsPageDataSelect,
 	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
+	tsPageFolderInsert,
+	tsPageFolderSelect,
 	tsPermissionsInsert,
 	tsPermissionsSelect,
 	tsSessionTableInsert,
@@ -79,7 +81,15 @@ export type {
 	tsUsersInsert,
 	tsSessionTableInsert,
 	tsUsersUpdate,
+	tsPageFolderInsert,
+	tsPageFolderSelect,
 };
+
+export interface FolderNode {
+	id: string;
+	name: string;
+	children: FolderNode[];
+}
 
 export type AstroDBVirtualModule = typeof import('astro:db');
 

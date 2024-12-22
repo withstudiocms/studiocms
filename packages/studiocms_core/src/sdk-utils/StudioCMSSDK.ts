@@ -1,4 +1,3 @@
-import { th } from '@markdoc/markdoc/dist/src/schema';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts';
 import { StudioCMS_SDK_Error } from './errors';
 import {
@@ -21,6 +20,7 @@ import type {
 	CombinedRank,
 	CombinedUserData,
 	DeletionResponse,
+	FolderNode,
 	MultiPageInsert,
 	PageContentReturnId,
 	PageDataCategoriesInsertResponse,
@@ -38,6 +38,7 @@ import type {
 	tsPageDataSelect,
 	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
+	tsPageFolderSelect,
 	tsPermissionsInsert,
 	tsPermissionsSelect,
 	tsSessionTableInsert,
@@ -48,12 +49,6 @@ import type {
 	tsUsersSelect,
 	tsUsersUpdate,
 } from './types';
-
-interface FolderNode {
-	id: string;
-	name: string;
-	children: FolderNode[];
-}
 
 /**
  * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.
@@ -89,7 +84,7 @@ export class StudioCMSSDK {
 	 * @param ids - The input to be parsed, expected to be an array of numbers.
 	 * @returns An array of numbers.
 	 */
-	private parseIdNumberArray(ids: unknown): number[] {
+	public parseIdNumberArray(ids: unknown): number[] {
 		return ids as number[];
 	}
 
@@ -99,13 +94,17 @@ export class StudioCMSSDK {
 	 * @param ids - The input to be parsed, expected to be an array of unknown type.
 	 * @returns An array of strings parsed from the input.
 	 */
-	private parseIdStringArray(ids: unknown): string[] {
+	public parseIdStringArray(ids: unknown): string[] {
 		return ids as string[];
 	}
 
-	private buildFolderStructure(
-		folders: (typeof tsPageFolderStructure.$inferSelect)[]
-	): FolderNode[] {
+	/**
+	 * Builds a folder structure from the provided folder data.
+	 *
+	 * @param folders - An array of folder data to build the folder structure from.
+	 * @returns An array of folder nodes representing the folder structure.
+	 */
+	public buildFolderStructure(folders: tsPageFolderSelect[]): FolderNode[] {
 		// Create a lookup table
 		const folderMap: Record<string, FolderNode> = {};
 
@@ -135,12 +134,23 @@ export class StudioCMSSDK {
 		return rootFolders;
 	}
 
-	private async getFolderStructure(): Promise<FolderNode[]> {
+	/**
+	 * Gets the folder structure from the database.
+	 *
+	 * @returns A promise that resolves to an array of folder nodes representing the folder structure.
+	 */
+	public async getFolderStructure(): Promise<FolderNode[]> {
 		const currentFolders = await this.db.select().from(tsPageFolderStructure);
 		return this.buildFolderStructure(currentFolders);
 	}
 
-	private async getPageUrl(page: tsPageDataSelect): Promise<string> {
+	/**
+	 * Gets the URL of a page based on the provided page data.
+	 *
+	 * @param page - The page data to get the URL for.
+	 * @returns A promise that resolves to the URL of the page.
+	 */
+	public async getPageUrl(page: tsPageDataSelect): Promise<string> {
 		const slug = page.slug;
 		const folderStructure = await this.getFolderStructure();
 		const folder = folderStructure.find(
@@ -181,7 +191,7 @@ export class StudioCMSSDK {
 	 * @returns A promise that resolves to an array of collected categories.
 	 * @throws {StudioCMS_SDK_Error} If there is an error while collecting categories.
 	 */
-	private async collectCategories(categoryIds: number[]): Promise<CombinedPageData['categories']> {
+	public async collectCategories(categoryIds: number[]): Promise<CombinedPageData['categories']> {
 		try {
 			const categories: CombinedPageData['categories'] = [];
 
@@ -210,7 +220,7 @@ export class StudioCMSSDK {
 	 * @returns A promise that resolves to an array of tags.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs while fetching the tags.
 	 */
-	private async collectTags(tagIds: number[]): Promise<CombinedPageData['tags']> {
+	public async collectTags(tagIds: number[]): Promise<CombinedPageData['tags']> {
 		try {
 			const tags: CombinedPageData['tags'] = [];
 
@@ -239,7 +249,7 @@ export class StudioCMSSDK {
 	 * @returns A promise that resolves to the combined page data.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs while collecting page data.
 	 */
-	private async collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
+	public async collectPageData(page: tsPageDataSelect): Promise<CombinedPageData> {
 		try {
 			const categoryIds = this.parseIdNumberArray(page.categories || []);
 			const categories = await this.collectCategories(categoryIds);
@@ -284,7 +294,7 @@ export class StudioCMSSDK {
 	 * @returns A promise that resolves to a CombinedUserData object containing the user data, OAuth data, and permissions data.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs while collecting user data.
 	 */
-	private async collectUserData(user: tsUsersSelect): Promise<CombinedUserData> {
+	public async collectUserData(user: tsUsersSelect): Promise<CombinedUserData> {
 		try {
 			const [oAuthData, permissionData] = await this.db.batch([
 				this.db.select().from(tsOAuthAccounts).where(this.eq(tsOAuthAccounts.userId, user.id)),
@@ -313,7 +323,7 @@ export class StudioCMSSDK {
 	 * @returns An array of objects containing the id and name of users with the specified rank.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs during the verification process.
 	 */
-	private verifyRank(
+	public verifyRank(
 		users: tsUsersSelect[],
 		permissions: tsPermissionsSelect[],
 		rank: string
@@ -346,7 +356,7 @@ export class StudioCMSSDK {
 	 * @param users - An array of user ranks to be combined with the given rank.
 	 * @returns An array of combined ranks, where each element includes the given rank and the properties of a user rank.
 	 */
-	private combineRanks(rank: string, users: SingleRank[]): CombinedRank[] {
+	public combineRanks(rank: string, users: SingleRank[]): CombinedRank[] {
 		return users.map((user) => ({ rank, ...user }));
 	}
 
@@ -356,7 +366,7 @@ export class StudioCMSSDK {
 	 * @param length - The length of the random ID number to generate.
 	 * @returns A random ID number with the specified length.
 	 */
-	private generateRandomIDNumber(length: number): number {
+	public generateRandomIDNumber(length: number): number {
 		return Math.floor(Math.random() * 10 ** length);
 	}
 
