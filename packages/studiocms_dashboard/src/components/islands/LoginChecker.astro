@@ -13,34 +13,38 @@ const user = await getUserData(Astro);
 const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
 ---
 
-<div 
-    id="login-checker"
-    style="display: hidden;" 
+<login-check
     data-is_logged_in={`${user.isLoggedIn}`}
-    data-authorized={`${isAuthorized}`} 
+    data-authorized={`${isAuthorized}`}
     data-redirect_profile={StudioCMSRoutes.mainLinks.userProfile}
     data-redirect_login={StudioCMSRoutes.authLinks.loginURL}
-/>
+    style="display: hidden;" 
+></login-check>
 
 <script>
-    function check() {
-        const authorized = document.getElementById('login-checker') as HTMLDivElement;
+    if (!customElements.get('login-check')) {
+        class LoginCheck extends HTMLElement {
+            constructor() {
+                super();
+                const authorized = this.dataset.authorized!;
+                const isLoggedIn = this.dataset.is_logged_in!;
+                const redirectProfile = this.dataset.redirect_profile!;
+                const redirectLogin = this.dataset.redirect_login!;
 
-        if (authorized.dataset.is_logged_in === 'false') {
-            window.location.href = authorized.dataset.redirect_login!;
+                if (isLoggedIn === 'false') {
+                    window.location.href = redirectLogin;
+                }
+
+                if (window.location.pathname === redirectProfile) {
+                    return;
+                }
+
+                if (authorized === 'false') {
+                    window.location.href = redirectProfile;
+                }
+            }
         }
 
-        if (window.location.pathname === authorized.dataset.redirect_profile) {
-            return;
-        }
-
-        if (authorized.dataset.authorized === 'false') {
-            window.location.href = authorized.dataset.redirect_profile!;
-        }
+        customElements.define('login-check', LoginCheck);
     }
-
-    check();
-
-    document.addEventListener('astro:page-load', check);
 </script>
-
