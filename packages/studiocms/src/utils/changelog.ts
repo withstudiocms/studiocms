@@ -9,7 +9,7 @@ export const changelogHelper = defineUtility('astro:config:setup')(async (params
 	const changelog = loadChangelog(resolve('../../CHANGELOG.md'));
 
 	// Generate markdown output
-	const output: string[] = [];
+	const output: string[] = ['# Release Notes'];
 
 	const ast: Root = {
 		type: 'root',
@@ -46,7 +46,7 @@ export const changelogHelper = defineUtility('astro:config:setup')(async (params
 		ast.children.push({
 			type: 'heading',
 			depth: 2,
-			children: [{ type: 'text', value: `Release Notes: ${latestVersion.version}` }],
+			children: [{ type: 'text', value: `${latestVersion.version}` }],
 		});
 	}
 
