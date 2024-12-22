@@ -2,7 +2,12 @@
 import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Divider, Dropdown, DoubleSidebar as SuiDoubleSidebar, User } from '@studiocms/ui/components';
+import {
+	Divider,
+	Dropdown,
+	DoubleSidebar as SuiDoubleSidebar,
+	User,
+} from '@studiocms/ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
@@ -30,7 +35,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
         <SidebarLink icon='home' href={'/dashboard/'}>
           {t("dashboard-link-label")}
         </SidebarLink>
-        <SidebarLink icon='pencil-square' href={'/dashboard/content-management'}>
+        <SidebarLink icon='pencil-square' href={'/dashboard/content-management/'}>
           {t("content-management-label")}
         </SidebarLink>
       </div>
