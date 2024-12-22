@@ -70,7 +70,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 </SuiDoubleSidebar>
 
 <script>
-  import { SingleSidebarHelper } from "@studiocms/ui/components";
+  import { DoubleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
 
   function removeTrailingSlash(url: string) {
@@ -92,7 +92,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
   sidebarLinks();
 
   document.addEventListener('astro:page-load', () => {
-    new SingleSidebarHelper('nav-toggle');
+    new DoubleSidebarHelper();
     new DropdownHelper('sidebar-user-dropdown', true);
     sidebarLinks();
   });
