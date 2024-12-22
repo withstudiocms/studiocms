@@ -22,8 +22,8 @@ const { link } = Astro.props;
 
                 const frameContainer = document.createElement('div');
                 frameContainer.style.position = 'absolute';
-                frameContainer.style.width = '99%';
-                frameContainer.style.height = '99%';
+                frameContainer.style.width = '100%';
+                frameContainer.style.height = '100%';
                 frameContainer.style.backgroundColor = 'hsl(var(--background-step-1))';
                 frameContainer.style.display = 'none';
                 frameContainer.style.justifyContent = 'center';
@@ -60,6 +60,7 @@ const { link } = Astro.props;
                 frameContent.style.overflowY = 'auto';
                 frameContent.style.scrollbarWidth = 'thin';
                 frameContent.style.scrollbarColor = 'hsl(var(--background-step-3)) hsl(var(--background-step-1))';
+                frameContent.style.scrollbarGutter = 'stable both-edges';
 
                 frameButton.addEventListener('mouseenter', () => {
                     frameButton.style.backgroundColor = 'hsl(var(--default-base))';
