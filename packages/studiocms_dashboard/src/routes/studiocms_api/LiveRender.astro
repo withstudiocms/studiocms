@@ -2,20 +2,29 @@
 export const partial = true;
 import { StudioCMSRenderer } from 'studiocms:renderer';
 
-type Content = string | null;
+type Content = string;
 
-const query =
-	Astro.url.searchParams.get('content') || ((await Astro.request.json()).content as string);
+const queryParam = Astro.url.searchParams.get('content');
 const preQuery = Astro.url.searchParams.get('preload-content');
 
-let content: Content = null;
+async function setContent() {
+	const jsonData: { content: string | undefined } | undefined = await Astro.request.json();
 
-if (query && query !== 'null') {
-	content = query;
-} else if (preQuery && preQuery !== 'null') {
-	content = preQuery;
-} else {
-	content = 'No content to display';
+	if (jsonData?.content) {
+		return jsonData.content;
+	}
+
+	if (queryParam && queryParam !== 'null') {
+		return queryParam;
+	}
+
+	if (preQuery && preQuery !== 'null') {
+		return preQuery;
+	}
+
+	return 'No content to display';
 }
+
+const content: Content = await setContent();
 ---
 <StudioCMSRenderer {content} />
