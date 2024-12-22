@@ -122,3 +122,7 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 }
+
+.sui-modal.lg {
+	width: 650px !important;
+}
