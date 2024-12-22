@@ -152,6 +152,12 @@ export const configSetup = defineUtility('astro:config:setup')(
 			prerender: false,
 		});
 
+		injectRoute({
+			pattern: sdkRouteResolver('full-changelog.json'),
+			entrypoint: resolve('../routes/full-changelog.json.ts'),
+			prerender: true,
+		});
+
 		integrationLogger(logInfo, 'Core Setup Complete...');
 	}
 );

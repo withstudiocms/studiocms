@@ -22,50 +22,66 @@ const { link } = Astro.props;
                 // Get the slot element
                 const slot = document.createElement('slot');
 
-                const iFrameContainer = document.createElement('div');
-                iFrameContainer.style.position = 'absolute';
-                iFrameContainer.style.top = '0';
-                iFrameContainer.style.left = '0';
-                iFrameContainer.style.width = '100%';
-                iFrameContainer.style.height = '100%';
-                iFrameContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                iFrameContainer.style.display = 'none';
-                iFrameContainer.style.justifyContent = 'center';
-                iFrameContainer.style.alignItems = 'center';
+                const frameContainer = document.createElement('div');
+                frameContainer.style.position = 'absolute';
+                frameContainer.style.width = '90%';
+                frameContainer.style.height = '90%';
+                frameContainer.style.backgroundColor = 'hsl(var(--background-step-1))';
+                frameContainer.style.display = 'none';
+                frameContainer.style.justifyContent = 'center';
+                frameContainer.style.alignItems = 'center';
+                frameContainer.style.zIndex = '1000';
+                frameContainer.style.top = '5%';
+                frameContainer.style.left = '5%';
+                frameContainer.style.borderRadius = '1rem';
 
-                const iFrameButton = document.createElement('button');
-                iFrameButton.textContent = 'Close';
-                iFrameButton.style.position = 'absolute';
-                iFrameButton.style.top = '0';
-                iFrameButton.style.right = '0';
-                iFrameButton.style.backgroundColor = 'transparent';
-                iFrameButton.style.color = 'white';
-                iFrameButton.style.padding = '0.5rem';
-                iFrameButton.style.border = 'none';
-                iFrameButton.style.cursor = 'pointer';
+                const frameButton = document.createElement('button');
+                frameButton.textContent = 'Close';
+                frameButton.style.position = 'absolute';
+                frameButton.style.top = '1rem';
+                frameButton.style.right = '1rem';
+                frameButton.style.backgroundColor = 'hsl(var(--background-step-3))';
+                frameButton.style.color = 'white';
+                frameButton.style.padding = '0.5rem';
+                frameButton.style.border = 'none';
+                frameButton.style.cursor = 'pointer';
+                frameButton.style.borderRadius = '0.5rem';
 
-                iFrameButton.addEventListener('click', () => {
-                    iFrameContainer.style.display = 'none';
+                frameButton.addEventListener('click', () => {
+                    frameContainer.style.display = 'none';
                 });
 
-                const iFrame = document.createElement('iframe');
-                iFrame.src = this.getAttribute('data-link') || '';
-                iFrame.style.width = '90%';
-                iFrame.style.height = '90%';
+                const frameContent = document.createElement('div');
+                frameContent.style.padding = '1rem';
+                frameContent.style.width = '100%';
+                frameContent.style.height = '90%';
+                frameContent.style.overflowX = 'none';
+                frameContent.style.overflowWrap = 'break-word';
+                frameContent.style.overflowY = 'auto';
 
-                iFrameContainer.appendChild(iFrameButton);
-                iFrameContainer.appendChild(iFrame);
+                frameContainer.appendChild(frameButton);
+                frameContainer.appendChild(frameContent);
                 
-                slot.addEventListener('click', () => {
+                slot.addEventListener('click', async () => {
 
                     console.log('clicked');
 
-                    iFrameContainer.style.display = 'flex';
+                    const link = this.getAttribute('data-link');
+                    const linkResponse = await fetch(link);
+
+                    const jsonRes = await linkResponse.json();
+
+                    frameContent.innerHTML = `
+                        <a href="${link}" target="_blank">Read more on GitHub</a>
+                        ${jsonRes.changelog}
+                    `;
+
+                    frameContainer.style.display = 'flex';
 
                 });
 
                 const shadow = this.attachShadow({ mode: 'open' });
-                shadow.appendChild(iFrameContainer);
+                shadow.appendChild(frameContainer);
                 shadow.appendChild(slot);
             }
         }

@@ -4,7 +4,8 @@ import { StudioCMSRenderer } from 'studiocms:renderer';
 
 type Content = string | null;
 
-const query = Astro.url.searchParams.get('content');
+const query =
+	Astro.url.searchParams.get('content') || ((await Astro.request.json()).content as string);
 const preQuery = Astro.url.searchParams.get('preload-content');
 
 let content: Content = null;
