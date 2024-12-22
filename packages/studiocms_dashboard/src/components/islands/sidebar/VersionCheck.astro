@@ -66,7 +66,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
             <div class="version-modal-release-notes">
                 <StudioCMSRenderer content={changelog} />
                 <span class="release-notes-read-more">
-                    <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full changelog</span></VersionCheckChangelog>
+                    <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
                 </span>
             </div>
 
@@ -152,6 +152,9 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     .release-notes-read-more {
         display: flex;
         flex-direction: row-reverse;
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
         margin-top: 1rem;
         font-size: 1rem;
 
@@ -200,7 +203,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
         border-radius: 0.5rem;
         padding: 1rem;
         overflow: auto;
-        max-height: 30vh;
+        max-height: 50vh;
         margin-top: 1rem;
         margin-bottom: 1rem;
     }

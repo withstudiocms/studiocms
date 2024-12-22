@@ -50,18 +50,6 @@ const { link } = Astro.props;
                 frameButton.style.alignItems = 'center';
                 frameButton.style.transition = 'background-color 0.15s ease-in-out';
 
-                frameButton.addEventListener('mouseenter', () => {
-                    frameButton.style.backgroundColor = 'hsl(var(--default-base))';
-                });
-
-                frameButton.addEventListener('mouseleave', () => {
-                    frameButton.style.backgroundColor = 'transparent';
-                });
-
-                frameButton.addEventListener('click', () => {
-                    frameContainer.style.display = 'none';
-                });
-
                 const frameContent = document.createElement('div');
                 frameContent.style.padding = '1rem';
                 frameContent.style.width = '100%';
@@ -73,8 +61,17 @@ const { link } = Astro.props;
                 frameContent.style.scrollbarWidth = 'thin';
                 frameContent.style.scrollbarColor = 'hsl(var(--background-step-3)) hsl(var(--background-step-1))';
 
-                frameContainer.appendChild(frameButton);
-                frameContainer.appendChild(frameContent);
+                frameButton.addEventListener('mouseenter', () => {
+                    frameButton.style.backgroundColor = 'hsl(var(--default-base))';
+                });
+
+                frameButton.addEventListener('mouseleave', () => {
+                    frameButton.style.backgroundColor = 'transparent';
+                });
+
+                frameButton.addEventListener('click', () => {
+                    frameContainer.style.display = 'none';
+                });
                 
                 slot.addEventListener('click', async () => {
                     const link = this.getAttribute('data-link')!;
@@ -89,6 +86,9 @@ const { link } = Astro.props;
 
                     frameContainer.style.display = 'flex';
                 });
+
+                frameContainer.appendChild(frameButton);
+                frameContainer.appendChild(frameContent);
 
                 const shadow = this.attachShadow({ mode: 'open' });
                 shadow.appendChild(frameContainer);
