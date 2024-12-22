@@ -75,13 +75,12 @@ const { link } = Astro.props;
                 
                 slot.addEventListener('click', async () => {
                     const link = this.getAttribute('data-link')!;
-                    const linkResponse = await fetch(link);
-                    const jsonRes = await linkResponse.json();
+                    const { changelog } = await (await fetch(link)).json();
 
                     frameContent.innerHTML = `
                         <h1>Full Changelog</h1>
                         <a href="${link}" target="_blank">See on GitHub ⤴</a>
-                        ${jsonRes.changelog}
+                        ${changelog}
                     `;
 
                     frameContainer.style.display = 'flex';
