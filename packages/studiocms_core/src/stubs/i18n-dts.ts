@@ -102,6 +102,16 @@ i18nDTS.addModule('studiocms:i18n', {
 			],
 		},
 	],
+	typeExports: [
+		{
+			name: 'UiLanguageKeys',
+			typeDef: `import('${resolve('../i18n/index.ts')}').UiLanguageKeys`,
+		},
+		{
+			name: 'UiTranslations',
+			typeDef: `import('${resolve('../i18n/index.ts')}').UiTranslations`,
+		},
+	],
 });
 
 export const i18nDTSOutput = i18nDTS.makeAstroInjectedType('i18n.d.ts');

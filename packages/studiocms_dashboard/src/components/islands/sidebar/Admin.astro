@@ -6,6 +6,7 @@ import pluginList from 'studiocms:plugins';
 import { Divider } from '@studiocms/ui/components';
 import SidebarLink from '../../SidebarLink.astro';
 import SidebarPluginLink from '../../SidebarPluginLink.astro';
+import { getSidebarLinks } from '../../sidebarConfig';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
@@ -14,7 +15,11 @@ const data = await getUserData(Astro);
 
 const isAdmin = await verifyUserPermissionLevel(data, 'admin');
 
+const isOwner = await verifyUserPermissionLevel(data, 'owner');
+
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
+
+const sidebar = getSidebarLinks(lang);
 
 Astro.response.headers.set('Cache-Control', 'max-age=604800');
 // 1. Set cookie if admin
@@ -25,29 +30,32 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
 {isAdmin && (
   <Divider background='background-step-1'>{t('category-2-header')}</Divider>
   <div class="sidebar-link-group">
-    <SidebarLink icon='cog-6-tooth' href={'/dashboard/some-route'}>
-      {t('site-configuration-label')}
-    </SidebarLink>
-    <SidebarLink icon='user-group' href={'/dashboard/some-other-route'}>
-      {t('user-management-label')}
-    </SidebarLink>
+    {
+      isOwner && sidebar.ownerLinks.map(({ href, icon, title}) => (
+        <SidebarLink {icon} {href}>{title}</SidebarLink>
+      ))
+    }
+    {
+      sidebar.adminLinks.map(({ href, icon, title }) => (
+        <SidebarLink {icon} {href}>{title}</SidebarLink>
+      ))
+    }
   </div>
   <Divider background='background-step-1'>{t('category-3-header')}</Divider>
   <div class="sidebar-link-group">
-    {filteredPluginList.map((plugin) => (
-      <SidebarPluginLink 
-        href={'/dashboard/plugins/some-plugin'}
-        identifier={plugin.identifier}
-        name={plugin.name}
-      />
-    ))}
-    {filteredPluginList.length === 0 && (
-      <span 
-        class="empty-placeholder-span"
-      >
-        {t('category-3-empty-placeholder')}
-      </span>
-    )}
+    { filteredPluginList.length > 0 
+      ? filteredPluginList.map((plugin) => (
+        <SidebarPluginLink 
+          href={'/dashboard/plugins/some-plugin'}
+          identifier={plugin.identifier}
+          name={plugin.name}
+        />
+      )) 
+      : ( 
+        <span class="empty-placeholder-span">
+          {t('category-3-empty-placeholder')}
+        </span>
+      )}
   </div>
 )}
 

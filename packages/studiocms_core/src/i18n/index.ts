@@ -17,24 +17,33 @@ const uiTranslations = {
 	'en-us': await import('./translations/en-us.json'),
 } as const;
 
+// Default language - Must match one of the keys in the `ui` object above
+const defaultLang: UiLanguageKeys = 'en-us';
+
+// Show the default language in the URL (e.g. /en/page) or hide it (e.g. /page)
+// This is false in Astro-feedback so there is no need for a language prefix and page redirect on the main route.
+const showDefaultLang: boolean = false;
+
+// --- i18n Utils --- //
+
 /**
  * Represents the type of UI translations.
  * This type is derived from the structure of the `uiTranslations` object.
  */
-type UiTranslations = typeof uiTranslations;
+export type UiTranslations = typeof uiTranslations;
 
 /**
  * Represents the keys of the UiTranslations type.
  * This type is used to define the possible keys for UI language translations.
  */
-type UiLanguageKeys = keyof UiTranslations;
+export type UiLanguageKeys = keyof UiTranslations;
 
 /**
  * Represents the keys of the UI component translations for the 'en-us' locale.
  * This type is derived from the 'translations' property of the 'UiTranslations' interface
  * for the 'en-us' locale (Source of truth), ensuring that only valid translation keys are used.
  */
-type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
+export type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
 
 // God please forgive me for what I am about to do
 type UiTranslationComponent<
@@ -46,15 +55,6 @@ type UiTranslationKey<
 	L extends UiLanguageKeys,
 	T extends UiComponentKeys,
 > = keyof UiTranslationComponent<L, T>;
-
-// Default language - Must match one of the keys in the `ui` object above
-const defaultLang: UiLanguageKeys = 'en-us';
-
-// Show the default language in the URL (e.g. /en/page) or hide it (e.g. /page)
-// This is false in Astro-feedback so there is no need for a language prefix and page redirect on the main route.
-const showDefaultLang: boolean = false;
-
-// --- i18n Utils --- //
 
 /**
  * Retrieves a translation function for a given language and component.

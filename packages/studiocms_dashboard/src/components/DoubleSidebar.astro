@@ -11,9 +11,11 @@ import {
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
+import Editor from './islands/sidebar/Editor.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
 import VersionCheck from './islands/sidebar/VersionCheck.astro';
 import VersionCheckPart from './shared-parts/VersionCheck.astro';
+import { getSidebarLinks } from './sidebarConfig';
 
 const { versionCheck } = dashboardConfig;
 
@@ -25,6 +27,7 @@ const { pagePreRendered } = Astro.props;
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
+const sidebar = getSidebarLinks(lang);
 ---
 
 <SuiDoubleSidebar class='sidebar' transition:persist transition:persist-props>
@@ -52,17 +55,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
       </div>
       <Divider background='background-step-1'>{t("category-1-header")}</Divider>
       <div class="sidebar-link-group">
-        <SidebarLink icon='home' href={'/dashboard/'}>
-          {t("dashboard-link-label")}
-        </SidebarLink>
-        <SidebarLink icon='pencil-square' href={'/dashboard/content-management/'}>
-          {t("content-management-label")}
-        </SidebarLink>
+        {
+          sidebar.baseLinks.map(({ href, icon, title }) => (
+            <SidebarLink {icon} {href}>{title}</SidebarLink>
+          ))
+        }
       </div>
       {
         pagePreRendered 
-        ? <Admin server:defer transition:persist transition:persist-props /> 
-        : <Admin transition:persist transition:persist-props />
+        ? (
+          <Editor server:defer transition:persist transition:persist-props />
+          <Admin server:defer transition:persist transition:persist-props />
+        ) 
+        : (
+          <Editor transition:persist transition:persist-props />
+          <Admin transition:persist transition:persist-props />
+        )
       }
       { /* 
         Fallback slot removed from <Admin /> component to prevent the sidebar

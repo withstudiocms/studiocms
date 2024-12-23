@@ -113,33 +113,34 @@ export const configSetup = defineUtility('astro:config:setup')(
 				routes: [
 					{
 						enabled: dashboardEnabled && !dbStartPage,
-						pattern: '/',
-						entrypoint: resolve('../routes/index.astro'),
-					},
-					{
-						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'test',
 						entrypoint: resolve('../routes/test.astro'),
+					},
+
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: '/',
+						entrypoint: resolve('../routes/index.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'content-management',
 						entrypoint: resolve('../routes/content-management.astro'),
 					},
-					// {
-					// 	enabled: dashboardEnabled && !dbStartPage,
-					// 	pattern: 'create-page',
-					// 	entrypoint: resolve('../routes/create-page.astro'),
-					// },
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'profile',
 						entrypoint: resolve('../routes/profile.astro'),
 					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'configuration',
+						entrypoint: resolve('../routes/configuration.astro'),
+					},
 					// {
 					// 	enabled: dashboardEnabled && !dbStartPage,
-					// 	pattern: 'configuration',
-					// 	entrypoint: resolve('../routes/configuration.astro'),
+					// 	pattern: 'create-page',
+					// 	entrypoint: resolve('../routes/create-page.astro'),
 					// },
 					// {
 					// 	enabled: dashboardEnabled && !dbStartPage,
