@@ -29,8 +29,9 @@ const compId = crypto.randomUUID();
 <script is:inline define:vars={{ compId }}>
   function setSidebarLinks() {
     const link = document.getElementById(compId)
-    const notSelectedIcon = link.getElementById('not-selected-icon')
-    const selectedIcon = link.getElementById('selected-icon')
+
+    const notSelectedIcon = link.querySelector('#not-selected-icon')
+    const selectedIcon = link.querySelector('#selected-icon')
 
     notSelectedIcon.style.display = 'block';
     selectedIcon.style.display = 'none';
