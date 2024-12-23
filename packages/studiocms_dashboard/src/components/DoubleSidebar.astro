@@ -117,10 +117,8 @@ const sidebar = getSidebarLinks(lang);
       new DoubleSidebarHelper();
     }
     new DropdownHelper('sidebar-user-dropdown', true);
-    // sidebarLinks();
-  });
 
-  document.addEventListener('astro:after-swap', () => {
+
     const sidebar = document.querySelector('.sidebar') as HTMLElement;
     if (!sidebar) return;
 
@@ -128,6 +126,12 @@ const sidebar = getSidebarLinks(lang);
 
     for (const link of sidebarLinks) {
       link.classList.remove('active');
+      if (link.href === window.location.pathname) {
+        link.classList.add('active');
+      }
     }
+  });
+
+  document.addEventListener('astro:page-load', () => {
   })
 </script>
