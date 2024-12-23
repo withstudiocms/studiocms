@@ -14,9 +14,11 @@ interface Props extends HTMLAttributes<'a'> {
 const { icon, ...props } = Astro.props;
 
 const activeIcon = `${icon}-solid`;
+
+const compId = crypto.randomUUID();
 ---
 
-<a id={`${icon}-link`} class="sidebar-link" {...props}>
+<a id={compId} class="sidebar-link" {...props}>
   <Icon name={icon} class='sidebar-link-icon not-selected' width={24} height={24} />
   <Icon name={activeIcon as HeroIconName} class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">
@@ -24,26 +26,22 @@ const activeIcon = `${icon}-solid`;
   </span>
 </a>
 
-<script is:inline>
+<script is:inline define:vars={{ compId }}>
   function setSidebarLinks() {
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    console.log('sidebarLinks', sidebarLinks);
+    const link = document.getElementById(compId)
+    console.log('sidebarLinks', link);
 
-    for (const link of sidebarLinks) {
-      const id = link.id;
+    const notSelectedIcon = link.querySelector('.not-selected')
+    const selectedIcon = link.querySelector('.selected')
 
-      const notSelectedIcon = link.querySelector('.not-selected')
-      const selectedIcon = link.querySelector('.selected')
+    notSelectedIcon.style.display = 'block';
+    selectedIcon.style.display = 'none';
+    link.classList.remove('active');
 
-      notSelectedIcon.style.display = 'block';
-      selectedIcon.style.display = 'none';
-      link.classList.remove('active');
-
-      if (new URL(link.href).pathname === window.location.pathname) {
-        notSelectedIcon.style.display = 'none';
-        selectedIcon.style.display = 'block';
-        link.classList.add('active');
-      }
+    if (new URL(link.href).pathname === window.location.pathname) {
+      notSelectedIcon.style.display = 'none';
+      selectedIcon.style.display = 'block';
+      link.classList.add('active');
     }
   }
   document.addEventListener('astro:page-load', setSidebarLinks);
