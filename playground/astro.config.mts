@@ -16,6 +16,11 @@ export default defineConfig({
 	security: {
 		checkOrigin: false,
 	},
+	vite: {
+		build: {
+			assetsInlineLimit: 0,
+		},
+	},
 	integrations: [
 		db(),
 		studioCMS({

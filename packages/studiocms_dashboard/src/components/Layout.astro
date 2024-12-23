@@ -46,8 +46,8 @@ const description = propDescription ?? dbConfig.description;
       }
       </>
      ) }
-    { sidebar === 'single' && <SingleSidebar {pagePreRendered} transition:persist transition:persist-props /> }
-    { sidebar === 'double' && <DoubleSidebar {pagePreRendered} transition:persist transition:persist-props /> }
+    { sidebar === 'single' && <SingleSidebar {pagePreRendered} /> }
+    { sidebar === 'double' && <DoubleSidebar {pagePreRendered} /> }
     <main>
       { sidebar !== false && (
         <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
@@ -57,10 +57,28 @@ const description = propDescription ?? dbConfig.description;
       <slot />
     </main>
     <script>
-      import { sidebarLinks } from "./component-scripts/sidebarLinks";
-    
+      const sidebarLinks = document.querySelectorAll('.sidebar-link');
+      console.log('sidebarLinks', sidebarLinks);
+
+      for (const link of sidebarLinks) {
+        link.classList.remove('active');
+
+        if (new URL(link.href).pathname === window.location.pathname) {
+          link.classList.add('active');
+        }
+      }
+
       document.addEventListener('astro:page-load', () => {
-        sidebarLinks();
+      const sidebarLinks = document.querySelectorAll('.sidebar-link');
+      console.log('sidebarLinks', sidebarLinks);
+
+      for (const link of sidebarLinks) {
+        link.classList.remove('active');
+
+        if (new URL(link.href).pathname === window.location.pathname) {
+          link.classList.add('active');
+        }
+      }
       });
     </script>
   </body>
