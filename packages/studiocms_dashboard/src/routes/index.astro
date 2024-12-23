@@ -2,20 +2,23 @@
 // import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
-import PageHeader from '../components/DashboardPageHeader.astro';
+import DashboardPageHeader from '../components/DashboardPageHeader.astro';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 // Get the web vitals
 // const webVitals = await getWebVitals();
+
+const pagePreRendered = true;
 ---
 
 <Layout 
   title={t('title')}
   requiredPermission='editor'
+  {pagePreRendered}
   {lang}
 >
-  <PageHeader />
+  <DashboardPageHeader {pagePreRendered} />
   <span>{t('sub-header')}</span>
 </Layout>

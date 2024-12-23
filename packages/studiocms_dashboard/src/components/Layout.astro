@@ -12,6 +12,7 @@ const { data: dbConfig } = await studioCMS_SDK_Cache.GET.siteConfig();
 
 type Props = {
 	title: string;
+	pagePreRendered?: boolean;
 	description?: string;
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
@@ -21,6 +22,7 @@ type Props = {
 const {
 	title: propTitle,
 	description: propDescription,
+	pagePreRendered = true,
 	lang = 'en-us',
 	requiredPermission = 'unknown',
 	sidebar = 'single',
@@ -35,9 +37,17 @@ const description = propDescription ?? dbConfig.description;
   <BaseHead {title} {description} />
   <body>
     <Toaster />
-    { requiredPermission !== 'none' && <LoginChecker server:defer {requiredPermission} /> }
-    { sidebar === 'single' && <SingleSidebar transition:persist transition:persist-props /> }
-    { sidebar === 'double' && <DoubleSidebar transition:persist transition:persist-props /> }
+    { requiredPermission !== 'none' && ( 
+      <>
+      { 
+        pagePreRendered 
+        ? <LoginChecker requiredPermission={requiredPermission} server:defer /> 
+        : <LoginChecker requiredPermission={requiredPermission} /> 
+      }
+      </>
+     ) }
+    { sidebar === 'single' && <SingleSidebar {pagePreRendered} transition:persist transition:persist-props /> }
+    { sidebar === 'double' && <DoubleSidebar {pagePreRendered} transition:persist transition:persist-props /> }
     <main>
       { sidebar !== false && (
         <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>

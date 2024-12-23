@@ -5,13 +5,23 @@ import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import UserName from './islands/dashboard/UserName.astro';
 
+interface Props {
+	pagePreRendered: boolean;
+}
+
+const { pagePreRendered } = Astro.props;
+
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
 <header class="page-header">
   <div class="page-title-container">
-    <h1 class="page-title">{t("welcome-title")}, <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName>.</h1>
+    <h1 class="page-title">{t("welcome-title")}, {
+        pagePreRendered
+        ? <UserName server:defer><Fragment slot='fallback' set:text='User' /></UserName>
+        : <UserName />
+      }.</h1>
   </div>
   <div class="page-actions-container">
     <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>

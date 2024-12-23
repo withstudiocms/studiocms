@@ -17,6 +17,12 @@ import VersionCheckPart from './shared-parts/VersionCheck.astro';
 
 const { versionCheck } = dashboardConfig;
 
+interface Props {
+	pagePreRendered: boolean;
+}
+
+const { pagePreRendered } = Astro.props;
+
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 ---
@@ -28,7 +34,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
         <StudioCMSLogo class={'sidebar-logo'} />
         <div class="sidebar-header-text">
           <span class="sidebar-title">StudioCMS</span>
-          { versionCheck && <VersionCheck server:defer><VersionCheckPart slot="fallback" /></VersionCheck>}
+          { versionCheck && 
+            (
+              <>
+              { pagePreRendered
+                ? (
+                  <VersionCheck server:defer transition:persist transition:persist-props>
+                    <VersionCheckPart slot="fallback" />
+                  </VersionCheck>
+                ) : (
+                  <VersionCheck transition:persist transition:persist-props />
+              )} 
+              </>
+            )
+          }
         </div>
       </div>
       <Divider background='background-step-1'>{t("category-1-header")}</Divider>
@@ -40,7 +59,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
           {t("content-management-label")}
         </SidebarLink>
       </div>
-      <Admin server:defer transition:persist transition:persist-props />
+      {
+        pagePreRendered 
+        ? <Admin server:defer transition:persist transition:persist-props /> 
+        : <Admin transition:persist transition:persist-props />
+      }
       { /* 
         Fallback slot removed from <Admin /> component to prevent the sidebar
         from displaying the fallback content when the user is not an admin.
@@ -58,9 +81,15 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
         transition:persist transition:persist-props
       >
         <div class="user-dropdown-trigger-container">
-          <UserAccount server:defer transition:persist transition:persist-props>
-            <User slot="fallback" name={"Visitor"} description={'Unknown'} />
-          </UserAccount>
+          {
+            pagePreRendered
+            ? (
+              <UserAccount server:defer transition:persist transition:persist-props>
+                <User slot="fallback" name={"Visitor"} description={'Unknown'} />
+              </UserAccount>
+            ) 
+            : <UserAccount transition:persist transition:persist-props />
+          }
         </div>
       </Dropdown>
     </div>
