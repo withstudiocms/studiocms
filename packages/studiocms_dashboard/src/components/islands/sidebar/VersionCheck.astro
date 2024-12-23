@@ -1,5 +1,4 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import changelog from 'studiocms:changelog';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { StudioCMSRenderer } from 'studiocms:renderer';
@@ -11,10 +10,6 @@ import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone
 import { timeAgo } from '../../component-scripts/timeAgo';
 import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
 import VersionCheckChangelog from './VersionCheckChangelog.astro';
-
-const data = await getUserData(Astro);
-
-const isAdmin = await verifyUserPermissionLevel(data, 'admin');
 
 const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
 
@@ -28,7 +23,6 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     <VersionCheckPart {status} />
 </div>
 
-{ isAdmin && ( 
     <Modal id="version-modal" size="lg">
 
         <h2 slot="header" class="inline-title">
@@ -89,7 +83,6 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
             </div>
         </div>
     </Modal>
-)}
 
 <script>
     import { ModalHelper } from '@studiocms/ui/components';
