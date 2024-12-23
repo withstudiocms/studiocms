@@ -103,10 +103,12 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     const latestUpdateCheck = document.getElementById('latest-update-check') as HTMLSpanElement;
     const latestVersionElem = document.getElementById('latest-version') as HTMLElement;
 
-    new ModalHelper('version-modal', 'version-modal-trigger')
-    dateTimeListener('version-modal-last-checked-date')
 
     document.addEventListener('astro:page-load', () => {
+        if (document.getElementById('version-modal-trigger')) {
+            new ModalHelper('version-modal', 'version-modal-trigger')
+            dateTimeListener('version-modal-last-checked-date')
+        }
         reloadButton.addEventListener('click', async () => {
             const response = await fetch(reloadButton.dataset.link!);
             if (response.ok) {
