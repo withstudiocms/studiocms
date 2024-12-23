@@ -34,11 +34,11 @@ export const StudioCMSRoutes = {
 	mainLinks: {
 		baseSiteURL: makeNonDashboardRoute(),
 		dashboardIndex: makeDashboardRoute(),
-		userProfile: makeDashboardRoute('profile/'),
-		contentManagement: makeDashboardRoute('content-management/'),
-		createPage: makeDashboardRoute('create-page/'),
-		siteConfiguration: makeDashboardRoute('configuration/'),
-		userManagement: makeDashboardRoute('user-management/'),
+		userProfile: makeDashboardRoute('profile'),
+		contentManagement: makeDashboardRoute('content-management'),
+		createPage: makeDashboardRoute('create-page'),
+		siteConfiguration: makeDashboardRoute('configuration'),
+		userManagement: makeDashboardRoute('user-management'),
 	},
 	authLinks: {
 		loginURL: makeDashboardRoute('login'),
