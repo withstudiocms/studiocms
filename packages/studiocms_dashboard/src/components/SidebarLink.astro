@@ -24,7 +24,7 @@ const activeIcon = `${icon}-solid`;
   </span>
 </a>
 
-<script is:inline data-astro-rerun>
+<script is:inline>
   function setSidebarLinks() {
     const sidebarLinks = document.querySelectorAll('.sidebar-link');
     console.log('sidebarLinks', sidebarLinks);
@@ -46,7 +46,7 @@ const activeIcon = `${icon}-solid`;
       }
     }
   }
-  document.addEventListener('astro:page-load', setSidebarLinks());
+  document.addEventListener('astro:page-load', setSidebarLinks);
   setSidebarLinks();
 </script>
 
