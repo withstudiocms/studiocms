@@ -56,14 +56,14 @@ const sidebar = getSidebarLinks(lang);
       }
       {
         pagePreRendered 
-        ? <Editor server:defer transition:persist transition:persist-props/> 
-        : <Editor transition:persist transition:persist-props/>
+        ? <Editor server:defer /> 
+        : <Editor />
       }
     </div>
     {
       pagePreRendered 
-      ? <Admin server:defer transition:persist transition:persist-props/>
-      : <Admin transition:persist transition:persist-props/>
+      ? <Admin server:defer />
+      : <Admin />
     }
     { /* 
       Fallback slot removed from <Admin /> component to prevent the sidebar
