@@ -6,12 +6,7 @@ function linkPath(link: HTMLAnchorElement) {
 	return new URL(link.href).pathname;
 }
 
-export function sidebarLinks() {
-	const singleSidebar = document.querySelector<HTMLElement>('#sui-sidebar');
-	const doubleSidebar = document.querySelector<HTMLElement>('#sui-sidebars');
-
-	const sidebar = singleSidebar || doubleSidebar;
-
+export function sidebarLinks(sidebar: HTMLElement | null) {
 	if (!sidebar) {
 		return;
 	}

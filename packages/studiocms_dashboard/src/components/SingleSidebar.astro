@@ -101,12 +101,16 @@ const sidebar = getSidebarLinks(lang);
   import { DropdownHelper } from "@studiocms/ui/components";
   import { sidebarLinks } from "./component-scripts/sidebarLinks";
 
+	const singleSidebar = document.querySelector<HTMLElement>('#sui-sidebar');
+
+  sidebarLinks(singleSidebar);
+
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebar')) {
       new SingleSidebarHelper('nav-toggle');
     }
     new DropdownHelper('sidebar-user-dropdown', true);
 
-    sidebarLinks();
+    sidebarLinks(singleSidebar);
   });
 </script>
