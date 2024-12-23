@@ -6,12 +6,8 @@ function linkPath(link: HTMLAnchorElement) {
 	return new URL(link.href).pathname;
 }
 
-export function sidebarLinks(sidebar: HTMLElement | null) {
-	if (!sidebar) {
-		return;
-	}
-
-	const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('.sidebar-link');
+export function sidebarLinks() {
+	const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>('.sidebar-link');
 
 	for (const link of sidebarLinks) {
 		link.classList.remove('active');
