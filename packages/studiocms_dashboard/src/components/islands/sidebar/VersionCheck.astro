@@ -102,7 +102,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
 
     if (document.getElementById('version-modal')) {
-        new ModalHelper('version-modal', 'version-modal-trigger');
+        makeClientRoutable(new ModalHelper('version-modal', 'version-modal-trigger'));
     }
 
     const reloadButton = document.getElementById('version-modal-reload') as HTMLButtonElement;

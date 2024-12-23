@@ -36,11 +36,11 @@ const sidebar = getSidebarLinks(lang);
             <>
             { pagePreRendered
               ? (
-                <VersionCheck server:defer>
+                <VersionCheck server:defer transition:persist transition:persist-props>
                   <VersionCheckPart slot="fallback" />
                 </VersionCheck>
               ) : (
-                <VersionCheck />
+                <VersionCheck transition:persist transition:persist-props />
             )} 
             </>
           )
