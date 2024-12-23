@@ -22,14 +22,13 @@ export default defineConfig({
 			dbStartPage: false,
 			verbose: true,
 			dashboardConfig: {
-				// AuthConfig: {
-				// 	providers: {
-				// 		auth0: true,
-				// 		github: true,
-				// 		google: true,
-				// 		discord: true,
-				// 	},
-				// },
+				AuthConfig: {
+					providers: {
+						github: true,
+						google: true,
+						discord: true,
+					},
+				},
 			},
 			defaultFrontEndConfig: {
 				// htmlDefaultHead: [
