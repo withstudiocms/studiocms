@@ -19,9 +19,8 @@ export function sidebarLinks(sidebar: HTMLElement | null) {
 		const linkP = removeTrailingSlash(linkPath(link)).trim();
 		const windowP = removeTrailingSlash(window.location.pathname).trim();
 
-		console.log(linkP, windowP);
-
 		if (linkP === windowP) {
+			console.log(linkP, windowP);
 			link.classList.add('active');
 		}
 	}
