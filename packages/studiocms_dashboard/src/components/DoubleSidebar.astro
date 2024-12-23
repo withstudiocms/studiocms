@@ -111,8 +111,6 @@ const sidebar = getSidebarLinks(lang);
   import { DropdownHelper } from "@studiocms/ui/components";
   import { sidebarLinks } from "./component-scripts/sidebarLinks";
 
-  sidebarLinks();
-
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebars')) {
       new DoubleSidebarHelper();
