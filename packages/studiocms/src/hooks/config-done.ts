@@ -25,6 +25,22 @@ export const configDone = defineUtility('astro:config:done')(
 			},
 		});
 
+		dtsFile.addModule('studiocms:mode', {
+			defaultExport: {
+				typeDef: `{ output: 'static' | 'server', prerenderRoutes: boolean }`,
+			},
+			namedExports: [
+				{
+					name: 'output',
+					typeDef: `'static' | 'server'`,
+				},
+				{
+					name: 'prerenderRoutes',
+					typeDef: 'boolean',
+				},
+			],
+		});
+
 		// Inject the DTS file
 		injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
 

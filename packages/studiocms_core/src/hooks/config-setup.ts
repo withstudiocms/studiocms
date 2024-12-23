@@ -6,7 +6,7 @@ import { makeAPIRoute, makePublicRoute } from '../lib';
 import type { StudioCMSConfig } from '../schemas';
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, options: StudioCMSConfig) => {
+	(params, options: StudioCMSConfig, prerenderRoutes: boolean) => {
 		// Destructure the params
 		const {
 			logger,
@@ -141,21 +141,21 @@ export const configSetup = defineUtility('astro:config:setup')(
 		});
 
 		injectRoute({
-			pattern: sdkRouteResolver('fallback-list-pages.json'),
-			entrypoint: resolve('../routes/fallback-list-pages.json.ts'),
-			prerender: true,
-		});
-
-		injectRoute({
 			pattern: sdkRouteResolver('update-latest-version-cache'),
 			entrypoint: resolve('../routes/update-latest-version-cache.ts'),
 			prerender: false,
 		});
 
 		injectRoute({
+			pattern: sdkRouteResolver('fallback-list-pages.json'),
+			entrypoint: resolve('../routes/fallback-list-pages.json.ts'),
+			prerender: prerenderRoutes,
+		});
+
+		injectRoute({
 			pattern: sdkRouteResolver('full-changelog.json'),
 			entrypoint: resolve('../routes/full-changelog.json.ts'),
-			prerender: true,
+			prerender: prerenderRoutes,
 		});
 
 		integrationLogger(logInfo, 'Core Setup Complete...');

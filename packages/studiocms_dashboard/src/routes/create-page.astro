@@ -1,4 +1,5 @@
 ---
+import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Layout } from '../components';
 
 const lang = 'en-us';
@@ -8,6 +9,7 @@ const lang = 'en-us';
 <Layout 
   title="Create Page"
   requiredPermission='editor'
+  {pagePreRendered}
   {lang}
 >
 

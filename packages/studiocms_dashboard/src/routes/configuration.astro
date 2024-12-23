@@ -1,4 +1,5 @@
 ---
+import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
 
@@ -9,6 +10,7 @@ const lang = 'en-us';
 <Layout 
   title={"Configuration"}
   requiredPermission='owner'
+  {pagePreRendered}
   {lang}
 >
 

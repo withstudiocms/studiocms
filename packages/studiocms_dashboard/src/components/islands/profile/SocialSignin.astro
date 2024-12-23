@@ -67,7 +67,7 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
 
                 {
                     connectedProviders.length === 0 && (
-                        <Center><p>No connected accounts found.</p></Center>
+                        <Center><div>No connected accounts found.</div></Center>
                     )
                 }
             </div>
@@ -95,7 +95,7 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
 
                 {
                     unconnectedProviders.length === 0 && (
-                        <Center><p>No other sign-in options found.</p></Center>
+                        <Center><div>No other sign-in options found.</div></Center>
                     )
                 }
             </div>

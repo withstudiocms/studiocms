@@ -9,7 +9,7 @@ import { injectDashboardRoute } from '../utils/injectRouteArray';
 const { resolve } = createResolver(import.meta.url);
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, name: string, options: StudioCMSDashboardOptions) => {
+	(params, name: string, options: StudioCMSDashboardOptions, prerenderRoutes: boolean) => {
 		// Destructure the params object
 		const { logger, injectRoute } = params;
 
@@ -106,46 +106,50 @@ export const configSetup = defineUtility('astro:config:setup')(
 		});
 
 		// Inject Routes
-		injectDashboardRoute(params, {
-			options,
-			routes: [
-				{
-					enabled: dashboardEnabled && !dbStartPage,
-					pattern: '/',
-					entrypoint: resolve('../routes/index.astro'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage,
-					pattern: 'test',
-					entrypoint: resolve('../routes/test.astro'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage,
-					pattern: 'content-management',
-					entrypoint: resolve('../routes/content-management.astro'),
-				},
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: 'create-page',
-				// 	entrypoint: resolve('../routes/create-page.astro'),
-				// },
-				{
-					enabled: dashboardEnabled && !dbStartPage,
-					pattern: 'profile',
-					entrypoint: resolve('../routes/profile.astro'),
-				},
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: 'configuration',
-				// 	entrypoint: resolve('../routes/configuration.astro'),
-				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage,
-				// 	pattern: 'user-management',
-				// 	entrypoint: resolve('../routes/user-management.astro'),
-				// },
-			],
-		});
+		injectDashboardRoute(
+			params,
+			{
+				options,
+				routes: [
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: '/',
+						entrypoint: resolve('../routes/index.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'test',
+						entrypoint: resolve('../routes/test.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management',
+						entrypoint: resolve('../routes/content-management.astro'),
+					},
+					// {
+					// 	enabled: dashboardEnabled && !dbStartPage,
+					// 	pattern: 'create-page',
+					// 	entrypoint: resolve('../routes/create-page.astro'),
+					// },
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'profile',
+						entrypoint: resolve('../routes/profile.astro'),
+					},
+					// {
+					// 	enabled: dashboardEnabled && !dbStartPage,
+					// 	pattern: 'configuration',
+					// 	entrypoint: resolve('../routes/configuration.astro'),
+					// },
+					// {
+					// 	enabled: dashboardEnabled && !dbStartPage,
+					// 	pattern: 'user-management',
+					// 	entrypoint: resolve('../routes/user-management.astro'),
+					// },
+				],
+			},
+			prerenderRoutes
+		);
 
 		// Log that the setup is complete
 		integrationLogger({ logger, logLevel: 'info', verbose }, 'StudioCMS Dashboard complete!');

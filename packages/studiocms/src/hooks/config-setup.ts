@@ -22,7 +22,10 @@ import { changelogHelper } from '../utils/changelog';
 export const configSetup = defineUtility('astro:config:setup')(
 	async (params, o: ConfigSetupOptions) => {
 		// Destructure the params
-		const { logger } = params;
+		const {
+			logger,
+			config: { output },
+		} = params;
 
 		// Destructure the options
 		const { messages, opts, pkgName, pkgVersion } = o;
@@ -42,8 +45,17 @@ export const configSetup = defineUtility('astro:config:setup')(
 		// Resolve Options
 		const options: StudioCMSConfig = await configResolver(params, opts);
 
-		const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
-			options;
+		const {
+			verbose,
+			rendererConfig,
+			defaultFrontEndConfig,
+			includedIntegrations,
+			plugins,
+			dashboardConfig: { prerender },
+		} = options;
+
+		// Check if the dashboard routes should be prerendered
+		const prerenderRoutes = output === 'static' || prerender;
 
 		// Setup Logger
 		integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS...');
@@ -58,11 +70,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 		const integrations = [
 			{ integration: nodeNamespace() },
 			{ integration: ui() },
-			{ integration: core(options) },
+			{ integration: core(options, prerenderRoutes) },
 			{ integration: renderers(rendererConfig, verbose) },
 			{ integration: imageHandler(options) },
-			{ integration: auth(options) },
-			{ integration: dashboard(options) },
+			{ integration: auth(options, prerenderRoutes) },
+			{ integration: dashboard(options, prerenderRoutes) },
 		];
 
 		// Frontend Integration (Default)
@@ -141,6 +153,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 			name: pkgName,
 			imports: {
 				'studiocms:plugins': `export default ${JSON.stringify(safePluginList)};`,
+				'studiocms:mode': `
+					export const output = ${JSON.stringify(output)};
+					export const prerenderRoutes = ${prerenderRoutes};
+					export default { output, prerenderRoutes };
+				`,
 			},
 		});
 

@@ -1,6 +1,7 @@
 ---
 // import { useTranslations } from 'studiocms:i18n';
 import { AuthConfig } from 'studiocms:config';
+import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
 import BasicInfo from '../components/islands/profile/BasicInfo.astro';
@@ -19,8 +20,6 @@ const {
 } = AuthConfig;
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
-
-const pagePreRendered = true;
 ---
 
 <Layout 

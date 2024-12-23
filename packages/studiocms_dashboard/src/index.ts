@@ -8,11 +8,14 @@ import type { StudioCMSDashboardOptions } from './schema';
 /**
  * StudioCMS Dashboard Integration
  */
-function studioCMSDashboard(options: StudioCMSDashboardOptions): AstroIntegration {
+function studioCMSDashboard(
+	options: StudioCMSDashboardOptions,
+	prerenderRoutes: boolean
+): AstroIntegration {
 	return {
 		name,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, name, options),
+			'astro:config:setup': (params) => configSetup(params, name, options, prerenderRoutes),
 			'astro:config:done': (params) => configDone(params),
 			'astro:server:start': (params) => serverStart(params, options),
 		},

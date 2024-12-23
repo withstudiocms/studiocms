@@ -12,11 +12,14 @@ import type { StudioCMSConfig } from './schemas';
  *
  * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  */
-export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
+export function studioCMSCore(
+	options: StudioCMSConfig,
+	prerenderRoutes: boolean
+): AstroIntegration {
 	return {
 		name: pkgName,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, options),
+			'astro:config:setup': (params) => configSetup(params, options, prerenderRoutes),
 			'astro:config:done': (params) => configDone(params),
 		},
 	};
