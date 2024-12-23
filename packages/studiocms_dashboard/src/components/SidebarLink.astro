@@ -19,8 +19,8 @@ const compId = crypto.randomUUID();
 ---
 
 <a id={compId} class="sidebar-link" {...props}>
-  <Icon name={icon} class='sidebar-link-icon not-selected' width={24} height={24} />
-  <Icon name={activeIcon as HeroIconName} class="sidebar-link-icon selected" width={24} height={24} />
+  <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
+  <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">
     <slot />
   </span>
@@ -29,10 +29,8 @@ const compId = crypto.randomUUID();
 <script is:inline define:vars={{ compId }}>
   function setSidebarLinks() {
     const link = document.getElementById(compId)
-    console.log('sidebarLinks', link);
-
-    const notSelectedIcon = link.querySelector('.not-selected')
-    const selectedIcon = link.querySelector('.selected')
+    const notSelectedIcon = link.getElementById('not-selected-icon')
+    const selectedIcon = link.getElementById('selected-icon')
 
     notSelectedIcon.style.display = 'block';
     selectedIcon.style.display = 'none';
