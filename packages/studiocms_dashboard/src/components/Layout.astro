@@ -56,5 +56,13 @@ const description = propDescription ?? dbConfig.description;
       )}
       <slot />
     </main>
+    <script>
+      import { sidebarLinks } from "./component-scripts/sidebarLinks";
+      sidebarLinks();
+    
+      document.addEventListener('astro:page-load', () => {
+        sidebarLinks();
+      });
+    </script>
   </body>
 </html>
