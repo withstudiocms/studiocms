@@ -7,11 +7,16 @@ function linkPath(link: HTMLAnchorElement) {
 }
 
 export function sidebarLinks() {
-	console.log('sidebarLinks script loaded');
-	const sidebar = document.querySelector('.sidebar') as HTMLElement;
-	if (!sidebar) return;
+	const singleSidebar = document.querySelector<HTMLElement>('#sui-sidebar');
+	const doubleSidebar = document.querySelector<HTMLElement>('#sui-sidebars');
 
-	const sidebarLinks = sidebar.querySelectorAll('a');
+	const sidebar = singleSidebar || doubleSidebar;
+
+	if (!sidebar) {
+		return;
+	}
+
+	const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
 
 	for (const link of sidebarLinks) {
 		link.classList.remove('active');

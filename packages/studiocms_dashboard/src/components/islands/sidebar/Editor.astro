@@ -13,10 +13,6 @@ const isEditor = await verifyUserPermissionLevel(data, 'editor');
 
 Astro.response.headers.set('Cache-Control', 'max-age=604800');
 ---
-<>
-{
-    isEditor && sidebar.editorLinks.map(({ href, icon, title }) => (
-        <SidebarLink {icon} {href}>{title}</SidebarLink>
-    ))
-}
-</>
+{ isEditor && sidebar.editorLinks.map(({ href, icon, title }) => (
+    <SidebarLink {icon} {href}>{title}</SidebarLink>
+))}

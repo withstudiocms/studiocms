@@ -65,10 +65,10 @@ const sidebar = getSidebarLinks(lang);
       ? <Admin server:defer transition:persist transition:persist-props/>
       : <Admin transition:persist transition:persist-props/>
     }
-      { /* 
-        Fallback slot removed from <Admin /> component to prevent the sidebar
-        from displaying the fallback content when the user is not an admin.
-      */}
+    { /* 
+      Fallback slot removed from <Admin /> component to prevent the sidebar
+      from displaying the fallback content when the user is not an admin.
+    */}
   </div>  
   <div>
     <Dropdown 
