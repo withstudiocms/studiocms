@@ -11,13 +11,13 @@ export function sidebarLinks(sidebar: HTMLElement | null) {
 		return;
 	}
 
-	const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('a');
+	const sidebarLinks = sidebar.querySelectorAll<HTMLAnchorElement>('.sidebar-link');
 
 	for (const link of sidebarLinks) {
 		link.classList.remove('active');
 
-		const linkP = removeTrailingSlash(linkPath(link));
-		const windowP = removeTrailingSlash(window.location.pathname);
+		const linkP = removeTrailingSlash(linkPath(link)).trim();
+		const windowP = removeTrailingSlash(window.location.pathname).trim();
 
 		console.log(linkP, windowP);
 
