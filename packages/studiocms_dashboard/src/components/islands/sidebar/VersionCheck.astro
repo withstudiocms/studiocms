@@ -93,41 +93,37 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
 
 <script>
     import { ModalHelper } from '@studiocms/ui/components';
-    import { makeClientRoutable } from '../../component-scripts/makeClientRoutable';
     import { dateTimeListener } from '../../component-scripts/dateTimeListener';
     import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
     import { timeAgo } from '../../component-scripts/timeAgo';
     import type { VersionCacheObject } from 'studiocms:sdk/cache';
-
-    makeClientRoutable(dateTimeListener('version-modal-last-checked-date'));
-
-    document.addEventListener('astro:page-load', () => {
-        if (document.getElementById('version-modal')) {
-            new ModalHelper('version-modal', 'version-modal-trigger')
-        }
-    });
-    if (document.getElementById('version-modal')) {
-        new ModalHelper('version-modal', 'version-modal-trigger')
-    }
 
     const reloadButton = document.getElementById('version-modal-reload') as HTMLButtonElement;
     const timeElem = document.getElementById('version-modal-last-checked-date') as HTMLTimeElement;
     const latestUpdateCheck = document.getElementById('latest-update-check') as HTMLSpanElement;
     const latestVersionElem = document.getElementById('latest-version') as HTMLElement;
 
-    reloadButton.addEventListener('click', async () => {
-        const response = await fetch(reloadButton.dataset.link!);
-        if (response.ok) {
-            const data: { success: boolean, latestVersion: VersionCacheObject } = await response.json();
-
-            if (data.success) {
-                latestVersionElem.textContent = `v${data.latestVersion.version}`;
-                timeElem.dateTime = new Date(data.latestVersion.lastCacheUpdate).toISOString();
-                timeElem.textContent = dateWithTimeAndZone(new Date(data.latestVersion.lastCacheUpdate));
-                latestUpdateCheck.textContent = `(${timeAgo(new Date(data.latestVersion.lastCacheUpdate))})`;
-            }
+    document.addEventListener('astro:page-load', () => {
+        if (document.getElementById('version-modal')) {
+            new ModalHelper('version-modal', 'version-modal-trigger')
+            dateTimeListener('version-modal-last-checked-date')
         }
+
+        reloadButton.addEventListener('click', async () => {
+            const response = await fetch(reloadButton.dataset.link!);
+            if (response.ok) {
+                const data: { success: boolean, latestVersion: VersionCacheObject } = await response.json();
+
+                if (data.success) {
+                    latestVersionElem.textContent = `v${data.latestVersion.version}`;
+                    timeElem.dateTime = new Date(data.latestVersion.lastCacheUpdate).toISOString();
+                    timeElem.textContent = dateWithTimeAndZone(new Date(data.latestVersion.lastCacheUpdate));
+                    latestUpdateCheck.textContent = `(${timeAgo(new Date(data.latestVersion.lastCacheUpdate))})`;
+                }
+            }
+        });
     });
+
 </script>
 
 <style>
