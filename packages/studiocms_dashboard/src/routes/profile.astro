@@ -4,11 +4,16 @@ import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
 import BasicInfo from '../components/islands/profile/BasicInfo.astro';
 import BasicInfoFallback from '../components/islands/profile/BasicInfoFallback.astro';
+import SocialSignin from '../components/islands/profile/SocialSignin.astro';
+import SocialSigninFallback from '../components/islands/profile/SocialSigninFallback.astro';
 import UpdatePassword from '../components/islands/profile/UpdatePassword.astro';
 import UpdatePasswordFallback from '../components/islands/profile/UpdatePasswordFallback.astro';
+import { providerData, showOAuth } from '../components/islands/profile/oAuthButtonProviders';
 
 const lang = 'en-us';
 // const t = useTranslations(lang, '@studiocms/dashboard:index');
+
+const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 ---
 
 <Layout 
@@ -20,13 +25,19 @@ const lang = 'en-us';
 
   <div class="page-content">
     
-    <BasicInfo server:defer>
+    <BasicInfo server:defer transition:persist transition:persist-props >
       <BasicInfoFallback slot="fallback" />
     </BasicInfo>
     
-    <UpdatePassword server:defer>
+    <UpdatePassword server:defer transition:persist transition:persist-props >
       <UpdatePasswordFallback slot="fallback" />
     </UpdatePassword>
+
+    { shouldShowOAuth && ( 
+      <SocialSignin server:defer transition:persist transition:persist-props >
+        <SocialSigninFallback slot="fallback" />
+      </SocialSignin>
+    )}
 
   </div>
 </Layout>

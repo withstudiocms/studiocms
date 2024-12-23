@@ -21,6 +21,16 @@ export default defineConfig({
 		studioCMS({
 			dbStartPage: false,
 			verbose: true,
+			dashboardConfig: {
+				// AuthConfig: {
+				// 	providers: {
+				// 		auth0: true,
+				// 		github: true,
+				// 		google: true,
+				// 		discord: true,
+				// 	},
+				// },
+			},
 			defaultFrontEndConfig: {
 				// htmlDefaultHead: [
 				// 	{

@@ -1,0 +1,154 @@
+---
+import { getUserData } from 'studiocms:auth/lib/user';
+// import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import studioCMS_SDK from 'studiocms:sdk';
+import type { CombinedUserData } from 'studiocms:sdk/types';
+import { Button, Card, Center } from '@studiocms/ui/components';
+import Icon from '@studiocms/ui/utils/Icon.astro';
+import { providerData } from './oAuthButtonProviders';
+
+const { user } = await getUserData(Astro);
+
+let userOAuthData: CombinedUserData['oAuthData'] | undefined;
+
+if (user) {
+	const userFullData = await studioCMS_SDK.GET.databaseEntry.users.byId(user.id);
+
+	if (userFullData) {
+		userOAuthData = userFullData.oAuthData;
+	}
+}
+
+const hasOAuthData = userOAuthData && Object.keys(userOAuthData).length > 0;
+
+const connectedAccounts: { provider: string }[] = [];
+
+if (hasOAuthData) {
+	for (const provider in userOAuthData) {
+		connectedAccounts.push({ provider });
+	}
+}
+
+const socialProviders = providerData.map((providerData) => ({
+	...providerData,
+	connected: connectedAccounts.some(
+		({ provider }) => provider === providerData.label.toLowerCase()
+	),
+}));
+
+const connectedProviders = socialProviders.filter(({ connected }) => connected);
+const unconnectedProviders = socialProviders.filter(({ connected }) => !connected);
+---
+<Card fullWidth class="social-signin-options">
+
+    <div slot="header">
+        <h2>Social Sign-in Accounts</h2>
+    </div>
+
+    <div class="social-signin-cards">
+
+        <Card fullWidth class="social-signin-bg">
+    
+            <div slot="header">
+                <h3>Connected Accounts</h3>
+            </div>
+
+            <div class="button-holder">
+                {
+                    connectedProviders.map(({ enabled, href, image, label }) => enabled && (
+                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                            <Icon name="minus-circle" width={24} height={24} />
+                        </Button>
+                    ))
+                }
+
+                {
+                    connectedProviders.length === 0 && (
+                        <Center><p>No connected accounts found.</p></Center>
+                    )
+                }
+            </div>
+    
+        </Card>
+    
+        <Card fullWidth class="social-signin-bg">
+    
+            <div slot="header">
+                <h3>Other Sign-In Options</h3>
+            </div>
+
+            <div class="button-holder">
+                {
+                    unconnectedProviders.map(({ enabled, href, image, label }) => enabled && (
+                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                            <Icon name="plus-circle" width={24} height={24} />
+                        </Button>
+                    ))
+                }
+
+                {
+                    unconnectedProviders.length === 0 && (
+                        <Center><p>No other sign-in options found.</p></Center>
+                    )
+                }
+            </div>
+    
+        </Card>
+    
+    </div>
+
+</Card>
+
+<style>
+    .social-signin-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .social-signin-cards {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        height: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .social-signin-cards {
+            flex-direction: column;
+        }
+    }
+
+    .social-signin-bg {
+        background-color: hsl(var(--background-step-2));
+        height: auto;
+    }
+
+    .oauth-button {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between !important;
+        width: 100%;
+        margin-button: 1rem;
+    }
+
+    .icon-and-label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .button-holder {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+</style>
