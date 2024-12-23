@@ -34,6 +34,7 @@ const { icon, ...props } = Astro.props;
       }
     }
   }
+  document.addEventListener('astro:page-load', setSidebarLinks());
   setSidebarLinks();
 </script>
 
