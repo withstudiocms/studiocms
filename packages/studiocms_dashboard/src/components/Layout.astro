@@ -56,17 +56,5 @@ const description = propDescription ?? dbConfig.description;
       )}
       <slot />
     </main>
-    <script is:inline data-astro-rerun>
-      const sidebarLinks = document.querySelectorAll('.sidebar-link');
-      console.log('sidebarLinks', sidebarLinks);
-
-      for (const link of sidebarLinks) {
-        link.classList.remove('active');
-
-        if (new URL(link.href).pathname === window.location.pathname) {
-          link.classList.add('active');
-        }
-      }
-    </script>
   </body>
 </html>

@@ -20,6 +20,23 @@ const { icon, ...props } = Astro.props;
     <slot />
   </span>
 </a>
+
+<script is:inline data-astro-rerun>
+  function setSidebarLinks() {
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    console.log('sidebarLinks', sidebarLinks);
+
+    for (const link of sidebarLinks) {
+      link.classList.remove('active');
+
+      if (new URL(link.href).pathname === window.location.pathname) {
+        link.classList.add('active');
+      }
+    }
+  }
+  setSidebarLinks();
+</script>
+
 <style>
   .sidebar-link {
     display: flex;
