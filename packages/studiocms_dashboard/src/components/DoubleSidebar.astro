@@ -60,17 +60,16 @@ const sidebar = getSidebarLinks(lang);
             <SidebarLink {icon} {href}>{title}</SidebarLink>
           ))
         }
+        {
+          pagePreRendered 
+          ? <Editor server:defer transition:persist transition:persist-props/> 
+          : <Editor transition:persist transition:persist-props/>
+        }
       </div>
       {
         pagePreRendered 
-        ? (
-          <Editor server:defer transition:persist transition:persist-props />
-          <Admin server:defer transition:persist transition:persist-props />
-        ) 
-        : (
-          <Editor transition:persist transition:persist-props />
-          <Admin transition:persist transition:persist-props />
-        )
+        ? <Admin server:defer transition:persist transition:persist-props/>
+        : <Admin transition:persist transition:persist-props/>
       }
       { /* 
         Fallback slot removed from <Admin /> component to prevent the sidebar
@@ -111,8 +110,6 @@ const sidebar = getSidebarLinks(lang);
   import { DoubleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
   import { sidebarLinks } from "./component-scripts/sidebarLinks";
-
-  sidebarLinks();
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebars')) {
