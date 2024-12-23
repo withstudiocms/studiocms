@@ -3,6 +3,7 @@ function removeTrailingSlash(url: string) {
 }
 
 export function sidebarLinks() {
+	console.log('sidebarLinks script loaded');
 	const sidebar = document.querySelector<HTMLElement>('.sidebar');
 	if (!sidebar) {
 		return;
