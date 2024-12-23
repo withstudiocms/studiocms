@@ -30,7 +30,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
 ---
 
-<SuiDoubleSidebar class='sidebar' transition:persist transition:persist-props>
+<SuiDoubleSidebar class='sidebar'>
   <div slot="outer" class="outer-sidebar-container">
     <div class="sidebar-links-container">
       <div class="sidebar-header">
@@ -42,11 +42,11 @@ const sidebar = getSidebarLinks(lang);
               <>
               { pagePreRendered
                 ? (
-                  <VersionCheck server:defer transition:persist transition:persist-props>
+                  <VersionCheck server:defer>
                     <VersionCheckPart slot="fallback" />
                   </VersionCheck>
                 ) : (
-                  <VersionCheck transition:persist transition:persist-props />
+                  <VersionCheck />
               )} 
               </>
             )
