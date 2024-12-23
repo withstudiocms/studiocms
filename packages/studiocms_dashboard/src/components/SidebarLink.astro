@@ -43,7 +43,7 @@ const compId = crypto.randomUUID();
       link.classList.add('active');
     }
   }
-  document.addEventListener('astro:page-load', setSidebarLinks);
+  document.addEventListener('astro:after-swap', setSidebarLinks());
   setSidebarLinks();
 </script>
 
