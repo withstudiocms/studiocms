@@ -25,8 +25,6 @@ export default defineConfig({
 				AuthConfig: {
 					providers: {
 						github: true,
-						google: true,
-						discord: true,
 					},
 				},
 			},

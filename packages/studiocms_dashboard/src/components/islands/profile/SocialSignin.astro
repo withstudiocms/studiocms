@@ -1,6 +1,5 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
-// import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Button, Card, Center } from '@studiocms/ui/components';
@@ -19,7 +18,7 @@ if (user) {
 	}
 }
 
-const hasOAuthData = userOAuthData && Object.keys(userOAuthData).length > 0;
+const hasOAuthData = userOAuthData && userOAuthData.length > 0;
 
 const connectedAccounts: { provider: string }[] = [];
 
