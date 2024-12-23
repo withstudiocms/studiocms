@@ -12,10 +12,13 @@ interface Props extends HTMLAttributes<'a'> {
 }
 
 const { icon, ...props } = Astro.props;
+
+const activeIcon = `${icon}-solid`;
 ---
 
-<a class="sidebar-link" {...props} >
-  <Icon name={icon} class='sidebar-link-icon' width={24} height={24} />
+<a id={`${icon}-link`} class="sidebar-link" {...props}>
+  <Icon name={icon} class='sidebar-link-icon not-selected' width={24} height={24} />
+  <Icon name={activeIcon as HeroIconName} class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">
     <slot />
   </span>
@@ -27,9 +30,18 @@ const { icon, ...props } = Astro.props;
     console.log('sidebarLinks', sidebarLinks);
 
     for (const link of sidebarLinks) {
+      const id = link.id;
+
+      const notSelectedIcon = link.querySelector('.not-selected')
+      const selectedIcon = link.querySelector('.selected')
+
+      notSelectedIcon.style.display = 'block';
+      selectedIcon.style.display = 'none';
       link.classList.remove('active');
 
       if (new URL(link.href).pathname === window.location.pathname) {
+        notSelectedIcon.style.display = 'none';
+        selectedIcon.style.display = 'block';
         link.classList.add('active');
       }
     }
@@ -50,6 +62,14 @@ const { icon, ...props } = Astro.props;
     padding: .375rem .5rem;
     text-decoration: none;
     color: hsl(var(--text-muted));
+  }
+
+  .not-selected {
+    display: block;
+  }
+
+  .selected {
+    display: none;
   }
 
   .sidebar-link:hover {
