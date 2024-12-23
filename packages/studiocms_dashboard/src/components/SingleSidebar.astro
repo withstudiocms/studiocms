@@ -58,12 +58,12 @@ const sidebar = getSidebarLinks(lang);
     {
       pagePreRendered 
       ? (
-        <Editor server:defer transition:persist transition:persist-props />
-        <Admin server:defer transition:persist transition:persist-props />
+        <Editor server:defer />
+        <Admin server:defer />
       ) 
       : (
-        <Editor transition:persist transition:persist-props />
-        <Admin transition:persist transition:persist-props />
+        <Editor />
+        <Admin />
       )
     }
       { /* 
@@ -100,15 +100,23 @@ const sidebar = getSidebarLinks(lang);
 <script>
   import { SingleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
-  import { sidebarLinks } from "./component-scripts/sidebarLinks";
-  
-  sidebarLinks();
+  // import { sidebarLinks } from "./component-scripts/sidebarLinks";
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebar')) {
       new SingleSidebarHelper('nav-toggle');
     }
     new DropdownHelper('sidebar-user-dropdown', true);
-    sidebarLinks();
   });
+
+  document.addEventListener('astro:after-swap', () => {
+    const sidebar = document.querySelector('.sidebar') as HTMLElement;
+    if (!sidebar) return;
+
+    const sidebarLinks = sidebar.querySelectorAll('a');
+
+    for (const link of sidebarLinks) {
+      link.classList.remove('active');
+    }
+  })
 </script>

@@ -110,13 +110,24 @@ const sidebar = getSidebarLinks(lang);
 <script>
   import { DoubleSidebarHelper } from "@studiocms/ui/components";
   import { DropdownHelper } from "@studiocms/ui/components";
-  import { sidebarLinks } from "./component-scripts/sidebarLinks";
+  // import { sidebarLinks } from "./component-scripts/sidebarLinks";
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebars')) {
       new DoubleSidebarHelper();
     }
     new DropdownHelper('sidebar-user-dropdown', true);
-    sidebarLinks();
+    // sidebarLinks();
   });
+
+  document.addEventListener('astro:after-swap', () => {
+    const sidebar = document.querySelector('.sidebar') as HTMLElement;
+    if (!sidebar) return;
+
+    const sidebarLinks = sidebar.querySelectorAll('a');
+
+    for (const link of sidebarLinks) {
+      link.classList.remove('active');
+    }
+  })
 </script>

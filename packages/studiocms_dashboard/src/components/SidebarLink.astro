@@ -1,21 +1,38 @@
 ---
 import Icon from '@studiocms/ui/utils/Icon.astro';
 import type { HeroIconName } from '@studiocms/ui/utils/iconType.ts';
+import { AstroError } from 'astro/errors';
 import type { HTMLAttributes } from 'astro/types';
 
 interface Props extends HTMLAttributes<'a'> {
-  /**
-   * ONLY USE OUTLINED ICONS! Shit will break otherwise
-   */
-  icon: HeroIconName;
-  href: string;
+	/**
+	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
+	 */
+	icon: HeroIconName;
+	href: string;
 }
 
 const { icon, ...props } = Astro.props;
 
-const isActive = Astro.url.pathname === props.href && 'active';
+const isServerIsland = Astro.url.pathname.includes('_server-island');
 
-const iconName = isActive ? `${icon}-solid` as HeroIconName : icon;
+function getCurrentPath() {
+	if (isServerIsland) {
+		const Referer = Astro.request.headers.get('Referer');
+		if (!Referer)
+			throw new AstroError('Component flagged with server:defer but cannot get heading');
+		const refererPathname = new URL(Referer).pathname;
+		return refererPathname;
+	}
+
+	return Astro.url.pathname;
+}
+
+const currentPath = getCurrentPath();
+
+const isActive = currentPath === props.href && 'active';
+
+const iconName = isActive ? (`${icon}-solid` as HeroIconName) : icon;
 ---
 
 <a class="sidebar-link" {...props} class:list={[ isActive && 'active' ]}>
