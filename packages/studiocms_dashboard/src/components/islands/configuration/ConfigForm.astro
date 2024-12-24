@@ -78,7 +78,10 @@ const ogSelectOptions = validImages.map(({ name, label }) => ({
 </form>
 
 <script is:inline>
-document.querySelectorAll('.sui-select-option').forEach((option) => {
+// Handle enabling/disabling the custom login page background image input if the user selects 'custom' from the LoginPageBackground dropdown
+const loginPageBgSelect = document.querySelector('#login-page-background-dropdown');
+
+loginPageBgSelect.querySelectorAll('.sui-select-option').forEach((option) => {
     option.addEventListener('click', (event) => {
         const selectedValue = option.getAttribute('value');
 
