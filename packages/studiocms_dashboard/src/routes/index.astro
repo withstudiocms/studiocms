@@ -2,6 +2,7 @@
 // import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { useTranslations } from 'studiocms:i18n';
 import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
+import { Card } from '@studiocms/ui/components';
 import { Layout } from '../components';
 import DashboardPageHeader from '../components/DashboardPageHeader.astro';
 
@@ -24,6 +25,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
     <span>{t('sub-header')}</span>
   </div>
 
-  
+  <div class="dashboard-grid-container">
+
+    <Card fullWidth variant='filled' class="grid-item span-2"></Card>
+    <Card fullWidth variant='filled' class="grid-item"></Card>
+    <Card fullWidth variant='filled' class="grid-item span-3"></Card>
+    <Card fullWidth variant='filled' class="grid-item"></Card>
+    <Card fullWidth variant='filled' class="grid-item span-2"></Card>
+    <Card fullWidth variant='filled' class="grid-item"></Card>
+    <Card fullWidth variant='filled' class="grid-item"></Card>
+    <Card fullWidth variant='filled' class="grid-item"></Card>
+
+  </div>
 
 </Layout>
