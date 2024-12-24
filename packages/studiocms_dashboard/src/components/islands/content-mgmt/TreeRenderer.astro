@@ -9,9 +9,25 @@ interface Props {
 }
 
 const { data } = Astro.props;
+
+/**
+ * Recursively sorts a tree of pages and folders by name (A to Z).
+ * @param data - The array of folders and pages to sort.
+ * @returns A new array with the sorted structure.
+ */
+function sortTree(data: FolderNode[]): FolderNode[] {
+	return data
+		.map((node) => ({
+			...node,
+			children: sortTree(node.children), // Recursively sort children
+		}))
+		.sort((a, b) => a.name.localeCompare(b.name)); // Sort current level by name
+}
+
+const sortedData = sortTree(data);
 ---
 
-{data.map(({ id, name, page, children }) => (
+{sortedData.map(({ id, name, page, children }) => (
     page ? (
         <InnerSidebarLink icon="document-text" href={`?id=${id}`}>
             {name}

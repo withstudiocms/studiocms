@@ -108,7 +108,7 @@ export class StudioCMSSDK {
 		const folderMap: Record<string, FolderNode> = {};
 
 		for (const folder of folders) {
-			folderMap[folder.id] = { id: folder.id, name: folder.name, children: [] };
+			folderMap[folder.id] = { id: folder.id, name: folder.name, page: false, children: [] };
 		}
 
 		// Build the tree

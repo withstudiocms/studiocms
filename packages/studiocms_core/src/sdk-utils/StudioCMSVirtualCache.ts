@@ -224,7 +224,7 @@ export class StudioCMSVirtualCache {
 				const pages = await this.sdk.GET.database.pages();
 
 				if (!folderTree) {
-					throw new StudioCMSCacheError('Folder tree not found in database');
+					throw new StudioCMSCacheError('Folder tree could not be constructed from database');
 				}
 
 				for (const page of pages) {
