@@ -78,15 +78,12 @@ const ogSelectOptions = validImages.map(({ name, label }) => ({
 </form>
 
 <script is:inline>
-    // Get the select element
-    const selectElement = document.getElementById('login-page-background');
-
-    // Listen to the change event
-    selectElement.addEventListener('change', (event) => {
-      const selectedValue = event.target.value;
-      console.log(`Selected value: ${selectedValue}`);
-      alert(`You selected: ${selectedValue}`);
+document.querySelectorAll(".sui-select-label").forEach((selectContainer) => {
+    selectContainer.addEventListener("selectionChange", (event) => {
+        console.log("Selection changed:", event.detail);
+        // Do something with event.detail.value or event.detail.label
     });
+});
 </script>
 
 <style>
