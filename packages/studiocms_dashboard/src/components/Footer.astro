@@ -3,8 +3,13 @@
 const year = new Date().getFullYear();
 
 const footerYear = year === 2024 ? year : `2024 - ${year}`;
+
+const repoLink = 'https://github.com/withstudiocms/studiocms/';
+const licenseLink =
+	'https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/LICENSE';
+const contributorsLink = 'https://github.com/withstudiocms/studiocms/graphs/contributors';
 ---
 <footer class="dashboard-footer">
-    <span>&copy; {footerYear} <a href="https://github.com/withstudiocms/studiocms/">withstudiocms/studiocms</a> ― <a href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/LICENSE"><strong>MIT License</strong></a></span>
-    <span>Developed By <a href="https://github.com/withstudiocms/studiocms/graphs/contributors"><strong>The StudioCMS Contributors</strong></a></span>
+    <span>&copy; {footerYear} <a href={repoLink}>withstudiocms/studiocms</a> ― <a href={licenseLink}><strong>MIT License</strong></a></span>
+    <span>Developed By <a href={contributorsLink}><strong>The StudioCMS Contributors</strong></a></span>
   </footer>

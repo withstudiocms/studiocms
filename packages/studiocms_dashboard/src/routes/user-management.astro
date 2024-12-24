@@ -2,6 +2,7 @@
 import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
+import PageHeader from '../components/PageHeader.astro';
 
 const lang = 'en-us';
 // const t = useTranslations(lang, '@studiocms/dashboard:index');
@@ -13,5 +14,8 @@ const lang = 'en-us';
   {lang}
   >
 
+  <div slot="header">
+    <PageHeader title="User Management" />
+  </div>
 
 </Layout>

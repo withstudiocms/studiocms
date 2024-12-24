@@ -41,27 +41,27 @@ const description = propDescription ?? dbConfig.description;
   <body>
     <Toaster />
     { requiredPermission !== 'none' && ( 
-      <>
-      { 
-        pagePreRendered 
+      <> { pagePreRendered 
         ? <LoginChecker requiredPermission={requiredPermission} server:defer /> 
         : <LoginChecker requiredPermission={requiredPermission} /> 
-      }
-      </>
+      } </>
      ) }
     { sidebar === 'single' && <SingleSidebar {pagePreRendered} /> }
     { sidebar === 'double' && <DoubleSidebar {pagePreRendered} /> }
+
     <main>
       { sidebar !== false && (
         <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
           <Icon name="bars-3" height={24} width={24} />
-        </Button>
-      )}
+        </Button> )}
       <div class="container">
+
         <div class="page-header">
           <slot name="header" />
         </div>
+
         <slot />
+
       </div>
 
       { footer && <Footer /> }
