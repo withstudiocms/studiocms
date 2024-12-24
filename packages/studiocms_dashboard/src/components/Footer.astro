@@ -1,0 +1,10 @@
+---
+
+const year = new Date().getFullYear();
+
+const footerYear = year === 2024 ? year : `2024 - ${year}`;
+---
+<footer class="dashboard-footer">
+    <span>&copy; {footerYear} <a href="https://github.com/withstudiocms/studiocms/">withstudiocms/studiocms</a> ― <a href="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/LICENSE"><strong>MIT License</strong></a></span>
+    <span>Developed By <a href="https://github.com/withstudiocms/studiocms/graphs/contributors"><strong>The StudioCMS Contributors</strong></a></span>
+  </footer>

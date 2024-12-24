@@ -5,6 +5,7 @@ import Icon from '@studiocms/ui/utils/Icon.astro';
 import { BaseHead } from '../components';
 import { makePageTitle } from '../utils';
 import DoubleSidebar from './DoubleSidebar.astro';
+import Footer from './Footer.astro';
 import SingleSidebar from './SingleSidebar.astro';
 import LoginChecker from './islands/LoginChecker.astro';
 
@@ -54,7 +55,11 @@ const description = propDescription ?? dbConfig.description;
           <Icon name="bars-3" height={24} width={24} />
         </Button>
       )}
-      <slot />
+      <div class="container">
+        <slot />
+      </div>
+
+      <Footer />
     </main>
   </body>
 </html>
