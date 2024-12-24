@@ -31,6 +31,7 @@ export class StudioCMSVirtualCache {
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';
 	private readonly VersionMapID: string = '__StudioCMS_Latest_Version';
 	private readonly FolderTreeMapID: string = '__StudioCMS_Folder_Tree';
+	private readonly PageFolderTreeMapID: string = '__StudioCMS_Page_Folder_Tree';
 	private readonly StudioCMSPkgId: string = 'studiocms';
 	private readonly CMSSiteConfigId = CMSSiteConfigId;
 	private readonly versionCacheLifetime = versionCacheLifetime;
@@ -42,6 +43,7 @@ export class StudioCMSVirtualCache {
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
 	private version = new Map<string, VersionCacheObject>();
 	private folderTree = new Map<string, FolderTreeCacheObject>();
+	private pageFolderTree = new Map<string, FolderTreeCacheObject>();
 
 	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: STUDIOCMS_SDK) {
 		this.cacheConfig = cacheConfig;
@@ -168,6 +170,82 @@ export class StudioCMSVirtualCache {
 				}
 
 				this.folderTree.set(this.FolderTreeMapID, this.folderTreeReturn(folderTree));
+
+				return this.folderTreeReturn(folderTree);
+			}
+
+			return tree;
+		} catch (error) {
+			throw new StudioCMSCacheError('Error fetching folder tree');
+		}
+	}
+
+	/**
+	 * Retrieves the folder tree from the cache or the database.
+	 *
+	 * @returns {Promise<FolderTreeCacheObject>} A promise that resolves to the folder tree.
+	 * @throws {StudioCMSCacheError} If the folder tree is not found in the database or if there is an error fetching the folder tree.
+	 */
+	public async getPageFolderTree(): Promise<FolderTreeCacheObject> {
+		try {
+			if (!this.isEnabled()) {
+				const folderTree = await this.sdk.buildFolderTree();
+				const pages = await this.sdk.GET.database.pages();
+
+				if (!folderTree) {
+					throw new StudioCMSCacheError('Folder tree not found in database');
+				}
+
+				for (const page of pages) {
+					if (page.parentFolder) {
+						this.sdk.addPageToFolderTree(folderTree, page.parentFolder, {
+							id: page.id,
+							name: page.title,
+							page: true,
+							children: [],
+						});
+					}
+
+					folderTree.push({
+						id: page.id,
+						name: page.title,
+						page: true,
+						children: [],
+					});
+				}
+
+				return this.folderTreeReturn(folderTree);
+			}
+
+			const tree = this.pageFolderTree.get(this.PageFolderTreeMapID);
+
+			if (!tree || this.isCacheExpired(tree)) {
+				const folderTree = await this.sdk.buildFolderTree();
+				const pages = await this.sdk.GET.database.pages();
+
+				if (!folderTree) {
+					throw new StudioCMSCacheError('Folder tree not found in database');
+				}
+
+				for (const page of pages) {
+					if (page.parentFolder) {
+						this.sdk.addPageToFolderTree(folderTree, page.parentFolder, {
+							id: page.id,
+							name: page.title,
+							page: true,
+							children: [],
+						});
+					}
+
+					folderTree.push({
+						id: page.id,
+						name: page.title,
+						page: true,
+						children: [],
+					});
+				}
+
+				this.folderTree.set(this.PageFolderTreeMapID, this.folderTreeReturn(folderTree));
 
 				return this.folderTreeReturn(folderTree);
 			}
@@ -745,6 +823,7 @@ export class StudioCMSVirtualCache {
 			siteConfig: async () => await this.getSiteConfig(),
 			latestVersion: async () => await this.getVersion(),
 			folderTree: async () => await this.getFolderTree(),
+			pageFolderTree: async () => await this.getPageFolderTree(),
 		},
 		CLEAR: {
 			page: {

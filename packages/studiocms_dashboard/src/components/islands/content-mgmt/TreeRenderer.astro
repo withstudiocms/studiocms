@@ -1,0 +1,35 @@
+---
+import type { FolderNode } from '@studiocms/core/sdk-utils/types';
+import InnerSidebarFolder from '../../InnerSidebarFolder.astro';
+import InnerSidebarLink from '../../InnerSidebarLink.astro';
+
+// Props passed to the component
+interface Props {
+	data: FolderNode[];
+}
+
+const { data } = Astro.props;
+---
+
+{data.map(({ id, name, page, children }) => (
+    page ? (
+        <InnerSidebarLink icon="document-text" href={`?id=${id}`}>
+            {name}
+        </InnerSidebarLink>
+    ) : (
+        <InnerSidebarFolder {name} icon="folder-solid">
+            {children && children.length > 0 && (
+                <div class="inner-sidebar-folder-child-nodes">
+                    <Astro.self data={children} />
+                </div>
+            )}
+        </InnerSidebarFolder>
+    )
+))}
+
+<style>
+    .inner-sidebar-folder-child-nodes {
+        margin-left: 0.5rem;
+        border-left: 2px solid hsl(var(--border));
+}
+</style>

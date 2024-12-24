@@ -258,6 +258,47 @@ export class StudioCMSSDK {
 	}
 
 	/**
+	 * Finds a node by its ID in the tree.
+	 * @param id - The ID of the node to find.
+	 * @returns The node or null if not found.
+	 */
+	private findNodeById(tree: FolderNode[], id: string): FolderNode | null {
+		for (const node of tree) {
+			if (node.id === id) {
+				return node;
+			}
+			const found = this.findNodeById(node.children, id);
+			if (found) {
+				return found;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Adds a new page to the folder tree.
+	 * @param tree - The root of the folder tree.
+	 * @param folderId - The ID of the parent folder.
+	 * @param newPage - The new page to add.
+	 * @returns The updated folder tree
+	 */
+	public addPageToFolderTree(
+		tree: FolderNode[],
+		folderId: string,
+		newPage: FolderNode
+	): FolderNode[] {
+		const parentFolder = this.findNodeById(tree, folderId);
+
+		if (!parentFolder) {
+			tree.push(newPage);
+			return tree;
+		}
+
+		parentFolder.children.push(newPage);
+		return tree;
+	}
+
+	/**
 	 * Collects categories based on the provided category IDs.
 	 *
 	 * @param categoryIds - An array of category IDs to collect.

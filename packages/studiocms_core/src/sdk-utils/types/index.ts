@@ -89,6 +89,7 @@ export interface FolderNode {
 	id: string;
 	name: string;
 	children: FolderNode[];
+	page?: boolean;
 }
 
 export type AstroDBVirtualModule = typeof import('astro:db');

@@ -47,7 +47,7 @@ const description = propDescription ?? dbConfig.description;
       } </>
      ) }
     { sidebar === 'single' && <SingleSidebar {pagePreRendered} /> }
-    { sidebar === 'double' && <DoubleSidebar {pagePreRendered} /> }
+    { sidebar === 'double' && <DoubleSidebar {pagePreRendered}><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
       { sidebar !== false && (
