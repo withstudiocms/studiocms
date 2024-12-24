@@ -1,11 +1,15 @@
 ---
 import { Button, Card, Input } from '@studiocms/ui/components';
+import Icon from '@studiocms/ui/utils/Icon.astro';
 ---
 <Card fullWidth class="basic-info-form">
     <div slot="header">
         <h2>Basic Info</h2>
         <div class="form-header">
-            <Button type='submit' size='sm' variant={'solid'} color='primary' disabled>Save</Button> 
+            <Button type='submit' size='sm' variant={'solid'} color='primary' disabled>
+                <Icon slot="start-content" name="check" width={24} height={24} />
+                Save
+            </Button> 
         </div>
     </div>
     <div class="form-inputs">

@@ -11,24 +11,28 @@ import studiocmsCurvesLight from '../loginBackgrounds/studiocms-curves-light.png
 const validImages = [
 	{
 		name: 'studiocms-blobs',
+		label: 'Blobs',
 		format: 'png',
 		light: studiocmsBlobsLight,
 		dark: studiocmsBlobsDark,
 	},
 	{
 		name: 'studiocms-blocks',
+		label: 'Blocks',
 		format: 'png',
 		light: studiocmsBlocksLight,
 		dark: studiocmsBlocksDark,
 	},
 	{
 		name: 'studiocms-curves',
+		label: 'Curves',
 		format: 'png',
 		light: studiocmsCurvesLight,
 		dark: studiocmsCurvesDark,
 	},
 	{
 		name: 'custom',
+		label: 'Custom',
 		format: 'web',
 		light: null,
 		dark: null,

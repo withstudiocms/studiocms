@@ -1,6 +1,7 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
 import { Button, Card, Input } from '@studiocms/ui/components';
+import Icon from '@studiocms/ui/utils/Icon.astro';
 
 const data = await getUserData(Astro);
 ---
@@ -11,7 +12,10 @@ const data = await getUserData(Astro);
         <h2>Basic Info</h2>
     
         <div class="form-header">
-            <Button type='submit' size='sm' variant={'solid'} color='primary'>Save</Button> 
+            <Button type='submit' size='sm' variant={'solid'} color='primary'>
+                <Icon slot="start-content" name="check" width={24} height={24} />
+                Save
+            </Button> 
         </div>
     </div>
 
