@@ -6,7 +6,6 @@ import Icon from '@studiocms/ui/utils/Icon.astro';
 import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
 import ConfigForm from '../components/islands/configuration/ConfigForm.astro';
-import ConfigFormFallback from '../components/islands/configuration/ConfigFormFallback.astro';
 
 const lang = 'en-us';
 // const t = useTranslations(lang, '@studiocms/dashboard:index');
@@ -28,11 +27,7 @@ const lang = 'en-us';
 
   {
     pagePreRendered 
-    ? (
-      <ConfigForm server:defer transition:persist transition:persist-props>
-        {/* <ConfigFormFallback slot="fallback"/> */}
-      </ConfigForm>
-    )
+    ? <ConfigForm server:defer transition:persist transition:persist-props />
     : <ConfigForm transition:persist transition:persist-props/>
   }
 
