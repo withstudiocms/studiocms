@@ -29,11 +29,11 @@ const lang = 'en-us';
   {
     pagePreRendered 
     ? (
-      <ConfigForm server:defer>
+      <ConfigForm server:defer transition:persist transition:persist-props>
         <ConfigFormFallback />
       </ConfigForm>
     )
-    : <ConfigForm />
+    : <ConfigForm transition:persist transition:persist-props/>
   }
 
 </Layout>
