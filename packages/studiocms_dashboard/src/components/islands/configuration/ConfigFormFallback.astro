@@ -1,0 +1,52 @@
+---
+import { validImages } from 'studiocms:auth/utils/validImages';
+import { Input, Select } from '@studiocms/ui/components';
+
+const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
+---
+
+<form id="site-config-form">
+    <div class="form-content">
+
+        <div class="form-row">
+            <Input label='Site Title' name='site-title' placeholder='My Awesome Website' disabled isRequired />
+            <Input label='Site Description' name='site-description' placeholder='Built with StudioCMS!' disabled isRequired />
+        </div>
+
+        <div class="form-row">
+            <Input label="Default Open Graph Image" name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" disabled />
+            <Input label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" disabled />
+        </div>
+
+        <div class="form-row">
+            <Select label='Login Page Background Image' name='login-page-background'  disabled options={ogSelectOptions} fullWidth />
+            <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" disabled />
+        </div>
+
+    </div>
+</form>
+
+<style>
+    .form-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .login-preview-container {
+        width: min-content;
+        height: min-content;
+    }
+
+    @media screen and (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
