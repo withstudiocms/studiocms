@@ -29,7 +29,7 @@ const sortedData = sortTree(data);
 
 {sortedData.map(({ id, name, page, children }) => (
     page ? (
-        <InnerSidebarLink icon="document-text" href={`?id=${id}`}>
+        <InnerSidebarLink icon="document-text" href={`?edit=${id}`}>
             {name}
         </InnerSidebarLink>
     ) : (

@@ -37,8 +37,8 @@ const compId = crypto.randomUUID();
     selectedIcon.style.display = 'none';
     link.classList.remove('active');
 
-    const LinkQueryParams = new URL(link.href).searchParams.get('id');
-    const CurrentQueryParams = new URL(window.location.href).searchParams.get('id');
+    const LinkQueryParams = new URL(link.href).searchParams.get('edit');
+    const CurrentQueryParams = new URL(window.location.href).searchParams.get('edit');
 
     if (LinkQueryParams === CurrentQueryParams) {
       notSelectedIcon.style.display = 'none';
