@@ -30,7 +30,7 @@ const lang = 'en-us';
     pagePreRendered 
     ? (
       <ConfigForm server:defer transition:persist transition:persist-props>
-        <ConfigFormFallback slot="fallback"/>
+        {/* <ConfigFormFallback slot="fallback"/> */}
       </ConfigForm>
     )
     : <ConfigForm transition:persist transition:persist-props/>
