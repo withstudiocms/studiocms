@@ -68,7 +68,7 @@ const ogSelectOptions = validImages.map(({ name, label }) => ({
                 name="login-page-background-custom"
                 placeholder="'https://...' for local, or '/...' for public/ folder"
                 value={data.loginPageCustomImage}
-                disabled
+                disabled={data.loginPageBackground !== 'custom'}
                 />
         
         </div>
@@ -78,10 +78,17 @@ const ogSelectOptions = validImages.map(({ name, label }) => ({
 </form>
 
 <script is:inline>
-document.querySelectorAll(".sui-select-label").forEach((selectContainer) => {
-    selectContainer.addEventListener("selectionChange", (event) => {
-        console.log("Selection changed:", event.detail);
-        // Do something with event.detail.value or event.detail.label
+document.querySelectorAll('.sui-select-option').forEach((option) => {
+    option.addEventListener('click', (event) => {
+        const selectedValue = option.getAttribute('value');
+
+        if (selectedValue === 'custom') {
+            document.querySelector('input[name="login-page-background-custom"]').removeAttribute('disabled');
+            document.querySelector('label[for="login-page-background-custom"]').classList.remove('disabled');
+        } else {
+            document.querySelector('input[name="login-page-background-custom"]').setAttribute('disabled', 'disabled');
+            document.querySelector('label[for="login-page-background-custom"]').classList.add('disabled');
+        }
     });
 });
 </script>
