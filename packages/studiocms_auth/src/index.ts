@@ -7,11 +7,11 @@ import type { StudioCMSAuthOptions } from './schema';
 /**
  * StudioCMS Auth Integration
  */
-function studioCMSAuth(options: StudioCMSAuthOptions): AstroIntegration {
+function studioCMSAuth(options: StudioCMSAuthOptions, prerenderRoutes: boolean): AstroIntegration {
 	return {
 		name,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, name, options),
+			'astro:config:setup': (params) => configSetup(params, name, options, prerenderRoutes),
 			'astro:config:done': (params) => configDone(params),
 		},
 	};

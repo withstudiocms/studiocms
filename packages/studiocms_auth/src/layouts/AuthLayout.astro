@@ -2,15 +2,13 @@
 import '@fontsource-variable/onest/index.css';
 import '@studiocms/ui/css/global.css';
 import './authlayout.css';
-import { Image } from 'astro:assets';
-import { validImages } from 'studiocms:auth/utils/validImages';
 import { Generator } from 'studiocms:components';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import { Toaster } from '@studiocms/ui/components';
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 import StaticAuthCheck from '../components/StaticAuthCheck.astro';
-import StudioCMSLogoSVG from '../components/StudioCMSLogoSVG.astro';
+import FallbackCanvas from './FallbackCanvas.astro';
+import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
 interface Props {
 	title: string;
@@ -18,19 +16,10 @@ interface Props {
 	lang: string;
 	disableScreen?: boolean;
 	checkLogin?: boolean;
+	pagePreRendered?: boolean;
 }
 
-const { title, description, lang, disableScreen, checkLogin } = Astro.props;
-
-// Get the site config
-const {
-	data: { loginPageBackground, loginPageCustomImage },
-} = await studioCMS_SDK_Cache.GET.siteConfig();
-
-const fallbackImageSrc =
-	loginPageBackground === 'custom'
-		? loginPageCustomImage
-		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark; // TODO: Adapt to theme
+const { title, description, lang, disableScreen, checkLogin, pagePreRendered = true } = Astro.props;
 ---
 <!doctype html>
 <html lang={lang} data-theme="dark">
@@ -57,28 +46,9 @@ const fallbackImageSrc =
 	<Toaster />
 	<main>
 		<div id="canvas-container">
-			<div class="fallback-container">
-				<StudioCMSLogoSVG
-					class="static-logo"
-				/>
-				{typeof fallbackImageSrc === 'string' && (
-					<Image 
-						src={fallbackImageSrc || ''}
-						inferSize
-						alt="A fallback image displaying because the interactive wallpaper couldn't be loaded."
-						class={'fallback-image'}
-						quality={100}
-					/>
-				)}
-				{typeof fallbackImageSrc !== 'string' && !!fallbackImageSrc && (
-					<Image 
-						src={fallbackImageSrc}
-						alt="A fallback image displaying because the interactive wallpaper couldn't be loaded."
-						class={'fallback-image'}
-						quality={100}
-					/>
-				)}
-			</div>
+			{
+				pagePreRendered ? <FallbackCanvas server:defer /> : <FallbackCanvas />
+			}
 		</div>
 		<div class="login-form-container">
 
@@ -94,13 +64,11 @@ const fallbackImageSrc =
 
 		</div>
 	</main>
-	{ checkLogin && <StaticAuthCheck server:defer /> }
-	<div
-		style="display: none;" 
-		id="auth-pages-config" 
-		data-config_background={loginPageBackground} 
-		data-config_custom_image={loginPageCustomImage}
-	/>
+	{ checkLogin && (
+		<>
+		{ pagePreRendered ? <StaticAuthCheck server:defer /> : <StaticAuthCheck /> }
+		</>
+	)}
+	{ pagePreRendered ? <ThreeCanvasLoader server:defer /> : <ThreeCanvasLoader /> }
   </body>
-  <script>import "studiocms:auth/scripts/three";</script>
 </html>

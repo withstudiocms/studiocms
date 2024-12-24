@@ -94,7 +94,8 @@ export const injectAuthPageRoutes = defineUtility('astro:config:setup')(
 				pattern: string;
 				entrypoint: string;
 			}[];
-		}
+		},
+		prerenderRoutes
 	) => {
 		const { injectRoute, logger } = params;
 
@@ -135,7 +136,7 @@ export const injectAuthPageRoutes = defineUtility('astro:config:setup')(
 			injectRoute({
 				pattern: makeDashboardRoute(pattern, options),
 				entrypoint,
-				prerender: true,
+				prerender: prerenderRoutes,
 			});
 		}
 	}

@@ -73,7 +73,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 			{ integration: core(options, prerenderRoutes) },
 			{ integration: renderers(rendererConfig, verbose) },
 			{ integration: imageHandler(options) },
-			{ integration: auth(options) },
+			{ integration: auth(options, prerenderRoutes) },
 			{ integration: dashboard(options, prerenderRoutes) },
 		];
 

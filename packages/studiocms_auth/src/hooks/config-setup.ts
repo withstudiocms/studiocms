@@ -10,7 +10,7 @@ import { checkEnvKeys } from '../utils/checkENV';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from '../utils/routeBuilder';
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, name: string, options: StudioCMSAuthOptions) => {
+	(params, name: string, options: StudioCMSAuthOptions, prerenderRoutes: boolean) => {
 		// Destructure Params
 		const { logger, updateConfig } = params;
 
@@ -229,26 +229,30 @@ export const configSetup = defineUtility('astro:config:setup')(
 			],
 		});
 
-		injectAuthPageRoutes(params, {
-			options,
-			routes: [
-				{
-					pattern: 'login/',
-					entrypoint: resolve('../routes/login.astro'),
-					enabled: dashboardEnabled && !options.dbStartPage,
-				},
-				{
-					pattern: 'logout/',
-					entrypoint: resolve('../routes/logout.astro'),
-					enabled: dashboardEnabled && !options.dbStartPage,
-				},
-				{
-					pattern: 'signup/',
-					entrypoint: resolve('../routes/signup.astro'),
-					enabled: usernameAndPasswordAPI && allowUserRegistration,
-				},
-			],
-		});
+		injectAuthPageRoutes(
+			params,
+			{
+				options,
+				routes: [
+					{
+						pattern: 'login/',
+						entrypoint: resolve('../routes/login.astro'),
+						enabled: dashboardEnabled && !options.dbStartPage,
+					},
+					{
+						pattern: 'logout/',
+						entrypoint: resolve('../routes/logout.astro'),
+						enabled: dashboardEnabled && !options.dbStartPage,
+					},
+					{
+						pattern: 'signup/',
+						entrypoint: resolve('../routes/signup.astro'),
+						enabled: usernameAndPasswordAPI && allowUserRegistration,
+					},
+				],
+			},
+			prerenderRoutes
+		);
 	}
 );
 
