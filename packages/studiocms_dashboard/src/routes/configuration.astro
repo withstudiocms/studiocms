@@ -17,14 +17,16 @@ const lang = 'en-us';
   {pagePreRendered}
   {lang}
   >
-  
-  <PageHeader title="Site Configuration">
-    <Button variant="solid" color="primary" type="submit" form="site-config-form">
-      <Icon slot="start-content" name="check" width={24} height={24} />
-      Save Changes
-    </Button>
-  </PageHeader>
 
+  <div slot="header">
+    <PageHeader title="Site Configuration">
+      <Button variant="solid" color="primary" type="submit" form="site-config-form">
+        <Icon slot="start-content" name="check" width={24} height={24} />
+        Save Changes
+      </Button>
+    </PageHeader>
+  </div>
+  
   {
     pagePreRendered 
     ? <ConfigForm server:defer transition:persist transition:persist-props />

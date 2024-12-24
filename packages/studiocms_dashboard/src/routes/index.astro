@@ -19,7 +19,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
   {lang}
   >
 
-  <DashboardPageHeader {pagePreRendered} />
-  <span>{t('sub-header')}</span>
+  <div slot="header">
+    <DashboardPageHeader {pagePreRendered} />
+    <span>{t('sub-header')}</span>
+  </div>
+
+  
 
 </Layout>

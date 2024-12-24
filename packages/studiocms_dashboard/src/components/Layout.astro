@@ -18,6 +18,7 @@ type Props = {
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
+	footer?: boolean;
 };
 
 const {
@@ -27,6 +28,7 @@ const {
 	lang = 'en-us',
 	requiredPermission = 'unknown',
 	sidebar = 'single',
+	footer = true,
 } = Astro.props;
 
 const title = makePageTitle(propTitle, dbConfig);
@@ -56,10 +58,13 @@ const description = propDescription ?? dbConfig.description;
         </Button>
       )}
       <div class="container">
+        <div class="page-header">
+          <slot name="header" />
+        </div>
         <slot />
       </div>
 
-      <Footer />
+      { footer && <Footer /> }
     </main>
   </body>
 </html>

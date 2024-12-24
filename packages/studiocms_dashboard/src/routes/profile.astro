@@ -28,8 +28,10 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
   {pagePreRendered}
   {lang}
   >
-  
-  <PageHeader title="Your Profile" />
+
+  <div slot="header">
+    <PageHeader title="Your Profile" />
+  </div>
 
   <div class="page-content">
 
