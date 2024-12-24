@@ -1,11 +1,20 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select } from '@studiocms/ui/components';
+import { Card, Input, Select } from '@studiocms/ui/components';
+import LightVsDark from './LightVsDark.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
+
+const currentLoginPageBg = validImages.find(
+	({ name }) => name === data.loginPageBackground && name !== 'custom'
+);
+
+const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
+const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
+const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 ---
 
 <form id="site-config-form">
@@ -26,23 +35,69 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
             <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
 
+        <Card class="login-preview-container">
+            <div slot="header">
+                <span>Login Page Preview</span>
+            </div>
+            {
+                currentLoginPageBg && currentLoginPageBg.name !== 'custom' && (
+                    <LightVsDark {...currentLoginPageBg} />
+                )
+            }
+        </Card>
+
     </div>
 </form>
 
-<script is:inline>
-// Handle enabling/disabling the custom login page background image input if the user selects 'custom' from the LoginPageBackground dropdown
-const loginPageBgSelect = document.querySelector('#login-page-background-dropdown');
+<script is:inline define:vars={{
+    blobsLight: blobs?.light?.src,
+    blobsDark: blobs?.dark?.src,
+    blocksLight: blocks?.light?.src,
+    blocksDark: blocks?.dark?.src,
+    curvesLight: curves?.light?.src,
+    curvesDark: curves?.dark?.src,
+}}>
 
-loginPageBgSelect.querySelectorAll('.sui-select-option').forEach((option) => {
+// Selectors
+const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
+const customInput = document.querySelector('input[name="login-page-background-custom"]');
+const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
+const previewContainer = document.querySelector('.login-preview-container');
+const lightImageHolder = document.querySelector('.light-image-holder');
+const darkImageHolder = document.querySelector('.dark-image-holder');
+
+loginPageBgSelectOptions.forEach((option) => {
     option.addEventListener('click', (event) => {
         const selectedValue = option.getAttribute('value');
 
         if (selectedValue === 'custom') {
-            document.querySelector('input[name="login-page-background-custom"]').removeAttribute('disabled');
-            document.querySelector('label[for="login-page-background-custom"]').classList.remove('disabled');
+            customInput.removeAttribute('disabled');
+            customInputLabel.classList.remove('disabled');
         } else {
-            document.querySelector('input[name="login-page-background-custom"]').setAttribute('disabled', 'disabled');
-            document.querySelector('label[for="login-page-background-custom"]').classList.add('disabled');
+            customInput.setAttribute('disabled', 'disabled');
+            customInputLabel.classList.add('disabled');
+        }
+
+        if (selectedValue === 'custom') {
+            previewContainer.style.display = 'none';
+        } else {
+            previewContainer.style.display = 'block';
+
+            if (selectedValue === 'studiocms-blobs') {
+                lightImageHolder.src = blobsLight;
+                darkImageHolder.src = blobsDark;
+            }
+
+            if (selectedValue === 'studiocms-blocks') {
+                lightImageHolder.src = blocksLight;
+                darkImageHolder.src = blocksDark;
+            }
+
+            if (selectedValue === 'studiocms-curves') {
+                lightImageHolder.src = curvesLight;
+                darkImageHolder.src = curvesDark;
+            }
+
         }
     });
 });
@@ -59,6 +114,11 @@ loginPageBgSelect.querySelectorAll('.sui-select-option').forEach((option) => {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
+    }
+
+    .login-preview-container {
+        width: min-content;
+        height: min-content;
     }
 
     @media screen and (max-width: 768px) {
