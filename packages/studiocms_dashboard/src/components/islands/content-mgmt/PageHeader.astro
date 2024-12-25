@@ -1,0 +1,102 @@
+---
+import { Button } from '@studiocms/ui/components';
+import Icon from '@studiocms/ui/utils/Icon.astro';
+---
+<header class="page-header">
+  <div class="page-title-container">
+    <h1 class="page-title">Content Management</h1>
+  </div>
+  <div class="page-actions-container">
+
+    {/* Edit Page Buttons */}
+    <Button id="edit-button" variant="solid" color="primary" type="submit" form="page-edit-form">
+      <Icon slot="start-content" name="check" width={24} height={24} />
+      Save Changes
+    </Button>
+
+    {/* Create Page Buttons */}
+    <Button id="draft-button" variant="outlined" color="primary" type="submit" form="page-create-form" disabled>
+      <Icon slot="start-content" name="document-text" width={24} height={24} />
+      Save Draft
+    </Button>
+    <Button id="publish-button" variant="solid" color="primary" type="submit" form="page-create-form">
+      <Icon slot="start-content" name="check" width={24} height={24} />
+      Publish
+    </Button>
+  </div>
+</header>
+
+
+<script is:inline>
+    async function listener() {
+        // get the query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+    
+        // get the id parameter
+        const edit = urlParams.get('edit');
+        const create = urlParams.get('create');
+  
+        // get the elements to customize
+        const pageTitle = document.querySelector('.page-title');
+
+        const pageEditButton = document.getElementById('edit-button');
+        const pageSaveDraftButton = document.getElementById('draft-button');
+        const pageSavePublishButton = document.getElementById('publish-button');
+
+        const placeholder = document.getElementById('placeholder-info');
+
+        if (edit) {
+            pageTitle.innerText = 'Edit Page';
+            pageEditButton.style.display = 'flex';
+            pageSaveDraftButton.style.display = 'none';
+            pageSavePublishButton.style.display = 'none';
+            placeholder.style.display = 'none';
+        } else if (create) {
+            pageTitle.innerText = 'Create Page';
+            pageEditButton.style.display = 'none';
+            pageSaveDraftButton.style.display = 'flex';
+            pageSavePublishButton.style.display = 'flex';
+            placeholder.style.display = 'none';
+        } else {
+            pageTitle.innerText = 'Content Management';
+            pageEditButton.style.display = 'none';
+            pageSaveDraftButton.style.display = 'none';
+            pageSavePublishButton.style.display = 'none';
+            placeholder.style.display = 'flex';
+        }
+    }
+  
+    listener();
+  </script>
+
+
+<style>
+.page-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.page-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  width: fit-content;
+}
+
+.page-title {
+  display: block;
+  width: fit-content;
+  margin: 0;
+}
+
+.page-actions-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+</style>

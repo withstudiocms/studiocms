@@ -1,0 +1,35 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+---
+<div id="create-page-container" data-link={StudioCMSRoutes.sdk.pages}>
+    <div id="create-page-content">
+    </div>
+</div>
+
+<script is:inline>
+    async function listener() {
+      // get the query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+  
+      // get the id parameter
+      const id = urlParams.get('create');
+  
+      // get the elements
+      const createPageContainer = document.getElementById('create-page-container');
+      const createPageContent = document.getElementById('create-page-content');
+  
+      if (id) {
+        createPageContainer.style.display = 'block';
+        createPageContent.innerHTML = `
+            <p>nothing here yet</p>
+          `;
+      } else {
+        createPageContainer.style.display = 'none';
+        createPageContent.innerHTML = `
+          <p>nothing here yet</p>
+        `;
+      }
+    }
+  
+    listener();
+  </script>

@@ -1,0 +1,59 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+---
+<div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
+    <div id="edit-page-content">
+    </div>
+</div>
+
+<script is:inline>
+    async function listener() {
+      // get the query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+  
+      // get the id parameter
+      const id = urlParams.get('edit');
+  
+      // get the elements
+      const editPageContainer = document.getElementById('edit-page-container');
+
+      const editPageContent = document.getElementById('edit-page-content');
+  
+      // get the page data
+      const pageDataResponse = await (await fetch(currentDisplayData.dataset.link)).json();
+  
+      if (id) {
+        // find the page data from the list
+        const pageData = pageDataResponse.pages.find((page) => page.data.id === id);
+
+        editPageContainer.style.display = 'block';
+  
+        if (pageData) {
+            editPageContent.innerHTML = `
+            <h1>${pageData.data.title}</h1>
+            <p>${JSON.stringify(pageData, null, 2)}</p>  
+          `;
+        } else {
+            editPageContent.innerHTML = `
+            <p>Page not found</p>
+          `;
+        }
+      } else {
+        editPageContent.innerHTML = `
+          <p>Select a page from the list to display</p>
+        `;
+
+        editPageContainer.style.display = 'none';
+      }
+    }
+  
+    listener();
+  </script>
+
+<style>
+    #edit-page-container {
+        height: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+</style>

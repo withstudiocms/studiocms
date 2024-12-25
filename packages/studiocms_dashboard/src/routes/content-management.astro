@@ -4,7 +4,9 @@ import { Button, Divider, Input } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
-import PageHeader from '../components/PageHeader.astro';
+import Create from '../components/islands/content-mgmt/Create.astro';
+import Edit from '../components/islands/content-mgmt/Edit.astro';
+import PageHeader from '../components/islands/content-mgmt/PageHeader.astro';
 import PageList from '../components/islands/content-mgmt/PageList.astro';
 
 const lang = 'en-us';
@@ -38,8 +40,15 @@ const lang = 'en-us';
   </div>
 
   <div slot="header">
-    <PageHeader title="Content Management" />
+    <PageHeader server:defer title="Content Management" />
   </div>
+
+  <div id="placeholder-info" class="placeholder-info">
+    <p>Select a page or create a new one to get started!</p>
+  </div>
+
+  <Edit server:defer />
+  <Create server:defer />
 
 </Layout>
 
@@ -86,5 +95,20 @@ const lang = 'en-us';
     background-position: 6px 6px !important;
     background-repeat: no-repeat !important;
     padding: .5rem 20px .5rem 2rem !important;
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: hsl(var(--text-muted));
+    }
   }
 </style>
