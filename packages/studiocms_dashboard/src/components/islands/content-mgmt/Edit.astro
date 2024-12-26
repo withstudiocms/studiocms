@@ -1,51 +1,286 @@
 ---
+import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { Input, Select } from '@studiocms/ui/components';
+
+const pageTypeOptions = [{ label: 'Normal (StudioCMS)', value: 'studiocms' }];
+const trueFalse = [
+	{ label: 'Yes', value: 'true' },
+	{ label: 'No', value: 'false' },
+];
+const categoriesOptions = [{ label: 'None', value: 'null' }];
+const tagsOptions = [{ label: 'None', value: 'null' }];
+const parentFolderOptions = [{ label: 'None', value: 'null' }];
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
-    <div id="edit-page-content">
+    <form id="edit-page-form">
+        <h2>Basic Information</h2>
+
+        <div class="form-row">
+            <Input label='Page Title' name='page-title' isRequired />
+            <Input label='Slug' name='page-slug' disabled isRequired />
+        </div>
+
+        <Input label='Description' name='page-description' isRequired />
+
+        <div class="form-row">
+            <Select 
+                label="Page type" 
+                name="page-type" 
+                isRequired 
+                fullWidth 
+                options={pageTypeOptions} 
+                />
+            <Select 
+                label="Show in Navigation" 
+                name="show-in-nav" 
+                isRequired 
+                fullWidth 
+                options={trueFalse} 
+                />
+        </div>
+
+        <div class="form-row">
+            <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
+            <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} />
+        </div>
+
+        <div class="form-row">
+            <Select label="Categories" name="categories" fullWidth options={categoriesOptions} disabled />
+            <Select label="Tags" name="tags" fullWidth options={tagsOptions} disabled />
+        </div>
+
+        <div class="form-row">
+            <Select label="Show Author" name="show-author" fullWidth options={trueFalse} />
+            <Select label="Show Contributors" name="show-contributors" fullWidth options={trueFalse} />
+        </div>
+
+        <h2>Page Content</h2>
+
+        <div class="page-content-editor">
+            <div id="toolbar"></div>
+            <div class="editor-container">
+                <textarea id="page-content"></textarea>
+            </div>
+        </div>
+        <br />
+
+
+    </form>
+    <div id="page-json">
     </div>
 </div>
 
-<script is:inline>
+<script src="../../component-scripts/tiny-mde.min.js"/>
+
+<script is:inline define:vars={{
+    pageTypeOptions: JSON.stringify(pageTypeOptions),
+    showInNavOptions: JSON.stringify(trueFalse),
+    categoriesOptions: JSON.stringify(categoriesOptions),
+    tagsOptions: JSON.stringify(tagsOptions),
+    parentFolderOptions: JSON.stringify(parentFolderOptions),
+    showAuthorOptions: JSON.stringify(trueFalse),
+    showContributorsOptions: JSON.stringify(trueFalse),
+}}>
     async function listener() {
       // get the query parameters
       const urlParams = new URLSearchParams(window.location.search);
   
       // get the id parameter
-      const id = urlParams.get('edit');
+      const editId = urlParams.get('edit');
   
       // get the elements
       const editPageContainer = document.getElementById('edit-page-container');
 
-      const editPageContent = document.getElementById('edit-page-content');
+      const editPageForm = document.getElementById('edit-page-form');
+
+      const pageTitleInput = editPageForm.querySelector('input[name="page-title"]');
+      const pageSlugInput = editPageForm.querySelector('input[name="page-slug"]');
+      const pageDescriptionInput = editPageForm.querySelector('input[name="page-description"]');
+      const pageTypeSelect = editPageForm.querySelector('select[name="page-type"]');
+      const pageTypeSelectValue = editPageForm.querySelector(`#page-type-value-span`);
+      const showInNavSelect = editPageForm.querySelector('select[name="show-in-nav"]');
+      const showInNavSelectValue = editPageForm.querySelector(`#show-in-nav-value-span`);
+      const pageHeroImageInput = editPageForm.querySelector('input[name="page-hero-image"]');
+
+      const categoriesSelect = editPageForm.querySelector('select[name="categories"]');
+      const categoriesSelectValue = editPageForm.querySelector(`#categories-value-span`);
+      const tagsSelect = editPageForm.querySelector('select[name="tags"]');
+      const tagsSelectValue = editPageForm.querySelector(`#tags-value-span`);
+      const parentFolderSelect = editPageForm.querySelector('select[name="parent-folder"]');
+      const parentFolderSelectValue = editPageForm.querySelector(`#parent-folder-value-span`);
+      const showAuthorSelect = editPageForm.querySelector('select[name="show-author"]');
+      const showAuthorSelectValue = editPageForm.querySelector(`#show-author-value-span`);
+      const showContributorsSelect = editPageForm.querySelector('select[name="show-contributors"]');
+      const showContributorsSelectValue = editPageForm.querySelector(`#show-contributors-value-span`);
+
+
+      function getPageTypeOption(value) {
+        const options = JSON.parse(pageTypeOptions);
+        const selectedOption = options.find((option) => option.value === value);
+        return selectedOption.label;
+      }
+
+      function setSelectValue(selectElm, selectValueElm, value, displayValue) {
+        selectElm.querySelector(`option[value="${value}"]`).setAttribute('selected', '');
+        selectValueElm.innerText = displayValue;
+      }
+
+      function getParentFolderOption(value) {
+        const options = JSON.parse(parentFolderOptions);
+        if (value === null) {
+          return options.find((option) => option.value === 'null').label;
+        }
+        const selectedOption = options.find((option) => option.value === value);
+        return selectedOption.label;
+      }
+
+      function getParentFolderValue(value) {
+        const options = JSON.parse(parentFolderOptions);
+        if (value === null) {
+          return (options.find((option) => option.value === 'null')).value;
+        }
+        const selectedOption = options.find((option) => option.value === value);
+        return selectedOption.value;
+      }
+
+      function categoryAndTagsOptions(option) {
+        if (option.length === 0) {
+            return 'None';
+        }
+      }
   
       // get the page data
-      const pageDataResponse = await (await fetch(editPageContainer.dataset.link)).json();
   
-      if (id) {
+      if (editId) {
         // find the page data from the list
-        const pageData = pageDataResponse.pages.find((page) => page.data.id === id);
+        const pageDataResponse = await (await fetch(editPageContainer.dataset.link)).json();
+        const pageData = pageDataResponse.pages.find((page) => page.data.id === editId);
+        const pageDataJson = JSON.stringify(pageData, null, 2);
 
         editPageContainer.style.display = 'block';
-        editPageContent.style.display = 'block';
   
         if (pageData) {
-            editPageContent.innerHTML = `
-            <h1>${pageData.data.title}</h1>
-            <p>${JSON.stringify(pageData, null, 2)}</p>  
-          `;
+            pageTitleInput.value = pageData.data.title;
+            pageSlugInput.value = pageData.data.slug;
+            pageDescriptionInput.value = pageData.data.description;
+            pageHeroImageInput.value = pageData.data.heroImage;
+
+            setSelectValue(pageTypeSelect, pageTypeSelectValue, pageData.data.package, getPageTypeOption(pageData.data.package));
+            setSelectValue(showInNavSelect, showInNavSelectValue, pageData.data.showOnNav, pageData.data.showOnNav === true ? 'Yes' : 'No');
+            setSelectValue(showAuthorSelect, showAuthorSelectValue, pageData.data.showAuthor, pageData.data.showAuthor === true ? 'Yes' : 'No');
+            setSelectValue(showContributorsSelect, showContributorsSelectValue, pageData.data.showContributors, pageData.data.showContributors === true ? 'Yes' : 'No');
+
+            // setSelectValue(categoriesSelect, categoriesSelectValue, pageData.data.categories, pageData.data.categories);
+            // setSelectValue(tagsSelect, tagsSelectValue, pageData.data.tags, pageData.data.tags);
+            setSelectValue(parentFolderSelect, parentFolderSelectValue, getParentFolderValue(pageData.data.parentFolder), getParentFolderOption(pageData.data.parentFolder));
+
+            // wait for the js to load
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            });
+
+            var tinyMDE = new TinyMDE.Editor({ textarea: "page-content" });
+            var commandBar = new TinyMDE.CommandBar({
+                element: "toolbar",
+                editor: tinyMDE,
+                commands: [
+                    {
+                        name: 'preview',
+                        title: 'Live Preview',
+                        innerHTML: '<span class="TMCommandButtonSpan"><svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg> Preview</span>',
+                        action: editor => alert("Preview coming soon!")
+                    },
+                    "|",
+                    {
+                        name: 'bold',
+                        action: 'bold',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linejoin="round" d="M6.75 3.744h-.753v8.25h7.125a4.125 4.125 0 0 0 0-8.25H6.75Zm0 0v.38m0 16.122h6.747a4.5 4.5 0 0 0 0-9.001h-7.5v9h.753Zm0 0v-.37m0-15.751h6a3.75 3.75 0 1 1 0 7.5h-6m0-7.5v7.5m0 0v8.25m0-8.25h6.375a4.125 4.125 0 0 1 0 8.25H6.75m.747-15.38h4.875a3.375 3.375 0 0 1 0 6.75H7.497v-6.75Zm0 7.5h5.25a3.75 3.75 0 0 1 0 7.5h-5.25v-7.5Z" /> </svg> ',
+                        title: 'Bold',
+                        hotkey: 'Mod-B',
+                    }, 
+                    {
+                        name: 'italic',
+                        action: 'italic',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M5.248 20.246H9.05m0 0h3.696m-3.696 0 5.893-16.502m0 0h-3.697m3.697 0h3.803" /> </svg> ',
+                        title: 'Italic',
+                        hotkey: 'Mod-I',
+                    }, 
+                    {
+                        name: 'strikethrough',
+                        action: 'strikethrough',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a8.912 8.912 0 0 1-.318-.079c-1.585-.424-2.904-1.247-3.76-2.236-.873-1.009-1.265-2.19-.968-3.301.59-2.2 3.663-3.29 6.863-2.432A8.186 8.186 0 0 1 16.5 5.21M6.42 17.81c.857.99 2.176 1.812 3.761 2.237 3.2.858 6.274-.23 6.863-2.431.233-.868.044-1.779-.465-2.617M3.75 12h16.5" /> </svg> ',
+                        title: 'Strikethrough',
+                        hotkey: 'Mod2-Shift-5',
+                    }, 
+                    {
+                        name: 'h1',
+                        action: 'h1',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501m4.501-8.627 2.25-1.5v10.126m0 0h-2.25m2.25 0h2.25" /> </svg> ',
+                        title: 'Level 1 heading',
+                        hotkey: 'Mod-Shift-1',
+                    },
+                    {
+                        name: 'h2',
+                        action: 'h2',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 19.5H16.5v-1.609a2.25 2.25 0 0 1 1.244-2.012l2.89-1.445c.651-.326 1.116-.955 1.116-1.683 0-.498-.04-.987-.118-1.463-.135-.825-.835-1.422-1.668-1.489a15.202 15.202 0 0 0-3.464.12M2.243 4.492v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
+                        title: 'Level 2 heading',
+                        hotkey: 'Mod-Shift-2',
+                    },
+                    {
+                        name: 'h3',
+                        action: 'h3',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M20.905 14.626a4.52 4.52 0 0 1 .738 3.603c-.154.695-.794 1.143-1.504 1.208a15.194 15.194 0 0 1-3.639-.104m4.405-4.707a4.52 4.52 0 0 0 .738-3.603c-.154-.696-.794-1.144-1.504-1.209a15.19 15.19 0 0 0-3.639.104m4.405 4.708H18M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
+                        title: 'Level 3 heading',
+                    },
+                    '|', 
+                    {
+                        name: 'ul',
+                        action: 'ul',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
+                        title: 'Bulleted list',
+                    },
+                    {
+                        name: 'ol',
+                        action: 'ol',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" /> </svg> ',
+                        title: 'Numbered list',
+                    }, 
+                    '|', 
+                    'blockquote',
+                    {
+                        name: 'code',
+                        action: 'code',
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /> </svg> ',
+                        title: 'Format as code',
+                    },
+                    '|', 
+                    {
+                        name: 'insertLink',
+                        action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('[', ']()')},
+                        enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /> </svg> ',
+                        title: 'Insert link',
+                        hotkey: 'Mod-K',
+                    }, 
+                    {
+                        name: 'insertImage',
+                        action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('![', ']()')},
+                        enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
+                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
+                        title: 'Insert image',
+                        hotkey: 'Mod2-Shift-I',
+                    },
+                ]
+            });
+
+            tinyMDE.setContent(pageData.data.defaultContent.content);
         } else {
-            editPageContent.innerHTML = `
-            <p>Page not found</p>
-          `;
         }
       } else {
-        editPageContent.innerHTML = `
-          <p>Select a page from the list to display</p>
-        `;
-
         editPageContainer.style.display = 'none';
-        editPageContent.style.display = 'none';
       }
     }
   
@@ -57,5 +292,45 @@ import { StudioCMSRoutes } from 'studiocms:lib';
         height: 100%;
         width: 100%;
         min-width: 100%;
+        display: none;
     }
+
+    #edit-page-form {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .75rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .page-content-editor {
+        height: 250px;
+        margin-bottom: 1rem;
+
+        .editor-container {
+            height: 100%;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        #page-content {
+            height: 100%;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+    }
+
 </style>

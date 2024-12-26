@@ -60,11 +60,13 @@ const description = propDescription ?? dbConfig.description;
           <slot name="header" />
         </div>
 
-        <slot />
+        <div class="container-content">
+          <slot />
+        </div>
+
+        { footer && <Footer /> }
 
       </div>
-
-      { footer && <Footer /> }
     </main>
   </body>
 </html>

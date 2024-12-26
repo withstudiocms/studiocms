@@ -1,12 +1,13 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 ---
 <header class="page-header">
   <div class="page-title-container">
-    <h1 class="page-title">Content Management</h1>
+    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>Content Management</h1>
   </div>
-  <div class="page-actions-container">
+  <div id="page-actions-container" class="page-actions-container">
 
     {/* Edit Page Buttons */}
     <Button id="edit-button" variant="solid" color="primary" type="submit" form="page-edit-form">
@@ -26,39 +27,45 @@ import Icon from '@studiocms/ui/utils/Icon.astro';
   </div>
 </header>
 
-
 <script is:inline>
     async function listener() {
         // get the query parameters
         const urlParams = new URLSearchParams(window.location.search);
+  
+        // get the elements to customize
+        const pageTitle = document.querySelector('.page-title');
+        const pageEditButton = document.getElementById('edit-button');
+        const pageSaveDraftButton = document.getElementById('draft-button');
+        const pageSavePublishButton = document.getElementById('publish-button');
+        const placeholder = document.getElementById('placeholder-info');
+
+        const pageActionsContainer = document.getElementById('page-actions-container');
     
         // get the id parameter
         const edit = urlParams.get('edit');
         const create = urlParams.get('create');
-  
-        // get the elements to customize
-        const pageTitle = document.querySelector('.page-title');
-
-        const pageEditButton = document.getElementById('edit-button');
-        const pageSaveDraftButton = document.getElementById('draft-button');
-        const pageSavePublishButton = document.getElementById('publish-button');
-
-        const placeholder = document.getElementById('placeholder-info');
 
         if (edit) {
-            pageTitle.innerText = 'Edit Page';
+
+            const pageDataResponse = await (await fetch(pageTitle.dataset.link)).json();
+            const currentPageData = pageDataResponse.pages.find((page) => page.data.id === edit);
+
+            pageTitle.innerText = `Edit Page: ${currentPageData.data.title}`;
+            pageActionsContainer.style.display = 'flex';
             pageEditButton.style.display = 'flex';
             pageSaveDraftButton.style.display = 'none';
             pageSavePublishButton.style.display = 'none';
             placeholder.style.display = 'none';
         } else if (create) {
-            pageTitle.innerText = 'Create Page';
+            pageTitle.innerText = 'Create new Page';
+            pageActionsContainer.style.display = 'flex';
             pageEditButton.style.display = 'none';
             pageSaveDraftButton.style.display = 'flex';
             pageSavePublishButton.style.display = 'flex';
             placeholder.style.display = 'none';
         } else {
             pageTitle.innerText = 'Content Management';
+            pageActionsContainer.style.display = 'none';
             pageEditButton.style.display = 'none';
             pageSaveDraftButton.style.display = 'none';
             pageSavePublishButton.style.display = 'none';
@@ -76,7 +83,6 @@ import Icon from '@studiocms/ui/utils/Icon.astro';
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
   width: 100%;
 }
 
@@ -94,9 +100,15 @@ import Icon from '@studiocms/ui/utils/Icon.astro';
 }
 
 .page-actions-container {
-  display: flex;
+  display: none;
   flex-direction: row;
   align-items: center;
   gap: 1rem;
+}
+
+#edit-button,
+#draft-button,
+#publish-button {
+  display: none;
 }
 </style>

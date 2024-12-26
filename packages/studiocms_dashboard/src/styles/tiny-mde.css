@@ -1,0 +1,241 @@
+.TinyMDE {
+	background-color: hsl(var(--background-step-2)) !important;
+	color: hsl(var(--text-normal)) !important;
+	font-size: 16px !important;
+	line-height: 24px !important;
+	outline: none !important;
+	padding: 5px !important;
+	height: 100% !important;
+	border-bottom-left-radius: 8px !important;
+	border-bottom-right-radius: 8px !important;
+	border-right: 2px solid hsl(var(--border)) !important;
+	border-bottom: 2px solid hsl(var(--border)) !important;
+	border-left: 2px solid hsl(var(--border)) !important;
+}
+
+.TMBlankLine {
+	height: 24px !important;
+}
+
+.TMH1,
+.TMSetextH1 {
+	font-size: 22px !important;
+	line-height: 32px !important;
+	font-weight: bold !important;
+	margin-bottom: 8px !important;
+}
+
+.TMSetextH1 {
+	margin-bottom: 0px !important;
+}
+
+.TMSetextH1Marker {
+	margin-bottom: 8px !important;
+}
+
+.TMH2,
+.TMSetextH2 {
+	font-size: 20px !important;
+	line-height: 28px !important;
+	font-weight: bold !important;
+	margin-bottom: 4px !important;
+}
+
+.TMMark_TMCode {
+	font-family: monospace !important;
+	font-size: .9em !important;
+}
+
+.TMFencedCodeBacktick,
+.TMFencedCodeTilde,
+.TMIndentedCode,
+.TMCode {
+	font-family: monospace !important;
+	font-size: .9em !important;
+	background-color: hsl(var(--background-step-3)) !important;
+}
+
+.TMCodeFenceBacktickOpen,
+.TMCodeFenceTildeOpen {
+	border-bottom: 1px solid hsl(var(--border)) !important;
+	font-family: monospace !important;
+	font-size: .9em !important;
+}
+
+.TMCodeFenceBacktickClose,
+.TMCodeFenceTildeClose {
+	border-top: 1px solid hsl(var(--border)) !important;
+	font-family: monospace !important;
+	font-size: .9em !important;
+}
+
+.TMInfoString {
+	color: #0000ff !important;
+}
+
+.TMCode {
+	border: 1px solid hsl(var(--border)) !important;
+	border-radius: 2px !important;
+}
+
+.TMBlockquote {
+	font-style: italic !important;
+	border-left: 2px solid hsl(var(--border)) !important;
+	padding-left: 10px !important;
+	margin-left: 10px !important;
+}
+
+.TMMark {
+	color: hsl(var(--text-muted)) !important;
+}
+
+.TMMark_TMH1,
+.TMMark_TMH2 {
+	color: #ff8080 !important;
+}
+
+.TMMark_TMUL,
+.TMMark_TMOL {
+	color: #ff8080 !important;
+}
+
+.TMImage {
+	text-decoration: underline !important;
+	text-decoration-color: #00ff00 !important;
+}
+
+.TMLink {
+	text-decoration: underline !important;
+	text-decoration-color: #0000ff !important;
+}
+
+.TMLinkLabel {
+	text-decoration: underline !important;
+	font-family: monospace !important;
+}
+
+.TMLinkLabel_Definition,
+.TMLinkLabel_Valid {
+	color: #40c040 !important;
+}
+
+.TMLinkLabel_Invalid {
+	color: #ff0000 !important;
+}
+
+.TMLinkTitle {
+	font-style: italic !important;
+}
+
+.TMLinkDestination,
+.TMAutolink {
+	text-decoration: underline !important;
+	color: #0000ff !important;
+}
+
+.TMHR {
+	position: relative !important;
+}
+
+.TMHR:before {
+	content: "";
+	position: absolute !important;
+	bottom: 50% !important;
+	left: 40% !important;
+	border-bottom: 2px solid hsl(var(--border)) !important;
+	width: 20% !important;
+	z-index: 0 !important;
+}
+
+.TMHTML,
+.TMHTMLBlock {
+	font-family: monospace !important;
+	font-size: .9em !important;
+	color: #8000ff !important;
+}
+
+.TMHTMLBlock {
+	color: #6000c0 !important;
+}
+
+.TMCommandBar {
+	background-color: hsl(var(--background-step-3)) !important;
+	height: 24px !important;
+	border: 2px solid hsl(var(--border)) !important;
+	box-sizing: content-box !important;
+	display: flex !important;
+	-webkit-user-select: none !important;
+	user-select: none !important;
+	overflow-x: scroll !important;
+	overflow-y: hidden !important;
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+	border-top-left-radius: 8px !important;
+	border-top-right-radius: 8px !important;
+	padding-left: .5rem;
+}
+
+.TMCommandBar::-webkit-scrollbar {
+	display: none !important;
+}
+
+.TMCommandButton {
+	box-sizing: border-box !important;
+	display: inline-block !important;
+	height: 24px !important;
+	padding: 3px !important;
+	margin-right: 4px !important;
+	color: hsl(var(--text-muted)) !important;
+	fill: hsl(var(--text-muted)) !important;
+	text-align: center !important;
+	cursor: pointer !important;
+	vertical-align: middle !important;
+	font-size: 20px !important;
+	line-height: 18px !important;
+	font-family: sans-serif !important;
+}
+
+.TMCommandButtonSpan {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+}
+
+.TMCommandDivider {
+	box-sizing: content-box !important;
+	height: 24px !important;
+	margin-left: 4px !important;
+	margin-right: 8px !important;
+	width: 0px !important;
+	border-left: 1px solid hsl(var(--border)) !important;
+	border-right: 1px solid hsl(var(--border)) !important;
+}
+
+.TMCommandButton_Active {
+	font-weight: bold !important;
+	color: hsl(var(--text-inverted)) !important;
+	background-color: hsl(var(--primary-active)) !important;
+	fill: hsl(var(--text-inverted)) !important;
+}
+
+.TMCommandButton_Inactive {
+	background-color: hsl(var(--background-step-3)) !important;
+	fill: hsl(var(--text-normal)) !important;
+	color: hsl(var(--text-normal)) !important;
+}
+
+.TMCommandButton_Disabled {
+	color: hsl(var(--text-muted)) !important;
+	fill: hsl(var(--text-muted)) !important;
+}
+
+@media (hover: hover) {
+	.TMCommandButton_Active:hover,
+	.TMCommandButton_Disabled:hover,
+	.TMCommandButton_Inactive:hover {
+		background-color: hsl(var(--primary-hover)) !important;
+		fill: hsl(var(--text-inverted)) !important;
+		color: hsl(var(--text-inverted)) !important;
+	}
+}
