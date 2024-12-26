@@ -2,6 +2,7 @@
 import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select } from '@studiocms/ui/components';
+import TinyMDE from '../../component-scripts/TinyMDE.astro';
 
 const pageTypeOptions = [{ label: 'Normal (StudioCMS)', value: 'studiocms' }];
 const trueFalse = [
@@ -71,7 +72,7 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
     </div>
 </div>
 
-<script src="../../component-scripts/tiny-mde.min.js"/>
+<TinyMDE />
 
 <script is:inline define:vars={{
     pageTypeOptions: JSON.stringify(pageTypeOptions),
