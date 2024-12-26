@@ -59,17 +59,13 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
         <h2>Page Content</h2>
 
         <div class="page-content-editor">
-            <div id="toolbar"></div>
+            <div id="editor-toolbar"></div>
             <div class="editor-container">
                 <textarea id="page-content"></textarea>
             </div>
         </div>
-        <br />
-
 
     </form>
-    <div id="page-json">
-    </div>
 </div>
 
 <TinyMDE />
@@ -115,6 +111,8 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
       const showContributorsSelect = editPageForm.querySelector('select[name="show-contributors"]');
       const showContributorsSelectValue = editPageForm.querySelector(`#show-contributors-value-span`);
 
+      const pageContentTextarea = document.getElementById('page-content')
+      const editorToolbar = document.getElementById('editor-toolbar');
 
       function getPageTypeOption(value) {
         const options = JSON.parse(pageTypeOptions);
@@ -170,9 +168,9 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
 
             // Setup the TinyMDE editor
             // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
-            var tinyMDE = new TinyMDE.Editor({ textarea: "page-content" });
+            var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
             var commandBar = new TinyMDE.CommandBar({
-                element: "toolbar",
+                element: editorToolbar,
                 editor: tinyMDE,
                 commands: [
                     {
@@ -265,6 +263,13 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
             });
 
             tinyMDE.setContent(pageData.data.defaultContent.content);
+
+            tinyMDE.addEventListener('change', e => { 
+                pageContentTextarea.textContent = e.content; 
+            });
+
+            // Set default page content in the textarea
+            pageContentTextarea.textContent = pageData.data.defaultContent.content;
 
             editPageContainer.style.display = 'block';
         }
