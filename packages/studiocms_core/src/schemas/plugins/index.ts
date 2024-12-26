@@ -102,6 +102,19 @@ export const StudioCMSPluginSchema = z.object({
 				 */
 				label: z.string(),
 				/**
+				 * Identifier that is saved in the database
+				 * @example
+				 * // Single page type per plugin
+				 * 'studiocms'
+				 * '@studiocms/blog'
+				 * // Multiple page types per plugin (Use unique identifiers for each type to avoid conflicts)
+				 * '@mystudiocms/plugin:pageType1'
+				 * '@mystudiocms/plugin:pageType2'
+				 * '@mystudiocms/plugin:pageType3'
+				 * '@mystudiocms/plugin:pageType4'
+				 */
+				identifier: z.string(),
+				/**
 				 * Description that is shown below the "Page Content" header if this type is selected
 				 */
 				description: z.string().optional(),

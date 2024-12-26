@@ -92,6 +92,11 @@ export interface FolderNode {
 	children: FolderNode[];
 }
 
+export interface FolderListItem {
+	id: string;
+	name: string;
+}
+
 export type AstroDBVirtualModule = typeof import('astro:db');
 
 // ../../schemas/config/sdk.ts
@@ -171,8 +176,30 @@ export interface VersionCacheObject extends BaseCacheObject {
 	version: string;
 }
 
+/**
+ * Represents a cache object for folder tree data.
+ * Extends the BaseCacheObject interface.
+ *
+ * @interface FolderTreeCacheObject
+ * @extends {BaseCacheObject}
+ *
+ * @property {FolderNode[]} data - The folder tree data to be cached.
+ */
 export interface FolderTreeCacheObject extends BaseCacheObject {
 	data: FolderNode[];
+}
+
+/**
+ * Represents a cache object for folder list data.
+ * Extends the BaseCacheObject interface.
+ *
+ * @interface FolderListCacheObject
+ * @extends {BaseCacheObject}
+ *
+ * @property {FolderListItem[]} data - The folder list data to be cached.
+ */
+export interface FolderListCacheObject extends BaseCacheObject {
+	data: FolderListItem[];
 }
 
 /**

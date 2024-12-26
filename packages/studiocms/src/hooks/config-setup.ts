@@ -96,6 +96,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 			{
 				name: 'StudioCMS (Default)',
 				identifier: 'studiocms',
+				pageTypes: [{ label: 'Normal (StudioCMS)', identifier: 'studiocms' }],
 			},
 		];
 

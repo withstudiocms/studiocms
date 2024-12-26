@@ -20,6 +20,7 @@ import type {
 	CombinedRank,
 	CombinedUserData,
 	DeletionResponse,
+	FolderListItem,
 	FolderNode,
 	MultiPageInsert,
 	PageContentReturnId,
@@ -141,6 +142,20 @@ export class StudioCMSSDK {
 	public async buildFolderTree(): Promise<FolderNode[]> {
 		const currentFolders = await this.db.select().from(tsPageFolderStructure);
 		return this.generateFolderTree(currentFolders);
+	}
+
+	/**
+	 * Gets the available folders from the database.
+	 *
+	 * @returns A promise that resolves to an array of folder list items.
+	 */
+	public async getAvailableFolders(): Promise<FolderListItem[]> {
+		const folders: FolderListItem[] = [];
+		const currentFolders = await this.db.select().from(tsPageFolderStructure);
+		for (const { id, name } of currentFolders) {
+			folders.push({ id, name });
+		}
+		return folders;
 	}
 
 	/**

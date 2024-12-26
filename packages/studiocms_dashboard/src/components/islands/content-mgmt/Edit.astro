@@ -1,17 +1,43 @@
 ---
 import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import pluginsList from 'studiocms:plugins';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Input, Select } from '@studiocms/ui/components';
 import TinyMDE from '../../component-scripts/TinyMDE.astro';
 
-const pageTypeOptions = [{ label: 'Normal (StudioCMS)', value: 'studiocms' }];
+type PluginList = {
+	label: string;
+	value: string;
+}[];
+
+const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
+
+const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
+	const pageTypeOutput: PluginList = [];
+
+	if (!pageTypes) {
+		return pageTypeOutput;
+	}
+
+	for (const { label, identifier } of pageTypes) {
+		pageTypeOutput.push({ label, value: identifier });
+	}
+
+	return pageTypeOutput;
+});
+
+const parentFolders = folderList.map(({ id: value, name: label }) => ({ label, value }));
+
+const parentFolderOptions = [{ label: 'None', value: 'null' }, ...parentFolders];
+
 const trueFalse = [
 	{ label: 'Yes', value: 'true' },
 	{ label: 'No', value: 'false' },
 ];
+
 const categoriesOptions = [{ label: 'None', value: 'null' }];
 const tagsOptions = [{ label: 'None', value: 'null' }];
-const parentFolderOptions = [{ label: 'None', value: 'null' }];
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
@@ -36,6 +62,7 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
                 label="Show in Navigation" 
                 name="show-in-nav" 
                 isRequired 
+                defaultValue='false'
                 fullWidth 
                 options={trueFalse} 
                 />
@@ -47,13 +74,13 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
         </div>
 
         <div class="form-row">
-            <Select label="Categories" name="categories" fullWidth options={categoriesOptions} disabled />
-            <Select label="Tags" name="tags" fullWidth options={tagsOptions} disabled />
+            <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+            <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
         </div>
 
         <div class="form-row">
-            <Select label="Show Author" name="show-author" fullWidth options={trueFalse} />
-            <Select label="Show Contributors" name="show-contributors" fullWidth options={trueFalse} />
+            <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
+            <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
         </div>
 
         <h2>Page Content</h2>
@@ -88,7 +115,6 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
   
       // get the elements
       const editPageContainer = document.getElementById('edit-page-container');
-
       const editPageForm = document.getElementById('edit-page-form');
 
       const pageTitleInput = editPageForm.querySelector('input[name="page-title"]');
@@ -99,7 +125,6 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
       const showInNavSelect = editPageForm.querySelector('select[name="show-in-nav"]');
       const showInNavSelectValue = editPageForm.querySelector(`#show-in-nav-value-span`);
       const pageHeroImageInput = editPageForm.querySelector('input[name="page-hero-image"]');
-
       const categoriesSelect = editPageForm.querySelector('select[name="categories"]');
       const categoriesSelectValue = editPageForm.querySelector(`#categories-value-span`);
       const tagsSelect = editPageForm.querySelector('select[name="tags"]');
@@ -110,6 +135,8 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
       const showAuthorSelectValue = editPageForm.querySelector(`#show-author-value-span`);
       const showContributorsSelect = editPageForm.querySelector('select[name="show-contributors"]');
       const showContributorsSelectValue = editPageForm.querySelector(`#show-contributors-value-span`);
+
+      const parentFolderSelectContainer = editPageForm.querySelector('#parent-folder-container');
 
       const pageContentTextarea = document.getElementById('page-content')
       const editorToolbar = document.getElementById('editor-toolbar');
@@ -156,6 +183,10 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
             pageSlugInput.value = pageData.data.slug;
             pageDescriptionInput.value = pageData.data.description;
             pageHeroImageInput.value = pageData.data.heroImage;
+
+            if (pageData.data.slug === 'index' || pageData.data.slug === 'about') {
+                parentFolderSelectContainer.classList.add('disabled');
+            }
 
             setSelectValue(pageTypeSelect, pageTypeSelectValue, pageData.data.package, getPageTypeOption(pageData.data.package));
             setSelectValue(showInNavSelect, showInNavSelectValue, pageData.data.showOnNav, pageData.data.showOnNav === true ? 'Yes' : 'No');
@@ -268,6 +299,26 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
                 pageContentTextarea.textContent = e.content; 
             });
 
+            tinyMDE.addEventListener("drop", function (event) {
+                let formData = new FormData();
+
+                // You can add use event.dataTransfer.items or event.dataTransfer.files
+                // to build the form data object:
+                for (let i = 0; i < event.dataTransfer.items.length; i++) {
+                    if (event.dataTransfer.items[i].kind === "file") {
+                    let file = event.dataTransfer.items[i].getAsFile();
+                    formData.append("image", file);
+                    }
+                }
+
+                // Call your API endpoint that accepts "Content-Type": "multipart/form-data"
+                // requests and responds with the image names and URL-s.
+                //
+                // Now you can add Markdown images like so:
+                // editor.paste(`![${imageName}](${imageUrl})`);
+                alert("Image upload coming soon!");
+            });
+
             // Set default page content in the textarea
             pageContentTextarea.textContent = pageData.data.defaultContent.content;
 
@@ -279,7 +330,7 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
     }
   
     listener();
-  </script>
+</script>
 
 <style>
     #edit-page-container {

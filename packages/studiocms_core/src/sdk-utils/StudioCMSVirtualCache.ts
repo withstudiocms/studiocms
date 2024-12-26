@@ -3,6 +3,8 @@ import { StudioCMSCacheError } from './errors';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
+	FolderListCacheObject,
+	FolderListItem,
 	FolderNode,
 	FolderTreeCacheObject,
 	PageDataCacheObject,
@@ -32,6 +34,7 @@ export class StudioCMSVirtualCache {
 	private readonly VersionMapID: string = '__StudioCMS_Latest_Version';
 	private readonly FolderTreeMapID: string = '__StudioCMS_Folder_Tree';
 	private readonly PageFolderTreeMapID: string = '__StudioCMS_Page_Folder_Tree';
+	private readonly FolderListMapID: string = '__StudioCMS_Folder_List';
 	private readonly StudioCMSPkgId: string = 'studiocms';
 	private readonly CMSSiteConfigId = CMSSiteConfigId;
 	private readonly versionCacheLifetime = versionCacheLifetime;
@@ -44,6 +47,7 @@ export class StudioCMSVirtualCache {
 	private version = new Map<string, VersionCacheObject>();
 	private folderTree = new Map<string, FolderTreeCacheObject>();
 	private pageFolderTree = new Map<string, FolderTreeCacheObject>();
+	private FolderList = new Map<string, FolderListCacheObject>();
 
 	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: STUDIOCMS_SDK) {
 		this.cacheConfig = cacheConfig;
@@ -140,7 +144,75 @@ export class StudioCMSVirtualCache {
 		};
 	}
 
+	private folderListReturn(data: FolderListItem[]): FolderListCacheObject {
+		return {
+			data,
+			lastCacheUpdate: new Date(),
+		};
+	}
+
 	// Folder Tree Utils
+
+	public async getFolderList(): Promise<FolderListCacheObject> {
+		try {
+			if (!this.isEnabled()) {
+				const folderList = await this.sdk.getAvailableFolders();
+
+				if (!folderList) {
+					throw new StudioCMSCacheError('Folder list not found in database');
+				}
+
+				return this.folderListReturn(folderList);
+			}
+
+			const list = this.FolderList.get(this.FolderListMapID);
+
+			if (!list || this.isCacheExpired(list)) {
+				const folderList = await this.sdk.getAvailableFolders();
+
+				if (!folderList) {
+					throw new StudioCMSCacheError('Folder list not found in database');
+				}
+
+				this.FolderList.set(this.FolderListMapID, this.folderListReturn(folderList));
+
+				return this.folderListReturn(folderList);
+			}
+
+			return list;
+		} catch (error) {
+			throw new StudioCMSCacheError('Error fetching folder list');
+		}
+	}
+
+	public async updateFolderList(): Promise<FolderListCacheObject> {
+		try {
+			const folderList = await this.sdk.getAvailableFolders();
+
+			if (!this.isEnabled()) {
+				return this.folderListReturn(folderList);
+			}
+
+			this.FolderList.set(this.FolderListMapID, this.folderListReturn(folderList));
+
+			return this.folderListReturn(folderList);
+		} catch (error) {
+			throw new StudioCMSCacheError('Error updating folder list');
+		}
+	}
+
+	public clearFolderList(): void {
+		// Check if caching is disabled
+		if (!this.isEnabled()) {
+			return;
+		}
+
+		// Clear the folder list cache
+		this.FolderList.clear();
+
+		// Return void
+		return;
+	}
 
 	/**
 	 * Retrieves the folder tree from the cache or the database.
@@ -824,6 +896,7 @@ export class StudioCMSVirtualCache {
 			latestVersion: async () => await this.getVersion(),
 			folderTree: async () => await this.getFolderTree(),
 			pageFolderTree: async () => await this.getPageFolderTree(),
+			folderList: async () => await this.getFolderList(),
 		},
 		CLEAR: {
 			page: {
@@ -833,6 +906,7 @@ export class StudioCMSVirtualCache {
 			pages: () => this.clearAllPages(),
 			latestVersion: () => this.clearVersion(),
 			folderTree: () => this.clearFolderTree(),
+			folderList: () => this.clearFolderList(),
 		},
 		UPDATE: {
 			page: {
@@ -849,6 +923,7 @@ export class StudioCMSVirtualCache {
 			siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
 			latestVersion: async () => await this.updateVersion(),
 			folderTree: async () => await this.updateFolderTree(),
+			folderList: async () => await this.updateFolderList(),
 		},
 	};
 }
