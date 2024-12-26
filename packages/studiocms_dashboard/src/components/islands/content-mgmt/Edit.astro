@@ -3,7 +3,7 @@ import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginsList from 'studiocms:plugins';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select } from '@studiocms/ui/components';
+import { Input, Select, TabItem, Tabs } from '@studiocms/ui/components';
 import TinyMDE from '../../component-scripts/TinyMDE.astro';
 
 type PluginList = {
@@ -41,57 +41,62 @@ const tagsOptions = [{ label: 'None', value: 'null' }];
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
-        <h2>Basic Information</h2>
 
-        <div class="form-row">
-            <Input label='Page Title' name='page-title' isRequired />
-            <Input label='Slug' name='page-slug' disabled isRequired />
-        </div>
+        <Tabs>
+          <TabItem label='Basic Information' icon='adjustments-horizontal'>
 
-        <Input label='Description' name='page-description' isRequired />
-
-        <div class="form-row">
-            <Select 
-                label="Page type" 
-                name="page-type" 
-                isRequired 
-                fullWidth 
-                options={pageTypeOptions} 
-                />
-            <Select 
-                label="Show in Navigation" 
-                name="show-in-nav" 
-                isRequired 
-                defaultValue='false'
-                fullWidth 
-                options={trueFalse} 
-                />
-        </div>
-
-        <div class="form-row">
-            <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
-            <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} />
-        </div>
-
-        <div class="form-row">
-            <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-            <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
-        </div>
-
-        <div class="form-row">
-            <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
-            <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
-        </div>
-
-        <h2>Page Content</h2>
-
-        <div class="page-content-editor">
-            <div id="editor-toolbar"></div>
-            <div class="editor-container">
-                <textarea id="page-content"></textarea>
+            <div class="form-row">
+                <Input label='Page Title' name='page-title' isRequired />
+                <Input label='Slug' name='page-slug' disabled isRequired />
             </div>
-        </div>
+    
+            <Input label='Description' name='page-description' isRequired />
+    
+            <div class="form-row">
+                <Select 
+                    label="Page type" 
+                    name="page-type" 
+                    isRequired 
+                    fullWidth 
+                    options={pageTypeOptions} 
+                    />
+                <Select 
+                    label="Show in Navigation" 
+                    name="show-in-nav" 
+                    isRequired 
+                    defaultValue='false'
+                    fullWidth 
+                    options={trueFalse} 
+                    />
+            </div>
+    
+            <div class="form-row">
+                <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
+                <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+                <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
+                <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
+            </div>
 
+          </TabItem>
+          <TabItem label='Page Content' icon='document-text'>
+
+            <div class="page-content-editor">
+                <div id="editor-toolbar"></div>
+                <div class="editor-container">
+                    <textarea id="page-content"></textarea>
+                </div>
+            </div>
+
+          </TabItem>
+        </Tabs>
     </form>
 </div>
 
