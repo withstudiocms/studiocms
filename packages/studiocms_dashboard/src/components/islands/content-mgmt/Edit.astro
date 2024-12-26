@@ -158,8 +158,6 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
         const pageDataResponse = await (await fetch(editPageContainer.dataset.link)).json();
         const pageData = pageDataResponse.pages.find((page) => page.data.id === editId);
         const pageDataJson = JSON.stringify(pageData, null, 2);
-
-        editPageContainer.style.display = 'block';
   
         if (pageData) {
             pageTitleInput.value = pageData.data.title;
@@ -176,13 +174,8 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
             // setSelectValue(tagsSelect, tagsSelectValue, pageData.data.tags, pageData.data.tags);
             setSelectValue(parentFolderSelect, parentFolderSelectValue, getParentFolderValue(pageData.data.parentFolder), getParentFolderOption(pageData.data.parentFolder));
 
-            // wait for the js to load
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, 500);
-            });
-
+            // Setup the TinyMDE editor
+            // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
             var tinyMDE = new TinyMDE.Editor({ textarea: "page-content" });
             var commandBar = new TinyMDE.CommandBar({
                 element: "toolbar",
@@ -278,7 +271,8 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
             });
 
             tinyMDE.setContent(pageData.data.defaultContent.content);
-        } else {
+
+            editPageContainer.style.display = 'block';
         }
       } else {
         editPageContainer.style.display = 'none';
@@ -327,7 +321,7 @@ const parentFolderOptions = [{ label: 'None', value: 'null' }];
         #page-content {
             height: 100%;
             width: 100%;
-            border: 1px solid #ccc;
+            border: 1px solid hsl(var(--border));
             border-radius: 4px;
             padding: 1rem;
             font-size: 1rem;
