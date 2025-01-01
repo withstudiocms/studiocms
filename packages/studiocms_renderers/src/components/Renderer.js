@@ -1,15 +1,15 @@
 import contentRenderer from 'studiocms:renderer/current';
 import { HTMLString } from 'astro/runtime/server/index.js';
 
-export const Renderer = Object.assign(
-	function Renderer(result, attributes, slots) {
+export default Object.assign(
+	function Renderer(result, { content }) {
 		return {
 			get [Symbol.toStringTag]() {
 				return 'AstroComponent';
 			},
 			async *[Symbol.asyncIterator]() {
-				const content = attributes.content;
-				yield new HTMLString(await contentRenderer(content));
+				const renderedContent = await contentRenderer(content);
+				yield new HTMLString(renderedContent);
 			},
 		};
 	},
@@ -17,5 +17,3 @@ export const Renderer = Object.assign(
 		isAstroComponentFactory: true,
 	}
 );
-
-export default Renderer;
