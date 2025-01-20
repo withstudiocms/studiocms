@@ -752,6 +752,9 @@ importers:
       semver:
         specifier: catalog:studiocms
         version: 7.6.3
+      ultrahtml:
+        specifier: ^1.5.3
+        version: 1.5.3
       vite:
         specifier: catalog:min
         version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)

@@ -45,7 +45,8 @@
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@fontsource-variable/onest": "catalog:studiocms-shared",
-    "semver": "catalog:studiocms"
+    "semver": "catalog:studiocms",
+    "ultrahtml": "^1.5.3"
   },
   "peerDependencies": {
     "astro": "catalog:min",

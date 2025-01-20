@@ -193,7 +193,8 @@ main {
 	padding: 1rem;
 
 	& .grid-item {
-		padding: 1rem;
+		padding: 0.5rem;
+		height: unset !important;
 	}
 
 	& .span-2 {
@@ -202,6 +203,12 @@ main {
 
 	& .span-3 {
 		grid-column: span 3;
+	}
+
+	& .grid-item-title {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
 	}
 }
 
