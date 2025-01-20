@@ -100,10 +100,9 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     if (document.getElementById('version-modal-trigger')) {
             dateTimeListener('version-modal-last-checked-date')
     }
-    new ModalHelper('version-modal', 'version-modal-trigger');
-
-    document.addEventListener('astro:after-swap', () => {
-        setTimeout(() => {}, 1000);
+    
+    document.addEventListener('astro:page-load', async () => {
+        setTimeout(() => {}, 1000)
         new ModalHelper('version-modal', 'version-modal-trigger');
     })
 
