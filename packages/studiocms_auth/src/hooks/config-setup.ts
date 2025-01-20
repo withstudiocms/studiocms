@@ -1,13 +1,13 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { makePublicRoute } from '@studiocms/core/lib';
 import { addAstroEnvConfig } from '@studiocms/core/utils';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import copy from 'rollup-plugin-copy';
-import type { StudioCMSAuthOptions } from '../schema';
-import { checkEnvKeys } from '../utils/checkENV';
-import { injectAuthAPIRoutes, injectAuthPageRoutes } from '../utils/routeBuilder';
+import type { StudioCMSAuthOptions } from '../schema.js';
+import { checkEnvKeys } from '../utils/checkENV.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
+import { injectAuthAPIRoutes, injectAuthPageRoutes } from '../utils/routeBuilder.js';
 
 export const configSetup = defineUtility('astro:config:setup')(
 	(params, name: string, options: StudioCMSAuthOptions, prerenderRoutes: boolean) => {
@@ -130,17 +130,16 @@ export const configSetup = defineUtility('astro:config:setup')(
 		addVirtualImports(params, {
 			name,
 			imports: {
-				'studiocms:auth/lib/encryption': `export * from '${resolve('../lib/encryption.ts')}'`,
-				'studiocms:auth/lib/password': `export * from '${resolve('../lib/password.ts')}'`,
-				'studiocms:auth/lib/rate-limit': `export * from '${resolve('../lib/rate-limit.ts')}'`,
-				'studiocms:auth/lib/session': `export * from '${resolve('../lib/session.ts')}'`,
-				'studiocms:auth/lib/types': `export * from '${resolve('../lib/types.ts')}'`,
-				'studiocms:auth/lib/user': `export * from '${resolve('../lib/user.ts')}'`,
-				'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('../utils/authEnvCheck.ts')}'`,
-				'studiocms:auth/utils/validImages': `export * from '${resolve('../utils/validImages.ts')}'`,
-				'studiocms:auth/utils/getLabelForPermissionLevel': `export * from '${resolve('../utils/getLabelForPermissionLevel.ts')}'`,
-				'studiocms:auth/scripts/three': `import ${JSON.stringify(resolve('../scripts/three.ts'))}`,
-				'studiocms:auth/scripts/formListener': `export * from '${resolve('../scripts/formListener.ts')}'`,
+				'studiocms:auth/lib/encryption': `export * from '${resolve('../lib/encryption.js')}'`,
+				'studiocms:auth/lib/password': `export * from '${resolve('../lib/password.js')}'`,
+				'studiocms:auth/lib/rate-limit': `export * from '${resolve('../lib/rate-limit.js')}'`,
+				'studiocms:auth/lib/session': `export * from '${resolve('../lib/session.js')}'`,
+				'studiocms:auth/lib/types': `export * from '${resolve('../lib/types.js')}'`,
+				'studiocms:auth/lib/user': `export * from '${resolve('../lib/user.js')}'`,
+				'studiocms:auth/utils/authEnvCheck': `export * from '${resolve('../utils/authEnvCheck.js')}'`,
+				'studiocms:auth/utils/validImages': `export * from '${resolve('../utils/validImages.js')}'`,
+				'studiocms:auth/utils/getLabelForPermissionLevel': `export * from '${resolve('../utils/getLabelForPermissionLevel.js')}'`,
+				'studiocms:auth/scripts/three': `import ${JSON.stringify(resolve('../scripts/three.js'))}`,
 			},
 		});
 
@@ -158,7 +157,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 						hook: 'buildStart',
 						targets: [
 							{
-								src: resolve('../public/*'),
+								src: resolve('../../assets/public/*'),
 								dest: makePublicRoute('auth'),
 							},
 						],
@@ -173,57 +172,57 @@ export const configSetup = defineUtility('astro:config:setup')(
 			routes: [
 				{
 					pattern: 'login',
-					entrypoint: resolve('../routes/api/login.ts'),
+					entrypoint: resolve('../../assets/routes/api/login.ts'),
 					enabled: usernameAndPasswordAPI,
 				},
 				{
 					pattern: 'logout',
-					entrypoint: resolve('../routes/api/logout.ts'),
+					entrypoint: resolve('../../assets/routes/api/logout.ts'),
 					enabled: dashboardEnabled && !options.dbStartPage,
 				},
 				{
 					pattern: 'register',
-					entrypoint: resolve('../routes/api/register.ts'),
+					entrypoint: resolve('../../assets/routes/api/register.ts'),
 					enabled: usernameAndPasswordAPI && allowUserRegistration,
 				},
 				{
 					pattern: 'github',
-					entrypoint: resolve('../routes/api/github/index.ts'),
+					entrypoint: resolve('../../assets/routes/api/github/index.ts'),
 					enabled: githubAPI,
 				},
 				{
 					pattern: 'github/callback',
-					entrypoint: resolve('../routes/api/github/callback.ts'),
+					entrypoint: resolve('../../assets/routes/api/github/callback.ts'),
 					enabled: githubAPI,
 				},
 				{
 					pattern: 'discord',
-					entrypoint: resolve('../routes/api/discord/index.ts'),
+					entrypoint: resolve('../../assets/routes/api/discord/index.ts'),
 					enabled: discordAPI,
 				},
 				{
 					pattern: 'discord/callback',
-					entrypoint: resolve('../routes/api/discord/callback.ts'),
+					entrypoint: resolve('../../assets/routes/api/discord/callback.ts'),
 					enabled: discordAPI,
 				},
 				{
 					pattern: 'google',
-					entrypoint: resolve('../routes/api/google/index.ts'),
+					entrypoint: resolve('../../assets/routes/api/google/index.ts'),
 					enabled: googleAPI,
 				},
 				{
 					pattern: 'google/callback',
-					entrypoint: resolve('../routes/api/google/callback.ts'),
+					entrypoint: resolve('../../assets/routes/api/google/callback.ts'),
 					enabled: googleAPI,
 				},
 				{
 					pattern: 'auth0',
-					entrypoint: resolve('../routes/api/auth0/index.ts'),
+					entrypoint: resolve('../../assets/routes/api/auth0/index.ts'),
 					enabled: auth0API,
 				},
 				{
 					pattern: 'auth0/callback',
-					entrypoint: resolve('../routes/api/auth0/callback.ts'),
+					entrypoint: resolve('../../assets/routes/api/auth0/callback.ts'),
 					enabled: auth0API,
 				},
 			],
@@ -236,17 +235,17 @@ export const configSetup = defineUtility('astro:config:setup')(
 				routes: [
 					{
 						pattern: 'login/',
-						entrypoint: resolve('../routes/login.astro'),
+						entrypoint: resolve('../../assets/routes/login.astro'),
 						enabled: dashboardEnabled && !options.dbStartPage,
 					},
 					{
 						pattern: 'logout/',
-						entrypoint: resolve('../routes/logout.astro'),
+						entrypoint: resolve('../../assets/routes/logout.astro'),
 						enabled: dashboardEnabled && !options.dbStartPage,
 					},
 					{
 						pattern: 'signup/',
-						entrypoint: resolve('../routes/signup.astro'),
+						entrypoint: resolve('../../assets/routes/signup.astro'),
 						enabled: usernameAndPasswordAPI && allowUserRegistration,
 					},
 				],

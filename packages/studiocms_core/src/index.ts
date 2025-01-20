@@ -1,8 +1,8 @@
 import type { AstroIntegration } from 'astro';
-import { name as pkgName } from '../package.json';
-import configDone from './hooks/config-done';
-import configSetup from './hooks/config-setup';
-import type { StudioCMSConfig } from './schemas';
+import { name as pkgName } from '../package.json' assert { type: 'json' };
+import configDone from './hooks/config-done.js';
+import configSetup from './hooks/config-setup.js';
+import type { StudioCMSConfig } from './schemas/index.js';
 
 /**
  * **StudioCMS Core Integration**

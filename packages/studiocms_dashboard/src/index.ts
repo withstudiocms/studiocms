@@ -1,9 +1,9 @@
 import type { AstroIntegration } from 'astro';
-import { name } from '../package.json';
-import configDone from './hooks/configDone';
-import configSetup from './hooks/configSetup';
-import serverStart from './hooks/serverStart';
-import type { StudioCMSDashboardOptions } from './schema';
+import { name } from '../package.json' assert { type: 'json' };
+import configDone from './hooks/configDone.js';
+import configSetup from './hooks/configSetup.js';
+import serverStart from './hooks/serverStart.js';
+import type { StudioCMSDashboardOptions } from './schema.js';
 
 /**
  * StudioCMS Dashboard Integration

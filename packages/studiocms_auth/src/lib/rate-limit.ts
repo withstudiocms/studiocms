@@ -1,4 +1,4 @@
-import type { ExpiringBucket, RefillBucket, ThrottlingCounter } from './types';
+import type { ExpiringBucket, RefillBucket, ThrottlingCounter } from './types.js';
 // TODO: Implement rate limiting for auth API routes
 
 /**
@@ -133,7 +133,6 @@ export class Throttler<_Key> {
 			this.storage.set(key, counter);
 			return true;
 		}
-		// @ts-expect-error: Could be undefined
 		const allowed = now - counter.updatedAt >= this.timeoutSeconds[counter.timeout] * 1000;
 		if (!allowed) {
 			return false;

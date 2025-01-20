@@ -25,32 +25,89 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "sideEffects": false,
   "files": [
-    "src"
+    "src", "assets"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
-    "./errors": "./src/errors.ts",
-    "./lib": "./src/lib/index.ts",
-    "./schemas": "./src/schemas/index.ts",
-    "./schemas/renderer": "./src/schemas/config/rendererConfig.ts",
-    "./utils": "./src/utils/index.ts",
-    "./consts": "./src/consts.ts",
-    "./db/config": "./src/db/config.ts",
-    "./db/tables": "./src/db/tables.ts",
-    "./db/tsTables": "./src/db/tsTables.ts",
-    "./sdk-utils": "./src/sdk-utils/index.ts",
-    "./sdk-utils/tables": "./src/sdk-utils/tables.ts",
-    "./sdk-utils/types": "./src/sdk-utils/types/index.ts",
-    "./sdk-utils/utils": "./src/sdk-utils/utils.ts",
-    "./sdk-utils/auth": "./src/sdk-utils/auth.ts",
-    "./sdk-utils/delete": "./src/sdk-utils/delete.ts",
-    "./sdk-utils/get": "./src/sdk-utils/get.ts",
-    "./sdk-utils/post": "./src/sdk-utils/post.ts",
-    "./sdk-utils/update": "./src/sdk-utils/update.ts",
-    "./sdk-utils/init": "./src/sdk-utils/init.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./components": "./assets/components/index.ts",
+    "./errors": {
+      "types": "./dist/errors.d.ts",
+      "default": "./dist/errors.js"
+    },
+    "./lib": {
+      "types": "./dist/lib/index.d.ts",
+      "default": "./dist/lib/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "./schemas/renderer": {
+      "types": "./dist/schemas/config/rendererConfig.d.ts",
+      "default": "./dist/schemas/config/rendererConfig.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./consts": {
+      "types": "./dist/consts.d.ts",
+      "default": "./dist/consts.js"
+    },
+    "./db/config": {
+      "types": "./dist/db/config.d.ts",
+      "default": "./dist/db/config.js"
+    },
+    "./db/tables": "./src/db/tables.js",
+    "./sdk-utils": {
+      "types": "./dist/sdk-utils/index.d.ts",
+      "default": "./dist/sdk-utils/index.js"
+    },
+    "./sdk-utils/tables": {
+      "types": "./dist/sdk-utils/tables.d.ts",
+      "default": "./dist/sdk-utils/tables.js"
+    },
+    "./sdk-utils/types": {
+      "types": "./dist/sdk-utils/types.d.ts",
+      "default": "./dist/sdk-utils/types.js"
+    },
+    "./sdk-utils/utils": {
+      "types": "./dist/sdk-utils/utils.d.ts",
+      "default": "./dist/sdk-utils/utils.js"
+    },
+    "./sdk-utils/auth": {
+      "types": "./dist/sdk-utils/auth.d.ts",
+      "default": "./dist/sdk-utils/auth.js"
+    },
+    "./sdk-utils/delete": {
+      "types": "./dist/sdk-utils/delete.d.ts",
+      "default": "./dist/sdk-utils/delete.js"
+    },
+    "./sdk-utils/get": {
+      "types": "./dist/sdk-utils/get.d.ts",
+      "default": "./dist/sdk-utils/get.js"
+    },
+    "./sdk-utils/post": {
+      "types": "./dist/sdk-utils/post.d.ts",
+      "default": "./dist/sdk-utils/post.js"
+    },
+    "./sdk-utils/update": {
+      "types": "./dist/sdk-utils/update.d.ts",
+      "default": "./dist/sdk-utils/update.js"
+    },
+    "./sdk-utils/init": {
+      "types": "./dist/sdk-utils/init.d.ts",
+      "default": "./dist/sdk-utils/init.js"
+    }
   },
   "type": "module",
   "dependencies": {
@@ -64,7 +121,6 @@
     "mdast-util-to-hast": "catalog:studiocms-core",
     "rollup-plugin-copy": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "drizzle-orm": "catalog:studiocms-core",
     "lodash": "catalog:studiocms-shared",
     "mdast": "catalog:studiocms-shared",

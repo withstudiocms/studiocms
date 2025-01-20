@@ -18,7 +18,7 @@ dtsFile.addModule('studiocms:components', {
 				'',
 				'This component has no props and will render the current user avatar or a default avatar if no user is logged in based on the Astro.locals object',
 			],
-			typeDef: `typeof import('${resolve('../components/Avatar.astro')}').default`,
+			typeDef: `typeof import('${resolve('../../assets/components/Avatar.astro')}').default`,
 		},
 		{
 			name: 'FormattedDate',
@@ -29,7 +29,7 @@ dtsFile.addModule('studiocms:components', {
 				'',
 				'@props {string(Date)} date - Date String',
 			],
-			typeDef: `typeof import('${resolve('../components/FormattedDate.astro')}').default`,
+			typeDef: `typeof import('${resolve('../../assets/components/FormattedDate.astro')}').default`,
 		},
 		{
 			name: 'GenericHeader',
@@ -38,7 +38,7 @@ dtsFile.addModule('studiocms:components', {
 				'',
 				'Generic Header Component used for rendering a generic header with a title and description from StudioCMS',
 			],
-			typeDef: `typeof import('${resolve('../components/GenericHeader.astro')}').default`,
+			typeDef: `typeof import('${resolve('../../assets/components/GenericHeader.astro')}').default`,
 		},
 		{
 			name: 'Navigation',
@@ -50,11 +50,11 @@ dtsFile.addModule('studiocms:components', {
 				'@props {topLevelLinkCount} number - Number of top level links to display before collapsing into a dropdown',
 				'@props {hideAvatar} boolean - Hide the user avatar/Login button in the navigation bar',
 			],
-			typeDef: `typeof import('${resolve('../components/Navigation.astro')}').default`,
+			typeDef: `typeof import('${resolve('../../assets/components/Navigation.astro')}').default`,
 		},
 		{
 			name: 'Generator',
-			typeDef: `typeof import('${resolve('../components/Generator.astro')}').default`,
+			typeDef: `typeof import('${resolve('../../assets/components/Generator.astro')}').default`,
 			multiLineDescription: [
 				'Component used for the generator meta tag',
 				'',

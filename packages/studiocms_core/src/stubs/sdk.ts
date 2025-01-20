@@ -11,37 +11,37 @@ sdkDTS.addSingleLineNote(
 
 sdkDTS.addModule('studiocms:sdk', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/index.js')}').default`,
 	},
 });
 
 sdkDTS.addModule('studiocms:sdk/get', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/get/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/get/index.js')}').default`,
 	},
 });
 
 sdkDTS.addModule('studiocms:sdk/post', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/post/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/post/index.js')}').default`,
 	},
 });
 
 sdkDTS.addModule('studiocms:sdk/update', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/update/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/update/index.js')}').default`,
 	},
 });
 
 sdkDTS.addModule('studiocms:sdk/delete', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/delete/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/delete/index.js')}').default`,
 	},
 });
 
 sdkDTS.addModule('studiocms:sdk/auth', {
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../sdk-utils/auth/index.ts')}').default`,
+		typeDef: `typeof import('${resolve('../sdk-utils/auth/index.js')}').default`,
 	},
 });
 
@@ -49,154 +49,154 @@ sdkDTS.addModule('studiocms:sdk/types', {
 	typeExports: [
 		{
 			name: 'STUDIOCMS_SDK',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').STUDIOCMS_SDK`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').STUDIOCMS_SDK`,
 		},
 		// tableDefs
 		{
 			name: 'AvailableLists',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').AvailableLists`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').AvailableLists`,
 		},
 		{
 			name: 'CombinedRank',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedRank`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').CombinedRank`,
 		},
 		{
 			name: 'DatabaseTables',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').DatabaseTables`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').DatabaseTables`,
 		},
 		{
 			name: 'PageContentReturnId',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageContentReturnId`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').PageContentReturnId`,
 		},
 		{
 			name: 'PageDataCategoriesInsertResponse',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataCategoriesInsertResponse`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').PageDataCategoriesInsertResponse`,
 		},
 		{
 			name: 'PageDataReturnId',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataReturnId`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').PageDataReturnId`,
 		},
 		{
 			name: 'PageDataStripped',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataStripped`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').PageDataStripped`,
 		},
 		{
 			name: 'PageDataTagsInsertResponse',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').PageDataTagsInsertResponse`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').PageDataTagsInsertResponse`,
 		},
 		{
 			name: 'SingleRank',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').SingleRank`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').SingleRank`,
 		},
 		{
 			name: 'SiteConfig',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').SiteConfig`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').SiteConfig`,
 		},
 		// tsAliases
 		{
 			name: 'tsDiffTrackingInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsDiffTrackingInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsDiffTrackingInsert`,
 		},
 		{
 			name: 'tsDiffTrackingSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsDiffTrackingSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsDiffTrackingSelect`,
 		},
 		{
 			name: 'CombinedInsertContent',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedInsertContent`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').CombinedInsertContent`,
 		},
 		{
 			name: 'tsOAuthAccountsSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsOAuthAccountsSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsOAuthAccountsSelect`,
 		},
 		{
 			name: 'tsPageContentInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageContentInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageContentInsert`,
 		},
 		{
 			name: 'tsPageContentSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageContentSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageContentSelect`,
 		},
 		{
 			name: 'tsPageDataCategoriesInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataCategoriesInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataCategoriesInsert`,
 		},
 		{
 			name: 'tsPageDataCategoriesSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataCategoriesSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataCategoriesSelect`,
 		},
 		{
 			name: 'tsPageDataInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataInsert`,
 		},
 		{
 			name: 'tsPageDataSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataSelect`,
 		},
 		{
 			name: 'tsPageDataTagsInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataTagsInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataTagsInsert`,
 		},
 		{
 			name: 'tsPageDataTagsSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPageDataTagsSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPageDataTagsSelect`,
 		},
 		{
 			name: 'tsSiteConfigInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSiteConfigInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsSiteConfigInsert`,
 		},
 		{
 			name: 'tsSiteConfigSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSiteConfigSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsSiteConfigSelect`,
 		},
 		{
 			name: 'tsUsersInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsUsersInsert`,
 		},
 		{
 			name: 'tsUsersSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsUsersSelect`,
 		},
 		{
 			name: 'tsUsersUpdate',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsUsersUpdate`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsUsersUpdate`,
 		},
 		{
 			name: 'tsPermissionsInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPermissionsInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPermissionsInsert`,
 		},
 		{
 			name: 'tsPermissionsSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsPermissionsSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsPermissionsSelect`,
 		},
 		{
 			name: 'tsSessionTableInsert',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSessionTableInsert`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsSessionTableInsert`,
 		},
 		{
 			name: 'tsSessionTableSelect',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').tsSessionTableSelect`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').tsSessionTableSelect`,
 		},
 		// Extras
 		{
 			name: 'GenericTable',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').GenericTable`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').GenericTable`,
 		},
 		{
 			name: 'addDatabaseEntryInsertPage',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').addDatabaseEntryInsertPage`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').addDatabaseEntryInsertPage`,
 		},
 		{
 			name: 'CombinedUserData',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedUserData`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').CombinedUserData`,
 		},
 		{
 			name: 'CombinedPageData',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').CombinedPageData`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').CombinedPageData`,
 		},
 		{
 			name: 'DeletionResponse',
-			typeDef: `import('${resolve('../sdk-utils/types/index.ts')}').DeletionResponse`,
+			typeDef: `import('${resolve('../sdk-utils/types/index.js')}').DeletionResponse`,
 		},
 	],
 });
@@ -214,19 +214,19 @@ sdkDTS.addModule('studiocms:sdk/cache', {
 	typeExports: [
 		{
 			name: 'STUDIOCMS_SDK_CACHE',
-			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').STUDIOCMS_SDK_CACHE`,
+			typeDef: `import('${resolve('../sdk-utils/cache.js')}').STUDIOCMS_SDK_CACHE`,
 		},
 		{
 			name: 'PageDataCacheObject',
-			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').PageDataCacheObject`,
+			typeDef: `import('${resolve('../sdk-utils/cache.js')}').PageDataCacheObject`,
 		},
 		{
 			name: 'SiteConfigCacheObject',
-			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').SiteConfigCacheObject`,
+			typeDef: `import('${resolve('../sdk-utils/cache.js')}').SiteConfigCacheObject`,
 		},
 		{
 			name: 'VersionCacheObject',
-			typeDef: `import('${resolve('../sdk-utils/cache.ts')}').VersionCacheObject`,
+			typeDef: `import('${resolve('../sdk-utils/cache.js')}').VersionCacheObject`,
 		},
 	],
 });

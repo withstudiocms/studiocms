@@ -13,7 +13,7 @@ rendererConfig.addSingleLineNote(
 rendererConfig.addModule('studiocms:renderer/config', {
 	defaultExport: {
 		singleLineDescription: 'Renderer Configuration',
-		typeDef: `import('${resolve('../index')}').StudioCMSRendererConfig`,
+		typeDef: `import('${resolve('../index.js')}').StudioCMSRendererConfig`,
 	},
 });
 

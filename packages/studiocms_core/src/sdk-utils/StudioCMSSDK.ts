@@ -1,5 +1,5 @@
-import { CMSSiteConfigId, GhostUserDefaults } from '../consts';
-import { StudioCMS_SDK_Error } from './errors';
+import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
+import { StudioCMS_SDK_Error } from './errors.js';
 import {
 	tsDiffTracking,
 	tsOAuthAccounts,
@@ -12,7 +12,7 @@ import {
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
-} from './tables';
+} from './tables.js';
 import type {
 	AstroDBVirtualModule,
 	CombinedInsertContent,
@@ -49,7 +49,7 @@ import type {
 	tsUsersInsert,
 	tsUsersSelect,
 	tsUsersUpdate,
-} from './types';
+} from './types/index.js';
 
 /**
  * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.

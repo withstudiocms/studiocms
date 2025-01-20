@@ -5,7 +5,7 @@ import { createResolver } from 'astro-integration-kit';
 const { resolve } = createResolver(import.meta.url);
 
 // Import the Renderer Component
-const RendererComponentTypes = resolve('../components/Renderer.d.ts');
+const RendererComponentTypes = resolve('../../components/Renderer.d.ts');
 
 const renderer = DTSBuilder();
 
@@ -38,11 +38,11 @@ renderer.addModule('studiocms:renderer/current', {
 	namedExports: [
 		{
 			name: 'contentRenderer',
-			typeDef: `typeof import('${resolve('../lib/contentRenderer.ts')}').contentRenderer`,
+			typeDef: `typeof import('${resolve('../lib/contentRenderer.js')}').contentRenderer`,
 		},
 	],
 	defaultExport: {
-		typeDef: `typeof import('${resolve('../lib/contentRenderer.ts')}').default`,
+		typeDef: `typeof import('${resolve('../lib/contentRenderer.js')}').default`,
 	},
 });
 

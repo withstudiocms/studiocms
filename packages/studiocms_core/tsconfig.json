@@ -1,11 +1,11 @@
 {
-  "extends": "astro/tsconfigs/strictest",
-  "files": [],
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "virtuals.d.ts", "assets"],
   "compilerOptions": {
-    "composite": true,
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false
-  },
-  "include": ["./package.json", "./**/*", "./src/**/*.json"]
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "jsx": "preserve"
+  }
 }

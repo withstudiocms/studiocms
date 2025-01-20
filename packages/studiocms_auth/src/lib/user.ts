@@ -1,10 +1,12 @@
+// @ts-ignore
 import studioCMS_SDK from 'studiocms:sdk';
+// @ts-ignore
 import type { tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import type { APIContext, AstroGlobal } from 'astro';
-import { hashPassword } from './password';
-import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session';
-import type { UserSessionData } from './types';
+import { hashPassword } from './password.js';
+import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session.js';
+import type { UserSessionData } from './types.js';
 
 /**
  * Verifies if the provided username meets the required criteria.

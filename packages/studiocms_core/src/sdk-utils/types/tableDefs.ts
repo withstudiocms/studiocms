@@ -9,7 +9,7 @@ import type {
 	tsSessionTableSelect,
 	tsSiteConfigSelect,
 	tsUsersSelect,
-} from './tsAlias';
+} from './tsAlias.js';
 
 /**
  * Represents a stripped-down version of the `tsSiteConfigSelect` type,

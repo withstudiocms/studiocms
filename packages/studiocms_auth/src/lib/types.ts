@@ -3,6 +3,7 @@ import type {
 	tsPermissionsSelect,
 	tsSessionTableSelect,
 	tsUsersSelect,
+	// @ts-ignore
 } from 'studiocms:sdk/types';
 
 /**

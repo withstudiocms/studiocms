@@ -83,6 +83,9 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
 
+      - name: Run Prepublish
+        run: pnpm ci:prepublish
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1

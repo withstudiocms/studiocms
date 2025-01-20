@@ -1,12 +1,10 @@
-import type { AstroConfig, AstroIntegration } from 'astro';
-import { name } from '../package.json';
-import type { UserAgentType } from './consts';
-
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-
-import { generateContent, printInfo } from './core';
-import { measureExecutionTime } from './utils';
+import type { AstroConfig, AstroIntegration } from 'astro';
+import { name } from '../package.json' assert { type: 'json' };
+import type { UserAgentType } from './consts.js';
+import { generateContent, printInfo } from './core.js';
+import { measureExecutionTime } from './utils/index.js';
 
 function getFileSizeInKilobytes(filename: URL): number {
 	const stats = fs.statSync(filename);

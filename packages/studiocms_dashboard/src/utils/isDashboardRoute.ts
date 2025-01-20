@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { dashboardConfig } from 'studiocms:config';
 import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 

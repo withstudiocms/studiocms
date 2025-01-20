@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { column, db, defineTable } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';

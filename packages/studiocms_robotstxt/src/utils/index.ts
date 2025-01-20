@@ -1,1 +1,1 @@
-export { default as measureExecutionTime } from './measureExecutionTime';
+export { default as measureExecutionTime } from './measureExecutionTime.js';

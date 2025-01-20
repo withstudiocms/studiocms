@@ -1,9 +1,11 @@
+// @ts-ignore
 import studioCMS_SDK from 'studiocms:sdk';
+// @ts-ignore
 import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { APIContext, AstroGlobal } from 'astro';
-import type { SessionValidationResult, UserSession } from './types';
+import type { SessionValidationResult, UserSession } from './types.js';
 
 /**
  * Generates a session token.

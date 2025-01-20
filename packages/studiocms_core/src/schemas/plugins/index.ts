@@ -1,7 +1,7 @@
 import { z } from 'astro/zod';
 import type { ColumnDataType } from 'drizzle-orm';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
-import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared';
+import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared.js';
 
 export interface AstroIntegration {
 	/** The name of the integration. */

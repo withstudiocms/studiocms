@@ -2,8 +2,8 @@ import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
 import Markdoc, { type ConfigType, type ParserArgs } from '@markdoc/markdoc';
 import type { MarkdocRenderer } from '@studiocms/core/schemas/renderer';
-import renderHTML from './markdoc-renderers/markdocHTML';
-import renderReactStatic from './markdoc-renderers/markdocReactStatic';
+import renderHTML from './markdoc-renderers/markdocHTML.js';
+import renderReactStatic from './markdoc-renderers/markdocReactStatic.js';
 
 // Destructure the Markdoc configuration from the rendererConfig
 const {

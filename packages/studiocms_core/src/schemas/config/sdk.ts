@@ -1,5 +1,5 @@
 import { z } from 'astro/zod';
-import { defaultCacheLifeTime } from '../../consts';
+import { defaultCacheLifeTime } from '../../consts.js';
 
 const TimeUnitSchema = z.union([z.literal('m'), z.literal('h')]);
 

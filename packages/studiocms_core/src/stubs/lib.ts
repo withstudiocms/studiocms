@@ -13,109 +13,109 @@ dtsFile.addModule('studiocms:lib', {
 	namedExports: [
 		{
 			name: 'HeadConfigSchema',
-			typeDef: `typeof import('${resolve('../lib/head.ts')}').HeadConfigSchema`,
+			typeDef: `typeof import('${resolve('../lib/head.js')}').HeadConfigSchema`,
 		},
 		{
 			name: 'createHead',
-			typeDef: `typeof import('${resolve('../lib/head.ts')}').createHead`,
+			typeDef: `typeof import('${resolve('../lib/head.js')}').createHead`,
 		},
 		{
 			name: 'headDefaults',
-			typeDef: `typeof import('${resolve('../lib/headDefaults.ts')}').headDefaults`,
+			typeDef: `typeof import('${resolve('../lib/headDefaults.js')}').headDefaults`,
 		},
 		{
 			name: 'stringify',
-			typeDef: `typeof import('${resolve('../lib/jsonUtils.ts')}').stringify`,
+			typeDef: `typeof import('${resolve('../lib/jsonUtils.js')}').stringify`,
 		},
 		{
 			name: 'stringifyMap',
-			typeDef: `typeof import('${resolve('../lib/jsonUtils.ts')}').stringifyMap`,
+			typeDef: `typeof import('${resolve('../lib/jsonUtils.js')}').stringifyMap`,
 		},
 		{
 			name: 'pathWithBase',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').pathWithBase`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').pathWithBase`,
 		},
 		{
 			name: 'fileWithBase',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').fileWithBase`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').fileWithBase`,
 		},
 		{
 			name: 'ensureLeadingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').ensureLeadingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').ensureLeadingSlash`,
 		},
 		{
 			name: 'ensureTrailingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').ensureTrailingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').ensureTrailingSlash`,
 		},
 		{
 			name: 'ensureLeadingSlashAndTrailingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').ensureLeadingSlashAndTrailingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').ensureLeadingSlashAndTrailingSlash`,
 		},
 		{
 			name: 'stripLeadingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').stripLeadingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').stripLeadingSlash`,
 		},
 		{
 			name: 'stripTrailingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').stripTrailingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').stripTrailingSlash`,
 		},
 		{
 			name: 'stripLeadingSlashAndTrailingSlash',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').stripLeadingSlashAndTrailingSlash`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').stripLeadingSlashAndTrailingSlash`,
 		},
 		{
 			name: 'stripHtmlExtension',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').stripHtmlExtension`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').stripHtmlExtension`,
 		},
 		{
 			name: 'ensureHtmlExtension',
-			typeDef: `typeof import('${resolve('../lib/pathGenerators.ts')}').ensureHtmlExtension`,
+			typeDef: `typeof import('${resolve('../lib/pathGenerators.js')}').ensureHtmlExtension`,
 		},
 		{
 			name: 'removeLeadingTrailingSlashes',
-			typeDef: `typeof import('${resolve('../lib/removeLeadingTrailingSlashes.ts')}').removeLeadingTrailingSlashes`,
+			typeDef: `typeof import('${resolve('../lib/removeLeadingTrailingSlashes.js')}').removeLeadingTrailingSlashes`,
 		},
 		{
 			name: 'getSluggedRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').getSluggedRoute`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').getSluggedRoute`,
 		},
 		{
 			name: 'getEditRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').getEditRoute`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').getEditRoute`,
 		},
 		{
 			name: 'getDeleteRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').getDeleteRoute`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').getDeleteRoute`,
 		},
 		{
 			name: 'makeNonDashboardRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').makeNonDashboardRoute`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').makeNonDashboardRoute`,
 		},
 		{
 			name: 'makeDashboardRoute',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').makeDashboardRoute`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').makeDashboardRoute`,
 		},
 		{
 			name: 'StudioCMSRoutes',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').StudioCMSRoutes`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').StudioCMSRoutes`,
 		},
 		{
 			name: 'sideBarLinkMap',
-			typeDef: `typeof import('${resolve('../lib/routeMap.ts')}').sideBarLinkMap`,
+			typeDef: `typeof import('${resolve('../lib/routeMap.js')}').sideBarLinkMap`,
 		},
 		{
 			name: 'urlGenFactory',
-			typeDef: `typeof import('${resolve('../lib/urlGen.ts')}').urlGenFactory`,
+			typeDef: `typeof import('${resolve('../lib/urlGen.js')}').urlGenFactory`,
 		},
 	],
 	typeExports: [
 		{
 			name: 'HeadConfig',
-			typeDef: `import('${resolve('../lib/head.ts')}').HeadConfig`,
+			typeDef: `import('${resolve('../lib/head.js')}').HeadConfig`,
 		},
 		{
 			name: 'HeadUserConfig',
-			typeDef: `import('${resolve('../lib/head.ts')}').HeadUserConfig`,
+			typeDef: `import('${resolve('../lib/head.js')}').HeadUserConfig`,
 		},
 	],
 });

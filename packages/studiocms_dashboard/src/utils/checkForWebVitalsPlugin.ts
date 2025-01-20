@@ -1,10 +1,10 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import {
 	addVirtualImports,
 	createResolver,
 	defineUtility,
 	hasIntegration,
 } from 'astro-integration-kit';
+import { integrationLogger } from './integrationLogger.js';
 
 const { resolve } = createResolver(import.meta.url);
 

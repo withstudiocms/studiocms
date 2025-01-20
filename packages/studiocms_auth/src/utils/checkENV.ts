@@ -1,7 +1,7 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import type { AstroIntegrationLogger } from 'astro';
 import { loadEnv } from 'vite';
-import type { StudioCMSAuthOptions } from '../schema';
+import type { StudioCMSAuthOptions } from '../schema.js';
+import { integrationLogger } from './integrationLogger.js';
 
 const env = loadEnv('all', process.cwd(), 'CMS');
 

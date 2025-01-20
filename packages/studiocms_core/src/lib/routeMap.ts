@@ -1,8 +1,8 @@
 import { dashboardConfig } from 'studiocms:config';
 // import { dashboardPageLinks } from 'virtual:studiocms/pluginSystem';
-import type { SideBarLink } from '../schemas';
-import { makeAPIRoute } from './makeAPIRoute';
-import urlGenFactory from './urlGen';
+import type { SideBarLink } from '../schemas/index.js';
+import { makeAPIRoute } from './makeAPIRoute.js';
+import urlGenFactory from './urlGen.js';
 
 const { dashboardRouteOverride } = dashboardConfig;
 

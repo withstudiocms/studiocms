@@ -1,3 +1,4 @@
+// @ts-ignore
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';

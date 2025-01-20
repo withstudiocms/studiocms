@@ -3,9 +3,9 @@ import type {
 	CacheConfig,
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
-} from '../../schemas/config/sdk';
-import type StudioCMSSDK from '../StudioCMSSDK';
-import type StudioCMSVirtualCache from '../StudioCMSVirtualCache';
+} from '../../schemas/config/sdk.js';
+import type StudioCMSSDK from '../StudioCMSSDK.js';
+import type StudioCMSVirtualCache from '../StudioCMSVirtualCache.js';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -17,7 +17,7 @@ import type {
 	PageDataTagsInsertResponse,
 	SingleRank,
 	SiteConfig,
-} from './tableDefs';
+} from './tableDefs.js';
 import type {
 	CombinedInsertContent,
 	tsDiffTrackingInsert,
@@ -42,7 +42,7 @@ import type {
 	tsUsersInsert,
 	tsUsersSelect,
 	tsUsersUpdate,
-} from './tsAlias';
+} from './tsAlias.js';
 
 // tableDefs.ts
 export type {

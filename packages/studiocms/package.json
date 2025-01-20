@@ -35,13 +35,28 @@
   },
   "sideEffects": false,
   "files": [
-    "src",
+    "dist",
+    "studiocms-cli.mjs",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
+  },
+  "bin": {
+    "studiocms": "./studiocms-cli.mjs"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    }
   },
   "type": "module",
   "dependencies": {
@@ -63,14 +78,26 @@
 
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "rollup-plugin-copy": "catalog:studiocms-shared",
 
     "mdast": "catalog:studiocms-shared",
     "mdast-util-from-markdown": "catalog:studiocms-shared",
     "mdast-util-to-markdown": "catalog:studiocms-shared",
     "mdast-util-to-string": "catalog:studiocms-shared",
-    "unist-util-visit": "catalog:studiocms-shared"
+    "unist-util-visit": "catalog:studiocms-shared",
+
+    "@bluwy/giget-core": "^0.1.2",
+    "@clack/core": "0.4.1",
+    "@clack/prompts": "0.9.1",
+    "@commander-js/extra-typings": "^13.0.0",
+    "commander": "^13.0.0",
+    "figlet": "^1.8.0",
+    "chalk": "^5.4.1",
+    "strip-ansi": "^7.1.0",
+    "wrap-ansi": "^9.0.0",
+    "log-update": "^6.1.0",
+    "boxen": "^8.0.1",
+    "lodash": "catalog:studiocms-shared"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -80,6 +107,9 @@
   "devDependencies": {
     "typescript": "catalog:",
     "@types/semver": "catalog:studiocms",
-    "@types/mdast": "catalog:studiocms-shared"
+    "@types/mdast": "catalog:studiocms-shared",
+    "@types/lodash": "catalog:studiocms-shared",
+    "@types/figlet": "^1.7.0",
+    "@types/node": "catalog:"
   }
 }

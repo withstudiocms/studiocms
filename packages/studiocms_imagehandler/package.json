@@ -26,11 +26,18 @@
     "access": "public"
   },
   "sideEffects": false,
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "files": [
-    "src"
+    "dist", "components"
   ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "type": "module",
   "dependencies": {

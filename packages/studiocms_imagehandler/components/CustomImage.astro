@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import Config from 'studiocms:config';
+import { cloudinaryPlugin } from './plugins/cloudinary.js';
+import type { SharedProps } from './props.js';
+
+interface Props extends SharedProps {}
+
+const { src, ...props } = Astro.props;
+
+// Get the current configured image service
+const {
+	imageService: { cdnPlugin },
+} = Config;
+
+// Get the current configured image service
+async function getImageSrc() {
+	switch (cdnPlugin) {
+		case 'cloudinary-js':
+			// Return the Cloudinary image source
+			return cloudinaryPlugin(src, props);
+		default:
+			// Return the original image source if no External image service plugin is configured
+			return src;
+	}
+}
+
+// check if the image source is an external URL
+function inferSizeNeeded(url: string) {
+	if (url.startsWith('https://') || url.startsWith('http://')) {
+		return true;
+	}
+	return false;
+}
+
+// Get the current configured image service source URL
+const currentSrcURL = await getImageSrc();
+
+// Set the image properties
+const imageProps = {
+	src: currentSrcURL,
+	inferSize: inferSizeNeeded(currentSrcURL),
+	...props,
+};
+---
+<Image loading={"lazy"} {...imageProps}/>

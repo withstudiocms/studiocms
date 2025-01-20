@@ -27,12 +27,22 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "src", "assets"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
-    "./utils": "./src/utils/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./components": "./assets/components/index.ts"
   },
   "type": "module",
   "dependencies": {

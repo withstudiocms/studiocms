@@ -1,6 +1,6 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { defineUtility } from 'astro-integration-kit';
-import type { StudioCMSDashboardOptions } from '../schema';
+import type { StudioCMSDashboardOptions } from '../schema.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
 
 export const serverStart = defineUtility('astro:server:start')(
 	({ logger }, { dbStartPage }: StudioCMSDashboardOptions) => {

@@ -1,9 +1,9 @@
 import { defineUtility } from 'astro-integration-kit';
-import componentsDtsFileOutput from '../stubs/components';
-import coreDtsFileOutput from '../stubs/core';
-import i18nDTSOutput from '../stubs/i18n-dts';
-import libDtsFileOutput from '../stubs/lib';
-import sdkDtsFile from '../stubs/sdk';
+import componentsDtsFileOutput from '../stubs/components.js';
+import coreDtsFileOutput from '../stubs/core.js';
+import i18nDTSOutput from '../stubs/i18n-dts.js';
+import libDtsFileOutput from '../stubs/lib.js';
+import sdkDtsFile from '../stubs/sdk.js';
 
 export const configDone = defineUtility('astro:config:done')(({ injectTypes }) => {
 	// Inject the DTS File

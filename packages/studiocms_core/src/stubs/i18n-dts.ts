@@ -13,7 +13,7 @@ i18nDTS.addModule('studiocms:i18n', {
 	namedExports: [
 		{
 			name: 'staticPaths',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').staticPaths`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').staticPaths`,
 			multiLineDescription: [
 				'Example of how to use this i18n utils on a Static page',
 				'',
@@ -31,7 +31,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'getLangFromUrl',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').getLangFromUrl`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').getLangFromUrl`,
 			multiLineDescription: [
 				"Extracts the language key from the given URL's pathname.",
 				'',
@@ -41,7 +41,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'useTranslations',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').useTranslations`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').useTranslations`,
 			multiLineDescription: [
 				'Retrieves a translation function for a given language and component.',
 				'',
@@ -52,7 +52,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'useTranslatedPath',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').useTranslatedPath`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').useTranslatedPath`,
 			multiLineDescription: [
 				'Returns a function that translates a given path based on the provided language.',
 				'',
@@ -65,7 +65,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'languageSelectorOptions',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').languageSelectorOptions`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').languageSelectorOptions`,
 			multiLineDescription: [
 				'Generates an array of language selector options from the `uiTranslations` object.',
 				'Each option contains a `key` and a `value` where:',
@@ -77,7 +77,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'getCurrentURLPath',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').getCurrentURLPath`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').getCurrentURLPath`,
 			multiLineDescription: [
 				'Retrieves the current URL path, adjusting for language settings.',
 				'',
@@ -94,7 +94,7 @@ i18nDTS.addModule('studiocms:i18n', {
 		},
 		{
 			name: 'switchLanguage',
-			typeDef: `typeof import('${resolve('../i18n/index.ts')}').switchLanguage`,
+			typeDef: `typeof import('${resolve('../../assets/i18n/index.ts')}').switchLanguage`,
 			multiLineDescription: [
 				'Function to switch the language of the current page.',
 				'',
@@ -105,11 +105,11 @@ i18nDTS.addModule('studiocms:i18n', {
 	typeExports: [
 		{
 			name: 'UiLanguageKeys',
-			typeDef: `import('${resolve('../i18n/index.ts')}').UiLanguageKeys`,
+			typeDef: `import('${resolve('../../assets/i18n/index.ts')}').UiLanguageKeys`,
 		},
 		{
 			name: 'UiTranslations',
-			typeDef: `import('${resolve('../i18n/index.ts')}').UiTranslations`,
+			typeDef: `import('${resolve('../../assets/i18n/index.ts')}').UiTranslations`,
 		},
 	],
 });

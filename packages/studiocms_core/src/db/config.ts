@@ -11,7 +11,7 @@ import {
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
 	StudioCMSUsers,
-} from './tables';
+} from './tables.js';
 
 // Export the Database Configuration for StudioCMS
 export default defineDb({

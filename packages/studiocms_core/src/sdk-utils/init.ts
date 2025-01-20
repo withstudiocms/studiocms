@@ -1,6 +1,6 @@
 import * as AstroDB from 'astro:db';
 import type { STUDIOCMS_SDK } from 'studiocms:sdk/types';
-import SDK from './StudioCMSSDK';
+import SDK from './StudioCMSSDK.js';
 
 const sdkCore = new SDK(AstroDB);
 

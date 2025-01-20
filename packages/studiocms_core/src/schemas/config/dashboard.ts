@@ -1,6 +1,6 @@
 import { z } from 'astro/zod';
-import { authConfigSchema } from './auth';
-import { developerConfigSchema } from './developer';
+import { authConfigSchema } from './auth.js';
+import { developerConfigSchema } from './developer.js';
 
 export const dashboardConfigSchema = z
 	.object({

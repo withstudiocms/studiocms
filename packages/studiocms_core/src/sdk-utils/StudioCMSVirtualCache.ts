@@ -1,5 +1,5 @@
-import { CMSSiteConfigId, versionCacheLifetime } from '../consts';
-import { StudioCMSCacheError } from './errors';
+import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
+import { StudioCMSCacheError } from './errors.js';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
@@ -15,7 +15,7 @@ import type {
 	VersionCacheObject,
 	tsPageContentSelect,
 	tsPageDataSelect,
-} from './types';
+} from './types/index.js';
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.

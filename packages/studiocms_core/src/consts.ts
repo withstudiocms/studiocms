@@ -1,4 +1,4 @@
-import type { TimeString } from './schemas/config/sdk';
+import type { TimeString } from './schemas/config/sdk.js';
 
 /**
  * StudioCMS Site Config Table Entry ID

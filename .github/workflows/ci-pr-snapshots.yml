@@ -15,6 +15,9 @@ jobs:
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
+
+      - name: Run Prepublish
+        run: pnpm ci:prepublish
   
       - name: Publish packages
         run: pnpm ci:snapshot

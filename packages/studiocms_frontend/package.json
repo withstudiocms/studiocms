@@ -27,11 +27,18 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "dist", "components", "routes"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./components": "./components/index.ts"
   },
   "type": "module",
   "dependencies": {

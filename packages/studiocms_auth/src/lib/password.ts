@@ -1,4 +1,5 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
+// @ts-ignore
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { sha1 } from '@oslojs/crypto/sha1';

@@ -1,5 +1,5 @@
-import { pathWithBase } from './pathGenerators';
-import { removeLeadingTrailingSlashes } from './removeLeadingTrailingSlashes';
+import { pathWithBase } from './pathGenerators.js';
+import { removeLeadingTrailingSlashes } from './removeLeadingTrailingSlashes.js';
 
 /**
  * # urlGenFactory Helper Function

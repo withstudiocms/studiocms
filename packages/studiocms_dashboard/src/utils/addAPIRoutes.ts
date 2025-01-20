@@ -1,7 +1,7 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { makeAPIRoute } from '@studiocms/core/lib';
 import { defineUtility } from 'astro-integration-kit';
-import type { StudioCMSDashboardOptions } from '../schema';
+import type { StudioCMSDashboardOptions } from '../schema.js';
+import { integrationLogger } from './integrationLogger.js';
 
 const apiRoute = makeAPIRoute('dashboard');
 

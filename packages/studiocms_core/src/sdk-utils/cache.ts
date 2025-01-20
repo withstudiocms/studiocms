@@ -1,13 +1,13 @@
 import * as AstroDB from 'astro:db';
 import { sdk } from 'studiocms:config';
-import SDK from './StudioCMSSDK';
-import StudioCMSVirtualCache from './StudioCMSVirtualCache';
+import SDK from './StudioCMSSDK.js';
+import StudioCMSVirtualCache from './StudioCMSVirtualCache.js';
 import type {
 	PageDataCacheObject,
 	STUDIOCMS_SDK_CACHE,
 	SiteConfigCacheObject,
 	VersionCacheObject,
-} from './types';
+} from './types/index.js';
 
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject, VersionCacheObject };
 

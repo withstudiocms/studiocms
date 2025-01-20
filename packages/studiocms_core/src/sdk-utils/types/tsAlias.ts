@@ -10,7 +10,7 @@ import type {
 	tsSessionTable,
 	tsSiteConfig,
 	tsUsers,
-} from '../tables';
+} from '../tables.js';
 
 /**
  * Type alias for the inferred select type of `tsPageFolderStructure`.

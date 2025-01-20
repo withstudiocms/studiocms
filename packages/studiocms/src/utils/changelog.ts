@@ -1,7 +1,7 @@
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
-import { loadChangelog, semverCategories } from './changelogLoader';
+import { loadChangelog, semverCategories } from './changelogLoader.js';
 
 const { resolve } = createResolver(import.meta.url);
 

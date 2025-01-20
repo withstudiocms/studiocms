@@ -11,7 +11,7 @@ import {
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
 	StudioCMSUsers,
-} from '../db/tables';
+} from '../db/tables.js';
 
 /**
  * # StudioCMS - Page Content Table

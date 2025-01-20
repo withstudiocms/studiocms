@@ -6,16 +6,24 @@
     "node": "20.14.0"
   },
   "scripts": {
-    "build": "pnpm --filter node-playground build",
+    "build": "pnpm build:studiocms && pnpm --filter node-playground build",
     "build:docs": "pnpm --filter docs build",
     "docs:dev": "pnpm --filter docs dev",
     "playground:dev": "pnpm --filter node-playground dev",
     "playground:push": "pnpm --filter node-playground db:push",
 
+    "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
+    "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* -r -parallel dev",
+    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter node-playground -r -parallel dev",
+
+    "studiocms:build": "pnpm --filter studiocms build",
+    "cli:test": "pnpm studiocms",
+
     "changeset": "changeset",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
 
+    "ci:prepublish": "pnpm build:studiocms",
     "ci:lunaria:build": "pnpm --filter docs lunaria:build",
     "ci:lunaria:report": "pnpm tsm --require=./scripts/filter-warnings.cjs ./www/docs/scripts/lunaria-report-bot.ts",
     "ci:translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
@@ -32,6 +40,8 @@
     "@changesets/config": "3.0.3",
     "@changesets/changelog-github": "0.5.0",
     "@changesets/write": "0.3.2",
+    "build-scripts": "workspace:*",
+    "studiocms": "workspace:*",
     "execa": "9.5.1",
     "pkg-pr-new": "0.0.32",
     "typescript": "catalog:",

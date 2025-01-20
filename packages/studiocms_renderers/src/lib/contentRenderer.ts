@@ -1,8 +1,8 @@
 import { logger } from '@it-astro:logger:studiocms-renderer';
 import rendererConfig from 'studiocms:renderer/config';
-import renderAstroMD from './astro-remark';
-import renderMarkDoc from './markdoc';
-import renderAstroMDX from './mdx';
+import renderAstroMD from './astro-remark.js';
+import renderMarkDoc from './markdoc.js';
+import renderAstroMDX from './mdx.js';
 
 const { renderer } = rendererConfig;
 

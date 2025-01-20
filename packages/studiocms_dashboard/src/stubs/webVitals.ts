@@ -18,13 +18,13 @@ dtsFile.addModule('studiocms-dashboard:web-vitals', {
 				'',
 				'@returns Promise<WebVitalsResponseItem[]>',
 			],
-			typeDef: `typeof import('${resolve('../utils/webVital.ts')}').getWebVitals`,
+			typeDef: `typeof import('${resolve('../utils/webVital.js')}').getWebVitals`,
 		},
 	],
 	typeExports: [
 		{
 			singleLineDescription: 'Web Vitals Response Item',
-			typeDef: `import('${resolve('../utils/webVital.ts')}').WebVitalsResponseItem`,
+			typeDef: `import('${resolve('../utils/webVital.js')}').WebVitalsResponseItem`,
 			name: 'WebVitalsResponseItem',
 		},
 	],

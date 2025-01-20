@@ -11,32 +11,32 @@ dtsFile.addSingleLineNote(
 
 dtsFile.addModule('studiocms:config', {
 	defaultExport: {
-		typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig`,
+		typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig`,
 	},
 	namedExports: [
 		{
 			name: 'config',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig`,
 		},
 		{
 			name: 'dashboardConfig',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig['dashboardConfig']`,
 		},
 		{
 			name: 'AuthConfig',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']['AuthConfig']`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig['dashboardConfig']['AuthConfig']`,
 		},
 		{
 			name: 'developerConfig',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['dashboardConfig']['developerConfig']`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig['dashboardConfig']['developerConfig']`,
 		},
 		{
 			name: 'defaultFrontEndConfig',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['defaultFrontEndConfig']`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig['defaultFrontEndConfig']`,
 		},
 		{
 			name: 'sdk',
-			typeDef: `import('${resolve('../schemas/config/index.ts')}').StudioCMSConfig['sdk']`,
+			typeDef: `import('${resolve('../schemas/config/index.js')}').StudioCMSConfig['sdk']`,
 		},
 	],
 });

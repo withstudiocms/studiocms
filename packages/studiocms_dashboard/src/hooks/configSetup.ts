@@ -1,10 +1,10 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { createResolver, defineUtility } from 'astro-integration-kit';
-import type { StudioCMSDashboardOptions } from '../schema';
-import { injectDashboardAPIRoutes } from '../utils/addAPIRoutes';
-import { checkForWebVitals } from '../utils/checkForWebVitalsPlugin';
-import { injectDashboardRoute } from '../utils/injectRouteArray';
+import type { StudioCMSDashboardOptions } from '../schema.js';
+import { injectDashboardAPIRoutes } from '../utils/addAPIRoutes.js';
+import { checkForWebVitals } from '../utils/checkForWebVitalsPlugin.js';
+import { injectDashboardRoute } from '../utils/injectRouteArray.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
 
 const { resolve } = createResolver(import.meta.url);
 
@@ -43,12 +43,12 @@ export const configSetup = defineUtility('astro:config:setup')(
 			);
 			injectRoute({
 				pattern: 'start',
-				entrypoint: resolve('../firstTimeSetupRoutes/main.astro'),
+				entrypoint: resolve('../../assets/firstTimeSetupRoutes/main.astro'),
 				prerender: false,
 			});
 			injectRoute({
 				pattern: 'done',
-				entrypoint: resolve('../firstTimeSetupRoutes/done.astro'),
+				entrypoint: resolve('../../assets/firstTimeSetupRoutes/done.astro'),
 				prerender: false,
 			});
 		}
@@ -58,7 +58,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 			integrationLogger({ logger, logLevel: 'info', verbose }, 'Injecting 404 Route...');
 			injectRoute({
 				pattern: '404',
-				entrypoint: resolve('../routes/404.astro'),
+				entrypoint: resolve('../../assets/routes/404.astro'),
 				prerender: true,
 			});
 		}
@@ -70,37 +70,37 @@ export const configSetup = defineUtility('astro:config:setup')(
 				{
 					enabled: dashboardEnabled && !dbStartPage,
 					pattern: 'liverender',
-					entrypoint: resolve('../routes/studiocms_api/LiveRender.astro'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/LiveRender.astro'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'config/site',
-					entrypoint: resolve('../routes/studiocms_api/config/site.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/config/site.ts'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'config/admin',
-					entrypoint: resolve('../routes/studiocms_api/config/admin.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/config/admin.ts'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'pages/create',
-					entrypoint: resolve('../routes/studiocms_api/pages/create.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/pages/create.ts'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'pages/edit',
-					entrypoint: resolve('../routes/studiocms_api/pages/edit.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/pages/edit.ts'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage && authEnabled,
 					pattern: 'pages/delete',
-					entrypoint: resolve('../routes/studiocms_api/pages/delete.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/pages/delete.ts'),
 				},
 				{
 					enabled: dbStartPage,
 					pattern: 'setup',
-					entrypoint: resolve('../routes/studiocms_api/firstTimeSetup.ts'),
+					entrypoint: resolve('../../assets/routes/studiocms_api/firstTimeSetup.ts'),
 				},
 			],
 		});
@@ -114,27 +114,27 @@ export const configSetup = defineUtility('astro:config:setup')(
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: '/',
-						entrypoint: resolve('../routes/index.astro'),
+						entrypoint: resolve('../../assets/routes/index.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'content-management',
-						entrypoint: resolve('../routes/content-management.astro'),
+						entrypoint: resolve('../../assets/routes/content-management.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'profile',
-						entrypoint: resolve('../routes/profile.astro'),
+						entrypoint: resolve('../../assets/routes/profile.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'configuration',
-						entrypoint: resolve('../routes/configuration.astro'),
+						entrypoint: resolve('../../assets/routes/configuration.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'user-management',
-						entrypoint: resolve('../routes/user-management.astro'),
+						entrypoint: resolve('../../assets/routes/user-management.astro'),
 					},
 				],
 			},

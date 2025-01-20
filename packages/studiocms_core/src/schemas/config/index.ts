@@ -1,17 +1,17 @@
 import { z } from 'astro/zod';
-import type { StudioCMSPlugin } from '../plugins';
-import { overridesSchema } from './componentoverrides';
-import { dashboardConfigSchema } from './dashboard';
-import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFrontend';
-import { imageServiceSchema } from './imageService';
-import { includedIntegrationsSchema } from './integrations';
+import type { StudioCMSPlugin } from '../plugins/index.js';
+import { overridesSchema } from './componentoverrides.js';
+import { dashboardConfigSchema } from './dashboard.js';
+import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFrontend.js';
+import { imageServiceSchema } from './imageService.js';
+import { includedIntegrationsSchema } from './integrations.js';
 import {
 	type CustomRenderer,
 	type Renderer,
 	type StudioCMSRendererConfig,
 	StudioCMSRendererConfigSchema,
-} from './rendererConfig';
-import { SDKSchema } from './sdk';
+} from './rendererConfig.js';
+import { SDKSchema } from './sdk.js';
 
 //
 // Exported Schemas for use in other internal packages

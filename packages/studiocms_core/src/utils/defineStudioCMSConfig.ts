@@ -1,4 +1,4 @@
-import type { StudioCMSOptions } from '../schemas';
+import type { StudioCMSOptions } from '../schemas/index.js';
 
 /**
  * A utility function to define the StudioCMS config object.

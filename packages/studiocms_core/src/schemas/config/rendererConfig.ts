@@ -1,6 +1,6 @@
 import { z } from 'astro/zod';
-import { type MarkdocRenderer, markdocConfigSchema, type markdocRenderer } from './markdoc';
-import { mdxConfigSchema } from './mdx';
+import { type MarkdocRenderer, markdocConfigSchema, type markdocRenderer } from './markdoc.js';
+import { mdxConfigSchema } from './mdx.js';
 
 export type Renderer = (content: string) => Promise<string>;
 export type { markdocRenderer, MarkdocRenderer };

@@ -1,7 +1,7 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from '@studiocms/core/lib';
 import { defineUtility } from 'astro-integration-kit';
-import type { StudioCMSAuthOptions } from '../schema';
+import type { StudioCMSAuthOptions } from '../schema.js';
+import { integrationLogger } from './integrationLogger.js';
 
 const apiRoute = makeAPIRoute('auth');
 

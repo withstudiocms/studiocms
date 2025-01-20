@@ -4,7 +4,7 @@ import { renderJSX } from 'astro/runtime/server/jsx.js';
 import { __unsafeHTML, transform } from 'ultrahtml';
 import sanitize, { type SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import swap from 'ultrahtml/transformers/swap';
-import { decode } from './decoder';
+import { decode } from './decoder/index.js';
 
 /**
  * Creates a proxy for components that can either be strings or functions.

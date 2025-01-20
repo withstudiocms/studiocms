@@ -27,10 +27,17 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "dist"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "type": "module",
   "dependencies": {},

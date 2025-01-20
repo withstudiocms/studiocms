@@ -26,18 +26,28 @@
     "access": "public"
   },
   "sideEffects": false,
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "files": [
-    "src"
+    "dist", "components", "exports"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./components/Renderer": {
-      "default": "./src/components/Renderer.js",
-      "types": "./src/components/Renderer.d.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
-    "./contentrenderer": "./src/lib/contentrenderer.ts",
-    "./exports": "./src/exports/index.ts",
-    "./exports/markdoc/react": "./src/exports/markdocRenderers/markdocReact.ts"
+    "./contentrenderer": {
+      "types": "./dist/lib/contentRenderer.d.ts",
+      "default": "./dist/lib/contentRenderer.js"
+    },
+    "./components/Renderer": {
+      "types": "./components/Renderer.d.ts",
+      "default": "./components/Renderer.js"
+    },
+    "./exports": "./exports/index.ts",
+    "./exports/markdoc/react": "./exports/markdocRenderers/markdocReact.ts"
   },
   "type": "module",
   "dependencies": {

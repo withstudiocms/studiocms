@@ -3,8 +3,8 @@ import version from 'studiocms:version';
 import type { AstroGlobalPartial } from 'astro';
 import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
-import { StudioCMSCoreError } from '../errors';
-import type { HeadConfigSchema } from '../schemas/config/defaultFrontend';
+import { StudioCMSCoreError } from '../errors.js';
+import type { HeadConfigSchema } from '../schemas/config/defaultFrontend.js';
 
 type faviconTypeMap = '.ico' | '.gif' | '.jpeg' | '.jpg' | '.png' | '.svg';
 const faviconTypes: faviconTypeMap[] = ['.ico', '.gif', '.jpeg', '.jpg', '.png', '.svg'];
