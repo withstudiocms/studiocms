@@ -137,16 +137,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 						pattern: 'configuration',
 						entrypoint: resolve('../routes/configuration.astro'),
 					},
-					// {
-					// 	enabled: dashboardEnabled && !dbStartPage,
-					// 	pattern: 'create-page',
-					// 	entrypoint: resolve('../routes/create-page.astro'),
-					// },
-					// {
-					// 	enabled: dashboardEnabled && !dbStartPage,
-					// 	pattern: 'user-management',
-					// 	entrypoint: resolve('../routes/user-management.astro'),
-					// },
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'user-management',
+						entrypoint: resolve('../routes/user-management.astro'),
+					},
 				],
 			},
 			prerenderRoutes
