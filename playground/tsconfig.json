@@ -1,21 +1,6 @@
 {
   "extends": "astro/tsconfigs/strict",
   "files": [],
-  "compilerOptions": {
-    "composite": true,
-    "allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true,
-    "resolveJsonModule": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noEmit": false,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "jsx": "preserve",
-    "strict": true
-  },
   "exclude": ["dist"],
-  "include": ["src/**/*", ".astro/**/*"]
+  "include": ["**/*", ".astro/types.d.ts"]
 }

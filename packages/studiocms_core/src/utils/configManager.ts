@@ -11,11 +11,11 @@ import type { StudioCMSOptions } from '../schemas';
  * sorted by how likely they're to appear.
  */
 const configPaths = Object.freeze([
+	'studiocms.config.cjs',
 	'studiocms.config.mjs',
 	'studiocms.config.js',
 	'studiocms.config.ts',
 	'studiocms.config.mts',
-	'studiocms.config.cjs',
 	'studiocms.config.cts',
 ]);
 
@@ -84,11 +84,30 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
  * If no config file is found, an empty object is returned.
  */
 export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
-	// Find the StudioCMS config file in the project root
-	const configPath = findConfig(projectRootUrl.pathname);
+	const pathsToTry = [
+		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.js?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cjs?t=${Date.now()}`, projectRootUrl).href,
+	];
+
+	if (import.meta.env?.BASE_URL?.length) {
+		pathsToTry.push(
+			`/studiocms.config.mjs?t=${Date.now()}`,
+			`/studiocms.config.js?t=${Date.now()}`,
+			`/studiocms.config.ts?t=${Date.now()}`,
+			`/studiocms.config.mts?t=${Date.now()}`,
+			`/studiocms.config.cts?t=${Date.now()}`,
+			`/studiocms.config.cjs?t=${Date.now()}`
+		);
+	}
 
 	// Return undefined for now if there is a config file, due to vite processing issues
-	if (configPath) {
+	// biome-ignore lint/suspicious/noSelfCompare: <explanation>
+	// biome-ignore lint/correctness/noConstantCondition: <explanation>
+	if (1 === 1) {
 		return undefined;
 	}
 
@@ -105,12 +124,12 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		}
 		return { message: error as string };
 	}
-	if (configPath) {
+
+	for (const path of pathsToTry) {
 		try {
-			// Attempt to import the config file dynamically
-			const module = (await import(/* @vite-ignore */ configPath)) as { default: StudioCMSOptions };
+			const module = (await import(/* @vite-ignore */ path)) as { default: StudioCMSOptions };
 			if (!module.default) {
-				throw new Error(
+				throw new StudioCMSCoreError(
 					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
 				);
 			}
@@ -118,18 +137,25 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		} catch (error) {
 			const { message, code } = coerceError(error);
 
-			const configFilePath = configPath.replace(projectRootUrl.pathname, '');
-
-			// If the config file exists but fails to load, throw an error
-			if (code !== 'ERR_MODULE_NOT_FOUND' && code !== 'ERR_LOAD_URL') {
-				throw new StudioCMSCoreError(
-					`Your project includes an StudioCMS config file (${configFilePath}) that could not be loaded due to ${code ? `the error ${code}` : 'the following error'}: ${message}`.replace(
-						/\s+/g,
-						' '
-					),
-					error instanceof Error ? error.stack : ''
-				);
+			if (code === 'ERR_MODULE_NOT_FOUND' || code === 'ERR_LOAD_URL') {
+				const msgCheck = message.replace(/(imported )?from .*$/, '');
+				if (
+					msgCheck.includes('studiocms.config.mjs') ||
+					msgCheck.includes('studiocms.config.js') ||
+					msgCheck.includes('studiocms.config.ts') ||
+					msgCheck.includes('studiocms.config.mts') ||
+					msgCheck.includes('studiocms.config.cts') ||
+					msgCheck.includes('studiocms.config.cjs')
+				)
+					continue;
 			}
+
+			throw new StudioCMSCoreError(
+				`Your project includes an StudioCMS config file (${path}) that could not be loaded due to ${
+					code ? `the error ${code}` : 'the following error'
+				}: ${message}`.replace(/\s+/g, ' '),
+				error instanceof Error ? error.stack : ''
+			);
 		}
 	}
 
