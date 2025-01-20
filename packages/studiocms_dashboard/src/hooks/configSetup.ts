@@ -113,12 +113,6 @@ export const configSetup = defineUtility('astro:config:setup')(
 				routes: [
 					{
 						enabled: dashboardEnabled && !dbStartPage,
-						pattern: 'test',
-						entrypoint: resolve('../routes/test.astro'),
-					},
-
-					{
-						enabled: dashboardEnabled && !dbStartPage,
 						pattern: '/',
 						entrypoint: resolve('../routes/index.astro'),
 					},
