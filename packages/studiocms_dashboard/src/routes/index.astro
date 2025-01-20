@@ -1,5 +1,4 @@
 ---
-// import { getWebVitals } from 'studiocms-dashboard:web-vitals';
 import { useTranslations } from 'studiocms:i18n';
 import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Layout } from '../components';
@@ -8,9 +7,6 @@ import DashboardGrid from '../components/islands/dashboard/DashboardGrid.astro';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
-
-// Get the web vitals
-// const webVitals = await getWebVitals();
 ---
 
 <Layout 
