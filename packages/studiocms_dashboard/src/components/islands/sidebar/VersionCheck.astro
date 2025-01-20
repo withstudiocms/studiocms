@@ -103,6 +103,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     new ModalHelper('version-modal', 'version-modal-trigger');
 
     document.addEventListener('astro:after-swap', () => {
+        setTimeout(() => {}, 1000);
         new ModalHelper('version-modal', 'version-modal-trigger');
     })
 
