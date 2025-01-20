@@ -1,43 +1,15 @@
 ---
 import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import pluginsList from 'studiocms:plugins';
-import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Input, Select } from '@studiocms/ui/components';
-import TinyMDE from '../../component-scripts/TinyMDE.astro';
-
-type PluginList = {
-	label: string;
-	value: string;
-}[];
-
-const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
-
-const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
-	const pageTypeOutput: PluginList = [];
-
-	if (!pageTypes) {
-		return pageTypeOutput;
-	}
-
-	for (const { label, identifier } of pageTypes) {
-		pageTypeOutput.push({ label, value: identifier });
-	}
-
-	return pageTypeOutput;
-});
-
-const parentFolders = folderList.map(({ id: value, name: label }) => ({ label, value }));
-
-const parentFolderOptions = [{ label: 'None', value: 'null' }, ...parentFolders];
-
-const trueFalse = [
-	{ label: 'Yes', value: 'true' },
-	{ label: 'No', value: 'false' },
-];
-
-const categoriesOptions = [{ label: 'None', value: 'null' }];
-const tagsOptions = [{ label: 'None', value: 'null' }];
+// import TinyMDE from '../../component-scripts/TinyMDE.astro';
+import {
+	categoriesOptions,
+	pageTypeOptions,
+	parentFolderOptions,
+	tagsOptions,
+	trueFalse,
+} from './shared';
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
@@ -89,14 +61,12 @@ const tagsOptions = [{ label: 'None', value: 'null' }];
         <div class="page-content-editor">
             <div id="editor-toolbar"></div>
             <div class="editor-container">
-                <textarea id="page-content"></textarea>
+                <textarea id="page-content" name="page-content"></textarea>
             </div>
         </div>
 
     </form>
 </div>
-
-<TinyMDE />
 
 <script is:inline define:vars={{
     pageTypeOptions: JSON.stringify(pageTypeOptions),
@@ -139,8 +109,8 @@ const tagsOptions = [{ label: 'None', value: 'null' }];
 
       const parentFolderSelectContainer = editPageForm.querySelector('#parent-folder-container');
 
-      const pageContentTextarea = document.getElementById('page-content')
-      const editorToolbar = document.getElementById('editor-toolbar');
+      const pageContentTextarea = editPageForm.querySelector('#page-content')
+      const editorToolbar = editPageForm.querySelector('#editor-toolbar');
 
       function getPageTypeOption(value) {
         const options = JSON.parse(pageTypeOptions);
@@ -317,30 +287,28 @@ const tagsOptions = [{ label: 'None', value: 'null' }];
             pageContentTextarea.textContent = pageData.data.defaultContent.content;
 
             editPageContainer.style.display = 'block';
-        }
 
-        editPageForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            editPageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-            const formData = new FormData(editPageForm);
+                const formData = new FormData(editPageForm);
 
-            const data = {
-                title: formData.get('page-title'),
-                slug: formData.get('page-slug'),
-                description: formData.get('page-description'),
-                package: formData.get('page-type'),
-                showOnNav: formData.get('show-in-nav') === 'true',
-                heroImage: formData.get('page-hero-image'),
-                parentFolder: formData.get('parent-folder'),
-                showAuthor: formData.get('show-author') === 'true',
-                showContributors: formData.get('show-contributors'),
-                defaultContent: {
+                const data = {
+                    title: formData.get('page-title'),
+                    slug: pageData.data.slug,
+                    description: formData.get('page-description'),
+                    package: formData.get('page-type'),
+                    showOnNav: formData.get('show-in-nav') === 'true',
+                    heroImage: formData.get('page-hero-image'),
+                    parentFolder: formData.get('parent-folder'),
+                    showAuthor: formData.get('show-author') === 'true',
+                    showContributors: formData.get('show-contributors'),
                     content: formData.get('page-content'),
-                },
-            };
+                };
 
-            console.log(data);
-        })
+                console.log(data);
+            });
+        }
 
       } else {
         editPageContainer.style.display = 'none';

@@ -4,6 +4,7 @@ import { Button, Divider, Input } from '@studiocms/ui/components';
 import Icon from '@studiocms/ui/utils/Icon.astro';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
+import TinyMDE from '../components/component-scripts/TinyMDE.astro';
 import Create from '../components/islands/content-mgmt/Create.astro';
 import Edit from '../components/islands/content-mgmt/Edit.astro';
 import PageHeader from '../components/islands/content-mgmt/PageHeader.astro';
@@ -49,6 +50,8 @@ const lang = 'en-us';
 
   <Edit server:defer />
   <Create server:defer />
+
+  <TinyMDE />
 
 </Layout>
 
