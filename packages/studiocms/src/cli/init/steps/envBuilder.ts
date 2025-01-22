@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import color from 'chalk';
 import type { Context } from '../../lib/context.js';
@@ -90,13 +91,25 @@ export async function env(
 	} else if (EnvPrompt === 'builder') {
 		let envBuilderOpts: EnvBuilderOptions = {};
 
-		const tursoDB = await ctx.p.select({
-			message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
-			options: [
-				{ value: 'yes', label: 'Yes' },
-				{ value: 'no', label: 'No' },
-			],
-		});
+		const isWindows = os.platform() === 'win32';
+
+		if (isWindows) {
+			ctx.p.log.warn(
+				`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+			);
+		}
+
+		let tursoDB: symbol | 'yes' | 'no' = 'no';
+
+		if (!isWindows) {
+			tursoDB = await ctx.p.select({
+				message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
+				options: [
+					{ value: 'yes', label: 'Yes' },
+					{ value: 'no', label: 'No' },
+				],
+			});
+		}
 
 		if (typeof tursoDB === 'symbol') {
 			ctx.pCancel(tursoDB);
