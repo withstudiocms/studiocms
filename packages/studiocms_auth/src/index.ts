@@ -1,10 +1,12 @@
 import type { AstroIntegration } from 'astro';
-import { name } from '../package.json' assert { type: 'json' };
 import configSetup from './hooks/config-setup.js';
 import type { StudioCMSAuthOptions } from './schema.js';
 import authLibDTS from './stubs/auth-lib.js';
 import authScriptsDTS from './stubs/auth-scripts.js';
 import authUtilsDTS from './stubs/auth-utils.js';
+import readJson from './utils/readJson';
+
+const { name } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * StudioCMS Auth Integration

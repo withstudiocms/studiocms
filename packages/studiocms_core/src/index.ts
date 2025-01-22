@@ -1,8 +1,11 @@
 import type { AstroIntegration } from 'astro';
-import { name as pkgName } from '../package.json' assert { type: 'json' };
+// import { name as pkgName } from '../package.json' assert { type: 'json' };
 import configDone from './hooks/config-done.js';
 import configSetup from './hooks/config-setup.js';
 import type { StudioCMSConfig } from './schemas/index.js';
+import readJson from './utils/readJson.js';
+
+const { name: pkgName } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * **StudioCMS Core Integration**

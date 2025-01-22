@@ -17,7 +17,6 @@ import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
-import { name as pkgName, version as pkgVersion } from '../package.json' assert { type: 'json' };
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { checkAstroConfig } from './utils/astroConfigCheck.js';
@@ -26,6 +25,11 @@ import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
+import readJson from './utils/readJson.js';
+
+const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
+	new URL('../package.json', import.meta.url)
+);
 
 /**
  * **StudioCMS Integration**

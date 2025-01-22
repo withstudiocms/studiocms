@@ -2,11 +2,13 @@ import { runtimeLogger } from '@inox-tools/runtime-logger';
 import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { name as pkgName } from '../package.json' assert { type: 'json' };
 import rendererConfigDTS from './stubs/renderer-config.js';
 import rendererMarkdownConfigDTS from './stubs/renderer-markdownConfig.js';
 import rendererDTS from './stubs/renderer.js';
 import { integrationLogger } from './utils/integrationLogger.js';
+import readJson from './utils/readJson.js';
+
+const { name: pkgName } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * **StudioCMS Renderers Integration**

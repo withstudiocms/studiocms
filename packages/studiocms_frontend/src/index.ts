@@ -1,8 +1,10 @@
 import type { AstroIntegration } from 'astro';
 import { createResolver } from 'astro-integration-kit';
-import { name } from '../package.json';
 import type { StudioCMSFrontEndOptions } from './schema.js';
 import { integrationLogger } from './utils/integrationLogger.js';
+import readJson from './utils/readJson.js';
+
+const { name } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * StudioCMS Frontend Integration

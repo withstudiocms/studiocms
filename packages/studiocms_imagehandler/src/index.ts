@@ -3,10 +3,12 @@ import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import { loadEnv } from 'vite';
-import { name as pkgName } from '../package.json' assert { type: 'json' };
 import type { StudioCMSImageHandlerOptions } from './schema.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
 import { integrationLogger } from './utils/integrationLogger.js';
+import readJson from './utils/readJson.js';
+
+const { name: pkgName } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * StudioCMS Image Handler Integration

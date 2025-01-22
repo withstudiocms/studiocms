@@ -33,6 +33,8 @@ export const StudioCMSColorwayWarnBg = chalk.bgHex('#facc14');
 export const StudioCMSColorwayError = chalk.hex('#bd0249');
 export const StudioCMSColorwayErrorBg = chalk.bgHex('#bd0249');
 
+export const TursoColorway = chalk.bgHex('#4ff8d2');
+
 export const CLITitle = supportsColor ? StudioCMSColorway.bold(`${ASCIIText}\n`) : `${ASCIIText}\n`;
 
 let stdout = process.stdout;
