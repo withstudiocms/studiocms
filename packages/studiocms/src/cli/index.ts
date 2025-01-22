@@ -1,7 +1,9 @@
 import { Option } from '@commander-js/extra-typings';
-import pkgJson from '../../package.json' assert { type: 'json' };
-import { Command } from './commander.js';
-import { CLITitle, logger } from './utils.js';
+import { initCMD } from './init/index.js';
+import { Command } from './lib/commander.js';
+import { CLITitle, logger, readJson } from './lib/utils.js';
+
+const pkgJson = readJson<{ version: string }>(new URL('../../package.json', import.meta.url));
 
 export async function main() {
 	logger.log('Starting StudioCMS CLI Utility Toolkit...');
@@ -19,6 +21,15 @@ export async function main() {
 
 	// Add Commands
 	program.command('help-default', { isDefault: true, hidden: true }).action(() => program.help());
+
+	program
+		.command('init')
+		.description('Initialize the StudioCMS project after new installation.')
+		.summary('Initialize StudioCMS Project')
+		.option('-d, --dry-run', 'Dry run mode.')
+		.option('--skip-banners', 'Skip all banners.')
+		.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
+		.action(initCMD);
 
 	await program.parseAsync();
 }

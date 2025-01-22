@@ -95,9 +95,12 @@
     "chalk": "^5.4.1",
     "strip-ansi": "^7.1.0",
     "wrap-ansi": "^9.0.0",
-    "log-update": "^6.1.0",
     "boxen": "^8.0.1",
-    "lodash": "catalog:studiocms-shared"
+    "lodash": "catalog:studiocms-shared",
+    "is-unicode-supported": "^2.1.0",
+    "ansi-escapes": "^7.0.0",
+    "cli-cursor": "^5.0.0",
+    "slice-ansi": "^7.1.0"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
