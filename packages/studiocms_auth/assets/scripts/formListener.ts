@@ -1,4 +1,4 @@
-import { toast } from '@studiocms/ui/components';
+import { toast } from 'studiocms:ui/components';
 
 export async function formListener(
 	event: SubmitEvent,
