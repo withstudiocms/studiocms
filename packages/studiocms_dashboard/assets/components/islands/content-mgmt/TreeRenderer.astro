@@ -1,7 +1,7 @@
 ---
 import type { FolderNode } from '@studiocms/core/sdk-utils/types';
-import InnerSidebarFolder from '../../InnerSidebarFolder.astro';
-import InnerSidebarLink from '../../InnerSidebarLink.astro';
+import TreeSidebarFolder from './TreeSidebarFolder.astro';
+import TreeSidebarLink from './TreeSidebarLink.astro';
 
 // Props passed to the component
 interface Props {
@@ -29,17 +29,17 @@ const sortedData = sortTree(data);
 
 {sortedData.map(({ id, name, page, children }) => (
     page ? (
-        <InnerSidebarLink icon="document-text" href={`?edit=${id}`}>
+        <TreeSidebarLink icon="document-text" href={`?edit=${id}`}>
             {name}
-        </InnerSidebarLink>
+        </TreeSidebarLink>
     ) : (
-        <InnerSidebarFolder {name} icon="folder-solid">
+        <TreeSidebarFolder {name} icon="folder-solid">
             {children && children.length > 0 && (
                 <div class="inner-sidebar-folder-child-nodes">
                     <Astro.self data={children} />
                 </div>
             )}
-        </InnerSidebarFolder>
+        </TreeSidebarFolder>
     )
 ))}
 

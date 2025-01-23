@@ -1,0 +1,86 @@
+---
+import { Icon } from 'studiocms:ui/components';
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+	/**
+	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
+	 */
+	icon: HeroIconName;
+	href: string;
+}
+
+const { icon, ...props } = Astro.props;
+
+const activeIcon = `${icon}-solid`;
+
+const compId = crypto.randomUUID();
+---
+
+<a id={compId} class="inner-sidebar-link" {...props} data-astro-reload>
+  <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
+  <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
+  <span class="sidebar-link-text">
+    <slot />
+  </span>
+</a>
+
+<script is:inline data-astro-rerun define:vars={{ compId }}>
+  function setInnerSidebarLinks() {
+    const link = document.getElementById(compId)
+
+    const notSelectedIcon = link.querySelector('#not-selected-icon')
+    const selectedIcon = link.querySelector('#selected-icon')
+
+    notSelectedIcon.style.display = 'block';
+    selectedIcon.style.display = 'none';
+    link.classList.remove('active');
+
+    const LinkQueryParams = new URL(link.href).searchParams.get('edit');
+    const CurrentQueryParams = new URL(window.location.href).searchParams.get('edit');
+
+    if (LinkQueryParams === CurrentQueryParams) {
+      notSelectedIcon.style.display = 'none';
+      selectedIcon.style.display = 'block';
+      link.classList.add('active');
+    }
+  }
+  document.addEventListener('astro:page-load', setInnerSidebarLinks());
+  setInnerSidebarLinks();
+</script>
+
+<style>
+  .inner-sidebar-link {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    border-radius: .5rem;
+    transition: all .15s ease;
+    width: 100%;
+    padding: .375rem .5rem;
+    text-decoration: none;
+    color: hsl(var(--text-muted));
+  }
+
+  .not-selected {
+    display: block;
+  }
+
+  .selected {
+    display: none;
+  }
+
+  .inner-sidebar-link:hover {
+    background-color: hsl(var(--background-step-3));
+  }
+
+  .inner-sidebar-link.active {
+    color: hsl(var(--text));
+  }
+
+  .inner-sidebar-link.active .sidebar-link-icon {
+    color: hsl(var(--primary-base));
+  }
+</style>

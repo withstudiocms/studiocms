@@ -77,8 +77,8 @@
       "default": "./dist/sdk-utils/tables.js"
     },
     "./sdk-utils/types": {
-      "types": "./dist/sdk-utils/types.d.ts",
-      "default": "./dist/sdk-utils/types.js"
+      "types": "./dist/sdk-utils/types/index.d.ts",
+      "default": "./dist/sdk-utils/types/index.js"
     },
     "./sdk-utils/utils": {
       "types": "./dist/sdk-utils/utils.d.ts",
