@@ -3,7 +3,6 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Button, Input } from 'studiocms:ui/components';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
@@ -37,7 +36,6 @@ if (usernameAndPassword && SHOW_OAUTH) {
     description={t('description')} 
     {lang} 
     checkLogin
-    {pagePreRendered}
     >
     
     <div slot="header" class="form-header">

@@ -10,14 +10,11 @@ const { name } = readJson<{ name: string }>(new URL('../package.json', import.me
 /**
  * StudioCMS Dashboard Integration
  */
-function studioCMSDashboard(
-	options: StudioCMSDashboardOptions,
-	prerenderRoutes: boolean
-): AstroIntegration {
+function studioCMSDashboard(options: StudioCMSDashboardOptions): AstroIntegration {
 	return {
 		name,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, name, options, prerenderRoutes),
+			'astro:config:setup': (params) => configSetup(params, name, options),
 			'astro:config:done': (params) => configDone(params),
 			'astro:server:start': (params) => serverStart(params, options),
 		},

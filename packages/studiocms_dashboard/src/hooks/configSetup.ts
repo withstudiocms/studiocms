@@ -9,7 +9,7 @@ import { integrationLogger } from '../utils/integrationLogger.js';
 const { resolve } = createResolver(import.meta.url);
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, name: string, options: StudioCMSDashboardOptions, prerenderRoutes: boolean) => {
+	(params, name: string, options: StudioCMSDashboardOptions) => {
 		// Destructure the params object
 		const { logger, injectRoute } = params;
 
@@ -138,7 +138,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 					},
 				],
 			},
-			prerenderRoutes
+			false
 		);
 
 		// Log that the setup is complete

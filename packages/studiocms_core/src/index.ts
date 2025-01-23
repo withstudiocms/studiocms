@@ -15,14 +15,11 @@ const { name: pkgName } = readJson<{ name: string }>(new URL('../package.json', 
  *
  * @see [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  */
-export function studioCMSCore(
-	options: StudioCMSConfig,
-	prerenderRoutes: boolean
-): AstroIntegration {
+export function studioCMSCore(options: StudioCMSConfig): AstroIntegration {
 	return {
 		name: pkgName,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, options, prerenderRoutes),
+			'astro:config:setup': (params) => configSetup(params, options),
 			'astro:config:done': (params) => configDone(params),
 		},
 	};

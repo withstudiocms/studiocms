@@ -1,7 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import AuthLayout from '../layouts/AuthLayout.astro';
 
 const lang = 'en-us';
@@ -11,7 +10,6 @@ const t = useTranslations(lang, '@studiocms/auth:logout');
 	title={t('title')} 
 	description={t('description')} 
 	{lang} 
-	{pagePreRendered}
 	disableScreen
 	>
 

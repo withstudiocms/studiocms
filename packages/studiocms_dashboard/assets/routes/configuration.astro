@@ -1,5 +1,4 @@
 ---
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Button, Icon } from 'studiocms:ui/components';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
@@ -13,7 +12,6 @@ const lang = 'en-us';
 <Layout 
   title={"Configuration"}
   requiredPermission='owner'
-  {pagePreRendered}
   {lang}
   >
 
@@ -26,10 +24,6 @@ const lang = 'en-us';
     </PageHeader>
   </div>
   
-  {
-    pagePreRendered 
-    ? <ConfigForm server:defer transition:persist transition:persist-props />
-    : <ConfigForm transition:persist transition:persist-props/>
-  }
+  <ConfigForm transition:persist transition:persist-props/>
 
 </Layout>

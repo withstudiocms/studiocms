@@ -71,17 +71,8 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 
 				options = await configResolver(params, opts);
 
-				const {
-					verbose,
-					rendererConfig,
-					defaultFrontEndConfig,
-					includedIntegrations,
-					plugins,
-					dashboardConfig: { prerender },
-				} = options;
-
-				// Check if the dashboard routes should be prerendered
-				const prerenderRoutes = output === 'static' || prerender;
+				const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
+					options;
 
 				// Setup Logger
 				integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS...');
@@ -99,11 +90,11 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 				const integrations = [
 					{ integration: nodeNamespaceBuiltinsAstro() },
 					{ integration: ui() },
-					{ integration: core(options, prerenderRoutes) },
+					{ integration: core(options) },
 					{ integration: renderers(rendererConfig, verbose) },
 					{ integration: imageHandler(options) },
-					{ integration: auth(options, prerenderRoutes) },
-					{ integration: dashboard(options, prerenderRoutes) },
+					{ integration: auth(options) },
+					{ integration: dashboard(options) },
 				];
 
 				// Frontend Integration (Default)
@@ -185,7 +176,7 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 						'studiocms:plugins': `export default ${JSON.stringify(safePluginList)};`,
 						'studiocms:mode': `
 							export const output = ${JSON.stringify(output)};
-							export const prerenderRoutes = ${prerenderRoutes};
+							export const prerenderRoutes = false;
 							export default { output, prerenderRoutes };
 						`,
 					},

@@ -11,11 +11,11 @@ const { name } = readJson<{ name: string }>(new URL('../package.json', import.me
 /**
  * StudioCMS Auth Integration
  */
-function studioCMSAuth(options: StudioCMSAuthOptions, prerenderRoutes: boolean): AstroIntegration {
+function studioCMSAuth(options: StudioCMSAuthOptions): AstroIntegration {
 	return {
 		name,
 		hooks: {
-			'astro:config:setup': (params) => configSetup(params, name, options, prerenderRoutes),
+			'astro:config:setup': (params) => configSetup(params, name, options),
 			'astro:config:done': ({ injectTypes }) => {
 				// Inject Types
 				injectTypes(authLibDTS);

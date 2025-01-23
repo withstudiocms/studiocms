@@ -1,6 +1,5 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Layout } from '../components';
 import DashboardPageHeader from '../components/DashboardPageHeader.astro';
 import DashboardGrid from '../components/islands/dashboard/DashboardGrid.astro';
@@ -12,19 +11,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 <Layout 
   title={t('title')}
   requiredPermission='editor'
-  {pagePreRendered}
   {lang}
   >
 
   <div slot="header">
-    <DashboardPageHeader {pagePreRendered} />
+    <DashboardPageHeader />
     <span>{t('sub-header')}</span>
   </div>
 
-  { 
-    pagePreRendered
-    ? <DashboardGrid server:defer />
-    : <DashboardGrid />
-  }
+  <DashboardGrid />
 
 </Layout>

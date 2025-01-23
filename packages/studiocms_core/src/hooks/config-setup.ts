@@ -10,7 +10,7 @@ const { name, version } = readJson<{ name: string; version: string }>(
 );
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, options: StudioCMSConfig, prerenderRoutes: boolean) => {
+	(params, options: StudioCMSConfig) => {
 		// Destructure the params
 		const {
 			logger,
@@ -153,13 +153,13 @@ export const configSetup = defineUtility('astro:config:setup')(
 		injectRoute({
 			pattern: sdkRouteResolver('fallback-list-pages.json'),
 			entrypoint: resolve('../routes/fallback-list-pages.json.js'),
-			prerender: prerenderRoutes,
+			prerender: true,
 		});
 
 		injectRoute({
 			pattern: sdkRouteResolver('full-changelog.json'),
 			entrypoint: resolve('../routes/full-changelog.json.js'),
-			prerender: prerenderRoutes,
+			prerender: true,
 		});
 
 		integrationLogger(logInfo, 'Core Setup Complete...');

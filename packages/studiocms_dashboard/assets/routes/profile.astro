@@ -1,15 +1,11 @@
 ---
 // import { useTranslations } from 'studiocms:i18n';
 import { AuthConfig } from 'studiocms:config';
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
 import BasicInfo from '../components/islands/profile/BasicInfo.astro';
-import BasicInfoFallback from '../components/islands/profile/BasicInfoFallback.astro';
 import SocialSignin from '../components/islands/profile/SocialSignin.astro';
-import SocialSigninFallback from '../components/islands/profile/SocialSigninFallback.astro';
 import UpdatePassword from '../components/islands/profile/UpdatePassword.astro';
-import UpdatePasswordFallback from '../components/islands/profile/UpdatePasswordFallback.astro';
 import { providerData, showOAuth } from '../components/islands/profile/oAuthButtonProviders';
 
 const lang = 'en-us';
@@ -25,7 +21,6 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 <Layout 
   title={'User Profile'}
   requiredPermission="visitor"
-  {pagePreRendered}
   {lang}
   >
 
@@ -35,40 +30,14 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 
   <div class="page-content">
 
-    { pagePreRendered ? (
-        <>
+    <BasicInfo transition:persist transition:persist-props />
 
-          <BasicInfo server:defer transition:persist transition:persist-props>
-            <BasicInfoFallback slot="fallback" />
-          </BasicInfo>
-      
-          { usernameAndPassword && ( 
-            <UpdatePassword server:defer transition:persist transition:persist-props >
-              <UpdatePasswordFallback slot="fallback" />
-            </UpdatePassword>
-          )}
-    
-          { shouldShowOAuth && ( 
-            <SocialSignin server:defer transition:persist transition:persist-props >
-              <SocialSigninFallback slot="fallback" />
-            </SocialSignin>
-          )}
+    { usernameAndPassword && ( 
+      <UpdatePassword transition:persist transition:persist-props />
+    )}
 
-        </>
-      ) : (
-        <>
-
-          <BasicInfo transition:persist transition:persist-props />
-
-          { usernameAndPassword && ( 
-            <UpdatePassword transition:persist transition:persist-props />
-          )}
-
-          { shouldShowOAuth && ( 
-            <SocialSignin transition:persist transition:persist-props />
-          )}
-
-        </>
+    { shouldShowOAuth && ( 
+      <SocialSignin transition:persist transition:persist-props />
     )}
 
   </div>

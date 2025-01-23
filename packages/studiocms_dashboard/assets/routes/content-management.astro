@@ -17,7 +17,6 @@ const lang = 'en-us';
   title="Content Management"
   requiredPermission='editor'
   sidebar='double'
-  {pagePreRendered}
   {lang}
   >
 
@@ -31,24 +30,21 @@ const lang = 'en-us';
       </div>
       <Divider background={'background-step-2'}>Items</Divider>
       <div class="inner-sidebar-items">
-        { pagePreRendered 
-          ? <PageList server:defer />
-          : <PageList />
-        }
+        <PageList />
       </div>
     </div>
   </div>
 
   <div slot="header">
-    <PageHeader server:defer title="Content Management" />
+    <PageHeader title="Content Management" />
   </div>
 
   <div id="placeholder-info" class="placeholder-info">
     <p>Select a page or create a new one to get started!</p>
   </div>
 
-  <Edit server:defer />
-  <Create server:defer />
+  <Edit />
+  <Create />
 
   <TinyMDE />
 

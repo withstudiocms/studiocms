@@ -15,10 +15,9 @@ interface Props {
 	lang: string;
 	disableScreen?: boolean;
 	checkLogin?: boolean;
-	pagePreRendered?: boolean;
 }
 
-const { title, description, lang, disableScreen, checkLogin, pagePreRendered = true } = Astro.props;
+const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 ---
 <!doctype html>
 <html lang={lang} data-theme="dark">
@@ -45,9 +44,7 @@ const { title, description, lang, disableScreen, checkLogin, pagePreRendered = t
 	<Toaster />
 	<main>
 		<div id="canvas-container">
-			{
-				pagePreRendered ? <FallbackCanvas server:defer /> : <FallbackCanvas />
-			}
+			<FallbackCanvas />
 		</div>
 		<div class="login-form-container">
 
@@ -64,10 +61,8 @@ const { title, description, lang, disableScreen, checkLogin, pagePreRendered = t
 		</div>
 	</main>
 	{ checkLogin && (
-		<>
-		{ pagePreRendered ? <StaticAuthCheck server:defer /> : <StaticAuthCheck /> }
-		</>
+		<StaticAuthCheck />
 	)}
-	{ pagePreRendered ? <ThreeCanvasLoader server:defer /> : <ThreeCanvasLoader /> }
+	<ThreeCanvasLoader />
   </body>
 </html>

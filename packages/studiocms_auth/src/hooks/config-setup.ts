@@ -10,7 +10,7 @@ import { integrationLogger } from '../utils/integrationLogger.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from '../utils/routeBuilder.js';
 
 export const configSetup = defineUtility('astro:config:setup')(
-	(params, name: string, options: StudioCMSAuthOptions, prerenderRoutes: boolean) => {
+	(params, name: string, options: StudioCMSAuthOptions) => {
 		// Destructure Params
 		const { logger, updateConfig } = params;
 
@@ -250,7 +250,7 @@ export const configSetup = defineUtility('astro:config:setup')(
 					},
 				],
 			},
-			prerenderRoutes
+			false
 		);
 	}
 );

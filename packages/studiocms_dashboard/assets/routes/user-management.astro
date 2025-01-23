@@ -1,5 +1,4 @@
 ---
-import { prerenderRoutes as pagePreRendered } from 'studiocms:mode';
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../components';
 import PageHeader from '../components/PageHeader.astro';
@@ -10,7 +9,6 @@ const lang = 'en-us';
 <Layout 
   title="User Management"
   requiredPermission='admin'
-  {pagePreRendered}
   {lang}
   >
 

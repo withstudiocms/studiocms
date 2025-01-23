@@ -12,7 +12,6 @@ const { data: dbConfig } = await studioCMS_SDK_Cache.GET.siteConfig();
 
 type Props = {
 	title: string;
-	pagePreRendered?: boolean;
 	description?: string;
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
@@ -23,7 +22,6 @@ type Props = {
 const {
 	title: propTitle,
 	description: propDescription,
-	pagePreRendered = true,
 	lang = 'en-us',
 	requiredPermission = 'unknown',
 	sidebar = 'single',
@@ -40,13 +38,10 @@ const description = propDescription ?? dbConfig.description;
   <body>
     <Toaster />
     { requiredPermission !== 'none' && ( 
-      <> { pagePreRendered 
-        ? <LoginChecker requiredPermission={requiredPermission} server:defer /> 
-        : <LoginChecker requiredPermission={requiredPermission} /> 
-      } </>
+      <LoginChecker requiredPermission={requiredPermission} />
      ) }
-    { sidebar === 'single' && <SingleSidebar {pagePreRendered} /> }
-    { sidebar === 'double' && <DoubleSidebar {pagePreRendered}><slot name="double-sidebar" /></DoubleSidebar> }
+    { sidebar === 'single' && <SingleSidebar /> }
+    { sidebar === 'double' && <DoubleSidebar><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
       { sidebar !== false && (
