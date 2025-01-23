@@ -18,7 +18,7 @@ const activeIcon = `${icon}-solid`;
 const compId = crypto.randomUUID();
 ---
 
-<a id={compId} class="inner-sidebar-link" {...props} data-astro-reload>
+<a id={compId} class="inner-sidebar-link" {...props} >
   <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
   <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">

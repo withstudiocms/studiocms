@@ -1,7 +1,8 @@
 ---
 import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Input, Select } from 'studiocms:ui/components';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -9,60 +10,74 @@ import {
 	tagsOptions,
 	trueFalse,
 } from './shared';
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('edit') || '';
+
+const { data: pageData } = await studioCMS_SDK_Cache.GET.page.byId(editId);
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
 
-        <h2>Basic Information</h2>
+        <Tabs syncKey='edit-page-tabs'>
+          <TabItem label='Basic Information' icon={'information-circle'} color={'primary'}>
 
-        <div class="form-row">
-            <Input label='Page Title' name='page-title' isRequired />
-            <Input label='Slug' name='page-slug' disabled isRequired />
-        </div>
-
-        <Input label='Description' name='page-description' isRequired />
-
-        <div class="form-row">
-            <Select 
-                label="Page type" 
-                name="page-type" 
-                isRequired 
-                fullWidth 
-                options={pageTypeOptions} 
-                />
-            <Select 
-                label="Show in Navigation" 
-                name="show-in-nav" 
-                isRequired 
-                defaultValue='false'
-                fullWidth 
-                options={trueFalse} 
-                />
-        </div>
-
-        <div class="form-row">
-            <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
-            <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} />
-        </div>
-
-        <div class="form-row">
-            <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-            <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
-        </div>
-
-        <div class="form-row">
-            <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
-            <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
-        </div>
-
-        <h2>Page Content</h2>
-
-        <div class="page-content-editor">
-            <div id="editor-toolbar"></div>
-            <div class="editor-container">
-                <textarea id="page-content" name="page-content"></textarea>
+            <div class="form-row">
+                <Input label='Page Title' name='page-title' isRequired defaultValue={pageData.title} />
+                <Input label='Slug' name='page-slug' disabled isRequired defaultValue={pageData.slug} />
+    
+                <input type="hidden" name="page-slug" value={pageData.slug} />
+                <input type="hidden" name="page-id" value={pageData.id} />
             </div>
-        </div>
+    
+            <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
+    
+            <div class="form-row">
+                <Select 
+                    label="Page type" 
+                    name="page-type" 
+                    isRequired 
+                    fullWidth 
+                    defaultValue={pageData.package}
+                    options={pageTypeOptions} 
+                    />
+                <Select 
+                    label="Show in Navigation" 
+                    name="show-in-nav" 
+                    isRequired 
+                    defaultValue={`${pageData.showOnNav}`}
+                    fullWidth 
+                    options={trueFalse} 
+                    />
+            </div>
+    
+            <div class="form-row">
+                <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
+                <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={pageData.parentFolder || undefined} />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+                <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Show Author" name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
+                <Select label="Show Contributors" name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
+            </div>
+
+          </TabItem>
+          <TabItem label='Page Content' icon={'document-text'} color={'success'}>
+
+            <div class="page-content-editor">
+                <div id="editor-toolbar"></div>
+                <div class="editor-container">
+                    <textarea id="page-content" name="page-content">{pageData.defaultContent?.content}</textarea>
+                </div>
+            </div>
+
+          </TabItem>
+        </Tabs>
 
     </form>
 </div>
@@ -81,256 +96,172 @@ import {
 </div>
 
 <script>
-    async function listener() {
-      // get the query parameters
-      const urlParams = new URLSearchParams(window.location.search);
+async function listener() {
+
+    const editPageGrabber = document.getElementById('edit-page-grabber') as HTMLElement;
+    const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
   
-      // get the id parameter
-      const editId = urlParams.get('edit');
+    // get the elements
+    const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-      const editPageGrabber = document.getElementById('edit-page-grabber') as HTMLElement;
-      const pageTypeOptions = editPageGrabber.dataset.page_type_options;
-      const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
-  
-      // get the elements
-      const editPageContainer = document.getElementById('edit-page-container') as HTMLElement;
-      const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
+    const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLElement;
+    const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
 
-      const pageTitleInput = editPageForm.querySelector('input[name="page-title"]') as HTMLInputElement;
-      const pageSlugInput = editPageForm.querySelector('input[name="page-slug"]') as HTMLInputElement;
-      const pageDescriptionInput = editPageForm.querySelector('input[name="page-description"]') as HTMLInputElement;
-      const pageTypeSelect = editPageForm.querySelector('select[name="page-type"]') as HTMLElement;
-      const pageTypeSelectValue = editPageForm.querySelector(`#page-type-value-span`) as HTMLElement;
-      const showInNavSelect = editPageForm.querySelector('select[name="show-in-nav"]') as HTMLElement;
-      const showInNavSelectValue = editPageForm.querySelector(`#show-in-nav-value-span`) as HTMLElement;
-      const pageHeroImageInput = editPageForm.querySelector('input[name="page-hero-image"]') as HTMLInputElement;
-      const categoriesSelect = editPageForm.querySelector('select[name="categories"]') as HTMLElement;
-      const categoriesSelectValue = editPageForm.querySelector(`#categories-value-span`) as HTMLElement;
-      const tagsSelect = editPageForm.querySelector('select[name="tags"]') as HTMLElement;
-      const tagsSelectValue = editPageForm.querySelector(`#tags-value-span`) as HTMLElement;
-      const parentFolderSelect = editPageForm.querySelector('select[name="parent-folder"]') as HTMLElement;
-      const parentFolderSelectValue = editPageForm.querySelector(`#parent-folder-value-span`) as HTMLElement;
-      const showAuthorSelect = editPageForm.querySelector('select[name="show-author"]') as HTMLElement;
-      const showAuthorSelectValue = editPageForm.querySelector(`#show-author-value-span`) as HTMLElement;
-      const showContributorsSelect = editPageForm.querySelector('select[name="show-contributors"]') as HTMLElement;
-      const showContributorsSelectValue = editPageForm.querySelector(`#show-contributors-value-span`) as HTMLElement;
 
-      const parentFolderSelectContainer = editPageForm.querySelector('#parent-folder-container') as HTMLElement;
-
-      const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLElement;
-      const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
-
-      function getPageTypeOption(value: any) {
-        const options = JSON.parse(pageTypeOptions!);
-        const selectedOption = options.find((option: { value: any; }) => option.value === value);
-        return selectedOption.label;
-      }
-
-      function setSelectValue(selectElm: HTMLElement, selectValueElm: HTMLElement, value: any, displayValue: string) {
-        selectElm.querySelector(`option[value="${value}"]`)?.setAttribute('selected', '');
-        selectValueElm.innerText = displayValue;
-      }
-
-      function getParentFolderOption(value: any) {
+    function getParentFolderValue(value: FormDataEntryValue | null) {
         const options = JSON.parse(parentFolderOptions!);
         if (value === null) {
-          return options.find((option: any) => option.value === 'null').label;
+          return (options.find((option: { value: string; }) => option.value === 'null')).value;
         }
-        const selectedOption = options.find((option: any) => option.value === value);
-        return selectedOption.label;
-      }
-
-      function getParentFolderValue(value: any) {
-        const options = JSON.parse(parentFolderOptions!);
-        if (value === null) {
-          return (options.find((option: any) => option.value === 'null')).value;
-        }
-        const selectedOption = options.find((option: any) => option.value === value);
+        const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
         return selectedOption.value;
-      }
+    }
   
-      // get the page data
-  
-      if (editId) {
-        // find the page data from the list
-        const pageDataResponse = await (await fetch(editPageContainer.dataset.link!)).json();
-        const pageData = pageDataResponse.pages.find((page: any) => page.data.id === editId);
-  
-        if (pageData) {
-            pageTitleInput.value = pageData.data.title;
-            pageSlugInput.value = pageData.data.slug;
-            pageDescriptionInput.value = pageData.data.description;
-            pageHeroImageInput.value = pageData.data.heroImage;
 
-            if (pageData.data.slug === 'index' || pageData.data.slug === 'about') {
-                parentFolderSelectContainer.classList.add('disabled');
-            }
-
-            setSelectValue(pageTypeSelect, pageTypeSelectValue, pageData.data.package, getPageTypeOption(pageData.data.package));
-            setSelectValue(showInNavSelect, showInNavSelectValue, pageData.data.showOnNav, pageData.data.showOnNav === true ? 'Yes' : 'No');
-            setSelectValue(showAuthorSelect, showAuthorSelectValue, pageData.data.showAuthor, pageData.data.showAuthor === true ? 'Yes' : 'No');
-            setSelectValue(showContributorsSelect, showContributorsSelectValue, pageData.data.showContributors, pageData.data.showContributors === true ? 'Yes' : 'No');
-
-            // setSelectValue(categoriesSelect, categoriesSelectValue, pageData.data.categories, pageData.data.categories);
-            // setSelectValue(tagsSelect, tagsSelectValue, pageData.data.tags, pageData.data.tags);
-            setSelectValue(parentFolderSelect, parentFolderSelectValue, getParentFolderValue(pageData.data.parentFolder), getParentFolderOption(pageData.data.parentFolder));
-
-            // Setup the TinyMDE editor
-            // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
-            // @ts-expect-error - Added TinyMDE to the window object
-            var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
-            // @ts-expect-error - Added TinyMDE to the window object
-            var commandBar = new TinyMDE.CommandBar({
-                element: editorToolbar,
-                editor: tinyMDE,
-                commands: [
-                    {
-                        name: 'bold',
-                        action: 'bold',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linejoin="round" d="M6.75 3.744h-.753v8.25h7.125a4.125 4.125 0 0 0 0-8.25H6.75Zm0 0v.38m0 16.122h6.747a4.5 4.5 0 0 0 0-9.001h-7.5v9h.753Zm0 0v-.37m0-15.751h6a3.75 3.75 0 1 1 0 7.5h-6m0-7.5v7.5m0 0v8.25m0-8.25h6.375a4.125 4.125 0 0 1 0 8.25H6.75m.747-15.38h4.875a3.375 3.375 0 0 1 0 6.75H7.497v-6.75Zm0 7.5h5.25a3.75 3.75 0 0 1 0 7.5h-5.25v-7.5Z" /> </svg> ',
-                        title: 'Bold',
+    // Setup the TinyMDE editor
+    // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
+    // @ts-expect-error - Added TinyMDE to the window object
+    var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
+    // @ts-expect-error - Added TinyMDE to the window object
+    var commandBar = new TinyMDE.CommandBar({
+        element: editorToolbar,
+        editor: tinyMDE,
+        commands: [
+            {
+                name: 'bold',
+                action: 'bold',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linejoin="round" d="M6.75 3.744h-.753v8.25h7.125a4.125 4.125 0 0 0 0-8.25H6.75Zm0 0v.38m0 16.122h6.747a4.5 4.5 0 0 0 0-9.001h-7.5v9h.753Zm0 0v-.37m0-15.751h6a3.75 3.75 0 1 1 0 7.5h-6m0-7.5v7.5m0 0v8.25m0-8.25h6.375a4.125 4.125 0 0 1 0 8.25H6.75m.747-15.38h4.875a3.375 3.375 0 0 1 0 6.75H7.497v-6.75Zm0 7.5h5.25a3.75 3.75 0 0 1 0 7.5h-5.25v-7.5Z" /> </svg> ',
+                title: 'Bold',
                         hotkey: 'Mod-B',
-                    }, 
-                    {
-                        name: 'italic',
-                        action: 'italic',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M5.248 20.246H9.05m0 0h3.696m-3.696 0 5.893-16.502m0 0h-3.697m3.697 0h3.803" /> </svg> ',
-                        title: 'Italic',
-                        hotkey: 'Mod-I',
-                    }, 
-                    {
-                        name: 'strikethrough',
-                        action: 'strikethrough',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a8.912 8.912 0 0 1-.318-.079c-1.585-.424-2.904-1.247-3.76-2.236-.873-1.009-1.265-2.19-.968-3.301.59-2.2 3.663-3.29 6.863-2.432A8.186 8.186 0 0 1 16.5 5.21M6.42 17.81c.857.99 2.176 1.812 3.761 2.237 3.2.858 6.274-.23 6.863-2.431.233-.868.044-1.779-.465-2.617M3.75 12h16.5" /> </svg> ',
-                        title: 'Strikethrough',
-                        hotkey: 'Mod2-Shift-5',
-                    }, 
-                    {
-                        name: 'h1',
-                        action: 'h1',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501m4.501-8.627 2.25-1.5v10.126m0 0h-2.25m2.25 0h2.25" /> </svg> ',
-                        title: 'Level 1 heading',
-                        hotkey: 'Mod-Shift-1',
-                    },
-                    {
-                        name: 'h2',
-                        action: 'h2',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 19.5H16.5v-1.609a2.25 2.25 0 0 1 1.244-2.012l2.89-1.445c.651-.326 1.116-.955 1.116-1.683 0-.498-.04-.987-.118-1.463-.135-.825-.835-1.422-1.668-1.489a15.202 15.202 0 0 0-3.464.12M2.243 4.492v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
-                        title: 'Level 2 heading',
-                        hotkey: 'Mod-Shift-2',
-                    },
-                    {
-                        name: 'h3',
-                        action: 'h3',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M20.905 14.626a4.52 4.52 0 0 1 .738 3.603c-.154.695-.794 1.143-1.504 1.208a15.194 15.194 0 0 1-3.639-.104m4.405-4.707a4.52 4.52 0 0 0 .738-3.603c-.154-.696-.794-1.144-1.504-1.209a15.19 15.19 0 0 0-3.639.104m4.405 4.708H18M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
-                        title: 'Level 3 heading',
-                    },
-                    '|', 
-                    {
-                        name: 'ul',
-                        action: 'ul',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
-                        title: 'Bulleted list',
-                    },
-                    {
-                        name: 'ol',
-                        action: 'ol',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" /> </svg> ',
-                        title: 'Numbered list',
-                    }, 
-                    '|', 
-                    'blockquote',
-                    {
-                        name: 'code',
-                        action: 'code',
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /> </svg> ',
-                        title: 'Format as code',
-                    },
-                    '|', 
-                    {
-                        name: 'insertLink',
-                        // @ts-expect-error - Added TinyMDE to the window object
-                        action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('[', ']()')},
-                        // @ts-expect-error - Added TinyMDE to the window object
-                        enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /> </svg> ',
-                        title: 'Insert link',
-                        hotkey: 'Mod-K',
-                    }, 
-                    {
-                        name: 'insertImage',
-                        // @ts-expect-error - Added TinyMDE to the window object
-                        action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('![', ']()')},
-                        // @ts-expect-error - Added TinyMDE to the window object
-                        enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
-                        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
-                        title: 'Insert image',
-                        hotkey: 'Mod2-Shift-I',
-                    },
-                ]
-            });
+            }, 
+            {
+                name: 'italic',
+                action: 'italic',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M5.248 20.246H9.05m0 0h3.696m-3.696 0 5.893-16.502m0 0h-3.697m3.697 0h3.803" /> </svg> ',
+                title: 'Italic',
+                hotkey: 'Mod-I',
+            }, 
+            {
+                name: 'strikethrough',
+                action: 'strikethrough',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a8.912 8.912 0 0 1-.318-.079c-1.585-.424-2.904-1.247-3.76-2.236-.873-1.009-1.265-2.19-.968-3.301.59-2.2 3.663-3.29 6.863-2.432A8.186 8.186 0 0 1 16.5 5.21M6.42 17.81c.857.99 2.176 1.812 3.761 2.237 3.2.858 6.274-.23 6.863-2.431.233-.868.044-1.779-.465-2.617M3.75 12h16.5" /> </svg> ',
+                title: 'Strikethrough',
+                hotkey: 'Mod2-Shift-5',
+            }, 
+            {
+                name: 'h1',
+                action: 'h1',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501m4.501-8.627 2.25-1.5v10.126m0 0h-2.25m2.25 0h2.25" /> </svg> ',
+                title: 'Level 1 heading',
+                hotkey: 'Mod-Shift-1',
+            },
+            {
+                name: 'h2',
+                action: 'h2',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 19.5H16.5v-1.609a2.25 2.25 0 0 1 1.244-2.012l2.89-1.445c.651-.326 1.116-.955 1.116-1.683 0-.498-.04-.987-.118-1.463-.135-.825-.835-1.422-1.668-1.489a15.202 15.202 0 0 0-3.464.12M2.243 4.492v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
+                title: 'Level 2 heading',
+                hotkey: 'Mod-Shift-2',
+            },
+            {
+                name: 'h3',
+                action: 'h3',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M20.905 14.626a4.52 4.52 0 0 1 .738 3.603c-.154.695-.794 1.143-1.504 1.208a15.194 15.194 0 0 1-3.639-.104m4.405-4.707a4.52 4.52 0 0 0 .738-3.603c-.154-.696-.794-1.144-1.504-1.209a15.19 15.19 0 0 0-3.639.104m4.405 4.708H18M2.243 4.493v7.5m0 0v7.502m0-7.501h10.5m0-7.5v7.5m0 0v7.501" /> </svg> ',
+                title: 'Level 3 heading',
+            },
+            '|', 
+            {
+                name: 'ul',
+                action: 'ul',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
+                title: 'Bulleted list',
+            },
+            {
+                name: 'ol',
+                action: 'ol',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" /> </svg> ',
+                title: 'Numbered list',
+            }, 
+            '|', 
+            'blockquote',
+            {
+                name: 'code',
+                action: 'code',
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /> </svg> ',
+                title: 'Format as code',
+            },
+            '|', 
+            {
+                name: 'insertLink',
+                // @ts-expect-error - Added TinyMDE to the window object
+                action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('[', ']()')},
+                // @ts-expect-error - Added TinyMDE to the window object
+                enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /> </svg> ',
+                title: 'Insert link',
+                hotkey: 'Mod-K',
+            }, 
+            {
+                name: 'insertImage',
+                // @ts-expect-error - Added TinyMDE to the window object
+                action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('![', ']()')},
+                // @ts-expect-error - Added TinyMDE to the window object
+                enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
+                innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
+                title: 'Insert image',
+                hotkey: 'Mod2-Shift-I',
+            },
+        ]
+    });
 
-            tinyMDE.setContent(pageData.data.defaultContent.content);
+    // @ts-expect-error - Added TinyMDE to the window object
+    tinyMDE.addEventListener('change', e => { 
+        pageContentTextarea.textContent = e.content; 
+    });
 
-            // @ts-expect-error - Added TinyMDE to the window object
-            tinyMDE.addEventListener('change', e => { 
-                pageContentTextarea.textContent = e.content; 
-            });
+    // @ts-expect-error - Added TinyMDE to the window object
+    tinyMDE.addEventListener("drop", function (event) {
+        let formData = new FormData();
 
-            // @ts-expect-error - Added TinyMDE to the window object
-            tinyMDE.addEventListener("drop", function (event) {
-                let formData = new FormData();
-
-                // You can add use event.dataTransfer.items or event.dataTransfer.files
-                // to build the form data object:
-                for (let i = 0; i < event.dataTransfer.items.length; i++) {
-                    if (event.dataTransfer.items[i].kind === "file") {
-                    let file = event.dataTransfer.items[i].getAsFile();
-                    formData.append("image", file);
-                    }
-                }
-
-                // Call your API endpoint that accepts "Content-Type": "multipart/form-data"
-                // requests and responds with the image names and URL-s.
-                //
-                // Now you can add Markdown images like so:
-                // editor.paste(`![${imageName}](${imageUrl})`);
-                alert("Image upload coming soon!");
-            });
-
-            // Set default page content in the textarea
-            pageContentTextarea.textContent = pageData.data.defaultContent.content;
-
-            editPageContainer.style.display = 'block';
-
-            editPageForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const formData = new FormData(editPageForm);
-
-                const data = {
-                    title: formData.get('page-title'),
-                    slug: pageData.data.slug,
-                    description: formData.get('page-description'),
-                    package: formData.get('page-type'),
-                    showOnNav: formData.get('show-in-nav') === 'true',
-                    heroImage: formData.get('page-hero-image'),
-                    parentFolder: formData.get('parent-folder'),
-                    showAuthor: formData.get('show-author') === 'true',
-                    showContributors: formData.get('show-contributors'),
-                    content: formData.get('page-content'),
-                };
-
-                console.log(data);
-            });
+        // You can add use event.dataTransfer.items or event.dataTransfer.files
+        // to build the form data object:
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+            if (event.dataTransfer.items[i].kind === "file") {
+            let file = event.dataTransfer.items[i].getAsFile();
+            formData.append("image", file);
+            }
         }
 
-      } else {
-        editPageContainer.style.display = 'none';
-      }
-    }
-    document.addEventListener('astro:after-swap', () => listener());
-    listener();
+        // Call your API endpoint that accepts "Content-Type": "multipart/form-data"
+        // requests and responds with the image names and URL-s.
+        //
+        // Now you can add Markdown images like so:
+        // editor.paste(`![${imageName}](${imageUrl})`);
+        alert("Image upload coming soon!");
+    });
+
+    editPageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(editPageForm);
+
+        const data = {
+            title: formData.get('page-title'),
+            slug: formData.get('page-slug'),
+            description: formData.get('page-description'),
+            package: formData.get('page-type'),
+            showOnNav: formData.get('show-in-nav') === 'true',
+            heroImage: formData.get('page-hero-image'),
+            parentFolder: getParentFolderValue(formData.get('parent-folder')),
+            showAuthor: formData.get('show-author') === 'true',
+            showContributors: formData.get('show-contributors'),
+            content: formData.get('page-content'),
+            id: formData.get('page-id'),
+        };
+
+        console.log(data);
+    });
+}
+document.addEventListener('astro:after-swap', () => listener());
+listener();
 </script>
 
 <style>
@@ -338,13 +269,13 @@ import {
         height: 100%;
         width: 100%;
         min-width: 100%;
-        display: none;
     }
 
     #edit-page-form {
         display: flex;
         flex-direction: column;
         gap: .75rem;
+        padding-top: .5rem;
     }
 
     .form-row {
