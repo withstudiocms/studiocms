@@ -19,63 +19,63 @@ const { data: pageData } = await studioCMS_SDK_Cache.GET.page.byId(editId);
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
 
-        <Tabs syncKey='edit-page-tabs'>
-          <TabItem label='Basic Information' icon={'information-circle'} color={'primary'}>
-
-            <div class="form-row">
-                <Input label='Page Title' name='page-title' isRequired defaultValue={pageData.title} />
-                <Input label='Slug' name='page-slug' disabled isRequired defaultValue={pageData.slug} />
-    
-                <input type="hidden" name="page-slug" value={pageData.slug} />
-                <input type="hidden" name="page-id" value={pageData.id} />
-            </div>
-    
-            <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
-    
-            <div class="form-row">
-                <Select 
-                    label="Page type" 
-                    name="page-type" 
-                    isRequired 
-                    fullWidth 
-                    defaultValue={pageData.package}
-                    options={pageTypeOptions} 
-                    />
-                <Select 
-                    label="Show in Navigation" 
-                    name="show-in-nav" 
-                    isRequired 
-                    defaultValue={`${pageData.showOnNav}`}
-                    fullWidth 
-                    options={trueFalse} 
-                    />
-            </div>
-    
-            <div class="form-row">
-                <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
-                <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={pageData.parentFolder || undefined} />
-            </div>
-    
-            <div class="form-row">
-                <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-                <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
-            </div>
-    
-            <div class="form-row">
-                <Select label="Show Author" name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
-                <Select label="Show Contributors" name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
-            </div>
-
-          </TabItem>
-          <TabItem label='Page Content' icon={'document-text'} color={'success'}>
-
-            <div class="page-content-editor">
-                <div id="editor-toolbar"></div>
-                <div class="editor-container">
-                    <textarea id="page-content" name="page-content">{pageData.defaultContent?.content}</textarea>
+        <Tabs syncKey='edit-page-tabs' variant={'starlight'}>
+          <TabItem label='Basic Information' icon={'information-circle-20-solid'} color={'primary'}>
+            <div class="tab-section">
+                <div class="form-row">
+                    <Input label='Page Title' name='page-title' isRequired defaultValue={pageData.title} />
+                    <Input label='Slug' name='page-slug' disabled isRequired defaultValue={pageData.slug} />
+        
+                    <input type="hidden" name="page-slug" value={pageData.slug} />
+                    <input type="hidden" name="page-id" value={pageData.id} />
+                </div>
+        
+                <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
+        
+                <div class="form-row">
+                    <Select 
+                        label="Page type" 
+                        name="page-type" 
+                        isRequired 
+                        fullWidth 
+                        defaultValue={pageData.package}
+                        options={pageTypeOptions} 
+                        />
+                    <Select 
+                        label="Show in Navigation" 
+                        name="show-in-nav" 
+                        isRequired 
+                        defaultValue={`${pageData.showOnNav}`}
+                        fullWidth 
+                        options={trueFalse} 
+                        />
+                </div>
+        
+                <div class="form-row">
+                    <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
+                    <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={pageData.parentFolder || undefined} />
+                </div>
+        
+                <div class="form-row">
+                    <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+                    <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
+                </div>
+        
+                <div class="form-row">
+                    <Select label="Show Author" name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
+                    <Select label="Show Contributors" name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
                 </div>
             </div>
-
+          </TabItem>
+          <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
+            <div class="tab-section">
+                <div class="page-content-editor">
+                    <div id="editor-toolbar"></div>
+                    <div class="editor-container">
+                        <textarea id="page-content" name="page-content">{pageData.defaultContent?.content}</textarea>
+                    </div>
+                </div>
+            </div>
           </TabItem>
         </Tabs>
 
@@ -277,6 +277,13 @@ listener();
         gap: .75rem;
         padding-top: .5rem;
     }
+
+
+.tab-section {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
 
     .form-row {
         display: grid;

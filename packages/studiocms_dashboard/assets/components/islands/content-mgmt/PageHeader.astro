@@ -1,6 +1,6 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Button, Icon } from 'studiocms:ui/components';
+import { Button, Group, Icon } from 'studiocms:ui/components';
 
 interface Props {
 	editPage?: boolean;
@@ -17,21 +17,23 @@ const { editPage, createPage, title = 'Content Management' } = Astro.props;
   <div id="page-actions-container" class="page-actions-container">
 
     { editPage && ( 
-      <Button id="edit-button" variant="solid" color="primary" type="submit" form="edit-page-form">
-        <Icon slot="start-content" name="check" width={24} height={24} />
+      <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-page-form">
+        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
         Save Changes
       </Button>
     )}
 
     {createPage && ( 
-      <Button id="draft-button" variant="outlined" color="primary" type="submit" form="page-create-form" disabled>
-        <Icon slot="start-content" name="document-text" width={24} height={24} />
+      <Group>
+      <Button id="draft-button" variant="outlined" size="sm" color="primary" type="submit" form="page-create-form" disabled>
+        <Icon slot="start-content" name="document-text-20-solid" width={20} height={20} />
         Save Draft
       </Button>
-      <Button id="publish-button" variant="solid" color="primary" type="submit" form="page-create-form">
-        <Icon slot="start-content" name="check" width={24} height={24} />
+      <Button id="publish-button" variant="solid" size="sm"  color="primary" type="submit" form="page-create-form">
+        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
         Publish
       </Button>
+      </Group>
     )}
   </div>
 </header>
