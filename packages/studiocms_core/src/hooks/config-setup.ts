@@ -5,7 +5,7 @@ import type { StudioCMSConfig } from '../schemas/index.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import readJson from '../utils/readJson.js';
 
-const { name, version } = readJson<{ name: string; version: string }>(
+const { name } = readJson<{ name: string; version: string }>(
 	new URL('../../package.json', import.meta.url)
 );
 
@@ -55,18 +55,18 @@ export const configSetup = defineUtility('astro:config:setup')(
 			name,
 			imports: {
 				// Core Virtual Modules
-				'studiocms:config': `
-				export default ${JSON.stringify(options)};
-				export const config = ${JSON.stringify(options)};
-				export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
-				export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
-				export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
-				export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-				export const sdk = ${JSON.stringify(options.sdk)};
-				`,
-				'studiocms:version': `
-				export default '${version}';
-				`,
+				// 'studiocms:config': `
+				// export default ${JSON.stringify(options)};
+				// export const config = ${JSON.stringify(options)};
+				// export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
+				// export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
+				// export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
+				// export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
+				// export const sdk = ${JSON.stringify(options.sdk)};
+				// `,
+				// 'studiocms:version': `
+				// export default '${version}';
+				// `,
 
 				// Core Virtual Components
 				'studiocms:components': `

@@ -488,6 +488,9 @@ importers:
       '@commander-js/extra-typings':
         specifier: ^13.0.0
         version: 13.0.0(commander@13.0.0)
+      '@inox-tools/aik-mod':
+        specifier: 0.9.1
+        version: 0.9.1(astro-integration-kit@0.18.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.4.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
@@ -1755,6 +1758,20 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@inox-tools/aik-mod@0.9.1':
+    resolution: {integrity: sha512-h9s1+JCCSvZWH31ztC0aE/xvYlml+czK8X6HTPb/mzrv8BmqS8zKKVmpLaljFkGDocpvC2eV9OV0lxwtXE91Mw==}
+    peerDependencies:
+      astro: ^5
+      astro-integration-kit: ~0.17 || ~0.18
+
+  '@inox-tools/inline-mod@2.0.2':
+    resolution: {integrity: sha512-TLzqeZ0/IBaszyhylg2Q4J6+5S704YpWKUrWvoCvkCnOxH0j7EcFWBphB4TCfIZnsXhswuhZkUTRWwdvaArT0w==}
+    peerDependencies:
+      vite: ^4 || ^5 || ^6
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   '@inox-tools/modular-station@0.4.0':
     resolution: {integrity: sha512-wuXiCTvHdMvMfOOBvxObzNDyU6sx3bNJ6nX1V3a5rJx77IrUXHWV0XxKe7CsYsEJ4rrrvdwon3uIIyn19S0IIQ==}
@@ -6822,6 +6839,26 @@ snapshots:
 
   '@img/sharp-win32-x64@0.33.5':
     optional: true
+
+  '@inox-tools/aik-mod@0.9.1(astro-integration-kit@0.18.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
+    dependencies:
+      '@inox-tools/inline-mod': 2.0.2(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
+      astro: 5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      astro-integration-kit: 0.18.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      debug: 4.4.0
+    transitivePeerDependencies:
+      - supports-color
+      - vite
+
+  '@inox-tools/inline-mod@2.0.2(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
+    dependencies:
+      '@inox-tools/utils': 0.3.0
+      debug: 4.4.0
+      typescript: 5.7.2
+    optionalDependencies:
+      vite: 6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1)
+    transitivePeerDependencies:
+      - supports-color
 
   '@inox-tools/modular-station@0.4.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
     dependencies:

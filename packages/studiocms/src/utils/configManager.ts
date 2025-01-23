@@ -11,9 +11,9 @@ import { defineUtility } from 'astro-integration-kit';
  * sorted by how likely they're to appear.
  */
 const configPaths = Object.freeze([
-	'studiocms.config.cjs',
-	'studiocms.config.mjs',
 	'studiocms.config.js',
+	'studiocms.config.mjs',
+	'studiocms.config.cjs',
 	'studiocms.config.ts',
 	'studiocms.config.mts',
 	'studiocms.config.cts',
@@ -82,23 +82,23 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
  */
 export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
 	const pathsToTry = [
-		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
 		new URL(`./studiocms.config.js?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
 		new URL(`./studiocms.config.cjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
+		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
 	];
 
 	// @ts-ignore
 	if (import.meta.env?.BASE_URL?.length) {
 		pathsToTry.push(
-			`/studiocms.config.mjs?t=${Date.now()}`,
 			`/studiocms.config.js?t=${Date.now()}`,
+			`/studiocms.config.mjs?t=${Date.now()}`,
+			`/studiocms.config.cjs?t=${Date.now()}`,
 			`/studiocms.config.ts?t=${Date.now()}`,
 			`/studiocms.config.mts?t=${Date.now()}`,
-			`/studiocms.config.cts?t=${Date.now()}`,
-			`/studiocms.config.cjs?t=${Date.now()}`
+			`/studiocms.config.cts?t=${Date.now()}`
 		);
 	}
 
@@ -131,12 +131,12 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 			if (code === 'ERR_MODULE_NOT_FOUND' || code === 'ERR_LOAD_URL') {
 				const msgCheck = message.replace(/(imported )?from .*$/, '');
 				if (
-					msgCheck.includes('studiocms.config.mjs') ||
 					msgCheck.includes('studiocms.config.js') ||
+					msgCheck.includes('studiocms.config.mjs') ||
+					msgCheck.includes('studiocms.config.cjs') ||
 					msgCheck.includes('studiocms.config.ts') ||
 					msgCheck.includes('studiocms.config.mts') ||
-					msgCheck.includes('studiocms.config.cts') ||
-					msgCheck.includes('studiocms.config.cjs')
+					msgCheck.includes('studiocms.config.cts')
 				)
 					continue;
 			}
