@@ -1,8 +1,8 @@
 import color from 'chalk';
-import type { instanceCommand } from '../lib/commander.js';
-import { getContext } from '../lib/context.js';
-import { StudioCMSColorwayBg, label } from '../lib/utils.js';
-import { intro } from '../shared/intro.js';
+import type { instanceCommand } from '../../lib/commander.js';
+import { getContext } from '../../lib/context.js';
+import { StudioCMSColorwayBg, label } from '../../lib/utils.js';
+import { intro } from '../../shared/intro.js';
 import { env } from './steps/envBuilder.js';
 import { next } from './steps/nextSteps.js';
 

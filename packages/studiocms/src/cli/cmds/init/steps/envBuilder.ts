@@ -3,8 +3,8 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import color from 'chalk';
-import type { Context } from '../../lib/context.js';
-import { commandExists, runInteractiveCommand, runShellCommand } from '../../lib/runExternal.js';
+import type { Context } from '../../../lib/context.js';
+import { commandExists, runInteractiveCommand, runShellCommand } from '../../../lib/runExternal.js';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
@@ -12,7 +12,7 @@ import {
 	TursoColorway,
 	exists,
 	label,
-} from '../../lib/utils.js';
+} from '../../../lib/utils.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsEnv.js';
 
 interface GenericOAuth {

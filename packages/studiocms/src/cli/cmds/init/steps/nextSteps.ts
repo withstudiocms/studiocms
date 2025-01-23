@@ -1,12 +1,12 @@
 import chalk from 'chalk';
-import type { Context } from '../../lib/context.js';
+import type { Context } from '../../../lib/context.js';
 import {
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfoBg,
 	boxen,
 	label,
-} from '../../lib/utils.js';
+} from '../../../lib/utils.js';
 
 export async function next(
 	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'p'>

@@ -10,4 +10,4 @@ if (requiredMajorVersion < minimumMajorVersion) {
 	process.exit(1);
 }
 
-import('./dist/cli/index.js').then(({ main }) => main());
+import('./dist/cli/index.js').then((mod) => mod);
