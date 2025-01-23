@@ -216,7 +216,7 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 
 				dtsFile.addModule('studiocms:plugins', {
 					defaultExport: {
-						typeDef: `import('${resolve('../index.ts')}').SafePluginListType`,
+						typeDef: `import('${resolve('./config.js')}').SafePluginListType`,
 					},
 				});
 

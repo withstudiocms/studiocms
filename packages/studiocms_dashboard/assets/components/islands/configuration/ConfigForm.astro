@@ -41,7 +41,7 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
             </div>
             {
                 currentLoginPageBg && currentLoginPageBg.name !== 'custom' && (
-                    <LightVsDark {...currentLoginPageBg} />
+                    <LightVsDark light={currentLoginPageBg.light!} dark={currentLoginPageBg.dark!} />
                 )
             }
         </Card>
