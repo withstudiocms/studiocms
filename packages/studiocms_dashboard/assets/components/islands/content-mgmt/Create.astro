@@ -67,83 +67,52 @@ import {
     </form>
 </div>
 
-<script is:inline define:vars={{
-  pageTypeOptions: JSON.stringify(pageTypeOptions),
-  showInNavOptions: JSON.stringify(trueFalse),
-  categoriesOptions: JSON.stringify(categoriesOptions),
-  tagsOptions: JSON.stringify(tagsOptions),
-  parentFolderOptions: JSON.stringify(parentFolderOptions),
-  showAuthorOptions: JSON.stringify(trueFalse),
-  showContributorsOptions: JSON.stringify(trueFalse),
-}}>
+<div 
+    id="create-page-grabber" 
+    style="display: none;"
+    data-page_type_options={JSON.stringify(pageTypeOptions)}
+    data-show_in_nav_options={JSON.stringify(trueFalse)}
+    data-categories_options={JSON.stringify(categoriesOptions)}
+    data-tags_options={JSON.stringify(tagsOptions)}
+    data-parent_folder_options={JSON.stringify(parentFolderOptions)}
+    data-show_author_options={JSON.stringify(trueFalse)}
+    data-show_contributors_options={JSON.stringify(trueFalse)}
+    >
+</div>
+
+<script>
     async function listener() {
       // get the query parameters
       const urlParams = new URLSearchParams(window.location.search);
   
       // get the id parameter
       const create = urlParams.get('create');
+
+      const editPageGrabber = document.getElementById('create-page-grabber') as HTMLElement;
+      const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
   
       // get the elements
-      const createPageContainer = document.getElementById('create-page-container');
-      const createPageForm = document.getElementById('page-create-form');
+      const createPageContainer = document.getElementById('create-page-container') as HTMLElement;
+      const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
 
-      const pageTitleInput = createPageForm.querySelector('input[name="page-title"]');
-      const pageSlugInput = createPageForm.querySelector('input[name="page-slug"]');
-      const pageDescriptionInput = createPageForm.querySelector('input[name="page-description"]');
-      const pageTypeSelect = createPageForm.querySelector('select[name="page-type"]');
-      const pageTypeSelectValue = createPageForm.querySelector(`#page-type-value-span`);
-      const showInNavSelect = createPageForm.querySelector('select[name="show-in-nav"]');
-      const showInNavSelectValue = createPageForm.querySelector(`#show-in-nav-value-span`);
-      const pageHeroImageInput = createPageForm.querySelector('input[name="page-hero-image"]');
-      const categoriesSelect = createPageForm.querySelector('select[name="categories"]');
-      const categoriesSelectValue = createPageForm.querySelector(`#categories-value-span`);
-      const tagsSelect = createPageForm.querySelector('select[name="tags"]');
-      const tagsSelectValue = createPageForm.querySelector(`#tags-value-span`);
-      const parentFolderSelect = createPageForm.querySelector('select[name="parent-folder"]');
-      const parentFolderSelectValue = createPageForm.querySelector(`#parent-folder-value-span`);
-      const showAuthorSelect = createPageForm.querySelector('select[name="show-author"]');
-      const showAuthorSelectValue = createPageForm.querySelector(`#show-author-value-span`);
-      const showContributorsSelect = createPageForm.querySelector('select[name="show-contributors"]');
-      const showContributorsSelectValue = createPageForm.querySelector(`#show-contributors-value-span`);
+      const pageContentTextarea = createPageForm.querySelector('#page-content') as HTMLTextAreaElement;
+      const editorToolbar = createPageForm.querySelector('#editor-toolbar') as HTMLElement;
 
-      const parentFolderSelectContainer = createPageForm.querySelector('#parent-folder-container');
-
-      const pageContentTextarea = createPageForm.querySelector('#page-content')
-      const editorToolbar = createPageForm.querySelector('#editor-toolbar');
-
-      function getPageTypeOption(value) {
-        const options = JSON.parse(pageTypeOptions);
-        const selectedOption = options.find((option) => option.value === value);
-        return selectedOption.label;
-      }
-
-      function setSelectValue(selectElm, selectValueElm, value, displayValue) {
-        selectElm.querySelector(`option[value="${value}"]`).setAttribute('selected', '');
-        selectValueElm.innerText = displayValue;
-      }
-
-      function getParentFolderOption(value) {
-        const options = JSON.parse(parentFolderOptions);
+      function getParentFolderValue(value: FormDataEntryValue | null) {
+        const options = JSON.parse(parentFolderOptions!);
         if (value === null) {
-          return options.find((option) => option.value === 'null').label;
+          return (options.find((option: { value: string; }) => option.value === 'null')).value;
         }
-        const selectedOption = options.find((option) => option.value === value);
-        return selectedOption.label;
-      }
-
-      function getParentFolderValue(value) {
-        const options = JSON.parse(parentFolderOptions);
-        if (value === null) {
-          return (options.find((option) => option.value === 'null')).value;
-        }
-        const selectedOption = options.find((option) => option.value === value);
+        const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
         return selectedOption.value;
       }
   
       if (create) {
         // Setup the TinyMDE editor
         // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
+        // @ts-expect-error - Added TinyMDE to the window object
         var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
+        // @ts-expect-error - Added TinyMDE to the window object
         var commandBar = new TinyMDE.CommandBar({
           element: editorToolbar,
           editor: tinyMDE,
@@ -213,7 +182,9 @@ import {
             '|', 
             {
               name: 'insertLink',
+              // @ts-expect-error - Added TinyMDE to the window object
               action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('[', ']()')},
+              // @ts-expect-error - Added TinyMDE to the window object
               enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
               innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /> </svg> ',
               title: 'Insert link',
@@ -221,7 +192,9 @@ import {
             }, 
             {
               name: 'insertImage',
+              // @ts-expect-error - Added TinyMDE to the window object
               action: (editor) => {if (editor.isInlineFormattingAllowed()) editor.wrapSelection('![', ']()')},
+              // @ts-expect-error - Added TinyMDE to the window object
               enabled: (editor, focus, anchor) => editor.isInlineFormattingAllowed(focus, anchor) ? false : null,
               innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" width="18px" height="18px" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /> </svg> ',
               title: 'Insert image',
@@ -230,10 +203,12 @@ import {
           ]
         });
 
+        // @ts-expect-error - Added TinyMDE to the window object
         tinyMDE.addEventListener('change', e => { 
           pageContentTextarea.textContent = e.content; 
         });
 
+        // @ts-expect-error - Added TinyMDE to the window object
         tinyMDE.addEventListener("drop", function (event) {
           let formData = new FormData();
 
@@ -254,8 +229,8 @@ import {
           alert("Image upload coming soon!");
         });
 
-        const draftButton = document.getElementById('draft-button');
-        const publishButton = document.getElementById('publish-button');
+        const draftButton = document.getElementById('draft-button') as HTMLElement;
+        const publishButton = document.getElementById('publish-button') as HTMLElement;
 
         createPageForm.addEventListener('submit', (e) => {
           e.preventDefault();

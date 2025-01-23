@@ -26,19 +26,19 @@ import { Button, Icon } from 'studiocms:ui/components';
   </div>
 </header>
 
-<script is:inline>
+<script>
     async function listener() {
         // get the query parameters
         const urlParams = new URLSearchParams(window.location.search);
   
         // get the elements to customize
-        const pageTitle = document.querySelector('.page-title');
-        const pageEditButton = document.getElementById('edit-button');
-        const pageSaveDraftButton = document.getElementById('draft-button');
-        const pageSavePublishButton = document.getElementById('publish-button');
-        const placeholder = document.getElementById('placeholder-info');
+        const pageTitle = document.querySelector('.page-title') as HTMLElement;
+        const pageEditButton = document.getElementById('edit-button') as HTMLElement;
+        const pageSaveDraftButton = document.getElementById('draft-button') as HTMLElement;
+        const pageSavePublishButton = document.getElementById('publish-button') as HTMLElement;
+        const placeholder = document.getElementById('placeholder-info') as HTMLElement;
 
-        const pageActionsContainer = document.getElementById('page-actions-container');
+        const pageActionsContainer = document.getElementById('page-actions-container') as HTMLElement;
     
         // get the id parameter
         const edit = urlParams.get('edit');
@@ -46,8 +46,8 @@ import { Button, Icon } from 'studiocms:ui/components';
 
         if (edit) {
 
-            const pageDataResponse = await (await fetch(pageTitle.dataset.link)).json();
-            const currentPageData = pageDataResponse.pages.find((page) => page.data.id === edit);
+            const pageDataResponse = await (await fetch(pageTitle.dataset.link!)).json();
+            const currentPageData = pageDataResponse.pages.find((page: { data: { id: string; }; }) => page.data.id === edit);
 
             pageTitle.innerText = `Edit Page: ${currentPageData.data.title}`;
             pageActionsContainer.style.display = 'flex';
