@@ -1,4 +1,5 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
 import type { FolderNode } from '@studiocms/core/sdk-utils/types';
 import TreeSidebarFolder from './TreeSidebarFolder.astro';
 import TreeSidebarLink from './TreeSidebarLink.astro';
@@ -29,7 +30,7 @@ const sortedData = sortTree(data);
 
 {sortedData.map(({ id, name, page, children }) => (
     page ? (
-        <TreeSidebarLink icon="document-text" href={`?edit=${id}`}>
+        <TreeSidebarLink icon="document-text" href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}/?edit=${id}`}>
             {name}
         </TreeSidebarLink>
     ) : (
