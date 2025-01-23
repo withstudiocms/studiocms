@@ -1,28 +1,38 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Icon } from 'studiocms:ui/components';
+
+interface Props {
+	editPage?: boolean;
+	createPage?: boolean;
+	title?: string;
+}
+
+const { editPage, createPage, title = 'Content Management' } = Astro.props;
 ---
 <header class="page-header">
   <div class="page-title-container">
-    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>Content Management</h1>
+    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>{title}</h1>
   </div>
   <div id="page-actions-container" class="page-actions-container">
 
-    {/* Edit Page Buttons */}
-    <Button id="edit-button" variant="solid" color="primary" type="submit" form="edit-page-form">
-      <Icon slot="start-content" name="check" width={24} height={24} />
-      Save Changes
-    </Button>
+    { editPage && ( 
+      <Button id="edit-button" variant="solid" color="primary" type="submit" form="edit-page-form">
+        <Icon slot="start-content" name="check" width={24} height={24} />
+        Save Changes
+      </Button>
+    )}
 
-    {/* Create Page Buttons */}
-    <Button id="draft-button" variant="outlined" color="primary" type="submit" form="page-create-form" disabled>
-      <Icon slot="start-content" name="document-text" width={24} height={24} />
-      Save Draft
-    </Button>
-    <Button id="publish-button" variant="solid" color="primary" type="submit" form="page-create-form">
-      <Icon slot="start-content" name="check" width={24} height={24} />
-      Publish
-    </Button>
+    {createPage && ( 
+      <Button id="draft-button" variant="outlined" color="primary" type="submit" form="page-create-form" disabled>
+        <Icon slot="start-content" name="document-text" width={24} height={24} />
+        Save Draft
+      </Button>
+      <Button id="publish-button" variant="solid" color="primary" type="submit" form="page-create-form">
+        <Icon slot="start-content" name="check" width={24} height={24} />
+        Publish
+      </Button>
+    )}
   </div>
 </header>
 
@@ -33,43 +43,15 @@ import { Button, Icon } from 'studiocms:ui/components';
   
         // get the elements to customize
         const pageTitle = document.querySelector('.page-title') as HTMLElement;
-        const pageEditButton = document.getElementById('edit-button') as HTMLElement;
-        const pageSaveDraftButton = document.getElementById('draft-button') as HTMLElement;
-        const pageSavePublishButton = document.getElementById('publish-button') as HTMLElement;
-        const placeholder = document.getElementById('placeholder-info') as HTMLElement;
-
-        const pageActionsContainer = document.getElementById('page-actions-container') as HTMLElement;
     
         // get the id parameter
-        const edit = urlParams.get('edit');
-        const create = urlParams.get('create');
-
+        const edit = window.location.pathname.includes('edit') ? urlParams.get('edit') : null;
         if (edit) {
-
             const pageDataResponse = await (await fetch(pageTitle.dataset.link!)).json();
             const currentPageData = pageDataResponse.pages.find((page: { data: { id: string; }; }) => page.data.id === edit);
 
             pageTitle.innerText = `Edit Page: ${currentPageData.data.title}`;
-            pageActionsContainer.style.display = 'flex';
-            pageEditButton.style.display = 'flex';
-            pageSaveDraftButton.style.display = 'none';
-            pageSavePublishButton.style.display = 'none';
-            placeholder.style.display = 'none';
-        } else if (create) {
-            pageTitle.innerText = 'Create new Page';
-            pageActionsContainer.style.display = 'flex';
-            pageEditButton.style.display = 'none';
-            pageSaveDraftButton.style.display = 'flex';
-            pageSavePublishButton.style.display = 'flex';
-            placeholder.style.display = 'none';
-        } else {
-            pageTitle.innerText = 'Content Management';
-            pageActionsContainer.style.display = 'none';
-            pageEditButton.style.display = 'none';
-            pageSaveDraftButton.style.display = 'none';
-            pageSavePublishButton.style.display = 'none';
-            placeholder.style.display = 'flex';
-        }
+        } 
     }
     document.addEventListener('astro:after-swap', () => listener());
     listener();
@@ -99,15 +81,9 @@ import { Button, Icon } from 'studiocms:ui/components';
 }
 
 .page-actions-container {
-  display: none;
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 1rem;
-}
-
-#edit-button,
-#draft-button,
-#publish-button {
-  display: none;
 }
 </style>
