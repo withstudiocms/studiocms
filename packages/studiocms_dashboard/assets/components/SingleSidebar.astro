@@ -2,7 +2,7 @@
 import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Divider, Dropdown, Sidebar, User } from '@studiocms/ui/components';
+import { Divider, Dropdown, Sidebar, User } from 'studiocms:ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
@@ -97,8 +97,8 @@ const sidebar = getSidebarLinks(lang);
 </Sidebar>
 
 <script>
-  import { SingleSidebarHelper } from "@studiocms/ui/components";
-  import { DropdownHelper } from "@studiocms/ui/components";
+  import { SingleSidebarHelper } from "studiocms:ui/components";
+  import { DropdownHelper } from "studiocms:ui/components";
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebar')) {

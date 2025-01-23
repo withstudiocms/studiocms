@@ -2,8 +2,7 @@
 import { getUserData } from 'studiocms:auth/lib/user';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { Button, Card, Center } from '@studiocms/ui/components';
-import Icon from '@studiocms/ui/utils/Icon.astro';
+import { Button, Card, Center, Icon } from 'studiocms:ui/components';
 import { providerData } from './oAuthButtonProviders';
 
 const { user } = await getUserData(Astro);

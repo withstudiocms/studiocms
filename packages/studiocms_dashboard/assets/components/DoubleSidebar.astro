@@ -7,7 +7,7 @@ import {
 	Dropdown,
 	DoubleSidebar as SuiDoubleSidebar,
 	User,
-} from '@studiocms/ui/components';
+} from 'studiocms:ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
@@ -107,8 +107,8 @@ const sidebar = getSidebarLinks(lang);
 </SuiDoubleSidebar>
 
 <script>
-  import { DoubleSidebarHelper } from "@studiocms/ui/components";
-  import { DropdownHelper } from "@studiocms/ui/components";
+  import { DoubleSidebarHelper } from "studiocms:ui/components";
+  import { DropdownHelper } from "studiocms:ui/components";
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebars')) {

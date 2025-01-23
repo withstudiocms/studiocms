@@ -70,9 +70,6 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 		const configFileUrl = getStudioConfigFileUrl(pathname);
 		if (configFileUrl) {
 			addWatchFile(configFileUrl);
-			// This has been disabled due to a Vite dynamic import issue preventing loading the config file
-			const configFilePath = configFileUrl.replace(pathname, '');
-			return `There is a StudioCMS config file detected ('${configFilePath}'), due to a vite bug, this file will be ignored. Please use the Astro config file for StudioCMS options for the time being. (You can ignore the warning above about the inline config being ignored while this is in place.)`;
 		}
 		return;
 	}
@@ -103,13 +100,6 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 			`/studiocms.config.cts?t=${Date.now()}`,
 			`/studiocms.config.cjs?t=${Date.now()}`
 		);
-	}
-
-	// Return undefined for now if there is a config file, due to vite processing issues
-	// biome-ignore lint/suspicious/noSelfCompare: <explanation>
-	// biome-ignore lint/correctness/noConstantCondition: <explanation>
-	if (1 === 1) {
-		return undefined;
 	}
 
 	/**

@@ -1,17 +1,17 @@
-const base = stripTrailingSlash(import.meta.env.BASE_URL);
+// const base = stripTrailingSlash(import.meta.env.BASE_URL);
 
 /** Get the a root-relative URL path with the site’s `base` prefixed. */
 export function pathWithBase(path: string) {
 	let newPath = path;
 	newPath = stripLeadingSlash(newPath);
-	return newPath ? `${base}/${newPath}` : `${base}/`;
+	return newPath ? `/${newPath}` : '/';
 }
 
 /** Get the a root-relative file URL path with the site’s `base` prefixed. */
 export function fileWithBase(path: string) {
 	let newPath = path;
 	newPath = stripLeadingSlash(newPath);
-	return newPath ? `${base}/${newPath}` : base;
+	return newPath ? `/${newPath}` : '/';
 }
 /** Ensure the passed path starts with a leading slash. */
 export function ensureLeadingSlash(href: string): string {

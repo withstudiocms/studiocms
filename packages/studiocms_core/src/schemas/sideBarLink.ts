@@ -1,4 +1,4 @@
-import type { HeroIconName } from '@studiocms/ui/utils/iconType.ts';
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import { z } from 'astro/zod';
 
 export const SideBarLinkSchema = z.object({

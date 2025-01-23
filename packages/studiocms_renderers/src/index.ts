@@ -1,5 +1,5 @@
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import type { StudioCMSRendererConfig } from '@studiocms/core/schemas/renderer';
+import type { StudioCMSRendererConfig } from '@studiocms/core/schemas';
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import rendererConfigDTS from './stubs/renderer-config.js';
@@ -48,8 +48,8 @@ export function studioCMSRenderers(
 						'studiocms:renderer/config': `export default ${JSON.stringify(options)}`,
 						'studiocms:renderer/astroMarkdownConfig': `export default ${JSON.stringify(config.markdown)}`,
 						'studiocms:renderer/current': `
-						export * from '${resolve('../lib/contentRenderer.js')}';
-						import contentRenderer from '${resolve('../lib/contentRenderer.js')}';
+						export * from '${resolve('./lib/contentRenderer.js')}';
+						import contentRenderer from '${resolve('./lib/contentRenderer.js')}';
 						export default contentRenderer;
 						`,
 					},

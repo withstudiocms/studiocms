@@ -1,7 +1,7 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Card, Input, Select } from '@studiocms/ui/components';
+import { Card, Input, Select } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.siteConfig();

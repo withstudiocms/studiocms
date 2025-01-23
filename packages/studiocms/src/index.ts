@@ -67,15 +67,7 @@ export function studioCMSIntegration(opts?: StudioCMSOptions): AstroIntegration 
 
 				logger.info('Checking configuration...');
 
-				const configFileResponse = watchStudioCMSConfig(params);
-
-				if (configFileResponse) {
-					messages.push({
-						label: 'studiocms:config',
-						logLevel: 'error',
-						message: configFileResponse,
-					});
-				}
+				watchStudioCMSConfig(params);
 
 				options = await configResolver(params, opts);
 

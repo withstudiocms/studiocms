@@ -3,7 +3,7 @@ import configDone from './hooks/configDone.js';
 import configSetup from './hooks/configSetup.js';
 import serverStart from './hooks/serverStart.js';
 import type { StudioCMSDashboardOptions } from './schema.js';
-import readJson from './utils/readJson';
+import readJson from './utils/readJson.js';
 
 const { name } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 

@@ -26,20 +26,38 @@ export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {
 	}
 }
 
-function stripZodSchemaDefaults<T extends z.ZodTypeAny>(schema: T): T {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function deepRemoveDefaults(schema: z.ZodTypeAny): any {
+	if (schema instanceof z.ZodDefault) return deepRemoveDefaults(schema.removeDefault());
+
 	if (schema instanceof z.ZodObject) {
-		const newShape = Object.fromEntries(
-			Object.entries(schema.shape).map(([key, value]) => {
-				// Remove the default() if it exists
-				if (value instanceof z.ZodDefault) {
-					return [key, value._def.innerType];
-				}
-				return [key, value];
-			})
-		);
-		return z.object(newShape) as unknown as T;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const newShape: any = {};
+
+		for (const key in schema.shape) {
+			const fieldSchema = schema.shape[key];
+			newShape[key] = z.ZodOptional.create(deepRemoveDefaults(fieldSchema));
+		}
+		return new z.ZodObject({
+			...schema._def,
+			shape: () => newShape,
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		}) as any;
 	}
-	throw new StudioCMSCoreError('stripZodSchemaDefaults only works on Zod objects');
+
+	if (schema instanceof z.ZodArray) return z.ZodArray.create(deepRemoveDefaults(schema.element));
+
+	if (schema instanceof z.ZodOptional)
+		return z.ZodOptional.create(deepRemoveDefaults(schema.unwrap()));
+
+	if (schema instanceof z.ZodNullable)
+		return z.ZodNullable.create(deepRemoveDefaults(schema.unwrap()));
+
+	if (schema instanceof z.ZodTuple)
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		return z.ZodTuple.create(schema.items.map((item: any) => deepRemoveDefaults(item)));
+
+	return schema;
 }
 
 function parseAndMerge<T extends z.ZodTypeAny>(
@@ -48,7 +66,7 @@ function parseAndMerge<T extends z.ZodTypeAny>(
 	studioCMSConfigFile: T['_input']
 ): T['_output'] {
 	try {
-		const ZeroDefaultsSchema = stripZodSchemaDefaults(schema);
+		const ZeroDefaultsSchema = deepRemoveDefaults(schema);
 		const parsedConfigFile = ZeroDefaultsSchema.parse(studioCMSConfigFile);
 		return lo.merge({}, inlineConfig, parsedConfigFile);
 	} catch (error) {

@@ -81,7 +81,7 @@ export default async function build(...args) {
 		console.log(
 			`${dim(`[${date}]`)} Cleaning dist directory... ${dim(`(${entryPoints.length} files found)`)}`
 		);
-		await clean(outdir);
+		await clean(outdir, [`!${outdir}/**/*.d.ts`]);
 	}
 
 	if (!isDev) {
@@ -127,7 +127,7 @@ export default async function build(...args) {
 		outdir,
 		format,
 		sourcemap: 'linked',
-		plugins: [copy(CopyConfig), rebuildPlugin, dtsGen(buildTsConfig)],
+		plugins: [copy(CopyConfig), rebuildPlugin],
 	});
 
 	console.log(
@@ -140,8 +140,8 @@ export default async function build(...args) {
 	});
 }
 
-async function clean(outdir) {
-	const files = await glob([`${outdir}/**`], { filesOnly: true });
+async function clean(outdir, skip = []) {
+	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
 	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
 }
 

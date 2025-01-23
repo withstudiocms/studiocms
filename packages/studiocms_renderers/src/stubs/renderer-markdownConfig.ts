@@ -8,7 +8,7 @@ rendererMarkdownConfig.addSingleLineNote(
 
 rendererMarkdownConfig.addModule('studiocms:renderer/astroMarkdownConfig', {
 	defaultExport: {
-		typeDef: `import('astro').AstroUserConfig['markdown']`,
+		typeDef: `import('astro').AstroConfig['markdown']`,
 	},
 });
 

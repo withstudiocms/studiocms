@@ -4,7 +4,7 @@ declare module 'studiocms:renderer/config' {
 }
 
 declare module 'studiocms:renderer/astroMarkdownConfig' {
-	const config: import('astro').AstroUserConfig['markdown'];
+	const config: import('astro').AstroConfig['markdown'];
 	export default config;
 }
 

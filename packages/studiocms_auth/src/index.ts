@@ -4,7 +4,7 @@ import type { StudioCMSAuthOptions } from './schema.js';
 import authLibDTS from './stubs/auth-lib.js';
 import authScriptsDTS from './stubs/auth-scripts.js';
 import authUtilsDTS from './stubs/auth-utils.js';
-import readJson from './utils/readJson';
+import readJson from './utils/readJson.js';
 
 const { name } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
 

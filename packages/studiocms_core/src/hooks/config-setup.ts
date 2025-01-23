@@ -1,9 +1,13 @@
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import copy from 'rollup-plugin-copy';
-import { name, version } from '../../package.json' assert { type: 'json' };
 import { makeAPIRoute, makePublicRoute } from '../lib/index.js';
 import type { StudioCMSConfig } from '../schemas/index.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
+import readJson from '../utils/readJson.js';
+
+const { name, version } = readJson<{ name: string; version: string }>(
+	new URL('../../package.json', import.meta.url)
+);
 
 export const configSetup = defineUtility('astro:config:setup')(
 	(params, options: StudioCMSConfig, prerenderRoutes: boolean) => {

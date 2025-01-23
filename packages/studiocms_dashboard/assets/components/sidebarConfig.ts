@@ -1,6 +1,6 @@
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import type { HeroIconName } from '@studiocms/ui/utils/iconType.ts';
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 
 interface SidebarLink {
 	title: string;
