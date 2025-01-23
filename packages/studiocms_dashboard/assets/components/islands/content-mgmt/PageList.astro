@@ -4,37 +4,37 @@ import TreeRenderer from './TreeRenderer.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.pageFolderTree();
 
-// const testData = [
-// 	{
-// 		id: '1',
-// 		name: 'Page 1',
-// 		page: true,
-// 		children: [],
-// 	},
-// 	{
-// 		id: '2',
-// 		name: 'Page 2',
-// 		page: true,
-// 		children: [],
-// 	},
-// 	{
-// 		id: '3',
-// 		name: 'Test Folder',
-// 		page: false,
-// 		children: [
-// 			{
-// 				id: '4',
-// 				name: 'Sub Folder',
-// 				page: false,
-// 				children: [
-// 					{ id: '5', name: 'Page 3', page: true, children: [] },
-// 					{ id: '6', name: 'Page 4', page: true, children: [] },
-// 				],
-// 			},
-// 			{ id: '7', name: 'Page 5', page: true, children: [] },
-// 		],
-// 	},
-// ];
+const testData = [
+	{
+		id: '1',
+		name: 'Page 1',
+		page: true,
+		children: [],
+	},
+	{
+		id: '2',
+		name: 'Page 2',
+		page: true,
+		children: [],
+	},
+	{
+		id: '3',
+		name: 'Test Folder',
+		page: false,
+		children: [
+			{
+				id: '4',
+				name: 'Sub Folder',
+				page: false,
+				children: [
+					{ id: '5', name: 'Page 3', page: true, children: [] },
+					{ id: '6', name: 'Page 4', page: true, children: [] },
+				],
+			},
+			{ id: '7', name: 'Page 5', page: true, children: [] },
+		],
+	},
+];
 ---
 
 <TreeRenderer data={data} />

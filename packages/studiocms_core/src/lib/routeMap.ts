@@ -38,6 +38,8 @@ export const StudioCMSRoutes = {
 		contentManagement: makeDashboardRoute('content-management'),
 		contentManagementCreate: makeDashboardRoute('content-management/create'),
 		contentManagementEdit: makeDashboardRoute('content-management/edit'),
+		contentManagementFolderCreate: makeDashboardRoute('content-management/create-folder'),
+		contentManagementFolderEdit: makeDashboardRoute('content-management/edit-folder'),
 		createPage: makeDashboardRoute('create-page'),
 		siteConfiguration: makeDashboardRoute('configuration'),
 		userManagement: makeDashboardRoute('user-management'),

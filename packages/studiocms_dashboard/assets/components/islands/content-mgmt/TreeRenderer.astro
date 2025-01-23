@@ -34,7 +34,7 @@ const sortedData = sortTree(data);
             {name}
         </TreeSidebarLink>
     ) : (
-        <TreeSidebarFolder {name} icon="folder-solid">
+        <TreeSidebarFolder {name} icon="folder" href={`${StudioCMSRoutes.mainLinks.contentManagementFolderEdit}/?folder=${id}`}>
             {children && children.length > 0 && (
                 <div class="inner-sidebar-folder-child-nodes">
                     <Astro.self data={children} />

@@ -128,8 +128,18 @@ export const configSetup = defineUtility('astro:config:setup')(
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management/create-folder',
+						entrypoint: resolve('../../assets/routes/content-management/createfolder.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'content-management/edit',
 						entrypoint: resolve('../../assets/routes/content-management/editpage.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management/edit-folder',
+						entrypoint: resolve('../../assets/routes/content-management/editfolder.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,

@@ -1,14 +1,22 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Button, Divider, Icon, Input, TabItem, Tabs } from 'studiocms:ui/components';
+import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
 ---
 
 <div class="inner-sidebar-header">
     <Input name='search' placeholder='Search...' />
-    <Button as="a" href={StudioCMSRoutes.mainLinks.contentManagementCreate} variant="solid" color="primary" size='sm' class="add-button">
-      <Icon name="plus" width={24} height={24} />
-    </Button>
+    <Dropdown
+        id='create-new-dropdown'
+        options={[
+            { label: 'Create Page', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
+            { label: 'Create Folder', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
+        ]}
+        >
+        <Button variant="solid" color="primary" size='sm' class="add-button">
+        <Icon name="plus" width={24} height={24} />
+        </Button>
+    </Dropdown>
   </div>
 
   <Divider background={'background-step-2'}>Items</Divider>
@@ -16,6 +24,12 @@ import PageList from './PageList.astro';
   <div class="inner-sidebar-items">
     <PageList />
   </div>
+
+  <script>
+    import { DropdownHelper } from 'studiocms:ui/components';
+
+    new DropdownHelper('create-new-dropdown');
+  </script>
 
   <style>
   
