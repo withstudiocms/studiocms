@@ -72,31 +72,31 @@ export const configSetup = defineUtility('astro:config:setup')(
 					pattern: 'liverender',
 					entrypoint: resolve('../../assets/routes/studiocms_api/LiveRender.astro'),
 				},
-				{
-					enabled: dashboardEnabled && !dbStartPage && authEnabled,
-					pattern: 'config/site',
-					entrypoint: resolve('../../assets/routes/studiocms_api/config/site.ts'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage && authEnabled,
-					pattern: 'config/admin',
-					entrypoint: resolve('../../assets/routes/studiocms_api/config/admin.ts'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage && authEnabled,
-					pattern: 'pages/create',
-					entrypoint: resolve('../../assets/routes/studiocms_api/pages/create.ts'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage && authEnabled,
-					pattern: 'pages/edit',
-					entrypoint: resolve('../../assets/routes/studiocms_api/pages/edit.ts'),
-				},
-				{
-					enabled: dashboardEnabled && !dbStartPage && authEnabled,
-					pattern: 'pages/delete',
-					entrypoint: resolve('../../assets/routes/studiocms_api/pages/delete.ts'),
-				},
+				// {
+				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
+				// 	pattern: 'config/site',
+				// 	entrypoint: resolve('../../assets/routes/studiocms_api/config/site.ts'),
+				// },
+				// {
+				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
+				// 	pattern: 'config/admin',
+				// 	entrypoint: resolve('../../assets/routes/studiocms_api/config/admin.ts'),
+				// },
+				// {
+				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
+				// 	pattern: 'pages/create',
+				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/create.ts'),
+				// },
+				// {
+				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
+				// 	pattern: 'pages/edit',
+				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/edit.ts'),
+				// },
+				// {
+				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
+				// 	pattern: 'pages/delete',
+				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/delete.ts'),
+				// },
 				{
 					enabled: dbStartPage,
 					pattern: 'setup',
