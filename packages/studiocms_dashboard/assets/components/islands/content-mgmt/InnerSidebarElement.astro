@@ -9,10 +9,11 @@ import PageList from './PageList.astro';
     <Dropdown
         id='create-new-dropdown'
         options={[
-            { label: 'Create Page', icon: 'document-text-20-solid', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
-            { label: 'Create Folder', icon: 'folder-20-solid', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
+            { label: 'Create Page', icon: 'document-text', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
+            { label: 'Create Folder', icon: 'folder', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
         ]}
         align={'end'}
+        
         >
         <Button variant="solid" color="primary" size='sm' class="add-button">
         <Icon name="plus" width={24} height={24} />
