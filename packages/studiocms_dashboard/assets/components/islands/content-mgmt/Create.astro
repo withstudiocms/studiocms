@@ -89,7 +89,6 @@ import {
       const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
   
       // get the elements
-      const createPageContainer = document.getElementById('create-page-container') as HTMLElement;
       const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
 
       const pageContentTextarea = createPageForm.querySelector('#page-content') as HTMLTextAreaElement;
@@ -106,11 +105,11 @@ import {
         // Setup the TinyMDE editor
         // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
         // @ts-expect-error - Added TinyMDE to the window object
-        var createMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
+        var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
         // @ts-expect-error - Added TinyMDE to the window object
         var commandBar = new TinyMDE.CommandBar({
           element: editorToolbar,
-          editor: createMDE,
+          editor: tinyMDE,
           commands: [
             {
               name: 'bold',
@@ -199,12 +198,12 @@ import {
         });
 
         // @ts-expect-error - Added TinyMDE to the window object
-        createMDE.addEventListener('change', e => { 
+        tinyMDE.addEventListener('change', e => { 
           pageContentTextarea.textContent = e.content; 
         });
 
         // @ts-expect-error - Added TinyMDE to the window object
-        createMDE.addEventListener("drop", function (event) {
+        tinyMDE.addEventListener("drop", function (event) {
           let formData = new FormData();
 
           // You can add use event.dataTransfer.items or event.dataTransfer.files
