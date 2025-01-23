@@ -9,8 +9,8 @@ import PageList from './PageList.astro';
     <Dropdown
         id='create-new-dropdown'
         options={[
-            { label: 'Create Page', icon: 'document-plus-20-solid', color: 'primary', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
-            { label: 'Create Folder', icon: 'folder-open-20-solid', color: 'info', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
+            { label: 'Create Page', icon: 'document-plus-20-solid', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
+            { label: 'Create Folder', icon: 'folder-open-20-solid', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
         ]}
         align={'end'}
         offset={2}
@@ -30,7 +30,9 @@ import PageList from './PageList.astro';
   <script>
     import { DropdownHelper } from 'studiocms:ui/components';
 
-    new DropdownHelper('create-new-dropdown');
+    document.addEventListener('astro:page-load', () => {
+        new DropdownHelper('create-new-dropdown');
+    });
   </script>
 
   <style>
