@@ -1,12 +1,12 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Divider, Icon, Input } from 'studiocms:ui/components';
 // import { useTranslations } from 'studiocms:i18n';
-import { Layout } from '../components';
-import TinyMDE from '../components/component-scripts/TinyMDE.astro';
-import Create from '../components/islands/content-mgmt/Create.astro';
-import Edit from '../components/islands/content-mgmt/Edit.astro';
-import PageHeader from '../components/islands/content-mgmt/PageHeader.astro';
-import PageList from '../components/islands/content-mgmt/PageList.astro';
+import { Layout } from '../../components';
+import TinyMDE from '../../components/component-scripts/TinyMDE.astro';
+import Edit from '../../components/islands/content-mgmt/Edit.astro';
+import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
+import PageList from '../../components/islands/content-mgmt/PageList.astro';
 
 const lang = 'en-us';
 // const t = useTranslations(lang, '@studiocms/dashboard:index');
@@ -23,7 +23,7 @@ const lang = 'en-us';
     <div class="sidebar-links-container">
       <div class="inner-sidebar-header">
         <Input name='search' placeholder='Search...' />
-        <Button as="a" href="?create=new" variant="solid" color="primary" size='sm' class="add-button" data-astro-reload>
+        <Button as="a" href={StudioCMSRoutes.mainLinks.contentManagementCreate} variant="solid" color="primary" size='sm' class="add-button" data-astro-reload>
           <Icon name="plus" width={24} height={24} />
         </Button>
       </div>
@@ -43,9 +43,6 @@ const lang = 'en-us';
   </div>
 
   <Edit />
-  <Create />
-
-  <TinyMDE />
 
 </Layout>
 

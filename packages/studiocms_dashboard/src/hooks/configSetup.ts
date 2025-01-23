@@ -119,7 +119,17 @@ export const configSetup = defineUtility('astro:config:setup')(
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'content-management',
-						entrypoint: resolve('../../assets/routes/content-management.astro'),
+						entrypoint: resolve('../../assets/routes/content-management/index.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management/create',
+						entrypoint: resolve('../../assets/routes/content-management/createpage.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management/edit',
+						entrypoint: resolve('../../assets/routes/content-management/editpage.astro'),
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,

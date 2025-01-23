@@ -2,6 +2,7 @@
 import '../../../styles/tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select } from 'studiocms:ui/components';
+import TinyMDE from '../../component-scripts/TinyMDE.astro';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -79,6 +80,8 @@ import {
     data-show_contributors_options={JSON.stringify(trueFalse)}
     >
 </div>
+
+<TinyMDE />
 
 <script>
     async function listener() {

@@ -1,6 +1,7 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select } from 'studiocms:ui/components';
+import TinyMDE from '../../component-scripts/TinyMDE.astro';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -80,14 +81,10 @@ import {
     >
 </div>
 
+<TinyMDE />
+
 <script>
     async function listener() {
-      // get the query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-  
-      // get the id parameter
-      const create = urlParams.get('create');
-
       const editPageGrabber = document.getElementById('create-page-grabber') as HTMLElement;
       const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
   
@@ -106,16 +103,14 @@ import {
         const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
         return selectedOption.value;
       }
-  
-      if (create) {
         // Setup the TinyMDE editor
         // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
         // @ts-expect-error - Added TinyMDE to the window object
-        var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
+        var createMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
         // @ts-expect-error - Added TinyMDE to the window object
         var commandBar = new TinyMDE.CommandBar({
           element: editorToolbar,
-          editor: tinyMDE,
+          editor: createMDE,
           commands: [
             {
               name: 'bold',
@@ -204,12 +199,12 @@ import {
         });
 
         // @ts-expect-error - Added TinyMDE to the window object
-        tinyMDE.addEventListener('change', e => { 
+        createMDE.addEventListener('change', e => { 
           pageContentTextarea.textContent = e.content; 
         });
 
         // @ts-expect-error - Added TinyMDE to the window object
-        tinyMDE.addEventListener("drop", function (event) {
+        createMDE.addEventListener("drop", function (event) {
           let formData = new FormData();
 
           // You can add use event.dataTransfer.items or event.dataTransfer.files
@@ -280,11 +275,6 @@ import {
 
           console.log("PUBLISH: " + JSON.stringify(pageData));
         })
-
-        createPageContainer.style.display = 'block';
-      } else {
-        createPageContainer.style.display = 'none';
-      }
     }
   
     document.addEventListener('astro:after-swap', () => listener());
@@ -296,7 +286,6 @@ import {
         height: 100%;
         width: 100%;
         min-width: 100%;
-        display: none;
     }
 
     #page-create-form {
