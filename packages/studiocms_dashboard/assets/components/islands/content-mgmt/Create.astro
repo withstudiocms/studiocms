@@ -287,7 +287,8 @@ import {
       }
     }
   
-    document.addEventListener('astro:page-load', listener);
+    document.addEventListener('astro:after-swap', () => listener());
+    listener();
   </script>
 
 <style>

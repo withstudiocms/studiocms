@@ -71,9 +71,8 @@ import { Button, Icon } from 'studiocms:ui/components';
             placeholder.style.display = 'flex';
         }
     }
-  
-
-    document.addEventListener('astro:page-load', listener);
+    document.addEventListener('astro:after-swap', () => listener());
+    listener();
   </script>
 
 
