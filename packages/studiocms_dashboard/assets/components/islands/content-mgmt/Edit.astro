@@ -16,15 +16,10 @@ const editId = urlParams.get('edit') || '';
 
 const { data: pageData } = await studioCMS_SDK_Cache.GET.page.byId(editId);
 
-function getParentFolderValue(value: typeof pageData.parentFolder) {
+function getParentFolderValue(value: string | null): string | undefined {
 	const options = parentFolderOptions;
-	if (value === null) {
-		return options.find((option: { value: string }) => option.value === 'null')?.value;
-	}
-	const selectedOption = options.find(
-		(option: { value: FormDataEntryValue }) => option.value === value
-	);
-	return selectedOption?.value;
+	if (value === null) return 'null';
+	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
 }
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>

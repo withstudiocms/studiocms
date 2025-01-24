@@ -7,9 +7,11 @@ import TreeSidebarLink from './TreeSidebarLink.astro';
 // Props passed to the component
 interface Props {
 	data: FolderNode[];
+	isNewPage?: boolean;
+	isNewFolder?: boolean;
 }
 
-const { data } = Astro.props;
+const { data, isNewFolder, isNewPage } = Astro.props;
 
 /**
  * Recursively sorts a tree of pages and folders by name (A to Z).
@@ -43,6 +45,14 @@ const sortedData = sortTree(data);
         </TreeSidebarFolder>
     )
 ))}
+{isNewPage && (
+    <TreeSidebarLink icon="document-text" href='#'>
+        New Page
+    </TreeSidebarLink>
+)}
+{isNewFolder && (
+    <TreeSidebarFolder name="New Folder" icon="folder" />
+)}
 
 <style>
     .inner-sidebar-folder-child-nodes {

@@ -2,6 +2,13 @@
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
+
+interface Props {
+	isNewFolder?: boolean;
+	isNewPage?: boolean;
+}
+
+const { isNewFolder, isNewPage } = Astro.props;
 ---
 
 <div class="inner-sidebar-header">
@@ -24,7 +31,7 @@ import PageList from './PageList.astro';
   <Divider background={'background-step-2'}>Items</Divider>
 
   <div class="inner-sidebar-items">
-    <PageList />
+    <PageList {isNewFolder} {isNewPage} />
   </div>
 
   <script>
