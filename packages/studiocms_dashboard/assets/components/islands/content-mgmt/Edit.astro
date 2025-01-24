@@ -15,6 +15,17 @@ const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
 
 const { data: pageData } = await studioCMS_SDK_Cache.GET.page.byId(editId);
+
+function getParentFolderValue(value: typeof pageData.parentFolder) {
+	const options = parentFolderOptions;
+	if (value === null) {
+		return options.find((option: { value: string }) => option.value === 'null')?.value;
+	}
+	const selectedOption = options.find(
+		(option: { value: FormDataEntryValue }) => option.value === value
+	);
+	return selectedOption?.value;
+}
 ---
 <div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
     <form id="edit-page-form">
@@ -53,7 +64,7 @@ const { data: pageData } = await studioCMS_SDK_Cache.GET.page.byId(editId);
         
                 <div class="form-row">
                     <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
-                    <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={pageData.parentFolder || undefined} />
+                    <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
                 </div>
         
                 <div class="form-row">
@@ -107,16 +118,6 @@ async function listener() {
     const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLElement;
     const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
 
-
-    function getParentFolderValue(value: FormDataEntryValue | null) {
-        const options = JSON.parse(parentFolderOptions!);
-        if (value === null) {
-          return (options.find((option: { value: string; }) => option.value === 'null')).value;
-        }
-        const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
-        return selectedOption.value;
-    }
-  
 
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
