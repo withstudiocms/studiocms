@@ -265,8 +265,7 @@ async function listener() {
         console.log(data);
     });
 }
-document.addEventListener('astro:after-swap', () => listener());
-listener();
+document.addEventListener('astro:page-load', () => listener());
 </script>
 
 <style>
