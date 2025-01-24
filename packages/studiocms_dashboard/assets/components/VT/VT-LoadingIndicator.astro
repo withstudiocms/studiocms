@@ -25,33 +25,36 @@ const { top = '', bottom = '', left = '', right = '', src = '' } = Astro.props;
 		@keyframes vtbot-blink {
 			0%,
 			30% {
-				opacity: 0;
+				opacity: 0.0;
 			}
 			40% {
 				opacity: 0.5;
 			}
 			50%,
 			60% {
-				opacity: 0;
+				opacity: 0.0;
 			}
 			80% {
 				opacity: 0.3;
 			}
 		}
-
 		#vtbot-loading-indicator {
-			position: fixed;
-			width: min(10vw, 10vh);
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 			z-index: 1000;
 			opacity: 0;
+			display: none;
 		}
 		#vtbot-loading-indicator img {
-			width: min(10vw, 10vh);
+			width: min(25vw, 25vh);
 			height: auto;
 		}
 
 		html.loading #vtbot-loading-indicator {
 			animation: vtbot-blink 1s infinite;
+			display: block;
 		}
 	}
 </style>
