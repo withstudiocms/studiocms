@@ -38,7 +38,9 @@ const { isNewFolder, isNewPage } = Astro.props;
     import { DropdownHelper } from 'studiocms:ui/components';
 
     document.addEventListener('astro:page-load', () => {
-        new DropdownHelper('create-new-dropdown');
+        if (document.getElementById('create-new-dropdown')) {
+          new DropdownHelper('create-new-dropdown');
+      }
     });
   </script>
 

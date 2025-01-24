@@ -89,6 +89,9 @@ import {
 <script>
     async function listener() {
       const editPageGrabber = document.getElementById('create-page-grabber') as HTMLElement;
+
+      if (!editPageGrabber) return;
+
       const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
   
       // get the elements
