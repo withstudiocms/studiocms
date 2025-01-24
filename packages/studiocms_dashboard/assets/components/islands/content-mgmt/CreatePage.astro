@@ -92,13 +92,9 @@ import {
 
       if (!editPageGrabber) return;
 
-      const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
-  
       // get the elements
+      const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
       const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
-
-      const pageContentTextarea = createPageForm.querySelector('#page-content') as HTMLTextAreaElement;
-      const editorToolbar = createPageForm.querySelector('#editor-toolbar') as HTMLElement;
 
       function getParentFolderValue(value: FormDataEntryValue | null) {
         const options = JSON.parse(parentFolderOptions!);
@@ -108,8 +104,70 @@ import {
         const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
         return selectedOption.value;
       }
+
+        const draftButton = document.getElementById('draft-button') as HTMLElement;
+        const publishButton = document.getElementById('publish-button') as HTMLElement;
+
+        createPageForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
+        });
+
+        draftButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(createPageForm);
+
+          const pageData = {
+            title: formData.get('page-title'),
+            slug: formData.get('page-slug'),
+            description: formData.get('page-description'),
+            type: formData.get('page-type'),
+            showInNav: formData.get('show-in-nav'),
+            heroImage: formData.get('page-hero-image'),
+            parentFolder: getParentFolderValue(formData.get('parent-folder')),
+            categories: formData.get('categories'),
+            tags: formData.get('tags'),
+            showAuthor: formData.get('show-author'),
+            showContributors: formData.get('show-contributors'),
+            content: formData.get('page-content'),
+          };
+
+          console.log("DRAFT: " + JSON.stringify(pageData));
+        })
+
+        publishButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(createPageForm);
+
+          const pageData = {
+            title: formData.get('page-title'),
+            slug: formData.get('page-slug'),
+            description: formData.get('page-description'),
+            type: formData.get('page-type'),
+            showInNav: formData.get('show-in-nav'),
+            heroImage: formData.get('page-hero-image'),
+            parentFolder: getParentFolderValue(formData.get('parent-folder')),
+            categories: formData.get('categories'),
+            tags: formData.get('tags'),
+            showAuthor: formData.get('show-author'),
+            showContributors: formData.get('show-contributors'),
+            content: formData.get('page-content'),
+          };
+
+          console.log("PUBLISH: " + JSON.stringify(pageData));
+        })
+    }
+  
+    document.addEventListener('astro:page-load', () => listener());
+  </script>
+
+<script is:inline data-astro-rerun>
+        const createPageForm = document.getElementById('page-create-form');
+
         // Setup the TinyMDE editor
         // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
+        const pageContentTextarea = createPageForm.querySelector('#page-content');
+        const editorToolbar = createPageForm.querySelector('#editor-toolbar');
         // @ts-expect-error - Added TinyMDE to the window object
         var tinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
         // @ts-expect-error - Added TinyMDE to the window object
@@ -228,63 +286,7 @@ import {
           // editor.paste(`![${imageName}](${imageUrl})`);
           alert("Image upload coming soon!");
         });
-
-        const draftButton = document.getElementById('draft-button') as HTMLElement;
-        const publishButton = document.getElementById('publish-button') as HTMLElement;
-
-        createPageForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
-        });
-
-        draftButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(createPageForm);
-
-          const pageData = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            type: formData.get('page-type'),
-            showInNav: formData.get('show-in-nav'),
-            heroImage: formData.get('page-hero-image'),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')),
-            categories: formData.get('categories'),
-            tags: formData.get('tags'),
-            showAuthor: formData.get('show-author'),
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
-          };
-
-          console.log("DRAFT: " + JSON.stringify(pageData));
-        })
-
-        publishButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(createPageForm);
-
-          const pageData = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            type: formData.get('page-type'),
-            showInNav: formData.get('show-in-nav'),
-            heroImage: formData.get('page-hero-image'),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')),
-            categories: formData.get('categories'),
-            tags: formData.get('tags'),
-            showAuthor: formData.get('show-author'),
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
-          };
-
-          console.log("PUBLISH: " + JSON.stringify(pageData));
-        })
-    }
-  
-    document.addEventListener('astro:after-swap', () => listener());
-    listener();
-  </script>
+</script>
 
 <style>
     #create-page-container {

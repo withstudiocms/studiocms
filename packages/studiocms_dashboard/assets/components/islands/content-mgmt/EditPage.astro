@@ -111,9 +111,6 @@ async function listener() {
     // get the elements
     const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-    const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLElement;
-    const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
-
     function getParentFolderValue(value: FormDataEntryValue | null) {
         const options = JSON.parse(editPageGrabber.dataset.parent_folder_options as string);
         if (value === null) {
@@ -123,6 +120,35 @@ async function listener() {
         return selectedOption.value;
       }
 
+    editPageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(editPageForm);
+
+        const data = {
+            title: formData.get('page-title'),
+            slug: formData.get('page-slug'),
+            description: formData.get('page-description'),
+            package: formData.get('page-type'),
+            showOnNav: formData.get('show-in-nav') === 'true',
+            heroImage: formData.get('page-hero-image'),
+            parentFolder: getParentFolderValue(formData.get('parent-folder')),
+            showAuthor: formData.get('show-author') === 'true',
+            showContributors: formData.get('show-contributors'),
+            content: formData.get('page-content'),
+            id: formData.get('page-id'),
+        };
+
+        console.log(data);
+    });
+}
+document.addEventListener('astro:page-load', () => listener());
+</script>
+
+<script is:inline data-astro-rerun>
+    const editPageForm = document.getElementById('edit-page-form');
+
+    const pageContentTextarea = editPageForm.querySelector('#page-content');
+    const editorToolbar = editPageForm.querySelector('#editor-toolbar');
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
     // @ts-expect-error - Added TinyMDE to the window object
@@ -243,30 +269,6 @@ async function listener() {
         // editor.paste(`![${imageName}](${imageUrl})`);
         alert("Image upload coming soon!");
     });
-
-    editPageForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData(editPageForm);
-
-        const data = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            package: formData.get('page-type'),
-            showOnNav: formData.get('show-in-nav') === 'true',
-            heroImage: formData.get('page-hero-image'),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')),
-            showAuthor: formData.get('show-author') === 'true',
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
-            id: formData.get('page-id'),
-        };
-
-        console.log(data);
-    });
-}
-document.addEventListener('astro:after-swap', () => listener());
-listener();
 </script>
 
 <style>
