@@ -34,6 +34,9 @@
       "recommended": true,
       "suspicious": {
         "noExplicitAny": "warn"
+      },
+      "style": {
+        "noParameterAssign": "off"
       }
     }
   },
