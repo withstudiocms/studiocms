@@ -3,7 +3,7 @@ import changelog from 'studiocms:changelog';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Modal } from 'studiocms:ui/components';
+import { Button, Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
 import { compare } from 'semver';
 import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
@@ -19,9 +19,9 @@ const comparison = compare(currentVersion, latestVersion.version);
 
 const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
 ---
-<div class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
+<Button size="sm" variant="flat" class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
     <VersionCheckPart {status} />
-</div>
+</Button>
 
     <Modal id="version-modal" size="lg">
 
@@ -211,15 +211,6 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
         font-size: .7em;
         font-weight: 700;
         text-align: center;
-    }
-
-    .version-container {
-        display: flex;
-        flex-direction: column;
-        gap: .05rem;
-        width: 100%;
-        color: hsl(var(--text-muted));
-        cursor: default;
     }
 
     .version-link {

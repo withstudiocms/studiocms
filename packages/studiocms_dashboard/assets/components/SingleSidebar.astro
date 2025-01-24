@@ -1,73 +1,18 @@
 ---
-import { dashboardConfig } from 'studiocms:config';
-import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
-import { Divider, Dropdown, Sidebar } from 'studiocms:ui/components';
-import StudioCMSLogo from '../components/StudioCMSLogo.astro';
-import SidebarLink from './SidebarLink.astro';
-import Admin from './islands/sidebar/Admin.astro';
-import Editor from './islands/sidebar/Editor.astro';
-import UserAccount from './islands/sidebar/UserAccount.astro';
-import VersionCheck from './islands/sidebar/VersionCheck.astro';
-import { getSidebarLinks } from './sidebarConfig';
-
-const { versionCheck } = dashboardConfig;
-
-const lang = 'en-us';
-const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
-const sidebar = getSidebarLinks(lang);
+import { Sidebar } from 'studiocms:ui/components';
+import MainSidebarContent from './MainSidebarContent.astro';
 ---
 
 <Sidebar class='sidebar'>
-  <div class="sidebar-links-container">
-    <div class="sidebar-header">
-      <StudioCMSLogo class={'sidebar-logo'} />
-      <div class="sidebar-header-text">
-        <span class="sidebar-title">StudioCMS</span>
-        { versionCheck && <VersionCheck /> }
-      </div>
-    </div>
-    <Divider background='background-step-1'>{t("category-1-header")}</Divider>
-    <div class="sidebar-link-group">
-      {
-        sidebar.baseLinks.map(({ href, icon, title }) => (
-          <SidebarLink {icon} {href}>{title}</SidebarLink>
-        ))
-      }
-      <Editor />
-    </div>
-    <Admin />
-    { /* 
-      Fallback slot removed from <Admin /> component to prevent the sidebar
-      from displaying the fallback content when the user is not an admin.
-    */}
-  </div>  
-  <div>
-    <Dropdown 
-      id='sidebar-user-dropdown'
-      options={[
-        { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
-        { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
-        { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL, color: 'danger' },
-      ]}
-      offset={8}
-      transition:persist transition:persist-props
-    >
-      <div class="user-dropdown-trigger-container">
-        <UserAccount transition:persist transition:persist-props />
-      </div>
-    </Dropdown>
-  </div>
+  <MainSidebarContent />
 </Sidebar>
 
 <script>
   import { SingleSidebarHelper } from "studiocms:ui/components";
-  import { DropdownHelper } from "studiocms:ui/components";
 
   document.addEventListener('astro:page-load', () => {
     if (document.getElementById('sui-sidebar')) {
       new SingleSidebarHelper('nav-toggle');
     }
-    new DropdownHelper('sidebar-user-dropdown', true);
   });
 </script>
