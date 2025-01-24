@@ -83,9 +83,9 @@ export async function vtbotLoadingIndicator(options: Options) {
 	const div = document.createElement('div');
 
 	div.style[options.top || !options.bottom ? 'top' : 'bottom'] =
-		options.top || options.bottom || '3vh';
+		options.top || options.bottom || '50%';
 	div.style[options.right || !options.left ? 'right' : 'left'] =
-		options.right || options.left || '3vw';
+		options.right || options.left || '50%';
 
 	div.id = 'vtbot-loading-indicator';
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
