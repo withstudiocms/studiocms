@@ -14,12 +14,7 @@ import imageHandler from '@studiocms/imagehandler';
 import renderers from '@studiocms/renderers';
 import robotsTXT from '@studiocms/robotstxt';
 import ui from '@studiocms/ui';
-import {
-	addVirtualImports,
-	createResolver,
-	defineIntegration,
-	withPlugins,
-} from 'astro-integration-kit';
+import { createResolver, defineIntegration, withPlugins } from 'astro-integration-kit';
 import { z } from 'astro/zod';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
