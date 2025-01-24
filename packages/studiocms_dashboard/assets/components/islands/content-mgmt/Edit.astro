@@ -118,6 +118,14 @@ async function listener() {
     const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLElement;
     const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
 
+    function getParentFolderValue(value: FormDataEntryValue | null) {
+        const options = JSON.parse(parentFolderOptions!);
+        if (value === null) {
+          return (options.find((option: { value: string; }) => option.value === 'null')).value;
+        }
+        const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
+        return selectedOption.value;
+      }
 
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
