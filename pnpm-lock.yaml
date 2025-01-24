@@ -31,8 +31,8 @@ catalogs:
       specifier: ^8.45.0
       version: 8.45.0
     '@studiocms/ui':
-      specifier: ^0.4.0
-      version: 0.4.0
+      specifier: ^0.4.2
+      version: 0.4.2
     '@types/node':
       specifier: ^20.14.11
       version: 20.17.10
@@ -385,7 +385,7 @@ importers:
         version: link:../packages/studiocms_renderers
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       '@types/hast':
         specifier: catalog:docs
         version: 3.0.4
@@ -526,7 +526,7 @@ importers:
         version: link:../studiocms_robotstxt
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
       ansi-escapes:
         specifier: ^7.0.0
         version: 7.0.0
@@ -654,7 +654,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       '@types/three':
         specifier: catalog:studiocms-auth
         version: 0.169.0
@@ -735,7 +735,7 @@ importers:
         version: link:../studiocms_robotstxt
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -823,7 +823,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -897,7 +897,7 @@ importers:
         version: link:../studiocms_core
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+        version: 0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       astro:
         specifier: catalog:min
         version: 5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -2529,8 +2529,8 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@studiocms/ui@0.4.0':
-    resolution: {integrity: sha512-NJmRSxtKO8MFTMjnfEBChxFqp0YSyvDJACIy5CPQZtpOnkT7fg8XONF53JEhLz+EX12Wk5zPkLvouPtD8cv3zA==}
+  '@studiocms/ui@0.4.2':
+    resolution: {integrity: sha512-CHD13XOP/zw7brRZxp4FcsG9JOAadAt+nkpE/bIaQQ9OwgO81BIvU6axiX60LIoQ041cwgQDPhB35L2hF9jxBw==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
@@ -7819,7 +7819,7 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@studiocms/ui@0.4.0(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
+  '@studiocms/ui@0.4.2(astro@5.1.8(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
     dependencies:
       '@iconify-json/heroicons': 1.2.1
       '@iconify/utils': 2.2.0
@@ -7830,7 +7830,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@0.4.0(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))':
+  '@studiocms/ui@0.4.2(astro@5.1.8(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))':
     dependencies:
       '@iconify-json/heroicons': 1.2.1
       '@iconify/utils': 2.2.0
