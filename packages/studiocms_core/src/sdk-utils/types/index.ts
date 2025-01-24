@@ -95,6 +95,7 @@ export interface FolderNode {
 export interface FolderListItem {
 	id: string;
 	name: string;
+	parent?: string | null;
 }
 
 export type AstroDBVirtualModule = typeof import('astro:db');

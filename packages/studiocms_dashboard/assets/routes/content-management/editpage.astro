@@ -2,7 +2,7 @@
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../../components';
 import TinyMDE from '../../components/component-scripts/TinyMDE.astro';
-import Edit from '../../components/islands/content-mgmt/Edit.astro';
+import EditPage from '../../components/islands/content-mgmt/EditPage.astro';
 import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
 
@@ -27,7 +27,7 @@ const lang = 'en-us';
     <PageHeader editPage title="Edit Page:" />
   </div>
 
-  <Edit />
+  <EditPage />
 
   <TinyMDE />
 

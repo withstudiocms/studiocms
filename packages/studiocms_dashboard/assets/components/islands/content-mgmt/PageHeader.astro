@@ -1,5 +1,6 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Button, Group, Icon } from 'studiocms:ui/components';
 
 interface Props {
@@ -17,10 +18,35 @@ const {
 	editFolder,
 	title = 'Content Management',
 } = Astro.props;
+
+let pageTitle = title;
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('edit') || '';
+
+if (editId) {
+	const res = await studioCMS_SDK_Cache.GET.page.byId(editId);
+
+	if (editPage) {
+		pageTitle = `Edit Page: ${res.data.title}`;
+	}
+}
+
+const folderEdit = urlParams.get('folder') || '';
+
+if (folderEdit) {
+	const res = await studioCMS_SDK_Cache.GET.folderList();
+
+	const folder = res.data.find((folder) => folder.id === folderEdit);
+
+	if (editFolder) {
+		pageTitle = `Edit Folder: ${folder?.name}`;
+	}
+}
 ---
 <header class="page-header">
   <div class="page-title-container">
-    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>{title}</h1>
+    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>{pageTitle}</h1>
   </div>
   <div id="page-actions-container" class="page-actions-container">
 
@@ -60,7 +86,7 @@ const {
   </div>
 </header>
 
-<script>
+<!-- <script>
     async function listener() {
         // get the query parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -76,10 +102,16 @@ const {
 
             pageTitle.innerText = `Edit Page: ${currentPageData.data.title}`;
         } 
+
+        const folderEdit = window.location.pathname.includes('edit-folder') ? urlParams.get('folder') : null;
+
+        if (folderEdit) {
+            
+        }
     }
     document.addEventListener('astro:after-swap', () => listener());
     listener();
-  </script>
+  </script> -->
 
 
 <style>

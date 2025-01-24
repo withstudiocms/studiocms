@@ -2,7 +2,7 @@
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../../components';
 import TinyMDE from '../../components/component-scripts/TinyMDE.astro';
-import Create from '../../components/islands/content-mgmt/Create.astro';
+import CreatePage from '../../components/islands/content-mgmt/CreatePage.astro';
 import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
 
@@ -27,7 +27,7 @@ const lang = 'en-us';
     <PageHeader createPage title="Create new Page"/>
   </div>
 
-  <Create />
+  <CreatePage />
 
   <TinyMDE />
 

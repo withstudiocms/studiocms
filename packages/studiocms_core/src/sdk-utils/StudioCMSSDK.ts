@@ -152,8 +152,8 @@ export class StudioCMSSDK {
 	public async getAvailableFolders(): Promise<FolderListItem[]> {
 		const folders: FolderListItem[] = [];
 		const currentFolders = await this.db.select().from(tsPageFolderStructure);
-		for (const { id, name } of currentFolders) {
-			folders.push({ id, name });
+		for (const current of currentFolders) {
+			folders.push(current);
 		}
 		return folders;
 	}
