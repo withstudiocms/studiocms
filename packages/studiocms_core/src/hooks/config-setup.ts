@@ -54,20 +54,6 @@ export const configSetup = defineUtility('astro:config:setup')(
 		addVirtualImports(params, {
 			name,
 			imports: {
-				// Core Virtual Modules
-				// 'studiocms:config': `
-				// export default ${JSON.stringify(options)};
-				// export const config = ${JSON.stringify(options)};
-				// export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
-				// export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
-				// export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
-				// export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-				// export const sdk = ${JSON.stringify(options.sdk)};
-				// `,
-				// 'studiocms:version': `
-				// export default '${version}';
-				// `,
-
 				// Core Virtual Components
 				'studiocms:components': `
 				export { default as Avatar } from '${resolve('../../assets/components/Avatar.astro')}';
