@@ -32,12 +32,12 @@ if (editId) {
 	}
 }
 
-const folderEdit = urlParams.get('folder') || '';
+const folderId = urlParams.get('folder') || '';
 
-if (folderEdit) {
+if (folderId) {
 	const res = await studioCMS_SDK_Cache.GET.folderList();
 
-	const folder = res.data.find((folder) => folder.id === folderEdit);
+	const folder = res.data.find((folder) => folder.id === folderId);
 
 	if (editFolder) {
 		pageTitle = `Edit Folder: ${folder?.name}`;
@@ -85,34 +85,6 @@ if (folderEdit) {
     )}
   </div>
 </header>
-
-<!-- <script>
-    async function listener() {
-        // get the query parameters
-        const urlParams = new URLSearchParams(window.location.search);
-  
-        // get the elements to customize
-        const pageTitle = document.querySelector('.page-title') as HTMLElement;
-    
-        // get the id parameter
-        const edit = window.location.pathname.includes('edit') ? urlParams.get('edit') : null;
-        if (edit) {
-            const pageDataResponse = await (await fetch(pageTitle.dataset.link!)).json();
-            const currentPageData = pageDataResponse.pages.find((page: { data: { id: string; }; }) => page.data.id === edit);
-
-            pageTitle.innerText = `Edit Page: ${currentPageData.data.title}`;
-        } 
-
-        const folderEdit = window.location.pathname.includes('edit-folder') ? urlParams.get('folder') : null;
-
-        if (folderEdit) {
-            
-        }
-    }
-    document.addEventListener('astro:after-swap', () => listener());
-    listener();
-  </script> -->
-
 
 <style>
 .page-header {
