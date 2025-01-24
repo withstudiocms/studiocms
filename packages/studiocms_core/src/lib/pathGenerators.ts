@@ -1,5 +1,3 @@
-// const base = stripTrailingSlash(import.meta.env.BASE_URL);
-
 /** Get the a root-relative URL path with the site’s `base` prefixed. */
 export function pathWithBase(path: string) {
 	let newPath = path;

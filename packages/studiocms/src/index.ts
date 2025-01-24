@@ -16,6 +16,7 @@ import robotsTXT from '@studiocms/robotstxt';
 import ui from '@studiocms/ui';
 import { createResolver, defineIntegration, withPlugins } from 'astro-integration-kit';
 import { z } from 'astro/zod';
+import boxen from 'boxen';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import type { Messages } from './types.js';
@@ -202,12 +203,17 @@ export default defineIntegration({
 					let pluginListMessage = '';
 
 					pluginListLength = safePluginList.length;
-					pluginListMessage = safePluginList.map((p, i) => ` ${i + 1}. ${p.name}`).join('\n');
+					pluginListMessage = safePluginList.map((p, i) => `${i + 1}. ${p.name}`).join('\n');
+
+					const messageBox = boxen(pluginListMessage, {
+						padding: 1,
+						title: `Currently Installed StudioCMS Plugins (${pluginListLength})`,
+					});
 
 					messages.push({
 						label: 'studiocms:plugins',
 						logLevel: 'info',
-						message: `Currently Installed StudioCMS Plugins: (${pluginListLength})\n${pluginListMessage}`,
+						message: ` \n \n${messageBox} \n \n`,
 					});
 
 					changelogHelper(params);
