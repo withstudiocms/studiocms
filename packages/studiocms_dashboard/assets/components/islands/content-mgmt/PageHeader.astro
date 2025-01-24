@@ -6,9 +6,17 @@ interface Props {
 	editPage?: boolean;
 	createPage?: boolean;
 	title?: string;
+	editFolder?: boolean;
+	createFolder?: boolean;
 }
 
-const { editPage, createPage, title = 'Content Management' } = Astro.props;
+const {
+	editPage,
+	createPage,
+	createFolder,
+	editFolder,
+	title = 'Content Management',
+} = Astro.props;
 ---
 <header class="page-header">
   <div class="page-title-container">
@@ -20,6 +28,20 @@ const { editPage, createPage, title = 'Content Management' } = Astro.props;
       <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-page-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
         Save Changes
+      </Button>
+    )}
+
+    { editFolder && ( 
+      <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-folder-form">
+        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        Save Changes
+      </Button>
+    )}
+
+    { createFolder && ( 
+      <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="create-folder-form">
+        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        Create
       </Button>
     )}
 
