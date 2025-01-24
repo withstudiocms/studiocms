@@ -3,13 +3,13 @@ import { Icon } from 'studiocms:ui/components';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { HTMLAttributes } from 'astro/types';
 
-interface Props extends HTMLAttributes<'div'> {
+interface Props extends HTMLAttributes<'a'> {
 	/**
 	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
 	 */
 	icon: HeroIconName;
 	name: string;
-	href?: string;
+	href: string;
 }
 
 const { icon, name, ...props } = Astro.props;
@@ -17,21 +17,15 @@ const { icon, name, ...props } = Astro.props;
 const activeIcon = `${icon}-solid`;
 
 const compId = crypto.randomUUID();
-
-const As = props.href ? 'a' : 'div';
-
-if (As === 'a') {
-	props['data-astro-reload'] = true;
-}
 ---
 
-<As id={compId} class="inner-sidebar-link" {...props} >
+<a id={compId} class="inner-sidebar-link" {...props} data-astro-reload>
   <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
   <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">
     {name}
   </span>
-</As>
+</a>
 <slot />
 
 <script is:inline data-astro-rerun define:vars={{ compId }}>
