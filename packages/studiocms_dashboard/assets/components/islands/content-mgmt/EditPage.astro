@@ -144,7 +144,8 @@ async function listener() {
 document.addEventListener('astro:page-load', () => listener());
 </script>
 
-<script is:inline data-astro-rerun>
+<script is:inline>
+    function listener() {
     const editPageForm = document.getElementById('edit-page-form');
 
     const pageContentTextarea = editPageForm.querySelector('#page-content');
@@ -269,6 +270,9 @@ document.addEventListener('astro:page-load', () => listener());
         // editor.paste(`![${imageName}](${imageUrl})`);
         alert("Image upload coming soon!");
     });
+    }
+
+    document.addEventListener('astro:page-load', () => listener());
 </script>
 
 <style>

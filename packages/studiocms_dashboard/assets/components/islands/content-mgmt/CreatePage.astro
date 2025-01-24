@@ -162,6 +162,7 @@ import {
   </script>
 
 <script is:inline data-astro-rerun>
+  function listener() {
         const createPageForm = document.getElementById('page-create-form');
 
         // Setup the TinyMDE editor
@@ -286,6 +287,9 @@ import {
           // editor.paste(`![${imageName}](${imageUrl})`);
           alert("Image upload coming soon!");
         });
+      }
+
+document.addEventListener('astro:page-load', () => listener());
 </script>
 
 <style>
