@@ -274,6 +274,7 @@ export class StudioCMSVirtualCache {
 							id: page.id,
 							name: page.title,
 							page: true,
+							pageData: page,
 							children: [],
 						});
 					}
@@ -282,6 +283,7 @@ export class StudioCMSVirtualCache {
 						id: page.id,
 						name: page.title,
 						page: true,
+						pageData: page,
 						children: [],
 					});
 				}
@@ -305,6 +307,7 @@ export class StudioCMSVirtualCache {
 							id: page.id,
 							name: page.title,
 							page: true,
+							pageData: page,
 							children: [],
 						});
 					}
@@ -313,6 +316,7 @@ export class StudioCMSVirtualCache {
 						id: page.id,
 						name: page.title,
 						page: true,
+						pageData: page,
 						children: [],
 					});
 				}

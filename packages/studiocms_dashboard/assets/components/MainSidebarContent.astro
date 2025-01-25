@@ -25,7 +25,7 @@ const sidebar = getSidebarLinks(lang);
         <span class="sidebar-subtitle">
           <Group>
           { versionCheck && <VersionCheck /> }
-          <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'} transition:persist transition:persist-props>
+          <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
             <div id="dark-content">
               <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
             </div>
@@ -50,24 +50,19 @@ const sidebar = getSidebarLinks(lang);
       <Editor />
     </div>
     <Admin />
-    { /* 
-      Fallback slot removed from <Admin /> component to prevent the sidebar
-      from displaying the fallback content when the user is not an admin.
-    */}
   </div>  
   <div>
     <Dropdown 
       id='sidebar-user-dropdown'
       options={[
-        { label: t("user-dropdown:settings"), value: 'user-settings', icon: "user", href: StudioCMSRoutes.mainLinks.userProfile },
-        { label: t("user-dropdown:view-site"), value: 'view-site', icon: "globe-alt", href: StudioCMSRoutes.mainLinks.baseSiteURL },
-        { label: t("user-dropdown:logout"), value: 'log-out', icon: "arrow-left-start-on-rectangle", href: StudioCMSRoutes.authLinks.logoutURL, color: 'danger' },
+        { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
+        { label: t("user-dropdown:view-site"), icon: "globe-alt", value: StudioCMSRoutes.mainLinks.baseSiteURL },
+        { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: StudioCMSRoutes.authLinks.logoutURL },
       ]}
       offset={8}
-      transition:persist transition:persist-props
     >
       <div class="user-dropdown-trigger-container">
-        <UserAccount transition:persist transition:persist-props />
+        <UserAccount />
       </div>
     </Dropdown>
   </div>
@@ -76,18 +71,22 @@ const sidebar = getSidebarLinks(lang);
 <script>
     import { DropdownHelper } from "studiocms:ui/components";
     import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
+    import { navigate } from 'astro:transitions/client';
 
     function setup() {
-        new DropdownHelper('sidebar-user-dropdown', true);
+        const userDropdown = new DropdownHelper('sidebar-user-dropdown', true);
+
+        userDropdown.registerClickCallback((value) => {
+          navigate(value)
+        });
+
         const themeToggle = document.getElementById('studiocms-theme-toggle');
         const themeHelper = new ThemeHelper();
     
         themeHelper.registerToggle(themeToggle);
 
-        const mediaMatcher = window.matchMedia("(prefers-color-scheme: light)");
-
-        mediaMatcher.addEventListener("change", (event) => {
-            themeHelper.setTheme(event.matches ? "light" : "dark");
+        themeHelper.onThemeChange((newTheme) => {
+          localStorage.setItem('studiocms-theme-preference', newTheme);
         });
     }
   

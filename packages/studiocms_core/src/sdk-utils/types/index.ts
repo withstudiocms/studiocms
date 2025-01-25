@@ -89,6 +89,7 @@ export interface FolderNode {
 	id: string;
 	name: string;
 	page: boolean;
+	pageData: CombinedPageData | null;
 	children: FolderNode[];
 }
 

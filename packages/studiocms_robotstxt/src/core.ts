@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { AstroIntegrationLogger } from 'astro';
-import type { RobotsConfig } from './index.js';
+import type { RobotsConfig } from './types.js';
 
 function validateHost(host: string, logger: AstroIntegrationLogger) {
 	const hostPattern = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$/;

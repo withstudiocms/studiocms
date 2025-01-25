@@ -16,8 +16,8 @@ const { isNewFolder, isNewPage } = Astro.props;
     <Dropdown
         id='create-new-dropdown'
         options={[
-            { label: 'Create Page', icon: 'document-plus', value: '1', href: StudioCMSRoutes.mainLinks.contentManagementCreate},
-            { label: 'Create Folder', icon: 'folder-plus', value: '2', href: StudioCMSRoutes.mainLinks.contentManagementFolderCreate},
+            { label: 'Create Page', icon: 'document-plus', value: StudioCMSRoutes.mainLinks.contentManagementCreate },
+            { label: 'Create Folder', icon: 'folder-plus', value: StudioCMSRoutes.mainLinks.contentManagementFolderCreate },
         ]}
         align={'end'}
         offset={8}
@@ -39,7 +39,11 @@ const { isNewFolder, isNewPage } = Astro.props;
 
     document.addEventListener('astro:page-load', () => {
       if (!document.getElementById('create-new-dropdown-dropdown')) return;
-      new DropdownHelper('create-new-dropdown');
+      const createNewDropdown = new DropdownHelper('create-new-dropdown');
+
+      createNewDropdown.registerClickCallback((value) => {
+        window.location.href = value;
+      })
     });
   </script>
 

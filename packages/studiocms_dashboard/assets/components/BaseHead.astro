@@ -4,8 +4,9 @@ import '@fontsource-variable/onest/index.css';
 import { ClientRouter } from 'astro:transitions';
 import { Generator } from 'studiocms:components';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import ThemeManager from './ThemeManager.astro';
 import ClientRouterDebug from './VT/VT-BotDebug.astro';
-import ClientRouterLinter from './VT/VT-Linter.astro';
+// import ClientRouterLinter from './VT/VT-Linter.astro';
 import ClientRouterLoadingIndicator from './VT/VT-LoadingIndicator.astro';
 
 export interface Props {
@@ -36,7 +37,10 @@ const { title, description } = Astro.props;
   <ClientRouterDebug />
   <ClientRouter />
   <ClientRouterLoadingIndicator top='50vh' src="/studiocms-resources/core/favicon-light.png"/>
-  <ClientRouterLinter />
+  <!-- <ClientRouterLinter /> -->
+
+  {/* Theme Manager */}
+  <ThemeManager />
 
   {/* Fonts */}
   <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />

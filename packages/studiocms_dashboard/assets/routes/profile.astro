@@ -30,14 +30,14 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 
   <div class="page-content">
 
-    <BasicInfo transition:persist transition:persist-props />
+    <BasicInfo />
 
     { usernameAndPassword && ( 
-      <UpdatePassword transition:persist transition:persist-props />
+      <UpdatePassword />
     )}
 
     { shouldShowOAuth && ( 
-      <SocialSignin transition:persist transition:persist-props />
+      <SocialSignin />
     )}
 
   </div>

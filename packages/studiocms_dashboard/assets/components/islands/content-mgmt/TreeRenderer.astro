@@ -30,13 +30,20 @@ function sortTree(data: FolderNode[]): FolderNode[] {
 const sortedData = sortTree(data);
 ---
 
-{sortedData.map(({ id, name, page, children }) => (
+{sortedData.map(({ id, name, page, children, pageData }) => (
     page ? (
-        <TreeSidebarLink icon="document-text" href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}/?edit=${id}`}>
+        <TreeSidebarLink 
+            icon={pageData?.slug === 'index' ? 'home-modern' : "document-text"} 
+            href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}/?edit=${id}`}
+            >
             {name}
         </TreeSidebarLink>
     ) : (
-        <TreeSidebarFolder {name} icon="folder" href={`${StudioCMSRoutes.mainLinks.contentManagementFolderEdit}/?folder=${id}`}>
+        <TreeSidebarFolder 
+            {name} 
+            icon="folder" 
+            href={`${StudioCMSRoutes.mainLinks.contentManagementFolderEdit}/?folder=${id}`}
+            >
             {children && children.length > 0 && (
                 <div class="inner-sidebar-folder-child-nodes">
                     <Astro.self data={children} />

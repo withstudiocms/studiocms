@@ -8,7 +8,6 @@ import currentVersion from 'studiocms:version';
 import { compare } from 'semver';
 import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
 import { timeAgo } from '../../component-scripts/timeAgo';
-import VersionCheckPart from '../../shared-parts/VersionCheck.astro';
 import VersionCheckChangelog from './VersionCheckChangelog.astro';
 
 const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
@@ -20,7 +19,10 @@ const comparison = compare(currentVersion, latestVersion.version);
 const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
 ---
 <Button size="sm" variant="flat" class="version-container" id="version-modal-trigger" title="Click for more information" aria-label="Click for more information">
-    <VersionCheckPart {status} />
+    <code class="version-check">
+        <span>v{currentVersion}</span>
+        {status && <span class="status" class:list={[status]} />}
+    </code>
 </Button>
 
     <Modal id="version-modal" size="lg">
@@ -292,6 +294,67 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
         height: 32px;
         --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M4 10v4h2v-3h1v3h1v-4zm5 0v5h2v-1h2v-4zm3 1v2h-1v-2zm2-1v4h2v-3h1v3h1v-3h1v3h1v-4zM3 9h18v6h-9v1H8v-1H3z'/%3E%3C/svg%3E");
         background-color: currentColor;
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+    .version-check {
+        display: flex;
+        flex-direction: row;
+        gap: .375rem;
+        width: 100%;
+        justify-content: left;
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        vertical-align: middle;
+        color: hsl(var(--text-muted));
+        font-size: .875em;
+        font-weight: 700;
+    }
+
+    .version-check:hover {
+        color: hsl(var(--primary-base));
+        cursor: pointer;
+    }
+
+    .outdated {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775a5.25 5.25 0 0 1 10.233-2.33a3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5z'/%3E%3C/svg%3E");
+        background-color: hsl(var(--warning-base));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .latest {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4.5 12.75l6 6l9-13.5'/%3E%3C/svg%3E");
+        background-color: hsl(var(--success-base));
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .future {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104q-.376.034-.75.082m.75-.082a24.3 24.3 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104q.377.034.75.082M19.8 15.3l-1.57.393A9.07 9.07 0 0 1 12 15a9.07 9.07 0 0 0-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.3 48.3 0 0 1 12 21a48 48 0 0 1-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5'/%3E%3C/svg%3E");
+        background-color: hsl(var(--primary-base));
         -webkit-mask-image: var(--svg);
         mask-image: var(--svg);
         -webkit-mask-repeat: no-repeat;
