@@ -280,3 +280,20 @@ main {
 [data-theme="light"] #studiocms-theme-toggle #fallback-content {
 	display: none;
 }
+
+.inner-sidebar-link {
+	display: flex;
+	flex-direction: row;
+	gap: .5rem;
+	align-items: center;
+	border-radius: .5rem;
+	transition: all .15s ease;
+	width: 100%;
+	padding: .375rem .5rem;
+	text-decoration: none;
+	color: hsl(var(--text-muted));
+}
+
+.inner-sidebar-link:hover {
+	background-color: hsl(var(--background-step-3));
+}

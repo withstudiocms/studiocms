@@ -13,6 +13,7 @@
     "astrojs",
     "CMSSDK",
     "Coolify",
+    "dompurify",
     "Libravatar",
     "liverender",
     "Markdoc",

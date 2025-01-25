@@ -1,6 +1,6 @@
 ---
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import TreeRenderer from './TreeRenderer.astro';
+import { PageFolderTree } from './shared';
 
 interface Props {
 	isNewFolder?: boolean;
@@ -8,8 +8,6 @@ interface Props {
 }
 
 const { isNewFolder, isNewPage } = Astro.props;
-
-const { data } = await studioCMS_SDK_Cache.GET.pageFolderTree();
 
 const testData = [
 	{
@@ -44,4 +42,4 @@ const testData = [
 ];
 ---
 
-<TreeRenderer data={data} {isNewFolder} {isNewPage} />
+<TreeRenderer data={PageFolderTree} {isNewFolder} {isNewPage} />

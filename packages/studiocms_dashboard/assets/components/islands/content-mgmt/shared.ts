@@ -8,7 +8,9 @@ interface PluginListItem {
 
 const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
 
-const parentFolders = folderList.map(({ id: value, name: label }) => ({ value, label }));
+export const { data: PageFolderTree } = await studioCMS_SDK_Cache.GET.pageFolderTree();
+
+export const parentFolders = folderList.map(({ id: value, name: label }) => ({ value, label }));
 
 // EXPORTS
 
