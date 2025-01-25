@@ -1,0 +1,35 @@
+---
+import { Input, Select } from 'studiocms:ui/components';
+import { parentFolderOptions } from './shared';
+---
+<div id="create-folder-container">
+
+    <form id="create-folder-form">
+    
+        {/* 
+          - Folder Name
+          - Folder Parent?
+        */}
+    
+        <Input label="Folder Name" name="folder-name" isRequired />
+        
+        <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
+    
+    </form>
+
+</div>
+
+<style>
+    #create-folder-container {
+        height: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+
+    #create-folder-form {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        padding-top: .5rem;
+    }
+</style>

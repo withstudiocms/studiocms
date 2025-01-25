@@ -1,6 +1,7 @@
 ---
 // import { useTranslations } from 'studiocms:i18n';
 import { Layout } from '../../components';
+import CreateFolder from '../../components/islands/content-mgmt/CreateFolder.astro';
 import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
 
@@ -24,6 +25,8 @@ const lang = 'en-us';
   <div slot="header">
     <PageHeader createFolder title="Create new Folder"/>
   </div>
+
+  <CreateFolder />
 
 </Layout>
 
