@@ -51,10 +51,6 @@ const { isNewFolder, isNewPage } = Astro.props;
 <div 
   class="inner-sidebar-items" 
   id="inner-sidebar-items" 
-  data-folders={JSON.stringify(folderList)} 
-  data-pages={JSON.stringify(pageList)}
-  data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
-  data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
   >
   <PageList {isNewFolder} {isNewPage} />
 </div>
@@ -63,6 +59,12 @@ const { isNewFolder, isNewPage } = Astro.props;
   class="inner-sidebar-items"
   id="inner-sidebar-items-search"
   style="display: none;"
+  data-folders={JSON.stringify(folderList)} 
+  data-pages={JSON.stringify(pageList)}
+  data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
+  data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
+  transition:persist
+  transition:persist-props
   ></div>
 
 <script>
@@ -111,8 +113,8 @@ setupDropdown();
 
   const itemTemplate = (item: SearchItem, searchTerm: string) => {
     const url = item.type === 'folder' 
-      ? `${document.getElementById('inner-sidebar-items')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
-      : `${document.getElementById('inner-sidebar-items')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
+      ? `${document.getElementById('inner-sidebar-items-search')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
+      : `${document.getElementById('inner-sidebar-items-search')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
     return `
   <a href=${url} class="inner-sidebar-link" data-astro-reload>
     ${
@@ -128,8 +130,8 @@ setupDropdown();
   };
 
   function getSearchList() {
-    const folders = JSON.parse(document.getElementById('inner-sidebar-items')?.dataset.folders || '[]') as Folders;
-    const pages = JSON.parse(document.getElementById('inner-sidebar-items')?.dataset.pages || '[]') as Pages;
+    const folders = JSON.parse(document.getElementById('inner-sidebar-items-search')?.dataset.folders || '[]') as Folders;
+    const pages = JSON.parse(document.getElementById('inner-sidebar-items-search')?.dataset.pages || '[]') as Pages;
 
     const searchList: SearchList = []
 
