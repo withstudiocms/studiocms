@@ -63,8 +63,6 @@ const { isNewFolder, isNewPage } = Astro.props;
   data-pages={JSON.stringify(pageList)}
   data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
   data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
-  transition:persist
-  transition:persist-props
   ></div>
 
 <script>
@@ -116,7 +114,7 @@ setupDropdown();
       ? `${document.getElementById('inner-sidebar-items-search')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
       : `${document.getElementById('inner-sidebar-items-search')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
     return `
-  <a href=${url} class="inner-sidebar-link" data-astro-reload>
+  <div id="search-selector" data-href=${url} class="inner-sidebar-link">
     ${
       item.type === 'folder' 
       ? `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /> </svg> ` 
@@ -125,7 +123,7 @@ setupDropdown();
     <span class="sidebar-link-text">
       ${item.name}
     </span>
-  </a>
+  </div>
   `;
   };
 
@@ -186,6 +184,15 @@ setupDropdown();
     document.getElementById('inner-sidebar-items')!.style.display = 'none';
     searchItems.style.display = 'block';
     divider.innerText = `Search Results (${results.length})`;
+
+  const searchResultSelectors = document.querySelectorAll('#search-selector') as NodeListOf<HTMLDivElement>;
+
+    for (const selector of searchResultSelectors) {
+      selector.addEventListener('click', (e) => {
+        const url = selector.dataset.href;
+        window.location.assign(url!);
+      });
+    }
   }
 
   // Main Functions
@@ -250,7 +257,7 @@ setupDropdown();
   .inner-sidebar-items {
     display: flex;
     flex-direction: column;
-    gap: .375rem;
+    gap: .4rem;
     width: 100%;
     height: 100%;
   }
