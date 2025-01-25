@@ -6,11 +6,6 @@ import { parentFolderOptions } from './shared';
 
     <form id="create-folder-form">
     
-        {/* 
-          - Folder Name
-          - Folder Parent?
-        */}
-    
         <Input label="Folder Name" name="folder-name" isRequired />
         
         <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />

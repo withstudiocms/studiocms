@@ -1,6 +1,5 @@
 ---
 import '../../../styles/tiny-mde.css';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
@@ -10,7 +9,7 @@ import {
 	trueFalse,
 } from './shared';
 ---
-<div id="create-page-container" data-link={StudioCMSRoutes.sdk.pages}>
+<div id="create-page-container">
     <form id="page-create-form">
 
       <Tabs variant={'starlight'}>

@@ -1,6 +1,5 @@
 ---
 import '../../../styles/tiny-mde.css';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
@@ -22,7 +21,7 @@ function getParentFolderValue(value: string | null): string | undefined {
 	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
 }
 ---
-<div id="edit-page-container" data-link={StudioCMSRoutes.sdk.pages}>
+<div id="edit-page-container">
     <form id="edit-page-form">
 
         <Tabs variant={'starlight'}>
