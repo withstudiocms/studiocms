@@ -46,7 +46,7 @@ const { isNewFolder, isNewPage } = Astro.props;
   </Dropdown>
 </div>
 
-<Divider background={'background-step-2'}>Items</Divider>
+<Divider background={'background-step-2'}><span id="sidebar-divider-title">Items</span></Divider>
 
 <div 
   class="inner-sidebar-items" 
@@ -74,6 +74,7 @@ const { isNewFolder, isNewPage } = Astro.props;
   const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
   const innerSideBarItems = document.getElementById('inner-sidebar-items') as HTMLDivElement;
   const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
+  const dividerTitle = document.getElementById('sidebar-divider-title') as HTMLSpanElement;
 
   type Folders = {
     id: string;
@@ -158,6 +159,7 @@ const { isNewFolder, isNewPage } = Astro.props;
     innerSidebarItemsSearch.innerHTML = '';
     innerSideBarItems.style.display = 'block';
     innerSidebarItemsSearch.style.display = 'none';
+    dividerTitle.innerText = 'Items';
   }
 
   function clearSearchParams() {
@@ -194,6 +196,7 @@ const { isNewFolder, isNewPage } = Astro.props;
 
     innerSideBarItems.style.display = 'none';
     innerSidebarItemsSearch.style.display = 'block';
+    dividerTitle.innerText = `Search Results (${results.length})`;
   }
 
   // Main Functions
@@ -232,6 +235,9 @@ const { isNewFolder, isNewPage } = Astro.props;
   document.addEventListener('astro:page-load', setupDropdown);
   document.addEventListener('astro:page-load', searchListeners);
   document.addEventListener('astro:page-load', setSearchTerm);
+  setupDropdown();
+  searchListeners();
+  setSearchTerm();
 </script>
 
 <style>
