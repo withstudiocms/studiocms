@@ -67,14 +67,22 @@ const { isNewFolder, isNewPage } = Astro.props;
 
 <script>
   import { DropdownHelper } from 'studiocms:ui/components';
+
+function setupDropdown() {
+    const createNewDropdown = new DropdownHelper('create-new-dropdown');
+
+    createNewDropdown.registerClickCallback((value) => {
+      window.location.href = value;
+    });
+  };
+
+document.addEventListener('astro:page-load', setupDropdown);
+setupDropdown();
+</script>
+
+<script>
   import DOMPurify from 'dompurify';
   import Fuse from 'fuse.js';
-
-  const form = document.getElementById('search-form') as HTMLFormElement;
-  const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
-  const innerSideBarItems = document.getElementById('inner-sidebar-items') as HTMLDivElement;
-  const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
-  const dividerTitle = document.getElementById('sidebar-divider-title') as HTMLSpanElement;
 
   type Folders = {
     id: string;
@@ -103,8 +111,8 @@ const { isNewFolder, isNewPage } = Astro.props;
 
   const itemTemplate = (item: SearchItem, searchTerm: string) => {
     const url = item.type === 'folder' 
-      ? `${innerSideBarItems.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
-      : `${innerSideBarItems.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
+      ? `${document.getElementById('inner-sidebar-items')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
+      : `${document.getElementById('inner-sidebar-items')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
     return `
   <a href=${url} class="inner-sidebar-link" data-astro-reload>
     ${
@@ -119,17 +127,9 @@ const { isNewFolder, isNewPage } = Astro.props;
   `;
   };
 
-  function setupDropdown() {
-    const createNewDropdown = new DropdownHelper('create-new-dropdown');
-
-    createNewDropdown.registerClickCallback((value) => {
-      window.location.href = value;
-    });
-  };
-
   function getSearchList() {
-    const folders = JSON.parse(innerSideBarItems.dataset.folders || '[]') as Folders;
-    const pages = JSON.parse(innerSideBarItems.dataset.pages || '[]') as Pages;
+    const folders = JSON.parse(document.getElementById('inner-sidebar-items')?.dataset.folders || '[]') as Folders;
+    const pages = JSON.parse(document.getElementById('inner-sidebar-items')?.dataset.pages || '[]') as Pages;
 
     const searchList: SearchList = []
 
@@ -144,100 +144,86 @@ const { isNewFolder, isNewPage } = Astro.props;
     return searchList;
   }
 
-  function getQueryParams() {
+  function clearSearchParams(dividerTitle: HTMLSpanElement, innerSidebarItemsSearch: HTMLDivElement) {
     const url = new URL(window.location.href);
-    return url.searchParams.get('search');
-  }
-
-  function updateQueryParams(searchTerm: string) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('search', searchTerm);
+    url.searchParams.delete('search');
     window.history.pushState({}, '', url);
-  }
-
-  function clearSearchResults() {
     innerSidebarItemsSearch.innerHTML = '';
-    innerSideBarItems.style.display = 'block';
+    document.getElementById('inner-sidebar-items')!.style.display = 'block';
     innerSidebarItemsSearch.style.display = 'none';
     dividerTitle.innerText = 'Items';
   }
 
-  function clearSearchParams() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('search');
-    window.history.pushState({}, '', url);
-    clearSearchResults();
-  }
-
-  function runSearch() {
+  function runSearch(form: HTMLFormElement, divider: HTMLSpanElement, searchItems: HTMLDivElement) {
     const formData = new FormData(form);
 
     const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
 
     if (!searchTerm || searchTerm.length === 0) return;
 
-    updateQueryParams(searchTerm);
+    const url = new URL(window.location.href);
+    url.searchParams.set('search', searchTerm);
+    window.history.pushState({}, '', url);
 
     const searchList = getSearchList();
 
     const fuse = new Fuse(searchList, {
       keys: ['name', 'slug'],
       includeScore: true,
-      threshold: 0.3,
+      threshold: 0.5,
     });
 
     const results = fuse.search(searchTerm);
 
     console.log(`Search Results (${results.length}) `, results);
 
-    innerSidebarItemsSearch.innerHTML = results.map(({ item }) => {
+    searchItems.innerHTML = results.map(({ item }) => {
       return itemTemplate(item, searchTerm);
     }).join('');
 
-    innerSideBarItems.style.display = 'none';
-    innerSidebarItemsSearch.style.display = 'block';
-    dividerTitle.innerText = `Search Results (${results.length})`;
+    document.getElementById('inner-sidebar-items')!.style.display = 'none';
+    searchItems.style.display = 'block';
+    divider.innerText = `Search Results (${results.length})`;
   }
 
   // Main Functions
 
   // Event Listeners
-  function searchListeners() {
+  function searchSetup() {
+  const form = document.getElementById('search-form') as HTMLFormElement;
+  const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
+
+  const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
+  const dividerTitle = document.getElementById('sidebar-divider-title') as HTMLSpanElement;
+
+    const url = new URL(window.location.href);
+    const searchTerm = url.searchParams.get('search');
+    if (searchTerm) {
+      const input = searchInput;
+      input.value = searchTerm;
+      runSearch(form, dividerTitle, innerSidebarItemsSearch);
+    }
+
     // if the user submits the form, run the search
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      runSearch();
+      runSearch(form, dividerTitle, innerSidebarItemsSearch);
     });
 
     // if the user stops typing for 500ms, run the search
     let timeout: NodeJS.Timeout;
     form.addEventListener('input', () => {
-      if (searchInput.value.length === 0) clearSearchParams();
+      if (searchInput.value.length === 0) clearSearchParams(dividerTitle, innerSidebarItemsSearch);
 
       clearTimeout(timeout);
-      timeout = setTimeout(runSearch, 500);
+      timeout = setTimeout(() => runSearch(form, dividerTitle, innerSidebarItemsSearch), 500);
     });
 
     // if the user clears the search, clear the query params
-    searchInput.addEventListener('search', clearSearchParams)
+    searchInput.addEventListener('search', () => clearSearchParams(dividerTitle, innerSidebarItemsSearch));
   }
 
-  // Set the search term if it exists in the query params on page load
-  function setSearchTerm() {
-    const searchTerm = getQueryParams();
-    if (searchTerm) {
-      const input = searchInput;
-      input.value = searchTerm;
-      setTimeout(runSearch, 500);
-    }
-  }
-
-  document.addEventListener('astro:page-load', setupDropdown);
-  document.addEventListener('astro:page-load', searchListeners);
-  document.addEventListener('astro:page-load', setSearchTerm);
-  setupDropdown();
-  searchListeners();
-  setSearchTerm();
+  document.addEventListener('astro:page-load', searchSetup);
 </script>
 
 <style>
