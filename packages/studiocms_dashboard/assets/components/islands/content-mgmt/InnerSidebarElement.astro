@@ -14,6 +14,8 @@ const { isNewFolder, isNewPage } = Astro.props;
 <div class="inner-sidebar-header">
     <Input name='search' placeholder='Search...' />
     <Dropdown
+        transition:persist
+        transition:persist-props
         id='create-new-dropdown'
         options={[
             { label: 'Create Page', icon: 'document-plus', value: StudioCMSRoutes.mainLinks.contentManagementCreate },

@@ -53,6 +53,8 @@ const sidebar = getSidebarLinks(lang);
   </div>  
   <div>
     <Dropdown 
+      transition:persist
+      transition:persist-props
       id='sidebar-user-dropdown'
       options={[
         { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
