@@ -1,0 +1,49 @@
+---
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import { Input, Select } from 'studiocms:ui/components';
+import { parentFolderOptions } from './shared';
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('folder') || '';
+
+const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
+
+const currentFolder = folderList.find((folder) => folder.id === editId);
+---
+<div id="edit-folder-container">
+
+    <form id="edit-folder-form">
+    
+        <Input 
+            label="Folder Name" 
+            name="folder-name" 
+            defaultValue={currentFolder?.name || ''}
+            isRequired 
+            />
+        
+        <Select 
+            label="Parent Folder" 
+            name="parent-folder" 
+            options={parentFolderOptions} 
+            defaultValue={currentFolder?.parent || 'null'} 
+            fullWidth 
+            />
+    
+    </form>
+
+</div>
+
+<style>
+    #edit-folder-container {
+        height: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+
+    #edit-folder-form {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        padding-top: .5rem;
+    }
+</style>

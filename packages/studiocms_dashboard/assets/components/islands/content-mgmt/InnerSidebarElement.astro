@@ -72,7 +72,7 @@ function setupDropdown() {
     const createNewDropdown = new DropdownHelper('create-new-dropdown');
 
     createNewDropdown.registerClickCallback((value) => {
-      window.location.href = value;
+      window.location.assign(value);
     });
   };
 
