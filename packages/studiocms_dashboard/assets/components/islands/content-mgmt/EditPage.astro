@@ -113,13 +113,9 @@ async function listener() {
     // get the elements
     const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-    function getParentFolderValue(value: FormDataEntryValue | null) {
-        const options = JSON.parse(editPageGrabber.dataset.parent_folder_options as string);
-        if (value === null) {
-          return (options.find((option: { value: string; }) => option.value === 'null')).value;
-        }
-        const selectedOption = options.find((option: { value: FormDataEntryValue; }) => option.value === value);
-        return selectedOption.value;
+    function getParentFolderValue(value?: string) {
+        if (value === 'null') return null;
+        return value;
       }
 
     editPageForm.addEventListener('submit', (e) => {
@@ -133,9 +129,9 @@ async function listener() {
             package: formData.get('page-type')?.toString(),
             showOnNav: formData.get('show-in-nav') === 'true',
             heroImage: formData.get('page-hero-image')?.toString(),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')),
+            parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
             showAuthor: formData.get('show-author') === 'true',
-            showContributors: formData.get('show-contributors')?.toString(),
+            showContributors: formData.get('show-contributors')?.toString() === 'true',
             content: formData.get('page-content')?.toString(),
             id: formData.get('page-id')?.toString(),
             draft: formData.get('draft')?.toString() === 'true',
