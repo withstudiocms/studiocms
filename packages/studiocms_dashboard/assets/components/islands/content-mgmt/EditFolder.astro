@@ -1,6 +1,6 @@
 ---
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select } from 'studiocms:ui/components';
+import { Button, Icon, Input, Select } from 'studiocms:ui/components';
 import { parentFolderOptions } from './shared';
 
 const urlParams = Astro.url.searchParams;
@@ -33,6 +33,16 @@ const currentFolder = folderList.find((folder) => folder.id === editId);
 
 </div>
 
+<div class="delete-folder-container">
+    <form id="delete-folder-form">
+        <input type="hidden" name="folder-id" value={currentFolder?.id} />
+        <Button color="danger" type="submit" size="sm">
+            <Icon name="trash-20-solid" width={20} height={20} />
+            Delete Folder
+        </Button>
+    </form>
+</div>
+
 <style>
     #edit-folder-container {
         height: 100%;
@@ -45,5 +55,9 @@ const currentFolder = folderList.find((folder) => folder.id === editId);
         flex-direction: column;
         gap: 1rem;
         padding-top: .5rem;
+    }
+
+    .delete-folder-container {
+        padding-top: 1rem;
     }
 </style>

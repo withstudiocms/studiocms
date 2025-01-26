@@ -1,7 +1,7 @@
 ---
 import '../../../styles/tiny-mde.css';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { Button, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -61,7 +61,7 @@ function getParentFolderValue(value: string | null): string | undefined {
         
                 <div class="form-row">
                     <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
-                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} />
+                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index' || pageData.slug === 'about'} />
                 </div>
         
                 <div class="form-row">
@@ -90,6 +90,16 @@ function getParentFolderValue(value: string | null): string | undefined {
     </form>
 </div>
 
+<div class="delete-button-container">
+    <form id="delete-page-form">
+        <input type="hidden" name="page-id" value={pageData.id} />
+        <Button color="danger" type="submit" size="sm" disabled={pageData.slug === 'index' || pageData.slug === 'about'}>
+            <Icon name="trash-20-solid" width={20} height={20} />
+            Delete Page
+        </Button>
+    </form>
+</div>
+
 <div 
     id="edit-page-grabber" 
     style="display: none;"
@@ -112,6 +122,17 @@ async function listener() {
   
     // get the elements
     const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
+
+    const deletePageForm = document.getElementById('delete-page-form') as HTMLFormElement;
+
+    deletePageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(deletePageForm);
+        const data = {
+            id: formData.get('page-id')?.toString(),
+        };
+        console.log(data);
+    });
 
     function getParentFolderValue(value?: string) {
         if (value === 'null') return null;
@@ -286,6 +307,10 @@ document.addEventListener('astro:page-load', () => listener());
         flex-direction: column;
         gap: .75rem;
         padding-top: .5rem;
+    }
+
+    .delete-button-container {
+        padding-top: 1rem;
     }
 
 
