@@ -61,6 +61,7 @@ export const StudioCMSRoutes = {
 		auth0Callback: authAPIRoute('auth0/callback'),
 	},
 	endpointLinks: {
+		searchList: dashboardAPIRoute('search-list'),
 		partials: {
 			livePreviewBox: dashboardAPIRoute('liverender'),
 		},

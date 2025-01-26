@@ -74,6 +74,7 @@ export const StudioCMSPageData = defineTable({
 		showAuthor: column.boolean({ default: false, optional: true }),
 		showContributors: column.boolean({ default: false, optional: true }),
 		parentFolder: column.text({ optional: true }),
+		draft: column.boolean({ optional: true }),
 	},
 });
 

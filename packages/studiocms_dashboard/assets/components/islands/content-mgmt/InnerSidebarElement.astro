@@ -1,6 +1,5 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
 
@@ -8,9 +7,6 @@ interface Props {
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
 }
-
-const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
-const pageList = await studioCMS_SDK_Cache.GET.pages();
 
 const { isNewFolder, isNewPage } = Astro.props;
 ---
@@ -59,8 +55,7 @@ const { isNewFolder, isNewPage } = Astro.props;
   class="inner-sidebar-items"
   id="inner-sidebar-items-search"
   style="display: none;"
-  data-folders={JSON.stringify(folderList)} 
-  data-pages={JSON.stringify(pageList)}
+  data-searchlist={StudioCMSRoutes.endpointLinks.searchList}
   data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
   data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
   ></div>
@@ -83,22 +78,6 @@ setupDropdown();
 <script>
   import DOMPurify from 'dompurify';
   import Fuse from 'fuse.js';
-
-  type Folders = {
-    id: string;
-    name: string;
-    parent?: string | null;
-  }[];
-
-  type Pages = {
-    data: {
-      id: string;
-      title: string;
-      slug: string;
-      parentFolder: string | null;
-    };
-    lastCacheUpdate: Date;
-  }[];
     
   type SearchItem = {
     id: string;
@@ -127,21 +106,20 @@ setupDropdown();
   `;
   };
 
-  function getSearchList() {
-    const folders = JSON.parse(document.getElementById('inner-sidebar-items-search')?.dataset.folders || '[]') as Folders;
-    const pages = JSON.parse(document.getElementById('inner-sidebar-items-search')?.dataset.pages || '[]') as Pages;
+  async function getSearchList(searchItems: HTMLDivElement) {
 
-    const searchList: SearchList = []
+    console.log(`Fetching search list from ${searchItems.dataset.searchlist}`);
 
-    for (const { id, name } of folders) {
-      searchList.push({ id, name, type: 'folder' });
+    const response = await fetch(searchItems.dataset.searchlist as string);
+
+    if (!response.ok) {
+      console.error('Failed to fetch search list');
+      return [];
     }
 
-    for (const { data: { id, title: name, slug } } of pages) {
-      searchList.push({ id, name, slug, type: 'page' });
-    }
-      
-    return searchList;
+    const data: SearchList = await response.json();
+
+    return data;
   }
 
   function clearSearchParams(dividerTitle: HTMLSpanElement, innerSidebarItemsSearch: HTMLDivElement) {
@@ -154,7 +132,7 @@ setupDropdown();
     dividerTitle.innerText = 'Items';
   }
 
-  function runSearch(form: HTMLFormElement, divider: HTMLSpanElement, searchItems: HTMLDivElement) {
+  async function runSearch(form: HTMLFormElement, divider: HTMLSpanElement, searchItems: HTMLDivElement) {
     const formData = new FormData(form);
 
     const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
@@ -165,11 +143,11 @@ setupDropdown();
     url.searchParams.set('search', searchTerm);
     window.history.pushState({}, '', url);
 
-    const searchList = getSearchList();
+    const searchList = await getSearchList(searchItems);
 
     const fuse = new Fuse(searchList, {
       keys: ['name', 'slug'],
-      includeScore: true,
+      isCaseSensitive: false,
       threshold: 0.5,
     });
 
@@ -198,7 +176,7 @@ setupDropdown();
   // Main Functions
 
   // Event Listeners
-  function searchSetup() {
+  async function searchSetup() {
   const form = document.getElementById('search-form') as HTMLFormElement;
   const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
 
@@ -210,13 +188,13 @@ setupDropdown();
     if (searchTerm) {
       const input = searchInput;
       input.value = searchTerm;
-      runSearch(form, dividerTitle, innerSidebarItemsSearch);
+      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
     }
 
     // if the user submits the form, run the search
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      runSearch(form, dividerTitle, innerSidebarItemsSearch);
+      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
     });
 
     // if the user stops typing for 500ms, run the search
@@ -225,7 +203,7 @@ setupDropdown();
       if (searchInput.value.length === 0) clearSearchParams(dividerTitle, innerSidebarItemsSearch);
 
       clearTimeout(timeout);
-      timeout = setTimeout(() => runSearch(form, dividerTitle, innerSidebarItemsSearch), 500);
+      timeout = setTimeout(async () => await runSearch(form, dividerTitle, innerSidebarItemsSearch), 500);
     });
 
     // if the user clears the search, clear the query params
