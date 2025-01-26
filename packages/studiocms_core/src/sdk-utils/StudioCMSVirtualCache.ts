@@ -258,7 +258,7 @@ export class StudioCMSVirtualCache {
 	 * @returns {Promise<FolderTreeCacheObject>} A promise that resolves to the folder tree.
 	 * @throws {StudioCMSCacheError} If the folder tree is not found in the database or if there is an error fetching the folder tree.
 	 */
-	public async getPageFolderTree(): Promise<FolderTreeCacheObject> {
+	public async getPageFolderTree(includeDrafts = false): Promise<FolderTreeCacheObject> {
 		try {
 			if (!this.isEnabled()) {
 				const folderTree = await this.sdk.buildFolderTree();
@@ -269,6 +269,10 @@ export class StudioCMSVirtualCache {
 				}
 
 				for (const page of pages) {
+					if (!includeDrafts && page.draft) {
+						continue;
+					}
+
 					if (page.parentFolder) {
 						this.sdk.addPageToFolderTree(folderTree, page.parentFolder, {
 							id: page.id,
@@ -302,6 +306,10 @@ export class StudioCMSVirtualCache {
 				}
 
 				for (const page of pages) {
+					if (!includeDrafts && page.draft) {
+						continue;
+					}
+
 					if (page.parentFolder) {
 						this.sdk.addPageToFolderTree(folderTree, page.parentFolder, {
 							id: page.id,
@@ -611,11 +619,11 @@ export class StudioCMSVirtualCache {
 	 * - If the cache is empty, the data is retrieved from the database and stored in the cache.
 	 * - If the cache contains data, it checks for expired entries and updates them from the database if necessary.
 	 */
-	public async getAllPages(): Promise<PageDataCacheObject[]> {
+	public async getAllPages(includeDrafts = false): Promise<PageDataCacheObject[]> {
 		try {
 			// Check if caching is disabled
 			if (!this.isEnabled()) {
-				const pages = await this.sdk.GET.database.pages();
+				const pages = await this.sdk.GET.database.pages(includeDrafts);
 				return pages.map((page) => this.pageDataReturn(page));
 			}
 
@@ -624,7 +632,7 @@ export class StudioCMSVirtualCache {
 			// Check if the cache is empty
 			if (this.pages.size === 0) {
 				// Retrieve the data from the database
-				const updatedData = await this.sdk.GET.database.pages(tree);
+				const updatedData = await this.sdk.GET.database.pages(includeDrafts, tree);
 
 				// Check if the data was retrieved successfully
 				if (!updatedData) {
@@ -899,7 +907,8 @@ export class StudioCMSVirtualCache {
 			siteConfig: async () => await this.getSiteConfig(),
 			latestVersion: async () => await this.getVersion(),
 			folderTree: async () => await this.getFolderTree(),
-			pageFolderTree: async () => await this.getPageFolderTree(),
+			pageFolderTree: async (includeDrafts?: boolean) =>
+				await this.getPageFolderTree(includeDrafts),
 			folderList: async () => await this.getFolderList(),
 		},
 		CLEAR: {

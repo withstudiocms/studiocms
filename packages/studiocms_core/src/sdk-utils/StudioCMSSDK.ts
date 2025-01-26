@@ -1026,11 +1026,16 @@ export class StudioCMSSDK {
 			 * @returns A promise that resolves to an array of combined page data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
-			pages: async (tree?: FolderNode[]): Promise<CombinedPageData[]> => {
+			pages: async (includeDrafts = false, tree?: FolderNode[]): Promise<CombinedPageData[]> => {
 				try {
 					const pages: CombinedPageData[] = [];
 
-					const pagesRaw = await this.db.select().from(tsPageData);
+					let pagesRaw = await this.db.select().from(tsPageData);
+
+					if (!includeDrafts) {
+						pagesRaw = pagesRaw.filter(({ draft }) => !draft);
+					}
+
 					const folders = tree || (await this.buildFolderTree());
 
 					for (const page of pagesRaw) {
@@ -1517,6 +1522,7 @@ export class StudioCMSSDK {
 					const newContentID = pageData.id || crypto.randomUUID().toString();
 
 					const {
+						id = newContentID,
 						title,
 						slug,
 						description,
@@ -1527,18 +1533,23 @@ export class StudioCMSSDK {
 						showOnNav = false,
 						showAuthor = false,
 						showContributors = false,
+						categories = [],
+						tags = [],
+						contributorIds = [],
+						draft = false,
+						parentFolder = null,
 					} = pageData;
 
 					const stringified = {
-						categories: JSON.stringify(pageData.categories || []),
-						tags: JSON.stringify(pageData.tags || []),
-						contributorIds: JSON.stringify(pageData.contributorIds || []),
+						categories: JSON.stringify(categories || []),
+						tags: JSON.stringify(tags || []),
+						contributorIds: JSON.stringify(contributorIds || []),
 					};
 
 					const contentData = {
 						id: crypto.randomUUID().toString(),
 						contentId: newContentID,
-						contentLang: pageContent.contentLang || 'default',
+						contentLang: contentLang,
 						content: pageContent.content || '',
 					};
 
@@ -1548,7 +1559,7 @@ export class StudioCMSSDK {
 						this.db
 							.insert(tsPageData)
 							.values({
-								id: newContentID,
+								id,
 								title,
 								slug,
 								description,
@@ -1558,6 +1569,8 @@ export class StudioCMSSDK {
 								showAuthor,
 								showContributors,
 								showOnNav,
+								draft,
+								parentFolder,
 								package: packageName,
 								publishedAt: NOW,
 								updatedAt: NOW,
@@ -1881,12 +1894,18 @@ export class StudioCMSSDK {
 							showOnNav = false,
 							showAuthor = false,
 							showContributors = false,
+							categories = [],
+							tags = [],
+							contributorIds = [],
+							draft = false,
+							parentFolder = null,
+							id = newContentID,
 						} = pageData;
 
 						const stringified = {
-							categories: JSON.stringify(pageData.categories || []),
-							tags: JSON.stringify(pageData.tags || []),
-							contributorIds: JSON.stringify(pageData.contributorIds || []),
+							categories: JSON.stringify(categories || []),
+							tags: JSON.stringify(tags || []),
+							contributorIds: JSON.stringify(contributorIds || []),
 						};
 
 						const contentData = {
@@ -1902,7 +1921,7 @@ export class StudioCMSSDK {
 							this.db
 								.insert(tsPageData)
 								.values({
-									id: newContentID,
+									id,
 									title,
 									slug,
 									description,
@@ -1912,6 +1931,8 @@ export class StudioCMSSDK {
 									showAuthor,
 									showContributors,
 									showOnNav,
+									draft,
+									parentFolder,
 									package: packageName,
 									publishedAt: NOW,
 									updatedAt: NOW,

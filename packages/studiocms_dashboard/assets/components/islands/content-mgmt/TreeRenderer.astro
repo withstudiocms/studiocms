@@ -1,5 +1,6 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
+import type { CombinedPageData } from 'studiocms:sdk/types';
 import type { FolderNode } from '@studiocms/core/sdk-utils/types';
 import TreeSidebarFolder from './TreeSidebarFolder.astro';
 import TreeSidebarLink from './TreeSidebarLink.astro';
@@ -28,12 +29,24 @@ function sortTree(data: FolderNode[]): FolderNode[] {
 }
 
 const sortedData = sortTree(data);
+
+function getIcon(pageData: CombinedPageData | null) {
+	if (pageData?.slug === 'index') {
+		return 'home-modern';
+	}
+
+	if (pageData?.draft) {
+		return 'pencil-square';
+	}
+
+	return 'document-text';
+}
 ---
 
 {sortedData.map(({ id, name, page, children, pageData }) => (
     page ? (
         <TreeSidebarLink 
-            icon={pageData?.slug === 'index' ? 'home-modern' : "document-text"} 
+            icon={getIcon(pageData)} 
             href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}/?edit=${id}`}
             >
             {name}

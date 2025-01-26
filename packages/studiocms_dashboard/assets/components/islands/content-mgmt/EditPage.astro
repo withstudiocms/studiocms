@@ -35,7 +35,10 @@ function getParentFolderValue(value: string | null): string | undefined {
                     <input type="hidden" name="page-id" value={pageData.id} />
                 </div>
         
-                <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
+                <div class="form-row">
+                    <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
+                    <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
+                </div>
         
                 <div class="form-row">
                     <Select 
@@ -57,8 +60,8 @@ function getParentFolderValue(value: string | null): string | undefined {
                 </div>
         
                 <div class="form-row">
-                    <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
                     <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
+                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} />
                 </div>
         
                 <div class="form-row">
@@ -124,17 +127,18 @@ async function listener() {
         const formData = new FormData(editPageForm);
 
         const data = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            package: formData.get('page-type'),
+            title: formData.get('page-title')?.toString(),
+            slug: formData.get('page-slug')?.toString(),
+            description: formData.get('page-description')?.toString(),
+            package: formData.get('page-type')?.toString(),
             showOnNav: formData.get('show-in-nav') === 'true',
-            heroImage: formData.get('page-hero-image'),
+            heroImage: formData.get('page-hero-image')?.toString(),
             parentFolder: getParentFolderValue(formData.get('parent-folder')),
             showAuthor: formData.get('show-author') === 'true',
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
-            id: formData.get('page-id'),
+            showContributors: formData.get('show-contributors')?.toString(),
+            content: formData.get('page-content')?.toString(),
+            id: formData.get('page-id')?.toString(),
+            draft: formData.get('draft')?.toString() === 'true',
         };
 
         console.log(data);
@@ -289,11 +293,11 @@ document.addEventListener('astro:page-load', () => listener());
     }
 
 
-.tab-section {
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-}
+    .tab-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
 
     .form-row {
         display: grid;

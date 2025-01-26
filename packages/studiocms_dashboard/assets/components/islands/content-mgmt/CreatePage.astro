@@ -20,7 +20,10 @@ import {
                 <Input label='Slug' name='page-slug' isRequired />
             </div>
     
-            <Input label='Description' name='page-description' isRequired />
+            <div class="form-row">
+              <Input label='Description' name='page-description' isRequired />
+              <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
+            </div>
     
             <div class="form-row">
                 <Select 
@@ -42,8 +45,8 @@ import {
             </div>
     
             <div class="form-row">
-                <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
                 <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
+                <Select label="Draft" name="draft" fullWidth options={trueFalse} disabled placeholder='Use submission buttons above'/>
             </div>
     
             <div class="form-row">
@@ -117,18 +120,19 @@ import {
           const formData = new FormData(createPageForm);
 
           const pageData = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            type: formData.get('page-type'),
-            showInNav: formData.get('show-in-nav'),
-            heroImage: formData.get('page-hero-image'),
+            title: formData.get('page-title')?.toString(),
+            slug: formData.get('page-slug')?.toString(),
+            description: formData.get('page-description')?.toString(),
+            type: formData.get('page-type')?.toString(),
+            showInNav: formData.get('show-in-nav')?.toString() === 'true',
+            heroImage: formData.get('page-hero-image')?.toString(),
             parentFolder: getParentFolderValue(formData.get('parent-folder')),
-            categories: formData.get('categories'),
-            tags: formData.get('tags'),
-            showAuthor: formData.get('show-author'),
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
+            categories: formData.get('categories')?.toString(),
+            tags: formData.get('tags')?.toString(),
+            showAuthor: formData.get('show-author')?.toString() === 'true',
+            showContributors: formData.get('show-contributors')?.toString() === 'true',
+            content: formData.get('page-content')?.toString(),
+            draft: true,
           };
 
           console.log("DRAFT: " + JSON.stringify(pageData));
@@ -139,18 +143,19 @@ import {
           const formData = new FormData(createPageForm);
 
           const pageData = {
-            title: formData.get('page-title'),
-            slug: formData.get('page-slug'),
-            description: formData.get('page-description'),
-            type: formData.get('page-type'),
-            showInNav: formData.get('show-in-nav'),
-            heroImage: formData.get('page-hero-image'),
+            title: formData.get('page-title')?.toString(),
+            slug: formData.get('page-slug')?.toString(),
+            description: formData.get('page-description')?.toString(),
+            type: formData.get('page-type')?.toString(),
+            showInNav: formData.get('show-in-nav')?.toString() === 'true',
+            heroImage: formData.get('page-hero-image')?.toString(),
             parentFolder: getParentFolderValue(formData.get('parent-folder')),
-            categories: formData.get('categories'),
-            tags: formData.get('tags'),
-            showAuthor: formData.get('show-author'),
-            showContributors: formData.get('show-contributors'),
-            content: formData.get('page-content'),
+            categories: formData.get('categories')?.toString(),
+            tags: formData.get('tags')?.toString(),
+            showAuthor: formData.get('show-author')?.toString() === 'true',
+            showContributors: formData.get('show-contributors')?.toString() === 'true',
+            content: formData.get('page-content')?.toString(),
+            draft: false,
           };
 
           console.log("PUBLISH: " + JSON.stringify(pageData));
@@ -308,7 +313,7 @@ document.addEventListener('astro:page-load', () => listener());
     .tab-section {
         display: flex;
         flex-direction: column;
-        gap: .75rem;
+        gap: 1rem;
     }
 
     .form-row {

@@ -6,6 +6,7 @@ type SearchItem = {
 	name: string;
 	slug?: string;
 	type: 'folder' | 'page';
+	isDraft?: boolean;
 };
 
 type SearchList = SearchItem[];
@@ -29,6 +30,7 @@ export const GET: APIRoute = async (ctx: APIContext) => {
 			id: page.data.id,
 			name: page.data.title,
 			slug: page.data.slug,
+			isDraft: page.data.draft ?? false,
 			type: 'page',
 		});
 	}
