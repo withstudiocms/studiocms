@@ -51,38 +51,3 @@ const compId = crypto.randomUUID();
   document.addEventListener('astro:page-load', setInnerSidebarLinks());
   setInnerSidebarLinks();
 </script>
-
-<style>
-  .inner-sidebar-link {
-    display: flex;
-    flex-direction: row;
-    gap: .5rem;
-    align-items: center;
-    border-radius: .5rem;
-    transition: all .15s ease;
-    width: 100%;
-    padding: .375rem .5rem;
-    text-decoration: none;
-    color: hsl(var(--text-muted));
-  }
-
-  .not-selected {
-    display: block;
-  }
-
-  .selected {
-    display: none;
-  }
-
-  .inner-sidebar-link:hover {
-    background-color: hsl(var(--background-step-3));
-  }
-
-  .inner-sidebar-link.active {
-    color: hsl(var(--text));
-  }
-
-  .inner-sidebar-link.active .sidebar-link-icon {
-    color: hsl(var(--primary-base));
-  }
-</style>

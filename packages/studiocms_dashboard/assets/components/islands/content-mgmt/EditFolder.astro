@@ -1,6 +1,6 @@
 ---
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Button, Center, Icon, Input, Modal, Select } from 'studiocms:ui/components';
+import { Input, Select } from 'studiocms:ui/components';
 import { parentFolderOptions } from './shared';
 
 const urlParams = Astro.url.searchParams;
@@ -33,51 +33,6 @@ const currentFolder = folderList.find((folder) => folder.id === editId);
 
 </div>
 
-<div class="delete-folder-container">
-    <Button id="delete-folder-modal-trigger" color="danger" type="submit" size="sm">
-        <Icon name="trash-20-solid" width={20} height={20} />
-        Delete Folder
-    </Button>
-    <Modal
-        id="delete-folder-modal"
-        isForm
-        cancelButton={{ label: 'Cancel', color: 'default' }}
-        actionButton={{ label: 'Delete', color: 'danger' }}
-        >
-        <h2 slot="header">Are you sure you want to delete this folder?</h2>
-        <Center>
-            <div class="modal-body">
-                <input type="hidden" name="folder-id" value={currentFolder?.id} />
-                <input type="hidden" name="folder-name" value={currentFolder?.name} />
-
-                <span>Enter the folder name <code>{currentFolder?.name}</code> to confirm</span>
-
-                <Input name="confirm-folder-name" placeholder={`${currentFolder?.name.slice(0, currentFolder.name.length-2)}...`} isRequired />
-        
-                <span style="color: hsl(var(--danger-base))">This action cannot be undone.</span>
-            </div>
-        </Center>
-    </Modal>
-</div>
-
-<script>
-    import { ModalHelper } from 'studiocms:ui/components';
-
-    const deleteFolderModal = new ModalHelper('delete-folder-modal', 'delete-folder-modal-trigger');
-
-    deleteFolderModal.registerConfirmCallback((formData) => {
-        const folderId = formData?.get('folder-id');
-        const folderName = formData?.get('folder-name');
-        const confirmFolderName = formData?.get('confirm-folder-name');
-
-        if (folderName === confirmFolderName) {
-            console.log('Deleting folder:', folderId);
-        } else {
-            console.log('Folder name does not match');
-        }
-    })
-</script>
-
 <style>
     #edit-folder-container {
         height: 100%;
@@ -90,25 +45,5 @@ const currentFolder = folderList.find((folder) => folder.id === editId);
         flex-direction: column;
         gap: 1rem;
         padding-top: .5rem;
-    }
-
-    .delete-folder-container {
-        padding-top: 1rem;
-    }
-
-    .modal-body {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-
-        span {
-            font-size: .875rem;
-        }
-
-        code {
-            background-color: hsl(var(--background-step-3));
-            padding: .25rem;
-            border-radius: 4px;
-        }
     }
 </style>

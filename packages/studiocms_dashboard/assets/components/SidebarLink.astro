@@ -18,7 +18,6 @@ const activeIcon = `${icon}-solid`;
 
 const compId = crypto.randomUUID();
 ---
-
 <a id={compId} class="sidebar-link" {...props}>
   <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
   <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
@@ -60,37 +59,3 @@ const compId = crypto.randomUUID();
   setSidebarLinks();
 </script>
 
-<style>
-  .sidebar-link {
-    display: flex;
-    flex-direction: row;
-    gap: .5rem;
-    align-items: center;
-    border-radius: .5rem;
-    transition: all .15s ease;
-    width: 100%;
-    padding: .375rem .5rem;
-    text-decoration: none;
-    color: hsl(var(--text-muted));
-  }
-
-  .not-selected {
-    display: block;
-  }
-
-  .selected {
-    display: none;
-  }
-
-  .sidebar-link:hover {
-    background-color: hsl(var(--background-step-2));
-  }
-
-  .sidebar-link.active {
-    color: hsl(var(--text));
-  }
-
-  .sidebar-link.active .sidebar-link-icon {
-    color: hsl(var(--primary-base));
-  }
-</style>

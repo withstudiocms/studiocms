@@ -1,7 +1,7 @@
 ---
 import '../../../styles/tiny-mde.css';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Button, Center, Icon, Input, Modal, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -89,51 +89,6 @@ function getParentFolderValue(value: string | null): string | undefined {
 
     </form>
 </div>
-
-<div class="delete-button-container">
-    <Button id="delete-page-modal-trigger" color="danger" type="submit" size="sm" disabled={pageData.slug === 'index' || pageData.slug === 'about'}>
-        <Icon name="trash-20-solid" width={20} height={20} />
-        Delete Page
-    </Button>
-    <Modal 
-        id='delete-page-modal'
-        isForm
-        cancelButton={{ label: 'Cancel', color: 'default' }}
-        actionButton={{ label: 'Confirm', color: 'danger' }}
-        >
-        <h2 slot='header'>Are you sure you want to Delete this page?</h2>
-        <Center>
-            <div class="modal-body">
-                <input type="hidden" name="page-id" value={pageData.id} />
-                <input type="hidden" name="page-slug" value={pageData.slug} />
-                
-                <span>Enter the slug <code>{pageData.slug}</code> to confirm</span>
-        
-                <Input name="slug-confirm" placeholder={`${pageData.slug.slice(0, pageData.slug.length-2)}...`} isRequired />
-        
-                <span style="color: hsl(var(--danger-base))">This action cannot be undone.</span>
-            </div>
-        </Center>
-    </Modal>
-</div>
-
-<script>
-    import { ModalHelper } from 'studiocms:ui/components';
-
-    const deletePageModal = new ModalHelper('delete-page-modal', 'delete-page-modal-trigger');
-
-    deletePageModal.registerConfirmCallback((formData) => {
-        const pageId = formData?.get('page-id')?.toString();
-        const pageSlug = formData?.get('page-slug')?.toString();
-        const slugConfirm = formData?.get('slug-confirm')?.toString();
-
-        if (slugConfirm === pageSlug) {
-            console.log('Confirmed', pageId);
-        } else {
-            console.log('Not Confirmed');
-        }
-    })
-</script>
 
 <div 
     id="edit-page-grabber" 
@@ -333,11 +288,6 @@ document.addEventListener('astro:page-load', () => listener());
         padding-top: .5rem;
     }
 
-    .delete-button-container {
-        padding-top: 1rem;
-    }
-
-
     .tab-section {
         display: flex;
         flex-direction: column;
@@ -377,21 +327,5 @@ document.addEventListener('astro:page-load', () => listener());
         }
     }
 
-
-    .modal-body {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-
-        span {
-            font-size: .875rem;
-        }
-
-        code {
-            background-color: hsl(var(--background-step-3));
-            padding: .25rem;
-            border-radius: 4px;
-        }
-    }
 
 </style>
