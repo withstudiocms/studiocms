@@ -13,7 +13,7 @@ body {
 }
 
 main {
-	min-height: 100vh;
+	min-height: 99vh;
 	width: 100%;
 	/* padding: 1.5rem; */
 	position: relative;
@@ -135,13 +135,10 @@ main {
 	flex-direction: column;
 	align-items: center;
 	gap: .25rem;
-	padding: 1.5rem;
+	padding-top: .5rem;
 	color: hsl(var(--text-muted));
 	font-size: .875em;
-
-	& strong {
-		font-weight: 700;
-	}
+	justify-content: center;
 
 	& a {
 		color: hsl(var(--text-muted));

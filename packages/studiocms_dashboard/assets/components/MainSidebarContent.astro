@@ -4,6 +4,7 @@ import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
 import StudioCMSLogo from '../components/StudioCMSLogo.astro';
+import Footer from './Footer.astro';
 import SidebarLink from './SidebarLink.astro';
 import Admin from './islands/sidebar/Admin.astro';
 import Editor from './islands/sidebar/Editor.astro';
@@ -76,6 +77,8 @@ const sidebar = getSidebarLinks(lang);
     </div>
     
   </Dropdown>
+
+  <Footer />
 </div>
 
 <script>

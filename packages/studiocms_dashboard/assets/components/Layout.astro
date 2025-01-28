@@ -4,7 +4,6 @@ import { Button, Icon, Toaster } from 'studiocms:ui/components';
 import { makePageTitle } from '../utils/makePageTitle.js';
 import BaseHead from './BaseHead.astro';
 import DoubleSidebar from './DoubleSidebar.astro';
-import Footer from './Footer.astro';
 import SingleSidebar from './SingleSidebar.astro';
 import LoginChecker from './islands/LoginChecker.astro';
 
@@ -16,7 +15,6 @@ type Props = {
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
-	footer?: boolean;
 };
 
 const {
@@ -25,7 +23,6 @@ const {
 	lang = 'en-us',
 	requiredPermission = 'unknown',
 	sidebar = 'single',
-	footer = true,
 } = Astro.props;
 
 const title = makePageTitle(propTitle, dbConfig);
@@ -57,8 +54,6 @@ const description = propDescription ?? dbConfig.description;
         <div class="container-content">
           <slot />
         </div>
-
-        { footer && <Footer /> }
 
       </div>
     </main>
