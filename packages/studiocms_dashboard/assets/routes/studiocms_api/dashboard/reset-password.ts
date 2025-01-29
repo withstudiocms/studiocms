@@ -15,14 +15,6 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
-	// Get user data
-	const userData = await getUserData(ctx);
-
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
-	}
-
 	const jsonData = await ctx.request.json();
 
 	const { token, id, userid, password, confirm_password } = jsonData;
