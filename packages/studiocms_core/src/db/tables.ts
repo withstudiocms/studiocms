@@ -15,6 +15,14 @@ export const StudioCMSUsers = defineTable({
 	},
 });
 
+export const StudioCMSUserResetTokens = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		token: column.text(),
+	},
+});
+
 /** StudioCMS - OAuth Accounts Table for Astro DB */
 export const StudioCMSOAuthAccounts = defineTable({
 	columns: {

@@ -70,6 +70,7 @@ export const StudioCMSRoutes = {
 		config: dashboardAPIRoute('config'),
 		users: dashboardAPIRoute('users'),
 		profile: dashboardAPIRoute('profile'),
+		createResetLink: dashboardAPIRoute('create-reset-link'),
 		content: {
 			page: dashboardAPIRoute('content/page'),
 			folder: dashboardAPIRoute('content/folder'),

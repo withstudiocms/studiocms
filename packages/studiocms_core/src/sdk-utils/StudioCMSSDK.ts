@@ -1,3 +1,5 @@
+import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
+import jwt from 'jsonwebtoken';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
@@ -11,6 +13,7 @@ import {
 	tsPermissions,
 	tsSessionTable,
 	tsSiteConfig,
+	tsUserResetTokens,
 	tsUsers,
 } from './tables.js';
 import type {
@@ -514,6 +517,25 @@ export class StudioCMSSDK {
 	public generateRandomIDNumber(length: number): number {
 		return Math.floor(Math.random() * 10 ** length);
 	}
+
+	public generateToken = (userId: string): string => {
+		return jwt.sign({ userId }, CMS_ENCRYPTION_KEY, { expiresIn: '3h' });
+	};
+
+	public resetTokenBucket = {
+		new: async (userId: string) => {
+			const token = this.generateToken(userId);
+
+			return await this.db
+				.insert(tsUserResetTokens)
+				.values({ id: crypto.randomUUID(), userId, token })
+				.returning()
+				.get();
+		},
+		delete: async (userId: string): Promise<void> => {
+			await this.db.delete(tsUserResetTokens).where(this.eq(tsUserResetTokens.userId, userId));
+		},
+	};
 
 	/**
 	 * Initializes the StudioCMS SDK with various utility functions.

@@ -10,6 +10,7 @@ import {
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
+	StudioCMSUserResetTokens,
 	StudioCMSUsers,
 } from '../db/tables.js';
 
@@ -83,4 +84,13 @@ export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSD
 export const tsPageFolderStructure = asDrizzleTable(
 	'StudioCMSPageFolderStructure',
 	StudioCMSPageFolderStructure
+);
+
+/**
+ * # StudioCMS - User Reset Tokens Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsUserResetTokens = asDrizzleTable(
+	'StudioCMSUserResetTokens',
+	StudioCMSUserResetTokens
 );

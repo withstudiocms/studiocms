@@ -10,6 +10,7 @@ import {
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
+	StudioCMSUserResetTokens,
 	StudioCMSUsers,
 } from './tables.js';
 
@@ -27,5 +28,6 @@ export default defineDb({
 		StudioCMSOAuthAccounts,
 		StudioCMSDiffTracking,
 		StudioCMSPageFolderStructure,
+		StudioCMSUserResetTokens,
 	},
 });

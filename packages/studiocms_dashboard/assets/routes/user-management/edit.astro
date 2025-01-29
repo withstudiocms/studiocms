@@ -1,6 +1,7 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
 import { FormattedDate } from 'studiocms:components';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
 import Layout from '../../components/Layout.astro';
@@ -92,6 +93,23 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
       </table>
     </Card>
 
+    <div>
+      <Button id="password-reset-link-trigger" variant={'outlined'} color={'danger'} size="sm" disabled={disableDelete}>
+        <Icon name="lock-open-20-solid" width={20} height={20} />
+        Create Reset Link
+      </Button>
+      <Modal id='password-reset-link-modal'>
+        <h2 slot="header">Reset Password Link</h2>
+        <Center>
+          <div class="modal-body">
+            <span>Reset link for user <code>{user?.username}</code> has been created.</span>
+            <span>Link: </span>
+            <code id="reset-link-placeholder"></code>
+          </div>
+        </Center>
+      </Modal>
+    </div>
+
     <form id="edit-user-form">
 
       <div class="text-h3">Role</div>
@@ -118,8 +136,54 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
     )}
   </div>
 
+  <div style="display: none;" id="resetlinkselector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
+
   <script>
     import { ModalHelper } from 'studiocms:ui/components';
+
+    const resetLinkModal = new ModalHelper('password-reset-link-modal');
+
+    const passwordResetLinkTrigger = document.getElementById('password-reset-link-trigger') as HTMLButtonElement;
+
+    const resetLinkAPI = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.link;
+    const userId = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.userid;
+    const dashboardIndex = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.dashboard;
+
+
+    function generateResetLink(token: {
+      id: string;
+      userId: string;
+      token: string;
+    }) {
+      return `${dashboardIndex}/reset-password?userid=${token.userId}token=${token.token}bucketid=${token.id}`;
+    }
+
+    passwordResetLinkTrigger.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const apiRes = await fetch(resetLinkAPI!, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: userId })
+      });
+
+      if (!apiRes.ok) {
+        console.error('Failed to create reset link');
+        return;
+      }
+
+      const token = await apiRes.json();
+
+      const resetLink = generateResetLink(token);
+
+      const resetLinkPlaceholder = document.getElementById('reset-link-placeholder') as HTMLElement;
+
+      resetLinkPlaceholder.innerText = `${window.location.origin}${resetLink}`;
+
+      resetLinkModal.show();
+    })
 
     const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
 
@@ -225,6 +289,26 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         background-color: hsl(var(--background-step-3));
         padding: .25rem;
         border-radius: 4px;
+    }
+  }
+
+  #password-reset-link-modal {
+
+    & .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+
+      span {
+        font-size: .875rem;
+      }
+
+      code {
+        background-color: hsl(var(--background-step-3));
+        padding: .25rem;
+        border-radius: 4px;
+      }
     }
   }
 

@@ -115,6 +115,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					entrypoint: routesDir.api('content/folder.ts'),
 				},
 				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'create-reset-link',
+					entrypoint: routesDir.api('create-reset-link.ts'),
+				},
+				{
 					enabled: dbStartPage,
 					pattern: 'setup',
 					entrypoint: routesDir.fts('firstTimeSetup.ts'),
