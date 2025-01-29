@@ -371,6 +371,5 @@ if (!smallScreen) {
 	} catch (err) {
 		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);
 		logoContainer.classList.add('loaded');
-		// TODO: Show static image instead (configured background plus non-transparent logo in the same position, allow for custom bgs)
 	}
 }

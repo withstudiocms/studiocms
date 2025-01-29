@@ -1,5 +1,4 @@
 import type { ExpiringBucket, RefillBucket, ThrottlingCounter } from './types.js';
-// TODO: Implement rate limiting for auth API routes
 
 /**
  * Represents a token bucket that refills tokens at a specified interval.

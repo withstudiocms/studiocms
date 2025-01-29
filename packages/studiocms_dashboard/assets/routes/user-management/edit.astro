@@ -204,6 +204,8 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         return;
       }
 
+      // TODO Setup API endpoint to Delete user
+
       if (userUsername === userUsernameConfirm) {
         console.log('Confirmed', userId);
       } else {
@@ -221,6 +223,7 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         rank: formData.get('rank')?.toString(),
       }
 
+      // TODO Setup API endpoint to update user rank
       console.log(data);
     })
   </script>

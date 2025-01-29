@@ -73,9 +73,7 @@ export const action = (key: Key, isSelect: boolean) => {
 	if (key.name === 'tab') return 'next';
 	if (key.name === 'pagedown') return 'nextPage';
 	if (key.name === 'pageup') return 'prevPage';
-	// TODO create home() in prompt types (e.g. TextPrompt)
 	if (key.name === 'home') return 'home';
-	// TODO create end() in prompt types (e.g. TextPrompt)
 	if (key.name === 'end') return 'end';
 
 	if (key.name === 'up') return 'up';

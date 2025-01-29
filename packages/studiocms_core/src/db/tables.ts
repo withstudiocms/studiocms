@@ -49,7 +49,6 @@ export const StudioCMSPermissions = defineTable({
 	},
 });
 
-// TODO: Ensure there is always a root folder added to the table
 /** StudioCMS - Page Folder Structure */
 export const StudioCMSPageFolderStructure = defineTable({
 	columns: {

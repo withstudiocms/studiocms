@@ -9,6 +9,8 @@ const editId = urlParams.get('folder') || '';
 const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
 
 const currentFolder = folderList.find((folder) => folder.id === editId);
+
+// TODO: Setup form submission and api call
 ---
 <div id="edit-folder-container">
 
