@@ -1,6 +1,5 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
