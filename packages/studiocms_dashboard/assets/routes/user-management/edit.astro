@@ -155,7 +155,7 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
       userId: string;
       token: string;
     }) {
-      return `${dashboardIndex}/reset-password?userid=${token.userId}token=${token.token}bucketid=${token.id}`;
+      return `${dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
     }
 
     passwordResetLinkTrigger.addEventListener('click', async (e) => {

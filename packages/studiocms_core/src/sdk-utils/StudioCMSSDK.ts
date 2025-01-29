@@ -522,6 +522,10 @@ export class StudioCMSSDK {
 		return jwt.sign({ userId }, CMS_ENCRYPTION_KEY, { expiresIn: '3h' });
 	};
 
+	public test(token: string) {
+		return jwt.verify(token, CMS_ENCRYPTION_KEY);
+	}
+
 	public resetTokenBucket = {
 		new: async (userId: string) => {
 			const token = this.generateToken(userId);
@@ -534,6 +538,21 @@ export class StudioCMSSDK {
 		},
 		delete: async (userId: string): Promise<void> => {
 			await this.db.delete(tsUserResetTokens).where(this.eq(tsUserResetTokens.userId, userId));
+		},
+		check: async (token: string) => {
+			const _token = this.test(token) as { userId: string };
+
+			const resetToken = await this.db
+				.select()
+				.from(tsUserResetTokens)
+				.where(this.eq(tsUserResetTokens.userId, _token.userId))
+				.get();
+
+			if (!resetToken) {
+				return false;
+			}
+
+			return resetToken.token === token;
 		},
 	};
 
