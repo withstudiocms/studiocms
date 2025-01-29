@@ -103,7 +103,6 @@ const sidebar = getSidebarLinks(lang);
     });
   }
   
-  document.addEventListener('astro:page-load', () => {
-    setup();
-  });
+  document.addEventListener('astro:page-load', setup);
+  setup();
 </script>

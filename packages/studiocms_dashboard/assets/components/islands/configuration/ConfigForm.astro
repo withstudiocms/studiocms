@@ -106,6 +106,7 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
     }
 
     document.addEventListener('astro:page-load', setupConfigForm);
+    setupConfigForm();
 </script>
 
 <script is:inline>

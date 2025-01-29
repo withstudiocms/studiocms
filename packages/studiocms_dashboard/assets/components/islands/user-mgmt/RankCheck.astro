@@ -22,7 +22,7 @@ const isAuthorized = await verifyUserPermissionLevel(
     style="display: hidden;" 
 ></rank-check>
 
-<script is:inline>
+<script>
     if (!customElements.get('rank-check')) {
         class RankCheck extends HTMLElement {
             constructor() {
@@ -31,7 +31,7 @@ const isAuthorized = await verifyUserPermissionLevel(
                 const redirect = this.dataset.redirect;
 
                 if (authorized === 'false') {
-                    window.location.href = redirect;
+                    window.location.href = redirect!;
                 }
             }
         }

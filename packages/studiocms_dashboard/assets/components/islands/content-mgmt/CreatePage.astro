@@ -8,8 +8,6 @@ import {
 	tagsOptions,
 	trueFalse,
 } from './shared';
-
-// TODO: Setup form submission and api call
 ---
 <div id="create-page-container">
     <form id="page-create-form">
@@ -134,6 +132,7 @@ import {
           };
 
           console.log("DRAFT: " + JSON.stringify(pageData));
+          // TODO: Call the API to save the draft
         })
 
         publishButton.addEventListener('click', async (e) => {
@@ -157,10 +156,12 @@ import {
           };
 
           console.log("PUBLISH: " + JSON.stringify(pageData));
+          // TODO: Call the API to publish the page
         })
     }
   
-    document.addEventListener('astro:page-load', () => listener());
+    document.addEventListener('astro:page-load', listener);
+    listener();
   </script>
 
 <script is:inline>
@@ -291,7 +292,8 @@ import {
         });
       }
 
-document.addEventListener('astro:page-load', () => listener());
+document.addEventListener('astro:page-load', listener);
+listener();
 </script>
 
 <style>

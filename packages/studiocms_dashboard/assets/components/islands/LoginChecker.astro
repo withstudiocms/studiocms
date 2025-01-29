@@ -21,7 +21,7 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
     style="display: hidden;" 
 ></login-check>
 
-<script is:inline>
+<script>
     if (!customElements.get('login-check')) {
         class LoginCheck extends HTMLElement {
             constructor() {
@@ -32,7 +32,7 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
                 const redirectLogin = this.dataset.redirect_login;
 
                 if (isLoggedIn === 'false') {
-                    window.location.href = redirectLogin;
+                    window.location.href = redirectLogin!;
                 }
 
                 if (window.location.pathname === redirectProfile) {
@@ -40,7 +40,7 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
                 }
 
                 if (authorized === 'false') {
-                    window.location.href = redirectProfile;
+                    window.location.href = redirectProfile!;
                 }
             }
         }

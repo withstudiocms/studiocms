@@ -142,7 +142,8 @@ async function listener() {
         // TODO: Setup form submission and api call
     });
 }
-document.addEventListener('astro:page-load', () => listener());
+document.addEventListener('astro:page-load', listener);
+listener();
 </script>
 
 <script is:inline>

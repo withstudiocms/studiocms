@@ -9,9 +9,12 @@ import MainSidebarContent from './MainSidebarContent.astro';
 <script>
   import { SingleSidebarHelper } from "studiocms:ui/components";
 
-  document.addEventListener('astro:page-load', () => {
+  function setupSidebar() {
     if (document.getElementById('sui-sidebar')) {
       new SingleSidebarHelper('nav-toggle');
     }
-  });
+  }
+
+  document.addEventListener('astro:page-load', setupSidebar);
+  setupSidebar();
 </script>
