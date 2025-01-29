@@ -43,14 +43,14 @@ const { isNewFolder, isNewPage } = Astro.props;
 <Divider background={'background-step-2'}><span id="sidebar-divider-title">Items</span></Divider>
 
 <div 
-  class="inner-sidebar-items" 
+  class="inner-sidebar-items scrollbar" 
   id="inner-sidebar-items" 
   >
   <PageList {isNewFolder} {isNewPage} />
 </div>
 
 <div
-  class="inner-sidebar-items"
+  class="inner-sidebar-items scrollbar"
   id="inner-sidebar-items-search"
   style="display: none;"
   data-searchlist={StudioCMSRoutes.endpointLinks.searchList}

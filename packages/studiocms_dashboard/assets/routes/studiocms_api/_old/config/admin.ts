@@ -2,7 +2,7 @@ import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext } from 'astro';
-import { simpleResponse } from '../../../utils/simpleResponse';
+import { simpleResponse } from '../../../../utils/simpleResponse';
 
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 

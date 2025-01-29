@@ -4,7 +4,7 @@ import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import { CMSSiteConfigId } from '@studiocms/core/consts';
 import type { APIContext } from 'astro';
-import { simpleResponse } from '../../../utils/simpleResponse';
+import { simpleResponse } from '../../../../utils/simpleResponse';
 
 const { testingAndDemoMode } = developerConfig;
 

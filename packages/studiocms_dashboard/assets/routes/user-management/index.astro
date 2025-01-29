@@ -1,11 +1,9 @@
 ---
 import Layout from '../../components/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
-// import { useTranslations } from 'studiocms:i18n';
 import InnerSidebarElement from '../../components/islands/user-mgmt/InnerSidebarElement.astro';
 
 const lang = 'en-us';
-// const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 <Layout 
   title="User Management"
@@ -37,6 +35,7 @@ const lang = 'en-us';
     flex-direction: column;
     align-items: center;
     width: 100%;
+    min-height: 100%;
     height: 100%;
   }
 

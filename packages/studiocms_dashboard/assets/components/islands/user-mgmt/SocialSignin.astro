@@ -36,70 +36,53 @@ const connectedProviders = socialProviders.filter(({ connected }) => connected);
 
 <Card fullWidth class="social-signin-bg">
 
-    <div class="button-holder">
-        {
-            connectedProviders.map(({ enabled, href, image, label }) => enabled && (
-                <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
-                    <div class="icon-and-label">
-                        <Fragment set:html={image} />
-                        <span>{label}</span>
-                    </div>
-                </Button>
-            ))
-        }
 
-        {
-            connectedProviders.length === 0 && (
-                <Center><div>No connected accounts found.</div></Center>
-            )
-        }
-    </div>
+    {
+        connectedProviders.length === 0 ? (
+            <Center>No connected accounts found.</Center>
+        ) : (
+            <div class="button-holder">
+                {
+                    connectedProviders.map(({ enabled, image, label }) => enabled && (
+                        <Button variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                        </Button>
+                    ))
+                }
+            </div>
+        )
+    }
 
 </Card>
 
 <style>
-    .social-signin-options {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .social-signin-cards {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-        height: 100%;
-    }
-
-    @media screen and (max-width: 768px) {
-        .social-signin-cards {
-            flex-direction: column;
-        }
-    }
-
     .social-signin-bg {
         background-color: hsl(var(--background-step-1));
         height: auto;
         width: auto;
-    }
 
-    .oauth-button {
-        display: flex;
-        align-items: stretch;
-        justify-content: space-between !important;
-        width: 100%;
-        margin-button: 1rem;
-    }
+        & .button-holder {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: .5rem;
+        }
 
-    .icon-and-label {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
+        & .oauth-button {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between !important;
+            width: 100%;
+            margin-button: 1rem;
+            cursor: default;
 
-    .button-holder {
-        display: flex;
-        flex-direction: column;
-        gap: .5rem;
+            & .icon-and-label {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
     }
-    
 </style>

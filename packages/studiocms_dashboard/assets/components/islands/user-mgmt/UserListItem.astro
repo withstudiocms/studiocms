@@ -58,22 +58,3 @@ const { user, searchQuery } = Astro.props;
     document.addEventListener('astro:page-load', setUserLinks);
     setUserLinks();
 </script>
-
-<style>
-    .sidebar-user {
-        padding: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-decoration: none;
-        color: hsl(var(--text-normal));
-    }
-    
-    .sidebar-user:hover {
-        background-color: hsl(var(--background-step-1));
-    }
-    
-    .sidebar-user.active {
-        background-color: hsl(var(--background-step-2));
-    }
-</style>

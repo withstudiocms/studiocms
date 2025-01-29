@@ -61,7 +61,7 @@ function getParentFolderValue(value: string | null): string | undefined {
         
                 <div class="form-row">
                     <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
-                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index' || pageData.slug === 'about'} />
+                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index'} />
                 </div>
         
                 <div class="form-row">

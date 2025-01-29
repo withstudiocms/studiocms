@@ -1,6 +1,8 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { FormattedDate } from 'studiocms:components';
 import studioCMS_SDK from 'studiocms:sdk';
-import { Button, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
+import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
 import Layout from '../../components/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { providerData, showOAuth } from '../../components/islands/profile/oAuthButtonProviders';
@@ -16,6 +18,10 @@ const userId = urlParams.get('user') || '';
 const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
+
+const { user: loggedInUser } = await getUserData(Astro);
+
+const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === loggedInUser?.id;
 ---
 <Layout 
   title="User Management"
@@ -36,8 +42,9 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 
   <div slot="header">
     <PageHeader title={user?.name || 'User Management'}>
+
       <Group>
-        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm">
+        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete}>
           <Icon name="trash-20-solid" width={20} height={20} />
           Delete
         </Button>
@@ -74,6 +81,37 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
   <div id="edit-user-container">
     <form id="edit-user-form">
 
+      <div class="text-h3">User Information</div>
+
+      <Card class="user-information-block" fullWidth variant={'filled'}>
+        <table>
+          <tr>
+            <td>Email</td>
+            <td>{user?.email}</td>
+          </tr>
+          <tr>
+            <td>Username</td>
+            <td>{user?.username}</td>
+          </tr>
+          {user?.url && (
+            <tr>
+              <td>Website</td>
+              <td>{user?.url}</td>
+            </tr>
+          )}
+          <tr>
+            <td>Created at</td>
+            <td><FormattedDate date={user?.createdAt!} /></td>
+          </tr>
+          { user?.updatedAt && (
+            <tr>
+              <td>Last Updated</td>
+              <td><FormattedDate date={user?.updatedAt} /></td>
+            </tr>
+          )}
+        </table>
+      </Card>
+
       <div class="text-h3">Role</div>
 
       <input type="hidden" name="user-id" value={user?.id}>
@@ -106,9 +144,18 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
     const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
     
     userDeleteModal.registerConfirmCallback((formData) => {
-      const userId = formData?.get('user-id')?.toString();
-      const userUsername = formData?.get('user-username')?.toString();
-      const userUsernameConfirm = formData?.get('confirm-user-username')?.toString();
+      if (!formData) {
+        console.error('No form data provided') 
+        return
+      };
+      const userId = formData.get('user-id')?.toString();
+      const userUsername = formData.get('user-username')?.toString();
+      const userUsernameConfirm = formData.get('confirm-user-username')?.toString();
+
+      if (!userId || !userUsername || !userUsernameConfirm) {
+        console.error('Missing form data');
+        return;
+      }
 
       if (userUsername === userUsernameConfirm) {
         console.log('Confirmed', userId);
@@ -190,6 +237,27 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
         background-color: hsl(var(--background-step-3));
         padding: .25rem;
         border-radius: 4px;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: 2px solid hsl(var(--background-step-1));
+    }
+
+    tr:nth-child(even) {
+      background-color: hsl(var(--background-step-2));
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: .5rem;
     }
   }
 </style>
