@@ -81,7 +81,7 @@ export async function createLocalUser(
 
 	const avatar = await createUserAvatar(email);
 
-	return await studioCMS_SDK.AUTH.user.create({
+	const newUser = await studioCMS_SDK.AUTH.user.create({
 		id: crypto.randomUUID(),
 		name,
 		username,
@@ -90,6 +90,10 @@ export async function createLocalUser(
 		createdAt: new Date(),
 		avatar,
 	});
+
+	await studioCMS_SDK.POST.databaseEntry.permissions(newUser.id, 'visitor');
+
+	return newUser;
 }
 
 /**

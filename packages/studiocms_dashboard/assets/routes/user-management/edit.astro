@@ -1,0 +1,195 @@
+---
+import studioCMS_SDK from 'studiocms:sdk';
+import { Button, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
+import Layout from '../../components/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { providerData, showOAuth } from '../../components/islands/profile/oAuthButtonProviders';
+import InnerSidebarElement from '../../components/islands/user-mgmt/InnerSidebarElement.astro';
+import RankCheck from '../../components/islands/user-mgmt/RankCheck.astro';
+import SocialSignin from '../../components/islands/user-mgmt/SocialSignin.astro';
+
+const lang = 'en-us';
+
+const urlParams = Astro.url.searchParams;
+const userId = urlParams.get('user') || '';
+
+const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
+
+const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
+---
+<Layout 
+  title="User Management"
+  requiredPermission='admin'
+  sidebar='double'
+  {lang}
+  >
+  {/*
+    Check if the user has the required permission to manage the user's rank level
+  */}
+  <RankCheck requiredPermission={user?.permissionsData?.rank} />
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-user-links-container">
+      <InnerSidebarElement />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader title={user?.name || 'User Management'}>
+      <Group>
+        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm">
+          <Icon name="trash-20-solid" width={20} height={20} />
+          Delete
+        </Button>
+        <Button id="edit-user-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-user-form">
+          <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+          Save Changes
+        </Button>
+      </Group>
+
+      <Modal
+        id="delete-user-modal"
+        isForm
+        cancelButton={{ label: 'Cancel', color: 'default' }}
+        actionButton={{ label: 'Delete', color: 'danger' }}
+        >
+        <h2 slot="header">Are you sure you want to delete this user?</h2>
+        <Center>
+          <div class="modal-body">
+            <input type="hidden" name="user-id" value={userId} />
+            <input type="hidden" name="user-username" value={user?.username} />
+
+            <span>Enter the user name <code>{user?.username}</code> to confirm</span>
+
+            <Input name="confirm-user-username" placeholder={`${user?.username.slice(0, user?.username.length-2)}...`} isRequired />
+          
+            <span style="color: hsl(var(--danger-base))">This action cannot be undone.</span>
+          </div>
+        </Center>
+      </Modal>
+
+    </PageHeader>
+  </div>
+
+  <div id="edit-user-container">
+    <form id="edit-user-form">
+
+      <div class="text-h3">Role</div>
+
+      <input type="hidden" name="user-id" value={user?.id}>
+
+      <Select 
+        name="rank"  
+        isRequired 
+        fullWidth 
+        defaultValue={user?.permissionsData?.rank || 'visitor'}
+        options={[
+          { label: 'Owner', value: 'owner' },
+          { label: 'Administrator', value: 'admin' },
+          { label: 'Editor', value: 'editor' },
+          { label: 'Visitor', value: 'visitor' },
+        ]}
+        />
+
+        { shouldShowOAuth && ( 
+          <SocialSignin oAuthData={user?.oAuthData} />
+        )}
+
+    </form>
+  </div>
+
+  <script>
+    import { ModalHelper } from 'studiocms:ui/components';
+
+    const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
+
+    const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
+    
+    userDeleteModal.registerConfirmCallback((formData) => {
+      const userId = formData?.get('user-id')?.toString();
+      const userUsername = formData?.get('user-username')?.toString();
+      const userUsernameConfirm = formData?.get('confirm-user-username')?.toString();
+
+      if (userUsername === userUsernameConfirm) {
+        console.log('Confirmed', userId);
+      } else {
+        console.log('Not Confirmed');
+      }
+    })
+
+    editUserForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(editUserForm);
+
+      const data = {
+        id: formData.get('user-id')?.toString(),
+        rank: formData.get('rank')?.toString(),
+      }
+
+      console.log(data);
+    })
+  </script>
+
+</Layout>
+
+<style>
+
+  .sidebar-user-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: hsl(var(--background-base));
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: hsl(var(--text-muted));
+    }
+  }
+
+  #edit-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    span {
+        font-size: .875rem;
+    }
+
+    code {
+        background-color: hsl(var(--background-step-3));
+        padding: .25rem;
+        border-radius: 4px;
+    }
+  }
+</style>

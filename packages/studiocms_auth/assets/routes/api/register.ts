@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';

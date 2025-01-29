@@ -1,0 +1,41 @@
+---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:lib';
+
+interface Props {
+	requiredPermission?: string;
+}
+
+const { requiredPermission } = Astro.props;
+
+const user = await getUserData(Astro);
+
+const isAuthorized = await verifyUserPermissionLevel(
+	user,
+	(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
+);
+---
+
+<rank-check
+    data-authorized={`${isAuthorized}`}
+    data-redirect={StudioCMSRoutes.mainLinks.userManagement}
+    style="display: hidden;" 
+></rank-check>
+
+<script is:inline>
+    if (!customElements.get('rank-check')) {
+        class RankCheck extends HTMLElement {
+            constructor() {
+                super();
+                const authorized = this.dataset.authorized;
+                const redirect = this.dataset.redirect;
+
+                if (authorized === 'false') {
+                    window.location.href = redirect;
+                }
+            }
+        }
+
+        customElements.define('rank-check', RankCheck);
+    }
+</script>

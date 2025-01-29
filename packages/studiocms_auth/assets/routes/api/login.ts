@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { verifyPasswordHash } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import studioCMS_SDK from 'studiocms:sdk';

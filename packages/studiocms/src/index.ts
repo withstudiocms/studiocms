@@ -14,7 +14,12 @@ import imageHandler from '@studiocms/imagehandler';
 import renderers from '@studiocms/renderers';
 import robotsTXT from '@studiocms/robotstxt';
 import ui from '@studiocms/ui';
-import { createResolver, defineIntegration, withPlugins } from 'astro-integration-kit';
+import {
+	addVirtualImports,
+	createResolver,
+	defineIntegration,
+	withPlugins,
+} from 'astro-integration-kit';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
 import packageJson from 'package-json';
@@ -55,6 +60,11 @@ export default defineIntegration({
 		// Resolver Function
 		const { resolve } = createResolver(import.meta.url);
 
+		const tempComponentList: Record<string, string> = {
+			example: './example.astro',
+			example2: './example.astro',
+		};
+
 		// Return the Integration
 		return withPlugins({
 			name: pkgName,
@@ -93,7 +103,7 @@ export default defineIntegration({
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: ui() },
+						{ integration: ui({ noInjectCSS: true }) },
 						{ integration: core(options) },
 						{ integration: renderers(rendererConfig, verbose) },
 						{ integration: imageHandler(options) },
@@ -199,6 +209,22 @@ export default defineIntegration({
 						defaultExport: pkgVersion,
 					});
 
+					addVirtualImports(params, {
+						name: pkgName,
+						imports: {
+							'studiocms:component-proxy': `
+								export const componentKeys = ${JSON.stringify(
+									Object.keys(tempComponentList).map((key) => key.toLowerCase())
+								)};
+
+								${Object.entries(tempComponentList)
+									// TODO: Update Resolve to point to Astro user config
+									.map(([key, value]) => `export { default as ${key} } from '${resolve(value)}';`)
+									.join('\n')}
+							`,
+						},
+					});
+
 					let pluginListLength = 0;
 					let pluginListMessage = '';
 
@@ -219,7 +245,7 @@ export default defineIntegration({
 					changelogHelper(params);
 				},
 				// Config Done: Make DTS file for StudioCMS Plugins Virtual Module
-				'astro:config:done': ({ injectTypes }) => {
+				'astro:config:done': ({ injectTypes, config }) => {
 					// Make DTS file for StudioCMS Plugins Virtual Module
 					const dtsFile = astroDTSBuilder();
 
@@ -239,6 +265,20 @@ export default defineIntegration({
 						},
 					});
 
+					dtsFile.addModule('studiocms:component-proxy', {
+						namedExports: [
+							{
+								name: 'componentKeys',
+								typeDef: 'string[]',
+							},
+							...Object.keys(tempComponentList).map((key) => ({
+								name: key,
+								// TODO: Update Resolve to point to Astro user config
+								typeDef: `typeof import('${resolve(tempComponentList[key])}').default`,
+							})),
+						],
+					});
+
 					dtsFile.addModule('studiocms:mode', {
 						defaultExport: {
 							typeDef: `{ output: 'static' | 'server', prerenderRoutes: boolean }`,
@@ -256,7 +296,7 @@ export default defineIntegration({
 					});
 
 					// Inject the DTS file
-					injectTypes(dtsFile.makeAstroInjectedType('plugins.d.ts'));
+					injectTypes(dtsFile.makeAstroInjectedType('types.d.ts'));
 
 					// Log Setup Complete
 					messages.push({

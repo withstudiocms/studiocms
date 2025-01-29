@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
 	deleteSessionTokenCookie,
 	invalidateSession,

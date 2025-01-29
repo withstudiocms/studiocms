@@ -43,6 +43,7 @@ export const StudioCMSRoutes = {
 		createPage: makeDashboardRoute('create-page'),
 		siteConfiguration: makeDashboardRoute('configuration'),
 		userManagement: makeDashboardRoute('user-management'),
+		userManagementEdit: makeDashboardRoute('user-management/edit'),
 	},
 	authLinks: {
 		loginURL: makeDashboardRoute('login'),
@@ -64,6 +65,7 @@ export const StudioCMSRoutes = {
 		searchList: dashboardAPIRoute('search-list'),
 		partials: {
 			livePreviewBox: dashboardAPIRoute('liverender'),
+			userListItems: dashboardAPIRoute('user-list-items'),
 		},
 		config: {
 			siteConfig: dashboardAPIRoute('config/site'),

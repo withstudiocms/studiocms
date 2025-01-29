@@ -80,6 +80,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					pattern: 'search-list',
 					entrypoint: routesDir.api('search-list.ts'),
 				},
+				{
+					enabled: dashboardEnabled && !dbStartPage,
+					pattern: 'user-list-items',
+					entrypoint: routesDir.api('UserListItems.astro'),
+				},
 				// {
 				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
 				// 	pattern: 'config/site',
@@ -162,7 +167,12 @@ export const configSetup = defineUtility('astro:config:setup')(
 					{
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'user-management',
-						entrypoint: routesDir.route('user-management.astro'),
+						entrypoint: routesDir.route('user-management/index.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'user-management/edit',
+						entrypoint: routesDir.route('user-management/edit.astro'),
 					},
 				],
 			},
