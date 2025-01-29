@@ -1,9 +1,9 @@
 ---
-import UserListItem from '../../../components/islands/user-mgmt/UserListItem.astro';
+import UserListItem from '../../../../components/islands/user-mgmt/UserListItem.astro';
 
 export const partial = true;
 
-async function setContent() {
+async function setData() {
 	const jsonData:
 		| {
 				users: {
@@ -30,10 +30,10 @@ async function setContent() {
 	return 'No Users to display';
 }
 
-const Users = await setContent();
+const Data = await setData();
 ---
 { 
-	typeof Users !== 'string' 
-	? Users.users.map((user) => <UserListItem user={user} searchQuery={Users.searchQuery} />) 
-	: Users 
+	typeof Data !== 'string' 
+	? Data.users.map((user) => <UserListItem user={user} searchQuery={Data.searchQuery} />) 
+	: Data 
 }

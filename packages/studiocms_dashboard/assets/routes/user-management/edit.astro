@@ -79,38 +79,20 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
   </div>
 
   <div id="edit-user-container">
+
+    <div class="text-h3">User Information</div>
+
+    <Card class="user-information-block" fullWidth variant={'filled'}>
+      <table>
+        <tr> <td>Email</td> <td>{user?.email}</td> </tr>
+        <tr> <td>Username</td> <td>{user?.username}</td> </tr>
+        {user?.url && <tr> <td>Website</td> <td>{user?.url}</td> </tr> }
+        <tr> <td>Created at</td> <td><FormattedDate date={user?.createdAt!} /></td> </tr>
+        { user?.updatedAt && <tr> <td>Last Updated</td> <td><FormattedDate date={user?.updatedAt} /></td> </tr> }
+      </table>
+    </Card>
+
     <form id="edit-user-form">
-
-      <div class="text-h3">User Information</div>
-
-      <Card class="user-information-block" fullWidth variant={'filled'}>
-        <table>
-          <tr>
-            <td>Email</td>
-            <td>{user?.email}</td>
-          </tr>
-          <tr>
-            <td>Username</td>
-            <td>{user?.username}</td>
-          </tr>
-          {user?.url && (
-            <tr>
-              <td>Website</td>
-              <td>{user?.url}</td>
-            </tr>
-          )}
-          <tr>
-            <td>Created at</td>
-            <td><FormattedDate date={user?.createdAt!} /></td>
-          </tr>
-          { user?.updatedAt && (
-            <tr>
-              <td>Last Updated</td>
-              <td><FormattedDate date={user?.updatedAt} /></td>
-            </tr>
-          )}
-        </table>
-      </Card>
 
       <div class="text-h3">Role</div>
 
@@ -129,11 +111,11 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         ]}
         />
 
-        { shouldShowOAuth && ( 
-          <SocialSignin oAuthData={user?.oAuthData} />
-        )}
-
     </form>
+
+    { shouldShowOAuth && ( 
+      <SocialSignin oAuthData={user?.oAuthData} />
+    )}
   </div>
 
   <script>
@@ -218,6 +200,12 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
   }
 
   #edit-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #edit-user-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;

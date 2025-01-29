@@ -64,17 +64,15 @@ export const StudioCMSRoutes = {
 	endpointLinks: {
 		searchList: dashboardAPIRoute('search-list'),
 		partials: {
-			livePreviewBox: dashboardAPIRoute('liverender'),
+			livePreviewBox: dashboardAPIRoute('live-render'),
 			userListItems: dashboardAPIRoute('user-list-items'),
 		},
-		config: {
-			siteConfig: dashboardAPIRoute('config/site'),
-			adminConfig: dashboardAPIRoute('config/admin'),
-		},
-		pages: {
-			createPages: dashboardAPIRoute('pages/create'),
-			editPages: dashboardAPIRoute('pages/edit'),
-			deletePages: dashboardAPIRoute('pages/delete'),
+		config: dashboardAPIRoute('config'),
+		users: dashboardAPIRoute('users'),
+		profile: dashboardAPIRoute('profile'),
+		content: {
+			page: dashboardAPIRoute('content/page'),
+			folder: dashboardAPIRoute('content/folder'),
 		},
 	},
 	sdk: {

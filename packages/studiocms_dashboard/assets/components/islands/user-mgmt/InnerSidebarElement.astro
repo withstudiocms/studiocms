@@ -31,6 +31,8 @@ const safeUsers: {
       transition:persist-props
       id='create-user-dropdown'
       options={[
+        { label: 'Create New User', value: 'new-user', icon: 'user-plus' },
+        { label: 'Create User Invite', value: 'new-invite', icon: 'inbox-arrow-down' },
       ]}
       align={'end'}
       offset={8}
@@ -66,7 +68,7 @@ const safeUsers: {
         const createNewDropdown = new DropdownHelper('create-user-dropdown');
     
         createNewDropdown.registerClickCallback((value) => {
-            window.location.assign(value);
+            console.log('Clicked', value);
         });
     };
   
@@ -150,7 +152,7 @@ const safeUsers: {
         const ActualUserList = document.querySelector('#user-list') as HTMLDivElement;
         
         const userListElm = document.querySelector('#search-list') as HTMLDivElement;
-        const users: Users = JSON.parse(userListElm.dataset.users || '[]');
+        const users: Users = JSON.parse(userListElm.dataset.users!);
         const userListItemsPartial = userListElm.dataset.userpartial!;
 
         const url = new URL(window.location.href);

@@ -1,5 +1,6 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Card, Input, Select } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
@@ -17,7 +18,7 @@ const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
 const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 ---
 
-<form id="site-config-form">
+<form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
     <div class="form-content">
 
         <div class="form-row">
@@ -49,58 +50,132 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
     </div>
 </form>
 
-<script is:inline define:vars={{
-    blobsLight: blobs?.light?.src,
-    blobsDark: blobs?.dark?.src,
-    blocksLight: blocks?.light?.src,
-    blocksDark: blocks?.dark?.src,
-    curvesLight: curves?.light?.src,
-    curvesDark: curves?.dark?.src,
-}}>
+<div id="login-page-bgs"
+    data-blobs-light={blobs?.light?.src} data-blobs-dark={blobs?.dark?.src}
+    data-blocks-light={blocks?.light?.src} data-blocks-dark={blocks?.dark?.src}
+    data-curves-light={curves?.light?.src} data-curves-dark={curves?.dark?.src}
+></div>
 
-// Selectors
-const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
-const customInput = document.querySelector('input[name="login-page-background-custom"]');
-const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
-const previewContainer = document.querySelector('.login-preview-container');
-const lightImageHolder = document.querySelector('.light-image-holder');
-const darkImageHolder = document.querySelector('.dark-image-holder');
+<script>
+    import { toast } from "studiocms:ui/components";
 
-loginPageBgSelectOptions.forEach((option) => {
-    option.addEventListener('click', (event) => {
-        const selectedValue = option.getAttribute('value');
+    function setupConfigForm() {
+        const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
 
-        if (selectedValue === 'custom') {
-            customInput.removeAttribute('disabled');
-            customInputLabel.classList.remove('disabled');
-        } else {
-            customInput.setAttribute('disabled', 'disabled');
-            customInputLabel.classList.add('disabled');
-        }
+        configForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        if (selectedValue === 'custom') {
-            previewContainer.style.display = 'none';
-        } else {
-            previewContainer.style.display = 'block';
+            const formData = new FormData(configForm);
 
-            if (selectedValue === 'studiocms-blobs') {
-                lightImageHolder.src = blobsLight;
-                darkImageHolder.src = blobsDark;
+            const data = {
+                title: formData.get('site-title') as string,
+                description: formData.get('site-description') as string,
+                defaultOgImage: formData.get('default-og-image') ?? null,
+                siteIcon: formData.get('site-icon') ?? null,
+                loginPageBackground: formData.get('login-page-background') as string,
+                loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
             }
 
-            if (selectedValue === 'studiocms-blocks') {
-                lightImageHolder.src = blocksLight;
-                darkImageHolder.src = blocksDark;
+            console.log(data);
+
+            const response = await fetch(configForm.action, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const res = await response.json();
+
+            if (response.status !== 200) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger'
+                })
             }
 
-            if (selectedValue === 'studiocms-curves') {
-                lightImageHolder.src = curvesLight;
-                darkImageHolder.src = curvesDark;
+            if (response.status === 200) {
+                toast({
+                    title: 'Success',
+                    description: res.message,
+                    type: 'success'
+                })
+            }
+        });
+    }
+
+    document.addEventListener('astro:page-load', setupConfigForm);
+</script>
+
+<script is:inline>
+async function setupLoginPreview() {
+    // Selectors
+    const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
+    const customInput = document.querySelector('input[name="login-page-background-custom"]');
+    const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
+    const previewContainer = document.querySelector('.login-preview-container');
+    const lightImageHolder = document.querySelector('.light-image-holder');
+    const darkImageHolder = document.querySelector('.dark-image-holder');
+
+    // Backgrounds
+    const loginPageBgs = document.querySelector('#login-page-bgs');
+
+    const blobs = {
+        light: loginPageBgs.getAttribute('data-blobs-light'),
+        dark: loginPageBgs.getAttribute('data-blobs-dark'),
+    }
+
+    const blocks = {
+        light: loginPageBgs.getAttribute('data-blocks-light'),
+        dark: loginPageBgs.getAttribute('data-blocks-dark'),
+    }
+
+    const curves = {
+        light: loginPageBgs.getAttribute('data-curves-light'),
+        dark: loginPageBgs.getAttribute('data-curves-dark'),
+    }
+
+    // Event Listeners
+    loginPageBgSelectOptions.forEach((option) => {
+        option.addEventListener('click', () => {
+            const selectedValue = option.getAttribute('value');
+
+            if (selectedValue === 'custom') {
+                customInput.removeAttribute('disabled');
+                customInputLabel.classList.remove('disabled');
+            } else {
+                customInput.setAttribute('disabled', 'disabled');
+                customInputLabel.classList.add('disabled');
             }
 
-        }
+            if (selectedValue === 'custom') {
+                previewContainer.style.display = 'none';
+            } else {
+                previewContainer.style.display = 'block';
+
+                if (selectedValue === 'studiocms-blobs') {
+                    lightImageHolder.src = blobs.light;
+                    darkImageHolder.src = blobs.dark;
+                }
+
+                if (selectedValue === 'studiocms-blocks') {
+                    lightImageHolder.src = blocks.light;
+                    darkImageHolder.src = blocks.dark;
+                }
+
+                if (selectedValue === 'studiocms-curves') {
+                    lightImageHolder.src = curves.light;
+                    darkImageHolder.src = curves.dark;
+                }
+
+            }
+        });
     });
-});
+}
+
+document.addEventListener('astro:page-load', setupLoginPreview);
+setupLoginPreview();
 </script>
 
 <style>

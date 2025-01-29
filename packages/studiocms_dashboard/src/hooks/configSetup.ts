@@ -24,7 +24,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 		const {
 			verbose,
 			dbStartPage,
-			dashboardConfig: { dashboardEnabled, inject404Route },
+			dashboardConfig: {
+				dashboardEnabled,
+				inject404Route,
+				AuthConfig: { enabled: authEnabled },
+			},
 		} = options;
 
 		const shouldInject404Route = inject404Route && dashboardEnabled;
@@ -72,8 +76,8 @@ export const configSetup = defineUtility('astro:config:setup')(
 			routes: [
 				{
 					enabled: dashboardEnabled && !dbStartPage,
-					pattern: 'liverender',
-					entrypoint: routesDir.api('LiveRender.astro'),
+					pattern: 'live-render',
+					entrypoint: routesDir.api('partials/LiveRender.astro'),
 				},
 				{
 					enabled: dashboardEnabled && !dbStartPage,
@@ -83,33 +87,33 @@ export const configSetup = defineUtility('astro:config:setup')(
 				{
 					enabled: dashboardEnabled && !dbStartPage,
 					pattern: 'user-list-items',
-					entrypoint: routesDir.api('UserListItems.astro'),
+					entrypoint: routesDir.api('partials/UserListItems.astro'),
 				},
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
-				// 	pattern: 'config/site',
-				// 	entrypoint: resolve('../../assets/routes/studiocms_api/config/site.ts'),
-				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
-				// 	pattern: 'config/admin',
-				// 	entrypoint: resolve('../../assets/routes/studiocms_api/config/admin.ts'),
-				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
-				// 	pattern: 'pages/create',
-				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/create.ts'),
-				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
-				// 	pattern: 'pages/edit',
-				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/edit.ts'),
-				// },
-				// {
-				// 	enabled: dashboardEnabled && !dbStartPage && authEnabled,
-				// 	pattern: 'pages/delete',
-				// 	entrypoint: resolve('../../assets/routes/studiocms_api/pages/delete.ts'),
-				// },
+				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'config',
+					entrypoint: routesDir.api('config.ts'),
+				},
+				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'profile',
+					entrypoint: routesDir.api('profile.ts'),
+				},
+				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'users',
+					entrypoint: routesDir.api('users.ts'),
+				},
+				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'content/page',
+					entrypoint: routesDir.api('content/page.ts'),
+				},
+				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'content/folder',
+					entrypoint: routesDir.api('content/folder.ts'),
+				},
 				{
 					enabled: dbStartPage,
 					pattern: 'setup',

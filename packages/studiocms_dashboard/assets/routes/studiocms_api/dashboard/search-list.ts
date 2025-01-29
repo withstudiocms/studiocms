@@ -1,5 +1,5 @@
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIRoute } from 'astro';
 
 type SearchItem = {
 	id: string;
@@ -11,7 +11,7 @@ type SearchItem = {
 
 type SearchList = SearchItem[];
 
-export const GET: APIRoute = async (ctx: APIContext) => {
+export const GET: APIRoute = async () => {
 	const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
 	const pageList = await studioCMS_SDK_Cache.GET.pages();
 
@@ -38,6 +38,29 @@ export const GET: APIRoute = async (ctx: APIContext) => {
 	return new Response(JSON.stringify(searchList), {
 		headers: {
 			'content-type': 'application/json',
+		},
+	});
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, GET',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
 		},
 	});
 };
