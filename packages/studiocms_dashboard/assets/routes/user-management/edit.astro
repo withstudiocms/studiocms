@@ -45,7 +45,7 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
     <PageHeader title={user?.name || 'User Management'}>
 
       <Group>
-        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete}>
+        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={StudioCMSRoutes.endpointLinks.users}>
           <Icon name="trash-20-solid" width={20} height={20} />
           Delete
         </Button>
@@ -110,7 +110,7 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
       </Modal>
     </div>
 
-    <form id="edit-user-form">
+    <form id="edit-user-form" action={StudioCMSRoutes.endpointLinks.users}>
 
       <div class="text-h3">Role</div>
 
@@ -188,32 +188,50 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
 
     const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
 
+    const deleteUserAction = (document.getElementById('delete-user-modal-trigger') as HTMLButtonElement).dataset.action;
+
     const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
     
-    userDeleteModal.registerConfirmCallback((formData) => {
+    userDeleteModal.registerConfirmCallback(async (formData) => {
       if (!formData) {
         console.error('No form data provided') 
         return
       };
-      const userId = formData.get('user-id')?.toString();
-      const userUsername = formData.get('user-username')?.toString();
-      const userUsernameConfirm = formData.get('confirm-user-username')?.toString();
 
-      if (!userId || !userUsername || !userUsernameConfirm) {
-        console.error('Missing form data');
-        return;
+      const data = {
+        userId: formData.get('user-id')?.toString(), 
+        username: formData.get('user-username')?.toString(), 
+        usernameConfirm: formData.get('confirm-user-username')?.toString()
       }
 
-      // TODO Setup API endpoint to Delete user
+      const response = await fetch(deleteUserAction!, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
 
-      if (userUsername === userUsernameConfirm) {
-        console.log('Confirmed', userId);
-      } else {
-        console.log('Not Confirmed');
+      const res = await response.json();
+
+      if (response.status !== 200) {
+        toast({
+          title: 'Error',
+          description: res.error,
+          type: 'danger'
+        })
+      }
+
+      if (response.status === 200) {
+        toast({
+          title: 'Success',
+          description: res.message,
+          type: 'success'
+        })
       }
     })
 
-    editUserForm.addEventListener('submit', (e) => {
+    editUserForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const formData = new FormData(editUserForm);
@@ -223,8 +241,31 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         rank: formData.get('rank')?.toString(),
       }
 
-      // TODO Setup API endpoint to update user rank
-      console.log(data);
+      const response = await fetch(editUserForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+
+      const res = await response.json();
+
+      if (response.status !== 200) {
+        toast({
+          title: 'Error',
+          description: res.error,
+          type: 'danger'
+        })
+      }
+
+      if (response.status === 200) {
+        toast({
+          title: 'Success',
+          description: res.message,
+          type: 'success'
+        })
+      }
     })
   </script>
 
