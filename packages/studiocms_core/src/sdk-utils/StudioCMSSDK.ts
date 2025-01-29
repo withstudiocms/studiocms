@@ -522,7 +522,7 @@ export class StudioCMSSDK {
 		return jwt.sign({ userId }, CMS_ENCRYPTION_KEY, { expiresIn: '3h' });
 	};
 
-	public test(token: string) {
+	public testToken(token: string) {
 		return jwt.verify(token, CMS_ENCRYPTION_KEY);
 	}
 
@@ -540,7 +540,7 @@ export class StudioCMSSDK {
 			await this.db.delete(tsUserResetTokens).where(this.eq(tsUserResetTokens.userId, userId));
 		},
 		check: async (token: string) => {
-			const _token = this.test(token) as { userId: string };
+			const _token = this.testToken(token) as { userId: string };
 
 			const resetToken = await this.db
 				.select()

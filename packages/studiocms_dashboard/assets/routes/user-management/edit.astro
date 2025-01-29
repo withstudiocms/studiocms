@@ -136,26 +136,26 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
     )}
   </div>
 
-  <div style="display: none;" id="resetlinkselector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
+  <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
 
   <script>
-    import { ModalHelper } from 'studiocms:ui/components';
+    import { ModalHelper, toast } from 'studiocms:ui/components';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
 
     const passwordResetLinkTrigger = document.getElementById('password-reset-link-trigger') as HTMLButtonElement;
+    const resetLinkPlaceholder = document.getElementById('reset-link-placeholder') as HTMLElement;
 
-    const resetLinkAPI = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.link;
-    const userId = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.userid;
-    const dashboardIndex = (document.getElementById('resetlinkselector') as HTMLDivElement).dataset.dashboard;
-
+    const resetLinkAPI = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.link;
+    const userId = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.userid;
+    const dashboardIndex = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.dashboard;
 
     function generateResetLink(token: {
       id: string;
       userId: string;
       token: string;
     }) {
-      return `${dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
+      return `${window.location.origin}${dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
     }
 
     passwordResetLinkTrigger.addEventListener('click', async (e) => {
@@ -169,18 +169,19 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
         body: JSON.stringify({ userId: userId })
       });
 
+      const token = await apiRes.json();
+
       if (!apiRes.ok) {
         console.error('Failed to create reset link');
+        toast({
+          title: 'Error',
+          description: token.error,
+          type: 'danger'
+        })
         return;
       }
 
-      const token = await apiRes.json();
-
-      const resetLink = generateResetLink(token);
-
-      const resetLinkPlaceholder = document.getElementById('reset-link-placeholder') as HTMLElement;
-
-      resetLinkPlaceholder.innerText = `${window.location.origin}${resetLink}`;
+      resetLinkPlaceholder.innerText = generateResetLink(token);
 
       resetLinkModal.show();
     })

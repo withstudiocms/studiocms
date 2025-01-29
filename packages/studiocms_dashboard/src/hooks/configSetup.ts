@@ -120,6 +120,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					entrypoint: routesDir.api('create-reset-link.ts'),
 				},
 				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'reset-password',
+					entrypoint: routesDir.api('reset-password.ts'),
+				},
+				{
 					enabled: dbStartPage,
 					pattern: 'setup',
 					entrypoint: routesDir.fts('firstTimeSetup.ts'),
@@ -182,6 +187,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'user-management/edit',
 						entrypoint: routesDir.route('user-management/edit.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage && authEnabled,
+						pattern: 'password-reset',
+						entrypoint: routesDir.route('password-reset.astro'),
 					},
 				],
 			},

@@ -71,6 +71,7 @@ export const StudioCMSRoutes = {
 		users: dashboardAPIRoute('users'),
 		profile: dashboardAPIRoute('profile'),
 		createResetLink: dashboardAPIRoute('create-reset-link'),
+		resetPassword: dashboardAPIRoute('reset-password'),
 		content: {
 			page: dashboardAPIRoute('content/page'),
 			folder: dashboardAPIRoute('content/folder'),
