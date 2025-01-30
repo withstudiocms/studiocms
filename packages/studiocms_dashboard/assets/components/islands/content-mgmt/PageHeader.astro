@@ -89,6 +89,7 @@ const currentMode = editPage
           <div class="modal-body">
             <input type="hidden" name="page-id" value={currentId} />
             <input type="hidden" name="page-slug" value={pageSlug} />
+            <input type="hidden" name="action-route" value={StudioCMSRoutes.endpointLinks.content.page} />
                     
             <span>Enter the slug <code>{pageSlug}</code> to confirm</span>
            
@@ -122,6 +123,7 @@ const currentMode = editPage
           <div class="modal-body">
             <input type="hidden" name="folder-id" value={currentId} />
             <input type="hidden" name="folder-name" value={folderName} />
+            <input type="hidden" name="action-route" value={StudioCMSRoutes.endpointLinks.content.folder} />
 
             <span>Enter the folder name <code>{folderName}</code> to confirm</span>
 
@@ -171,7 +173,7 @@ const currentMode = editPage
       case "edit-page": {
         const deletePageModal = new ModalHelper('delete-page-modal', 'delete-page-modal-trigger');
 
-        deletePageModal.registerConfirmCallback((formData) => {
+        deletePageModal.registerConfirmCallback(async (formData) => {
             if (!formData) {
               toast({
                   title: 'Error',
@@ -180,17 +182,69 @@ const currentMode = editPage
               })
               return;
             }
-            const pageId = formData?.get('page-id')?.toString();
-            const pageSlug = formData?.get('page-slug')?.toString();
-            const slugConfirm = formData?.get('slug-confirm')?.toString();
 
-            if (slugConfirm === pageSlug) {
-                console.log('Confirmed', pageId);
-            } else {
-                console.log('Not Confirmed');
+            const slugConfirm = formData?.get('slug-confirm')?.toString();
+            const action = formData.get('action-route') as string;
+
+            const data = {
+              id: formData?.get('page-id')?.toString(),
+              slug: formData?.get('page-slug')?.toString(),
             }
 
-            // TODO: Setup api call
+            if (!slugConfirm) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (!data.id || !data.slug) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (slugConfirm !== data.slug) {
+              toast({
+                  title: 'Error',
+                  description: 'Slug does not match',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            const response = await fetch(action, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            const res = await response.json();
+
+            if (response.status !== 200) {
+              toast({
+                  title: 'Error',
+                  description: res.error,
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (response.status === 200) {
+              toast({
+                  title: 'Success',
+                  description: res.message,
+                  type: 'success'
+              })
+              return;
+            }
         })
         break;
       }
@@ -216,6 +270,7 @@ const currentMode = editPage
             const folderName = formData.get('folder-name') as string;
             const id = formData.get('folder-id') as string;
             const confirmFolderName = formData?.get('confirm-folder-name');
+            const action = formData.get('action-route') as string;
 
             if (!folderName || !confirmFolderName) {
               toast({
@@ -241,7 +296,7 @@ const currentMode = editPage
               parentFolder: null,
             };
 
-            const response = await fetch('', {
+            const response = await fetch(action, {
               method: 'DELETE',
               headers: {
                   'Content-Type': 'application/json',

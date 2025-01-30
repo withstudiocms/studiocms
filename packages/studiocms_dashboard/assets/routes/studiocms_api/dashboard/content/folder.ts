@@ -58,11 +58,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder created successfully');
 	} catch (error) {
-		logger.error(
-			'Failed to create folder' /* 
-			// @ts-ignore */,
-			error
-		);
+		logger.error(`Failed to create folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to create folder');
 	}
 };
@@ -109,11 +105,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder updated successfully');
 	} catch (error) {
-		logger.error(
-			'Failed to update folder' /* 
-			// @ts-ignore */,
-			error
-		);
+		logger.error(`Failed to update folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to update folder');
 	}
 };
@@ -155,11 +147,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder deleted successfully');
 	} catch (error) {
-		logger.error(
-			'Failed to delete folder' /* 
-			// @ts-ignore */,
-			error
-		);
+		logger.error(`Failed to delete folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to delete folder');
 	}
 };

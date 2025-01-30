@@ -1,6 +1,8 @@
 import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../utils/simpleResponse';
 
@@ -77,7 +79,33 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
-	return simpleResponse(501, 'Not implemented');
+	const jsonData = await context.request.json();
+
+	const { id, slug } = jsonData;
+
+	if (!id) {
+		return simpleResponse(400, 'Invalid request');
+	}
+
+	if (!slug) {
+		return simpleResponse(400, 'Invalid request');
+	}
+
+	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index', 'studiocms');
+
+	if (isHomePage.data && isHomePage.data.id === id) {
+		return simpleResponse(400, 'Cannot delete home page');
+	}
+
+	try {
+		await studioCMS_SDK.DELETE.page(id);
+		studioCMS_SDK_Cache.CLEAR.page.byId(id);
+
+		return simpleResponse(200, 'Page deleted successfully');
+	} catch (error) {
+		logger.error(`Failed to delete page ${(error as Error).message}`);
+		return simpleResponse(500, 'Failed to delete page');
+	}
 };
 
 export const OPTIONS: APIRoute = async () => {
