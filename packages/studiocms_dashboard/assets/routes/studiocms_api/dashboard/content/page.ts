@@ -3,12 +3,24 @@ import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user'
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../utils/simpleResponse';
 
 const { testingAndDemoMode } = developerConfig;
 
-// TODO: Implement this route
+type UpdatePageData = Partial<tsPageDataSelect>;
+type UpdatePageContent = Partial<tsPageContentSelect>;
+
+interface CreatePageJson {
+	data?: UpdatePageData;
+	content?: UpdatePageContent;
+}
+
+interface EditPageJson {
+	data: tsPageDataSelect;
+	content: tsPageContentSelect;
+}
 
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
@@ -31,7 +43,43 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
-	return simpleResponse(501, 'Not implemented');
+	const jsonData: CreatePageJson = await context.request.json();
+
+	const { data, content } = jsonData;
+
+	if (!data) {
+		return simpleResponse(400, 'Invalid form data, data is required');
+	}
+
+	if (!content) {
+		return simpleResponse(400, 'Invalid form data, content is required');
+	}
+
+	const dataId = crypto.randomUUID();
+	const contentId = crypto.randomUUID();
+
+	if (!data.title) {
+		return simpleResponse(400, 'Invalid form data, title is required');
+	}
+
+	try {
+		await studioCMS_SDK.POST.databaseEntry.pages(
+			{
+				id: dataId,
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				title: data.title!,
+				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
+				description: data.description || '',
+				...data,
+			},
+			{ id: contentId, ...content }
+		);
+
+		return simpleResponse(200, 'Page created successfully');
+	} catch (error) {
+		logger.error(`Failed to create page ${(error as Error).message}`);
+		return simpleResponse(500, 'Failed to create page');
+	}
 };
 
 export const PATCH: APIRoute = async (context: APIContext) => {
@@ -55,7 +103,34 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
-	return simpleResponse(501, 'Not implemented');
+	const jsonData: EditPageJson = await context.request.json();
+
+	const { data, content } = jsonData;
+
+	if (!data) {
+		return simpleResponse(400, 'Invalid form data, data is required');
+	}
+
+	if (!content) {
+		return simpleResponse(400, 'Invalid form data, content is required');
+	}
+
+	if (!data.id) {
+		return simpleResponse(400, 'Invalid form data, id is required');
+	}
+
+	if (!content.id) {
+		return simpleResponse(400, 'Invalid form data, id is required');
+	}
+
+	try {
+		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, { pageData: data, pageContent: content });
+
+		return simpleResponse(200, 'Page updated successfully');
+	} catch (error) {
+		logger.error(`Failed to update page ${(error as Error).message}`);
+		return simpleResponse(500, 'Failed to update page');
+	}
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {

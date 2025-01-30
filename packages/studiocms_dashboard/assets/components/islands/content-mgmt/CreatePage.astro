@@ -75,89 +75,79 @@ import {
     </form>
 </div>
 
-<div 
-    id="create-page-grabber" 
-    style="display: none;"
-    data-page_type_options={JSON.stringify(pageTypeOptions)}
-    data-show_in_nav_options={JSON.stringify(trueFalse)}
-    data-categories_options={JSON.stringify(categoriesOptions)}
-    data-tags_options={JSON.stringify(tagsOptions)}
-    data-parent_folder_options={JSON.stringify(parentFolderOptions)}
-    data-show_author_options={JSON.stringify(trueFalse)}
-    data-show_contributors_options={JSON.stringify(trueFalse)}
-    >
-</div>
-
 <script>
-    async function listener() {
-      const editPageGrabber = document.getElementById('create-page-grabber') as HTMLElement;
+  async function listener() {
+    // get the elements
+    const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
 
-      if (!editPageGrabber) return;
+    function getParentFolderValue(value?: string) {
+      if (value === 'null') return null;
+      return value;
+    }
 
-      // get the elements
-      const parentFolderOptions = editPageGrabber.dataset.parent_folder_options;
-      const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
+    const draftButton = document.getElementById('draft-button') as HTMLElement;
+    const publishButton = document.getElementById('publish-button') as HTMLElement;
 
-      function getParentFolderValue(value?: string) {
-        if (value === 'null') return null;
-        return value;
+    createPageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
+    });
+
+    draftButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createPageForm);
+
+      const pageData = {
+        title: formData.get('page-title')?.toString(),
+        slug: formData.get('page-slug')?.toString(),
+        description: formData.get('page-description')?.toString(),
+        type: formData.get('page-type')?.toString(),
+        showInNav: formData.get('show-in-nav')?.toString() === 'true',
+        heroImage: formData.get('page-hero-image')?.toString(),
+        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+        showAuthor: formData.get('show-author')?.toString() === 'true',
+        showContributors: formData.get('show-contributors')?.toString() === 'true',
+        categories: [],
+        tags: [],
+        draft: true,
+      };
+
+      const content = {
+            id: crypto.randomUUID(),
+            content: formData.get('page-content')?.toString(),
+      }
+      
+      console.log("DRAFT: " + JSON.stringify(pageData));
+        // TODO: Call the API to save the draft
+      })
+
+    publishButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createPageForm);
+
+      const pageData = {
+        title: formData.get('page-title')?.toString(),
+        slug: formData.get('page-slug')?.toString(),
+        description: formData.get('page-description')?.toString(),
+        type: formData.get('page-type')?.toString(),
+        showInNav: formData.get('show-in-nav')?.toString() === 'true',
+        heroImage: formData.get('page-hero-image')?.toString(),
+        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+        showAuthor: formData.get('show-author')?.toString() === 'true',
+        showContributors: formData.get('show-contributors')?.toString() === 'true',
+        categories: [],
+        tags: [],
+        draft: false,
+      };
+
+      const content = {
+        id: crypto.randomUUID(),
+        content: formData.get('page-content')?.toString(),
       }
 
-        const draftButton = document.getElementById('draft-button') as HTMLElement;
-        const publishButton = document.getElementById('publish-button') as HTMLElement;
-
-        createPageForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
-        });
-
-        draftButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(createPageForm);
-
-          const pageData = {
-            title: formData.get('page-title')?.toString(),
-            slug: formData.get('page-slug')?.toString(),
-            description: formData.get('page-description')?.toString(),
-            type: formData.get('page-type')?.toString(),
-            showInNav: formData.get('show-in-nav')?.toString() === 'true',
-            heroImage: formData.get('page-hero-image')?.toString(),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-            categories: formData.get('categories')?.toString(),
-            tags: formData.get('tags')?.toString(),
-            showAuthor: formData.get('show-author')?.toString() === 'true',
-            showContributors: formData.get('show-contributors')?.toString() === 'true',
-            content: formData.get('page-content')?.toString(),
-            draft: true,
-          };
-
-          console.log("DRAFT: " + JSON.stringify(pageData));
-          // TODO: Call the API to save the draft
-        })
-
-        publishButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(createPageForm);
-
-          const pageData = {
-            title: formData.get('page-title')?.toString(),
-            slug: formData.get('page-slug')?.toString(),
-            description: formData.get('page-description')?.toString(),
-            type: formData.get('page-type')?.toString(),
-            showInNav: formData.get('show-in-nav')?.toString() === 'true',
-            heroImage: formData.get('page-hero-image')?.toString(),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-            categories: formData.get('categories')?.toString(),
-            tags: formData.get('tags')?.toString(),
-            showAuthor: formData.get('show-author')?.toString() === 'true',
-            showContributors: formData.get('show-contributors')?.toString() === 'true',
-            content: formData.get('page-content')?.toString(),
-            draft: false,
-          };
-
-          console.log("PUBLISH: " + JSON.stringify(pageData));
-          // TODO: Call the API to publish the page
-        })
+      console.log("PUBLISH: " + JSON.stringify(pageData));
+        // TODO: Call the API to publish the page
+      })
     }
   
     document.addEventListener('astro:page-load', listener);

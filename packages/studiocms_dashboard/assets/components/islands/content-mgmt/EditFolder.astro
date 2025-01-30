@@ -68,8 +68,6 @@ import { toast } from "studiocms:ui/components";
             parentFolder: parseParentFolder(formData.get('parent-folder') as string),
         }
 
-        console.log(data);
-
         const response = await fetch(form.action, {
             method: 'PATCH',
             headers: {

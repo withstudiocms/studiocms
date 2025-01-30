@@ -76,6 +76,9 @@ function getParentFolderValue(value: string | null): string | undefined {
             </div>
           </TabItem>
           <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
+
+            <input type="hidden" name="page-content-id" value={pageData.defaultContent?.id} />
+
             <div class="tab-section">
                 <div class="page-content-editor">
                     <div id="editor-toolbar"></div>
@@ -132,12 +135,18 @@ async function listener() {
             parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
             showAuthor: formData.get('show-author') === 'true',
             showContributors: formData.get('show-contributors')?.toString() === 'true',
-            content: formData.get('page-content')?.toString(),
+            categories: [],
+            tags: [],
             id: formData.get('page-id')?.toString(),
             draft: formData.get('draft')?.toString() === 'true',
         };
 
-        console.log(data);
+        const content = {
+            id: formData.get('page-content-id')?.toString(),
+            content: formData.get('page-content')?.toString(),
+        }
+
+        console.log(data, content);
 
         // TODO: Setup form submission and api call
     });
