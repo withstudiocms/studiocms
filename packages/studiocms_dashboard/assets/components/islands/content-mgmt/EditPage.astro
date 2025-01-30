@@ -1,5 +1,6 @@
 ---
 import '../../../styles/tiny-mde.css';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
@@ -22,7 +23,7 @@ function getParentFolderValue(value: string | null): string | undefined {
 }
 ---
 <div id="edit-page-container">
-    <form id="edit-page-form">
+    <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
 
         <Tabs variant={'starlight'}>
           <TabItem label='Basic Information' icon={'information-circle-20-solid'} color={'primary'}>
@@ -107,6 +108,7 @@ function getParentFolderValue(value: string | null): string | undefined {
 </div>
 
 <script>
+import { toast } from "studiocms:ui/components";
 async function listener() {
 
     const editPageGrabber = document.getElementById('edit-page-grabber') as HTMLElement;
@@ -121,7 +123,7 @@ async function listener() {
         return value;
       }
 
-    editPageForm.addEventListener('submit', (e) => {
+    editPageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(editPageForm);
 
@@ -148,7 +150,33 @@ async function listener() {
 
         console.log(data, content);
 
-        // TODO: Setup form submission and api call
+        const response = await fetch(editPageForm.action, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data, content }),
+        });
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger'
+            })
+            return;
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success'
+            })
+            return;
+        }
     });
 }
 document.addEventListener('astro:page-load', listener);

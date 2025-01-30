@@ -86,12 +86,17 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Delete user
-	// TODO: Add delete user function
+	try {
+		const response = await studioCMS_SDK.DELETE.user(userId);
 
-	return simpleResponse(
-		400,
-		'This feature is not available yet, You will have to delete the user manually from the database'
-	);
+		if (!response) {
+			return simpleResponse(400, 'Failed to delete user');
+		}
+
+		return simpleResponse(200, response.message);
+	} catch (error) {
+		return simpleResponse(400, 'Failed to delete user');
+	}
 };
 
 export const OPTIONS: APIRoute = async () => {

@@ -1,5 +1,6 @@
 ---
 import '../../../styles/tiny-mde.css';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
@@ -10,7 +11,7 @@ import {
 } from './shared';
 ---
 <div id="create-page-container">
-    <form id="page-create-form">
+    <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
 
       <Tabs variant={'starlight'}>
         <TabItem label='Basic Information' icon={'information-circle-20-solid'} color={'primary'}>
@@ -76,6 +77,7 @@ import {
 </div>
 
 <script>
+import { toast } from "studiocms:ui/components";
   async function listener() {
     // get the elements
     const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
@@ -97,7 +99,7 @@ import {
       e.preventDefault();
       const formData = new FormData(createPageForm);
 
-      const pageData = {
+      const data = {
         title: formData.get('page-title')?.toString(),
         slug: formData.get('page-slug')?.toString(),
         description: formData.get('page-description')?.toString(),
@@ -116,16 +118,41 @@ import {
             id: crypto.randomUUID(),
             content: formData.get('page-content')?.toString(),
       }
-      
-      console.log("DRAFT: " + JSON.stringify(pageData));
-        // TODO: Call the API to save the draft
+
+      const response = await fetch(createPageForm.action, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data, content }),
+      });
+
+      const res = await response.json();
+
+      if (response.status !== 200) {
+          toast({
+              title: 'Error',
+              description: res.error,
+              type: 'danger'
+          })
+          return;
+      }
+
+      if (response.status === 200) {
+          toast({
+              title: 'Success',
+              description: res.message,
+              type: 'success'
+          })
+          return;
+      }
       })
 
     publishButton.addEventListener('click', async (e) => {
       e.preventDefault();
       const formData = new FormData(createPageForm);
 
-      const pageData = {
+      const data = {
         title: formData.get('page-title')?.toString(),
         slug: formData.get('page-slug')?.toString(),
         description: formData.get('page-description')?.toString(),
@@ -145,8 +172,33 @@ import {
         content: formData.get('page-content')?.toString(),
       }
 
-      console.log("PUBLISH: " + JSON.stringify(pageData));
-        // TODO: Call the API to publish the page
+      const response = await fetch(createPageForm.action, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data, content }),
+      });
+
+      const res = await response.json();
+
+      if (response.status !== 200) {
+          toast({
+              title: 'Error',
+              description: res.error,
+              type: 'danger'
+          })
+          return;
+      }
+
+      if (response.status === 200) {
+          toast({
+              title: 'Success',
+              description: res.message,
+              type: 'success'
+          })
+          return;
+      }
       })
     }
   

@@ -323,6 +323,34 @@ export class StudioCMSSDK {
 		return tree;
 	}
 
+	public async clearUserReferences(userId: string) {
+		try {
+			await this.db.batch([
+				this.db.delete(tsUserResetTokens).where(this.eq(tsUserResetTokens.userId, userId)),
+				this.db.delete(tsPermissions).where(this.eq(tsPermissions.user, userId)),
+				this.db.delete(tsOAuthAccounts).where(this.eq(tsOAuthAccounts.userId, userId)),
+				this.db.delete(tsSessionTable).where(this.eq(tsSessionTable.userId, userId)),
+				this.db
+					.update(tsDiffTracking)
+					.set({ userId: GhostUserDefaults.id })
+					.where(this.eq(tsDiffTracking.userId, userId)),
+				this.db
+					.update(tsPageData)
+					.set({ authorId: GhostUserDefaults.id })
+					.where(this.eq(tsPageData.authorId, userId)),
+			]);
+			return true;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error clearing user references: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error('Error clearing user references: An unknown error occurred.');
+		}
+	}
+
 	/**
 	 * Collects categories based on the provided category IDs.
 	 *
@@ -2481,6 +2509,44 @@ export class StudioCMSSDK {
 				}
 				throw new StudioCMS_SDK_Error(
 					`Error deleting folder with ID ${id}: An unknown error occurred.`
+				);
+			}
+		},
+
+		/**
+		 * Deletes a user from the database.
+		 *
+		 * @param id - The ID of the user to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the user.
+		 */
+		user: async (id: string): Promise<DeletionResponse> => {
+			try {
+				const verifyNoReference = await this.clearUserReferences(id);
+
+				if (verifyNoReference) {
+					return await this.db
+						.delete(tsUsers)
+						.where(this.eq(tsUsers.id, id))
+						.then(() => {
+							return {
+								status: 'success',
+								message: `User with ID ${id} has been deleted successfully`,
+							};
+						});
+				}
+				throw new StudioCMS_SDK_Error(
+					`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
+				);
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(
+						`Error deleting user with ID ${id}: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMS_SDK_Error(
+					`Error deleting user with ID ${id}: An unknown error occurred.`
 				);
 			}
 		},
