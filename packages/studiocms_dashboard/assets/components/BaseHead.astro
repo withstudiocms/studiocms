@@ -33,16 +33,17 @@ const { title, description } = Astro.props;
   <title>{title}</title>
   <meta name="title" content={title} />
   <meta name="description" content={description} />
-
-  {/* Astro Client Router (ViewTransitions) */}
-  <ClientRouterDebug />
-  <ClientRouter />
-  <ClientRouterLoadingIndicator top='50vh' src="/studiocms-resources/core/favicon-light.png"/>
-  {/* <ClientRouterLinter /> */}
+  <meta name="theme-color" content="#a581f3" />
 
   {/* Theme Manager */}
   <ThemeManager />
 
   {/* Fonts */}
   <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
+
+  {/* Astro Client Router (ViewTransitions) */}
+  <ClientRouterDebug />
+  <ClientRouter />
+  <ClientRouterLoadingIndicator top='50vh' src="/studiocms-resources/core/favicon-light.png"/>
+  {/* <ClientRouterLinter /> */}
 </head>

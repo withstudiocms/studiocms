@@ -12,10 +12,10 @@ const {
 const fallbackImageSrc =
 	loginPageBackground === 'custom'
 		? loginPageCustomImage
-		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark; // TODO: Adapt to theme
+		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark;
 ---
 
-<div class="fallback-container">
+<div class="fallback-container" id="fallback-config" data-config={JSON.stringify({ loginPageBackground, loginPageCustomImage })}>
     <StudioCMSLogoSVG
         class="static-logo"
     />
@@ -37,3 +37,88 @@ const fallbackImageSrc =
         />
     )}
 </div>
+
+<script>
+    import { validImages } from 'studiocms:auth/utils/validImages';
+
+    /**
+     * A valid image that can be used as a background for the StudioCMS Logo.
+     */
+    type ValidImage = (typeof validImages)[number];
+
+    /**
+     * The parameters for the background image.
+     */
+    type BackgroundParams = {
+        background: ValidImage['name'];
+        customImageHref: string;
+        mode: 'light' | 'dark';
+    };
+
+    const imageHolder = document.querySelector('.fallback-image') as HTMLImageElement;
+    const currentMode = document.documentElement.dataset.theme || 'dark';
+
+    /**
+     * Parses the background image config.
+     * @param imageName The name of the image to parse.
+     */
+    function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage['name'] {
+        // If the image name is not provided, use the default image
+        if (!imageName) {
+            return 'studiocms-curves';
+        }
+
+        // Check if the image name is one of the valid images (built-in or custom)
+        if (imageName) {
+            return imageName as ValidImage['name'];
+        }
+
+        // Use the default image if the image name is invalid
+        // (i.e. someone tampered with the actual database)
+        return 'studiocms-curves';
+    }
+
+    function parseToString(value: string | undefined | null): string {
+        return value || '';
+    }
+
+    const config: {
+        loginPageBackground: ValidImage['name'];
+        loginPageCustomImage: string;
+    } = JSON.parse((document.querySelector('#fallback-config') as HTMLDivElement).dataset.config ?? '{}');
+
+    /**
+     * The parameters for the background image config.
+     */
+     const backgroundConfig: BackgroundParams = {
+        background: parseBackgroundImageConfig(config.loginPageBackground),
+        customImageHref: parseToString(config.loginPageCustomImage),
+        mode: currentMode as 'light' | 'dark',
+    };
+
+    /**
+     * Gets the background config based on the parameters.
+     * @param config The config to get the background for.
+     */
+    function getBackgroundConfig(config: BackgroundParams): ValidImage {
+        return validImages.find((image) => image.name === config.background) || validImages[0];
+    }
+
+    /**
+     * Selects the background based on the image.
+     * @param image The image to select the background for.
+     * @param params The parameters to select the background for.
+     */
+    function bgSelector(image: ValidImage, params: BackgroundParams): string {
+        return (image.format === 'web'
+            ? params.customImageHref
+            : params.mode === 'dark'
+                ? image.dark?.src
+                : image.light?.src) ?? "";
+    }
+
+    const selectedBackground = getBackgroundConfig(backgroundConfig);
+
+    imageHolder.src = bgSelector(selectedBackground, backgroundConfig);
+
+</script>

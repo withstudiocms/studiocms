@@ -8,6 +8,7 @@ import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal
 import OAuthButtonStack from '../components/OAuthButtonStack.astro';
 import StaticAuthCheck from '../components/StaticAuthCheck.astro';
 import FallbackCanvas from './FallbackCanvas.astro';
+import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
 interface Props {
@@ -21,7 +22,7 @@ interface Props {
 const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 ---
 <!doctype html>
-<html lang={lang} data-theme="dark">
+<html {lang}>
   <head>
 	{/* Global Metadata */}
     <meta charset="utf-8" />
@@ -37,6 +38,10 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+	<meta name="theme-color" content="#a581f3" />
+
+	{/* Theme Manager */}
+	<ThemeManager />
 
     {/* Fonts */}
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
