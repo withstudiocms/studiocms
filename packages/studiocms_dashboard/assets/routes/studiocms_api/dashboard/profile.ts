@@ -30,7 +30,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'visitor');
 	if (!isAuthorized) {
 		return simpleResponse(403, 'Unauthorized');
 	}

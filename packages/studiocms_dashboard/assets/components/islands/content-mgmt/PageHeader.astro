@@ -163,6 +163,7 @@ const currentMode = editPage
 
 <script>
     import { ModalHelper } from 'studiocms:ui/components';
+    import { toast } from "studiocms:ui/components";
 
     const mode = (document.getElementById('current-mode-selector') as HTMLDivElement).dataset.mode;
 
@@ -171,6 +172,14 @@ const currentMode = editPage
         const deletePageModal = new ModalHelper('delete-page-modal', 'delete-page-modal-trigger');
 
         deletePageModal.registerConfirmCallback((formData) => {
+            if (!formData) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
             const pageId = formData?.get('page-id')?.toString();
             const pageSlug = formData?.get('page-slug')?.toString();
             const slugConfirm = formData?.get('slug-confirm')?.toString();
@@ -188,17 +197,77 @@ const currentMode = editPage
       case "edit-folder": {
         const deleteFolderModal = new ModalHelper('delete-folder-modal', 'delete-folder-modal-trigger');
 
-        deleteFolderModal.registerConfirmCallback((formData) => {
-            const folderId = formData?.get('folder-id');
-            const folderName = formData?.get('folder-name');
+        deleteFolderModal.registerConfirmCallback(async (formData) => {
+            if (!formData) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            type JsonData = {
+              id: string;
+              folderName: string;
+              parentFolder: string | null;
+            };
+
+            const folderName = formData.get('folder-name') as string;
+            const id = formData.get('folder-id') as string;
             const confirmFolderName = formData?.get('confirm-folder-name');
 
-            if (folderName === confirmFolderName) {
-                console.log('Deleting folder:', folderId);
-            } else {
-                console.log('Folder name does not match');
+            if (!folderName || !confirmFolderName) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
             }
-            // TODO: Setup api call
+
+            if (folderName !== confirmFolderName) {
+              toast({
+                  title: 'Error',
+                  description: 'Folder name does not match',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            const data: JsonData = {
+              id,
+              folderName: folderName,
+              parentFolder: null,
+            };
+
+            const response = await fetch('', {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            const res = await response.json();
+
+            if (response.status !== 200) {
+              toast({
+                  title: 'Error',
+                  description: res.error,
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (response.status === 200) {
+              toast({
+                  title: 'Success',
+                  description: res.message,
+                  type: 'success'
+              })
+              return;
+            }
         })
         break;
       }

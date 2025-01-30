@@ -42,6 +42,7 @@ import type {
 	tsPageDataSelect,
 	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
+	tsPageFolderInsert,
 	tsPageFolderSelect,
 	tsPermissionsInsert,
 	tsPermissionsSelect,
@@ -1119,6 +1120,17 @@ export class StudioCMSSDK {
 					);
 				}
 			},
+
+			folders: async (): Promise<tsPageFolderSelect[]> => {
+				try {
+					return await this.db.select().from(tsPageFolderStructure);
+				} catch (error) {
+					if (error instanceof Error) {
+						throw new StudioCMS_SDK_Error(`Error getting folders: ${error.message}`, error.stack);
+					}
+					throw new StudioCMS_SDK_Error('Error getting folders: An unknown error occurred.');
+				}
+			},
 		},
 
 		/**
@@ -1290,6 +1302,21 @@ export class StudioCMSSDK {
 					}
 				},
 			},
+
+			folder: async (id: string): Promise<tsPageFolderSelect | undefined> => {
+				try {
+					return await this.db
+						.select()
+						.from(tsPageFolderStructure)
+						.where(this.eq(tsPageFolderStructure.id, id))
+						.get();
+				} catch (error) {
+					if (error instanceof Error) {
+						throw new StudioCMS_SDK_Error(`Error getting folders: ${error.message}`, error.stack);
+					}
+					throw new StudioCMS_SDK_Error('Error getting folders: An unknown error occurred.');
+				}
+			},
 		},
 
 		/**
@@ -1380,6 +1407,14 @@ export class StudioCMSSDK {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the diff tracking data.
 			 */
 			diffTracking: async () => await this.db.select().from(tsDiffTracking),
+
+			/**
+			 * Retrieves all data from the page folder structure table.
+			 *
+			 * @returns A promise that resolves to an array of page folder structure data.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page folder structure data.
+			 */
+			pageFolderStructure: async () => await this.db.select().from(tsPageFolderStructure),
 		},
 
 		/**
@@ -1792,6 +1827,31 @@ export class StudioCMSSDK {
 					);
 				}
 			},
+
+			/**
+			 * Inserts a new folder into the database.
+			 *
+			 * @param folder - The data to insert into the page folder structure table.
+			 * @returns A promise that resolves to the inserted folder.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
+			 */
+			folder: async (folder: tsPageFolderInsert): Promise<tsPageFolderSelect[]> => {
+				try {
+					return await this.db
+						.insert(tsPageFolderStructure)
+						.values({
+							id: folder.id || crypto.randomUUID().toString(),
+							name: folder.name,
+							parent: folder.parent || null,
+						})
+						.returning();
+				} catch (error) {
+					if (error instanceof Error) {
+						throw new StudioCMS_SDK_Error(`Error inserting folder: ${error.message}`, error.stack);
+					}
+					throw new StudioCMS_SDK_Error('Error inserting folder: An unknown error occurred.');
+				}
+			},
 		},
 
 		/**
@@ -2149,6 +2209,22 @@ export class StudioCMSSDK {
 				throw new StudioCMS_SDK_Error('Error updating site config: An unknown error occurred.');
 			}
 		},
+
+		folder: async (data: tsPageFolderSelect): Promise<tsPageFolderSelect> => {
+			try {
+				return await this.db
+					.update(tsPageFolderStructure)
+					.set(data)
+					.where(this.eq(tsPageFolderStructure.id, data.id))
+					.returning()
+					.get();
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(`Error updating folder: ${error.message}`, error.stack);
+				}
+				throw new StudioCMS_SDK_Error('Error updating folder: An unknown error occurred.');
+			}
+		},
 	};
 
 	/**
@@ -2374,6 +2450,37 @@ export class StudioCMSSDK {
 				}
 				throw new StudioCMS_SDK_Error(
 					`Error deleting diff tracking with ID ${id}: An unknown error occurred.`
+				);
+			}
+		},
+
+		/**
+		 * Deletes a folder from the database.
+		 *
+		 * @param id - The ID of the folder to delete.
+		 * @returns A promise that resolves to a deletion response.
+		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the folder.
+		 */
+		folder: async (id: string): Promise<DeletionResponse> => {
+			try {
+				return await this.db
+					.delete(tsPageFolderStructure)
+					.where(this.eq(tsPageFolderStructure.id, id))
+					.then(() => {
+						return {
+							status: 'success',
+							message: `Folder with ID ${id} has been deleted successfully`,
+						};
+					});
+			} catch (error) {
+				if (error instanceof Error) {
+					throw new StudioCMS_SDK_Error(
+						`Error deleting folder with ID ${id}: ${error.message}`,
+						error.stack
+					);
+				}
+				throw new StudioCMS_SDK_Error(
+					`Error deleting folder with ID ${id}: An unknown error occurred.`
 				);
 			}
 		},

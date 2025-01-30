@@ -15,6 +15,7 @@ import type {
 	VersionCacheObject,
 	tsPageContentSelect,
 	tsPageDataSelect,
+	tsPageFolderSelect,
 } from './types/index.js';
 
 /**
@@ -910,6 +911,7 @@ export class StudioCMSVirtualCache {
 			pageFolderTree: async (includeDrafts?: boolean) =>
 				await this.getPageFolderTree(includeDrafts),
 			folderList: async () => await this.getFolderList(),
+			folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
 		},
 		CLEAR: {
 			page: {
@@ -937,6 +939,12 @@ export class StudioCMSVirtualCache {
 			latestVersion: async () => await this.updateVersion(),
 			folderTree: async () => await this.updateFolderTree(),
 			folderList: async () => await this.updateFolderList(),
+			folder: async (data: tsPageFolderSelect) => {
+				const updatedEntry = await this.sdk.UPDATE.folder(data);
+				await this.updateFolderTree();
+				await this.updateFolderList();
+				return updatedEntry;
+			},
 		},
 	};
 }
