@@ -206,14 +206,14 @@ import { toast } from "studiocms:ui/components";
     listener();
   </script>
 
-<script is:inline>
+<script>
   function listener() {
-        const createPageForm = document.getElementById('page-create-form');
+        const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
 
         // Setup the TinyMDE editor
         // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
-        const pageContentTextarea = createPageForm.querySelector('#create_page-content');
-        const editorToolbar = createPageForm.querySelector('#create_editor-toolbar');
+        const pageContentTextarea = createPageForm.querySelector('#create_page-content') as HTMLTextAreaElement;
+        const editorToolbar = createPageForm.querySelector('#create_editor-toolbar') as HTMLElement;
         // @ts-expect-error - Added TinyMDE to the window object
         var createTinyMDE = new TinyMDE.Editor({ textarea: pageContentTextarea });
         // @ts-expect-error - Added TinyMDE to the window object
@@ -333,9 +333,7 @@ import { toast } from "studiocms:ui/components";
           alert("Image upload coming soon!");
         });
       }
-
-document.addEventListener('astro:page-load', listener);
-listener();
+      listener();
 </script>
 
 <style>

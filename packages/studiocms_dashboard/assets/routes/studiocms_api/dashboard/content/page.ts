@@ -70,6 +70,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 				title: data.title!,
 				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
 				description: data.description || '',
+				authorId: userData.user?.id || null,
 				...data,
 			},
 			{ id: contentId, ...content }
@@ -123,8 +124,36 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		return simpleResponse(400, 'Invalid form data, id is required');
 	}
 
+	const currentPageData = await studioCMS_SDK_Cache.GET.page.byId(data.id);
+
+	if (!currentPageData.data) {
+		return simpleResponse(404, 'Page not found');
+	}
+
+	const { authorId, contributorIds } = currentPageData.data;
+
+	let AuthorId = authorId;
+
+	if (!authorId) {
+		AuthorId = userData.user?.id || null;
+	}
+
+	const ContributorIds = contributorIds || [];
+
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	if (!ContributorIds.includes(userData.user!.id)) {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		ContributorIds.push(userData.user!.id);
+	}
+
+	data.authorId = AuthorId;
+	data.contributorIds = JSON.stringify(ContributorIds);
+
 	try {
-		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, { pageData: data, pageContent: content });
+		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
+			pageData: data,
+			pageContent: content,
+		});
 
 		return simpleResponse(200, 'Page updated successfully');
 	} catch (error) {

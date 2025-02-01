@@ -183,12 +183,12 @@ document.addEventListener('astro:page-load', listener);
 listener();
 </script>
 
-<script is:inline>
+<script>
     function listener() {
-    const editPageForm = document.getElementById('edit-page-form');
+    const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-    const pageContentTextarea = editPageForm.querySelector('#page-content');
-    const editorToolbar = editPageForm.querySelector('#editor-toolbar');
+    const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLTextAreaElement;
+    const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
     // @ts-expect-error - Added TinyMDE to the window object
@@ -310,8 +310,7 @@ listener();
         alert("Image upload coming soon!");
     });
     }
-
-    document.addEventListener('astro:page-load', () => listener());
+    listener();
 </script>
 
 <style>
