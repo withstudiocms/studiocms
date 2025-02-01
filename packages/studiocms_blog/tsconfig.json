@@ -1,32 +1,5 @@
 {
   "extends": "astro/tsconfigs/strictest",
   "files": [],
-  "compilerOptions": {
-    "outDir": "../../.moon/cache/types/packages/studiocms_blog",
-    "composite": true,
-    "noEmit": false,
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": false,
-    "paths": {
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"],
-      "@studiocms/frontend": ["../studiocms_frontend/src/index.ts"],
-      "@studiocms/frontend/*": ["../studiocms_frontend/src/*"]
-    }
-  },
-  "include": [
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_core/**/*",
-    "../studiocms_frontend/**/*",
-    "./**/*",
-    "./**/*.json"
-  ],
-  "references": [
-    {
-      "path": "../studiocms_core"
-    },
-    {
-      "path": "../studiocms_frontend"
-    }
-  ]
+  "include": ["./**/*", "./**/*.json"]
 }

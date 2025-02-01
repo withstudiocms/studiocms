@@ -1,0 +1,57 @@
+---
+import Layout from '../../components/Layout.astro';
+import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
+
+const lang = 'en-us';
+---
+
+<Layout 
+  title="Content Management"
+  requiredPermission='editor'
+  sidebar='double'
+  {lang}
+  >
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader />
+  </div>
+
+  <div id="placeholder-info" class="placeholder-info">
+    <p>Select a page or create a new one to get started!</p>
+  </div>
+
+</Layout>
+
+<style>
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: hsl(var(--text-muted));
+    }
+  }
+</style>

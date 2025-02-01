@@ -31,7 +31,7 @@ function isFaviconExt(ext: string): ext is keyof typeof faviconTypeMap {
 export type HeadUserConfig = z.input<ReturnType<typeof HeadConfigSchema>>;
 export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
 
-export const DefaultFrontEndConfigSchema = z
+export const FrontEndConfigSchema = z
 	.object({
 		/**
 		 * Inject Default Routes - Injects the default routes for the StudioCMS Frontend
@@ -41,6 +41,8 @@ export const DefaultFrontEndConfigSchema = z
 		/**
 		 * Inject 404 Route - Injects a 404 route for handling unknown routes
 		 * @default true
+		 *
+		 * @deprecated Moved to dashboardConfig
 		 */
 		inject404Route: z.boolean().optional().default(true),
 		/**
@@ -73,5 +75,10 @@ export const DefaultFrontEndConfigSchema = z
 			.optional()
 			.default('/favicon.svg'),
 	})
+	.optional()
+	.default({});
+
+export const DefaultFrontEndConfigSchema = z
+	.union([FrontEndConfigSchema, z.boolean()])
 	.optional()
 	.default({});

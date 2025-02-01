@@ -1,0 +1,37 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import profileImg from './avatar.webp';
+
+interface Props {
+	/**
+	 * Allows Overriding the default link description
+	 * @default "Login"
+	 */
+	title?: string | undefined;
+	/**
+	 * Allows Overriding the default alt text for a logged out user
+	 * @default "Logged Out user"
+	 */
+	alt?: string | undefined;
+	/**
+	 * Allows Overriding the default image src
+	 */
+	src?: string | undefined;
+}
+
+const attrs = {
+	a: {
+		href: StudioCMSRoutes.authLinks.loginURL,
+		title: Astro.props.title || 'Login',
+	},
+	img: {
+		src: Astro.props.src || profileImg.src,
+		alt: Astro.props.alt || 'Logged Out user',
+		width: 64,
+		height: 64,
+	},
+};
+---
+<a {...attrs.a}>
+    <img {...attrs.img} />
+</a>

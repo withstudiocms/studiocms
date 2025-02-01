@@ -1,16 +1,18 @@
-/// <reference types="@astrojs/db" />
 import { defineDb } from 'astro:db';
 import {
+	StudioCMSDiffTracking,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
+	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
+	StudioCMSUserResetTokens,
 	StudioCMSUsers,
-} from './tables';
+} from './tables.js';
 
 // Export the Database Configuration for StudioCMS
 export default defineDb({
@@ -24,5 +26,8 @@ export default defineDb({
 		StudioCMSSiteConfig,
 		StudioCMSUsers,
 		StudioCMSOAuthAccounts,
+		StudioCMSDiffTracking,
+		StudioCMSPageFolderStructure,
+		StudioCMSUserResetTokens,
 	},
 });

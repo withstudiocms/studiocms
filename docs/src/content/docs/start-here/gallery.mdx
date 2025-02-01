@@ -1,0 +1,18 @@
+---
+i18nReady: true
+title: Gallery
+description: A small gallery of images to show off StudioCMS
+tableOfContents: false
+banner:
+  content: |
+    <strong>These images are for <code>0.1.0-beta.7</code> and below.</strong>
+sidebar:
+   order: 5
+---
+
+import Gallery from '~/components/Gallery.astro'
+import { mainDemoGalleryImages } from "~/assets/index.ts"
+
+This is a small gallery of images to show off the `StudioCMS` integration.
+
+<Gallery galleryImages={mainDemoGalleryImages} />

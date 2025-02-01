@@ -13,7 +13,25 @@ authUtils.addModule('studiocms:auth/utils/authEnvCheck', {
 	namedExports: [
 		{
 			name: 'authEnvCheck',
-			typeDef: `typeof import('${resolve('../utils/authEnvCheck.ts')}').authEnvCheck`,
+			typeDef: `typeof import('${resolve('../utils/authEnvCheck.js')}').authEnvCheck`,
+		},
+	],
+});
+
+authUtils.addModule('studiocms:auth/utils/validImages', {
+	namedExports: [
+		{
+			name: 'validImages',
+			typeDef: `typeof import('${resolve('../utils/validImages.js')}').validImages`,
+		},
+	],
+});
+
+authUtils.addModule('studiocms:auth/utils/getLabelForPermissionLevel', {
+	namedExports: [
+		{
+			name: 'getLabelForPermissionLevel',
+			typeDef: `typeof import('${resolve('../utils/getLabelForPermissionLevel.js')}').getLabelForPermissionLevel`,
 		},
 	],
 });

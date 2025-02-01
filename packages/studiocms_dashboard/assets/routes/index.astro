@@ -1,0 +1,24 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import DashboardPageHeader from '../components/DashboardPageHeader.astro';
+import Layout from '../components/Layout.astro';
+import DashboardGrid from '../components/islands/dashboard/DashboardGrid.astro';
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:index');
+---
+
+<Layout 
+  title={t('title')}
+  requiredPermission='editor'
+  {lang}
+  >
+
+  <div slot="header">
+    <DashboardPageHeader />
+    <span>{t('sub-header')}</span>
+  </div>
+
+  <DashboardGrid />
+
+</Layout>

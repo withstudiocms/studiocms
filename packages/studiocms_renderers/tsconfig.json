@@ -1,32 +1,11 @@
 {
-  "extends": "astro/tsconfigs/strictest",
-  "files": [],
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "components", "exports", "virtuals.d.ts"],
   "compilerOptions": {
-    "outDir": "../../.moon/cache/types/packages/studiocms_renderers",
-    "composite": true,
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"],
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"]
-    }
-  },
-  "references": [
-    {
-      "path": "../../playgrounds/node"
-    },
-    {
-      "path": "../studiocms_core"
-    }
-  ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/**/*",
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_core/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "jsx": "preserve"
+  }
 }

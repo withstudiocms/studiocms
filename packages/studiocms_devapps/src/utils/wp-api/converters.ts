@@ -78,48 +78,48 @@ export const ConvertToPageContent = async (
 	return pageContent;
 };
 
-export const generateCatagories = async (categories: number[], endpoint: string) => {
-	const newCatagories: Category[] = [];
+export const generateCategories = async (categories: number[], endpoint: string) => {
+	const newCategories: Category[] = [];
 
-	for (const catagoryId of categories) {
-		// Check if catagory already exists in the database
-		const catagoryExists = await db
+	for (const categoryId of categories) {
+		// Check if category already exists in the database
+		const categoryExists = await db
 			.select()
 			.from(tsPageDataCategories)
-			.where(eq(tsPageDataCategories.id, catagoryId))
+			.where(eq(tsPageDataCategories.id, categoryId))
 			.get();
 
-		if (catagoryExists) {
-			console.log(`Catagory with id ${catagoryId} already exists in the database`);
+		if (categoryExists) {
+			console.log(`Category with id ${categoryId} already exists in the database`);
 			continue;
 		}
 
-		const catagoryURL = apiEndpoint(endpoint, 'catagories', `${catagoryId}`);
-		const response = await fetch(catagoryURL);
+		const categoryURL = apiEndpoint(endpoint, 'categories', `${categoryId}`);
+		const response = await fetch(categoryURL);
 		const json = await response.json();
-		newCatagories.push(json);
+		newCategories.push(json);
 	}
 
-	if (newCatagories.length > 0) {
-		const catagoryData = newCatagories.map((catagory) => {
+	if (newCategories.length > 0) {
+		const categoryData = newCategories.map((category) => {
 			const data: typeof tsPageDataCategories.$inferInsert = {
-				id: catagory.id,
-				name: catagory.name,
-				slug: catagory.slug,
-				description: catagory.description,
-				meta: JSON.stringify(catagory.meta),
+				id: category.id,
+				name: category.name,
+				slug: category.slug,
+				description: category.description,
+				meta: JSON.stringify(category.meta),
 			};
 
-			if (catagory.parent) {
-				data.parent = catagory.parent;
+			if (category.parent) {
+				data.parent = category.parent;
 			}
 
 			return data;
 		});
 
-		for (const catagory of catagoryData) {
-			console.log(`Inserting catagory with id ${catagory.id} into the database`);
-			await db.insert(tsPageDataCategories).values(catagory);
+		for (const category of categoryData) {
+			console.log(`Inserting category with id ${category.id} into the database`);
+			await db.insert(tsPageDataCategories).values(category);
 		}
 	}
 };
@@ -181,7 +181,7 @@ export const ConvertToPostData = async (
 
 	const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms';
 
-	await generateCatagories(data.categories, endpoint);
+	await generateCategories(data.categories, endpoint);
 	await generateTags(data.tags, endpoint);
 
 	const pageData: PageData = {
@@ -194,7 +194,7 @@ export const ConvertToPostData = async (
 		showOnNav: false,
 		contentLang: 'default',
 		package: pkg,
-		catagories: JSON.stringify(data.categories),
+		categories: JSON.stringify(data.categories),
 		tags: JSON.stringify(data.tags),
 	};
 

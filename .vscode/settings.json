@@ -8,5 +8,42 @@
   "[mdx]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.gotoLocation.multipleDefinitions": "goto"
+  "editor.gotoLocation.multipleDefinitions": "goto",
+  "cSpell.words": [
+    "Adammatthiesen",
+    "astrodtsbuilder",
+    "astrojs",
+    "CMSO",
+    "CMSSDK",
+    "Coolify",
+    "createpage",
+    "dompurify",
+    "editfolder",
+    "editpage",
+    "heroicons",
+    "inox",
+    "jdtjenkins",
+    "johndoe",
+    "Libravatar",
+    "liverender",
+    "Markdoc",
+    "Matthiesen",
+    "mdast",
+    "mgmt",
+    "mrmime",
+    "onest",
+    "oslojs",
+    "prototools",
+    "robotstxt",
+    "searchlist",
+    "strikethrough",
+    "studiocms",
+    "studiocmsenv",
+    "turso",
+    "twoslash",
+    "userpartial",
+    "Valladares",
+    "vite",
+    "withstudiocms"
+  ]
 }

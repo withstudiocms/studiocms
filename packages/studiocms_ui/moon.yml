@@ -1,7 +1,0 @@
-language: 'typescript'
-tags: ['astro', 'typescript']
-
-project: 
-  name: 'studiocms_ui'
-  description: 'The UI library for StudioCMS'
-  maintainers: ['louisescher']

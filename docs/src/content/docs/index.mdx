@@ -1,0 +1,87 @@
+---
+i18nReady: true
+title: StudioCMS Documentation
+description: Get started building with StudioCMS.
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  tagline: Guides and resources for learning how to use StudioCMS.
+  image:
+    alt: StudioCMS Logo
+    dark: ./studioCMS.png
+    light: ./studioCMS-dark.png
+  actions:
+    - text: Get started
+      link: /start-here/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub repository
+      link: https://github.com/withstudiocms/studiocms/
+      icon: github
+---
+
+import { CardGrid, LinkButton } from '@astrojs/starlight/components';
+import Youtube from '~/components/Youtube.astro';
+import Card from '~/components/landing/Card.astro';
+import ListCard from '~/components/landing/ListCard.astro';
+import SplitCard from '~/components/landing/SplitCard.astro';
+import { Center } from '@studiocms/ui/components';
+
+<Card title="Welcome to StudioCMS" icon='seti:video'>
+  <Youtube id="Ukh3Zb9VjIM"/>
+</Card>
+
+<CardGrid>
+
+  <SplitCard title="Quick Start" icon="rocket">
+    ```sh
+    # Create a new Astro project
+    pnpm create astro@latest
+    # Add StudioCMS and Astro DB to your project
+    pnpm astro add db studiocms
+
+    # Setup your Turso database with the Turso CLI
+    # Optional - You can use any libSQL provider
+    turso db create my-database
+    ```
+    
+    <div style="padding: 0;">
+    For more information about required environment variables, see the [Environment Variables](/start-here/environment-variables) page.
+
+    For a more in-depth guide, check out the [Getting Started](/start-here/getting-started) guide.
+    
+    Looking for a libSQL database? Check out [Turso](https://tur.so/studiocms).
+    </div>
+     
+  </SplitCard>
+
+  <ListCard title="Learn about StudioCMS" icon="information">
+    - [Getting Started](/start-here/getting-started)
+    - [Environment Variables](/start-here/environment-variables)
+    - [Why StudioCMS?](/start-here/why-studiocms)
+    - [Understanding StudioCMS](/how-it-works/)
+  </ListCard>
+
+  <ListCard title="Customizing StudioCMS" icon="puzzle">
+    - [Customizing the Renderer](/customizing/studiocms-renderers/)
+    - [Using the StudioCMS UI Library](/customizing/studiocms-ui/)
+    - [Finding and Using Plugins](/package-catalog/)
+  </ListCard>
+
+</CardGrid>
+
+<Center>
+  <div style="display: flex; flex-direction: column; margin-top: 3rem;">
+    Want to get involved with the StudioCMS community?
+
+    <LinkButton 
+      href='https://chat.studiocms.dev' 
+      icon='discord' 
+      iconPlacement='end'
+      class='discord-button'
+      style='width: fit-content; margin-left: auto; margin-right: auto;'>
+        Join our Discord!
+    </LinkButton>
+  </div>
+</Center>

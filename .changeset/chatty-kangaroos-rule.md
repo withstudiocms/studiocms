@@ -2,7 +2,6 @@
 "@studiocms/dashboard": patch
 "@studiocms/auth": patch
 "@studiocms/core": patch
-"@studiocms/ui": patch
 "studiocms": patch
 ---
 
@@ -113,7 +112,3 @@ Auth system overhaul:
 ## **`@studiocms/dashboard`**
 
 - Refactor to utilize new `@studiocms/auth` lib for user verification
-
-## **`@studiocms/ui`**
-
-- Update `<Input />` component's available types

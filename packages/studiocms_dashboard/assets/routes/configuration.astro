@@ -1,0 +1,27 @@
+---
+import { Button, Icon } from 'studiocms:ui/components';
+import Layout from '../components/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ConfigForm from '../components/islands/configuration/ConfigForm.astro';
+
+const lang = 'en-us';
+---
+
+<Layout 
+  title={"Configuration"}
+  requiredPermission='owner'
+  {lang}
+  >
+
+  <div slot="header">
+    <PageHeader title="Site Configuration">
+      <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
+        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        Save Changes
+      </Button>
+    </PageHeader>
+  </div>
+  
+  <ConfigForm />
+
+</Layout>

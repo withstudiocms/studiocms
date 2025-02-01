@@ -27,10 +27,21 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "dist"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
   },
   "type": "module",
   "dependencies": {},

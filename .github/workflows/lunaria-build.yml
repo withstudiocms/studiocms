@@ -19,15 +19,15 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: ./.github/actions/install
+        uses: withstudiocms/automations/.github/actions/install@main
 
       - name: Build Lunaria Overview
-        run: pnpm lunaria:build
+        run: pnpm ci:lunaria:build
 
       - name: Upload Overview
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "www/docs/dist/lunaria/"
+          path: "docs/dist/lunaria/"
 
   deploy-overview:
     runs-on: ubuntu-latest

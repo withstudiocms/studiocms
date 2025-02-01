@@ -10,7 +10,6 @@
 "@studiocms/auth": patch
 "@studiocms/blog": patch
 "@studiocms/core": patch
-"@studiocms/ui": patch
 "studiocms": patch
 ---
 

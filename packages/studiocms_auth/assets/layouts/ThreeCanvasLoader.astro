@@ -1,0 +1,18 @@
+---
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+
+// Get the site config
+const {
+	data: { loginPageBackground, loginPageCustomImage },
+} = await studioCMS_SDK_Cache.GET.siteConfig();
+---
+<div 
+    style="display: none;" 
+    id="auth-pages-config" 
+    data-config_background={loginPageBackground} 
+    data-config_custom_image={loginPageCustomImage}
+    />
+
+<script>
+import "studiocms:auth/scripts/three";
+</script>

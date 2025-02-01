@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../.astro/collections/package-catalog.schema.json",
+  "name": "@studiocms/ui",
+  "description": "The UI library for StudioCMS. Includes the layouts & components we use to build StudioCMS.",
+  "docsLink": "https://ui.studiocms.dev",
+  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_ui/",
+  "catalog": "studiocms",
+  "released": true,
+  "publiclyUsable": true
+}

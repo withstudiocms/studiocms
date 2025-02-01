@@ -27,24 +27,31 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "dist", "components", "routes"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./components": "./components/index.ts"
   },
   "type": "module",
   "dependencies": {
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "@studiocms/core": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
+    "@studiocms/ui": "catalog:",
     "astro-integration-kit": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -17,11 +17,11 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: ./.github/actions/install
+        uses: withstudiocms/automations/.github/actions/install@main
 
       - id: message
         name: Format Discord message
-        run: pnpm tsm --require=./scripts/filter-warnings.cjs ./www/docs/scripts/lunaria-report-bot.ts
+        run: pnpm ci:lunaria:report
 
   discord_message:
     name: Send Discord Message

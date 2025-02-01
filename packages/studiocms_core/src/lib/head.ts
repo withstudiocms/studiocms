@@ -2,7 +2,7 @@ import {
 	type HeadConfig,
 	HeadConfigSchema,
 	type HeadUserConfig,
-} from '../schemas/config/defaultFrontend';
+} from '../schemas/config/defaultFrontend.js';
 
 export { HeadConfigSchema };
 export type { HeadConfig, HeadUserConfig };

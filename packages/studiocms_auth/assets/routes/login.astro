@@ -1,0 +1,67 @@
+---
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
+import { AuthConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { Button, Input } from 'studiocms:ui/components';
+import AuthLayout from '../layouts/AuthLayout.astro';
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/auth:login');
+
+const {
+	providers,
+	providers: {
+		usernameAndPassword,
+		usernameAndPasswordConfig: { allowUserRegistration },
+	},
+} = AuthConfig;
+
+const { SHOW_OAUTH } = await authEnvCheck(providers);
+
+let paragraph: string;
+
+if (usernameAndPassword && SHOW_OAUTH) {
+	paragraph = t('sub-header-usernamepasswordoauth');
+} else if (usernameAndPassword && !SHOW_OAUTH) {
+	paragraph = t('sub-header-usernamepassword');
+} else if (!usernameAndPassword && SHOW_OAUTH) {
+	paragraph = t('sub-header-oauth');
+} else {
+	paragraph = t('sub-header-noprovider');
+}
+---
+<AuthLayout 
+    title={t('title')} 
+    description={t('description')} 
+    {lang}
+    checkLogin
+    >
+
+    <div slot="header" class="form-header">
+        <h1>{t('header')}</h1>
+        <p>{paragraph}</p>
+    </div>
+
+    { usernameAndPassword && (
+        <form class="form" id="login-form" method="post" action={StudioCMSRoutes.authLinks.loginAPI}>
+
+            <Input label={t('username-label')} name="username" type="text" />
+            <Input label={t('password-label')} name="password" type='password' />
+
+            <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'><span>{t('login-button')}</span></Button>
+        </form>
+    )}
+
+    { allowUserRegistration && (
+        <p slot="footer">{t('allow-registration-noaccount')} <a href={StudioCMSRoutes.authLinks.signupURL}>{t('allow-registration-register')}</a></p>
+    )}
+
+</AuthLayout>
+
+<script>
+    import { formListener } from '../scripts/formListener';
+    const loginForm = document.getElementById('login-form') as HTMLFormElement;
+
+    loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+</script>

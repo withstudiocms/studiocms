@@ -1,0 +1,42 @@
+---
+interface Props {
+	identifier: string;
+	name: string;
+	href: string;
+}
+
+const { name, href, identifier } = Astro.props;
+
+const isActive = Astro.url.pathname === href && 'active';
+---
+<a class="sidebar-plugin-link" href={href} class:list={[ isActive && 'active' ]}>
+  <span class="sidebar-plugin-name">{name}</span>
+  <span class="sidebar-plugin-identifier">{identifier}</span>
+</a>
+
+<style>
+  .sidebar-plugin-link {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    border-radius: .5rem;
+    transition: all .15s ease;
+    width: 100%;
+    padding: .375rem .5rem;
+    text-decoration: none;
+    color: hsl(var(--text-muted));
+  }
+
+  .sidebar-plugin-link:hover {
+    background-color: hsl(var(--background-step-2));
+  }
+
+  .sidebar-plugin-link.active {
+    color: hsl(var(--text));
+  }
+
+  .sidebar-plugin-identifier {
+    font-weight: 300;
+    font-size: .875em;
+  }
+</style>

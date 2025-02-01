@@ -1,21 +1,24 @@
 import { z } from 'astro/zod';
-import { overridesSchema } from './componentoverrides';
-import { dashboardConfigSchema } from './dashboard';
-import { DefaultFrontEndConfigSchema } from './defaultFrontend';
-import { imageServiceSchema } from './imageService';
-import { includedIntegrationsSchema } from './integrations';
+import type { StudioCMSPlugin } from '../plugins/index.js';
+import { overridesSchema } from './componentoverrides.js';
+import { dashboardConfigSchema } from './dashboard.js';
+import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFrontend.js';
+import { imageServiceSchema } from './imageService.js';
+import { includedIntegrationsSchema } from './integrations.js';
 import {
 	type CustomRenderer,
 	type Renderer,
 	type StudioCMSRendererConfig,
 	StudioCMSRendererConfigSchema,
-} from './rendererConfig';
+} from './rendererConfig.js';
+import { SDKSchema } from './sdk.js';
 
 //
 // Exported Schemas for use in other internal packages
 //
 export {
 	StudioCMSRendererConfigSchema,
+	FrontEndConfigSchema,
 	type StudioCMSRendererConfig,
 	type CustomRenderer,
 	type Renderer,
@@ -45,12 +48,14 @@ export const StudioCMSOptionsSchema = z
 		imageService: imageServiceSchema,
 		/**
 		 * Default Frontend Configuration
+		 *
+		 * Allows customization of the default frontend configuration
+		 *
+		 * @default true
 		 */
 		defaultFrontEndConfig: DefaultFrontEndConfigSchema,
 		/**
 		 * Allows customization of the Dashboard Configuration
-		 *
-		 * Coming soon....
 		 */
 		dashboardConfig: dashboardConfigSchema,
 		/**
@@ -62,6 +67,14 @@ export const StudioCMSOptionsSchema = z
 		 */
 		dateLocale: z.string().optional().default('en-us'),
 		/**
+		 * DateTime Format Options
+		 */
+		dateTimeFormat: z.custom<Intl.DateTimeFormatOptions>().optional().default({
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		}),
+		/**
 		 * Component Overrides - Allows for customizing the components used in StudioCMS
 		 */
 		overrides: overridesSchema,
@@ -70,6 +83,21 @@ export const StudioCMSOptionsSchema = z
 		 * @default false
 		 */
 		verbose: z.boolean().optional().default(false),
+		/**
+		 * Add Plugins to the StudioCMS
+		 */
+		plugins: z.custom<StudioCMSPlugin[]>().optional(),
+		/**
+		 * SDKSchema is a Zod schema that validates the SDK configuration.
+		 * It can either be a boolean or an object containing cache configuration.
+		 *
+		 * If it is a boolean, it defaults to `true` and transforms into an object
+		 * with default cache configuration.
+		 *
+		 * If it is an object, it must contain the `cacheConfig` property which is
+		 * validated by the `SDKCacheSchema`.
+		 */
+		sdk: SDKSchema,
 	})
 	.optional()
 	.default({});

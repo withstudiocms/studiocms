@@ -1,8 +1,7 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { CheckENVStrings } from '@studiocms/core/strings';
 import type { AstroIntegrationLogger } from 'astro';
 import { loadEnv } from 'vite';
-import type { StudioCMSAuthOptions } from '../schema';
+import type { StudioCMSAuthOptions } from '../schema.js';
+import { integrationLogger } from './integrationLogger.js';
 
 const env = loadEnv('all', process.cwd(), 'CMS');
 
@@ -14,6 +13,35 @@ type KeyListType = Record<
 		messages: { CheckMessage: string; ErrorMessage: string };
 	}
 >;
+
+export const CheckENVStrings = {
+	CheckStart: 'Checking Environment Variables...',
+	CheckComplete: 'Environment Variables Check Complete.',
+	GithubMessages: {
+		CheckMessage: 'Github Auth Enabled, Checking Github Environment Variables...',
+		ErrorMessage:
+			'The Following Github Keys are Missing and are Required for the Github Authentication to work:',
+	},
+	DiscordMessages: {
+		CheckMessage: 'Discord Auth Enabled, Checking Discord Environment Variables...',
+		ErrorMessage:
+			'The Following Discord Keys are Missing and are Required for the Discord Authentication to work:',
+	},
+	GoogleMessages: {
+		CheckMessage: 'Google Auth Enabled, Checking Google Environment Variables...',
+		ErrorMessage:
+			'The Following Google Keys are Missing and are Required for the Google Authentication to work:',
+	},
+	Auth0Messages: {
+		CheckMessage: 'Auth0 Auth Enabled, Checking Auth0 Environment Variables...',
+		ErrorMessage:
+			'The Following Auth0 Keys are Missing and are Required for the Auth0 Authentication to work:',
+	},
+	EncryptionMessages: {
+		CheckMessage: 'Checking Encryption Key...',
+		ErrorMessage: 'The CMS_ENCRYPTION_KEY is Missing and is Required for StudioCMS to work:',
+	},
+};
 
 const keyList: KeyListType = {
 	EncryptionKey: {

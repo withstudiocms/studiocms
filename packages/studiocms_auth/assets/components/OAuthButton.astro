@@ -1,0 +1,21 @@
+---
+import { Button } from 'studiocms:ui/components';
+
+interface Props {
+	href: string;
+	label: string;
+	image: string;
+}
+
+const { href, label, image } = Astro.props;
+---
+<Button as="a" href={href} variant="solid" size="lg">
+    <Fragment set:html={image} />
+    <span>{label}</span>
+</Button>
+
+<style>
+    .button {
+        color: var(--text-inverted) !important;
+    }
+</style>

@@ -1,4 +1,3 @@
-/// <reference types="@astrojs/db" />
 import { NOW, column, defineTable } from 'astro:db';
 
 /** StudioCMS - Users Table for Astro DB */
@@ -16,6 +15,15 @@ export const StudioCMSUsers = defineTable({
 	},
 });
 
+export const StudioCMSUserResetTokens = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		token: column.text(),
+	},
+});
+
+/** StudioCMS - OAuth Accounts Table for Astro DB */
 export const StudioCMSOAuthAccounts = defineTable({
 	columns: {
 		provider: column.text(), // github, google, discord, auth0
@@ -41,6 +49,15 @@ export const StudioCMSPermissions = defineTable({
 	},
 });
 
+/** StudioCMS - Page Folder Structure */
+export const StudioCMSPageFolderStructure = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		name: column.text(),
+		parent: column.text({ optional: true }),
+	},
+});
+
 /** StudioCMS - Pages Data Table for Astro DB */
 export const StudioCMSPageData = defineTable({
 	columns: {
@@ -57,11 +74,31 @@ export const StudioCMSPageData = defineTable({
 			default:
 				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 		}),
-		catagories: column.json({ default: [], optional: true }),
+		categories: column.json({ default: [], optional: true }),
 		tags: column.json({ default: [], optional: true }),
+		authorId: column.text({ optional: true }),
+		contributorIds: column.json({ default: [], optional: true }),
+		showAuthor: column.boolean({ default: false, optional: true }),
+		showContributors: column.boolean({ default: false, optional: true }),
+		parentFolder: column.text({ optional: true }),
+		draft: column.boolean({ optional: true }),
 	},
 });
 
+/** StudioCMS - Diff Tracking Table for Astro DB */
+export const StudioCMSDiffTracking = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		pageId: column.text({ references: () => StudioCMSPageData.columns.id }),
+		timestamp: column.date({ default: NOW, optional: true }),
+		pageMetaData: column.json({ default: {}, optional: true }),
+		pageContentStart: column.text({ multiline: true }),
+		diff: column.text({ multiline: true, optional: true }),
+	},
+});
+
+/** StudioCMS - Page Data Tags Table for Astro DB */
 export const StudioCMSPageDataTags = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),
@@ -72,6 +109,7 @@ export const StudioCMSPageDataTags = defineTable({
 	},
 });
 
+/** StudioCMS - Page Data Categories Table for Astro DB */
 export const StudioCMSPageDataCategories = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),

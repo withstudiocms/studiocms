@@ -1,10 +1,12 @@
-import { db, eq } from 'astro:db';
+// @ts-ignore
+import studioCMS_SDK from 'studiocms:sdk';
+// @ts-ignore
+import type { tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
-import { tsOAuthAccounts, tsPermissions, tsUsers } from '@studiocms/core/db/tsTables';
 import type { APIContext, AstroGlobal } from 'astro';
-import { hashPassword } from './password';
-import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session';
-import type { UserSessionData, UserTable } from './types';
+import { hashPassword } from './password.js';
+import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session.js';
+import type { UserSessionData } from './types.js';
 
 /**
  * Verifies if the provided username meets the required criteria.
@@ -47,9 +49,9 @@ export function verifyUsernameInput(username: string): boolean {
  */
 export async function createUserAvatar(email: string) {
 	// trim and lowercase the email
-	const safeemail = email.trim().toLowerCase();
+	const safeEmail = email.trim().toLowerCase();
 	// encode as (utf-8) Uint8Array
-	const msgUint8 = new TextEncoder().encode(safeemail);
+	const msgUint8 = new TextEncoder().encode(safeEmail);
 	// hash the message
 	const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
 	// convert buffer to byte array
@@ -74,12 +76,12 @@ export async function createLocalUser(
 	username: string,
 	email: string,
 	password: string
-): Promise<UserTable> {
+): Promise<tsUsersSelect> {
 	const passwordHash = await hashPassword(password);
 
 	const avatar = await createUserAvatar(email);
 
-	const newUserData: typeof tsUsers.$inferInsert = {
+	const newUser = await studioCMS_SDK.AUTH.user.create({
 		id: crypto.randomUUID(),
 		name,
 		username,
@@ -87,9 +89,9 @@ export async function createLocalUser(
 		password: passwordHash,
 		createdAt: new Date(),
 		avatar,
-	};
+	});
 
-	const newUser = await db.insert(tsUsers).values(newUserData).returning().get();
+	await studioCMS_SDK.POST.databaseEntry.permissions(newUser.id, 'visitor');
 
 	return newUser;
 }
@@ -102,13 +104,13 @@ export async function createLocalUser(
  * @returns The newly created user object or an error object if the creation fails.
  */
 export async function createOAuthUser(
-	userFields: typeof tsUsers.$inferInsert,
+	userFields: tsUsersInsert,
 	oAuthFields: { provider: string; providerUserId: string }
 ) {
 	try {
-		const newUser = await db.insert(tsUsers).values(userFields).returning().get();
+		const newUser = await studioCMS_SDK.AUTH.user.create(userFields);
 
-		await db.insert(tsOAuthAccounts).values({
+		await studioCMS_SDK.AUTH.oAuth.create({
 			userId: newUser.id,
 			provider: oAuthFields.provider,
 			providerUserId: oAuthFields.providerUserId,
@@ -141,7 +143,7 @@ export const LinkNewOAuthCookieName = 'link-new-o-auth';
 export async function updateUserPassword(userId: string, password: string): Promise<void> {
 	const passwordHash = await hashPassword(password);
 
-	await db.update(tsUsers).set({ password: passwordHash }).where(eq(tsUsers.id, userId));
+	await studioCMS_SDK.AUTH.user.update(userId, { password: passwordHash });
 }
 
 /**
@@ -152,7 +154,7 @@ export async function updateUserPassword(userId: string, password: string): Prom
  * @throws Will throw an error if the user is not found or if the user does not have a password.
  */
 export async function getUserPasswordHash(userId: string): Promise<string> {
-	const user = await db.select().from(tsUsers).where(eq(tsUsers.id, userId)).get();
+	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
 
 	if (!user) {
 		throw new Error('User not found');
@@ -171,8 +173,8 @@ export async function getUserPasswordHash(userId: string): Promise<string> {
  * @param email - The email address of the user to retrieve.
  * @returns A promise that resolves to the user data if found, or null if no user is found with the given email.
  */
-export async function getUserFromEmail(email: string): Promise<UserTable | null> {
-	return (await db.select().from(tsUsers).where(eq(tsUsers.email, email)).get()) ?? null;
+export async function getUserFromEmail(email: string): Promise<tsUsersSelect | null> {
+	return (await studioCMS_SDK.GET.databaseEntry.users.byEmail(email)) ?? null;
 }
 
 /**
@@ -210,7 +212,7 @@ export async function getUserData(Astro: AstroGlobal | APIContext): Promise<User
 		return { isLoggedIn: false, user: null, permissionLevel: 'unknown' };
 	}
 
-	const result = await db.select().from(tsPermissions).where(eq(tsPermissions.user, user.id)).get();
+	const result = await studioCMS_SDK.AUTH.permission.currentStatus(user.id);
 
 	if (!result) {
 		return { isLoggedIn: true, user, permissionLevel: 'unknown' };

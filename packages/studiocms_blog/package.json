@@ -54,7 +54,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/core": "workspace:*",
+    "studiocms": "workspace:*",
     "@studiocms/frontend": "workspace:*",
     "@astrojs/rss": "catalog:",
     "astro-theme-provider": "catalog:"
@@ -63,6 +63,7 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   }
 }

@@ -108,7 +108,7 @@ export const downloadAndUpdateImages = async (html: string, pathToFolder: string
 
 export const apiEndpoint = (
 	endpoint: string,
-	type: 'posts' | 'pages' | 'media' | 'catagories' | 'tags' | 'settings',
+	type: 'posts' | 'pages' | 'media' | 'categories' | 'tags' | 'settings',
 	path?: string
 ) => {
 	if (!endpoint) {

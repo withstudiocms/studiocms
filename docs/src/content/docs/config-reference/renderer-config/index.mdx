@@ -1,0 +1,48 @@
+---
+i18nReady: true
+title: rendererConfig
+description: A reference page for rendererConfig
+sidebar:
+  order: 2
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+## `renderer`
+
+The Markdown Content Renderer to use for rendering pages within StudioCMS
+
+- **Type:** `'astro'` | `'markdoc'` | `'mdx'` | `CustomRenderer`
+- **Default:** `'astro'`
+
+`renderer` determines how Markdown content should be rendered in `studioCMS`. This is used to setup your content data. The default value is `astro` which uses the Astro built-in markdown processor but you can also use `markdoc`, `mdx` or define a Custom Renderer.
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'astro',
+    markdocConfig: {},
+    mdxConfig: {},
+  },
+})
+```
+
+## `markdocConfig`
+
+<ReadMore>`markdocConfig` is an object that is used to determine how content should be rendered in `studiocms` while using the MarkDoc renderer.</ReadMore>
+
+### Usage
+
+<ReadMore>[See `markdocConfig` for full options](/config-reference/markdoc-config)</ReadMore>
+
+## `mdxConfig`
+
+`mdxConfig` is an object that is used to determine how content should be rendered in `studiocms` while using the MDX renderer.
+
+### Usage
+
+<ReadMore>[See `mdxConfig` for full options](/config-reference/mdx-config)</ReadMore>

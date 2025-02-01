@@ -1,49 +1,12 @@
 {
-  "extends": "astro/tsconfigs/strictest",
-  "files": [],
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "assets"],
   "compilerOptions": {
-    "outDir": "../../.moon/cache/types/packages/studiocms_dashboard",
-    "composite": true,
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "emitDeclarationOnly": false,
-    "paths": {
-      "node-playground/*": ["../../playgrounds/node/src/*"],
-      "@studiocms/assets": ["../studiocms_assets/src/index.ts"],
-      "@studiocms/assets/*": ["../studiocms_assets/src/*"],
-      "@studiocms/betaresources": ["../studiocms_betaresources/src/index.ts"],
-      "@studiocms/betaresources/*": ["../studiocms_betaresources/src/*"],
-      "@studiocms/core": ["../studiocms_core/src/index.ts"],
-      "@studiocms/core/*": ["../studiocms_core/src/*"],
-      "@studiocms/renderers": ["../studiocms_renderers/src/index.ts"],
-      "@studiocms/renderers/*": ["../studiocms_renderers/src/*"]
-    }
-  },
-  "references": [
-    {
-      "path": "../../playgrounds/node"
-    },
-    {
-      "path": "../studiocms_assets"
-    },
-    {
-      "path": "../studiocms_betaresources"
-    },
-    {
-      "path": "../studiocms_core"
-    },
-    {
-      "path": "../studiocms_renderers"
-    }
-  ],
-  "include": [
-    "./package.json",
-    "../../playgrounds/node/.astro/**/*",
-    "../studiocms_assets/**/*",
-    "../studiocms_betaresources/**/*",
-    "../studiocms_core/**/*",
-    "../studiocms_renderers/**/*",
-    "./**/*",
-    "./src/**/*.json"
-  ]
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "jsx": "preserve",
+    "types": ["astro/client"]
+  }
 }

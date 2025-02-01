@@ -3,7 +3,7 @@ import config from '@studiocms/blog:config';
 import { pages } from '@studiocms/blog:context';
 import { PageList, RSSIcon } from '@studiocms:blog/components';
 import { BlogLayout } from '@studiocms:blog/layouts';
-import { getPageList } from 'studiocms:helpers/contentHelper';
+import studioCMS_SDK from 'studiocms:sdk';
 import { name } from '../../../package.json';
 
 // Set the title and description
@@ -14,15 +14,10 @@ const description: string = configDescription || 'Blog Index';
 const showRSSFeed: boolean = blogIndex?.showRSSFeed || true;
 
 // Get all pages
-const pageList = await getPageList();
+const blogPageList = await studioCMS_SDK.GET.packagePages(name);
 
 // Get the RSS feed URL
 const rssPath = pages.get('/rss.xml');
-
-// Get all blog pages and sort by published date
-const blogPageList = pageList
-	.filter((page) => page.package === name)
-	.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
 ---
 <BlogLayout {title} description={description} >
     <main>

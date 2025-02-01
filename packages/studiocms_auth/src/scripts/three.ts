@@ -3,12 +3,14 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { fitModelToViewport } from '../scripts/utils/fitModelToViewport';
-import { validImages } from '../utils/validImages';
+import { fitModelToViewport } from '../scripts/utils/fitModelToViewport.js';
+import { validImages } from '../utils/validImages.js';
 
 // Get the current configuration for the login page
-const loginPageBackground = document.getElementById('login-page-configs')?.dataset.pagebg;
-const loginPageCustomImage = document.getElementById('login-page-configs')?.dataset.pagecustomimage;
+const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
+
+const loginPageBackground = configElement.dataset.config_background;
+const loginPageCustomImage = configElement.dataset.config_custom_image;
 const currentMode = document.documentElement.dataset.theme || 'dark';
 
 /**
@@ -75,8 +77,8 @@ function bgSelector(image: ValidImage, params: BackgroundParams) {
 	return image.format === 'web'
 		? params.customImageHref
 		: params.mode === 'dark'
-			? image.dark.src
-			: image.light.src;
+			? image.dark?.src
+			: image.light?.src;
 }
 
 /**
@@ -186,7 +188,7 @@ class StudioCMS3DLogo {
 		const loader = new GLTFLoader();
 
 		// Load the GLTF Model from the public dir & apply the material to all children
-		loader.loadAsync('/studiocms-auth/studiocms-logo.glb').then((gltf) => {
+		loader.loadAsync('/studiocms-resources/auth/studiocms-logo.glb').then((gltf) => {
 			this.model = gltf.scene;
 
 			this.model.traverse((child) => {
@@ -256,7 +258,14 @@ class StudioCMS3DLogo {
 		}
 
 		const loader = new THREE.TextureLoader();
-		loader.loadAsync(bgSelector(image, backgroundConfig)).then((texture) => {
+		const bgUrl = bgSelector(image, backgroundConfig);
+
+		if (!bgUrl) {
+			console.error('ERROR: Invalid background URL');
+			return;
+		}
+
+		loader.loadAsync(bgUrl).then((texture) => {
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			const planeHeight = this.frustumHeight!;
 			const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
@@ -362,6 +371,5 @@ if (!smallScreen) {
 	} catch (err) {
 		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);
 		logoContainer.classList.add('loaded');
-		// TODO: Show static image instead (configured background plus non-transparent logo in the same position, allow for custom bgs)
 	}
 }

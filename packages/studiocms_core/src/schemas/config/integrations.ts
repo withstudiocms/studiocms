@@ -1,4 +1,4 @@
-import type { RobotsConfig } from '@studiocms/robotstxt';
+import type { RobotsConfig } from '@studiocms/robotstxt/types';
 import { z } from 'astro/zod';
 
 //
@@ -9,19 +9,9 @@ export const includedIntegrationsSchema = z
 		/**
 		 * Allows the user to enable/disable the use of the StudioCMS Custom `astro-robots-txt` Integration
 		 *
-		 * @default true
+		 * @default robotsTXT: { policy: [ { userAgent: ['*'], allow: ['/'], disallow: ['/dashboard/'] } ] }
 		 */
-		useAstroRobots: z.boolean().optional().default(true),
-		astroRobotsConfig: z.custom<RobotsConfig>().default({}),
-		/**
-		 * Allows the user to enable/disable the use of the Inox-tools Sitemap Plugin
-		 * For more information on the Inox-tools Sitemap Plugin, visit:
-		 * @see https://inox-tools.vercel.app/sitemap-ext
-		 *
-		 * # TEMPORARILY DISABLED
-		 * If you would like to still use the Inox-tools Sitemap Plugin, you can manually add it to your project's Integrations.
-		 */
-		useInoxSitemap: z.boolean().optional().default(true),
+		robotsTXT: z.union([z.custom<RobotsConfig>(), z.boolean()]).optional().default(true),
 	})
 	.optional()
 	.default({});

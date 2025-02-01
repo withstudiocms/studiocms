@@ -1,7 +1,6 @@
 import { z } from 'astro/zod';
-import { authConfigSchema } from './auth';
-import { developerConfigSchema } from './developer';
-import { unocssConfigSchema } from './unocss';
+import { authConfigSchema } from './auth.js';
+import { developerConfigSchema } from './developer.js';
 
 export const dashboardConfigSchema = z
 	.object({
@@ -11,6 +10,20 @@ export const dashboardConfigSchema = z
 		 * @default true
 		 */
 		dashboardEnabled: z.boolean().optional().default(true),
+		// /**
+		//  * This allows the user when in `output: "server"` mode with Astro to enable or disable the prerendering of the dashboard
+		//  *
+		//  * **Note: This is only applicable when using Astro in server mode in static(hybrid) mode, this will be `true`**
+		//  *
+		//  * @default true
+		//  */
+		// prerender: z.boolean().optional().default(true),
+		/**
+		 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
+		 *
+		 * @default true
+		 */
+		inject404Route: z.boolean().optional().default(true),
 		/**
 		 * OPTIONAL - This allows the user to override the default Favicon URL to a custom URL
 		 */
@@ -30,17 +43,18 @@ export const dashboardConfigSchema = z
 		 */
 		AuthConfig: authConfigSchema,
 		/**
-		 * UnoCSS Configuration - Allows customization of the UnoCSS Configuration
-		 *
-		 * **Note: Use with caution, this is an advanced feature**
-		 *
-		 * StudioCMS uses UnoCSS+DaisyUI to provide a TailwindCSS-like experience with minimal CSS+prebuilt theme options!. This configuration allows you to override the default configuration.
-		 */
-		UnoCSSConfigOverride: unocssConfigSchema,
-		/**
 		 * Developer Options/Configuration
 		 */
 		developerConfig: developerConfigSchema,
+		/**
+		 * OPTIONAL - This allows the user to enable or disable the version check for the dashboard
+		 *
+		 * This will check for the latest version of StudioCMS and notify the user
+		 * if there is a new version available.
+		 *
+		 * @default true
+		 */
+		versionCheck: z.boolean().optional().default(true),
 	})
 	.optional()
 	.default({});

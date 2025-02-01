@@ -1,0 +1,31 @@
+---
+import { StudioCMSRenderer } from 'studiocms:renderer';
+import studioCMS_SDK from 'studiocms:sdk';
+import Layout from '../components/Layout.astro';
+
+const { slug } = Astro.params;
+
+if (!slug) {
+	return new Response(null, { status: 404 });
+}
+
+const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, 'studiocms');
+
+if (!page) {
+	return new Response(null, { status: 404 });
+}
+
+const { title, description, heroImage, defaultContent } = page;
+
+if (!defaultContent) {
+	return new Response(null, { status: 404 });
+}
+
+const content = defaultContent.content || '';
+---
+
+<Layout title={title} description={description} heroImage={heroImage}>
+	<main>
+		<StudioCMSRenderer content={content} />
+	</main>
+</Layout>

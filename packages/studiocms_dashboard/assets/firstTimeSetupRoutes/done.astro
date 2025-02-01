@@ -1,0 +1,46 @@
+---
+import { Code } from 'astro:components';
+import { Card, Divider } from '@matthiesenxyz/astrolace/components';
+import Layout from '../components/Layout.astro';
+import { makePageTitle } from '../utils';
+
+const codeBlob = `import { defineConfig } from "astro/config";
+import studioCMS from "studiocms";
+import db from '@astrojs/db';
+
+// https://astro.build/config
+export default defineConfig({
+	// other config options,
+	integrations: [
+		db(),
+		studioCMS({ 
++			dbStartPage: false,
+		}),
+	],
+});`;
+---
+<Layout title={makePageTitle("Setup Done", {title: "StudioCMS Dashboard"})} description="Welcome to StudioCMS" sideBarActiveItemID='start' includeSidebar={false}>
+	<div class="container lg:max-w-[50vw]">
+        <div class="py-8">
+          <div class="bg-base-300 p-8 md:p-12 lg:p-16 rounded-lg">
+			<div class="text-5xl font-bold pb-4 text-center">Setup Done!</div>
+			<div class="flex flex-col py-2 w-full gap-4">
+			  <Card>
+				<span class="font-bold">Next Step</span> 
+				<Divider class="divider" />
+				You can now stop your dev server and add the following option in your <strong>astro.config</strong> to start using StudioCMS. Then you can start your server back up to see your new CMS data.
+			  </Card>
+
+			  <Card>
+				<span class="font-bold">Code to change</span>
+				<Divider class="divider" />
+				<Code lang="diff" class="p-6" code={codeBlob} wrap/>
+			  </Card>
+			</div>
+
+		  </div>
+		</div>
+
+	</div>
+
+</Layout>

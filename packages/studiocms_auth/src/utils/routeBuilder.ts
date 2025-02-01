@@ -1,12 +1,9 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
-import { removeLeadingTrailingSlashes } from '@studiocms/core/lib';
-import { DashboardStrings } from '@studiocms/core/strings';
+import { makeAPIRoute, removeLeadingTrailingSlashes } from '@studiocms/core/lib';
 import { defineUtility } from 'astro-integration-kit';
-import type { StudioCMSAuthOptions } from '../schema';
+import type { StudioCMSAuthOptions } from '../schema.js';
+import { integrationLogger } from './integrationLogger.js';
 
-export const makeStudioCMSAuthAPIRoute = (route: string) => {
-	return `studiocms_api/auth/${route}`;
-};
+const apiRoute = makeAPIRoute('auth');
 
 export const makeDashboardRoute = (route: string, options: StudioCMSAuthOptions) => {
 	// Get the dashboard route override from the options
@@ -19,7 +16,7 @@ export const makeDashboardRoute = (route: string, options: StudioCMSAuthOptions)
 		? removeLeadingTrailingSlashes(dashboardRouteOverride)
 		: 'dashboard';
 
-	return `[...locale]/${defaultDashboardRoute}/${route}`;
+	return `${defaultDashboardRoute}/${route}`;
 };
 
 export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(
@@ -40,7 +37,6 @@ export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(
 			options: {
 				verbose,
 				dashboardConfig: {
-					dashboardEnabled,
 					AuthConfig: { enabled: authEnabled },
 					developerConfig: { testingAndDemoMode },
 				},
@@ -48,27 +44,27 @@ export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(
 			routes,
 		} = opts;
 
-		// Check if the Dashboard is enabled
-		if (dashboardEnabled) {
-			// Log that the Dashboard is enabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardEnabled);
-		} else {
-			// Log that the Dashboard is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardDisabled);
-		}
-
 		if (!authEnabled) {
 			// Log that the Auth is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthDisabled);
+			integrationLogger(
+				{ logger, logLevel: 'info', verbose },
+				'Auth is Disabled by the User Configuration.  You will only be able to edit the database directly'
+			);
 			return;
 		}
 
 		// Log that the Auth is enabled
-		integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthEnabled);
+		integrationLogger(
+			{ logger, logLevel: 'info', verbose },
+			'Auth is Enabled, Setting Up API Routes...'
+		);
 
 		// If Testing and Demo Mode is enabled, log that it is enabled
 		if (testingAndDemoMode) {
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.TestAndDemo);
+			integrationLogger(
+				{ logger, logLevel: 'info', verbose },
+				'Testing and Demo Mode is Enabled, Authentication will not be required to access dashboard pages.  But you will only be able to edit the database directly'
+			);
 		}
 
 		// Inject the API routes
@@ -80,7 +76,7 @@ export const injectAuthAPIRoutes = defineUtility('astro:config:setup')(
 			}
 
 			injectRoute({
-				pattern: makeStudioCMSAuthAPIRoute(pattern),
+				pattern: apiRoute(pattern),
 				entrypoint,
 				prerender: false,
 			});
@@ -98,7 +94,8 @@ export const injectAuthPageRoutes = defineUtility('astro:config:setup')(
 				pattern: string;
 				entrypoint: string;
 			}[];
-		}
+		},
+		prerenderRoutes
 	) => {
 		const { injectRoute, logger } = params;
 
@@ -106,39 +103,29 @@ export const injectAuthPageRoutes = defineUtility('astro:config:setup')(
 			options: {
 				verbose,
 				dashboardConfig: {
-					dashboardEnabled,
 					AuthConfig: { enabled: authEnabled },
-					developerConfig: { testingAndDemoMode },
 				},
 			},
 			options,
 			routes,
 		} = opts;
 
-		// Check if the Dashboard is enabled
-		if (dashboardEnabled) {
-			// Log that the Dashboard is enabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardEnabled);
-		} else {
-			// Log that the Dashboard is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.DashboardDisabled);
-		}
-
 		if (!authEnabled) {
 			// Log that the Auth is disabled
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthDisabled);
+			integrationLogger(
+				{ logger, logLevel: 'info', verbose },
+				'Auth is Disabled by the User Configuration.  You will only be able to edit the database directly'
+			);
 			return;
 		}
 
 		// Log that the Auth is enabled
-		integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.AuthEnabled);
+		integrationLogger(
+			{ logger, logLevel: 'info', verbose },
+			'Auth is Enabled, Setting Up Auth Page Routes...'
+		);
 
-		// If Testing and Demo Mode is enabled, log that it is enabled
-		if (testingAndDemoMode) {
-			integrationLogger({ logger, logLevel: 'info', verbose }, DashboardStrings.TestAndDemo);
-		}
-
-		// Inject the API routes
+		// Inject the page routes
 		for (const route of routes) {
 			const { enabled, pattern, entrypoint } = route;
 
@@ -149,7 +136,7 @@ export const injectAuthPageRoutes = defineUtility('astro:config:setup')(
 			injectRoute({
 				pattern: makeDashboardRoute(pattern, options),
 				entrypoint,
-				prerender: true,
+				prerender: prerenderRoutes,
 			});
 		}
 	}

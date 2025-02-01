@@ -27,15 +27,22 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "dist", "assets"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "type": "module",
   "dependencies": {
     "@studiocms/core": "workspace:*",
-    "@studiocms/ui": "workspace:*",
+    "@studiocms/ui": "catalog:",
     "astro-integration-kit": "catalog:",
     "@fontsource-variable/onest": "catalog:studiocms-shared",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
@@ -47,16 +54,14 @@
     "@oslojs/encoding": "catalog:studiocms-auth",
     "@types/three": "catalog:studiocms-auth",
     "arctic": "catalog:studiocms-auth",
-    "three": "catalog:studiocms-auth",
-    "@types/bcryptjs": "catalog:studiocms-auth",
-    "bcryptjs": "catalog:studiocms-auth"
+    "three": "catalog:studiocms-auth"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "vite": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "typescript": "catalog:"
   }
 }

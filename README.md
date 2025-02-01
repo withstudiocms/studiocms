@@ -15,7 +15,7 @@ To see how to get started, check out the [StudioCMS README](./packages/studiocms
 
 ## Sponsor
 
-<a href="https://turso.tech" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
+<a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
 
 ## StudioCMS Dashboard i18n Status
 
@@ -45,7 +45,7 @@ For an up-to-date list of our main tools check out our [`.prototools`](.prototoo
 
 For more information about Proto checkout [Proto's Website](https://moonrepo.dev/proto)
 
-## This is a [`Moonrepo`](https://moonrepo.dev)
+## This is a [`Moon repository`](https://moonrepo.dev)
 
 Follow install instructions listed on Moonrepo's docs, and you'll be all set to go! Its even a super easy single line command you put in your terminal!
 
@@ -65,16 +65,15 @@ Steps to get a running playground should be the following:
 
 - clone repo
 - run `pnpm i --frozen-lockfile`
-- change `dbStartPage` in the [node playground's](./playgrounds/node/studiocms.config.mjs) config to `true`
+- change `dbStartPage` in the [node playground's](./playground/studiocms.config.mts) config to `true`
 - read the first time setup instructions listed in the [main package readme](./packages/studiocms/README.md#first-start-and-setup) then replace the astro db commands with the following:
 
   Commands to run:
 
-  - `pnpm playground:login` - Login your CLI to Astro Studio
-  - `pnpm playground:push` - Creates the base tables on the remote database.
+  - `pnpm playground:push` - Push to your libSQL database assigned via environment variables
   - `pnpm playground:dev` - Starts the Dev server connected to the linked database
 
-Once that process completes successfuly you are ready to navigate to http://localhost:4321/start and follow the instructions to get started.
+Once that process completes successfully you are ready to navigate to http://localhost:4321/start and follow the instructions to get started.
 
 It will redirect and ask you to shutdown and change the above mentioned config option `dbStartPage` to `false` at which point that will enable full functionality of the CMS. you can now restart the dev server with `astro dev --remote` to continue viewing your new site!
 

@@ -1,38 +1,44 @@
-import type { Renderer } from '@studiocms/core/schemas/renderer';
+import { logger } from '@it-astro:logger:studiocms-renderer';
+import rendererConfig from 'studiocms:renderer/config';
+import renderAstroMD from './astro-remark.js';
+import renderMarkDoc from './markdoc.js';
+import renderAstroMDX from './mdx.js';
+
+const { renderer } = rendererConfig;
 
 /**
- * Content Renderer Type
+ * Renders the given content using a specified renderer.
  *
- * Renders content based on the renderer configuration
+ * The renderer can be a custom object with a `renderer` function and a `name` property,
+ * or a string indicating one of the built-in renderers ('astro', 'markdoc', 'mdx').
+ *
+ * @param content - The content to be rendered.
+ * @returns A promise that resolves to the rendered content as a string.
+ * @throws Will throw an error if the custom renderer object is invalid.
  */
-export type ContentRenderer = {
-	content: string;
-	renderer: Renderer;
-};
+export async function contentRenderer(content: string): Promise<string> {
+	if (typeof renderer === 'object') {
+		if (!renderer.renderer || !renderer.name) {
+			throw new Error('Invalid custom renderer');
+		}
+		logger.debug(`Using custom renderer: ${renderer.name}`);
+		return await renderer.renderer(content);
+	}
 
-/**
- * Content Renderer
- *
- * Renders content based on the renderer configuration
- *
- * @param content - The content to render
- * @param renderer - The renderer function to use
- * @returns The rendered content
- *
- * @example
- * function sampleRenderer(content: string): Promise<string> {
- *   // Assuming the renderer function processes the content and returns a string
- *   return `<p>${content}</p>`;
- * }
- *
- * const renderedContent = contentRenderer({
- *   content: 'Hello, world!',
- *   renderer: sampleRenderer,
- * });
- */
-export async function contentRenderer({ content, renderer }: ContentRenderer): Promise<string> {
-	// Assuming the renderer function processes the content and returns a string
-	return renderer(content);
+	switch (renderer) {
+		case 'astro':
+			logger.debug('Using built-in renderer: astro remark');
+			return await renderAstroMD(content);
+		case 'markdoc':
+			logger.debug('Using built-in renderer: markdoc');
+			return await renderMarkDoc(content);
+		case 'mdx':
+			logger.debug('Using built-in renderer: mdx');
+			return await renderAstroMDX(content);
+		default:
+			logger.error(`Unknown renderer: ${renderer}, falling back to astro remark`);
+			return await renderAstroMD(content);
+	}
 }
 
 export default contentRenderer;

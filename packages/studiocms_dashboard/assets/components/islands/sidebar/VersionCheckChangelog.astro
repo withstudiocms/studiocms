@@ -1,0 +1,101 @@
+---
+
+interface Props {
+	link: string;
+}
+
+const { link } = Astro.props;
+---
+
+<frame-button data-link={link}>
+    <slot />
+</frame-button>
+
+<script>
+    if (!customElements.get('frame-button')) {
+        
+        class FrameButton extends HTMLElement {
+            constructor() {
+                super();
+                // Get the slot element
+                const slot = document.createElement('slot');
+
+                const frameContainer = document.createElement('div');
+                frameContainer.style.position = 'absolute';
+                frameContainer.style.width = '100%';
+                frameContainer.style.height = '100%';
+                frameContainer.style.backgroundColor = 'hsl(var(--background-step-1))';
+                frameContainer.style.display = 'none';
+                frameContainer.style.justifyContent = 'center';
+                frameContainer.style.alignItems = 'center';
+                frameContainer.style.top = '0';
+                frameContainer.style.left = '0';
+                frameContainer.style.zIndex = '1000';
+                frameContainer.style.borderRadius = '1rem';
+                frameContainer.style.overflow = 'hidden';
+
+                const frameButton = document.createElement('button');
+                frameButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                frameButton.style.position = 'absolute';
+                frameButton.style.top = '1.5rem';
+                frameButton.style.right = '1.5rem';
+                frameButton.style.backgroundColor = 'transparent';
+                frameButton.style.border = 'none';
+                frameButton.style.cursor = 'pointer';
+                frameButton.style.borderRadius = '0.5rem';
+                frameButton.style.height = '1.5rem';
+                frameButton.style.padding = '0';
+                frameButton.style.width = '1.5rem';
+                frameButton.style.display = 'flex';
+                frameButton.style.justifyContent = 'center';
+                frameButton.style.alignItems = 'center';
+                frameButton.style.transition = 'background-color 0.15s ease-in-out';
+
+                const frameContent = document.createElement('div');
+                frameContent.style.padding = '1.5rem';
+                frameContent.style.width = '100%';
+                frameContent.style.height = '90%';
+                frameContent.style.overflowX = 'none';
+                frameContent.style.overflowWrap = 'break-word';
+                frameContent.style.overflowY = 'auto';
+                frameContent.style.scrollbarWidth = 'thin';
+                frameContent.style.scrollbarColor = 'hsl(var(--default-active)) hsl(var(--background-step-1))';
+
+                frameButton.addEventListener('mouseenter', () => {
+                    frameButton.style.backgroundColor = 'hsl(var(--default-base))';
+                });
+
+                frameButton.addEventListener('mouseleave', () => {
+                    frameButton.style.backgroundColor = 'transparent';
+                });
+
+                frameButton.addEventListener('click', () => {
+                    frameContainer.style.display = 'none';
+                });
+                
+                slot.addEventListener('click', async () => {
+                    const link = this.getAttribute('data-link')!;
+                    const { changelog } = await (await fetch(link)).json();
+
+                    frameContent.innerHTML = `
+                        <h1>Full Changelog</h1>
+                        <a href="${link}" target="_blank">See on GitHub ⤴</a>
+                        ${changelog}
+                    `;
+
+                    frameContainer.style.display = 'flex';
+                });
+
+                frameContainer.appendChild(frameButton);
+                frameContainer.appendChild(frameContent);
+
+                const shadow = this.attachShadow({ mode: 'open' });
+                shadow.appendChild(frameContainer);
+                shadow.appendChild(slot);
+            }
+        }
+
+        customElements.define('frame-button', FrameButton);
+
+    }
+</script>

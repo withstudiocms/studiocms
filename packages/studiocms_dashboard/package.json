@@ -27,38 +27,48 @@
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "src", "assets"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
-    "./utils": "./src/utils/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./components": "./assets/components/index.ts"
   },
   "type": "module",
   "dependencies": {
+    "@studiocms/ui": "catalog:",
     "@studiocms/assets": "workspace:*",
     "@studiocms/betaresources": "workspace:*",
     "@studiocms/core": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-
-    "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
-    "daisyui": "catalog:studiocms-shared",
-    "unocss": "catalog:studiocms-shared",
-    "@unocss/astro": "catalog:studiocms-shared",
-    "@unocss/reset": "catalog:studiocms-shared"
+    "@fontsource-variable/onest": "catalog:studiocms-shared",
+    "semver": "catalog:studiocms",
+    "ultrahtml": "^1.5.3",
+    "dompurify": "^3.2.3",
+    "fuse.js": "^7.0.0"
   },
   "peerDependencies": {
     "astro": "catalog:min",
     "@astrojs/db": "catalog:",
-    "@astrojs/web-vitals": "catalog:"
+    "@astrojs/web-vitals": "catalog:",
+    "vite": "catalog:min"
   },
   "devDependencies": {
-    "vite": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/semver": "catalog:studiocms",
+    "@types/dompurify": "^3.2.0"
   }
 }
