@@ -15,12 +15,7 @@ import MainSidebarContent from './MainSidebarContent.astro';
 <script>
   import { DoubleSidebarHelper } from "studiocms:ui/components";
 
-  function setupDoubleSidebar() {
-    if (document.getElementById('sui-sidebars')) {
+  if (document.getElementById('sui-sidebars')) {
       new DoubleSidebarHelper();
     }
-  }
-
-  document.addEventListener('astro:page-load', setupDoubleSidebar);
-  setupDoubleSidebar();
 </script>

@@ -78,7 +78,6 @@ import {
 
 <script>
 import { toast } from "studiocms:ui/components";
-  async function listener() {
     // get the elements
     const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
 
@@ -200,10 +199,6 @@ import { toast } from "studiocms:ui/components";
           return;
       }
       })
-    }
-  
-    document.addEventListener('astro:page-load', listener);
-    listener();
   </script>
 
 <script>

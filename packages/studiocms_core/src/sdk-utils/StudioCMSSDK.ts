@@ -716,8 +716,8 @@ export class StudioCMSSDK {
 				});
 
 				const diff = Diff.createTwoFilesPatch(
-					'MetaData',
-					'MetaData',
+					'Metadata',
+					'Metadata',
 					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).start, null, 2),
 					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).end, null, 2)
 				);

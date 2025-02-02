@@ -44,13 +44,13 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
         Page Metadata
     </h4>
 
-    <div set:html={diff.metadataDiffHtml} style="margin: 0 auto; width: 100%; max-width: 1000px;"></div>
+    <div set:html={diff.metadataDiffHtml} class="diff-screen"></div>
 
     <h4>
         Page Content
     </h4>
 
-    <div set:html={diff.contentDiffHtml} style="margin: 0 auto; width: 100%; max-width: 1000px;"></div>
+    <div set:html={diff.contentDiffHtml} class="diff-screen"></div>
 
 </Layout>
 
@@ -62,6 +62,29 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
     min-height: 100vh;
     height: 100%;
     padding: 1rem;
+  }
+
+  h4 {
+    margin: 1rem auto;
+    padding-left: 2rem;
+  }
+
+  .diff-screen {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  @media screen and (max-width: 1500px) {
+    .diff-screen {
+        max-width: 800px;
+    }
+  }
+
+  @media screen and (max-width: 1380px) {
+    .diff-screen {
+        max-width: 600px;
+    }
   }
 
 </style>

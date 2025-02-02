@@ -65,8 +65,6 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 
 <script>
     import { toast } from "studiocms:ui/components";
-
-    function setupConfigForm() {
         const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
 
         configForm.addEventListener('submit', async (e) => {
@@ -112,10 +110,6 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
                 })
             }
         });
-    }
-
-    document.addEventListener('astro:page-load', setupConfigForm);
-    setupConfigForm();
 </script>
 
 <script is:inline>
