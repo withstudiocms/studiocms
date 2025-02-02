@@ -1,0 +1,67 @@
+---
+import studioCMS_SDK from 'studiocms:sdk';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import Layout from '../../components/Layout.astro';
+import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
+
+const lang = 'en-us';
+
+const urlParams = Astro.url.searchParams;
+const diffId = urlParams.get('diff');
+
+if (!diffId) {
+	return new Response(null, { status: 404 });
+}
+
+const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffId);
+
+if (!diff) {
+	return new Response(null, { status: 404 });
+}
+
+const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
+---
+
+<Layout 
+  title="Content Management"
+  requiredPermission='editor'
+  sidebar='double'
+  {lang}
+  >
+
+    <div slot="double-sidebar" class="inner-sidebar-container">
+        <div class="sidebar-links-container">
+        <InnerSidebarElement />
+        </div>
+    </div>
+
+    <div slot="header">
+        <PageHeader title=`Page Diff: ${page.title}` />
+    </div>
+
+    <h4>
+        Page Metadata
+    </h4>
+
+    <div set:html={diff.metadataDiffHtml} style="margin: 0 auto; width: 100%; max-width: 1000px;"></div>
+
+    <h4>
+        Page Content
+    </h4>
+
+    <div set:html={diff.contentDiffHtml} style="margin: 0 auto; width: 100%; max-width: 1000px;"></div>
+
+</Layout>
+
+<style>
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    height: 100%;
+    padding: 1rem;
+  }
+
+</style>

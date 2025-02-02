@@ -623,8 +623,8 @@ export class StudioCMSSDK {
 			diffLength: number
 		) => {
 			const diff = Diff.createTwoFilesPatch(
-				data.metaData.start.title || '',
-				data.metaData.end.title || '',
+				'Content',
+				'Content',
 				data.content.start,
 				data.content.end
 			);
@@ -707,7 +707,22 @@ export class StudioCMSSDK {
 					throw new StudioCMS_SDK_Error('Diff not found');
 				}
 
-				const diffHtml = Diff2Html.html(diffEntry.diff, {
+				const contentDiffHtml = Diff2Html.html(diffEntry.diff, {
+					diffStyle: 'word',
+					matching: 'lines',
+					drawFileList: false,
+					outputFormat: 'side-by-side',
+					...options,
+				});
+
+				const diff = Diff.createTwoFilesPatch(
+					'MetaData',
+					'MetaData',
+					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).start, null, 2),
+					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).end, null, 2)
+				);
+
+				const metadataDiffHtml = Diff2Html.html(diff, {
 					diffStyle: 'word',
 					matching: 'lines',
 					drawFileList: false,
@@ -717,7 +732,8 @@ export class StudioCMSSDK {
 
 				return {
 					...diffEntry,
-					diffHtml,
+					metadataDiffHtml,
+					contentDiffHtml,
 				};
 			},
 		},
@@ -771,8 +787,8 @@ export class StudioCMSSDK {
 
 		test: () => {
 			const diff = Diff.createTwoFilesPatch(
-				'title.md',
-				'title.md',
+				'Default Lang',
+				'Default Lang',
 				`# Regi perque inimica siste deseret rerum ut
 
 ## Venias equos mora questus est nefas ore

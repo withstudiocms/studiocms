@@ -1,8 +1,10 @@
 ---
 import '../../../styles/tiny-mde.css';
+import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -21,6 +23,12 @@ function getParentFolderValue(value: string | null): string | undefined {
 	if (value === null) return 'null';
 	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
 }
+
+const {
+	data: { enableDiffs },
+} = await studioCMS_SDK_Cache.GET.siteConfig();
+
+const diffs = await studioCMS_SDK.diffTracking.get.byPageId.latest(pageData.id, 10);
 ---
 <div id="edit-page-container">
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -89,6 +97,43 @@ function getParentFolderValue(value: string | null): string | undefined {
                 </div>
             </div>
           </TabItem>
+
+          {
+            enableDiffs && (
+                <TabItem label='Page History' icon={'archive-box-20-solid'} color={'warning'}>
+                    <div class="tab-section">
+                        <div class="edit-card-list">
+                    
+                        {
+                            diffs.length > 0 ? (
+                            diffs.map((diff) => (
+                                <Card fullWidth class={'edit-card'}>
+                                <div class="card-row">
+                                    <span class="card-title">{pageData.title}</span>
+                                    <span class="card-date">Edited: <FormattedDate date={diff.timestamp!} /></span>
+                                </div>
+                    
+                                <div class="card-row">
+                                    <span class="card-description">{pageData.description}</span>
+                                    <Button size='sm' as='a' href={StudioCMSRoutes.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                                    <Icon name="eye" width={24} height={24} class="card-icon" />
+                                    </Button>
+                                </div>
+                                </Card>
+                            ))
+                            ) : (
+                            <Card fullWidth style="background-color: hsl(var(--background-step-1));">
+                                <Center>No history found.</Center>
+                            </Card>
+                            )
+                        }
+                    
+                        </div>
+                    </div>
+                </TabItem>
+            )
+          }
+
         </Tabs>
 
     </form>
@@ -366,5 +411,42 @@ listener();
         }
     }
 
+.edit-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.edit-card {
+  display: flex;
+  flex-direction: column;
+  background-color: hsl(var(--background-step-2));
+  
+  & .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & .card-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+
+    & .card-date {
+      color: hsl(var(--text-muted));
+      font-size: .8rem;
+    }
+
+    & .card-description {
+      font-size: 1rem;
+      color: hsl(var(--text-muted));
+      line-clamp: 1;
+    }
+
+    & .card-icon {
+      color: hsl(var(--text-muted));
+    }
+  }
+}
 
 </style>

@@ -170,6 +170,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					},
 					{
 						enabled: dashboardEnabled && !dbStartPage,
+						pattern: 'content-management/diff',
+						entrypoint: routesDir.route('content-management/diff.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage,
 						pattern: 'profile',
 						entrypoint: routesDir.route('profile.astro'),
 					},
