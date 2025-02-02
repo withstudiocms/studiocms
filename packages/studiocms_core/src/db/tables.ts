@@ -141,5 +141,7 @@ export const StudioCMSSiteConfig = defineTable({
 		siteIcon: column.text({ optional: true }),
 		loginPageBackground: column.text({ default: 'studiocms-curves' }),
 		loginPageCustomImage: column.text({ optional: true }),
+		enableDiffs: column.boolean({ default: false }),
+		diffPerPage: column.number({ default: 10 }),
 	},
 });

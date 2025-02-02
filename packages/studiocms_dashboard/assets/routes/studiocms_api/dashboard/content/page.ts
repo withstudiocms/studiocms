@@ -149,11 +149,42 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	data.authorId = AuthorId;
 	data.contributorIds = JSON.stringify(ContributorIds);
 
+	const startMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+		(metaData) => metaData.id === data.id
+	);
+
+	const {
+		data: { defaultContent },
+	} = await studioCMS_SDK_Cache.GET.page.byId(data.id);
+
 	try {
 		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
 			pageData: data,
 			pageContent: content,
 		});
+
+		const updatedMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+			(metaData) => metaData.id === data.id
+		);
+
+		const { enableDiffs, diffPerPage } = (await studioCMS_SDK_Cache.GET.siteConfig()).data;
+
+		if (enableDiffs) {
+			await studioCMS_SDK.diffTracking.insert(
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				userData.user!.id,
+				data.id,
+				{
+					content: {
+						start: defaultContent?.content || '',
+						end: content.content || '',
+					},
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					metaData: { start: startMetaData!, end: updatedMetaData! },
+				},
+				diffPerPage
+			);
+		}
 
 		return simpleResponse(200, 'Page updated successfully');
 	} catch (error) {

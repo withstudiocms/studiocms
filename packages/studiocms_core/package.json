@@ -128,7 +128,9 @@
     "mdast-util-to-markdown": "catalog:studiocms-shared",
     "mdast-util-to-string": "catalog:studiocms-shared",
     "unist-util-visit": "catalog:studiocms-shared",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "diff": "^7.0.0",
+    "diff2html": "^3.4.51"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
@@ -139,6 +141,7 @@
     "typescript": "catalog:",
     "@types/lodash": "catalog:studiocms-shared",
     "@types/mdast": "catalog:studiocms-shared",
-    "@types/jsonwebtoken": "^9.0.8"
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/diff": "^7.0.1"
   }
 }
