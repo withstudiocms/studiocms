@@ -1,6 +1,8 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
+import { Button } from 'studiocms:ui/components';
 import Layout from '../../components/Layout.astro';
 import InnerSidebarElement from '../../components/islands/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../components/islands/content-mgmt/PageHeader.astro';
@@ -38,6 +40,14 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
 
     <div slot="header">
         <PageHeader title=`Page Diff: ${page.title}` />
+        <span style="width: 100%; display: flex; padding: 1rem 0;">
+            <Button 
+            variant="outlined" 
+            color="primary" 
+            size="sm"
+            href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
+            >View Page</Button>
+        </span>
     </div>
 
     <h4>
