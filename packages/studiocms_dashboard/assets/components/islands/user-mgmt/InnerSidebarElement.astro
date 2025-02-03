@@ -64,16 +64,11 @@ const safeUsers: {
 <script>
     import { DropdownHelper } from 'studiocms:ui/components';
   
-    function setupDropdown() {
-        const createNewDropdown = new DropdownHelper('create-user-dropdown');
+    const createNewDropdown = new DropdownHelper('create-user-dropdown');
     
-        createNewDropdown.registerClickCallback((value) => {
-            console.log('Clicked', value);
-        });
-    };
-  
-    document.addEventListener('astro:page-load', setupDropdown);
-    setupDropdown();
+    createNewDropdown.registerClickCallback((value) => {
+        console.log('Clicked', value);
+    });
 </script>
 
 <script>
@@ -181,6 +176,5 @@ const safeUsers: {
         });
     }
 
-document.addEventListener('astro:page-load', searchSetup);
 searchSetup();
 </script>

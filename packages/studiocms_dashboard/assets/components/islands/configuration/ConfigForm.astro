@@ -2,7 +2,7 @@
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Card, Input, Select } from 'studiocms:ui/components';
+import { Card, Divider, Input, Select } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
@@ -32,6 +32,13 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
         </div>
 
         <div class="form-row">
+            <Select label="Page Diff Tracking" name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <Input label="Page Diff Tracking Limit (per page)" name="diff-per-page" placeholder="10" value={data.diffPerPage} />
+        </div>
+
+        <Divider />
+
+        <div class="form-row">
             <Select label='Login Page Background Image' name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
             <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
@@ -58,8 +65,6 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 
 <script>
     import { toast } from "studiocms:ui/components";
-
-    function setupConfigForm() {
         const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
 
         configForm.addEventListener('submit', async (e) => {
@@ -74,6 +79,8 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
                 siteIcon: formData.get('site-icon') ?? null,
                 loginPageBackground: formData.get('login-page-background') as string,
                 loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
+                enableDiffs: formData.get('diff-enabled') === 'true',
+                diffPerPage: parseInt(formData.get('diff-per-page') as string),
             }
 
             console.log(data);
@@ -103,10 +110,6 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
                 })
             }
         });
-    }
-
-    document.addEventListener('astro:page-load', setupConfigForm);
-    setupConfigForm();
 </script>
 
 <script is:inline>

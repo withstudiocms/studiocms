@@ -1,4 +1,7 @@
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
+import * as Diff from 'diff';
+import * as Diff2Html from 'diff2html';
+import { ColorSchemeType } from 'diff2html/lib/types.js';
 import jwt from 'jsonwebtoken';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
@@ -75,11 +78,15 @@ export class StudioCMSSDK {
 	private db: AstroDBVirtualModule['db'];
 	private and: AstroDBVirtualModule['and'];
 	private eq: AstroDBVirtualModule['eq'];
+	private asc: AstroDBVirtualModule['asc'];
+	private desc: AstroDBVirtualModule['desc'];
 
 	constructor(AstroDB: AstroDBVirtualModule) {
 		this.db = AstroDB.db;
 		this.and = AstroDB.and;
 		this.eq = AstroDB.eq;
+		this.asc = AstroDB.asc;
+		this.desc = AstroDB.desc;
 	}
 
 	/**
@@ -582,6 +589,241 @@ export class StudioCMSSDK {
 			}
 
 			return resetToken.token === token;
+		},
+	};
+
+	public checkDiffsLengthAndRemoveOldestIfToLong = async (pageId: string, length: number) => {
+		const diffs = await this.db
+			.select()
+			.from(tsDiffTracking)
+			.where(this.eq(tsDiffTracking.pageId, pageId))
+			.orderBy(this.asc(tsDiffTracking.timestamp));
+
+		if (diffs.length > length) {
+			const oldestDiff = diffs[0];
+
+			await this.db.delete(tsDiffTracking).where(this.eq(tsDiffTracking.id, oldestDiff.id));
+		}
+	};
+
+	public diffTracking = {
+		insert: async (
+			userId: string,
+			pageId: string,
+			data: {
+				content: {
+					start: string;
+					end: string;
+				};
+				metaData: {
+					start: Partial<tsPageDataSelect>;
+					end: Partial<tsPageDataSelect>;
+				};
+			},
+			diffLength: number
+		) => {
+			const diff = Diff.createTwoFilesPatch(
+				'Content',
+				'Content',
+				data.content.start,
+				data.content.end
+			);
+
+			await this.checkDiffsLengthAndRemoveOldestIfToLong(pageId, diffLength);
+
+			return await this.db
+				.insert(tsDiffTracking)
+				.values({
+					id: crypto.randomUUID(),
+					userId,
+					pageId,
+					diff,
+					timestamp: new Date(),
+					pageContentStart: data.content.start,
+					pageMetaData: JSON.stringify(data.metaData),
+				})
+				.returning()
+				.get();
+		},
+		clear: async (pageId: string) => {
+			await this.db.delete(tsDiffTracking).where(this.eq(tsDiffTracking.pageId, pageId));
+		},
+		get: {
+			byPageId: {
+				all: async (pageId: string) => {
+					return await this.db
+						.select()
+						.from(tsDiffTracking)
+						.where(this.eq(tsDiffTracking.pageId, pageId))
+						.orderBy(this.desc(tsDiffTracking.timestamp));
+				},
+				latest: async (pageId: string, count: number) => {
+					const diffs = await this.db
+						.select()
+						.from(tsDiffTracking)
+						.where(this.eq(tsDiffTracking.pageId, pageId))
+						.orderBy(this.desc(tsDiffTracking.timestamp));
+
+					return diffs.slice(0, count);
+				},
+			},
+			byUserId: {
+				all: async (userId: string) => {
+					return await this.db
+						.select()
+						.from(tsDiffTracking)
+						.where(this.eq(tsDiffTracking.userId, userId))
+						.orderBy(this.desc(tsDiffTracking.timestamp));
+				},
+				latest: async (userId: string, count: number) => {
+					const diffs = await this.db
+						.select()
+						.from(tsDiffTracking)
+						.where(this.eq(tsDiffTracking.userId, userId))
+						.orderBy(this.desc(tsDiffTracking.timestamp));
+
+					return diffs.slice(0, count);
+				},
+			},
+			single: async (id: string) => {
+				return await this.db
+					.select()
+					.from(tsDiffTracking)
+					.where(this.eq(tsDiffTracking.id, id))
+					.get();
+			},
+			withHtml: async (id: string, options?: Diff2Html.Diff2HtmlConfig) => {
+				const diffEntry = await this.db
+					.select()
+					.from(tsDiffTracking)
+					.where(this.eq(tsDiffTracking.id, id))
+					.get();
+
+				if (!diffEntry) {
+					throw new StudioCMS_SDK_Error('Diff not found');
+				}
+
+				if (!diffEntry.diff) {
+					throw new StudioCMS_SDK_Error('Diff not found');
+				}
+
+				const contentDiffHtml = Diff2Html.html(diffEntry.diff, {
+					diffStyle: 'word',
+					matching: 'lines',
+					drawFileList: false,
+					outputFormat: 'side-by-side',
+					...options,
+				});
+
+				const diff = Diff.createTwoFilesPatch(
+					'Metadata',
+					'Metadata',
+					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).start, null, 2),
+					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).end, null, 2)
+				);
+
+				const metadataDiffHtml = Diff2Html.html(diff, {
+					diffStyle: 'word',
+					matching: 'lines',
+					drawFileList: false,
+					outputFormat: 'side-by-side',
+					...options,
+				});
+
+				return {
+					...diffEntry,
+					metadataDiffHtml,
+					contentDiffHtml,
+				};
+			},
+		},
+		revertToDiff: async (id: string, type: 'content' | 'data' | 'both') => {
+			const diffEntry = await this.db
+				.select()
+				.from(tsDiffTracking)
+				.where(this.eq(tsDiffTracking.id, id))
+				.get();
+
+			if (!diffEntry) {
+				throw new StudioCMS_SDK_Error('Diff not found');
+			}
+
+			const shouldRevertData = type === 'data' || type === 'both';
+			const shouldRevertContent = type === 'content' || type === 'both';
+
+			if (shouldRevertData) {
+				const pageData = JSON.parse(diffEntry.pageMetaData as string);
+
+				await this.db
+					.update(tsPageData)
+					.set(pageData.start)
+					.where(this.eq(tsPageData.id, pageData.end.id));
+			}
+
+			if (shouldRevertContent) {
+				await this.db
+					.update(tsPageContent)
+					.set({ content: diffEntry.pageContentStart })
+					.where(this.eq(tsPageContent.contentId, diffEntry.pageId));
+			}
+
+			// purge all diffs after this one
+			const allDiffs = await this.db
+				.select()
+				.from(tsDiffTracking)
+				.where(this.eq(tsDiffTracking.pageId, diffEntry.pageId))
+				.orderBy(this.desc(tsDiffTracking.timestamp));
+
+			const diffIndex = allDiffs.findIndex((diff) => diff.id === id);
+
+			const diffsToPurge = allDiffs.slice(diffIndex + 1);
+
+			for (const diff of diffsToPurge) {
+				await this.db.delete(tsDiffTracking).where(this.eq(tsDiffTracking.id, diff.id));
+			}
+
+			return diffEntry;
+		},
+
+		test: () => {
+			const diff = Diff.createTwoFilesPatch(
+				'Default Lang',
+				'Default Lang',
+				`# Regi perque inimica siste deseret rerum ut
+
+## Venias equos mora questus est nefas ore
+
+Lorem markdownum, **corpus** vel coniunx, at color flammis victrix *neu paelicis
+huius* prosiliunt natasque, audax. Amnis una mihi praeteriit agimus scelus.
+
+## Sequentes quoque
+
+Discussa mandata reminiscor iamque miserum fulminis deus: aurea illa inpius
+iussit, legebant deae sidera illa. Ambiguus di currus erat uvis caelo fertque
+coronatae gesserat aquas [anni fallacia](http://prius-quoniam.net/iubet) vidit,
+**terra**, ite lacrimas.`,
+				`# Morbi ipsum
+
+## Citra nam torque quibus rabidi mente
+
+Lorem markdownum amplexa arcus. Ausonio quem quasque unda, est Byblis, per
+*vixque auctor*, transtra. Tenuisse quoque.
+
+1. Et Nisus
+2. Pariterque arte in stipite lumina deus referre
+3. Potuissent nata
+4. Vis ac in scire
+5. Aestusque quorum recenti suos pyra`
+			);
+
+			const diffHtml = Diff2Html.html(diff, {
+				diffStyle: 'word',
+				matching: 'lines',
+				drawFileList: false,
+				outputFormat: 'side-by-side',
+			});
+
+			return diffHtml;
 		},
 	};
 

@@ -3,6 +3,7 @@ import { getUserData } from 'studiocms:auth/lib/user';
 import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
+import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
 import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
 import Layout from '../../components/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
@@ -23,6 +24,14 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 const { user: loggedInUser } = await getUserData(Astro);
 
 const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === loggedInUser?.id;
+
+const diffs = await studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5);
+
+const pages = await studioCMS_SDK_Cache.GET.pages();
+
+const {
+	data: { enableDiffs },
+} = await studioCMS_SDK_Cache.GET.siteConfig();
 ---
 <Layout 
   title="User Management"
@@ -134,6 +143,39 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
     { shouldShowOAuth && ( 
       <SocialSignin oAuthData={user?.oAuthData} />
     )}
+
+    { enableDiffs && ( 
+      <div class="text-h3">Last edited pages</div>
+  
+      <div class="edit-card-list">
+  
+        {
+          diffs.length > 0 ? (
+            diffs.map((diff) => (
+              <Card fullWidth class={'edit-card'}>
+                <div class="card-row">
+                  <span class="card-title">{pages.find((page) => page.data.id === diff.pageId)?.data.title}</span>
+                  <span class="card-date">Edited: <FormattedDate date={diff.timestamp!} /></span>
+                </div>
+  
+                <div class="card-row">
+                  <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
+                  <Button size='sm' as='a' href={StudioCMSRoutes.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                    <Icon name="eye" width={24} height={24} class="card-icon" />
+                  </Button>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <Card fullWidth style="background-color: hsl(var(--background-step-1));">
+              <Center>No history found.</Center>
+            </Card>
+          )
+        }
+  
+      </div>
+    )}
+
   </div>
 
   <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
@@ -377,4 +419,43 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === lo
       padding: .5rem;
     }
   }
+
+  .edit-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .edit-card {
+    display: flex;
+    flex-direction: column;
+    background-color: hsl(var(--background-step-2));
+    
+    & .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      & .card-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+
+      & .card-date {
+        color: hsl(var(--text-muted));
+        font-size: .8rem;
+      }
+
+      & .card-description {
+        font-size: 1rem;
+        color: hsl(var(--text-muted));
+        line-clamp: 1;
+      }
+
+      & .card-icon {
+        color: hsl(var(--text-muted));
+      }
+    }
+  }
+
 </style>

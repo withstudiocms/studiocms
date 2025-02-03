@@ -1,8 +1,10 @@
 ---
 import '../../../styles/tiny-mde.css';
+import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
 import { studioCMS_SDK_Cache } from 'studiocms:sdk/cache';
-import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -21,6 +23,16 @@ function getParentFolderValue(value: string | null): string | undefined {
 	if (value === null) return 'null';
 	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
 }
+
+const {
+	data: { enableDiffs },
+} = await studioCMS_SDK_Cache.GET.siteConfig();
+
+const diffs = await studioCMS_SDK.diffTracking.get.byPageId.latest(pageData.id, 10);
+
+const users = await studioCMS_SDK.GET.database.users();
+
+const user = (id: string) => users.find((u) => u.id === id)?.name;
 ---
 <div id="edit-page-container">
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -89,106 +101,123 @@ function getParentFolderValue(value: string | null): string | undefined {
                 </div>
             </div>
           </TabItem>
+
+          {
+            enableDiffs && (
+                <TabItem label='Edit History' icon={'archive-box-20-solid'} color={'warning'}>
+                    <div class="tab-section">
+                        <div class="edit-card-list">
+                    
+                        {
+                            diffs.length > 0 ? (
+                            diffs.map((diff) => (
+                                <Card fullWidth class={'edit-card'}>
+                                <div class="card-row">
+                                    <span class="card-title">{pageData.title}</span>
+                                    <span class="card-date">Edited: <FormattedDate date={diff.timestamp!} /> by {user(diff.userId)}</span>
+                                </div>
+                    
+                                <div class="card-row">
+                                    <span class="card-description">{pageData.description}</span>
+                                    <Button size='sm' as='a' href={StudioCMSRoutes.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                                    <Icon name="eye" width={24} height={24} class="card-icon" />
+                                    </Button>
+                                </div>
+                                </Card>
+                            ))
+                            ) : (
+                            <Card fullWidth style="background-color: hsl(var(--background-step-1));">
+                                <Center>No history found.</Center>
+                            </Card>
+                            )
+                        }
+                    
+                        </div>
+                    </div>
+                </TabItem>
+            )
+          }
+
         </Tabs>
 
     </form>
 </div>
 
-<div 
-    id="edit-page-grabber" 
-    style="display: none;"
-    data-page_type_options={JSON.stringify(pageTypeOptions)}
-    data-show_in_nav_options={JSON.stringify(trueFalse)}
-    data-categories_options={JSON.stringify(categoriesOptions)}
-    data-tags_options={JSON.stringify(tagsOptions)}
-    data-parent_folder_options={JSON.stringify(parentFolderOptions)}
-    data-show_author_options={JSON.stringify(trueFalse)}
-    data-show_contributors_options={JSON.stringify(trueFalse)}
-    >
-</div>
-
 <script>
 import { toast } from "studiocms:ui/components";
-async function listener() {
 
-    const editPageGrabber = document.getElementById('edit-page-grabber') as HTMLElement;
+// get the elements
+const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-    if (!editPageGrabber) return;
-  
-    // get the elements
-    const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
+function getParentFolderValue(value?: string) {
+    if (value === 'null') return null;
+    return value;
+  }
 
-    function getParentFolderValue(value?: string) {
-        if (value === 'null') return null;
-        return value;
-      }
+editPageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(editPageForm);
 
-    editPageForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(editPageForm);
+    const data = {
+        title: formData.get('page-title')?.toString(),
+        slug: formData.get('page-slug')?.toString(),
+        description: formData.get('page-description')?.toString(),
+        package: formData.get('page-type')?.toString(),
+        showOnNav: formData.get('show-in-nav') === 'true',
+        heroImage: formData.get('page-hero-image')?.toString(),
+        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+        showAuthor: formData.get('show-author') === 'true',
+        showContributors: formData.get('show-contributors')?.toString() === 'true',
+        categories: [],
+        tags: [],
+        id: formData.get('page-id')?.toString(),
+        draft: formData.get('draft')?.toString() === 'true',
+    };
 
-        const data = {
-            title: formData.get('page-title')?.toString(),
-            slug: formData.get('page-slug')?.toString(),
-            description: formData.get('page-description')?.toString(),
-            package: formData.get('page-type')?.toString(),
-            showOnNav: formData.get('show-in-nav') === 'true',
-            heroImage: formData.get('page-hero-image')?.toString(),
-            parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-            showAuthor: formData.get('show-author') === 'true',
-            showContributors: formData.get('show-contributors')?.toString() === 'true',
-            categories: [],
-            tags: [],
-            id: formData.get('page-id')?.toString(),
-            draft: formData.get('draft')?.toString() === 'true',
-        };
+    const content = {
+        id: formData.get('page-content-id')?.toString(),
+        content: formData.get('page-content')?.toString(),
+    }
 
-        const content = {
-            id: formData.get('page-content-id')?.toString(),
-            content: formData.get('page-content')?.toString(),
-        }
+    console.log(data, content);
 
-        console.log(data, content);
-
-        const response = await fetch(editPageForm.action, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data, content }),
-        });
-
-        const res = await response.json();
-
-        if (response.status !== 200) {
-            toast({
-                title: 'Error',
-                description: res.error,
-                type: 'danger'
-            })
-            return;
-        }
-
-        if (response.status === 200) {
-            toast({
-                title: 'Success',
-                description: res.message,
-                type: 'success'
-            })
-            return;
-        }
+    const response = await fetch(editPageForm.action, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data, content }),
     });
-}
-document.addEventListener('astro:page-load', listener);
-listener();
+
+    const res = await response.json();
+
+    if (response.status !== 200) {
+        toast({
+            title: 'Error',
+            description: res.error,
+            type: 'danger'
+        })
+        return;
+    }
+
+    if (response.status === 200) {
+        toast({
+            title: 'Success',
+            description: res.message,
+            type: 'success'
+        })
+        return;
+    }
+});
+
 </script>
 
-<script is:inline>
+<script>
     function listener() {
-    const editPageForm = document.getElementById('edit-page-form');
+    const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-    const pageContentTextarea = editPageForm.querySelector('#page-content');
-    const editorToolbar = editPageForm.querySelector('#editor-toolbar');
+    const pageContentTextarea = editPageForm.querySelector('#page-content') as HTMLTextAreaElement;
+    const editorToolbar = editPageForm.querySelector('#editor-toolbar') as HTMLElement;
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
     // @ts-expect-error - Added TinyMDE to the window object
@@ -310,8 +339,7 @@ listener();
         alert("Image upload coming soon!");
     });
     }
-
-    document.addEventListener('astro:page-load', () => listener());
+    listener();
 </script>
 
 <style>
@@ -367,5 +395,42 @@ listener();
         }
     }
 
+.edit-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.edit-card {
+  display: flex;
+  flex-direction: column;
+  background-color: hsl(var(--background-step-2));
+  
+  & .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & .card-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+
+    & .card-date {
+      color: hsl(var(--text-muted));
+      font-size: .8rem;
+    }
+
+    & .card-description {
+      font-size: 1rem;
+      color: hsl(var(--text-muted));
+      line-clamp: 1;
+    }
+
+    & .card-icon {
+      color: hsl(var(--text-muted));
+    }
+  }
+}
 
 </style>

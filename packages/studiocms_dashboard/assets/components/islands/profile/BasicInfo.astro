@@ -36,8 +36,7 @@ const data = await getUserData(Astro);
 <script>
     import { toast } from "studiocms:ui/components";
 
-    function setupBasicInfoForm() {
-        const basicInfoForm = document.getElementById('basic-info-form') as HTMLFormElement;
+    const basicInfoForm = document.getElementById('basic-info-form') as HTMLFormElement;
         basicInfoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -80,10 +79,6 @@ const data = await getUserData(Astro);
             }
 
         });
-    }
-
-    document.addEventListener('astro:page-load', setupBasicInfoForm);
-    setupBasicInfoForm();
 </script>
 
 <style>

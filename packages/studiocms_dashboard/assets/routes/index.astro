@@ -1,11 +1,14 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+// import studioCMS_SDK from 'studiocms:sdk';
 import DashboardPageHeader from '../components/DashboardPageHeader.astro';
 import Layout from '../components/Layout.astro';
 import DashboardGrid from '../components/islands/dashboard/DashboardGrid.astro';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
+
+// const test = studioCMS_SDK.diffTracking.test();
 ---
 
 <Layout 
@@ -20,5 +23,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
   </div>
 
   <DashboardGrid />
+
+  <!-- <div style="margin: 0 auto; width: 100%; max-width: 1000px;" set:html={test}></div> -->
 
 </Layout>

@@ -68,7 +68,6 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "@types/semver": "catalog:studiocms",
-    "@types/dompurify": "^3.2.0"
+    "@types/semver": "catalog:studiocms"
   }
 }

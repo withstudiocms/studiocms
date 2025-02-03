@@ -61,16 +61,11 @@ const { isNewFolder, isNewPage } = Astro.props;
 <script>
   import { DropdownHelper } from 'studiocms:ui/components';
 
-function setupDropdown() {
-    const createNewDropdown = new DropdownHelper('create-new-dropdown');
+  const createNewDropdown = new DropdownHelper('create-new-dropdown');
 
-    createNewDropdown.registerClickCallback((value) => {
-      window.location.assign(value);
-    });
-  };
-
-document.addEventListener('astro:page-load', setupDropdown);
-setupDropdown();
+createNewDropdown.registerClickCallback((value) => {
+  window.location.assign(value);
+});
 </script>
 
 <script>
@@ -225,6 +220,5 @@ setupDropdown();
     searchInput.addEventListener('search', () => clearSearchParams(dividerTitle, innerSidebarItemsSearch));
   }
 
-  document.addEventListener('astro:page-load', searchSetup);
   searchSetup();
 </script>
