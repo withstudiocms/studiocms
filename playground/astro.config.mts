@@ -10,7 +10,7 @@ import { getCoolifyURL } from './hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true),
+	site: getCoolifyURL(true) || 'https://next-demo.studiocms.dev',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
