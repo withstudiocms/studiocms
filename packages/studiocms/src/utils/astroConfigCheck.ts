@@ -19,11 +19,6 @@ export const checkAstroConfig = defineUtility('astro:config:setup')(
 			);
 		}
 
-		// Check for SSR Mode (output: "server")
-		if (astroConfig.output !== 'server') {
-			throw new StudioCMSCoreError("StudioCMS is only supported in 'Output: server' SSR mode.");
-		}
-
 		// Check for Site URL
 		if (!astroConfig.site) {
 			throw new StudioCMSCoreError(

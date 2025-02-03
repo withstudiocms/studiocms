@@ -60,10 +60,8 @@ export default defineIntegration({
 		// Resolver Function
 		const { resolve } = createResolver(import.meta.url);
 
-		const tempComponentList: Record<string, string> = {
-			example: './example.astro',
-			example2: './example.astro',
-		};
+		// Component Registry for Custom user Components
+		let ComponentRegistry: Record<string, string>;
 
 		// Return the Integration
 		return withPlugins({
@@ -77,7 +75,7 @@ export default defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, defineModule } = params;
+					const { logger, defineModule, config } = params;
 
 					logger.info('Checking configuration...');
 
@@ -85,14 +83,24 @@ export default defineIntegration({
 
 					options = await configResolver(params, opts);
 
-					const { verbose, rendererConfig, defaultFrontEndConfig, includedIntegrations, plugins } =
-						options;
+					const {
+						verbose,
+						rendererConfig,
+						defaultFrontEndConfig,
+						includedIntegrations,
+						plugins,
+						componentRegistry,
+					} = options;
+
+					if (componentRegistry) ComponentRegistry = componentRegistry;
 
 					// Setup Logger
 					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS...');
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
+
+					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					// Setup Logger
 					integrationLogger(
@@ -209,21 +217,32 @@ export default defineIntegration({
 						defaultExport: pkgVersion,
 					});
 
-					addVirtualImports(params, {
-						name: pkgName,
-						imports: {
-							'studiocms:component-proxy': `
-								export const componentKeys = ${JSON.stringify(
-									Object.keys(tempComponentList).map((key) => key.toLowerCase())
-								)};
+					const componentKeys = ComponentRegistry
+						? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
+						: [];
 
-								${Object.entries(tempComponentList)
-									// TODO: Update Resolve to point to Astro user config
-									.map(([key, value]) => `export { default as ${key} } from '${resolve(value)}';`)
-									.join('\n')}
-							`,
-						},
-					});
+					const components = ComponentRegistry
+						? Object.entries(ComponentRegistry)
+								.map(
+									([key, value]) =>
+										`export { default as ${key} } from '${astroConfigResolve(value)}';`
+								)
+								.join('\n')
+						: '';
+
+					if (ComponentRegistry) {
+						addVirtualImports(params, {
+							name: pkgName,
+							imports: {
+								'studiocms:component-proxy': `
+									export * from ${resolve('./utils/AstroComponentProxy.js')};
+
+									export const componentKeys = ${JSON.stringify(componentKeys)};
+									${components}
+								`,
+							},
+						});
+					}
 
 					let pluginListLength = 0;
 					let pluginListMessage = '';
@@ -246,6 +265,8 @@ export default defineIntegration({
 				},
 				// Config Done: Make DTS file for StudioCMS Plugins Virtual Module
 				'astro:config:done': ({ injectTypes, config }) => {
+					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
+
 					// Make DTS file for StudioCMS Plugins Virtual Module
 					const dtsFile = astroDTSBuilder();
 
@@ -268,14 +289,27 @@ export default defineIntegration({
 					dtsFile.addModule('studiocms:component-proxy', {
 						namedExports: [
 							{
+								name: 'createComponentProxy',
+								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').createComponentProxy`,
+							},
+							{
+								name: 'dedent',
+								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').dedent`,
+							},
+							{
+								name: 'transformHTML',
+								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').transformHTML`,
+							},
+							{
 								name: 'componentKeys',
 								typeDef: 'string[]',
 							},
-							...Object.keys(tempComponentList).map((key) => ({
-								name: key,
-								// TODO: Update Resolve to point to Astro user config
-								typeDef: `typeof import('${resolve(tempComponentList[key])}').default`,
-							})),
+							...(ComponentRegistry
+								? Object.keys(ComponentRegistry).map((key) => ({
+										name: key,
+										typeDef: `typeof import('${astroConfigResolve(ComponentRegistry[key])}').default`,
+									}))
+								: []),
 						],
 					});
 

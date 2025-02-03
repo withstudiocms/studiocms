@@ -98,6 +98,10 @@ export const StudioCMSOptionsSchema = z
 		 * validated by the `SDKCacheSchema`.
 		 */
 		sdk: SDKSchema,
+		/**
+		 * Component Registry
+		 */
+		componentRegistry: z.record(z.string()).optional(),
 	})
 	.optional()
 	.default({});

@@ -584,6 +584,9 @@ importers:
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
+      ultrahtml:
+        specifier: ^1.5.3
+        version: 1.5.3
       unist-util-visit:
         specifier: catalog:studiocms-shared
         version: 5.0.0
