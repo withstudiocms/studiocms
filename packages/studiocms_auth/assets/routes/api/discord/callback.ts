@@ -34,11 +34,6 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		const discordUserId = discordUser.id;
 		const discordUsername = discordUser.username;
 
-		// FIRST-TIME-SETUP
-		// if (STUDIOCMS_FIRST_TIME_SETUP) {
-		//  // TODO: Add first-time setup logic here
-		// }
-
 		const existingOAuthAccount = await studioCMS_SDK.AUTH.oAuth.searchProvidersForId(
 			ProviderID,
 			discordUserId
@@ -93,6 +88,11 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		if ('error' in newUser) {
 			return new Response('Error creating user', { status: 500 });
+		}
+
+		// FIRST-TIME-SETUP
+		if (config.dbStartPage) {
+			return redirect('/done');
 		}
 
 		await createUserSession(newUser.id, context);

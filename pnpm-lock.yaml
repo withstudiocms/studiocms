@@ -821,6 +821,12 @@ importers:
       '@fontsource-variable/onest':
         specifier: catalog:studiocms-shared
         version: 5.1.0
+      '@iconify-json/flat-color-icons':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@iconify-json/simple-icons':
+        specifier: ^1.2.23
+        version: 1.2.23
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.4.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
@@ -1660,8 +1666,14 @@ packages:
   '@gerrit0/mini-shiki@1.24.4':
     resolution: {integrity: sha512-YEHW1QeAg6UmxEmswiQbOVEg1CW22b1XUD/lNTliOsu0LD0wqoyleFMnmbTp697QE0pcadQiR5cVtbbAPncvpw==}
 
+  '@iconify-json/flat-color-icons@1.2.1':
+    resolution: {integrity: sha512-iv1NQai4ThVJf5RGB2UBY/EYG4P5KpdnRTUM1hqLweD6OmWxZUyNJkqLzwns6/t+VBYM0H5gS/ckSWyxxEIYmQ==}
+
   '@iconify-json/heroicons@1.2.1':
     resolution: {integrity: sha512-TkKfS5U27kE5MXmSGLzPoz95BP5VA9xEJXwJFwmPMVLX+xyWq0OkoiWTUXB0uAoQODpb8BaRpzSydItrq9fIRA==}
+
+  '@iconify-json/simple-icons@1.2.23':
+    resolution: {integrity: sha512-ySyZ0ZXdNveWnR71t7XGV7jhknxSlTtpM2TyIR1cUHTUzZLP36hYHTNqb2pYYsCzH5ed85KTTKz7vYT33FyNIQ==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -6785,7 +6797,15 @@ snapshots:
       '@shikijs/types': 1.24.2
       '@shikijs/vscode-textmate': 9.3.1
 
+  '@iconify-json/flat-color-icons@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/heroicons@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/simple-icons@1.2.23':
     dependencies:
       '@iconify/types': 2.0.0
 

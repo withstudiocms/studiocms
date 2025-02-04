@@ -50,12 +50,22 @@ export const configSetup = defineUtility('astro:config:setup')(
 			);
 			injectRoute({
 				pattern: 'start',
-				entrypoint: routesDir.fts('main.astro'),
+				entrypoint: routesDir.fts('1-start.astro'),
+				prerender: false,
+			});
+			injectRoute({
+				pattern: 'start/1',
+				entrypoint: routesDir.fts('1-start.astro'),
+				prerender: false,
+			});
+			injectRoute({
+				pattern: 'start/2',
+				entrypoint: routesDir.fts('2-next.astro'),
 				prerender: false,
 			});
 			injectRoute({
 				pattern: 'done',
-				entrypoint: routesDir.fts('done.astro'),
+				entrypoint: routesDir.fts('3-done.astro'),
 				prerender: false,
 			});
 		}
@@ -126,8 +136,13 @@ export const configSetup = defineUtility('astro:config:setup')(
 				},
 				{
 					enabled: dbStartPage,
-					pattern: 'setup',
-					entrypoint: routesDir.fts('firstTimeSetup.ts'),
+					pattern: 'step-1',
+					entrypoint: routesDir.fts('api/step-1.ts'),
+				},
+				{
+					enabled: dbStartPage,
+					pattern: 'step-2',
+					entrypoint: routesDir.fts('api/step-2.ts'),
 				},
 			],
 		});

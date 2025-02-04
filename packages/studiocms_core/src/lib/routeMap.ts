@@ -83,6 +83,10 @@ export const StudioCMSRoutes = {
 		fallback_pages: sdkRoute('fallback-list-pages.json'),
 		updateLatestVersionCache: sdkRoute('update-latest-version-cache'),
 	},
+	fts: {
+		step1: dashboardAPIRoute('step-1'),
+		step2: dashboardAPIRoute('step-2'),
+	},
 };
 
 // Add default dashboard page links

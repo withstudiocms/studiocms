@@ -1,0 +1,14 @@
+import db from '@astrojs/db';
+import { defineConfig } from 'astro/config';
+import studioCMS from 'studiocms';
+
+// https://astro.build/config
+export default defineConfig({
+	// other config options,
+	integrations: [
+		db(),
+		studioCMS({
++			dbStartPage: false,
+		}),
+	],
+});
