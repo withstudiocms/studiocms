@@ -1,0 +1,41 @@
+---
+import { Toaster } from 'studiocms:ui/components';
+import BaseHead from '../../components/BaseHead.astro';
+
+type Props = {
+	title?: string;
+	description?: string;
+	lang?: string;
+};
+
+const {
+	title = 'StudioCMS Setup',
+	description = 'StudioCMS Onboarding',
+	lang = 'en-us',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html {lang}>
+  <BaseHead {title} {description} />
+  <body>
+    <Toaster />
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+    <style>
+      .container {
+        margin: 0 auto;
+        padding: 0 1rem;
+        padding-top: 2rem;
+
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+  </body>
+</html>

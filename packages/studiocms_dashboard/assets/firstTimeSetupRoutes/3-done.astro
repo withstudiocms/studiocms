@@ -1,0 +1,94 @@
+---
+import { Code } from 'astro:components';
+import { Accordion, AccordionItem, Card } from 'studiocms:ui/components';
+import Layout from './components/Layout.astro';
+import PageHeader from './components/PageHeader.astro';
+import codeSnippet1 from './snippets/opt1-astro.config.diff?raw';
+import codeSnippet2 from './snippets/opt2-astro.config.diff?raw';
+import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
+import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
+---
+<Layout title="Welcome to StudioCMS">
+
+    <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Done' }} />
+
+    <Card class='card' style="background-color: hsl(var(--background-step-1))" fullWidth>
+
+        <div slot="header">
+            <h2>Finish Onboarding</h2>
+        </div>
+
+        <div>
+            You're almost done! You can now start using StudioCMS after changing the following config option. If you have any questions, please reach out to us on our <a href="https://chat.studiocms.dev" target="_blank">Discord</a> server.
+        </div>
+        <br />
+
+        <Accordion>
+            <AccordionItem>
+                <div slot="summary">Using StudioCMS with just the <code>astro.config.mjs</code></div>
+                <Code class='diff' data-lines-inserted="11" code={codeSnippet1} lang={'ts'} />
+            </AccordionItem>
+            <AccordionItem>
+                <div slot="summary">Using StudioCMS with the <code>studiocms.config.mjs</code></div>
+
+                <span>astro.config.mjs</span>
+                <Code code={codeSnippet2} lang={'ts'} />
+
+                <span>studiocms.config.mjs</span>
+                <Code class='diff' data-lines-inserted="4" code={codeSnippet3} lang={'ts'} />
+            </AccordionItem>
+        </Accordion>
+
+    </Card>
+
+    <style>
+        .form-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    
+        .login-preview-container {
+            width: min-content;
+            height: min-content;
+        }
+    
+        @media screen and (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            margin-left: 20%;
+            margin-right: 20%;
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media screen and (max-width: 768px) {
+            .card {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+
+    <AstroCodeDiffsScript />
+
+</Layout>

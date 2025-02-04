@@ -1,7 +1,7 @@
-// @ts-nocheck
 import { logger } from '@it-astro:logger:studiocms-auth';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
+import { config } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
@@ -33,11 +33,6 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		const githubUser: GitHubUser = await githubUserResponse.json();
 		const githubUserId = githubUser.id;
 		const githubUsername = githubUser.login;
-
-		// FIRST-TIME-SETUP
-		// if (STUDIOCMS_FIRST_TIME_SETUP) {
-		// 	// TODO: Add first-time setup logic here
-		// }
 
 		const existingOAuthAccount = await studioCMS_SDK.AUTH.oAuth.searchProvidersForId(
 			ProviderID,
@@ -92,6 +87,11 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		if ('error' in newUser) {
 			return new Response('Error creating user', { status: 500 });
+		}
+
+		// FIRST-TIME-SETUP
+		if (config.dbStartPage) {
+			return redirect('/done');
 		}
 
 		await createUserSession(newUser.id, context);

@@ -58,7 +58,9 @@
     "semver": "catalog:studiocms",
     "ultrahtml": "^1.5.3",
     "dompurify": "^3.2.3",
-    "fuse.js": "^7.0.0"
+    "fuse.js": "^7.0.0",
+    "@iconify-json/simple-icons": "^1.2.23",
+    "@iconify-json/flat-color-icons": "^1.2.1"
   },
   "peerDependencies": {
     "astro": "catalog:min",
