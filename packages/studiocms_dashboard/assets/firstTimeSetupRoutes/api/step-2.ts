@@ -120,7 +120,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	const newUser = await createLocalUser(displayname, username, email, password);
 
-	await studioCMS_SDK.POST.databaseEntry.permissions(newUser.id, 'owner');
+	await studioCMS_SDK.UPDATE.permissions({
+		user: newUser.id,
+		rank: 'owner',
+	});
 
 	return new Response(JSON.stringify({ message: 'Success' }), {
 		status: 200,
