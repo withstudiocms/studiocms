@@ -22,7 +22,7 @@ export const checkAstroConfig = defineUtility('astro:config:setup')(
 		if (!astroConfig.adapter) {
 			throw new StudioCMSCoreError(
 				'SSR Adapter not found in Astro Config',
-				'StudioCMS requires a Server Adapter to be set in your Astro Config. For how to setup a Server Adapter, see the Astro Docs: https://docs.astro.build/en/guides/on-demand-rendering/#server-adapters'
+				'StudioCMS requires a Server Adapter to be set in your Astro Config. For instructions on how to setup a Server Adapter, see the Astro Docs: https://docs.astro.build/en/guides/on-demand-rendering/#server-adapters'
 			);
 		}
 
