@@ -1,7 +1,7 @@
-// @ts-nocheck
 import { logger } from '@it-astro:logger:studiocms-auth';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
+import { config } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';

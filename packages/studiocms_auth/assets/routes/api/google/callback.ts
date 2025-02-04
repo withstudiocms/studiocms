@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger } from '@it-astro:logger:studiocms-auth';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
