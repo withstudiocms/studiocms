@@ -8,7 +8,7 @@ export default defineConfig({
 	integrations: [
 		db(),
 		studioCMS({
-+			dbStartPage: false,
+			dbStartPage: false,
 		}),
 	],
 });

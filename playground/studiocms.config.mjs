@@ -1,7 +1,7 @@
 import { defineStudioCMSConfig } from 'studiocms/config';
 
 export default defineStudioCMSConfig({
-	dbStartPage: false,
+	dbStartPage: true,
 	verbose: true,
 	dashboardConfig: {
 		AuthConfig: {

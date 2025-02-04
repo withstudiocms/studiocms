@@ -6,6 +6,7 @@ import PageHeader from './components/PageHeader.astro';
 import codeSnippet1 from './snippets/opt1-astro.config.diff?raw';
 import codeSnippet2 from './snippets/opt2-astro.config.diff?raw';
 import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
+import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -25,7 +26,7 @@ import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
         <Accordion>
             <AccordionItem>
                 <div slot="summary">Using StudioCMS with just the <code>astro.config.mjs</code></div>
-                <Code code={codeSnippet1} lang={'diff'} />
+                <Code class='diff' data-lines-inserted="11" code={codeSnippet1} lang={'ts'} />
             </AccordionItem>
             <AccordionItem>
                 <div slot="summary">Using StudioCMS with the <code>studiocms.config.mjs</code></div>
@@ -34,7 +35,7 @@ import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
                 <Code code={codeSnippet2} lang={'ts'} />
 
                 <span>studiocms.config.mjs</span>
-                <Code code={codeSnippet3} lang={'diff'} />
+                <Code class='diff' data-lines-inserted="4" code={codeSnippet3} lang={'ts'} />
             </AccordionItem>
         </Accordion>
 
@@ -87,5 +88,7 @@ import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
             gap: 1rem;
         }
     </style>
+
+    <AstroCodeDiffsScript />
 
 </Layout>
