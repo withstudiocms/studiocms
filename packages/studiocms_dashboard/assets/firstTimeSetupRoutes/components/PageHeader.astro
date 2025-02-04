@@ -14,7 +14,7 @@ const { title, badge } = Astro.props;
 <header class="page-header">
   <div class="page-title-container">
     <h1 class="page-title">{title}</h1>
-    { badge && <Badge label={badge.label}  /> }
+    { badge && <Badge label={badge.label} size="lg" /> }
   </div>
   <div class="page-actions-container">
     <slot />
