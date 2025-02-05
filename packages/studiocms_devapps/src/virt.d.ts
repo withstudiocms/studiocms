@@ -12,3 +12,5 @@ declare module 'virtual:studiocms-devapps/config' {
 		token: string;
 	};
 }
+
+declare module 'virtual:studiocms-devapps/libsql/createClient' {}
