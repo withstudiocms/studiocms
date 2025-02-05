@@ -3,7 +3,7 @@ import {
 	importPagesFromWPAPI,
 	importPostsFromWPAPI,
 	importSettingsFromWPAPI,
-} from '../utils/wp-api';
+} from '../utils/wp-api/index.js';
 
 export const POST: APIRoute = async ({ request }: APIContext) => {
 	const data = await request.formData();

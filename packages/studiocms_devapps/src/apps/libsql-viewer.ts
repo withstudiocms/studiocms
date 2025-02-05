@@ -1,6 +1,6 @@
-import config from 'virtual:studiocms-devapps/libsql-viewer';
+import { libSQLEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { defineToolbarApp } from 'astro/toolbar';
-import { closeOnOutsideClick } from './utils';
+import { closeOnOutsideClick } from '../utils/app-utils.js';
 
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
@@ -11,7 +11,7 @@ export default defineToolbarApp({
 		closeOnOutsideClick(eventTarget);
 
 		const link = document.createElement('a');
-		link.href = config.endpointPath;
+		link.href = libSQLEndpoint;
 		link.target = '_blank';
 		link.innerText = 'Open as page';
 		Object.assign(link.style, {
@@ -27,7 +27,7 @@ export default defineToolbarApp({
 		appWindow.appendChild(link);
 
 		const viewerIframe = document.createElement('iframe');
-		viewerIframe.src = config.endpointPath;
+		viewerIframe.src = libSQLEndpoint;
 		Object.assign(viewerIframe.style, {
 			height: '100%',
 			width: '100%',

@@ -30,11 +30,18 @@
   },
   "sideEffects": false,
   "files": [
-    "src",
+    "dist",
     "assets"
   ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
   },
   "type": "module",
   "dependencies": {

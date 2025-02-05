@@ -1,6 +1,6 @@
-import config from 'virtual:studiocms-devapps/wp-api-importer';
+import { wpAPIEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { defineToolbarApp } from 'astro/toolbar';
-import { closeOnOutsideClick, createWindowElement } from './utils';
+import { closeOnOutsideClick, createWindowElement } from '../utils/app-utils.js';
 
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
@@ -203,7 +203,7 @@ export default defineToolbarApp({
 
 				console.log('formData', formData);
 
-				const response = await fetch(config.endpointPath, {
+				const response = await fetch(wpAPIEndpoint, {
 					method: 'POST',
 					body: formData,
 				});

@@ -1,6 +1,6 @@
 ---
+import { dbEnv } from 'virtual:studiocms-devapps/config';
 ---
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +14,8 @@
     id="sqlIframe" 
     title="libSQL Database Viewer"
     src="https://libsqlstudio.com/embed/sqlite?name=libSQLDatabase&theme=dark" 
-    data-url={import.meta.env.ASTRO_DB_REMOTE_URL} 
-    data-authtoken={import.meta.env.ASTRO_DB_APP_TOKEN}
+    data-url={dbEnv.remoteUrl} 
+    data-authtoken={dbEnv.token}
     style="height: 94vh; width: 98vw; border: 0;"
     ></iframe>
 
