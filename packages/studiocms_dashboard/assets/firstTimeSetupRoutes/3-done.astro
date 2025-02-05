@@ -1,5 +1,4 @@
 ---
-// import { Code } from 'astro:components';
 import { Accordion, AccordionItem, Card } from 'studiocms:ui/components';
 import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
 import Layout from './components/Layout.astro';
@@ -28,7 +27,6 @@ import Code from '../components/Code.astro';
         <Accordion>
             <AccordionItem>
                 <div slot="summary">Using StudioCMS with just the <code>astro.config.mjs</code></div>
-                <!-- <Code class='diff' data-lines-inserted="11" code={codeSnippet1} lang={'ts'} /> -->
                  <Code code={codeSnippet1} ins='11' />
             </AccordionItem>
             <AccordionItem>
