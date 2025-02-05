@@ -35,15 +35,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const pluginData = filteredPluginList.find((pl) => pl.identifier === plugin);
 
 	if (!pluginData) {
-		return new Response(JSON.stringify({ error: 'Plugin not found' }), { status: 404 });
+		return simpleResponse(404, 'Plugin not found');
 	}
 
 	const { settingsPage } = pluginData;
 
 	if (!settingsPage) {
-		return new Response(JSON.stringify({ error: 'Plugin does not have a settings page' }), {
-			status: 404,
-		});
+		return simpleResponse(404, 'Plugin does not have a settings page');
 	}
 
 	return settingsPage.onSave(context);
