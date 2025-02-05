@@ -135,6 +135,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 					entrypoint: routesDir.api('reset-password.ts'),
 				},
 				{
+					enabled: dashboardEnabled && !dbStartPage && authEnabled,
+					pattern: 'plugins/[plugin]',
+					entrypoint: routesDir.api('plugins/[plugin].ts'),
+				},
+				{
 					enabled: dbStartPage,
 					pattern: 'step-1',
 					entrypoint: routesDir.fts('api/step-1.ts'),
@@ -212,6 +217,11 @@ export const configSetup = defineUtility('astro:config:setup')(
 						enabled: dashboardEnabled && !dbStartPage && authEnabled,
 						pattern: 'password-reset',
 						entrypoint: routesDir.route('password-reset.astro'),
+					},
+					{
+						enabled: dashboardEnabled && !dbStartPage && authEnabled,
+						pattern: 'plugins/[plugin]',
+						entrypoint: routesDir.route('plugins/[plugin].astro'),
 					},
 				],
 			},

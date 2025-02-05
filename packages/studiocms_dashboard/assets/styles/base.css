@@ -482,6 +482,8 @@ main {
 .line.diff {
 	position: relative;
 	z-index: 2;
+	align-items: center;
+	display: flex;
 }
 
 .line.diff > span {

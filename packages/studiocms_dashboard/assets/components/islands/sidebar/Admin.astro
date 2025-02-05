@@ -44,11 +44,10 @@ Astro.response.headers.set('Cache-Control', 'max-age=604800');
   <Divider background='background-step-1'>{t('category-3-header')}</Divider>
   <div class="sidebar-link-group">
     { filteredPluginList.length > 0 
-      ? filteredPluginList.map((plugin) => (
+      ? filteredPluginList.map(({ identifier, name }) => (
         <SidebarPluginLink 
-          href={'/dashboard/plugins/some-plugin'}
-          identifier={plugin.identifier}
-          name={plugin.name}
+          identifier={identifier}
+          name={name}
         />
       )) 
       : ( 

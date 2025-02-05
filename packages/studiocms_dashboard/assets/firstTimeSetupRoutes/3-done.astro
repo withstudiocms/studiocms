@@ -1,12 +1,14 @@
 ---
-import { Code } from 'astro:components';
+// import { Code } from 'astro:components';
 import { Accordion, AccordionItem, Card } from 'studiocms:ui/components';
+import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
 import Layout from './components/Layout.astro';
 import PageHeader from './components/PageHeader.astro';
 import codeSnippet1 from './snippets/opt1-astro.config.diff?raw';
 import codeSnippet2 from './snippets/opt2-astro.config.diff?raw';
 import codeSnippet3 from './snippets/opt2-studiocms.config.diff?raw';
-import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
+
+import Code from '../components/Code.astro';
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -26,16 +28,17 @@ import AstroCodeDiffsScript from '../components/AstroCodeDiffsScript.astro';
         <Accordion>
             <AccordionItem>
                 <div slot="summary">Using StudioCMS with just the <code>astro.config.mjs</code></div>
-                <Code class='diff' data-lines-inserted="11" code={codeSnippet1} lang={'ts'} />
+                <!-- <Code class='diff' data-lines-inserted="11" code={codeSnippet1} lang={'ts'} /> -->
+                 <Code code={codeSnippet1} ins='11' />
             </AccordionItem>
             <AccordionItem>
                 <div slot="summary">Using StudioCMS with the <code>studiocms.config.mjs</code></div>
 
                 <span>astro.config.mjs</span>
-                <Code code={codeSnippet2} lang={'ts'} />
+                <Code code={codeSnippet2} />
 
                 <span>studiocms.config.mjs</span>
-                <Code class='diff' data-lines-inserted="4" code={codeSnippet3} lang={'ts'} />
+                <Code ins="4" code={codeSnippet3} />
             </AccordionItem>
         </Accordion>
 
