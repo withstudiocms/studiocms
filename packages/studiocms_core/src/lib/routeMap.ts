@@ -45,6 +45,7 @@ export const StudioCMSRoutes = {
 		siteConfiguration: makeDashboardRoute('configuration'),
 		userManagement: makeDashboardRoute('user-management'),
 		userManagementEdit: makeDashboardRoute('user-management/edit'),
+		plugins: makeDashboardRoute('plugins/'),
 	},
 	authLinks: {
 		loginURL: makeDashboardRoute('login'),
@@ -77,6 +78,7 @@ export const StudioCMSRoutes = {
 			page: dashboardAPIRoute('content/page'),
 			folder: dashboardAPIRoute('content/folder'),
 		},
+		plugins: dashboardAPIRoute('plugins/'),
 	},
 	sdk: {
 		pages: sdkRoute('list-pages'),

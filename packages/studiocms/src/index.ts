@@ -240,6 +240,9 @@ export default defineIntegration({
 									export const componentKeys = ${JSON.stringify(componentKeys)};
 									${components}
 								`,
+								'studiocms:plugin-helpers': `
+									export * from "${resolve('./plugins.js')}";
+								`,
 							},
 						});
 					}
@@ -278,6 +281,15 @@ export default defineIntegration({
 						defaultExport: {
 							typeDef: `import('${resolve('./config.js')}').SafePluginListType`,
 						},
+					});
+
+					dtsFile.addModule('studiocms:plugin-helpers', {
+						typeExports: [
+							{
+								name: 'SettingsField',
+								typeDef: `import('${resolve('./plugins.js')}').SettingsField`,
+							},
+						],
 					});
 
 					dtsFile.addModule('studiocms:changelog', {

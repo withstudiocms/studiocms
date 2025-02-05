@@ -1,15 +1,18 @@
 ---
+import { StudioCMSRoutes } from 'studiocms:lib';
+
 interface Props {
 	identifier: string;
 	name: string;
-	href: string;
 }
 
-const { name, href, identifier } = Astro.props;
+const { name, identifier } = Astro.props;
+
+const href = StudioCMSRoutes.mainLinks.plugins + identifier;
 
 const isActive = Astro.url.pathname === href && 'active';
 ---
-<a class="sidebar-plugin-link" href={href} class:list={[ isActive && 'active' ]}>
+<a class="sidebar-plugin-link" {href} class:list={[ isActive && 'active' ]}>
   <span class="sidebar-plugin-name">{name}</span>
   <span class="sidebar-plugin-identifier">{identifier}</span>
 </a>
