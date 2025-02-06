@@ -1,10 +1,12 @@
-const base = stripTrailingSlash(import.meta.env.BASE_URL);
+function base(url: string) {
+	return stripTrailingSlash(url);
+}
 
 /** Get the a root-relative URL path with the site’s `base` prefixed. */
-export function pathWithBase(path: string) {
+export function pathWithBase(path: string, _base: string) {
 	let newPath = path;
 	newPath = stripLeadingSlash(newPath);
-	return newPath ? `${base}/${newPath}` : `${base}/`;
+	return newPath ? `${base(_base)}/${newPath}` : `${base(_base)}/`;
 }
 
 /** Ensure the passed path does not start with a leading slash. */
@@ -29,10 +31,10 @@ export function ensureLeadingSlash(href: string): string {
 }
 
 /** Endpoint path generator */
-export const pathGenerator = (endpointPath: string) => {
+export const pathGenerator = (endpointPath: string, _base: string) => {
 	const newEndpointPath = stripTrailingSlash(endpointPath);
 	return function pathBuilder(path: string): string {
 		const newPath = stripLeadingSlash(path);
-		return `${pathWithBase(newEndpointPath)}${ensureLeadingSlash(newPath)}`;
+		return `${pathWithBase(newEndpointPath, _base)}${ensureLeadingSlash(newPath)}`;
 	};
 };

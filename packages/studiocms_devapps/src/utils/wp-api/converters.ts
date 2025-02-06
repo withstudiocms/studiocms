@@ -1,11 +1,11 @@
 import path from 'node:path';
 import { db, eq } from 'astro:db';
-import Config from 'virtual:studiocms-devapps/wp-api/configPath';
-import { tsPageDataCategories, tsPageDataTags } from '@studiocms/core/db/tsTables';
+import { userProjectRoot } from 'virtual:studiocms-devapps/config';
+import { tsPageDataCategories, tsPageDataTags } from '@studiocms/core/sdk-utils/tables';
 import { decode } from 'html-entities';
 import TurndownService from 'turndown';
-import type { Category, Page, Post, Tag } from '../../schema/wp-api';
-import type { PageContent, PageData } from './index';
+import type { Category, Page, Post, Tag } from '../../schema/wp-api.js';
+import type { PageContent, PageData } from './index.js';
 import {
 	apiEndpoint,
 	cleanUpHtml,
@@ -14,7 +14,7 @@ import {
 	stripHtml,
 } from './utils';
 
-const ASTROPUBLICFOLDER = path.resolve(Config.projectRoot, 'public');
+const ASTROPUBLICFOLDER = path.resolve(userProjectRoot, 'public');
 const WPImportFolder = path.resolve(ASTROPUBLICFOLDER, 'wp-import');
 const pagesImagesFolder = path.resolve(WPImportFolder, 'pages');
 const postsImagesFolder = path.resolve(WPImportFolder, 'posts');
