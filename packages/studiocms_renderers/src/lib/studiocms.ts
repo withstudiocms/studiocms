@@ -14,15 +14,12 @@ const cachedProcessor = await createMarkdownProcessor({
 const _components = await importComponentsKeys();
 
 /**
- * Render Astro Markdown
+ * Render StudioCMS Markdown content
  *
- * Renders Astro Markdown content
+ * @param content - The StudioCMS Markdown content
+ * @param SSRResult - The SSR result Used to render the custom components
  *
- * Astro is the built-in Astro remark-markdown plugin.
- * @see https://www.npmjs.com/package/@astrojs/markdown-remark
- *
- * @param content - The content to render
- * @returns The rendered content
+ * @returns The rendered HTML
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
