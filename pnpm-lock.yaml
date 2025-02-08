@@ -733,6 +733,9 @@ importers:
       '@matthiesenxyz/astrodtsbuilder':
         specifier: catalog:studiocms-shared
         version: 0.2.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      '@studiocms/markdown-remark-processor':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@studiocms/robotstxt':
         specifier: workspace:*
         version: link:../studiocms_robotstxt
@@ -978,6 +981,9 @@ importers:
       '@astrojs/react':
         specifier: 'catalog:'
         version: 4.1.0(@types/node@22.10.2)(@types/react-dom@18.3.5(@types/react@18.3.16))(@types/react@18.3.16)(jiti@2.4.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(yaml@2.6.1)
+      '@inox-tools/aik-mod':
+        specifier: 0.9.1
+        version: 0.9.1(astro-integration-kit@0.18.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
       '@inox-tools/runtime-logger':
         specifier: catalog:studiocms-shared
         version: 0.4.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
@@ -996,6 +1002,9 @@ importers:
       '@studiocms/core':
         specifier: workspace:*
         version: link:../studiocms_core
+      '@studiocms/markdown-remark-processor':
+        specifier: ^1.0.0
+        version: 1.0.0
       astro:
         specifier: catalog:min
         version: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -2552,6 +2561,9 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@studiocms/markdown-remark-processor@1.0.0':
+    resolution: {integrity: sha512-W3wszWS00bc+cQEe+HgynVam5sQcU6kQFv5ZJ/gSwG/KGMYmhKLrHDQBwn9PfjIWORkSqSBMQdsSoAD8fhg3tQ==}
 
   '@studiocms/ui@0.4.8':
     resolution: {integrity: sha512-nAwoANBGKTDVqJ4s6xvwD6Gkz5rtgRMUXqFBUL2hHwqoTwccL8zxR9ufW6eGopeF3DuE13B9wxKfqf7o1ufKow==}
@@ -4254,6 +4266,9 @@ packages:
 
   mdast-util-find-and-replace@3.0.1:
     resolution: {integrity: sha512-SG21kZHGC3XRTSUhtofZkBzZTJNM5ecCi0SK2IMKmSXR8vO3peL+kb1O0z7Zl83jKtutG4k5Wv/W7V3/YHvzPA==}
+
+  mdast-util-find-and-replace@3.0.2:
+    resolution: {integrity: sha512-Tmd1Vg/m3Xz43afeNxDIhWRtFZgM2VLyaf4vSTYwudTyeuTneoL3qtWMA5jeLyz/O1vDJmmV4QuScFCA2tBPwg==}
 
   mdast-util-from-markdown@2.0.2:
     resolution: {integrity: sha512-uZhTV/8NBuw0WHkPTrCqDOl0zVe1BIng5ZtHoDk49ME1qqcjYmmLmOf0gELgcRMxN4w2iuIeVso5/6QymSrgmA==}
@@ -6781,7 +6796,7 @@ snapshots:
   '@expressive-code/plugin-shiki@0.38.3':
     dependencies:
       '@expressive-code/core': 0.38.3
-      shiki: 1.27.2
+      shiki: 1.29.2
 
   '@expressive-code/plugin-text-markers@0.38.3':
     dependencies:
@@ -6896,6 +6911,16 @@ snapshots:
       - supports-color
       - vite
 
+  '@inox-tools/aik-mod@0.9.1(astro-integration-kit@0.18.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))':
+    dependencies:
+      '@inox-tools/inline-mod': 2.0.2(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
+      astro: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      astro-integration-kit: 0.18.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      debug: 4.4.0
+    transitivePeerDependencies:
+      - supports-color
+      - vite
+
   '@inox-tools/inline-mod@2.0.2(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
     dependencies:
       '@inox-tools/utils': 0.3.0
@@ -6903,6 +6928,16 @@ snapshots:
       typescript: 5.7.2
     optionalDependencies:
       vite: 6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@inox-tools/inline-mod@2.0.2(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))':
+    dependencies:
+      '@inox-tools/utils': 0.3.0
+      debug: 4.4.0
+      typescript: 5.7.2
+    optionalDependencies:
+      vite: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -7864,6 +7899,36 @@ snapshots:
   '@shikijs/vscode-textmate@9.3.1': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@studiocms/markdown-remark-processor@1.0.0':
+    dependencies:
+      '@astrojs/prism': 3.2.0
+      github-slugger: 2.0.0
+      hast-util-from-html: 2.0.3
+      hast-util-is-element: 3.0.0
+      hast-util-to-string: 3.0.1
+      hast-util-to-text: 4.0.2
+      hastscript: 9.0.0
+      html-escaper: 3.0.3
+      import-meta-resolve: 4.1.0
+      js-yaml: 4.1.0
+      mdast-util-definitions: 6.0.0
+      mdast-util-find-and-replace: 3.0.2
+      rehype-autolink-headings: 7.1.0
+      rehype-raw: 7.0.0
+      rehype-stringify: 10.0.1
+      remark-gfm: 4.0.0
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.1
+      remark-smartypants: 3.0.2
+      shiki: 1.29.2
+      unified: 11.0.5
+      unist-util-remove-position: 5.0.0
+      unist-util-visit: 5.0.0
+      unist-util-visit-parents: 6.0.1
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
 
   '@studiocms/ui@0.4.8(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))':
     dependencies:
@@ -9862,6 +9927,13 @@ snapshots:
       - supports-color
 
   mdast-util-find-and-replace@3.0.1:
+    dependencies:
+      '@types/mdast': 4.0.4
+      escape-string-regexp: 5.0.0
+      unist-util-is: 6.0.0
+      unist-util-visit-parents: 6.0.1
+
+  mdast-util-find-and-replace@3.0.2:
     dependencies:
       '@types/mdast': 4.0.4
       escape-string-regexp: 5.0.0

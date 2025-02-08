@@ -1,7 +1,7 @@
-import astroMarkdownConfig from 'studiocms:renderer/astroMarkdownConfig';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { shared } from './shared.js';
 
-const cachedProcessor = await createMarkdownProcessor(astroMarkdownConfig);
+const cachedProcessor = await createMarkdownProcessor(shared.markdownConfig);
 
 /**
  * Render Astro Markdown

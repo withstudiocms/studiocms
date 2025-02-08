@@ -113,7 +113,7 @@ export default defineIntegration({
 						{ integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
 						{ integration: core(options) },
-						{ integration: renderers(rendererConfig, verbose) },
+						{ integration: renderers({ verbose, opts: rendererConfig }) },
 						{ integration: imageHandler(options) },
 						{ integration: auth(options) },
 						{ integration: dashboard(options) },
@@ -230,22 +230,20 @@ export default defineIntegration({
 								.join('\n')
 						: '';
 
-					if (ComponentRegistry) {
-						addVirtualImports(params, {
-							name: pkgName,
-							imports: {
-								'studiocms:component-proxy': `
-									export * from ${resolve('./utils/AstroComponentProxy.js')};
+					addVirtualImports(params, {
+						name: pkgName,
+						imports: {
+							'studiocms:component-proxy': `
+									export * from "${resolve('./utils/AstroComponentProxy.js')}";
 
 									export const componentKeys = ${JSON.stringify(componentKeys)};
 									${components}
 								`,
-								'studiocms:plugin-helpers': `
+							'studiocms:plugin-helpers': `
 									export * from "${resolve('./plugins.js')}";
 								`,
-							},
-						});
-					}
+						},
+					});
 
 					let pluginListLength = 0;
 					let pluginListMessage = '';
