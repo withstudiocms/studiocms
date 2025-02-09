@@ -1,9 +1,15 @@
 import { z } from 'astro/zod';
 import { type MarkdocRenderer, markdocConfigSchema, type markdocRenderer } from './markdoc.js';
 import { mdxConfigSchema } from './mdx.js';
+import {
+	StudioCMSMarkdownExtendedSchema,
+	TransformToProcessor,
+} from './studiocms-markdown-remark.js';
 
 export type Renderer = (content: string) => Promise<string>;
 export type { markdocRenderer, MarkdocRenderer };
+
+export { TransformToProcessor };
 
 /**
  * Custom Renderer Type
@@ -43,13 +49,14 @@ export const StudioCMSRendererConfigSchema = z
 		 */
 		renderer: z
 			.union([
+				z.literal('studiocms'),
 				z.literal('astro'),
 				z.literal('markdoc'),
 				z.literal('mdx'),
 				z.custom<CustomRenderer>(),
 			])
 			.optional()
-			.default('astro'),
+			.default('studiocms'),
 		/**
 		 * Allows customization of the Markdoc Configuration
 		 *
@@ -64,6 +71,14 @@ export const StudioCMSRendererConfigSchema = z
 		 * @see https://mdxjs.com/ for more info about MDX.
 		 */
 		mdxConfig: mdxConfigSchema,
+
+		/**
+		 * Allows customization of the StudioCMS Markdown Extended Configuration
+		 *
+		 * StudioCMS Markdown Extended is a collection of custom markdown features for StudioCMS.
+		 * @see https://github.com/withstudiocms/markdown-remark/tree/main for more info about StudioCMS Markdown Extended.
+		 */
+		studiocms: StudioCMSMarkdownExtendedSchema,
 	})
 	.optional()
 	.default({});

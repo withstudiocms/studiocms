@@ -10,6 +10,7 @@ import {
 	type Renderer,
 	type StudioCMSRendererConfig,
 	StudioCMSRendererConfigSchema,
+	TransformToProcessor,
 } from './rendererConfig.js';
 import { SDKSchema } from './sdk.js';
 
@@ -19,6 +20,7 @@ import { SDKSchema } from './sdk.js';
 export {
 	StudioCMSRendererConfigSchema,
 	FrontEndConfigSchema,
+	TransformToProcessor,
 	type StudioCMSRendererConfig,
 	type CustomRenderer,
 	type Renderer,

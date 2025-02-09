@@ -27,8 +27,8 @@
   },
   "sideEffects": false,
   "scripts": {
-    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
-    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+    "build": "build-scripts build 'src/**/*.{ts,css}' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.{ts,css}' --build-tsconfig"
   },
   "files": [
     "dist", "components", "exports"
@@ -52,9 +52,11 @@
   "type": "module",
   "dependencies": {
     "@studiocms/core": "workspace:*",
+    "@studiocms/markdown-remark-processor": "^1.0.0",
 
     "astro-integration-kit": "catalog:",
     
+    "@inox-tools/aik-mod": "0.9.1",
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
     "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",

@@ -113,6 +113,7 @@
   "dependencies": {
     "@studiocms/ui": "catalog:",
     "@studiocms/robotstxt": "workspace:*",
+    "@studiocms/markdown-remark-processor": "^1.0.0",
     "astro-integration-kit": "catalog:",
     "@markdoc/markdoc": "catalog:studiocms-renderer",
     "mrmime": "catalog:studiocms-core",

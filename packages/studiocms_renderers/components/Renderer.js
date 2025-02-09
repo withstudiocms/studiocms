@@ -8,7 +8,7 @@ export default Object.assign(
 				return 'AstroComponent';
 			},
 			async *[Symbol.asyncIterator]() {
-				const renderedContent = await contentRenderer(content);
+				const renderedContent = await contentRenderer(content, result);
 				yield new HTMLString(renderedContent);
 			},
 		};
