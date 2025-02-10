@@ -1,18 +1,14 @@
 ---
+import '../styles/global.css';
 import { defaultFrontEndConfig } from 'studiocms:config';
 import {
 	type HeadConfig,
 	type HeadConfigSchema,
 	type HeadUserConfig,
 	createHead,
-	// fileWithBase,
 	headDefaults,
 } from 'studiocms:lib';
 import type { z } from 'astro/zod';
-
-// // Import the global.css file here so that it is included on
-// // all pages through the use of the <BaseHead /> component.
-import './global.css';
 
 let htmlDefaultHead: HeadUserConfig = [];
 let favicon = '';
@@ -59,6 +55,7 @@ const StudioCMSFrontEndHeads: z.input<ReturnType<typeof HeadConfigSchema>> = [
 
 makeHeader.push(...StudioCMSFrontEndHeads);
 
+// TODO: Setup Sitemap integration
 // Link to sitemap, but only when `site` is set.
 // if (Astro.site) {
 // 	makeHeader.push({

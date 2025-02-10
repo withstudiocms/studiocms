@@ -75,7 +75,13 @@ const { link } = Astro.props;
                 
                 slot.addEventListener('click', async () => {
                     const link = this.getAttribute('data-link')!;
-                    const { changelog } = await (await fetch(link)).json();
+                    const { changelog } = await (await fetch(link, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ currentURLOrigin: window.location.origin }),
+                    })).json();
 
                     frameContent.innerHTML = `
                         <h1>Full Changelog</h1>

@@ -1,12 +1,12 @@
 ---
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk';
-import Layout from '../components/Layout.astro';
+import Layout from './components/Layout.astro';
 
-const { slug } = Astro.params;
+let { slug } = Astro.params;
 
 if (!slug) {
-	return new Response(null, { status: 404 });
+	slug = 'index';
 }
 
 const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, 'studiocms');

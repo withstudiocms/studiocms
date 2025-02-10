@@ -1,6 +1,5 @@
-import contentRenderer from 'studiocms:renderer/current';
-import type { APIRoute } from 'astro';
-import { HTMLString } from 'astro/runtime/server/index.js';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import type { APIContext, APIRoute } from 'astro';
 import type { List, Root } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
@@ -28,7 +27,7 @@ function parsePackageReference(str: string) {
 	return { packageName, version };
 }
 
-export const GET: APIRoute = async () => {
+export const POST: APIRoute = async (context: APIContext) => {
 	const Changelog = await fetch(
 		'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
 	);
@@ -190,18 +189,29 @@ export const GET: APIRoute = async () => {
 
 		const markdownString = output.join('\n');
 
-		const renderedContent = await contentRenderer(markdownString);
+		const currentRequestJson = await context.request.json();
 
-		return new Response(
-			JSON.stringify({ success: true, changelog: new HTMLString(renderedContent) }),
-			{
-				status: 200,
-				headers: {
-					'Content-Type': 'application/json',
-					Date: new Date().toUTCString(),
-				},
-			}
-		);
+		const currentURLOrigin = currentRequestJson.currentURLOrigin;
+
+		const partialUrl = new URL(StudioCMSRoutes.endpointLinks.partials.render, currentURLOrigin);
+
+		const partialResponse = await fetch(partialUrl, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ content: markdownString }),
+		});
+
+		const contentRendered = await partialResponse.text();
+
+		return new Response(JSON.stringify({ success: true, changelog: contentRendered }), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				Date: new Date().toUTCString(),
+			},
+		});
 	}
 
 	return new Response(JSON.stringify({ success: false, error: 'Error fetching changelog' }), {

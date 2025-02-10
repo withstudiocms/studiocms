@@ -1,7 +1,7 @@
+// @ts-ignore
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import * as Diff from 'diff';
 import * as Diff2Html from 'diff2html';
-import { ColorSchemeType } from 'diff2html/lib/types.js';
 import jwt from 'jsonwebtoken';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
