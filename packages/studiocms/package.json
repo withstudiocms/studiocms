@@ -97,6 +97,10 @@
       "types": "./dist/sdk/StudioCMSVirtualCache.d.ts",
       "default": "./dist/sdk/StudioCMSVirtualCache.js"
     },
+    "./sdk/tables": {
+      "types": "./dist/sdk/tables.d.ts",
+      "default": "./dist/sdk/tables.js"
+    },
     "./schemas": {
       "types": "./dist/schemas/index.d.ts",
       "default": "./dist/schemas/index.js"

@@ -1,8 +1,8 @@
 import path from 'node:path';
 import { db, eq } from 'astro:db';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { tsPageDataCategories, tsPageDataTags } from '@studiocms/core/sdk-utils/tables';
 import { decode } from 'html-entities';
+import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
 import TurndownService from 'turndown';
 import type { Category, Page, Post, Tag } from '../../schema/wp-api.js';
 import type { PageContent, PageData } from './index.js';

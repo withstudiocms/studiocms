@@ -1,4 +1,4 @@
-import type { tsPageContent, tsPageData } from '@studiocms/core/sdk-utils/tables';
+import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 
 export type PageData = typeof tsPageData.$inferInsert;
 export type PageContent = typeof tsPageContent.$inferInsert;

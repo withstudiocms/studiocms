@@ -1,5 +1,5 @@
 import { db } from 'astro:db';
-import { tsPageContent, tsPageData } from '@studiocms/core/sdk-utils/tables';
+import { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import type { Page } from '../../schema/wp-api.js';
 import { ConvertToPostContent, ConvertToPostData } from './converters.js';
 import { apiEndpoint, fetchAll } from './utils.js';
