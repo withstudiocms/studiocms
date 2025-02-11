@@ -7,8 +7,6 @@
 
 import inlineMod from '@inox-tools/aik-mod';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import auth from '@studiocms/auth';
-import dashboard from '@studiocms/dashboard';
 import ui from '@studiocms/ui';
 import {
 	addVirtualImports,
@@ -28,6 +26,9 @@ import { makeAPIRoute } from './lib/index.js';
 import { shared } from './renderer/shared.js';
 import robotsTXT from './robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
+import authLibDTS from './stubs/auth-lib.js';
+import authScriptsDTS from './stubs/auth-scripts.js';
+import authUtilsDTS from './stubs/auth-utils.js';
 import changelogDtsFileOutput from './stubs/changelog.js';
 import componentsDtsFileOutput from './stubs/components.js';
 import coreDtsFileOutput from './stubs/core.js';
@@ -40,8 +41,12 @@ import rendererConfigDTS from './stubs/renderer-config.js';
 import rendererMarkdownConfigDTS from './stubs/renderer-markdownConfig.js';
 import rendererDTS from './stubs/renderer.js';
 import sdkDtsFile from './stubs/sdk.js';
+import webVitalDtsFile from './stubs/webVitals.js';
 import type { Messages } from './types.js';
+import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
+import { checkEnvKeys } from './utils/checkENV.js';
+import { checkForWebVitals } from './utils/checkForWebVitalsPlugin.js';
 import {
 	addIntegrationArray,
 	changelogHelper,
@@ -52,6 +57,8 @@ import {
 	readJson,
 	watchStudioCMSConfig,
 } from './utils/index.js';
+import { injectDashboardRoute } from './utils/injectRouteArray.js';
+import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
 
 // Read the package.json file for the package name and version
 const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
@@ -78,7 +85,7 @@ const apiRoute = makeAPIRoute('renderer');
 export default defineIntegration({
 	name: pkgName,
 	optionsSchema: z.custom<StudioCMSOptions>(),
-	setup: ({ options: opts }) => {
+	setup: ({ name, options: opts }) => {
 		// Resolved Options for StudioCMS
 		let options: StudioCMSConfig;
 
@@ -98,9 +105,15 @@ export default defineIntegration({
 		// Define the Image Component Path
 		let imageComponentPath: string;
 
+		const routesDir = {
+			fts: (file: string) => resolve(`./dashboard/firstTimeSetupRoutes/${file}`),
+			route: (file: string) => resolve(`./dashboard/routes/${file}`),
+			api: (file: string) => resolve(`./dashboard/routes/studiocms_api/dashboard/${file}`),
+		};
+
 		// Return the Integration
 		return withPlugins({
-			name: pkgName,
+			name,
 			plugins: [inlineMod],
 			hooks: {
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
@@ -127,7 +140,26 @@ export default defineIntegration({
 						componentRegistry,
 						overrides,
 						dbStartPage,
+						dashboardConfig,
 					} = options;
+
+					const {
+						dashboardEnabled,
+						inject404Route,
+						AuthConfig: {
+							enabled: authEnabled,
+							providers: {
+								github: githubAPI,
+								discord: discordAPI,
+								google: googleAPI,
+								auth0: auth0API,
+								usernameAndPassword: usernameAndPasswordAPI,
+								usernameAndPasswordConfig: { allowUserRegistration },
+							},
+						},
+					} = dashboardConfig;
+
+					const shouldInject404Route = inject404Route && dashboardEnabled;
 
 					// Create logInfo object
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
@@ -151,7 +183,6 @@ export default defineIntegration({
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
 					// TODO: Migrate the following
-					// - Auth package
 					// - Dashboard package
 
 					// Add Astro Environment Configuration
@@ -159,6 +190,81 @@ export default defineIntegration({
 						validateSecrets: false,
 						schema: {
 							CMS_CLOUDINARY_CLOUDNAME: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Auth Encryption Key
+							CMS_ENCRYPTION_KEY: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: false,
+							}),
+							// GitHub Auth Provider Environment Variables
+							CMS_GITHUB_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Discord Auth Provider Environment Variables
+							CMS_DISCORD_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Google Auth Provider Environment Variables
+							CMS_GOOGLE_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Auth0 Auth Provider Environment Variables
+							CMS_AUTH0_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_DOMAIN: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_REDIRECT_URI: envField.string({
 								context: 'server',
 								access: 'secret',
 								optional: true,
@@ -182,6 +288,15 @@ export default defineIntegration({
 						? astroConfigResolve(overrides.CustomImageOverride)
 						: resolve('../static/components/image/CustomImage.astro');
 
+					// Log that Setup is Starting
+					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Auth...');
+
+					// Inject `@it-astro:logger:{name}` Logger for runtime logging
+					runtimeLogger(params, { name: 'studiocms-auth' });
+
+					// Check for Authentication Environment Variables
+					checkEnvKeys(logger, options);
+
 					updateConfig({
 						image: {
 							remotePatterns: [
@@ -191,6 +306,9 @@ export default defineIntegration({
 							],
 						},
 						vite: {
+							optimizeDeps: {
+								exclude: ['three'],
+							},
 							plugins: [
 								copy({
 									copyOnce: true,
@@ -286,12 +404,289 @@ export default defineIntegration({
 							break;
 					}
 
+					// Inject `@it-astro:logger:{name}` Logger for runtime logging
+					runtimeLogger(params, { name: 'studiocms-dashboard' });
+
+					// Check for `@astrojs/web-vitals` Integration
+					checkForWebVitals(params, { name, verbose });
+
+					// Inject First Time Setup Routes if dbStartPage is enabled
+					if (dbStartPage) {
+						integrationLogger(
+							{ logger, logLevel: 'info', verbose },
+							'Injecting First Time Setup Routes...'
+						);
+						injectRoute({
+							pattern: 'start',
+							entrypoint: routesDir.fts('1-start.astro'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: 'start/1',
+							entrypoint: routesDir.fts('1-start.astro'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: 'start/2',
+							entrypoint: routesDir.fts('2-next.astro'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: 'done',
+							entrypoint: routesDir.fts('3-done.astro'),
+							prerender: false,
+						});
+					}
+
+					// Inject 404 Route if enabled
+					if (shouldInject404Route) {
+						integrationLogger(logInfo, 'Injecting 404 Route...');
+						injectRoute({
+							pattern: '404',
+							entrypoint: routesDir.route('404.astro'),
+							prerender: true,
+						});
+					}
+
+					// Inject API Routes
+					injectDashboardAPIRoutes(params, {
+						options,
+						routes: [
+							{
+								enabled: dashboardEnabled && !dbStartPage,
+								pattern: 'live-render',
+								entrypoint: routesDir.api('partials/LiveRender.astro'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage,
+								pattern: 'search-list',
+								entrypoint: routesDir.api('search-list.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage,
+								pattern: 'user-list-items',
+								entrypoint: routesDir.api('partials/UserListItems.astro'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'config',
+								entrypoint: routesDir.api('config.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'profile',
+								entrypoint: routesDir.api('profile.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'users',
+								entrypoint: routesDir.api('users.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'content/page',
+								entrypoint: routesDir.api('content/page.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'content/folder',
+								entrypoint: routesDir.api('content/folder.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'create-reset-link',
+								entrypoint: routesDir.api('create-reset-link.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'reset-password',
+								entrypoint: routesDir.api('reset-password.ts'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'plugins/[plugin]',
+								entrypoint: routesDir.api('plugins/[plugin].ts'),
+							},
+							{
+								enabled: dbStartPage,
+								pattern: 'step-1',
+								entrypoint: routesDir.fts('api/step-1.ts'),
+							},
+							{
+								enabled: dbStartPage,
+								pattern: 'step-2',
+								entrypoint: routesDir.fts('api/step-2.ts'),
+							},
+						],
+					});
+
+					// Inject Routes
+					injectDashboardRoute(
+						params,
+						{
+							options,
+							routes: [
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: '/',
+									entrypoint: routesDir.route('index.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management',
+									entrypoint: routesDir.route('content-management/index.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management/create',
+									entrypoint: routesDir.route('content-management/createpage.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management/create-folder',
+									entrypoint: routesDir.route('content-management/createfolder.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management/edit',
+									entrypoint: routesDir.route('content-management/editpage.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management/edit-folder',
+									entrypoint: routesDir.route('content-management/editfolder.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'content-management/diff',
+									entrypoint: routesDir.route('content-management/diff.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'profile',
+									entrypoint: routesDir.route('profile.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'configuration',
+									entrypoint: routesDir.route('configuration.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'user-management',
+									entrypoint: routesDir.route('user-management/index.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'user-management/edit',
+									entrypoint: routesDir.route('user-management/edit.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage && authEnabled,
+									pattern: 'password-reset',
+									entrypoint: routesDir.route('password-reset.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage && authEnabled,
+									pattern: 'plugins/[plugin]',
+									entrypoint: routesDir.route('plugins/[plugin].astro'),
+								},
+							],
+						},
+						false
+					);
+
+					// Inject API Routes
+					injectAuthAPIRoutes(params, {
+						options,
+						routes: [
+							{
+								pattern: 'login',
+								entrypoint: resolve('./auth/routes/api/login.js'),
+								enabled: usernameAndPasswordAPI,
+							},
+							{
+								pattern: 'logout',
+								entrypoint: resolve('./auth/routes/api/logout.js'),
+								enabled: dashboardEnabled && !options.dbStartPage,
+							},
+							{
+								pattern: 'register',
+								entrypoint: resolve('./auth/routes/api/register.js'),
+								enabled: usernameAndPasswordAPI && allowUserRegistration,
+							},
+							{
+								pattern: 'github',
+								entrypoint: resolve('./auth/routes/api/github/index.js'),
+								enabled: githubAPI,
+							},
+							{
+								pattern: 'github/callback',
+								entrypoint: resolve('./auth/routes/api/github/callback.js'),
+								enabled: githubAPI,
+							},
+							{
+								pattern: 'discord',
+								entrypoint: resolve('./auth/routes/api/discord/index.js'),
+								enabled: discordAPI,
+							},
+							{
+								pattern: 'discord/callback',
+								entrypoint: resolve('./auth/routes/api/discord/callback.js'),
+								enabled: discordAPI,
+							},
+							{
+								pattern: 'google',
+								entrypoint: resolve('./auth/routes/api/google/index.js'),
+								enabled: googleAPI,
+							},
+							{
+								pattern: 'google/callback',
+								entrypoint: resolve('./auth/routes/api/google/callback.js'),
+								enabled: googleAPI,
+							},
+							{
+								pattern: 'auth0',
+								entrypoint: resolve('./auth/routes/api/auth0/index.js'),
+								enabled: auth0API,
+							},
+							{
+								pattern: 'auth0/callback',
+								entrypoint: resolve('./auth/routes/api/auth0/callback.js'),
+								enabled: auth0API,
+							},
+						],
+					});
+
+					injectAuthPageRoutes(
+						params,
+						{
+							options,
+							routes: [
+								{
+									pattern: 'login/',
+									entrypoint: resolve('./auth/routes/login.astro'),
+									enabled: dashboardEnabled && !options.dbStartPage,
+								},
+								{
+									pattern: 'logout/',
+									entrypoint: resolve('./auth/routes/logout.astro'),
+									enabled: dashboardEnabled && !options.dbStartPage,
+								},
+								{
+									pattern: 'signup/',
+									entrypoint: resolve('./auth/routes/signup.astro'),
+									enabled: usernameAndPasswordAPI && allowUserRegistration,
+								},
+							],
+						},
+						false
+					);
+
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
-						{ integration: auth(options) },
-						{ integration: dashboard(options) },
 					];
 
 					integrationLogger(logInfo, 'Adding optional integrations...');
@@ -397,7 +792,7 @@ export default defineIntegration({
 						: '';
 
 					addVirtualImports(params, {
-						name: pkgName,
+						name,
 						imports: {
 							// Core Virtual Components
 							'studiocms:components': `
@@ -477,6 +872,38 @@ export default defineIntegration({
 							'studiocms:imageHandler/components': `
 								export { default as CustomImage } from '${imageComponentPath}';
 							`,
+
+							// Auth Virtual Imports
+							'studiocms:auth/lib/encryption': `
+								export * from '${resolve('./auth/lib/encryption.js')}'
+							`,
+							'studiocms:auth/lib/password': `
+								export * from '${resolve('./auth/lib/password.js')}'
+							`,
+							'studiocms:auth/lib/rate-limit': `
+								export * from '${resolve('./auth/lib/rate-limit.js')}'
+							`,
+							'studiocms:auth/lib/session': `
+								export * from '${resolve('./auth/lib/session.js')}'
+							`,
+							'studiocms:auth/lib/types': `
+								export * from '${resolve('./auth/lib/types.js')}'
+							`,
+							'studiocms:auth/lib/user': `
+								export * from '${resolve('./auth/lib/user.js')}'
+							`,
+							'studiocms:auth/utils/authEnvCheck': `
+								export * from '${resolve('./auth/utils/authEnvCheck.js')}'
+							`,
+							'studiocms:auth/utils/validImages': `
+								export * from '${resolve('./utils/validImages.js')}'
+							`,
+							'studiocms:auth/utils/getLabelForPermissionLevel': `
+								export * from '${resolve('./utils/getLabelForPermissionLevel.js')}'
+							`,
+							'studiocms:auth/scripts/three': `
+								import ${JSON.stringify(resolve('./auth/scripts/three.js'))}
+							`,
 						},
 					});
 
@@ -515,6 +942,10 @@ export default defineIntegration({
 					injectTypes(rendererConfigDTS);
 					injectTypes(rendererMarkdownConfigDTS);
 					injectTypes(getImagesDTS(imageComponentPath));
+					injectTypes(authLibDTS);
+					injectTypes(authUtilsDTS);
+					injectTypes(authScriptsDTS);
+					injectTypes(webVitalDtsFile);
 
 					// Inject the Markdown configuration into the shared state
 					shared.markdownConfig = config.markdown;
@@ -567,6 +998,13 @@ export default defineIntegration({
 								verbose: logLevel === 'info' ? options.verbose : true,
 							},
 							message
+						);
+					}
+
+					if (options.dbStartPage) {
+						integrationLogger(
+							{ logger, logLevel: 'warn', verbose: true },
+							'Start Page is Enabled.  This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.'
 						);
 					}
 				},

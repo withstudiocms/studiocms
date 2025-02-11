@@ -1,5 +1,7 @@
 /// <reference types="../renderer.d.ts" />
 /// <reference types="../core.d.ts" />
+/// <reference types="../auth.d.ts" />
+/// <reference types="../ui.d.ts" />
 
 import type { StudioCMSOptions } from './schemas/index.js';
 

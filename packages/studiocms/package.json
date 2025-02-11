@@ -40,7 +40,9 @@
     "static",
     "custom-renderers",
     "renderer.d.ts",
+    "auth.d.ts",
     "core.d.ts",
+    "ui.d.ts",
     "studiocms-cli.mjs",
     "CHANGELOG.md",
     "LICENSE",
@@ -111,8 +113,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/auth": "workspace:*",
-    "@studiocms/dashboard": "workspace:*",
     "@studiocms/markdown-remark-processor": "^1.0.0",
     "@studiocms/ui": "catalog:",
 
@@ -129,6 +129,13 @@
     "remark-gfm": "catalog:studiocms-renderer",
     "rehype-highlight": "catalog:studiocms-renderer",
 
+    "@oslojs/binary": "catalog:studiocms-auth",
+    "@oslojs/crypto": "catalog:studiocms-auth",
+    "@oslojs/encoding": "catalog:studiocms-auth",
+    "@types/three": "catalog:studiocms-auth",
+    "arctic": "catalog:studiocms-auth",
+    "three": "catalog:studiocms-auth",
+
     "mrmime": "catalog:studiocms-core",
     "unified": "catalog:studiocms-core",
     "remark-rehype": "catalog:studiocms-core",
@@ -139,6 +146,7 @@
 
     "@inox-tools/runtime-logger": "catalog:studiocms-shared",
     "@matthiesenxyz/astrodtsbuilder": "catalog:studiocms-shared",
+    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
     "rollup-plugin-copy": "catalog:studiocms-shared",
     "mdast": "catalog:studiocms-shared",
     "mdast-util-from-markdown": "catalog:studiocms-shared",
@@ -146,6 +154,7 @@
     "mdast-util-to-string": "catalog:studiocms-shared",
     "unist-util-visit": "catalog:studiocms-shared",
     "lodash": "catalog:studiocms-shared",
+    "@fontsource-variable/onest": "catalog:studiocms-shared",
 
     "@bluwy/giget-core": "^0.1.2",
     "@clack/core": "0.4.1",
@@ -164,7 +173,11 @@
     "ultrahtml": "^1.5.3",
     "jsonwebtoken": "^9.0.2",
     "diff": "^7.0.0",
-    "diff2html": "^3.4.51"
+    "diff2html": "^3.4.51",
+    "dompurify": "^3.2.3",
+    "fuse.js": "^7.0.0",
+    "@iconify-json/simple-icons": "^1.2.23",
+    "@iconify-json/flat-color-icons": "^1.2.1"
   },
   "devDependencies": {
     "typescript": "catalog:",
@@ -182,11 +195,15 @@
     "@astrojs/db": "catalog:min",
     "@astrojs/markdown-remark": "catalog:min",
     "@astrojs/react": "catalog:",
+    "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:min",
     "vite": "catalog:min"
   },
   "peerDependenciesMeta": {
     "@astrojs/react": {
+      "optional": true
+    },
+    "@astrojs/web-vitals": {
       "optional": true
     }
   }

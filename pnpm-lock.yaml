@@ -479,6 +479,9 @@ importers:
       '@astrojs/react':
         specifier: 'catalog:'
         version: 4.1.0(@types/node@20.17.10)(@types/react-dom@18.3.5(@types/react@18.3.16))(@types/react@18.3.16)(jiti@2.4.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(yaml@2.6.1)
+      '@astrojs/web-vitals':
+        specifier: 'catalog:'
+        version: 3.0.1(@astrojs/db@0.14.6(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.16)(react@19.0.0))
       '@bluwy/giget-core':
         specifier: ^0.1.2
         version: 0.1.2
@@ -494,6 +497,15 @@ importers:
       '@commander-js/extra-typings':
         specifier: ^13.0.0
         version: 13.0.0(commander@13.0.0)
+      '@fontsource-variable/onest':
+        specifier: catalog:studiocms-shared
+        version: 5.1.0
+      '@iconify-json/flat-color-icons':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@iconify-json/simple-icons':
+        specifier: ^1.2.23
+        version: 1.2.23
       '@inox-tools/aik-mod':
         specifier: 0.9.1
         version: 0.9.1(astro-integration-kit@0.18.0(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
@@ -506,24 +518,36 @@ importers:
       '@matthiesenxyz/astrodtsbuilder':
         specifier: catalog:studiocms-shared
         version: 0.2.0(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      '@matthiesenxyz/integration-utils':
+        specifier: catalog:studiocms-shared
+        version: 0.3.0(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       '@mdx-js/mdx':
         specifier: catalog:studiocms-renderer
         version: 3.1.0(acorn@8.14.0)
-      '@studiocms/auth':
-        specifier: workspace:*
-        version: link:../studiocms_auth
-      '@studiocms/dashboard':
-        specifier: workspace:*
-        version: link:../studiocms_dashboard
+      '@oslojs/binary':
+        specifier: catalog:studiocms-auth
+        version: 1.0.0
+      '@oslojs/crypto':
+        specifier: catalog:studiocms-auth
+        version: 1.0.1
+      '@oslojs/encoding':
+        specifier: catalog:studiocms-auth
+        version: 1.1.0
       '@studiocms/markdown-remark-processor':
         specifier: ^1.0.0
         version: 1.0.0
       '@studiocms/ui':
         specifier: 'catalog:'
         version: 0.4.8(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
+      '@types/three':
+        specifier: catalog:studiocms-auth
+        version: 0.169.0
       ansi-escapes:
         specifier: ^7.0.0
         version: 7.0.0
+      arctic:
+        specifier: catalog:studiocms-auth
+        version: 2.3.1
       astro:
         specifier: catalog:min
         version: 5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -548,12 +572,18 @@ importers:
       diff2html:
         specifier: ^3.4.51
         version: 3.4.51
+      dompurify:
+        specifier: ^3.2.3
+        version: 3.2.3
       drizzle-orm:
         specifier: catalog:studiocms-core
         version: 0.31.4(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@18.3.16)(react@19.0.0)
       figlet:
         specifier: ^1.8.0
         version: 1.8.0
+      fuse.js:
+        specifier: ^7.0.0
+        version: 7.0.0
       is-unicode-supported:
         specifier: ^2.1.0
         version: 2.1.0
@@ -611,6 +641,9 @@ importers:
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
+      three:
+        specifier: catalog:studiocms-auth
+        version: 0.170.0
       ultrahtml:
         specifier: ^1.5.3
         version: 1.5.3
@@ -6914,12 +6947,19 @@ snapshots:
     dependencies:
       astro: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
 
+  '@matthiesenxyz/integration-utils@0.3.0(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
+    dependencies:
+      astro: 5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      astro-integration-kit: 0.17.0(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      package-json: 10.0.1
+      semver: 7.7.0
+
   '@matthiesenxyz/integration-utils@0.3.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
     dependencies:
       astro: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
       astro-integration-kit: 0.17.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       package-json: 10.0.1
-      semver: 7.6.3
+      semver: 7.7.0
 
   '@mdx-js/mdx@3.1.0(acorn@8.14.0)':
     dependencies:
