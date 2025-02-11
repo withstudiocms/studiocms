@@ -1,6 +1,6 @@
 ---
 import { StudioCMSRenderer } from 'studiocms:renderer';
-import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK from 'studiocms:sdk/cache';
 import Layout from './components/Layout.astro';
 
 let { slug } = Astro.params;
@@ -9,13 +9,15 @@ if (!slug) {
 	slug = 'index';
 }
 
-const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, 'studiocms');
+const page = await studioCMS_SDK.GET.page.bySlug(slug, 'studiocms');
 
 if (!page) {
 	return new Response(null, { status: 404 });
 }
 
-const { title, description, heroImage, defaultContent } = page;
+const {
+	data: { title, description, heroImage, defaultContent },
+} = page;
 
 if (!defaultContent) {
 	return new Response(null, { status: 404 });

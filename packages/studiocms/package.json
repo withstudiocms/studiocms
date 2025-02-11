@@ -113,8 +113,6 @@
   "dependencies": {
     "@studiocms/auth": "workspace:*",
     "@studiocms/dashboard": "workspace:*",
-    "@studiocms/frontend": "workspace:*",
-    "@studiocms/robotstxt": "workspace:*",
     "@studiocms/markdown-remark-processor": "^1.0.0",
     "@studiocms/ui": "catalog:",
 

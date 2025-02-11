@@ -9,8 +9,6 @@ import inlineMod from '@inox-tools/aik-mod';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import auth from '@studiocms/auth';
 import dashboard from '@studiocms/dashboard';
-import frontend from '@studiocms/frontend';
-import robotsTXT from '@studiocms/robotstxt';
 import ui from '@studiocms/ui';
 import {
 	addVirtualImports,
@@ -28,6 +26,7 @@ import { loadEnv } from 'vite';
 import { StudioCMSError } from './errors.js';
 import { makeAPIRoute } from './lib/index.js';
 import { shared } from './renderer/shared.js';
+import robotsTXT from './robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
 import changelogDtsFileOutput from './stubs/changelog.js';
 import componentsDtsFileOutput from './stubs/components.js';
@@ -127,6 +126,7 @@ export default defineIntegration({
 						plugins,
 						componentRegistry,
 						overrides,
+						dbStartPage,
 					} = options;
 
 					// Create logInfo object
@@ -153,7 +153,6 @@ export default defineIntegration({
 					// TODO: Migrate the following
 					// - Auth package
 					// - Dashboard package
-					// - Frontend package
 
 					// Add Astro Environment Configuration
 					addAstroEnvConfig(params, {
@@ -246,6 +245,47 @@ export default defineIntegration({
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
 
+					integrationLogger(logInfo, 'Setting up Frontend...');
+
+					// Check if Database Start Page is enabled
+					let shouldInject = false;
+
+					if (typeof defaultFrontEndConfig === 'boolean') {
+						shouldInject = defaultFrontEndConfig;
+					} else if (typeof defaultFrontEndConfig === 'object') {
+						shouldInject = defaultFrontEndConfig.injectDefaultFrontEndRoutes;
+					}
+
+					switch (dbStartPage) {
+						case true:
+							integrationLogger(
+								logInfo,
+								'Database Start Page enabled, skipping Default Frontend Routes Injection... Please follow the Database Setup Guide to create your Frontend.'
+							);
+							break;
+						case false:
+							integrationLogger(
+								logInfo,
+								'Database Start Page disabled, checking for Default Frontend Routes Injection...'
+							);
+
+							if (shouldInject) {
+								integrationLogger(
+									logInfo,
+									'Route Injection enabled, Injecting Default Frontend Routes...'
+								);
+
+								injectRoute({
+									pattern: '[...slug]',
+									entrypoint: resolve('./routes/frontend/route.astro'),
+									prerender: false,
+								});
+
+								integrationLogger(logInfo, 'Frontend Routes Injected!');
+							}
+							break;
+					}
+
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
@@ -253,11 +293,6 @@ export default defineIntegration({
 						{ integration: auth(options) },
 						{ integration: dashboard(options) },
 					];
-
-					// Frontend Integration (Default)
-					if (defaultFrontEndConfig !== false) {
-						integrations.push({ integration: frontend(options) });
-					}
 
 					integrationLogger(logInfo, 'Adding optional integrations...');
 

@@ -1,5 +1,5 @@
-import type { RobotsConfig } from '@studiocms/robotstxt/types';
 import { z } from 'astro/zod';
+import type { RobotsConfig } from '../../robots/types.js';
 
 //
 // INTEGRATIONS CONFIG SCHEMA
