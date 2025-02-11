@@ -29,6 +29,7 @@ export function makeDashboardRoute(route?: string | undefined): string {
 const authAPIRoute = makeAPIRoute('auth');
 const dashboardAPIRoute = makeAPIRoute('dashboard');
 const sdkRoute = makeAPIRoute('sdk');
+const rendererRoute = makeAPIRoute('renderer');
 
 export const StudioCMSRoutes = {
 	mainLinks: {
@@ -68,6 +69,7 @@ export const StudioCMSRoutes = {
 		partials: {
 			livePreviewBox: dashboardAPIRoute('live-render'),
 			userListItems: dashboardAPIRoute('user-list-items'),
+			render: rendererRoute('render'),
 		},
 		config: dashboardAPIRoute('config'),
 		users: dashboardAPIRoute('users'),

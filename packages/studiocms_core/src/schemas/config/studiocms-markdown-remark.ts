@@ -72,7 +72,6 @@ export const TransformToProcessor = StudioCMSMarkdownExtendedSchema.transform(
 				callouts: callouts.enabled ? { theme: callouts.theme } : false,
 				autolink: autoLinkHeadings,
 				discordSubtext,
-				sanitize,
 			},
 		} as { studiocms: StudioCMSConfigOptions };
 	}

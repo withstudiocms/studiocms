@@ -1,5 +1,6 @@
 import inlineMod from '@inox-tools/aik-mod';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
+import { makeAPIRoute } from '@studiocms/core/lib';
 import type { StudioCMSRendererConfig } from '@studiocms/core/schemas';
 import {
 	addVirtualImports,
@@ -16,6 +17,8 @@ import { integrationLogger } from './utils/integrationLogger.js';
 import readJson from './utils/readJson.js';
 
 const { name: pkgName } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
+
+const apiRoute = makeAPIRoute('renderer');
 
 /**
  * **StudioCMS Renderers Integration**
@@ -47,7 +50,7 @@ export const studioCMSRenderers = defineIntegration({
 			hooks: {
 				'astro:config:setup': (params) => {
 					// Destructure the params
-					const { logger, injectScript } = params;
+					const { logger, injectScript, injectRoute } = params;
 
 					// Log that Setup is Starting
 					integrationLogger(
@@ -78,6 +81,12 @@ export const studioCMSRenderers = defineIntegration({
 					if (opts.renderer === 'studiocms') {
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
+
+					injectRoute({
+						pattern: apiRoute('render'),
+						entrypoint: resolve('./routes/render.astro'),
+						prerender: false,
+					});
 
 					integrationLogger(
 						{ logger, logLevel: 'info', verbose },

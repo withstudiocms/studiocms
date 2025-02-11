@@ -30,15 +30,16 @@
     "dist", "components", "routes"
   ],
   "scripts": {
-    "build": "build-scripts build 'src/**/*.ts' --build-tsconfig",
-    "dev": "build-scripts dev 'src/**/*.ts' --build-tsconfig"
+    "build": "build-scripts build 'src/**/*.{ts,css}' --build-tsconfig",
+    "dev": "build-scripts dev 'src/**/*.{ts,css}' --build-tsconfig"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./components": "./components/index.ts"
+    "./components/*": "./dist/components/*",
+    "./styles/*": "./dist/styles/*"
   },
   "type": "module",
   "dependencies": {

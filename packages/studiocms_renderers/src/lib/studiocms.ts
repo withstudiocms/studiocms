@@ -27,7 +27,7 @@ export async function renderStudioCMS(content: string, SSRResult: any) {
 	const components = createComponentProxy(SSRResult, _components);
 	const code = (await cachedProcessor.render(content)).code;
 
-	const html = await transformHTML(code, components, studiocmsMarkdownExtended.studiocms.sanitize);
+	const html = await transformHTML(code, components);
 	return html;
 }
 
