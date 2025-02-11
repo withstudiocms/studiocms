@@ -3,9 +3,7 @@ import { fileURLToPath } from 'node:url';
 import type { AstroConfig, AstroIntegration } from 'astro';
 import { generateContent, printInfo } from './core.js';
 import type { RobotsConfig } from './types.js';
-import { getFileSizeInKilobytes, measureExecutionTime, readJson } from './utils.js';
-
-const { name } = readJson<{ name: string }>(new URL('../package.json', import.meta.url));
+import { getFileSizeInKilobytes, measureExecutionTime } from './utils.js';
 
 const defaultConfig: RobotsConfig = {
 	sitemap: true,
@@ -35,7 +33,7 @@ export default function createRobotsIntegration(options?: RobotsConfig): AstroIn
 	const config = { ...defaultConfig, ...options };
 
 	return {
-		name,
+		name: '@studiocms/robotstxt',
 		hooks: {
 			'astro:config:setup': ({ config: cfg }) => {
 				astroConfig = cfg;

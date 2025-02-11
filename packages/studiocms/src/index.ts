@@ -100,7 +100,7 @@ export default defineIntegration({
 
 		let resolvedCalloutTheme: string;
 
-		const RendererComponent = resolve('../components/Renderer.js');
+		const RendererComponent = resolve('../static/components/Renderer.js');
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
@@ -181,9 +181,6 @@ export default defineIntegration({
 
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
-
-					// TODO: Migrate the following
-					// - Dashboard package
 
 					// Add Astro Environment Configuration
 					addAstroEnvConfig(params, {
@@ -460,7 +457,7 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
-								entrypoint: routesDir.api('search-list.ts'),
+								entrypoint: routesDir.api('search-list.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
@@ -470,52 +467,52 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'config',
-								entrypoint: routesDir.api('config.ts'),
+								entrypoint: routesDir.api('config.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'profile',
-								entrypoint: routesDir.api('profile.ts'),
+								entrypoint: routesDir.api('profile.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'users',
-								entrypoint: routesDir.api('users.ts'),
+								entrypoint: routesDir.api('users.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/page',
-								entrypoint: routesDir.api('content/page.ts'),
+								entrypoint: routesDir.api('content/page.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/folder',
-								entrypoint: routesDir.api('content/folder.ts'),
+								entrypoint: routesDir.api('content/folder.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-reset-link',
-								entrypoint: routesDir.api('create-reset-link.ts'),
+								entrypoint: routesDir.api('create-reset-link.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'reset-password',
-								entrypoint: routesDir.api('reset-password.ts'),
+								entrypoint: routesDir.api('reset-password.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'plugins/[plugin]',
-								entrypoint: routesDir.api('plugins/[plugin].ts'),
+								entrypoint: routesDir.api('plugins/[plugin].js'),
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-1',
-								entrypoint: routesDir.fts('api/step-1.ts'),
+								entrypoint: routesDir.fts('api/step-1.js'),
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-2',
-								entrypoint: routesDir.fts('api/step-2.ts'),
+								entrypoint: routesDir.fts('api/step-2.js'),
 							},
 						],
 					});
@@ -824,12 +821,12 @@ export default defineIntegration({
 								export default studioCMS_SDK;
 							`,
 							'studiocms:sdk/cache': `
-								export * from '${resolve('../sdk/cache.js')}';
-								import studioCMS_SDK_Cache from '${resolve('../sdk/cache.js')}';
+								export * from '${resolve('./sdk/cache.js')}';
+								import studioCMS_SDK_Cache from '${resolve('./sdk/cache.js')}';
 								export default studioCMS_SDK_Cache;
 							`,
 							'studiocms:sdk/types': `
-								export * from '${resolve('../sdk/types.js')}';
+								export * from '${resolve('./sdk/types.js')}';
 							`,
 
 							// i18n Virtual Module
@@ -853,14 +850,14 @@ export default defineIntegration({
 
 							// Renderer Virtual Imports
 							'studiocms:renderer/config': `
-								export default ${JSON.stringify(opts)};
+								export default ${JSON.stringify(options.rendererConfig)};
 							`,
 							'studiocms:renderer': `
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
 							`,
 							'studiocms:renderer/current': `
-								export * from '${resolve('./lib/contentRenderer.js')}';
-								import contentRenderer from '${resolve('./lib/contentRenderer.js')}';
+								export * from '${resolve('./renderer/contentRenderer.js')}';
+								import contentRenderer from '${resolve('./renderer/contentRenderer.js')}';
 								export default contentRenderer;
 							`,
 							'studiocms:renderer/markdown-remark/css': `
@@ -893,7 +890,7 @@ export default defineIntegration({
 								export * from '${resolve('./auth/lib/user.js')}'
 							`,
 							'studiocms:auth/utils/authEnvCheck': `
-								export * from '${resolve('./auth/utils/authEnvCheck.js')}'
+								export * from '${resolve('./utils/authEnvCheck.js')}'
 							`,
 							'studiocms:auth/utils/validImages': `
 								export * from '${resolve('./utils/validImages.js')}'
