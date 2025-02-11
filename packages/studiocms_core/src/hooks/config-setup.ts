@@ -1,3 +1,4 @@
+import { runtimeLogger } from '@inox-tools/runtime-logger';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import copy from 'rollup-plugin-copy';
 import { makeAPIRoute, makePublicRoute } from '../lib/index.js';
@@ -26,6 +27,10 @@ export const configSetup = defineUtility('astro:config:setup')(
 
 		// Log the setup
 		integrationLogger(logInfo, 'Setting up StudioCMS Core...');
+
+		runtimeLogger(params, {
+			name: 'studiocms-core',
+		});
 
 		// Create resolvers
 		const { resolve } = createResolver(import.meta.url);
