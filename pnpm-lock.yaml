@@ -515,15 +515,9 @@ importers:
       '@studiocms/dashboard':
         specifier: workspace:*
         version: link:../studiocms_dashboard
-      '@studiocms/frontend':
-        specifier: workspace:*
-        version: link:../studiocms_frontend
       '@studiocms/markdown-remark-processor':
         specifier: ^1.0.0
         version: 1.0.0
-      '@studiocms/robotstxt':
-        specifier: workspace:*
-        version: link:../studiocms_robotstxt
       '@studiocms/ui':
         specifier: 'catalog:'
         version: 0.4.8(astro@5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.6.1))
@@ -747,9 +741,6 @@ importers:
       '@astrojs/rss':
         specifier: 'catalog:'
         version: 4.0.10
-      '@studiocms/frontend':
-        specifier: workspace:*
-        version: link:../studiocms_frontend
       astro:
         specifier: catalog:min
         version: 5.2.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
@@ -867,34 +858,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
-
-  packages/studiocms_frontend:
-    dependencies:
-      '@matthiesenxyz/integration-utils':
-        specifier: catalog:studiocms-shared
-        version: 0.3.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
-      '@studiocms/ui':
-        specifier: 'catalog:'
-        version: 0.4.8(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1))
-      astro:
-        specifier: catalog:min
-        version: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
-      vite:
-        specifier: catalog:min
-        version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.6.1)
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 5.7.2
-
-  packages/studiocms_robotstxt:
-    dependencies:
-      astro:
-        specifier: catalog:min
-        version: 5.2.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
 
   playground:
     dependencies:
