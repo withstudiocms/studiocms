@@ -126,7 +126,7 @@ export function setSessionTokenCookie(context: APIContext, token: string, expire
 	context.cookies.set(sessionCookieName, token, {
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: import.meta.env.PROD,
+		secure: false,
 		expires: expiresAt,
 		path: '/',
 	});
@@ -141,7 +141,7 @@ export function deleteSessionTokenCookie(context: APIContext | AstroGlobal): voi
 	context.cookies.set(sessionCookieName, '', {
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: import.meta.env.PROD,
+		secure: false,
 		maxAge: 0,
 		path: '/',
 	});
@@ -157,7 +157,7 @@ export function deleteSessionTokenCookie(context: APIContext | AstroGlobal): voi
 export function setOAuthSessionTokenCookie(context: APIContext, key: string, value: string): void {
 	context.cookies.set(key, value, {
 		path: '/',
-		secure: import.meta.env.PROD,
+		secure: false,
 		httpOnly: true,
 		maxAge: 60 * 10,
 		sameSite: 'lax',

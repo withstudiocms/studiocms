@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { hashPassword, verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import {
 	getUserData,
@@ -17,7 +16,6 @@ const { testingAndDemoMode } = developerConfig;
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -58,17 +56,14 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		const data = r as UserBasicUpdate;
 
 		if (!data.name) {
-			logger.error('Invalid form data, name is required');
 			return simpleResponse(400, 'Invalid form data, name is required');
 		}
 
 		if (!data.email) {
-			logger.error('Invalid form data, email is required');
 			return simpleResponse(400, 'Invalid form data, email is required');
 		}
 
 		if (!data.username) {
-			logger.error('Invalid form data, username is required');
 			return simpleResponse(400, 'Invalid form data, username is required');
 		}
 
@@ -110,13 +105,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			await studioCMS_SDK.AUTH.user.update(userData.user!.id!, toUpdate);
 
-			logger.info('User profile updated');
 			return simpleResponse(200, 'User profile updated successfully');
 		} catch (error) {
-			// Log error
-			if (error instanceof Error) {
-				logger.error(error.message);
-			}
 			// Return Error Response
 			return simpleResponse(500, 'Error updating user profile');
 		}
@@ -163,13 +153,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			await studioCMS_SDK.AUTH.user.update(userData.user!.id, userUpdate);
 
-			logger.info('User password updated');
 			return simpleResponse(200, 'User password updated successfully');
 		} catch (error) {
-			// Log error
-			if (error instanceof Error) {
-				logger.error(error.message);
-			}
 			// Return Error Response
 			return simpleResponse(500, 'Error updating user password');
 		}

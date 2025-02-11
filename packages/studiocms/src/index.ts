@@ -6,7 +6,6 @@
 /// <reference types="@astrojs/db" />
 
 import inlineMod from '@inox-tools/aik-mod';
-import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import {
 	addVirtualImports,
@@ -44,20 +43,18 @@ import sdkDtsFile from './stubs/sdk.js';
 import webVitalDtsFile from './stubs/webVitals.js';
 import type { Messages } from './types.js';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
+import { addIntegrationArray } from './utils/addIntegrationArray.js';
+import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
+import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
 import { checkForWebVitals } from './utils/checkForWebVitalsPlugin.js';
-import {
-	addIntegrationArray,
-	changelogHelper,
-	checkAstroConfig,
-	configResolver,
-	integrationLogger,
-	nodeNamespaceBuiltinsAstro,
-	readJson,
-	watchStudioCMSConfig,
-} from './utils/index.js';
+import { watchStudioCMSConfig } from './utils/configManager.js';
+import { configResolver } from './utils/configResolver.js';
 import { injectDashboardRoute } from './utils/injectRouteArray.js';
+import { integrationLogger } from './utils/integrationLogger.js';
+import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
+import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
 
 // Read the package.json file for the package name and version
@@ -288,9 +285,6 @@ export default defineIntegration({
 					// Log that Setup is Starting
 					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Auth...');
 
-					// Inject `@it-astro:logger:{name}` Logger for runtime logging
-					runtimeLogger(params, { name: 'studiocms-auth' });
-
 					// Check for Authentication Environment Variables
 					checkEnvKeys(logger, options);
 
@@ -348,7 +342,6 @@ export default defineIntegration({
 					});
 
 					integrationLogger(logInfo, 'Setting up StudioCMS Renderer...');
-					runtimeLogger(params, { name: 'studiocms-renderer' });
 
 					injectRoute({
 						pattern: apiRoute('render'),
@@ -400,9 +393,6 @@ export default defineIntegration({
 							}
 							break;
 					}
-
-					// Inject `@it-astro:logger:{name}` Logger for runtime logging
-					runtimeLogger(params, { name: 'studiocms-dashboard' });
 
 					// Check for `@astrojs/web-vitals` Integration
 					checkForWebVitals(params, { name, verbose });

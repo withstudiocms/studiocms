@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -20,7 +19,6 @@ interface FolderEdit extends FolderBase {
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -58,7 +56,6 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder created successfully');
 	} catch (error) {
-		logger.error(`Failed to create folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to create folder');
 	}
 };
@@ -66,7 +63,6 @@ export const POST: APIRoute = async (context: APIContext) => {
 export const PATCH: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -105,7 +101,6 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder updated successfully');
 	} catch (error) {
-		logger.error(`Failed to update folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to update folder');
 	}
 };
@@ -113,7 +108,6 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 export const DELETE: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -147,7 +141,6 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 		return simpleResponse(200, 'Folder deleted successfully');
 	} catch (error) {
-		logger.error(`Failed to delete folder ${(error as Error).message}`);
 		return simpleResponse(500, 'Failed to delete folder');
 	}
 };

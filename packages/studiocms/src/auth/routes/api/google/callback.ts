@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-auth';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import config from 'studiocms:config';
@@ -106,12 +105,10 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
 			const code = e.code;
-			logger.error(`OAuth2RequestError in Google OAuth callback: ${code}`);
 			return new Response(code, {
 				status: 400,
 			});
 		}
-		logger.error(`Unexpected error in Google OAuth callback: ${e}`);
 		return new Response(null, {
 			status: 500,
 		});

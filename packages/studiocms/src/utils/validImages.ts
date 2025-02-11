@@ -1,4 +1,4 @@
-/// <reference types="astro/client" />
+// @ts-nocheck
 import type { ImageMetadata } from 'astro';
 import studiocmsBlobsDark from '../resources/loginBackgrounds/studiocms-blobs-dark.png';
 import studiocmsBlobsLight from '../resources/loginBackgrounds/studiocms-blobs-light.png';

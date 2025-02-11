@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -10,7 +9,6 @@ const { testingAndDemoMode } = developerConfig;
 export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 

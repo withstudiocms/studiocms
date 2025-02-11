@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -10,7 +9,6 @@ const { testingAndDemoMode } = developerConfig;
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -91,14 +89,8 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 		await studioCMS_SDK.resetTokenBucket.delete(userid);
 
-		logger.info('User password updated');
-
 		return simpleResponse(200, 'User password updated successfully');
 	} catch (error) {
-		// Log error
-		if (error instanceof Error) {
-			logger.error(error.message);
-		}
 		// Return Error Response
 		return simpleResponse(500, 'Error updating user password');
 	}

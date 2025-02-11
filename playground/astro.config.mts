@@ -3,7 +3,7 @@ import node from '@astrojs/node';
 // import sentry from '@sentry/astro';
 // import webVitals from '@astrojs/web-vitals';
 // import studioCMSBlog from '@studiocms/blog';
-import devApps from '@studiocms/devapps';
+// import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
 import { getCoolifyURL } from './hostUtils';
@@ -19,7 +19,7 @@ export default defineConfig({
 	integrations: [
 		db(),
 		studioCMS(),
-		devApps(),
+		// devApps(),
 		// sentry({
 		// 	dsn: 'https://71c3c874d5d8ad20486529628ac13aae@sentry.studiocms.dev/4',
 		// 	replaysSessionSampleRate: 1.0,

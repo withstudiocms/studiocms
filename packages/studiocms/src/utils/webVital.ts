@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { column, db, defineTable } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';
 
@@ -39,9 +38,6 @@ export async function getWebVitals(): Promise<WebVitalsResponseItem[]> {
 			}
 		}
 	} catch (error) {
-		logger.warn(
-			`Error getting @astrojs/web-vitals table data.  If you have not installed the package you can disregard this error.\n - ${error}`
-		);
 		return [] as WebVitalsResponseItem[];
 	}
 

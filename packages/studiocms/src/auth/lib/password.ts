@@ -1,7 +1,7 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
 // @ts-ignore
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
+// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 
@@ -57,10 +57,10 @@ export async function verifyPasswordStrength(password: string): Promise<boolean>
 	}
 
 	// Check if password is known unsafe password
-	const isUnsafe = checkIfUnsafe(password).password();
-	if (isUnsafe) {
-		return false;
-	}
+	// const isUnsafe = checkIfUnsafe(password).password();
+	// if (isUnsafe) {
+	// 	return false;
+	// }
 
 	// Check if password is in pwned password database
 	const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(password)));

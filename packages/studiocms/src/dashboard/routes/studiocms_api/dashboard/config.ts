@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-dashboard';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
@@ -11,7 +10,6 @@ const { testingAndDemoMode } = developerConfig;
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		logger.warn('Testing and demo mode is enabled, this action is disabled.');
 		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
@@ -34,22 +32,18 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// Validate form data
 	if (!siteConfig.title) {
-		logger.error('Invalid form data, title is required');
 		return simpleResponse(400, 'Invalid form data, title is required');
 	}
 
 	if (!siteConfig.description) {
-		logger.error('Invalid form data, description is required');
 		return simpleResponse(400, 'Invalid form data, description is required');
 	}
 
 	if (!siteConfig.loginPageBackground) {
-		logger.error('Invalid form data, loginPageBackground is required');
 		return simpleResponse(400, 'Invalid form data, loginPageBackground is required');
 	}
 
 	if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
-		logger.error('Invalid form data, loginPageCustomImage is required');
 		return simpleResponse(400, 'Invalid form data, loginPageCustomImage is required');
 	}
 
@@ -57,13 +51,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	try {
 		await studioCMS_SDK_Cache.UPDATE.siteConfig(siteConfig);
 
-		logger.info('Site config updated');
 		return simpleResponse(200, 'Site config updated');
 	} catch (error) {
-		// Log error
-		if (error instanceof Error) {
-			logger.error(error.message);
-		}
 		// Return Error Response
 		return simpleResponse(500, 'Error updating site config');
 	}

@@ -1,4 +1,3 @@
-import { logger } from '@it-astro:logger:studiocms-auth';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import { config } from 'studiocms:config';
@@ -100,12 +99,10 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	} catch (e) {
 		if (e instanceof OAuth2RequestError) {
 			const code = e.code;
-			logger.error(`OAuth2RequestError in GitHub OAuth callback: ${code}`);
 			return new Response(code, {
 				status: 400,
 			});
 		}
-		logger.error(`Unexpected error in GitHub OAuth callback: ${e}`);
 		return new Response(null, {
 			status: 400,
 		});

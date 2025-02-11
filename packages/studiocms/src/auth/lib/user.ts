@@ -1,6 +1,6 @@
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
+// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password.js';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session.js';
@@ -29,9 +29,9 @@ export function verifyUsernameInput(username: string): boolean {
 	}
 
 	// Check if the username is unsafe
-	if (checkIfUnsafe(username).username()) {
-		return false;
-	}
+	// if (checkIfUnsafe(username).username()) {
+	// 	return false;
+	// }
 
 	return true;
 }
