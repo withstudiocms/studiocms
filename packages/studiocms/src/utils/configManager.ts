@@ -1,7 +1,7 @@
 import { statSync } from 'node:fs';
-import { StudioCMSCoreError } from '@studiocms/core/errors';
-import type { StudioCMSOptions } from '@studiocms/core/schemas';
 import { defineUtility } from 'astro-integration-kit';
+import { StudioCMSCoreError } from '../errors.js';
+import type { StudioCMSOptions } from '../schemas/index.js';
 
 // This File was created based on Expressive Code's Astro Integration by Hippotastic on github
 // see: https://expressive-code.com/ & https://github.com/expressive-code/expressive-code

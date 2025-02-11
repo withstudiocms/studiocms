@@ -1,21 +1,4 @@
-import {
-	type CustomRenderer,
-	type Renderer,
-	type SafePluginListType,
-	type StudioCMSOptions,
-	type StudioCMSPlugin,
-	type StudioCMSPluginOptions,
-	definePlugin,
-} from '@studiocms/core/schemas';
-import { defineStudioCMSConfig } from '@studiocms/core/utils';
+import type { CustomRenderer, Renderer, StudioCMSOptions } from './schemas/index.js';
+import { defineStudioCMSConfig } from './utils/defineStudioCMSConfig.js';
 
-export {
-	defineStudioCMSConfig,
-	definePlugin,
-	type StudioCMSPlugin,
-	type CustomRenderer,
-	type Renderer,
-	type StudioCMSOptions,
-	type StudioCMSPluginOptions,
-	type SafePluginListType,
-};
+export { defineStudioCMSConfig, type CustomRenderer, type Renderer, type StudioCMSOptions };

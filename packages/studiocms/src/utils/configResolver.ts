@@ -1,12 +1,12 @@
-import { StudioCMSCoreError } from '@studiocms/core/errors';
+import { defineUtility } from 'astro-integration-kit';
+import { z } from 'astro/zod';
+import lo from 'lodash';
+import { StudioCMSCoreError } from '../errors.js';
 import {
 	type StudioCMSConfig,
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
-} from '@studiocms/core/schemas';
-import { defineUtility } from 'astro-integration-kit';
-import { z } from 'astro/zod';
-import lo from 'lodash';
+} from '../schemas/index.js';
 import { loadStudioCMSConfigFile } from './configManager.js';
 
 export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {

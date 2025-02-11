@@ -1,17 +1,15 @@
+/**
+ * These triple-slash directives defines dependencies to various declaration files that will be
+ * loaded when a user imports the StudioCMS integration in their Astro configuration file. These
+ * directives must be first at the top of the file and can only be preceded by this comment.
+ */
+/// <reference types="@astrojs/db" />
+
 import inlineMod from '@inox-tools/aik-mod';
-import astroDTSBuilder from '@matthiesenxyz/astrodtsbuilder';
+import { runtimeLogger } from '@inox-tools/runtime-logger';
 import auth from '@studiocms/auth';
-import core from '@studiocms/core';
-import { StudioCMSError } from '@studiocms/core/errors';
-import type {
-	SafePluginListType,
-	StudioCMSConfig,
-	StudioCMSOptions,
-} from '@studiocms/core/schemas';
 import dashboard from '@studiocms/dashboard';
 import frontend from '@studiocms/frontend';
-import imageHandler from '@studiocms/imagehandler';
-import renderers from '@studiocms/renderers';
 import robotsTXT from '@studiocms/robotstxt';
 import ui from '@studiocms/ui';
 import {
@@ -20,23 +18,54 @@ import {
 	defineIntegration,
 	withPlugins,
 } from 'astro-integration-kit';
+import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
 import packageJson from 'package-json';
+import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
+import { loadEnv } from 'vite';
+import { StudioCMSError } from './errors.js';
+import { makeAPIRoute } from './lib/index.js';
+import { shared } from './renderer/shared.js';
+import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
+import changelogDtsFileOutput from './stubs/changelog.js';
+import componentsDtsFileOutput from './stubs/components.js';
+import coreDtsFileOutput from './stubs/core.js';
+import i18nDTSOutput from './stubs/i18n-dts.js';
+import { getImagesDTS } from './stubs/images.js';
+import libDtsFileOutput from './stubs/lib.js';
+import pluginsDtsFileOutput from './stubs/plugins.js';
+import getProxyDTS from './stubs/proxy.js';
+import rendererConfigDTS from './stubs/renderer-config.js';
+import rendererMarkdownConfigDTS from './stubs/renderer-markdownConfig.js';
+import rendererDTS from './stubs/renderer.js';
+import sdkDtsFile from './stubs/sdk.js';
 import type { Messages } from './types.js';
-import { addIntegrationArray } from './utils/addIntegrationArray.js';
-import { checkAstroConfig } from './utils/astroConfigCheck.js';
-import { changelogHelper } from './utils/changelog.js';
-import { watchStudioCMSConfig } from './utils/configManager.js';
-import { configResolver } from './utils/configResolver.js';
-import { integrationLogger } from './utils/integrationLogger.js';
-import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
-import readJson from './utils/readJson.js';
+import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
+import {
+	addIntegrationArray,
+	changelogHelper,
+	checkAstroConfig,
+	configResolver,
+	integrationLogger,
+	nodeNamespaceBuiltinsAstro,
+	readJson,
+	watchStudioCMSConfig,
+} from './utils/index.js';
 
+// Read the package.json file for the package name and version
 const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
 	new URL('../package.json', import.meta.url)
 );
+
+// Load Environment Variables
+const env = loadEnv('all', process.cwd(), 'CMS');
+
+// SDK Route Resolver
+const sdkRouteResolver = makeAPIRoute('sdk');
+// API Route Resolver
+const apiRoute = makeAPIRoute('renderer');
 
 /**
  * **StudioCMS Integration**
@@ -63,19 +92,25 @@ export default defineIntegration({
 		// Component Registry for Custom user Components
 		let ComponentRegistry: Record<string, string>;
 
+		let resolvedCalloutTheme: string;
+
+		const RendererComponent = resolve('../components/Renderer.js');
+
+		// Define the Image Component Path
+		let imageComponentPath: string;
+
 		// Return the Integration
 		return withPlugins({
 			name: pkgName,
 			plugins: [inlineMod],
 			hooks: {
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
-				// @ts-expect-error - This is a custom Integration Hook
 				'astro:db:setup': ({ extendDb }) => {
-					extendDb({ configEntrypoint: '@studiocms/core/db/config' });
+					extendDb({ configEntrypoint: 'studiocms/db/config' });
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, defineModule, config } = params;
+					const { logger, defineModule, config, updateConfig, injectRoute, injectScript } = params;
 
 					logger.info('Checking configuration...');
 
@@ -88,14 +123,24 @@ export default defineIntegration({
 						rendererConfig,
 						defaultFrontEndConfig,
 						includedIntegrations,
+						imageService,
 						plugins,
 						componentRegistry,
+						overrides,
 					} = options;
+
+					// Create logInfo object
+					const logInfo = { logger, logLevel: 'info' as const, verbose };
 
 					if (componentRegistry) ComponentRegistry = componentRegistry;
 
+					// Resolve the callout theme based on the user's configuration
+					resolvedCalloutTheme = resolve(
+						`./styles/md-remark-callouts/${rendererConfig.studiocms.callouts.theme}.css`
+					);
+
 					// Setup Logger
-					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS...');
+					integrationLogger(logInfo, 'Setting up StudioCMS...');
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
@@ -103,18 +148,108 @@ export default defineIntegration({
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					// Setup Logger
-					integrationLogger(
-						{ logger, logLevel: 'info', verbose },
-						'Setting up StudioCMS internals...'
-					);
+					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
+
+					// TODO: Migrate the following
+					// - Auth package
+					// - Dashboard package
+					// - Frontend package
+
+					// Add Astro Environment Configuration
+					addAstroEnvConfig(params, {
+						validateSecrets: false,
+						schema: {
+							CMS_CLOUDINARY_CLOUDNAME: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+						},
+					});
+
+					// Check for Cloudinary CDN Plugin
+					if (imageService.cdnPlugin === 'cloudinary-js') {
+						if (!env.CMS_CLOUDINARY_CLOUDNAME) {
+							integrationLogger(
+								{ logger, logLevel: 'warn', verbose: true },
+								'Using the Cloudinary CDN JS SDK Plugin requires the CMS_CLOUDINARY_CLOUDNAME environment variable to be set. Please add this to your .env file.'
+							);
+						}
+					}
+
+					integrationLogger(logInfo, 'Configuring CustomImage Component...');
+
+					imageComponentPath = overrides.CustomImageOverride
+						? astroConfigResolve(overrides.CustomImageOverride)
+						: resolve('../static/components/image/CustomImage.astro');
+
+					updateConfig({
+						image: {
+							remotePatterns: [
+								{
+									protocol: 'https',
+								},
+							],
+						},
+						vite: {
+							plugins: [
+								copy({
+									copyOnce: true,
+									hook: 'buildStart',
+									targets: [
+										{
+											src: resolve('../static/studiocms-resources/*'),
+											dest: 'public/studiocms-resources/',
+										},
+									],
+								}),
+							],
+						},
+					});
+
+					integrationLogger(logInfo, 'Injecting SDK Routes...');
+
+					injectRoute({
+						pattern: sdkRouteResolver('list-pages'),
+						entrypoint: resolve('./routes/sdk/list-pages.js'),
+						prerender: false,
+					});
+
+					injectRoute({
+						pattern: sdkRouteResolver('update-latest-version-cache'),
+						entrypoint: resolve('./routes/sdk/update-latest-version-cache.js'),
+						prerender: false,
+					});
+
+					injectRoute({
+						pattern: sdkRouteResolver('fallback-list-pages.json'),
+						entrypoint: resolve('./routes/sdk/fallback-list-pages.json.js'),
+						prerender: true,
+					});
+
+					injectRoute({
+						pattern: sdkRouteResolver('full-changelog.json'),
+						entrypoint: resolve('./routes/sdk/full-changelog.json.js'),
+						prerender: false,
+					});
+
+					integrationLogger(logInfo, 'Setting up StudioCMS Renderer...');
+					runtimeLogger(params, { name: 'studiocms-renderer' });
+
+					injectRoute({
+						pattern: apiRoute('render'),
+						entrypoint: resolve('./routes/api/render.astro'),
+						prerender: false,
+					});
+
+					if (rendererConfig.renderer === 'studiocms') {
+						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
+					}
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
-						{ integration: core(options) },
-						{ integration: renderers({ verbose, opts: rendererConfig }) },
-						{ integration: imageHandler(options) },
 						{ integration: auth(options) },
 						{ integration: dashboard(options) },
 					];
@@ -124,10 +259,7 @@ export default defineIntegration({
 						integrations.push({ integration: frontend(options) });
 					}
 
-					integrationLogger(
-						{ logger, logLevel: 'info', verbose },
-						'Adding optional integrations...'
-					);
+					integrationLogger(logInfo, 'Adding optional integrations...');
 
 					// Robots.txt Integration (Default)
 					if (includedIntegrations.robotsTXT === true) {
@@ -145,10 +277,7 @@ export default defineIntegration({
 						},
 					];
 
-					integrationLogger(
-						{ logger, logLevel: 'info', verbose },
-						'Setting up StudioCMS plugins...'
-					);
+					integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
 
 					// Resolve StudioCMS Plugins
 					for (const {
@@ -197,6 +326,8 @@ export default defineIntegration({
 					// Setup Integrations
 					addIntegrationArray(params, integrations);
 
+					integrationLogger(logInfo, 'Adding Virtual Imports...');
+
 					defineModule('studiocms:plugins', {
 						defaultExport: safePluginList,
 					});
@@ -233,15 +364,84 @@ export default defineIntegration({
 					addVirtualImports(params, {
 						name: pkgName,
 						imports: {
-							'studiocms:component-proxy': `
-									export * from "${resolve('./utils/AstroComponentProxy.js')}";
+							// Core Virtual Components
+							'studiocms:components': `
+								export { default as Avatar } from 'studiocms/static/components/Avatar.astro';
+								export { default as FormattedDate } from '${
+									options.overrides.FormattedDateOverride
+										? astroConfigResolve(options.overrides.FormattedDateOverride)
+										: 'studiocms/static/components/FormattedDate.astro'
+								}';
+								export { default as GenericHeader } from 'studiocms/static/components/GenericHeader.astro';
+								export { default as Navigation } from 'studiocms/static/components/Navigation.astro';
+								export { default as Generator } from 'studiocms/static/components/Generator.astro';
+							`,
 
-									export const componentKeys = ${JSON.stringify(componentKeys)};
-									${components}
-								`,
+							// StudioCMS lib
+							'studiocms:lib': `
+								export * from '${resolve('./lib/head.js')}';
+								export * from '${resolve('./lib/headDefaults.js')}';
+								export * from '${resolve('./lib/jsonUtils.js')}';
+								export * from '${resolve('./lib/pathGenerators.js')}';
+								export * from '${resolve('./lib/removeLeadingTrailingSlashes.js')}';
+								export * from '${resolve('./lib/routeMap.js')}';
+								export * from '${resolve('./lib/urlGen.js')}';
+							`,
+
+							// SDK Virtual Modules
+							'studiocms:sdk': `
+								import studioCMS_SDK from '${resolve('./sdk/index.js')}';
+								export default studioCMS_SDK;
+							`,
+							'studiocms:sdk/cache': `
+								export * from '${resolve('../sdk/cache.js')}';
+								import studioCMS_SDK_Cache from '${resolve('../sdk/cache.js')}';
+								export default studioCMS_SDK_Cache;
+							`,
+							'studiocms:sdk/types': `
+								export * from '${resolve('../sdk/types.js')}';
+							`,
+
+							// i18n Virtual Module
+							'studiocms:i18n': `
+								export * from 'studiocms/static/i18n/index.ts';
+								export { default as LanguageSelector } from 'studiocms/static/i18n/LanguageSelector.astro';
+							`,
+
+							// User Virtual Components
+							'studiocms:component-proxy': `
+								export * from "${resolve('./runtime/AstroComponentProxy.js')}";
+
+								export const componentKeys = ${JSON.stringify(componentKeys)};
+								${components}
+							`,
+
+							// Plugin Helpers
 							'studiocms:plugin-helpers': `
-									export * from "${resolve('./plugins.js')}";
-								`,
+								export * from "${resolve('./plugins.js')}";
+							`,
+
+							// Renderer Virtual Imports
+							'studiocms:renderer/config': `
+								export default ${JSON.stringify(opts)};
+							`,
+							'studiocms:renderer': `
+								export { default as StudioCMSRenderer } from '${RendererComponent}';
+							`,
+							'studiocms:renderer/current': `
+								export * from '${resolve('./lib/contentRenderer.js')}';
+								import contentRenderer from '${resolve('./lib/contentRenderer.js')}';
+								export default contentRenderer;
+							`,
+							'studiocms:renderer/markdown-remark/css': `
+								import '${resolve('./styles/md-remark-headings.css')}';
+								${rendererConfig.studiocms.callouts.enabled ? `import '${resolvedCalloutTheme}';` : ''}
+							`,
+
+							// Image Handler Virtual Imports
+							'studiocms:imageHandler/components': `
+								export { default as CustomImage } from '${imageComponentPath}';
+							`,
 						},
 					});
 
@@ -268,79 +468,22 @@ export default defineIntegration({
 				'astro:config:done': ({ injectTypes, config }) => {
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
-					// Make DTS file for StudioCMS Plugins Virtual Module
-					const dtsFile = astroDTSBuilder();
+					injectTypes(changelogDtsFileOutput);
+					injectTypes(componentsDtsFileOutput);
+					injectTypes(coreDtsFileOutput);
+					injectTypes(i18nDTSOutput);
+					injectTypes(libDtsFileOutput);
+					injectTypes(pluginsDtsFileOutput);
+					injectTypes(getProxyDTS(ComponentRegistry, astroConfigResolve));
+					injectTypes(sdkDtsFile);
+					injectTypes(rendererDTS);
+					injectTypes(rendererConfigDTS);
+					injectTypes(rendererMarkdownConfigDTS);
+					injectTypes(getImagesDTS(imageComponentPath));
 
-					dtsFile.addSingleLineNote(
-						'This file is auto-generated by StudioCMS and should not be modified.'
-					);
-
-					dtsFile.addModule('studiocms:plugins', {
-						defaultExport: {
-							typeDef: `import('${resolve('./config.js')}').SafePluginListType`,
-						},
-					});
-
-					dtsFile.addModule('studiocms:plugin-helpers', {
-						typeExports: [
-							{
-								name: 'SettingsField',
-								typeDef: `import('${resolve('./plugins.js')}').SettingsField`,
-							},
-						],
-					});
-
-					dtsFile.addModule('studiocms:changelog', {
-						defaultExport: {
-							typeDef: 'string',
-						},
-					});
-
-					dtsFile.addModule('studiocms:component-proxy', {
-						namedExports: [
-							{
-								name: 'createComponentProxy',
-								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').createComponentProxy`,
-							},
-							{
-								name: 'dedent',
-								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').dedent`,
-							},
-							{
-								name: 'transformHTML',
-								typeDef: `typeof import('${resolve('./utils/AstroComponentProxy.js')}').transformHTML`,
-							},
-							{
-								name: 'componentKeys',
-								typeDef: 'string[]',
-							},
-							...(ComponentRegistry
-								? Object.keys(ComponentRegistry).map((key) => ({
-										name: key,
-										typeDef: `typeof import('${astroConfigResolve(ComponentRegistry[key])}').default`,
-									}))
-								: []),
-						],
-					});
-
-					dtsFile.addModule('studiocms:mode', {
-						defaultExport: {
-							typeDef: `{ output: 'static' | 'server', prerenderRoutes: boolean }`,
-						},
-						namedExports: [
-							{
-								name: 'output',
-								typeDef: `'static' | 'server'`,
-							},
-							{
-								name: 'prerenderRoutes',
-								typeDef: 'boolean',
-							},
-						],
-					});
-
-					// Inject the DTS file
-					injectTypes(dtsFile.makeAstroInjectedType('types.d.ts'));
+					// Inject the Markdown configuration into the shared state
+					shared.markdownConfig = config.markdown;
+					shared.studiocms = options.rendererConfig.studiocms;
 
 					// Log Setup Complete
 					messages.push({

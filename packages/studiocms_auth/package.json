@@ -41,7 +41,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/core": "workspace:*",
     "@studiocms/ui": "catalog:",
     "astro-integration-kit": "catalog:",
     "@fontsource-variable/onest": "catalog:studiocms-shared",

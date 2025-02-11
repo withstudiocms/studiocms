@@ -1,4 +1,7 @@
-import type { StudioCMSOptions } from '@studiocms/core/schemas';
+/// <reference types="../renderer.d.ts" />
+/// <reference types="../core.d.ts" />
+
+import type { StudioCMSOptions } from './schemas/index.js';
 
 export type Messages = {
 	label: string;
