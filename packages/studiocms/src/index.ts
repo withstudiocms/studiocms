@@ -312,6 +312,11 @@ export default defineIntegration({
 									],
 								}),
 							],
+							build: {
+								rollupOptions: {
+									external: ['fsevents'],
+								},
+							},
 						},
 					});
 
