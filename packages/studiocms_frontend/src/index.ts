@@ -55,6 +55,12 @@ function studioCMSFrontend({
 							);
 
 							injectRoute({
+								pattern: '/',
+								entrypoint: resolve('./route.astro'),
+								prerender: false,
+							});
+
+							injectRoute({
 								pattern: '[...slug]',
 								entrypoint: resolve('./route.astro'),
 								prerender: false,
