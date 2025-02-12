@@ -1,7 +1,7 @@
-import { transformHTML } from 'studiocms:component-proxy';
+import { createComponentProxy, transformHTML } from 'studiocms:component-proxy';
 import { createMarkdownProcessor } from '@studiocms/markdown-remark-processor';
 // import { TransformToProcessor } from '../schemas/index.js';
-// import { importComponentsKeys } from './runtime.js';
+import { importComponentsKeys } from './runtime.js';
 import { shared } from './shared.js';
 
 // const studiocmsMarkdownExtended = TransformToProcessor.parse({ studiocms: shared.studiocms });
@@ -11,7 +11,7 @@ const cachedProcessor = await createMarkdownProcessor({
 	// ...studiocmsMarkdownExtended,
 });
 
-// const _components = await importComponentsKeys();
+const _components = await importComponentsKeys();
 
 /**
  * Render StudioCMS Markdown content
@@ -24,10 +24,10 @@ const cachedProcessor = await createMarkdownProcessor({
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function renderStudioCMS(content: string, SSRResult?: any) {
-	// const components = createComponentProxy(SSRResult, _components);
+	const components = createComponentProxy(SSRResult, _components);
 	const code = (await cachedProcessor.render(content)).code;
 
-	const html = await transformHTML(code, {});
+	const html = await transformHTML(code, components);
 	return html;
 }
 
