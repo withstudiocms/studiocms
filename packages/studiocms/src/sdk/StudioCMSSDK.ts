@@ -56,6 +56,14 @@ import type {
 	tsUsersUpdate,
 } from './types/index.js';
 
+type AstroDbVM = {
+	db: AstroDBVirtualModule['db'];
+	and: AstroDBVirtualModule['and'];
+	eq: AstroDBVirtualModule['eq'];
+	asc: AstroDBVirtualModule['asc'];
+	desc: AstroDBVirtualModule['desc'];
+};
+
 /**
  * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.
  * It includes functionalities for parsing input data, collecting and combining page and user data, managing
@@ -80,12 +88,12 @@ export class StudioCMSSDK {
 	private desc: AstroDBVirtualModule['desc'];
 	private env: { CMS_ENCRYPTION_KEY: string };
 
-	constructor(AstroDB: AstroDBVirtualModule, env: { CMS_ENCRYPTION_KEY: string }) {
-		this.db = AstroDB.db;
-		this.and = AstroDB.and;
-		this.eq = AstroDB.eq;
-		this.asc = AstroDB.asc;
-		this.desc = AstroDB.desc;
+	constructor({ eq, and, asc, db, desc }: AstroDbVM, env: { CMS_ENCRYPTION_KEY: string }) {
+		this.db = db;
+		this.and = and;
+		this.eq = eq;
+		this.asc = asc;
+		this.desc = desc;
 		this.env = env;
 	}
 

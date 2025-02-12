@@ -498,7 +498,7 @@ export class StudioCMSVirtualCache {
 
 			return siteConfig;
 		} catch (error) {
-			throw new StudioCMSCacheError('Error fetching site configuration');
+			throw new StudioCMSCacheError('Error fetching site configuration', (error as Error).stack);
 		}
 	}
 

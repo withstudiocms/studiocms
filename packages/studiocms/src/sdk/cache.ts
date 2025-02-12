@@ -1,4 +1,4 @@
-import * as AstroDB from 'astro:db';
+import { and, asc, db, desc, eq } from 'astro:db';
 import { getSecret } from 'astro:env/server';
 import { sdk } from 'studiocms:config';
 import SDK from './StudioCMSSDK.js';
@@ -18,7 +18,7 @@ const env = {
 	CMS_ENCRYPTION_KEY: getSecret('CMS_ENCRYPTION_KEY'),
 };
 
-const sdkCore = new SDK(AstroDB, env);
+const sdkCore = new SDK({ eq, and, asc, db, desc }, env);
 
 // Create the virtual cache
 const VirtualCache = new StudioCMSVirtualCache(cacheConfig, sdkCore);
