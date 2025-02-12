@@ -2,7 +2,7 @@ import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user'
 import { developerConfig } from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../utils/simpleResponse';
+import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 

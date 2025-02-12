@@ -9,7 +9,7 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { tsUsersUpdate } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { simpleResponse } from '../../../utils/simpleResponse';
+import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 

@@ -4,7 +4,7 @@ import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse';
+import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
