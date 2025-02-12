@@ -37,7 +37,7 @@ catalogs:
       specifier: ^20.14.11
       version: 20.17.10
     astro:
-      specifier: ^5.2.0
+      specifier: ^5.1.9
       version: 5.2.5
     astro-integration-kit:
       specifier: ^0.18
@@ -135,7 +135,7 @@ catalogs:
       specifier: ^6.1.0
       version: 6.1.0
     astro:
-      specifier: ^5.2.0
+      specifier: ^5.1.9
       version: 5.2.5
     vite:
       specifier: ^6.0
