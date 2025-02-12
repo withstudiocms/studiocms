@@ -3,7 +3,6 @@ import type {
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../schemas/config/sdk.js';
-import type StudioCMSSDK from '../StudioCMSSDK.js';
 import type StudioCMSVirtualCache from '../StudioCMSVirtualCache.js';
 import type {
 	AvailableLists,
@@ -102,16 +101,6 @@ export type AstroDBVirtualModule = typeof import('astro:db');
 
 // ../../schemas/config/sdk.ts
 export type { CacheConfig, ProcessedCacheConfig, ProcessedSDKConfig };
-
-/**
- * Type representing the constructor of the StudioCMSSDK class.
- */
-export type STUDIOCMS_SDKConstructor = typeof StudioCMSSDK;
-
-/**
- * Represents an instance of the STUDIOCMS SDK.
- */
-export type STUDIOCMS_SDK = InstanceType<STUDIOCMS_SDKConstructor>;
 
 /**
  * Type definition for the constructor of the StudioCMS SDK Cache.

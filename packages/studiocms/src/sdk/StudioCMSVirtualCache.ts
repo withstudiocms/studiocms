@@ -10,7 +10,6 @@ import type {
 	FolderTreeCacheObject,
 	PageDataCacheObject,
 	ProcessedCacheConfig,
-	STUDIOCMS_SDK,
 	SiteConfig,
 	SiteConfigCacheObject,
 	VersionCacheObject,
