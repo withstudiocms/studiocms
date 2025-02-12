@@ -8,6 +8,7 @@ interface Props {
 const { content } = Astro.props;
 
 console.log('STARTING RENDERER');
-const renderedContent = await contentRenderer(content);
+// @ts-ignore
+const renderedContent = await contentRenderer(content, $$result);
 ---
 <Fragment set:html={renderedContent}></Fragment>
