@@ -1,7 +1,7 @@
 import { createMarkdownProcessor } from '@studiocms/markdown-remark-processor';
 import { transformHTML } from '../runtime/AstroComponentProxy.js';
 // import { TransformToProcessor } from '../schemas/index.js';
-// import { importComponentsKeys } from './runtime.js';
+import { importComponentsKeys } from './runtime.js';
 import { shared } from './shared.js';
 
 // const studiocmsMarkdownExtended = TransformToProcessor.parse({ studiocms: shared.studiocms });
@@ -11,7 +11,7 @@ const cachedProcessor = await createMarkdownProcessor({
 	// ...studiocmsMarkdownExtended,
 });
 
-// const _components = await importComponentsKeys();
+const _components = await importComponentsKeys();
 
 /**
  * Render StudioCMS Markdown content
