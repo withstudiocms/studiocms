@@ -862,7 +862,7 @@ export default defineIntegration({
 							'studiocms:component-proxy': `
 								export * from "${resolve('./runtime/AstroComponentProxy.js')}";
 
-								export const componentKeys = ${JSON.stringify(componentKeys)};
+								export const componentKeys = ${JSON.stringify(componentKeys || [])};
 								${components}
 							`,
 
