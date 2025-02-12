@@ -7,7 +7,6 @@ interface Props {
 
 const { content } = Astro.props;
 
-// @ts-expect-error - `$$result` is a variable injected by the Astro compiler
-const renderedContent = await contentRenderer(content, $$result);
+const renderedContent = await contentRenderer(content);
 ---
 <Fragment set:html={renderedContent} />

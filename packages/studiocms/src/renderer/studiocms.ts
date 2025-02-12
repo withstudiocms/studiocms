@@ -23,11 +23,11 @@ const _components = await importComponentsKeys();
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function renderStudioCMS(content: string, SSRResult: any) {
-	const components = createComponentProxy(SSRResult, _components);
+export async function renderStudioCMS(content: string, SSRResult?: any) {
+	// const components = createComponentProxy(SSRResult, _components);
 	const code = (await cachedProcessor.render(content)).code;
 
-	const html = await transformHTML(code, components);
+	const html = await transformHTML(code, {});
 	return html;
 }
 
