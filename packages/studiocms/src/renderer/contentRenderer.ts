@@ -1,4 +1,5 @@
 import rendererConfig from 'studiocms:renderer/config';
+import type { SSRResult } from 'astro';
 import renderAstroMD from './astro-remark.js';
 import renderMarkDoc from './markdoc.js';
 import renderAstroMDX from './mdx.js';
@@ -16,7 +17,7 @@ const { renderer } = rendererConfig;
  * @returns A promise that resolves to the rendered content as a string.
  * @throws Will throw an error if the custom renderer object is invalid.
  */
-export async function contentRenderer(content: string, SSRResult: any): Promise<string> {
+export async function contentRenderer(content: string, SSRResult: SSRResult): Promise<string> {
 	if (typeof renderer === 'object') {
 		if (!renderer.renderer || !renderer.name) {
 			throw new Error('Invalid custom renderer');

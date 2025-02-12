@@ -7,7 +7,6 @@ interface Props {
 
 const { content } = Astro.props;
 
-console.log('STARTING RENDERER');
 // @ts-ignore
 const renderedContent = await contentRenderer(content, $$result);
 ---

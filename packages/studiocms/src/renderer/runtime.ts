@@ -13,7 +13,6 @@ export async function importComponentsKeys() {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const predefinedComponents: Record<string, any> = {};
 
-	console.log('KEY LOOP');
 	for (const key of componentKeys) {
 		try {
 			// @ts-ignore
