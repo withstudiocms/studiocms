@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { validImages } from '../../utils/validImages.js';
+import { validImages } from '../utils/validImages.js';
 import { fitModelToViewport } from './utils/fitModelToViewport.js';
 
 // Get the current configuration for the login page
