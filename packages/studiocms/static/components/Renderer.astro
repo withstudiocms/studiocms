@@ -1,0 +1,14 @@
+---
+/// <reference types="../../renderer.d.ts" />
+import contentRenderer from 'studiocms:renderer/current';
+
+interface Props {
+	content: string;
+}
+
+const { content } = Astro.props;
+
+// @ts-expect-error - `$$result` is a variable injected by the Astro compiler
+const renderedContent = await contentRenderer(content, $$result);
+---
+<Fragment set:html={renderedContent} />

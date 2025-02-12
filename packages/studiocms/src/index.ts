@@ -53,7 +53,7 @@ import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { injectDashboardRoute } from './utils/injectRouteArray.js';
 import { integrationLogger } from './utils/integrationLogger.js';
-import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
+// import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
 
@@ -97,7 +97,7 @@ export default defineIntegration({
 
 		let resolvedCalloutTheme: string;
 
-		const RendererComponent = resolve('../static/components/Renderer.js');
+		const RendererComponent = resolve('../static/components/Renderer.astro');
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
@@ -312,11 +312,6 @@ export default defineIntegration({
 									],
 								}),
 							],
-							// build: {
-							// 	rollupOptions: {
-							// 		external: ['fsevents'],
-							// 	},
-							// },
 						},
 					});
 
@@ -337,7 +332,7 @@ export default defineIntegration({
 					injectRoute({
 						pattern: sdkRouteResolver('fallback-list-pages.json'),
 						entrypoint: resolve('./routes/sdk/fallback-list-pages.json.js'),
-						prerender: true,
+						prerender: false,
 					});
 
 					injectRoute({
@@ -436,7 +431,7 @@ export default defineIntegration({
 						injectRoute({
 							pattern: '404',
 							entrypoint: routesDir.route('404.astro'),
-							prerender: true,
+							prerender: false,
 						});
 					}
 
@@ -677,7 +672,7 @@ export default defineIntegration({
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
-						{ integration: nodeNamespaceBuiltinsAstro() },
+						// { integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
 					];
 
@@ -894,7 +889,7 @@ export default defineIntegration({
 								export * from '${resolve('./utils/getLabelForPermissionLevel.js')}'
 							`,
 							'studiocms:auth/scripts/three': `
-								import ${JSON.stringify(resolve('./auth/scripts/three.js'))}
+								import '${resolve('./auth/scripts/three.js')}';
 							`,
 						},
 					});

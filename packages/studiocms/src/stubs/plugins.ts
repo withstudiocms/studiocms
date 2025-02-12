@@ -11,7 +11,7 @@ dtsFile.addSingleLineNote(
 
 dtsFile.addModule('studiocms:plugins', {
 	defaultExport: {
-		typeDef: `import('${resolve('../config.js')}').SafePluginListType`,
+		typeDef: `import('${resolve('../plugins.js')}').SafePluginListType`,
 	},
 });
 
