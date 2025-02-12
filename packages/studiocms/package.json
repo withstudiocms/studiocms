@@ -31,7 +31,8 @@
   ],
   "homepage": "https://studiocms.dev",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "sideEffects": false,
   "files": [
