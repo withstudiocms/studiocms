@@ -860,8 +860,6 @@ export default defineIntegration({
 
 							// User Virtual Components
 							'studiocms:component-proxy': `
-								export * from "${resolve('./runtime/AstroComponentProxy.js')}";
-
 								export const componentKeys = ${JSON.stringify(componentKeys || [])};
 								${components}
 							`,
