@@ -57,9 +57,12 @@ import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
 
+// Resolver Function
+const { resolve } = createResolver(import.meta.url);
+
 // Read the package.json file for the package name and version
 const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
-	new URL('../package.json', import.meta.url)
+	resolve('../package.json')
 );
 
 // Load Environment Variables
@@ -88,9 +91,6 @@ export default defineIntegration({
 
 		// Messages Array for Logging
 		const messages: Messages = [];
-
-		// Resolver Function
-		const { resolve } = createResolver(import.meta.url);
 
 		// Component Registry for Custom user Components
 		let ComponentRegistry: Record<string, string>;
@@ -312,11 +312,11 @@ export default defineIntegration({
 									],
 								}),
 							],
-							build: {
-								rollupOptions: {
-									external: ['fsevents'],
-								},
-							},
+							// build: {
+							// 	rollupOptions: {
+							// 		external: ['fsevents'],
+							// 	},
+							// },
 						},
 					});
 

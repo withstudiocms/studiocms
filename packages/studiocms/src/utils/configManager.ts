@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+import fs from 'node:fs';
 import { defineUtility } from 'astro-integration-kit';
 import { StudioCMSCoreError } from '../errors.js';
 import type { StudioCMSOptions } from '../schemas/index.js';
@@ -33,7 +33,7 @@ function findConfig(projectRootUrl: string) {
 export function exists(path: string | undefined) {
 	if (!path) return false;
 	try {
-		statSync(path);
+		fs.statSync(path);
 		return true;
 	} catch {
 		return false;
@@ -90,17 +90,17 @@ export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<Stud
 		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
 	];
 
-	// @ts-ignore
-	if (import.meta.env?.BASE_URL?.length) {
-		pathsToTry.push(
-			`/studiocms.config.js?t=${Date.now()}`,
-			`/studiocms.config.mjs?t=${Date.now()}`,
-			`/studiocms.config.cjs?t=${Date.now()}`,
-			`/studiocms.config.ts?t=${Date.now()}`,
-			`/studiocms.config.mts?t=${Date.now()}`,
-			`/studiocms.config.cts?t=${Date.now()}`
-		);
-	}
+	// // @ts-ignore
+	// if (import.meta.env?.BASE_URL?.length) {
+	// 	pathsToTry.push(
+	// 		`/studiocms.config.js?t=${Date.now()}`,
+	// 		`/studiocms.config.mjs?t=${Date.now()}`,
+	// 		`/studiocms.config.cjs?t=${Date.now()}`,
+	// 		`/studiocms.config.ts?t=${Date.now()}`,
+	// 		`/studiocms.config.mts?t=${Date.now()}`,
+	// 		`/studiocms.config.cts?t=${Date.now()}`
+	// 	);
+	// }
 
 	/**
 	 * Checks the error received on attempting to import StudioCMS config file.

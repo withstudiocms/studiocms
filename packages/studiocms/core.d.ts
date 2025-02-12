@@ -1,3 +1,7 @@
+declare module 'astro:env/server' {
+	export function getSecret(secret: string): string;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;

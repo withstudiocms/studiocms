@@ -1,14 +1,12 @@
 ---
 /// <reference types="astro/client" />
 import { Image } from 'astro:assets';
+import { getSecret } from 'astro:env/server';
 import Config from 'studiocms:config';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
-import { loadEnv } from 'vite';
 
-const env = loadEnv('all', process.cwd());
-
-const CMS_CLOUDINARY_CLOUDNAME = env.CMS_CLOUDINARY_CLOUDNAME;
+const CMS_CLOUDINARY_CLOUDNAME = getSecret('CMS_CLOUDINARY_CLOUDNAME');
 
 interface Props {
 	src: string;

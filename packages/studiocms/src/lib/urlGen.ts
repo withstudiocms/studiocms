@@ -1,8 +1,5 @@
-import { loadEnv } from 'vite';
 import { pathWithBase } from './pathGenerators.js';
 import { removeLeadingTrailingSlashes } from './removeLeadingTrailingSlashes.js';
-
-const env = loadEnv('all', process.cwd());
 
 /**
  * # urlGenFactory Helper Function
@@ -36,7 +33,7 @@ export default function urlGenFactory(
 		if (isDashboardRoute) {
 			url = pathWithBase(dashboardRoute);
 		} else {
-			url = env.BASE_URL;
+			url = '/';
 		}
 	}
 	return url;

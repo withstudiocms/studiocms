@@ -1,4 +1,3 @@
-// @ts-ignore
 import { getSecret } from 'astro:env/server';
 
 type Providers = {

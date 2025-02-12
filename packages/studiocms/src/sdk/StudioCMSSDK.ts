@@ -1,7 +1,6 @@
 import * as Diff from 'diff';
 import * as Diff2Html from 'diff2html';
 import jwt from 'jsonwebtoken';
-import { loadEnv } from 'vite';
 import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
@@ -57,10 +56,6 @@ import type {
 	tsUsersUpdate,
 } from './types/index.js';
 
-const env = loadEnv('all', process.cwd());
-
-const CMS_ENCRYPTION_KEY = env.CMS_ENCRYPTION_KEY;
-
 /**
  * The StudioCMSSDK class provides a comprehensive set of methods for interacting with the StudioCMS database.
  * It includes functionalities for parsing input data, collecting and combining page and user data, managing
@@ -83,13 +78,15 @@ export class StudioCMSSDK {
 	private eq: AstroDBVirtualModule['eq'];
 	private asc: AstroDBVirtualModule['asc'];
 	private desc: AstroDBVirtualModule['desc'];
+	private env: { CMS_ENCRYPTION_KEY: string };
 
-	constructor(AstroDB: AstroDBVirtualModule) {
+	constructor(AstroDB: AstroDBVirtualModule, env: { CMS_ENCRYPTION_KEY: string }) {
 		this.db = AstroDB.db;
 		this.and = AstroDB.and;
 		this.eq = AstroDB.eq;
 		this.asc = AstroDB.asc;
 		this.desc = AstroDB.desc;
+		this.env = env;
 	}
 
 	/**
@@ -558,11 +555,11 @@ export class StudioCMSSDK {
 	}
 
 	public generateToken = (userId: string): string => {
-		return jwt.sign({ userId }, CMS_ENCRYPTION_KEY, { expiresIn: '3h' });
+		return jwt.sign({ userId }, this.env.CMS_ENCRYPTION_KEY, { expiresIn: '3h' });
 	};
 
 	public testToken(token: string) {
-		return jwt.verify(token, CMS_ENCRYPTION_KEY);
+		return jwt.verify(token, this.env.CMS_ENCRYPTION_KEY);
 	}
 
 	public resetTokenBucket = {
