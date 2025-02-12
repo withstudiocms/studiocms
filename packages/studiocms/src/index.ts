@@ -834,7 +834,7 @@ export default defineIntegration({
 
 							// i18n Virtual Module
 							'studiocms:i18n': `
-								export * from '${resolve('./i18n/index.ts')}';
+								export * from '${resolve('./i18n/index.js')}';
 								export { default as LanguageSelector } from '${resolve('./i18n/LanguageSelector.astro')}';
 							`,
 
