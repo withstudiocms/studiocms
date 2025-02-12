@@ -66,7 +66,7 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 );
 
 // Load Environment Variables
-const env = loadEnv('', process.cwd());
+const env = loadEnv('', process.cwd(), '');
 
 // SDK Route Resolver
 const sdkRouteResolver = makeAPIRoute('sdk');
