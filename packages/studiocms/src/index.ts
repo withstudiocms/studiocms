@@ -181,7 +181,7 @@ export default defineIntegration({
 
 					// Add Astro Environment Configuration
 					addAstroEnvConfig(params, {
-						validateSecrets: false,
+						validateSecrets: true,
 						schema: {
 							CMS_CLOUDINARY_CLOUDNAME: envField.string({
 								context: 'server',
@@ -390,7 +390,7 @@ export default defineIntegration({
 								});
 
 								injectRoute({
-									pattern: '[slug]',
+									pattern: '[...slug]',
 									entrypoint: resolve('./routes/frontend/route.astro'),
 									prerender: false,
 								});

@@ -3,9 +3,6 @@ import { defineStudioCMSConfig } from 'studiocms/config';
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
-	rendererConfig: {
-		renderer: 'astro',
-	},
 	dashboardConfig: {
 		AuthConfig: {
 			providers: {

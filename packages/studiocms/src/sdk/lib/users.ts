@@ -1,5 +1,10 @@
-import { StudioCMS_SDK_Error } from '../errors';
-import type { CombinedRank, SingleRank, tsPermissionsSelect, tsUsersSelect } from '../types';
+import { StudioCMS_SDK_Error } from '../errors.js';
+import type {
+	CombinedRank,
+	SingleRank,
+	tsPermissionsSelect,
+	tsUsersSelect,
+} from '../types/index.js';
 
 /**
  * Verifies the rank of users based on the provided permissions and rank.
