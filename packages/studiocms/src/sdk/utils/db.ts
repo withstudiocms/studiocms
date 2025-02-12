@@ -1,6 +1,6 @@
 import { dbSecret, dbUrl } from 'virtual:studiocms/sdk/env';
 // import { createClient } from '@libsql/client';
-import { drizzle } from 'drizzle-orm/libsql/node';
+import { drizzle } from 'drizzle-orm/libsql/web';
 
 // const client = createClient({
 // 	url: dbUrl,
