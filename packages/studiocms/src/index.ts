@@ -751,25 +751,25 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
-					defineModule('studiocms:plugins', {
-						defaultExport: safePluginList,
-					});
+					// defineModule('studiocms:plugins', {
+					// 	defaultExport: safePluginList,
+					// });
 
-					defineModule('studiocms:config', {
-						defaultExport: options,
-						constExports: {
-							config: options,
-							dashboardConfig: options.dashboardConfig,
-							AuthConfig: options.dashboardConfig.AuthConfig,
-							developerConfig: options.dashboardConfig.developerConfig,
-							defaultFrontEndConfig: options.defaultFrontEndConfig,
-							sdk: options.sdk,
-						},
-					});
+					// defineModule('studiocms:config', {
+					// 	defaultExport: options,
+					// 	constExports: {
+					// 		config: options,
+					// 		dashboardConfig: options.dashboardConfig,
+					// 		AuthConfig: options.dashboardConfig.AuthConfig,
+					// 		developerConfig: options.dashboardConfig.developerConfig,
+					// 		defaultFrontEndConfig: options.defaultFrontEndConfig,
+					// 		sdk: options.sdk,
+					// 	},
+					// });
 
-					defineModule('studiocms:version', {
-						defaultExport: pkgVersion,
-					});
+					// defineModule('studiocms:version', {
+					// 	defaultExport: pkgVersion,
+					// });
 
 					const componentKeys = ComponentRegistry
 						? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
@@ -798,6 +798,26 @@ export default defineIntegration({
 								export { default as GenericHeader } from '${resolve('../static/components/GenericHeader.astro')}';
 								export { default as Navigation } from '${resolve('../static/components/Navigation.astro')}';
 								export { default as Generator } from '${resolve('../static/components/Generator.astro')}';
+							`,
+
+							// Plugins Virtual Modules
+							'studiocms:plugins': `
+								export default ${JSON.stringify(safePluginList)};
+							`,
+
+							'studiocms:config': `
+								export const config = ${JSON.stringify(options)};
+								export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
+								export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
+								export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
+								export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
+								export const sdk = ${JSON.stringify(options.sdk)};
+
+								export default ${JSON.stringify(options)};
+							`,
+
+							'studiocms:version': `
+								export default ${JSON.stringify(pkgVersion)};
 							`,
 
 							// StudioCMS lib
