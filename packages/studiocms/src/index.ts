@@ -66,7 +66,7 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 );
 
 // Load Environment Variables
-const env = loadEnv('all', process.cwd(), 'CMS');
+const env = loadEnv('all', process.cwd(), '');
 
 // SDK Route Resolver
 const sdkRouteResolver = makeAPIRoute('sdk');
@@ -832,6 +832,12 @@ export default defineIntegration({
 							`,
 
 							// SDK Virtual Modules
+							'virtual:studiocms/sdk/env': `
+								export const dbUrl = '${env.ASTRO_DB_REMOTE_URL}';
+								export const dbSecret = '${env.ASTRO_DB_APP_TOKEN}';
+								export const cmsEncryptionKey = '${env.CMS_ENCRYPTION_KEY}';
+							`,
+
 							'studiocms:sdk': `
 								import studioCMS_SDK from '${resolve('./sdk/index.js')}';
 								export default studioCMS_SDK;

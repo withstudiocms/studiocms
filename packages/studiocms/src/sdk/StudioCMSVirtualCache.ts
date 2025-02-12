@@ -1,4 +1,5 @@
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
+import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
 import type {
 	BaseCacheObject,
@@ -41,7 +42,7 @@ export class StudioCMSVirtualCache {
 	private readonly versionCacheLifetime = versionCacheLifetime;
 
 	private readonly cacheConfig: ProcessedCacheConfig;
-	private readonly sdk: STUDIOCMS_SDK;
+	private readonly sdk: ReturnType<typeof studiocmsSDKCore>;
 
 	private pages = new Map<string, PageDataCacheObject>();
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
@@ -50,7 +51,7 @@ export class StudioCMSVirtualCache {
 	private pageFolderTree = new Map<string, FolderTreeCacheObject>();
 	private FolderList = new Map<string, FolderListCacheObject>();
 
-	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: STUDIOCMS_SDK) {
+	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: ReturnType<typeof studiocmsSDKCore>) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = sdkCore;
 	}
