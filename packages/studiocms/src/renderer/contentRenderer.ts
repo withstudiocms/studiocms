@@ -16,8 +16,7 @@ const { renderer } = rendererConfig;
  * @returns A promise that resolves to the rendered content as a string.
  * @throws Will throw an error if the custom renderer object is invalid.
  */
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function contentRenderer(content: string, SSRResult: any): Promise<string> {
+export async function contentRenderer(content: string): Promise<string> {
 	if (typeof renderer === 'object') {
 		if (!renderer.renderer || !renderer.name) {
 			throw new Error('Invalid custom renderer');
@@ -27,7 +26,7 @@ export async function contentRenderer(content: string, SSRResult: any): Promise<
 
 	switch (renderer) {
 		case 'studiocms':
-			return await renderStudioCMS(content, SSRResult);
+			return await renderStudioCMS(content);
 		case 'astro':
 			return await renderAstroMD(content);
 		case 'markdoc':

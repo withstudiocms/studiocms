@@ -22,8 +22,7 @@ const _components = await importComponentsKeys();
  * @returns The rendered HTML
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function renderStudioCMS(content: string, SSRResult?: any) {
+export async function renderStudioCMS(content: string) {
 	console.log('I AM RENDERING COMPONENTS');
 	// const components = createComponentProxy(SSRResult, _components);
 	// console.log('COMPONENTS', JSON.stringify(components));
