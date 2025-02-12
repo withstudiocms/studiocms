@@ -1,5 +1,5 @@
 import { createMarkdownProcessor } from '@studiocms/markdown-remark-processor';
-import { createComponentProxy, transformHTML } from '../runtime/AstroComponentProxy.js';
+import { transformHTML } from '../runtime/AstroComponentProxy.js';
 // import { TransformToProcessor } from '../schemas/index.js';
 import { importComponentsKeys } from './runtime.js';
 import { shared } from './shared.js';
@@ -25,13 +25,13 @@ const _components = await importComponentsKeys();
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function renderStudioCMS(content: string, SSRResult?: any) {
 	console.log('I AM RENDERING COMPONENTS');
-	const components = createComponentProxy(SSRResult, _components);
-	console.log('COMPONENTS', JSON.stringify(components));
+	// const components = createComponentProxy(SSRResult, _components);
+	// console.log('COMPONENTS', JSON.stringify(components));
 
 	console.log('I AM RENDERING CONTENT');
 	const code = (await cachedProcessor.render(content)).code;
 	console.log('I AM TRANSFORMING HTML');
-	const html = await transformHTML(code, components);
+	const html = await transformHTML(code, {});
 	return html;
 }
 
