@@ -69,12 +69,12 @@
       "default": "./dist/consts.js"
     },
     "./contentRenderer": {
-      "types": "./dist/renderer/contentRenderer.d.ts",
-      "default": "./dist/renderer/contentRenderer.js"
+      "types": "./dist/lib/renderer/contentRenderer.d.ts",
+      "default": "./dist/lib/renderer/contentRenderer.js"
     },
     "./Renderer": {
-      "types": "./static/components/Renderer.d.ts",
-      "default": "./static/components/Renderer.js"
+      "types": "./components/Renderer.d.ts",
+      "default": "./components/Renderer.js"
     },
     "./custom-renderers": "./custom-renderers/index.ts",
     "./db/config": {
@@ -90,12 +90,12 @@
       "default": "./dist/errors.js"
     },
     "./sdk/base": {
-      "types": "./dist/sdk/StudioCMSSDK.d.ts",
-      "default": "./dist/sdk/StudioCMSSDK.js"
+      "types": "./dist/sdk/index.d.ts",
+      "default": "./dist/sdk/index.js"
     },
     "./sdk/cache": {
-      "types": "./dist/sdk/StudioCMSVirtualCache.d.ts",
-      "default": "./dist/sdk/StudioCMSVirtualCache.js"
+      "types": "./dist/sdk/cache.d.ts",
+      "default": "./dist/sdk/cache.js"
     },
     "./sdk/tables": {
       "types": "./dist/sdk/tables.d.ts",
@@ -109,11 +109,7 @@
       "types": "./dist/schemas/config/rendererConfig.d.ts",
       "default": "./dist/schemas/config/rendererConfig.js"
     },
-    "./static/*": "./static/*",
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "default": "./dist/utils/index.js"
-    }
+    "./static/*": "./static/*"
   },
   "type": "module",
   "dependencies": {
