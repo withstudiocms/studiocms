@@ -1,4 +1,4 @@
-// import { createComponentProxy, transformHTML } from 'studiocms:component-proxy';
+import { transformHTML } from 'studiocms:component-proxy';
 import { createMarkdownProcessor } from '@studiocms/markdown-remark-processor';
 // import { TransformToProcessor } from '../schemas/index.js';
 // import { importComponentsKeys } from './runtime.js';
@@ -27,8 +27,8 @@ export async function renderStudioCMS(content: string, SSRResult?: any) {
 	// const components = createComponentProxy(SSRResult, _components);
 	const code = (await cachedProcessor.render(content)).code;
 
-	// const html = await transformHTML(code, {});
-	return code;
+	const html = await transformHTML(code, {});
+	return html;
 }
 
 export default renderStudioCMS;
