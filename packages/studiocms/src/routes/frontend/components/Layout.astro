@@ -1,6 +1,6 @@
 ---
-import { Navigation } from 'studiocms:components';
-import config from 'studiocms:config';
+import { defaultFrontEndConfig } from 'studiocms:config';
+import Navigation from '../../../components/Navigation.astro';
 import studioCMS_SDK from '../../../sdk/index.js';
 import BaseHead from './BaseHead.astro';
 import Footer from './Footer.astro';
@@ -13,12 +13,9 @@ const { title: SiteTitle, description: SiteDescription } =
 
 let htmlDefaultLanguage = 'en';
 
-if (config.defaultFrontEndConfig) {
-	if (
-		typeof config.defaultFrontEndConfig === 'object' &&
-		config.defaultFrontEndConfig.htmlDefaultLanguage
-	) {
-		htmlDefaultLanguage = config.defaultFrontEndConfig.htmlDefaultLanguage;
+if (defaultFrontEndConfig) {
+	if (typeof defaultFrontEndConfig === 'object' && defaultFrontEndConfig.htmlDefaultLanguage) {
+		htmlDefaultLanguage = defaultFrontEndConfig.htmlDefaultLanguage;
 	}
 }
 

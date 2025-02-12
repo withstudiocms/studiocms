@@ -97,7 +97,7 @@ export default defineIntegration({
 
 		let resolvedCalloutTheme: string;
 
-		const RendererComponent = resolve('../static/components/Renderer.astro');
+		const RendererComponent = resolve('./components/Renderer.astro');
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
@@ -119,7 +119,7 @@ export default defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript } = params;
+					const { logger, config, updateConfig, injectRoute, injectScript, defineModule } = params;
 
 					logger.info('Checking configuration...');
 
@@ -280,7 +280,7 @@ export default defineIntegration({
 
 					imageComponentPath = overrides.CustomImageOverride
 						? astroConfigResolve(overrides.CustomImageOverride)
-						: resolve('../static/components/image/CustomImage.astro');
+						: resolve('./components/image/CustomImage.astro');
 
 					// Log that Setup is Starting
 					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Auth...');
@@ -751,25 +751,25 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
-					// defineModule('studiocms:plugins', {
-					// 	defaultExport: safePluginList,
-					// });
+					defineModule('studiocms:plugins', {
+						defaultExport: safePluginList,
+					});
 
-					// defineModule('studiocms:config', {
-					// 	defaultExport: options,
-					// 	constExports: {
-					// 		config: options,
-					// 		dashboardConfig: options.dashboardConfig,
-					// 		AuthConfig: options.dashboardConfig.AuthConfig,
-					// 		developerConfig: options.dashboardConfig.developerConfig,
-					// 		defaultFrontEndConfig: options.defaultFrontEndConfig,
-					// 		sdk: options.sdk,
-					// 	},
-					// });
+					defineModule('studiocms:config', {
+						defaultExport: options,
+						constExports: {
+							config: options,
+							dashboardConfig: options.dashboardConfig,
+							AuthConfig: options.dashboardConfig.AuthConfig,
+							developerConfig: options.dashboardConfig.developerConfig,
+							defaultFrontEndConfig: options.defaultFrontEndConfig,
+							sdk: options.sdk,
+						},
+					});
 
-					// defineModule('studiocms:version', {
-					// 	defaultExport: pkgVersion,
-					// });
+					defineModule('studiocms:version', {
+						defaultExport: pkgVersion,
+					});
 
 					const componentKeys = ComponentRegistry
 						? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
@@ -789,36 +789,37 @@ export default defineIntegration({
 						imports: {
 							// Core Virtual Components
 							'studiocms:components': `
-								export { default as Avatar } from '${resolve('../static/components/Avatar.astro')}';
+								export { default as Avatar } from '${resolve('./components/Avatar.astro')}';
 								export { default as FormattedDate } from '${
 									options.overrides.FormattedDateOverride
 										? astroConfigResolve(options.overrides.FormattedDateOverride)
-										: resolve('../static/components/FormattedDate.astro')
+										: resolve('./components/FormattedDate.astro')
 								}';
-								export { default as GenericHeader } from '${resolve('../static/components/GenericHeader.astro')}';
-								export { default as Navigation } from '${resolve('../static/components/Navigation.astro')}';
-								export { default as Generator } from '${resolve('../static/components/Generator.astro')}';
+								export { default as GenericHeader } from '${resolve('./components/GenericHeader.astro')}';
+								export { default as Navigation } from '${resolve('./components/Navigation.astro')}';
+								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
-							// Plugins Virtual Modules
-							'studiocms:plugins': `
-								export default ${JSON.stringify(safePluginList)};
-							`,
+							// // Plugins Virtual Modules
+							// 'studiocms:plugins': `
+							// 	const plugins = ${JSON.stringify(safePluginList)};
+							// 	export default plugins;
+							// `,
 
-							'studiocms:config': `
-								export const config = ${JSON.stringify(options)};
-								export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
-								export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
-								export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
-								export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-								export const sdk = ${JSON.stringify(options.sdk)};
+							// 'studiocms:config': `
+							// 	export const config = ${JSON.stringify(options)};
+							// 	export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
+							// 	export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
+							// 	export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
+							// 	export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
+							// 	export const sdk = ${JSON.stringify(options.sdk)};
 
-								export default ${JSON.stringify(options)};
-							`,
+							// 	export default config;
+							// `,
 
-							'studiocms:version': `
-								export default ${JSON.stringify(pkgVersion)};
-							`,
+							// 'studiocms:version': `
+							// 	export default ${JSON.stringify(pkgVersion)};
+							// `,
 
 							// StudioCMS lib
 							'studiocms:lib': `
