@@ -2,21 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "withstudiocms/studiocms" }],
   "commit": false,
-  "fixed": [
-    [
-      "studiocms",
-      "@studiocms/assets",
-      "@studiocms/auth",
-      "@studiocms/betaresources",
-      "@studiocms/core",
-      "@studiocms/dashboard",
-      "@studiocms/devapps",
-      "@studiocms/frontend",
-      "@studiocms/imagehandler",
-      "@studiocms/renderers",
-      "@studiocms/robotstxt"
-    ]
-  ],
+  "fixed": [["studiocms", "@studiocms/blog", "@studiocms/devapps"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",

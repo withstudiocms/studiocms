@@ -1,7 +1,5 @@
 ---
 "studiocms": patch
-"@studiocms/auth": patch
-"@studiocms/core": patch
 ---
 
 Introduce Dashboard i18n logic

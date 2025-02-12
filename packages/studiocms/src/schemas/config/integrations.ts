@@ -1,5 +1,5 @@
 import { z } from 'astro/zod';
-import type { RobotsConfig } from '../../robots/types.js';
+import type { RobotsConfig } from '../../lib/robots/types.js';
 
 //
 // INTEGRATIONS CONFIG SCHEMA

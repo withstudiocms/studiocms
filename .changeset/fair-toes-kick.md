@@ -1,5 +1,5 @@
 ---
-"@studiocms/dashboard": patch
+"studiocms": patch
 ---
 
 Remove Astro ViewTransitions/ClientRouter

@@ -1,11 +1,4 @@
 ---
-"@studiocms/imagehandler": patch
-"@studiocms/dashboard": patch
-"@studiocms/renderers": patch
-"@studiocms/robotstxt": patch
-"@studiocms/frontend": patch
-"@studiocms/auth": patch
-"@studiocms/core": patch
 "studiocms": patch
 ---
 

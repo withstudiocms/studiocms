@@ -1,8 +1,5 @@
 ---
-"@studiocms/dashboard": patch
-"@studiocms/renderers": patch
-"@studiocms/frontend": patch
-"@studiocms/core": patch
+"studiocms": patch
 ---
 
 Update Frontend logic and fix some small issues with rendering.

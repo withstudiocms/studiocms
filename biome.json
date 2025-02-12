@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**", "**/min.js", "code.css"]
+    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**", "**/min.js", "dashboard-code.css"]
   },
   "formatter": {
     "lineWidth": 100,

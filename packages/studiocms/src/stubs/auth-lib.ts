@@ -13,7 +13,7 @@ authLib.addModule('studiocms:auth/lib/encryption', {
 	namedExports: [
 		{
 			name: 'encrypt',
-			typeDef: `typeof import('${resolve('../auth/lib/encryption.js')}').encrypt`,
+			typeDef: `typeof import('${resolve('../lib/auth/encryption.js')}').encrypt`,
 			multiLineDescription: [
 				'Encrypts the given data using AES-128-GCM encryption.',
 				'',
@@ -23,7 +23,7 @@ authLib.addModule('studiocms:auth/lib/encryption', {
 		},
 		{
 			name: 'encryptString',
-			typeDef: `typeof import('${resolve('../auth/lib/encryption.js')}').encryptString`,
+			typeDef: `typeof import('${resolve('../lib/auth/encryption.js')}').encryptString`,
 			multiLineDescription: [
 				'Encrypts a given string and returns the encrypted data as a Uint8Array.',
 				'',
@@ -33,7 +33,7 @@ authLib.addModule('studiocms:auth/lib/encryption', {
 		},
 		{
 			name: 'decrypt',
-			typeDef: `typeof import('${resolve('../auth/lib/encryption.js')}').decrypt`,
+			typeDef: `typeof import('${resolve('../lib/auth/encryption.js')}').decrypt`,
 			multiLineDescription: [
 				'Decrypts the given encrypted data using AES-128-GCM.',
 				'',
@@ -44,7 +44,7 @@ authLib.addModule('studiocms:auth/lib/encryption', {
 		},
 		{
 			name: 'decryptToString',
-			typeDef: `typeof import('${resolve('../auth/lib/encryption.js')}').decryptToString`,
+			typeDef: `typeof import('${resolve('../lib/auth/encryption.js')}').decryptToString`,
 			multiLineDescription: [
 				'Decrypts the given Uint8Array data and returns the result as a string.',
 				'',
@@ -59,7 +59,7 @@ authLib.addModule('studiocms:auth/lib/password', {
 	namedExports: [
 		{
 			name: 'hashPassword',
-			typeDef: `typeof import('${resolve('../auth/lib/password.js')}').hashPassword`,
+			typeDef: `typeof import('${resolve('../lib/auth/password.js')}').hashPassword`,
 			multiLineDescription: [
 				'Hashes a plain text password using bcrypt.',
 				'',
@@ -69,7 +69,7 @@ authLib.addModule('studiocms:auth/lib/password', {
 		},
 		{
 			name: 'verifyPasswordHash',
-			typeDef: `typeof import('${resolve('../auth/lib/password.js')}').verifyPasswordHash`,
+			typeDef: `typeof import('${resolve('../lib/auth/password.js')}').verifyPasswordHash`,
 			multiLineDescription: [
 				'Verifies if the provided password matches the hashed password.',
 				'',
@@ -80,7 +80,7 @@ authLib.addModule('studiocms:auth/lib/password', {
 		},
 		{
 			name: 'verifyPasswordStrength',
-			typeDef: `typeof import('${resolve('../auth/lib/password.js')}').verifyPasswordStrength`,
+			typeDef: `typeof import('${resolve('../lib/auth/password.js')}').verifyPasswordStrength`,
 			multiLineDescription: [
 				'Verifies the strength of a given password.',
 				'',
@@ -241,7 +241,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 	namedExports: [
 		{
 			name: 'generateSessionToken',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').generateSessionToken`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').generateSessionToken`,
 			multiLineDescription: [
 				'Generates a new session token.',
 				'',
@@ -250,7 +250,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'sessionCookieName',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').sessionCookieName`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').sessionCookieName`,
 			multiLineDescription: [
 				'The name of the cookie used to store the authentication session.',
 				'',
@@ -259,7 +259,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'createSession',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').createSession`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').createSession`,
 			multiLineDescription: [
 				'Creates a new session for a user.',
 				'',
@@ -270,7 +270,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'validateSessionToken',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').validateSessionToken`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').validateSessionToken`,
 			multiLineDescription: [
 				'Validates a session token by checking its existence and expiration in the database.',
 				'If the session is valid but close to expiration, it extends the session expiration time.',
@@ -282,7 +282,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'invalidateSession',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').invalidateSession`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').invalidateSession`,
 			multiLineDescription: [
 				'Invalidates a session by deleting it from the database.',
 				'',
@@ -292,7 +292,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'setSessionTokenCookie',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').setSessionTokenCookie`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').setSessionTokenCookie`,
 			multiLineDescription: [
 				'Sets the session token cookie in the response object.',
 				'',
@@ -303,7 +303,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'deleteSessionTokenCookie',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').deleteSessionTokenCookie`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').deleteSessionTokenCookie`,
 			multiLineDescription: [
 				'Deletes the session token cookie from the response object.',
 				'',
@@ -312,7 +312,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'setOAuthSessionTokenCookie',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').setOAuthSessionTokenCookie`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').setOAuthSessionTokenCookie`,
 			multiLineDescription: [
 				'Sets the OAuth session token cookie in the response object.',
 				'',
@@ -323,7 +323,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'makeExpirationDate',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').makeExpirationDate`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').makeExpirationDate`,
 			multiLineDescription: [
 				'Generates a new expiration date for a session.',
 				'',
@@ -332,7 +332,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'sessionExpTime',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').sessionExpTime`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').sessionExpTime`,
 			multiLineDescription: [
 				'The session expiration time in milliseconds.',
 				'This value represents 14 days.',
@@ -340,7 +340,7 @@ authLib.addModule('studiocms:auth/lib/session', {
 		},
 		{
 			name: 'createUserSession',
-			typeDef: `typeof import('${resolve('../auth/lib/session.js')}').createUserSession`,
+			typeDef: `typeof import('${resolve('../lib/auth/session.js')}').createUserSession`,
 			multiLineDescription: [
 				'Creates a new user session.',
 				'',
@@ -356,7 +356,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 	typeExports: [
 		{
 			name: 'UserTable',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').UserTable`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').UserTable`,
 			multiLineDescription: [
 				'Represents a user in the database.',
 				'',
@@ -374,7 +374,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'SessionTable',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').SessionTable`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').SessionTable`,
 			multiLineDescription: [
 				'Represents a session in the database.',
 				'',
@@ -386,7 +386,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'OAuthAccountsTable',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').OAuthAccountsTable`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').OAuthAccountsTable`,
 			multiLineDescription: [
 				'Represents a table of OAuth accounts.',
 				'',
@@ -398,7 +398,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'PermissionsTable',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').PermissionsTable`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').PermissionsTable`,
 			multiLineDescription: [
 				'Interface representing a table of user permissions.',
 				'',
@@ -409,7 +409,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'UserSessionData',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').UserSessionData`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').UserSessionData`,
 			multiLineDescription: [
 				'Represents the session data for a user.',
 				'',
@@ -420,7 +420,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'UserSession',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').UserSession`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').UserSession`,
 			multiLineDescription: [
 				'Represents a user session which includes user information and session details.',
 				'',
@@ -430,7 +430,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'SessionValidationResult',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').SessionValidationResult`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').SessionValidationResult`,
 			multiLineDescription: [
 				'Represents the result of validating a session token.',
 				'',
@@ -439,7 +439,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'RefillBucket',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').RefillBucket`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').RefillBucket`,
 			multiLineDescription: [
 				'Represents an individual refillable token bucket.',
 				'',
@@ -450,7 +450,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'ExpiringBucket',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').ExpiringBucket`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').ExpiringBucket`,
 			multiLineDescription: [
 				'Represents a bucket with an expiration mechanism.',
 				'',
@@ -461,7 +461,7 @@ authLib.addModule('studiocms:auth/lib/types', {
 		},
 		{
 			name: 'ThrottlingCounter',
-			typeDef: `import('${resolve('../auth/lib/types.js')}').ThrottlingCounter`,
+			typeDef: `import('${resolve('../lib/auth/types.js')}').ThrottlingCounter`,
 			multiLineDescription: [
 				'Interface representing a throttling counter.',
 				'',
@@ -477,47 +477,47 @@ authLib.addModule('studiocms:auth/lib/user', {
 	namedExports: [
 		{
 			name: 'verifyUsernameInput',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').verifyUsernameInput`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').verifyUsernameInput`,
 		},
 		{
 			name: 'createUserAvatar',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').createUserAvatar`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').createUserAvatar`,
 		},
 		{
 			name: 'createLocalUser',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').createLocalUser`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').createLocalUser`,
 		},
 		{
 			name: 'createOAuthUser',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').createOAuthUser`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').createOAuthUser`,
 		},
 		{
 			name: 'updateUserPassword',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').updateUserPassword`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').updateUserPassword`,
 		},
 		{
 			name: 'getUserPasswordHash',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').getUserPasswordHash`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').getUserPasswordHash`,
 		},
 		{
 			name: 'getUserFromEmail',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').getUserFromEmail`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').getUserFromEmail`,
 		},
 		{
 			name: 'getUserData',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').getUserData`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').getUserData`,
 		},
 		{
 			name: 'permissionRanksMap',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').permissionRanksMap`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').permissionRanksMap`,
 		},
 		{
 			name: 'verifyUserPermissionLevel',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').verifyUserPermissionLevel`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').verifyUserPermissionLevel`,
 		},
 		{
 			name: 'LinkNewOAuthCookieName',
-			typeDef: `typeof import('${resolve('../auth/lib/user.js')}').LinkNewOAuthCookieName`,
+			typeDef: `typeof import('${resolve('../lib/auth/user.js')}').LinkNewOAuthCookieName`,
 		},
 	],
 });

@@ -44,11 +44,11 @@ declare module 'studiocms:changelog' {
 }
 
 declare module 'studiocms:components' {
-	export const Avatar: typeof import('./static/components/Avatar.astro').default;
-	export const FormattedDate: typeof import('./static/components/FormattedDate.astro').default;
-	export const GenericHeader: typeof import('./static/components/GenericHeader.astro').default;
-	export const Navigation: typeof import('./static/components/Navigation.astro').default;
-	export const Generator: typeof import('./static/components/Generator.astro').default;
+	export const Avatar: typeof import('./src/components/Avatar.astro').default;
+	export const FormattedDate: typeof import('./src/components/FormattedDate.astro').default;
+	export const GenericHeader: typeof import('./src/components/GenericHeader.astro').default;
+	export const Navigation: typeof import('./src/components/Navigation.astro').default;
+	export const Generator: typeof import('./src/components/Generator.astro').default;
 }
 
 declare module 'studiocms:i18n' {
@@ -66,7 +66,7 @@ declare module 'studiocms:i18n' {
 }
 
 declare module 'studiocms:imageHandler/components' {
-	export const CustomImage: typeof import('./static/components/image/CustomImage.astro').default;
+	export const CustomImage: typeof import('./src/components/image/CustomImage.astro').default;
 }
 
 declare module 'studiocms:lib' {
@@ -113,22 +113,15 @@ declare module 'studiocms:plugin-helpers' {
 }
 
 declare module 'studiocms:component-proxy' {
-	export const createComponentProxy: typeof import(
-		'./src/runtime/AstroComponentProxy.js'
-	).createComponentProxy;
-	export const dedent: typeof import('./src/runtime/AstroComponentProxy.js').dedent;
-	export const transformHTML: typeof import('./src/runtime/AstroComponentProxy.js').transformHTML;
 	export const componentKeys: string[];
 }
 
 declare module 'studiocms:sdk' {
-	const mod: import('./src/sdk/StudioCMSSDK.js').StudioCMSSDK;
+	const mod: typeof import('./src/sdk/index.js').studioCMS_SDK;
 	export default mod;
 }
 
 declare module 'studiocms:sdk/types' {
-	export type STUDIOCMS_SDK = import('./src/sdk/types/index.js').STUDIOCMS_SDK;
-
 	export type AvailableLists = import('./src/sdk/types/index.js').AvailableLists;
 	export type CombinedRank = import('./src/sdk/types/index.js').CombinedRank;
 	export type DatabaseTables = import('./src/sdk/types/index.js').DatabaseTables;

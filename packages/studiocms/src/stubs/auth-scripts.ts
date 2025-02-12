@@ -23,7 +23,7 @@ authScripts.addModule('studiocms:auth/scripts/formListener', {
 	namedExports: [
 		{
 			name: 'formListener',
-			typeDef: `typeof import('${resolve('../auth/scripts/formListener.js')}').formListener`,
+			typeDef: `typeof import('${resolve('../scripts/formListener.js')}').formListener`,
 		},
 	],
 });

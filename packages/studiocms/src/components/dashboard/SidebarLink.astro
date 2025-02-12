@@ -1,0 +1,61 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { Icon } from 'studiocms:ui/components';
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+	/**
+	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
+	 */
+	icon: HeroIconName;
+	href: string;
+}
+
+const { icon, ...props } = Astro.props;
+
+const activeIcon = `${icon}-solid`;
+
+const compId = crypto.randomUUID();
+---
+<a id={compId} class="sidebar-link" {...props}>
+  <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
+  <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
+  <span class="sidebar-link-text">
+    <slot />
+  </span>
+</a>
+
+<script is:inline data-astro-rerun define:vars={{ compId, dashboardIndex: StudioCMSRoutes.mainLinks.dashboardIndex }}>
+  function setSidebarLinks() {
+    const link = document.getElementById(compId)
+
+    const notSelectedIcon = link.querySelector('#not-selected-icon')
+    const selectedIcon = link.querySelector('#selected-icon')
+
+    notSelectedIcon.style.display = 'block';
+    selectedIcon.style.display = 'none';
+    link.classList.remove('active');
+
+    const windowLocation = window.location.pathname;
+    const elemPath = new URL(link.href).pathname;
+
+    const webDashboardIndex = new URL(window.location.origin + dashboardIndex).pathname;
+
+    if (elemPath === windowLocation) {
+      notSelectedIcon.style.display = 'none';
+      selectedIcon.style.display = 'block';
+      link.classList.add('active');
+    }
+
+    if (windowLocation.includes(elemPath) && elemPath !== webDashboardIndex) {
+      notSelectedIcon.style.display = 'none';
+      selectedIcon.style.display = 'block';
+      link.classList.add('active');
+    }
+
+  }
+  document.addEventListener('astro:page-load', setSidebarLinks);
+  setSidebarLinks();
+</script>
+

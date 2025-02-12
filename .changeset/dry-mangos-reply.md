@@ -1,6 +1,5 @@
 ---
-"@studiocms/dashboard": patch
-"@studiocms/auth": patch
+"studiocms": patch
 ---
 
 Implement new Dashboard design and update API endpoints

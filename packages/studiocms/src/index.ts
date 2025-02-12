@@ -22,8 +22,8 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSError } from './errors.js';
 import { makeAPIRoute } from './lib/index.js';
-import { shared } from './renderer/shared.js';
-import robotsTXT from './robots/index.js';
+import { shared } from './lib/renderer/shared.js';
+import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
 import authLibDTS from './stubs/auth-lib.js';
 import authScriptsDTS from './stubs/auth-scripts.js';
@@ -53,7 +53,7 @@ import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { injectDashboardRoute } from './utils/injectRouteArray.js';
 import { integrationLogger } from './utils/integrationLogger.js';
-// import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
+import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
 
@@ -103,9 +103,10 @@ export default defineIntegration({
 		let imageComponentPath: string;
 
 		const routesDir = {
-			fts: (file: string) => resolve(`./dashboard/firstTimeSetupRoutes/${file}`),
-			route: (file: string) => resolve(`./dashboard/routes/${file}`),
-			api: (file: string) => resolve(`./dashboard/routes/studiocms_api/dashboard/${file}`),
+			fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
+			route: (file: string) => resolve(`./routes/dashboard/${file}`),
+			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
+			f0f: (file: string) => resolve(`./routes/${file}`),
 		};
 
 		// Return the Integration
@@ -436,7 +437,7 @@ export default defineIntegration({
 						integrationLogger(logInfo, 'Injecting 404 Route...');
 						injectRoute({
 							pattern: '404',
-							entrypoint: routesDir.route('404.astro'),
+							entrypoint: routesDir.f0f('404.astro'),
 							prerender: false,
 						});
 					}
@@ -595,57 +596,57 @@ export default defineIntegration({
 						routes: [
 							{
 								pattern: 'login',
-								entrypoint: resolve('./auth/routes/api/login.js'),
+								entrypoint: resolve('./routes/auth/api/login.js'),
 								enabled: usernameAndPasswordAPI,
 							},
 							{
 								pattern: 'logout',
-								entrypoint: resolve('./auth/routes/api/logout.js'),
+								entrypoint: resolve('./routes/auth/api/logout.js'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
-								entrypoint: resolve('./auth/routes/api/register.js'),
+								entrypoint: resolve('./routes/auth/api/register.js'),
 								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
 								pattern: 'github',
-								entrypoint: resolve('./auth/routes/api/github/index.js'),
+								entrypoint: resolve('./routes/auth/api/github/index.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'github/callback',
-								entrypoint: resolve('./auth/routes/api/github/callback.js'),
+								entrypoint: resolve('./routes/auth/api/github/callback.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'discord',
-								entrypoint: resolve('./auth/routes/api/discord/index.js'),
+								entrypoint: resolve('./routes/auth/api/discord/index.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'discord/callback',
-								entrypoint: resolve('./auth/routes/api/discord/callback.js'),
+								entrypoint: resolve('./routes/auth/api/discord/callback.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'google',
-								entrypoint: resolve('./auth/routes/api/google/index.js'),
+								entrypoint: resolve('./routes/auth/api/google/index.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'google/callback',
-								entrypoint: resolve('./auth/routes/api/google/callback.js'),
+								entrypoint: resolve('./routes/auth/api/google/callback.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'auth0',
-								entrypoint: resolve('./auth/routes/api/auth0/index.js'),
+								entrypoint: resolve('./routes/auth/api/auth0/index.js'),
 								enabled: auth0API,
 							},
 							{
 								pattern: 'auth0/callback',
-								entrypoint: resolve('./auth/routes/api/auth0/callback.js'),
+								entrypoint: resolve('./routes/auth/api/auth0/callback.js'),
 								enabled: auth0API,
 							},
 						],
@@ -658,17 +659,17 @@ export default defineIntegration({
 							routes: [
 								{
 									pattern: 'login/',
-									entrypoint: resolve('./auth/routes/login.astro'),
+									entrypoint: resolve('./routes/auth/login.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'logout/',
-									entrypoint: resolve('./auth/routes/logout.astro'),
+									entrypoint: resolve('./routes/auth/logout.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'signup/',
-									entrypoint: resolve('./auth/routes/signup.astro'),
+									entrypoint: resolve('./routes/auth/signup.astro'),
 									enabled: usernameAndPasswordAPI && allowUserRegistration,
 								},
 							],
@@ -678,7 +679,7 @@ export default defineIntegration({
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
-						// { integration: nodeNamespaceBuiltinsAstro() },
+						{ integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
 					];
 
@@ -800,27 +801,6 @@ export default defineIntegration({
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
-							// // Plugins Virtual Modules
-							// 'studiocms:plugins': `
-							// 	const plugins = ${JSON.stringify(safePluginList)};
-							// 	export default plugins;
-							// `,
-
-							// 'studiocms:config': `
-							// 	export const config = ${JSON.stringify(options)};
-							// 	export const dashboardConfig = ${JSON.stringify(options.dashboardConfig)};
-							// 	export const AuthConfig = ${JSON.stringify(options.dashboardConfig.AuthConfig)};
-							// 	export const developerConfig = ${JSON.stringify(options.dashboardConfig.developerConfig)};
-							// 	export const defaultFrontEndConfig = ${JSON.stringify(options.defaultFrontEndConfig)};
-							// 	export const sdk = ${JSON.stringify(options.sdk)};
-
-							// 	export default config;
-							// `,
-
-							// 'studiocms:version': `
-							// 	export default ${JSON.stringify(pkgVersion)};
-							// `,
-
 							// StudioCMS lib
 							'studiocms:lib': `
 								export * from '${resolve('./lib/head.js')}';
@@ -877,8 +857,8 @@ export default defineIntegration({
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
 							`,
 							'studiocms:renderer/current': `
-								export * from '${resolve('./renderer/contentRenderer.js')}';
-								import contentRenderer from '${resolve('./renderer/contentRenderer.js')}';
+								export * from '${resolve('./lib/renderer/contentRenderer.js')}';
+								import contentRenderer from '${resolve('./lib/renderer/contentRenderer.js')}';
 								export default contentRenderer;
 							`,
 							'studiocms:renderer/markdown-remark/css': `
@@ -893,22 +873,22 @@ export default defineIntegration({
 
 							// Auth Virtual Imports
 							'studiocms:auth/lib/encryption': `
-								export * from '${resolve('./auth/lib/encryption.js')}'
+								export * from '${resolve('./lib/auth/encryption.js')}'
 							`,
 							'studiocms:auth/lib/password': `
-								export * from '${resolve('./auth/lib/password.js')}'
+								export * from '${resolve('./lib/auth/password.js')}'
 							`,
 							'studiocms:auth/lib/rate-limit': `
-								export * from '${resolve('./auth/lib/rate-limit.js')}'
+								export * from '${resolve('./lib/auth/rate-limit.js')}'
 							`,
 							'studiocms:auth/lib/session': `
-								export * from '${resolve('./auth/lib/session.js')}'
+								export * from '${resolve('./lib/auth/session.js')}'
 							`,
 							'studiocms:auth/lib/types': `
-								export * from '${resolve('./auth/lib/types.js')}'
+								export * from '${resolve('./lib/auth/types.js')}'
 							`,
 							'studiocms:auth/lib/user': `
-								export * from '${resolve('./auth/lib/user.js')}'
+								export * from '${resolve('./lib/auth/user.js')}'
 							`,
 							'studiocms:auth/utils/authEnvCheck': `
 								export * from '${resolve('./utils/authEnvCheck.js')}'
@@ -920,7 +900,7 @@ export default defineIntegration({
 								export * from '${resolve('./utils/getLabelForPermissionLevel.js')}'
 							`,
 							'studiocms:auth/scripts/three': `
-								import '${resolve('./auth/scripts/three.js')}';
+								import '${resolve('./scripts/three.js')}';
 							`,
 						},
 					});

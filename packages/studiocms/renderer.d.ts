@@ -9,31 +9,17 @@ declare module 'studiocms:renderer/astroMarkdownConfig' {
 }
 
 declare module 'studiocms:renderer' {
-	export const StudioCMSRenderer: typeof import('./static/components/Renderer.astro').default;
+	export const StudioCMSRenderer: typeof import('./src/components/Renderer.astro').default;
 }
 
 declare module 'studiocms:renderer/current' {
-	const deModule: typeof import('./src/renderer/contentRenderer.js').default;
+	const deModule: typeof import('./src/lib/renderer/contentRenderer.js').default;
 	export default deModule;
-	export const contentRenderer: typeof import('./src/renderer/contentRenderer.js').contentRenderer;
+	export const contentRenderer: typeof import(
+		'./src/lib/renderer/contentRenderer.js'
+	).contentRenderer;
 }
 
 declare module 'studiocms:component-proxy' {
-	export const createComponentProxy: (
-		result: import('astro').SSRResult,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		_components?: Record<string, any>
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	) => Record<string, any>;
-	export const dedent: (str: string) => string;
-	export const transformHTML: (
-		html: string,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		components: Record<string, any>,
-		sanitizeOpts?: typeof import(
-			'./src/schemas/config/studiocms-markdown-remark.ts'
-		).StudioCMSSanitizeOptionsSchema._input
-	) => Promise<string>;
-
 	export const componentKeys: string[];
 }

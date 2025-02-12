@@ -1,0 +1,49 @@
+---
+import TreeRenderer from './TreeRenderer.astro';
+import { PageFolderTree } from './shared.js';
+
+interface Props {
+	isNewFolder?: boolean;
+	isNewPage?: boolean;
+}
+
+const { isNewFolder, isNewPage } = Astro.props;
+
+const testData = [
+	{
+		id: '1',
+		name: 'Page 1',
+		page: true,
+		pageData: null,
+		children: [],
+	},
+	{
+		id: '2',
+		name: 'Page 2',
+		page: true,
+		pageData: null,
+		children: [],
+	},
+	{
+		id: '3',
+		name: 'Test Folder',
+		page: false,
+		pageData: null,
+		children: [
+			{
+				id: '4',
+				name: 'Sub Folder',
+				page: false,
+				pageData: null,
+				children: [
+					{ id: '5', name: 'Page 3', page: true, children: [], pageData: null },
+					{ id: '6', name: 'Page 4', page: true, children: [], pageData: null },
+				],
+			},
+			{ id: '7', name: 'Page 5', page: true, children: [], pageData: null },
+		],
+	},
+];
+---
+
+<TreeRenderer data={PageFolderTree} {isNewFolder} {isNewPage} />

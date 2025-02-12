@@ -1,5 +1,4 @@
 ---
-"@studiocms/core": patch
 "studiocms": patch
 ---
 

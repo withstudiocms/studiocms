@@ -1,0 +1,103 @@
+---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { useTranslations } from 'studiocms:i18n';
+import pluginList from 'studiocms:plugins';
+import { Divider } from 'studiocms:ui/components';
+import SidebarLink from '../../SidebarLink.astro';
+import SidebarPluginLink from '../../SidebarPluginLink.astro';
+import { getSidebarLinks } from '../../sidebarConfig.js';
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
+
+const data = await getUserData(Astro);
+
+const isAdmin = await verifyUserPermissionLevel(data, 'admin');
+
+const isOwner = await verifyUserPermissionLevel(data, 'owner');
+
+const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
+
+const sidebar = getSidebarLinks(lang);
+
+Astro.response.headers.set('Cache-Control', 'max-age=604800');
+// 1. Set cookie if admin
+// 2. check on subsequent loads if cookie is there
+// 3. if yes, show static shit
+// 4. render server island
+---
+{isAdmin && (
+  <Divider background='background-step-1'>{t('category-2-header')}</Divider>
+  <div class="sidebar-link-group">
+    {
+      isOwner && sidebar.ownerLinks.map(({ href, icon, title}) => (
+        <SidebarLink {icon} {href}>{title}</SidebarLink>
+      ))
+    }
+    {
+      sidebar.adminLinks.map(({ href, icon, title }) => (
+        <SidebarLink {icon} {href}>{title}</SidebarLink>
+      ))
+    }
+  </div>
+  <Divider background='background-step-1'>{t('category-3-header')}</Divider>
+  <div class="sidebar-link-group">
+    { filteredPluginList.length > 0 
+      ? filteredPluginList.map(({ identifier, name }) => (
+        <SidebarPluginLink 
+          identifier={identifier}
+          name={name}
+        />
+      )) 
+      : ( 
+        <span class="empty-placeholder-span">
+          {t('category-3-empty-placeholder')}
+        </span>
+      )}
+  </div>
+)}
+
+<style>
+  .sidebar-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: .375rem;
+    width: 100%;
+  }
+
+  .sidebar-link-group.hidden {
+    display: none;
+  }
+
+  .empty-placeholder-span {
+    width: 100%;
+    text-align: center;
+    color: hsl(var(--text-muted));
+    font-size: .875em;
+  }
+
+  .user-dropdown-trigger-container {
+    width: calc(280px - 3rem);
+    cursor: pointer;
+    border: 1px solid hsl(var(--border));
+    padding: .5rem;
+    border-radius: .5rem;
+    transition: all .15s ease;
+  }
+
+  .user-dropdown-trigger-container:hover {
+    background-color: hsla(var(--border), .5);
+  }
+
+  .sidebar {
+    justify-content: space-between;
+  }
+
+  .sidebar-links-container {
+    gap: .75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
