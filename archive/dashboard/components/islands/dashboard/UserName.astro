@@ -1,6 +1,0 @@
----
-import { getUserData } from 'studiocms:auth/lib/user';
-
-const user = await getUserData(Astro);
----
-<Fragment set:text={user.user?.name} />
