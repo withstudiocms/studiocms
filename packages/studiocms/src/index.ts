@@ -385,7 +385,7 @@ export default defineIntegration({
 
 								injectRoute({
 									pattern: '/',
-									entrypoint: resolve('./routes/frontend/route.astro'),
+									entrypoint: resolve('./routes/frontend/index.astro'),
 									prerender: false,
 								});
 
