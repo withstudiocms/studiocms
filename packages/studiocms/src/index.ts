@@ -66,7 +66,7 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 );
 
 // Load Environment Variables
-const env = loadEnv('all', process.cwd(), '');
+const env = loadEnv('', process.cwd());
 
 // SDK Route Resolver
 const sdkRouteResolver = makeAPIRoute('sdk');
@@ -119,7 +119,7 @@ export default defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, defineModule, config, updateConfig, injectRoute, injectScript } = params;
+					const { logger, config, updateConfig, injectRoute, injectScript } = params;
 
 					logger.info('Checking configuration...');
 
