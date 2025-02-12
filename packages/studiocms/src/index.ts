@@ -115,7 +115,7 @@ export default defineIntegration({
 			hooks: {
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
 				'astro:db:setup': ({ extendDb }) => {
-					extendDb({ configEntrypoint: 'studiocms/db/config' });
+					extendDb({ configEntrypoint: resolve('./db/config.js') });
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
@@ -390,7 +390,7 @@ export default defineIntegration({
 								});
 
 								injectRoute({
-									pattern: '[...slug]',
+									pattern: '[slug]',
 									entrypoint: resolve('./routes/frontend/route.astro'),
 									prerender: false,
 								});

@@ -9,7 +9,7 @@ declare module 'studiocms:renderer/astroMarkdownConfig' {
 }
 
 declare module 'studiocms:renderer' {
-	export const StudioCMSRenderer: typeof import('./static/components/Renderer.d.ts').default;
+	export const StudioCMSRenderer: typeof import('./static/components/Renderer.astro').default;
 }
 
 declare module 'studiocms:renderer/current' {

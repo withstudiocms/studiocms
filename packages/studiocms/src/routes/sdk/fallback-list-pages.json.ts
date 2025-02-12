@@ -6,7 +6,7 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = async (): Promise<Response> => {
 	const pages = await studioCMS_SDK.GET.pages();
 
-	const lastUpdated = new Date().toISOString();
+	const lastUpdated = new Date().toUTCString();
 
 	return new Response(
 		JSON.stringify({ lastUpdated, pages: pages.map((pageItem) => pageItem.data) }, null, 2),

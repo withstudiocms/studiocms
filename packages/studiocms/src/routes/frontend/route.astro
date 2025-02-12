@@ -3,9 +3,7 @@ import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk/cache';
 import Layout from './components/Layout.astro';
 
-const { slug } = Astro.params;
-
-const page = await studioCMS_SDK.GET.page.bySlug(slug ?? 'index', 'studiocms');
+const page = await studioCMS_SDK.GET.page.bySlug(Astro.params.slug || 'index', 'studiocms');
 
 if (!page) {
 	return new Response(null, { status: 404 });
@@ -15,11 +13,7 @@ const {
 	data: { title, description, heroImage, defaultContent },
 } = page;
 
-if (!defaultContent) {
-	return new Response(null, { status: 404 });
-}
-
-const content = defaultContent.content || '';
+const content = defaultContent?.content || '';
 ---
 
 <Layout title={title} description={description} heroImage={heroImage}>

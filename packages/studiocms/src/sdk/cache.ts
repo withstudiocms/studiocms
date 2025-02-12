@@ -1,6 +1,6 @@
 import { and, asc, db, desc, eq } from 'astro:db';
 import { getSecret } from 'astro:env/server';
-import { sdk } from 'studiocms:config';
+import config from 'studiocms:config';
 import SDK from './StudioCMSSDK.js';
 import StudioCMSVirtualCache from './StudioCMSVirtualCache.js';
 import type {
@@ -12,7 +12,7 @@ import type {
 
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject, VersionCacheObject };
 
-const { cacheConfig } = sdk;
+const { cacheConfig } = config.sdk;
 
 const env = {
 	CMS_ENCRYPTION_KEY: getSecret('CMS_ENCRYPTION_KEY'),

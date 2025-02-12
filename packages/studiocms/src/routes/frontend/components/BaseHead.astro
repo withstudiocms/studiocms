@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { defaultFrontEndConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import {
 	type HeadConfig,
 	type HeadConfigSchema,
@@ -13,12 +13,12 @@ import type { z } from 'astro/zod';
 let htmlDefaultHead: HeadUserConfig = [];
 let favicon = '';
 
-if (defaultFrontEndConfig && typeof defaultFrontEndConfig === 'object') {
-	if (defaultFrontEndConfig.htmlDefaultHead) {
-		htmlDefaultHead.push(...defaultFrontEndConfig.htmlDefaultHead);
+if (config.defaultFrontEndConfig && typeof config.defaultFrontEndConfig === 'object') {
+	if (config.defaultFrontEndConfig.htmlDefaultHead) {
+		htmlDefaultHead.push(...config.defaultFrontEndConfig.htmlDefaultHead);
 	}
-	if (defaultFrontEndConfig.favicon) {
-		favicon = defaultFrontEndConfig.favicon;
+	if (config.defaultFrontEndConfig.favicon) {
+		favicon = config.defaultFrontEndConfig.favicon;
 	}
 }
 

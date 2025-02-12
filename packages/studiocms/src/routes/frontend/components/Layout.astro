@@ -1,6 +1,6 @@
 ---
 import { Navigation } from 'studiocms:components';
-import { defaultFrontEndConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import studioCMS_SDK from 'studiocms:sdk/cache';
 import BaseHead from './BaseHead.astro';
 import Footer from './Footer.astro';
@@ -14,9 +14,12 @@ const {
 
 let htmlDefaultLanguage = 'en';
 
-if (defaultFrontEndConfig) {
-	if (typeof defaultFrontEndConfig === 'object' && defaultFrontEndConfig.htmlDefaultLanguage) {
-		htmlDefaultLanguage = defaultFrontEndConfig.htmlDefaultLanguage;
+if (config.defaultFrontEndConfig) {
+	if (
+		typeof config.defaultFrontEndConfig === 'object' &&
+		config.defaultFrontEndConfig.htmlDefaultLanguage
+	) {
+		htmlDefaultLanguage = config.defaultFrontEndConfig.htmlDefaultLanguage;
 	}
 }
 
