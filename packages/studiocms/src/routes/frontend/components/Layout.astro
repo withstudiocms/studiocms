@@ -1,16 +1,15 @@
 ---
 import { Navigation } from 'studiocms:components';
 import config from 'studiocms:config';
-import studioCMS_SDK from 'studiocms:sdk/cache';
+import studioCMS_SDK from 'studiocms:sdk';
 import BaseHead from './BaseHead.astro';
 import Footer from './Footer.astro';
 
-const {
-	data: { title: SiteTitle, description: SiteDescription },
-} = (await studioCMS_SDK.GET.siteConfig()) || {
-	title: 'StudioCMS - Database Unavailable',
-	description: 'StudioCMS - Database Unavailable',
-};
+const { title: SiteTitle, description: SiteDescription } =
+	(await studioCMS_SDK.GET.database.config()) || {
+		title: 'StudioCMS - Database Unavailable',
+		description: 'StudioCMS - Database Unavailable',
+	};
 
 let htmlDefaultLanguage = 'en';
 
