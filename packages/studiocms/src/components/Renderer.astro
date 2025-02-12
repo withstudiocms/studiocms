@@ -11,4 +11,4 @@ console.log('STARTING RENDERER');
 // @ts-expect-error - `$$result` is a variable injected by the Astro compiler
 const renderedContent = await contentRenderer(content, $$result);
 ---
-<Fragment set:html={renderedContent} />
+<Fragment set:html={renderedContent}></Fragment>
