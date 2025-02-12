@@ -384,6 +384,12 @@ export default defineIntegration({
 								);
 
 								injectRoute({
+									pattern: '/',
+									entrypoint: resolve('./routes/frontend/route.astro'),
+									prerender: false,
+								});
+
+								injectRoute({
 									pattern: '[...slug]',
 									entrypoint: resolve('./routes/frontend/route.astro'),
 									prerender: false,
@@ -783,15 +789,15 @@ export default defineIntegration({
 						imports: {
 							// Core Virtual Components
 							'studiocms:components': `
-								export { default as Avatar } from 'studiocms/static/components/Avatar.astro';
+								export { default as Avatar } from '${resolve('../static/components/Avatar.astro')}';
 								export { default as FormattedDate } from '${
 									options.overrides.FormattedDateOverride
 										? astroConfigResolve(options.overrides.FormattedDateOverride)
-										: 'studiocms/static/components/FormattedDate.astro'
+										: resolve('../static/components/FormattedDate.astro')
 								}';
-								export { default as GenericHeader } from 'studiocms/static/components/GenericHeader.astro';
-								export { default as Navigation } from 'studiocms/static/components/Navigation.astro';
-								export { default as Generator } from 'studiocms/static/components/Generator.astro';
+								export { default as GenericHeader } from '${resolve('../static/components/GenericHeader.astro')}';
+								export { default as Navigation } from '${resolve('../static/components/Navigation.astro')}';
+								export { default as Generator } from '${resolve('../static/components/Generator.astro')}';
 							`,
 
 							// StudioCMS lib
@@ -821,8 +827,8 @@ export default defineIntegration({
 
 							// i18n Virtual Module
 							'studiocms:i18n': `
-								export * from 'studiocms/static/i18n/index.ts';
-								export { default as LanguageSelector } from 'studiocms/static/i18n/LanguageSelector.astro';
+								export * from '${resolve('../static/i18n/index.ts')}';
+								export { default as LanguageSelector } from '${resolve('../static/i18n/LanguageSelector.astro')}';
 							`,
 
 							// User Virtual Components
