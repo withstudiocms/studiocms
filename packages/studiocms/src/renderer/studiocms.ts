@@ -1,5 +1,5 @@
-import { createComponentProxy, transformHTML } from 'studiocms:component-proxy';
 import { createMarkdownProcessor } from '@studiocms/markdown-remark-processor';
+import { createComponentProxy, transformHTML } from '../runtime/AstroComponentProxy.js';
 // import { TransformToProcessor } from '../schemas/index.js';
 import { importComponentsKeys } from './runtime.js';
 import { shared } from './shared.js';
