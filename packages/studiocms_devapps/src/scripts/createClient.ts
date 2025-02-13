@@ -1,4 +1,5 @@
 import { createClient } from '@libsql/client/web';
+import { transformTursoResult } from '@outerbase/sdk-transform';
 
 // Define types for incoming messages
 interface ClientRequest {
@@ -6,32 +7,6 @@ interface ClientRequest {
 	id: number;
 	statement?: string;
 	statements?: string[];
-}
-
-interface ResultHeader {
-	name: string;
-	displayName: string;
-	originalType: string | null;
-	type: ColumnType;
-}
-
-interface Result {
-	rows: Record<string, unknown>[];
-	headers: ResultHeader[];
-	stat: {
-		rowsAffected: number;
-		rowsRead: number | null;
-		rowsWritten: number | null;
-		queryDurationMs: number | null;
-	};
-	lastInsertRowid?: number | undefined; // Explicitly include undefined
-}
-
-enum ColumnType {
-	TEXT = 1,
-	INTEGER = 2,
-	REAL = 3,
-	BLOB = 4,
 }
 
 // Get reference to the iframe
@@ -44,76 +19,6 @@ const client = createClient({
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	authToken: iframe.dataset.authtoken!,
 });
-
-// Function to transform raw SQL result
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function transformRawResult(raw: any): Result {
-	const headerSet = new Set<string>();
-
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const headers: ResultHeader[] = raw.columns.map((colName: any, colIdx: string | number) => {
-		const colType = raw.columnTypes[colIdx];
-		let renameColName = colName;
-
-		for (let i = 0; i < 20; i++) {
-			if (!headerSet.has(renameColName)) break;
-			renameColName = `__${colName}_${i}`;
-		}
-
-		headerSet.add(renameColName);
-
-		return {
-			name: renameColName,
-			displayName: colName,
-			originalType: colType,
-			type: convertSqliteType(colType),
-		};
-	});
-
-	const rows = raw.rows.map((r: unknown[]) =>
-		headers.reduce(
-			(a, b, idx) => {
-				a[b.name] = r[idx];
-				return a;
-			},
-			{} as Record<string, unknown>
-		)
-	);
-
-	return {
-		rows,
-		stat: {
-			rowsAffected: raw.rowsAffected,
-			rowsRead: null,
-			rowsWritten: null,
-			queryDurationMs: 0,
-		},
-		headers,
-		lastInsertRowid: raw.lastInsertRowid === undefined ? undefined : Number(raw.lastInsertRowid),
-	};
-}
-
-// Function to convert SQLite types to ColumnType enum
-function convertSqliteType(type: string | undefined): ColumnType {
-	if (type === undefined) return ColumnType.BLOB;
-	type = type.toUpperCase();
-
-	if (
-		type.includes('CHAR') ||
-		type.includes('TEXT') ||
-		type.includes('CLOB') ||
-		type.includes('STRING')
-	) {
-		return ColumnType.TEXT;
-	}
-
-	if (type.includes('INT')) return ColumnType.INTEGER;
-	if (type.includes('BLOB')) return ColumnType.BLOB;
-	if (type.includes('REAL') || type.includes('DOUBLE') || type.includes('FLOAT'))
-		return ColumnType.REAL;
-
-	return ColumnType.TEXT;
-}
 
 // Event listener to handle postMessage events
 window.addEventListener('message', async (e: MessageEvent<ClientRequest>) => {
@@ -130,7 +35,7 @@ window.addEventListener('message', async (e: MessageEvent<ClientRequest>) => {
 					{
 						type,
 						id,
-						data: transformRawResult(result),
+						data: transformTursoResult(result),
 					},
 					'*'
 				);
@@ -152,7 +57,7 @@ window.addEventListener('message', async (e: MessageEvent<ClientRequest>) => {
 					{
 						type,
 						id,
-						data: result.map(transformRawResult),
+						data: result.map(transformTursoResult),
 					},
 					'*'
 				);

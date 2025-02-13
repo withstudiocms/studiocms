@@ -1,5 +1,6 @@
 ---
 import { dbEnv } from 'virtual:studiocms-devapps/config';
+import { getIFrameSrc } from '../utils/libsql-url.js';
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -7,13 +8,12 @@ import { dbEnv } from 'virtual:studiocms-devapps/config';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>libSQL Database Viewer</title>
-  <link rel="icon" type="image/x-icon" href="https://libsqlstudio.com/icons/outerbase.ico">
 </head>
 <body style="background: black;">
   <iframe 
     id="sqlIframe" 
     title="libSQL Database Viewer"
-    src="https://libsqlstudio.com/embed/sqlite?name=libSQLDatabase&theme=dark" 
+    src={getIFrameSrc(dbEnv.remoteUrl)}
     data-url={dbEnv.remoteUrl} 
     data-authtoken={dbEnv.token}
     style="height: 94vh; width: 98vw; border: 0;"

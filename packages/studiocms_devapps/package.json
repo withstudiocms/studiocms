@@ -47,14 +47,15 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-    "@libsql/client": "catalog:studiocms-devapps",
-    "cheerio": "catalog:studiocms-devapps",
-    "@types/cheerio": "catalog:studiocms-devapps",
-    "turndown": "catalog:studiocms-devapps",
-    "@types/turndown": "catalog:studiocms-devapps",
-    "html-entities": "catalog:studiocms-devapps"
+    "@libsql/client": "^0.14.0",
+    "cheerio": "^1.0.0",
+    "turndown": "^7.2.0",
+    "html-entities": "^2.5.2",
+    "@outerbase/sdk-transform": "^1.0.4"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/turndown": "^5.0.5",
     "typescript": "catalog:"
   },
   "peerDependencies": {
