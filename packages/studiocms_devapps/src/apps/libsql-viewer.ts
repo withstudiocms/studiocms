@@ -1,10 +1,8 @@
 import { dbEnv } from 'virtual:studiocms-devapps/config';
-import { libSQLEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { createClient } from '@libsql/client/web';
 import { transformTursoResult } from '@outerbase/sdk-transform';
 import { defineToolbarApp } from 'astro/toolbar';
 import { closeOnOutsideClick } from '../utils/app-utils.js';
-import { getIFrameSrc } from '../utils/libsql-url.js';
 
 // Define types for incoming messages
 interface ClientRequest {
@@ -14,6 +12,16 @@ interface ClientRequest {
 	statements?: string[];
 }
 
+const sqlLiteUrl = 'https://studio.outerbase.com/embed/sqlite?theme=dark';
+const tursoURL = 'https://studio.outerbase.com/embed/turso?theme=dark';
+
+export function getIFrameSrc(dbUrl: string) {
+	if (dbUrl.includes('turso.io')) {
+		return tursoURL;
+	}
+	return sqlLiteUrl;
+}
+
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		const appWindow = document.createElement('astro-dev-toolbar-window');
@@ -21,22 +29,6 @@ export default defineToolbarApp({
 		appWindow.style.height = '95%';
 
 		closeOnOutsideClick(eventTarget);
-
-		const link = document.createElement('a');
-		link.href = libSQLEndpoint;
-		link.target = '_blank';
-		link.innerText = 'Open as page';
-		Object.assign(link.style, {
-			display: 'inline-block',
-			marginRight: 'auto',
-			color: 'rgba(224, 204, 250, 1)',
-			marginBottom: '8px',
-			textDecoration: 'none',
-			border: '1px solid rgba(224, 204, 250, 1)',
-			padding: '4px 8px',
-			borderRadius: '4px',
-		} satisfies Partial<typeof link.style>);
-		appWindow.appendChild(link);
 
 		const viewerIframe = document.createElement('iframe');
 		viewerIframe.src = getIFrameSrc(dbEnv.remoteUrl);
