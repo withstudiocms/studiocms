@@ -1,6 +1,5 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
-// import sentry from '@sentry/astro';
 // import webVitals from '@astrojs/web-vitals';
 // import studioCMSBlog from '@studiocms/blog';
 import devApps from '@studiocms/devapps';
@@ -20,15 +19,6 @@ export default defineConfig({
 		db(),
 		studioCMS(),
 		devApps(),
-		// sentry({
-		// 	dsn: 'https://71c3c874d5d8ad20486529628ac13aae@sentry.studiocms.dev/4',
-		// 	replaysSessionSampleRate: 1.0,
-		// 	replaysOnErrorSampleRate: 1.0,
-		// 	sourceMapsUploadOptions: {
-		// 		project: 'node-playground',
-		// 		authToken: process.env.SENTRY_AUTH_TOKEN,
-		// 	},
-		// }),
 		// webVitals(),
 		// studioCMSBlog({
 		// 	config: {
