@@ -1,5 +1,5 @@
 ---
-"@studiocms/core": patch
+"studiocms": patch
 ---
 
 Translation Updated (PR: #391)

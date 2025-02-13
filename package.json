@@ -11,6 +11,7 @@
     "docs:dev": "pnpm build:studiocms && pnpm --filter docs dev",
     "playground:dev": "pnpm --filter node-playground dev",
     "playground:push": "pnpm --filter node-playground db:push",
+    "playground:preview": "pnpm --filter node-playground preview",
 
     "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
     "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* -r -parallel dev",

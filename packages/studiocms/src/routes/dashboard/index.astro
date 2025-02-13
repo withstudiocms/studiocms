@@ -1,0 +1,29 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+// import studioCMS_SDK from 'studiocms:sdk';
+import DashboardPageHeader from '../../components/dashboard/DashboardPageHeader.astro';
+import DashboardGrid from '../../components/dashboard/islands/dashboard/DashboardGrid.astro';
+import Layout from '../../layouts/dashboard/Layout.astro';
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:index');
+
+// const test = studioCMS_SDK.diffTracking.test();
+---
+
+<Layout 
+  title={t('title')}
+  requiredPermission='editor'
+  {lang}
+  >
+
+  <div slot="header">
+    <DashboardPageHeader />
+    <span>{t('sub-header')}</span>
+  </div>
+
+  <DashboardGrid />
+
+  <!-- <div style="margin: 0 auto; width: 100%; max-width: 1000px;" set:html={test}></div> -->
+
+</Layout>

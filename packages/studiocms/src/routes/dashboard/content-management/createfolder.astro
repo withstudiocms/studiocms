@@ -1,0 +1,56 @@
+---
+import CreateFolder from '../../../components/dashboard/islands/content-mgmt/CreateFolder.astro';
+import InnerSidebarElement from '../../../components/dashboard/islands/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../../components/dashboard/islands/content-mgmt/PageHeader.astro';
+import Layout from '../../../layouts/dashboard/Layout.astro';
+
+const lang = 'en-us';
+---
+
+<Layout 
+  title="Content Management"
+  requiredPermission='editor'
+  sidebar='double'
+  {lang}
+  >
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement isNewFolder />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader createFolder title="Create new Folder"/>
+  </div>
+
+  <CreateFolder />
+
+</Layout>
+
+<style>
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: hsl(var(--text-muted));
+    }
+  }
+</style>

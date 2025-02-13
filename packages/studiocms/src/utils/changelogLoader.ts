@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import fs from 'node:fs';
 import type { List } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toString as ToString } from 'mdast-util-to-string';
@@ -19,7 +19,7 @@ export const semverCategories = ['major', 'minor', 'patch'] as const;
 export type SemverCategory = (typeof semverCategories)[number];
 
 export function loadChangelog(path: string): Changelog {
-	let markdown = readFileSync(path, 'utf8');
+	let markdown = fs.readFileSync(path, 'utf8');
 
 	// Convert GitHub usernames in "Thanks ..." sentences to links
 	markdown = markdown.replace(

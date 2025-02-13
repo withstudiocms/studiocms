@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import config from 'studiocms:config';
+import {
+	type HeadConfig,
+	type HeadConfigSchema,
+	type HeadUserConfig,
+	createHead,
+	headDefaults,
+} from 'studiocms:lib';
+import type { z } from 'astro/zod';
+
+let htmlDefaultHead: HeadUserConfig = [];
+let favicon = '';
+
+if (config.defaultFrontEndConfig && typeof config.defaultFrontEndConfig === 'object') {
+	if (config.defaultFrontEndConfig.htmlDefaultHead) {
+		htmlDefaultHead.push(...config.defaultFrontEndConfig.htmlDefaultHead);
+	}
+	if (config.defaultFrontEndConfig.favicon) {
+		favicon = config.defaultFrontEndConfig.favicon;
+	}
+}
+
+interface Props {
+	title: string;
+	description: string;
+	lang?: string | undefined;
+	image?: string | undefined;
+}
+
+const canonicalURL = Astro.url;
+
+const {
+	title,
+	description,
+	lang = 'en',
+	image = 'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+} = Astro.props;
+
+const makeHeader = headDefaults(title, description, lang, Astro, favicon, image, canonicalURL);
+
+const StudioCMSFrontEndHeads: z.input<ReturnType<typeof HeadConfigSchema>> = [
+	// Fonts
+	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
+	{
+		tag: 'link',
+		attrs: {
+			href: 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap',
+			rel: 'stylesheet',
+		},
+	},
+];
+
+makeHeader.push(...StudioCMSFrontEndHeads);
+
+// TODO: Setup Sitemap integration
+// Link to sitemap, but only when `site` is set.
+// if (Astro.site) {
+// 	makeHeader.push({
+// 		tag: 'link',
+// 		attrs: {
+// 			rel: 'sitemap',
+// 			href: fileWithBase('/sitemap-index.xml'),
+// 		},
+// 	});
+// }
+
+const head = createHead(makeHeader, htmlDefaultHead as HeadConfig);
+---
+
+{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}

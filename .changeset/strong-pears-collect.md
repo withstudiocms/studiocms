@@ -1,7 +1,5 @@
 ---
 "studiocms": patch
-"@studiocms/core": patch
-"@studiocms/renderers": patch
 ---
 
 [Refactor]: Update main config schema for renderers.

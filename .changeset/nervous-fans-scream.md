@@ -1,5 +1,5 @@
 ---
-"@studiocms/renderers": patch
+"studiocms": patch
 ---
 
 New Renderer component

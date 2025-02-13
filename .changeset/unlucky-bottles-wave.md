@@ -1,6 +1,4 @@
 ---
-"@studiocms/renderers": patch
-"@studiocms/core": patch
 "studiocms": patch
 ---
 

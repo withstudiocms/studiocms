@@ -1,0 +1,68 @@
+---
+import PageHeader from '../../../components/dashboard/PageHeader.astro';
+import InnerSidebarElement from '../../../components/dashboard/islands/user-mgmt/InnerSidebarElement.astro';
+import Layout from '../../../layouts/dashboard/Layout.astro';
+
+const lang = 'en-us';
+---
+<Layout 
+  title="User Management"
+  requiredPermission='admin'
+  sidebar='double'
+  {lang}
+  >
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-user-links-container">
+      <InnerSidebarElement />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader title="User Management" />
+  </div>
+
+  <div id="placeholder-info" class="placeholder-info">
+    <p>Select a user get started!</p>
+  </div>
+
+</Layout>
+
+<style>
+
+  .sidebar-user-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+  }
+
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: hsl(var(--background-base));
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: hsl(var(--text-muted));
+    }
+  }
+</style>

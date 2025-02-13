@@ -1,0 +1,108 @@
+---
+import { dashboardConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
+import Footer from './Footer.astro';
+import SidebarLink from './SidebarLink.astro';
+import StudioCMSLogo from './StudioCMSLogo.astro';
+import Admin from './islands/sidebar/Admin.astro';
+import Editor from './islands/sidebar/Editor.astro';
+import UserAccount from './islands/sidebar/UserAccount.astro';
+import VersionCheck from './islands/sidebar/VersionCheck.astro';
+import { getSidebarLinks } from './sidebarConfig.js';
+
+const { versionCheck } = dashboardConfig;
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
+const sidebar = getSidebarLinks(lang);
+---
+
+<div class="sidebar-links-container">
+  <div class="sidebar-header">
+    <StudioCMSLogo class={'sidebar-logo'} />
+    <div class="sidebar-header-text">
+      <span class="sidebar-title">StudioCMS</span>
+      <span class="sidebar-subtitle">
+        <Group>
+        { versionCheck && <VersionCheck /> }
+        <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
+          <div id="dark-content">
+            <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
+          </div>
+          <div id="light-content">
+            <Icon name='sun-16-solid' width={16} height={16} slot="light" />
+          </div>
+          <div id="fallback-content">
+            <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
+          </div>
+        </Button>
+      </Group>
+      </span>
+    </div>
+  </div>
+  
+  <Divider background='background-step-1'>{t("category-1-header")}</Divider>
+  
+  <div class="sidebar-link-group">
+    {
+      sidebar.baseLinks.map(({ href, icon, title }) => (
+        <SidebarLink {icon} {href}>{title}</SidebarLink>
+      ))
+    }
+  
+    <Editor />
+  
+  </div>
+  
+  <Admin />
+
+</div>  
+
+<div>
+  <Dropdown 
+    transition:persist
+    transition:persist-props
+    id='sidebar-user-dropdown'
+    options={[
+      { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
+      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: StudioCMSRoutes.mainLinks.baseSiteURL },
+      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: StudioCMSRoutes.authLinks.logoutURL },
+    ]}
+    offset={8}
+    >
+
+    <div class="user-dropdown-trigger-container">
+      <UserAccount />
+    </div>
+    
+  </Dropdown>
+
+  <Footer />
+</div>
+
+<script>
+  import { DropdownHelper } from "studiocms:ui/components";
+  import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
+  import { navigate } from 'astro:transitions/client';
+
+  function setup() {
+    const userDropdown = new DropdownHelper('sidebar-user-dropdown', true);
+
+    userDropdown.registerClickCallback((value) => {
+      navigate(value)
+    });
+
+    const themeToggle = document.getElementById('studiocms-theme-toggle');
+    const themeHelper = new ThemeHelper();
+    
+    themeHelper.registerToggle(themeToggle);
+
+    themeHelper.onThemeChange((newTheme) => {
+      localStorage.setItem('studiocms-theme-preference', newTheme);
+    });
+  }
+  
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>

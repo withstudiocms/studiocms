@@ -1,0 +1,103 @@
+---
+import { languageSelectorOptions, switchLanguage } from './index.js';
+
+const switcher = switchLanguage(Astro);
+
+// TODO: Update the language selector's styles to match StudioCMS's new design
+---
+
+<button
+    id="language-selector"
+    class="language-selector mr-2"
+    >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-[80%]" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 5h7M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c0 2.144 2.952 3.908 6.7 4m.3 7l4-9l4 9m-.9-2h-6.2"/></g></svg>
+</button>
+
+<menu id="language-sector-menu" type="context" class="bg-neutral rounded-md p-2">
+    {
+        //Language Buttons Auto-Generated
+        languageSelectorOptions.map(({ key, value }) => (
+            <a class="btn btn-primary" href={switcher(key)}>{value}</a>
+        ))
+    }
+    <div class="flex flex-row-reverse">
+        <button 
+            id="language-sector-menu-cancel" 
+            class="btn btn-sm btn-circle btn-outline text-neutral-content" 
+            type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+</menu>
+
+<style>
+.language-selector {
+        background-color: oklch(var(--b2));
+        border-radius: 50%;
+        border: 0.125rem solid;
+        border-color: oklch(var(--s));
+        box-shadow: 0 0 0.25rem 0.015rem rgba(0, 0, 0, 0.694);
+        width: 2.5rem;
+        height: 2.5rem;
+        cursor: pointer;
+        display: none;
+        opacity: 0;
+        z-index: 99998;
+        transition: opacity 1s ease;
+    }
+    #language-sector-menu {
+        position: absolute;
+        display: none;
+        flex-direction: column;
+        gap: 0.5rem;
+        left: -4rem;
+        top: 3rem;
+        width: max-content;
+        z-index: 99999;
+    }
+
+    #language-sector-menu-cancel {
+        border-radius: 50%;
+    }
+</style>
+
+<script>
+    // Get the Language Selector elements
+    const LanguageSelector = document.getElementById('language-selector') as HTMLButtonElement;
+    const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel') as HTMLButtonElement;
+    const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
+
+    // Show the Language Selector on page load
+    setTimeout(() => {
+        LanguageSelector.style.display = 'block';
+            setTimeout(() => {
+                LanguageSelector.style.opacity = "1";
+            }, 250);
+    }, 200);
+
+    // Toggle the Language Selector
+    function toggleLanguageSelector(element: HTMLMenuElement) {
+        if (
+            !element.style.display 
+            || element.style.display === 'none'
+        ) {
+            element.style.display = 'flex';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+
+    // Language Selector Event Listeners
+    LanguageSelector.addEventListener('click', () => 
+        toggleLanguageSelector(LanguageSectorMenu)
+    );
+    LanguageSelector.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleLanguageSelector(LanguageSectorMenu)
+    });
+    LanguageSectorMenuCancel.addEventListener('click', () => 
+        toggleLanguageSelector(LanguageSectorMenu)
+    );
+</script>

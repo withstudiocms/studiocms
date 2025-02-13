@@ -1,8 +1,8 @@
 import path from 'node:path';
 import { db, eq } from 'astro:db';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { CMSSiteConfigId } from '@studiocms/core/consts';
-import { tsSiteConfig } from '@studiocms/core/sdk-utils/tables';
+import { CMSSiteConfigId } from 'studiocms/consts';
+import { tsSiteConfig } from 'studiocms/sdk/tables';
 import type { SiteSettings } from '../../schema/wp-api.js';
 import { apiEndpoint, downloadPostImage } from './utils.js';
 

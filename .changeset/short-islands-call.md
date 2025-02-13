@@ -1,6 +1,4 @@
 ---
-"@studiocms/imagehandler": patch
-"@studiocms/core": patch
 "studiocms": patch
 ---
 

@@ -1,6 +1,4 @@
 ---
-"@studiocms/dashboard": patch
-"@studiocms/core": patch
 "studiocms": patch
 ---
 

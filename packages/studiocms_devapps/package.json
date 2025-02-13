@@ -26,7 +26,8 @@
   ],
   "homepage": "https://studiocms.dev",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "sideEffects": false,
   "files": [
@@ -45,7 +46,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/core": "workspace:*",
     "astro-integration-kit": "catalog:",
     "@libsql/client": "catalog:studiocms-devapps",
     "cheerio": "catalog:studiocms-devapps",
@@ -54,12 +54,18 @@
     "@types/turndown": "catalog:studiocms-devapps",
     "html-entities": "catalog:studiocms-devapps"
   },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
   "peerDependencies": {
+    "studiocms": "workspace:*",
     "@astrojs/db": "catalog:min",
     "astro": "catalog:min",
     "vite": "catalog:min"
   },
-  "devDependencies": {
-    "typescript": "catalog:"
+  "peerDependenciesMeta": {
+    "studiocms": {
+      "optional": true
+    }
   }
 }

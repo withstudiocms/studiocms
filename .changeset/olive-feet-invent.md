@@ -1,6 +1,5 @@
 ---
-"@studiocms/renderers": patch
-"@studiocms/core": patch
+"studiocms": patch
 ---
 
 [Refactor]: Update virtual module generation

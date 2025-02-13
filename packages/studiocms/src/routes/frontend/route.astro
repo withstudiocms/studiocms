@@ -1,0 +1,24 @@
+---
+import { StudioCMSRenderer } from 'studiocms:renderer';
+import studioCMS_SDK from '../../sdk/index.js';
+import Layout from './components/Layout.astro';
+
+const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(
+	Astro.params.slug || 'index',
+	'studiocms'
+);
+
+if (!page) {
+	return new Response(null, { status: 404 });
+}
+
+const { title, description, heroImage, defaultContent } = page;
+
+const content = defaultContent?.content || '';
+---
+
+<Layout title={title} description={description} heroImage={heroImage}>
+	<main>
+		<StudioCMSRenderer content={content} />
+	</main>
+</Layout>

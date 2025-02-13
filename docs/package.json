@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "studiocms": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
     "@studiocms/ui": "catalog:",

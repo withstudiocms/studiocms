@@ -1,0 +1,123 @@
+---
+import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
+import plugins from 'studiocms:plugins';
+import Avatar from './Avatar.astro';
+import './navigation.css';
+import studioCMS_SDK from 'studiocms:sdk';
+
+type Props = {
+	topLevelLinkCount?: number;
+	hideAvatar?: boolean;
+};
+
+const { hideAvatar, topLevelLinkCount = 3 } = Astro.props;
+
+const config = await studioCMS_SDK.GET.database.config();
+const pageList = await studioCMS_SDK.GET.database.pages();
+
+const { title } = config || { title: 'StudioCMS' };
+const {
+	mainLinks: { baseSiteURL },
+} = StudioCMSRoutes;
+
+type LinkProps = {
+	text: string;
+	href: string;
+};
+
+const links: LinkProps[] = [];
+
+const navPagesList = pageList
+	.filter((page) => page.showOnNav === true && page.package === 'studiocms')
+	.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
+
+const indexPage = navPagesList.find((page) => page.slug === 'index');
+
+if (indexPage) {
+	links.push({
+		text: indexPage.title || 'Home',
+		href: import.meta.env.BASE_URL,
+	});
+}
+
+const restOfPages = navPagesList.filter((page) => page.slug !== 'index');
+
+for (const page of restOfPages) {
+	links.push({
+		text: page.title,
+		href: pathWithBase(page.slug),
+	});
+}
+
+const pluginsLinks = plugins.map(({ frontendNavigationLinks }) => {
+	if (frontendNavigationLinks) {
+		return frontendNavigationLinks;
+	}
+	return [];
+});
+
+for (const pluginLinks of pluginsLinks) {
+	for (const link of pluginLinks) {
+		links.push({
+			text: link.label,
+			href: pathWithBase(link.href),
+		});
+	}
+}
+---
+
+<!-- If no dropdown items -->
+{ ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.map(({ text, href }) => (
+                <a class="links" {href}>{text}</a>
+            )) 
+        }
+
+        { !hideAvatar && <div class="avatar"><Avatar /></div> }
+    </div> 
+) }
+
+<!-- If dropdown items -->
+{ links.length > topLevelLinkCount && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.slice(0, topLevelLinkCount).map(({ text, href }) => (
+                    <a class="links" {href}>{text}</a>
+            ))
+        }
+            <div class="dropdown">
+                <button>More ▼</button>
+                <div class="dropdown-content">
+                    { links.slice(topLevelLinkCount).map(({ text, href }) => (
+                        <a {href}>{text}</a>
+                    )) }
+                </div>
+            </div>
+        { !hideAvatar && <div class="avatar"><Avatar /></div> }
+    </div>
+) }

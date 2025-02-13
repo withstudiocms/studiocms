@@ -1,5 +1,5 @@
 ---
-"@studiocms/dashboard": patch
+"studiocms": patch
 ---
 
 Added Author and Contributor tracking
