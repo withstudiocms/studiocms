@@ -1,9 +1,8 @@
 ---
-import { PostHeader } from '@studiocms:blog/components';
-import { BlogLayout } from '@studiocms:blog/layouts';
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk';
-import { name } from '../../../package.json';
+import PostHeader from '../components/PostHeader.astro';
+import BlogLayout from '../layouts/Layout.astro';
 
 // Get the slug from the URL
 const { slug } = Astro.params;
@@ -15,7 +14,7 @@ if (!slug) {
 
 // Fetch the blog post content
 
-const post = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, name);
+const post = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, '@studiocms/blog');
 
 // If no content is found, redirect to 404
 if (!post) {
@@ -39,9 +38,3 @@ const content = defaultContent.content || '';
         </article>
     </main>
 </BlogLayout>
-
-<style>
-	main {
-		width: 960px;
-	}
-</style>

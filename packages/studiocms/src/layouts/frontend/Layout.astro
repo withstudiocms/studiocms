@@ -1,9 +1,9 @@
 ---
 import { defaultFrontEndConfig } from 'studiocms:config';
-import Navigation from '../../../components/Navigation.astro';
-import studioCMS_SDK from '../../../sdk/index.js';
-import BaseHead from './BaseHead.astro';
-import Footer from './Footer.astro';
+import Navigation from '../../components/Navigation.astro';
+import BaseHead from '../../components/frontend/BaseHead.astro';
+import Footer from '../../components/frontend/Footer.astro';
+import studioCMS_SDK from '../../sdk/index.js';
 
 const { title: SiteTitle, description: SiteDescription } =
 	(await studioCMS_SDK.GET.database.config()) || {

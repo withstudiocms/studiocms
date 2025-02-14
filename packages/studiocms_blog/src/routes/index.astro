@@ -1,0 +1,30 @@
+---
+import blogConfig from 'studiocms:blog/config';
+import studioCMS_SDK from 'studiocms:sdk';
+import PageList from '../components/PageList.astro';
+import RSSIcon from '../components/RSSIcon.astro';
+import BlogLayout from '../layouts/Layout.astro';
+
+const config = (await studioCMS_SDK.GET.database.config()) || {
+	description: 'StudioCMS - Database Unavailable',
+};
+
+// Set the title and description
+const { description: configDescription } = config;
+
+const title: string = blogConfig.title;
+const description: string = configDescription || 'Blog Index';
+const showRSSFeed: boolean = blogConfig.enableRSS;
+
+// Get all pages
+const blogPageList = await studioCMS_SDK.GET.packagePages('@studiocms/blog');
+
+// Get the RSS feed URL
+const rssPath = '/rss.xml';
+---
+<BlogLayout {title} description={description} >
+    <main>
+        <h1>{title} {showRSSFeed && rssPath && <a href={rssPath}><RSSIcon /></a>}</h1>
+        <PageList {blogPageList} />
+    </main>
+</BlogLayout>

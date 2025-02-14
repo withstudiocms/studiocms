@@ -1,6 +1,11 @@
 ---
-import config from '@studiocms/blog:config';
-import { Layout as FrontLayout } from '@studiocms/frontend/components';
+import '../styles/base.css';
+import studioCMS_SDK from 'studiocms:sdk';
+import FrontLayout from 'studiocms/layouts/frontend/Layout.astro';
+
+const config = (await studioCMS_SDK.GET.database.config()) || {
+	description: 'StudioCMS - Database Unavailable',
+};
 
 interface Props {
 	title: string;

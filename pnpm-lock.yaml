@@ -42,9 +42,6 @@ catalogs:
     astro-integration-kit:
       specifier: ^0.18
       version: 0.18.0
-    astro-theme-provider:
-      specifier: ^0.7.0
-      version: 0.7.0
     sharp:
       specifier: ^0.33.5
       version: 0.33.5
@@ -574,9 +571,9 @@ importers:
       astro:
         specifier: catalog:min
         version: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
-      astro-theme-provider:
+      astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.7.0(@astrojs/db@0.14.6)(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1))
+        version: 0.18.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1))
       studiocms:
         specifier: workspace:*
         version: link:../studiocms
@@ -2450,25 +2447,6 @@ packages:
     peerDependencies:
       astro: ^4.12.0 || ^5.0.0
 
-  astro-pages@0.3.1:
-    resolution: {integrity: sha512-gDp2+JRhTzbNDjeTAP3rgG4i85eLO2z2fuhXJcFxdlkd6A5bpoLDNv1OPZP6K+Sd8sZvGK9wF8hL2icWTZdGqQ==}
-    peerDependencies:
-      astro: '>=3'
-
-  astro-public@0.1.1:
-    resolution: {integrity: sha512-uYJSqzd+zgfjxxUFhtU/erEWeeUuMxJ6NvKJvGCEKiT/AqbIkbBsuVrqX545/mOz+7uOFVSfZQ6jBuEvhssrCQ==}
-    peerDependencies:
-      astro: ^4.4.0||^5
-
-  astro-theme-provider@0.7.0:
-    resolution: {integrity: sha512-4kcchqzB/85NVr0ut+Dpgx7GwI+M27aYtjd1T3aXLk4vq71IX7kypRqUcuWLiLosI6yoymiFsNN9nQBeUhaXpw==}
-    peerDependencies:
-      '@astrojs/db': '>=0.8.0'
-      astro: '>=3'
-    peerDependenciesMeta:
-      '@astrojs/db':
-        optional: true
-
   astro-transition-event-polyfill@1.1.0:
     resolution: {integrity: sha512-DhR5MAcNl6zsTu5bU60vAe+nBZLTW61zNFUU6DX1gNSiFDQbQiRC7ft322kAMRDRir7MJIQ5/hCMcEWx3jDNWA==}
     peerDependencies:
@@ -2561,10 +2539,6 @@ packages:
 
   call-me-maybe@1.0.2:
     resolution: {integrity: sha512-HpX65o1Hnr9HH25ojC1YGs7HCQLq0GCOibSaWER0eNpgJ/Z1MZv2mTc7+xh6WOPxbRVcmgbv4hGU+uSQ/2xFZQ==}
-
-  callsites@4.2.0:
-    resolution: {integrity: sha512-kfzR4zzQtAE9PC7CzZsjl3aBNbXWuXiSeOCdLcPpBfGW8YuCqQHcRPFDbr/BPVmd3EEPVpuFzLyuT/cUhPr4OQ==}
-    engines: {node: '>=12.20'}
 
   camelcase@8.0.0:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
@@ -7791,15 +7765,15 @@ snapshots:
       pathe: 1.1.2
       recast: 0.23.9
 
-  astro-integration-kit@0.17.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)):
-    dependencies:
-      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
-      pathe: 1.1.2
-      recast: 0.23.9
-
   astro-integration-kit@0.18.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
     dependencies:
       astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      pathe: 1.1.2
+      recast: 0.23.9
+
+  astro-integration-kit@0.18.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)):
+    dependencies:
+      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
       pathe: 1.1.2
       recast: 0.23.9
 
@@ -7808,26 +7782,6 @@ snapshots:
       astro: 5.2.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
       pathe: 1.1.2
       recast: 0.23.9
-
-  astro-pages@0.3.1(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)):
-    dependencies:
-      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
-      fast-glob: 3.3.3
-
-  astro-public@0.1.1(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)):
-    dependencies:
-      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
-
-  astro-theme-provider@0.7.0(@astrojs/db@0.14.6)(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)):
-    dependencies:
-      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
-      astro-integration-kit: 0.17.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1))
-      astro-pages: 0.3.1(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1))
-      astro-public: 0.1.1(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1))
-      callsites: 4.2.0
-      fast-glob: 3.3.3
-    optionalDependencies:
-      '@astrojs/db': 0.14.6(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.8)(react@19.0.0)
 
   astro-transition-event-polyfill@1.1.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
     dependencies:
@@ -8406,8 +8360,6 @@ snapshots:
       keyv: 5.2.2
 
   call-me-maybe@1.0.2: {}
-
-  callsites@4.2.0: {}
 
   camelcase@8.0.0: {}
 
