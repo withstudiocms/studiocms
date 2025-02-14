@@ -1,7 +1,6 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
 // import webVitals from '@astrojs/web-vitals';
-// import studioCMSBlog from '@studiocms/blog';
 import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
@@ -20,11 +19,5 @@ export default defineConfig({
 		studioCMS(),
 		devApps(),
 		// webVitals(),
-		// studioCMSBlog({
-		// 	config: {
-		// 		title: 'StudioCMS Test Blog',
-		// 		description: 'A simple blog built with Astro and StudioCMS',
-		// 	},
-		// }),
 	],
 });

@@ -1,12 +1,10 @@
-import config from '@studiocms/blog:config';
-import { pages } from '@studiocms/blog:context';
+import blogConfig from 'studiocms:blog/config';
 import { pathWithBase } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import rss, { type RSSFeedItem } from '@astrojs/rss';
 import type { APIContext } from 'astro';
-import { name } from '../../package.json';
 
-const blogRouteFullPath = pages.get('/blog/[...slug]');
+const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
 
 function getBlogRoute(slug: string) {
 	if (blogRouteFullPath) {
@@ -17,15 +15,18 @@ function getBlogRoute(slug: string) {
 
 export async function GET(context: APIContext) {
 	// Get Config from Studio Database
-	const studioCMSConfig = await studioCMS_SDK.GET.database.config();
+	const config = (await studioCMS_SDK.GET.database.config()) || {
+		title: 'StudioCMS - Database Unavailable',
+		description: 'StudioCMS - Database Unavailable',
+	};
 
 	// Set Title, Description, and Site
-	const title = config.title ?? studioCMSConfig?.title ?? 'Blog';
-	const description = config.description ?? studioCMSConfig?.description ?? 'Blog';
+	const title = `${config?.title} | ${blogConfig.title}`;
+	const description = config?.description ?? 'Blog';
 	const site = context.site ?? 'https://example.com';
 
 	// Get all Posts from Studio Database
-	const orderedPosts = await studioCMS_SDK.GET.packagePages(name);
+	const orderedPosts = await studioCMS_SDK.GET.packagePages('@studiocms/blog');
 
 	const items: RSSFeedItem[] = orderedPosts.map((post) => {
 		return {

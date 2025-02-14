@@ -1,3 +1,4 @@
+import blog from '@studiocms/blog';
 import { defineStudioCMSConfig } from 'studiocms/config';
 
 export default defineStudioCMSConfig({
@@ -13,16 +14,17 @@ export default defineStudioCMSConfig({
 			},
 		},
 	},
-	defaultFrontEndConfig: {
-		// htmlDefaultHead: [
-		// 	{
-		// 		tag: 'script',
-		// 		attrs: {
-		// 			src: 'https://analytics.studiocms.xyz/script.js',
-		// 			'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
-		// 			defer: true,
-		// 		},
-		// 	},
-		// ],
-	},
+	plugins: [blog()],
+	// defaultFrontEndConfig: {
+	// 	// htmlDefaultHead: [
+	// 	// 	{
+	// 	// 		tag: 'script',
+	// 	// 		attrs: {
+	// 	// 			src: 'https://analytics.studiocms.xyz/script.js',
+	// 	// 			'data-website-id': '23a84c25-40fd-4303-a191-aba4bfaf3ff1',
+	// 	// 			defer: true,
+	// 	// 		},
+	// 	// 	},
+	// 	// ],
+	// },
 });

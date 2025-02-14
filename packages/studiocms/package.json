@@ -86,6 +86,10 @@
       "types": "./dist/errors.d.ts",
       "default": "./dist/errors.js"
     },
+    "./plugins": {
+      "types": "./dist/plugins.d.ts",
+      "default": "./dist/plugins.js"
+    },
     "./sdk/base": {
       "types": "./dist/sdk/index.d.ts",
       "default": "./dist/sdk/index.js"
@@ -98,6 +102,10 @@
       "types": "./dist/sdk/tables.d.ts",
       "default": "./dist/sdk/tables.js"
     },
+    "./sdk/types": {
+      "types": "./dist/sdk/types/index.d.ts",
+      "default": "./dist/sdk/types/index.js"
+    },
     "./schemas": {
       "types": "./dist/schemas/index.d.ts",
       "default": "./dist/schemas/index.js"
@@ -106,7 +114,9 @@
       "types": "./dist/schemas/config/rendererConfig.d.ts",
       "default": "./dist/schemas/config/rendererConfig.js"
     },
-    "./static/*": "./static/*"
+    "./components/*": "./dist/components/*",
+    "./layouts/*": "./dist/layouts/*",
+    "./lib/*": "./dist/lib/*"
   },
   "type": "module",
   "dependencies": {
