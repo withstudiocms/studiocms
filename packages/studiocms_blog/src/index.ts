@@ -38,7 +38,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		studiocmsMinimumVersion: '0.1.0-beta.7',
+		studiocmsMinimumVersion: '0.1.0-beta.8',
 		frontendNavigationLinks: [{ label: title, href: safeRoute }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
 		integration: {
