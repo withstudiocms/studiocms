@@ -1,7 +1,6 @@
 /// <reference types="@astrojs/db" />
 
 declare module 'virtual:studiocms-devapps/endpoints' {
-	export const libSQLEndpoint: string;
 	export const wpAPIEndpoint: string;
 }
 
@@ -12,5 +11,3 @@ declare module 'virtual:studiocms-devapps/config' {
 		token: string;
 	};
 }
-
-declare module 'virtual:studiocms-devapps/libsql/createClient' {}

@@ -1,6 +1,6 @@
 import { dbEnv } from 'virtual:studiocms-devapps/config';
-import { libSQLEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { createClient } from '@libsql/client/web';
+import { transformTursoResult } from '@outerbase/sdk-transform';
 import { defineToolbarApp } from 'astro/toolbar';
 import { closeOnOutsideClick } from '../utils/app-utils.js';
 
@@ -12,58 +12,26 @@ interface ClientRequest {
 	statements?: string[];
 }
 
-interface ResultHeader {
-	name: string;
-	displayName: string;
-	originalType: string | null;
-	type: ColumnType;
-}
+const sqlLiteUrl = 'https://studio.outerbase.com/embed/sqlite?theme=dark';
+const tursoURL = 'https://studio.outerbase.com/embed/turso?theme=dark';
 
-interface Result {
-	rows: Record<string, unknown>[];
-	headers: ResultHeader[];
-	stat: {
-		rowsAffected: number;
-		rowsRead: number | null;
-		rowsWritten: number | null;
-		queryDurationMs: number | null;
-	};
-	lastInsertRowid?: number | undefined; // Explicitly include undefined
-}
-
-enum ColumnType {
-	TEXT = 1,
-	INTEGER = 2,
-	REAL = 3,
-	BLOB = 4,
+export function getIFrameSrc(dbUrl: string) {
+	if (dbUrl.includes('turso.io')) {
+		return tursoURL;
+	}
+	return sqlLiteUrl;
 }
 
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		const appWindow = document.createElement('astro-dev-toolbar-window');
 		appWindow.style.width = '95%';
-		appWindow.style.height = '80vh';
+		appWindow.style.height = '95%';
 
 		closeOnOutsideClick(eventTarget);
 
-		const link = document.createElement('a');
-		link.href = libSQLEndpoint;
-		link.target = '_blank';
-		link.innerText = 'Open as page';
-		Object.assign(link.style, {
-			display: 'inline-block',
-			marginRight: 'auto',
-			color: 'rgba(224, 204, 250, 1)',
-			marginBottom: '16px',
-			textDecoration: 'none',
-			border: '1px solid rgba(224, 204, 250, 1)',
-			padding: '8px 16px',
-			borderRadius: '4px',
-		} satisfies Partial<typeof link.style>);
-		appWindow.appendChild(link);
-
 		const viewerIframe = document.createElement('iframe');
-		viewerIframe.src = 'https://libsqlstudio.com/embed/sqlite?name=libSQLDatabase&theme=dark';
+		viewerIframe.src = getIFrameSrc(dbEnv.remoteUrl);
 		viewerIframe.id = 'sqlIframe';
 		viewerIframe.title = 'libSQL Database Viewer';
 		Object.assign(viewerIframe.dataset, {
@@ -85,77 +53,6 @@ export default defineToolbarApp({
 			authToken: viewerIframe.dataset.authtoken!,
 		});
 
-		// Function to transform raw SQL result
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		function transformRawResult(raw: any): Result {
-			const headerSet = new Set<string>();
-
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			const headers: ResultHeader[] = raw.columns.map((colName: any, colIdx: string | number) => {
-				const colType = raw.columnTypes[colIdx];
-				let renameColName = colName;
-
-				for (let i = 0; i < 20; i++) {
-					if (!headerSet.has(renameColName)) break;
-					renameColName = `__${colName}_${i}`;
-				}
-
-				headerSet.add(renameColName);
-
-				return {
-					name: renameColName,
-					displayName: colName,
-					originalType: colType,
-					type: convertSqliteType(colType),
-				};
-			});
-
-			const rows = raw.rows.map((r: unknown[]) =>
-				headers.reduce(
-					(a, b, idx) => {
-						a[b.name] = r[idx];
-						return a;
-					},
-					{} as Record<string, unknown>
-				)
-			);
-
-			return {
-				rows,
-				stat: {
-					rowsAffected: raw.rowsAffected,
-					rowsRead: null,
-					rowsWritten: null,
-					queryDurationMs: 0,
-				},
-				headers,
-				lastInsertRowid:
-					raw.lastInsertRowid === undefined ? undefined : Number(raw.lastInsertRowid),
-			};
-		}
-
-		// Function to convert SQLite types to ColumnType enum
-		function convertSqliteType(type: string | undefined): ColumnType {
-			if (type === undefined) return ColumnType.BLOB;
-			type = type.toUpperCase();
-
-			if (
-				type.includes('CHAR') ||
-				type.includes('TEXT') ||
-				type.includes('CLOB') ||
-				type.includes('STRING')
-			) {
-				return ColumnType.TEXT;
-			}
-
-			if (type.includes('INT')) return ColumnType.INTEGER;
-			if (type.includes('BLOB')) return ColumnType.BLOB;
-			if (type.includes('REAL') || type.includes('DOUBLE') || type.includes('FLOAT'))
-				return ColumnType.REAL;
-
-			return ColumnType.TEXT;
-		}
-
 		// Event listener to handle postMessage events
 		window.addEventListener('message', async (e: MessageEvent<ClientRequest>) => {
 			const contentWindow = viewerIframe.contentWindow;
@@ -171,7 +68,7 @@ export default defineToolbarApp({
 							{
 								type,
 								id,
-								data: transformRawResult(result),
+								data: transformTursoResult(result),
 							},
 							'*'
 						);
@@ -193,7 +90,7 @@ export default defineToolbarApp({
 							{
 								type,
 								id,
-								data: result.map(transformRawResult),
+								data: result.map(transformTursoResult),
 							},
 							'*'
 						);

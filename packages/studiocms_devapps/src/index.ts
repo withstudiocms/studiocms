@@ -32,7 +32,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 				// Enforce dev mode only
 				if (command === 'dev') {
 					// Generate Endpoint Paths
-					const libSQLViewerPath = makeEndpointPath(options.appsConfig.libSQLViewer.endpoint);
 					const wpAPIPath = makeEndpointPath(options.appsConfig.wpImporter.endpoint);
 
 					// Add Virtual Imports
@@ -40,7 +39,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 						name: '@studiocms/devapps',
 						imports: {
 							'virtual:studiocms-devapps/endpoints': `
-								export const libSQLEndpoint = "${libSQLViewerPath}";
 								export const wpAPIEndpoint = "${wpAPIPath}";
 							`,
 							'virtual:studiocms-devapps/config': `
@@ -51,9 +49,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 									token: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
 								};
 							`,
-							'virtual:studiocms-devapps/libsql/createClient': `
-								import "${resolve('./scripts/createClient.js')}";
-							`,
 						},
 					});
 
@@ -62,11 +57,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 					// Add LibSQL Viewer App
 					if (options.appsConfig.libSQLViewer.enabled) {
 						options.verbose && logger.info('Adding Dev Toolbar App: LibSQL Viewer');
-
-						injectDevRoute(params, {
-							entrypoint: resolve('./routes/libsql-viewer.astro'),
-							pattern: libSQLViewerPath,
-						});
 
 						addDevToolbarApp({
 							name: 'LibSQL Viewer',
