@@ -50,17 +50,20 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 					injectRoute({
 						entrypoint: resolve('./routes/index.astro'),
 						pattern: `${safeRoute}`,
+						prerender: false,
 					});
 
 					injectRoute({
 						entrypoint: resolve('./routes/[...slug].astro'),
 						pattern: `${safeRoute}/[...slug]`,
+						prerender: false,
 					});
 
 					if (enableRSS) {
 						injectRoute({
 							entrypoint: resolve('./routes/rss.xml.js'),
 							pattern: pathWithBase('rss.xml'),
+							prerender: false,
 						});
 					}
 
