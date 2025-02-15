@@ -11,8 +11,8 @@ const { content } = Astro.props;
 </div>
 <script>
     function listener() {
-    const pageContentTextarea = document.querySelector('#page-content') as HTMLTextAreaElement;
-    const editorToolbar = document.querySelector('#editor-toolbar') as HTMLElement;
+    const pageContentTextarea = document.querySelector('#page-content');
+    const editorToolbar = document.querySelector('#editor-toolbar');
     // Setup the TinyMDE editor
     // See https://github.com/jefago/tiny-markdown-editor/tree/main for more details
     // @ts-expect-error - Added TinyMDE to the window object
@@ -110,7 +110,7 @@ const { content } = Astro.props;
 
     // @ts-expect-error - Added TinyMDE to the window object
     tinyMDE.addEventListener('change', e => { 
-        pageContentTextarea.textContent = e.content; 
+        pageContentTextarea!.textContent = e.content; 
     });
 
     // @ts-expect-error - Added TinyMDE to the window object

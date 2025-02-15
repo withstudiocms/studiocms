@@ -78,42 +78,49 @@ const currentEditor = editors.find((editor) => editor.identifier === 'studiocms/
     </form>
 </div>
 
-<div style="display: none;" id="editor-partial-url" data-url={StudioCMSRoutes.endpointLinks.partials.editor}></div>
+<!-- <div style="display: none;" id="editor-partial-url" data-url={StudioCMSRoutes.endpointLinks.partials.editor}></div>
 
-<script>
-  const currentPageTypeOptions = document.querySelector('page-type')?.querySelectorAll('.sui-select-option') as NodeListOf<HTMLElement>;
+<script is:inline>
 
-  const editorPartialURL = (document.getElementById('editor-partial-url') as HTMLElement).dataset.url as string;
+// TODO: Make this work... This almost works but does not load scripts once the partial is loaded.
 
-  currentPageTypeOptions.forEach((option) => {
-    option.addEventListener('click', async () => {
+  async function setupPageEditorSwapper() {
 
-      const selectedValue = option.getAttribute('value');
+  const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
 
-      const fetchedEditor = await fetch(editorPartialURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ editor: selectedValue }),
-      })
+const editorPartialURL = document.getElementById('editor-partial-url').dataset.url;
 
-      const res = await fetchedEditor.json();
+currentPageTypeOptions.forEach((option) => {
+  option.addEventListener('click', async () => {
 
-      if (fetchedEditor.status !== 200) {
-        console.error(res.error);
-        return;
-      }
+    const selectedValue = option.getAttribute('value');
 
-      if (fetchedEditor.status === 200) {
-        const editorContainer = document.querySelector('.page-content-editor') as HTMLElement;
-        editorContainer.innerHTML = res.text();
-      }
-
+    const fetchedEditor = await fetch(editorPartialURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ editor: selectedValue }),
     })
 
+    const res = await fetchedEditor.text();
+
+    if (fetchedEditor.status !== 200) {
+      console.error('Error fetching editor partial');
+      return;
+    }
+
+    if (fetchedEditor.status === 200) {
+      const editorContainer = document.querySelector('.page-content-editor');
+      editorContainer.setHTMLUnsafe(res);
+    }
+
   })
-</script>
+
+})
+  }
+  setupPageEditorSwapper();
+</script> -->
 
 <script>
 import { toast } from "studiocms:ui/components";
