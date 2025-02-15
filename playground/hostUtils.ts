@@ -1,11 +1,3 @@
-function stripHTTPandHTTPS(url: string) {
-	return url.replace('http://', '').replace('https://', '');
-}
-
-function stripTrailingSlash(url: string) {
-	return url.replace(/\/$/, '');
-}
-
 function setHTTP(url: string) {
 	return `http://${url}`;
 }
@@ -14,7 +6,7 @@ function setHTTPS(url: string) {
 	return `https://${url}`;
 }
 
-function splitListandSelectFirst(list: string) {
+function splitListAndSelectFirst(list: string) {
 	if (list.indexOf(',') === -1) return list;
 	return list.split(',')[0];
 }
@@ -31,7 +23,7 @@ export const getCoolifyURL = (returnHttps?: boolean) => {
 	if (!urlList) {
 		return undefined;
 	}
-	const url = splitListandSelectFirst(urlList);
+	const url = splitListAndSelectFirst(urlList);
 	if (returnHttps) {
 		return setHTTPS(url);
 	}
