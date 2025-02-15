@@ -59,7 +59,11 @@ export const StudioCMSPluginSchema = z.object({
 	/**
 	 * Astro Integration(s) for the plugin
 	 */
-	integration: AstroIntegrationSchema,
+	integration: AstroIntegrationSchema.optional(),
+	/**
+	 * If this is true, the plugin will enable the Sitemap
+	 */
+	triggerSitemap: z.boolean().optional(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */

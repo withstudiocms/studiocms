@@ -28,7 +28,7 @@ type LinkProps = {
 const links: LinkProps[] = [];
 
 const navPagesList = pageList
-	.filter((page) => page.showOnNav === true && page.package === 'studiocms')
+	.filter((page) => page.showOnNav === true && page.package === 'studiocms/markdown')
 	.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
 
 const indexPage = navPagesList.find((page) => page.slug === 'index');

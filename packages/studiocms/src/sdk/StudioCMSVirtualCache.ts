@@ -282,15 +282,15 @@ export class StudioCMSVirtualCache {
 							pageData: page,
 							children: [],
 						});
+					} else {
+						folderTree.push({
+							id: page.id,
+							name: page.title,
+							page: true,
+							pageData: page,
+							children: [],
+						});
 					}
-
-					folderTree.push({
-						id: page.id,
-						name: page.title,
-						page: true,
-						pageData: page,
-						children: [],
-					});
 				}
 
 				return this.folderTreeReturn(folderTree);
@@ -319,18 +319,19 @@ export class StudioCMSVirtualCache {
 							pageData: page,
 							children: [],
 						});
+					} else {
+						folderTree.push({
+							id: page.id,
+							name: page.title,
+							page: true,
+							pageData: page,
+							children: [],
+						});
 					}
-
-					folderTree.push({
-						id: page.id,
-						name: page.title,
-						page: true,
-						pageData: page,
-						children: [],
-					});
 				}
 
 				this.folderTree.set(this.PageFolderTreeMapID, this.folderTreeReturn(folderTree));
+				this.clearFolderTree();
 
 				return this.folderTreeReturn(folderTree);
 			}
@@ -819,6 +820,7 @@ export class StudioCMSVirtualCache {
 			const returnData = this.pageDataReturn(updatedData);
 
 			this.pages.set(id, returnData);
+			this.clearFolderTree();
 
 			return returnData;
 		} catch (error) {
@@ -887,6 +889,7 @@ export class StudioCMSVirtualCache {
 			// Update the cache
 			const returnData = this.pageDataReturn(updatedData);
 			this.pages.set(updatedData.id, returnData);
+			this.clearFolderTree();
 
 			// Return the data
 			return returnData;
@@ -943,6 +946,7 @@ export class StudioCMSVirtualCache {
 				const updatedEntry = await this.sdk.UPDATE.folder(data);
 				await this.updateFolderTree();
 				await this.updateFolderList();
+				this.clearFolderTree();
 				return updatedEntry;
 			},
 		},

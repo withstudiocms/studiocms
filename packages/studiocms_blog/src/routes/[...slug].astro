@@ -1,40 +1,32 @@
 ---
+import config from 'studiocms:config';
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk';
-import PostHeader from '../components/PostHeader.astro';
-import BlogLayout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro';
 
-// Get the slug from the URL
-const { slug } = Astro.params;
+if (config.dbStartPage) {
+	return Astro.redirect('/start');
+}
 
-// If no slug is provided, redirect to 404
+let { slug } = Astro.params;
+
 if (!slug) {
+	slug = 'index';
+}
+
+const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, 'studiocms/markdown');
+
+if (!page) {
 	return new Response(null, { status: 404 });
 }
 
-// Fetch the blog post content
+const { title, description, heroImage, defaultContent } = page;
 
-const post = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, '@studiocms/blog');
-
-// If no content is found, redirect to 404
-if (!post) {
-	return new Response(null, { status: 404 });
-}
-
-const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post;
-
-// If no content is found, redirect to 404
-if (!defaultContent) {
-	return new Response(null, { status: 404 });
-}
-
-const content = defaultContent.content || '';
+const content = defaultContent?.content || '';
 ---
-<BlogLayout {title} {description} {heroImage}>
-    <main>
-        <article>
-            <PostHeader {title} {description} {heroImage} {publishedAt} {updatedAt} />
-            <StudioCMSRenderer {content} />
-        </article>
-    </main>
-</BlogLayout>
+
+<Layout title={title} description={description} heroImage={heroImage}>
+	<main>
+		<StudioCMSRenderer content={content} />
+	</main>
+</Layout>

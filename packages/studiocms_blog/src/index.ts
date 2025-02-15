@@ -3,20 +3,22 @@ import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
 import { definePlugin } from 'studiocms/plugins';
 
 interface StudioCMSBlogOptions {
-	/**
-	 * The title of the blog
-	 */
-	title: string;
-	/**
-	 * Enable RSS feed
-	 */
-	enableRSS: boolean;
-	/**
-	 * The route for the blog
-	 * @default '/blog'
-	 * @example '/news'
-	 */
-	route: string;
+	blog?: {
+		/**
+		 * The title of the blog
+		 */
+		title?: string;
+		/**
+		 * Enable RSS feed
+		 */
+		enableRSS?: boolean;
+		/**
+		 * The route for the blog
+		 * @default '/blog'
+		 * @example '/news'
+		 */
+		route?: string;
+	};
 }
 
 const packageIdentifier = '@studiocms/blog';
@@ -28,9 +30,9 @@ const packageIdentifier = '@studiocms/blog';
  * @returns The StudioCMS plugin
  */
 export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
-	const title = options?.title || 'Blog';
-	const enableRSS = options?.enableRSS || true;
-	const route = options?.route || '/blog';
+	const title = options?.blog?.title || 'Blog';
+	const enableRSS = options?.blog?.enableRSS || true;
+	const route = options?.blog?.route || '/blog';
 
 	const safeRoute = pathWithBase(route);
 	const { resolve } = createResolver(import.meta.url);
@@ -38,39 +40,48 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		studiocmsMinimumVersion: '0.1.0-beta.8',
+		// TODO: Update this to the correct version when the package is ready to be published
+		studiocmsMinimumVersion: '0.1.0-beta.7',
 		frontendNavigationLinks: [{ label: title, href: safeRoute }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
-		integration: {
-			name: packageIdentifier,
-			hooks: {
-				'astro:config:setup': async (params) => {
-					const { injectRoute } = params;
+		triggerSitemap: true,
+		integration: [
+			{
+				name: packageIdentifier,
+				hooks: {
+					'astro:config:setup': async (params) => {
+						const { injectRoute } = params;
 
-					injectRoute({
-						entrypoint: resolve('./routes/index.astro'),
-						pattern: `${safeRoute}`,
-						prerender: false,
-					});
-
-					injectRoute({
-						entrypoint: resolve('./routes/[...slug].astro'),
-						pattern: `${safeRoute}/[...slug]`,
-						prerender: false,
-					});
-
-					if (enableRSS) {
 						injectRoute({
-							entrypoint: resolve('./routes/rss.xml.js'),
-							pattern: pathWithBase('rss.xml'),
+							entrypoint: resolve('./routes/[...slug].astro'),
+							pattern: pathWithBase('[...slug]'),
 							prerender: false,
 						});
-					}
 
-					addVirtualImports(params, {
-						name: packageIdentifier,
-						imports: {
-							'studiocms:blog/config': `
+						injectRoute({
+							entrypoint: resolve('./routes/blog/index.astro'),
+							pattern: `${safeRoute}`,
+							prerender: false,
+						});
+
+						injectRoute({
+							entrypoint: resolve('./routes/blog/[...slug].astro'),
+							pattern: `${safeRoute}/[...slug]`,
+							prerender: false,
+						});
+
+						if (enableRSS) {
+							injectRoute({
+								entrypoint: resolve('./routes/rss.xml.js'),
+								pattern: pathWithBase('rss.xml'),
+								prerender: false,
+							});
+						}
+
+						addVirtualImports(params, {
+							name: packageIdentifier,
+							imports: {
+								'studiocms:blog/config': `
                                 const config = {
                                     title: "${title}",
                                     enableRSS: ${enableRSS},
@@ -78,11 +89,12 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
                                 }
                                 export default config;
                             `,
-						},
-					});
+							},
+						});
+					},
 				},
 			},
-		},
+		],
 	});
 }
 

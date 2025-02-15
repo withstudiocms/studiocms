@@ -134,13 +134,15 @@ export function studiocmsSDKCore() {
 		try {
 			const categories: CombinedPageData['categories'] = [];
 
-			const [categoryHead, ...categoryTail] = categoryIds.map((id) =>
-				db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
-			);
+			if (categoryIds.length > 0) {
+				const [categoryHead, ...categoryTail] = categoryIds.map((id) =>
+					db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
+				);
 
-			if (categoryHead) {
-				const categoryResults = await db.batch([categoryHead, ...categoryTail]);
-				categories.push(...categoryResults.flat().filter((result) => result !== undefined));
+				if (categoryHead) {
+					const categoryResults = await db.batch([categoryHead, ...categoryTail]);
+					categories.push(...categoryResults.flat().filter((result) => result !== undefined));
+				}
 			}
 
 			return categories;

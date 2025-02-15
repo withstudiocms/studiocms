@@ -18,9 +18,6 @@ catalogs:
     '@astrojs/react':
       specifier: ^4.2.0
       version: 4.2.0
-    '@astrojs/rss':
-      specifier: ^4.0.7
-      version: 4.0.10
     '@astrojs/starlight':
       specifier: ^0.30
       version: 0.30.0
@@ -351,6 +348,9 @@ importers:
       '@astrojs/react':
         specifier: 'catalog:'
         version: 4.2.0(@types/node@20.17.10)(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(jiti@2.4.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(yaml@2.6.1)
+      '@astrojs/sitemap':
+        specifier: 3.2.1
+        version: 3.2.1
       '@astrojs/web-vitals':
         specifier: 'catalog:'
         version: 3.0.1(@astrojs/db@0.14.6(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.8)(react@19.0.0))
@@ -566,8 +566,8 @@ importers:
   packages/studiocms_blog:
     dependencies:
       '@astrojs/rss':
-        specifier: 'catalog:'
-        version: 4.0.10
+        specifier: 4.0.11
+        version: 4.0.11
       astro:
         specifier: catalog:min
         version: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.3)(yaml@2.6.1)
@@ -780,8 +780,8 @@ packages:
       react: ^17.0.2 || ^18.0.0 || ^19.0.0
       react-dom: ^17.0.2 || ^18.0.0 || ^19.0.0
 
-  '@astrojs/rss@4.0.10':
-    resolution: {integrity: sha512-2gFdHM763uUAySkdwPYrpi6dppOBJr9ddg5VbkKXctWze8d1JHgIBBY78zWIYs7KBJT58zxadsObVAVt55RDaw==}
+  '@astrojs/rss@4.0.11':
+    resolution: {integrity: sha512-3e3H8i6kc97KGnn9iaZBJpIkdoQi8MmR5zH5R+dWsfCM44lLTszOqy1OBfGGxDt56mpQkYVtZJWoxMyWuUZBfw==}
 
   '@astrojs/sitemap@3.2.1':
     resolution: {integrity: sha512-uxMfO8f7pALq0ADL6Lk68UV6dNYjJ2xGUzyjjVj60JLBs5a6smtlkBYv3tQ0DzoqwS7c9n4FUx5lgv0yPo/fgA==}
@@ -5756,7 +5756,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@astrojs/rss@4.0.10':
+  '@astrojs/rss@4.0.11':
     dependencies:
       fast-xml-parser: 4.5.0
       kleur: 4.1.5
