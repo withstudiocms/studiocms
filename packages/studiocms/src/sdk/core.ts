@@ -12,6 +12,7 @@ import {
 	generateFolderTree,
 	getFullPath,
 } from './lib/foldertree.js';
+import type { PageType } from './lib/packages.js';
 import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { generateRandomIDNumber, generateToken, testToken } from './lib/tokens.js';
 import { combineRanks, verifyRank } from './lib/users.js';
@@ -1167,7 +1168,7 @@ export function studiocmsSDKCore() {
 				 */
 				bySlug: async (
 					slug: string,
-					pkg?: string,
+					pkg?: PageType,
 					tree?: FolderNode[]
 				): Promise<CombinedPageData | undefined> => {
 					try {
