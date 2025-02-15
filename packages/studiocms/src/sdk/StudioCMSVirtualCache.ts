@@ -1,6 +1,7 @@
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
 import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
+import type { PageType } from './lib/packages.js';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
@@ -905,7 +906,7 @@ export class StudioCMSVirtualCache {
 		GET: {
 			page: {
 				byId: async (id: string) => await this.getPageById(id),
-				bySlug: async (slug: string, pkg: string) => await this.getPageBySlug(slug, pkg),
+				bySlug: async (slug: string, pkg: PageType) => await this.getPageBySlug(slug, pkg),
 			},
 			pages: async () => await this.getAllPages(),
 			siteConfig: async () => await this.getSiteConfig(),
@@ -919,7 +920,7 @@ export class StudioCMSVirtualCache {
 		CLEAR: {
 			page: {
 				byId: (id: string) => this.clearPageById(id),
-				bySlug: (slug: string, pkg: string) => this.clearPageBySlug(slug, pkg),
+				bySlug: (slug: string, pkg: PageType) => this.clearPageBySlug(slug, pkg),
 			},
 			pages: () => this.clearAllPages(),
 			latestVersion: () => this.clearVersion(),
@@ -934,7 +935,7 @@ export class StudioCMSVirtualCache {
 				) => await this.updatePageById(id, data),
 				bySlug: async (
 					slug: string,
-					pkg: string,
+					pkg: PageType,
 					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
 				) => await this.updatePageBySlug(slug, pkg, data),
 			},
