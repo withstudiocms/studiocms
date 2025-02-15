@@ -70,6 +70,7 @@ const currentEditor = editors.find((editor) => editor.identifier === 'studiocms/
             <div class="tab-section">
               <div class="page-content-editor">
                 <currentEditor.Component />
+                <div id="page-content-editor-placeholder" style="display: none;"></div>
               </div>
             </div>
           </TabItem>
@@ -78,49 +79,43 @@ const currentEditor = editors.find((editor) => editor.identifier === 'studiocms/
     </form>
 </div>
 
-<!-- <div style="display: none;" id="editor-partial-url" data-url={StudioCMSRoutes.endpointLinks.partials.editor}></div>
+<script is:inline define:vars={{ editors }}>
 
-<script is:inline>
-
-// TODO: Make this work... This almost works but does not load scripts once the partial is loaded.
+// TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
 
   async function setupPageEditorSwapper() {
+    const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
 
-  const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
+    currentPageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
 
-const editorPartialURL = document.getElementById('editor-partial-url').dataset.url;
+        const selectedValue = option.getAttribute('value');
 
-currentPageTypeOptions.forEach((option) => {
-  option.addEventListener('click', async () => {
+        if (selectedValue !== 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
 
-    const selectedValue = option.getAttribute('value');
+          if (editors.find((editor) => editor.identifier !== selectedValue)) {
+            return;
+          }
 
-    const fetchedEditor = await fetch(editorPartialURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ editor: selectedValue }),
+          editorContainer.style.display = 'none';
+          editorPlaceholder.style.display = 'block';
+          editorPlaceholder.innerText = 'You have changed your pageType. Please save your changes and refresh the page to see the new editor.';
+        }
+
+        if (selectedValue === 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
+
+          editorContainer.style.display = 'block';
+          editorPlaceholder.style.display = 'none';
+        }
+      })
     })
-
-    const res = await fetchedEditor.text();
-
-    if (fetchedEditor.status !== 200) {
-      console.error('Error fetching editor partial');
-      return;
-    }
-
-    if (fetchedEditor.status === 200) {
-      const editorContainer = document.querySelector('.page-content-editor');
-      editorContainer.setHTMLUnsafe(res);
-    }
-
-  })
-
-})
   }
   setupPageEditorSwapper();
-</script> -->
+</script>
 
 <script>
 import { toast } from "studiocms:ui/components";
@@ -161,7 +156,7 @@ import { toast } from "studiocms:ui/components";
 
       const content = {
             id: crypto.randomUUID(),
-            content: formData.get('page-content')?.toString(),
+            content: formData.get('page-content')?.toString() ?? '',
       }
 
       const response = await fetch(createPageForm.action, {

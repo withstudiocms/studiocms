@@ -154,43 +154,43 @@ if (!currentEditor) {
     </form>
 </div>
 
-<div style="display: none;" id="editor-partial-url" data-url={StudioCMSRoutes.endpointLinks.partials.editor}></div>
+<script is:inline define:vars={{ editors }}>
 
-<script>
-  const currentPageTypeOptions = document.querySelector('page-type')?.querySelectorAll('.sui-select-option') as NodeListOf<HTMLElement>;
+// TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
 
-  const editorPartialURL = (document.getElementById('editor-partial-url') as HTMLElement).dataset.url as string;
+  async function setupPageEditorSwapper() {
+    const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
 
-  currentPageTypeOptions.forEach((option) => {
-    option.addEventListener('click', async () => {
+    currentPageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
 
-      const selectedValue = option.getAttribute('value');
+        const selectedValue = option.getAttribute('value');
 
-      const fetchedEditor = await fetch(editorPartialURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ editor: selectedValue }),
+        if (selectedValue !== 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
+
+          if (editors.find((editor) => editor.identifier !== selectedValue)) {
+            return;
+          }
+
+          editorContainer.style.display = 'none';
+          editorPlaceholder.style.display = 'block';
+          editorPlaceholder.innerText = 'You have changed your pageType. Please save your changes and refresh the page to see the new editor.';
+        }
+
+        if (selectedValue === 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
+
+          editorContainer.style.display = 'block';
+          editorPlaceholder.style.display = 'none';
+        }
       })
-
-      const res = await fetchedEditor.json();
-
-      if (fetchedEditor.status !== 200) {
-        console.error(res.error);
-        return;
-      }
-
-      if (fetchedEditor.status === 200) {
-        const editorContainer = document.querySelector('.page-content-editor') as HTMLElement;
-        editorContainer.innerHTML = res.text();
-      }
-
     })
-
-  })
+  }
+  setupPageEditorSwapper();
 </script>
-
 <script>
 import { toast } from "studiocms:ui/components";
 
