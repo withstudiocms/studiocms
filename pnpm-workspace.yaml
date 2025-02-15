@@ -1,6 +1,6 @@
 catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@astrojs/db': ^0.14.6
-  '@astrojs/rss': ^4.0.7
+  '@astrojs/rss': ^4.0.11
   '@astrojs/react': ^4.2.0
   '@astrojs/check': ^0.9.4
   '@astrojs/tailwind': ^5.1.2
@@ -23,90 +23,6 @@ catalogs:
     '@astrojs/db': ^0.14.6
     '@astrojs/markdown-remark': ^6.1.0
     vite: ^6.0
-
-  docs: # Confirmed Current Docs Deps - 11.01.2024
-    "@11ty/eleventy-fetch": ^5.0.1
-    "@lorenzo_lewis/starlight-utils": ^0.2.0
-    "@types/hast": ^3.0.4
-    astro-embed: ^0.9.0
-    hast: ^1.0.0
-    hast-util-select: ^6.0.3
-    p-retry: ^6.2.0
-    rehype: ^13.0.2
-    starlight-typedoc: ^0.17.0
-    typedoc: ^0.27
-    typedoc-plugin-markdown: ^4.3.2
-    starlight-image-zoom: ^0.9.0
-    hastscript: ^9.0.0
-    hast-util-to-string: ^3.0.1
-    mdast-util-from-markdown: ^2.0.2
-    mdast-util-gfm: ^3.0.0
-    mdast-util-to-hast: ^13.2.0
-    rehype-slug: ^6.0.0
-    rehype-autolink-headings: ^7.1.0
-    rehype-external-links: ^3.0.0
-    "@types/html-escaper": ^3.0.2
-    html-escaper: ^3.0.3
-    expressive-code-twoslash: ^0.3.0
-    "@shikijs/colorized-brackets": ^1.24.2
-    starlight-package-managers: ^0.8.0
-
-  studiocms: # Confirmed Current CMS Deps - 11.01.2024
-    '@types/semver': ^7.5.8
-    package-json: ^10.0.1
-    semver: ^7.6.3
-
-  studiocms-core: # Confirmed Current Core Deps - 11.01.2024
-    remark-rehype: ^11.1.1
-    mdast-util-to-hast: ^13.2.0
-    mrmime: ^2.0.0
-    unified: ^11.0.5
-    drizzle-orm: ^0.31.2
-
-  studiocms-devapps: # Confirmed Current DevApps Deps - 11.01.2024
-    "@libsql/client": ^0.14.0
-    "@types/cheerio": ^0.22.35
-    "@types/turndown": ^5.0.5
-    cheerio: ^1.0.0
-    turndown: ^7.2.0
-    html-entities: ^2.5.2
-
-  studiocms-auth: # Confirmed Current Auth Deps - 11.01.2024
-    '@oslojs/crypto': ^1.0.1
-    '@oslojs/encoding': ^1.1.0
-    '@oslojs/binary': ^1.0.0
-    '@types/three': 0.169.0
-    arctic: ^2.3.1
-    three: 0.170.0
-    
-  studiocms-shared: # Confirmed Current Shared Deps - 11.01.2024
-    '@fontsource-variable/onest': 5.1.0
-    '@inox-tools/runtime-logger': ^0.4.0
-    '@iconify-json/heroicons': ^1.2.1
-    "@matthiesenxyz/astrodtsbuilder": ^0.2.0
-    "@matthiesenxyz/integration-utils": ^0.3.0
-    rollup-plugin-copy: ^3.5.0
-    lodash: ^4.17.21
-    mdast: ^3.0.0
-    mdast-util-to-markdown: ^2.1.1
-    mdast-util-from-markdown: ^2.0.2
-    mdast-util-to-string: ^4.0.0
-    unist-util-visit: ^5.0.0
-    "@types/lodash": ^4.17.13
-    "@types/mdast": ^4.0.4
-
-  studiocms-renderer: # Confirmed Current Renderer Deps - 11.01.2024
-    "@mdx-js/mdx": ^3.1.0
-    '@markdoc/markdoc': ^0.4.0
-    "@types/react": ^18.3.5
-    "@types/react-dom": ^18.3.0
-    react: ^19.0.0
-    react-dom: ^19.0.0
-    remark-gfm: ^4.0.0
-    rehype-highlight: ^7.0.1
-
-  studiocms-imagehandler: # Confirmed Current ImageHandler Deps - 11.01.2024
-    '@cloudinary/url-gen': ^1.21.0
 
 packages:
   - "packages/*"
