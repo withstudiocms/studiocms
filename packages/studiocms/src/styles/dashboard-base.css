@@ -340,11 +340,11 @@ main {
 		background-repeat: no-repeat !important;
 		padding: .5rem 20px .5rem 2rem !important;
 	}
+}
 
-	& .inner-sidebar-folder-child-nodes {
-		margin-left: 0.5rem;
-		border-left: 2px solid hsl(var(--border));
-	}
+.inner-sidebar-folder-child-nodes {
+	margin-left: 0.5rem;
+	border-left: 2px solid hsl(var(--border));
 }
 
 .inner-sidebar-link {

@@ -1,6 +1,6 @@
 import blogConfig from 'studiocms:blog/config';
 import { pathWithBase } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK from 'studiocms:sdk/cache';
 import rss, { type RSSFeedItem } from '@astrojs/rss';
 import type { APIContext } from 'astro';
 
@@ -15,7 +15,7 @@ function getBlogRoute(slug: string) {
 
 export async function GET(context: APIContext) {
 	// Get Config from Studio Database
-	const config = (await studioCMS_SDK.GET.database.config()) || {
+	const config = (await studioCMS_SDK.GET.siteConfig()).data || {
 		title: 'StudioCMS - Database Unavailable',
 		description: 'StudioCMS - Database Unavailable',
 	};
@@ -26,7 +26,9 @@ export async function GET(context: APIContext) {
 	const site = context.site ?? 'https://example.com';
 
 	// Get all Posts from Studio Database
-	const orderedPosts = await studioCMS_SDK.GET.packagePages('@studiocms/blog');
+	const orderedPosts = (await studioCMS_SDK.GET.pages())
+		.map(({ data }) => data)
+		.filter(({ package: pkg }) => pkg === '@studiocms/blog');
 
 	const items: RSSFeedItem[] = orderedPosts.map((post) => {
 		return {

@@ -38,9 +38,11 @@ type AsDrizzleTable = SQLiteTableWithColumns<{
 
 const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
 
-const AstroIntegrationSchema = z.union([
-	z.custom<AstroIntegration>(),
-	z.array(z.custom<AstroIntegration>()),
+const AstroIntegrationSchema = z.custom<AstroIntegration>();
+
+const AstroIntegrationPossiblyArraySchema = z.union([
+	AstroIntegrationSchema,
+	z.array(AstroIntegrationSchema),
 ]);
 
 export const StudioCMSPluginSchema = z.object({
@@ -59,7 +61,11 @@ export const StudioCMSPluginSchema = z.object({
 	/**
 	 * Astro Integration(s) for the plugin
 	 */
-	integration: AstroIntegrationSchema,
+	integration: AstroIntegrationPossiblyArraySchema.optional(),
+	/**
+	 * If this is true, the plugin will enable the Sitemap
+	 */
+	triggerSitemap: z.boolean().optional(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
@@ -122,6 +128,24 @@ export const StudioCMSPluginSchema = z.object({
 				 * Description that is shown below the "Page Content" header if this type is selected
 				 */
 				description: z.string().optional(),
+				/**
+				 * The path to the actual component that is displayed for the page content
+				 *
+				 * Component should have a `content` prop that is a string to be able to display current content.
+				 *
+				 * **NOTE:** Currently, requires you to use the form id `page-content` for the content output. Your editor should also be able to handle form submission.
+				 *
+				 * @example
+				 * ```ts
+				 * import { createResolver } from 'astro-integration-kit';
+				 * const { resolve } = createResolver(import.meta.url)
+				 *
+				 * {
+				 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
+				 * }
+				 * ```
+				 */
+				pageContentComponent: z.string().optional(),
 
 				// TODO: Figure out the best way to handle more complex plugin systems...
 				// Ideally, we would want to be able to handle the following cases:
@@ -185,21 +209,6 @@ export const StudioCMSPluginSchema = z.object({
 				// 		table: DrizzleTableSchema,
 				// 	})
 				// 	.optional(),
-				// /**
-				//  * The path to the actual component that is displayed for the page content
-				//  *
-				//  * @example
-				//  * ```ts
-				//  * import { createResolver } from 'astro-integration-kit';
-				//  * const { resolve } = createResolver(import.meta.url)
-				//  *
-				//  * {
-				//  *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
-				//  * }
-				//  * ```
-				//  *
-				//  */
-				// pageContentComponent: z.string().optional(),
 			})
 		)
 		.optional(),

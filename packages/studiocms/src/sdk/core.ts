@@ -12,6 +12,7 @@ import {
 	generateFolderTree,
 	getFullPath,
 } from './lib/foldertree.js';
+import type { PageType } from './lib/packages.js';
 import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { generateRandomIDNumber, generateToken, testToken } from './lib/tokens.js';
 import { combineRanks, verifyRank } from './lib/users.js';
@@ -134,13 +135,15 @@ export function studiocmsSDKCore() {
 		try {
 			const categories: CombinedPageData['categories'] = [];
 
-			const [categoryHead, ...categoryTail] = categoryIds.map((id) =>
-				db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
-			);
+			if (categoryIds.length > 0) {
+				const [categoryHead, ...categoryTail] = categoryIds.map((id) =>
+					db.select().from(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
+				);
 
-			if (categoryHead) {
-				const categoryResults = await db.batch([categoryHead, ...categoryTail]);
-				categories.push(...categoryResults.flat().filter((result) => result !== undefined));
+				if (categoryHead) {
+					const categoryResults = await db.batch([categoryHead, ...categoryTail]);
+					categories.push(...categoryResults.flat().filter((result) => result !== undefined));
+				}
 			}
 
 			return categories;
@@ -1165,7 +1168,7 @@ export function studiocmsSDKCore() {
 				 */
 				bySlug: async (
 					slug: string,
-					pkg?: string,
+					pkg?: PageType,
 					tree?: FolderNode[]
 				): Promise<CombinedPageData | undefined> => {
 					try {
@@ -2428,5 +2431,6 @@ export function studiocmsSDKCore() {
 		POST,
 		UPDATE,
 		DELETE,
+		db,
 	};
 }

@@ -30,6 +30,37 @@ export const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
 	return pageTypeOutput;
 });
 
+export const pageTypeComponents = async () => {
+	const pageTypeComponents: {
+		identifier: string;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		Component: (Props?: { content?: string | null | undefined }) => any;
+	}[] = [];
+
+	for (const { pageTypes } of pluginsList) {
+		if (!pageTypes) {
+			return pageTypeComponents;
+		}
+
+		for (const { identifier, pageContentComponent } of pageTypes) {
+			if (!pageContentComponent) {
+				continue;
+			}
+
+			const component = await import(/* @vite-ignore */ pageContentComponent);
+
+			pageTypeComponents.push({
+				identifier,
+				Component: component.default,
+			});
+		}
+
+		return pageTypeComponents;
+	}
+
+	return pageTypeComponents;
+};
+
 export const trueFalse = [
 	{ label: 'Yes', value: 'true' },
 	{ label: 'No', value: 'false' },

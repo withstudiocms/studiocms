@@ -1,6 +1,7 @@
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
 import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
+import type { PageType } from './lib/packages.js';
 import type {
 	BaseCacheObject,
 	CombinedPageData,
@@ -17,6 +18,7 @@ import type {
 	tsPageDataSelect,
 	tsPageFolderSelect,
 } from './types/index.js';
+import type { useDB } from './utils/db.js';
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
@@ -50,9 +52,110 @@ export class StudioCMSVirtualCache {
 	private pageFolderTree = new Map<string, FolderTreeCacheObject>();
 	private FolderList = new Map<string, FolderListCacheObject>();
 
+	public cacheModule: {
+		GET: {
+			page: {
+				byId: (id: string) => Promise<PageDataCacheObject>;
+				bySlug: (slug: string, pkg: PageType) => Promise<PageDataCacheObject>;
+			};
+			pages: (includeDrafts?: boolean) => Promise<PageDataCacheObject[]>;
+			siteConfig: () => Promise<SiteConfigCacheObject>;
+			latestVersion: () => Promise<VersionCacheObject>;
+			folderTree: () => Promise<FolderTreeCacheObject>;
+			pageFolderTree: (includeDrafts?: boolean) => Promise<FolderTreeCacheObject>;
+			folderList: () => Promise<FolderListCacheObject>;
+			folder: (
+				id: string
+			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
+		};
+		CLEAR: {
+			page: {
+				byId: (id: string) => void;
+				bySlug: (slug: string, pkg: PageType) => void;
+			};
+			pages: () => void;
+			latestVersion: () => void;
+			folderTree: () => void;
+			folderList: () => void;
+		};
+		UPDATE: {
+			page: {
+				byId: (
+					id: string,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => Promise<PageDataCacheObject>;
+				bySlug: (
+					slug: string,
+					pkg: PageType,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => Promise<PageDataCacheObject>;
+			};
+			siteConfig: (data: SiteConfig) => Promise<SiteConfigCacheObject>;
+			latestVersion: () => Promise<VersionCacheObject>;
+			folderTree: () => Promise<FolderTreeCacheObject>;
+			folderList: () => Promise<FolderListCacheObject>;
+			folder: (
+				data: tsPageFolderSelect
+			) => Promise<{ name: string; id: string; parent: string | null }>;
+		};
+		db: ReturnType<typeof useDB>;
+	};
+
 	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: ReturnType<typeof studiocmsSDKCore>) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = sdkCore;
+
+		this.cacheModule = {
+			GET: {
+				page: {
+					byId: async (id: string) => await this.getPageById(id),
+					bySlug: async (slug: string, pkg: PageType) => await this.getPageBySlug(slug, pkg),
+				},
+				pages: async (includeDrafts = false) => await this.getAllPages(includeDrafts),
+				siteConfig: async () => await this.getSiteConfig(),
+				latestVersion: async () => await this.getVersion(),
+				folderTree: async () => await this.getFolderTree(),
+				pageFolderTree: async (includeDrafts?: boolean) =>
+					await this.getPageFolderTree(includeDrafts),
+				folderList: async () => await this.getFolderList(),
+				folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
+			},
+			CLEAR: {
+				page: {
+					byId: (id: string) => this.clearPageById(id),
+					bySlug: (slug: string, pkg: PageType) => this.clearPageBySlug(slug, pkg),
+				},
+				pages: () => this.clearAllPages(),
+				latestVersion: () => this.clearVersion(),
+				folderTree: () => this.clearFolderTree(),
+				folderList: () => this.clearFolderList(),
+			},
+			UPDATE: {
+				page: {
+					byId: async (
+						id: string,
+						data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+					) => await this.updatePageById(id, data),
+					bySlug: async (
+						slug: string,
+						pkg: PageType,
+						data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+					) => await this.updatePageBySlug(slug, pkg, data),
+				},
+				siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
+				latestVersion: async () => await this.updateVersion(),
+				folderTree: async () => await this.updateFolderTree(),
+				folderList: async () => await this.updateFolderList(),
+				folder: async (data: tsPageFolderSelect) => {
+					const updatedEntry = await this.sdk.UPDATE.folder(data);
+					await this.updateFolderTree();
+					await this.updateFolderList();
+					this.clearFolderTree();
+					return updatedEntry;
+				},
+			},
+			db: sdkCore.db,
+		};
 	}
 
 	// Misc Utils
@@ -282,15 +385,15 @@ export class StudioCMSVirtualCache {
 							pageData: page,
 							children: [],
 						});
+					} else {
+						folderTree.push({
+							id: page.id,
+							name: page.title,
+							page: true,
+							pageData: page,
+							children: [],
+						});
 					}
-
-					folderTree.push({
-						id: page.id,
-						name: page.title,
-						page: true,
-						pageData: page,
-						children: [],
-					});
 				}
 
 				return this.folderTreeReturn(folderTree);
@@ -319,18 +422,19 @@ export class StudioCMSVirtualCache {
 							pageData: page,
 							children: [],
 						});
+					} else {
+						folderTree.push({
+							id: page.id,
+							name: page.title,
+							page: true,
+							pageData: page,
+							children: [],
+						});
 					}
-
-					folderTree.push({
-						id: page.id,
-						name: page.title,
-						page: true,
-						pageData: page,
-						children: [],
-					});
 				}
 
 				this.folderTree.set(this.PageFolderTreeMapID, this.folderTreeReturn(folderTree));
+				this.clearFolderTree();
 
 				return this.folderTreeReturn(folderTree);
 			}
@@ -819,6 +923,7 @@ export class StudioCMSVirtualCache {
 			const returnData = this.pageDataReturn(updatedData);
 
 			this.pages.set(id, returnData);
+			this.clearFolderTree();
 
 			return returnData;
 		} catch (error) {
@@ -887,6 +992,7 @@ export class StudioCMSVirtualCache {
 			// Update the cache
 			const returnData = this.pageDataReturn(updatedData);
 			this.pages.set(updatedData.id, returnData);
+			this.clearFolderTree();
 
 			// Return the data
 			return returnData;
@@ -894,59 +1000,6 @@ export class StudioCMSVirtualCache {
 			throw new StudioCMSCacheError('Error updating page by slug');
 		}
 	}
-
-	/**
-	 * Returns an object containing methods to interact with the cache.
-	 */
-	public cacheModule = {
-		GET: {
-			page: {
-				byId: async (id: string) => await this.getPageById(id),
-				bySlug: async (slug: string, pkg: string) => await this.getPageBySlug(slug, pkg),
-			},
-			pages: async () => await this.getAllPages(),
-			siteConfig: async () => await this.getSiteConfig(),
-			latestVersion: async () => await this.getVersion(),
-			folderTree: async () => await this.getFolderTree(),
-			pageFolderTree: async (includeDrafts?: boolean) =>
-				await this.getPageFolderTree(includeDrafts),
-			folderList: async () => await this.getFolderList(),
-			folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
-		},
-		CLEAR: {
-			page: {
-				byId: (id: string) => this.clearPageById(id),
-				bySlug: (slug: string, pkg: string) => this.clearPageBySlug(slug, pkg),
-			},
-			pages: () => this.clearAllPages(),
-			latestVersion: () => this.clearVersion(),
-			folderTree: () => this.clearFolderTree(),
-			folderList: () => this.clearFolderList(),
-		},
-		UPDATE: {
-			page: {
-				byId: async (
-					id: string,
-					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
-				) => await this.updatePageById(id, data),
-				bySlug: async (
-					slug: string,
-					pkg: string,
-					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
-				) => await this.updatePageBySlug(slug, pkg, data),
-			},
-			siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
-			latestVersion: async () => await this.updateVersion(),
-			folderTree: async () => await this.updateFolderTree(),
-			folderList: async () => await this.updateFolderList(),
-			folder: async (data: tsPageFolderSelect) => {
-				const updatedEntry = await this.sdk.UPDATE.folder(data);
-				await this.updateFolderTree();
-				await this.updateFolderList();
-				return updatedEntry;
-			},
-		},
-	};
 }
 
 export default StudioCMSVirtualCache;

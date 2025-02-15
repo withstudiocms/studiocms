@@ -34,11 +34,6 @@ export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
 export const FrontEndConfigSchema = z
 	.object({
 		/**
-		 * Inject Default Routes - Injects the default routes for the StudioCMS Frontend
-		 * @default true
-		 */
-		injectDefaultFrontEndRoutes: z.boolean().optional().default(true),
-		/**
 		 * Inject 404 Route - Injects a 404 route for handling unknown routes
 		 * @default true
 		 *
@@ -54,10 +49,6 @@ export const FrontEndConfigSchema = z
 		 * HTML Default Header - The default head configuration for the Frontend
 		 */
 		htmlDefaultHead: HeadConfigSchema(),
-		/**
-		 * Layout Override - The default layout override for the Frontend
-		 */
-		layoutOverride: z.string().optional(),
 		/**
 		 * Favicon Configuration - The default favicon configuration for the Frontend
 		 */

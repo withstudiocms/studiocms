@@ -1,44 +1,60 @@
 ---
-import '../styles/base.css';
-import studioCMS_SDK from 'studiocms:sdk';
-import FrontLayout from 'studiocms/layouts/frontend/Layout.astro';
+import { defaultFrontEndConfig } from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk/cache';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Navigation from '../components/Navigation.astro';
 
-const config = (await studioCMS_SDK.GET.database.config()) || {
+const { title: SiteTitle, description: SiteDescription } = (await studioCMS_SDK.GET.siteConfig())
+	.data || {
+	title: 'StudioCMS - Database Unavailable',
 	description: 'StudioCMS - Database Unavailable',
 };
 
-interface Props {
+let htmlDefaultLanguage = 'en';
+
+if (defaultFrontEndConfig) {
+	if (typeof defaultFrontEndConfig === 'object' && defaultFrontEndConfig.htmlDefaultLanguage) {
+		htmlDefaultLanguage = defaultFrontEndConfig.htmlDefaultLanguage;
+	}
+}
+
+type Props = {
 	title: string;
 	description: string;
 	lang?: string | undefined;
-	heroImage?: string;
-	siteTitle?: string;
-	siteDescription?: string;
-	pageTitleDelimiter?: string;
-	pageDescriptionDelimiter?: string;
-}
+	heroImage?: string | undefined;
+	siteTitle?: string | undefined;
+	siteDescription?: string | undefined;
+	pageTitleDelimiter?: string | undefined;
+	pageDescriptionDelimiter?: string | undefined;
+};
 
 const {
 	title,
 	description,
 	heroImage,
-	lang,
-	pageDescriptionDelimiter,
-	pageTitleDelimiter,
-	siteDescription = config.description,
-	siteTitle,
+	lang = htmlDefaultLanguage || 'en',
+	siteTitle = SiteTitle,
+	siteDescription = SiteDescription,
+	pageTitleDelimiter = '|',
+	pageDescriptionDelimiter = '-',
 } = Astro.props;
+
+const pageDescription = `${description} ${pageDescriptionDelimiter} ${siteDescription}`;
+const pageTitle = `${title} ${pageTitleDelimiter} ${siteTitle}`;
 ---
 
-<FrontLayout 
-    {title} 
-    {description} 
-    {siteTitle} 
-    {siteDescription}
-    {lang}
-    {heroImage} 
-    {pageDescriptionDelimiter} 
-    {pageTitleDelimiter} 
-    >
-    <slot />
-</FrontLayout>
+<!doctype html>
+<html {lang}>
+	<head>
+		<BaseHead title={pageTitle} description={pageDescription} image={heroImage} lang={lang}/>
+	</head>
+	<body>
+		<Navigation />
+		
+		<slot />
+
+		<Footer {siteTitle} />
+	</body>
+</html>

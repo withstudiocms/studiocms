@@ -14,6 +14,5 @@ export default defineStudioCMSConfig({
 			},
 		},
 	},
-	// TODO: Enable this once beta.8 is released
-	// plugins: [blog()],
+	plugins: [blog()],
 });

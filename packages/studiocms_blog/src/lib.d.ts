@@ -41,3 +41,29 @@ declare module 'studiocms:lib' {
 	export type HeadConfig = import('studiocms/lib/head.js').HeadConfig;
 	export type HeadUserConfig = import('studiocms/lib/head.js').HeadUserConfig;
 }
+
+declare module 'studiocms:config' {
+	export const config: import('studiocms/schemas').StudioCMSConfig;
+	export default config;
+
+	export const dashboardConfig: import('studiocms/schemas').StudioCMSConfig['dashboardConfig'];
+	export const AuthConfig: import(
+		'studiocms/schemas'
+	).StudioCMSConfig['dashboardConfig']['AuthConfig'];
+	export const developerConfig: import(
+		'studiocms/schemas'
+	).StudioCMSConfig['dashboardConfig']['developerConfig'];
+	export const defaultFrontEndConfig: import(
+		'studiocms/schemas'
+	).StudioCMSConfig['defaultFrontEndConfig'];
+	export const sdk: import('studiocms/schemas').StudioCMSConfig['sdk'];
+}
+
+declare module 'studiocms:plugins' {
+	const mod: import('studiocms/plugins').SafePluginListType;
+	export default mod;
+}
+
+declare module 'studiocms:plugin-helpers' {
+	export type SettingsField = import('studiocms/plugins').SettingsField;
+}

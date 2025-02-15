@@ -5,6 +5,7 @@
  */
 /// <reference types="@astrojs/db" />
 
+import sitemap from '@astrojs/sitemap';
 import inlineMod from '@inox-tools/aik-mod';
 import ui from '@studiocms/ui';
 import {
@@ -21,7 +22,7 @@ import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSError } from './errors.js';
-import { makeAPIRoute } from './lib/index.js';
+import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
@@ -131,7 +132,6 @@ export default defineIntegration({
 					const {
 						verbose,
 						rendererConfig,
-						defaultFrontEndConfig,
 						includedIntegrations,
 						imageService,
 						plugins,
@@ -143,6 +143,7 @@ export default defineIntegration({
 
 					const {
 						dashboardEnabled,
+						dashboardRouteOverride,
 						inject404Route,
 						AuthConfig: {
 							enabled: authEnabled,
@@ -354,47 +355,6 @@ export default defineIntegration({
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
 
-					integrationLogger(logInfo, 'Setting up Frontend...');
-
-					// Check if Database Start Page is enabled
-					let shouldInject = false;
-
-					if (typeof defaultFrontEndConfig === 'boolean') {
-						shouldInject = defaultFrontEndConfig;
-					} else if (typeof defaultFrontEndConfig === 'object') {
-						shouldInject = defaultFrontEndConfig.injectDefaultFrontEndRoutes;
-					}
-
-					switch (dbStartPage) {
-						case true:
-							integrationLogger(
-								logInfo,
-								'Database Start Page enabled, skipping Default Frontend Routes Injection... Please follow the Database Setup Guide to create your Frontend.'
-							);
-							break;
-						case false:
-							integrationLogger(
-								logInfo,
-								'Database Start Page disabled, checking for Default Frontend Routes Injection...'
-							);
-
-							if (shouldInject) {
-								integrationLogger(
-									logInfo,
-									'Route Injection enabled, Injecting Default Frontend Routes...'
-								);
-
-								injectRoute({
-									pattern: '[...slug]',
-									entrypoint: resolve('./routes/frontend/route.astro'),
-									prerender: false,
-								});
-
-								integrationLogger(logInfo, 'Frontend Routes Injected!');
-							}
-							break;
-					}
-
 					// Check for `@astrojs/web-vitals` Integration
 					checkForWebVitals(params, { name, verbose });
 
@@ -444,6 +404,11 @@ export default defineIntegration({
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'live-render',
 								entrypoint: routesDir.api('partials/LiveRender.astro'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage,
+								pattern: 'editor',
+								entrypoint: routesDir.api('partials/Editor.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
@@ -689,13 +654,22 @@ export default defineIntegration({
 					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 					const safePluginList: SafePluginListType = [
 						{
-							name: 'StudioCMS (Default)',
+							name: 'StudioCMS (Built-in)',
 							identifier: 'studiocms',
-							pageTypes: [{ label: 'Normal (StudioCMS)', identifier: 'studiocms' }],
+							pageTypes: [
+								{
+									label: 'Markdown (Built-in)',
+									identifier: 'studiocms/markdown',
+									pageContentComponent: resolve('./components/DefaultEditor.astro'),
+								},
+								// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
+							],
 						},
 					];
 
 					integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
+
+					let sitemapEnabled = false;
 
 					// Resolve StudioCMS Plugins
 					for (const {
@@ -706,6 +680,7 @@ export default defineIntegration({
 						frontendNavigationLinks,
 						pageTypes,
 						settingsPage,
+						triggerSitemap,
 					} of plugins || []) {
 						// Check if the identifier is reserved
 						if (identifier === 'studiocms') {
@@ -732,12 +707,28 @@ export default defineIntegration({
 							integrations.push({ integration });
 						}
 
+						if (triggerSitemap) sitemapEnabled = triggerSitemap;
+
 						safePluginList.push({
 							identifier,
 							name,
 							frontendNavigationLinks,
 							pageTypes,
 							settingsPage,
+						});
+					}
+
+					const defaultDashboardRoute = dashboardRouteOverride
+						? removeLeadingTrailingSlashes(dashboardRouteOverride)
+						: 'dashboard';
+
+					if (sitemapEnabled) {
+						integrations.push({
+							integration: sitemap({
+								filter: (route) =>
+									!route.includes(`${config.site}/${defaultDashboardRoute}`) &&
+									!route.includes('/studiocms_api/'),
+							}),
 						});
 					}
 
@@ -784,14 +775,11 @@ export default defineIntegration({
 						imports: {
 							// Core Virtual Components
 							'studiocms:components': `
-								export { default as Avatar } from '${resolve('./components/Avatar.astro')}';
 								export { default as FormattedDate } from '${
 									options.overrides.FormattedDateOverride
 										? astroConfigResolve(options.overrides.FormattedDateOverride)
 										: resolve('./components/FormattedDate.astro')
 								}';
-								export { default as GenericHeader } from '${resolve('./components/GenericHeader.astro')}';
-								export { default as Navigation } from '${resolve('./components/Navigation.astro')}';
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
@@ -907,7 +895,7 @@ export default defineIntegration({
 
 					const messageBox = boxen(pluginListMessage, {
 						padding: 1,
-						title: `Currently Installed StudioCMS Plugins (${pluginListLength})`,
+						title: `Currently Installed StudioCMS Modules (${pluginListLength})`,
 					});
 
 					messages.push({
