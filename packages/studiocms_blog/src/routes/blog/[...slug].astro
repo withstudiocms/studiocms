@@ -1,8 +1,11 @@
 ---
 import { StudioCMSRenderer } from 'studiocms:renderer';
-import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK from 'studiocms:sdk/cache';
 import PostHeader from '../../components/PostHeader.astro';
 import Layout from '../../layouts/Layout.astro';
+
+// This is here to refresh the cache when needed
+const allPages = await studioCMS_SDK.GET.pages();
 
 // Get the slug from the URL
 const { slug } = Astro.params;
@@ -14,14 +17,14 @@ if (!slug) {
 
 // Fetch the blog post content
 
-const post = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug, '@studiocms/blog');
+const post = await studioCMS_SDK.GET.page.bySlug(slug, '@studiocms/blog');
 
 // If no content is found, redirect to 404
 if (!post) {
 	return new Response(null, { status: 404 });
 }
 
-const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post;
+const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post.data;
 
 // If no content is found, redirect to 404
 if (!defaultContent) {

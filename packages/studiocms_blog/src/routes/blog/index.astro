@@ -1,11 +1,11 @@
 ---
 import blogConfig from 'studiocms:blog/config';
-import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK from 'studiocms:sdk/cache';
 import PageList from '../../components/PageList.astro';
 import RSSIcon from '../../components/RSSIcon.astro';
 import Layout from '../../layouts/Layout.astro';
 
-const config = (await studioCMS_SDK.GET.database.config()) || {
+const config = (await studioCMS_SDK.GET.siteConfig()).data || {
 	description: 'StudioCMS - Database Unavailable',
 };
 
@@ -17,7 +17,9 @@ const description: string = configDescription || 'Blog Index';
 const showRSSFeed: boolean = blogConfig.enableRSS;
 
 // Get all pages
-const blogPageList = await studioCMS_SDK.GET.packagePages('@studiocms/blog');
+const blogPageList = (await studioCMS_SDK.GET.pages())
+	.map(({ data }) => data)
+	.filter(({ package: pkg }) => pkg === '@studiocms/blog');
 
 // Get the RSS feed URL
 const rssPath = '/rss.xml';

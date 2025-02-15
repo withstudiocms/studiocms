@@ -2431,5 +2431,6 @@ export function studiocmsSDKCore() {
 		POST,
 		UPDATE,
 		DELETE,
+		db,
 	};
 }

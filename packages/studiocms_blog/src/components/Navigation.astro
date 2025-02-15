@@ -3,7 +3,7 @@ import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
 import plugins from 'studiocms:plugins';
 import Avatar from './Avatar.astro';
 import './navigation.css';
-import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK from 'studiocms:sdk/cache';
 
 type Props = {
 	topLevelLinkCount?: number;
@@ -12,8 +12,8 @@ type Props = {
 
 const { hideAvatar, topLevelLinkCount = 3 } = Astro.props;
 
-const config = await studioCMS_SDK.GET.database.config();
-const pageList = await studioCMS_SDK.GET.database.pages();
+const config = (await studioCMS_SDK.GET.siteConfig()).data;
+const pageList = (await studioCMS_SDK.GET.pages()).map(({ data }) => data);
 
 const { title } = config || { title: 'StudioCMS' };
 const {
