@@ -38,21 +38,22 @@ const packageIdentifier = '@studiocms/blog';
  * @returns The StudioCMS plugin
  */
 export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
+	// Resolve the options and set defaults if not provided
 	const title = options?.blog?.title || 'Blog';
 	const enableRSS = options?.blog?.enableRSS || true;
-	const route = options?.blog?.route || '/blog';
-
+	const route = pathWithBase(options?.blog?.route || '/blog');
 	const sitemap = options?.sitemap ?? true;
 
-	const safeRoute = pathWithBase(route);
+	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
+	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
 		// TODO: Update this to the correct version when the package is ready to be published
 		studiocmsMinimumVersion: '0.1.0-beta.7',
-		frontendNavigationLinks: [{ label: title, href: safeRoute }],
+		frontendNavigationLinks: [{ label: title, href: route }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
 		triggerSitemap: sitemap,
 		integration: {
@@ -69,13 +70,13 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 
 					injectRoute({
 						entrypoint: resolve('./routes/blog/index.astro'),
-						pattern: `${safeRoute}`,
+						pattern: `${route}`,
 						prerender: false,
 					});
 
 					injectRoute({
 						entrypoint: resolve('./routes/blog/[...slug].astro'),
-						pattern: `${safeRoute}/[...slug]`,
+						pattern: `${route}/[...slug]`,
 						prerender: false,
 					});
 
@@ -94,7 +95,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 							const config = {
 								title: "${title}",
 								enableRSS: ${enableRSS},
-								route: "${safeRoute}"
+								route: "${route}"
 							}
 							export default config;
 						`,
