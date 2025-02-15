@@ -10,7 +10,7 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@types/node': ^20.14.11
   "@studiocms/ui": ^0.4.10
   "@sentry/astro": ^8.45.0
-  astro: ^5.2.6
+  astro: ^5.3.0
   astro-integration-kit: ^0.18
   astro-theme-provider: ^0.7.0
   sharp: ^0.33.5

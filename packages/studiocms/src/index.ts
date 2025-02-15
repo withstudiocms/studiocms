@@ -654,7 +654,7 @@ export default defineIntegration({
 					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 					const safePluginList: SafePluginListType = [
 						{
-							name: 'StudioCMS (Default)',
+							name: 'StudioCMS (Built-in)',
 							identifier: 'studiocms',
 							pageTypes: [
 								{
