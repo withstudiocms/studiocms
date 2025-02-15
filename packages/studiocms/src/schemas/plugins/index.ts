@@ -38,9 +38,11 @@ type AsDrizzleTable = SQLiteTableWithColumns<{
 
 const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
 
-const AstroIntegrationSchema = z.union([
-	z.custom<AstroIntegration>(),
-	z.array(z.custom<AstroIntegration>()),
+const AstroIntegrationSchema = z.custom<AstroIntegration>();
+
+const AstroIntegrationPossiblyArraySchema = z.union([
+	AstroIntegrationSchema,
+	z.array(AstroIntegrationSchema),
 ]);
 
 export const StudioCMSPluginSchema = z.object({
@@ -59,7 +61,7 @@ export const StudioCMSPluginSchema = z.object({
 	/**
 	 * Astro Integration(s) for the plugin
 	 */
-	integration: AstroIntegrationSchema.optional(),
+	integration: AstroIntegrationPossiblyArraySchema.optional(),
 	/**
 	 * If this is true, the plugin will enable the Sitemap
 	 */
