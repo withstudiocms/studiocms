@@ -8,7 +8,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/withstudiocms/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_devapps"
   },
   "contributors": [
     "Adammatthiesen",
@@ -22,7 +23,17 @@
     "astrolicious",
     "astro-integration",
     "studiocms",
-    "withastro"
+    "withastro",
+    "wordpress",
+    "wordpress-import",
+    "wordpress-importer",
+    "libsql",
+    "libsql-viewer",
+    "libsql-client",
+    "libsqlstudio",
+    "devapp",
+    "astro-devapp",
+    "astro-devtoolbarapp"
   ],
   "homepage": "https://studiocms.dev",
   "publishConfig": {

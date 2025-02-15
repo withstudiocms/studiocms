@@ -8,7 +8,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/withstudiocms/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms"
   },
   "contributors": [
     "Adammatthiesen",
@@ -27,7 +28,10 @@
     "astro-studiocms",
     "astro",
     "withastro",
-    "astro-integration"
+    "astro-integration",
+    "headlesscms",
+    "headless-cms",
+    "headless"
   ],
   "homepage": "https://studiocms.dev",
   "publishConfig": {

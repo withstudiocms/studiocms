@@ -8,7 +8,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/withstudiocms/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_blog"
   },
   "contributors": [
     "Adammatthiesen",
@@ -56,7 +57,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/rss": "4.0.11",
+    "@astrojs/rss": "catalog:",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
