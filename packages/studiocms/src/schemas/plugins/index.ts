@@ -128,6 +128,24 @@ export const StudioCMSPluginSchema = z.object({
 				 * Description that is shown below the "Page Content" header if this type is selected
 				 */
 				description: z.string().optional(),
+				/**
+				 * The path to the actual component that is displayed for the page content
+				 *
+				 * Component should have a `content` prop that is a string to be able to display current content.
+				 *
+				 * **NOTE:** Currently, requires you to use the form id `page-content` for the content output. Your editor should also be able to handle form submission.
+				 *
+				 * @example
+				 * ```ts
+				 * import { createResolver } from 'astro-integration-kit';
+				 * const { resolve } = createResolver(import.meta.url)
+				 *
+				 * {
+				 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
+				 * }
+				 * ```
+				 */
+				pageContentComponent: z.string().optional(),
 
 				// TODO: Figure out the best way to handle more complex plugin systems...
 				// Ideally, we would want to be able to handle the following cases:
@@ -191,20 +209,6 @@ export const StudioCMSPluginSchema = z.object({
 				// 		table: DrizzleTableSchema,
 				// 	})
 				// 	.optional(),
-				/**
-				 * The path to the actual component that is displayed for the page content
-				 *
-				 * @example
-				 * ```ts
-				 * import { createResolver } from 'astro-integration-kit';
-				 * const { resolve } = createResolver(import.meta.url)
-				 *
-				 * {
-				 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
-				 * }
-				 * ```
-				 */
-				pageContentComponent: z.string().optional(),
 			})
 		)
 		.optional(),
