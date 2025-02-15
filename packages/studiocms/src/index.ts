@@ -658,7 +658,7 @@ export default defineIntegration({
 							identifier: 'studiocms',
 							pageTypes: [
 								{
-									label: 'Markdown (StudioCMS)',
+									label: 'Markdown (Built-in)',
 									identifier: 'studiocms/markdown',
 									pageContentComponent: resolve('./components/DefaultEditor.astro'),
 								},
@@ -727,7 +727,7 @@ export default defineIntegration({
 							integration: sitemap({
 								filter: (route) =>
 									!route.includes(`${config.site}/${defaultDashboardRoute}`) &&
-									!route.includes('studiocms_api'),
+									!route.includes('/studiocms_api/'),
 							}),
 						});
 					}
@@ -895,7 +895,7 @@ export default defineIntegration({
 
 					const messageBox = boxen(pluginListMessage, {
 						padding: 1,
-						title: `Currently Installed StudioCMS Plugins (${pluginListLength})`,
+						title: `Currently Installed StudioCMS Modules (${pluginListLength})`,
 					});
 
 					messages.push({
