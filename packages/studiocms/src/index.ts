@@ -652,7 +652,11 @@ export default defineIntegration({
 							name: 'StudioCMS (Default)',
 							identifier: 'studiocms',
 							pageTypes: [
-								{ label: 'Markdown (StudioCMS)', identifier: 'studiocms/markdown' },
+								{
+									label: 'Markdown (StudioCMS)',
+									identifier: 'studiocms/markdown',
+									pageContentComponent: resolve('./components/DefaultEditor.astro'),
+								},
 								// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
 							],
 						},

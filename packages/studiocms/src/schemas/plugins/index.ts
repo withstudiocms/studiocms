@@ -191,21 +191,20 @@ export const StudioCMSPluginSchema = z.object({
 				// 		table: DrizzleTableSchema,
 				// 	})
 				// 	.optional(),
-				// /**
-				//  * The path to the actual component that is displayed for the page content
-				//  *
-				//  * @example
-				//  * ```ts
-				//  * import { createResolver } from 'astro-integration-kit';
-				//  * const { resolve } = createResolver(import.meta.url)
-				//  *
-				//  * {
-				//  *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
-				//  * }
-				//  * ```
-				//  *
-				//  */
-				// pageContentComponent: z.string().optional(),
+				/**
+				 * The path to the actual component that is displayed for the page content
+				 *
+				 * @example
+				 * ```ts
+				 * import { createResolver } from 'astro-integration-kit';
+				 * const { resolve } = createResolver(import.meta.url)
+				 *
+				 * {
+				 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
+				 * }
+				 * ```
+				 */
+				pageContentComponent: z.string().optional(),
 			})
 		)
 		.optional(),
