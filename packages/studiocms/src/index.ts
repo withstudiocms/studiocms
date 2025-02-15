@@ -407,6 +407,11 @@ export default defineIntegration({
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
+								pattern: 'editor',
+								entrypoint: routesDir.api('partials/Editor.astro'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
 								entrypoint: routesDir.api('search-list.js'),
 							},

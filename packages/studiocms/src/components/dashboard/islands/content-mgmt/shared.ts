@@ -31,7 +31,11 @@ export const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
 });
 
 export const pageTypeComponents = async () => {
-	const pageTypeComponents: { identifier: string; Component: any }[] = [];
+	const pageTypeComponents: {
+		identifier: string;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		Component: (Props?: { content?: string | null | undefined }) => any;
+	}[] = [];
 
 	for (const { pageTypes } of pluginsList) {
 		if (!pageTypes) {

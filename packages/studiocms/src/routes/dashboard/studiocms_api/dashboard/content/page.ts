@@ -21,6 +21,11 @@ interface EditPageJson {
 	content: tsPageContentSelect;
 }
 
+function getParentFolderValue(value?: string) {
+	if (value === 'null') return null;
+	return value;
+}
+
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
@@ -100,9 +105,28 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
-	const jsonData: EditPageJson = await context.request.json();
+	const formData = await context.request.formData();
 
-	const { data, content } = jsonData;
+	const data: Partial<tsPageDataSelect> = {
+		title: formData.get('page-title')?.toString(),
+		slug: formData.get('page-slug')?.toString(),
+		description: formData.get('page-description')?.toString(),
+		package: formData.get('page-type')?.toString(),
+		showOnNav: formData.get('show-in-nav') === 'true',
+		heroImage: formData.get('page-hero-image')?.toString(),
+		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+		showAuthor: formData.get('show-author') === 'true',
+		showContributors: formData.get('show-contributors')?.toString() === 'true',
+		categories: [],
+		tags: [],
+		id: formData.get('page-id')?.toString(),
+		draft: formData.get('draft')?.toString() === 'true',
+	};
+
+	const content = {
+		id: formData.get('page-content-id')?.toString(),
+		content: formData.get('page-content')?.toString(),
+	};
 
 	if (!data) {
 		return simpleResponse(400, 'Invalid form data, data is required');
@@ -156,8 +180,8 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 	try {
 		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
-			pageData: data,
-			pageContent: content,
+			pageData: data as tsPageDataSelect,
+			pageContent: content as tsPageContentSelect,
 		});
 
 		const updatedMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(

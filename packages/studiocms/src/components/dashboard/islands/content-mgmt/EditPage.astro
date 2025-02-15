@@ -154,50 +154,56 @@ if (!currentEditor) {
     </form>
 </div>
 
+<div style="display: none;" id="editor-partial-url" data-url={StudioCMSRoutes.endpointLinks.partials.editor}></div>
+
+<script>
+  const currentPageTypeOptions = document.querySelector('page-type')?.querySelectorAll('.sui-select-option') as NodeListOf<HTMLElement>;
+
+  const editorPartialURL = (document.getElementById('editor-partial-url') as HTMLElement).dataset.url as string;
+
+  currentPageTypeOptions.forEach((option) => {
+    option.addEventListener('click', async () => {
+
+      const selectedValue = option.getAttribute('value');
+
+      const fetchedEditor = await fetch(editorPartialURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ editor: selectedValue }),
+      })
+
+      const res = await fetchedEditor.json();
+
+      if (fetchedEditor.status !== 200) {
+        console.error(res.error);
+        return;
+      }
+
+      if (fetchedEditor.status === 200) {
+        const editorContainer = document.querySelector('.page-content-editor') as HTMLElement;
+        editorContainer.innerHTML = res.text();
+      }
+
+    })
+
+  })
+</script>
+
 <script>
 import { toast } from "studiocms:ui/components";
 
 // get the elements
 const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
 
-function getParentFolderValue(value?: string) {
-    if (value === 'null') return null;
-    return value;
-  }
-
 editPageForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(editPageForm);
 
-    const data = {
-        title: formData.get('page-title')?.toString(),
-        slug: formData.get('page-slug')?.toString(),
-        description: formData.get('page-description')?.toString(),
-        package: formData.get('page-type')?.toString(),
-        showOnNav: formData.get('show-in-nav') === 'true',
-        heroImage: formData.get('page-hero-image')?.toString(),
-        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-        showAuthor: formData.get('show-author') === 'true',
-        showContributors: formData.get('show-contributors')?.toString() === 'true',
-        categories: [],
-        tags: [],
-        id: formData.get('page-id')?.toString(),
-        draft: formData.get('draft')?.toString() === 'true',
-    };
-
-    const content = {
-        id: formData.get('page-content-id')?.toString(),
-        content: formData.get('page-content')?.toString(),
-    }
-
-    console.log(data, content);
-
     const response = await fetch(editPageForm.action, {
         method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data, content }),
+        body: formData,
     });
 
     const res = await response.json();

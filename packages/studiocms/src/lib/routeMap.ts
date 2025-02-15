@@ -69,6 +69,7 @@ export const StudioCMSRoutes = {
 			livePreviewBox: dashboardAPIRoute('live-render'),
 			userListItems: dashboardAPIRoute('user-list-items'),
 			render: rendererRoute('render'),
+			editor: dashboardAPIRoute('editor'),
 		},
 		config: dashboardAPIRoute('config'),
 		users: dashboardAPIRoute('users'),
