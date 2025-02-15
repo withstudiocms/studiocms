@@ -3,6 +3,14 @@ import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
 import { definePlugin } from 'studiocms/plugins';
 
 interface StudioCMSBlogOptions {
+	/**
+	 * Enable sitemap generation
+	 * @default true
+	 */
+	sitemap?: boolean;
+	/**
+	 * The configuration for the blog
+	 */
 	blog?: {
 		/**
 		 * The title of the blog
@@ -34,6 +42,8 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 	const enableRSS = options?.blog?.enableRSS || true;
 	const route = options?.blog?.route || '/blog';
 
+	const sitemap = options?.sitemap ?? true;
+
 	const safeRoute = pathWithBase(route);
 	const { resolve } = createResolver(import.meta.url);
 
@@ -44,7 +54,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 		studiocmsMinimumVersion: '0.1.0-beta.7',
 		frontendNavigationLinks: [{ label: title, href: safeRoute }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
-		triggerSitemap: true,
+		triggerSitemap: sitemap,
 		integration: [
 			{
 				name: packageIdentifier,
