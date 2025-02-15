@@ -4,9 +4,9 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   '@astrojs/react': ^4.2.0
   '@astrojs/check': ^0.9.4
   '@astrojs/tailwind': ^5.1.2
-  '@astrojs/starlight': ^0.30
+  '@astrojs/starlight': ^0.31.1
   '@astrojs/web-vitals': ^3.0.1
-  '@astrojs/node': ^9.0.1
+  '@astrojs/node': ^9.1.0
   '@types/node': ^20.14.11
   "@studiocms/ui": ^0.4.10
   "@sentry/astro": ^8.45.0
