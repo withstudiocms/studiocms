@@ -1,6 +1,6 @@
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse';
+import { simpleResponse } from '../../../utils/simpleResponse.js';
 
 const getAuthToken = (headerString?: string | null) => {
 	if (!headerString) {
@@ -15,6 +15,7 @@ const getAuthToken = (headerString?: string | null) => {
 
 	return parts[1];
 };
+
 /**
  * Verify the auth token
  *

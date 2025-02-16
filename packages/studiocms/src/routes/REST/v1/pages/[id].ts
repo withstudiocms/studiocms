@@ -1,9 +1,9 @@
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
-import type { APIRoute } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../utils/simpleResponse.js';
-import { verifyAuthToken } from '../utils/auth-token.js';
+import { verifyAuthToken } from '../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
@@ -14,7 +14,7 @@ interface UpdatePageJson {
 	content?: UpdatePageContent;
 }
 
-export const GET: APIRoute = async (context) => {
+export const GET: APIRoute = async (context: APIContext) => {
 	const user = await verifyAuthToken(context);
 
 	if (user instanceof Response) {
@@ -46,7 +46,7 @@ export const GET: APIRoute = async (context) => {
 	});
 };
 
-export const PATCH: APIRoute = async (context) => {
+export const PATCH: APIRoute = async (context: APIContext) => {
 	const user = await verifyAuthToken(context);
 
 	if (user instanceof Response) {
@@ -154,7 +154,7 @@ export const PATCH: APIRoute = async (context) => {
 	}
 };
 
-export const DELETE: APIRoute = async (context) => {
+export const DELETE: APIRoute = async (context: APIContext) => {
 	const user = await verifyAuthToken(context);
 
 	if (user instanceof Response) {

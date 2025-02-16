@@ -2,7 +2,7 @@ import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../utils/simpleResponse.js';
-import { verifyAuthToken } from '../utils/auth-token.js';
+import { verifyAuthToken } from '../../utils/auth-token.js';
 
 interface FolderBase {
 	folderName: string;

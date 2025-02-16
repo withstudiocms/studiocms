@@ -3,7 +3,7 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../utils/simpleResponse.js';
-import { verifyAuthToken } from '../utils/auth-token.js';
+import { verifyAuthToken } from '../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
