@@ -17,6 +17,7 @@ type JSONData = {
 	email: string | undefined;
 	displayname: string | undefined;
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
+	originalUrl: string;
 };
 
 export const POST: APIRoute = async (ctx: APIContext) => {
@@ -41,7 +42,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	const jsonData: JSONData = await ctx.request.json();
 
-	const { username, email, displayname, rank } = jsonData;
+	const { username, email, displayname, rank, originalUrl } = jsonData;
 
 	// If the username, password, email, or display name is missing, return an error
 	if (!username) {
@@ -94,10 +95,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		userId: string;
 		token: string;
 	}) {
-		return `${
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			removeLeadingTrailingSlashes(ctx.request.headers.get('origin')!)
-		}/${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
+		return `${originalUrl}${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
 	}
 
 	// Creates a new user invite

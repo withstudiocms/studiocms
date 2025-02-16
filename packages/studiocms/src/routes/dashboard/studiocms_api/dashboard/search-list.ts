@@ -1,6 +1,9 @@
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
+const initFoldersCache = await studioCMS_SDK_Cache.GET.folderList();
+const initPagesCache = await studioCMS_SDK_Cache.GET.pages();
+
 type SearchItem = {
 	id: string;
 	name: string;

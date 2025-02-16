@@ -212,7 +212,8 @@ const safeUsers: {
             username,
             email,
             displayname, 
-            rank
+            rank,
+            originalUrl: window.location.origin
         };
 
         const apiResponse = await fetch(createUserInviteLink, {
