@@ -670,6 +670,8 @@ export default defineIntegration({
 
 					// Inject REST API Routes if not using the dbStartPage and Auth is enabled
 					if (!dbStartPage && authEnabled) {
+						integrationLogger(logInfo, 'Injecting REST API Routes...');
+
 						injectRoute({
 							pattern: v1RestRoute('folders'),
 							entrypoint: routesDir.v1Rest('folders/index.js'),
