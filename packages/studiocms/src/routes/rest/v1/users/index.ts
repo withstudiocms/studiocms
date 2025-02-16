@@ -29,7 +29,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 
 	const users = await studioCMS_SDK.GET.database.users();
 
-	const data = users.map(
+	let data = users.map(
 		({ avatar, createdAt, email, id, name, permissionsData, updatedAt, url, username }) => ({
 			avatar,
 			createdAt,
@@ -42,6 +42,10 @@ export const GET: APIRoute = async (context: APIContext) => {
 			username,
 		})
 	);
+
+	if (rank !== 'owner') {
+		data = data.filter((user) => user.rank !== 'owner');
+	}
 
 	const searchParams = context.url.searchParams;
 
