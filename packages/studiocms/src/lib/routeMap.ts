@@ -81,6 +81,10 @@ export const StudioCMSRoutes = {
 			folder: dashboardAPIRoute('content/folder'),
 		},
 		plugins: dashboardAPIRoute('plugins/'),
+		newUsers: {
+			create: dashboardAPIRoute('create-user'),
+			invite: dashboardAPIRoute('create-user-invite'),
+		},
 	},
 	sdk: {
 		pages: sdkRoute('list-pages'),

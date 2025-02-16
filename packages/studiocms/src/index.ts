@@ -470,6 +470,16 @@ export default defineIntegration({
 								pattern: 'step-2',
 								entrypoint: routesDir.fts('api/step-2.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'create-user',
+								entrypoint: routesDir.api('create-user.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'create-user-invite',
+								entrypoint: routesDir.api('create-user-invite.js'),
+							},
 						],
 					});
 
