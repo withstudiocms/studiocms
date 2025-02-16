@@ -82,9 +82,13 @@ export const injectDashboardRoute = defineUtility('astro:config:setup')(
 			// Log that the Dashboard is enabled
 			integrationLogger({ logger, logLevel: 'info', verbose }, 'Injecting Page Routes...');
 
-			const defaultDashboardRoute = dashboardRouteOverride
+			let defaultDashboardRoute = dashboardRouteOverride
 				? removeLeadingTrailingSlashes(dashboardRouteOverride)
 				: 'dashboard';
+
+			if (defaultDashboardRoute === '/') {
+				defaultDashboardRoute = '';
+			}
 
 			const makeDashboardRoute = (path: string) => {
 				return `${defaultDashboardRoute}/${path}`;

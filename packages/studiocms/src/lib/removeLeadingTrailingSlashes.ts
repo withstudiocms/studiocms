@@ -17,5 +17,5 @@ export function removeLeadingTrailingSlashes(path: string): string {
 		newPath = newPath.substring(0, newPath.length - 1);
 	}
 
-	return newPath;
+	return newPath || '/';
 }
