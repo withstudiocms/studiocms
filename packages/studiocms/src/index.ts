@@ -689,7 +689,17 @@ export default defineIntegration({
 						});
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]'),
-							entrypoint: routesDir.v1Rest('pages/[id].js'),
+							entrypoint: routesDir.v1Rest('pages/[id]/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]/history'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]/history/[id]'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/[id].js'),
 							prerender: false,
 						});
 						injectRoute({
