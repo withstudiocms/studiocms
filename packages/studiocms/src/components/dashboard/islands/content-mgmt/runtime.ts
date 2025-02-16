@@ -17,12 +17,8 @@ export async function importEditorKeys(keys: string[]) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const predefinedComponents: Record<string, any> = {};
 
-	console.log('mod', mod);
-
 	for (const key of keys) {
 		try {
-			console.log('key', key);
-
 			predefinedComponents[convertToSafeString(key)] =
 				// @ts-ignore
 				mod[convertToSafeString(key)];
