@@ -1,10 +1,9 @@
 import * as mod from 'virtual:studiocms/components/Editors';
 import { StudioCMSError } from '../../../../errors.js';
 import { prefixError } from '../../../../lib/renderer/errors.js';
+import { convertToSafeString } from '../../../../utils/safeString.js';
 
-export function convertToSafeString(string: string) {
-	return string.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-}
+export { convertToSafeString };
 
 /**
  * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.

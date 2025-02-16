@@ -57,6 +57,7 @@ import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
+import { convertToSafeString } from './utils/safeString.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -768,10 +769,6 @@ export default defineIntegration({
 					defineModule('studiocms:version', {
 						defaultExport: pkgVersion,
 					});
-
-					function convertToSafeString(string: string) {
-						return string.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-					}
 
 					const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
