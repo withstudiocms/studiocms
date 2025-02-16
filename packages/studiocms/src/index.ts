@@ -70,10 +70,15 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
 
+// Current REST API Versions
+type currentRESTAPIVersions = 'v1';
+
 // SDK Route Resolver
 const sdkRouteResolver = makeAPIRoute('sdk');
 // API Route Resolver
 const apiRoute = makeAPIRoute('renderer');
+// REST API Route Resolver
+const restRoute = (version: currentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
 
 /**
  * **StudioCMS Integration**
@@ -111,6 +116,8 @@ export default defineIntegration({
 			route: (file: string) => resolve(`./routes/dashboard/${file}`),
 			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
 			f0f: (file: string) => resolve(`./routes/${file}`),
+			rest: (version: currentRESTAPIVersions, file: string) =>
+				resolve(`./routes/REST/${version}/${file}`),
 		};
 
 		// Return the Integration
@@ -648,6 +655,38 @@ export default defineIntegration({
 						},
 						false
 					);
+
+					// Inject REST API Routes
+					injectRoute({
+						pattern: restRoute('v1')('folders'),
+						entrypoint: routesDir.rest('v1', 'folders/index.js'),
+						prerender: false,
+					});
+					injectRoute({
+						pattern: restRoute('v1')('folders/[id]'),
+						entrypoint: routesDir.rest('v1', 'folders/[id].js'),
+						prerender: false,
+					});
+					injectRoute({
+						pattern: restRoute('v1')('pages'),
+						entrypoint: routesDir.rest('v1', 'pages/index.js'),
+						prerender: false,
+					});
+					injectRoute({
+						pattern: restRoute('v1')('pages/[id]'),
+						entrypoint: routesDir.rest('v1', 'pages/[id].js'),
+						prerender: false,
+					});
+					injectRoute({
+						pattern: restRoute('v1')('users'),
+						entrypoint: routesDir.rest('v1', 'users/index.js'),
+						prerender: false,
+					});
+					injectRoute({
+						pattern: restRoute('v1')('users/[id]'),
+						entrypoint: routesDir.rest('v1', 'users/[id].js'),
+						prerender: false,
+					});
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
