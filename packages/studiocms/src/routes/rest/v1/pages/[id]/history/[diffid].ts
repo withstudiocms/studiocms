@@ -1,13 +1,50 @@
-import type { APIRoute } from 'astro';
+import studioCMS_SDK from 'studiocms:sdk';
+import type { APIContext, APIRoute } from 'astro';
+import { simpleResponse } from '../../../../../../utils/simpleResponse.js';
+import { verifyAuthToken } from '../../../../utils/auth-token.js';
 
-// TODO: Implement data fetching and return a response
+export const GET: APIRoute = async (context: APIContext) => {
+	const user = await verifyAuthToken(context);
+
+	if (user instanceof Response) {
+		return user;
+	}
+
+	const { rank } = user;
+
+	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+		return simpleResponse(401, 'Unauthorized');
+	}
+
+	const { id, diffid } = context.params;
+
+	if (!id) {
+		return simpleResponse(400, 'Invalid page ID');
+	}
+
+	if (!diffid) {
+		return simpleResponse(400, 'Invalid diff ID');
+	}
+
+	const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffid);
+
+	if (!diff) {
+		return simpleResponse(404, 'Diff not found');
+	}
+
+	return new Response(JSON.stringify(diff), {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
 		status: 204,
 		statusText: 'No Content',
 		headers: {
-			Allow: 'OPTIONS',
+			Allow: 'OPTIONS, GET',
 			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
 			'Cache-Control': 'public, max-age=604800, immutable',
 			Date: new Date().toUTCString(),
