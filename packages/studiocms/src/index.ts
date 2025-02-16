@@ -682,6 +682,11 @@ export default defineIntegration({
 						prerender: false,
 					});
 					injectRoute({
+						pattern: v1RestRoute('settings'),
+						entrypoint: routesDir.v1Rest('settings/index.js'),
+						prerender: false,
+					});
+					injectRoute({
 						pattern: v1RestRoute('users'),
 						entrypoint: routesDir.v1Rest('users/index.js'),
 						prerender: false,
