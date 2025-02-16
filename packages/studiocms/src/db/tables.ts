@@ -155,3 +155,19 @@ export const StudioCMSSiteConfig = defineTable({
 		diffPerPage: column.number({ default: 10 }),
 	},
 });
+
+export const tables = {
+	StudioCMSPageContent,
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
+	StudioCMSPermissions,
+	StudioCMSSessionTable,
+	StudioCMSSiteConfig,
+	StudioCMSUsers,
+	StudioCMSOAuthAccounts,
+	StudioCMSDiffTracking,
+	StudioCMSPageFolderStructure,
+	StudioCMSUserResetTokens,
+	StudioCMSAPIKeys,
+};
