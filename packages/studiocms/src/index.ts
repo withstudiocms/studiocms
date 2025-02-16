@@ -767,6 +767,25 @@ export default defineIntegration({
 						defaultExport: pkgVersion,
 					});
 
+					function convertToSafeString(string: string) {
+						return string.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+					}
+
+					const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
+
+					const editorKeys = allPageTypes.map(({ identifier }) => convertToSafeString(identifier));
+
+					const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
+
+					const editorComponents = allPageTypes
+						.map(({ identifier, pageContentComponent }) => {
+							if (!pageContentComponent) {
+								return `export { default as ${convertToSafeString(identifier)} } from '${defaultEditorComponent}';`;
+							}
+							return `export { default as ${convertToSafeString(identifier)} } from '${pageContentComponent}';`;
+						})
+						.join('\n');
+
 					const componentKeys = ComponentRegistry
 						? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
 						: [];
@@ -793,10 +812,9 @@ export default defineIntegration({
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
-							'virtual:studiocms/components/DefaultEditor': `
-								export { default as DefaultEditor } from '${resolve('./components/DefaultEditor.astro')}';
-
-								export default DefaultEditor;
+							'virtual:studiocms/components/Editors': `
+								export const editorKeys = ${JSON.stringify([...editorKeys])};
+								${editorComponents}
 							`,
 
 							// StudioCMS lib

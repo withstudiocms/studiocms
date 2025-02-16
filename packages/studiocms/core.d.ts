@@ -51,9 +51,8 @@ declare module 'studiocms:components' {
 	export const Generator: typeof import('./src/components/Generator.astro').default;
 }
 
-declare module 'virtual:studiocms/components/DefaultEditor' {
-	export const DefaultEditor: typeof import('./src/components/DefaultEditor.astro').default;
-	export default DefaultEditor;
+declare module 'virtual:studiocms/components/Editors' {
+	export const editorKeys: string[];
 }
 
 declare module 'studiocms:i18n' {

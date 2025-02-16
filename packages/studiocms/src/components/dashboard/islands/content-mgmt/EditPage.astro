@@ -2,10 +2,13 @@
 import '../../../../styles/dashboard-tiny-mde.css';
 import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import pluginsList from 'studiocms:plugins';
+// import pluginsList from 'studiocms:plugins';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { editorKeys } from 'virtual:studiocms/components/Editors';
+import { createComponentProxy } from '../../../../runtime/AstroComponentProxy';
+import { convertToSafeString, importEditorKeys } from './runtime';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -14,34 +17,7 @@ import {
 	trueFalse,
 } from './shared.js';
 
-const pageTypeComponents = async () => {
-	const pageTypeComponents: {
-		identifier: string;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		Component: (Props?: { content?: string | null | undefined }) => any;
-	}[] = [];
-
-	for (const { pageTypes } of pluginsList) {
-		if (!pageTypes) {
-			return pageTypeComponents;
-		}
-
-		for (const { identifier, pageContentComponent } of pageTypes) {
-			if (!pageContentComponent) {
-				continue;
-			}
-
-			pageTypeComponents.push({
-				identifier,
-				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
-			});
-		}
-
-		return pageTypeComponents;
-	}
-
-	return pageTypeComponents;
-};
+console.log('Editor Keys:', editorKeys);
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
@@ -64,18 +40,14 @@ const users = await studioCMS_SDK.GET.database.users();
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-const editors = await pageTypeComponents();
+const editors = await importEditorKeys(editorKeys);
 
-let currentEditor = editors.find((editor) => {
-	if (editor.identifier === pageData.package) {
-		return editor;
-	}
-});
+console.log('Editors:', editors);
 
-if (!currentEditor) {
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	currentEditor = editors.find((editor) => editor.identifier === 'studiocms/markdown')!;
-}
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+let editor: any = editors[convertToSafeString(pageData.package)];
+
+const CurrentEditorComponent = editor;
 ---
 <div id="edit-page-container">
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -137,7 +109,7 @@ if (!currentEditor) {
 
             <div class="tab-section">
                 <div class="page-content-editor">
-                    <currentEditor.Component content={pageData.defaultContent?.content} />
+                    <CurrentEditorComponent content={pageData.defaultContent?.content} />
                     <div id="page-content-editor-placeholder" style="display: none;"></div>
                 </div>
             </div>
@@ -184,7 +156,7 @@ if (!currentEditor) {
     </form>
 </div>
 
-<script is:inline define:vars={{ editors }}>
+<script is:inline define:vars={{ editors: editorKeys }}>
 
 // TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
 
@@ -200,7 +172,7 @@ if (!currentEditor) {
           const editorContainer = document.querySelector('.page-content-editor');
           const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
 
-          if (editors.find((editor) => editor.identifier !== selectedValue)) {
+          if (editors.find((editor) => editor !== selectedValue)) {
             return;
           }
 
