@@ -79,6 +79,8 @@ const sdkRouteResolver = makeAPIRoute('sdk');
 const apiRoute = makeAPIRoute('renderer');
 // REST API Route Resolver
 const restRoute = (version: currentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
+// V1 REST API Route Resolver
+const v1RestRoute = restRoute('v1');
 
 /**
  * **StudioCMS Integration**
@@ -117,7 +119,7 @@ export default defineIntegration({
 			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
 			f0f: (file: string) => resolve(`./routes/${file}`),
 			rest: (version: currentRESTAPIVersions, file: string) =>
-				resolve(`./routes/REST/${version}/${file}`),
+				resolve(`./routes/rest/${version}/${file}`),
 		};
 
 		// Return the Integration
@@ -658,32 +660,32 @@ export default defineIntegration({
 
 					// Inject REST API Routes
 					injectRoute({
-						pattern: restRoute('v1')('folders'),
+						pattern: v1RestRoute('folders'),
 						entrypoint: routesDir.rest('v1', 'folders/index.js'),
 						prerender: false,
 					});
 					injectRoute({
-						pattern: restRoute('v1')('folders/[id]'),
+						pattern: v1RestRoute('folders/[id]'),
 						entrypoint: routesDir.rest('v1', 'folders/[id].js'),
 						prerender: false,
 					});
 					injectRoute({
-						pattern: restRoute('v1')('pages'),
+						pattern: v1RestRoute('pages'),
 						entrypoint: routesDir.rest('v1', 'pages/index.js'),
 						prerender: false,
 					});
 					injectRoute({
-						pattern: restRoute('v1')('pages/[id]'),
+						pattern: v1RestRoute('pages/[id]'),
 						entrypoint: routesDir.rest('v1', 'pages/[id].js'),
 						prerender: false,
 					});
 					injectRoute({
-						pattern: restRoute('v1')('users'),
+						pattern: v1RestRoute('users'),
 						entrypoint: routesDir.rest('v1', 'users/index.js'),
 						prerender: false,
 					});
 					injectRoute({
-						pattern: restRoute('v1')('users/[id]'),
+						pattern: v1RestRoute('users/[id]'),
 						entrypoint: routesDir.rest('v1', 'users/[id].js'),
 						prerender: false,
 					});
