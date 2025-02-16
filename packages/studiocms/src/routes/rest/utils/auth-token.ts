@@ -5,6 +5,17 @@ import { simpleResponse } from '../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
+/**
+ * Get the auth token from the Authorization header
+ *
+ * Auth token is passed in the Authorization header as a Bearer token
+ * @example
+ * headers: {
+ * 	Authorization: 'Bearer <authToken>'
+ * }
+ * @param headerString The Authorization header string
+ * @returns The auth token or null if not found
+ */
 const getAuthToken = (headerString?: string | null) => {
 	if (!headerString) {
 		return null;
@@ -27,6 +38,8 @@ const getAuthToken = (headerString?: string | null) => {
  * headers: {
  * 	Authorization: 'Bearer <authToken>'
  * }
+ * @param context The Astro API context
+ * @returns The user data if the auth token is valid, otherwise a 401 response
  */
 export async function verifyAuthToken(context: APIContext) {
 	// Check if testing and demo mode is enabled
