@@ -40,17 +40,17 @@
   },
   "sideEffects": false,
   "files": [
+    "auth.d.ts",
+    "CHANGELOG.md",
+    "core.d.ts",
+    "custom-renderers",
+    "LICENSE",
+    "README.md",
+    "renderer.d.ts",
+    "ui.d.ts",
     "dist",
     "static",
-    "custom-renderers",
-    "renderer.d.ts",
-    "auth.d.ts",
-    "core.d.ts",
-    "ui.d.ts",
-    "studiocms-cli.mjs",
-    "CHANGELOG.md",
-    "LICENSE",
-    "README.md"
+    "studiocms-cli.mjs"
   ],
   "scripts": {
     "build": "build-scripts build 'src/**/*.{ts,css}'",
