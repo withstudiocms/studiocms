@@ -128,7 +128,7 @@
     "@studiocms/ui": "catalog:",
 
     "astro-integration-kit": "catalog:",
-    "@inox-tools/aik-mod": "^0.9.2",
+    "@inox-tools/inline-mod": "^2.0.3",
 
     "package-json": "^10.0.1",
     "semver": "^7.7.1",

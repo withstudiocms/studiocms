@@ -6,14 +6,9 @@
 /// <reference types="@astrojs/db" />
 
 import sitemap from '@astrojs/sitemap';
-import inlineMod from '@inox-tools/aik-mod';
+import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
-import {
-	addVirtualImports,
-	createResolver,
-	defineIntegration,
-	withPlugins,
-} from 'astro-integration-kit';
+import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
@@ -128,9 +123,8 @@ export default defineIntegration({
 		let imageComponentPath: string;
 
 		// Return the Integration
-		return withPlugins({
+		return {
 			name,
-			plugins: [inlineMod],
 			hooks: {
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
 				'astro:db:setup': ({ extendDb }) => {
@@ -138,7 +132,7 @@ export default defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript, defineModule } = params;
+					const { logger, config, updateConfig, injectRoute, injectScript } = params;
 
 					logger.info('Checking configuration...');
 
@@ -310,34 +304,6 @@ export default defineIntegration({
 
 					// Check for Authentication Environment Variables
 					checkEnvKeys(logger, options);
-
-					// Update the Astro Config
-					updateConfig({
-						image: {
-							remotePatterns: [
-								{
-									protocol: 'https',
-								},
-							],
-						},
-						vite: {
-							optimizeDeps: {
-								exclude: ['three'],
-							},
-							plugins: [
-								copy({
-									copyOnce: true,
-									hook: 'buildStart',
-									targets: [
-										{
-											src: resolve('../static/studiocms-resources/*'),
-											dest: 'public/studiocms-resources/',
-										},
-									],
-								}),
-							],
-						},
-					});
 
 					integrationLogger(logInfo, 'Injecting SDK Routes...');
 
@@ -997,6 +963,35 @@ export default defineIntegration({
 						},
 					});
 
+					// Update the Astro Config
+					updateConfig({
+						image: {
+							remotePatterns: [
+								{
+									protocol: 'https',
+								},
+							],
+						},
+						vite: {
+							optimizeDeps: {
+								exclude: ['three'],
+							},
+							plugins: [
+								inlineModPlugin(),
+								copy({
+									copyOnce: true,
+									hook: 'buildStart',
+									targets: [
+										{
+											src: resolve('../static/studiocms-resources/*'),
+											dest: 'public/studiocms-resources/',
+										},
+									],
+								}),
+							],
+						},
+					});
+
 					let pluginListLength = 0;
 					let pluginListMessage = '';
 
@@ -1113,6 +1108,6 @@ export default defineIntegration({
 					}
 				},
 			},
-		});
+		};
 	},
 });
