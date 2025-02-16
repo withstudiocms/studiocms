@@ -185,6 +185,11 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	});
 };
 
+export const DELETE: APIRoute = async (context: APIContext) => {
+	// TODO: Implement DELETE method
+	return simpleResponse(405, 'Method Not Allowed');
+};
+
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
 		status: 204,
