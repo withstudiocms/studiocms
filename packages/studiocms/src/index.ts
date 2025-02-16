@@ -793,6 +793,12 @@ export default defineIntegration({
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
+							'virtual:studiocms/components/DefaultEditor': `
+								export { default as DefaultEditor } from '${resolve('./components/DefaultEditor.astro')}';
+
+								export default DefaultEditor;
+							`,
+
 							// StudioCMS lib
 							'studiocms:lib': `
 								export * from '${resolve('./lib/head.js')}';
