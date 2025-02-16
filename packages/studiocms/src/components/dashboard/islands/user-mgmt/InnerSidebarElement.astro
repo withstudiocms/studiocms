@@ -187,17 +187,17 @@ const safeUsers: {
             body: JSON.stringify(data),
         });
 
+        const response = await apiResponse.json();
+
         if (!apiResponse.ok) {
             console.error('Failed to create new user');
             toast({
                 title: 'Failed to create new user',
-                description: 'An error occurred while creating a new user',
+                description: response.error,
                 type: 'danger',
             })
             return;
         }
-
-        const response = await apiResponse.json();
 
         createResponsePlaceholder.innerText = JSON.stringify(response, null, 2);
 
@@ -227,19 +227,19 @@ const safeUsers: {
             body: JSON.stringify(data),
         });
 
+        const response = await apiResponse.json();
+
         if (!apiResponse.ok) {
             console.error('Failed to create new user invite');
             toast({
                 title: 'Failed to create new user invite',
-                description: 'An error occurred while creating a new user invite',
+                description: response.error,
                 type: 'danger',
             })
             return;
         }
 
-        const response = await apiResponse.json();
-
-        inviteResponsePlaceholder.innerText = response.inviteLink;
+        inviteResponsePlaceholder.innerText = response.link;
 
         createUserInviteModal.hide();
         inviteResponseModal.show();
