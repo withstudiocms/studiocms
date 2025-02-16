@@ -100,6 +100,8 @@ export default defineIntegration({
 
 		const RendererComponent = resolve('./components/Renderer.astro');
 
+		const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
+
 		// Define the Image Component Path
 		let imageComponentPath: string;
 
@@ -670,7 +672,7 @@ export default defineIntegration({
 								{
 									label: 'Markdown (Built-in)',
 									identifier: 'studiocms/markdown',
-									pageContentComponent: resolve('./components/DefaultEditor.astro'),
+									pageContentComponent: defaultEditorComponent,
 								},
 								// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
 							],
@@ -774,8 +776,6 @@ export default defineIntegration({
 					const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
 					const editorKeys = allPageTypes.map(({ identifier }) => convertToSafeString(identifier));
-
-					const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 					const editorComponents = allPageTypes
 						.map(({ identifier, pageContentComponent }) => {
