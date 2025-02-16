@@ -90,6 +90,10 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 			return simpleResponse(400, 'Failed to delete user');
 		}
 
+		if (response.status === 'error') {
+			return simpleResponse(400, response.message);
+		}
+
 		return simpleResponse(200, response.message);
 	} catch (error) {
 		return simpleResponse(400, 'Failed to delete user');

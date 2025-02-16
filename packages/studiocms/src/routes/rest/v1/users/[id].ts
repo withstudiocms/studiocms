@@ -186,8 +186,69 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
-	// TODO: Implement DELETE method
-	return simpleResponse(405, 'Method Not Allowed');
+	const user = await verifyAuthToken(context);
+
+	if (user instanceof Response) {
+		return user;
+	}
+
+	const { rank } = user;
+
+	if (rank !== 'owner' && rank !== 'admin') {
+		return simpleResponse(401, 'Unauthorized');
+	}
+
+	const { id } = context.params;
+
+	if (!id) {
+		return simpleResponse(400, 'Invalid form data, id is required');
+	}
+
+	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
+
+	if (!existingUser) {
+		return simpleResponse(400, 'User not found');
+	}
+
+	const { permissionsData } = existingUser;
+
+	const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+
+	const loggedInUser = (await studioCMS_SDK.GET.databaseTable.users()).find(
+		(user) => user.id === id
+	);
+
+	if (!loggedInUser || loggedInUser === undefined) {
+		return simpleResponse(400, 'User Error');
+	}
+
+	const permissionLevelInput = {
+		isLoggedIn: true,
+		user: loggedInUser,
+		permissionLevel: rank as PermissionRank,
+	};
+
+	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
+
+	if (!isAllowed) {
+		return simpleResponse(401, 'Unauthorized');
+	}
+
+	try {
+		const response = await studioCMS_SDK.DELETE.user(id);
+
+		if (!response) {
+			return simpleResponse(400, 'Failed to delete user');
+		}
+
+		if (response.status === 'error') {
+			return simpleResponse(400, response.message);
+		}
+
+		return simpleResponse(200, response.message);
+	} catch (error) {
+		return simpleResponse(400, `Failed to delete user: ${error}`);
+	}
 };
 
 export const OPTIONS: APIRoute = async () => {
@@ -195,7 +256,7 @@ export const OPTIONS: APIRoute = async () => {
 		status: 204,
 		statusText: 'No Content',
 		headers: {
-			Allow: 'OPTIONS, GET',
+			Allow: 'OPTIONS, GET, PATCH, DELETE',
 			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
 			'Cache-Control': 'public, max-age=604800, immutable',
 			Date: new Date().toUTCString(),
