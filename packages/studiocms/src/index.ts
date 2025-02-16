@@ -695,6 +695,8 @@ export default defineIntegration({
 							entrypoint: routesDir.v1Rest('pages/[id]/index.js'),
 							prerender: false,
 						});
+
+						// Page Diff (History) API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]/history'),
 							entrypoint: routesDir.v1Rest('pages/[id]/history/index.js'),
