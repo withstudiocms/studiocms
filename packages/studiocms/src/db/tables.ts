@@ -20,6 +20,8 @@ export const StudioCMSAPIKeys = defineTable({
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 		key: column.text(),
+		creationDate: column.date({ default: NOW }),
+		description: column.text({ optional: true }),
 	},
 });
 

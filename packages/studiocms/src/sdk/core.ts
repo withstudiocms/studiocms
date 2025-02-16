@@ -317,12 +317,12 @@ export function studiocmsSDKCore() {
 
 	const REST_API = {
 		tokens: {
-			new: async (userId: string) => {
+			new: async (userId: string, description: string) => {
 				const key = generateToken(userId);
 
 				return await db
 					.insert(tsAPIKeys)
-					.values({ id: crypto.randomUUID(), userId, key })
+					.values({ id: crypto.randomUUID(), userId, key, creationDate: new Date(), description })
 					.returning()
 					.get();
 			},
