@@ -672,6 +672,7 @@ export default defineIntegration({
 					if (!dbStartPage && authEnabled) {
 						integrationLogger(logInfo, 'Injecting REST API Routes...');
 
+						// Folders API Routes
 						injectRoute({
 							pattern: v1RestRoute('folders'),
 							entrypoint: routesDir.v1Rest('folders/index.js'),
@@ -682,6 +683,8 @@ export default defineIntegration({
 							entrypoint: routesDir.v1Rest('folders/[id].js'),
 							prerender: false,
 						});
+
+						// Pages API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages'),
 							entrypoint: routesDir.v1Rest('pages/index.js'),
@@ -702,11 +705,15 @@ export default defineIntegration({
 							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].js'),
 							prerender: false,
 						});
+
+						// Settings API Routes
 						injectRoute({
 							pattern: v1RestRoute('settings'),
 							entrypoint: routesDir.v1Rest('settings/index.js'),
 							prerender: false,
 						});
+
+						// Users API Routes
 						injectRoute({
 							pattern: v1RestRoute('users'),
 							entrypoint: routesDir.v1Rest('users/index.js'),
