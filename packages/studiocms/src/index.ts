@@ -113,13 +113,15 @@ export default defineIntegration({
 		// Define the Image Component Path
 		let imageComponentPath: string;
 
+		const _rest_dir = (version: currentRESTAPIVersions) => (file: string) =>
+			resolve(`./routes/rest/${version}/${file}`);
+
 		const routesDir = {
 			fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
 			route: (file: string) => resolve(`./routes/dashboard/${file}`),
 			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
 			f0f: (file: string) => resolve(`./routes/${file}`),
-			rest: (version: currentRESTAPIVersions, file: string) =>
-				resolve(`./routes/rest/${version}/${file}`),
+			v1Rest: (file: string) => _rest_dir('v1')(file),
 		};
 
 		// Return the Integration
@@ -661,32 +663,32 @@ export default defineIntegration({
 					// Inject REST API Routes
 					injectRoute({
 						pattern: v1RestRoute('folders'),
-						entrypoint: routesDir.rest('v1', 'folders/index.js'),
+						entrypoint: routesDir.v1Rest('folders/index.js'),
 						prerender: false,
 					});
 					injectRoute({
 						pattern: v1RestRoute('folders/[id]'),
-						entrypoint: routesDir.rest('v1', 'folders/[id].js'),
+						entrypoint: routesDir.v1Rest('folders/[id].js'),
 						prerender: false,
 					});
 					injectRoute({
 						pattern: v1RestRoute('pages'),
-						entrypoint: routesDir.rest('v1', 'pages/index.js'),
+						entrypoint: routesDir.v1Rest('pages/index.js'),
 						prerender: false,
 					});
 					injectRoute({
 						pattern: v1RestRoute('pages/[id]'),
-						entrypoint: routesDir.rest('v1', 'pages/[id].js'),
+						entrypoint: routesDir.v1Rest('pages/[id].js'),
 						prerender: false,
 					});
 					injectRoute({
 						pattern: v1RestRoute('users'),
-						entrypoint: routesDir.rest('v1', 'users/index.js'),
+						entrypoint: routesDir.v1Rest('users/index.js'),
 						prerender: false,
 					});
 					injectRoute({
 						pattern: v1RestRoute('users/[id]'),
-						entrypoint: routesDir.rest('v1', 'users/[id].js'),
+						entrypoint: routesDir.v1Rest('users/[id].js'),
 						prerender: false,
 					});
 
