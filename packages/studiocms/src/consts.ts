@@ -12,11 +12,20 @@ export const CMSSiteConfigId: number = 1;
  */
 export const defaultCacheLifeTime: TimeString = '5m';
 
+/**
+ * The default lifetime for cached items in milliseconds.
+ * This value is used to determine how long an item should remain in the cache before it is considered expired.
+ */
 export const versionCacheLifetime = 1000 * 60 * 60 * 24 * 7; // 1 week
 
-// Current REST API Versions
-
+/**
+ * Current REST API Versions
+ */
 export const currentRESTAPIVersions = ['v1'] as const;
+
+/**
+ * Current REST API Versions Type
+ */
 export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 
 /**

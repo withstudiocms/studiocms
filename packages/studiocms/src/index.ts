@@ -80,9 +80,11 @@ const restRoute = (version: CurrentRESTAPIVersions) => makeAPIRoute(`rest/${vers
 // V1 REST API Route Resolver
 const v1RestRoute = restRoute('v1');
 
+// REST API Directory Resolver
 const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
 	resolve(`./routes/rest/${version}/${file}`);
 
+// Routes Directory Resolvers
 const routesDir = {
 	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
 	route: (file: string) => resolve(`./routes/dashboard/${file}`),
@@ -91,8 +93,10 @@ const routesDir = {
 	v1Rest: (file: string) => _rest_dir('v1')(file),
 };
 
+// Renderer Component Resolver
 const RendererComponent = resolve('./components/Renderer.astro');
 
+// Default Editor Component Resolver
 const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 /**
@@ -117,6 +121,7 @@ export default defineIntegration({
 		// Component Registry for Custom user Components
 		let ComponentRegistry: Record<string, string>;
 
+		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string;
 
 		// Define the Image Component Path
@@ -137,8 +142,10 @@ export default defineIntegration({
 
 					logger.info('Checking configuration...');
 
+					// Watch the StudioCMS Config File
 					watchStudioCMSConfig(params);
 
+					// Resolve the StudioCMS Configuration
 					options = await configResolver(params, opts);
 
 					const {
@@ -175,6 +182,7 @@ export default defineIntegration({
 					// Create logInfo object
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
 
+					// Check for Component Registry
 					if (componentRegistry) ComponentRegistry = componentRegistry;
 
 					// Resolve the callout theme based on the user's configuration
@@ -292,6 +300,7 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Configuring CustomImage Component...');
 
+					// Resolve the Custom Image Component Path
 					imageComponentPath = overrides.CustomImageOverride
 						? astroConfigResolve(overrides.CustomImageOverride)
 						: resolve('./components/image/CustomImage.astro');
@@ -302,6 +311,7 @@ export default defineIntegration({
 					// Check for Authentication Environment Variables
 					checkEnvKeys(logger, options);
 
+					// Update the Astro Config
 					updateConfig({
 						image: {
 							remotePatterns: [
@@ -658,42 +668,44 @@ export default defineIntegration({
 						false
 					);
 
-					// Inject REST API Routes
-					injectRoute({
-						pattern: v1RestRoute('folders'),
-						entrypoint: routesDir.v1Rest('folders/index.js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('folders/[id]'),
-						entrypoint: routesDir.v1Rest('folders/[id].js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('pages'),
-						entrypoint: routesDir.v1Rest('pages/index.js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('pages/[id]'),
-						entrypoint: routesDir.v1Rest('pages/[id].js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('settings'),
-						entrypoint: routesDir.v1Rest('settings/index.js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('users'),
-						entrypoint: routesDir.v1Rest('users/index.js'),
-						prerender: false,
-					});
-					injectRoute({
-						pattern: v1RestRoute('users/[id]'),
-						entrypoint: routesDir.v1Rest('users/[id].js'),
-						prerender: false,
-					});
+					// Inject REST API Routes if not using the dbStartPage and Auth is enabled
+					if (!dbStartPage && authEnabled) {
+						injectRoute({
+							pattern: v1RestRoute('folders'),
+							entrypoint: routesDir.v1Rest('folders/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('folders/[id]'),
+							entrypoint: routesDir.v1Rest('folders/[id].js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages'),
+							entrypoint: routesDir.v1Rest('pages/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]'),
+							entrypoint: routesDir.v1Rest('pages/[id].js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('settings'),
+							entrypoint: routesDir.v1Rest('settings/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('users'),
+							entrypoint: routesDir.v1Rest('users/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('users/[id]'),
+							entrypoint: routesDir.v1Rest('users/[id].js'),
+							prerender: false,
+						});
+					}
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
