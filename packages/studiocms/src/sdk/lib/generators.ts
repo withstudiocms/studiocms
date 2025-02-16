@@ -17,3 +17,12 @@ export function generateToken(userId: string): string {
 export function testToken(token: string) {
 	return jwt.verify(token, cmsEncryptionKey);
 }
+
+export function generateRandomPassword(length: number): string {
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let password = '';
+	for (let i = 0; i < length; i++) {
+		password += characters.charAt(Math.floor(Math.random() * characters.length));
+	}
+	return password;
+}

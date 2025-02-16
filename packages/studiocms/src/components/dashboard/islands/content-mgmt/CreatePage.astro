@@ -2,18 +2,22 @@
 import '../../../../styles/dashboard-tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { editorKeys } from 'virtual:studiocms/components/Editors';
+import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
 	categoriesOptions,
-	pageTypeComponents,
 	pageTypeOptions,
 	parentFolderOptions,
 	tagsOptions,
 	trueFalse,
 } from './shared.js';
-const editors = await pageTypeComponents();
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-const currentEditor = editors.find((editor) => editor.identifier === 'studiocms/markdown')!;
+const editors = await importEditorKeys(editorKeys);
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+let editor: any = editors[convertToSafeString('studiocms/markdown')];
+
+const CurrentEditorComponent = editor;
 ---
 <div id="create-page-container">
     <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -69,7 +73,7 @@ const currentEditor = editors.find((editor) => editor.identifier === 'studiocms/
           <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
             <div class="tab-section">
               <div class="page-content-editor">
-                <currentEditor.Component />
+                <CurrentEditorComponent />
                 <div id="page-content-editor-placeholder" style="display: none;"></div>
               </div>
             </div>

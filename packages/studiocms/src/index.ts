@@ -57,6 +57,7 @@ import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import { injectAuthAPIRoutes, injectAuthPageRoutes } from './utils/routeBuilder.js';
+import { convertToSafeString } from './utils/safeString.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -99,6 +100,8 @@ export default defineIntegration({
 		let resolvedCalloutTheme: string;
 
 		const RendererComponent = resolve('./components/Renderer.astro');
+
+		const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
@@ -470,6 +473,16 @@ export default defineIntegration({
 								pattern: 'step-2',
 								entrypoint: routesDir.fts('api/step-2.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'create-user',
+								entrypoint: routesDir.api('create-user.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'create-user-invite',
+								entrypoint: routesDir.api('create-user-invite.js'),
+							},
 						],
 					});
 
@@ -660,7 +673,7 @@ export default defineIntegration({
 								{
 									label: 'Markdown (Built-in)',
 									identifier: 'studiocms/markdown',
-									pageContentComponent: resolve('./components/DefaultEditor.astro'),
+									pageContentComponent: defaultEditorComponent,
 								},
 								// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
 							],
@@ -757,6 +770,19 @@ export default defineIntegration({
 						defaultExport: pkgVersion,
 					});
 
+					const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
+
+					const editorKeys = allPageTypes.map(({ identifier }) => convertToSafeString(identifier));
+
+					const editorComponents = allPageTypes
+						.map(({ identifier, pageContentComponent }) => {
+							if (!pageContentComponent) {
+								return `export { default as ${convertToSafeString(identifier)} } from '${defaultEditorComponent}';`;
+							}
+							return `export { default as ${convertToSafeString(identifier)} } from '${pageContentComponent}';`;
+						})
+						.join('\n');
+
 					const componentKeys = ComponentRegistry
 						? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
 						: [];
@@ -781,6 +807,11 @@ export default defineIntegration({
 										: resolve('./components/FormattedDate.astro')
 								}';
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
+							`,
+
+							'virtual:studiocms/components/Editors': `
+								export const editorKeys = ${JSON.stringify([...editorKeys])};
+								${editorComponents}
 							`,
 
 							// StudioCMS lib

@@ -51,6 +51,10 @@ declare module 'studiocms:components' {
 	export const Generator: typeof import('./src/components/Generator.astro').default;
 }
 
+declare module 'virtual:studiocms/components/Editors' {
+	export const editorKeys: string[];
+}
+
 declare module 'studiocms:i18n' {
 	export const staticPaths: typeof import('./static/i18n/index.js').staticPaths;
 	export const getLangFromUrl: typeof import('./static/i18n/index.js').getLangFromUrl;

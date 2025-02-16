@@ -12,9 +12,14 @@ import {
 	generateFolderTree,
 	getFullPath,
 } from './lib/foldertree.js';
+import {
+	generateRandomIDNumber,
+	generateRandomPassword,
+	generateToken,
+	testToken,
+} from './lib/generators.js';
 import type { PageType } from './lib/packages.js';
 import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
-import { generateRandomIDNumber, generateToken, testToken } from './lib/tokens.js';
 import { combineRanks, verifyRank } from './lib/users.js';
 import {
 	tsDiffTracking,
@@ -716,10 +721,13 @@ export function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted user.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the user.
 			 */
-			create: async (newUserData: tsUsersInsert): Promise<tsUsersSelect> => {
+			create: async (
+				newUserData: tsUsersInsert,
+				rank?: 'visitor' | 'editor' | 'admin' | 'owner'
+			): Promise<tsUsersSelect> => {
 				try {
 					const newUser = await db.insert(tsUsers).values(newUserData).returning().get();
-					await db.insert(tsPermissions).values({ user: newUser.id, rank: 'visitor' });
+					await db.insert(tsPermissions).values({ user: newUser.id, rank: rank || 'visitor' });
 					return newUser;
 				} catch (error) {
 					if (error instanceof Error) {
@@ -2423,6 +2431,7 @@ export function studiocmsSDKCore() {
 		collectTags,
 		collectPageData,
 		collectUserData,
+		generateRandomPassword,
 		resetTokenBucket,
 		diffTracking,
 		AUTH,

@@ -1,5 +1,34 @@
 ---
-import { pageTypeComponents } from '../../../../../components/dashboard/islands/content-mgmt/shared.js';
+import pluginsList from 'studiocms:plugins';
+
+const pageTypeComponents = async () => {
+	const pageTypeComponents: {
+		identifier: string;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		Component: (Props?: { content?: string | null | undefined }) => any;
+	}[] = [];
+
+	for (const { pageTypes } of pluginsList) {
+		if (!pageTypes) {
+			return pageTypeComponents;
+		}
+
+		for (const { identifier, pageContentComponent } of pageTypes) {
+			if (!pageContentComponent) {
+				continue;
+			}
+
+			pageTypeComponents.push({
+				identifier,
+				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
+			});
+		}
+
+		return pageTypeComponents;
+	}
+
+	return pageTypeComponents;
+};
 
 export const partial = true;
 

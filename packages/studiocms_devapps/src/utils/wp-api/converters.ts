@@ -179,7 +179,7 @@ export const ConvertToPostData = async (
 	const titleImageJson = await titleImageResponse.json();
 	const titleImage = await downloadPostImage(titleImageJson.source_url, pagesImagesFolder);
 
-	const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms';
+	const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms/markdown';
 
 	await generateCategories(data.categories, endpoint);
 	await generateTags(data.tags, endpoint);
