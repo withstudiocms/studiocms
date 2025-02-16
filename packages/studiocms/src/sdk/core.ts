@@ -322,7 +322,13 @@ export function studiocmsSDKCore() {
 
 				return await db
 					.insert(tsAPIKeys)
-					.values({ id: crypto.randomUUID(), userId, key, creationDate: new Date(), description })
+					.values({
+						id: crypto.randomUUID(),
+						creationDate: new Date(),
+						userId,
+						key,
+						description,
+					})
 					.returning()
 					.get();
 			},
