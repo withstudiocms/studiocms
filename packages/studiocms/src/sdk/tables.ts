@@ -1,5 +1,6 @@
 import { asDrizzleTable } from '@astrojs/db/utils';
 import {
+	StudioCMSAPIKeys,
 	StudioCMSDiffTracking,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
@@ -13,6 +14,8 @@ import {
 	StudioCMSUserResetTokens,
 	StudioCMSUsers,
 } from '../db/tables.js';
+
+export const tsAPIKeys = asDrizzleTable('StudioCMSAPIKeys', StudioCMSAPIKeys);
 
 /**
  * # StudioCMS - Page Content Table

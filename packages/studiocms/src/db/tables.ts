@@ -15,6 +15,14 @@ export const StudioCMSUsers = defineTable({
 	},
 });
 
+export const StudioCMSAPIKeys = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		key: column.text(),
+	},
+});
+
 export const StudioCMSUserResetTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),

@@ -1,5 +1,6 @@
 import { defineDb } from 'astro:db';
 import {
+	StudioCMSAPIKeys,
 	StudioCMSDiffTracking,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
@@ -29,5 +30,6 @@ export default defineDb({
 		StudioCMSDiffTracking,
 		StudioCMSPageFolderStructure,
 		StudioCMSUserResetTokens,
+		StudioCMSAPIKeys,
 	},
 });
