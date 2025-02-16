@@ -21,6 +21,7 @@ import packageJson from 'package-json';
 import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
+import type { CurrentRESTAPIVersions } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
@@ -70,17 +71,29 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
 
-// Current REST API Versions
-type currentRESTAPIVersions = 'v1';
-
 // SDK Route Resolver
 const sdkRouteResolver = makeAPIRoute('sdk');
 // API Route Resolver
 const apiRoute = makeAPIRoute('renderer');
 // REST API Route Resolver
-const restRoute = (version: currentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
+const restRoute = (version: CurrentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
 // V1 REST API Route Resolver
 const v1RestRoute = restRoute('v1');
+
+const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
+	resolve(`./routes/rest/${version}/${file}`);
+
+const routesDir = {
+	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
+	route: (file: string) => resolve(`./routes/dashboard/${file}`),
+	api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
+	f0f: (file: string) => resolve(`./routes/${file}`),
+	v1Rest: (file: string) => _rest_dir('v1')(file),
+};
+
+const RendererComponent = resolve('./components/Renderer.astro');
+
+const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 /**
  * **StudioCMS Integration**
@@ -106,23 +119,8 @@ export default defineIntegration({
 
 		let resolvedCalloutTheme: string;
 
-		const RendererComponent = resolve('./components/Renderer.astro');
-
-		const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
-
 		// Define the Image Component Path
 		let imageComponentPath: string;
-
-		const _rest_dir = (version: currentRESTAPIVersions) => (file: string) =>
-			resolve(`./routes/rest/${version}/${file}`);
-
-		const routesDir = {
-			fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-			route: (file: string) => resolve(`./routes/dashboard/${file}`),
-			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-			f0f: (file: string) => resolve(`./routes/${file}`),
-			v1Rest: (file: string) => _rest_dir('v1')(file),
-		};
 
 		// Return the Integration
 		return withPlugins({

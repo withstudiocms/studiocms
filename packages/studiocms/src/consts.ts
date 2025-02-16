@@ -14,6 +14,11 @@ export const defaultCacheLifeTime: TimeString = '5m';
 
 export const versionCacheLifetime = 1000 * 60 * 60 * 24 * 7; // 1 week
 
+// Current REST API Versions
+
+export const currentRESTAPIVersions = ['v1'] as const;
+export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
+
 /**
  * StudioCMS Social Links Type
  */
