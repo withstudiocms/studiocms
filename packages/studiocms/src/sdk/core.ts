@@ -18,7 +18,6 @@ import {
 	generateToken,
 	testToken,
 } from './lib/generators.js';
-import type { PageType } from './lib/packages.js';
 import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { combineRanks, verifyRank } from './lib/users.js';
 import {
@@ -1217,17 +1216,10 @@ export function studiocmsSDKCore() {
 				 */
 				bySlug: async (
 					slug: string,
-					pkg?: PageType,
 					tree?: FolderNode[]
 				): Promise<CombinedPageData | undefined> => {
 					try {
-						const pkgToGet = pkg || 'studiocms';
-
-						const page = await db
-							.select()
-							.from(tsPageData)
-							.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
-							.get();
+						const page = await db.select().from(tsPageData).where(eq(tsPageData.slug, slug)).get();
 
 						if (!page) return undefined;
 						const folders = tree || (await buildFolderTree());
