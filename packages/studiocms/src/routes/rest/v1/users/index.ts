@@ -43,7 +43,27 @@ export const GET: APIRoute = async (context: APIContext) => {
 		})
 	);
 
-	return new Response(JSON.stringify(data), {
+	const searchParams = context.url.searchParams;
+
+	const rankFilter = searchParams.get('rank');
+	const usernameFilter = searchParams.get('username');
+	const nameFilter = searchParams.get('name');
+
+	let filteredData = data;
+
+	if (rankFilter) {
+		filteredData = filteredData.filter((user) => user.rank === rankFilter);
+	}
+
+	if (usernameFilter) {
+		filteredData = filteredData.filter((user) => user.username.includes(usernameFilter));
+	}
+
+	if (nameFilter) {
+		filteredData = filteredData.filter((user) => user.name.includes(nameFilter));
+	}
+
+	return new Response(JSON.stringify(filteredData), {
 		headers: {
 			'Content-Type': 'application/json',
 		},

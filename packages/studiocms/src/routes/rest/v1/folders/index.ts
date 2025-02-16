@@ -24,7 +24,27 @@ export const GET: APIRoute = async (context: APIContext) => {
 
 	const folders = await studioCMS_SDK_Cache.GET.folderList();
 
-	return new Response(JSON.stringify(folders), {
+	const searchParams = context.url.searchParams;
+
+	const folderNameFilter = searchParams.get('name');
+	const folderParentFilter = searchParams.get('parent');
+
+	let filteredFolders = folders.data;
+
+	if (folderNameFilter) {
+		filteredFolders = filteredFolders.filter((folder) => folder.name.includes(folderNameFilter));
+	}
+
+	if (folderParentFilter) {
+		filteredFolders = filteredFolders.filter((folder) => folder.parent === folderParentFilter);
+	}
+
+	const finalFolders = {
+		data: filteredFolders,
+		lastCacheUpdate: folders.lastCacheUpdate,
+	};
+
+	return new Response(JSON.stringify(finalFolders), {
 		headers: {
 			'Content-Type': 'application/json',
 		},
