@@ -15,10 +15,10 @@ import packageJson from 'package-json';
 import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import type { CurrentRESTAPIVersions } from './consts.js';
+import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { makeAPIRoute } from './lib/index.js';
+import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
@@ -50,32 +50,6 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
-
-// SDK Route Resolver
-const sdkRouteResolver = makeAPIRoute('sdk');
-// API Route Resolver
-const apiRoute = makeAPIRoute('renderer');
-// REST API Route Resolver
-const restRoute = (version: CurrentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
-// V1 REST API Route Resolver
-const v1RestRoute = restRoute('v1');
-
-// REST API Directory Resolver
-const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
-	resolve(`./routes/rest/${version}/${file}`);
-
-// Routes Directory Resolvers
-const routesDir = {
-	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-	dashRoute: (file: string) => resolve(`./routes/dashboard/${file}`),
-	dashApi: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-	errors: (file: string) => resolve(`./routes/error-pages/${file}`),
-	v1Rest: (file: string) => _rest_dir('v1')(file),
-	sdk: (file: string) => resolve(`./routes/sdk/${file}`),
-	api: (file: string) => resolve(`./routes/api/${file}`),
-	authPage: (file: string) => resolve(`./routes/auth/${file}`),
-	authAPI: (file: string) => resolve(`./routes/auth/api/${file}`),
-};
 
 // Renderer Component Resolver
 const RendererComponent = resolve('./components/Renderer.astro');
@@ -125,6 +99,8 @@ export default defineIntegration({
 				'astro:config:setup': async (params) => {
 					// Destructure the params
 					const { logger, config, updateConfig, injectRoute, injectScript } = params;
+
+					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					logger.info('Checking configuration...');
 
@@ -180,8 +156,6 @@ export default defineIntegration({
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
-
-					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
@@ -330,10 +304,6 @@ export default defineIntegration({
 						entrypoint: routesDir.api('render.astro'),
 						prerender: false,
 					});
-
-					if (rendererConfig.renderer === 'studiocms') {
-						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
-					}
 
 					// Check for `@astrojs/web-vitals` Integration
 					checkForWebVitals(params, { name, verbose });
@@ -993,6 +963,10 @@ export default defineIntegration({
 						},
 					});
 
+					if (rendererConfig.renderer === 'studiocms') {
+						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
+					}
+
 					// Update the Astro Config
 					updateConfig({
 						image: {
@@ -1068,22 +1042,22 @@ export default defineIntegration({
 				},
 				// DEV SERVER: Check for updates on server start and log messages
 				'astro:server:start': async ({ logger: l }) => {
-					const logger = l.fork(`${pkgName}:update-check`);
+					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const { version: latestVersion } = await packageJson(pkgName.toLowerCase());
+						const { version: latestVersion } = await packageJson(name.toLowerCase());
 
 						const comparison = semCompare(pkgVersion, latestVersion);
 
 						if (comparison === -1) {
 							logger.warn(
-								`A new version of '${pkgName}' is available. Please update to ${latestVersion} using your favorite package manager.`
+								`A new version of '${name}' is available. Please update to ${latestVersion} using your favorite package manager.`
 							);
 						} else if (comparison === 0) {
-							logger.info(`You are using the latest version of '${pkgName}' (${pkgVersion})`);
+							logger.info(`You are using the latest version of '${name}' (${pkgVersion})`);
 						} else {
 							logger.info(
-								`You are using a newer version (${pkgVersion}) of '${pkgName}' than the latest release (${latestVersion})`
+								`You are using a newer version (${pkgVersion}) of '${name}' than the latest release (${latestVersion})`
 							);
 						}
 					} catch (error) {

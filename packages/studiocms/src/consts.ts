@@ -1,4 +1,7 @@
+import { createResolver } from 'astro-integration-kit';
 import type { TimeString } from './schemas/config/sdk.js';
+
+const { resolve } = createResolver(import.meta.url);
 
 /**
  * StudioCMS Site Config Table Entry ID
@@ -27,6 +30,27 @@ export const currentRESTAPIVersions = ['v1'] as const;
  * Current REST API Versions Type
  */
 export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
+
+/**
+ * REST API Directory Resolver
+ */
+const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
+	resolve(`./routes/rest/${version}/${file}`);
+
+/**
+ * REST API Directory
+ */
+export const routesDir = {
+	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
+	dashRoute: (file: string) => resolve(`./routes/dashboard/${file}`),
+	dashApi: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
+	errors: (file: string) => resolve(`./routes/error-pages/${file}`),
+	v1Rest: (file: string) => _rest_dir('v1')(file),
+	sdk: (file: string) => resolve(`./routes/sdk/${file}`),
+	api: (file: string) => resolve(`./routes/api/${file}`),
+	authPage: (file: string) => resolve(`./routes/auth/${file}`),
+	authAPI: (file: string) => resolve(`./routes/auth/api/${file}`),
+};
 
 /**
  * StudioCMS Social Links Type
