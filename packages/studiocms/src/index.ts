@@ -19,7 +19,7 @@ import { loadEnv } from 'vite';
 import type { CurrentRESTAPIVersions } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
+import { makeAPIRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
