@@ -5,7 +5,6 @@
  */
 /// <reference types="@astrojs/db" />
 
-// import sitemap from '@astrojs/sitemap';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
