@@ -5,7 +5,7 @@
  */
 /// <reference types="@astrojs/db" />
 
-import sitemap from '@astrojs/sitemap';
+// import sitemap from '@astrojs/sitemap';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -18,6 +18,7 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import type { CurrentRESTAPIVersions } from './consts.js';
 import { StudioCMSError } from './errors.js';
+import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
@@ -743,6 +744,11 @@ export default defineIntegration({
 
 					let sitemapEnabled = false;
 
+					const sitemaps: {
+						pluginName: string;
+						sitemapXMLEndpointPath: string | URL;
+					}[] = [];
+
 					// Resolve StudioCMS Plugins
 					for (const {
 						name,
@@ -753,6 +759,7 @@ export default defineIntegration({
 						pageTypes,
 						settingsPage,
 						triggerSitemap,
+						sitemaps: pluginSitemaps,
 					} of plugins || []) {
 						// Check if the identifier is reserved
 						if (identifier === 'studiocms') {
@@ -781,6 +788,10 @@ export default defineIntegration({
 
 						if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
+						if (pluginSitemaps) {
+							sitemaps.push(...pluginSitemaps);
+						}
+
 						safePluginList.push({
 							identifier,
 							name,
@@ -790,16 +801,10 @@ export default defineIntegration({
 						});
 					}
 
-					const defaultDashboardRoute = dashboardRouteOverride
-						? removeLeadingTrailingSlashes(dashboardRouteOverride)
-						: 'dashboard';
-
 					if (sitemapEnabled) {
 						integrations.push({
-							integration: sitemap({
-								filter: (route) =>
-									!route.includes(`${config.site}/${defaultDashboardRoute}`) &&
-									!route.includes('/studiocms_api/'),
+							integration: dynamicSitemap({
+								sitemaps: sitemaps,
 							}),
 						});
 					}
