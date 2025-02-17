@@ -6,7 +6,7 @@ import type { RobotsConfig } from './types.js';
 import { getFileSizeInKilobytes, measureExecutionTime } from './utils.js';
 
 const defaultConfig: RobotsConfig = {
-	sitemap: true,
+	sitemap: false,
 	host: false,
 	policy: [
 		{

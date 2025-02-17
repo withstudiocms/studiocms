@@ -2,6 +2,10 @@ declare module 'astro:env/server' {
 	export function getSecret(secret: string): string;
 }
 
+declare module 'virtual:studiocms/sitemaps' {
+	export const sitemaps: string[];
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;

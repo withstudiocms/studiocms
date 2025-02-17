@@ -5,7 +5,6 @@
  */
 /// <reference types="@astrojs/db" />
 
-import sitemap from '@astrojs/sitemap';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -16,9 +15,10 @@ import packageJson from 'package-json';
 import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import type { CurrentRESTAPIVersions } from './consts.js';
+import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
-import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
+import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
+import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
@@ -51,33 +51,14 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
 
-// SDK Route Resolver
-const sdkRouteResolver = makeAPIRoute('sdk');
-// API Route Resolver
-const apiRoute = makeAPIRoute('renderer');
-// REST API Route Resolver
-const restRoute = (version: CurrentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
-// V1 REST API Route Resolver
-const v1RestRoute = restRoute('v1');
-
-// REST API Directory Resolver
-const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
-	resolve(`./routes/rest/${version}/${file}`);
-
-// Routes Directory Resolvers
-const routesDir = {
-	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-	route: (file: string) => resolve(`./routes/dashboard/${file}`),
-	api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-	f0f: (file: string) => resolve(`./routes/${file}`),
-	v1Rest: (file: string) => _rest_dir('v1')(file),
-};
-
 // Renderer Component Resolver
 const RendererComponent = resolve('./components/Renderer.astro');
 
 // Default Editor Component Resolver
 const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
+
+// Default Custom Image Component Resolver
+const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
 /**
  * **StudioCMS Integration**
@@ -119,6 +100,8 @@ export default defineIntegration({
 					// Destructure the params
 					const { logger, config, updateConfig, injectRoute, injectScript } = params;
 
+					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
+
 					logger.info('Checking configuration...');
 
 					// Watch the StudioCMS Config File
@@ -141,7 +124,6 @@ export default defineIntegration({
 
 					const {
 						dashboardEnabled,
-						dashboardRouteOverride,
 						inject404Route,
 						AuthConfig: {
 							enabled: authEnabled,
@@ -175,8 +157,6 @@ export default defineIntegration({
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
 
-					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
-
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
@@ -184,11 +164,6 @@ export default defineIntegration({
 					addAstroEnvConfig(params, {
 						validateSecrets: true,
 						schema: {
-							CMS_CLOUDINARY_CLOUDNAME: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
 							// Auth Encryption Key
 							CMS_ENCRYPTION_KEY: envField.string({
 								context: 'server',
@@ -264,6 +239,12 @@ export default defineIntegration({
 								access: 'secret',
 								optional: true,
 							}),
+							// Cloudinary Environment Variables for Custom Image Component
+							CMS_CLOUDINARY_CLOUDNAME: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
 						},
 					});
 
@@ -282,7 +263,7 @@ export default defineIntegration({
 					// Resolve the Custom Image Component Path
 					imageComponentPath = overrides.CustomImageOverride
 						? astroConfigResolve(overrides.CustomImageOverride)
-						: resolve('./components/image/CustomImage.astro');
+						: defaultCustomImageComponent;
 
 					// Log that Setup is Starting
 					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Auth...');
@@ -294,25 +275,25 @@ export default defineIntegration({
 
 					injectRoute({
 						pattern: sdkRouteResolver('list-pages'),
-						entrypoint: resolve('./routes/sdk/list-pages.js'),
+						entrypoint: routesDir.sdk('list-pages.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('update-latest-version-cache'),
-						entrypoint: resolve('./routes/sdk/update-latest-version-cache.js'),
+						entrypoint: routesDir.sdk('update-latest-version-cache.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('fallback-list-pages.json'),
-						entrypoint: resolve('./routes/sdk/fallback-list-pages.json.js'),
+						entrypoint: routesDir.sdk('fallback-list-pages.json.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('full-changelog.json'),
-						entrypoint: resolve('./routes/sdk/full-changelog.json.js'),
+						entrypoint: routesDir.sdk('full-changelog.json.js'),
 						prerender: false,
 					});
 
@@ -320,13 +301,9 @@ export default defineIntegration({
 
 					injectRoute({
 						pattern: apiRoute('render'),
-						entrypoint: resolve('./routes/api/render.astro'),
+						entrypoint: routesDir.api('render.astro'),
 						prerender: false,
 					});
-
-					if (rendererConfig.renderer === 'studiocms') {
-						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
-					}
 
 					// Check for `@astrojs/web-vitals` Integration
 					checkForWebVitals(params, { name, verbose });
@@ -364,7 +341,7 @@ export default defineIntegration({
 						integrationLogger(logInfo, 'Injecting 404 Route...');
 						injectRoute({
 							pattern: '404',
-							entrypoint: routesDir.f0f('404.astro'),
+							entrypoint: routesDir.errors('404.astro'),
 							prerender: false,
 						});
 					}
@@ -376,62 +353,62 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'live-render',
-								entrypoint: routesDir.api('partials/LiveRender.astro'),
+								entrypoint: routesDir.dashApi('partials/LiveRender.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'editor',
-								entrypoint: routesDir.api('partials/Editor.astro'),
+								entrypoint: routesDir.dashApi('partials/Editor.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
-								entrypoint: routesDir.api('search-list.js'),
+								entrypoint: routesDir.dashApi('search-list.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'user-list-items',
-								entrypoint: routesDir.api('partials/UserListItems.astro'),
+								entrypoint: routesDir.dashApi('partials/UserListItems.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'config',
-								entrypoint: routesDir.api('config.js'),
+								entrypoint: routesDir.dashApi('config.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'profile',
-								entrypoint: routesDir.api('profile.js'),
+								entrypoint: routesDir.dashApi('profile.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'users',
-								entrypoint: routesDir.api('users.js'),
+								entrypoint: routesDir.dashApi('users.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/page',
-								entrypoint: routesDir.api('content/page.js'),
+								entrypoint: routesDir.dashApi('content/page.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/folder',
-								entrypoint: routesDir.api('content/folder.js'),
+								entrypoint: routesDir.dashApi('content/folder.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-reset-link',
-								entrypoint: routesDir.api('create-reset-link.js'),
+								entrypoint: routesDir.dashApi('create-reset-link.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'reset-password',
-								entrypoint: routesDir.api('reset-password.js'),
+								entrypoint: routesDir.dashApi('reset-password.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'plugins/[plugin]',
-								entrypoint: routesDir.api('plugins/[plugin].js'),
+								entrypoint: routesDir.dashApi('plugins/[plugin].js'),
 							},
 							{
 								enabled: dbStartPage,
@@ -446,17 +423,17 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user',
-								entrypoint: routesDir.api('create-user.js'),
+								entrypoint: routesDir.dashApi('create-user.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user-invite',
-								entrypoint: routesDir.api('create-user-invite.js'),
+								entrypoint: routesDir.dashApi('create-user-invite.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
-								entrypoint: routesDir.api('api-tokens.js'),
+								entrypoint: routesDir.dashApi('api-tokens.js'),
 							},
 						],
 					});
@@ -470,67 +447,67 @@ export default defineIntegration({
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: '/',
-									entrypoint: routesDir.route('index.astro'),
+									entrypoint: routesDir.dashRoute('index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management',
-									entrypoint: routesDir.route('content-management/index.astro'),
+									entrypoint: routesDir.dashRoute('content-management/index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create',
-									entrypoint: routesDir.route('content-management/createpage.astro'),
+									entrypoint: routesDir.dashRoute('content-management/createpage.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create-folder',
-									entrypoint: routesDir.route('content-management/createfolder.astro'),
+									entrypoint: routesDir.dashRoute('content-management/createfolder.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit',
-									entrypoint: routesDir.route('content-management/editpage.astro'),
+									entrypoint: routesDir.dashRoute('content-management/editpage.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit-folder',
-									entrypoint: routesDir.route('content-management/editfolder.astro'),
+									entrypoint: routesDir.dashRoute('content-management/editfolder.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/diff',
-									entrypoint: routesDir.route('content-management/diff.astro'),
+									entrypoint: routesDir.dashRoute('content-management/diff.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'profile',
-									entrypoint: routesDir.route('profile.astro'),
+									entrypoint: routesDir.dashRoute('profile.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'configuration',
-									entrypoint: routesDir.route('configuration.astro'),
+									entrypoint: routesDir.dashRoute('configuration.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management',
-									entrypoint: routesDir.route('user-management/index.astro'),
+									entrypoint: routesDir.dashRoute('user-management/index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management/edit',
-									entrypoint: routesDir.route('user-management/edit.astro'),
+									entrypoint: routesDir.dashRoute('user-management/edit.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage && authEnabled,
 									pattern: 'password-reset',
-									entrypoint: routesDir.route('password-reset.astro'),
+									entrypoint: routesDir.dashRoute('password-reset.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage && authEnabled,
 									pattern: 'plugins/[plugin]',
-									entrypoint: routesDir.route('plugins/[plugin].astro'),
+									entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
 								},
 							],
 						},
@@ -543,57 +520,57 @@ export default defineIntegration({
 						routes: [
 							{
 								pattern: 'login',
-								entrypoint: resolve('./routes/auth/api/login.js'),
+								entrypoint: routesDir.authAPI('login.js'),
 								enabled: usernameAndPasswordAPI,
 							},
 							{
 								pattern: 'logout',
-								entrypoint: resolve('./routes/auth/api/logout.js'),
+								entrypoint: routesDir.authAPI('logout.js'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
-								entrypoint: resolve('./routes/auth/api/register.js'),
+								entrypoint: routesDir.authAPI('register.js'),
 								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
 								pattern: 'github',
-								entrypoint: resolve('./routes/auth/api/github/index.js'),
+								entrypoint: routesDir.authAPI('github/index.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'github/callback',
-								entrypoint: resolve('./routes/auth/api/github/callback.js'),
+								entrypoint: routesDir.authAPI('github/callback.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'discord',
-								entrypoint: resolve('./routes/auth/api/discord/index.js'),
+								entrypoint: routesDir.authAPI('discord/index.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'discord/callback',
-								entrypoint: resolve('./routes/auth/api/discord/callback.js'),
+								entrypoint: routesDir.authAPI('discord/callback.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'google',
-								entrypoint: resolve('./routes/auth/api/google/index.js'),
+								entrypoint: routesDir.authAPI('google/index.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'google/callback',
-								entrypoint: resolve('./routes/auth/api/google/callback.js'),
+								entrypoint: routesDir.authAPI('google/callback.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'auth0',
-								entrypoint: resolve('./routes/auth/api/auth0/index.js'),
+								entrypoint: routesDir.authAPI('auth0/index.js'),
 								enabled: auth0API,
 							},
 							{
 								pattern: 'auth0/callback',
-								entrypoint: resolve('./routes/auth/api/auth0/callback.js'),
+								entrypoint: routesDir.authAPI('auth0/callback.js'),
 								enabled: auth0API,
 							},
 						],
@@ -606,17 +583,17 @@ export default defineIntegration({
 							routes: [
 								{
 									pattern: 'login/',
-									entrypoint: resolve('./routes/auth/login.astro'),
+									entrypoint: routesDir.authPage('login.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'logout/',
-									entrypoint: resolve('./routes/auth/logout.astro'),
+									entrypoint: routesDir.authPage('logout.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'signup/',
-									entrypoint: resolve('./routes/auth/signup.astro'),
+									entrypoint: routesDir.authPage('signup.astro'),
 									enabled: usernameAndPasswordAPI && allowUserRegistration,
 								},
 							],
@@ -716,13 +693,6 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Adding optional integrations...');
 
-					// Robots.txt Integration (Default)
-					if (includedIntegrations.robotsTXT === true) {
-						integrations.push({ integration: robotsTXT() });
-					} else if (typeof includedIntegrations.robotsTXT === 'object') {
-						integrations.push({ integration: robotsTXT(includedIntegrations.robotsTXT) });
-					}
-
 					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 					const safePluginList: SafePluginListType = [
 						{
@@ -743,6 +713,11 @@ export default defineIntegration({
 
 					let sitemapEnabled = false;
 
+					const sitemaps: {
+						pluginName: string;
+						sitemapXMLEndpointPath: string | URL;
+					}[] = [];
+
 					// Resolve StudioCMS Plugins
 					for (const {
 						name,
@@ -753,6 +728,7 @@ export default defineIntegration({
 						pageTypes,
 						settingsPage,
 						triggerSitemap,
+						sitemaps: pluginSitemaps,
 					} of plugins || []) {
 						// Check if the identifier is reserved
 						if (identifier === 'studiocms') {
@@ -781,6 +757,10 @@ export default defineIntegration({
 
 						if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
+						if (pluginSitemaps) {
+							sitemaps.push(...pluginSitemaps);
+						}
+
 						safePluginList.push({
 							identifier,
 							name,
@@ -790,16 +770,22 @@ export default defineIntegration({
 						});
 					}
 
-					const defaultDashboardRoute = dashboardRouteOverride
-						? removeLeadingTrailingSlashes(dashboardRouteOverride)
-						: 'dashboard';
+					// Robots.txt Integration (Default)
+					if (includedIntegrations.robotsTXT === true) {
+						integrations.push({ integration: robotsTXT({ sitemap: sitemapEnabled }) });
+					} else if (typeof includedIntegrations.robotsTXT === 'object') {
+						integrations.push({
+							integration: robotsTXT({
+								...includedIntegrations.robotsTXT,
+								sitemap: sitemapEnabled,
+							}),
+						});
+					}
 
 					if (sitemapEnabled) {
 						integrations.push({
-							integration: sitemap({
-								filter: (route) =>
-									!route.includes(`${config.site}/${defaultDashboardRoute}`) &&
-									!route.includes('/studiocms_api/'),
+							integration: dynamicSitemap({
+								sitemaps: sitemaps,
 							}),
 						});
 					}
@@ -977,6 +963,10 @@ export default defineIntegration({
 						},
 					});
 
+					if (rendererConfig.renderer === 'studiocms') {
+						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
+					}
+
 					// Update the Astro Config
 					updateConfig({
 						image: {
@@ -1052,22 +1042,22 @@ export default defineIntegration({
 				},
 				// DEV SERVER: Check for updates on server start and log messages
 				'astro:server:start': async ({ logger: l }) => {
-					const logger = l.fork(`${pkgName}:update-check`);
+					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const { version: latestVersion } = await packageJson(pkgName.toLowerCase());
+						const { version: latestVersion } = await packageJson(name.toLowerCase());
 
 						const comparison = semCompare(pkgVersion, latestVersion);
 
 						if (comparison === -1) {
 							logger.warn(
-								`A new version of '${pkgName}' is available. Please update to ${latestVersion} using your favorite package manager.`
+								`A new version of '${name}' is available. Please update to ${latestVersion} using your favorite package manager.`
 							);
 						} else if (comparison === 0) {
-							logger.info(`You are using the latest version of '${pkgName}' (${pkgVersion})`);
+							logger.info(`You are using the latest version of '${name}' (${pkgVersion})`);
 						} else {
 							logger.info(
-								`You are using a newer version (${pkgVersion}) of '${pkgName}' than the latest release (${latestVersion})`
+								`You are using a newer version (${pkgVersion}) of '${name}' than the latest release (${latestVersion})`
 							);
 						}
 					} catch (error) {

@@ -66,6 +66,16 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 		frontendNavigationLinks: [{ label: title, href: route }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
 		triggerSitemap: sitemap,
+		sitemaps: [
+			{
+				pluginName: packageIdentifier,
+				sitemapXMLEndpointPath: resolve('./routes/sitemap-posts.xml.js'),
+			},
+			{
+				pluginName: 'pages',
+				sitemapXMLEndpointPath: resolve('./routes/sitemap-md.xml.js'),
+			},
+		],
 		integration: {
 			name: packageIdentifier,
 			hooks: {

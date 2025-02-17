@@ -66,6 +66,20 @@ export const StudioCMSPluginSchema = z.object({
 	 * If this is true, the plugin will enable the Sitemap
 	 */
 	triggerSitemap: z.boolean().optional(),
+	sitemaps: z
+		.array(
+			z.object({
+				/**
+				 * The name of the plugin
+				 */
+				pluginName: z.string(),
+				/**
+				 * The path to the sitemap XML file
+				 */
+				sitemapXMLEndpointPath: z.string().or(z.instanceof(URL)),
+			})
+		)
+		.optional(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
