@@ -17,6 +17,8 @@ New Routes:
 
 All routes listed above are behind authentication.
 
-There is the following PUBLIC endpoints that ONLY support GET requests to published pages
+There is the following PUBLIC endpoints that ONLY support GET requests to published pages/folders
 - `/studiocms_api/rest/v1/public/pages`
 - `/studiocms_api/rest/v1/public/pages/[id]`
+- `/studiocms_api/rest/v1/public/folders`
+- `/studiocms_api/rest/v1/public/folders/[id]`
