@@ -36,7 +36,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
         </div>
     </div>
     <div class="api-tokens-content">
-        <p class="description">API tokens are used to authenticate with the StudioCMS REST API.</p>
+        <span class="description">API tokens are used to authenticate with the StudioCMS REST API.</span>
 
         { userTokens.length > 0 ? userTokens.map((token) => (
             <Card fullWidth class="token-list-item" variant={'filled'}>
@@ -46,7 +46,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
                             <Icon name="key" width={24} height={24} />
                             {token.description}
                         </h4>
-                        <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={user.id}>
+                        <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={user.id} disabled>
                             <Icon slot="start-content" name="trash" width={24} height={24} />
                             Delete
                         </Button>

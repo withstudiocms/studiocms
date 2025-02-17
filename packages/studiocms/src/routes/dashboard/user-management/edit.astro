@@ -1,5 +1,5 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -24,9 +24,9 @@ const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
-const { user: loggedInUser } = await getUserData(Astro);
+const userSession = await getUserData(Astro);
 
-const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === loggedInUser?.id;
+const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === userSession.user?.id;
 
 const diffs = await studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5);
 
@@ -35,6 +35,10 @@ const pages = await studioCMS_SDK_Cache.GET.pages();
 const {
 	data: { enableDiffs },
 } = await studioCMS_SDK_Cache.GET.siteConfig();
+
+const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
+
+const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
 ---
 <Layout 
   title="User Management"
@@ -179,6 +183,41 @@ const {
       </div>
     )}
 
+    { isAllowedAPITokens && (
+      <div class="text-h3">API Tokens</div>
+
+      <div class="edit-card-list">
+        { userTokens.length > 0 ? userTokens.map((token) => (
+            <Card fullWidth class="token-list-item" variant={'filled'}>
+                <div slot="header" class="token-list-item-header">
+                    <div class="token-list-item-header-row">
+                        <h4>
+                            <Icon name="key" width={24} height={24} />
+                            {token.description}
+                        </h4>
+                        <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={token.userId} disabled>
+                            <Icon slot="start-content" name="trash" width={24} height={24} />
+                            Delete
+                        </Button>
+                    </div>
+                </div>
+
+                <div class="token-list-item-content">
+                    <div class="token-list-item-content-row">
+                        <span class="created-at">Created - <FormattedDate date={token.creationDate} /></span>
+                    </div>
+                </div>
+            </Card>
+        )) : (
+            <Card fullWidth class="token-list-item" variant={'filled'}>
+                <Center>
+                    <p class="description">No API tokens found.</p>
+                </Center>
+            </Card>
+        ) }
+      </div>
+    )}
+
   </div>
 
   <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
@@ -187,6 +226,14 @@ const {
     import { ModalHelper, toast } from 'studiocms:ui/components';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
+    
+    const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
+
+    const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
+
+    const deleteUserAction = (document.getElementById('delete-user-modal-trigger') as HTMLButtonElement).dataset.action;
+
+    const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
 
     const passwordResetLinkTrigger = document.getElementById('password-reset-link-trigger') as HTMLButtonElement;
     const resetLinkPlaceholder = document.getElementById('reset-link-placeholder') as HTMLElement;
@@ -230,12 +277,6 @@ const {
 
       resetLinkModal.show();
     })
-
-    const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
-
-    const deleteUserAction = (document.getElementById('delete-user-modal-trigger') as HTMLButtonElement).dataset.action;
-
-    const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
     
     userDeleteModal.registerConfirmCallback(async (formData) => {
       if (!formData) {
@@ -312,6 +353,24 @@ const {
         })
       }
     })
+
+    deleteButtons.forEach((button) => {
+        button.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const tokenID = button.getAttribute('data-token');
+            const userID = button.getAttribute('data-user');
+
+            if (!tokenID) {
+                return;
+            }
+
+            if (!userID) {
+                return;
+            }
+
+            console.log('Deleting token', tokenID);
+        });
+    });
   </script>
 
 </Layout>
@@ -461,4 +520,42 @@ const {
     }
   }
 
+  .token-list-item {
+    display: flex;
+    flex-direction: column;
+    background-color: hsl(var(--background-step-2));
+
+    .token-list-item-header {
+      display: flex;
+      flex-direction: column;
+
+      .token-list-item-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h4 {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      }
+    }
+
+    .token-list-item-content {
+      display: flex;
+      flex-direction: column;
+
+      .token-list-item-content-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .created-at {
+          font-size: 0.75rem;
+          color: hsl(var(--text-muted));
+        }
+      }
+    }
+  }
 </style>
