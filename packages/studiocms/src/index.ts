@@ -102,7 +102,6 @@ export default defineIntegration({
 
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
-
 					logger.info('Checking configuration...');
 
 					// Watch the StudioCMS Config File
@@ -435,11 +434,6 @@ export default defineIntegration({
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
 								entrypoint: routesDir.dashApi('api-tokens.js'),
-							},
-							{
-								enabled: dashboardEnabled && !dbStartPage && authEnabled,
-								pattern: 'api-tokens',
-								entrypoint: routesDir.api('api-tokens.js'),
 							},
 						],
 					});
