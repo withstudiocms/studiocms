@@ -700,13 +700,13 @@ export default defineIntegration({
 
 						// Public Pages API Routes
 						injectRoute({
-							pattern: v1RestRoute('public/pages/[id]'),
-							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
+							pattern: v1RestRoute('public/pages'),
+							entrypoint: routesDir.v1Rest('public/pages/index.js'),
 							prerender: false,
 						});
 						injectRoute({
-							pattern: v1RestRoute('public/pages'),
-							entrypoint: routesDir.v1Rest('public/pages/index.js'),
+							pattern: v1RestRoute('public/pages/[id]'),
+							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
 							prerender: false,
 						});
 					}
