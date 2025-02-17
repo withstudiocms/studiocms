@@ -2,7 +2,7 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { FormattedDate } from 'studiocms:components';
 import studioCMS_SDK from 'studiocms:sdk';
-import { Button, Card, Center, Icon } from 'studiocms:ui/components';
+import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
 	userSession: UserSessionData;
@@ -39,7 +39,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
         <span class="description">API tokens are used to authenticate with the StudioCMS REST API.</span>
 
         { userTokens.length > 0 ? userTokens.map((token) => (
-            <Card fullWidth class="token-list-item" variant={'filled'}>
+            <Card fullWidth class="token-list-item">
                 <div slot="header" class="token-list-item-header">
                     <div class="token-list-item-header-row">
                         <h4>
@@ -69,9 +69,98 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
     </div>
     
 </Card>
+<Modal
+  id='create-api-token-modal'
+  cancelButton={{ label: 'Cancel', color: 'default' }}
+  actionButton={{ label: 'Confirm', color: 'danger' }}
+  isForm
+>
+  <h2 slot='header'>Create New API Token</h2>
+  <div class="modal-body">
+    <Input label="Description" name="description" type="text" isRequired />
+    <input type="hidden" name="user" value={user.id} />
+  </div>
+</Modal>
+
+<Modal id='create-token-response-modal'>
+  <h2 slot="header">New Token</h2>
+  <Center>
+    <div class="modal-body">
+        <span>This will only be shown once, please save this information.</span>
+      <code id="create-token-response-placeholder"></code>
+    </div>
+  </Center>
+</Modal>
+
+<div 
+    id="token-api-links" style="display: none;"
+    data-create_token={''}
+    data-delete_token={''}
+></div>
 
 <script>
+    import { ModalHelper, toast } from 'studiocms:ui/components';
+
+    const createAPITokenModal = new ModalHelper('create-api-token-modal', 'create-api-token');
+    const createTokenResponseModal = new ModalHelper('create-token-response-modal');
     const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
+
+    const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
+
+    const createTokenLink = tokenAPILinks.dataset.create_token!;
+    const deleteTokenLink = tokenAPILinks.dataset.delete_token!;
+
+    createAPITokenModal.registerConfirmCallback(async (formData) => {
+        const description = formData?.get('description');
+        const user = formData?.get('user');
+
+        if (!description) {
+            toast({
+                title: 'Error',
+                description: 'Description is required',
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        if (!user) {
+            toast({
+                title: 'Error',
+                description: 'User ID not found',
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        const response = await fetch(createTokenLink, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                description,
+                user
+            })
+        });
+
+        const res = await response.json();
+
+        if (!response.ok) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        createTokenResponseModal.show();
+        document.getElementById('create-token-response-placeholder')!.innerText = res.token;
+
+    })
 
     deleteButtons.forEach((button) => {
         button.addEventListener('click', async (event) => {
@@ -80,14 +169,56 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
             const userID = button.getAttribute('data-user');
 
             if (!tokenID) {
+                toast({
+                    title: 'Error',
+                    description: 'Token ID not found',
+                    type: 'danger',
+                    duration: 5000
+                })
                 return;
             }
 
             if (!userID) {
+                toast({
+                    title: 'Error',
+                    description: 'User ID not found',
+                    type: 'danger',
+                    duration: 5000
+                })
                 return;
             }
 
-            console.log('Deleting token', tokenID);
+            const response = await fetch(deleteTokenLink, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tokenID,
+                    userID
+                })
+            });
+
+            const res = await response.json();
+
+            if (!response.ok) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger',
+                    duration: 5000
+                })
+                return;
+            }
+
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success',
+                duration: 5000
+            })
+
+            window.location.reload();
         });
     });
 </script>
