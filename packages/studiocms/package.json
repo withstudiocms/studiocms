@@ -40,17 +40,17 @@
   },
   "sideEffects": false,
   "files": [
+    "auth.d.ts",
+    "CHANGELOG.md",
+    "core.d.ts",
+    "custom-renderers",
+    "LICENSE",
+    "README.md",
+    "renderer.d.ts",
+    "ui.d.ts",
     "dist",
     "static",
-    "custom-renderers",
-    "renderer.d.ts",
-    "auth.d.ts",
-    "core.d.ts",
-    "ui.d.ts",
-    "studiocms-cli.mjs",
-    "CHANGELOG.md",
-    "LICENSE",
-    "README.md"
+    "studiocms-cli.mjs"
   ],
   "scripts": {
     "build": "build-scripts build 'src/**/*.{ts,css}'",
@@ -128,7 +128,7 @@
     "@studiocms/ui": "catalog:",
 
     "astro-integration-kit": "catalog:",
-    "@inox-tools/aik-mod": "^0.9.2",
+    "@inox-tools/inline-mod": "^2.0.3",
 
     "package-json": "^10.0.1",
     "semver": "^7.7.1",

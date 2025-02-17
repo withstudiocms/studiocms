@@ -56,7 +56,7 @@ export class StudioCMSVirtualCache {
 		GET: {
 			page: {
 				byId: (id: string) => Promise<PageDataCacheObject>;
-				bySlug: (slug: string, pkg: PageType) => Promise<PageDataCacheObject>;
+				bySlug: (slug: string) => Promise<PageDataCacheObject>;
 			};
 			pages: (includeDrafts?: boolean) => Promise<PageDataCacheObject[]>;
 			siteConfig: () => Promise<SiteConfigCacheObject>;
@@ -86,7 +86,6 @@ export class StudioCMSVirtualCache {
 				) => Promise<PageDataCacheObject>;
 				bySlug: (
 					slug: string,
-					pkg: PageType,
 					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
 				) => Promise<PageDataCacheObject>;
 			};
@@ -109,7 +108,7 @@ export class StudioCMSVirtualCache {
 			GET: {
 				page: {
 					byId: async (id: string) => await this.getPageById(id),
-					bySlug: async (slug: string, pkg: PageType) => await this.getPageBySlug(slug, pkg),
+					bySlug: async (slug: string) => await this.getPageBySlug(slug),
 				},
 				pages: async (includeDrafts = false) => await this.getAllPages(includeDrafts),
 				siteConfig: async () => await this.getSiteConfig(),
@@ -138,9 +137,8 @@ export class StudioCMSVirtualCache {
 					) => await this.updatePageById(id, data),
 					bySlug: async (
 						slug: string,
-						pkg: PageType,
 						data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
-					) => await this.updatePageBySlug(slug, pkg, data),
+					) => await this.updatePageBySlug(slug, data),
 				},
 				siteConfig: async (data: SiteConfig) => await this.updateSiteConfig(data),
 				latestVersion: async () => await this.updateVersion(),
@@ -828,15 +826,14 @@ export class StudioCMSVirtualCache {
 	 * Retrieves a page by its slug from the cache or database.
 	 *
 	 * @param {string} slug - The slug of the page to retrieve.
-	 * @param {string} pkg - The package name associated with the page.
 	 * @returns {Promise<PageDataCacheObject>} A promise that resolves to the page data.
 	 * @throws {StudioCMSCacheError} If the page is not found in the database or if there is an error fetching the page.
 	 */
-	public async getPageBySlug(slug: string, pkg: string): Promise<PageDataCacheObject> {
+	public async getPageBySlug(slug: string): Promise<PageDataCacheObject> {
 		try {
 			// Check if caching is disabled
 			if (!this.isEnabled()) {
-				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg);
+				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug);
 
 				if (!page) {
 					throw new StudioCMSCacheError('Page not found in database');
@@ -848,13 +845,11 @@ export class StudioCMSVirtualCache {
 			const { data: tree } = await this.getFolderTree();
 
 			// Retrieve the cached page
-			const cachedPage = Array.from(this.pages.values()).find(
-				(page) => page.data.slug === slug && page.data.package === pkg
-			);
+			const cachedPage = Array.from(this.pages.values()).find((page) => page.data.slug === slug);
 
 			// Check if the page is not cached or the cache is expired
 			if (!cachedPage || this.isCacheExpired(cachedPage)) {
-				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg, tree);
+				const page = await this.sdk.GET.databaseEntry.pages.bySlug(slug, tree);
 
 				if (!page) {
 					throw new StudioCMSCacheError('Page not found in database');
@@ -944,7 +939,6 @@ export class StudioCMSVirtualCache {
 	 */
 	public async updatePageBySlug(
 		slug: string,
-		pkg: string,
 		data: {
 			pageData: tsPageDataSelect;
 			pageContent: tsPageContentSelect;
@@ -956,7 +950,7 @@ export class StudioCMSVirtualCache {
 				await this.sdk.UPDATE.page(data.pageData);
 				await this.sdk.UPDATE.pageContent(data.pageContent);
 
-				const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg);
+				const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug);
 
 				if (!updatedData) {
 					throw new StudioCMSCacheError('Page not found in database');
@@ -968,9 +962,7 @@ export class StudioCMSVirtualCache {
 			const { data: tree } = await this.updateFolderTree();
 
 			// Retrieve the cached page
-			const cachedPage = Array.from(this.pages.values()).find(
-				(page) => page.data.slug === slug && page.data.package === pkg
-			);
+			const cachedPage = Array.from(this.pages.values()).find((page) => page.data.slug === slug);
 
 			// Check if the page is not cached
 			if (!cachedPage) {
@@ -982,7 +974,7 @@ export class StudioCMSVirtualCache {
 			await this.sdk.UPDATE.pageContent(data.pageContent);
 
 			// Retrieve the updated data
-			const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug, pkg, tree);
+			const updatedData = await this.sdk.GET.databaseEntry.pages.bySlug(slug, tree);
 
 			// Check if the data was returned successfully
 			if (!updatedData) {

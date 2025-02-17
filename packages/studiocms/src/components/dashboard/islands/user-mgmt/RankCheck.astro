@@ -14,7 +14,14 @@ const isAuthorized = await verifyUserPermissionLevel(
 	user,
 	(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
 );
+
+if (!isAuthorized) {
+	return Astro.redirect(StudioCMSRoutes.mainLinks.userManagement);
+}
 ---
+{/*
+
+// OLD CODE FOR STATIC/HYBRID Setup
 
 <rank-check
     data-authorized={`${isAuthorized}`}
@@ -39,3 +46,4 @@ const isAuthorized = await verifyUserPermissionLevel(
         customElements.define('rank-check', RankCheck);
     }
 </script>
+*/}

@@ -245,7 +245,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		return simpleResponse(400, 'Invalid request');
 	}
 
-	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index', 'studiocms');
+	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index');
 
 	if (isHomePage.data && isHomePage.data.id === id) {
 		return simpleResponse(400, 'Cannot delete home page');

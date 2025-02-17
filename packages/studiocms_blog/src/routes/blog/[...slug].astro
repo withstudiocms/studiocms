@@ -17,7 +17,7 @@ if (!slug) {
 
 // Fetch the blog post content
 
-const post = await studioCMS_SDK.GET.page.bySlug(slug, '@studiocms/blog');
+const post = await studioCMS_SDK.GET.page.bySlug(slug);
 
 // If no content is found, redirect to 404
 if (!post) {

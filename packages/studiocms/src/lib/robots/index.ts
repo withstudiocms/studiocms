@@ -12,7 +12,7 @@ const defaultConfig: RobotsConfig = {
 		{
 			userAgent: ['*'],
 			allow: ['/'],
-			disallow: ['/dashboard/'],
+			disallow: ['/dashboard/', '/studiocms_api/'],
 		},
 	],
 };

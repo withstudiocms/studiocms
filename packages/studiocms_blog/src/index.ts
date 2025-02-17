@@ -8,6 +8,13 @@ interface StudioCMSBlogOptions {
 	 * @default true
 	 */
 	sitemap?: boolean;
+
+	/**
+	 * Inject routes
+	 * @default true
+	 */
+	injectRoutes?: boolean;
+
 	/**
 	 * The configuration for the blog
 	 */
@@ -16,10 +23,12 @@ interface StudioCMSBlogOptions {
 		 * The title of the blog
 		 */
 		title?: string;
+
 		/**
 		 * Enable RSS feed
 		 */
 		enableRSS?: boolean;
+
 		/**
 		 * The route for the blog
 		 * @default '/blog'
@@ -43,6 +52,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 	const enableRSS = options?.blog?.enableRSS || true;
 	const route = pathWithBase(options?.blog?.route || '/blog');
 	const sitemap = options?.sitemap ?? true;
+	const injectRoutes = options?.injectRoutes ?? true;
 
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
@@ -62,30 +72,32 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
 				'astro:config:setup': async (params) => {
 					const { injectRoute } = params;
 
-					injectRoute({
-						entrypoint: resolve('./routes/[...slug].astro'),
-						pattern: pathWithBase('[...slug]'),
-						prerender: false,
-					});
-
-					injectRoute({
-						entrypoint: resolve('./routes/blog/index.astro'),
-						pattern: `${route}`,
-						prerender: false,
-					});
-
-					injectRoute({
-						entrypoint: resolve('./routes/blog/[...slug].astro'),
-						pattern: `${route}/[...slug]`,
-						prerender: false,
-					});
-
-					if (enableRSS) {
+					if (injectRoutes) {
 						injectRoute({
-							entrypoint: resolve('./routes/rss.xml.js'),
-							pattern: pathWithBase('rss.xml'),
+							entrypoint: resolve('./routes/[...slug].astro'),
+							pattern: pathWithBase('[...slug]'),
 							prerender: false,
 						});
+
+						injectRoute({
+							entrypoint: resolve('./routes/blog/index.astro'),
+							pattern: `${route}`,
+							prerender: false,
+						});
+
+						injectRoute({
+							entrypoint: resolve('./routes/blog/[...slug].astro'),
+							pattern: `${route}/[...slug]`,
+							prerender: false,
+						});
+
+						if (enableRSS) {
+							injectRoute({
+								entrypoint: resolve('./routes/rss.xml.js'),
+								pattern: pathWithBase('rss.xml'),
+								prerender: false,
+							});
+						}
 					}
 
 					addVirtualImports(params, {

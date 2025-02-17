@@ -18,10 +18,10 @@ import {
 	generateToken,
 	testToken,
 } from './lib/generators.js';
-import type { PageType } from './lib/packages.js';
 import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { combineRanks, verifyRank } from './lib/users.js';
 import {
+	tsAPIKeys,
 	tsDiffTracking,
 	tsOAuthAccounts,
 	tsPageContent,
@@ -314,6 +314,57 @@ export function studiocmsSDKCore() {
 			await db.delete(tsDiffTracking).where(eq(tsDiffTracking.id, oldestDiff.id));
 		}
 	}
+
+	const REST_API = {
+		tokens: {
+			get: async (userId: string) => {
+				return await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId));
+			},
+			new: async (userId: string, description: string) => {
+				const key = generateToken(userId);
+
+				return await db
+					.insert(tsAPIKeys)
+					.values({
+						id: crypto.randomUUID(),
+						creationDate: new Date(),
+						userId,
+						key,
+						description,
+					})
+					.returning()
+					.get();
+			},
+			delete: async (userId: string, tokenId: string) => {
+				await db
+					.delete(tsAPIKeys)
+					.where(and(eq(tsAPIKeys.userId, userId), eq(tsAPIKeys.id, tokenId)));
+			},
+			verify: async (key: string) => {
+				const apiKey = await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.key, key)).get();
+
+				if (!apiKey) {
+					return false;
+				}
+
+				const keyRank = await db
+					.select()
+					.from(tsPermissions)
+					.where(eq(tsPermissions.user, apiKey.userId))
+					.get();
+
+				if (!keyRank) {
+					return false;
+				}
+
+				return {
+					userId: apiKey.userId,
+					key: apiKey.key,
+					rank: keyRank.rank,
+				};
+			},
+		},
+	};
 
 	const diffTracking = {
 		insert: async (
@@ -1176,17 +1227,10 @@ export function studiocmsSDKCore() {
 				 */
 				bySlug: async (
 					slug: string,
-					pkg?: PageType,
 					tree?: FolderNode[]
 				): Promise<CombinedPageData | undefined> => {
 					try {
-						const pkgToGet = pkg || 'studiocms';
-
-						const page = await db
-							.select()
-							.from(tsPageData)
-							.where(and(eq(tsPageData.slug, slug), eq(tsPageData.package, pkgToGet)))
-							.get();
+						const page = await db.select().from(tsPageData).where(eq(tsPageData.slug, slug)).get();
 
 						if (!page) return undefined;
 						const folders = tree || (await buildFolderTree());
@@ -2441,5 +2485,6 @@ export function studiocmsSDKCore() {
 		UPDATE,
 		DELETE,
 		db,
+		REST_API,
 	};
 }

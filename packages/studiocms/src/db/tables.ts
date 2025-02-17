@@ -15,6 +15,16 @@ export const StudioCMSUsers = defineTable({
 	},
 });
 
+export const StudioCMSAPIKeys = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		key: column.text(),
+		creationDate: column.date({ default: NOW }),
+		description: column.text({ optional: true }),
+	},
+});
+
 export const StudioCMSUserResetTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -145,3 +155,19 @@ export const StudioCMSSiteConfig = defineTable({
 		diffPerPage: column.number({ default: 10 }),
 	},
 });
+
+export const tables = {
+	StudioCMSPageContent,
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
+	StudioCMSPermissions,
+	StudioCMSSessionTable,
+	StudioCMSSiteConfig,
+	StudioCMSUsers,
+	StudioCMSOAuthAccounts,
+	StudioCMSDiffTracking,
+	StudioCMSPageFolderStructure,
+	StudioCMSUserResetTokens,
+	StudioCMSAPIKeys,
+};

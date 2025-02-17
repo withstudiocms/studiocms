@@ -6,14 +6,9 @@
 /// <reference types="@astrojs/db" />
 
 import sitemap from '@astrojs/sitemap';
-import inlineMod from '@inox-tools/aik-mod';
+import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
-import {
-	addVirtualImports,
-	createResolver,
-	defineIntegration,
-	withPlugins,
-} from 'astro-integration-kit';
+import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
@@ -21,27 +16,13 @@ import packageJson from 'package-json';
 import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
+import type { CurrentRESTAPIVersions } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
-import authLibDTS from './stubs/auth-lib.js';
-import authScriptsDTS from './stubs/auth-scripts.js';
-import authUtilsDTS from './stubs/auth-utils.js';
-import changelogDtsFileOutput from './stubs/changelog.js';
-import componentsDtsFileOutput from './stubs/components.js';
-import coreDtsFileOutput from './stubs/core.js';
-import i18nDTSOutput from './stubs/i18n-dts.js';
-import { getImagesDTS } from './stubs/images.js';
-import libDtsFileOutput from './stubs/lib.js';
-import pluginsDtsFileOutput from './stubs/plugins.js';
-import getProxyDTS from './stubs/proxy.js';
-import rendererConfigDTS from './stubs/renderer-config.js';
-import rendererMarkdownConfigDTS from './stubs/renderer-markdownConfig.js';
-import rendererDTS from './stubs/renderer.js';
-import sdkDtsFile from './stubs/sdk.js';
-import webVitalDtsFile from './stubs/webVitals.js';
+import { getInjectedTypes } from './stubs/index.js';
 import type { Messages } from './types.js';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
@@ -74,6 +55,29 @@ const env = loadEnv('', process.cwd(), '');
 const sdkRouteResolver = makeAPIRoute('sdk');
 // API Route Resolver
 const apiRoute = makeAPIRoute('renderer');
+// REST API Route Resolver
+const restRoute = (version: CurrentRESTAPIVersions) => makeAPIRoute(`rest/${version}`);
+// V1 REST API Route Resolver
+const v1RestRoute = restRoute('v1');
+
+// REST API Directory Resolver
+const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
+	resolve(`./routes/rest/${version}/${file}`);
+
+// Routes Directory Resolvers
+const routesDir = {
+	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
+	route: (file: string) => resolve(`./routes/dashboard/${file}`),
+	api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
+	f0f: (file: string) => resolve(`./routes/${file}`),
+	v1Rest: (file: string) => _rest_dir('v1')(file),
+};
+
+// Renderer Component Resolver
+const RendererComponent = resolve('./components/Renderer.astro');
+
+// Default Editor Component Resolver
+const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 /**
  * **StudioCMS Integration**
@@ -97,26 +101,15 @@ export default defineIntegration({
 		// Component Registry for Custom user Components
 		let ComponentRegistry: Record<string, string>;
 
+		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string;
-
-		const RendererComponent = resolve('./components/Renderer.astro');
-
-		const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
 
-		const routesDir = {
-			fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-			route: (file: string) => resolve(`./routes/dashboard/${file}`),
-			api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-			f0f: (file: string) => resolve(`./routes/${file}`),
-		};
-
 		// Return the Integration
-		return withPlugins({
+		return {
 			name,
-			plugins: [inlineMod],
 			hooks: {
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
 				'astro:db:setup': ({ extendDb }) => {
@@ -124,12 +117,14 @@ export default defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript, defineModule } = params;
+					const { logger, config, updateConfig, injectRoute, injectScript } = params;
 
 					logger.info('Checking configuration...');
 
+					// Watch the StudioCMS Config File
 					watchStudioCMSConfig(params);
 
+					// Resolve the StudioCMS Configuration
 					options = await configResolver(params, opts);
 
 					const {
@@ -166,6 +161,7 @@ export default defineIntegration({
 					// Create logInfo object
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
 
+					// Check for Component Registry
 					if (componentRegistry) ComponentRegistry = componentRegistry;
 
 					// Resolve the callout theme based on the user's configuration
@@ -283,6 +279,7 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Configuring CustomImage Component...');
 
+					// Resolve the Custom Image Component Path
 					imageComponentPath = overrides.CustomImageOverride
 						? astroConfigResolve(overrides.CustomImageOverride)
 						: resolve('./components/image/CustomImage.astro');
@@ -292,33 +289,6 @@ export default defineIntegration({
 
 					// Check for Authentication Environment Variables
 					checkEnvKeys(logger, options);
-
-					updateConfig({
-						image: {
-							remotePatterns: [
-								{
-									protocol: 'https',
-								},
-							],
-						},
-						vite: {
-							optimizeDeps: {
-								exclude: ['three'],
-							},
-							plugins: [
-								copy({
-									copyOnce: true,
-									hook: 'buildStart',
-									targets: [
-										{
-											src: resolve('../static/studiocms-resources/*'),
-											dest: 'public/studiocms-resources/',
-										},
-									],
-								}),
-							],
-						},
-					});
 
 					integrationLogger(logInfo, 'Injecting SDK Routes...');
 
@@ -482,6 +452,11 @@ export default defineIntegration({
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user-invite',
 								entrypoint: routesDir.api('create-user-invite.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'api-tokens',
+								entrypoint: routesDir.api('api-tokens.js'),
 							},
 						],
 					});
@@ -648,6 +623,90 @@ export default defineIntegration({
 						},
 						false
 					);
+
+					// Inject REST API Routes if not using the dbStartPage and Auth is enabled
+					if (!dbStartPage && authEnabled) {
+						integrationLogger(logInfo, 'Injecting REST API Routes...');
+
+						// Folders API Routes
+						injectRoute({
+							pattern: v1RestRoute('folders'),
+							entrypoint: routesDir.v1Rest('folders/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('folders/[id]'),
+							entrypoint: routesDir.v1Rest('folders/[id].js'),
+							prerender: false,
+						});
+
+						// Pages API Routes
+						injectRoute({
+							pattern: v1RestRoute('pages'),
+							entrypoint: routesDir.v1Rest('pages/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]'),
+							entrypoint: routesDir.v1Rest('pages/[id]/index.js'),
+							prerender: false,
+						});
+
+						// Page Diff (History) API Routes
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]/history'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('pages/[id]/history/[diffid]'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].js'),
+							prerender: false,
+						});
+
+						// Settings API Routes
+						injectRoute({
+							pattern: v1RestRoute('settings'),
+							entrypoint: routesDir.v1Rest('settings/index.js'),
+							prerender: false,
+						});
+
+						// Users API Routes
+						injectRoute({
+							pattern: v1RestRoute('users'),
+							entrypoint: routesDir.v1Rest('users/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('users/[id]'),
+							entrypoint: routesDir.v1Rest('users/[id].js'),
+							prerender: false,
+						});
+
+						// Public Pages API Routes
+						injectRoute({
+							pattern: v1RestRoute('public/pages'),
+							entrypoint: routesDir.v1Rest('public/pages/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('public/pages/[id]'),
+							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
+							prerender: false,
+						});
+
+						// Public Folders API Routes
+						injectRoute({
+							pattern: v1RestRoute('public/folders'),
+							entrypoint: routesDir.v1Rest('public/folders/index.js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('public/folders/[id]'),
+							entrypoint: routesDir.v1Rest('public/folders/[id].js'),
+							prerender: false,
+						});
+					}
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
@@ -918,6 +977,35 @@ export default defineIntegration({
 						},
 					});
 
+					// Update the Astro Config
+					updateConfig({
+						image: {
+							remotePatterns: [
+								{
+									protocol: 'https',
+								},
+							],
+						},
+						vite: {
+							optimizeDeps: {
+								exclude: ['three'],
+							},
+							plugins: [
+								inlineModPlugin(),
+								copy({
+									copyOnce: true,
+									hook: 'buildStart',
+									targets: [
+										{
+											src: resolve('../static/studiocms-resources/*'),
+											dest: 'public/studiocms-resources/',
+										},
+									],
+								}),
+							],
+						},
+					});
+
 					let pluginListLength = 0;
 					let pluginListMessage = '';
 
@@ -941,22 +1029,15 @@ export default defineIntegration({
 				'astro:config:done': ({ injectTypes, config }) => {
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
-					injectTypes(changelogDtsFileOutput);
-					injectTypes(componentsDtsFileOutput);
-					injectTypes(coreDtsFileOutput);
-					injectTypes(i18nDTSOutput);
-					injectTypes(libDtsFileOutput);
-					injectTypes(pluginsDtsFileOutput);
-					injectTypes(getProxyDTS(ComponentRegistry, astroConfigResolve));
-					injectTypes(sdkDtsFile);
-					injectTypes(rendererDTS);
-					injectTypes(rendererConfigDTS);
-					injectTypes(rendererMarkdownConfigDTS);
-					injectTypes(getImagesDTS(imageComponentPath));
-					injectTypes(authLibDTS);
-					injectTypes(authUtilsDTS);
-					injectTypes(authScriptsDTS);
-					injectTypes(webVitalDtsFile);
+					const injectedTypes = getInjectedTypes(
+						ComponentRegistry,
+						imageComponentPath,
+						astroConfigResolve
+					);
+
+					for (const type of injectedTypes) {
+						injectTypes(type);
+					}
 
 					// Inject the Markdown configuration into the shared state
 					shared.markdownConfig = config.markdown;
@@ -1034,6 +1115,6 @@ export default defineIntegration({
 					}
 				},
 			},
-		});
+		};
 	},
 });

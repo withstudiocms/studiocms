@@ -17,7 +17,7 @@ if (!slug) {
 	slug = 'index';
 }
 
-const page = await studioCMS_SDK.GET.page.bySlug(slug, 'studiocms/markdown');
+const page = await studioCMS_SDK.GET.page.bySlug(slug);
 
 if (!page) {
 	return new Response(null, { status: 404 });
