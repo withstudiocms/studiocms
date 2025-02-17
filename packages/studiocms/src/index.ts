@@ -697,6 +697,18 @@ export default defineIntegration({
 							entrypoint: routesDir.v1Rest('users/[id].js'),
 							prerender: false,
 						});
+
+						// Public Pages API Routes
+						injectRoute({
+							pattern: v1RestRoute('public/pages/[id]'),
+							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
+							prerender: false,
+						});
+						injectRoute({
+							pattern: v1RestRoute('public/pages'),
+							entrypoint: routesDir.v1Rest('public/pages/index.js'),
+							prerender: false,
+						});
 					}
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
