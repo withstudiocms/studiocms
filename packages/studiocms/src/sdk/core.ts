@@ -317,6 +317,9 @@ export function studiocmsSDKCore() {
 
 	const REST_API = {
 		tokens: {
+			get: async (userId: string) => {
+				return await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId));
+			},
 			new: async (userId: string, description: string) => {
 				const key = generateToken(userId);
 
@@ -332,8 +335,10 @@ export function studiocmsSDKCore() {
 					.returning()
 					.get();
 			},
-			delete: async (userId: string, key: string) => {
-				await db.delete(tsAPIKeys).where(and(eq(tsAPIKeys.userId, userId), eq(tsAPIKeys.key, key)));
+			delete: async (userId: string, tokenId: string) => {
+				await db
+					.delete(tsAPIKeys)
+					.where(and(eq(tsAPIKeys.userId, userId), eq(tsAPIKeys.id, tokenId)));
 			},
 			verify: async (key: string) => {
 				const apiKey = await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.key, key)).get();

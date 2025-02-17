@@ -1,6 +1,8 @@
 ---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
+import APITokens from '../../components/dashboard/islands/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/islands/profile/BasicInfo.astro';
 import SocialSignin from '../../components/dashboard/islands/profile/SocialSignin.astro';
 import UpdatePassword from '../../components/dashboard/islands/profile/UpdatePassword.astro';
@@ -17,6 +19,10 @@ const {
 } = AuthConfig;
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
+
+const userSession = await getUserData(Astro);
+
+const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
 ---
 
 <Layout 
@@ -33,13 +39,11 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 
     <BasicInfo />
 
-    { usernameAndPassword && ( 
-      <UpdatePassword />
-    )}
+    { usernameAndPassword && <UpdatePassword /> }
 
-    { shouldShowOAuth && ( 
-      <SocialSignin />
-    )}
+    { shouldShowOAuth && <SocialSignin /> }
+
+    { isAllowedAPITokens && <APITokens {userSession} /> }
 
   </div>
 </Layout>
