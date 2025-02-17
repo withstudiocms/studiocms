@@ -22,22 +22,7 @@ import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
-import authLibDTS from './stubs/auth-lib.js';
-import authScriptsDTS from './stubs/auth-scripts.js';
-import authUtilsDTS from './stubs/auth-utils.js';
-import changelogDtsFileOutput from './stubs/changelog.js';
-import componentsDtsFileOutput from './stubs/components.js';
-import coreDtsFileOutput from './stubs/core.js';
-import i18nDTSOutput from './stubs/i18n-dts.js';
-import { getImagesDTS } from './stubs/images.js';
-import libDtsFileOutput from './stubs/lib.js';
-import pluginsDtsFileOutput from './stubs/plugins.js';
-import getProxyDTS from './stubs/proxy.js';
-import rendererConfigDTS from './stubs/renderer-config.js';
-import rendererMarkdownConfigDTS from './stubs/renderer-markdownConfig.js';
-import rendererDTS from './stubs/renderer.js';
-import sdkDtsFile from './stubs/sdk.js';
-import webVitalDtsFile from './stubs/webVitals.js';
+import { getInjectedTypes } from './stubs/index.js';
 import type { Messages } from './types.js';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
@@ -1044,22 +1029,15 @@ export default defineIntegration({
 				'astro:config:done': ({ injectTypes, config }) => {
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
-					injectTypes(changelogDtsFileOutput);
-					injectTypes(componentsDtsFileOutput);
-					injectTypes(coreDtsFileOutput);
-					injectTypes(i18nDTSOutput);
-					injectTypes(libDtsFileOutput);
-					injectTypes(pluginsDtsFileOutput);
-					injectTypes(getProxyDTS(ComponentRegistry, astroConfigResolve));
-					injectTypes(sdkDtsFile);
-					injectTypes(rendererDTS);
-					injectTypes(rendererConfigDTS);
-					injectTypes(rendererMarkdownConfigDTS);
-					injectTypes(getImagesDTS(imageComponentPath));
-					injectTypes(authLibDTS);
-					injectTypes(authUtilsDTS);
-					injectTypes(authScriptsDTS);
-					injectTypes(webVitalDtsFile);
+					const injectedTypes = getInjectedTypes(
+						ComponentRegistry,
+						imageComponentPath,
+						astroConfigResolve
+					);
+
+					for (const type of injectedTypes) {
+						injectTypes(type);
+					}
 
 					// Inject the Markdown configuration into the shared state
 					shared.markdownConfig = config.markdown;
