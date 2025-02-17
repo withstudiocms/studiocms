@@ -716,13 +716,6 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Adding optional integrations...');
 
-					// Robots.txt Integration (Default)
-					if (includedIntegrations.robotsTXT === true) {
-						integrations.push({ integration: robotsTXT() });
-					} else if (typeof includedIntegrations.robotsTXT === 'object') {
-						integrations.push({ integration: robotsTXT(includedIntegrations.robotsTXT) });
-					}
-
 					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 					const safePluginList: SafePluginListType = [
 						{
@@ -797,6 +790,18 @@ export default defineIntegration({
 							frontendNavigationLinks,
 							pageTypes,
 							settingsPage,
+						});
+					}
+
+					// Robots.txt Integration (Default)
+					if (includedIntegrations.robotsTXT === true) {
+						integrations.push({ integration: robotsTXT({ sitemap: sitemapEnabled }) });
+					} else if (typeof includedIntegrations.robotsTXT === 'object') {
+						integrations.push({
+							integration: robotsTXT({
+								...includedIntegrations.robotsTXT,
+								sitemap: sitemapEnabled,
+							}),
 						});
 					}
 
