@@ -67,10 +67,14 @@ const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
 // Routes Directory Resolvers
 const routesDir = {
 	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-	route: (file: string) => resolve(`./routes/dashboard/${file}`),
-	api: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-	f0f: (file: string) => resolve(`./routes/${file}`),
+	dashRoute: (file: string) => resolve(`./routes/dashboard/${file}`),
+	dashApi: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
+	errors: (file: string) => resolve(`./routes/error-pages/${file}`),
 	v1Rest: (file: string) => _rest_dir('v1')(file),
+	sdk: (file: string) => resolve(`./routes/sdk/${file}`),
+	api: (file: string) => resolve(`./routes/api/${file}`),
+	authPage: (file: string) => resolve(`./routes/auth/${file}`),
+	authAPI: (file: string) => resolve(`./routes/auth/api/${file}`),
 };
 
 // Renderer Component Resolver
@@ -78,6 +82,9 @@ const RendererComponent = resolve('./components/Renderer.astro');
 
 // Default Editor Component Resolver
 const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
+
+// Default Custom Image Component Resolver
+const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
 /**
  * **StudioCMS Integration**
@@ -141,7 +148,6 @@ export default defineIntegration({
 
 					const {
 						dashboardEnabled,
-						dashboardRouteOverride,
 						inject404Route,
 						AuthConfig: {
 							enabled: authEnabled,
@@ -184,11 +190,6 @@ export default defineIntegration({
 					addAstroEnvConfig(params, {
 						validateSecrets: true,
 						schema: {
-							CMS_CLOUDINARY_CLOUDNAME: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
 							// Auth Encryption Key
 							CMS_ENCRYPTION_KEY: envField.string({
 								context: 'server',
@@ -264,6 +265,12 @@ export default defineIntegration({
 								access: 'secret',
 								optional: true,
 							}),
+							// Cloudinary Environment Variables for Custom Image Component
+							CMS_CLOUDINARY_CLOUDNAME: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
 						},
 					});
 
@@ -282,7 +289,7 @@ export default defineIntegration({
 					// Resolve the Custom Image Component Path
 					imageComponentPath = overrides.CustomImageOverride
 						? astroConfigResolve(overrides.CustomImageOverride)
-						: resolve('./components/image/CustomImage.astro');
+						: defaultCustomImageComponent;
 
 					// Log that Setup is Starting
 					integrationLogger({ logger, logLevel: 'info', verbose }, 'Setting up StudioCMS Auth...');
@@ -294,25 +301,25 @@ export default defineIntegration({
 
 					injectRoute({
 						pattern: sdkRouteResolver('list-pages'),
-						entrypoint: resolve('./routes/sdk/list-pages.js'),
+						entrypoint: routesDir.sdk('list-pages.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('update-latest-version-cache'),
-						entrypoint: resolve('./routes/sdk/update-latest-version-cache.js'),
+						entrypoint: routesDir.sdk('update-latest-version-cache.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('fallback-list-pages.json'),
-						entrypoint: resolve('./routes/sdk/fallback-list-pages.json.js'),
+						entrypoint: routesDir.sdk('fallback-list-pages.json.js'),
 						prerender: false,
 					});
 
 					injectRoute({
 						pattern: sdkRouteResolver('full-changelog.json'),
-						entrypoint: resolve('./routes/sdk/full-changelog.json.js'),
+						entrypoint: routesDir.sdk('full-changelog.json.js'),
 						prerender: false,
 					});
 
@@ -320,7 +327,7 @@ export default defineIntegration({
 
 					injectRoute({
 						pattern: apiRoute('render'),
-						entrypoint: resolve('./routes/api/render.astro'),
+						entrypoint: routesDir.api('render.astro'),
 						prerender: false,
 					});
 
@@ -364,7 +371,7 @@ export default defineIntegration({
 						integrationLogger(logInfo, 'Injecting 404 Route...');
 						injectRoute({
 							pattern: '404',
-							entrypoint: routesDir.f0f('404.astro'),
+							entrypoint: routesDir.errors('404.astro'),
 							prerender: false,
 						});
 					}
@@ -376,62 +383,62 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'live-render',
-								entrypoint: routesDir.api('partials/LiveRender.astro'),
+								entrypoint: routesDir.dashApi('partials/LiveRender.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'editor',
-								entrypoint: routesDir.api('partials/Editor.astro'),
+								entrypoint: routesDir.dashApi('partials/Editor.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
-								entrypoint: routesDir.api('search-list.js'),
+								entrypoint: routesDir.dashApi('search-list.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'user-list-items',
-								entrypoint: routesDir.api('partials/UserListItems.astro'),
+								entrypoint: routesDir.dashApi('partials/UserListItems.astro'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'config',
-								entrypoint: routesDir.api('config.js'),
+								entrypoint: routesDir.dashApi('config.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'profile',
-								entrypoint: routesDir.api('profile.js'),
+								entrypoint: routesDir.dashApi('profile.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'users',
-								entrypoint: routesDir.api('users.js'),
+								entrypoint: routesDir.dashApi('users.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/page',
-								entrypoint: routesDir.api('content/page.js'),
+								entrypoint: routesDir.dashApi('content/page.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/folder',
-								entrypoint: routesDir.api('content/folder.js'),
+								entrypoint: routesDir.dashApi('content/folder.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-reset-link',
-								entrypoint: routesDir.api('create-reset-link.js'),
+								entrypoint: routesDir.dashApi('create-reset-link.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'reset-password',
-								entrypoint: routesDir.api('reset-password.js'),
+								entrypoint: routesDir.dashApi('reset-password.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'plugins/[plugin]',
-								entrypoint: routesDir.api('plugins/[plugin].js'),
+								entrypoint: routesDir.dashApi('plugins/[plugin].js'),
 							},
 							{
 								enabled: dbStartPage,
@@ -446,17 +453,17 @@ export default defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user',
-								entrypoint: routesDir.api('create-user.js'),
+								entrypoint: routesDir.dashApi('create-user.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user-invite',
-								entrypoint: routesDir.api('create-user-invite.js'),
+								entrypoint: routesDir.dashApi('create-user-invite.js'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
-								entrypoint: routesDir.api('api-tokens.js'),
+								entrypoint: routesDir.dashApi('api-tokens.js'),
 							},
 						],
 					});
@@ -470,67 +477,67 @@ export default defineIntegration({
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: '/',
-									entrypoint: routesDir.route('index.astro'),
+									entrypoint: routesDir.dashRoute('index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management',
-									entrypoint: routesDir.route('content-management/index.astro'),
+									entrypoint: routesDir.dashRoute('content-management/index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create',
-									entrypoint: routesDir.route('content-management/createpage.astro'),
+									entrypoint: routesDir.dashRoute('content-management/createpage.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create-folder',
-									entrypoint: routesDir.route('content-management/createfolder.astro'),
+									entrypoint: routesDir.dashRoute('content-management/createfolder.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit',
-									entrypoint: routesDir.route('content-management/editpage.astro'),
+									entrypoint: routesDir.dashRoute('content-management/editpage.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit-folder',
-									entrypoint: routesDir.route('content-management/editfolder.astro'),
+									entrypoint: routesDir.dashRoute('content-management/editfolder.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/diff',
-									entrypoint: routesDir.route('content-management/diff.astro'),
+									entrypoint: routesDir.dashRoute('content-management/diff.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'profile',
-									entrypoint: routesDir.route('profile.astro'),
+									entrypoint: routesDir.dashRoute('profile.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'configuration',
-									entrypoint: routesDir.route('configuration.astro'),
+									entrypoint: routesDir.dashRoute('configuration.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management',
-									entrypoint: routesDir.route('user-management/index.astro'),
+									entrypoint: routesDir.dashRoute('user-management/index.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management/edit',
-									entrypoint: routesDir.route('user-management/edit.astro'),
+									entrypoint: routesDir.dashRoute('user-management/edit.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage && authEnabled,
 									pattern: 'password-reset',
-									entrypoint: routesDir.route('password-reset.astro'),
+									entrypoint: routesDir.dashRoute('password-reset.astro'),
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage && authEnabled,
 									pattern: 'plugins/[plugin]',
-									entrypoint: routesDir.route('plugins/[plugin].astro'),
+									entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
 								},
 							],
 						},
@@ -543,57 +550,57 @@ export default defineIntegration({
 						routes: [
 							{
 								pattern: 'login',
-								entrypoint: resolve('./routes/auth/api/login.js'),
+								entrypoint: routesDir.authAPI('login.js'),
 								enabled: usernameAndPasswordAPI,
 							},
 							{
 								pattern: 'logout',
-								entrypoint: resolve('./routes/auth/api/logout.js'),
+								entrypoint: routesDir.authAPI('logout.js'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
-								entrypoint: resolve('./routes/auth/api/register.js'),
+								entrypoint: routesDir.authAPI('register.js'),
 								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
 								pattern: 'github',
-								entrypoint: resolve('./routes/auth/api/github/index.js'),
+								entrypoint: routesDir.authAPI('github/index.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'github/callback',
-								entrypoint: resolve('./routes/auth/api/github/callback.js'),
+								entrypoint: routesDir.authAPI('github/callback.js'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'discord',
-								entrypoint: resolve('./routes/auth/api/discord/index.js'),
+								entrypoint: routesDir.authAPI('discord/index.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'discord/callback',
-								entrypoint: resolve('./routes/auth/api/discord/callback.js'),
+								entrypoint: routesDir.authAPI('discord/callback.js'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'google',
-								entrypoint: resolve('./routes/auth/api/google/index.js'),
+								entrypoint: routesDir.authAPI('google/index.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'google/callback',
-								entrypoint: resolve('./routes/auth/api/google/callback.js'),
+								entrypoint: routesDir.authAPI('google/callback.js'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'auth0',
-								entrypoint: resolve('./routes/auth/api/auth0/index.js'),
+								entrypoint: routesDir.authAPI('auth0/index.js'),
 								enabled: auth0API,
 							},
 							{
 								pattern: 'auth0/callback',
-								entrypoint: resolve('./routes/auth/api/auth0/callback.js'),
+								entrypoint: routesDir.authAPI('auth0/callback.js'),
 								enabled: auth0API,
 							},
 						],
@@ -606,17 +613,17 @@ export default defineIntegration({
 							routes: [
 								{
 									pattern: 'login/',
-									entrypoint: resolve('./routes/auth/login.astro'),
+									entrypoint: routesDir.authPage('login.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'logout/',
-									entrypoint: resolve('./routes/auth/logout.astro'),
+									entrypoint: routesDir.authPage('logout.astro'),
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'signup/',
-									entrypoint: resolve('./routes/auth/signup.astro'),
+									entrypoint: routesDir.authPage('signup.astro'),
 									enabled: usernameAndPasswordAPI && allowUserRegistration,
 								},
 							],
