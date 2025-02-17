@@ -1,6 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { FormattedDate } from 'studiocms:components';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
 
@@ -72,7 +73,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
 <Modal
   id='create-api-token-modal'
   cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'danger' }}
+  actionButton={{ label: 'Confirm', color: 'primary' }}
   isForm
 >
   <h2 slot='header'>Create New API Token</h2>
@@ -94,8 +95,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
 
 <div 
     id="token-api-links" style="display: none;"
-    data-create_token={''}
-    data-delete_token={''}
+    data-token_api={StudioCMSRoutes.endpointLinks.apiTokens}
 ></div>
 
 <script>
@@ -107,8 +107,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
 
     const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
 
-    const createTokenLink = tokenAPILinks.dataset.create_token!;
-    const deleteTokenLink = tokenAPILinks.dataset.delete_token!;
+    const tokenAPI = tokenAPILinks.dataset.token_api!;
 
     createAPITokenModal.registerConfirmCallback(async (formData) => {
         const description = formData?.get('description');
@@ -134,7 +133,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
             return;
         }
 
-        const response = await fetch(createTokenLink, {
+        const response = await fetch(tokenAPI, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -168,27 +167,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
             const tokenID = button.getAttribute('data-token');
             const userID = button.getAttribute('data-user');
 
-            if (!tokenID) {
-                toast({
-                    title: 'Error',
-                    description: 'Token ID not found',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return;
-            }
-
-            if (!userID) {
-                toast({
-                    title: 'Error',
-                    description: 'User ID not found',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return;
-            }
-
-            const response = await fetch(deleteTokenLink, {
+            const response = await fetch(tokenAPI, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -218,7 +197,9 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
                 duration: 5000
             })
 
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         });
     });
 </script>

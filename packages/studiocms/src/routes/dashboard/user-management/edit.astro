@@ -222,12 +222,21 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
 
   <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
 
+  <div 
+      id="token-api-links" style="display: none;"
+      data-token_api={StudioCMSRoutes.endpointLinks.apiTokens}
+  ></div>
+
   <script>
     import { ModalHelper, toast } from 'studiocms:ui/components';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
     
     const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
+
+    const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
+
+    const tokenAPI = tokenAPILinks.dataset.token_api!;
 
     const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
 
@@ -360,15 +369,39 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
             const tokenID = button.getAttribute('data-token');
             const userID = button.getAttribute('data-user');
 
-            if (!tokenID) {
+            const response = await fetch(tokenAPI, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tokenID,
+                    userID
+                })
+            });
+
+            const res = await response.json();
+
+            if (!response.ok) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger',
+                    duration: 5000
+                })
                 return;
             }
 
-            if (!userID) {
-                return;
-            }
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success',
+                duration: 5000
+            })
 
-            console.log('Deleting token', tokenID);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
         });
     });
   </script>

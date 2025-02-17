@@ -468,6 +468,11 @@ export default defineIntegration({
 								pattern: 'create-user-invite',
 								entrypoint: routesDir.api('create-user-invite.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'api-tokens',
+								entrypoint: routesDir.api('api-tokens.js'),
+							},
 						],
 					});
 

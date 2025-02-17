@@ -85,6 +85,7 @@ export const StudioCMSRoutes = {
 			create: dashboardAPIRoute('create-user'),
 			invite: dashboardAPIRoute('create-user-invite'),
 		},
+		apiTokens: dashboardAPIRoute('api-tokens'),
 	},
 	sdk: {
 		pages: sdkRoute('list-pages'),
