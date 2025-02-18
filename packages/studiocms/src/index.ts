@@ -68,11 +68,11 @@ const defaultCustomImageComponent = resolve('./components/image/CustomImage.astr
 
 // TODO: Dashboard Grid Items
 // - Built-in
-//   - Recently Signed Up Users
-//   - Recently Updated Pages
-//   - Recently Created Pages
-//   - Drafts
-//   - Totals
+//   - Recently Signed Up Users (span 1)
+//   - Recently Updated Pages (span 2)
+//   - Recently Created Pages (span 2)
+//   - Drafts (span 1)
+//   - Totals (span 1)
 //     - Total Pages
 //     - Total Users
 // - Plugins
