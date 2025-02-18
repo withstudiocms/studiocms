@@ -66,14 +66,6 @@ const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
-// TODO: Dashboard Grid Items
-// - Plugins
-//   - WebAnalytics (astrojs/web-vitals)
-//     - LCP
-//     - CLS
-//     - INP
-//     - Page Visits
-
 // Built-in StudioCMS Plugin
 const defaultPlugin: StudioCMSPlugin = {
 	name: 'StudioCMS (Built-in)',

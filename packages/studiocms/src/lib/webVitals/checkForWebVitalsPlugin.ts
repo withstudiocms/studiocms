@@ -44,10 +44,19 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		addVirtualImports(params, {
 			name: opts.name,
 			imports: {
-				'studiocms-dashboard:web-vitals': `export * from "${resolve('./webVital.ts')}"`,
+				'studiocms-dashboard:web-vitals': `
+					export * from "${resolve('./webVital.ts')}"
+				`,
 			},
 		});
 
+		// TODO: Dashboard Grid Items
+		// - Plugins
+		//   - WebAnalytics (astrojs/web-vitals)
+		//     - LCP
+		//     - CLS
+		//     - INP
+		//     - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
 			identifier: '@astrojs/web-vitals',
 			name: 'Astro Web Vitals',
