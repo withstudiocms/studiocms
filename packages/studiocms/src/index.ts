@@ -67,14 +67,6 @@ const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
 // TODO: Dashboard Grid Items
-// - Built-in
-//   - Recently Signed Up Users (span 1)
-//   - Recently Updated Pages (span 2)
-//   - Recently Created Pages (span 2)
-//   - Drafts (span 1)
-//   - Totals (span 1)
-//     - Total Pages
-//     - Total Users
 // - Plugins
 //   - WebAnalytics (astrojs/web-vitals)
 //     - LCP
@@ -89,24 +81,47 @@ const defaultPlugin: StudioCMSPlugin = {
 	studiocmsMinimumVersion: pkgVersion,
 	dashboardGridItems: [
 		{
-			name: 'test0',
-			span: 2,
+			name: 'overview',
+			span: 1,
 			variant: 'filled',
-			header: { title: 'test1', icon: 'wrench-solid' },
+			header: { title: 'Overview', icon: 'bolt' },
 			body: {
-				html: '<span>Hello World!</span><br /><br /><test></test>',
+				html: '<totals></totals>',
 				components: {
-					test: resolve('./components/dashboard/islands/dashboard/Test.astro'),
+					totals: resolve('./components/default-grid-items/Totals.astro'),
 				},
 			},
 		},
-		{ name: 'test1', span: 1, variant: 'filled' },
-		{ name: 'test2', span: 3, variant: 'filled' },
-		{ name: 'test3', span: 1, variant: 'filled' },
-		{ name: 'test4', span: 2, variant: 'filled' },
-		{ name: 'test5', span: 1, variant: 'filled' },
-		{ name: 'test6', span: 1, variant: 'filled' },
-		{ name: 'test7', span: 1, variant: 'filled' },
+		{
+			name: 'recently-updated-pages',
+			span: 2,
+			variant: 'filled',
+			header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
+			body: {
+				html: '<recentlyupdatedpages></recentlyupdatedpages>',
+				components: {
+					recentlyupdatedpages: resolve('./components/default-grid-items/Recently-updated-pages.astro'),
+				},
+			}
+		},
+		{
+			name: 'recently-signed-up-users',
+			span: 1,
+			variant: 'filled',
+			header: { title: 'Recently Signed Up Users', icon: 'user-group' },
+		},
+		{
+			name: 'recently-created-pages',
+			span: 2,
+			variant: 'filled',
+			header: { title: 'Recently Created Pages', icon: 'document-plus' },
+			body: {
+				html: '<recentlycreatedpages></recentlycreatedpages>',
+				components: {
+					recentlycreatedpages: resolve('./components/default-grid-items/Recently-created-pages.astro'),
+				},
+			}
+		},
 	],
 	pageTypes: [
 		{
@@ -806,7 +821,7 @@ export default defineIntegration({
 						}
 
 						if (dashboardGridItems) {
-							availableDashboardGridItems.push(...dashboardGridItems);
+							availableDashboardGridItems.push(...dashboardGridItems.map((item) => ({ ...item, name: `${identifier}/${item.name}` })));
 						}
 
 						safePluginList.push({

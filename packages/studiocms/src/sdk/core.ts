@@ -1037,7 +1037,7 @@ export function studiocmsSDKCore() {
 					let pagesRaw = await db.select().from(tsPageData);
 
 					if (!includeDrafts) {
-						pagesRaw = pagesRaw.filter(({ draft }) => !draft);
+						pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
 					}
 
 					const folders = tree || (await buildFolderTree());

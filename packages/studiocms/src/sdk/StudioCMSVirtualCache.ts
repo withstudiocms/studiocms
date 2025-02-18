@@ -364,7 +364,7 @@ export class StudioCMSVirtualCache {
 		try {
 			if (!this.isEnabled()) {
 				const folderTree = await this.sdk.buildFolderTree();
-				const pages = await this.sdk.GET.database.pages();
+				const pages = await this.sdk.GET.database.pages(includeDrafts);
 
 				if (!folderTree) {
 					throw new StudioCMSCacheError('Folder tree not found in database');
@@ -401,7 +401,7 @@ export class StudioCMSVirtualCache {
 
 			if (!tree || this.isCacheExpired(tree)) {
 				const folderTree = await this.sdk.buildFolderTree();
-				const pages = await this.sdk.GET.database.pages();
+				const pages = await this.sdk.GET.database.pages(includeDrafts);
 
 				if (!folderTree) {
 					throw new StudioCMSCacheError('Folder tree could not be constructed from database');

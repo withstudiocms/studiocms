@@ -1,3 +1,89 @@
 ---
+import studioCMS_SDK from "studiocms:sdk";
+import { Card, Icon } from "studiocms:ui/components";
+import { allowedIdentifiers } from "./utils.js";
 
+// Get all pages and users from the database
+const allPages = await studioCMS_SDK.GET.database.pages(true);
+const totalUsers = await studioCMS_SDK.GET.database.users();
+
+// Filter out the pages that are not allowed
+const totalPages = allPages.filter(page => allowedIdentifiers.includes(page.package));
+
+// Filter out for draft pages
+const totalDraftPages = totalPages.filter(page => page.draft === true);
 ---
+<div class="totals-grid-item-container">
+    <div class="totals-grid-item">
+        <Card class="totals-grid-item-card">
+            <div class="totals-grid-item-content">
+                <Icon name="document-text" height={24} width={24} />
+                <div class="totals-grid-item-text">
+                    <span class="totals-grid-item-label">Total Pages</span>
+                    <span>{totalPages.length}</span>
+                </div>
+            </div>
+        </Card>
+    </div>
+    <div class="totals-grid-item">
+        <Card class="totals-grid-item-card">
+            <div class="totals-grid-item-content">
+                <Icon name="document" height={24} width={24} />
+                <div class="totals-grid-item-text">
+                    <span class="totals-grid-item-label">Draft Pages</span>
+                    <span>{totalDraftPages.length}</span>
+                </div>
+            </div>
+        </Card>
+    </div>
+    <div class="totals-grid-item">
+        <Card class="totals-grid-item-card">
+            <div class="totals-grid-item-content">
+                <Icon name="user-group" height={24} width={24} />
+                <div class="totals-grid-item-text">
+                    <span class="totals-grid-item-label">Total Users</span>
+                    <span>{totalUsers.length}</span>
+                </div>
+            </div>
+        </Card>
+    </div>
+</div>
+
+<style>
+    .totals-grid-item-card {
+        background-color: hsl(var(--background-step-2));
+        width: 100%;
+        height: 100%;
+    }
+
+    .totals-grid-item-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .totals-grid-item {
+        width: 33%;
+    }
+
+    .totals-grid-item-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+    }
+
+    .totals-grid-item-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+        gap: .5rem;
+    }
+
+    .totals-grid-item-label {
+        font-size: small;
+        font-weight: 500;
+    }
+</style>
