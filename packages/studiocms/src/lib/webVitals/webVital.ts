@@ -1,18 +1,11 @@
 import { db } from 'astro:db';
 import { tsMetric, WEB_VITALS_METRIC_TABLE } from './consts.js';
+import type { WebVitalsResponseItem, IntermediateWebVitalsRouteSummary, MetricStats, WebVitalsMetricSummary, WebVitalsRouteSummary, WebVitalsSummary } from './types.js';
+import { getWebVitalsRouteSummaries } from './webVitalsRouteSummary.js';
+import { getWebVitalsSummary } from './webVitalsSummary.js';
 
-export * from './webVitalsRouteSummary.js';
-export * from './webVitalsSummary.js';
-
-export type WebVitalsResponseItem = {
-	id: string;
-	pathname: string;
-	route: string;
-	name: string;
-	value: number;
-	rating: string;
-	timestamp: Date;
-};
+export { getWebVitalsRouteSummaries, getWebVitalsSummary };
+export type { WebVitalsResponseItem, IntermediateWebVitalsRouteSummary, MetricStats, WebVitalsMetricSummary, WebVitalsRouteSummary, WebVitalsSummary };
 
 export async function getWebVitals(): Promise<WebVitalsResponseItem[]> {
 	try {

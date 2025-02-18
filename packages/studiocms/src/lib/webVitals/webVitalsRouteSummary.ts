@@ -1,34 +1,9 @@
-import { z } from "astro/zod";
 import studioCMS_SDK from 'studiocms:sdk';
-import { CoreWebVitalsMetricTypeSchema, WebVitalsRatingSchema, type CoreWebVitalsMetricType, type WebVitalsRating } from "./schemas.js";
+import { RouteSummaryRowSchema, type WebVitalsRating } from "./schemas.js";
 import { WEB_VITALS_METRIC_TABLE } from "./consts.js";
+import type { IntermediateWebVitalsRouteSummary, WebVitalsRouteSummary } from "./types.js";
 
-interface MetricStats {
-	value: number;
-	rating: WebVitalsRating;
-	sampleSize: number;
-}
-interface IntermediateWebVitalsRouteSummary {
-	route: string;
-	passingCoreWebVitals: boolean;
-	metrics: Partial<Record<CoreWebVitalsMetricType, MetricStats>>;
-}
-interface WebVitalsRouteSummary extends IntermediateWebVitalsRouteSummary {
-	metrics: Record<CoreWebVitalsMetricType, MetricStats>;
-}
-
-const RouteSummaryRowSchema = z.tuple([
-	// route path
-	z.string(),
-	CoreWebVitalsMetricTypeSchema,
-	WebVitalsRatingSchema,
-	// value
-	z.number().gte(0),
-	// sample size
-	z.number(),
-]);
-
-export async function useWebVitalsRouteSummaries({
+export async function getWebVitalsRouteSummaries({
     startDate,
     endDate,
   }: {

@@ -1,29 +1,7 @@
 import studioCMS_SDK from 'studiocms:sdk';
 import { WEB_VITALS_METRIC_TABLE } from './consts.js';
-import { WebVitalsMetricTypeSchema, WebVitalsRatingSchema, type WebVitalsMetricType, type WebVitalsRating } from './schemas.js';
-import { z } from 'astro/zod';
-
-export interface WebVitalsMetricSummary {
-	histogram: Record<WebVitalsRating, number>;
-	percentiles: Partial<Record<'p75', { value: number; rating: WebVitalsRating }>>;
-	sampleSize: number;
-}
-type WebVitalsSummary = Record<string, WebVitalsMetricSummary>;
-
-const MetricSummaryRowSchema = z.tuple([
-	WebVitalsMetricTypeSchema,
-	WebVitalsRatingSchema,
-	// value
-	z.number().gte(0),
-	// density
-	z.number().gte(0),
-	// rating end
-	z.union([z.literal(0), z.literal(1)]).transform(Boolean),
-	// percentile
-	z.number().or(z.null()),
-	// sample size
-	z.number(),
-]);
+import { MetricSummaryRowSchema, type WebVitalsMetricType } from './schemas.js';
+import type { WebVitalsSummary } from './types.js';
 
 /**
  * Fetches a summary of web vitals data for the given date range.
@@ -45,7 +23,7 @@ const MetricSummaryRowSchema = z.tuple([
  * },
  * ```
  */
-export async function useWebVitalsSummary({
+export async function getWebVitalsSummary({
   startDate,
   endDate,
   metrics = ['LCP', 'CLS', 'INP'],
