@@ -5,6 +5,7 @@ export interface GridItemInput {
 	name: string;
 	span: 1 | 2 | 3;
 	variant: 'default' | 'filled';
+	requiresPermission?: "owner" | "admin" | "editor" | "visitor";
 	header?: {
 		title: string;
 		icon?: HeroIconName;
@@ -20,6 +21,7 @@ export interface GridItemUsable {
 	name: string;
 	span: 1 | 2 | 3;
 	variant: 'default' | 'filled';
+	requiresPermission?: "owner" | "admin" | "editor" | "visitor";
 	header?: {
 		title: string;
 		icon?: HeroIconName;

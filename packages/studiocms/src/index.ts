@@ -84,6 +84,7 @@ const defaultPlugin: StudioCMSPlugin = {
 			name: 'overview',
 			span: 1,
 			variant: 'filled',
+			requiresPermission: 'editor',
 			header: { title: 'Overview', icon: 'bolt' },
 			body: {
 				html: '<totals></totals>',
@@ -96,6 +97,7 @@ const defaultPlugin: StudioCMSPlugin = {
 			name: 'recently-updated-pages',
 			span: 2,
 			variant: 'filled',
+			requiresPermission: 'editor',
 			header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
 			body: {
 				html: '<recentlyupdatedpages></recentlyupdatedpages>',
@@ -108,12 +110,20 @@ const defaultPlugin: StudioCMSPlugin = {
 			name: 'recently-signed-up-users',
 			span: 1,
 			variant: 'filled',
+			requiresPermission: 'admin',
 			header: { title: 'Recently Signed Up Users', icon: 'user-group' },
+			body: {
+				html: '<recentlysignedupusers></recentlysignedupusers>',
+				components: {
+					recentlysignedupusers: resolve('./components/default-grid-items/Recently-signed-up.astro'),
+				}
+			}
 		},
 		{
 			name: 'recently-created-pages',
 			span: 2,
 			variant: 'filled',
+			requiresPermission: 'editor',
 			header: { title: 'Recently Created Pages', icon: 'document-plus' },
 			body: {
 				html: '<recentlycreatedpages></recentlycreatedpages>',

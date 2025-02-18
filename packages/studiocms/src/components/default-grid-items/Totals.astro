@@ -2,6 +2,7 @@
 import studioCMS_SDK from "studiocms:sdk";
 import { Card, Icon } from "studiocms:ui/components";
 import { allowedIdentifiers } from "./utils.js";
+import { StudioCMSRoutes } from "studiocms:lib";
 
 // Get all pages and users from the database
 const allPages = await studioCMS_SDK.GET.database.pages(true);
@@ -15,45 +16,60 @@ const totalDraftPages = totalPages.filter(page => page.draft === true);
 ---
 <div class="totals-grid-item-container">
     <div class="totals-grid-item">
-        <Card class="totals-grid-item-card">
-            <div class="totals-grid-item-content">
-                <Icon name="document-text" height={24} width={24} />
-                <div class="totals-grid-item-text">
-                    <span class="totals-grid-item-label">Total Pages</span>
-                    <span>{totalPages.length}</span>
+        <a href={StudioCMSRoutes.mainLinks.contentManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="document-text" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label">Total Pages</span>
+                        <span>{totalPages.length}</span>
+                    </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+        </a>
     </div>
     <div class="totals-grid-item">
-        <Card class="totals-grid-item-card">
-            <div class="totals-grid-item-content">
-                <Icon name="document" height={24} width={24} />
-                <div class="totals-grid-item-text">
-                    <span class="totals-grid-item-label">Draft Pages</span>
-                    <span>{totalDraftPages.length}</span>
+        <a href={StudioCMSRoutes.mainLinks.contentManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="document" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label">Draft Pages</span>
+                        <span>{totalDraftPages.length}</span>
+                    </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+        </a>
     </div>
     <div class="totals-grid-item">
-        <Card class="totals-grid-item-card">
-            <div class="totals-grid-item-content">
-                <Icon name="user-group" height={24} width={24} />
-                <div class="totals-grid-item-text">
-                    <span class="totals-grid-item-label">Total Users</span>
-                    <span>{totalUsers.length}</span>
+        <a href={StudioCMSRoutes.mainLinks.userManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="user-group" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label">Total Users</span>
+                        <span>{totalUsers.length}</span>
+                    </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+        </a>
     </div>
 </div>
 
 <style>
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
     .totals-grid-item-card {
         background-color: hsl(var(--background-step-2));
         width: 100%;
         height: 100%;
+    }
+
+    .totals-grid-item-card:hover {
+        background-color: hsl(var(--background-step-3));
     }
 
     .totals-grid-item-container {

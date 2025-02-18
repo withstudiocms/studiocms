@@ -2,6 +2,7 @@
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { Center } from 'studiocms:ui/components';
 import DashboardGridItem from './DashboardGridItem.astro';
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 
 let gridItems = dashboardGridItems;
 
@@ -13,12 +14,23 @@ const filterItems = allowedItems.length > 0;
 if (filterItems) {
 	gridItems = dashboardGridItems.filter((item) => allowedItems.includes(item.name));
 }
+
+const currentUser = await getUserData(Astro);
 ---
 <div class="dashboard-grid-container">
 
     { 
 		gridItems.length > 0 
-		? gridItems.map((item) => <DashboardGridItem {...item} />) 
+		? gridItems.map(async (item) => {
+			if (item.requiresPermission) {
+				const allowed = await verifyUserPermissionLevel(currentUser, item.requiresPermission);
+				if (allowed) {
+					return <DashboardGridItem {...item} />
+				}
+			} else {
+				return <DashboardGridItem {...item} />
+			}
+		}) 
 		: <Center><p>There is nothing to display</p></Center> 
 	}
 
