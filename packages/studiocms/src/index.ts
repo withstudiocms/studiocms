@@ -66,6 +66,22 @@ const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
+// TODO: Dashboard Grid Items
+// - Built-in
+//   - Recently Signed Up Users
+//   - Recently Updated Pages
+//   - Recently Created Pages
+//   - Drafts
+//   - Totals
+//     - Total Pages
+//     - Total Users
+// - Plugins
+//   - WebAnalytics (astrojs/web-vitals)
+//     - LCP
+//     - CLS
+//     - INP
+//     - Page Visits
+
 // Built-in StudioCMS Plugin
 const defaultPlugin: StudioCMSPlugin = {
 	name: 'StudioCMS (Built-in)',
@@ -91,8 +107,6 @@ const defaultPlugin: StudioCMSPlugin = {
 		{ name: 'test5', span: 1, variant: 'filled' },
 		{ name: 'test6', span: 1, variant: 'filled' },
 		{ name: 'test7', span: 1, variant: 'filled' },
-		{ name: 'test8', span: 1, variant: 'filled' },
-		{ name: 'test9', span: 1, variant: 'filled' },
 	],
 	pageTypes: [
 		{
