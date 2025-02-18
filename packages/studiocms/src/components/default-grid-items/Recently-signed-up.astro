@@ -1,4 +1,5 @@
 ---
+import config from 'studiocms:config';
 import studioCMS_SDK from "studiocms:sdk";
 import { StudioCMSRoutes } from "studiocms:lib";
 import { Icon, User } from "studiocms:ui/components";
@@ -19,8 +20,8 @@ const recentlyCreatedUsers = totalUsers.sort((a, b) => {
                         <User 
                             name={user.name}
                             avatar={user.avatar ?? undefined} 
-                            description={`Created at ${new Date(user.createdAt!).toLocaleDateString()}`} 
-                            loading='eager',
+                            description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.dateLocale, config.dateTimeFormat)}`} 
+                            loading='lazy',
                             />
                         <Icon name="eye" width={24} height={24} />
                     </div>
