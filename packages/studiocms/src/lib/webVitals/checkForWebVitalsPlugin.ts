@@ -4,7 +4,8 @@ import {
 	defineUtility,
 	hasIntegration,
 } from 'astro-integration-kit';
-import { integrationLogger } from './integrationLogger.js';
+import { integrationLogger } from '../../utils/integrationLogger.js';
+import type { StudioCMSPlugin } from '../../plugins.js';
 
 const { resolve } = createResolver(import.meta.url);
 
@@ -14,6 +15,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		opts: {
 			name: string;
 			verbose: boolean;
+			version: string;
 		}
 	) => {
 		integrationLogger(
@@ -21,8 +23,10 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			"Checking for '@astrojs/web-vitals' integration..."
 		);
 
+		const enabled = hasIntegration(params, { name: '@astrojs/web-vitals' });
+
 		// Check for Web Vitals
-		if (hasIntegration(params, { name: '@astrojs/web-vitals' })) {
+		if (enabled) {
 			// Log that the Web Vitals Integration is Present
 			integrationLogger(
 				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
@@ -43,5 +47,17 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 				'studiocms-dashboard:web-vitals': `export * from "${resolve('./webVital.ts')}"`,
 			},
 		});
+
+		const webVitalsPlugin: StudioCMSPlugin = {
+			identifier: '@astrojs/web-vitals',
+			name: 'Astro Web Vitals',
+			studiocmsMinimumVersion: opts.version,
+		}
+
+		if (enabled) {
+			return webVitalsPlugin;
+		}
+
+		return null;
 	}
 );

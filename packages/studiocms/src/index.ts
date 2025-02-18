@@ -36,7 +36,7 @@ import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
 import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
-import { checkForWebVitals } from './utils/checkForWebVitalsPlugin.js';
+import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { injectDashboardRoute } from './utils/injectRouteArray.js';
@@ -389,9 +389,6 @@ export default defineIntegration({
 						entrypoint: routesDir.api('render.astro'),
 						prerender: false,
 					});
-
-					// Check for `@astrojs/web-vitals` Integration
-					checkForWebVitals(params, { name, verbose });
 
 					// Inject First Time Setup Routes if dbStartPage is enabled
 					if (dbStartPage) {
@@ -787,8 +784,13 @@ export default defineIntegration({
 						sitemapXMLEndpointPath: string | URL;
 					}[] = [];
 
+					// Check for `@astrojs/web-vitals` Integration
+					const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
+
 					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 					const pluginsToProcess: StudioCMSPlugin[] = [defaultPlugin];
+
+					if (wvPlugin) pluginsToProcess.push(wvPlugin);
 
 					if (plugins) pluginsToProcess.push(...plugins);
 
