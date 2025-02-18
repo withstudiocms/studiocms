@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import type { ColumnDataType } from 'drizzle-orm';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
+import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared.js';
 
 export interface AstroIntegration {
@@ -66,6 +67,9 @@ export const StudioCMSPluginSchema = z.object({
 	 * If this is true, the plugin will enable the Sitemap
 	 */
 	triggerSitemap: z.boolean().optional(),
+	/**
+	 * Allows the plugin to add sitemap endpoints
+	 */
 	sitemaps: z
 		.array(
 			z.object({
@@ -80,6 +84,10 @@ export const StudioCMSPluginSchema = z.object({
 			})
 		)
 		.optional(),
+	/**
+	 * Allows the plugin to add custom dashboard grid items
+	 */
+	dashboardGridItems: z.custom<GridItemInput[]>().optional(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
@@ -231,6 +239,9 @@ export const StudioCMSPluginSchema = z.object({
 export const SafePluginListItemSchema = StudioCMSPluginSchema.omit({
 	integration: true,
 	studiocmsMinimumVersion: true,
+	sitemaps: true,
+	dashboardGridItems: true,
+	triggerSitemap: true,
 });
 
 export const SafePluginListSchema = z.array(SafePluginListItemSchema);

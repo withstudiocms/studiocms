@@ -6,6 +6,11 @@ declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
 
+declare module 'studiocms:components/dashboard-grid-items' {
+	export const dashboardGridItems: import('./src/lib/dashboardGrid').GridItemUsable[];
+	export default dashboardGridItems;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;

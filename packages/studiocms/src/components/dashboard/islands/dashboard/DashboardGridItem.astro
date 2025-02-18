@@ -1,23 +1,9 @@
 ---
 import { Card, Icon } from 'studiocms:ui/components';
-import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
-import { type SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { createComponentProxy, transformHTML } from '../../../../runtime/AstroComponentProxy.js';
+import type { GridItem } from './shared.js';
 
-export interface Props {
-	span: 1 | 2 | 3;
-	variant: 'default' | 'filled';
-	header?: {
-		title: string;
-		icon?: HeroIconName;
-	};
-	body?: {
-		html: string;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		components?: Record<string, any>;
-		sanitizeOpts?: SanitizeOptions;
-	};
-}
+export interface Props extends GridItem {}
 
 const { span, variant, body, header } = Astro.props;
 

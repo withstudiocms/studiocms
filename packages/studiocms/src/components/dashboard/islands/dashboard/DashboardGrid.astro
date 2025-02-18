@@ -1,28 +1,20 @@
 ---
-import DashboardGridItem, { type Props as GridItemProps } from './DashboardGridItem.astro';
-import Test from './Test.astro';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import { Center } from 'studiocms:ui/components';
+import DashboardGridItem from './DashboardGridItem.astro';
 
-const gridItems: GridItemProps[] = [
-	{
-		span: 2,
-		variant: 'filled',
-		header: { title: 'test1', icon: 'wrench-solid' },
-		body: {
-			html: '<span>Hello World!</span><br /><br /><test></test>',
-			components: { test: Test },
-		},
-	},
-	{ span: 1, variant: 'filled' },
-	{ span: 3, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 2, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-];
+const allowedItems = ['test0', 'test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7'];
+
+const filteredDashboardGridItems = dashboardGridItems.filter((item) =>
+	allowedItems.includes(item.name)
+);
 ---
 <div class="dashboard-grid-container">
 
-    { gridItems.map((item) => <DashboardGridItem {...item} />) }
+    { 
+		filteredDashboardGridItems.length > 0 
+		? filteredDashboardGridItems.map((item) => <DashboardGridItem {...item} />) 
+		: <Center><p>There is nothing to display</p></Center> 
+	}
 
 </div>

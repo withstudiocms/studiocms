@@ -17,11 +17,17 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
+import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
-import type { SafePluginListType, StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
+import type {
+	SafePluginListType,
+	StudioCMSConfig,
+	StudioCMSOptions,
+	StudioCMSPlugin,
+} from './schemas/index.js';
 import { getInjectedTypes } from './stubs/index.js';
 import type { Messages } from './types.js';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
@@ -60,6 +66,42 @@ const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
+// Built-in StudioCMS Plugin
+const defaultPlugin: StudioCMSPlugin = {
+	name: 'StudioCMS (Built-in)',
+	identifier: 'studiocms',
+	studiocmsMinimumVersion: pkgVersion,
+	dashboardGridItems: [
+		{
+			name: 'test0',
+			span: 2,
+			variant: 'filled',
+			header: { title: 'test1', icon: 'wrench-solid' },
+			body: {
+				html: '<span>Hello World!</span><br /><br /><test></test>',
+				components: {
+					test: resolve('./components/dashboard/islands/dashboard/Test.astro'),
+				},
+			},
+		},
+		{ name: 'test1', span: 1, variant: 'filled' },
+		{ name: 'test2', span: 3, variant: 'filled' },
+		{ name: 'test3', span: 1, variant: 'filled' },
+		{ name: 'test4', span: 2, variant: 'filled' },
+		{ name: 'test5', span: 1, variant: 'filled' },
+		{ name: 'test6', span: 1, variant: 'filled' },
+		{ name: 'test7', span: 1, variant: 'filled' },
+	],
+	pageTypes: [
+		{
+			label: 'Markdown (Built-in)',
+			identifier: 'studiocms/markdown',
+			pageContentComponent: defaultEditorComponent,
+		},
+		// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
+	],
+};
+
 /**
  * **StudioCMS Integration**
  *
@@ -87,6 +129,8 @@ export default defineIntegration({
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
+
+		const availableDashboardGridItems: GridItemInput[] = [];
 
 		// Return the Integration
 		return {
@@ -693,22 +737,6 @@ export default defineIntegration({
 
 					integrationLogger(logInfo, 'Adding optional integrations...');
 
-					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
-					const safePluginList: SafePluginListType = [
-						{
-							name: 'StudioCMS (Built-in)',
-							identifier: 'studiocms',
-							pageTypes: [
-								{
-									label: 'Markdown (Built-in)',
-									identifier: 'studiocms/markdown',
-									pageContentComponent: defaultEditorComponent,
-								},
-								// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
-							],
-						},
-					];
-
 					integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
 
 					let sitemapEnabled = false;
@@ -717,6 +745,13 @@ export default defineIntegration({
 						pluginName: string;
 						sitemapXMLEndpointPath: string | URL;
 					}[] = [];
+
+					// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
+					const pluginsToProcess: StudioCMSPlugin[] = [defaultPlugin];
+
+					if (plugins) pluginsToProcess.push(...plugins);
+
+					const safePluginList: SafePluginListType = [];
 
 					// Resolve StudioCMS Plugins
 					for (const {
@@ -729,15 +764,8 @@ export default defineIntegration({
 						settingsPage,
 						triggerSitemap,
 						sitemaps: pluginSitemaps,
-					} of plugins || []) {
-						// Check if the identifier is reserved
-						if (identifier === 'studiocms') {
-							throw new StudioCMSError(
-								'Plugin Identifier "studiocms" is reserved for the default StudioCMS package.',
-								`Plugin ${name} has the identifier "studiocms" which is reserved for the default StudioCMS package, please change the identifier to something else, if the plugin is from a third party, please contact the author to change the identifier.`
-							);
-						}
-
+						dashboardGridItems,
+					} of pluginsToProcess || []) {
 						// Check if the plugin has a minimum version requirement
 						const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
 
@@ -759,6 +787,10 @@ export default defineIntegration({
 
 						if (pluginSitemaps) {
 							sitemaps.push(...pluginSitemaps);
+						}
+
+						if (dashboardGridItems) {
+							availableDashboardGridItems.push(...dashboardGridItems);
 						}
 
 						safePluginList.push({
@@ -841,6 +873,18 @@ export default defineIntegration({
 								.join('\n')
 						: '';
 
+					const dashboardGridComponents = availableDashboardGridItems
+						.map((item) => {
+							const components: Record<string, string> = item.body?.components || {};
+
+							const remappedComps = Object.entries(components).map(
+								([key, value]) => `export { default as ${key} } from '${value}';`
+							);
+
+							return remappedComps.join('\n');
+						})
+						.join('\n');
+
 					addVirtualImports(params, {
 						name,
 						imports: {
@@ -905,6 +949,34 @@ export default defineIntegration({
 							// Plugin Helpers
 							'studiocms:plugin-helpers': `
 								export * from "${resolve('./plugins.js')}";
+							`,
+
+							// Dashboard Grid Items
+							'studiocms:components/dashboard-grid-components': `
+								${dashboardGridComponents}
+							`,
+							'studiocms:components/dashboard-grid-items': `
+								import * as components from 'studiocms:components/dashboard-grid-components';
+
+								const currentComponents = ${JSON.stringify(availableDashboardGridItems)};
+
+								const dashboardGridItems = currentComponents.map((item) => {
+									const gridItem = { ...item };
+
+									if (gridItem.body?.components) {
+										gridItem.body.components = Object.entries(gridItem.body.components).reduce(
+											(acc, [key, value]) => ({
+												...acc,
+												[key]: components[key],
+											}),
+											{}
+										);
+									}
+
+									return gridItem;
+								});
+
+								export default dashboardGridItems;
 							`,
 
 							// Renderer Virtual Imports
