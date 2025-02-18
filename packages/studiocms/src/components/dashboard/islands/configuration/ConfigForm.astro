@@ -67,7 +67,7 @@ const gridItemOptions: AllGridItems = allGridItems.map((name) => {
         <div class="grid-items-container">
             {
                 gridItemOptions.map((item) => (
-                    <Card><Toggle label={item.name} name={item.name} color='primary' defaultChecked={item.enabled} /></Card>
+                    <Card style="background-color: hsl(var(--background-step-2));"><Toggle label={item.name} name={item.name} color='primary' defaultChecked={item.enabled} /></Card>
                 ))
             }
         </div>
