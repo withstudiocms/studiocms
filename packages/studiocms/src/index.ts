@@ -91,6 +91,8 @@ const defaultPlugin: StudioCMSPlugin = {
 		{ name: 'test5', span: 1, variant: 'filled' },
 		{ name: 'test6', span: 1, variant: 'filled' },
 		{ name: 'test7', span: 1, variant: 'filled' },
+		{ name: 'test8', span: 1, variant: 'filled' },
+		{ name: 'test9', span: 1, variant: 'filled' },
 	],
 	pageTypes: [
 		{
