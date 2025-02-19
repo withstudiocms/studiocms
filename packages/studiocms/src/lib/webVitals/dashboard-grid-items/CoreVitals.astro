@@ -1,0 +1,21 @@
+---
+import { getWebVitals } from 'studiocms-dashboard:web-vitals';
+import SummaryCard from './SummaryCard.astro';
+
+const webVitals = await getWebVitals();
+
+const metrics = ['LCP', 'CLS', 'INP'];
+---
+<div class="flex-wrap">
+    {metrics.map((metric) => (
+        <SummaryCard metric={metric as "LCP" | "CLS" | "INP"} summary={webVitals.summary[metric]} />
+    ))}
+</div>
+
+<style>
+    .flex-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+    }
+</style>

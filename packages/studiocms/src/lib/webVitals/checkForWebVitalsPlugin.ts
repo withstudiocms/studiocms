@@ -4,8 +4,8 @@ import {
 	defineUtility,
 	hasIntegration,
 } from 'astro-integration-kit';
-import { integrationLogger } from '../../utils/integrationLogger.js';
 import type { StudioCMSPlugin } from '../../plugins.js';
+import { integrationLogger } from '../../utils/integrationLogger.js';
 
 const { resolve } = createResolver(import.meta.url);
 
@@ -51,17 +51,29 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		});
 
 		// TODO: Dashboard Grid Items
-		// - Plugins
-		//   - WebAnalytics (astrojs/web-vitals)
-		//     - LCP
-		//     - CLS
-		//     - INP
-		//     - Page Visits
+		//         - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
 			identifier: '@astrojs/web-vitals',
 			name: 'Astro Web Vitals',
 			studiocmsMinimumVersion: opts.version,
-		}
+			dashboardGridItems: [
+				{
+					name: 'core-web-vitals',
+					span: 2,
+					variant: 'filled',
+					header: {
+						title: 'Core Web Vitals',
+						icon: 'chart-pie',
+					},
+					body: {
+						html: '<webvitals></webvitals>',
+						components: {
+							webvitals: resolve('./dashboard-grid-items/CoreVitals.astro'),
+						},
+					},
+				},
+			],
+		};
 
 		if (enabled) {
 			return webVitalsPlugin;

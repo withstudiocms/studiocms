@@ -193,3 +193,13 @@ declare module 'studiocms:sdk/cache' {
 	export type SiteConfigCacheObject = import('./src/sdk/cache.js').SiteConfigCacheObject;
 	export type VersionCacheObject = import('./src/sdk/cache.js').VersionCacheObject;
 }
+
+declare module 'studiocms-dashboard:web-vitals' {
+	export const getWebVitals: typeof import('./src/lib/webVitals/webVital').getWebVitals;
+	export const processWebVitalsRouteSummary: typeof import(
+		'./src/lib/webVitals/webVital'
+	).processWebVitalsRouteSummary;
+	export const processWebVitalsSummary: typeof import(
+		'./src/lib/webVitals/webVital'
+	).processWebVitalsSummary;
+}
