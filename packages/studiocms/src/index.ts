@@ -22,6 +22,7 @@ import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
+import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	SafePluginListType,
 	StudioCMSConfig,
@@ -36,7 +37,6 @@ import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
 import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
-import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { injectDashboardRoute } from './utils/injectRouteArray.js';
@@ -94,9 +94,11 @@ const defaultPlugin: StudioCMSPlugin = {
 			body: {
 				html: '<recentlyupdatedpages></recentlyupdatedpages>',
 				components: {
-					recentlyupdatedpages: resolve('./components/default-grid-items/Recently-updated-pages.astro'),
+					recentlyupdatedpages: resolve(
+						'./components/default-grid-items/Recently-updated-pages.astro'
+					),
 				},
-			}
+			},
 		},
 		{
 			name: 'recently-signed-up-users',
@@ -107,9 +109,11 @@ const defaultPlugin: StudioCMSPlugin = {
 			body: {
 				html: '<recentlysignedupusers></recentlysignedupusers>',
 				components: {
-					recentlysignedupusers: resolve('./components/default-grid-items/Recently-signed-up.astro'),
-				}
-			}
+					recentlysignedupusers: resolve(
+						'./components/default-grid-items/Recently-signed-up.astro'
+					),
+				},
+			},
 		},
 		{
 			name: 'recently-created-pages',
@@ -120,9 +124,11 @@ const defaultPlugin: StudioCMSPlugin = {
 			body: {
 				html: '<recentlycreatedpages></recentlycreatedpages>',
 				components: {
-					recentlycreatedpages: resolve('./components/default-grid-items/Recently-created-pages.astro'),
+					recentlycreatedpages: resolve(
+						'./components/default-grid-items/Recently-created-pages.astro'
+					),
 				},
-			}
+			},
 		},
 	],
 	pageTypes: [
@@ -825,7 +831,12 @@ export default defineIntegration({
 						}
 
 						if (dashboardGridItems) {
-							availableDashboardGridItems.push(...dashboardGridItems.map((item) => ({ ...item, name: `${identifier}/${item.name}` })));
+							availableDashboardGridItems.push(
+								...dashboardGridItems.map((item) => ({
+									...item,
+									name: `${convertToSafeString(identifier)}/${convertToSafeString(item.name)}`,
+								}))
+							);
 						}
 
 						safePluginList.push({

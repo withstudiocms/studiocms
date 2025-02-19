@@ -53,8 +53,8 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		// TODO: Dashboard Grid Items
 		//         - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
-			identifier: '@astrojs/web-vitals',
 			name: 'Astro Web Vitals',
+			identifier: '@astrojs/web-vitals',
 			studiocmsMinimumVersion: opts.version,
 			dashboardGridItems: [
 				{
