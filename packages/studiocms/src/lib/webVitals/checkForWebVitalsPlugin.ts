@@ -7,6 +7,8 @@ import {
 import type { StudioCMSPlugin } from '../../plugins.js';
 import { integrationLogger } from '../../utils/integrationLogger.js';
 
+export const webVitalsName = '@astrojs/web-vitals';
+
 const { resolve } = createResolver(import.meta.url);
 
 export const checkForWebVitals = defineUtility('astro:config:setup')(
@@ -20,10 +22,10 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 	) => {
 		integrationLogger(
 			{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-			"Checking for '@astrojs/web-vitals' integration..."
+			`Checking for '${webVitalsName}' integration...`
 		);
 
-		const enabled = hasIntegration(params, { name: '@astrojs/web-vitals' });
+		const enabled = hasIntegration(params, { name: webVitalsName });
 
 		// Check for Web Vitals
 		if (enabled) {
@@ -36,7 +38,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			// Log that the Web Vitals Integration is Missing
 			integrationLogger(
 				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-				'Web Vitals integration not found. If you wish to use Web Vitals, please install the `@astrojs/web-vitals` package.'
+				`Web Vitals integration not found. If you wish to use Web Vitals, please install the '${webVitalsName}' package.`
 			);
 		}
 
@@ -54,7 +56,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		//         - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
 			name: 'Astro Web Vitals',
-			identifier: '@astrojs/web-vitals',
+			identifier: webVitalsName,
 			studiocmsMinimumVersion: opts.version,
 			dashboardGridItems: [
 				{
