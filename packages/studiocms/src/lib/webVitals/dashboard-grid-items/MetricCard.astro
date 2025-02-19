@@ -1,0 +1,24 @@
+---
+import './metric.css';
+import { type HeroIconName, Icon } from 'studiocms:ui/components';
+import { WEB_VITALS_METRIC_LABELS } from '../consts.js';
+import type { WebVitalsMetricType, WebVitalsRating } from '../schemas';
+import { ratingCardClasses, ratingIcons, ratingText } from './shared.js';
+
+interface Props {
+	metric: WebVitalsMetricType;
+	rating?: WebVitalsRating;
+}
+
+const { metric, rating } = Astro.props;
+const IconName: HeroIconName = rating ? ratingIcons[rating] : 'information-circle';
+const iconColor = rating ? ratingText[rating] : '';
+const cardColors = rating ? ratingCardClasses[rating] : 'border-gray bg-light-gray';
+---
+<article class={`metric-card ${cardColors}`}>
+    <h4 class="metric-title">
+        <span class={`icon ${iconColor}`}><Icon name={IconName} height={24} width={24} /></span>
+        {WEB_VITALS_METRIC_LABELS[metric]} ({metric})
+    </h4>
+    <slot />
+</article>
