@@ -7,7 +7,7 @@ export interface Props extends GridItem {}
 
 const { span, variant, body, header, name } = Astro.props;
 
-// @ts-ignore
+// @ts-expect-error - `$$result` is a global variable injected by Astro's compiler during rendering
 const components = createComponentProxy($$result, body?.components);
 
 let html: string | undefined = undefined;
