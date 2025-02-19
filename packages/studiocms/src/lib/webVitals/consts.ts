@@ -1,8 +1,11 @@
-import type { WebVitalsMetricType } from "./schemas.js";
-import { asDrizzleTable } from '@astrojs/db/utils';
 import { column, defineTable } from 'astro:db';
+import { asDrizzleTable } from '@astrojs/db/utils';
+import type { WebVitalsMetricType } from './schemas.js';
+import type { GetWebVitalsData } from './types.js';
 
 export const WEB_VITALS_METRIC_TABLE = 'AstrojsWebVitals_Metric';
+
+export const CoreWebVitals: WebVitalsMetricType[] = ['LCP', 'CLS', 'INP'];
 
 export const WEB_VITALS_METRIC_LABELS: Record<WebVitalsMetricType, string> = {
 	LCP: 'Largest Contentful Paint',
@@ -28,3 +31,12 @@ const Metric = defineTable({
 });
 
 export const tsMetric = asDrizzleTable(WEB_VITALS_METRIC_TABLE, Metric);
+
+export const EmptyReturn: GetWebVitalsData = {
+	raw: [],
+	routeSummary: [],
+	summary: {},
+	twentyFourHours: { summary: {}, routeSummary: [] },
+	sevenDays: { summary: {}, routeSummary: [] },
+	thirtyDays: { summary: {}, routeSummary: [] },
+};

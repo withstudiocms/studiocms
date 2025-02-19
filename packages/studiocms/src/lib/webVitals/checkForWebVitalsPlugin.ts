@@ -45,7 +45,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			name: opts.name,
 			imports: {
 				'studiocms-dashboard:web-vitals': `
-					export * from "${resolve('./webVital.ts')}"
+					export * from "${resolve('./webVital.js')}"
 				`,
 			},
 		});

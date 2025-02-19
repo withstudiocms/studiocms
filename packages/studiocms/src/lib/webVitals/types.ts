@@ -41,4 +41,16 @@ export interface GetWebVitalsData {
 	raw: Omit<WebVitalsResponseItem, 'rating_end' | 'quartile' | 'quartile_end'>[];
 	routeSummary: WebVitalsRouteSummary[];
 	summary: WebVitalsSummary;
+	twentyFourHours: {
+		summary: WebVitalsSummary;
+		routeSummary: WebVitalsRouteSummary[];
+	};
+	sevenDays: {
+		summary: WebVitalsSummary;
+		routeSummary: WebVitalsRouteSummary[];
+	};
+	thirtyDays: {
+		summary: WebVitalsSummary;
+		routeSummary: WebVitalsRouteSummary[];
+	};
 }

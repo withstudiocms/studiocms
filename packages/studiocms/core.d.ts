@@ -196,10 +196,4 @@ declare module 'studiocms:sdk/cache' {
 
 declare module 'studiocms-dashboard:web-vitals' {
 	export const getWebVitals: typeof import('./src/lib/webVitals/webVital').getWebVitals;
-	export const processWebVitalsRouteSummary: typeof import(
-		'./src/lib/webVitals/webVital'
-	).processWebVitalsRouteSummary;
-	export const processWebVitalsSummary: typeof import(
-		'./src/lib/webVitals/webVital'
-	).processWebVitalsSummary;
 }
