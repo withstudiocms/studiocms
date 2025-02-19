@@ -75,7 +75,7 @@ const defaultPlugin: StudioCMSPlugin = {
 		{
 			name: 'overview',
 			span: 1,
-			variant: 'filled',
+			variant: 'default',
 			requiresPermission: 'editor',
 			header: { title: 'Overview', icon: 'bolt' },
 			body: {
@@ -88,7 +88,7 @@ const defaultPlugin: StudioCMSPlugin = {
 		{
 			name: 'recently-updated-pages',
 			span: 2,
-			variant: 'filled',
+			variant: 'default',
 			requiresPermission: 'editor',
 			header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
 			body: {
@@ -103,7 +103,7 @@ const defaultPlugin: StudioCMSPlugin = {
 		{
 			name: 'recently-signed-up-users',
 			span: 1,
-			variant: 'filled',
+			variant: 'default',
 			requiresPermission: 'admin',
 			header: { title: 'Recently Signed Up Users', icon: 'user-group' },
 			body: {
@@ -118,7 +118,7 @@ const defaultPlugin: StudioCMSPlugin = {
 		{
 			name: 'recently-created-pages',
 			span: 2,
-			variant: 'filled',
+			variant: 'default',
 			requiresPermission: 'editor',
 			header: { title: 'Recently Created Pages', icon: 'document-plus' },
 			body: {

@@ -62,7 +62,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 				{
 					name: 'core-web-vitals',
 					span: 2,
-					variant: 'filled',
+					variant: 'default',
 					header: {
 						title: 'Core Web Vitals',
 						icon: 'chart-pie',

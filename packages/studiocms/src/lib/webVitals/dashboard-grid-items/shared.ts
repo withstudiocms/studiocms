@@ -22,12 +22,15 @@ export const ratingCardClasses = {
 	poor: 'border-red-600 bg-red-100',
 };
 
+// return Math.round(average * 100) / 100;
+
 export const webVitalsMetricFormatters = {
-	CLS: (v: number) => v.toFixed(4),
+	CLS: (v: number) => v.toFixed(0),
 	FCP: (v: number) => v.toFixed(0),
 	FID: (v: number) => v.toFixed(0),
-	LCP: (v: number) => v.toFixed(0),
+	LCP: (v: number) => `${Math.floor(Math.round(v * 100) / 100)} ms`,
 	TTFB: (v: number) => v.toFixed(0),
+	INP: (v: number) => `${v.toFixed(0)} ms`,
 };
 
 export const barSegments = {
