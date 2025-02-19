@@ -1,15 +1,18 @@
 ---
 import config from 'studiocms:config';
-import studioCMS_SDK from "studiocms:sdk";
-import { StudioCMSRoutes } from "studiocms:lib";
-import { Icon, User } from "studiocms:ui/components";
-import Card from "@studiocms/ui/components/Card/Card.astro";
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
+import { Icon, User } from 'studiocms:ui/components';
+import Card from '@studiocms/ui/components/Card/Card.astro';
 
 const totalUsers = await studioCMS_SDK.GET.database.users();
 
-const recentlyCreatedUsers = totalUsers.sort((a, b) => {
-  return new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime();
-}).slice(0, 3);
+const recentlyCreatedUsers = totalUsers
+	.sort((a, b) => {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		return new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime();
+	})
+	.slice(0, 3);
 ---
 <div class="recently-signed-up-users-container">
     {
@@ -21,7 +24,7 @@ const recentlyCreatedUsers = totalUsers.sort((a, b) => {
                             name={user.name}
                             avatar={user.avatar ?? undefined} 
                             description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.dateLocale, config.dateTimeFormat)}`} 
-                            loading='lazy',
+                            loading='eager',
                             />
                         <Icon name="eye" width={24} height={24} />
                     </div>

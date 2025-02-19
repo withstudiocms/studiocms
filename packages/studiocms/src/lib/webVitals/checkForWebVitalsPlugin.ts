@@ -66,9 +66,9 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 						icon: 'chart-pie',
 					},
 					body: {
-						html: '<webvitals></webvitals>',
+						html: '<corevitals></corevitals>',
 						components: {
-							webvitals: resolve('./dashboard-grid-items/CoreVitals.astro'),
+							corevitals: resolve('./dashboard-grid-items/CoreVitals.astro'),
 						},
 					},
 				},
