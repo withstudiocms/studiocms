@@ -73,13 +73,13 @@ const totalDraftPages = totalPages.filter((page) => page.draft === true);
     }
 
     .totals-grid-item-container {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: .5rem;
     }
 
     .totals-grid-item {
-        width: 33%;
+        width: 100%;
     }
 
     .totals-grid-item-content {

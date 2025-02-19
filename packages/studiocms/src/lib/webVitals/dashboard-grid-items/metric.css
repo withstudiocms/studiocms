@@ -25,6 +25,7 @@
 
 .icon {
 	flex-shrink: 0;
+	height: 24px;
 }
 
 /* Example of rating-based styles */
