@@ -5,7 +5,7 @@ import type { GridItem } from './shared.js';
 
 export interface Props extends GridItem {}
 
-const { span, variant, body, header } = Astro.props;
+const { span, variant, body, header, name } = Astro.props;
 
 // @ts-ignore
 const components = createComponentProxy($$result, body?.components);
@@ -20,7 +20,8 @@ if (body?.html) {
     fullWidth
     variant={variant}
     class="grid-item"
-    class:list={[span > 1 && `span-${span}`]}>
+    class:list={[span > 1 && `span-${span}`]}
+    id={name}>
     {header && (
         <div slot="header">
             <span class="grid-item-title">
