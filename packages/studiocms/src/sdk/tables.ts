@@ -14,6 +14,9 @@ import {
 	StudioCMSUserResetTokens,
 	StudioCMSUsers,
 } from '../db/tables.js';
+import { tsMetric } from '../lib/webVitals/consts.js';
+
+export { tsMetric };
 
 export const tsAPIKeys = asDrizzleTable('StudioCMSAPIKeys', StudioCMSAPIKeys);
 
