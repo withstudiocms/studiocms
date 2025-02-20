@@ -13,7 +13,7 @@ const [tdDevApps, tdDevApps_SB] = createStarlightTypeDocPlugin();
 const [tdBlog, tdBlog_SB] = createStarlightTypeDocPlugin();
 
 // Set to true to enable testing mode for TypeDoc
-const testTypeDoc = true;
+const testTypeDoc = false;
 
 const isProd = process.env.NODE_ENV === 'production';
 
