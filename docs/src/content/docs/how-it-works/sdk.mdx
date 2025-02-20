@@ -6,3 +6,288 @@ sidebar:
    order: 2
 ---
 
+import ReadMore from '../../../components/ReadMore.astro';
+
+The StudioCMS SDK is a powerful tool that allows you to interact with StudioCMS programmatically. It provides a set of functions and utilities that allow you to manage and serve your content using Astro DB. It also provides the backbone for the StudioCMS Dashboard.
+
+## Usage
+
+The StudioCMS SDK is available as a virtual module in your Astro project. You can import it using the following syntax:
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+// Or
+import SDKCached from 'studiocms:sdk/cache';
+```
+
+The `studioCMSSDK` object provides a set of functions and utilities that allow you to interact with StudioCMS. You can use these functions to create, read, update, and delete content in your Astro project.
+
+The `studioCMSSDKCached` object provides a set of functions and utilities that allow you to interact with the StudioCMS SDK with a caching layer on top. You can use these functions to cache content in your Astro project.
+
+## StudioCMS SDK (Standard)
+
+### `SDK.AUTH`
+
+The `SDK.AUTH` object provides a set of functions and utilities that allow you to manage authentication in your Astro project. You can use these functions to authenticate users, manage sessions, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   oAuth,
+   permission,
+   session,
+   user,
+} = SDK.AUTH;
+```
+
+### `SDK.INIT`
+
+The `SDK.INIT` object provides a set of functions and utilities that allow you to initialize the StudioCMS SDK in your Astro project. You can use these functions to set up the SDK, configure it, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   siteConfig,
+   ghostUser,
+} = SDK.INIT;
+```
+
+### `SDK.GET`
+
+The `SDK.GET` object provides a set of functions and utilities that allow you to retrieve content from Astro DB. You can use these functions to get content by ID, get content by type, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   database,
+   databaseEntry,
+   databaseTable,
+   permissionsLists,
+   packagePages,
+} = SDK.GET;
+```
+
+### `SDK.POST`
+
+The `SDK.POST` object provides a set of functions and utilities that allow you to create content in Astro DB. You can use these functions to create content by type, create content by ID, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   databaseEntry,
+   databaseEntries,
+} = SDK.POST;
+```
+
+### `SDK.UPDATE`
+
+The `SDK.UPDATE` object provides a set of functions and utilities that allow you to update content in Astro DB. You can use these functions to update content by ID, update content by type, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   page,
+   pageContent,
+   tags,
+   categories,
+   permissions,
+   siteConfig,
+   folder,
+} = SDK.UPDATE;
+```
+
+### `SDK.DELETE`
+
+The `SDK.DELETE` object provides a set of functions and utilities that allow you to delete content from Astro DB. You can use these functions to delete content by ID, delete content by type, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   page,
+   pageContent,
+   pageContentLang,
+   tags,
+   categories,
+   permissions,
+   diffTracking,
+   folder,
+   user,
+} = SDK.DELETE;
+```
+
+### `SDK.db`
+
+The `SDK.db` object provides a set of functions and utilities that allow you to interact with the Astro DB directly. You can use these functions to query the database, run custom queries, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { db } = SDK;
+```
+
+<ReadMore>For more information about how to use `db` check out the [Astro DB Guide](https://docs.astro.build/en/guides/astro-db/)</ReadMore>
+
+### `SDK.REST_API`
+
+The `SDK.REST_API` object provides a set of functions and utilities that the REST API uses to interact with the StudioCMS and Astro DB.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   tokens: {
+      get: getToken,
+      new: newToken,
+      delete: deleteToken,
+      verify: verifyToken,
+   },
+} = SDK.REST_API;
+```
+
+### `SDK.diffTracking`
+
+The `SDK.diffTracking` object provides a set of functions and utilities that allow you to track changes in Astro DB. You can use these functions to track changes in content, track changes in users, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const { 
+   insert,
+   clear,
+   get,
+   revertToDiff
+} = SDK.diffTracking;
+```
+
+### Utility Functions
+
+The StudioCMS SDK also provides a set of utility functions that you can use to interact with the SDK. These functions include:
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDK from 'studiocms:sdk';
+
+const {
+	addPageToFolderTree,
+	findNodeById,
+	findNodeByPath,
+	findNodesAlongPath,
+	getFullPath,
+	parseIdNumberArray,
+	parseIdStringArray,
+	generateRandomIDNumber,
+	generateToken,
+	testToken,
+	combineRanks,
+	verifyRank,
+	buildFolderTree,
+	getAvailableFolders,
+	clearUserReferences,
+	collectCategories,
+	collectTags,
+	collectPageData,
+	collectUserData,
+	generateRandomPassword,
+} = SDK;
+```
+
+## StudioCMS SDK (Cached)
+
+The StudioCMS SDK also provides a cached version of the SDK with a limited subset of the SDK Features that includes a caching layer on top of the standard SDK. You can import the cached SDK using the following syntax:
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDKCached from 'studiocms:sdk/cache';
+```
+
+### `SDKCached.GET`
+
+The `SDKCached.GET` object provides a set of functions and utilities that allow you to retrieve content from Astro DB with a caching layer on top. You can use these functions to get content by ID, get content by type, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDKCached from 'studiocms:sdk/cache';
+
+const { 
+   page,
+   pages,
+   siteConfig,
+   latestVersion,
+   folderTree,
+   pageFolderTree,
+   folderList,
+   folder,
+} = SDKCached.GET;
+```
+
+### `SDKCached.CLEAR`
+
+The `SDKCached.CLEAR` object provides a set of functions and utilities that allow you to clear the cache in the cached SDK. You can use these functions to clear the cache for a specific content type, clear the cache for a specific content ID, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDKCached from 'studiocms:sdk/cache';
+
+const { 
+   page,
+   pages,
+   latestVersion,
+   folderTree,
+   folderList,
+} = SDKCached.CLEAR;
+```
+
+### `SDKCached.UPDATE`
+
+The `SDKCached.UPDATE` object provides a set of functions and utilities that allow you to update content in Astro DB with a caching layer on top. You can use these functions to update content by ID, update content by type, and more.
+
+```ts twoslash
+/// <reference types="studiocms/v/core.d.ts" />
+// ---cut---
+import SDKCached from 'studiocms:sdk/cache';
+
+const { 
+   page,
+   siteConfig,
+   latestVersion,
+   folderTree,
+   folderList,
+   folder,
+} = SDKCached.UPDATE;
+```
+
+### `SDKCached.db`
+
+This is a passthrough to the standard SDK `db` object.
+
+<ReadMore>See [`SDK.db`](#sdkdb) for more information</ReadMore>
