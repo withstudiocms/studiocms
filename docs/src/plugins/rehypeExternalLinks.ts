@@ -7,7 +7,10 @@ export const rehypeExternalLinks: [RehypePlugin, any] = [
 	{
 		content: {
 			type: 'text',
-			value: ' ⤴',
+			value: ' ^',
+		},
+		properties: {
+			target: '_blank',
 		},
 		rel: ['noopener', 'noreferrer'],
 	},
