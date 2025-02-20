@@ -112,6 +112,10 @@ export default defineConfig({
 					autogenerate: { directory: 'contributing' },
 				},
 				{
+					label: 'Plugins Reference',
+					autogenerate: { directory: 'plugins' },
+				},
+				{
 					label: 'Package Catalog',
 					items: [
 						{

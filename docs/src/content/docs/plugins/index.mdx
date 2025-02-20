@@ -1,0 +1,198 @@
+---
+i18nReady: true
+title: The Basics
+description: Learn about the StudioCMS Plugins and how they work.
+sidebar:
+   order: 1
+---
+
+# Introduction
+
+StudioCMS Plugins are a powerful tool that allows you to extend the functionality of StudioCMS. They provide a simple and flexible way to add new features to your StudioCMS project. The following is a breakdown of StudioCMS Plugins and how they work.
+
+## What are Plugins?
+
+StudioCMS Plugins are similar to Astro Integration, but they have extra information attached to the function object. This information is used by StudioCMS to determine how the plugin should be loaded and used. StudioCMS Plugins are used to extend the functionality of StudioCMS by adding new features or modifying existing ones.
+
+### The StudioCMS Plugin Type
+
+```ts twoslash
+import { APIRoute, AstroIntegration } from "astro"
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
+import type { SettingsField } from 'studiocms/schemas';
+// ---cut---
+type StudioCMSPlugin = {
+  /**
+   * Identifier of the plugin from the package.json
+   */
+  identifier: string;
+
+  /**
+   * Label of the plugin to be displayed in the StudioCMS Dashboard
+   */
+  name: string;
+    
+  /**
+   * Minimum version of StudioCMS required for the plugin to work
+   */
+  studiocmsMinimumVersion: string;
+    
+  /**
+   * Astro Integration(s) that the plugin provides
+   */
+  integration?: AstroIntegration | AstroIntegration[] | undefined;
+
+  /**
+   * If this is true, the plugin will enable the sitemap generation
+   */
+  triggerSitemap?: boolean;
+
+  /**
+   * Allows the plugin to add sitemap endpoints
+   */
+  sitemaps?: Array<{
+
+    /**
+     * Name of the plugin
+     */
+    pluginName: string;
+
+    /**
+     * Path to the sitemap xml endpoint file
+     */
+    sitemapXMLEndpointPath: string | URL;
+  }> | undefined;
+
+  /**
+   * Allows the plugin to add custom dashboard grid items
+   */
+  dashboardGridItems?: Array<{
+
+    /**
+     * Name of the grid item
+     */
+    name: string;
+
+    /**
+     * Span of the grid item
+     */
+    span: 1 | 2 | 3;
+
+    /**
+     * Card variant of the grid item
+     */
+    variant: 'default' | 'filled';
+
+    /**
+     * Permission required to view the grid item
+     */
+    requiresPermission?: "owner" | "admin" | "editor" | "visitor";
+
+    /**
+     * Header information of the grid item
+     */
+    header?: {
+
+      /**
+       * Title of the grid item
+       */
+      title: string;
+
+      /**
+       * Icon of the grid item
+       */
+      icon?: HeroIconName;
+    };
+
+    /**
+     * Body information of the grid item
+     */
+    body?: {
+
+      /**
+       * HTML content of the grid item
+       */
+      html: string;
+
+      /**
+       * Component that is displayed in the grid item
+       */
+      components?: Record<string, string>;
+
+      /**
+       * Sanitize options for the HTML content
+       */
+      sanitizeOpts?: SanitizeOptions;
+    };
+  }> | undefined;
+
+  /**
+   * If this exists, the plugin will have its own setting page
+   */
+  settingsPage: {
+
+    /**
+     * Fields according to specification
+     */
+    fields: SettingsField[];
+
+    /**
+     * Function that runs on when the settings page is saved
+     *
+     * Should return a string if there is an error,
+     * otherwise return boolean true to indicate success
+     */
+    onSave: APIRoute;
+  } | undefined;
+
+  /**
+   * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
+   */
+  pageTypes: Array<{
+
+    /**
+     * Label that is shown in the select input
+     */
+    label: string;
+
+    /**
+     * Identifier that is saved in the database
+     * @example
+     * // Single page type per plugin
+     * 'studiocms'
+     * '@studiocms/blog'
+     * // Multiple page types per plugin (Use unique identifiers for each type to avoid conflicts)
+     * '@mystudiocms/plugin:pageType1'
+     * '@mystudiocms/plugin:pageType2'
+     * '@mystudiocms/plugin:pageType3'
+     * '@mystudiocms/plugin:pageType4'
+     */
+    identifier: string;
+
+    /**
+     * Description that is shown below the "Page Content" header if this type is selected
+     */
+    description: string;
+
+    /**
+     * The path to the actual component that is displayed for the page content
+     *
+     * Component should have a `content` prop that is a string to be able to display current content.
+     *
+     * **NOTE:** Currently, requires you to use the form id `page-content` for the content output. Your editor should also be able to handle form submission.
+     *
+     * @example
+     * ```ts
+     * import { createResolver } from 'astro-integration-kit';
+     * const { resolve } = createResolver(import.meta.url)
+     *
+     * {
+     *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
+     * }
+     * ```
+     */
+    pageContentComponent: string;
+  }> | undefined;
+};
+```

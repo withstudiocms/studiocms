@@ -252,6 +252,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
+      ultrahtml:
+        specifier: ^1.5.3
+        version: 1.5.3
       unified:
         specifier: ^11.0.5
         version: 11.0.5
