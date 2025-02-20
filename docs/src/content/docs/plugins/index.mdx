@@ -196,3 +196,35 @@ type StudioCMSPlugin = {
   }> | undefined;
 };
 ```
+
+### Defining a Plugin
+
+To define a StudioCMS Plugin, you need to create an object that conforms to the `StudioCMSPlugin` type. This object should contain the following properties:
+
+```ts twoslash title="my-plugin.ts"
+import { definePlugin } from 'studiocms/plugins';
+import { AstroIntegration } from 'astro';
+
+// Define the options for the plugin and integration
+interface Options {
+    foo: string;
+}
+
+// Define the Astro integration
+const myIntegration = (options: Options): AstroIntegration => ({
+    name: 'my-astro-integration',
+    hooks: {
+        "astro:config:setup": () => {
+            console.log('Hello from my Astro Integration!');
+        }
+    }
+})
+
+// Define the StudioCMS Plugin
+export const myPlugin = (options: Options) => definePlugin({
+  identifier: 'my-plugin',
+  name: 'My Plugin',
+  studiocmsMinimumVersion: '1.0.0',
+  integration: myIntegration(options),
+});
+```
