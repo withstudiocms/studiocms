@@ -1,5 +1,5 @@
-import type { WebVitalsResponseItem } from 'studiocms-dashboard:web-vitals';
-import { checkDate } from './checkDate';
+import type { WebVitalsResponseItem } from '../types.js';
+import { checkDate } from './checkDate.js';
 
 export type BuildDataObject = {
 	historicalData: WebVitalsResponseItem[];

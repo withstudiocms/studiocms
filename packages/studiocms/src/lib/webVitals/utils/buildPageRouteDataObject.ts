@@ -1,5 +1,5 @@
-import type { WebVitalsResponseItem } from 'studiocms-dashboard:web-vitals';
-import { checkDate } from './checkDate';
+import type { WebVitalsResponseItem } from '../types.js';
+import { checkDate } from './checkDate.js';
 
 type pageRouteDataEntry = {
 	pagePathname: string;
@@ -22,7 +22,6 @@ export const buildPageRouteDataObject = (webVitalData: WebVitalsResponseItem[]) 
 			if (checkDate(timestamp).isInLast24Hours()) {
 				const index = last24HoursData.findIndex((entry) => entry.pagePathname === pathname);
 				if (index !== -1) {
-					// @ts-expect-error - This is a valid index
 					last24HoursData[index].analyticData.pageViews += 1;
 				} else {
 					last24HoursData.push({
@@ -38,7 +37,6 @@ export const buildPageRouteDataObject = (webVitalData: WebVitalsResponseItem[]) 
 			if (checkDate(timestamp).isInLast7Days()) {
 				const index = last7DaysData.findIndex((entry) => entry.pagePathname === pathname);
 				if (index !== -1) {
-					// @ts-expect-error - This is a valid index
 					last7DaysData[index].analyticData.pageViews += 1;
 				} else {
 					last7DaysData.push({
@@ -54,7 +52,6 @@ export const buildPageRouteDataObject = (webVitalData: WebVitalsResponseItem[]) 
 			if (checkDate(timestamp).isInLast30Days()) {
 				const index = last30DaysData.findIndex((entry) => entry.pagePathname === pathname);
 				if (index !== -1) {
-					// @ts-expect-error - This is a valid index
 					last30DaysData[index].analyticData.pageViews += 1;
 				} else {
 					last30DaysData.push({
@@ -69,7 +66,6 @@ export const buildPageRouteDataObject = (webVitalData: WebVitalsResponseItem[]) 
 
 			const index = perRouteData.findIndex((entry) => entry.pagePathname === pathname);
 			if (index !== -1) {
-				// @ts-expect-error - This is a valid index
 				perRouteData[index].analyticData.pageViews += 1;
 			} else {
 				perRouteData.push({

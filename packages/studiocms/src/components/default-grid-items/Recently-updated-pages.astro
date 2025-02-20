@@ -1,0 +1,88 @@
+---
+import { FormattedDate } from 'studiocms:components';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
+import { Badge, Button, Card, Center, Icon } from 'studiocms:ui/components';
+import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
+
+// Get all pages and users from the database
+const allPages = await studioCMS_SDK.GET.database.pages(true);
+
+// Filter out the pages that are not allowed
+const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.package));
+
+const recentlyUpdatedPages = totalPages
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	.filter((page) => withinLast30Days(page.updatedAt!))
+	.sort((a, b) => sortByDate(a.updatedAt, b.updatedAt))
+	.slice(0, 3);
+---
+<div class="recently-updated-page-container">
+    {
+        recentlyUpdatedPages.length > 0 ? (
+            recentlyUpdatedPages.map(page => (
+                <Card fullWidth class={'recently-updated-page-card'}>
+                    <div class="card-row">
+                        <span class="card-title">{page.title} {page.draft && <Badge label="Draft" size="sm" variant="flat" rounding="semi" />}</span>
+                        <span class="card-date">Edited: <FormattedDate date={page.updatedAt || page.publishedAt} /></span>
+                    </div>
+                    
+                    <div class="card-row">
+                        <span class="card-description">{page.description}</span>
+                        <Button size='sm' as='a' href={StudioCMSRoutes.mainLinks.contentManagementEdit + `?edit=${page.id}`} title="View page" aria-label="View page">
+                            <Icon name="eye" width={24} height={24} class="card-icon" />
+                        </Button>
+                    </div>
+                </Card>
+            ))
+        ) : (
+            <Card fullWidth style="background-color: hsl(var(--background-step-2));">
+                <Center><span style="color: hsl(var(--text-muted));">No recently updated pages found.</span></Center>
+            </Card>
+        )
+    }
+</div>
+
+<style>
+    .recently-updated-page-container {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+
+.recently-updated-page-card {
+  display: flex;
+  flex-direction: column;
+  background-color: hsl(var(--background-step-2));
+  
+  & .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & .card-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    & .card-date {
+      color: hsl(var(--text-muted));
+      font-size: .8rem;
+    }
+
+    & .card-description {
+      font-size: 1rem;
+      color: hsl(var(--text-muted));
+      line-clamp: 1;
+    }
+
+    & .card-icon {
+      color: hsl(var(--text-muted));
+    }
+  }
+}
+</style>

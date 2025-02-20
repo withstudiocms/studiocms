@@ -6,6 +6,11 @@ declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
 
+declare module 'studiocms:components/dashboard-grid-items' {
+	export const dashboardGridItems: import('./src/lib/dashboardGrid').GridItemUsable[];
+	export default dashboardGridItems;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;
@@ -187,4 +192,8 @@ declare module 'studiocms:sdk/cache' {
 	export type PageDataCacheObject = import('./src/sdk/cache.js').PageDataCacheObject;
 	export type SiteConfigCacheObject = import('./src/sdk/cache.js').SiteConfigCacheObject;
 	export type VersionCacheObject = import('./src/sdk/cache.js').VersionCacheObject;
+}
+
+declare module 'studiocms-dashboard:web-vitals' {
+	export const getWebVitals: typeof import('./src/lib/webVitals/webVital').getWebVitals;
 }

@@ -1,5 +1,4 @@
-import type { WebVitalsResponseItem } from 'studiocms-dashboard:web-vitals';
-import type { SlProgressRing } from '@matthiesenxyz/astrolace/types';
+import type { WebVitalsResponseItem } from '../types.js';
 
 // Misc Utils
 export function msToSeconds(ms: number): number {
@@ -309,15 +308,15 @@ export function generateLighthouseFetchUrl(
 	return fetchUrl;
 }
 
-export const setProgressRing = (ProgressRing: SlProgressRing, value: number) => {
-	ProgressRing.value = value;
-	ProgressRing.textContent = value.toString();
-	ProgressRing.style.color = value >= 90 ? 'green' : value >= 50 ? 'rgb(208, 208, 0)' : 'red';
-	ProgressRing.style.setProperty(
-		'--indicator-color',
-		value >= 90 ? 'green' : value >= 50 ? 'yellow' : 'red'
-	);
-	if (value < 90) {
-		ProgressRing.style.webkitTextStroke = '2px black;';
-	}
-};
+// export const setProgressRing = (ProgressRing: SlProgressRing, value: number) => {
+// 	ProgressRing.value = value;
+// 	ProgressRing.textContent = value.toString();
+// 	ProgressRing.style.color = value >= 90 ? 'green' : value >= 50 ? 'rgb(208, 208, 0)' : 'red';
+// 	ProgressRing.style.setProperty(
+// 		'--indicator-color',
+// 		value >= 90 ? 'green' : value >= 50 ? 'yellow' : 'red'
+// 	);
+// 	if (value < 90) {
+// 		ProgressRing.style.webkitTextStroke = '2px black;';
+// 	}
+// };

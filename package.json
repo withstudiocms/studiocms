@@ -7,17 +7,16 @@
   },
   "scripts": {
     "build": "pnpm build:studiocms && pnpm --filter node-playground build",
+    "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
     "build:docs": "pnpm --filter docs build",
     "docs:dev": "pnpm build:studiocms && pnpm --filter docs dev",
     "playground:dev": "pnpm --filter node-playground dev",
     "playground:push": "pnpm --filter node-playground db:push",
     "playground:preview": "pnpm --filter node-playground preview",
 
-    "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
     "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* -r -parallel dev",
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter node-playground -r -parallel dev",
 
-    "build:cli": "pnpm --filter studiocms build",
     "cli:test": "pnpm studiocms",
 
     "changeset": "changeset",

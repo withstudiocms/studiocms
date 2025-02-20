@@ -153,6 +153,7 @@ export const StudioCMSSiteConfig = defineTable({
 		loginPageCustomImage: column.text({ optional: true }),
 		enableDiffs: column.boolean({ default: false }),
 		diffPerPage: column.number({ default: 10 }),
+		gridItems: column.json({ default: [] }),
 	},
 });
 

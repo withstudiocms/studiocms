@@ -1,5 +1,5 @@
-import type { WebVitalsResponseItem } from 'studiocms-dashboard:web-vitals';
-import { checkDate } from './checkDate';
+import type { WebVitalsResponseItem } from '../types.js';
+import { checkDate } from './checkDate.js';
 import {
 	calculateClsAverage,
 	calculateClsScoreText,
@@ -7,7 +7,7 @@ import {
 	calculateInpScoreText,
 	calculateLcpAverage,
 	calculateLcpScoreText,
-} from './webVitalsUtils';
+} from './webVitalsUtils.js';
 
 export type perPageDataEntry = {
 	pageRoute: string;
@@ -47,18 +47,14 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 			const index = last24HoursData.findIndex((entry) => entry.route === route);
 
 			if (index !== -1) {
-				// @ts-expect-error - This is a valid index
 				last24HoursData[index].samplesize += 1;
 				if (item.name === 'CLS') {
-					// @ts-expect-error - This is a valid index
 					last24HoursData[index].clsvalue.push(item.value);
 				}
 				if (item.name === 'LCP') {
-					// @ts-expect-error - This is a valid index
 					last24HoursData[index].lcpvalue.push(item.value);
 				}
 				if (item.name === 'INP') {
-					// @ts-expect-error - This is a valid index
 					last24HoursData[index].inpvalue.push(item.value);
 				}
 			} else {
@@ -75,18 +71,14 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 			const index = last7DaysData.findIndex((entry) => entry.route === route);
 
 			if (index !== -1) {
-				// @ts-expect-error - This is a valid index
 				last7DaysData[index].samplesize += 1;
 				if (item.name === 'CLS') {
-					// @ts-expect-error - This is a valid index
 					last7DaysData[index].clsvalue.push(item.value);
 				}
 				if (item.name === 'LCP') {
-					// @ts-expect-error - This is a valid index
 					last7DaysData[index].lcpvalue.push(item.value);
 				}
 				if (item.name === 'INP') {
-					// @ts-expect-error - This is a valid index
 					last7DaysData[index].inpvalue.push(item.value);
 				}
 			} else {
@@ -103,18 +95,14 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 			const index = last30DaysData.findIndex((entry) => entry.route === route);
 
 			if (index !== -1) {
-				// @ts-expect-error - This is a valid index
 				last30DaysData[index].samplesize += 1;
 				if (item.name === 'CLS') {
-					// @ts-expect-error - This is a valid index
 					last30DaysData[index].clsvalue.push(item.value);
 				}
 				if (item.name === 'LCP') {
-					// @ts-expect-error - This is a valid index
 					last30DaysData[index].lcpvalue.push(item.value);
 				}
 				if (item.name === 'INP') {
-					// @ts-expect-error - This is a valid index
 					last30DaysData[index].inpvalue.push(item.value);
 				}
 			} else {
@@ -131,18 +119,14 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 		const index = RouteArray.findIndex((entry) => entry.route === route);
 
 		if (index !== -1) {
-			// @ts-expect-error - This is a valid index
 			RouteArray[index].samplesize += 1;
 			if (item.name === 'CLS') {
-				// @ts-expect-error - This is a valid index
 				RouteArray[index].clsvalue.push(item.value);
 			}
 			if (item.name === 'LCP') {
-				// @ts-expect-error - This is a valid index
 				RouteArray[index].lcpvalue.push(item.value);
 			}
 			if (item.name === 'INP') {
-				// @ts-expect-error - This is a valid index
 				RouteArray[index].inpvalue.push(item.value);
 			}
 		} else {

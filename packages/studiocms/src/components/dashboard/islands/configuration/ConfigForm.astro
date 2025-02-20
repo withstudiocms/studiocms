@@ -1,8 +1,9 @@
 ---
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Card, Divider, Input, Select } from 'studiocms:ui/components';
+import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
@@ -16,6 +17,35 @@ const currentLoginPageBg = validImages.find(
 const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
 const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
 const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
+
+const currentlyEnabledGridItems: string[] = data.gridItems as string[] ?? [];
+
+interface PreGridItem {
+    name: string;
+    label: string;
+}
+
+interface AllGridItems extends PreGridItem {
+    enabled: boolean;
+}
+
+const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({ name: item.name, label: item.header?.title ?? item.name }));
+
+const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
+    if (currentlyEnabledGridItems.length === 0) {
+        return {
+            enabled: true,
+            name,
+            label,
+        }
+    }
+
+    return {
+        enabled: currentlyEnabledGridItems.includes(name),
+        name,
+        label,
+    }
+})
 ---
 
 <form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
@@ -34,6 +64,20 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
         <div class="form-row">
             <Select label="Page Diff Tracking" name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
             <Input label="Page Diff Tracking Limit (per page)" name="diff-per-page" placeholder="10" value={data.diffPerPage} />
+        </div>
+
+        <Divider />
+
+        <span>Dashboard Grid Items</span>
+
+        <div class="grid-items-container">
+            {
+                gridItemOptions.map(({ enabled, label, name }) => (
+                    <Card style="background-color: hsl(var(--background-step-2));">
+                        <Toggle {label} {name} color='primary' defaultChecked={enabled} />
+                    </Card>
+                ))
+            }
         </div>
 
         <Divider />
@@ -72,6 +116,16 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 
             const formData = new FormData(configForm);
 
+            // Get dashboard grid items
+            const gridItems = Array.from(configForm.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>).map((input) => {
+                return {
+                    name: input.name,
+                    enabled: input.checked,
+                }
+            });
+
+            const enabledGridItems = gridItems.filter((item) => item.enabled).map((item) => item.name);
+
             const data = {
                 title: formData.get('site-title') as string,
                 description: formData.get('site-description') as string,
@@ -81,6 +135,7 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
                 loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
                 enableDiffs: formData.get('diff-enabled') === 'true',
                 diffPerPage: parseInt(formData.get('diff-per-page') as string),
+                gridItems: enabledGridItems,
             }
 
             console.log(data);
@@ -204,5 +259,11 @@ setupLoginPreview();
         .form-row {
             grid-template-columns: 1fr;
         }
+    }
+
+    .grid-items-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 </style>

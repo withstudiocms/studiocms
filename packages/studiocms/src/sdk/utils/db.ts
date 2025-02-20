@@ -1,6 +1,7 @@
 import { dbSecret, dbUrl } from 'virtual:studiocms/sdk/env';
 import { createClient } from '@libsql/client/web';
 import { drizzle } from 'drizzle-orm/libsql';
+import * as schema from '../tables.js';
 
 /**
  * Returns a new Drizzle libSQL connection.
@@ -10,7 +11,7 @@ export const useDB = () => {
 		url: dbUrl,
 		authToken: dbSecret,
 	});
-	const connection = drizzle(client);
+	const db = drizzle(client, { schema });
 
-	return connection;
+	return db;
 };

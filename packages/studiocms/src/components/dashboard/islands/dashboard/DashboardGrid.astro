@@ -1,28 +1,39 @@
 ---
-import DashboardGridItem, { type Props as GridItemProps } from './DashboardGridItem.astro';
-import Test from './Test.astro';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import { Center } from 'studiocms:ui/components';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import DashboardGridItem from './DashboardGridItem.astro';
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 
-const gridItems: GridItemProps[] = [
-	{
-		span: 2,
-		variant: 'filled',
-		header: { title: 'test1', icon: 'wrench-solid' },
-		body: {
-			html: '<span>Hello World!</span><br /><br /><test></test>',
-			components: { test: Test },
-		},
-	},
-	{ span: 1, variant: 'filled' },
-	{ span: 3, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 2, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-	{ span: 1, variant: 'filled' },
-];
+const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
+
+let gridItems = dashboardGridItems;
+
+const allowedItems: string[] = data.gridItems as string[] ?? [];
+
+const filterItems = allowedItems.length > 0;
+
+if (filterItems) {
+	gridItems = dashboardGridItems.filter((item) => allowedItems.includes(item.name));
+}
+
+const currentUser = await getUserData(Astro);
 ---
 <div class="dashboard-grid-container">
 
-    { gridItems.map((item) => <DashboardGridItem {...item} />) }
+    { 
+		gridItems.length > 0 
+		? gridItems.map(async (item) => {
+			if (item.requiresPermission) {
+				const allowed = await verifyUserPermissionLevel(currentUser, item.requiresPermission);
+				if (allowed) {
+					return <DashboardGridItem {...item} />
+				}
+			} else {
+				return <DashboardGridItem {...item} />
+			}
+		}) 
+		: <Center><p>There is nothing to display</p></Center> 
+	}
 
 </div>

@@ -1,6 +1,6 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
-// import webVitals from '@astrojs/web-vitals';
+import webVitals from '@astrojs/web-vitals';
 import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
@@ -14,10 +14,5 @@ export default defineConfig({
 	security: {
 		checkOrigin: false,
 	},
-	integrations: [
-		db(),
-		studioCMS(),
-		devApps(),
-		// webVitals(),
-	],
+	integrations: [db(), studioCMS(), devApps(), webVitals()],
 });
