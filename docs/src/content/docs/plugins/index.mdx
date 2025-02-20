@@ -218,13 +218,13 @@ const myIntegration = (options: Options): AstroIntegration => ({
             console.log('Hello from my Astro Integration!');
         }
     }
-})
+});
 
 // Define the StudioCMS Plugin
 export const myPlugin = (options: Options) => definePlugin({
     identifier: 'my-plugin',
     name: 'My Plugin',
     studiocmsMinimumVersion: '0.1.0-beta.8',
-    integration: myIntegration(options),
+    integration: myIntegration(options), // Optional, but recommended
 });
 ```
