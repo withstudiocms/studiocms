@@ -137,7 +137,7 @@ export default defineConfig({
 						{
 							label: 'Configuration Reference',
 							autogenerate: { directory: 'config-reference' },
-							collapsed: false,
+							collapsed: true,
 						},
 						// typeDocSideBarEntry,
 					],

@@ -5,18 +5,14 @@ export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
 	plugins: [blog()],
-	// imageService: {},
-	// defaultFrontEndConfig: {},
-	// dashboardConfig: {
-	// 	AuthConfig: {
-	// 		providers: {
-	// 			github: true,
-	// 			google: true,
-	// 			auth0: true,
-	// 			discord: true,
-	// 		},
-	// 	},
-	// },
-	// includedIntegrations: {},
-	// sdk: {},
+	dashboardConfig: {
+		AuthConfig: {
+			providers: {
+				github: true,
+				google: true,
+				auth0: true,
+				discord: true,
+			},
+		},
+	},
 });

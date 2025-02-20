@@ -42,6 +42,29 @@ export default defineStudioCMSConfig({
 })
 ```
 
+### Define a Custom Renderer
+
+StudioCMS allows you to define custom renderers for your content. This allows you to define custom rendering logic for your content. Custom renderers can be used to render content in a way that is not supported by the built-in renderers, such as raw HTML, or another custom format.
+
+```ts twoslash {11} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+import type { CustomRenderer } from 'studiocms/config';
+const customRenderer: CustomRenderer = {
+  name: 'CustomRenderer',
+  renderer: async (content: string) => {
+    // Custom rendering logic here
+    return content;
+  },
+};
+
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: customRenderer
+  },
+})
+```
+
 ## `studiocms`
 
 `studiocms` is an object that is used to determine how content should be rendered with the `studiocms` renderer.
