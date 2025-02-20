@@ -9,9 +9,6 @@ export const rehypeExternalLinks: [RehypePlugin, any] = [
 			type: 'text',
 			value: ' ⤴',
 		},
-		properties: {
-			target: '_blank',
-		},
 		rel: ['noopener', 'noreferrer'],
 	},
 ];
