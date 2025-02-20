@@ -1221,7 +1221,6 @@ export function studiocmsSDKCore() {
 				 * Retrieves a page by slug.
 				 *
 				 * @param slug - The slug of the page to retrieve.
-				 * @param pkg - The package of the page to retrieve.
 				 * @returns A promise that resolves to the page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
 				 */
@@ -1607,11 +1606,11 @@ export function studiocmsSDKCore() {
 			},
 
 			/**
-			 * Inserts a new user into the database.
+			 * Inserts new page content into the database.
 			 *
-			 * @param userData - The data to insert into the users table.
-			 * @returns A promise that resolves to the inserted user.
-			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the user.
+			 * @param pageContent - The data to insert into the page content table.
+			 * @returns A promise that resolves to the inserted page content.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page content.
 			 */
 			pageContent: async (pageContent: tsPageContentInsert): Promise<PageContentReturnId[]> => {
 				try {
@@ -1733,11 +1732,11 @@ export function studiocmsSDKCore() {
 			},
 
 			/**
-			 * Inserts a new site configuration into the database.
+			 * Inserts a new diff tracking entry into the database.
 			 *
-			 * @param siteConfig - The data to insert into the site config table.
-			 * @returns A promise that resolves to the inserted site configuration.
-			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the site configuration.
+			 * @param diff - The data to insert into the diff tracking table.
+			 * @returns A promise that resolves to the inserted diff tracking entry.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the diff tracking entry.
 			 */
 			diffTracking: async (diff: tsDiffTrackingInsert): Promise<tsDiffTrackingSelect[]> => {
 				try {

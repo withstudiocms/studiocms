@@ -71,7 +71,7 @@ export class StudioCMSVirtualCache {
 		CLEAR: {
 			page: {
 				byId: (id: string) => void;
-				bySlug: (slug: string, pkg: PageType) => void;
+				bySlug: (slug: string) => void;
 			};
 			pages: () => void;
 			latestVersion: () => void;
@@ -122,7 +122,7 @@ export class StudioCMSVirtualCache {
 			CLEAR: {
 				page: {
 					byId: (id: string) => this.clearPageById(id),
-					bySlug: (slug: string, pkg: PageType) => this.clearPageBySlug(slug, pkg),
+					bySlug: (slug: string) => this.clearPageBySlug(slug),
 				},
 				pages: () => this.clearAllPages(),
 				latestVersion: () => this.clearVersion(),
@@ -667,7 +667,7 @@ export class StudioCMSVirtualCache {
 	 *
 	 * @returns void
 	 */
-	public clearPageBySlug(slug: string, pkg: string): void {
+	public clearPageBySlug(slug: string): void {
 		// Check if caching is disabled
 		if (!this.isEnabled()) {
 			return;
@@ -678,7 +678,7 @@ export class StudioCMSVirtualCache {
 
 		// Iterate through the pages
 		for (const [key, cachedObject] of this.pages) {
-			if (cachedObject.data.slug === slug && cachedObject.data.package === pkg) {
+			if (cachedObject.data.slug === slug) {
 				keyIndex.push(key);
 			}
 		}
