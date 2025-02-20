@@ -35,9 +35,9 @@ A Collection of useful tools available during dev mode in Astro.
 
    <PackageManagers pkg="@studiocms/devapps" />
 
-2. Add `@studiocms/blog` to your astro config file:
+2. Add `@studiocms/devapps` to your astro config file:
 
-   ```ts title="astro.config.mjs" ins={3, 9}
+   ```ts twoslash title="astro.config.mjs" ins={3, 9}
    import { defineConfig } from 'astro/config';
    import db from '@astrojs/db';
    import devApps from '@studiocms/devapps'; 
@@ -60,7 +60,7 @@ All tools will only be available during `astro dev` and will not be available du
 
 ### Example config
 
-```ts title="astro.config.mjs" {2, 8} ins={3, 9}
+```ts twoslash title="astro.config.mjs" {2, 8} ins={3, 9}
 import { defineConfig } from 'astro/config';
 import db from '@astrojs/db';
 import devApps from '@studiocms/devapps';
@@ -78,31 +78,16 @@ export default defineConfig({
 
 Full list of options available for the `devApps` integration, with default values shown. **All options are optional**.
 
-```ts 
+```ts twoslash 
 import devApps from '@studiocms/devapps';
 devApps({
 // ---cut---
-  /* Apps Config */
-  appsConfig: {
-    /* libSQL Viewer - Config */
-    libSQLViewer: {
-      /* Enable or disable the libSQL Viewer */
-      enabled: true,
-      /* Endpoint Path for libSQLViewer */
-      endpoint: '/libsql-viewer',
-    },
-    /* WP API Importer - Config */
-    wpApiImporter: {
-      /* Enable or disable the Wordpress Importer */
-      enabled: false,
-      /* Endpoint Path for Wordpress Importer */
-      endpoint: '/wp-api-importer',
-    },
-  },
-  /* Endpoint Path for apps that use endpoints */
-  endpointPath: '/_studiocms-devapps',
-  /* Enable or disable Verbose logging */
-  verbose: false
+endpoint: '_studiocms-devapps',
+verbose: false,
+appsConfig: {
+  libSQLViewer: true,
+  wpImporter: true,
+},
 // ---cut-after---
 })
 ```
@@ -128,10 +113,6 @@ The following env variables set (Also used for `@astrojs/db`):
 - Toolbar app (Expanded)
 
 ![Astro DevToolbarApp (Expanded)](./assets/devapps-1-toolbar-app-expanded.png)
-
-- Full Page view
-
-![Full Page view](./assets/devapps-1-full-page-view.png)
 
 ### Wordpress Importer
 
