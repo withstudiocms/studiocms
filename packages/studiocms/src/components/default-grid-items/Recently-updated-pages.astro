@@ -3,7 +3,7 @@ import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Badge, Button, Card, Center, Icon } from 'studiocms:ui/components';
-import { allowedIdentifiers, sorter, withinLast30Days } from './utils.js';
+import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
 
 // Get all pages and users from the database
 const allPages = await studioCMS_SDK.GET.database.pages(true);
@@ -14,7 +14,7 @@ const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.pa
 const recentlyUpdatedPages = totalPages
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	.filter((page) => withinLast30Days(page.updatedAt!))
-	.sort((a, b) => sorter(a.updatedAt, b.updatedAt))
+	.sort((a, b) => sortByDate(a.updatedAt, b.updatedAt))
 	.slice(0, 3);
 ---
 <div class="recently-updated-page-container">
