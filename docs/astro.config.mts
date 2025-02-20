@@ -1,11 +1,11 @@
 import starlight from '@astrojs/starlight';
-// import starlightUtils from '@lorenzo_lewis/starlight-utils';
-// import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils.ts';
 import rehypePluginKit from './src/plugins/rehypePluginKit.ts';
+// import starlightUtils from '@lorenzo_lewis/starlight-utils';
+import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';
@@ -143,7 +143,7 @@ export default defineConfig({
 							autogenerate: { directory: 'config-reference' },
 							collapsed: true,
 						},
-						// typeDocSideBarEntry,
+						typeDocSideBarEntry,
 					],
 				},
 			],
@@ -151,7 +151,7 @@ export default defineConfig({
 				// starlightUtils({
 				// 	multiSidebar: { switcherStyle: 'horizontalList' },
 				// }),
-				// ...typeDocPlugins,
+				...typeDocPlugins,
 				starlightImageZoom(),
 			],
 		}),
