@@ -1,0 +1,60 @@
+---
+i18nReady: true
+title: Overrides
+description: Reference page for StudioCMSOptions overrides
+sidebar:
+  order: 2
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+StudioCMS Integration config options schema Reference
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  overrides: {
+    CustomImageOverride: 'src/components/CustomImage.astro',
+    FormattedDateOverride: 'src/components/FormattedDate.astro',
+  },
+});
+```
+
+## `CustomImageOverride`
+
+`CustomImageOverride` is a string that is used to determine the path to the custom image component.
+
+- **Type:** `string`
+- **Default:** `undefined`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  overrides: {
+    CustomImageOverride: 'src/components/CustomImage.astro',
+  },
+})
+```
+
+## `FormattedDateOverride`
+
+`FormattedDateOverride` is a string that is used to determine the path to the custom date component.
+
+- **Type:** `string`
+- **Default:** `undefined`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  overrides: {
+    FormattedDateOverride: 'src/components/FormattedDate.astro',
+  },
+})
+```

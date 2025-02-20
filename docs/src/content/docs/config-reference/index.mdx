@@ -1,0 +1,185 @@
+---
+i18nReady: true
+title: StudioCMSOptions
+description: Reference page for StudioCMSOptions
+sidebar:
+  order: 1
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+StudioCMS Integration config options schema Reference
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+// Default Values shown
+export default defineStudioCMSConfig({
+  dbStartPage: true,
+  dateLocale: 'en-us',
+  verbose: false,
+  plugins: [],
+  componentRegistry: {},
+  overrides: {},
+  rendererConfig: {},
+  imageService: {},
+  defaultFrontEndConfig: {},
+  dashboardConfig: {},
+  includedIntegrations: {},
+  dateTimeFormat: {},
+  sdk: {},
+});
+```
+
+## `dbStartPage`
+
+Project Initialization Page - Used during First time setup to create your database configuration.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### Usage
+
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dbStartPage: true, // DEFAULT - This injects a start page to setup your DB data.
+})
+```
+
+## `dateLocale`
+
+`dateLocale` is a string that is used to determine the locale for date formatting.
+
+- **Type:** `string`
+- **Default:** `'en-us'`
+
+### Usage
+
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dateLocale: 'en-us', // DEFAULT - This sets the date locale for date formatting.
+})
+```
+
+## `verbose`
+
+`verbose` is a boolean that is used to determine if verbose logging should be enabled.
+
+- **Type:** `boolean`
+- **Default:** `false`
+
+### Usage
+
+```ts twoslash {2} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  verbose: false, // DEFAULT - This sets the verbose logging to false.
+})
+```
+
+## `plugins`
+
+`plugins` is an array that is used to determine which plugins should be loaded.
+
+- **Type:** `StudioCMSPlugin[]`
+- **Default:** `[]`
+
+### Usage
+
+```ts twoslash {1, 3-5} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+import blog from '@studiocms/blog';
+export default defineStudioCMSConfig({
+  plugins: [
+    blog(),
+  ],
+})
+```
+
+## `componentRegistry`
+
+`componentRegistry` is an object that is used to register components.
+
+- **Type:** `Record<string, string>`
+- **Default:** `{}`
+
+### Usage
+
+```ts twoslash {2-4} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  componentRegistry: {
+    'my-component': 'src/components/MyComponent.astro',
+  },
+})
+```
+
+## `dateTimeFormat`
+
+`dateTimeFormat` is an object that is used to configure the date time format.
+
+- **Type:** `Intl.DateTimeFormatOptions`
+- **Default:** `{}`
+
+### Usage
+
+```ts twoslash {2-6} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dateTimeFormat: {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  },
+})
+```
+
+## `overrides`
+
+`overrides` is an object that is used to override the default configuration.
+
+<ReadMore>[See `overrides` for full options](/config-reference/overrides)</ReadMore>
+
+## `rendererConfig`
+
+`rendererConfig` is an object that is used to configure the renderer.
+
+<ReadMore>[See `rendererConfig` for full options](/config-reference/renderer-config)</ReadMore>
+
+## `imageService`
+
+`imageService` is an object that is used to configure the image service.
+
+<ReadMore>[See `imageService` for full options](/config-reference/image-service)</ReadMore>
+
+## `defaultFrontEndConfig`
+
+`defaultFrontEndConfig` is an object that is used to configure the default front-end.
+
+<ReadMore>[See `defaultFrontEndConfig` for full options](/config-reference/default-frontend-config)</ReadMore>
+
+## `dashboardConfig`
+
+`dashboardConfig` is an object that is used to configure the dashboard.
+
+<ReadMore>[See `dashboardConfig` for full options](/config-reference/dashboard)</ReadMore>
+
+## `includedIntegrations`
+
+`includedIntegrations` is an object that is used to configure which integrations should be included.
+
+<ReadMore>[See `includedIntegrations` for full options](/config-reference/included-integrations)</ReadMore>
+
+## `sdk`
+
+`sdk` is an object that is used to configure the SDK.
+
+<ReadMore>[See `sdk` for full options](/config-reference/sdk)</ReadMore>

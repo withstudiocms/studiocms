@@ -131,17 +131,17 @@ export default defineConfig({
 						},
 					],
 				},
-				// {
-				// 	label: 'References',
-				// 	items: [
-				// 		{
-				// 			label: 'Configuration Reference',
-				// 			autogenerate: { directory: 'config-reference' },
-				// 			collapsed: false,
-				// 		},
-				// 		// typeDocSideBarEntry,
-				// 	],
-				// },
+				{
+					label: 'References',
+					items: [
+						{
+							label: 'Configuration Reference',
+							autogenerate: { directory: 'config-reference' },
+							collapsed: false,
+						},
+						// typeDocSideBarEntry,
+					],
+				},
 			],
 			plugins: [
 				// starlightUtils({

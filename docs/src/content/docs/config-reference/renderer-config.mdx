@@ -1,0 +1,181 @@
+---
+i18nReady: true
+title: Renderer Config
+description: Reference page for StudioCMSOptions rendererConfig
+sidebar:
+  order: 3
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+StudioCMS Integration config options schema Reference
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'studiocms',
+    studiocms: {},
+    markdocConfig: {},
+    mdxConfig: {}
+  },
+});
+```
+
+## `renderer`
+
+`renderer` is a string or `CustomRenderer` that is used to determine the renderer to use for content.
+
+- **Type:** `CustomRenderer` | `"studiocms"` | `"astro"` | `"markdoc"` | `"mdx"` | `undefined`
+- **Default:** `'studiocms'`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    renderer: 'studiocms', // DEFAULT - This uses the StudioCMS Renderer.
+  }
+})
+```
+
+## `studiocms`
+
+`studiocms` is an object that is used to determine how content should be rendered with the `studiocms` renderer.
+
+### Usage
+
+```ts twoslash {3-8} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    studiocms: {
+      autoLinkHeadings: true,
+      discordSubtext: true,
+      callouts: {},
+      sanitize: {},
+    },
+  }
+})
+```
+
+### `autoLinkHeadings`
+
+`autoLinkHeadings` is a boolean that is used to determine if headings should be automatically linked.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### `discordSubtext`
+
+`discordSubtext` is a boolean that is used to determine if subtext (`-# hello`) should be rendered as Discord-style subtext.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### `callouts`
+
+`callouts` is an object that is used to determine how callouts should be rendered.
+
+- **Type:** `{ theme?: "github" | "obsidian" | "vitepress" | undefined }` | `undefined` | `false`
+- **Default:** `{}`
+
+### `sanitize`
+
+`sanitize` is an object that is used to determine how content should be sanitized.
+
+<ReadMore>[See UltraHTML Sanitization for full options](https://github.com/natemoo-re/ultrahtml?tab=readme-ov-file#sanitization)</ReadMore>
+
+## `markdocConfig`
+
+`markdocConfig` is an object that is used to determine how content should be rendered with the `markdoc` renderer.
+
+### Usage
+
+```ts twoslash {3-} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    markdocConfig: {
+      renderType: 'html',
+      argParse: {},
+      transformConfig: {},
+    },
+  }
+})
+```
+
+### `renderType`
+
+`renderType` is a string that is used to determine the type of content to render.
+
+- **Type:** `MarkdocRenderer` | `"html"` | `"react-static"` | `undefined`
+- **Default:** `'html'`
+
+### `argParse`
+
+`argParse` is an object that is used to determine how arguments should be parsed.
+
+- **Type:** `{}` | `false`
+- **Default:** `{}`
+
+### `transformConfig`
+
+`transformConfig` is an object that is used to determine how content should be transformed.
+
+- **Type:** `{}` | `false`
+- **Default:** `{}`
+
+## `mdxConfig`
+
+`mdxConfig` is an object that is used to determine how content should be rendered with the `mdx` renderer.
+
+### Usage
+
+```ts twoslash {3-} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    mdxConfig: {
+      recmaPlugins: [],
+      remarkPlugins: [],
+      rehypePlugins: [],
+      remarkRehypeOptions: {},
+    },
+  }
+})
+```
+
+### `recmaPlugins`
+
+`recmaPlugins` is an array that is used to determine which recma plugins should be loaded.
+
+- **Type:** `PluggableList` | `undefined`
+- **Default:** `[]`
+
+### `remarkPlugins`
+
+`remarkPlugins` is an array that is used to determine which remark plugins should be loaded.
+
+- **Type:** `PluggableList` | `undefined`
+- **Default:** `[]`
+
+### `rehypePlugins`
+
+`rehypePlugins` is an array that is used to determine which rehype plugins should be loaded.
+
+- **Type:** `PluggableList` | `undefined`
+- **Default:** `[]`
+
+### `remarkRehypeOptions`
+
+`remarkRehypeOptions` is an object that is used to determine how remark and rehype should be configured.
+
+- **Type:** `RemarkRehypeOptions`
+- **Default:** `{}`
