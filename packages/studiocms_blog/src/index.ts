@@ -1,6 +1,6 @@
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
-import { definePlugin } from 'studiocms/plugins';
+import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
 
 interface StudioCMSBlogOptions {
 	/**
@@ -46,7 +46,7 @@ const packageIdentifier = '@studiocms/blog';
  * @param options - The options for the blog plugin
  * @returns The StudioCMS plugin
  */
-export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
+export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
 	// Resolve the options and set defaults if not provided
 	const title = options?.blog?.title || 'Blog';
 	const enableRSS = options?.blog?.enableRSS || true;

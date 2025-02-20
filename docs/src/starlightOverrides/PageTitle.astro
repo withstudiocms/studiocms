@@ -2,10 +2,11 @@
 import { getEntry } from 'astro:content';
 import { Icon } from '@astrojs/starlight/components';
 import Default from '@astrojs/starlight/components/PageTitle.astro';
-import type { Props } from '@astrojs/starlight/props';
 import Version from '../components/Version.astro';
 
-const { data } = Astro.props.entry;
+const {
+	entry: { data },
+} = Astro.locals.starlightRoute;
 
 function parsePackageName(packageName: string): {
 	scoped: boolean;
@@ -69,7 +70,7 @@ const { scoped, scope, name } = parsePackageName(entryData.name);
 			</div>
 		</div>
 	) : (
-		<Default {...Astro.props}>
+		<Default>
 			<slot />
 		</Default>
 	)

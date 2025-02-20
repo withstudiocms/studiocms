@@ -1,10 +1,11 @@
 import starlight from '@astrojs/starlight';
-import starlightUtils from '@lorenzo_lewis/starlight-utils';
+// import starlightUtils from '@lorenzo_lewis/starlight-utils';
+// import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
+import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils.ts';
 import rehypePluginKit from './src/plugins/rehypePluginKit.ts';
-import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';
@@ -37,6 +38,7 @@ export default defineConfig({
 		rehypePlugins: rehypePluginKit,
 	},
 	integrations: [
+		ui(),
 		starlight({
 			title: 'StudioCMS',
 			description: 'A dedicated CMS for Astro DB. Built from the ground up by the Astro community.',
@@ -98,69 +100,54 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: 'Learn',
-					items: [
-						{
-							label: 'Start Here',
-							autogenerate: { directory: 'start-here' },
-						},
-						{
-							label: 'Contributing Guides',
-							autogenerate: { directory: 'contributing' },
-						},
-						{
-							label: 'Understanding StudioCMS',
-							autogenerate: { directory: 'how-it-works' },
-						},
-						{
-							label: 'Package Catalog',
-							items: [
-								{
-									label: 'Package List',
-									link: '/package-catalog',
-									badge: { text: 'New', variant: 'success' },
-								},
-								{
-									label: 'StudioCMS Integrations',
-									autogenerate: { directory: 'package-catalog/studiocms-integrations' },
-									collapsed: true,
-								},
-								{
-									label: 'Community Integrations',
-									autogenerate: { directory: 'package-catalog/community-integrations' },
-									collapsed: true,
-								},
-							],
-						},
-						{
-							label: 'Customizing StudioCMS',
-							items: [
-								{
-									label: '@studiocms/renderers',
-									autogenerate: { directory: 'customizing/studiocms-renderers' },
-									collapsed: true,
-								},
-							],
-						},
-					],
+					label: 'Start Here',
+					autogenerate: { directory: 'start-here' },
 				},
 				{
-					label: 'References',
+					label: 'Contributing Guides',
+					autogenerate: { directory: 'contributing' },
+				},
+				{
+					label: 'Understanding StudioCMS',
+					autogenerate: { directory: 'how-it-works' },
+				},
+				{
+					label: 'Package Catalog',
 					items: [
 						{
-							label: 'Configuration Reference',
-							autogenerate: { directory: 'config-reference' },
-							collapsed: false,
+							label: 'Package List',
+							link: '/package-catalog',
+							badge: { text: 'New', variant: 'success' },
 						},
-						typeDocSideBarEntry,
+						{
+							label: 'StudioCMS Integrations',
+							autogenerate: { directory: 'package-catalog/studiocms-integrations' },
+							collapsed: true,
+						},
+						{
+							label: 'Community Integrations',
+							autogenerate: { directory: 'package-catalog/community-integrations' },
+							collapsed: true,
+						},
 					],
 				},
+				// {
+				// 	label: 'References',
+				// 	items: [
+				// 		{
+				// 			label: 'Configuration Reference',
+				// 			autogenerate: { directory: 'config-reference' },
+				// 			collapsed: false,
+				// 		},
+				// 		// typeDocSideBarEntry,
+				// 	],
+				// },
 			],
 			plugins: [
-				starlightUtils({
-					multiSidebar: { switcherStyle: 'horizontalList' },
-				}),
-				...typeDocPlugins,
+				// starlightUtils({
+				// 	multiSidebar: { switcherStyle: 'horizontalList' },
+				// }),
+				// ...typeDocPlugins,
 				starlightImageZoom(),
 			],
 		}),

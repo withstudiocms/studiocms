@@ -27,6 +27,8 @@ To start using StudioCMS, you'll need:
 
 StudioCMS uses `@astrojs/db` to connect to your libSQL database. You can use any libSQL provider or self-hosted libSQL server.
 
+If you are using the StudioCMS CLI, you can skip this step and use the CLI to create a new database if you have TursoCLI installed.
+
 <ReadMore>For more information about the required environment variables see, [Database URL and Token for `@astrojs/db`](/start-here/environment-variables/#database-url-and-token-for-astrojsdb)</ReadMore>
 
 ### Getting started with Turso
@@ -72,36 +74,70 @@ libSQL supports both HTTP and WebSockets as the transport protocol for a remote 
 
 <ReadMore>For more information about all the potential libSQL options (inlcuding local files) see [Astro Docs: Remote URL configuration options](https://docs.astro.build/en/guides/astro-db/#remote-url-configuration-options)</ReadMore>
 
-## Creating a new Astro project
-
-To create a new Astro project, simply run the following command in your terminal:
-
-    <PackageManagers type="create" pkg="astro@latest" />
-
-After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project in the specified directory.
-
-If all goes well, you should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
-
-`cd` into your new project directory to begin using Astro. 
-
-```bash
-cd my-project
-```
-
-If you skipped the npm install step during the CLI wizard, then be sure to install your dependencies before continuing.
-
-## Adding the StudioCMS integration
+## Creating a StudioCMS project
 
 <Tabs syncKey='install-method'>
+
+<TabItem label="Use the StudioCMS CLI" icon="rocket">
+
+    1. Creating a StudioCMS Project using the create command
+
+        To create a new Astro project with StudioCMS using one of our pre-made templates, simply run the following command in your terminal:
+
+            <PackageManagers type="create" pkg="studiocms@latest" />
+
+        After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project with StudioCMS in the specified directory.
+
+        If all goes well, you will be prompted to follow the next steps, which includes ensuring your environment variables are set correctly and running the project to complete the setup.
+
+    2. After running the CLI, make sure that your `astro.config.mjs` fle is correctly configured:
+
+       ```ts twoslash title="astro.config.mjs" {2-4,11-12}
+       import { defineConfig } from 'astro/config';
+       import db from '@astrojs/db';
+       import node from '@astrojs/node';
+       import studioCMS from 'studiocms';
+
+       export default defineConfig({
+           site: 'https://demo.studiocms.dev/',
+           output: 'server',
+           adapter: node({ mode: "standalone" }),
+           integrations: [
+               db(),
+               studioCMS(),
+           ],
+       });
+       ```
+
+</TabItem>
 
 <TabItem label="Astro Method" icon='astro'>
 
     {/* <Steps> Note: For some reason this breaks placement of EC-Twoslash popups... must investigate */}
-    1. To add the StudioCMS integration to your project, you'll need to install the StudioCMS package and it's dependencies:
+
+    1. Creating a new Astro project
+
+        To create a new Astro project, simply run the following command in your terminal:
+
+            <PackageManagers type="create" pkg="astro@latest" />
+
+        After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project in the specified directory.
+
+        If all goes well, you should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
+
+        `cd` into your new project directory to begin using Astro. 
+
+        ```bash
+        cd my-project
+        ```
+
+        If you skipped the npm install step during the CLI wizard, then be sure to install your dependencies before continuing.
+
+    2. To add the StudioCMS integration to your project, you'll need to install the StudioCMS package and it's dependencies:
 
        <PackageManagers type="exec" pkg="astro" args="add db node studiocms" />
 
-    2. After installing the package, make sure that your `astro.config.mjs` file is correctly importing and calling the integration:
+    3. After installing the package, make sure that your `astro.config.mjs` file is correctly importing and calling the integration:
 
        ```ts twoslash title="astro.config.mjs" {2-4,11-12}
        import { defineConfig } from 'astro/config';
@@ -128,11 +164,29 @@ If you skipped the npm install step during the CLI wizard, then be sure to insta
 
     {/* <Steps> */}
 
-    1. To add the StudioCMS integration to your project, you'll need to install the Astro StudioCMS package and it's dependencies:
+    1. Creating a new Astro project
+
+        To create a new Astro project, simply run the following command in your terminal:
+
+            <PackageManagers type="create" pkg="astro@latest" />
+
+        After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project in the specified directory.
+
+        If all goes well, you should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
+
+        `cd` into your new project directory to begin using Astro. 
+
+        ```bash
+        cd my-project
+        ```
+
+        If you skipped the npm install step during the CLI wizard, then be sure to install your dependencies before continuing.
+
+    2. To add the StudioCMS integration to your project, you'll need to install the Astro StudioCMS package and it's dependencies:
 
        <PackageManagers pkg="@astrojs/db @astrojs/node studiocms" />
 
-    2. Update your `astro.config.mjs` file:
+    3. Update your `astro.config.mjs` file:
 
        ```ts twoslash title="astro.config.mjs" {2-4,11-12}
        import { defineConfig } from 'astro/config';
@@ -158,8 +212,8 @@ If you skipped the npm install step during the CLI wizard, then be sure to insta
 
 Please note that the `site` option in the `astro.config.mjs` file is required for StudioCMS to work correctly. You can set this to your site's URL or a placeholder URL. (i.e. `https://demo.studiocms.xyz/` or `http://localhost:4321/`)
 
-<Aside type="note" title="SSR Only">
-StudioCMS requires SSR mode to work correctly. Make sure to set `output: 'server'` and an adapter that supports SSR in your `astro.config.mjs` file.
+<Aside type="note" title="Adapter Required">
+StudioCMS requires an Astro Adapter to work correctly. Make sure to set an adapter that supports SSR Routes in your `astro.config.mjs` file.
 </Aside>
 
 ## Configure authentication
@@ -252,6 +306,32 @@ To start your Astro project, run the following command in your terminal:
 After running the command, you should see a message indicating that your project is running at `localhost:4321`. Open your browser and navigate to `http://localhost:4321` to see your Astro project in action.
 
 **Congratulations!** 🥳 You now have StudioCMS installed in your Astro project.
+
+### Adding a frontend to your StudioCMS project
+
+StudioCMS is a headless Astro CMS, which means you have to provide your own frontend to display the content. If you are looking for a frontend that is already built, you can checkout our plugins in the [Package Catalog](/package-catalog/).
+
+#### Setup a blog
+
+If you are looking to setup a blog, you can use the `@studiocms/blog` plugin to get started.
+
+To install and setup the blog plugin, run the following command in your terminal:
+
+<PackageManagers type="install" pkg="@studiocms/blog" />
+
+After installing the plugin, you will need to add the plugin to your `studiocms.config.mjs` file:
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+import blog from '@studiocms/blog';
+
+export default defineStudioCMSConfig({
+    dbStartPage: false,
+    plugins: [
+        blog(),
+    ],
+});
+```
 
 ### Building and deploying your StudioCMS project
 

@@ -1,11 +1,10 @@
 ---
 import Default from '@astrojs/starlight/components/Head.astro';
-import type { Props } from '@astrojs/starlight/props';
 import '@fontsource-variable/onest/index.css';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 ---
 
-<Default {...Astro.props}><slot /></Default>
+<Default><slot /></Default>
 <link rel="preload" as="font" type="font/woff2" href={onestWoff2} crossorigin="anonymous" />
 <meta name="twitter:site" content="withstudiocms" />
 <meta name="twitter:creator" content="withstudiocms" />
