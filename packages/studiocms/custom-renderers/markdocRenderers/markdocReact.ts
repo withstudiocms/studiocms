@@ -1,8 +1,8 @@
 import reactRenderer from '@astrojs/react/server.js';
 import Markdoc, { type RenderableTreeNode } from '@markdoc/markdoc';
-import type { MarkdocRenderer } from '@studiocms/core/schemas/renderer';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import * as React from 'react';
+import type { MarkdocRenderer } from 'studiocms/schemas/renderer';
 import ReactWrapper from './markdocReact-components/MarkDocReactWrapper.astro';
 
 /**

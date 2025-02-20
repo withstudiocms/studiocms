@@ -140,6 +140,25 @@ export default defineStudioCMSConfig({
 - **Type:** `MarkdocRenderer` | `"html"` | `"react-static"` | `undefined`
 - **Default:** `'html'`
 
+#### `MarkdocRenderer`
+
+A custom renderer for StudioCMS's MarkDoc renderer that allows the user to use MarkDoc with React and custom React components.
+
+This renderer is used to render MarkDoc content with React components. This allows you to use React components in your MarkDoc content. Requires [`@astrojs/react`](https://docs.astro.build/en/guides/integrations-guide/react/) to be installed.
+
+```ts twoslash ins={1, 5} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+import { markDocRenderReact } from 'studiocms/custom-renderers';
+export default defineStudioCMSConfig({
+  rendererConfig: {
+    markdocConfig: {
+      renderType: markDocRenderReact(),
+    },
+  },
+});
+```
+
 ### `argParse`
 
 `argParse` is an object that is used to determine how arguments should be parsed.
