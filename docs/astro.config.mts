@@ -120,13 +120,13 @@ export default defineConfig({
 							badge: { text: 'New', variant: 'success' },
 						},
 						{
-							label: 'StudioCMS Integrations',
-							autogenerate: { directory: 'package-catalog/studiocms-integrations' },
+							label: 'StudioCMS Plugins',
+							autogenerate: { directory: 'package-catalog/studiocms-plugins' },
 							collapsed: true,
 						},
 						{
-							label: 'Community Integrations',
-							autogenerate: { directory: 'package-catalog/community-integrations' },
+							label: 'Community Plugins',
+							autogenerate: { directory: 'package-catalog/community-plugins' },
 							collapsed: true,
 						},
 					],
