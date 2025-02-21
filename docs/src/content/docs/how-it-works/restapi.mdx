@@ -10,19 +10,19 @@ sidebar:
 
 The StudioCMS REST API is a powerful tool that allows you to interact with your StudioCMS content programmatically. It provides a simple and flexible way to manage and serve your content using Astro DB.
 
-The StudioCMS REST API is powered by Astro Endpoints and provides a RESTful interface for interacting with your StudioCMS content. The following is a breakdown of the StudioCMS REST API and its components.
+The StudioCMS REST API is powered by Astro Endpoints and offers a RESTful interface for interacting with your StudioCMS content. Below is a breakdown of the StudioCMS REST API and its components.
 
-## API tokens
+## API Tokens
 
 To access the StudioCMS REST API's protected endpoints, you need to provide an API token in the `Authorization` header of your requests. You can generate an API token by logging into the StudioCMS Dashboard and navigating to the "API Tokens" section in the User Profile.
 
 ## Endpoints
 
-The StudioCMS REST API provides several endpoints that allow you to interact with your StudioCMS content. These endpoints are primarily used internally by StudioCMS, but can be accessed by developers to interact with StudioCMS data. The following are the endpoints provided by the StudioCMS REST API:
+The StudioCMS REST API provides several endpoints that allow you to interact with your StudioCMS content. These endpoints are primarily used internally by StudioCMS but can also be accessed by developers to interact with StudioCMS data. The following are the endpoints provided by the StudioCMS REST API:
 
 ### Public Endpoints
 
-These endpoints are accessible to the public and do not require authentication. They provide read-only access to the StudioCMS content tree. Therefor, these endpoints only support `GET` requests.
+These endpoints are accessible to the public and do not require authentication. They provide read-only access to the StudioCMS content tree. Therefore, these endpoints only support `GET` requests.
 
 - **`/studiocms_api/rest/v1/public/folders/`**: Provides a list of all public folders in the StudioCMS content tree.
 - **`/studiocms_api/rest/v1/public/folders/[id]`**: Provides details for a specific public folder in the StudioCMS content tree.
