@@ -2,39 +2,32 @@
 import type { Props as GalleryProps } from '~/components/Gallery.astro';
 type ImageArrayType = GalleryProps['galleryImages'];
 
-import CreateNewPageDark from './gallery/CreateNewPageDark.png';
-import CreateNewPageLight1 from './gallery/CreateNewPageLight-1.png';
-import CreateNewPageLight2 from './gallery/CreateNewPageLight-2.png';
-import DashboardDark from './gallery/DashboardDark.png';
-import DashboardLight from './gallery/DashboardLight.png';
-import EditPageDark1 from './gallery/EditPageDark-1.png';
-import EditPageDark2 from './gallery/EditPageDark-2.png';
-import EditPageLight1 from './gallery/EditPageLight-1.png';
-import EditPageLight2 from './gallery/EditPageLight-2.png';
-// Gallery Images
-import LoginPageDark from './gallery/LoginPageDark.png';
-import LoginPageLight from './gallery/LoginPageLight.png';
-import SiteAdminsDark from './gallery/SiteAdminsDark.png';
-import SiteConfigDark from './gallery/SiteConfigDark.png';
-import UserProfileDark from './gallery/UserProfileDark.png';
-import UserProfileLight from './gallery/UserProfileLight.png';
+import contentMngmtDark from './content-management/content-mngmt-dark.png';
+import contentMngmtLight from './content-management/content-mngmt-light.png';
+import dashboardDark from './dashboard/dashboard-index-dark.png';
+import dashboardLight from './dashboard/dashboard-index-light.png';
+import loginDark from './dashboard/login-dark.png';
+import loginLight from './dashboard/login-light.png';
+import siteConfigDark from './dashboard/site-config-dark.png';
+import siteConfigLight from './dashboard/site-config-light.png';
+import userMngmtDark from './dashboard/user-mngmt-dark.png';
+import userMngmtLight from './dashboard/user-mngmt-light.png';
+import userProfileDark from './dashboard/user-profile-dark.png';
+import userProfileLight from './dashboard/user-profile-light.png';
 
 export const mainDemoGalleryImages: ImageArrayType = [
-	{ imageMetadata: LoginPageDark, alt: 'Login Page Dark' },
-	{ imageMetadata: LoginPageLight, alt: 'Login Page Light' },
-	{ imageMetadata: CreateNewPageDark, alt: 'Create New Page Dark' },
-	{ imageMetadata: CreateNewPageLight1, alt: 'Create New Page Light 1' },
-	{ imageMetadata: CreateNewPageLight2, alt: 'Create New Page Light 2' },
-	{ imageMetadata: DashboardDark, alt: 'Dashboard Dark' },
-	{ imageMetadata: DashboardLight, alt: 'Dashboard Light' },
-	{ imageMetadata: EditPageDark1, alt: 'Edit Page Dark 1' },
-	{ imageMetadata: EditPageDark2, alt: 'Edit Page Dark 2' },
-	{ imageMetadata: EditPageLight1, alt: 'Edit Page Light 1' },
-	{ imageMetadata: EditPageLight2, alt: 'Edit Page Light 2' },
-	{ imageMetadata: SiteAdminsDark, alt: 'Site Admins Dark' },
-	{ imageMetadata: SiteConfigDark, alt: 'Site Config Dark' },
-	{ imageMetadata: UserProfileDark, alt: 'User Profile Dark' },
-	{ imageMetadata: UserProfileLight, alt: 'User Profile Light' },
+	{ imageMetadata: contentMngmtDark, alt: 'Content Management (Dark Mode)' },
+	{ imageMetadata: contentMngmtLight, alt: 'Content Management (Light Mode)' },
+	{ imageMetadata: loginDark, alt: 'Login Page (Dark Mode)' },
+	{ imageMetadata: loginLight, alt: 'Login Page (Light Mode)' },
+	{ imageMetadata: dashboardDark, alt: 'Dashboard (Dark Mode)' },
+	{ imageMetadata: dashboardLight, alt: 'Dashboard (Light Mode)' },
+	{ imageMetadata: siteConfigDark, alt: 'Site Configuration (Dark Mode)' },
+	{ imageMetadata: siteConfigLight, alt: 'Site Configuration (Light Mode)' },
+	{ imageMetadata: userMngmtDark, alt: 'User Management (Dark Mode)' },
+	{ imageMetadata: userMngmtLight, alt: 'User Management (Light Mode)' },
+	{ imageMetadata: userProfileDark, alt: 'User Profile (Dark Mode)' },
+	{ imageMetadata: userProfileLight, alt: 'User Profile (Light Mode)' },
 ];
 
 // Web-Vitals Images
