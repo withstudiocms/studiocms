@@ -2,8 +2,8 @@
 import type { Props as GalleryProps } from '~/components/Gallery.astro';
 type ImageArrayType = GalleryProps['galleryImages'];
 
-import contentMngmtDark from './content-management/content-mngmt-dark.png';
-import contentMngmtLight from './content-management/content-mngmt-light.png';
+import contentMngmtDark from './dashboard/content-mngmt-dark.png';
+import contentMngmtLight from './dashboard/content-mngmt-light.png';
 import dashboardDark from './dashboard/dashboard-index-dark.png';
 import dashboardLight from './dashboard/dashboard-index-light.png';
 import loginDark from './dashboard/login-dark.png';
@@ -16,12 +16,12 @@ import userProfileDark from './dashboard/user-profile-dark.png';
 import userProfileLight from './dashboard/user-profile-light.png';
 
 export const mainDemoGalleryImages: ImageArrayType = [
-	{ imageMetadata: contentMngmtDark, alt: 'Content Management (Dark Mode)' },
-	{ imageMetadata: contentMngmtLight, alt: 'Content Management (Light Mode)' },
 	{ imageMetadata: loginDark, alt: 'Login Page (Dark Mode)' },
 	{ imageMetadata: loginLight, alt: 'Login Page (Light Mode)' },
 	{ imageMetadata: dashboardDark, alt: 'Dashboard (Dark Mode)' },
 	{ imageMetadata: dashboardLight, alt: 'Dashboard (Light Mode)' },
+	{ imageMetadata: contentMngmtDark, alt: 'Content Management (Dark Mode)' },
+	{ imageMetadata: contentMngmtLight, alt: 'Content Management (Light Mode)' },
 	{ imageMetadata: siteConfigDark, alt: 'Site Configuration (Dark Mode)' },
 	{ imageMetadata: siteConfigLight, alt: 'Site Configuration (Light Mode)' },
 	{ imageMetadata: userMngmtDark, alt: 'User Management (Dark Mode)' },
