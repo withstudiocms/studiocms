@@ -183,6 +183,9 @@ importers:
       astro-embed:
         specifier: ^0.9.0
         version: 0.9.0(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       expressive-code-twoslash:
         specifier: ^0.4.0
         version: 0.4.0(@expressive-code/core@0.40.2)(expressive-code@0.40.2)(typescript@5.7.2)
@@ -7651,6 +7654,12 @@ snapshots:
   astro-integration-kit@0.18.0(astro@5.2.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
     dependencies:
       astro: 5.2.5(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
+      pathe: 1.1.2
+      recast: 0.23.9
+
+  astro-integration-kit@0.18.0(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
+    dependencies:
+      astro: 5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
       pathe: 1.1.2
       recast: 0.23.9
 

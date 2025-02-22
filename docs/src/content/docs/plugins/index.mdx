@@ -6,6 +6,8 @@ sidebar:
    order: 1
 ---
 
+import ReadMore from '../../../components/ReadMore.astro'
+
 # Introduction
 
 StudioCMS Plugins are a powerful tool that allows you to extend the functionality of StudioCMS. They provide a simple and flexible way to add new features to your StudioCMS project. The following is a breakdown of StudioCMS Plugins and how they work.
@@ -199,7 +201,13 @@ type StudioCMSPlugin = {
 
 ### Defining a Plugin
 
-To define a StudioCMS Plugin, you need to create an object that conforms to the `StudioCMSPlugin` type. This object should contain the following properties:
+To define a StudioCMS Plugin, you need to create an object that conforms to the `StudioCMSPlugin` type. This object should look similar to the following, keeping in mind that the following properties are required:
+
+- `identifier`: The identifier of the plugin from the package.json file.
+- `name`: The label of the plugin to be displayed in the StudioCMS Dashboard.
+- `studiocmsMinimumVersion`: The minimum version of StudioCMS required for the plugin to work.
+
+Here is an example of a StudioCMS Plugin definition that includes all the required properties as well as provides an Astro Integration to do custom logic:
 
 ```ts twoslash title="my-plugin.ts"
 import { definePlugin } from 'studiocms/plugins';
@@ -228,3 +236,7 @@ export const myPlugin = (options: Options) => definePlugin({
     integration: myIntegration(options), // Optional, but recommended
 });
 ```
+
+In this example, we define a StudioCMS Plugin called `My Plugin` that requires StudioCMS version `0.1.0-beta.8` or higher. The plugin also provides an Astro Integration that logs a message to the console when the `astro:config:setup` hook is called.
+
+<ReadMore>For more information on building plugins checkout the [Making Plugins Useful](/plugins/extended) Guide</ReadMore>

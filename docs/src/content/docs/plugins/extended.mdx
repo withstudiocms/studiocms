@@ -1,0 +1,110 @@
+---
+i18nReady: true
+title: Making Plugins Useful
+description: Learn about the StudioCMS Plugins and how they work.
+sidebar:
+   order: 2
+---
+
+import ReadMore from '../../../components/ReadMore.astro'
+import { FileTree } from '@astrojs/starlight/components'
+
+# Introduction
+
+Building a StudioCMS Plugin is a powerful way to extend the functionality of StudioCMS. They provide a simple and flexible way to add new features to your StudioCMS project. The following is a basic example of how to create a StudioCMS Plugin and how it works.
+
+## Getting Started
+
+To get started, you will need to create a new StudioCMS Plugin. The following is a basic example of the file structure for a StudioCMS Plugin:
+
+<FileTree>
+
+- package.json
+- src
+  - index.ts
+  - routes
+    - [...slug].astro
+  - dashboard-grid-items
+    - MyPluginGridItem.astro
+
+</FileTree>
+
+## Creating the Plugin
+
+In the main `src/index.ts` file, you will define the StudioCMS Plugin. The following is an example of how to define a StudioCMS Plugin that includes an Astro Integration to create a simple blog example:
+
+```ts twoslash title="index.ts"
+import { definePlugin } from 'studiocms/plugins';
+import { AstroIntegration } from 'astro';
+import { createResolver } from 'astro-integration-kit';
+
+// Define the options for the plugin and integration
+interface Options {
+    route: string;
+}
+
+export function studioCMSPageInjector(options: Options) {
+
+    // Resolve the path to the current file
+    const { resolve } = createResolver(import.meta.url);
+
+    // Define the Astro integration
+    function myIntegration(options: Options): AstroIntegration {
+        const route = `/${options?.route || 'my-plugin'}`;
+
+        return {
+            name: 'my-astro-integration',
+            hooks: {
+                "astro:config:setup": (params) => {
+                    const { injectRoute } = params;
+
+                    // Inject the route for the plugin
+                    injectRoute({
+                        entrypoint: resolve('./routes/[...slug].astro'),
+                        pattern: `/${route}/[...slug]`,
+                        prerender: false,
+                    })
+                }
+            }
+        }
+    }
+
+    // Define the StudioCMS Plugin
+    return definePlugin({
+        identifier: 'my-plugin',
+        name: 'My Plugin',
+        studiocmsMinimumVersion: '0.1.0-beta.8',
+        integration: myIntegration(options), // Optional, but recommended
+        frontendNavigationLinks: [{ label: 'Title here', href: options?.route || 'my-plugin' }],
+        // When creating pageTypes, you can also define a `pageContentComponent` if your plugin requires a custom content editor.
+        // pageTypes: [{ identifier: 'my-plugin', label: 'Blog Post (My Plugin)', pageContentComponent: resolve('./components/MyContentEditor.astro') }],
+        // In this example we are okay using the default content editor (markdown).
+        pageTypes: [{ identifier: 'my-plugin', label: 'Blog Post (My Plugin)' }],
+        // Define the grid items for the dashboard
+        // These are the items that will be displayed on the StudioCMS Dashboard
+        // You can define as many items as you want
+        // In this example, we are defining a single item, which has a span of 2 and requires the 'editor' permission and injects an Astro component which replaces the plain html custom element.
+        dashboardGridItems: [
+            {
+                name: 'example',
+                span: 2,
+                variant: 'default',
+                requiresPermission: 'editor',
+                header: { title: 'Example', icon: 'bolt' },
+                body: {
+                    // Always use plain html without `-` or special characters in the tags, they will get replaced with the Astro component and this HTML will never be rendered
+                    html: '<examplegriditem></examplegriditem>',
+                    components: {
+                        // Inject the Astro component to replace the plain html custom element
+                        examplegriditem: resolve('./dashboard-grid-items/MyPluginGridItem.astro')
+                    }
+                }
+            }
+        ],
+    });
+}
+```
+
+The above example defines a StudioCMS Plugin that includes an Astro Integration to create a simple blog example. The plugin includes a route that is injected into the StudioCMS project and a grid item that is displayed on the StudioCMS Dashboard.
+
+<ReadMore>For more information on how to create an Astro Integration, see the [Astro Integration Kit](https://astro-integration-kit.netlify.app/) and the [Astro Integrations documentation](https://docs.astro.build/en/reference/integrations-reference/).</ReadMore>
