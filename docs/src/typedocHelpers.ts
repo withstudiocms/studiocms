@@ -26,6 +26,8 @@ export function makeTypedocOpts(o: {
 			skipErrorChecking: true,
 			gitRemote: 'https://github.com/withstudiocms/studiocms/blob',
 			gitRevision: 'main',
+			sourceLinkTemplate:
+				'https://github.com/withstudiocms/studiocms/blob/{gitRevision}/{path}#L{line}',
 			includeVersion: true,
 			expandObjects: true,
 			expandParameters: true,
@@ -36,8 +38,6 @@ export function makeTypedocOpts(o: {
 			outputFileStrategy: 'modules',
 			flattenOutputFiles: true,
 			pretty: true,
-			sourceLinkTemplate:
-				'https://github.com/withstudiocms/studiocms/blob/{gitRevision}/{path}#L{line}',
 		},
 	};
 }
