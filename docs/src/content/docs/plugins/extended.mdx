@@ -36,7 +36,7 @@ In the main `src/index.ts` file, you will define the StudioCMS Plugin. The follo
 ```ts twoslash title="index.ts"
 import { definePlugin } from 'studiocms/plugins';
 import { AstroIntegration } from 'astro';
-import { createResolver } from 'astro-integration-kit';
+import { addVirtualImports, createResolver } from 'astro-integration-kit';
 
 // Define the options for the plugin and integration
 interface Options {
@@ -63,6 +63,16 @@ export function studioCMSPageInjector(options: Options) {
                         entrypoint: resolve('./routes/[...slug].astro'),
                         pattern: `/${route}/[...slug]`,
                         prerender: false,
+                    })
+
+                    addVirtualImports(params, {
+                        name: 'my-astro-integration',
+                        imports: {
+                            'myplugin:config': `
+                                export const options = ${JSON.stringify({ route })};
+                                export default options;
+                            `,
+                        }
                     })
                 }
             }
@@ -108,3 +118,45 @@ export function studioCMSPageInjector(options: Options) {
 The above example defines a StudioCMS Plugin that includes an Astro Integration to create a simple blog example. The plugin includes a route that is injected into the StudioCMS project and a grid item that is displayed on the StudioCMS Dashboard.
 
 <ReadMore>For more information on how to create an Astro Integration, see the [Astro Integration Kit](https://astro-integration-kit.netlify.app/) and the [Astro Integrations documentation](https://docs.astro.build/en/reference/integrations-reference/).</ReadMore>
+
+## Example route
+
+In the `src/routes/[...slug].astro` file, you will define the route for the plugin. The following is an example of how to define a route for the plugin:
+
+```astro title="[...slug].astro"
+---
+import sdk from 'studiocms:sdk';
+import config from 'myplugin:config';
+
+const makeRoute = (slug) => {
+    return `/${config.route}/${slug}`;
+}
+
+const pages = await sdk.GET.packagePages('my-plugin');
+
+const { slug } = astro.params;
+
+const page = pages.find((page) => page.slug === slug);
+---
+
+{
+    slug ? (
+        <div>
+            <h1>{page?.title}</h1>
+            <div>{page?.defaultContent?.content}</div>
+        </div>
+    ) : (
+        <div>
+            <h1>My Plugin</h1>
+            <ul>
+                {pages.length > 0 && pages.map((page) => (
+                    <li>
+                        <a href={makeRoute(page.slug)}>{page.title}</a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+
+```
