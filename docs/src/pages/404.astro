@@ -1,0 +1,85 @@
+---
+import { Button } from 'studiocms:ui/components';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+// import NotFound from '~/components/NotFound.astro';
+---
+
+<StarlightPage frontmatter={{ title: '404', template: 'splash',  }}>
+    <div class="notfound-container">
+      <div class="notfound">
+        <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="305" y="10" width="440" height="446" rx="22" stroke="currentColor" stroke-width="20"/>
+          <path d="M262 176V434C262 470.451 291.549 500 328 500H599.5V597C599.5 609.15 589.65 619 577.5 619H180C167.85 619 158 609.15 158 597V198C158 185.85 167.85 176 180 176H262Z" stroke="currentColor" stroke-width="20"/>
+          <path d="M114 339V597C114 633.451 143.549 663 180 663H451.5V760C451.5 772.15 441.65 782 429.5 782H32C19.8497 782 10 772.15 10 760V361C10 348.85 19.8497 339 32 339H114Z" stroke="currentColor" stroke-width="20"/>
+        </svg>
+        <h1>Error 404</h1>
+        <h2>Page not found</h2>
+        <p>The page you are looking for might have been removed, had its name changed or is temporarily unavailable.</p>
+        <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth>
+          <span>Go back</span>
+        </Button>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('back-button')!.addEventListener('click', () => {
+        window.history.back();
+      });
+    </script>
+
+    <style>
+        .notfound-container {
+            position: relative;
+            height: 80vh;
+            & .notfound {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+                max-width: 460px;
+                width: 100%;
+                text-align: center;
+                line-height: 1.4;
+
+                & svg {
+                    position: relative;
+                    width: 250px;
+                    height: 250px;
+                    margin: 0px auto 50px;
+                }
+
+                & h1 {
+                    font-weight: 700;
+                    margin: 0;
+                    font-size: 3rem;
+                    text-align: center;
+                    height: 40px;
+                    line-height: 40px;
+                }
+
+                & h2 {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 7px;
+                }
+
+                & p {
+                    font-size: 1rem;
+                    font-weight: 500;
+                    text-wrap: balance;
+                }
+
+                & .return {
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    color: hsl(var(--text-normal));
+                }
+            }
+        }
+    </style>
+
+</StarlightPage>

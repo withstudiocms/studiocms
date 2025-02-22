@@ -69,11 +69,13 @@ const { scoped, scope, name } = parsePackageName(entryData.name);
 				</a>
 			</div>
 		</div>
-	) : (
-		<Default>
-			<slot />
-		</Default>
-	)
+	) : (data.template === 'splash' && data.title === "404") 
+		? <slot/> 
+		: (
+			<Default>
+				<slot />
+			</Default>
+		)
 }
 
 { data.type === 'redirect' ? (
