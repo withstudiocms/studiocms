@@ -155,7 +155,7 @@ const pages = await sdk.GET.packagePages('my-plugin');
 
 const { slug } = Astro.params;
 
-const page = pages.find((page) => page.slug === slug);
+const page = pages.find((page) => page.slug === slug || '');
 ```
 
 ```astro title="Template"
