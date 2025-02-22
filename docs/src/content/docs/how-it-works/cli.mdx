@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+import ReadMore from '../../../components/ReadMore.astro';
 
 # Introduction
 
@@ -206,29 +207,9 @@ ASTRO_DB_APP_TOKEN=your-token
 
 # Auth Configuration
 CMS_ENCRYPTION_KEY="..." # Generated with openssl rand --base64 16
-
-# OAuth Providers
-## GitHub
-CMS_GITHUB_CLIENT_ID=
-CMS_GITHUB_CLIENT_SECRET=
-CMS_GITHUB_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/github/callback
-
-## Discord
-CMS_DISCORD_CLIENT_ID=
-CMS_DISCORD_CLIENT_SECRET=
-CMS_DISCORD_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/discord/callback
-
-## Google
-CMS_GOOGLE_CLIENT_ID=
-CMS_GOOGLE_CLIENT_SECRET=
-CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/google/callback
-
-## Auth0
-CMS_AUTH0_CLIENT_ID=
-CMS_AUTH0_CLIENT_SECRET=
-CMS_AUTH0_DOMAIN=
-CMS_AUTH0_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/auth0/callback
 ```
+
+<ReadMore>For a full list of environment variables, see the [Environment Variables documentation](/start-here/environment-variables/).</ReadMore>
 
 You can set up these variables using the `studiocms init` command's interactive environment builder.
 
