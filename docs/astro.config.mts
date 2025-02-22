@@ -99,14 +99,6 @@ export default defineConfig({
 						content: `${site}og.jpg?v=1`,
 					},
 				},
-				{
-					tag: 'link',
-					attrs: {
-						type: 'application/opensearchdescription+xml',
-						href: '/warp.xml',
-						title: 'StudioCMS Docs',
-					},
-				},
 			],
 			plugins: [
 				...typeDocPlugins,
