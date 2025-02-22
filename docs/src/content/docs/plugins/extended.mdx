@@ -121,30 +121,46 @@ The above example defines a StudioCMS Plugin that includes an Astro Integration 
 
 ## Example route
 
-In the `src/routes/[...slug].astro` file, you will define the route for the plugin. The following is an example of how to define a route for the plugin:
+In the `src/routes/[...slug].astro` file, you will define the route for the plugin. The following is an example of how to define a route for the plugin, we will break this out into two parts, the first part is the frontmatter(Between the `---` marks), and the second part is the HTML template that gets put under the second `---`.
 
-```astro title="[...slug].astro"
----
+```ts twoslash title="Frontmatter"
+// @noErrors
+// @filename: plugin.d.ts
+declare module 'myplugin:config' {
+    export const options: { route: string };
+    export default options;
+}
+// ---cut---
+// @filename: Frontmatter.ts
+/// <reference types="studiocms/v/core.d.ts" />
+/// <reference types="studiocms/v/renderer.d.ts" />
+/// <reference types="./plugin.d.ts" />
+import type { AstroGlobal } from 'astro';
+const Astro: AstroGlobal = {};
+// ---cut---
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import sdk from 'studiocms:sdk';
 import config from 'myplugin:config';
 
-const makeRoute = (slug) => {
+const makeRoute = (slug: string) => {
     return `/${config.route}/${slug}`;
 }
 
-const pages = await sdk.GET.packagePages('my-plugin');
+// 'my-plugin' here is used as the identifier for 
+// the pageType from the plugin definition
+const pages = await sdk.GET.packagePages('my-plugin'); 
 
-const { slug } = astro.params;
+const { slug } = Astro.params;
 
 const page = pages.find((page) => page.slug === slug);
----
+```
 
+```astro title="Template"
 {
-    slug ? (
+    slug && page ? (
         <div>
-            <h1>{page?.title}</h1>
-            <StudioCMSRenderer content={page?.defaultContent?.content || ''} />
+            <h1>{page.title}</h1>
+            <StudioCMSRenderer content={page.defaultContent?.content || ''} />
         </div>
     ) : (
         <div>
@@ -159,7 +175,6 @@ const page = pages.find((page) => page.slug === slug);
         </div>
     )
 }
-
 ```
 
 The above example defines a [dynamic route](https://docs.astro.build/en/guides/routing/#dynamic-routes) for the plugin that displays a list of blog posts when no slug is provided and displays the content of a blog post when a slug is provided.
