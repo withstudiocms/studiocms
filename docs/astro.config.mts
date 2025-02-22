@@ -5,7 +5,7 @@ import starlightImageZoom from 'starlight-image-zoom';
 import starlightSidebarTopics from 'starlight-sidebar-topics';
 import getCoolifyURL from './hostUtils.ts';
 import rehypePlugins from './src/plugins/rehypePluginKit.ts';
-import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
+import { typeDocPlugins } from './typedoc.config.ts';
 
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';

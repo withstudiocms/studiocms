@@ -1,8 +1,48 @@
 import type { StarlightPlugin } from '@astrojs/starlight/types';
 import { createStarlightTypeDocPlugin } from 'starlight-typedoc';
-import { getFilePathToPackage, makeTypedocOpts } from './src/typedocHelpers.ts';
-import type { SidebarGroup } from './starlight-types.ts';
+import type { StarlightTypeDocOptions } from 'starlight-typedoc';
 
+// Utility function to create TypeDoc related paths
+export function getFilePathToPackage(name: string, path: string) {
+	return `../packages/${name}/${path}`;
+}
+
+// Utility function to create TypeDoc options for the StudioCMS packages so that each package documentation is the same when generated
+export function makeTypedocOpts(o: {
+	name: string;
+	dir: string;
+	output: string;
+	entryPoints: StarlightTypeDocOptions['entryPoints'];
+}): StarlightTypeDocOptions {
+	return {
+		tsconfig: getFilePathToPackage(o.dir, 'tsconfig.json'),
+		entryPoints: o.entryPoints,
+		output: `typedoc/${o.output}`,
+		typeDoc: {
+			plugin: [
+				'typedoc-plugin-zod',
+				'typedoc-plugin-frontmatter',
+				'./src/plugins/frontmatter.js',
+				'./src/plugins/readmes.js',
+			],
+			skipErrorChecking: true,
+			gitRemote: 'https://github.com/withstudiocms/studiocms/blob',
+			gitRevision: 'main',
+			sourceLinkTemplate:
+				'https://github.com/withstudiocms/studiocms/blob/{gitRevision}/{path}#L{line}',
+			includeVersion: true,
+			expandObjects: true,
+			expandParameters: true,
+			useCodeBlocks: true,
+			readme: 'none',
+			useHTMLAnchors: true,
+			sourceLinkExternal: true,
+			outputFileStrategy: 'modules',
+			flattenOutputFiles: true,
+			pretty: true,
+		},
+	};
+}
 // Create Starlight TypeDoc Plugins for different parts of the Astro StudioCMS Project
 
 // studiocms
@@ -69,28 +109,3 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 };
 
 export const typeDocPlugins = TypeDocPlugins(isProd, testTypeDoc);
-
-export const TypeDocSideBarEntry = (isProd: boolean, testingMode: boolean): SidebarGroup => {
-	if (isProd || testingMode) {
-		return {
-			label: 'TypeDoc',
-			badge: {
-				text: 'Auto Generated',
-				variant: 'tip',
-			},
-			collapsed: true,
-			items: [tdStudioCMS_SB, tdBlog_SB, tdDevApps_SB],
-		};
-	}
-	return {
-		label: 'TypeDoc',
-		badge: {
-			text: 'Auto Generated',
-			variant: 'tip',
-		},
-		collapsed: true,
-		items: [],
-	};
-};
-
-export const typeDocSideBarEntry = TypeDocSideBarEntry(isProd, testTypeDoc);
