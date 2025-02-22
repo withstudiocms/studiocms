@@ -34,7 +34,6 @@ export function makeTypedocOpts(o: {
 			expandObjects: true,
 			expandParameters: true,
 			useCodeBlocks: true,
-			readme: 'none',
 			useHTMLAnchors: true,
 			sourceLinkExternal: true,
 			outputFileStrategy: 'modules',
@@ -46,11 +45,11 @@ export function makeTypedocOpts(o: {
 // Create Starlight TypeDoc Plugins for different parts of the Astro StudioCMS Project
 
 // studiocms
-const [tdStudioCMS, tdStudioCMS_SB] = createStarlightTypeDocPlugin();
+const tdStudioCMS = createStarlightTypeDocPlugin()[0];
 // @studiocms/devapps
-const [tdDevApps, tdDevApps_SB] = createStarlightTypeDocPlugin();
+const tdDevApps = createStarlightTypeDocPlugin()[0];
 // @studiocms/blog
-const [tdBlog, tdBlog_SB] = createStarlightTypeDocPlugin();
+const tdBlog = createStarlightTypeDocPlugin()[0];
 
 // Set to true to enable testing mode for TypeDoc
 const testTypeDoc = true;
