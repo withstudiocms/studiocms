@@ -36,6 +36,7 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 						getFilePathToPackage('studiocms', 'src/db/tables.ts'),
 						getFilePathToPackage('studiocms', 'src/sdk/index.ts'),
 						getFilePathToPackage('studiocms', 'src/sdk/cache.ts'),
+						getFilePathToPackage('studiocms', 'src/sdk/StudioCMSVirtualCache.ts'),
 						getFilePathToPackage('studiocms', 'src/sdk/errors.ts'),
 						getFilePathToPackage('studiocms', 'src/schemas/index.ts'),
 					],
