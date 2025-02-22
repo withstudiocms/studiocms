@@ -255,6 +255,9 @@ importers:
       typedoc-plugin-markdown:
         specifier: ^4.4.2
         version: 4.4.2(typedoc@0.27.7(typescript@5.7.2))
+      typedoc-plugin-zod:
+        specifier: ^1.3.1
+        version: 1.3.1(typedoc@0.27.7(typescript@5.7.2))
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
@@ -4815,6 +4818,11 @@ packages:
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.27.x
+
+  typedoc-plugin-zod@1.3.1:
+    resolution: {integrity: sha512-u4NH1Ez168gRNnhUd0x4pZhp85maJ9y050IxSok9XwdzTpUA9NN0ee3ho8ssrzmxsvO2UDbDEiks7xtI0p6UXA==}
+    peerDependencies:
+      typedoc: 0.23.x || 0.24.x || 0.25.x || 0.26.x || 0.27.x
 
   typedoc@0.27.7:
     resolution: {integrity: sha512-K/JaUPX18+61W3VXek1cWC5gwmuLvYTOXJzBvD9W7jFvbPnefRnCHQCEPw7MSNrP/Hj7JJrhZtDDLKdcYm6ucg==}
@@ -11010,6 +11018,10 @@ snapshots:
       yaml: 2.7.0
 
   typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.7.2)):
+    dependencies:
+      typedoc: 0.27.7(typescript@5.7.2)
+
+  typedoc-plugin-zod@1.3.1(typedoc@0.27.7(typescript@5.7.2)):
     dependencies:
       typedoc: 0.27.7(typescript@5.7.2)
 

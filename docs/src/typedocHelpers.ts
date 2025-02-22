@@ -18,6 +18,7 @@ export function makeTypedocOpts(o: {
 		output: `typedoc/${o.output}`,
 		typeDoc: {
 			plugin: [
+				'typedoc-plugin-zod',
 				'typedoc-plugin-frontmatter',
 				'./src/plugins/frontmatter.js',
 				'./src/plugins/readmes.js',

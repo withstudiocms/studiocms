@@ -1,18 +1,9 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute, AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { ColumnDataType } from 'drizzle-orm';
 import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared.js';
-
-export interface AstroIntegration {
-	/** The name of the integration. */
-	name: string;
-	/** The different hooks available to extend. */
-	hooks: {
-		[K in keyof Astro.IntegrationHooks]?: Astro.IntegrationHooks[K];
-	} & Partial<Record<string, unknown>>;
-}
 
 type AsDrizzleTable = SQLiteTableWithColumns<{
 	name: string;
