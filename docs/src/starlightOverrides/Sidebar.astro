@@ -1,9 +1,11 @@
 ---
 import Default from '@astrojs/starlight/components/Sidebar.astro';
+import StarlightSidebarTopicsSidebar from 'starlight-sidebar-topics/components/Sidebar.astro';
 import Sponsors from '../components/Sponsors.astro';
 ---
 
 <div class="sidebar-custom">
+    <StarlightSidebarTopicsSidebar />
     <Default><slot /></Default>
     
     <div class="sl-hidden md:sl-block sidebar-footer">

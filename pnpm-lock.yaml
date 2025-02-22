@@ -153,9 +153,6 @@ importers:
       '@fontsource-variable/onest':
         specifier: 5.1.1
         version: 5.1.1
-      '@lorenzo_lewis/starlight-utils':
-        specifier: ^0.2.0
-        version: 0.2.0(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
       '@lunariajs/core':
         specifier: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
         version: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0
@@ -237,6 +234,9 @@ importers:
       starlight-package-managers:
         specifier: ^0.10.0
         version: 0.10.0(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))
+      starlight-sidebar-topics:
+        specifier: ^0.4.1
+        version: 0.4.1(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))
       starlight-typedoc:
         specifier: ^0.19.0
         version: 0.19.0(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.7.2)))(typedoc@0.27.7(typescript@5.7.2))
@@ -1383,12 +1383,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@lorenzo_lewis/starlight-utils@0.2.0':
-    resolution: {integrity: sha512-RAOhqhA5axe9+MXb6r/QwY6mulbTU1hCmtu2lImU3OyFqyV6ClPhAxqqEY7wMHHEHds8UaXGVPUPMST2FZcyZQ==}
-    peerDependencies:
-      '@astrojs/starlight': '>=0.28.0'
-      astro: '>=4.14.0'
-
   '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0':
     resolution: {tarball: https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0}
     version: 0.1.1
@@ -2341,11 +2335,6 @@ packages:
     resolution: {integrity: sha512-yJMQId0yXSAbW9I6yqvJ3FcjKzJ8zRL7elbJbllkv1ZJPlsI0NI83Pxn1YL1IapEM347EvOOkSW2GL+2+NO61w==}
     peerDependencies:
       astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0
-
-  astro-integration-kit@0.16.1:
-    resolution: {integrity: sha512-N/iam0PAFrRT9azYZqscP1HowQhC77Dwlp912P0/72k+kwUVgO3m73F26XXukHYoZBsrHgrUrfsWBxuCH3kEUg==}
-    peerDependencies:
-      astro: ^4.12.0
 
   astro-integration-kit@0.17.0:
     resolution: {integrity: sha512-fe31CCKmrGYn/kkBd1J4b7P02gEdMdEIFBz14zdAud+YAmJeLtZD6wmrCz3LDau+lE1oM1hQnvmZXVSM/YveKw==}
@@ -4650,6 +4639,12 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.22.0'
 
+  starlight-sidebar-topics@0.4.1:
+    resolution: {integrity: sha512-fzYVgccxUDBjdxgGXPDQzNI/GghEMhcdaxlDkkOFXzKvZQVX71/LAB/ZffGAB+EKkS3n9bF5YggYYBMuO6wKAw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.32.0'
+
   starlight-typedoc@0.19.0:
     resolution: {integrity: sha512-NR1A3XjxEl8hS3xKaw7TutuFMaEYmMstgZNmSNAnAzav1dZtMoZsp3KM+S4Tr+5kYCR1v0DlF+ESouOn8Nl5Dw==}
     engines: {node: '>=18.17.1'}
@@ -6425,12 +6420,6 @@ snapshots:
   '@libsql/win32-x64-msvc@0.4.7':
     optional: true
 
-  '@lorenzo_lewis/starlight-utils@0.2.0(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)))(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))':
-    dependencies:
-      '@astrojs/starlight': 0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
-      astro: 5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
-      astro-integration-kit: 0.16.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
-
   '@lunariajs/core@https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0':
     dependencies:
       consola: 3.2.3
@@ -7626,12 +7615,6 @@ snapshots:
     dependencies:
       astro: 5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
       rehype-expressive-code: 0.40.2
-
-  astro-integration-kit@0.16.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
-    dependencies:
-      astro: 5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)
-      pathe: 1.1.2
-      recast: 0.23.9
 
   astro-integration-kit@0.17.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1)):
     dependencies:
@@ -10865,6 +10848,10 @@ snapshots:
       - supports-color
 
   starlight-package-managers@0.10.0(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))):
+    dependencies:
+      '@astrojs/starlight': 0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
+
+  starlight-sidebar-topics@0.4.1(@astrojs/starlight@0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))):
     dependencies:
       '@astrojs/starlight': 0.32.1(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.6.1))
 

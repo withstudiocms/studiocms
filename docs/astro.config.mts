@@ -2,9 +2,9 @@ import starlight from '@astrojs/starlight';
 import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
+import starlightSidebarTopics from 'starlight-sidebar-topics';
 import getCoolifyURL from './hostUtils.ts';
 import rehypePlugins from './src/plugins/rehypePluginKit.ts';
-// import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 
 // Define the Site URL
@@ -98,60 +98,68 @@ export default defineConfig({
 					},
 				},
 			],
-			sidebar: [
-				{
-					label: 'Start Here',
-					autogenerate: { directory: 'start-here' },
-				},
-				{
-					label: 'Understanding StudioCMS',
-					autogenerate: { directory: 'how-it-works' },
-				},
-				{
-					label: 'Contributing Guides',
-					autogenerate: { directory: 'contributing' },
-				},
-				{
-					label: 'Plugins Reference',
-					autogenerate: { directory: 'plugins' },
-				},
-				{
-					label: 'Package Catalog',
-					items: [
-						{
-							label: 'Package List',
-							link: '/package-catalog',
-						},
-						{
-							label: 'StudioCMS Plugins',
-							autogenerate: { directory: 'package-catalog/studiocms-plugins' },
-							collapsed: true,
-						},
-						{
-							label: 'Community Plugins',
-							autogenerate: { directory: 'package-catalog/community-plugins' },
-							collapsed: true,
-						},
-					],
-				},
-				{
-					label: 'References',
-					items: [
-						{
-							label: 'Configuration Reference',
-							autogenerate: { directory: 'config-reference' },
-							collapsed: true,
-						},
-						typeDocSideBarEntry,
-					],
-				},
-			],
 			plugins: [
-				// starlightUtils({
-				// 	multiSidebar: { switcherStyle: 'horizontalList' },
-				// }),
 				...typeDocPlugins,
 				starlightImageZoom(),
+				starlightSidebarTopics([
+					{
+						label: 'Learn',
+						link: '/start-here/getting-started',
+						icon: 'open-book',
+						id: 'learn',
+						items: [
+							{
+								label: 'Start Here',
+								autogenerate: { directory: 'start-here' },
+							},
+							{
+								label: 'Understanding StudioCMS',
+								autogenerate: { directory: 'how-it-works' },
+							},
+							{
+								label: 'Contributing Guides',
+								autogenerate: { directory: 'contributing' },
+							},
+							{
+								label: 'Plugins',
+								autogenerate: { directory: 'plugins' },
+							},
+						],
+					},
+					{
+						label: 'Package Catalog',
+						link: '/package-catalog',
+						icon: 'download',
+						id: 'package-catalog',
+						items: [
+							{
+								label: 'Catalog',
+								link: '/package-catalog',
+							},
+							{
+								label: 'StudioCMS Plugins',
+								autogenerate: { directory: 'package-catalog/studiocms-plugins' },
+							},
+							{
+								label: 'Community Plugins',
+								autogenerate: { directory: 'package-catalog/community-plugins' },
+							},
+						],
+					},
+					{
+						label: 'References',
+						link: '/config-reference',
+						icon: 'information',
+						id: 'references',
+						items: [
+							{
+								label: 'Configuration Reference',
+								autogenerate: { directory: 'config-reference' },
+							},
+							typeDocSideBarEntry,
+						],
+					},
+				]),
 			],
 		}),
 	],

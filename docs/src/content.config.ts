@@ -2,6 +2,7 @@ import { defineCollection, reference, z } from 'astro:content';
 import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
 import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
 import { glob } from 'astro/loaders';
+import { topicSchema } from 'starlight-sidebar-topics/schema';
 
 const packageCatalogSchema = z.object({
 	name: z.string(),
@@ -17,7 +18,7 @@ const packageCatalogSchema = z.object({
 	released: z.boolean().optional().default(true),
 });
 
-const baseSchema = z.object({
+const baseSchema = topicSchema.extend({
 	type: z.literal('base').optional().default('base'),
 	i18nReady: z.boolean().optional().default(false),
 });

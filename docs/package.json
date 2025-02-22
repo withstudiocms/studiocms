@@ -34,7 +34,7 @@
     "@shikijs/colorized-brackets": "^1.24.2",
     "starlight-package-managers": "^0.10.0",
     "@11ty/eleventy-fetch": "^5.0.2",
-    "@lorenzo_lewis/starlight-utils": "^0.2.0",
+    "starlight-sidebar-topics": "^0.4.1",
     "@types/hast": "^3.0.4",
     "p-retry": "^6.2.1",
     "astro-embed": "^0.9.0",
