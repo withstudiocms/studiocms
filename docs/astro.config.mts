@@ -162,8 +162,23 @@ export default defineConfig({
 									text: 'Auto Generated',
 									variant: 'tip',
 								},
-								autogenerate: { directory: 'typedoc' },
-								collapsed: true,
+								items: [
+									{
+										label: 'studiocms',
+										autogenerate: { directory: 'typedoc/studiocms' },
+										collapsed: true,
+									},
+									{
+										label: '@studiocms/blog',
+										autogenerate: { directory: 'typedoc/studiocms-blog' },
+										collapsed: true,
+									},
+									{
+										label: '@studiocms/devapps',
+										autogenerate: { directory: 'typedoc/studiocms-devapps' },
+										collapsed: true,
+									},
+								],
 							},
 						],
 					},

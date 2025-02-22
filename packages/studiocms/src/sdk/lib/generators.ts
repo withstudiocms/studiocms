@@ -10,14 +10,33 @@ export function generateRandomIDNumber(length: number): number {
 	return Math.floor(Math.random() * 10 ** length);
 }
 
+/**
+ * Generates a JSON Web Token (JWT) for a given user ID.
+ *
+ * @param userId - The unique identifier of the user for whom the token is being generated.
+ * @returns A signed JWT string that expires in 3 hours.
+ */
 export function generateToken(userId: string): string {
 	return jwt.sign({ userId }, cmsEncryptionKey, { expiresIn: '3h' });
 }
 
+/**
+ * Verifies the provided JWT token using the CMS encryption key.
+ *
+ * @param token - The JWT token to be verified.
+ * @returns The decoded token if verification is successful.
+ * @throws Will throw an error if the token is invalid or verification fails.
+ */
 export function testToken(token: string) {
 	return jwt.verify(token, cmsEncryptionKey);
 }
 
+/**
+ * Generates a random password of the specified length.
+ *
+ * @param length - The length of the password to generate.
+ * @returns A randomly generated password string containing uppercase letters, lowercase letters, and digits.
+ */
 export function generateRandomPassword(length: number): string {
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	let password = '';

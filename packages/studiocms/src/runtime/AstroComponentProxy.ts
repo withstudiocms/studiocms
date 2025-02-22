@@ -76,6 +76,14 @@ export function dedent(str: string): string {
 	return lns.map((ln) => (ln.startsWith(indent) ? ln.slice(indent.length) : ln)).join('\n');
 }
 
+/**
+ * Transforms the provided HTML string by applying sanitization and component swapping.
+ *
+ * @param html - The HTML string to be transformed.
+ * @param components - A record of components to be swapped within the HTML. The keys are component names and the values are the corresponding component implementations.
+ * @param sanitizeOpts - Optional sanitization options to be applied to the HTML.
+ * @returns A promise that resolves to the transformed HTML string.
+ */
 export async function transformHTML(
 	html: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

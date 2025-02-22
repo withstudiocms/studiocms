@@ -6,9 +6,36 @@ import { lookup } from 'mrmime';
 import { StudioCMSCoreError } from '../errors.js';
 import type { HeadConfigSchema } from '../schemas/config/defaultFrontend.js';
 
+/**
+ * A union type representing the possible file extensions for favicon images.
+ *
+ * The supported file extensions are:
+ * - `.ico`: Icon file format
+ * - `.gif`: Graphics Interchange Format
+ * - `.jpeg`: JPEG image format
+ * - `.jpg`: JPEG image format
+ * - `.png`: Portable Network Graphics
+ * - `.svg`: Scalable Vector Graphics
+ */
 type faviconTypeMap = '.ico' | '.gif' | '.jpeg' | '.jpg' | '.png' | '.svg';
+
+/**
+ * An array of file extensions representing different types of favicons.
+ *
+ * @type {faviconTypeMap[]}
+ * @example
+ * // Example usage:
+ * const faviconExtensions = faviconTypes;
+ * console.log(faviconExtensions); // ['.ico', '.gif', '.jpeg', '.jpg', '.png', '.svg']
+ */
 const faviconTypes: faviconTypeMap[] = ['.ico', '.gif', '.jpeg', '.jpg', '.png', '.svg'];
 
+/**
+ * Checks if the given file extension is a valid favicon type.
+ *
+ * @param ext - The file extension to check.
+ * @returns A boolean indicating whether the extension is a valid favicon type.
+ */
 function isFaviconExt(ext: string): ext is faviconTypeMap {
 	if (faviconTypes.includes(ext as faviconTypeMap)) {
 		return true;
@@ -16,6 +43,13 @@ function isFaviconExt(ext: string): ext is faviconTypeMap {
 	return false;
 }
 
+/**
+ * Generates a favicon object with the appropriate href and type based on the provided favicon file.
+ *
+ * @param favicon - The path or URL to the favicon file.
+ * @returns An object containing the href and type of the favicon.
+ * @throws {StudioCMSCoreError} If the favicon extension is not supported.
+ */
 const makeFavicon = (favicon: string) => {
 	const ext = extname(favicon).toLocaleLowerCase();
 	if (isFaviconExt(ext)) {

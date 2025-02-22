@@ -2,7 +2,21 @@ import type { WebVitalsRating } from './schemas.js';
 import type { WebVitalsResponseItem, WebVitalsSummary } from './types.js';
 
 /**
- * Processes an array of Web Vitals data, replicating SQL logic.
+ * Processes an array of web vitals response items and generates a summary.
+ *
+ * @param data - An array of `WebVitalsResponseItem` objects to be processed.
+ * @returns A `WebVitalsSummary` object containing the processed summary.
+ *
+ * The function performs the following steps:
+ * 1. Groups the input data by the `name` property.
+ * 2. Processes each metric group separately.
+ * 3. Sorts the metrics within each group by `rating` and `value`.
+ * 4. Assigns quartiles to each metric.
+ * 5. Identifies the end of each rating group.
+ * 6. Computes the sample size for each metric group.
+ * 7. Computes histogram densities for each rating.
+ * 8. Computes the 75th percentile (P75) for each metric group.
+ * 9. Filters the final results based on specific conditions.
  */
 export function processWebVitalsSummary(data: WebVitalsResponseItem[]): WebVitalsSummary {
 	// Step 1: Group by `name`

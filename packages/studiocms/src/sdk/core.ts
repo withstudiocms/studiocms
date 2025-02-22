@@ -76,6 +76,13 @@ import { useDB } from './utils/db.js';
 
 const db = useDB();
 
+/**
+ * The core SDK for StudioCMS.
+ *
+ * This SDK provides access to the core functionality of StudioCMS, including the ability to interact with the database, manage users, and more.
+ *
+ * @returns An object containing the core functionality of the StudioCMS SDK.
+ */
 export function studiocmsSDKCore() {
 	/**
 	 * Gets the folder structure from the database.

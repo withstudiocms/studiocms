@@ -2,6 +2,13 @@ import path from 'node:path';
 import type { AstroIntegrationLogger } from 'astro';
 import type { RobotsConfig } from './types.js';
 
+/**
+ * Validates the given host string against a specific pattern and logs errors if the validation fails.
+ *
+ * @param host - The host string to be validated.
+ * @param logger - The logger instance used to log error messages.
+ * @throws Will throw an error if the host is not a string or if it does not match the required pattern.
+ */
 function validateHost(host: string, logger: AstroIntegrationLogger) {
 	const hostPattern = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$/;
 
@@ -14,6 +21,19 @@ function validateHost(host: string, logger: AstroIntegrationLogger) {
 	}
 }
 
+/**
+ * Generates the host content for the robots.txt file based on the provided configuration.
+ *
+ * @param {RobotsConfig} config - The configuration object for generating the host content.
+ * @param {AstroIntegrationLogger} logger - The logger instance for logging validation messages.
+ * @returns {string} The generated host content for the robots.txt file.
+ *
+ * @remarks
+ * - If `config.host` is `true`, the default host is used.
+ * - If `config.host` is `false`, the host is not specified.
+ * - If `config.host` is a number, it is validated and used.
+ * - If `config.host` is a string and not 'localhost', it is validated and used.
+ */
 function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogger) {
 	let content = '';
 
@@ -32,6 +52,24 @@ function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogge
 	return content;
 }
 
+/**
+ * Validates the given URL to ensure it is a valid sitemap file URL.
+ *
+ * The URL must start with "http" or "https" and end with one of the following extensions:
+ * - .xml
+ * - .txt
+ * - .html
+ * - .xml.gz
+ * - .txt.gz
+ * - .json
+ * - .xhtml
+ *
+ * If the URL is invalid, an error message is logged and an exception is thrown.
+ *
+ * @param url - The URL to validate.
+ * @param logger - The logger instance to use for logging error messages.
+ * @throws Will throw an error if the URL is invalid or not a valid sitemap file.
+ */
 function validateUrl(url: string, logger: AstroIntegrationLogger) {
 	// const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html)$/;
 	const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html|xml.gz|txt.gz|json|xhtml)$/i;
@@ -40,6 +78,15 @@ function validateUrl(url: string, logger: AstroIntegrationLogger) {
 	}
 }
 
+/**
+ * Generates the content for the sitemap based on the provided configuration.
+ *
+ * @param {RobotsConfig} config - The configuration object for the robots.txt file.
+ * @param {string} siteHref - The base URL of the site.
+ * @param {AstroIntegrationLogger} logger - The logger instance for logging messages.
+ * @returns {string} The generated sitemap content.
+ * @throws Will throw an error if the sitemap configuration is an invalid number.
+ */
 function generateSitemapContent(
 	config: RobotsConfig,
 	siteHref: string,
@@ -64,6 +111,17 @@ function generateSitemapContent(
 	return content;
 }
 
+/**
+ * Throws a message with a specific type and logs it using the provided logger.
+ *
+ * @param msg - The message to be logged and thrown.
+ * @param type - The type of the message. It can be a boolean, 'warn', 'error', or 'info'.
+ *               - 'warn': Logs a warning message.
+ *               - 'error': Logs a failure message and throws an error with the message.
+ *               - true: Logs a failure message and throws an error with the message and a reference link to Google's robots.txt rules.
+ *               - default: Logs a failure message and throws an error with the message and a reference link to Yandex's robots.txt rules.
+ * @param logger - The logger instance used to log the messages.
+ */
 function throwMsg(
 	msg: string,
 	type: boolean | 'warn' | 'error' | 'info',
@@ -99,6 +157,18 @@ function throwMsg(
 	}
 }
 
+/**
+ * Generates the content for the robots.txt file based on the provided configuration.
+ *
+ * @param {RobotsConfig} config - The configuration object for generating the robots.txt content.
+ * @param {string} siteMapHref - The URL of the sitemap.
+ * @param {AstroIntegrationLogger} logger - The logger instance for logging messages.
+ * @returns {string} The generated content for the robots.txt file.
+ *
+ * @throws Will throw an error if any policy is missing a required userAgent,
+ *         if both allow and disallow entries are missing or empty,
+ *         if crawlDelay is not a number or is out of the allowed range (0.1 to 60 seconds).
+ */
 export function generateContent(
 	config: RobotsConfig,
 	siteMapHref: string,
@@ -204,6 +274,14 @@ export function generateContent(
 	return content;
 }
 
+/**
+ * Prints information about the generation of the 'robots.txt' file.
+ *
+ * @param fileSize - The size of the generated 'robots.txt' file in KB.
+ * @param executionTime - The time taken to generate the 'robots.txt' file in milliseconds.
+ * @param logger - The logger instance used to log information.
+ * @param destDir - The destination directory where the 'robots.txt' file is created.
+ */
 export function printInfo(
 	fileSize: number,
 	executionTime: number,

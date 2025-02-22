@@ -72,6 +72,10 @@ export const studioCMSSocials: StudioCMSSocials = {
 	discord: 'https://chat.studiocms.dev',
 };
 
+/**
+ * Default values for a "ghost" user in StudioCMS.
+ * This user represents a deleted user in the system.
+ */
 export const GhostUserDefaults = {
 	id: '_StudioCMS_Ghost_User_',
 	name: 'Ghost (deleted user)',
