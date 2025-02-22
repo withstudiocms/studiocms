@@ -49,15 +49,11 @@ for (const page of restOfPages) {
 	});
 }
 
-const pluginsLinks = plugins.map(({ frontendNavigationLinks }) => {
-	if (frontendNavigationLinks) {
-		return frontendNavigationLinks;
+for (const { frontendNavigationLinks } of plugins) {
+	if (!frontendNavigationLinks) {
+		continue;
 	}
-	return [];
-});
-
-for (const pluginLinks of pluginsLinks) {
-	for (const link of pluginLinks) {
+	for (const link of frontendNavigationLinks) {
 		links.push({
 			text: link.label,
 			href: pathWithBase(link.href),
