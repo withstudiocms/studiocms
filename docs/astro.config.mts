@@ -3,7 +3,7 @@ import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
 import getCoolifyURL from './hostUtils.ts';
-import rehypePluginKit from './src/plugins/rehypePluginKit.ts';
+import rehypePlugins from './src/plugins/rehypePluginKit.ts';
 // import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
 
@@ -35,7 +35,7 @@ export default defineConfig({
 		remotePatterns: [{ protocol: 'https' }],
 	},
 	markdown: {
-		rehypePlugins: rehypePluginKit,
+		rehypePlugins,
 	},
 	integrations: [
 		ui(),
@@ -121,7 +121,6 @@ export default defineConfig({
 						{
 							label: 'Package List',
 							link: '/package-catalog',
-							badge: { text: 'New', variant: 'success' },
 						},
 						{
 							label: 'StudioCMS Plugins',
