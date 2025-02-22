@@ -1,4 +1,5 @@
 import starlight from '@astrojs/starlight';
+import starWarp from '@inox-tools/star-warp';
 import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
@@ -97,10 +98,25 @@ export default defineConfig({
 						content: `${site}og.jpg?v=1`,
 					},
 				},
+				{
+					tag: 'link',
+					attrs: {
+						type: 'application/opensearchdescription+xml',
+						href: '/warp.xml',
+						title: 'StudioCMS Docs',
+					},
+				},
 			],
 			plugins: [
 				...typeDocPlugins,
 				starlightImageZoom(),
+				starWarp({
+					openSearch: {
+						title: 'StudioCMS Docs',
+						description: 'Search StudioCMS documentation',
+						enabled: true,
+					},
+				}),
 				starlightSidebarTopics([
 					{
 						label: 'Learn',
