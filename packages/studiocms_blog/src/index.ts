@@ -1,42 +1,7 @@
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
 import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
-
-interface StudioCMSBlogOptions {
-	/**
-	 * Enable sitemap generation
-	 * @default true
-	 */
-	sitemap?: boolean;
-
-	/**
-	 * Inject routes
-	 * @default true
-	 */
-	injectRoutes?: boolean;
-
-	/**
-	 * The configuration for the blog
-	 */
-	blog?: {
-		/**
-		 * The title of the blog
-		 */
-		title?: string;
-
-		/**
-		 * Enable RSS feed
-		 */
-		enableRSS?: boolean;
-
-		/**
-		 * The route for the blog
-		 * @default '/blog'
-		 * @example '/news'
-		 */
-		route?: string;
-	};
-}
+import type { StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
 

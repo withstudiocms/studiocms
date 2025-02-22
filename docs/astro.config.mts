@@ -156,7 +156,15 @@ export default defineConfig({
 								label: 'Configuration Reference',
 								autogenerate: { directory: 'config-reference' },
 							},
-							typeDocSideBarEntry,
+							{
+								label: 'TypeDoc',
+								badge: {
+									text: 'Auto Generated',
+									variant: 'tip',
+								},
+								autogenerate: { directory: 'typedoc' },
+								collapsed: true,
+							},
 						],
 					},
 				]),

@@ -150,7 +150,7 @@ const defaultPlugin: StudioCMSPlugin = {
  * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  *
  */
-export default defineIntegration({
+export const studiocms = defineIntegration({
 	name: pkgName,
 	optionsSchema: z.custom<StudioCMSOptions>(),
 	setup: ({ name, options: opts }) => {
@@ -1226,3 +1226,5 @@ export default defineIntegration({
 		};
 	},
 });
+
+export default studiocms;

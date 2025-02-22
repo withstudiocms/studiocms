@@ -13,7 +13,7 @@ const [tdDevApps, tdDevApps_SB] = createStarlightTypeDocPlugin();
 const [tdBlog, tdBlog_SB] = createStarlightTypeDocPlugin();
 
 // Set to true to enable testing mode for TypeDoc
-const testTypeDoc = false;
+const testTypeDoc = true;
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -57,7 +57,10 @@ const TypeDocPlugins = (isProd: boolean, testingMode: boolean): StarlightPlugin[
 					name: '@studiocms/blog',
 					output: 'studiocms-blog',
 					dir: 'studiocms_blog',
-					entryPoints: [getFilePathToPackage('studiocms_blog', 'src/index.ts')],
+					entryPoints: [
+						getFilePathToPackage('studiocms_blog', 'src/index.ts'),
+						getFilePathToPackage('studiocms_blog', 'src/types.ts'),
+					],
 				})
 			),
 		];

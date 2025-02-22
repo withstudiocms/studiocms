@@ -16,12 +16,12 @@ export function makeTypedocOpts(o: {
 		tsconfig: getFilePathToPackage(o.dir, 'tsconfig.json'),
 		entryPoints: o.entryPoints,
 		output: `typedoc/${o.output}`,
-		sidebar: {
-			label: o.name,
-			collapsed: true,
-		},
-		pagination: true,
 		typeDoc: {
+			plugin: [
+				'typedoc-plugin-frontmatter',
+				'./src/plugins/frontmatter.js',
+				'./src/plugins/readmes.js',
+			],
 			skipErrorChecking: true,
 			gitRemote: 'https://github.com/withstudiocms/studiocms/blob',
 			gitRevision: 'main',
@@ -29,8 +29,12 @@ export function makeTypedocOpts(o: {
 			expandObjects: true,
 			expandParameters: true,
 			useCodeBlocks: true,
+			readme: 'none',
 			useHTMLAnchors: true,
 			sourceLinkExternal: true,
+			outputFileStrategy: 'modules',
+			flattenOutputFiles: true,
+			pretty: true,
 			sourceLinkTemplate:
 				'https://github.com/withstudiocms/studiocms/blob/{gitRevision}/{path}#L{line}',
 		},
