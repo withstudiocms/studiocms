@@ -125,6 +125,7 @@ In the `src/routes/[...slug].astro` file, you will define the route for the plug
 
 ```astro title="[...slug].astro"
 ---
+import { StudioCMSRenderer } from 'studiocms:renderer';
 import sdk from 'studiocms:sdk';
 import config from 'myplugin:config';
 
@@ -143,7 +144,7 @@ const page = pages.find((page) => page.slug === slug);
     slug ? (
         <div>
             <h1>{page?.title}</h1>
-            <div>{page?.defaultContent?.content}</div>
+            <StudioCMSRenderer content={page?.defaultContent?.content || ''} />
         </div>
     ) : (
         <div>
