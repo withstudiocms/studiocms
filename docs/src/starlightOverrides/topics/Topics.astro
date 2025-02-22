@@ -1,0 +1,139 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import config from 'virtual:starlight-sidebar-topics/config';
+import starlightConfig from 'virtual:starlight/user-config';
+import { Badge, Icon } from '@astrojs/starlight/components';
+import { AstroError } from 'astro/errors';
+import type { ComponentProps } from 'astro/types';
+
+import type { StarlightSidebarTopicsSharedConfig } from 'node_modules/starlight-sidebar-topics/libs/config';
+
+interface Props {
+	current: StarlightSidebarTopicsSharedConfig[number];
+}
+
+const { current } = Astro.props;
+
+const defaultLang =
+	starlightConfig.defaultLocale?.lang || starlightConfig.defaultLocale?.locale || 'en';
+
+function getTranslation(translations: Record<string, string>, link: string, description: string) {
+	const defaultTranslation = translations[defaultLang];
+
+	if (!defaultTranslation) {
+		throw new AstroError(
+			`The ${description} for "${link}" must have a key for the default language "${defaultLang}".`,
+			'Update the Starlight config to include a topic label for the default language.'
+		);
+	}
+
+	let translation = defaultTranslation;
+
+	if (Astro.currentLocale) {
+		translation = translations[Astro.currentLocale] ?? defaultTranslation;
+	}
+
+	return translation;
+}
+---
+<ul>
+    {
+      config.map((topic) => {
+        const isLinkTopic = topic.type === 'link'
+        const isCurrent = isLinkTopic ? false : topic.label === current.label && topic.link === current.link
+        const link =
+          !isLinkTopic && Astro.currentLocale ? getRelativeLocaleUrl(Astro.currentLocale, topic.link) : topic.link
+        const label =
+          typeof topic.label === 'string' ? topic.label : getTranslation(topic.label, topic.link, 'topic label')
+  
+        return (
+          <li>
+            <a href={link} class:list={{ 'starlight-sidebar-topics-current': isCurrent }}>
+              {topic.icon && (
+                <div class="starlight-sidebar-topics-icon">
+                  <Icon name={topic.icon as ComponentProps<typeof Icon>['name']} />
+                </div>
+              )}
+              <div>
+                {label}
+                {topic.badge && (
+                  <Badge
+                    class="starlight-sidebar-topics-badge"
+                    text={
+                      typeof topic.badge.text === 'string'
+                        ? topic.badge.text
+                        : getTranslation(topic.badge.text, topic.link, 'topic badge text')
+                    }
+                    variant={topic.badge.variant}
+                  />
+                )}
+              </div>
+            </a>
+          </li>
+        )
+      })
+    }
+</ul>
+
+<style>
+    ul {
+      list-style: none;
+      padding: 0.25rem;
+      border: 1px solid var(--sl-color-hairline-light);
+      border-radius: 0.25rem;
+      background-color: hsl(var(--background-base));
+      margin-bottom: .5rem;
+    }
+
+    li {
+      overflow-wrap: anywhere;
+    }
+
+    li + li {
+      margin-top: 0.25rem;
+    }
+  
+    a {
+      align-items: center;
+      color: var(--sl-color-white);
+      display: flex;
+      font-size: var(--sl-text-base);
+      font-weight: 600;
+      gap: 0.5rem;
+      line-height: 1.5;
+      padding: 0.3em 0.5rem;
+      text-decoration: none;
+    }
+  
+    a:is(.starlight-sidebar-topics-current, :hover, :focus-visible) {
+      color: var(--sl-color-accent-high);
+      border: 1px solid var(--sl-color-hairline-light);
+      overflow-wrap: anywhere;
+      border-radius: 0.25rem;
+      background-color: hsl(var(--background-step-2));
+    }
+  
+    :global([data-theme='light']) a.starlight-sidebar-topics-current {
+      color: var(--sl-color-accent);
+    }
+  
+    .starlight-sidebar-topics-icon {
+      align-items: center;
+      border-radius: 0.25rem;
+      border: 1px solid var(--sl-color-gray-4);
+      display: flex;
+      justify-content: center;
+      padding: 0.1875rem;
+      padding: 0.25rem;
+    }
+  
+    a:is(.starlight-sidebar-topics-current, :hover, :focus-visible) .starlight-sidebar-topics-icon {
+      background-color: var(--sl-color-text-accent);
+      border-color: var(--sl-color-text-accent);
+      color: var(--sl-color-text-invert);
+    }
+  
+    .starlight-sidebar-topics-badge {
+      margin-inline-start: 0.25em;
+    }
+  </style>

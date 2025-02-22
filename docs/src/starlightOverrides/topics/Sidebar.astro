@@ -1,0 +1,16 @@
+---
+import {
+	type StarlightSidebarTopicsLocals,
+	StarlightSidebarTopicsLocalsSymbol,
+} from 'node_modules/starlight-sidebar-topics/libs/locals';
+import Topics from './Topics.astro';
+
+const { hasSidebar } = Astro.locals.starlightRoute;
+
+// @ts-expect-error - See `libs/locals` for more information.
+const currentTopic = Astro.locals[
+	StarlightSidebarTopicsLocalsSymbol
+] as StarlightSidebarTopicsLocals;
+---
+
+{hasSidebar && currentTopic && <Topics current={currentTopic.config} />}
