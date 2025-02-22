@@ -1,3 +1,6 @@
+/**
+ * Options for configuring the StudioCMS Blog.
+ */
 export interface StudioCMSBlogOptions {
 	/**
 	 * Enable sitemap generation

@@ -1,3 +1,9 @@
+/**
+ * Removes the trailing slash from the given URL.
+ *
+ * @param url - The URL from which to remove the trailing slash.
+ * @returns The URL without a trailing slash.
+ */
 function base(url: string) {
 	return stripTrailingSlash(url);
 }

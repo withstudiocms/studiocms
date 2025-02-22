@@ -2,6 +2,46 @@ import { wpAPIEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { defineToolbarApp } from 'astro/toolbar';
 import { closeOnOutsideClick, createWindowElement } from '../utils/app-utils.js';
 
+/**
+ * Defines a toolbar application for importing content from a WordPress site into StudioCMS.
+ *
+ * @param {Object} canvas - The canvas element where the application will be rendered.
+ * @param {Object} eventTarget - The target element for event listeners.
+ *
+ * @returns {Object} - The toolbar application definition.
+ *
+ * @function init
+ * Initializes the toolbar application by creating the canvas and setting up event listeners.
+ *
+ * @function createCanvas
+ * Creates and appends the main window component to the canvas. Sets up the form and its event listeners.
+ *
+ * @function closeOnOutsideClick
+ * Closes the window component when a click is detected outside of the specified event target.
+ *
+ * @event 'astro:after-swap'
+ * Recreates the canvas when the 'astro:after-swap' event is triggered.
+ *
+ * @event 'submit'
+ * Handles the form submission, including validation, showing a loading spinner, and making a POST request to the WordPress API endpoint.
+ *
+ * @constant {string} wpAPIEndpoint - The endpoint URL for the WordPress API.
+ *
+ * @typedef {Object} FormData
+ * Represents the form data to be sent in the POST request.
+ *
+ * @typedef {Object} Response
+ * Represents the response from the WordPress API.
+ *
+ * @typedef {Object} HTMLFormElement
+ * Represents the form element in the DOM.
+ *
+ * @typedef {Object} HTMLInputElement
+ * Represents the input element in the DOM.
+ *
+ * @typedef {Object} HTMLSelectElement
+ * Represents the select element in the DOM.
+ */
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		createCanvas();

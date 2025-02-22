@@ -5,10 +5,23 @@ import * as cheerio from 'cheerio';
 
 const imagesNotDownloaded = [];
 
+/**
+ * Removes all HTML tags from a given string.
+ *
+ * @param string - The input string containing HTML tags.
+ * @returns The input string with all HTML tags removed.
+ */
 export function stripHtml(string: string) {
 	return string.replace(/<[^>]*>/g, '');
 }
 
+/**
+ * Cleans up the provided HTML string by removing certain attributes from images
+ * and modifying specific elements related to WordPress polls.
+ *
+ * @param html - The HTML string to be cleaned up.
+ * @returns The cleaned-up HTML string.
+ */
 export const cleanUpHtml = (html: string) => {
 	const $ = cheerio.load(html);
 
@@ -25,6 +38,16 @@ export const cleanUpHtml = (html: string) => {
 	return $.html();
 };
 
+/**
+ * Downloads an image from the specified URL and saves it to the given destination.
+ *
+ * @param {string | URL} imageUrl - The URL of the image to download.
+ * @param {string | URL} destination - The file path where the image should be saved.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the image was successfully downloaded,
+ *                               or false if the download failed or the file already exists.
+ *
+ * @throws {Error} - Throws an error if there is an issue with the fetch request or file writing.
+ */
 export async function downloadImage(imageUrl: string | URL, destination: string | URL) {
 	if (fs.existsSync(destination)) {
 		console.error('File already exists:', destination);
@@ -63,6 +86,19 @@ export async function downloadImage(imageUrl: string | URL, destination: string 
 	}
 }
 
+/**
+ * Downloads an image from the given source URL and saves it to the specified folder.
+ *
+ * @param src - The URL of the image to download.
+ * @param pathToFolder - The path to the folder where the image should be saved.
+ * @returns The file name of the downloaded image if successful, otherwise `undefined`.
+ *
+ * @remarks
+ * - If the `src` or `pathToFolder` parameters are not provided, the function will return immediately.
+ * - If the specified folder does not exist, it will be created recursively.
+ * - If the image already exists in the specified folder, the function will log a message and skip the download.
+ * - If the image download fails, the source URL will be added to the `imagesNotDownloaded` array.
+ */
 export const downloadPostImage = async (src: string, pathToFolder: string) => {
 	if (!src || !pathToFolder) {
 		return;
@@ -90,6 +126,17 @@ export const downloadPostImage = async (src: string, pathToFolder: string) => {
 	return imageDownloaded ? fileName : undefined;
 };
 
+/**
+ * Downloads and updates the image sources in the provided HTML string.
+ *
+ * This function parses the given HTML string, finds all image elements,
+ * downloads the images to the specified folder, and updates the image
+ * sources to point to the downloaded images.
+ *
+ * @param html - The HTML string containing image elements to be processed.
+ * @param pathToFolder - The path to the folder where images should be downloaded.
+ * @returns A promise that resolves to the updated HTML string with new image sources.
+ */
 export const downloadAndUpdateImages = async (html: string, pathToFolder: string) => {
 	const $ = cheerio.load(html);
 	const images = $('img');
@@ -106,6 +153,15 @@ export const downloadAndUpdateImages = async (html: string, pathToFolder: string
 	return $.html();
 };
 
+/**
+ * Constructs a WordPress API endpoint URL based on the provided parameters.
+ *
+ * @param endpoint - The base URL of the WordPress website.
+ * @param type - The type of resource to access. Can be 'posts', 'pages', 'media', 'categories', 'tags', or 'settings'.
+ * @param path - An optional path to append to the endpoint.
+ * @returns The constructed URL object pointing to the desired API endpoint.
+ * @throws {AstroError} If the `endpoint` argument is missing.
+ */
 export const apiEndpoint = (
 	endpoint: string,
 	type: 'posts' | 'pages' | 'media' | 'categories' | 'tags' | 'settings',
