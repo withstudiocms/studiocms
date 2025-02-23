@@ -25,19 +25,22 @@ const sidebar = getSidebarLinks(lang);
       <span class="sidebar-title">StudioCMS</span>
       <span class="sidebar-subtitle">
         <Group>
-        { versionCheck && <VersionCheck /> }
-        <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
-          <div id="dark-content">
-            <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
-          </div>
-          <div id="light-content">
-            <Icon name='sun-16-solid' width={16} height={16} slot="light" />
-          </div>
-          <div id="fallback-content">
-            <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
-          </div>
+          { versionCheck && <VersionCheck /> }
+          <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
+            <div id="dark-content">
+              <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
+            </div>
+            <div id="light-content">
+              <Icon name='sun-16-solid' width={16} height={16} slot="light" />
+            </div>
+            <div id="fallback-content">
+              <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
+            </div>
+          </Button>
+        </Group>
+        <Button color='primary' size='sm' id='nav-close'>
+          <Icon name="x-mark" height={16} width={16} />
         </Button>
-      </Group>
       </span>
     </div>
   </div>
@@ -106,3 +109,16 @@ const sidebar = getSidebarLinks(lang);
   document.addEventListener('astro:page-load', setup);
   setup();
 </script>
+
+<style>
+  #nav-close {
+    display: none;
+  }
+
+  @media screen and (max-width: 840px) {
+    #nav-close {
+      display: flex;
+      margin-left: .75rem;
+    }
+  }
+</style>

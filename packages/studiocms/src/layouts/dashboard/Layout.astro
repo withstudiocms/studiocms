@@ -41,10 +41,6 @@ const description = propDescription ?? dbConfig.description;
     { sidebar === 'double' && <DoubleSidebar><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
-      { sidebar !== false && (
-        <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
-          <Icon name="bars-3" height={24} width={24} />
-        </Button> )}
       <div class="container">
 
         <div class="page-header">
@@ -57,5 +53,10 @@ const description = propDescription ?? dbConfig.description;
 
       </div>
     </main>
+    <style>
+      .page-header {
+        margin-bottom: 1.5rem;
+      }
+    </style>
   </body>
 </html>
