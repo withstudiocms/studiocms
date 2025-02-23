@@ -15,7 +15,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 # Introduction
 
-This Plugin enables the StudioCMS Blog features as well as a Frontend in your Astro project. This plugin will allow you to create, edit, and delete blog posts in the StudioCMS dashboard.
+This plugin enables the StudioCMS Blog features as well as a frontend in your Astro project. It will allow you to create, edit, and delete blog posts from the StudioCMS dashboard.
 
 ## Installation
 
@@ -23,7 +23,7 @@ This Plugin enables the StudioCMS Blog features as well as a Frontend in your As
 
    <PackageManagers pkg="@studiocms/blog" />
 
-2. Add `@studiocms/blog` to your astro config file:
+2. Add `@studiocms/blog` to your Astro config file:
 
    ```ts title="studiocms.config.mjs" ins={2, 6}
    import { defineStudioCMSConfig } from 'studiocms/config';
@@ -39,7 +39,7 @@ This Plugin enables the StudioCMS Blog features as well as a Frontend in your As
 
 ### What does this plugin do?
 
-This integration will add the following new routes to your StudioCMS Controlled front-end:
+This integration will add the following new routes to your StudioCMS-controlled front-end:
 
 - `/[...slug]` - The main blog page that lists all StudioCMS Pages.
 - `/blog` - The main blog page that lists all blog posts.
