@@ -24,7 +24,7 @@ To start using StudioCMS, you'll need:
 
 StudioCMS uses `@astrojs/db` to connect to your libSQL database. You can use any libSQL provider or self-hosted libSQL server.
 
-If you are using the StudioCMS CLI, you can skip this step and use the CLI to create a new database if you have TursoCLI installed.
+If you are using the StudioCMS CLI, you can skip this step and use the CLI to create a new database if you have the Turso CLI installed.
 
 <ReadMore>For more information about the required environment variables see, [Database URL and Token for `@astrojs/db`](/start-here/environment-variables/#database-url-and-token-for-astrojsdb)</ReadMore>
 
@@ -85,7 +85,7 @@ libSQL supports both HTTP and WebSockets as the transport protocol for a remote 
 
         After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project with StudioCMS in the specified directory.
 
-        If all goes well, you will be prompted to follow the next steps, which includes ensuring your environment variables are set correctly and running the project to complete the setup.
+        Afterward, you will be prompted to follow the next steps, which includes ensuring your environment variables are set correctly and running the project to complete the setup.
 
     2. After running the CLI, make sure that your `astro.config.mjs` fle is correctly configured:
 
@@ -120,7 +120,7 @@ libSQL supports both HTTP and WebSockets as the transport protocol for a remote 
 
         After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project in the specified directory.
 
-        If all goes well, you should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
+        You should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
 
         `cd` into your new project directory to begin using Astro. 
 
@@ -169,7 +169,7 @@ libSQL supports both HTTP and WebSockets as the transport protocol for a remote 
 
         After running the command, you'll be prompted to answer a few questions about your project. Once completed, the CLI will create a new Astro project in the specified directory.
 
-        If all goes well, you should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
+        You should see a “Liftoff confirmed. Explore your project!” message followed by some recommended next steps.
 
         `cd` into your new project directory to begin using Astro. 
 
@@ -210,7 +210,7 @@ libSQL supports both HTTP and WebSockets as the transport protocol for a remote 
 Please note that the `site` option in the `astro.config.mjs` file is required for StudioCMS to work correctly. You can set this to your site's URL or a placeholder URL. (i.e. `https://demo.studiocms.xyz/` or `http://localhost:4321/`)
 
 <Aside type="note" title="Adapter Required">
-StudioCMS requires an Astro Adapter to work correctly. Make sure to set an adapter that supports SSR Routes in your `astro.config.mjs` file.
+StudioCMS requires an [Astro Adapter](https://docs.astro.build/en/guides/on-demand-rendering/#server-adapters) to work correctly. Make sure to set an adapter that supports SSR Routes in your `astro.config.mjs` file.
 </Aside>
 
 ## Configure authentication

@@ -8,7 +8,7 @@ sidebar:
 
 import ReadMore from '~/components/ReadMore.astro';
 
-StudioCMS Integration config options schema Reference
+StudioCMS Integration config options schema reference
 
 ```ts twoslash title="studiocms.config.mjs"
 import { defineStudioCMSConfig } from 'studiocms/config';
@@ -88,21 +88,21 @@ export default defineStudioCMSConfig({
 
 ### `autoLinkHeadings`
 
-`autoLinkHeadings` is a boolean that is used to determine if headings should be automatically linked.
+`autoLinkHeadings` is a boolean that is used to determine if headings should be automatically linked. When linked, a link icon will show up next to them so users can easily copy a quick link to that heading
 
 - **Type:** `boolean`
 - **Default:** `true`
 
 ### `discordSubtext`
 
-`discordSubtext` is a boolean that is used to determine if subtext (`-# hello`) should be rendered as Discord-style subtext.
+`discordSubtext` is a boolean that is used to determine if the `-# hello` syntax should be rendered as Discord-style subtext.
 
 - **Type:** `boolean`
 - **Default:** `true`
 
 ### `callouts`
 
-`callouts` is an object that is used to determine how callouts should be rendered.
+`callouts` is an object that is used to determine with what style callouts should be rendered as.
 
 - **Type:** `{ theme?: "github" | "obsidian" | "vitepress" | undefined }` | `undefined` | `false`
 - **Default:** `{}`
@@ -142,9 +142,7 @@ export default defineStudioCMSConfig({
 
 #### `MarkdocRenderer`
 
-A custom renderer for StudioCMS's MarkDoc renderer that allows the user to use MarkDoc with React and custom React components.
-
-This renderer is used to render MarkDoc content with React components. This allows you to use React components in your MarkDoc content. Requires [`@astrojs/react`](https://docs.astro.build/en/guides/integrations-guide/react/) to be installed.
+A custom renderer for StudioCMS's MarkDoc renderer that allows the user to use MarkDoc with React and custom React components. Requires [`@astrojs/react`](https://docs.astro.build/en/guides/integrations-guide/react/) to be installed.
 
 ```ts twoslash ins={1, 5} title="studiocms.config.mjs"
 import { defineStudioCMSConfig } from 'studiocms/config';
@@ -196,7 +194,7 @@ export default defineStudioCMSConfig({
 
 ### `recmaPlugins`
 
-`recmaPlugins` is an array that is used to determine which recma plugins should be loaded.
+`recmaPlugins` is an array that is used to determine which [recma](https://github.com/mdx-js/recma) plugins should be loaded.
 
 - **Type:** `PluggableList` | `undefined`
 - **Default:** `[]`
