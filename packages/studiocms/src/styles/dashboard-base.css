@@ -202,6 +202,11 @@ main {
 	width: 100%;
 }
 
+.index-sub-header {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
 .dashboard-grid-container {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
