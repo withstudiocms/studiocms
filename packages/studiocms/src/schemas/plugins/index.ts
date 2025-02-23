@@ -281,7 +281,12 @@ export type StudioCMSPluginOptions = z.infer<typeof StudioCMSPluginSchema>;
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
 export interface StudioCMSPlugin extends StudioCMSPluginOptions {}
-export type { SettingsField, DashboardPage, AvailableDashboardPages } from './shared.js';
+export type {
+	SettingsField,
+	DashboardPage,
+	AvailableDashboardPages,
+	FinalDashboardPage,
+} from './shared.js';
 
 /**
  * Defines a plugin for StudioCMS.

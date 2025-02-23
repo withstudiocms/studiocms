@@ -1,5 +1,4 @@
 import { z } from 'astro/zod';
-import { desc } from 'drizzle-orm';
 
 export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
 
@@ -225,6 +224,14 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 	slug: z.string(),
 });
 
+const FinalBaseSchema = AvailableBaseSchema.extend({
+	components: z.object({
+		pageHeaderComponent: z.any(),
+		pageBodyComponent: z.any(),
+		innerSidebarComponent: z.any().optional(),
+	}),
+});
+
 /**
  * Schema for a single sidebar dashboard page.
  *
@@ -236,6 +243,10 @@ const SingleSidebarSchema = BaseDashboardPagePropsSchema.extend({
 });
 
 const AvailableSingleSchema = AvailableBaseSchema.extend({
+	sidebar: z.literal('single'),
+});
+
+const FinalSingleSchema = FinalBaseSchema.extend({
 	sidebar: z.literal('single'),
 });
 
@@ -256,6 +267,11 @@ const AvailableDoubleSchema = AvailableBaseSchema.extend({
 	innerSidebarComponent: z.string(),
 });
 
+const FinalDoubleSchema = FinalBaseSchema.extend({
+	sidebar: z.literal('double'),
+	innerSidebarComponent: z.string(),
+});
+
 /**
  * A union schema that represents different types of dashboard page schemas.
  * This schema can be one of the following:
@@ -265,6 +281,8 @@ const AvailableDoubleSchema = AvailableBaseSchema.extend({
 export const DashboardPageSchema = z.union([SingleSidebarSchema, DoubleSidebarSchema]);
 
 export const AvailableDashboardBaseSchema = z.union([AvailableSingleSchema, AvailableDoubleSchema]);
+
+export const FinalDashboardBaseSchema = z.union([FinalSingleSchema, FinalDoubleSchema]);
 
 export const AvailableDashboardPagesSchema = z.object({
 	user: z.array(AvailableDashboardBaseSchema).optional(),
@@ -279,3 +297,5 @@ export const AvailableDashboardPagesSchema = z.object({
 export type DashboardPage = z.infer<typeof DashboardPageSchema>;
 
 export type AvailableDashboardPages = z.infer<typeof AvailableDashboardPagesSchema>;
+
+export type FinalDashboardPage = z.infer<typeof FinalDashboardBaseSchema>;

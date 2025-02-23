@@ -1120,14 +1120,13 @@ export const studiocms = defineIntegration({
 								const dashboardPages = currentComponents.map((item) => {
 									const page = { ...item };
 
-									if (page.components) {
-										page.components = Object.entries(page.components).reduce(
-											(acc, [key, value]) => ({
-												...acc,
-												[key]: components[key],
-											}),
-											{}
-										);
+									page.components = {
+										pageHeaderComponent: components[page.pageHeaderComponent],
+										pageBodyComponent: components[page.pageBodyComponent],
+									};
+
+									if (page.sidebar === 'double') {
+										page.components.innerSidebarComponent = components[page.innerSidebarComponent];
 									}
 
 									return page;
@@ -1147,14 +1146,13 @@ export const studiocms = defineIntegration({
 								const dashboardPages = currentComponents.map((item) => {
 									const page = { ...item };
 
-									if (page.components) {
-										page.components = Object.entries(page.components).reduce(
-											(acc, [key, value]) => ({
-												...acc,
-												[key]: components[key],
-											}),
-											{}
-										);
+									page.components = {
+										pageHeaderComponent: components[page.pageHeaderComponent],
+										pageBodyComponent: components[page.pageBodyComponent],
+									};
+
+									if (page.sidebar === 'double') {
+										page.components.innerSidebarComponent = components[page.innerSidebarComponent];
 									}
 
 									return page;
