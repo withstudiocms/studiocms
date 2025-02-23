@@ -202,10 +202,9 @@ main {
 	width: 100%;
 }
 
-.container .page-header {
+.index-sub-header {
 	padding-left: 1rem;
 	padding-right: 1rem;
-	margin-bottom: .5rem;
 }
 
 .dashboard-grid-container {
