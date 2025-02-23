@@ -25,7 +25,6 @@ import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	AvailableDashboardPages,
-	DashboardPage,
 	SafePluginListType,
 	StudioCMSConfig,
 	StudioCMSOptions,

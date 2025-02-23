@@ -11,6 +11,16 @@ declare module 'studiocms:components/dashboard-grid-items' {
 	export default dashboardGridItems;
 }
 
+declare module 'studiocms:plugins/dashboard-pages/user' {
+	const dashboardPages: import('./src/schemas/index').FinalDashboardPage[];
+	export default dashboardPages;
+}
+
+declare module 'studiocms:plugins/dashboard-pages/admin' {
+	const dashboardPages: import('./src/schemas/index').FinalDashboardPage[];
+	export default dashboardPages;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;
