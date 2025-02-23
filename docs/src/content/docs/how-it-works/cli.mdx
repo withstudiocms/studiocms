@@ -1,7 +1,7 @@
 ---
 i18nReady: true
 title: "The CLI"
-description: "Learn about the StudioCMS CLI and how to use it."
+description: "Learn about the StudioCMS CLIs and how to use them."
 sidebar:
    order: 2
 ---
@@ -11,9 +11,9 @@ import ReadMore from '../../../components/ReadMore.astro';
 
 # Introduction
 
-The StudioCMS CLI is a utility that allows you to quickly scaffold new StudioCMS projects, as well as provides useful utilities for StudioCMS.
+The StudioCMS CLIs are utilities that allow you to quickly scaffold new StudioCMS projects and expose useful utilities for StudioCMS.
 
-There is two different CLI's that are part of the StudioCMS ecosystem:
+There is two different CLIs that are part of the StudioCMS ecosystem:
 
 - **`create-studiocms`**: The StudioCMS project scaffolding CLI.
 - **`studiocms`**: The StudioCMS utility CLI.
@@ -47,7 +47,7 @@ The following is a breakdown of the StudioCMS CLI and its components.
 <Tabs syncKey='pkgs'>
   <TabItem label="npm" icon="seti:npm">
   ```sh
-  npm create studiocms@latest --template studiocms/basics --project-name my-studiocms-project
+  npm create studiocms@latest -- --template studiocms/basics --project-name my-studiocms-project
   ```
   </TabItem>
   <TabItem label="pnpm" icon="pnpm">
@@ -64,7 +64,7 @@ The following is a breakdown of the StudioCMS CLI and its components.
 
 [Check out the full list][templates] of templates, available on GitHub.
 
-When using `--template`, the default behavior is to search the Templates repository and is declared as folders. For example, the `studiocms/basics` templates points to the `basics` project within the `studiocms` folder at the root of the repository.
+When using `--template`, the CLI searches the templates repository for all folders. For example, the `studiocms/basics` template points to the `basics` project within the `studiocms` folder at the root of the repository.
 
 ### Full CLI Options and commands
 
@@ -213,16 +213,5 @@ CMS_ENCRYPTION_KEY="..." # Generated with openssl rand --base64 16
 
 You can set up these variables using the `studiocms init` command's interactive environment builder.
 
-## Interactive Experience
-
-Both CLIs (`create-studiocms` and `studiocms`) provide a rich interactive experience with:
-
-- Colorful interface with clear visual feedback
-- Step-by-step guided setup
-- Progress indicators and spinners
-- Seasonal welcome messages and themes
-- Helpful error messages and recovery options
-
-The CLIs are designed to be user-friendly while providing powerful configuration options for your StudioCMS project.
 
 [templates]: https://github.com/withstudiocms/templates

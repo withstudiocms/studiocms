@@ -8,7 +8,7 @@ sidebar:
 
 import ReadMore from '~/components/ReadMore.astro';
 
-StudioCMS Integration config options schema Reference
+StudioCMS Integration config options schema reference
 
 ```ts twoslash title="studiocms.config.mjs"
 import { defineStudioCMSConfig } from 'studiocms/config';
@@ -57,4 +57,21 @@ export default defineStudioCMSConfig({
     FormattedDateOverride: 'src/components/FormattedDate.astro',
   },
 })
+```
+
+### Default component
+
+```astro title="FormattedDate.astro"
+---
+import config from 'studiocms:config';
+
+interface Props {
+	date: Date;
+}
+
+const datetime = Astro.props.date.toISOString();
+const formattedDate = Astro.props.date.toLocaleDateString(config.dateLocale, config.dateTimeFormat);
+---
+
+<time {datetime}>{formattedDate}</time>
 ```
