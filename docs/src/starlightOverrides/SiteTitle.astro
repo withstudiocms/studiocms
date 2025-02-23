@@ -1,10 +1,8 @@
 ---
+import { Toaster } from 'studiocms:ui/components';
 import config from 'virtual:starlight/user-config';
 import { logos } from 'virtual:starlight/user-images';
-import type { Props } from '@astrojs/starlight/props';
-import { Toaster } from '@studiocms/ui/components';
-
-const { siteTitle, siteTitleHref } = Astro.props;
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
 ---
 
 <Toaster />

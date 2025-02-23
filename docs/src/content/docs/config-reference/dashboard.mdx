@@ -1,0 +1,227 @@
+---
+i18nReady: true
+title: Dashboard Configuration
+description: Reference page for StudioCMSOptions dashboardConfig
+sidebar:
+  order: 6
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+StudioCMS Integration config options schema reference
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    dashboardEnabled: true,
+    dashboardRouteOverride: 'dashboard',
+    developerConfig: {},
+    faviconURL: '/favicon.svg',
+    inject404Route: true,
+    versionCheck: true,
+    AuthConfig: {},
+  },
+});
+```
+
+## `dashboardEnabled`
+
+`dashboardEnabled` is a boolean that is used to determine if the dashboard is enabled.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    dashboardEnabled: true, // DEFAULT - This enables the dashboard.
+  }
+})
+```
+
+## `DashboardRouteOverride`
+
+`DashboardRouteOverride` is a string that is used to determine the route for the dashboard.
+
+- **Type:** `string`
+- **Default:** `'dashboard'`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    dashboardRouteOverride: 'dashboard', // DEFAULT - This sets the dashboard route to /dashboard.
+  }
+})
+```
+
+## `developerConfig`
+
+`developerConfig` is an object that is used to configure the developer settings for the dashboard.
+
+### Usage
+
+```ts twoslash {3-5} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    developerConfig: {
+        testingAndDemoMode: false, // DEFAULT - This disables testing and demo mode.
+    },
+  }
+})
+```
+
+## `faviconURL`
+
+`faviconURL` is a string that is used to determine the path to the favicon for the dashboard.
+
+- **Type:** `string`
+- **Default:** `'/favicon.svg'`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    faviconURL: '/favicon.svg', // DEFAULT - This sets the favicon for the dashboard.
+  }
+})
+```
+
+## `inject404Route`
+
+`inject404Route` is a boolean that is used to determine if the 404 route should be injected.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    inject404Route: true, // DEFAULT - This injects the 404 route.
+  }
+})
+```
+
+## `versionCheck`
+
+`versionCheck` is a boolean that is used to determine if version checking should be enabled.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    versionCheck: true, // DEFAULT - This enables version checking.
+  }
+})
+```
+
+## `AuthConfig`
+
+`AuthConfig` is an object that is used to configure the authentication settings for the dashboard.
+
+### Usage
+
+```ts twoslash {3-5} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    AuthConfig: {
+        enabled: true, // DEFAULT - This enables authentication.
+    },
+  }
+})
+```
+
+### `providers`
+
+`providers` is an object that is used to configure the authentication providers for the dashboard.
+
+- **Type:** [`AuthProviders`](#authprovider)
+- **Default:** `{}`
+
+#### Usage
+
+```ts twoslash {4-11} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    AuthConfig: {
+        providers: {
+            google: true,
+            github: true,
+            discord: true,
+            auth0: true,
+            usernameAndPassword: true,
+            usernameAndPasswordConfig: {},
+        },
+    },
+  },
+})
+```
+
+#### `usernameAndPasswordConfig`
+
+`usernameAndPasswordConfig` is an object that is used to configure the username and password settings for the dashboard.
+
+- **Type:** `{ allowUserRegistration?: boolean }`
+- **Default:** `{}`
+
+##### Usage
+
+```ts twoslash {5-8} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  dashboardConfig: {
+    AuthConfig: {
+        providers: {
+            usernameAndPassword: true,
+            usernameAndPasswordConfig: {
+                allowUserRegistration: true, // DEFAULT - This allows user registration.
+            },
+        },
+    },
+  },
+})
+```
+
+###### `AuthProvider`
+
+```ts
+type AuthProviders: {
+    github?: boolean | undefined;
+    discord?: boolean | undefined;
+    google?: boolean | undefined;
+    auth0?: boolean | undefined;
+    usernameAndPassword?: boolean | undefined;
+    usernameAndPasswordConfig?: {
+        allowUserRegistration?: boolean | undefined;
+    } | undefined;
+} | undefined
+```

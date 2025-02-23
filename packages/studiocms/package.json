@@ -120,7 +120,14 @@
     },
     "./components/*": "./dist/components/*",
     "./layouts/*": "./dist/layouts/*",
-    "./lib/*": "./dist/lib/*"
+    "./lib/*": "./dist/lib/*",
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./v/core.d.ts": "./core.d.ts",
+    "./v/auth.d.ts": "./auth.d.ts",
+    "./v/renderer.d.ts": "./renderer.d.ts"
   },
   "type": "module",
   "dependencies": {

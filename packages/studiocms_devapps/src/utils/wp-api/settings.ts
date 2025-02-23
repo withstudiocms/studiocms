@@ -8,6 +8,23 @@ import { apiEndpoint, downloadPostImage } from './utils.js';
 
 const ASTROPUBLICFOLDER = path.resolve(userProjectRoot, 'public');
 
+/**
+ * Imports site settings from a WordPress API endpoint and updates the local database.
+ *
+ * @param endpoint - The WordPress API endpoint to fetch settings from.
+ *
+ * This function performs the following steps:
+ * 1. Constructs the URL for the settings endpoint.
+ * 2. Fetches the site settings from the constructed URL.
+ * 3. Logs the fetched settings.
+ * 4. Downloads the site icon if available.
+ * 5. If the site icon is not available, attempts to download the site logo.
+ * 6. Constructs the site configuration object.
+ * 7. Updates the local database with the fetched settings.
+ * 8. Logs the success or failure of the database update.
+ *
+ * @throws Will log an error message if the fetch or database update fails.
+ */
 export const importSettingsFromWPAPI = async (endpoint: string) => {
 	const url = apiEndpoint(endpoint, 'settings');
 

@@ -11,6 +11,11 @@ export class StudioCMSError extends AstroError {
 	override name = 'StudioCMS Error';
 }
 
+/**
+ * Represents an error specific to the core functionality of StudioCMS.
+ * This class extends the `StudioCMSError` class and overrides the `name` property
+ * to provide a more specific error name.
+ */
 export class StudioCMSCoreError extends StudioCMSError {
 	override name = 'StudioCMS Core Error';
 }

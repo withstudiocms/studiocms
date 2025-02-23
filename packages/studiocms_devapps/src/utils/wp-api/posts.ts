@@ -4,6 +4,14 @@ import type { Page } from '../../schema/wp-api.js';
 import { ConvertToPostContent, ConvertToPostData } from './converters.js';
 import { apiEndpoint, fetchAll } from './utils.js';
 
+/**
+ * Generates post data and content from a post object.
+ *
+ * @param post - The post object to generate data and content from.
+ * @param useBlogPkg - A boolean flag indicating whether to use the blog package for generating the post data.
+ * @param endpoint - The API endpoint to be used for generating the post data.
+ * @returns A promise that resolves with the generated post data and content.
+ */
 const generatePostFromData = async (post: unknown, useBlogPkg: boolean, endpoint: string) => {
 	const pageData = await ConvertToPostData(post, useBlogPkg, endpoint);
 	const pageContent = await ConvertToPostContent(pageData, post);
@@ -11,6 +19,15 @@ const generatePostFromData = async (post: unknown, useBlogPkg: boolean, endpoint
 	return { pageData, pageContent };
 };
 
+/**
+ * Imports a post from the WordPress API and inserts the post data and content into the database.
+ *
+ * @param post - The post data to be imported. The structure of this object is determined by the `generatePostFromData` function.
+ * @param useBlogPkg - A boolean flag indicating whether to use the blog package for generating the post data.
+ * @param endpoint - The API endpoint to be used for generating the post data.
+ * @throws Will throw an error if inserting post data or content into the database fails.
+ * @returns A promise that resolves when the post has been successfully imported.
+ */
 const importPost = async (post: unknown, useBlogPkg: boolean, endpoint: string) => {
 	const { pageData, pageContent } = await generatePostFromData(post, useBlogPkg, endpoint);
 
@@ -37,6 +54,15 @@ const importPost = async (post: unknown, useBlogPkg: boolean, endpoint: string) 
 	console.log('- Imported new post from WP-API:', pageDataResult.title);
 };
 
+/**
+ * Imports posts from a WordPress API endpoint.
+ *
+ * @param endpoint - The API endpoint to fetch posts from.
+ * @param useBlogPkg - A boolean indicating whether to use the blog package.
+ * @returns A promise that resolves when all posts have been imported.
+ *
+ * @throws Will throw an error if the import process fails.
+ */
 export const importPostsFromWPAPI = async (endpoint: string, useBlogPkg: boolean) => {
 	const url = apiEndpoint(endpoint, 'posts');
 

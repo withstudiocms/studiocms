@@ -1,5 +1,8 @@
 import pluginsList from 'studiocms:plugins';
 
+/**
+ * List of all page types available in the StudioCMS instance.
+ */
 export const pageTypeList = pluginsList.flatMap(({ pageTypes }) => {
 	const pageTypeOutput: string[] = [];
 
@@ -14,4 +17,7 @@ export const pageTypeList = pluginsList.flatMap(({ pageTypes }) => {
 	return pageTypeOutput;
 });
 
+/**
+ * Type of a page in the StudioCMS instance.
+ */
 export type PageType = (typeof pageTypeList)[number];

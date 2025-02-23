@@ -11,6 +11,17 @@ export const webVitalsName = '@astrojs/web-vitals';
 
 const { resolve } = createResolver(import.meta.url);
 
+/**
+ * Checks for the presence of the Web Vitals integration and sets up the necessary configurations.
+ *
+ * @param params - The parameters provided by the Astro configuration setup.
+ * @param opts - Options for configuring the Web Vitals integration.
+ * @param opts.name - The name of the Web Vitals integration.
+ * @param opts.verbose - A flag indicating whether to log verbose messages.
+ * @param opts.version - The minimum version of StudioCMS required for the Web Vitals integration.
+ *
+ * @returns A StudioCMSPlugin object if the Web Vitals integration is enabled, otherwise null.
+ */
 export const checkForWebVitals = defineUtility('astro:config:setup')(
 	(
 		params,

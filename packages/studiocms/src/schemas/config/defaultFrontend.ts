@@ -34,13 +34,6 @@ export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
 export const FrontEndConfigSchema = z
 	.object({
 		/**
-		 * Inject 404 Route - Injects a 404 route for handling unknown routes
-		 * @default true
-		 *
-		 * @deprecated Moved to dashboardConfig
-		 */
-		inject404Route: z.boolean().optional().default(true),
-		/**
 		 * HTML Default Language - The default language for the HTML tag
 		 * @default 'en'
 		 */

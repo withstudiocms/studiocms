@@ -1,52 +1,42 @@
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
-import { definePlugin } from 'studiocms/plugins';
-
-interface StudioCMSBlogOptions {
-	/**
-	 * Enable sitemap generation
-	 * @default true
-	 */
-	sitemap?: boolean;
-
-	/**
-	 * Inject routes
-	 * @default true
-	 */
-	injectRoutes?: boolean;
-
-	/**
-	 * The configuration for the blog
-	 */
-	blog?: {
-		/**
-		 * The title of the blog
-		 */
-		title?: string;
-
-		/**
-		 * Enable RSS feed
-		 */
-		enableRSS?: boolean;
-
-		/**
-		 * The route for the blog
-		 * @default '/blog'
-		 * @example '/news'
-		 */
-		route?: string;
-	};
-}
+import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
+import type { StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
 
 /**
- * StudioCMS Blog Plugin
+ * Creates and configures the StudioCMS Blog plugin.
  *
- * @param options - The options for the blog plugin
- * @returns The StudioCMS plugin
+ * @param {StudioCMSBlogOptions} [options] - Optional configuration options for the blog plugin.
+ * @returns {StudioCMSPlugin} The configured StudioCMS plugin.
+ *
+ * @remarks
+ * This function sets up the StudioCMS Blog plugin with the provided options or default values.
+ * It configures the plugin's identifier, name, minimum version, frontend navigation links, page types,
+ * sitemap settings, and integration hooks.
+ *
+ * @example
+ * ```typescript
+ * const blogPlugin = studioCMSBlogPlugin({
+ *   blog: {
+ *     title: 'My Blog',
+ *     enableRSS: true,
+ *     route: '/my-blog'
+ *   },
+ *   sitemap: true,
+ *   injectRoutes: true
+ * });
+ * ```
+ *
+ * @param {StudioCMSBlogOptions} [options.blog] - Blog-specific options.
+ * @param {string} [options.blog.title] - The title of the blog. Defaults to 'Blog'.
+ * @param {boolean} [options.blog.enableRSS] - Whether to enable RSS feed. Defaults to true.
+ * @param {string} [options.blog.route] - The route for the blog. Defaults to '/blog'.
+ * @param {boolean} [options.sitemap] - Whether to trigger sitemap generation. Defaults to true.
+ * @param {boolean} [options.injectRoutes] - Whether to inject routes for the blog. Defaults to true.
  */
-export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions) {
+export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
 	// Resolve the options and set defaults if not provided
 	const title = options?.blog?.title || 'Blog';
 	const enableRSS = options?.blog?.enableRSS || true;

@@ -66,7 +66,13 @@ const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
-// Built-in StudioCMS Plugin
+/**
+ * **Default StudioCMS Plugin**
+ *
+ * The default StudioCMS Plugin that comes with StudioCMS.
+ *
+ * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
+ */
 const defaultPlugin: StudioCMSPlugin = {
 	name: 'StudioCMS (Built-in)',
 	identifier: 'studiocms',
@@ -150,7 +156,7 @@ const defaultPlugin: StudioCMSPlugin = {
  * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  *
  */
-export default defineIntegration({
+export const studiocms = defineIntegration({
 	name: pkgName,
 	optionsSchema: z.custom<StudioCMSOptions>(),
 	setup: ({ name, options: opts }) => {
@@ -1226,3 +1232,5 @@ export default defineIntegration({
 		};
 	},
 });
+
+export default studiocms;

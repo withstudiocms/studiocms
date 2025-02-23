@@ -1,6 +1,6 @@
 # StudioCMS
 
-![Readme's Banner](./www/assets/banner-readme.png)
+![Readme's Banner](./assets/banner-readme.png)
 
 [![NPM Version](https://img.shields.io/npm/v/studiocms)](https://npm.im/studiocms)
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)

@@ -1,12 +1,9 @@
 ---
 i18nReady: true
-title: "How it works"
+title: "The Integration"
 description: "Learn how StudioCMS helps you manage and deliver your content by exploring a comprehensive breakdown of it's fundamental components."
 sidebar:
    order: 1
-   badge:
-     text: "Updated"
-     variant: "success"
 ---
 
 # Introduction
@@ -15,102 +12,122 @@ StudioCMS is a powerful CMS built for Astro that allows you to manage and serve 
 
 Extending StudioCMS is easy too! You can create your own plugins to add new features to StudioCMS.
 
-## How does it work?
+The StudioCMS integration is the basis for the entire StudioCMS ecosystem. It provides a headless CMS solution for Astro projects, allowing you to manage and serve your content using Astro DB. The following is a breakdown of the StudioCMS integration and its components.
 
-StudioCMS is divided into multiple parts:
+## Virtual Modules
 
-- **studiocms**: The primary integration that hooks into your Astro project and provides the ability to interact with Astro DB (through the `@astrojs/db` integration).
-- **@studiocms/core**: The core integration that provides the foundation for StudioCMS. It provides the database configurations, and adds various features including virtual imports, logging, etc.
-- **@studiocms/auth**: An integration that provides authentication configuration options for the StudioCMS Dashboard.
-- **@studiocms/assets**: An integration that provides the assets for the StudioCMS Dashboard.
-- **@studiocms/frontend**: An integration that provides the frontend layouts and components for the StudioCMS ecosystem.
-- **@studiocms/renderers**: An integration that provides the renderers for the StudioCMS ecosystem.
-- **@studiocms/dashboard**: The primary web interface for managing your StudioCMS project. It provides a user-friendly interface for creating, editing, and deleting content.
-- **@studiocms/imagehandler**: An integration that provides a `<CustomImage />` component to handle remote images and optimize them for your project in an SSR environment.
-- **@studiocms/robotstxt**: An integration that automates the creation of a `robots.txt` file for your StudioCMS project.
-- **@studiocms/betaresources**: An integration that provides resources for the StudioCMS beta.
+The StudioCMS integration provides several [virtual modules](https://vite.dev/guide/api-plugin#virtual-modules-convention) that give you full control over your dynamic content. These modules are primarily used internally by StudioCMS, but can be accessed by developers to access StudioCMS data. The following are the virtual modules provided by the StudioCMS integration:
 
-## Breakdown
+### Authentication Virtual Modules
 
-### StudioCMS: Core
+- **`studiocms:auth/lib/encryption`**: Encryption utilities for StudioCMS.
+- **`studiocms:auth/lib/password`**: Password management utilities for StudioCMS.
+- **`studiocms:auth/lib/rate-limit`**: Rate-limiting utilities for StudioCMS.
+- **`studiocms:auth/lib/session`**: Session management utilities for StudioCMS.
+- **`studiocms:auth/lib/types`**: Types for the StudioCMS auth lib for StudioCMS.
+- **`studiocms:auth/lib/user`**: User management utilities for StudioCMS.
+- **`studiocms:auth/utils/authEnvCheck`**: Utilities for checking the authentication environment for StudioCMS.
+- **`studiocms:auth/utils/getLabelForPermissionLevel`**: Utilities for getting the label for a permission level for StudioCMS.
 
-StudioCMS Core is an Astro Integration which provides a comprehensive CMS solution out-of-the-box. This integration registers StudioCMS as the first plugin, sets up database configurations, watches for configuration changes, and adds various features including virtual imports, logging, and default frontend routes.
+### Core Virtual Modules
 
-#### Features
+- **`studiocms:config`**: Provides the resolved configuration for the StudioCMS integration ecosystem.
+- **`studiocms:version`**: Provides the current version of the StudioCMS integration ecosystem.
+- **`studiocms:plugins`**: Provides the plugin system interfaces during runtime for StudioCMS.
+- **`studiocms:plugin-helpers`**: Provides the plugin helper functions for StudioCMS.
+- **`studiocms:components`**: Provides exported components for StudioCMS.
+- **`studiocms:components/Editors`**: Provides the Editor components for Page Editing.
+- **`studiocms:components/dashboard-grid-components`**: Internal components used by the StudioCMS Dashboard.
+- **`studiocms:components/dashboard-grid-items`**: Internal components used by the StudioCMS Dashboard.
+- **`studiocms:component-proxy`**: Provides the component proxy for User-defined components in StudioCMS.
+- **`studiocms:lib`**: Provides the StudioCMS library helpers for StudioCMS.
 
-- **@astrojs/db**: StudioCMS Core uses the `@astrojs/db` integration to connect to a libSQL database.
-- **Virtual Imports**: StudioCMS Core adds several [virtual modules](https://vitejs.dev/guide/api-plugin#virtual-modules-convention) packed with features that give you full control over your dynamic content.
-- **Logging**: StudioCMS Core logs all changes to Astro Studio. This can be enabled in your config file.
-- **Default Frontend Routes**: The StudioCMS Core integration adds default frontend routes to your Astro project to allow for easy access to the StudioCMS dashboard.
-- **Plugin System**: You can extend StudioCMS using plugins to add additional functionality.
+### SDK Virtual Modules
 
-#### Core Virtual Modules
+- **`studiocms:sdk`**: Provides the StudioCMS SDK for StudioCMS.
+- **`studiocms:sdk/cache`**: Provides the StudioCMS SDK cache for StudioCMS.
+- **`studiocms:sdk/types`**: Provides the StudioCMS SDK types for StudioCMS.
 
-:::tip
-Modules prefixed with `virtual:` are virtual modules that are primarily used internally by StudioCMS, but can be used by developers to access StudioCMS data.  To access these modules with proper typings, see the [project development `.d.ts` file](https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms_core/virtuals.d.ts) for an example of how to configure your project to sense these types.
+### i18n Virtual Modules
 
-Modules without the `virtual:` prefix have full typings defined and injected into your project's `.astro/` directory automatically, and can be accessed directly without any extra configuration.
-:::
+- **`studiocms:i18n`**: Provides the StudioCMS i18n for StudioCMS.
 
-- **`virtual:studiocms/config`**: Provides the resolved configuration for the StudioCMS integration ecosystem.
-- **`virtual:studiocms/version`**: Provides the current version of the StudioCMS integration ecosystem.
-- **`virtual:studiocms/pluginSystem`**: Provides the plugin system interfaces during runtime for StudioCMS.
-- **`studiocms:components`**: Provides the front-end exported components for StudioCMS.
-- **`studiocms:helpers`**: Provides the front-end exported helper functions for StudioCMS.
-- **`studiocms:helpers/contentHelper`**: Provides the exported content helper functions for StudioCMS.
-- **`studiocms:helpers/headDefaults`**: Provides the exported head defaults for StudioCMS.
-- **`studiocms:helpers/routemap`**: Provides the exported route map for StudioCMS.
-- **`studiocms:i18n`**: Provides the i18n utilities for StudioCMS.
+### Renderer Virtual Modules
 
-### StudioCMS: Auth
+- **`studiocms:renderer`**: Provides the StudioCMS renderer for StudioCMS.
+- **`studiocms:renderer/config`**: Provides the StudioCMS renderer configuration for StudioCMS.
+- **`studiocms:renderer/current`**: Provides the StudioCMS renderer current for StudioCMS.
+- **`studiocms:renderer/markdown-remark/css`**: Provides the StudioCMS renderer markdown-remark css for StudioCMS.
 
-The StudioCMS Auth integration provides authentication configuration options for the StudioCMS Dashboard. This integration is used to determine how users can authenticate with the StudioCMS Dashboard.
+### ImageHandler Virtual Modules
 
-#### Features
-- **`@oslojs`**: The StudioCMS Auth integration uses the `@oslojs` utilities to handle local authentication options such as username and password.
-- **`arctic`**: The StudioCMS Auth integration uses the `arctic` library to handle OAuth authentication options such as GitHub.
-- **`three`**: The StudioCMS Auth integration uses the ThreeJS library to create a 3D logo animation for the login and signup pages.
-- **`@studiocms/ui`**: The StudioCMS Auth integration uses the `@studiocms/ui` library to provide UI components for the login and signup pages.
+- **`studiocms:imageHandler/components`**: Provides the StudioCMS imageHandler components for StudioCMS.
 
-#### Auth Virtual Modules
+## Routes
 
-- **`studiocms:auth/lib/encryption`**: Provides encryption functions for the StudioCMS Auth integration.
-- **`studiocms:auth/lib/password`**: Provides password functions for the StudioCMS Auth integration.
-- **`studiocms:auth/lib/session`**: Provides session functions for the StudioCMS Auth integration.
-- **`studiocms:auth/lib/types`**: Provides types for the StudioCMS Auth integration.
-- **`studiocms:auth/lib/user`**: Provides user functions for the StudioCMS Auth integration.
-- **`studiocms:auth/utils/authEnvCheck`**: Provides authentication environment check functions for the StudioCMS Auth integration.
-- **`studiocms:auth/scripts/three`**: Provides ThreeJS scripts for the StudioCMS Auth integration.
-- **`studiocms:auth/scripts/formListener`**: Provides form listener scripts for the StudioCMS Auth integration.
+The StudioCMS integration provides several routes that allow you to manage your content and configuration. These routes are used by the StudioCMS Dashboard and API to interact with the StudioCMS integration. The following is a breakdown of the routes provided by the StudioCMS integration.
 
-### StudioCMS: Dashboard
+### Dashboard Routes
 
-The StudioCMS Dashboard is a web interface that allows you to manage your StudioCMS project. It provides a user-friendly interface for creating, editing, and deleting content for your project. The StudioCMS Dashboard is built with [Astro](https://astro.build) and our [`@studiocms/ui](/customizing/studiocms-ui/) library.
+The routes that users can access to manage their StudioCMS project.
 
-#### Tech Stack
+#### Main Routes
 
-- **Dashboard**: The StudioCMS Dashboard provides a user-friendly interface for managing your StudioCMS project.
-- **AuthConfig**: The StudioCMS Dashboard provides authentication configuration options.
-- **DashboardRouteOverride**: The StudioCMS Dashboard provides a dashboard route override configuration option. Allowing you to change the default route for the StudioCMS Dashboard and API.
+- **`/dashboard/`**: The StudioCMS Dashboard, where you can manage your StudioCMS project.
+- **`/dashboard/profile/`**: The StudioCMS Dashboard profile page, where you can manage your profile.
+- **`/dashboard/content-management/`**: The StudioCMS Dashboard content management page, where you can manage your content.
+- **`/dashboard/configuration/`**: The StudioCMS Dashboard configuration page, where you can manage your configuration.
+- **`/dashboard/user-management/`**: The StudioCMS Dashboard user management page, where you can manage your users.
+- **`/dashboard/plugins/`**: The StudioCMS Dashboard plugins page, where you can manage your plugins.
 
-### StudioCMS: ImageHandler
+#### Auth Routes
 
-The StudioCMS ImageHandler is an integration that provides a custom image component for your Astro project. This component is used to handle remote images and optimize them in a SSR environment.
+- **`/dashboard/login/`**: The StudioCMS Dashboard login page.
+- **`/dashboard/signup/`**: The StudioCMS Dashboard signup page.
+- **`/dashboard/logout/`**: The StudioCMS Dashboard logout page.
 
-#### Features
+### API Routes
 
-- **`<CustomImage />`**: The StudioCMS ImageHandler provides a custom image component for your Astro project.
+The Routes that the StudioCMS Dashboard uses to interact with the StudioCMS integration.
 
-#### ImageHandler Virtual Modules
+#### Main Routes
 
-- **`studiocms:imageHandler/components`**: The Virtual module that provides the exported image components for the StudioCMS ImageHandler.
+- **`/studiocms_api/dashboard/api-tokens`**: The StudioCMS API API tokens endpoint.
+- **`/studiocms_api/dashboard/search-list`**: The StudioCMS API search list endpoint.
+- **`/studiocms_api/dashboard/live-render`**: The StudioCMS API live render Partial endpoint.
+- **`/studiocms_api/dashboard/user-list-items`**: The StudioCMS API user list items endpoint.
+- **`/studiocms_api/dashboard/editor`**: The StudioCMS API editor endpoint.
+- **`/studiocms_api/dashboard/config`**: The StudioCMS API config endpoint.
+- **`/studiocms_api/dashboard/users`**: The StudioCMS API users endpoint.
+- **`/studiocms_api/dashboard/profile`**: The StudioCMS API profile endpoint.
+- **`/studiocms_api/dashboard/create-reset-link`**: The StudioCMS API create reset link endpoint.
+- **`/studiocms_api/dashboard/reset-password`**: The StudioCMS API reset password endpoint.
+- **`/studiocms_api/dashboard/content/page`**: The StudioCMS API content page endpoint.
+- **`/studiocms_api/dashboard/content/folder`**: The StudioCMS API content folder endpoint.
+- **`/studiocms_api/dashboard/plugins`**: The StudioCMS API plugins endpoint.
+- **`/studiocms_api/dashboard/create-user`**: The StudioCMS API create user endpoint.
+- **`/studiocms_api/dashboard/update-user-invite`**: The StudioCMS API update user invite endpoint.
 
-### StudioCMS: Renderers
+#### Auth Routes
 
-The StudioCMS Renderers integration provides the renderers for the StudioCMS ecosystem. This integration is used to determine how content should be rendered in StudioCMS.
+- **`/studiocms_api/auth/login`**: The StudioCMS API login endpoint.
+- **`/studiocms_api/auth/logout`**: The StudioCMS API logout endpoint.
+- **`/studiocms_api/auth/register`**: The StudioCMS API register endpoint.
+- **`/studiocms_api/auth/github`**: The StudioCMS API GitHub endpoint.
+- **`/studiocms_api/auth/github/callback`**: The StudioCMS API GitHub callback endpoint.
+- **`/studiocms_api/auth/discord`**: The StudioCMS API Discord endpoint.
+- **`/studiocms_api/auth/discord/callback`**: The StudioCMS API Discord callback endpoint.
+- **`/studiocms_api/auth/google`**: The StudioCMS API Google endpoint.
+- **`/studiocms_api/auth/google/callback`**: The StudioCMS API Google callback endpoint.
+- **`/studiocms_api/auth/auth0`**: The StudioCMS API Auth0 endpoint.
+- **`/studiocms_api/auth/auth0/callback`**: The StudioCMS API Auth0 callback endpoint.
 
-#### Renderers Virtual Modules
+#### SDK Routes
 
-- **`studiocms:renderer`**: Provides the main renderer component for the StudioCMS ecosystem.
-- **`studiocms:renderer/config`**: Provides the configuration for the StudioCMS renderer.
-- **`studiocms:renderer/astroMarkdownConfig`**: Provides the configuration for Astro Markdown support.
+- **`/studiocms_api/sdk/list-pages`**: The StudioCMS API SDK pages endpoint.
+- **`/studiocms_api/sdk/fallback-list-pages.json`**: The StudioCMS API SDK fallback list pages endpoint.
+- **`/studiocms_api/sdk/update-latest-version-cache`**: The StudioCMS API SDK update latest version cache endpoint.
+
+#### Renderer Routes
+
+- **`/studiocms_api/renderer/render`**: The StudioCMS API render endpoint.

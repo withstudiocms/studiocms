@@ -1,10 +1,10 @@
-catalog: # Confirmed Current Master Catalog - 11.01.2024
+catalog: # Confirmed Current Master Catalog - 02.20.2025
   '@astrojs/db': ^0.14.6
   '@astrojs/rss': ^4.0.11
   '@astrojs/react': ^4.2.0
   '@astrojs/check': ^0.9.4
   '@astrojs/tailwind': ^5.1.2
-  '@astrojs/starlight': ^0.31.1
+  '@astrojs/starlight': ^0.32.1
   '@astrojs/web-vitals': ^3.0.1
   '@astrojs/node': ^9.1.0
   '@types/node': ^20.14.11
@@ -18,7 +18,7 @@ catalog: # Confirmed Current Master Catalog - 11.01.2024
   vite: ^6.0.5
 
 catalogs:
-  min: # Confirmed Current Min Deps - 11.01.2024
+  min: # Confirmed Current Min Deps - 02.20.2025
     astro: ^5.2.0
     '@astrojs/db': ^0.14.6
     '@astrojs/markdown-remark': ^6.1.0

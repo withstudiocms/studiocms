@@ -1,10 +1,12 @@
 import starlight from '@astrojs/starlight';
-import starlightUtils from '@lorenzo_lewis/starlight-utils';
+import starWarp from '@inox-tools/star-warp';
+import ui from '@studiocms/ui';
 import { defineConfig } from 'astro/config';
 import starlightImageZoom from 'starlight-image-zoom';
+import starlightSidebarTopics from 'starlight-sidebar-topics';
 import getCoolifyURL from './hostUtils.ts';
-import rehypePluginKit from './src/plugins/rehypePluginKit.ts';
-import { typeDocPlugins, typeDocSideBarEntry } from './typedoc.config.ts';
+import rehypePlugins from './src/plugins/rehypePluginKit.ts';
+import { typeDocPlugins } from './typedoc.config.ts';
 
 // Define the Site URL
 const site = getCoolifyURL(true) || 'https://docs.studiocms.dev/';
@@ -34,9 +36,10 @@ export default defineConfig({
 		remotePatterns: [{ protocol: 'https' }],
 	},
 	markdown: {
-		rehypePlugins: rehypePluginKit,
+		rehypePlugins,
 	},
 	integrations: [
+		ui(),
 		starlight({
 			title: 'StudioCMS',
 			description: 'A dedicated CMS for Astro DB. Built from the ground up by the Astro community.',
@@ -44,6 +47,7 @@ export default defineConfig({
 			lastUpdated: true,
 			credits: true,
 			tagline: 'A dedicated CMS for Astro DB. Built from the ground up by the Astro community.',
+			disable404Route: true,
 			components: {
 				SiteTitle: './src/starlightOverrides/SiteTitle.astro',
 				PageTitle: './src/starlightOverrides/PageTitle.astro',
@@ -96,72 +100,98 @@ export default defineConfig({
 					},
 				},
 			],
-			sidebar: [
-				{
-					label: 'Learn',
-					items: [
-						{
-							label: 'Start Here',
-							autogenerate: { directory: 'start-here' },
-						},
-						{
-							label: 'Contributing Guides',
-							autogenerate: { directory: 'contributing' },
-						},
-						{
-							label: 'Understanding StudioCMS',
-							autogenerate: { directory: 'how-it-works' },
-						},
-						{
-							label: 'Package Catalog',
-							items: [
-								{
-									label: 'Package List',
-									link: '/package-catalog',
-									badge: { text: 'New', variant: 'success' },
-								},
-								{
-									label: 'StudioCMS Integrations',
-									autogenerate: { directory: 'package-catalog/studiocms-integrations' },
-									collapsed: true,
-								},
-								{
-									label: 'Community Integrations',
-									autogenerate: { directory: 'package-catalog/community-integrations' },
-									collapsed: true,
-								},
-							],
-						},
-						{
-							label: 'Customizing StudioCMS',
-							items: [
-								{
-									label: '@studiocms/renderers',
-									autogenerate: { directory: 'customizing/studiocms-renderers' },
-									collapsed: true,
-								},
-							],
-						},
-					],
-				},
-				{
-					label: 'References',
-					items: [
-						{
-							label: 'Configuration Reference',
-							autogenerate: { directory: 'config-reference' },
-							collapsed: false,
-						},
-						typeDocSideBarEntry,
-					],
-				},
-			],
 			plugins: [
-				starlightUtils({
-					multiSidebar: { switcherStyle: 'horizontalList' },
-				}),
 				...typeDocPlugins,
 				starlightImageZoom(),
+				starWarp({
+					openSearch: {
+						title: 'StudioCMS Docs',
+						description: 'Search StudioCMS documentation',
+						enabled: true,
+					},
+				}),
+				starlightSidebarTopics([
+					{
+						label: 'Learn',
+						link: '/start-here/getting-started',
+						icon: 'open-book',
+						id: 'learn',
+						items: [
+							{
+								label: 'Start Here',
+								autogenerate: { directory: 'start-here' },
+							},
+							{
+								label: 'Contributing Guides',
+								autogenerate: { directory: 'contributing' },
+							},
+							{
+								label: 'Understanding StudioCMS',
+								autogenerate: { directory: 'how-it-works' },
+							},
+							{
+								label: 'Plugins',
+								autogenerate: { directory: 'plugins' },
+							},
+						],
+					},
+					{
+						label: 'Package Catalog',
+						link: '/package-catalog',
+						icon: 'download',
+						id: 'package-catalog',
+						items: [
+							{
+								label: 'Catalog',
+								link: '/package-catalog',
+							},
+							{
+								label: 'StudioCMS Plugins',
+								autogenerate: { directory: 'package-catalog/studiocms-plugins' },
+							},
+							{
+								label: 'Community Plugins',
+								autogenerate: { directory: 'package-catalog/community-plugins' },
+							},
+						],
+					},
+					{
+						label: 'References',
+						link: '/config-reference',
+						icon: 'information',
+						id: 'references',
+						items: [
+							{
+								label: 'Configuration Reference',
+								autogenerate: { directory: 'config-reference' },
+							},
+							{
+								label: 'TypeDoc',
+								badge: {
+									text: 'Auto Generated',
+									variant: 'tip',
+								},
+								items: [
+									{
+										label: 'studiocms',
+										autogenerate: { directory: 'typedoc/studiocms' },
+										collapsed: true,
+									},
+									{
+										label: '@studiocms/blog',
+										autogenerate: { directory: 'typedoc/studiocms-blog' },
+										collapsed: true,
+									},
+									{
+										label: '@studiocms/devapps',
+										autogenerate: { directory: 'typedoc/studiocms-devapps' },
+										collapsed: true,
+									},
+								],
+							},
+						],
+					},
+				]),
 			],
 		}),
 	],

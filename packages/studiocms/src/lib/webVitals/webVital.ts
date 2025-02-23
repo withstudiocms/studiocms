@@ -23,6 +23,23 @@ export type {
 	GetWebVitalsData,
 };
 
+/**
+ * Fetches web vitals data from the Astro database.
+ *
+ * @returns {Promise<GetWebVitalsData>} A promise that resolves to an object containing web vitals data.
+ *
+ * The returned object contains the following properties:
+ * - `raw`: The raw web vitals data.
+ * - `routeSummary`: A summary of web vitals data by route.
+ * - `summary`: A general summary of web vitals data.
+ * - `twentyFourHours`: An object containing web vitals data for the last 24 hours, with `summary` and `routeSummary` properties.
+ * - `sevenDays`: An object containing web vitals data for the last 7 days, with `summary` and `routeSummary` properties.
+ * - `thirtyDays`: An object containing web vitals data for the last 30 days, with `summary` and `routeSummary` properties.
+ *
+ * If the web vitals metric table is not found in the Astro database, or if an error occurs, an empty return object is returned.
+ *
+ * @throws {Error} If there is an issue with fetching or processing the web vitals data.
+ */
 export async function getWebVitals(): Promise<GetWebVitalsData> {
 	try {
 		const AstroDB = await import('astro:db');

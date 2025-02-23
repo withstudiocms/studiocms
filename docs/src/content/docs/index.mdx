@@ -26,7 +26,7 @@ import Youtube from '~/components/Youtube.astro';
 import Card from '~/components/landing/Card.astro';
 import ListCard from '~/components/landing/ListCard.astro';
 import SplitCard from '~/components/landing/SplitCard.astro';
-import { Center } from '@studiocms/ui/components';
+import { Center } from 'studiocms:ui/components';
 
 <Card title="Welcome to StudioCMS" icon='seti:video'>
   <Youtube id="Ukh3Zb9VjIM"/>
@@ -37,13 +37,11 @@ import { Center } from '@studiocms/ui/components';
   <SplitCard title="Quick Start" icon="rocket">
     ```sh
     # Create a new Astro project
-    pnpm create astro@latest
-    # Add StudioCMS and Astro DB to your project
-    pnpm astro add db studiocms
+    pnpm create studiocms@latest
 
-    # Setup your Turso database with the Turso CLI
-    # Optional - You can use any libSQL provider
-    turso db create my-database
+    # Start the development server
+    cd my-studiocms-project
+    pnpm dev
     ```
     
     <div style="padding: 0;">

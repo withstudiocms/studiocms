@@ -4,6 +4,42 @@ import { loadEnv } from 'vite';
 import { type StudioCMSDevAppsOptions, StudioCMSDevAppsSchema } from './schema/index.js';
 import { pathGenerator } from './utils/pathGenerator.js';
 
+/**
+ * Integrates StudioCMS development applications with Astro.
+ *
+ * @param {StudioCMSDevAppsOptions} [opts] - Optional configuration options for StudioCMS DevApps.
+ * @returns {AstroIntegration} The Astro integration object for StudioCMS DevApps.
+ *
+ * @remarks
+ * This function sets up the StudioCMS development applications for use in an Astro project.
+ * It parses the provided options, sets up virtual imports, and adds development toolbar apps
+ * based on the configuration.
+ *
+ * The integration is enforced to run only in development mode.
+ *
+ * @example
+ * ```typescript
+ * import { studioCMSDevApps } from '@studiocms/devapps';
+ *
+ * export default {
+ *   integrations: [
+ *     studioCMSDevApps({
+ *       endpoint: '/api',
+ *       appsConfig: {
+ *         wpImporter: {
+ *           enabled: true,
+ *           endpoint: '/wp-import',
+ *         },
+ *         libSQLViewer: {
+ *           enabled: true,
+ *         },
+ *       },
+ *       verbose: true,
+ *     }),
+ *   ],
+ * };
+ * ```
+ */
 export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegration {
 	// Parse Options
 	const options = StudioCMSDevAppsSchema.parse(opts);

@@ -1,5 +1,20 @@
 import { toast } from 'studiocms:ui/components';
 
+/**
+ * Handles form submission events for login and registration forms.
+ *
+ * @param event - The submit event triggered by the form submission.
+ * @param form - The HTML form element being submitted.
+ * @param type - The type of form being submitted, either 'login' or 'register'.
+ *
+ * @remarks
+ * - Prevents the default form submission behavior.
+ * - For registration forms, checks if the password and confirm password fields match.
+ * - Displays a toast notification if the passwords do not match.
+ * - Submits the form data using the fetch API.
+ * - Displays a success toast notification and reloads the page if the submission is successful.
+ * - Displays an error toast notification if the submission fails.
+ */
 export async function formListener(
 	event: SubmitEvent,
 	form: HTMLFormElement,

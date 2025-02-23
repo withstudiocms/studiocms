@@ -1,11 +1,12 @@
 ---
-import type { Props } from '@astrojs/starlight/props';
-import Default from '@lorenzo_lewis/starlight-utils/components/Sidebar.astro';
+import Default from '@astrojs/starlight/components/Sidebar.astro';
 import Sponsors from '../components/Sponsors.astro';
+import TopicsSelector from './topics/TopicsSelector.astro';
 ---
 
 <div class="sidebar-custom">
-    <Default {...Astro.props}><slot /></Default>
+    <TopicsSelector />
+    <Default><slot /></Default>
     
     <div class="sl-hidden md:sl-block sidebar-footer">
         <Sponsors />

@@ -5,6 +5,23 @@ import type {
 	WebVitalsRouteSummary,
 } from './types.js';
 
+/**
+ * Processes an array of Web Vitals response items and returns a summary of web vitals for each route.
+ *
+ * @param data - An array of WebVitalsResponseItem objects representing the web vitals data.
+ * @returns An array of WebVitalsRouteSummary objects summarizing the web vitals for each route.
+ *
+ * The function performs the following steps:
+ * 1. Groups the data by route and name.
+ * 2. Processes each group separately, ensuring the sample size is at least 4.
+ * 3. Sorts the metrics within each group by rating and value.
+ * 4. Assigns quartiles to the metrics using NTILE(4) logic.
+ * 5. Identifies the end of each quartile.
+ * 6. Selects only the metrics in quartile 3 where quartile_end is true.
+ * 7. Converts the selected metrics into WebVitalsRouteSummary structures.
+ *
+ * The resulting summaries include the route, whether the route passes core web vitals, the metrics for LCP, CLS, and INP, and a score.
+ */
 export function processWebVitalsRouteSummary(
 	data: WebVitalsResponseItem[]
 ): WebVitalsRouteSummary[] {

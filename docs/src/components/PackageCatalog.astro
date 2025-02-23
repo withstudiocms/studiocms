@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { Card } from 'studiocms:ui/components';
 import Integration from './Integration.astro';
 import ReadMore from './ReadMore.astro';
 
@@ -38,13 +39,15 @@ const packages = (await getCollection('package-catalog'))
             docsLink: href,
             publiclyUsable
         }, index) => (
-            <Integration {title} {githubURL} {released} {isPlugin} {publiclyUsable} />
+            <Card fullWidth>
+                <Integration {title} {githubURL} {released} {isPlugin} {publiclyUsable} />
 
-            <p>{description}</p>
+                <p>{description}</p>
 
-            <ReadMore>{Astro.locals.t('package-catalog.readmore.start')} <a {href}> {Astro.locals.t('package-catalog.readmore.end')}{(href.startsWith('https://') || href.startsWith('http://')) && ' ⤴'}</a></ReadMore>
+                <ReadMore>{Astro.locals.t('package-catalog.readmore.start')} <a {href}> {Astro.locals.t('package-catalog.readmore.end')}{(href.startsWith('https://') || href.startsWith('http://')) && ' ⤴'}</a></ReadMore>
 
-            <>{ index < packages.length - 1 && <hr /> }</>
+                <>{ index < packages.length - 1 && <hr /> }</>
+            </Card>
         )) 
     }
 

@@ -4,6 +4,7 @@ import { defineStudioCMSConfig } from 'studiocms/config';
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
+	plugins: [blog()],
 	dashboardConfig: {
 		AuthConfig: {
 			providers: {
@@ -14,5 +15,4 @@ export default defineStudioCMSConfig({
 			},
 		},
 	},
-	plugins: [blog()],
 });
