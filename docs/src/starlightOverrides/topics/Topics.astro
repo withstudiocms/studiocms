@@ -104,6 +104,10 @@ function getTranslation(translations: Record<string, string>, link: string, desc
       padding: 0.3em 0.5rem;
       text-decoration: none;
     }
+
+    a:not(:hover) {
+      border: 1px solid transparent;
+    }
   
     a:is(.starlight-sidebar-topics-current, :hover, :focus-visible) {
       color: var(--sl-color-accent-high);
