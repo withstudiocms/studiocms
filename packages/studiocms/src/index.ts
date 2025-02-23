@@ -24,6 +24,8 @@ import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
+	AvailableDashboardPages,
+	DashboardPage,
 	SafePluginListType,
 	StudioCMSConfig,
 	StudioCMSOptions,
@@ -176,6 +178,11 @@ export const studiocms = defineIntegration({
 		let imageComponentPath: string;
 
 		const availableDashboardGridItems: GridItemInput[] = [];
+
+		const availableDashboardPages: AvailableDashboardPages = {
+			user: [],
+			admin: [],
+		};
 
 		// Return the Integration
 		return {
@@ -802,16 +809,13 @@ export const studiocms = defineIntegration({
 
 					// Resolve StudioCMS Plugins
 					for (const {
-						name,
-						identifier,
 						studiocmsMinimumVersion,
 						integration,
-						frontendNavigationLinks,
-						pageTypes,
-						settingsPage,
 						triggerSitemap,
 						sitemaps: pluginSitemaps,
 						dashboardGridItems,
+						dashboardPages,
+						...safePlugin
 					} of pluginsToProcess || []) {
 						// Check if the plugin has a minimum version requirement
 						const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
@@ -840,18 +844,31 @@ export const studiocms = defineIntegration({
 							availableDashboardGridItems.push(
 								...dashboardGridItems.map((item) => ({
 									...item,
-									name: `${convertToSafeString(identifier)}/${convertToSafeString(item.name)}`,
+									name: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(item.name)}`,
 								}))
 							);
 						}
 
-						safePluginList.push({
-							identifier,
-							name,
-							frontendNavigationLinks,
-							pageTypes,
-							settingsPage,
-						});
+						if (dashboardPages) {
+							if (dashboardPages.user) {
+								availableDashboardPages.user?.push(
+									...dashboardPages.user.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title)}`,
+									}))
+								);
+							}
+							if (dashboardPages.admin) {
+								availableDashboardPages.admin?.push(
+									...dashboardPages.admin.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title)}`,
+									}))
+								);
+							}
+						}
+
+						safePluginList.push(safePlugin);
 					}
 
 					// Robots.txt Integration (Default)
@@ -936,6 +953,66 @@ export const studiocms = defineIntegration({
 							return remappedComps.join('\n');
 						})
 						.join('\n');
+
+					const dashboardPagesComponentsUser =
+						availableDashboardPages.user
+							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
+								if (item.sidebar === 'double') {
+									const components = {
+										innerSidebarComponent: item.innerSidebarComponent,
+										pageHeaderComponent,
+										pageBodyComponent,
+									};
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) => `export { default as ${key} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								}
+
+								const components = {
+									pageHeaderComponent,
+									pageBodyComponent,
+								};
+
+								const remappedComps = Object.entries(components).map(
+									([key, value]) => `export { default as ${key} } from '${value}';`
+								);
+
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '';
+
+					const dashboardPagesComponentsAdmin =
+						availableDashboardPages.admin
+							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
+								if (item.sidebar === 'double') {
+									const components = {
+										innerSidebarComponent: item.innerSidebarComponent,
+										pageHeaderComponent,
+										pageBodyComponent,
+									};
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) => `export { default as ${key} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								}
+
+								const components = {
+									pageHeaderComponent,
+									pageBodyComponent,
+								};
+
+								const remappedComps = Object.entries(components).map(
+									([key, value]) => `export { default as ${key} } from '${value}';`
+								);
+
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '';
 
 					addVirtualImports(params, {
 						name,
@@ -1029,6 +1106,61 @@ export const studiocms = defineIntegration({
 								});
 
 								export default dashboardGridItems;
+							`,
+
+							// Dashboard Pages
+							'studiocms:plugins/dashboard-pages/components/user': `
+								${dashboardPagesComponentsUser}
+							`,
+							'studiocms:plugins/dashboard-pages/user': `
+								import * as components from 'studiocms:plugins/dashboard-pages/components/user';
+
+								const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
+
+								const dashboardPages = currentComponents.map((item) => {
+									const page = { ...item };
+
+									if (page.components) {
+										page.components = Object.entries(page.components).reduce(
+											(acc, [key, value]) => ({
+												...acc,
+												[key]: components[key],
+											}),
+											{}
+										);
+									}
+
+									return page;
+								});
+
+								export default dashboardPages;
+							`,
+
+							'studiocms:plugins/dashboard-pages/components/admin': `
+								${dashboardPagesComponentsAdmin}
+							`,
+							'studiocms:plugins/dashboard-pages/admin': `
+								import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
+
+								const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
+
+								const dashboardPages = currentComponents.map((item) => {
+									const page = { ...item };
+
+									if (page.components) {
+										page.components = Object.entries(page.components).reduce(
+											(acc, [key, value]) => ({
+												...acc,
+												[key]: components[key],
+											}),
+											{}
+										);
+									}
+
+									return page;
+								});
+
+								export default dashboardPages;
 							`,
 
 							// Renderer Virtual Imports

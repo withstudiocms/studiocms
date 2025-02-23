@@ -1,34 +1,39 @@
 import type { APIRoute, AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
-import type { ColumnDataType } from 'drizzle-orm';
-import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
+// import type { ColumnDataType } from 'drizzle-orm';
+// import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
-import { SettingsFieldSchema, TransformFunction, ValidationFunction } from './shared.js';
+import {
+	DashboardPageSchema,
+	SettingsFieldSchema,
+	TransformFunction,
+	ValidationFunction,
+} from './shared.js';
 
-type AsDrizzleTable = SQLiteTableWithColumns<{
-	name: string;
-	schema: undefined;
-	columns: {
-		[x: string]: SQLiteColumn<
-			{
-				name: string;
-				tableName: string;
-				dataType: ColumnDataType;
-				columnType: string;
-				data: unknown;
-				driverParam: unknown;
-				notNull: false;
-				hasDefault: false;
-				enumValues: string[] | undefined;
-				baseColumn: never;
-			},
-			object
-		>;
-	};
-	dialect: 'sqlite';
-}>;
+// type AsDrizzleTable = SQLiteTableWithColumns<{
+// 	name: string;
+// 	schema: undefined;
+// 	columns: {
+// 		[x: string]: SQLiteColumn<
+// 			{
+// 				name: string;
+// 				tableName: string;
+// 				dataType: ColumnDataType;
+// 				columnType: string;
+// 				data: unknown;
+// 				driverParam: unknown;
+// 				notNull: false;
+// 				hasDefault: false;
+// 				enumValues: string[] | undefined;
+// 				baseColumn: never;
+// 			},
+// 			object
+// 		>;
+// 	};
+// 	dialect: 'sqlite';
+// }>;
 
-const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
+// const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
 
 const AstroIntegrationSchema = z.custom<AstroIntegration>();
 
@@ -37,6 +42,9 @@ const AstroIntegrationPossiblyArraySchema = z.union([
 	z.array(AstroIntegrationSchema),
 ]);
 
+/**
+ * Schema for StudioCMS Plugin configuration.
+ */
 export const StudioCMSPluginSchema = z.object({
 	/**
 	 * Identifier of the plugin from the package.json
@@ -79,6 +87,25 @@ export const StudioCMSPluginSchema = z.object({
 	 * Allows the plugin to add custom dashboard grid items
 	 */
 	dashboardGridItems: z.custom<GridItemInput[]>().optional(),
+	/**
+	 * Dashboard Pages for the plugin
+	 */
+	dashboardPages: z
+		.object({
+			/**
+			 * Pages for the user role
+			 *
+			 * These are shown in the "Dashboard" section of the dashboard sidebar
+			 */
+			user: z.array(DashboardPageSchema).optional(),
+			/**
+			 * Pages for the editor role
+			 *
+			 * These are shown in the "Admin" section of the dashboard sidebar
+			 */
+			admin: z.array(DashboardPageSchema).optional(),
+		})
+		.optional(),
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
@@ -227,12 +254,25 @@ export const StudioCMSPluginSchema = z.object({
 		.optional(),
 });
 
+/**
+ * A schema for a safe plugin list item in StudioCMS.
+ * This schema omits certain properties from the `StudioCMSPluginSchema`:
+ * - `integration`
+ * - `studiocmsMinimumVersion`
+ * - `sitemaps`
+ * - `dashboardGridItems`
+ * - `triggerSitemap`
+ *
+ * These properties are excluded to ensure that the plugin list item schema
+ * only includes the necessary and safe properties for use in the application.
+ */
 export const SafePluginListItemSchema = StudioCMSPluginSchema.omit({
 	integration: true,
 	studiocmsMinimumVersion: true,
 	sitemaps: true,
 	dashboardGridItems: true,
 	triggerSitemap: true,
+	dashboardPages: true,
 });
 
 export const SafePluginListSchema = z.array(SafePluginListItemSchema);
@@ -241,7 +281,7 @@ export type StudioCMSPluginOptions = z.infer<typeof StudioCMSPluginSchema>;
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
 export interface StudioCMSPlugin extends StudioCMSPluginOptions {}
-export type { SettingsField } from './shared.js';
+export type { SettingsField, DashboardPage, AvailableDashboardPages } from './shared.js';
 
 /**
  * Defines a plugin for StudioCMS.
