@@ -68,4 +68,6 @@ export async function frontendNavigation(basePackage?: string) {
 			});
 		}
 	}
+
+	return links;
 }

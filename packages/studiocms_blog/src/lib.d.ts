@@ -66,4 +66,17 @@ declare module 'studiocms:plugins' {
 
 declare module 'studiocms:plugin-helpers' {
 	export type SettingsField = import('studiocms/plugins').SettingsField;
+	export type SafePluginListType = import('studiocms/plugins').SafePluginListType;
+	export type StudioCMSPlugin = import('studiocms/plugins').StudioCMSPlugin;
+	export type StudioCMSPluginOptions = import('studiocms/plugins').StudioCMSPluginOptions;
+	export type AvailableDashboardPages = import('studiocms/plugins').AvailableDashboardPages;
+	export type FinalDashboardPage = import('studiocms/plugins').FinalDashboardPage;
+	export type DashboardPage = import('studiocms/plugins').DashboardPage;
+
+	export const getPluginDashboardPages: typeof import(
+		'studiocms/lib/plugins/index.js'
+	).getPluginDashboardPages;
+	export const frontendNavigation: typeof import(
+		'studiocms/lib/plugins/index.js'
+	).frontendNavigation;
 }

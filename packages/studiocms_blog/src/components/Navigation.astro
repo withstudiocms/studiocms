@@ -1,8 +1,8 @@
 ---
-import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
-import plugins from 'studiocms:plugins';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import Avatar from './Avatar.astro';
 import './navigation.css';
+import { frontendNavigation } from 'studiocms:plugin-helpers';
 import studioCMS_SDK from 'studiocms:sdk/cache';
 
 type Props = {
@@ -13,7 +13,6 @@ type Props = {
 const { hideAvatar, topLevelLinkCount = 3 } = Astro.props;
 
 const config = (await studioCMS_SDK.GET.siteConfig()).data;
-const pageList = (await studioCMS_SDK.GET.pages()).map(({ data }) => data);
 
 const { title } = config || { title: 'StudioCMS' };
 const {
@@ -25,41 +24,7 @@ type LinkProps = {
 	href: string;
 };
 
-const links: LinkProps[] = [];
-
-const navPagesList = pageList
-	.filter((page) => page.showOnNav === true && page.package === 'studiocms/markdown')
-	.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
-
-const indexPage = navPagesList.find((page) => page.slug === 'index');
-
-if (indexPage) {
-	links.push({
-		text: indexPage.title || 'Home',
-		href: import.meta.env.BASE_URL,
-	});
-}
-
-const restOfPages = navPagesList.filter((page) => page.slug !== 'index');
-
-for (const page of restOfPages) {
-	links.push({
-		text: page.title,
-		href: pathWithBase(page.slug),
-	});
-}
-
-for (const { frontendNavigationLinks } of plugins) {
-	if (!frontendNavigationLinks) {
-		continue;
-	}
-	for (const link of frontendNavigationLinks) {
-		links.push({
-			text: link.label,
-			href: pathWithBase(link.href),
-		});
-	}
-}
+const links: LinkProps[] = await frontendNavigation('studiocms/markdown');
 ---
 
 <!-- If no dropdown items -->
