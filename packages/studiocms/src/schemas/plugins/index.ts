@@ -31,22 +31,27 @@ export const StudioCMSPluginSchema = z.object({
 	 * Identifier of the plugin from the package.json
 	 */
 	identifier: z.string(),
+
 	/**
 	 * Label of the plugin to be displayed in the StudioCMS Dashboard
 	 */
 	name: z.string(),
+
 	/**
 	 * Minimum version of StudioCMS required for the plugin to work
 	 */
 	studiocmsMinimumVersion: z.string(),
+
 	/**
 	 * Astro Integration(s) for the plugin
 	 */
 	integration: AstroIntegrationPossiblyArraySchema.optional(),
+
 	/**
 	 * If this is true, the plugin will enable the Sitemap
 	 */
 	triggerSitemap: z.boolean().optional(),
+
 	/**
 	 * Allows the plugin to add sitemap endpoints
 	 */
@@ -57,6 +62,7 @@ export const StudioCMSPluginSchema = z.object({
 				 * The name of the plugin
 				 */
 				pluginName: z.string(),
+
 				/**
 				 * The path to the sitemap XML file
 				 */
@@ -64,10 +70,12 @@ export const StudioCMSPluginSchema = z.object({
 			})
 		)
 		.optional(),
+
 	/**
 	 * Allows the plugin to add custom dashboard grid items
 	 */
 	dashboardGridItems: z.custom<GridItemInput[]>().optional(),
+
 	/**
 	 * Dashboard Pages for the plugin
 	 */
@@ -79,6 +87,7 @@ export const StudioCMSPluginSchema = z.object({
 			 * These are shown in the "Dashboard" section of the dashboard sidebar
 			 */
 			user: z.array(DashboardPageSchema).default([]).optional(),
+
 			/**
 			 * Pages for the editor role
 			 *
@@ -87,6 +96,7 @@ export const StudioCMSPluginSchema = z.object({
 			admin: z.array(DashboardPageSchema).default([]).optional(),
 		})
 		.optional(),
+
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
@@ -96,6 +106,7 @@ export const StudioCMSPluginSchema = z.object({
 			 * Fields according to specification
 			 */
 			fields: z.array(SettingsFieldSchema),
+
 			/**
 			 * Function that runs on when the settings page is saved
 			 *
@@ -105,6 +116,7 @@ export const StudioCMSPluginSchema = z.object({
 			onSave: AstroAPIRouteSchema,
 		})
 		.optional(),
+
 	/**
 	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
 	 */
@@ -115,6 +127,7 @@ export const StudioCMSPluginSchema = z.object({
 				 * Display label for the link
 				 */
 				label: z.string(),
+
 				/**
 				 * URL to link to
 				 */
@@ -122,6 +135,7 @@ export const StudioCMSPluginSchema = z.object({
 			})
 		)
 		.optional(),
+
 	/**
 	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
 	 */
@@ -132,6 +146,7 @@ export const StudioCMSPluginSchema = z.object({
 				 * Label that is shown in the select input
 				 */
 				label: z.string(),
+
 				/**
 				 * Identifier that is saved in the database
 				 * @example
@@ -145,10 +160,12 @@ export const StudioCMSPluginSchema = z.object({
 				 * '@mystudiocms/plugin:pageType4'
 				 */
 				identifier: z.string(),
+
 				/**
 				 * Description that is shown below the "Page Content" header if this type is selected
 				 */
 				description: z.string().optional(),
+
 				/**
 				 * The path to the actual component that is displayed for the page content
 				 *
