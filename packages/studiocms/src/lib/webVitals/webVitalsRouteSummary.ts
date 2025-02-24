@@ -70,6 +70,7 @@ export function processWebVitalsRouteSummary(
 			route,
 			passingCoreWebVitals: true,
 			metrics: {},
+			score: 0,
 		});
 		routeSummary.metrics[name as 'LCP' | 'CLS' | 'INP'] = {
 			rating,
