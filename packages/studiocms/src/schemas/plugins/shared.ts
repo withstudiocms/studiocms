@@ -228,9 +228,12 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 
 const FinalBaseSchema = AvailableBaseSchema.extend({
 	components: z.object({
-		PageHeaderComponent: z.any(),
-		PageBodyComponent: z.any(),
-		InnerSidebarComponent: z.any().optional(),
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		PageHeaderComponent: z.custom<(props: any) => any>(),
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		PageBodyComponent: z.custom<(props: any) => any>(),
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		InnerSidebarComponent: z.custom<(props: any) => any>(),
 	}),
 });
 

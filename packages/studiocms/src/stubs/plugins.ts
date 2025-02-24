@@ -33,6 +33,18 @@ dtsFile.addModule('studiocms:plugin-helpers', {
 			name: 'StudioCMSPluginOptions',
 			typeDef: `import('${resolve('../plugins.js')}').StudioCMSPluginOptions`,
 		},
+		{
+			name: 'AvailableDashboardPages',
+			typeDef: `import('${resolve('../plugins.js')}').AvailableDashboardPages`,
+		},
+		{
+			name: 'FinalDashboardPage',
+			typeDef: `import('${resolve('../plugins.js')}').FinalDashboardPage`,
+		},
+		{
+			name: 'DashboardPage',
+			typeDef: `import('${resolve('../plugins.js')}').DashboardPage`,
+		},
 	],
 	namedExports: [
 		{

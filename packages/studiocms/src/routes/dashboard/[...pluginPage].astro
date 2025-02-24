@@ -1,0 +1,63 @@
+---
+import { getPluginDashboardPages } from 'studiocms:plugin-helpers';
+import Layout from '../../layouts/dashboard/Layout.astro';
+import type { FinalDashboardPage } from '../../schemas/index.js';
+
+const lang = 'en-us';
+
+const { adminPages, userPages } = getPluginDashboardPages();
+
+const { pluginPage } = Astro.params;
+
+let page: FinalDashboardPage | undefined;
+
+if (pluginPage) {
+	page =
+		adminPages.find((p) => p.slug === pluginPage) || userPages.find((p) => p.slug === pluginPage);
+}
+
+if (!page) {
+	return Astro.redirect('/404');
+}
+
+const { sidebar, components, title, description, requiredPermissions } = page;
+
+const { PageBodyComponent, PageHeaderComponent } = components;
+
+const InnerSidebarComponent = sidebar === 'double' ? components.InnerSidebarComponent : null;
+---
+
+<Layout 
+  title={title}
+  description={description}
+  requiredPermission={requiredPermissions}
+  sidebar={sidebar}
+  {lang}
+  >
+
+  { sidebar === 'double' && ( 
+    <div slot="double-sidebar" class="inner-sidebar-container">
+      <div class="sidebar-links-container">
+        { InnerSidebarComponent && <InnerSidebarComponent />}
+      </div>
+    </div>
+   )}
+
+  <div slot="header">
+    <PageHeaderComponent />
+  </div>
+
+  <PageBodyComponent />
+
+</Layout>
+
+<style>
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    height: 100%;
+    padding: 1rem;
+  }
+</style>

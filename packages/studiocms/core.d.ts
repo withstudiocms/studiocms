@@ -136,6 +136,9 @@ declare module 'studiocms:plugin-helpers' {
 	export type SafePluginListType = import('./src/plugins.js').SafePluginListType;
 	export type StudioCMSPlugin = import('./src/plugins.js').StudioCMSPlugin;
 	export type StudioCMSPluginOptions = import('./src/plugins.js').StudioCMSPluginOptions;
+	export type AvailableDashboardPages = import('./src/plugins.js').AvailableDashboardPages;
+	export type FinalDashboardPage = import('./src/plugins.ts').FinalDashboardPage;
+	export type DashboardPage = import('./src/plugins.js').DashboardPage;
 
 	export const getPluginDashboardPages: typeof import(
 		'./src/lib/plugins/index.js'
