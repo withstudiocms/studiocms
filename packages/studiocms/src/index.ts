@@ -6,6 +6,7 @@
 /// <reference types="@astrojs/db" />
 
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
+import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
@@ -19,11 +20,17 @@ import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
+import {
+	apiRoute,
+	removeLeadingTrailingSlashes,
+	sdkRouteResolver,
+	v1RestRoute,
+} from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
+	AvailableDashboardPages,
 	SafePluginListType,
 	StudioCMSConfig,
 	StudioCMSOptions,
@@ -177,6 +184,11 @@ export const studiocms = defineIntegration({
 
 		const availableDashboardGridItems: GridItemInput[] = [];
 
+		const availableDashboardPages: AvailableDashboardPages = {
+			user: [],
+			admin: [],
+		};
+
 		// Return the Integration
 		return {
 			name,
@@ -214,6 +226,7 @@ export const studiocms = defineIntegration({
 					const {
 						dashboardEnabled,
 						inject404Route,
+						dashboardRouteOverride,
 						AuthConfig: {
 							enabled: authEnabled,
 							providers: {
@@ -242,6 +255,10 @@ export const studiocms = defineIntegration({
 
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS...');
+
+					runtimeLogger(params, {
+						name: 'studiocms-runtime',
+					});
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
@@ -802,16 +819,13 @@ export const studiocms = defineIntegration({
 
 					// Resolve StudioCMS Plugins
 					for (const {
-						name,
-						identifier,
 						studiocmsMinimumVersion,
 						integration,
-						frontendNavigationLinks,
-						pageTypes,
-						settingsPage,
 						triggerSitemap,
 						sitemaps: pluginSitemaps,
 						dashboardGridItems,
+						dashboardPages,
+						...safePlugin
 					} of pluginsToProcess || []) {
 						// Check if the plugin has a minimum version requirement
 						const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
@@ -840,18 +854,31 @@ export const studiocms = defineIntegration({
 							availableDashboardGridItems.push(
 								...dashboardGridItems.map((item) => ({
 									...item,
-									name: `${convertToSafeString(identifier)}/${convertToSafeString(item.name)}`,
+									name: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(item.name)}`,
 								}))
 							);
 						}
 
-						safePluginList.push({
-							identifier,
-							name,
-							frontendNavigationLinks,
-							pageTypes,
-							settingsPage,
-						});
+						if (dashboardPages) {
+							if (dashboardPages.user) {
+								availableDashboardPages.user?.push(
+									...dashboardPages.user.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
+									}))
+								);
+							}
+							if (dashboardPages.admin) {
+								availableDashboardPages.admin?.push(
+									...dashboardPages.admin.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
+									}))
+								);
+							}
+						}
+
+						safePluginList.push(safePlugin);
 					}
 
 					// Robots.txt Integration (Default)
@@ -871,6 +898,30 @@ export const studiocms = defineIntegration({
 							integration: dynamicSitemap({
 								sitemaps: sitemaps,
 							}),
+						});
+					}
+
+					let defaultDashboardRoute = dashboardRouteOverride
+						? removeLeadingTrailingSlashes(dashboardRouteOverride)
+						: 'dashboard';
+
+					if (defaultDashboardRoute === '/') {
+						defaultDashboardRoute = '';
+					}
+
+					const makeDashboardRoute = (path: string) => {
+						return `${defaultDashboardRoute}/${path}`;
+					};
+
+					// Inject Dashboard plugin page route, if any plugins have dashboard pages
+					if (
+						(availableDashboardPages.user && availableDashboardPages.user.length > 0) ||
+						(availableDashboardPages.admin && availableDashboardPages.admin.length > 0)
+					) {
+						injectRoute({
+							pattern: makeDashboardRoute('[...pluginPage]'),
+							entrypoint: routesDir.dashRoute('[...pluginPage].astro'),
+							prerender: false,
 						});
 					}
 
@@ -937,6 +988,70 @@ export const studiocms = defineIntegration({
 						})
 						.join('\n');
 
+					const dashboardPagesComponentsUser =
+						availableDashboardPages.user
+							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
+								if (item.sidebar === 'double') {
+									const components = {
+										innerSidebarComponent: item.innerSidebarComponent,
+										pageHeaderComponent,
+										pageBodyComponent,
+									};
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								}
+
+								const components = {
+									pageHeaderComponent,
+									pageBodyComponent,
+								};
+
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
+
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '';
+
+					const dashboardPagesComponentsAdmin =
+						availableDashboardPages.admin
+							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
+								if (item.sidebar === 'double') {
+									const components = {
+										innerSidebarComponent: item.innerSidebarComponent,
+										pageHeaderComponent,
+										pageBodyComponent,
+									};
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								}
+
+								const components = {
+									pageHeaderComponent,
+									pageBodyComponent,
+								};
+
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
+
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '';
+
 					addVirtualImports(params, {
 						name,
 						imports: {
@@ -998,9 +1113,15 @@ export const studiocms = defineIntegration({
 								${components}
 							`,
 
+							'studiocms:logger': `
+								import { logger } from '@it-astro:logger:studiocms-runtime';
+								export default logger.fork('studiocms:runtime');
+							`,
+
 							// Plugin Helpers
 							'studiocms:plugin-helpers': `
 								export * from "${resolve('./plugins.js')}";
+								export * from "${resolve('./lib/plugins/index.js')}";
 							`,
 
 							// Dashboard Grid Items
@@ -1029,6 +1150,61 @@ export const studiocms = defineIntegration({
 								});
 
 								export default dashboardGridItems;
+							`,
+
+							// Dashboard Pages
+							'studiocms:plugins/dashboard-pages/components/user': `
+								${dashboardPagesComponentsUser}
+							`,
+							'studiocms:plugins/dashboard-pages/user': `
+								import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+								import * as components from 'studiocms:plugins/dashboard-pages/components/user';
+
+								const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
+
+								const dashboardPages = currentComponents.map((item) => {
+									const page = { ...item };
+
+									page.components = {
+										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
+									};
+
+									if (page.sidebar === 'double') {
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
+									}
+
+									return page;
+								});
+
+								export default dashboardPages;
+							`,
+
+							'studiocms:plugins/dashboard-pages/components/admin': `
+								${dashboardPagesComponentsAdmin}
+							`,
+							'studiocms:plugins/dashboard-pages/admin': `
+								import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+								import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
+
+								const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
+
+								const dashboardPages = currentComponents.map((item) => {
+									const page = { ...item };
+
+									page.components = {
+										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
+									};
+
+									if (page.sidebar === 'double') {
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
+									}
+
+									return page;
+								});
+
+								export default dashboardPages;
 							`,
 
 							// Renderer Virtual Imports
@@ -1088,10 +1264,15 @@ export const studiocms = defineIntegration({
 					});
 
 					if (rendererConfig.renderer === 'studiocms') {
+						integrationLogger(logInfo, 'Injecting StudioCMS Renderer CSS...');
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
 
 					// Update the Astro Config
+					integrationLogger(
+						logInfo,
+						'Updating Astro Config with StudioCMS Resources and settings...'
+					);
 					updateConfig({
 						image: {
 							remotePatterns: [

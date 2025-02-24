@@ -1,0 +1,81 @@
+---
+import { getPluginDashboardPages } from 'studiocms:plugin-helpers';
+import Layout from '../../layouts/dashboard/Layout.astro';
+import type { FinalDashboardPage } from '../../schemas/index.js';
+
+const lang = 'en-us';
+
+// Get all the pages from the plugins
+const { adminPages, userPages } = getPluginDashboardPages();
+
+// Get the plugin page param from the URL
+const { pluginPage } = Astro.params;
+
+// Declare the page variable
+let page: FinalDashboardPage | undefined;
+
+// If the plugin page is not found, return a 404
+if (!pluginPage) {
+	return new Response(null, { status: 404 });
+}
+
+// Find the page from the admin and user pages
+page =
+	adminPages.find(({ slug }) => slug === pluginPage) ||
+	userPages.find(({ slug }) => slug === pluginPage);
+
+// If the page is not found, return a 404
+if (!page) {
+	return new Response(null, { status: 404 });
+}
+
+// Destructure the page object
+const {
+	sidebar,
+	components: { PageBodyComponent, PageHeaderComponent, InnerSidebarComponent },
+	title,
+	description,
+	requiredPermissions,
+} = page;
+
+// Check if the sidebar is double and if the InnerSidebarComponent exists to determine the sidebar configuration
+const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' : 'single';
+---
+
+<Layout 
+  title={title[lang]}
+  description={description}
+  requiredPermission={requiredPermissions}
+  sidebar={sidebarConfig}
+  {lang}
+  >
+
+  { 
+    sidebarConfig === 'double' && 
+    /* This is a safety check due to types even though we are checking above */ 
+    InnerSidebarComponent && ( 
+      <div slot="double-sidebar" class="inner-sidebar-container">
+        <div class="sidebar-links-container">
+          <InnerSidebarComponent />
+        </div>
+      </div>
+    )}
+
+  <div slot="header">
+    <PageHeaderComponent />
+  </div>
+
+  <PageBodyComponent />
+
+</Layout>
+
+<style>
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    height: 100%;
+    padding: 1rem;
+  }
+</style>

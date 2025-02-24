@@ -87,6 +87,8 @@ export interface IntermediateWebVitalsRouteSummary {
 	 * A partial record of core web vitals metrics and their statistics.
 	 */
 	metrics: Partial<Record<CoreWebVitalsMetricType, MetricStats>>;
+
+	score: number;
 }
 
 /**

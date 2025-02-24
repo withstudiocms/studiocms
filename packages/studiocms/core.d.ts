@@ -6,9 +6,24 @@ declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
 
+declare module 'studiocms:logger' {
+	export const logger: import('astro').AstroIntegrationLogger;
+	export default logger;
+}
+
 declare module 'studiocms:components/dashboard-grid-items' {
 	export const dashboardGridItems: import('./src/lib/dashboardGrid').GridItemUsable[];
 	export default dashboardGridItems;
+}
+
+declare module 'studiocms:plugins/dashboard-pages/user' {
+	const dashboardPages: import('./src/schemas/index').FinalDashboardPage[];
+	export default dashboardPages;
+}
+
+declare module 'studiocms:plugins/dashboard-pages/admin' {
+	const dashboardPages: import('./src/schemas/index').FinalDashboardPage[];
+	export default dashboardPages;
 }
 
 interface Window {
@@ -65,17 +80,17 @@ declare module 'virtual:studiocms/components/Editors' {
 }
 
 declare module 'studiocms:i18n' {
-	export const staticPaths: typeof import('./static/i18n/index.js').staticPaths;
-	export const getLangFromUrl: typeof import('./static/i18n/index.js').getLangFromUrl;
-	export const useTranslations: typeof import('./static/i18n/index.js').useTranslations;
-	export const useTranslatedPath: typeof import('./static/i18n/index.js').useTranslatedPath;
+	export const staticPaths: typeof import('./src/lib/i18n/index.js').staticPaths;
+	export const getLangFromUrl: typeof import('./src/lib/i18n/index.js').getLangFromUrl;
+	export const useTranslations: typeof import('./src/lib/i18n/index.js').useTranslations;
+	export const useTranslatedPath: typeof import('./src/lib/i18n/index.js').useTranslatedPath;
 	export const languageSelectorOptions: typeof import(
 		'./static/i18n/index.js'
 	).languageSelectorOptions;
-	export const getCurrentURLPath: typeof import('./static/i18n/index.js').getCurrentURLPath;
-	export const switchLanguage: typeof import('./static/i18n/index.js').switchLanguage;
-	export type UiLanguageKeys = import('./static/i18n/index.js').UiLanguageKeys;
-	export type UiTranslations = import('./static/i18n/index.js').UiTranslations;
+	export const getCurrentURLPath: typeof import('./src/lib/i18n/index.js').getCurrentURLPath;
+	export const switchLanguage: typeof import('./src/lib/i18n/index.js').switchLanguage;
+	export type UiLanguageKeys = import('./src/lib/i18n/index.js').UiLanguageKeys;
+	export type UiTranslations = import('./src/lib/i18n/index.js').UiTranslations;
 }
 
 declare module 'studiocms:imageHandler/components' {
@@ -123,6 +138,17 @@ declare module 'studiocms:plugins' {
 
 declare module 'studiocms:plugin-helpers' {
 	export type SettingsField = import('./src/plugins.js').SettingsField;
+	export type SafePluginListType = import('./src/plugins.js').SafePluginListType;
+	export type StudioCMSPlugin = import('./src/plugins.js').StudioCMSPlugin;
+	export type StudioCMSPluginOptions = import('./src/plugins.js').StudioCMSPluginOptions;
+	export type AvailableDashboardPages = import('./src/plugins.js').AvailableDashboardPages;
+	export type FinalDashboardPage = import('./src/plugins.ts').FinalDashboardPage;
+	export type DashboardPage = import('./src/plugins.js').DashboardPage;
+
+	export const getPluginDashboardPages: typeof import(
+		'./src/lib/plugins/index.js'
+	).getPluginDashboardPages;
+	export const frontendNavigation: typeof import('./src/lib/plugins/index.js').frontendNavigation;
 }
 
 declare module 'studiocms:component-proxy' {

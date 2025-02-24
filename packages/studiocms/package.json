@@ -136,6 +136,7 @@
 
     "astro-integration-kit": "catalog:",
     "@inox-tools/inline-mod": "^2.0.3",
+    "@inox-tools/runtime-logger": "0.4.2",
 
     "package-json": "^10.0.1",
     "semver": "^7.7.1",

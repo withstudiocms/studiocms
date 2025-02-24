@@ -312,6 +312,9 @@ importers:
       '@inox-tools/inline-mod':
         specifier: ^2.0.3
         version: 2.0.3(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0))
+      '@inox-tools/runtime-logger':
+        specifier: 0.4.2
+        version: 0.4.2(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -1306,6 +1309,16 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
+
+  '@inox-tools/modular-station@0.4.2':
+    resolution: {integrity: sha512-o9tt6BhPJ5Of+b/xKjMqfqMCETa6KAyxREcl9y45UmaALEU5xwV6ZwpuO4VDsRoKnG0HB6PgRSPnXU1IdwSIeQ==}
+    peerDependencies:
+      astro: ^5
+
+  '@inox-tools/runtime-logger@0.4.2':
+    resolution: {integrity: sha512-7Py4nZmYJw94XQEuHh6R8HxFruxKPWuz909Y076nu6y4pt/U7XYH6lXsZSrroKyNOW40CoWjquTbACGiGADmpA==}
+    peerDependencies:
+      astro: ^5
 
   '@inox-tools/star-warp@0.2.3':
     resolution: {integrity: sha512-JPkWOowZZoy67nLYCDgl15JsZTzAsu2J577Ezya1NPVwsLZYnI4nt0kbSaWHq5UrmkLwLSI51GG9ZuGtimYidA==}
@@ -6356,6 +6369,24 @@ snapshots:
       typescript: 5.7.3
     optionalDependencies:
       vite: 6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@inox-tools/modular-station@0.4.2(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))':
+    dependencies:
+      '@inox-tools/utils': 0.3.1
+      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0)
+      astro-integration-kit: 0.18.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))
+      debug: 4.4.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@inox-tools/runtime-logger@0.4.2(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))':
+    dependencies:
+      '@inox-tools/modular-station': 0.4.2(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))
+      '@inox-tools/utils': 0.3.1
+      astro: 5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0)
+      astro-integration-kit: 0.18.0(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
