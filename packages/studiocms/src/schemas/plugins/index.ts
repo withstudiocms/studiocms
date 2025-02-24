@@ -11,6 +11,11 @@ import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
 const AstroIntegrationSchema = z.custom<AstroIntegration>();
 
 /**
+ * Schema for Astro API Route.
+ */
+const AstroAPIRouteSchema = z.custom<APIRoute>();
+
+/**
  * Schema for Astro Integration, which can be an array of Astro Integrations.
  */
 const AstroIntegrationPossiblyArraySchema = z.union([
@@ -97,7 +102,7 @@ export const StudioCMSPluginSchema = z.object({
 			 * Should return a string if there is an error,
 			 * otherwise return boolean true to indicate success
 			 */
-			onSave: z.custom<APIRoute>(),
+			onSave: AstroAPIRouteSchema,
 		})
 		.optional(),
 	/**
@@ -149,7 +154,8 @@ export const StudioCMSPluginSchema = z.object({
 				 *
 				 * Component should have a `content` prop that is a string to be able to display current content.
 				 *
-				 * **NOTE:** Currently, requires you to use the form id `page-content` for the content output. Your editor should also be able to handle form submission.
+				 * **NOTE:** If you storing a single string in the database, you can use the form name `page-content` for the content output. and it will be stored in the normal `content` field in the database.
+				 * You can also use the apiEndpoints to create custom endpoints for the page type.
 				 *
 				 * @example
 				 * ```ts
@@ -163,15 +169,25 @@ export const StudioCMSPluginSchema = z.object({
 				 */
 				pageContentComponent: z.string().optional(),
 
-				// TODO: Figure out the best way to handle more complex plugin systems...
-				// Ideally, we would want to be able to handle the following cases:
-				// - Advanced page types with custom fields, content transforms, and page content components
-				// - Page types that are stored in different tables
-				// - Page types that have different content transforms
-				// - Page types that have different page content components
+				// TODO: Add more fields for:
 				// - Page types that have different fields
-				// - Page types that have different validation functions
-				// - Page types that have different database conversion functions
+
+				/**
+				 * API Endpoints for the page type
+				 *
+				 * API endpoints are used to create, edit, and delete pages of this type,
+				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
+				 */
+				apiEndpoints: z
+					.object({
+						/** POST */
+						onCreate: AstroAPIRouteSchema.optional(),
+						/** PATCH */
+						onEdit: AstroAPIRouteSchema.optional(),
+						/** DELETE */
+						onDelete: AstroAPIRouteSchema.optional(),
+					})
+					.optional(),
 			})
 		)
 		.optional(),

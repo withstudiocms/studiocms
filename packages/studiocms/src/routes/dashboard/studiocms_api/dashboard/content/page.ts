@@ -1,25 +1,52 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import plugins from 'studiocms:plugins';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
+const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
+	const pageTypeOutput: {
+		identifier: string;
+		label: string;
+		description?: string | undefined;
+		pageContentComponent?: string | undefined;
+		apiEndpoints?:
+			| {
+					onCreate?: APIRoute | undefined;
+					onEdit?: APIRoute | undefined;
+					onDelete?: APIRoute | undefined;
+			  }
+			| undefined;
+	}[] = [];
+
+	if (!pageTypes) {
+		return pageTypeOutput;
+	}
+
+	for (const pageType of pageTypes) {
+		pageTypeOutput.push(pageType);
+	}
+
+	return pageTypeOutput;
+});
+
+function getPageTypeEndpoints(pkg: string, type: 'onCreate' | 'onEdit' | 'onDelete') {
+	const currentPageType = pageTypeOptions.find((pageType) => pageType.identifier === pkg);
+
+	if (!currentPageType) {
+		return undefined;
+	}
+
+	return currentPageType.apiEndpoints?.[type];
+}
+
 const { testingAndDemoMode } = developerConfig;
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
-
-interface CreatePageJson {
-	data?: UpdatePageData;
-	content?: UpdatePageContent;
-}
-
-interface EditPageJson {
-	data: tsPageDataSelect;
-	content: tsPageContentSelect;
-}
 
 function getParentFolderValue(value?: string) {
 	if (value === 'null') return null;
@@ -46,9 +73,27 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return simpleResponse(403, 'Unauthorized');
 	}
 
-	const jsonData: CreatePageJson = await context.request.json();
+	const formData = await context.request.formData();
 
-	const { data, content } = jsonData;
+	const data: UpdatePageData = {
+		title: formData.get('page-title')?.toString(),
+		slug: formData.get('page-slug')?.toString(),
+		description: formData.get('page-description')?.toString(),
+		package: formData.get('page-type')?.toString(),
+		showOnNav: formData.get('show-in-nav')?.toString() === 'true',
+		heroImage: formData.get('page-hero-image')?.toString(),
+		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+		showAuthor: formData.get('show-author')?.toString() === 'true',
+		showContributors: formData.get('show-contributors')?.toString() === 'true',
+		categories: [],
+		tags: [],
+		draft: true,
+	};
+
+	const content = {
+		id: crypto.randomUUID(),
+		content: formData.get('page-content')?.toString() ?? '',
+	} as UpdatePageContent;
 
 	if (!data) {
 		return simpleResponse(400, 'Invalid form data, data is required');
@@ -65,6 +110,9 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return simpleResponse(400, 'Invalid form data, title is required');
 	}
 
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
+
 	try {
 		await studioCMS_SDK.POST.databaseEntry.pages(
 			{
@@ -78,6 +126,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 			},
 			{ id: contentId, ...content }
 		);
+
+		if (apiRoute) {
+			await apiRoute(context);
+		}
 
 		return simpleResponse(200, 'Page created successfully');
 	} catch (error) {
@@ -178,6 +230,9 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		data: { defaultContent },
 	} = await studioCMS_SDK_Cache.GET.page.byId(data.id);
 
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
+
 	try {
 		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
 			pageData: data as tsPageDataSelect,
@@ -205,6 +260,10 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 				},
 				diffPerPage
 			);
+		}
+
+		if (apiRoute) {
+			await apiRoute(context);
 		}
 
 		return simpleResponse(200, 'Page updated successfully');
@@ -251,9 +310,17 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		return simpleResponse(400, 'Cannot delete home page');
 	}
 
+	const pageToDelete = await studioCMS_SDK_Cache.GET.page.byId(id);
+
+	const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
+
 	try {
 		await studioCMS_SDK.DELETE.page(id);
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
+
+		if (apiRoute) {
+			await apiRoute(context);
+		}
 
 		return simpleResponse(200, 'Page deleted successfully');
 	} catch (error) {

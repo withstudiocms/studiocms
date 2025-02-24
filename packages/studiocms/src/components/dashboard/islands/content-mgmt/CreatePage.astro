@@ -143,32 +143,9 @@ import { toast } from "studiocms:ui/components";
       e.preventDefault();
       const formData = new FormData(createPageForm);
 
-      const data = {
-        title: formData.get('page-title')?.toString(),
-        slug: formData.get('page-slug')?.toString(),
-        description: formData.get('page-description')?.toString(),
-        type: formData.get('page-type')?.toString(),
-        showInNav: formData.get('show-in-nav')?.toString() === 'true',
-        heroImage: formData.get('page-hero-image')?.toString(),
-        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-        showAuthor: formData.get('show-author')?.toString() === 'true',
-        showContributors: formData.get('show-contributors')?.toString() === 'true',
-        categories: [],
-        tags: [],
-        draft: true,
-      };
-
-      const content = {
-            id: crypto.randomUUID(),
-            content: formData.get('page-content')?.toString() ?? '',
-      }
-
       const response = await fetch(createPageForm.action, {
           method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ data, content }),
+          body: formData,
       });
 
       const res = await response.json();
