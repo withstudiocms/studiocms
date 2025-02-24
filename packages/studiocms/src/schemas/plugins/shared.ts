@@ -206,13 +206,16 @@ export const SettingsFieldSchema = z.union([FieldSchema, RowFieldSchema]);
 export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 
 /**
+ * Allowed keys for UI translations.
+ */
+const allowedKeys = Object.keys(uiTranslationsAvailable);
+
+/**
  * A custom schema for i18n label translations.
  */
 export const i18nLabelSchema = z.custom<Record<UiTranslationKey, string>>(
-	(value) => {
+	(value: Record<UiTranslationKey, string>) => {
 		const keys = Object.keys(value);
-
-		const allowedKeys = Object.keys(uiTranslationsAvailable);
 
 		for (const key of keys) {
 			if (!allowedKeys.includes(key)) {
@@ -222,7 +225,9 @@ export const i18nLabelSchema = z.custom<Record<UiTranslationKey, string>>(
 
 		return true;
 	},
-	{ message: 'Invalid i18n label translations' }
+	{
+		message: `Invalid i18n label translations, currently support translations: ${allowedKeys.join(', ')}.`,
+	}
 );
 
 /**

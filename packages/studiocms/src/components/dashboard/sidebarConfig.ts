@@ -3,6 +3,7 @@ import { StudioCMSRoutes, makeDashboardRoute } from 'studiocms:lib';
 import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import { defaultLang } from '../../lib/i18n/config.js';
 
 /**
  * Represents a link in the sidebar of the dashboard.
@@ -55,7 +56,7 @@ function filterAndProcessPages(
 	for (const { title: t, icon: i, slug, requiredPermissions } of pages) {
 		const href = makeDashboardRoute(slug);
 		const icon = i || 'cube-transparent';
-		const title = t[lang];
+		const title = t[lang] || t[defaultLang];
 
 		if ((admin && requiredPermissions !== 'admin') || (admin && requiredPermissions !== 'owner')) {
 			logger.warn(loggerMessage(title, slug, admin));
