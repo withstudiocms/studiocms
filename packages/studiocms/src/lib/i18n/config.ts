@@ -1,10 +1,22 @@
+// Note: Translations are not currently used in StudioCMS, so we
+// will only allow 'en-us' to be used for now on the Dashboard.
+
+/**
+ * The UI translations available in the StudioCMS app.
+ */
 export const uiTranslationsAvailable = ['en-us'] as const;
 
+/**
+ * The UI translations available in the StudioCMS app.
+ */
 export type UiTranslationKey = (typeof uiTranslationsAvailable)[number];
 
-// Default language - Must match one of the keys in the `ui` object above
+/**
+ * The default language for the StudioCMS app.
+ */
 export const defaultLang: UiTranslationKey = 'en-us';
 
-// Show the default language in the URL (e.g. /en/page) or hide it (e.g. /page)
-// This is false in Astro-feedback so there is no need for a language prefix and page redirect on the main route.
+/**
+ * Whether to show the default language in the language switcher.
+ */
 export const showDefaultLang: boolean = false;

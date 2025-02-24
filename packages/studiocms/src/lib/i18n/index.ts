@@ -7,14 +7,18 @@ import { defaultLang, showDefaultLang } from './config.js';
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
 // https://i18n.studiocms.dev/ or PR them into the `translations` folder:
-// `packages/studiocms_core/src/i18n/translations/` on https://github.com/withstudiocms/studiocms
+// `packages/studiocms/src/lib/i18n/translations/` on https://github.com/withstudiocms/studiocms
 
 // --- i18n Config --- //
 
-// Translations
+/**
+ * The UI translations available in the StudioCMS app.
+ */
 const uiTranslations = {
 	'en-us': await import('./translations/en-us.json'),
 } as const;
+
+// Some options are stored in the `./config.ts` file.
 
 // --- i18n Utils --- //
 
