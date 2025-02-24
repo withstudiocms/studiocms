@@ -80,17 +80,17 @@ declare module 'virtual:studiocms/components/Editors' {
 }
 
 declare module 'studiocms:i18n' {
-	export const staticPaths: typeof import('./static/i18n/index.js').staticPaths;
-	export const getLangFromUrl: typeof import('./static/i18n/index.js').getLangFromUrl;
-	export const useTranslations: typeof import('./static/i18n/index.js').useTranslations;
-	export const useTranslatedPath: typeof import('./static/i18n/index.js').useTranslatedPath;
+	export const staticPaths: typeof import('./src/lib/i18n/index.js').staticPaths;
+	export const getLangFromUrl: typeof import('./src/lib/i18n/index.js').getLangFromUrl;
+	export const useTranslations: typeof import('./src/lib/i18n/index.js').useTranslations;
+	export const useTranslatedPath: typeof import('./src/lib/i18n/index.js').useTranslatedPath;
 	export const languageSelectorOptions: typeof import(
 		'./static/i18n/index.js'
 	).languageSelectorOptions;
-	export const getCurrentURLPath: typeof import('./static/i18n/index.js').getCurrentURLPath;
-	export const switchLanguage: typeof import('./static/i18n/index.js').switchLanguage;
-	export type UiLanguageKeys = import('./static/i18n/index.js').UiLanguageKeys;
-	export type UiTranslations = import('./static/i18n/index.js').UiTranslations;
+	export const getCurrentURLPath: typeof import('./src/lib/i18n/index.js').getCurrentURLPath;
+	export const switchLanguage: typeof import('./src/lib/i18n/index.js').switchLanguage;
+	export type UiLanguageKeys = import('./src/lib/i18n/index.js').UiLanguageKeys;
+	export type UiTranslations = import('./src/lib/i18n/index.js').UiTranslations;
 }
 
 declare module 'studiocms:imageHandler/components' {
