@@ -20,6 +20,7 @@ import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
+import { defaultLang } from './lib/i18n/config.js';
 import {
 	apiRoute,
 	removeLeadingTrailingSlashes,
@@ -864,7 +865,7 @@ export const studiocms = defineIntegration({
 								availableDashboardPages.user?.push(
 									...dashboardPages.user.map((page) => ({
 										...page,
-										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title['en-us'])}`,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title[defaultLang])}`,
 									}))
 								);
 							}
@@ -872,7 +873,7 @@ export const studiocms = defineIntegration({
 								availableDashboardPages.admin?.push(
 									...dashboardPages.admin.map((page) => ({
 										...page,
-										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title['en-us'])}`,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title[defaultLang])}`,
 									}))
 								);
 							}
