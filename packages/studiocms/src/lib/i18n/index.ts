@@ -1,4 +1,5 @@
 import type { AstroGlobal } from 'astro';
+import { defaultLang, showDefaultLang } from './config.js';
 
 // Note: Translations are not currently used in StudioCMS, so we
 // will only allow 'en-us' to be used for now on the Dashboard.
@@ -10,19 +11,10 @@ import type { AstroGlobal } from 'astro';
 
 // --- i18n Config --- //
 
-export const uiTranslationsAvailable = ['en-us'] as const;
-
 // Translations
 const uiTranslations = {
 	'en-us': await import('./translations/en-us.json'),
 } as const;
-
-// Default language - Must match one of the keys in the `ui` object above
-const defaultLang: UiLanguageKeys = 'en-us';
-
-// Show the default language in the URL (e.g. /en/page) or hide it (e.g. /page)
-// This is false in Astro-feedback so there is no need for a language prefix and page redirect on the main route.
-const showDefaultLang: boolean = false;
 
 // --- i18n Utils --- //
 

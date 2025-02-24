@@ -1,6 +1,6 @@
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import { z } from 'astro/zod';
-import { type UiLanguageKeys, uiTranslationsAvailable } from '../../lib/i18n/index.js';
+import { type UiTranslationKey, uiTranslationsAvailable } from '../../lib/i18n/config.js';
 
 // export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
 
@@ -208,7 +208,7 @@ export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 /**
  * A custom schema for i18n label translations.
  */
-export const i18nLabelSchema = z.custom<Record<UiLanguageKeys, string>>(
+export const i18nLabelSchema = z.custom<Record<UiTranslationKey, string>>(
 	(value) => {
 		const keys = Object.keys(value);
 
