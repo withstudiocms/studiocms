@@ -2,31 +2,22 @@
 import { Card, TabItem, Tabs } from 'studiocms:ui/components';
 import { CoreWebVitals } from '../../consts.js';
 import SummaryCard from '../../dashboard-grid-items/SummaryCard.astro';
+import { buildPageRouteDataObject } from '../../utils/buildPageRouteDataObject';
 import { getWebVitals } from '../../webVital.js';
 
-const webVitals = await getWebVitals();
-
-const twentyFourHourSummary = CoreWebVitals.map((metric) => ({
-	metric,
-	summary: webVitals.twentyFourHours.summary[metric],
-}));
-
-const sevenDaySummary = CoreWebVitals.map((metric) => ({
-	metric,
-	summary: webVitals.sevenDays.summary[metric],
-}));
-
-const thirtyDaySummary = CoreWebVitals.map((metric) => ({
-	metric,
-	summary: webVitals.thirtyDays.summary[metric],
-}));
+const { summary, routeSummary, raw: rawVitals } = await getWebVitals();
 
 const summaries = CoreWebVitals.map((metric) => ({
 	metric,
-	summary: webVitals.summary[metric],
+	summary: summary[metric],
 }));
 
-const { routeSummary } = webVitals;
+const {
+	perRouteData: analyticData,
+	last24HoursData: analytics24Hours,
+	last30DaysData: analytics30Days,
+	last7DaysData: analytics7Days,
+} = buildPageRouteDataObject(rawVitals);
 
 const ratingText = {
 	good: 'Good',
@@ -36,7 +27,7 @@ const ratingText = {
 ---
 <div class="analytics-container">
 
-    <Tabs variant='starlight'>
+    <Tabs variant='starlight' syncKey='analytics'>
         <TabItem label="Core Web Vitals">
             <div class="flex-column">
                 <Card fullWidth>
@@ -72,6 +63,37 @@ const ratingText = {
                 </Card>
             </div>
         </TabItem>
+        <TabItem label="Analytics">
+            <Card fullWidth>
+                <div slot="header"><span>Analytics</span></div>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Page Path</th> 
+                                <th>Page Route</th> 
+                                <th>24 Hours</th>
+                                <th>7 Days</th>
+                                <th>30 Days</th>
+                                <th>All Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {analyticData.map(({ pagePathname, analyticData: { pageRoute, pageViews } }) => (
+                                <tr>
+                                    <td>{pagePathname}</td>
+                                    <td>{pageRoute}</td>
+                                    <td>{analytics24Hours.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{analytics7Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{analytics30Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{pageViews}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+        </TabItem>
     </Tabs>
 
 </div>
@@ -95,6 +117,19 @@ const ratingText = {
     .flex-column {
         display: flex;
         flex-direction: column;
+        gap: 1rem;
+    }
+
+    .flex-column-center {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        align-items: center;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
         gap: 1rem;
     }
 
