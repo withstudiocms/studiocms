@@ -1166,12 +1166,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										PageHeaderComponent: components[convertToSafeString(page.title+'pageHeaderComponent')],
-										PageBodyComponent: components[convertToSafeString(page.title+'pageBodyComponent')],
+										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[convertToSafeString(page.title+'innerSidebarComponent')];
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
 									}
 
 									return page;
@@ -1193,12 +1193,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										PageHeaderComponent: components[convertToSafeString(page.title+'pageHeaderComponent')],
-										PageBodyComponent: components[convertToSafeString(page.title+'pageBodyComponent')],
+										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[convertToSafeString(page.title+'innerSidebarComponent')];
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
 									}
 
 									return page;
