@@ -11,7 +11,7 @@ import type { AstroGlobal } from 'astro';
 // --- i18n Config --- //
 
 // Translations
-const uiTranslations = {
+export const uiTranslations = {
 	'en-us': await import('./translations/en-us.json'),
 } as const;
 

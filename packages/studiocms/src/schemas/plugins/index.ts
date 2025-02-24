@@ -1,42 +1,18 @@
 import type { APIRoute, AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
-// import type { ColumnDataType } from 'drizzle-orm';
-// import type { SQLiteColumn, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
-import {
-	DashboardPageSchema,
-	SettingsFieldSchema,
-	TransformFunction,
-	ValidationFunction,
-} from './shared.js';
+import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
 
-// type AsDrizzleTable = SQLiteTableWithColumns<{
-// 	name: string;
-// 	schema: undefined;
-// 	columns: {
-// 		[x: string]: SQLiteColumn<
-// 			{
-// 				name: string;
-// 				tableName: string;
-// 				dataType: ColumnDataType;
-// 				columnType: string;
-// 				data: unknown;
-// 				driverParam: unknown;
-// 				notNull: false;
-// 				hasDefault: false;
-// 				enumValues: string[] | undefined;
-// 				baseColumn: never;
-// 			},
-// 			object
-// 		>;
-// 	};
-// 	dialect: 'sqlite';
-// }>;
-
-// const DrizzleTableSchema = z.custom<{ name: string; table: AsDrizzleTable }>();
-
+/**
+ * Schema for Astro Integration.
+ *
+ * Converts the AstroIntegration type to a Zod schema.
+ */
 const AstroIntegrationSchema = z.custom<AstroIntegration>();
 
+/**
+ * Schema for Astro Integration, which can be an array of Astro Integrations.
+ */
 const AstroIntegrationPossiblyArraySchema = z.union([
 	AstroIntegrationSchema,
 	z.array(AstroIntegrationSchema),
@@ -286,6 +262,7 @@ export type {
 	DashboardPage,
 	AvailableDashboardPages,
 	FinalDashboardPage,
+	StudioCMSColorway,
 } from './shared.js';
 
 /**

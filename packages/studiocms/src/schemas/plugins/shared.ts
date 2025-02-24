@@ -1,11 +1,22 @@
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import { z } from 'astro/zod';
+import { type UiLanguageKeys, uiTranslations } from '../../lib/i18n/index.js';
 
-export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
+// export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
 
-export const TransformFunction = z.function().args(z.any()).returns(z.any());
+// export const TransformFunction = z.function().args(z.any()).returns(z.any());
 
-const StudioCMSColorway = z.enum(['primary', 'success', 'warning', 'danger', 'info', 'mono']);
+/**
+ * Schema for a StudioCMS colorway.
+ */
+export const StudioCMSColorway = z.enum([
+	'primary',
+	'success',
+	'warning',
+	'danger',
+	'info',
+	'mono',
+]);
 
 /**
  * Schema for a base field.
@@ -195,6 +206,26 @@ export const SettingsFieldSchema = z.union([FieldSchema, RowFieldSchema]);
 export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 
 /**
+ * A custom schema for i18n label translations.
+ */
+export const i18nLabelSchema = z.custom<Record<UiLanguageKeys, string>>(
+	(value) => {
+		const keys = Object.keys(value);
+
+		const allowedKeys = Object.keys(uiTranslations);
+
+		for (const key of keys) {
+			if (!allowedKeys.includes(key)) {
+				return false;
+			}
+		}
+
+		return true;
+	},
+	{ message: 'Invalid i18n label translations' }
+);
+
+/**
  * Schema for a base dashboard page props.
  *
  * This schema includes the following properties:
@@ -205,7 +236,7 @@ export type SettingsField = z.infer<typeof SettingsFieldSchema>;
  * - `pageBodyComponent`: The component to render in the page body.
  */
 const BaseDashboardPagePropsSchema = z.object({
-	title: z.string(),
+	title: i18nLabelSchema,
 	description: z.string(),
 	icon: z.custom<HeroIconName>().default('cube-transparent').optional(),
 	requiredPermissions: z
@@ -222,10 +253,22 @@ const BaseDashboardPagePropsSchema = z.object({
 	pageBodyComponent: z.string(),
 });
 
+/**
+ * Schema for a base dashboard page props.
+ *
+ * This schema extends the `BaseDashboardPagePropsSchema` and includes the following properties:
+ * - `slug`: The slug of the dashboard page.
+ */
 const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 	slug: z.string(),
 });
 
+/**
+ * Schema for a base dashboard page props.
+ *
+ * This schema extends the `AvailableBaseSchema` and includes the following properties:
+ * - `components`: An object containing the components to render in the dashboard page.
+ */
 const FinalBaseSchema = AvailableBaseSchema.extend({
 	components: z.object({
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -47,13 +47,15 @@ const loggerMessage = (title: string, slug: string, admin: boolean) =>
 function filterAndProcessPages(
 	pages: FinalDashboardPage[],
 	admin: boolean,
-	permission: ('owner' | 'admin' | 'editor' | 'visitor' | 'none')[]
+	permission: ('owner' | 'admin' | 'editor' | 'visitor' | 'none')[],
+	lang: UiLanguageKeys
 ): SidebarLink[] {
 	const filteredPages: SidebarLink[] = [];
 
-	for (const { title, icon: i, slug, requiredPermissions } of pages) {
+	for (const { title: t, icon: i, slug, requiredPermissions } of pages) {
 		const href = makeDashboardRoute(slug);
 		const icon = i || 'cube-transparent';
+		const title = t[lang];
 
 		if ((admin && requiredPermissions !== 'admin') || (admin && requiredPermissions !== 'owner')) {
 			logger.warn(loggerMessage(title, slug, admin));
@@ -69,7 +71,7 @@ function filterAndProcessPages(
 		}
 
 		if (permission?.includes(requiredPermissions || 'none')) {
-			filteredPages.push({ title, icon, href });
+			filteredPages.push({ title: title, icon, href });
 		}
 	}
 
@@ -100,7 +102,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'home',
 			href: StudioCMSRoutes.mainLinks.dashboardIndex,
 		},
-		...filterAndProcessPages(userPages, false, ['none', 'visitor']),
+		...filterAndProcessPages(userPages, false, ['none', 'visitor'], lang),
 	];
 
 	// Editor links
@@ -110,7 +112,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'pencil-square',
 			href: StudioCMSRoutes.mainLinks.contentManagement,
 		},
-		...filterAndProcessPages(userPages, false, ['editor']),
+		...filterAndProcessPages(userPages, false, ['editor'], lang),
 	];
 
 	// Admin links
@@ -120,7 +122,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'user-group',
 			href: StudioCMSRoutes.mainLinks.userManagement,
 		},
-		...filterAndProcessPages(adminPages, true, ['admin']),
+		...filterAndProcessPages(adminPages, true, ['admin'], lang),
 	];
 
 	// Owner links
@@ -130,7 +132,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'cog-6-tooth',
 			href: StudioCMSRoutes.mainLinks.siteConfiguration,
 		},
-		...filterAndProcessPages(adminPages, true, ['owner']),
+		...filterAndProcessPages(adminPages, true, ['owner'], lang),
 	];
 
 	return {
