@@ -121,7 +121,6 @@
     "./components/*": "./dist/components/*",
     "./layouts/*": "./dist/layouts/*",
     "./lib/*": "./dist/lib/*",
-    "./lib/plugins/*": "./dist/lib/plugins/*",
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
