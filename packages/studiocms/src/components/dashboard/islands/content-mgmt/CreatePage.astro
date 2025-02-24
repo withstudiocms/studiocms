@@ -1,7 +1,9 @@
 ---
 import '../../../../styles/dashboard-tiny-mde.css';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import type { SettingsField } from 'studiocms:plugin-helpers';
+import pluginList from 'studiocms:plugins';
+import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
@@ -18,6 +20,23 @@ const editors = await importEditorKeys(editorKeys);
 let editor: any = editors[convertToSafeString('studiocms/markdown')];
 
 const CurrentEditorComponent = editor;
+
+const pluginFields = pluginList.flatMap(({ pageTypes }) => {
+	const pageTypeOutput: {
+		identifier: string;
+		fields?: SettingsField[];
+	}[] = [];
+
+	if (!pageTypes) {
+		return pageTypeOutput;
+	}
+
+	for (const pageType of pageTypes) {
+		pageTypeOutput.push(pageType);
+	}
+
+	return pageTypeOutput;
+});
 ---
 <div id="create-page-container">
     <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -68,6 +87,16 @@ const CurrentEditorComponent = editor;
                 <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
                 <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
             </div>
+
+            <div id="custom-page-type-fields" style="display: none;">
+              <Card fullWidth>
+                <div slot="header">
+                  <span>Plugin Page Type Fields</span>
+                </div>
+                <div>You have changed your pageType. Please save your changes and refresh the page to see the new fields.</div>
+              </Card>
+            </div>
+
           </div>
           </TabItem>
           <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
@@ -83,9 +112,32 @@ const CurrentEditorComponent = editor;
     </form>
 </div>
 
-<script is:inline define:vars={{ editors }}>
+<script is:inline define:vars={{ editors, pluginFields }}>
 
 // TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
+
+  async function setupPluginFields() {
+    const pageTypeDropdown = document.querySelector('#page-type-dropdown');
+    const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
+
+    pageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
+        const selectedValue = option.getAttribute('value');
+
+        const pluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
+
+        if (!pluginFields) {
+          return;
+        }
+
+        const customPageTypeFields = document.getElementById('custom-page-type-fields');
+
+        if (pluginFields.fields > 0) {
+          customPageTypeFields.style.display = 'block';
+        }
+      })
+    })
+  }
 
   async function setupPageEditorSwapper() {
     const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
@@ -118,6 +170,8 @@ const CurrentEditorComponent = editor;
       })
     })
   }
+
+  setupPluginFields();
   setupPageEditorSwapper();
 </script>
 
@@ -143,32 +197,9 @@ import { toast } from "studiocms:ui/components";
       e.preventDefault();
       const formData = new FormData(createPageForm);
 
-      const data = {
-        title: formData.get('page-title')?.toString(),
-        slug: formData.get('page-slug')?.toString(),
-        description: formData.get('page-description')?.toString(),
-        type: formData.get('page-type')?.toString(),
-        showInNav: formData.get('show-in-nav')?.toString() === 'true',
-        heroImage: formData.get('page-hero-image')?.toString(),
-        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-        showAuthor: formData.get('show-author')?.toString() === 'true',
-        showContributors: formData.get('show-contributors')?.toString() === 'true',
-        categories: [],
-        tags: [],
-        draft: true,
-      };
-
-      const content = {
-            id: crypto.randomUUID(),
-            content: formData.get('page-content')?.toString() ?? '',
-      }
-
       const response = await fetch(createPageForm.action, {
           method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ data, content }),
+          body: formData,
       });
 
       const res = await response.json();

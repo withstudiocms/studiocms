@@ -1,4 +1,7 @@
 import {
+	type AvailableDashboardPages,
+	type DashboardPage,
+	type FinalDashboardPage,
 	type SafePluginListType,
 	type SettingsField,
 	type StudioCMSPlugin,
@@ -11,5 +14,8 @@ export {
 	type SafePluginListType,
 	type StudioCMSPlugin,
 	type StudioCMSPluginOptions,
+	type AvailableDashboardPages,
+	type FinalDashboardPage,
+	type DashboardPage,
 	definePlugin,
 };

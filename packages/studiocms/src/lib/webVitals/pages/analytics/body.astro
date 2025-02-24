@@ -1,0 +1,186 @@
+---
+import { Card, TabItem, Tabs } from 'studiocms:ui/components';
+import { CoreWebVitals } from '../../consts.js';
+import SummaryCard from '../../dashboard-grid-items/SummaryCard.astro';
+import { buildPageRouteDataObject } from '../../utils/buildPageRouteDataObject';
+import { getWebVitals } from '../../webVital.js';
+
+const { summary: coreVitalSummary, routeSummary, raw: rawVitals } = await getWebVitals();
+
+const summaries = CoreWebVitals.map((metric) => ({
+	metric,
+	summary: coreVitalSummary[metric],
+}));
+
+const {
+	perRouteData: analyticData,
+	last24HoursData: analytics24Hours,
+	last30DaysData: analytics30Days,
+	last7DaysData: analytics7Days,
+} = buildPageRouteDataObject(rawVitals);
+
+const ratingText = {
+	good: 'Good',
+	'needs-improvement': 'Needs Improvement',
+	poor: 'Poor',
+};
+---
+<div class="analytics-container">
+
+    <Tabs variant='starlight' syncKey='analytics'>
+        <TabItem label="Core Web Vitals">
+            <div class="flex-column">
+                <Card fullWidth>
+                    <div slot="header"><span>Core Web Vitals Summaries</span></div>
+                    <div class="flex-wrap">
+                        {summaries.map(({ metric, summary }) => (
+                            <SummaryCard {metric} {summary} />
+                        ))}
+                    </div>
+                </Card>
+            
+                <Card fullWidth>
+                    <div slot="header"><span>Core Web Vitals by Route</span></div>
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Route</th> <th>Passing?</th> <th>LCP</th> <th>INP</th> <th>CLS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {routeSummary.map(({ route, metrics, passingCoreWebVitals }) => (
+                                    <tr>
+                                        <td>{route}</td>
+                                        <td><span class:list={[passingCoreWebVitals ? 'good' : 'needs-improvement']}>{passingCoreWebVitals ? 'Yes' : 'No'}</span></td>
+                                        <td><span class:list={[metrics.LCP.rating]}>{ratingText[metrics.LCP.rating]}</span></td>
+                                        <td><span class:list={[metrics.INP.rating]}>{ratingText[metrics.INP.rating]}</span></td>
+                                        <td><span class:list={[metrics.CLS.rating]}>{ratingText[metrics.CLS.rating]}</span></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </Card>
+            </div>
+        </TabItem>
+        <TabItem label="Analytics">
+            <Card fullWidth>
+                <div slot="header"><span>Analytics</span></div>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Page Path</th> 
+                                <th>Views (24 Hours)</th>
+                                <th>Views (7 Days)</th>
+                                <th>Views (30 Days)</th>
+                                <th>Views (All Time)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {analyticData.map(({ pagePathname, analyticData: { pageViews } }) => (
+                                <tr>
+                                    <td>{pagePathname}</td>
+                                    <td>{analytics24Hours.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{analytics7Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{analytics30Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
+                                    <td>{pageViews}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+        </TabItem>
+    </Tabs>
+
+</div>
+
+<style>
+    .analytics-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .flex-wrap {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: .5rem;
+        margin-bottom: 1rem;
+    }
+
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .flex-column-center {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        align-items: center;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        padding: .5rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    td {
+        padding: .5rem;
+        border-bottom: 1px solid hsl(var(--border));
+        background-color: inherit;
+
+        span {
+            background-color: inherit;
+        }
+    }
+
+    span.good {
+        color: hsl(var(--success-base));
+    }
+
+    span.needs-improvement {
+        color: hsl(var(--warning-base)); 
+    }
+
+    span.poor {
+        color: hsl(var(--danger-base));
+    }
+
+    tr {
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+
+    tr:last-child {
+        border-bottom: none;
+    }
+
+    tbody tr:nth-child(odd) {
+        background-color: hsl(var(--background-base));
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: hsl(var(--background-step-1));
+    }
+
+
+</style>
