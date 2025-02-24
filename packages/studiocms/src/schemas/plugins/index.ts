@@ -73,13 +73,13 @@ export const StudioCMSPluginSchema = z.object({
 			 *
 			 * These are shown in the "Dashboard" section of the dashboard sidebar
 			 */
-			user: z.array(DashboardPageSchema).optional(),
+			user: z.array(DashboardPageSchema).default([]).optional(),
 			/**
 			 * Pages for the editor role
 			 *
 			 * These are shown in the "Admin" section of the dashboard sidebar
 			 */
-			admin: z.array(DashboardPageSchema).optional(),
+			admin: z.array(DashboardPageSchema).default([]).optional(),
 		})
 		.optional(),
 	/**

@@ -1000,7 +1000,8 @@ export const studiocms = defineIntegration({
 									};
 
 									const remappedComps = Object.entries(components).map(
-										([key, value]) => `export { default as ${key} } from '${value}';`
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
 									);
 
 									return remappedComps.join('\n');
@@ -1012,7 +1013,8 @@ export const studiocms = defineIntegration({
 								};
 
 								const remappedComps = Object.entries(components).map(
-									([key, value]) => `export { default as ${key} } from '${value}';`
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
 								);
 
 								return remappedComps.join('\n');
@@ -1030,7 +1032,8 @@ export const studiocms = defineIntegration({
 									};
 
 									const remappedComps = Object.entries(components).map(
-										([key, value]) => `export { default as ${key} } from '${value}';`
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
 									);
 
 									return remappedComps.join('\n');
@@ -1042,7 +1045,8 @@ export const studiocms = defineIntegration({
 								};
 
 								const remappedComps = Object.entries(components).map(
-									([key, value]) => `export { default as ${key} } from '${value}';`
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
 								);
 
 								return remappedComps.join('\n');
@@ -1154,6 +1158,7 @@ export const studiocms = defineIntegration({
 								${dashboardPagesComponentsUser}
 							`,
 							'studiocms:plugins/dashboard-pages/user': `
+								import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
 								import * as components from 'studiocms:plugins/dashboard-pages/components/user';
 
 								const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
@@ -1162,12 +1167,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										PageHeaderComponent: components[page.pageHeaderComponent],
-										PageBodyComponent: components[page.pageBodyComponent],
+										PageHeaderComponent: components[convertToSafeString(page.title+'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title+'pageBodyComponent')],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[page.innerSidebarComponent];
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title+'innerSidebarComponent')];
 									}
 
 									return page;
@@ -1180,6 +1185,7 @@ export const studiocms = defineIntegration({
 								${dashboardPagesComponentsAdmin}
 							`,
 							'studiocms:plugins/dashboard-pages/admin': `
+								import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
 								import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
 
 								const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
@@ -1188,12 +1194,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										PageHeaderComponent: components[page.pageHeaderComponent],
-										PageBodyComponent: components[page.pageBodyComponent],
+										PageHeaderComponent: components[convertToSafeString(page.title+'pageHeaderComponent')],
+										PageBodyComponent: components[convertToSafeString(page.title+'pageBodyComponent')],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[page.innerSidebarComponent];
+										page.components.InnerSidebarComponent = components[convertToSafeString(page.title+'innerSidebarComponent')];
 									}
 
 									return page;

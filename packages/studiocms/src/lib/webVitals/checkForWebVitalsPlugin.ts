@@ -86,6 +86,21 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 					},
 				},
 			],
+			dashboardPages: {
+				admin: [
+					{
+						title: {
+							'en-us': 'Analytics and Vitals',
+						},
+						icon: 'chart-pie',
+						description: 'View the Core Web Vitals and Analytics of your site.',
+						sidebar: 'single',
+						pageBodyComponent: resolve('./pages/analytics/body.astro'),
+						pageHeaderComponent: resolve('./pages/analytics/header.astro'),
+						requiredPermissions: 'admin',
+					},
+				],
+			},
 		};
 
 		if (enabled) {

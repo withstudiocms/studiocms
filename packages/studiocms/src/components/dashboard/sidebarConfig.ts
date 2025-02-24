@@ -58,17 +58,32 @@ function filterAndProcessPages(
 		const icon = ico || 'cube-transparent';
 		const title = t[lang] || t[defaultLang];
 
-		if ((admin && requiredPermissions !== 'admin') || (admin && requiredPermissions !== 'owner')) {
-			logger.warn(loggerMessage(title, slug, admin));
-			continue;
-		}
-
-		if (
-			(!admin && requiredPermissions === 'admin') ||
-			(!admin && requiredPermissions === 'owner')
-		) {
-			logger.warn(loggerMessage(title, slug, admin));
-			continue;
+		if (admin) {
+			if (requiredPermissions === undefined) {
+				logger.warn(loggerMessage(title, slug, admin));
+				continue;
+			}
+			if (requiredPermissions === 'none') {
+				logger.warn(loggerMessage(title, slug, admin));
+				continue;
+			}
+			if (requiredPermissions === 'visitor') {
+				filteredPages.push({ title: title, icon, href });
+				continue;
+			}
+			if (requiredPermissions === 'editor') {
+				filteredPages.push({ title: title, icon, href });
+				continue;
+			}
+		} else {
+			if (requiredPermissions === 'admin') {
+				logger.warn(loggerMessage(title, slug, admin));
+				continue;
+			}
+			if (requiredPermissions === 'owner') {
+				logger.warn(loggerMessage(title, slug, admin));
+				continue;
+			}
 		}
 
 		if (permission?.includes(requiredPermissions || 'none')) {
