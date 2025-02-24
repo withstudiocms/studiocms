@@ -53,9 +53,9 @@ function filterAndProcessPages(
 ): SidebarLink[] {
 	const filteredPages: SidebarLink[] = [];
 
-	for (const { title: t, icon: i, slug, requiredPermissions } of pages) {
+	for (const { title: t, icon: ico, slug, requiredPermissions } of pages) {
 		const href = makeDashboardRoute(slug);
-		const icon = i || 'cube-transparent';
+		const icon = ico || 'cube-transparent';
 		const title = t[lang] || t[defaultLang];
 
 		if ((admin && requiredPermissions !== 'admin') || (admin && requiredPermissions !== 'owner')) {

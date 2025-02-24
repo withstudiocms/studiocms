@@ -241,9 +241,24 @@ export const i18nLabelSchema = z.custom<Record<UiTranslationKey, string>>(
  * - `pageBodyComponent`: The component to render in the page body.
  */
 const BaseDashboardPagePropsSchema = z.object({
+	/**
+	 * The title of the dashboard page
+	 */
 	title: i18nLabelSchema,
+	/**
+	 * The description of the dashboard page
+	 */
 	description: z.string(),
+	/**
+	 * The icon to display in the sidebar
+	 *
+	 * @default 'cube-transparent'
+	 * @optional
+	 */
 	icon: z.custom<HeroIconName>().default('cube-transparent').optional(),
+	/**
+	 * The required permissions to access the page
+	 */
 	requiredPermissions: z
 		.union([
 			z.literal('owner'),
@@ -254,7 +269,13 @@ const BaseDashboardPagePropsSchema = z.object({
 		])
 		.default('none')
 		.optional(),
+	/**
+	 * The component to render in the page header
+	 */
 	pageHeaderComponent: z.string(),
+	/**
+	 * The component to render in the page body
+	 */
 	pageBodyComponent: z.string(),
 });
 
@@ -265,6 +286,9 @@ const BaseDashboardPagePropsSchema = z.object({
  * - `slug`: The slug of the dashboard page.
  */
 const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
+	/**
+	 * The slug of the dashboard page
+	 */
 	slug: z.string(),
 });
 
@@ -292,6 +316,9 @@ const FinalBaseSchema = AvailableBaseSchema.extend({
  * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
  */
 const SingleSidebarSchema = BaseDashboardPagePropsSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('single'),
 });
 
@@ -302,6 +329,9 @@ const SingleSidebarSchema = BaseDashboardPagePropsSchema.extend({
  * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
  */
 const AvailableSingleSchema = AvailableBaseSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('single'),
 });
 
@@ -312,6 +342,9 @@ const AvailableSingleSchema = AvailableBaseSchema.extend({
  * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
  */
 const FinalSingleSchema = FinalBaseSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('single'),
 });
 
@@ -323,7 +356,13 @@ const FinalSingleSchema = FinalBaseSchema.extend({
  * - `innerSidebarComponent`: The component to render in the inner sidebar.
  */
 const DoubleSidebarSchema = BaseDashboardPagePropsSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('double'),
+	/**
+	 * The component to render in the inner sidebar
+	 */
 	innerSidebarComponent: z.string(),
 });
 
@@ -335,7 +374,13 @@ const DoubleSidebarSchema = BaseDashboardPagePropsSchema.extend({
  * - `innerSidebarComponent`: The component to render in the inner sidebar.
  */
 const AvailableDoubleSchema = AvailableBaseSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('double'),
+	/**
+	 * The component to render in the inner sidebar
+	 */
 	innerSidebarComponent: z.string(),
 });
 
@@ -347,7 +392,13 @@ const AvailableDoubleSchema = AvailableBaseSchema.extend({
  * - `innerSidebarComponent`: The component to render in the inner sidebar.
  */
 const FinalDoubleSchema = FinalBaseSchema.extend({
+	/**
+	 * The sidebar layout
+	 */
 	sidebar: z.literal('double'),
+	/**
+	 * The component to render in the inner sidebar
+	 */
 	innerSidebarComponent: z.string(),
 });
 
@@ -383,7 +434,13 @@ export const FinalDashboardBaseSchema = z.union([FinalSingleSchema, FinalDoubleS
  * - `admin`: An optional array of `AvailableDashboardBaseSchema` representing the available dashboard pages for admins.
  */
 export const AvailableDashboardPagesSchema = z.object({
+	/**
+	 * Available dashboard pages for users
+	 */
 	user: z.array(AvailableDashboardBaseSchema).optional(),
+	/**
+	 * Available dashboard pages for admins
+	 */
 	admin: z.array(AvailableDashboardBaseSchema).optional(),
 });
 
@@ -392,18 +449,18 @@ export const AvailableDashboardPagesSchema = z.object({
  *
  * This type is used to define the structure of dashboard pages within the application.
  */
-export type DashboardPage = z.infer<typeof DashboardPageSchema>;
+export type DashboardPage = typeof DashboardPageSchema._input;
 
 /**
  * Represents the type inferred from the `AvailableDashboardBaseSchema` schema.
  *
  * This type is used to define the structure of available dashboard pages within the application.
  */
-export type AvailableDashboardPages = z.infer<typeof AvailableDashboardPagesSchema>;
+export type AvailableDashboardPages = typeof AvailableDashboardPagesSchema._output;
 
 /**
  * Represents the type inferred from the `FinalDashboardBaseSchema` schema.
  *
  * This type is used to define the structure of final dashboard pages within the application.
  */
-export type FinalDashboardPage = z.infer<typeof FinalDashboardBaseSchema>;
+export type FinalDashboardPage = typeof FinalDashboardBaseSchema._output;

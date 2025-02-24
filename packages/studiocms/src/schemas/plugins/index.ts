@@ -165,8 +165,6 @@ export const StudioCMSPluginSchema = z.object({
 
 				// TODO: Figure out the best way to handle more complex plugin systems...
 				// Ideally, we would want to be able to handle the following cases:
-				// - Single page type per plugin
-				// - Multiple page types per plugin
 				// - Advanced page types with custom fields, content transforms, and page content components
 				// - Page types that are stored in different tables
 				// - Page types that have different content transforms
@@ -174,57 +172,6 @@ export const StudioCMSPluginSchema = z.object({
 				// - Page types that have different fields
 				// - Page types that have different validation functions
 				// - Page types that have different database conversion functions
-
-				// /**
-				//  * Fields that are shown in the page creation form
-				//  */
-				// fields: z
-				// 	.object({
-				// 		/**
-				// 		 * Fields according to specification
-				// 		 */
-				// 		fields: z.array(SettingsFieldSchema),
-				// 		/**
-				// 		 * Database Conversion function that runs on save after validation
-				// 		 */
-				// 		transform: TransformFunction,
-				// 		/**
-				// 		 * AstroDB Table to store the data in
-				// 		 *
-				// 		 * @example
-				// 		 * ```ts
-				// 		 * import { myTable } from '../dbTables';
-				// 		 *
-				// 		 * {
-				// 		 * table: { name: 'myTable', table: myTable },
-				// 		 * }
-				// 		 */
-				// 		table: DrizzleTableSchema,
-				// 	})
-				// 	.optional(),
-				// /**
-				//  * A function that takes in all basic info & the page content and gets to modify it. `any` type for visualization purposes.
-				//  */
-				// contentTransform: z
-				// 	.object({
-				// 		/**
-				// 		 * Content Transform function. Takes in all the values and returns the modified values to be stored in the database.
-				// 		 */
-				// 		transform: TransformFunction,
-				// 		/**
-				// 		 * AstroDB Table to store the data in
-				// 		 *
-				// 		 * @example
-				// 		 * ```ts
-				// 		 * import { myTable } from '../dbTables';
-				// 		 *
-				// 		 * {
-				// 		 * table: { name: 'myTable', table: myTable },
-				// 		 * }
-				// 		 */
-				// 		table: DrizzleTableSchema,
-				// 	})
-				// 	.optional(),
 			})
 		)
 		.optional(),
@@ -253,7 +200,7 @@ export const SafePluginListItemSchema = StudioCMSPluginSchema.omit({
 
 export const SafePluginListSchema = z.array(SafePluginListItemSchema);
 
-export type StudioCMSPluginOptions = z.infer<typeof StudioCMSPluginSchema>;
+export type StudioCMSPluginOptions = typeof StudioCMSPluginSchema._input;
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
 export interface StudioCMSPlugin extends StudioCMSPluginOptions {}
