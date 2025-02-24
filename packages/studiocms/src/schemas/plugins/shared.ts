@@ -233,7 +233,7 @@ const FinalBaseSchema = AvailableBaseSchema.extend({
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		PageBodyComponent: z.custom<(_props: any) => any>(),
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		InnerSidebarComponent: z.custom<(_props: any) => any>(),
+		InnerSidebarComponent: z.custom<(_props: any) => any>().optional(),
 	}),
 });
 

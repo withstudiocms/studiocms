@@ -5,41 +5,55 @@ import type { FinalDashboardPage } from '../../schemas/index.js';
 
 const lang = 'en-us';
 
+// Get all the pages from the plugins
 const { adminPages, userPages } = getPluginDashboardPages();
 
+// Get the plugin page param from the URL
 const { pluginPage } = Astro.params;
 
+// Declare the page variable
 let page: FinalDashboardPage | undefined;
 
-if (pluginPage) {
-	page =
-		adminPages.find(({ slug }) => slug === pluginPage) ||
-		userPages.find(({ slug }) => slug === pluginPage);
+// If the plugin page is not found, return a 404
+if (!pluginPage) {
+	return new Response(null, { status: 404 });
 }
 
+// Find the page from the admin and user pages
+page =
+	adminPages.find(({ slug }) => slug === pluginPage) ||
+	userPages.find(({ slug }) => slug === pluginPage);
+
+// If the page is not found, return a 404
 if (!page) {
 	return new Response(null, { status: 404 });
 }
 
-const { sidebar, components, title, description, requiredPermissions } = page;
+// Destructure the page object
+const {
+	sidebar,
+	components: { PageBodyComponent, PageHeaderComponent, InnerSidebarComponent },
+	title,
+	description,
+	requiredPermissions,
+} = page;
 
-const { PageBodyComponent, PageHeaderComponent } = components;
-
-const InnerSidebarComponent = sidebar === 'double' ? components.InnerSidebarComponent : null;
+// Check if the sidebar is double and if the InnerSidebarComponent exists to determine the sidebar configuration
+const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' : 'single';
 ---
 
 <Layout 
   title={title}
   description={description}
   requiredPermission={requiredPermissions}
-  sidebar={sidebar}
+  sidebar={sidebarConfig}
   {lang}
   >
 
-  { sidebar === 'double' && ( 
+  { sidebarConfig === 'double' && InnerSidebarComponent && ( 
     <div slot="double-sidebar" class="inner-sidebar-container">
       <div class="sidebar-links-container">
-        { InnerSidebarComponent && <InnerSidebarComponent />}
+        <InnerSidebarComponent />
       </div>
     </div>
    )}
