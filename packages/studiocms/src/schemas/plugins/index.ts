@@ -169,7 +169,7 @@ export const StudioCMSPluginSchema = z.object({
 				 */
 				pageContentComponent: z.string().optional(),
 
-				// TODO: Add support for custom fields
+				fields: z.array(SettingsFieldSchema).optional(),
 
 				/**
 				 * API Endpoints for the page type

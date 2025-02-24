@@ -2,10 +2,13 @@
 import '../../../../styles/dashboard-tiny-mde.css';
 import { FormattedDate } from 'studiocms:components';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import type { SettingsField } from 'studiocms:plugin-helpers';
+import pluginList from 'studiocms:plugins';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
+import PluginFields from './PluginFields.astro';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
 	categoriesOptions,
@@ -42,6 +45,25 @@ const editors = await importEditorKeys(editorKeys);
 let editor: any = editors[convertToSafeString(pageData.package)];
 
 const CurrentEditorComponent = editor;
+
+const pluginFields = pluginList
+	.flatMap(({ pageTypes }) => {
+		const pageTypeOutput: {
+			identifier: string;
+			fields?: SettingsField[];
+		}[] = [];
+
+		if (!pageTypes) {
+			return pageTypeOutput;
+		}
+
+		for (const pageType of pageTypes) {
+			pageTypeOutput.push(pageType);
+		}
+
+		return pageTypeOutput;
+	})
+	.find((pageType) => pageType.identifier === pageData.package);
 ---
 <div id="edit-page-container">
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
@@ -95,6 +117,16 @@ const CurrentEditorComponent = editor;
                     <Select label="Show Author" name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
                     <Select label="Show Contributors" name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
                 </div>
+
+                  <div id="custom-page-type-fields" class:list={[pluginFields?.fields ? '' : 'page-types-hidden']}>
+                    <Card fullWidth>
+                      <div slot="header">
+                        <span>Plugin Page Type Fields</span>
+                      </div>
+                      {pluginFields?.fields && (<PluginFields fields={pluginFields.fields} /> )}
+                      <div>You have changed your pageType. Please save your changes and refresh the page to see the new fields.</div>
+                    </Card>
+                  </div>
             </div>
           </TabItem>
           <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
@@ -154,6 +186,36 @@ const CurrentEditorComponent = editor;
 
 // TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
 
+  async function setupPluginFields() {
+    const pageTypeDropdown = document.querySelector('#page-type-dropdown');
+    const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
+
+    pageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
+        const selectedValue = option.getAttribute('value');
+
+        const pluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
+
+        if (!pluginFields) {
+          return;
+        }
+
+        const customPageTypeFields = document.getElementById('custom-page-type-fields');
+
+        if (pluginFields.fields > 0) {
+          customPageTypeFields.classList.remove('page-types-hidden');
+          customPageTypeFields.style.display = 'block';
+        }
+
+        if (pluginFields.fields === 0) {
+          customPageTypeFields.classList.add('page-types-hidden');
+          customPageTypeFields.style.display = 'none';
+        }
+      })
+    })
+  }
+
+
   async function setupPageEditorSwapper() {
     const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
 
@@ -185,6 +247,8 @@ const CurrentEditorComponent = editor;
       })
     })
   }
+
+  setupPluginFields();
   setupPageEditorSwapper();
 </script>
 <script>
@@ -227,6 +291,10 @@ editPageForm.addEventListener('submit', async (e) => {
 
 
 <style>
+    .page-types-hidden {
+      display: none;
+    }
+
     #edit-page-container {
         height: 100%;
         width: 100%;
