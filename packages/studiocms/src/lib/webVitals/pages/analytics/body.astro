@@ -45,13 +45,14 @@ const ratingText = {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Route</th> <th>LCP</th> <th>INP</th> <th>CLS</th>
+                                    <th>Route</th> <th>Passing?</th> <th>LCP</th> <th>INP</th> <th>CLS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {routeSummary.map(({ route, metrics }) => (
+                                {routeSummary.map(({ route, metrics, passingCoreWebVitals }) => (
                                     <tr>
                                         <td>{route}</td>
+                                        <td><span class:list={[passingCoreWebVitals ? 'good' : 'needs-improvement']}>{passingCoreWebVitals ? 'Yes' : 'No'}</span></td>
                                         <td><span class:list={[metrics.LCP.rating]}>{ratingText[metrics.LCP.rating]}</span></td>
                                         <td><span class:list={[metrics.INP.rating]}>{ratingText[metrics.INP.rating]}</span></td>
                                         <td><span class:list={[metrics.CLS.rating]}>{ratingText[metrics.CLS.rating]}</span></td>
@@ -71,18 +72,16 @@ const ratingText = {
                         <thead>
                             <tr>
                                 <th>Page Path</th> 
-                                <th>Page Route</th> 
-                                <th>24 Hours</th>
-                                <th>7 Days</th>
-                                <th>30 Days</th>
-                                <th>All Time</th>
+                                <th>Views (24 Hours)</th>
+                                <th>Views (7 Days)</th>
+                                <th>Views (30 Days)</th>
+                                <th>Views (All Time)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {analyticData.map(({ pagePathname, analyticData: { pageRoute, pageViews } }) => (
+                            {analyticData.map(({ pagePathname, analyticData: { pageViews } }) => (
                                 <tr>
                                     <td>{pagePathname}</td>
-                                    <td>{pageRoute}</td>
                                     <td>{analytics24Hours.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
                                     <td>{analytics7Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
                                     <td>{analytics30Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
