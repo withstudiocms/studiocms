@@ -180,11 +180,23 @@ export const StudioCMSPluginSchema = z.object({
 				 */
 				apiEndpoints: z
 					.object({
-						/** POST */
+						/**
+						 * POST
+						 *
+						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 */
 						onCreate: AstroAPIRouteSchema.optional(),
-						/** PATCH */
+						/**
+						 * PATCH
+						 *
+						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 */
 						onEdit: AstroAPIRouteSchema.optional(),
-						/** DELETE */
+						/**
+						 * DELETE
+						 *
+						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 */
 						onDelete: AstroAPIRouteSchema.optional(),
 					})
 					.optional(),
