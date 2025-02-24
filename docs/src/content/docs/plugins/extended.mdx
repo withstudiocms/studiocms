@@ -226,9 +226,9 @@ If you are looking to use the built-in StudioCMS navigation helpers in your proj
 
 ```astro title="Navigation.astro"
 ---
-import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
-import plugins from 'studiocms:plugins';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk/cache';
+import { frontendNavigation } from 'studiocms:plugin-helpers';
 
 // Define the props for the Navigation component
 interface Props {
@@ -240,8 +240,6 @@ const { topLevelLinkCount = 3 } = Astro.props;
 
 // Get the site config and page list
 const config = (await studioCMS_SDK.GET.siteConfig()).data;
-const fullPageList = await studioCMS_SDK.GET.pages();
-const pageListData = fullPageList.map(({ data }) => data);
 
 // Get the site title from the config
 const { title } = config || { title: 'StudioCMS' };
@@ -258,47 +256,7 @@ type LinkProps = {
 };
 
 // Define the links for the navigation
-const links: LinkProps[] = [];
-
-// Get the pages that are set to show on the navigation
-const navPagesList = pageListData
-	.filter((page) => page.showOnNav === true && page.package === 'studiocms/markdown')
-	.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
-
-// Get the index page
-const indexPage = navPagesList.find((page) => page.slug === 'index');
-
-// Add the main site URL to the links
-if (indexPage) {
-	links.push({
-		text: indexPage.title || 'Home',
-		href: import.meta.env.BASE_URL,
-	});
-}
-
-// Get the rest of the pages that are set to show on the navigation
-const restOfPages = navPagesList.filter((page) => page.slug !== 'index');
-
-// Add the rest of the pages to the links
-for (const page of restOfPages) {
-	links.push({
-		text: page.title,
-		href: pathWithBase(page.slug),
-	});
-}
-
-// Add the frontend navigation links from the plugins
-for (const { frontendNavigationLinks } of plugins) {
-    if (!frontendNavigationLinks) {
-        continue;
-    }
-	for (const link of frontendNavigationLinks) {
-		links.push({
-			text: link.label,
-			href: pathWithBase(link.href),
-		});
-	}
-}
+const links: LinkProps[] = await frontendNavigation();
 ---
 {/* If no dropdown items */}
 { ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
