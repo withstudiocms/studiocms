@@ -13,7 +13,8 @@ let page: FinalDashboardPage | undefined;
 
 if (pluginPage) {
 	page =
-		adminPages.find((p) => p.slug === pluginPage) || userPages.find((p) => p.slug === pluginPage);
+		adminPages.find(({ slug }) => slug === pluginPage) ||
+		userPages.find(({ slug }) => slug === pluginPage);
 }
 
 if (!page) {
