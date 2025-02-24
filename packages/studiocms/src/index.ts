@@ -20,7 +20,6 @@ import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { defaultLang } from './lib/i18n/config.js';
 import {
 	apiRoute,
 	removeLeadingTrailingSlashes,
