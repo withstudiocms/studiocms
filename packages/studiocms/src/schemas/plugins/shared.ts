@@ -1,3 +1,4 @@
+import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import { z } from 'astro/zod';
 
 export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
@@ -206,6 +207,7 @@ export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 const BaseDashboardPagePropsSchema = z.object({
 	title: z.string(),
 	description: z.string(),
+	icon: z.custom<HeroIconName>().default('cube-transparent').optional(),
 	requiredPermissions: z
 		.union([
 			z.literal('owner'),
@@ -242,10 +244,22 @@ const SingleSidebarSchema = BaseDashboardPagePropsSchema.extend({
 	sidebar: z.literal('single'),
 });
 
+/**
+ * Schema for a single sidebar dashboard page.
+ *
+ * This schema extends the `AvailableBaseSchema` and includes the following properties:
+ * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
+ */
 const AvailableSingleSchema = AvailableBaseSchema.extend({
 	sidebar: z.literal('single'),
 });
 
+/**
+ * Schema for a single sidebar dashboard page.
+ *
+ * This schema extends the `FinalBaseSchema` and includes the following properties:
+ * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
+ */
 const FinalSingleSchema = FinalBaseSchema.extend({
 	sidebar: z.literal('single'),
 });
@@ -262,11 +276,25 @@ const DoubleSidebarSchema = BaseDashboardPagePropsSchema.extend({
 	innerSidebarComponent: z.string(),
 });
 
+/**
+ * Schema for a double sidebar dashboard page.
+ *
+ * This schema extends the `AvailableBaseSchema` and includes the following properties:
+ * - `sidebar`: A literal string 'double' indicating a double sidebar layout.
+ * - `innerSidebarComponent`: The component to render in the inner sidebar.
+ */
 const AvailableDoubleSchema = AvailableBaseSchema.extend({
 	sidebar: z.literal('double'),
 	innerSidebarComponent: z.string(),
 });
 
+/**
+ * Schema for a double sidebar dashboard page.
+ *
+ * This schema extends the `FinalBaseSchema` and includes the following properties:
+ * - `sidebar`: A literal string 'double' indicating a double sidebar layout.
+ * - `innerSidebarComponent`: The component to render in the inner sidebar.
+ */
 const FinalDoubleSchema = FinalBaseSchema.extend({
 	sidebar: z.literal('double'),
 	innerSidebarComponent: z.string(),
@@ -280,10 +308,29 @@ const FinalDoubleSchema = FinalBaseSchema.extend({
  */
 export const DashboardPageSchema = z.union([SingleSidebarSchema, DoubleSidebarSchema]);
 
+/**
+ * A union schema that represents different types of available dashboard base schemas.
+ * This schema can be one of the following:
+ * - AvailableSingleSchema
+ * - AvailableDoubleSchema
+ */
 export const AvailableDashboardBaseSchema = z.union([AvailableSingleSchema, AvailableDoubleSchema]);
 
+/**
+ * A union schema that represents different types of final dashboard base schemas.
+ * This schema can be one of the following:
+ * - FinalSingleSchema
+ * - FinalDoubleSchema
+ */
 export const FinalDashboardBaseSchema = z.union([FinalSingleSchema, FinalDoubleSchema]);
 
+/**
+ * Schema for an array of available dashboard pages.
+ *
+ * This schema defines an object with the following properties:
+ * - `user`: An optional array of `AvailableDashboardBaseSchema` representing the available dashboard pages for users.
+ * - `admin`: An optional array of `AvailableDashboardBaseSchema` representing the available dashboard pages for admins.
+ */
 export const AvailableDashboardPagesSchema = z.object({
 	user: z.array(AvailableDashboardBaseSchema).optional(),
 	admin: z.array(AvailableDashboardBaseSchema).optional(),
@@ -296,6 +343,16 @@ export const AvailableDashboardPagesSchema = z.object({
  */
 export type DashboardPage = z.infer<typeof DashboardPageSchema>;
 
+/**
+ * Represents the type inferred from the `AvailableDashboardBaseSchema` schema.
+ *
+ * This type is used to define the structure of available dashboard pages within the application.
+ */
 export type AvailableDashboardPages = z.infer<typeof AvailableDashboardPagesSchema>;
 
+/**
+ * Represents the type inferred from the `FinalDashboardBaseSchema` schema.
+ *
+ * This type is used to define the structure of final dashboard pages within the application.
+ */
 export type FinalDashboardPage = z.infer<typeof FinalDashboardBaseSchema>;
