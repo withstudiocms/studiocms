@@ -7,6 +7,7 @@
 
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import ui from '@studiocms/ui';
+import integration from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
@@ -1248,10 +1249,15 @@ export const studiocms = defineIntegration({
 					});
 
 					if (rendererConfig.renderer === 'studiocms') {
+						integrationLogger(logInfo, 'Injecting StudioCMS Renderer CSS...');
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
 
 					// Update the Astro Config
+					integrationLogger(
+						logInfo,
+						'Updating Astro Config with StudioCMS Resources and settings...'
+					);
 					updateConfig({
 						image: {
 							remotePatterns: [
