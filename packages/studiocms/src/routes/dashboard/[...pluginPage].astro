@@ -18,7 +18,7 @@ if (pluginPage) {
 }
 
 if (!page) {
-	return Astro.redirect('/404');
+	return new Response(null, { status: 404 });
 }
 
 const { sidebar, components, title, description, requiredPermissions } = page;
