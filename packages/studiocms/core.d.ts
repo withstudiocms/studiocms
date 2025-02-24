@@ -6,6 +6,11 @@ declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
 
+declare module 'studiocms:logger' {
+	export const logger: import('astro').AstroIntegrationLogger;
+	export default logger;
+}
+
 declare module 'studiocms:components/dashboard-grid-items' {
 	export const dashboardGridItems: import('./src/lib/dashboardGrid').GridItemUsable[];
 	export default dashboardGridItems;

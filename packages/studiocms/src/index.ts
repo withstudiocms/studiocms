@@ -6,6 +6,7 @@
 /// <reference types="@astrojs/db" />
 
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
+import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
@@ -254,6 +255,10 @@ export const studiocms = defineIntegration({
 
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS...');
+
+					runtimeLogger(params, {
+						name: 'studiocms-runtime',
+					});
 
 					// Check Astro Config for required settings
 					checkAstroConfig(params);
@@ -1102,6 +1107,11 @@ export const studiocms = defineIntegration({
 							'studiocms:component-proxy': `
 								export const componentKeys = ${JSON.stringify(componentKeys || [])};
 								${components}
+							`,
+
+							'studiocms:logger': `
+								import { logger } from '@it-astro:logger:studiocms-runtime';
+								export default logger.fork('studiocms:runtime');
 							`,
 
 							// Plugin Helpers

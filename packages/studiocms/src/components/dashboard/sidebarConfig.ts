@@ -1,5 +1,6 @@
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes, makeDashboardRoute } from 'studiocms:lib';
+import logger from 'studiocms:logger';
 import { getPluginDashboardPages } from 'studiocms:plugin-helpers';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 
@@ -27,13 +28,13 @@ for (const { title, icon: i, slug, requiredPermissions } of adminPages) {
 			pluginAdminLinks.push({ title, icon, href });
 			break;
 		case 'editor':
-			console.warn(
+			logger.warn(
 				`Plugin page ${title} is an editor page and should be part of the userPages and not the adminPages`
 			);
 			pluginEditorLinks.push({ title, icon, href });
 			break;
 		default:
-			console.warn(
+			logger.warn(
 				`Plugin page ${title} is a unrestricted page and should be part of the userPages and not the adminPages`
 			);
 			pluginBaseLinks.push({ title, icon, href });
@@ -46,13 +47,13 @@ for (const { title, icon: i, slug, requiredPermissions } of userPages) {
 	const icon = i || 'cube-transparent';
 	switch (requiredPermissions) {
 		case 'owner':
-			console.warn(
+			logger.warn(
 				`Plugin page ${title} is an owner page and should be part of the adminPages and not the userPages`
 			);
 			pluginOwnerLinks.push({ title, icon, href });
 			break;
 		case 'admin':
-			console.warn(
+			logger.warn(
 				`Plugin page ${title} is an admin page and should be part of the adminPages and not the userPages`
 			);
 			pluginAdminLinks.push({ title, icon, href });
