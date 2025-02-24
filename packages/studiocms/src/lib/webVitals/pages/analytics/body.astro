@@ -5,11 +5,11 @@ import SummaryCard from '../../dashboard-grid-items/SummaryCard.astro';
 import { buildPageRouteDataObject } from '../../utils/buildPageRouteDataObject';
 import { getWebVitals } from '../../webVital.js';
 
-const { summary, routeSummary, raw: rawVitals } = await getWebVitals();
+const { summary: coreVitalSummary, routeSummary, raw: rawVitals } = await getWebVitals();
 
 const summaries = CoreWebVitals.map((metric) => ({
 	metric,
-	summary: summary[metric],
+	summary: coreVitalSummary[metric],
 }));
 
 const {
