@@ -1,6 +1,6 @@
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import { z } from 'astro/zod';
-import { type UiLanguageKeys, uiTranslations } from '../../lib/i18n/index.js';
+import { type UiLanguageKeys, uiTranslationsAvailable } from '../../lib/i18n/index.js';
 
 // export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
 
@@ -212,7 +212,7 @@ export const i18nLabelSchema = z.custom<Record<UiLanguageKeys, string>>(
 	(value) => {
 		const keys = Object.keys(value);
 
-		const allowedKeys = Object.keys(uiTranslations);
+		const allowedKeys = Object.keys(uiTranslationsAvailable);
 
 		for (const key of keys) {
 			if (!allowedKeys.includes(key)) {
