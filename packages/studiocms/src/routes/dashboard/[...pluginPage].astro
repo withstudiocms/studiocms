@@ -50,13 +50,16 @@ const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' :
   {lang}
   >
 
-  { sidebarConfig === 'double' && InnerSidebarComponent && ( 
-    <div slot="double-sidebar" class="inner-sidebar-container">
-      <div class="sidebar-links-container">
-        <InnerSidebarComponent />
+  { 
+    sidebarConfig === 'double' && 
+    /* This is a safety check due to types even though we are checking above */ 
+    InnerSidebarComponent && ( 
+      <div slot="double-sidebar" class="inner-sidebar-container">
+        <div class="sidebar-links-container">
+          <InnerSidebarComponent />
+        </div>
       </div>
-    </div>
-   )}
+    )}
 
   <div slot="header">
     <PageHeaderComponent />
