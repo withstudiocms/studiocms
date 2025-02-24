@@ -133,6 +133,14 @@ declare module 'studiocms:plugins' {
 
 declare module 'studiocms:plugin-helpers' {
 	export type SettingsField = import('./src/plugins.js').SettingsField;
+	export type SafePluginListType = import('./src/plugins.js').SafePluginListType;
+	export type StudioCMSPlugin = import('./src/plugins.js').StudioCMSPlugin;
+	export type StudioCMSPluginOptions = import('./src/plugins.js').StudioCMSPluginOptions;
+
+	export const getPluginDashboardPages: typeof import(
+		'./src/lib/plugins/index.js'
+	).getPluginDashboardPages;
+	export const frontendNavigation: typeof import('./src/lib/plugins/index.js').frontendNavigation;
 }
 
 declare module 'studiocms:component-proxy' {

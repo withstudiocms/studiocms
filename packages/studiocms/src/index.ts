@@ -1077,6 +1077,7 @@ export const studiocms = defineIntegration({
 							// Plugin Helpers
 							'studiocms:plugin-helpers': `
 								export * from "${resolve('./plugins.js')}";
+								export * from "${resolve('./lib/plugins/index.js')}";
 							`,
 
 							// Dashboard Grid Items
@@ -1120,12 +1121,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										pageHeaderComponent: components[page.pageHeaderComponent],
-										pageBodyComponent: components[page.pageBodyComponent],
+										PageHeaderComponent: components[page.pageHeaderComponent],
+										PageBodyComponent: components[page.pageBodyComponent],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.innerSidebarComponent = components[page.innerSidebarComponent];
+										page.components.InnerSidebarComponent = components[page.innerSidebarComponent];
 									}
 
 									return page;
@@ -1146,12 +1147,12 @@ export const studiocms = defineIntegration({
 									const page = { ...item };
 
 									page.components = {
-										pageHeaderComponent: components[page.pageHeaderComponent],
-										pageBodyComponent: components[page.pageBodyComponent],
+										PageHeaderComponent: components[page.pageHeaderComponent],
+										PageBodyComponent: components[page.pageBodyComponent],
 									};
 
 									if (page.sidebar === 'double') {
-										page.components.innerSidebarComponent = components[page.innerSidebarComponent];
+										page.components.InnerSidebarComponent = components[page.innerSidebarComponent];
 									}
 
 									return page;

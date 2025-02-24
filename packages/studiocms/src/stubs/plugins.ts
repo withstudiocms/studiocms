@@ -21,6 +21,28 @@ dtsFile.addModule('studiocms:plugin-helpers', {
 			name: 'SettingsField',
 			typeDef: `import('${resolve('../plugins.js')}').SettingsField`,
 		},
+		{
+			name: 'SafePluginListType',
+			typeDef: `import('${resolve('../plugins.js')}').SafePluginListType`,
+		},
+		{
+			name: 'StudioCMSPlugin',
+			typeDef: `import('${resolve('../plugins.js')}').StudioCMSPlugin`,
+		},
+		{
+			name: 'StudioCMSPluginOptions',
+			typeDef: `import('${resolve('../plugins.js')}').StudioCMSPluginOptions`,
+		},
+	],
+	namedExports: [
+		{
+			name: 'getPluginDashboardPages',
+			typeDef: `import('${resolve('../lib/plugins/index.js')}').getPluginDashboardPages`,
+		},
+		{
+			name: 'frontendNavigation',
+			typeDef: `import('${resolve('../lib/plugins/index.js')}').frontendNavigation`,
+		},
 	],
 });
 

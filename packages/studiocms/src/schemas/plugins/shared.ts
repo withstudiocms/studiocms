@@ -226,9 +226,9 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 
 const FinalBaseSchema = AvailableBaseSchema.extend({
 	components: z.object({
-		pageHeaderComponent: z.any(),
-		pageBodyComponent: z.any(),
-		innerSidebarComponent: z.any().optional(),
+		PageHeaderComponent: z.any(),
+		PageBodyComponent: z.any(),
+		InnerSidebarComponent: z.any().optional(),
 	}),
 });
 
