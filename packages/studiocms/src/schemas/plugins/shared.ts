@@ -297,6 +297,12 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 });
 
 /**
+ * Schema for a custom Astro component.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const AstroComponentSchema = z.custom<(_props: any) => any>();
+
+/**
  * Schema for a base dashboard page props.
  *
  * This schema extends the `AvailableBaseSchema` and includes the following properties:
@@ -304,12 +310,9 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
  */
 const FinalBaseSchema = AvailableBaseSchema.extend({
 	components: z.object({
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		PageHeaderComponent: z.custom<(_props: any) => any>(),
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		PageBodyComponent: z.custom<(_props: any) => any>(),
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		InnerSidebarComponent: z.custom<(_props: any) => any>().optional(),
+		PageHeaderComponent: AstroComponentSchema,
+		PageBodyComponent: AstroComponentSchema,
+		InnerSidebarComponent: AstroComponentSchema.optional(),
 	}),
 });
 
