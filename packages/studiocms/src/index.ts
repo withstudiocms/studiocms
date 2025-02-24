@@ -865,7 +865,7 @@ export const studiocms = defineIntegration({
 								availableDashboardPages.user?.push(
 									...dashboardPages.user.map((page) => ({
 										...page,
-										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title[defaultLang])}`,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
 									}))
 								);
 							}
@@ -873,7 +873,7 @@ export const studiocms = defineIntegration({
 								availableDashboardPages.admin?.push(
 									...dashboardPages.admin.map((page) => ({
 										...page,
-										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.title[defaultLang])}`,
+										slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
 									}))
 								);
 							}

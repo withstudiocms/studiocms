@@ -250,6 +250,10 @@ const BaseDashboardPagePropsSchema = z.object({
 	 */
 	description: z.string(),
 	/**
+	 * The desired route of the dashboard page
+	 */
+	route: z.string(),
+	/**
 	 * The icon to display in the sidebar
 	 *
 	 * @default 'cube-transparent'

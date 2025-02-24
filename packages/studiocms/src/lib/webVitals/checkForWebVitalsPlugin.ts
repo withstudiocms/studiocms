@@ -93,6 +93,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 							'en-us': 'Analytics and Vitals',
 						},
 						icon: 'chart-pie',
+						route: 'analytics',
 						description: 'View the Core Web Vitals and Analytics of your site.',
 						sidebar: 'single',
 						pageBodyComponent: resolve('./pages/analytics/body.astro'),
