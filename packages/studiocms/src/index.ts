@@ -19,7 +19,12 @@ import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
+import {
+	apiRoute,
+	removeLeadingTrailingSlashes,
+	sdkRouteResolver,
+	v1RestRoute,
+} from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
@@ -220,6 +225,7 @@ export const studiocms = defineIntegration({
 					const {
 						dashboardEnabled,
 						inject404Route,
+						dashboardRouteOverride,
 						AuthConfig: {
 							enabled: authEnabled,
 							providers: {
@@ -887,6 +893,30 @@ export const studiocms = defineIntegration({
 							integration: dynamicSitemap({
 								sitemaps: sitemaps,
 							}),
+						});
+					}
+
+					let defaultDashboardRoute = dashboardRouteOverride
+						? removeLeadingTrailingSlashes(dashboardRouteOverride)
+						: 'dashboard';
+
+					if (defaultDashboardRoute === '/') {
+						defaultDashboardRoute = '';
+					}
+
+					const makeDashboardRoute = (path: string) => {
+						return `${defaultDashboardRoute}/${path}`;
+					};
+
+					// Inject Dashboard plugin page route, if any plugins have dashboard pages
+					if (
+						(availableDashboardPages.user && availableDashboardPages.user.length > 0) ||
+						(availableDashboardPages.admin && availableDashboardPages.admin.length > 0)
+					) {
+						injectRoute({
+							pattern: makeDashboardRoute('[...pluginPage]'),
+							entrypoint: routesDir.dashRoute('[...pluginPage].astro'),
+							prerender: false,
 						});
 					}
 
