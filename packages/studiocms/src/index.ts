@@ -5,6 +5,7 @@
  */
 /// <reference types="@astrojs/db" />
 
+import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
@@ -221,6 +222,7 @@ export const studiocms = defineIntegration({
 						overrides,
 						dbStartPage,
 						dashboardConfig,
+						defaultFrontEndConfig,
 					} = options;
 
 					const {
@@ -239,6 +241,27 @@ export const studiocms = defineIntegration({
 							},
 						},
 					} = dashboardConfig;
+
+					const frontEndDefaultsTrue: typeof defaultFrontEndConfig = {
+						htmlDefaultLanguage: 'en',
+						htmlDefaultHead: [],
+						favicon: '/favicon.svg',
+						injectQuickActionsMenu: true,
+					};
+
+					const frontEndDefaultsFalse: typeof defaultFrontEndConfig = {
+						htmlDefaultLanguage: 'en',
+						htmlDefaultHead: [],
+						favicon: '/favicon.svg',
+						injectQuickActionsMenu: true,
+					};
+
+					const frontendConfig =
+						typeof defaultFrontEndConfig === 'object'
+							? defaultFrontEndConfig
+							: defaultFrontEndConfig === false
+								? frontEndDefaultsFalse
+								: frontEndDefaultsTrue;
 
 					const shouldInject404Route = inject404Route && dashboardEnabled;
 
@@ -537,6 +560,11 @@ export const studiocms = defineIntegration({
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
 								entrypoint: routesDir.dashApi('api-tokens.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'verify-session',
+								entrypoint: routesDir.dashApi('verify-session.js'),
 							},
 						],
 					});
@@ -1263,9 +1291,18 @@ export const studiocms = defineIntegration({
 						},
 					});
 
+					// Inject Renderer CSS
 					if (rendererConfig.renderer === 'studiocms') {
 						integrationLogger(logInfo, 'Injecting StudioCMS Renderer CSS...');
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
+					}
+
+					// Inject User Quick Tools (Available on non-dashboard pages)
+					if (frontendConfig.injectQuickActionsMenu) {
+						injectScript(
+							'head-inline',
+							fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8')
+						);
 					}
 
 					// Update the Astro Config

@@ -18,6 +18,7 @@ export default defineStudioCMSConfig({
     favicon: '/favicon.svg',
     htmlDefaultLanguage: 'en',
     htmlDefaultHead: [],
+    injectQuickActionsMenu: true,
   },
 });
 ```
@@ -97,4 +98,23 @@ interface HeadConfig {
 	attrs?: Record<string, string | boolean | undefined>;
 	content?: string;
 }
+```
+
+## `injectQuickActionsMenu`
+
+**type:** `boolean`
+**default:** `true`
+
+Injects a user interface for quick actions in the bottom right corner of the main site, allowing users to quickly navigate to the StudioCMS admin interface.
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  defaultFrontEndConfig: {
+    injectQuickActionsMenu: true, // DEFAULT - This injects the quick actions menu.
+  }
+})
 ```

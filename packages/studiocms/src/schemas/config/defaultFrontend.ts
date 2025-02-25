@@ -58,6 +58,12 @@ export const FrontEndConfigSchema = z
 			)
 			.optional()
 			.default('/favicon.svg'),
+
+		/**
+		 * Enable Quick Actions Menu - Whether to enable the quick actions menu
+		 * @default true
+		 */
+		injectQuickActionsMenu: z.boolean().optional().default(true),
 	})
 	.optional()
 	.default({});

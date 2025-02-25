@@ -14,24 +14,12 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
 
 const redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
 const redirectLogin = StudioCMSRoutes.authLinks.loginURL;
-
-if (!user.isLoggedIn) {
-	return Astro.redirect(redirectLogin);
-}
-
-if (!isAuthorized) {
-	return Astro.redirect(redirectProfile);
-}
 ---
-{/*
-
-Old Code that works client-side:
-
 <login-check
     data-is_logged_in={`${user.isLoggedIn}`}
     data-authorized={`${isAuthorized}`}
-    data-redirect_profile={StudioCMSRoutes.mainLinks.userProfile}
-    data-redirect_login={StudioCMSRoutes.authLinks.loginURL}
+    data-redirect_profile={redirectProfile}
+    data-redirect_login={redirectLogin}
     style="display: hidden;" 
 ></login-check>
 
@@ -62,5 +50,3 @@ Old Code that works client-side:
         customElements.define('login-check', LoginCheck);
     }
 </script>
-
-*/}
