@@ -287,7 +287,7 @@ class UserQuickTools extends HTMLElement {
                 .menuOpened .menu {
                     right: 0;
                     opacity: 1;
-                    transition: translate .4s ease-in-out, background-color .15s ease;
+                    transition: transform .4s ease-in-out, background-color .15s ease;
                     pointer-events: all;
                     user-select: all;
                     cursor: pointer;
