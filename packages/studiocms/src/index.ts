@@ -1269,17 +1269,17 @@ export const studiocms = defineIntegration({
 						},
 					});
 
+					// Inject Renderer CSS
 					if (rendererConfig.renderer === 'studiocms') {
 						integrationLogger(logInfo, 'Injecting StudioCMS Renderer CSS...');
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
 
-					const componentScript = fs.readFileSync(
-						resolve('./components/user-quick-tools.js'),
-						'utf-8'
+					// Inject User Quick Tools (Available on non-dashboard pages)
+					injectScript(
+						'head-inline',
+						fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8')
 					);
-
-					injectScript('head-inline', componentScript);
 
 					// Update the Astro Config
 					integrationLogger(

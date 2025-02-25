@@ -109,10 +109,6 @@ class UserQuickTools extends HTMLElement {
 		const callback: MutationCallback = (mutationsList) => {
 			for (const mutation of mutationsList) {
 				if (mutation.type === 'attributes') {
-					// console.log(`Attribute "${mutation.attributeName}" changed.`);
-					// console.log('Old value:', mutation.oldValue);
-					// console.log('New value:', targetNode.getAttribute(mutation.attributeName));
-
 					if (targetNode.getAttribute('data-theme') === 'light') {
 						// biome-ignore lint/style/noNonNullAssertion: <explanation>
 						this.shadowRoot!.querySelector<HTMLElement>('.cornerMenu')!.dataset.theme = 'light';
