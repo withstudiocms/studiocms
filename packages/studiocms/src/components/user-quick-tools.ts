@@ -83,9 +83,28 @@ class UserQuickTools extends HTMLElement {
 			return;
 		}
 
+		let menuOpened = false;
+
 		cornerMenu.addEventListener('click', () => {
-			cornerMenu.classList.toggle('menuOpened');
-			menu_overlay.classList.toggle('menuOpened');
+			if (menuOpened) {
+				cornerMenu.classList.remove('menuOpened');
+				menu_overlay.classList.remove('menuOpened');
+				menuOpened = false;
+				return;
+			}
+
+			cornerMenu.classList.add('menuOpened');
+			menu_overlay.classList.add('menuOpened');
+			menuOpened = true;
+
+			menu_overlay.addEventListener('click', () => {
+				if (!menuOpened) {
+					return;
+				}
+				cornerMenu.classList.remove('menuOpened');
+				menu_overlay.classList.remove('menuOpened');
+				menuOpened = false;
+			});
 		});
 
 		const targetNode = document.documentElement;
@@ -287,7 +306,7 @@ class UserQuickTools extends HTMLElement {
                 .menuOpened .menu {
                     right: 0;
                     opacity: 1;
-                    transition: transform .4s ease-in-out, background-color .15s ease;
+                    transition: transform .3s ease-in-out, background-color .15s ease;
                     pointer-events: all;
                     user-select: all;
                     cursor: pointer;
