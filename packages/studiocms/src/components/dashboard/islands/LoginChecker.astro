@@ -14,14 +14,6 @@ const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
 
 const redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
 const redirectLogin = StudioCMSRoutes.authLinks.loginURL;
-
-// if (!user.isLoggedIn) {
-// 	return Astro.redirect(redirectLogin);
-// }
-
-// if (!isAuthorized) {
-// 	return Astro.redirect(redirectProfile);
-// }
 ---
 <login-check
     data-is_logged_in={`${user.isLoggedIn}`}
