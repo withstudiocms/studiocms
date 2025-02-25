@@ -83,20 +83,6 @@ class UserQuickTools extends HTMLElement {
 		this.shadowRoot?.querySelector('.cornerMenu')?.addEventListener('click', () => {
 			this.shadowRoot?.querySelector('.cornerMenu')?.classList.toggle('menuOpened');
 			this.shadowRoot?.querySelector('.menu_overlay')?.classList.toggle('menuOpened');
-
-			// biome-ignore lint/complexity/noForEach: <explanation>
-			this.shadowRoot?.querySelectorAll<HTMLElement>('.menu').forEach((el) => {
-				if (!el.dataset.active || el.dataset.active === 'false') {
-					el.dataset.active = 'true';
-					el.addEventListener('click', () => {
-						if (el.dataset.active && el.parentElement?.classList.contains('menuOpened')) {
-							window.location.href = el.dataset.link ?? '#';
-						}
-					});
-				} else {
-					el.dataset.active = 'false';
-				}
-			});
 		});
 
 		const targetNode = document.documentElement;
@@ -269,14 +255,14 @@ class UserQuickTools extends HTMLElement {
                     width: 32px;
                     height: 32px;
                     position: absolute;
-                    background-image: radial-gradient(hsl(0deg 0% 22.34%), hsl(var(--background-base)));
+                    background-color: hsl(var(--background-step-2));
                     box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.10);
                     border-radius: 50%;
                     text-align: center;
                     line-height: 42px;
                     font-size: 16px;
                     top: -5px;
-                    right: -10rem;
+                    right: 0;
                     left: -5px;
                     margin: auto;
                     transform: translate(0, 0);
@@ -285,6 +271,11 @@ class UserQuickTools extends HTMLElement {
                     transition: all .4s ease-in-out;
                     padding: 8px;
                     border: 1px solid hsl(var(--border));
+                    user-select: none;
+                    pointer-events: none;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
 
                     svg {
                         width: 24px;
@@ -296,6 +287,8 @@ class UserQuickTools extends HTMLElement {
                     right: 0;
                     opacity: 1;
                     transition: all .4s ease-in-out;
+                    pointer-events: all;
+                    user-select: all;
                 }
 
                 .menuOpened .menu1 {
@@ -338,13 +331,13 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	generateMenuItem(menuItem: MenuItem, index: number) {
-		const menuItemElement = document.createElement('div');
+		const menuItemElement = document.createElement('a');
 		menuItemElement.classList.add('menu');
 		menuItemElement.classList.add(`menu${index}`);
 		menuItemElement.classList.add(menuItem.name.toLowerCase());
 		menuItemElement.title = menuItem.name;
 		menuItemElement.innerHTML = menuItem.svg;
-		menuItemElement.dataset.link = menuItem.href;
+		menuItemElement.href = menuItem.href;
 
 		return menuItemElement;
 	}
