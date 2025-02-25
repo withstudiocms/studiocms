@@ -277,9 +277,9 @@ class UserQuickTools extends HTMLElement {
                     text-align: center;
                     line-height: 42px;
                     font-size: 16px;
-                    top: 5px;
+                    top: -5px;
                     right: -10rem;
-                    left: 0;
+                    left: -5px;
                     margin: auto;
                     transform: translate(0, 0);
                     opacity: 0;
