@@ -1,13 +1,9 @@
 interface UserData {
 	id: string;
 	name: string;
-	updatedAt: Date | null;
-	url: string | null;
 	email: string | null;
 	avatar: string | null;
 	username: string;
-	password: string | null;
-	createdAt: Date | null;
 }
 
 interface Routes {
@@ -33,6 +29,13 @@ const permissionRanksMap: Record<PermissionLevel, string[]> = {
 	visitor: ['owner', 'admin', 'editor', 'visitor'],
 	unknown: ['owner', 'admin', 'editor', 'visitor', 'unknown'],
 };
+
+interface GetSessionResponse {
+	isLoggedIn: boolean;
+	user: UserData;
+	permissionLevel: PermissionLevel;
+	routes: Routes;
+}
 
 /**
  * Verifies if the user's permission level meets the required permission rank.
@@ -76,9 +79,13 @@ class UserQuickTools extends HTMLElement {
 		const cornerMenu = shadow.querySelector<HTMLElement>('.cornerMenu');
 		const menu_overlay = shadow.querySelector<HTMLElement>('.menu_overlay');
 
-		cornerMenu?.addEventListener('click', () => {
+		if (!cornerMenu || !menu_overlay) {
+			return;
+		}
+
+		cornerMenu.addEventListener('click', () => {
 			cornerMenu.classList.toggle('menuOpened');
-			menu_overlay?.classList.toggle('menuOpened');
+			menu_overlay.classList.toggle('menuOpened');
 		});
 
 		const targetNode = document.documentElement;
@@ -88,21 +95,19 @@ class UserQuickTools extends HTMLElement {
 			attributeOldValue: true,
 		};
 
-		const callback: MutationCallback = (mutationsList) => {
+		const mutationObserverCallback: MutationCallback = (mutationsList) => {
 			for (const mutation of mutationsList) {
 				if (mutation.type === 'attributes') {
 					if (targetNode.getAttribute('data-theme') === 'light') {
-						// biome-ignore lint/style/noNonNullAssertion: <explanation>
-						this.shadowRoot!.querySelector<HTMLElement>('.cornerMenu')!.dataset.theme = 'light';
+						cornerMenu.dataset.theme = 'light';
 					} else {
-						// biome-ignore lint/style/noNonNullAssertion: <explanation>
-						this.shadowRoot!.querySelector<HTMLElement>('.cornerMenu')!.dataset.theme = 'dark';
+						cornerMenu.dataset.theme = 'dark';
 					}
 				}
 			}
 		};
 
-		const observer = new MutationObserver(callback);
+		const observer = new MutationObserver(mutationObserverCallback);
 
 		observer.observe(targetNode, config);
 	}
@@ -338,7 +343,7 @@ class UserQuickTools extends HTMLElement {
 		return menuItemElement;
 	}
 
-	async getSession() {
+	async getSession(): Promise<GetSessionResponse | null> {
 		const userResponse = await fetch('/studiocms_api/dashboard/verify-session', {
 			method: 'POST',
 		});
@@ -347,12 +352,7 @@ class UserQuickTools extends HTMLElement {
 			return null;
 		}
 
-		const data: {
-			isLoggedIn: boolean;
-			user: UserData;
-			permissionLevel: PermissionLevel;
-			routes: Routes;
-		} = await userResponse.json();
+		const data: GetSessionResponse = await userResponse.json();
 
 		return data;
 	}

@@ -58,7 +58,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 	return new Response(
 		JSON.stringify({
 			isLoggedIn: true,
-			user,
+			user: {
+				id: user.id,
+				username: user.username,
+				email: user.email,
+				avatar: user.avatar,
+				name: user.name,
+			},
 			permissionLevel,
 			routes: {
 				logout: StudioCMSRoutes.authLinks.logoutURL,
