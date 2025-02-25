@@ -32,24 +32,30 @@ const safeUsers: {
 });
 ---
 <div class="inner-user-sidebar-header">
-    <form id="search-form">
-      <Input name='search' placeholder='Search...' type='search' required />
-    </form>
-    <Dropdown
-      transition:persist
-      transition:persist-props
-      id='create-user-dropdown'
-      options={[
-        { label: 'Create New User', icon: 'user-plus', value: 'new-user' },
-        { label: 'Create User Invite', icon: 'inbox-arrow-down', value: 'new-invite' },
-      ]}
-      align={'end'}
-      offset={8}
-      >
-      <Button variant="solid" color="primary" size='sm' class="add-button">
+  <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
+    <Icon name="arrow-left" width={24} height={24} slot="start-content" />
+  </Button>
+  <form id="search-form">
+    <Input name='search' placeholder='Search...' type='search' required />
+  </form>
+  <Dropdown
+    transition:persist
+    transition:persist-props
+    id='create-user-dropdown'
+    options={[
+      { label: 'Create New User', icon: 'user-plus', value: 'new-user' },
+      { label: 'Create User Invite', icon: 'inbox-arrow-down', value: 'new-invite' },
+    ]}
+    align={'end'}
+    offset={8}
+  >
+    <Button variant="solid" color="primary" size='md' class="add-button">
       <Icon name="plus" width={24} height={24} />
-      </Button>
-    </Dropdown>
+    </Button>
+  </Dropdown>
+  <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
+    <Icon name="x-mark" width={24} height={24} slot="start-content" />
+  </Button>
 </div>
 <Modal
   id='create-new-user-modal'

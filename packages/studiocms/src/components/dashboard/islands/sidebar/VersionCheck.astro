@@ -128,6 +128,9 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
 </script>
 
 <style>
+    .version-container {
+        width: 100%;
+    }
 
     .inline-title {
         display: flex;
@@ -325,14 +328,14 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
         flex-direction: row;
         gap: .375rem;
         width: 100%;
-        justify-content: left;
         text-align: center;
         align-items: center;
         align-content: center;
         vertical-align: middle;
         color: hsl(var(--text-muted));
-        font-size: .875em;
         font-weight: 700;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .version-check:hover {

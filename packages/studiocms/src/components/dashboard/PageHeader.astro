@@ -1,4 +1,6 @@
 ---
+import { Button, Icon } from 'studiocms:ui/components';
+
 interface Props {
 	title: string;
 }
@@ -7,6 +9,9 @@ const { title } = Astro.props;
 ---
 <header class="page-header">
   <div class="page-title-container">
+    <Button color='primary' id='nav-open' class='mobile-btn'>
+      <Icon name="bars-3" height={24} width={24} />
+    </Button>
     <h1 class="page-title">{title}</h1>
   </div>
   <div class="page-actions-container">
@@ -21,11 +26,13 @@ const { title } = Astro.props;
   align-items: center;
   width: 100%;
   margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 
   & .page-title-container {
     display: flex;
-    flex-direction: column;
-    gap: .5rem;
+    flex-direction: row;
+    gap: 1rem;
     width: fit-content;
 
     & .page-title {

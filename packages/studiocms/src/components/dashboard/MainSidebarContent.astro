@@ -20,28 +20,28 @@ const sidebar = getSidebarLinks(lang);
 
 <div class="sidebar-links-container">
   <div class="sidebar-header">
-    <StudioCMSLogo class={'sidebar-logo'} />
     <div class="sidebar-header-text">
+      <StudioCMSLogo class={'sidebar-logo'} />
       <span class="sidebar-title">StudioCMS</span>
-      <span class="sidebar-subtitle">
-        <Group>
-          { versionCheck && <VersionCheck /> }
-          <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
-            <div id="dark-content">
-              <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
-            </div>
-            <div id="light-content">
-              <Icon name='sun-16-solid' width={16} height={16} slot="light" />
-            </div>
-            <div id="fallback-content">
-              <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
-            </div>
-          </Button>
-        </Group>
-        <Button color='primary' size='sm' id='nav-close'>
-          <Icon name="x-mark" height={16} width={16} />
+    </div>
+    <div class="sidebar-subtitle">
+      <Group>
+        { versionCheck && <VersionCheck /> }
+        <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
+          <div id="dark-content">
+            <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
+          </div>
+          <div id="light-content">
+            <Icon name='sun-16-solid' width={16} height={16} slot="light" />
+          </div>
+          <div id="fallback-content">
+            <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
+          </div>
         </Button>
-      </span>
+      </Group>
+      <Button color='primary' size='sm' id='nav-close' class='mobile-btn mid-size-btn'>
+        <Icon name="x-mark" height={16} width={16} />
+      </Button>
     </div>
   </div>
   

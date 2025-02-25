@@ -12,6 +12,9 @@ const { isNewFolder, isNewPage } = Astro.props;
 ---
 
 <div class="inner-sidebar-header">
+  <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
+    <Icon name="arrow-left" width={24} height={24} slot="start-content" />
+  </Button>
   <form id="search-form">
     <Input name='search' placeholder='Search...' type='search' required />
   </form>
@@ -33,11 +36,14 @@ const { isNewFolder, isNewPage } = Astro.props;
     ]}
     align={'end'}
     offset={8}
-    >
-    <Button variant="solid" color="primary" size='sm' class="add-button">
-    <Icon name="plus" width={24} height={24} />
+  >
+    <Button variant="solid" color="primary" size='md' class="add-button">
+      <Icon name="plus" width={24} height={24} slot="start-content" />
     </Button>
   </Dropdown>
+  <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
+    <Icon name="x-mark" width={24} height={24} slot="start-content" />
+  </Button>
 </div>
 
 <Divider background={'background-step-2'}><span id="sidebar-divider-title">Items</span></Divider>

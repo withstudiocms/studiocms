@@ -1,6 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import { Button, Group, Icon } from 'studiocms:ui/components';
+import { Button, Icon } from 'studiocms:ui/components';
 import UserName from './islands/dashboard/UserName.astro';
 
 const lang = 'en-us';
@@ -9,35 +9,23 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 <header class="index-page-header">
   <div class="page-title-container">
+    <Button color='primary' id='nav-open' class='mobile-btn'>
+      <Icon name="bars-3" height={24} width={24} />
+    </Button>
     <h1 class="page-title">{t("welcome-title")}, <UserName />.</h1>
   </div>
   <div class="page-actions-container">
-    <Group>
-      <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>
-        <Fragment set:html={`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011a.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0a8 8 0 0 0-.412-.833a.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02a.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595a.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085a8 8 0 0 1-1.249.594a.05.05 0 0 0-.03.03a.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019a13.2 13.2 0 0 0 4.001-2.02a.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613c0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613c0 .888-.631 1.612-1.438 1.612"/></svg>`} slot='start-content' />
-        {t("title-button:discord")}
-      </Button>
-      <Button color='success' variant='flat' as="a" href={'https://github.com/withstudiocms/studiocms/discussions/new?category=feedback'} target='_blank' rel='noreferrer,noopener'>
-        <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
-        {t("title-button:feedback")}
-      </Button>
-    </Group>
-    <Button color='primary' id='nav-open'>
-      <Icon name="bars-3" height={24} width={24} />
+    <Button color='primary' variant='flat' as="a" href={'https://chat.studiocms.dev'} target='_blank' rel='noreferrer,noopener'>
+      <Fragment set:html={`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="currentColor" d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011a.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0a8 8 0 0 0-.412-.833a.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02a.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595a.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085a8 8 0 0 1-1.249.594a.05.05 0 0 0-.03.03a.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019a13.2 13.2 0 0 0 4.001-2.02a.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613c0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613c0 .888-.631 1.612-1.438 1.612"/></svg>`} slot='start-content' />
+      {t("title-button:discord")}
+    </Button>
+    <Button color='success' variant='flat' as="a" href={'https://github.com/withstudiocms/studiocms/discussions/new?category=feedback'} target='_blank' rel='noreferrer,noopener'>
+      <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
+      {t("title-button:feedback")}
     </Button>
   </div>
 </header>
 <style>
-  #nav-open {
-    display: none;
-  }
-
-  @media screen and (max-width: 840px) {
-    #nav-open {
-      display: flex;
-    }
-  }
-
   .index-page-header {
     display: flex;
     flex-direction: row;
@@ -45,12 +33,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
     align-items: center;
     margin-bottom: .5rem;
     width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
   
   .page-title-container {
     display: flex;
-    flex-direction: column;
-    gap: .5rem;
+    flex-direction: row;
+    gap: 1rem;
     width: fit-content;
   }
   
@@ -65,17 +55,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
     flex-direction: row;
     align-items: center;
     gap: 1rem;
-  }
-
-  @media screen and (max-width: 840px) {
-    .index-page-header {
-      flex-direction: column-reverse;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-
-    .page-actions-container {
-      margin-left: auto;
-    }
+    margin-left: auto;
   }
 </style>

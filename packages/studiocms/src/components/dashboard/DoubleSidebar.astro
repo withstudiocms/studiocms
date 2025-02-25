@@ -16,6 +16,11 @@ import MainSidebarContent from './MainSidebarContent.astro';
   import { DoubleSidebarHelper } from "studiocms:ui/components";
 
   if (document.getElementById('sui-sidebars')) {
-      new DoubleSidebarHelper();
-    }
+    const sidebar = new DoubleSidebarHelper();
+
+    sidebar.showInnerOnClick('nav-open');
+    sidebar.showInnerOnClick('nav-close');
+    sidebar.showOuterOnClick('back-to-outer');
+    sidebar.hideSidebarOnClick('show-page');
+  }
 </script>
