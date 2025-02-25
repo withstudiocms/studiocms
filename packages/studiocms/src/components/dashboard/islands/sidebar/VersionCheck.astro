@@ -25,66 +25,66 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     </code>
 </Button>
 
-    <Modal id="version-modal" size="lg">
+<Modal id="version-modal" size="lg">
 
-        <h2 slot="header" class="inline-title">
-            <span>Version Information</span>
-            <button data-link={StudioCMSRoutes.sdk.updateLatestVersionCache} 
-                id="version-modal-reload"
-                class="reload-button" 
-                title="Check for updates" 
-                aria-label="Check for updates"
-                ><span class="reload"></span>
-            </button>
-        </h2>
+    <h2 slot="header" class="inline-title">
+        <span>Version Information</span>
+        <button data-link={StudioCMSRoutes.sdk.updateLatestVersionCache} 
+            id="version-modal-reload"
+            class="reload-button" 
+            title="Check for updates" 
+            aria-label="Check for updates"
+            ><span class="reload"></span>
+        </button>
+    </h2>
 
-        <div>
-            <div class="version-modal-top-row">
-                <div class="version-modal-col">
-                    <span class="version-modal-col-title">Current Version</span>
-                    <code class="version-modal-col-value">v{currentVersion}</code>
-                </div>
-
-                <div class="version-modal-col">
-                    <span class="version-modal-col-title">Latest Version</span>
-                    <code id="latest-version" class="version-modal-col-value">v{latestVersion.version}</code>
-                </div>
-
-                <div class="version-modal-col">
-                    <span class="version-modal-col-title">Last Update Check</span>
-                    <span class="version-modal-col-value">
-                        <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                        <span id="latest-update-check" class="latest-update-check">({timeAgo(lastChecked)})</span>
-                    </span>
-                </div>
+    <div>
+        <div class="version-modal-top-row">
+            <div class="version-modal-col">
+                <span class="version-modal-col-title">Current Version</span>
+                <code class="version-modal-col-value">v{currentVersion}</code>
             </div>
 
-            <div class="version-modal-release-notes">
-                <div><StudioCMSRenderer content={changelog} /></div>
-                <span class="release-notes-read-more">
-                    <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+            <div class="version-modal-col">
+                <span class="version-modal-col-title">Latest Version</span>
+                <code id="latest-version" class="version-modal-col-value">v{latestVersion.version}</code>
+            </div>
+
+            <div class="version-modal-col">
+                <span class="version-modal-col-title">Last Update Check</span>
+                <span class="version-modal-col-value">
+                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
+                    <span id="latest-update-check" class="latest-update-check">({timeAgo(lastChecked)})</span>
                 </span>
             </div>
-
-            <div class="version-modal-links">
-                <span class="version-modal-row-title">View on</span>
-                <a href="https://github.com/withstudiocms/studiocms/releases" 
-                    target="_blank" 
-                    class="version-link"
-                    title="View Releases on GitHub"
-                    aria-label="View Releases on GitHub"
-                    ><span class="brand--github"></span>
-                </a>
-                <a href="https://npm.im/studiocms" 
-                    target="_blank" 
-                    class="version-link"
-                    title="View on NPM"
-                    aria-label="View on NPM"
-                    ><span class="brand--npm"></span>
-                </a>
-            </div>
         </div>
-    </Modal>
+
+        <div class="version-modal-release-notes">
+            <div><StudioCMSRenderer content={changelog} /></div>
+            <span class="release-notes-read-more">
+                <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+            </span>
+        </div>
+
+        <div class="version-modal-links">
+            <span class="version-modal-row-title">View on</span>
+            <a href="https://github.com/withstudiocms/studiocms/releases" 
+                target="_blank" 
+                class="version-link"
+                title="View Releases on GitHub"
+                aria-label="View Releases on GitHub"
+                ><span class="brand--github"></span>
+            </a>
+            <a href="https://npm.im/studiocms" 
+                target="_blank" 
+                class="version-link"
+                title="View on NPM"
+                aria-label="View on NPM"
+                ><span class="brand--npm"></span>
+            </a>
+        </div>
+    </div>
+</Modal>
 
 <script>
     import { ModalHelper } from 'studiocms:ui/components';
