@@ -55,22 +55,9 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	async connectedCallback() {
-		const userResponse = await fetch('/studiocms_api/dashboard/verify-session', {
-			method: 'POST',
-		});
+		const data = await this.getSession();
 
-		if (!userResponse.ok) {
-			return;
-		}
-
-		const data: {
-			isLoggedIn: boolean;
-			user: UserData;
-			permissionLevel: PermissionLevel;
-			routes: Routes;
-		} = await userResponse.json();
-
-		if (!data.isLoggedIn) {
+		if (!data || !data.isLoggedIn) {
 			return;
 		}
 
@@ -80,9 +67,18 @@ class UserQuickTools extends HTMLElement {
 
 		this.render(data.user, data.permissionLevel, data.routes);
 
-		this.shadowRoot?.querySelector('.cornerMenu')?.addEventListener('click', () => {
-			this.shadowRoot?.querySelector('.cornerMenu')?.classList.toggle('menuOpened');
-			this.shadowRoot?.querySelector('.menu_overlay')?.classList.toggle('menuOpened');
+		const shadow = this.shadowRoot;
+
+		if (!shadow) {
+			return;
+		}
+
+		const cornerMenu = shadow.querySelector<HTMLElement>('.cornerMenu');
+		const menu_overlay = shadow.querySelector<HTMLElement>('.menu_overlay');
+
+		cornerMenu?.addEventListener('click', () => {
+			cornerMenu.classList.toggle('menuOpened');
+			menu_overlay?.classList.toggle('menuOpened');
 		});
 
 		const targetNode = document.documentElement;
@@ -340,6 +336,25 @@ class UserQuickTools extends HTMLElement {
 		menuItemElement.href = menuItem.href;
 
 		return menuItemElement;
+	}
+
+	async getSession() {
+		const userResponse = await fetch('/studiocms_api/dashboard/verify-session', {
+			method: 'POST',
+		});
+
+		if (!userResponse.ok) {
+			return null;
+		}
+
+		const data: {
+			isLoggedIn: boolean;
+			user: UserData;
+			permissionLevel: PermissionLevel;
+			routes: Routes;
+		} = await userResponse.json();
+
+		return data;
 	}
 }
 
