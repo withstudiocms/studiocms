@@ -222,6 +222,7 @@ export const studiocms = defineIntegration({
 						overrides,
 						dbStartPage,
 						dashboardConfig,
+						defaultFrontEndConfig,
 					} = options;
 
 					const {
@@ -240,6 +241,27 @@ export const studiocms = defineIntegration({
 							},
 						},
 					} = dashboardConfig;
+
+					const frontEndDefaultsTrue: typeof defaultFrontEndConfig = {
+						htmlDefaultLanguage: 'en',
+						htmlDefaultHead: [],
+						favicon: '/favicon.svg',
+						injectQuickActionsMenu: true,
+					};
+
+					const frontEndDefaultsFalse: typeof defaultFrontEndConfig = {
+						htmlDefaultLanguage: 'en',
+						htmlDefaultHead: [],
+						favicon: '/favicon.svg',
+						injectQuickActionsMenu: true,
+					};
+
+					const frontendConfig =
+						typeof defaultFrontEndConfig === 'object'
+							? defaultFrontEndConfig
+							: defaultFrontEndConfig === false
+								? frontEndDefaultsFalse
+								: frontEndDefaultsTrue;
 
 					const shouldInject404Route = inject404Route && dashboardEnabled;
 
@@ -1276,10 +1298,12 @@ export const studiocms = defineIntegration({
 					}
 
 					// Inject User Quick Tools (Available on non-dashboard pages)
-					injectScript(
-						'head-inline',
-						fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8')
-					);
+					if (frontendConfig.injectQuickActionsMenu) {
+						injectScript(
+							'head-inline',
+							fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8')
+						);
+					}
 
 					// Update the Astro Config
 					integrationLogger(
