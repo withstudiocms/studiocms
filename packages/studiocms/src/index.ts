@@ -5,6 +5,7 @@
  */
 /// <reference types="@astrojs/db" />
 
+import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
@@ -537,6 +538,11 @@ export const studiocms = defineIntegration({
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
 								entrypoint: routesDir.dashApi('api-tokens.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'verify-session',
+								entrypoint: routesDir.dashApi('verify-session.js'),
 							},
 						],
 					});
@@ -1267,6 +1273,13 @@ export const studiocms = defineIntegration({
 						integrationLogger(logInfo, 'Injecting StudioCMS Renderer CSS...');
 						injectScript('page-ssr', 'import "studiocms:renderer/markdown-remark/css";');
 					}
+
+					const componentScript = fs.readFileSync(
+						resolve('./components/user-quick-tools.js'),
+						'utf-8'
+					);
+
+					injectScript('head-inline', componentScript);
 
 					// Update the Astro Config
 					integrationLogger(

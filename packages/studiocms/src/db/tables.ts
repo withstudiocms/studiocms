@@ -7,7 +7,10 @@ export const StudioCMSUsers = defineTable({
 		url: column.text({ optional: true }),
 		name: column.text(),
 		email: column.text({ unique: true, optional: true }),
-		avatar: column.text({ optional: true }),
+		avatar: column.text({
+			optional: true,
+			default: 'https://seccdn.libravatar.org/static/img/mm/80.png',
+		}),
 		username: column.text(),
 		password: column.text({ optional: true }),
 		updatedAt: column.date({ default: NOW, optional: true }),

@@ -1,16 +1,14 @@
 ---
 import { StudioCMSRoutes } from 'studiocms:lib';
-import Avatar from './Avatar.astro';
 import './navigation.css';
 import { frontendNavigation } from 'studiocms:plugin-helpers';
 import studioCMS_SDK from 'studiocms:sdk/cache';
 
 type Props = {
 	topLevelLinkCount?: number;
-	hideAvatar?: boolean;
 };
 
-const { hideAvatar, topLevelLinkCount = 3 } = Astro.props;
+const { topLevelLinkCount = 3 } = Astro.props;
 
 const config = (await studioCMS_SDK.GET.siteConfig()).data;
 
@@ -46,8 +44,6 @@ const links: LinkProps[] = await frontendNavigation();
                 <a class="links" {href}>{text}</a>
             )) 
         }
-
-        { !hideAvatar && <div class="avatar"><Avatar /></div> }
     </div> 
 ) }
 
@@ -79,6 +75,5 @@ const links: LinkProps[] = await frontendNavigation();
                     )) }
                 </div>
             </div>
-        { !hideAvatar && <div class="avatar"><Avatar /></div> }
     </div>
 ) }

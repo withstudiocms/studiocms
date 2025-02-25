@@ -317,6 +317,11 @@ export const StudioCMSRoutes = {
 		 * API route for fetching API tokens.
 		 */
 		apiTokens: dashboardAPIRoute('api-tokens'),
+
+		/**
+		 * API route for verifying a user session.
+		 */
+		verifySession: dashboardAPIRoute('verify-session'),
 	},
 	sdk: {
 		/**
