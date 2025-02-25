@@ -196,6 +196,7 @@ class UserQuickTools extends HTMLElement {
             <style>
                 :host {
                     --border: 240 5% 17%;
+	                --background-base: 0 0% 6%;
                     --background-step-1: 0 0% 8%;
                     --background-step-2: 0 0% 10%;
 	                --background-step-3: 0 0% 14%;
@@ -213,6 +214,7 @@ class UserQuickTools extends HTMLElement {
 
                 [data-theme="light"] {
 	                --border: 263 5% 68%;
+	                --background-base: 0 0% 97%;
                     --background-step-1: 0 0% 90%;
                     --background-step-2: 0 0% 85%;
                     --background-step-3: 0 0% 80%;
@@ -267,7 +269,7 @@ class UserQuickTools extends HTMLElement {
                     width: 32px;
                     height: 32px;
                     position: absolute;
-                    background: hsl(var(--background-step-1));
+                    background-image: radial-gradient(hsl(0deg 0% 22.34%), hsl(var(--background-base)));
                     box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.10);
                     border-radius: 50%;
                     text-align: center;
