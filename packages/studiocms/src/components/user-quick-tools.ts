@@ -287,9 +287,14 @@ class UserQuickTools extends HTMLElement {
                 .menuOpened .menu {
                     right: 0;
                     opacity: 1;
-                    transition: all .4s ease-in-out;
+                    transition: translate .4s ease-in-out, background-color .15s ease;
                     pointer-events: all;
                     user-select: all;
+                    cursor: pointer;
+                }
+                
+                .menuOpened .menu:hover {
+                    background-color: hsl(var(--background-step-3));
                 }
 
                 .menuOpened .menu1 {
