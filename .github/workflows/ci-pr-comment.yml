@@ -21,11 +21,6 @@ jobs:
             The following links will become available for preview shortly (if applicable):
             - [StudioCMS Documentation](https://pr${{ github.event.pull_request.number }}.docs.studiocms.dev/)
             - [StudioCMS Demo (playgrounds/node)](https://pr${{ github.event.pull_request.number }}.demo.studiocms.dev/)
-            - [StudioCMS Ui Demo (playgrounds/ui)](https://pr${{ github.event.pull_request.number }}.ui-testing.studiocms.dev/)
-
-            TEMPORARILY DISABLED: The StudioCMS Demo (playgrounds/node) link is currently disabled due to ongoing development on the next version. We apologize for the inconvenience and appreciate your understanding. 🙏
-
-            - [StudioCMS Next-Demo (playgrounds/node)](https://pr${{ github.event.pull_request.number }}.next-demo.studiocms.dev/) (Temporarily available for preview's on the next version)
 
             Note: Changes may take a few minutes to propagate. Please be patient! You can also see the status of each deployment via the withstudiocms-deployments bot 🤖 comments.
 
