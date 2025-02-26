@@ -1,0 +1,83 @@
+{
+  "name": "@studiocms/devapps",
+  "version": "0.1.0-beta.7",
+  "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
+  "author": {
+    "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_devapps"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrodb",
+    "astrolicious",
+    "astro-integration",
+    "studiocms",
+    "withastro",
+    "wordpress",
+    "wordpress-import",
+    "wordpress-importer",
+    "libsql",
+    "libsql-viewer",
+    "libsql-client",
+    "libsqlstudio",
+    "devapp",
+    "astro-devapp",
+    "astro-devtoolbarapp"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "@libsql/client": "^0.14.0",
+    "cheerio": "^1.0.0",
+    "turndown": "^7.2.0",
+    "html-entities": "^2.5.2",
+    "@outerbase/sdk-transform": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/turndown": "^5.0.5",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "studiocms": "workspace:*",
+    "@astrojs/db": "catalog:min",
+    "astro": "catalog:min",
+    "vite": "catalog:min"
+  },
+  "peerDependenciesMeta": {
+    "studiocms": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.notfound-container {
+	position: relative;
+	height: 80vh;
+	& .notfound {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		-ms-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		max-width: 460px;
+		width: 100%;
+		text-align: center;
+		line-height: 1.4;
+
+		& svg {
+			position: relative;
+			width: 250px;
+			height: 250px;
+			margin: 0px auto 50px;
+		}
+
+		& h1 {
+			font-weight: 700;
+			margin: 0;
+			font-size: 3rem;
+			text-align: center;
+			height: 40px;
+			line-height: 40px;
+		}
+
+		& h2 {
+			font-size: 2rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 7px;
+		}
+
+		& p {
+			font-size: 1rem;
+			font-weight: 500;
+			text-wrap: balance;
+		}
+
+		& .return {
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			color: hsl(var(--text-normal));
+		}
+	}
+}

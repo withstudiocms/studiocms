@@ -1,0 +1,56 @@
+---
+import './metric.css';
+import { Icon } from 'studiocms:ui/components';
+import type { WebVitalsMetricType } from '../schemas.js';
+import type { WebVitalsMetricSummary } from '../types.js';
+import MetricCard from './MetricCard.astro';
+import { barSegments, ratingText, webVitalsMetricFormatters } from './shared.js';
+
+interface Props {
+	metric: WebVitalsMetricType;
+	summary?: WebVitalsMetricSummary | undefined;
+}
+
+const { metric, summary } = Astro.props;
+
+let message: string | undefined;
+
+if (!summary || !summary.percentiles.p75) {
+	message = 'Not enough data yet';
+}
+
+const { p75 } = summary?.percentiles || {};
+
+const { rating, value } = p75 || {};
+
+const format =
+	webVitalsMetricFormatters[metric as keyof typeof webVitalsMetricFormatters] || ((v) => v);
+---
+<MetricCard metric={metric} rating={rating}>
+    {message ? (
+        <p class="no-data-text">{message}</p>
+    ) : (
+        <>
+            <p class="metric-value" class:list={[rating && ratingText[rating]]}>{format(value!)}</p>
+            <div class="distribution-container">
+                {/* p75 marker */}
+                <span aria-hidden="true" class="p75-marker" class:list={[rating && ratingText[rating]]}>
+                    <span class="marker-text">p75</span>
+                    <Icon name="chevron-down-16-solid" width={16} height={16} />
+                </span>
+                {/* Distribution bar */}
+                <p class="distribution-bar">
+                    <span class="sr-only">Distribution:</span>
+                    {summary && Object.entries(summary.histogram).map(([rating, density]) =>
+                        density ? (
+                            <span
+                                class:list={[barSegments[rating as "good" | "needs-improvement" | "poor"]]}
+                                style={`width: ${density * 100}%;`}
+                            ></span>
+                        ) : null
+                    )}
+                </p>
+            </div>
+        </>
+    )}
+</MetricCard>

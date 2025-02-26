@@ -1,0 +1,20 @@
+---
+import { getUserData } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:lib';
+
+const { isLoggedIn } = await getUserData(Astro);
+---
+<div 
+  id="login-check" 
+  style="display: none;" 
+  data-is_logged_in={`${isLoggedIn}`}
+  data-redirect_route={StudioCMSRoutes.mainLinks.dashboardIndex}
+  ></div>
+
+<script is:inline>
+  const loginCheck = document.getElementById('login-check');
+
+  if (loginCheck.dataset.is_logged_in === 'true') {
+    window.location.href = loginCheck.dataset.redirect_route;
+  }
+</script>

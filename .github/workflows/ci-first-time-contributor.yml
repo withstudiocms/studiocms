@@ -1,0 +1,61 @@
+name: CI - First Time Contributor
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened, closed]
+
+jobs:
+  check_for_first_interaction:
+    name: Check for First Interaction
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: First Interaction Check
+        uses: zephyrproject-rtos/action-first-interaction@7e6446f8439d8b4399169880c36a3a12b5747699
+        with:
+          repo-token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          issue-message: >
+            Hi @${{ github.event.issue.user.login }} 👋
+
+            Welcome to the StudioCMS project! We're excited to have you here. Thanks for opening your first issue! 🎉
+
+            If you have not already and your issue is related to a bug, please make sure to include the following information in your issue:
+            - A clear description of the issue
+            - Steps to reproduce the issue
+            - Expected behavior
+            - Actual behavior
+            - StudioCMS version
+            - Environment details (OS, hardware, etc.)
+
+            If you have any questions or need help, feel free to ask. We're here to help you! 🚀
+
+            If you're interested in contributing to the project, please check out our [Contributing Guide](https://github.com/withstudiocms/.github/blob/main/CONTRIBUTING.md) and join our [Discord community](https://chat.studiocms.dev) to stay in the loop for any future help we may need!
+
+            Thanks again for opening your first issue! 🙌
+
+            - The StudioCMS Team
+
+          pr-opened-message: >
+            Hello @${{ github.event.pull_request.user.login }}, and thank you for opening your first pull request to StudioCMS! 🎉
+
+            If you have not already, please make sure to review the project's [Contributing Guide](https://github.com/withstudiocms/.github/blob/main/CONTRIBUTING.md) to ensure your pull request meets our quality standards.
+
+            We're excited to have you here and appreciate your contribution. If you have not already, please make sure to include the following information in your pull request:
+            - A clear description of the changes
+            - Steps to reproduce the issue (if applicable)
+            - Any relevant screenshots or logs
+
+            Our team will review your pull request as soon as possible. If you have any questions or need help, feel free to ask. We're here to help you! 🚀
+
+            In the meantime, you will notice that a few checks will run on your pull request. These checks are automated and help us ensure that your changes meet our quality standards. If you see any errors or warnings, don't worry! Our team will help you address them. 😊
+
+          pr-merged-message: >
+            **Congrats and Welcome** @${{ github.event.pull_request.user.login }} to the Contributor Squad! 🎉
+
+            If you haven't already, please join our [Discord community](https://chat.studiocms.dev) to stay in the loop for any future help we may need!
+
+            - The StudioCMS Team

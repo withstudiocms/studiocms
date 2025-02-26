@@ -1,0 +1,61 @@
+---
+import pluginsList from 'studiocms:plugins';
+
+const pageTypeComponents = async () => {
+	const pageTypeComponents: {
+		identifier: string;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		Component: (Props?: { content?: string | null | undefined }) => any;
+	}[] = [];
+
+	for (const { pageTypes } of pluginsList) {
+		if (!pageTypes) {
+			return pageTypeComponents;
+		}
+
+		for (const { identifier, pageContentComponent } of pageTypes) {
+			if (!pageContentComponent) {
+				continue;
+			}
+
+			pageTypeComponents.push({
+				identifier,
+				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
+			});
+		}
+
+		return pageTypeComponents;
+	}
+
+	return pageTypeComponents;
+};
+
+export const partial = true;
+
+async function setContent() {
+	const jsonData: { content: string | undefined; editor: string } | undefined =
+		await Astro.request.json();
+
+	const editors = await pageTypeComponents();
+
+	let currentEditor = editors.find((ed) => {
+		if (ed.identifier === jsonData?.editor) {
+			return ed;
+		}
+	});
+
+	if (!currentEditor) {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		currentEditor = editors.find((editor) => editor.identifier === 'studiocms/markdown')!;
+	}
+
+	if (jsonData?.content) {
+		return { content: jsonData.content, ActiveEditor: currentEditor.Component };
+	}
+
+	return { content: 'No content to display', ActiveEditor: currentEditor.Component };
+}
+
+const { content, ActiveEditor } = await setContent();
+---
+<ActiveEditor content={content} />

@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**", "**/ogBackgrounds/**"]
+    "ignore": ["**/.astro/**", "**/package.json", "**/dist/**", "**/min.js", "dashboard-code.css"]
   },
   "formatter": {
     "lineWidth": 100,
@@ -31,7 +31,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "warn"
+      },
+      "style": {
+        "noParameterAssign": "off"
+      }
     }
   },
   "overrides": [

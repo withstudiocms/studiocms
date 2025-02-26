@@ -1,0 +1,66 @@
+---
+import { getWebVitals } from 'studiocms-dashboard:web-vitals';
+import { TabItem, Tabs } from 'studiocms:ui/components';
+import { CoreWebVitals } from '../consts.js';
+import SummaryCard from './SummaryCard.astro';
+
+const webVitals = await getWebVitals();
+
+const twentyFourHourSummary = CoreWebVitals.map((metric) => ({
+	metric,
+	summary: webVitals.twentyFourHours.summary[metric],
+}));
+
+const sevenDaySummary = CoreWebVitals.map((metric) => ({
+	metric,
+	summary: webVitals.sevenDays.summary[metric],
+}));
+
+const thirtyDaySummary = CoreWebVitals.map((metric) => ({
+	metric,
+	summary: webVitals.thirtyDays.summary[metric],
+}));
+
+const summaries = CoreWebVitals.map((metric) => ({
+	metric,
+	summary: webVitals.summary[metric],
+}));
+---
+<Tabs variant={'starlight'}>
+    <TabItem label='24 Hours'>
+        <div class="flex-wrap">
+            {twentyFourHourSummary.map(({ metric, summary }) => (
+                <SummaryCard {metric} {summary} />
+            ))}
+        </div>
+    </TabItem>
+    <TabItem label='7 Days'>
+        <div class="flex-wrap">
+            {sevenDaySummary.map(({ metric, summary }) => (
+                <SummaryCard {metric} {summary} />
+            ))}
+        </div>
+    </TabItem>
+    <TabItem label='30 Days'>
+        <div class="flex-wrap">
+            {thirtyDaySummary.map(({ metric, summary }) => (
+                <SummaryCard {metric} {summary} />
+            ))}
+        </div>
+    </TabItem>
+    <TabItem label='All Time'>
+        <div class="flex-wrap">
+            {summaries.map(({ metric, summary }) => (
+                <SummaryCard {metric} {summary} />
+            ))}
+        </div>
+    </TabItem>
+</Tabs>
+
+<style>
+    .flex-wrap {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: .5rem;
+    }
+</style>

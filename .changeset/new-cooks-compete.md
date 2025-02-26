@@ -1,6 +1,5 @@
 ---
-"@studiocms/renderers": patch
-"@studiocms/core": patch
+"studiocms": patch
 ---
 
 [Update] Add MDX Renderer:

@@ -1,0 +1,317 @@
+---
+i18nReady: true
+title: Making Plugins Useful
+description: Learn about the StudioCMS Plugins and how they work.
+sidebar:
+   order: 2
+---
+
+import ReadMore from '../../../components/ReadMore.astro'
+import { FileTree } from '@astrojs/starlight/components'
+
+# Introduction
+
+Building a StudioCMS Plugin is a powerful way to extend the functionality of StudioCMS. They provide a simple and flexible way to add new features to your StudioCMS project. The following is a basic example of how to create a StudioCMS Plugin and how it works.
+
+## Getting Started
+
+To get started, you will need to create a new StudioCMS Plugin. The following is a basic example of the file structure for a StudioCMS Plugin:
+
+<FileTree>
+
+- package.json
+- src
+  - index.ts
+  - routes
+    - [...slug].astro
+  - dashboard-grid-items
+    - MyPluginGridItem.astro
+
+</FileTree>
+
+## Creating the Plugin
+
+In the main `src/index.ts` file, you will define the StudioCMS Plugin. The following is an example of how to define a StudioCMS Plugin that includes an Astro Integration to create a simple blog example:
+
+```ts twoslash title="index.ts"
+import { definePlugin } from 'studiocms/plugins';
+import { AstroIntegration } from 'astro';
+import { addVirtualImports, createResolver } from 'astro-integration-kit';
+
+// Define the options for the plugin and integration
+interface Options {
+    route: string;
+}
+
+export function studioCMSPageInjector(options: Options) {
+
+    // Resolve the path to the current file
+    const { resolve } = createResolver(import.meta.url);
+
+    // Define the Astro integration
+    function myIntegration(options: Options): AstroIntegration {
+        const route = `/${options?.route || 'my-plugin'}`;
+
+        return {
+            name: 'my-astro-integration',
+            hooks: {
+                "astro:config:setup": (params) => {
+                    const { injectRoute } = params;
+
+                    // Inject the route for the plugin
+                    injectRoute({
+                        entrypoint: resolve('./routes/[...slug].astro'),
+                        pattern: `/${route}/[...slug]`,
+                        prerender: false,
+                    })
+
+                    addVirtualImports(params, {
+                        name: 'my-astro-integration',
+                        imports: {
+                            'myplugin:config': `
+                                export const options = ${JSON.stringify({ route })};
+                                export default options;
+                            `,
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+    // Define the StudioCMS Plugin
+    return definePlugin({
+        identifier: 'my-plugin',
+        name: 'My Plugin',
+        studiocmsMinimumVersion: '0.1.0-beta.8',
+        integration: myIntegration(options), // Optional, but recommended
+        // Define the frontend navigation links for the plugin (optional)
+        // This is useful if you are using the built in StudioCMS navigation helpers in your layout,
+        // such as when using the `@studiocms/blog` Plugin.
+        frontendNavigationLinks: [{ label: 'Title here', href: options?.route || 'my-plugin' }],
+        // When creating pageTypes, you can also define a `pageContentComponent` if your plugin requires a custom content editor.
+        // pageTypes: [{ identifier: 'my-plugin', label: 'Blog Post (My Plugin)', pageContentComponent: resolve('./components/MyContentEditor.astro') }],
+        // In this example we are okay using the default content editor (markdown).
+        pageTypes: [{ identifier: 'my-plugin', label: 'Blog Post (My Plugin)' }],
+        // Define the grid items for the dashboard
+        // These are the items that will be displayed on the StudioCMS Dashboard
+        // You can define as many items as you want
+        // In this example, we are defining a single item, which has a span of 2 and requires the 'editor' permission and injects an Astro component which replaces the plain html custom element.
+        dashboardGridItems: [
+            {
+                name: 'example',
+                span: 2,
+                variant: 'default',
+                requiresPermission: 'editor',
+                header: { title: 'Example', icon: 'bolt' },
+                body: {
+                    // Always use plain html without `-` or special characters in the tags, they will get replaced with the Astro component and this HTML will never be rendered
+                    html: '<examplegriditem></examplegriditem>',
+                    components: {
+                        // Inject the Astro component to replace the plain html custom element
+                        examplegriditem: resolve('./dashboard-grid-items/MyPluginGridItem.astro')
+                    }
+                }
+            }
+        ],
+    });
+}
+```
+
+The above example defines a StudioCMS Plugin that includes an Astro Integration to create a simple blog example. The plugin includes a route that is injected into the StudioCMS project and a grid item that is displayed on the StudioCMS Dashboard.
+
+<ReadMore>For more information on how to create an Astro Integration, see the [Astro Integration Kit](https://astro-integration-kit.netlify.app/) and the [Astro Integrations documentation](https://docs.astro.build/en/reference/integrations-reference/).</ReadMore>
+
+## Example route
+
+In the `src/routes/[...slug].astro` file, you will define the route for the plugin. The following is an example of how to define a route for the plugin, we will break this out into two parts, the first part is the frontmatter (between the `---` marks), and the second part is the HTML template that gets put under the second `---`.
+
+```ts twoslash title="Frontmatter"
+// @noErrors
+// @filename: plugin.d.ts
+declare module 'myplugin:config' {
+    export const options: { route: string };
+    export default options;
+}
+// ---cut---
+// @filename: Frontmatter.ts
+/// <reference types="studiocms/v/core.d.ts" />
+/// <reference types="studiocms/v/renderer.d.ts" />
+/// <reference types="./plugin.d.ts" />
+import type { AstroGlobal } from 'astro';
+const Astro: AstroGlobal = {};
+// ---cut---
+import { StudioCMSRenderer } from 'studiocms:renderer';
+import sdk from 'studiocms:sdk';
+import config from 'myplugin:config';
+
+const makeRoute = (slug: string) => {
+    return `/${config.route}/${slug}`;
+}
+
+// 'my-plugin' here is used as the identifier for 
+// the pageType from the plugin definition
+const pages = await sdk.GET.packagePages('my-plugin'); 
+
+const { slug } = Astro.params;
+
+const page = pages.find((page) => page.slug === slug || '');
+```
+
+```astro title="Template"
+{
+    slug && page ? (
+        <div>
+            <h1>{page.title}</h1>
+            <StudioCMSRenderer content={page.defaultContent?.content || ''} />
+        </div>
+    ) : (
+        <div>
+            <h1>My Plugin</h1>
+            <ul>
+                {pages.length > 0 && pages.map((page) => (
+                    <li>
+                        <a href={makeRoute(page.slug)}>{page.title}</a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+```
+
+The above example defines a [dynamic route](https://docs.astro.build/en/guides/routing/#dynamic-routes) for the plugin that displays a list of blog posts when no slug is provided and displays the content of a blog post when a slug is provided.
+
+## Example grid item
+
+In the `src/dashboard-grid-items/MyPluginGridItem.astro` file, you will define the grid item for the plugin. The following is an example of how to define a grid item for the plugin:
+
+```astro title="MyPluginGridItem.astro"
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import sdk from 'studiocms:sdk';
+
+// 'my-plugin' here is used as the identifier for 
+// the pageType from the plugin definition
+const pages = await sdk.GET.packagePages('my-plugin'); 
+
+// Get the 5 most recently updated pages from the last 30 days
+const recentlyUpdatedPages = pages
+    .filter((page) => {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+        return new Date(page.updatedAt) > thirtyDaysAgo;
+    })
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, 5);
+---
+
+<div>
+    <h2>Recently Updated Pages</h2>
+    <ul>
+        {recentlyUpdatedPages.length > 0 && recentlyUpdatedPages.map((page) => (
+            <li>
+                <a href={StudioCMSRoutes.mainLinks.contentManagementEdit + `?edit=${page.id}`}>{page.title}</a>
+            </li>
+        ))}
+    </ul>
+</div>
+```
+
+The above example defines a grid item for the plugin that displays the 5 most recently updated pages from the last 30 days. The grid item includes a list of links to the content management edit page for each page.
+
+## Integrating with the FrontendNavigationLinks helpers
+
+If you are looking to use the built-in StudioCMS navigation helpers in your project, similar to the way the `@studiocms/blog` plugin does, you can create a custom `Navigation.astro` component:
+
+```astro title="Navigation.astro"
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk/cache';
+import { frontendNavigation } from 'studiocms:plugin-helpers';
+
+// Define the props for the Navigation component
+interface Props {
+	topLevelLinkCount?: number;
+};
+
+// Get the top level link count from the props
+const { topLevelLinkCount = 3 } = Astro.props;
+
+// Get the site config and page list
+const config = (await studioCMS_SDK.GET.siteConfig()).data;
+
+// Get the site title from the config
+const { title } = config || { title: 'StudioCMS' };
+
+// Get the main site URL
+const {
+	mainLinks: { baseSiteURL },
+} = StudioCMSRoutes;
+
+// Define the link props for the navigation
+type LinkProps = {
+	text: string;
+	href: string;
+};
+
+// Define the links for the navigation
+const links: LinkProps[] = await frontendNavigation();
+---
+{/* If no dropdown items */}
+{ ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.map(({ text, href }) => (
+                <a class="links" {href}>{text}</a>
+            )) 
+        }
+    </div> 
+) }
+
+{/* If dropdown items */}
+{ links.length > topLevelLinkCount && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.slice(0, topLevelLinkCount).map(({ text, href }) => (
+                    <a class="links" {href}>{text}</a>
+            ))
+        }
+            <div class="dropdown">
+                <button>More ▼</button>
+                <div class="dropdown-content">
+                    { links.slice(topLevelLinkCount).map(({ text, href }) => (
+                        <a {href}>{text}</a>
+                    )) }
+                </div>
+            </div>
+    </div>
+) }
+```
+
+The above example defines a custom `Navigation.astro` component that uses the built-in StudioCMS navigation helpers to create a navigation menu for the project. The component includes links to the main site URL, the index page, and any other pages that are set to show on the navigation.
+
+All you need to do is add some styles, and you have a fully functional navigation menu that works with the built-in StudioCMS navigation helpers.

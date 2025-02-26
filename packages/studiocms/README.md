@@ -2,9 +2,12 @@
 
 As part of our efforts, we're excited to introduce StudioCMS - a dedicated content management system (CMS) built on top of Astro's latest feature, [Astro DB](https://docs.astro.build/en/guides/astro-db/). This project was developed by [Adam](https://github.com/Adammatthiesen), [Dreyfus](https://github.com/dreyfus92), and [Jumper](https://github.com/jdtjenkins), three passionate members of the Astro community.
 
+> [!IMPORTANT]
+> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
+
 ## Sponsor
 
-<a href="https://turso.tech" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
+<a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
 
 ## Why another CMS?
 
@@ -25,23 +28,23 @@ StudioCMS is built from the ground up to seamlessly integrate with Astro's robus
 
 ## Key Features
 
-**Astro Foundation:** StudioCMS leverages Astro's robust and efficient framework, providing a solid base for building and scaling applications.
+**Built on Astro:** StudioCMS leverages Astro's robust and efficient framework, providing a solid base for building and scaling applications.
 
-**Enhanced Markdown:** We've incorporated 'Marked' with support for extensions, enriching the markdown experience with greater flexibility and functionality.
+**Support for Markdown:** Incorporates Astro's Markdown processing, enriching the markdown experience with greater flexibility and functionality.
 
-**Shiki Syntax Highlighting:** StudioCMS offers Shiki-powered syntax highlighting, ensuring your code is both visually appealing and easy to read. This is especially useful in non-Cloudflare environments due to bundle size considerations.
+**Markdoc Integration:** Provides an alternative to Astro's Markdown with Markdoc, offering users a choice for their markdown processing needs.
 
-**Markdoc Integration:** In addition to 'Marked', StudioCMS provides an alternative with Markdoc, offering users a choice for their markdown processing needs.
+**Secure libSQL Database:** All data is securely housed within your libSQL database, ensuring accessibility to your data to only authorized users to your libSQL provider or Self-hosted server.
 
-**Built-in Authentication:** StudioCMS features built-in authentication with support for multiple platforms, including Local and Github, enhancing security and user management (currently in development).
+**Built-in Authentication:** Features built-in authentication with support for multiple platforms including Local and Github, enhancing security and user management.
 
-**Unpic Image Service:** StudioCMS includes a free and efficient image service, Unpic, which makes managing external URLs straightforward, with support for major CDNs.
+**Web Vitals:**Integration with '@astrojs/web-vitals' for monitoring and providing insights into web performance metrics, ensuring optimal user experiences.
 
 ## A Community-Driven Effort
 
-At the heart of Astrolicious is a deep commitment to community involvement and collaboration. We believe that the development of StudioCMS should be a collective effort, drawing on the diverse talents and perspectives of the Astro community.
+We believe that the development of StudioCMS should be a collective effort, drawing on the diverse talents and perspectives of the Astro community.
 
-To that end, we've handed the repository Astrolicious as an open organization, welcoming contributors of all skill levels to get involved and help shape the future of this CMS. Whether you're a seasoned Astro developer or new to the ecosystem, we encourage you to join our [Discord server](https://chat.studiocms.xyz/) and explore ways to contribute.
+To that end, we are welcoming contributors of all skill levels to get involved and help shape the future of this CMS. Whether you're a seasoned Astro developer or new to the ecosystem, we encourage you to join our [Discord server](https://chat.studiocms.dev/) and explore ways to contribute.
 
 By fostering a sense of shared ownership and investment, we aim to create a CMS that truly reflects the needs and desires of the Astro community. Your feedback, ideas, and code contributions will be invaluable as we work to build a feature-rich and user-friendly content management solution for Astro.
 
@@ -49,8 +52,8 @@ So don't be a stranger - come join us on this journey and help us realize the fu
 
 ## Get Started
 
-Follow the documentation to [get started with StudioCMS](https://docs.studiocms.xyz/start-here/getting-started).
+Follow the documentation to [get started with StudioCMS](https://docs.studiocms.dev/start-here/getting-started).
 
 ## Get Involved
 
-As members of [Astrolicious](https://github.com/astrolicious) we are a free and open-source project, and we welcome contributions from the Astro community. If you're interested in getting involved, please visit our [GitHub repository](https://github.com/astrolicious/studiocms) and join our [Discord server](https://chat.studiocms.xyz/). Together, let's build an even stronger and more vibrant Astro ecosystem.
+As members of [withstudiocms](https://github.com/withstudiocms) we are a free and open-source project, and we welcome contributions from the Astro community. If you're interested in getting involved, please visit our [GitHub repository](https://github.com/withstudiocms/studiocms) and join our [Discord server](https://chat.studiocms.dev/). Together, let's build an even stronger and more vibrant Astro ecosystem.

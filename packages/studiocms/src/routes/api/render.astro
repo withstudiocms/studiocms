@@ -1,0 +1,25 @@
+---
+export const partial = true;
+import { StudioCMSRenderer } from 'studiocms:renderer';
+
+type Content = string;
+
+const queryParam = Astro.url.searchParams.get('content');
+
+async function setContent() {
+	const jsonData: { content: string | undefined } | undefined = await Astro.request.json();
+
+	if (jsonData?.content) {
+		return jsonData.content;
+	}
+
+	if (queryParam && queryParam !== 'null') {
+		return queryParam;
+	}
+
+	return 'No content to display';
+}
+
+const content: Content = await setContent();
+---
+<StudioCMSRenderer {content} />

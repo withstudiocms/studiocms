@@ -1,0 +1,332 @@
+---
+import '../../../../styles/dashboard-tiny-mde.css';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import type { SettingsField } from 'studiocms:plugin-helpers';
+import pluginList from 'studiocms:plugins';
+import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { editorKeys } from 'virtual:studiocms/components/Editors';
+import { convertToSafeString, importEditorKeys } from './runtime.js';
+import {
+	categoriesOptions,
+	pageTypeOptions,
+	parentFolderOptions,
+	tagsOptions,
+	trueFalse,
+} from './shared.js';
+
+const editors = await importEditorKeys(editorKeys);
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+let editor: any = editors[convertToSafeString('studiocms/markdown')];
+
+const CurrentEditorComponent = editor;
+
+const pluginFields = pluginList.flatMap(({ pageTypes }) => {
+	const pageTypeOutput: {
+		identifier: string;
+		fields?: SettingsField[];
+	}[] = [];
+
+	if (!pageTypes) {
+		return pageTypeOutput;
+	}
+
+	for (const pageType of pageTypes) {
+		pageTypeOutput.push(pageType);
+	}
+
+	return pageTypeOutput;
+});
+---
+<div id="create-page-container">
+    <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
+
+      <Tabs variant={'starlight'}>
+        <TabItem label='Basic Information' icon={'information-circle-20-solid'} color={'primary'}>
+          <div class="tab-section">
+            <div class="form-row">
+                <Input label='Page Title' name='page-title' isRequired />
+                <Input label='Slug' name='page-slug' isRequired />
+            </div>
+    
+            <div class="form-row">
+              <Input label='Description' name='page-description' isRequired />
+              <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' />
+            </div>
+    
+            <div class="form-row">
+                <Select 
+                    label="Page type" 
+                    name="page-type" 
+                    isRequired 
+                    fullWidth 
+                    defaultValue='studiocms/markdown'
+                    options={pageTypeOptions} 
+                    />
+                <Select 
+                    label="Show in Navigation" 
+                    name="show-in-nav" 
+                    isRequired 
+                    defaultValue='false'
+                    fullWidth 
+                    options={trueFalse} 
+                    />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
+                <Select label="Draft" name="draft" fullWidth options={trueFalse} disabled placeholder='Use submission buttons above'/>
+            </div>
+    
+            <div class="form-row">
+                <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+                <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
+            </div>
+    
+            <div class="form-row">
+                <Select label="Show Author" name="show-author" defaultValue="false" fullWidth options={trueFalse} />
+                <Select label="Show Contributors" name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
+            </div>
+
+            <div id="custom-page-type-fields" style="display: none;">
+              <Card fullWidth>
+                <div slot="header">
+                  <span>Plugin Page Type Fields</span>
+                </div>
+                <div>You have changed your pageType. Please save your changes and refresh the page to see the new fields.</div>
+              </Card>
+            </div>
+
+          </div>
+          </TabItem>
+          <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
+            <div class="tab-section">
+              <div class="page-content-editor">
+                <CurrentEditorComponent />
+                <div id="page-content-editor-placeholder" style="display: none;"></div>
+              </div>
+            </div>
+          </TabItem>
+        </Tabs>
+
+    </form>
+</div>
+
+<script is:inline define:vars={{ editors, pluginFields }}>
+
+// TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
+
+  async function setupPluginFields() {
+    const pageTypeDropdown = document.querySelector('#page-type-dropdown');
+    const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
+
+    pageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
+        const selectedValue = option.getAttribute('value');
+
+        const pluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
+
+        if (!pluginFields) {
+          return;
+        }
+
+        const customPageTypeFields = document.getElementById('custom-page-type-fields');
+
+        if (pluginFields.fields > 0) {
+          customPageTypeFields.style.display = 'block';
+        }
+      })
+    })
+  }
+
+  async function setupPageEditorSwapper() {
+    const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
+
+    currentPageTypeOptions.forEach((option) => {
+      option.addEventListener('click', async () => {
+
+        const selectedValue = option.getAttribute('value');
+
+        if (selectedValue !== 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
+
+          if (editors.find((editor) => editor.identifier !== selectedValue)) {
+            return;
+          }
+
+          editorContainer.style.display = 'none';
+          editorPlaceholder.style.display = 'block';
+          editorPlaceholder.innerText = 'You have changed your pageType. Please save your changes and refresh the page to see the new editor.';
+        }
+
+        if (selectedValue === 'studiocms/markdown') {
+          const editorContainer = document.querySelector('.page-content-editor');
+          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
+
+          editorContainer.style.display = 'block';
+          editorPlaceholder.style.display = 'none';
+        }
+      })
+    })
+  }
+
+  setupPluginFields();
+  setupPageEditorSwapper();
+</script>
+
+<script>
+import { toast } from "studiocms:ui/components";
+    // get the elements
+    const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
+
+    function getParentFolderValue(value?: string) {
+      if (value === 'null') return null;
+      return value;
+    }
+
+    const draftButton = document.getElementById('draft-button') as HTMLElement;
+    const publishButton = document.getElementById('publish-button') as HTMLElement;
+
+    createPageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
+    });
+
+    draftButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createPageForm);
+
+      const response = await fetch(createPageForm.action, {
+          method: 'POST',
+          body: formData,
+      });
+
+      const res = await response.json();
+
+      if (response.status !== 200) {
+          toast({
+              title: 'Error',
+              description: res.error,
+              type: 'danger'
+          })
+          return;
+      }
+
+      if (response.status === 200) {
+          toast({
+              title: 'Success',
+              description: res.message,
+              type: 'success'
+          })
+          return;
+      }
+      })
+
+    publishButton.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createPageForm);
+
+      const data = {
+        title: formData.get('page-title')?.toString(),
+        slug: formData.get('page-slug')?.toString(),
+        description: formData.get('page-description')?.toString(),
+        type: formData.get('page-type')?.toString(),
+        showInNav: formData.get('show-in-nav')?.toString() === 'true',
+        heroImage: formData.get('page-hero-image')?.toString(),
+        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+        showAuthor: formData.get('show-author')?.toString() === 'true',
+        showContributors: formData.get('show-contributors')?.toString() === 'true',
+        categories: [],
+        tags: [],
+        draft: false,
+      };
+
+      const content = {
+        id: crypto.randomUUID(),
+        content: formData.get('page-content')?.toString(),
+      }
+
+      const response = await fetch(createPageForm.action, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data, content }),
+      });
+
+      const res = await response.json();
+
+      if (response.status !== 200) {
+          toast({
+              title: 'Error',
+              description: res.error,
+              type: 'danger'
+          })
+          return;
+      }
+
+      if (response.status === 200) {
+          toast({
+              title: 'Success',
+              description: res.message,
+              type: 'success'
+          })
+          return;
+      }
+      })
+  </script>
+
+<style>
+  #create-page-container {
+      height: 100%;
+      width: 100%;
+      min-width: 100%;
+  }
+
+  #page-create-form {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      padding-top: .5rem;
+  }
+
+  .tab-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  }
+
+  .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+  }
+
+  @media screen and (max-width: 768px) {
+      .form-row {
+          grid-template-columns: 1fr;
+      }
+  }
+
+  .page-content-editor {
+      height: 250px;
+      margin-bottom: 1rem;
+
+      .editor-container {
+          height: 100%;
+          overflow: hidden;
+          margin-bottom: 1rem;
+      }
+
+      #page-content {
+          height: 100%;
+          width: 100%;
+          border: 1px solid hsl(var(--border));
+          border-radius: 4px;
+          padding: 1rem;
+          font-size: 1rem;
+          overflow-y: auto;
+      }
+  }
+</style>

@@ -1,0 +1,31 @@
+{
+  "name": "node-playground",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "db:login": "astro db login",
+    "db:link": "astro db link",
+    "db:push": "astro db push --remote",
+    "dev": "astro dev --remote",
+    "start": "astro dev --remote",
+    "build": "astro build --remote",
+    "astro": "astro",
+    "preview": "astro preview --remote"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@astrojs/db": "catalog:",
+    "@astrojs/node": "catalog:",
+    "@astrojs/web-vitals": "catalog:",
+    "astro": "catalog:",
+    "studiocms": "workspace:*",
+    "sharp": "catalog:",
+    "@studiocms/blog": "workspace:*",
+    "@studiocms/devapps": "workspace:*",
+    "@sentry/astro": "catalog:"
+  }
+}

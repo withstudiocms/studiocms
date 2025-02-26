@@ -1,0 +1,71 @@
+---
+import config from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
+import { Icon, User } from 'studiocms:ui/components';
+import Card from '@studiocms/ui/components/Card/Card.astro';
+import { sortByDate } from './utils';
+
+const totalUsers = await studioCMS_SDK.GET.database.users();
+
+const recentlyCreatedUsers = totalUsers
+	.sort((a, b) => sortByDate(a.createdAt, b.createdAt))
+	.slice(0, 3);
+---
+<div class="recently-signed-up-users-container">
+    {
+        recentlyCreatedUsers.map((user) => (
+            <a href={`${StudioCMSRoutes.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
+                <Card class="user-card" fullWidth>
+                    <div class="user-flex">
+                        <User 
+                            name={user.name}
+                            avatar={user.avatar ?? undefined} 
+                            description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.dateLocale, config.dateTimeFormat)}`} 
+                            loading='eager',
+                            />
+                        <Icon name="eye" width={24} height={24} />
+                    </div>
+                </Card>
+            </a>
+        ))
+    }
+
+</div>
+
+<style>
+    .recently-signed-up-users-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        gap: .5rem;
+    }
+    
+    .recently-signed-up-user {
+        text-decoration: none;
+        color: hsl(var(--text-normal));
+    }
+
+    .user-card {
+        background-color: hsl(var(--background-step-2));
+        width: 100%;
+        height: 100%;
+        transition: all .15s ease;
+    }
+    
+    .user-card:hover {
+        background-color: hsl(var(--background-step-3));
+    }
+
+    .user-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-card:hover {
+        background-color: hsl(var(--background-step-3));
+    }
+    
+</style>

@@ -1,0 +1,109 @@
+---
+i18nReady: true
+title: Environment Variables
+description: A brief overview of the environment variables used in StudioCMS.
+sidebar:
+   order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import ReadMore from '~/components/ReadMore.astro';
+
+For StudioCMS to work correctly, you must set up the correct environment variables. These variables are essential for establishing a secure connection to Astro DB and authenticating with the StudioCMS API. Without correctly configuring these environment variables, the application will not function as intended.
+
+You can create a `.env` file in the root directory of your project and add the required environment variables. The `.env` file is a text file that contains key-value pairs of environment variables. The environment variables are read by the application at runtime.
+
+For future reference on how to work with environment variables within Astro you can checkout [Environment Variables](https://docs.astro.build/guides/environment-variables) from the Astro documentation.
+
+## Required Environment Variables
+
+In order to use StudioCMS, there are a few required environment variables that you must set up in your `.env` file.
+
+### Database URL and Token for `@astrojs/db`
+
+`ASTRO_DB_REMOTE_URL` - The connection URL to your libSQL server
+`ASTRO_DB_APP_TOKEN` - The app token for your libSQL server
+
+```bash title=".env"
+ASTRO_DB_REMOTE_URL=libsql://your.server.io
+ASTRO_DB_APP_TOKEN=eyJh...RUCg
+```
+
+<ReadMore>For more information about `@astrojs/db` see, the [Astro docs for Astro DB](https://docs.astro.build/en/guides/astro-db/)</ReadMore>
+
+### Encryption Key for `@studiocms/auth`
+
+`CMS_ENCRYPTION_KEY` - A secure encryption key for encrypting sensitive data
+
+```bash title=".env"
+CMS_ENCRYPTION_KEY="wqR+w...sRcg=="
+```
+
+<Aside type="note" title="Use OpenSSL">
+You can generate a secure encryption key using the following command: 
+```bash
+openssl rand --base64 16
+``` 
+</Aside>
+
+## Optional Environment Variables
+
+### oAuth Authentication Environment Variables
+
+<ReadMore>
+For more information about setting up oAuth authentication, see the [Configure oAuth Authentication](/start-here/getting-started/#optional-configure-oauth-authentication) documentation.
+</ReadMore>
+
+#### GitHub (Optional)
+
+To authenticate with GitHub, you need to add the following environment variables to your `.env` file:
+
+```bash title=".env"
+# credentials for GitHub OAuth
+CMS_GITHUB_CLIENT_ID=
+CMS_GITHUB_CLIENT_SECRET=
+CMS_GITHUB_REDIRECT_URI=
+```
+
+<Aside type="note" title="Note">
+`CMS_GITHUB_REDIRECT_URI` is optional if you are using multiple redirect URIs with GitHub oAuth.
+</Aside>
+
+#### Discord (Optional)
+
+```bash title=".env"
+# credentials for Discord OAuth
+CMS_DISCORD_CLIENT_ID=
+CMS_DISCORD_CLIENT_SECRET=
+CMS_DISCORD_REDIRECT_URI=
+```
+
+#### Google (Optional)
+
+```bash title=".env"
+# credentials for Google OAuth
+CMS_GOOGLE_CLIENT_ID=
+CMS_GOOGLE_CLIENT_SECRET=
+CMS_GOOGLE_REDIRECT_URI=
+```
+
+#### Auth0 (Optional)
+
+```bash title=".env"
+# credentials for auth0 OAuth
+CMS_AUTH0_CLIENT_ID=
+CMS_AUTH0_CLIENT_SECRET=
+CMS_AUTH0_DOMAIN=
+CMS_AUTH0_REDIRECT_URI=
+```
+
+### Image Handler Environment Variables
+
+#### Cloudinary (Optional)
+
+If you choose to use the built-in Cloudinary plugin, you will need to define the following:
+
+```bash title=".env"
+## Cloudinary Javascript SDK
+CMS_CLOUDINARY_CLOUDNAME="demo"
+```

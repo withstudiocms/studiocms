@@ -1,0 +1,352 @@
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { developerConfig } from 'studiocms:config';
+import plugins from 'studiocms:plugins';
+import studioCMS_SDK from 'studiocms:sdk';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
+import type { APIContext, APIRoute } from 'astro';
+import { simpleResponse } from '../../../../../utils/simpleResponse.js';
+
+const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
+	const pageTypeOutput: {
+		identifier: string;
+		label: string;
+		description?: string | undefined;
+		pageContentComponent?: string | undefined;
+		apiEndpoints?:
+			| {
+					onCreate?: APIRoute | undefined;
+					onEdit?: APIRoute | undefined;
+					onDelete?: APIRoute | undefined;
+			  }
+			| undefined;
+	}[] = [];
+
+	if (!pageTypes) {
+		return pageTypeOutput;
+	}
+
+	for (const pageType of pageTypes) {
+		pageTypeOutput.push(pageType);
+	}
+
+	return pageTypeOutput;
+});
+
+function getPageTypeEndpoints(pkg: string, type: 'onCreate' | 'onEdit' | 'onDelete') {
+	const currentPageType = pageTypeOptions.find((pageType) => pageType.identifier === pkg);
+
+	if (!currentPageType) {
+		return undefined;
+	}
+
+	return currentPageType.apiEndpoints?.[type];
+}
+
+const { testingAndDemoMode } = developerConfig;
+
+type UpdatePageData = Partial<tsPageDataSelect>;
+type UpdatePageContent = Partial<tsPageContentSelect>;
+
+function getParentFolderValue(value?: string) {
+	if (value === 'null') return null;
+	return value;
+}
+
+export const POST: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	const formData = await context.request.formData();
+
+	const data: UpdatePageData = {
+		title: formData.get('page-title')?.toString(),
+		slug: formData.get('page-slug')?.toString(),
+		description: formData.get('page-description')?.toString(),
+		package: formData.get('page-type')?.toString(),
+		showOnNav: formData.get('show-in-nav')?.toString() === 'true',
+		heroImage: formData.get('page-hero-image')?.toString(),
+		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+		showAuthor: formData.get('show-author')?.toString() === 'true',
+		showContributors: formData.get('show-contributors')?.toString() === 'true',
+		categories: [],
+		tags: [],
+		draft: true,
+	};
+
+	const content = {
+		id: crypto.randomUUID(),
+		content: formData.get('page-content')?.toString() ?? '',
+	} as UpdatePageContent;
+
+	if (!data) {
+		return simpleResponse(400, 'Invalid form data, data is required');
+	}
+
+	if (!content) {
+		return simpleResponse(400, 'Invalid form data, content is required');
+	}
+
+	const dataId = crypto.randomUUID();
+	const contentId = crypto.randomUUID();
+
+	if (!data.title) {
+		return simpleResponse(400, 'Invalid form data, title is required');
+	}
+
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
+
+	try {
+		await studioCMS_SDK.POST.databaseEntry.pages(
+			{
+				id: dataId,
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				title: data.title!,
+				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
+				description: data.description || '',
+				authorId: userData.user?.id || null,
+				...data,
+			},
+			{ id: contentId, ...content }
+		);
+
+		if (apiRoute) {
+			await apiRoute(context);
+		}
+
+		return simpleResponse(200, 'Page created successfully');
+	} catch (error) {
+		return simpleResponse(500, 'Failed to create page');
+	}
+};
+
+export const PATCH: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	const formData = await context.request.formData();
+
+	const data: Partial<tsPageDataSelect> = {
+		title: formData.get('page-title')?.toString(),
+		slug: formData.get('page-slug')?.toString(),
+		description: formData.get('page-description')?.toString(),
+		package: formData.get('page-type')?.toString(),
+		showOnNav: formData.get('show-in-nav') === 'true',
+		heroImage: formData.get('page-hero-image')?.toString(),
+		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+		showAuthor: formData.get('show-author') === 'true',
+		showContributors: formData.get('show-contributors')?.toString() === 'true',
+		categories: [],
+		tags: [],
+		id: formData.get('page-id')?.toString(),
+		draft: formData.get('draft')?.toString() === 'true',
+	};
+
+	const content = {
+		id: formData.get('page-content-id')?.toString(),
+		content: formData.get('page-content')?.toString(),
+	};
+
+	if (!data) {
+		return simpleResponse(400, 'Invalid form data, data is required');
+	}
+
+	if (!content) {
+		return simpleResponse(400, 'Invalid form data, content is required');
+	}
+
+	if (!data.id) {
+		return simpleResponse(400, 'Invalid form data, id is required');
+	}
+
+	if (!content.id) {
+		return simpleResponse(400, 'Invalid form data, id is required');
+	}
+
+	const currentPageData = await studioCMS_SDK_Cache.GET.page.byId(data.id);
+
+	if (!currentPageData.data) {
+		return simpleResponse(404, 'Page not found');
+	}
+
+	const { authorId, contributorIds } = currentPageData.data;
+
+	let AuthorId = authorId;
+
+	if (!authorId) {
+		AuthorId = userData.user?.id || null;
+	}
+
+	const ContributorIds = contributorIds || [];
+
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	if (!ContributorIds.includes(userData.user!.id)) {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		ContributorIds.push(userData.user!.id);
+	}
+
+	data.authorId = AuthorId;
+	data.contributorIds = JSON.stringify(ContributorIds);
+	data.updatedAt = new Date();
+
+	const startMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+		(metaData) => metaData.id === data.id
+	);
+
+	const {
+		data: { defaultContent },
+	} = await studioCMS_SDK_Cache.GET.page.byId(data.id);
+
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
+
+	try {
+		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
+			pageData: data as tsPageDataSelect,
+			pageContent: content as tsPageContentSelect,
+		});
+
+		const updatedMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+			(metaData) => metaData.id === data.id
+		);
+
+		const { enableDiffs, diffPerPage } = (await studioCMS_SDK_Cache.GET.siteConfig()).data;
+
+		if (enableDiffs) {
+			await studioCMS_SDK.diffTracking.insert(
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				userData.user!.id,
+				data.id,
+				{
+					content: {
+						start: defaultContent?.content || '',
+						end: content.content || '',
+					},
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					metaData: { start: startMetaData!, end: updatedMetaData! },
+				},
+				diffPerPage
+			);
+		}
+
+		if (apiRoute) {
+			await apiRoute(context);
+		}
+
+		return simpleResponse(200, 'Page updated successfully');
+	} catch (error) {
+		return simpleResponse(500, 'Failed to update page');
+	}
+};
+
+export const DELETE: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	const jsonData = await context.request.json();
+
+	const { id, slug } = jsonData;
+
+	if (!id) {
+		return simpleResponse(400, 'Invalid request');
+	}
+
+	if (!slug) {
+		return simpleResponse(400, 'Invalid request');
+	}
+
+	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index');
+
+	if (isHomePage.data && isHomePage.data.id === id) {
+		return simpleResponse(400, 'Cannot delete home page');
+	}
+
+	const pageToDelete = await studioCMS_SDK_Cache.GET.page.byId(id);
+
+	const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
+
+	try {
+		await studioCMS_SDK.DELETE.page(id);
+		studioCMS_SDK_Cache.CLEAR.page.byId(id);
+
+		if (apiRoute) {
+			await apiRoute(context);
+		}
+
+		return simpleResponse(200, 'Page deleted successfully');
+	} catch (error) {
+		return simpleResponse(500, 'Failed to delete page');
+	}
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST, DELETE, PATCH',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
+};

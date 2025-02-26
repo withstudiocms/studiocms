@@ -1,0 +1,131 @@
+.metric-card {
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--radius-lg);
+	gap: 1rem;
+	border: 1px solid hsl(var(--border));
+	padding: 1rem;
+	background-color: hsl(var(--background-step-1)); /* Light gray background */
+
+	p {
+		margin: 0;
+	}
+
+	h4 {
+		margin: 0;
+	}
+}
+
+.metric-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: bold;
+}
+
+.icon {
+	flex-shrink: 0;
+	height: 24px;
+}
+
+/* Example of rating-based styles */
+.border-gray {
+	border-color: hsl(var(--border));
+}
+
+.bg-light-gray {
+	background-color: hsl(var(--background-step-1));
+}
+
+.no-data-text {
+	margin: auto;
+	padding: 1rem;
+	font-size: 0.875rem;
+	color: hsl(var(--text-muted)); /* Tailwind's text-gray-800 */
+}
+
+.metric-value {
+	font-size: 1.875rem;
+	font-weight: 400;
+	line-height: 1;
+}
+
+.distribution-container {
+	position: relative;
+}
+
+.p75-marker {
+	position: absolute;
+	left: 50%;
+	right: 0;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	transform: translateY(-100%);
+}
+
+.marker-text {
+	height: .8rem;
+	font-family: monospace;
+	font-size: 0.875rem;
+}
+
+.distribution-bar {
+	display: flex;
+	height: 1rem;
+	overflow: hidden;
+	border-radius: var(--radius-lg);
+}
+
+/* Example color classes */
+.good {
+	background-color: hsl(var(--success-base));
+}
+
+.needs-improvement {
+	background-color: hsl(var(--warning-base));
+}
+
+.poor {
+	background-color: hsl(var(--danger-base));
+}
+
+/* Text Colors */
+.text-green-600 {
+	color: hsl(var(--success-base)); /* Tailwind's text-green-600 */
+}
+
+.text-yellow-600 {
+	color: hsl(var(--warning-base)); /* Tailwind's text-yellow-600 */
+}
+
+.text-red-600 {
+	color: hsl(var(--danger-base)); /* Tailwind's text-red-600 */
+}
+
+/* Border & Background Colors */
+.border-green-600 {
+	border-color: hsl(var(--success-base)); /* Tailwind's border-green-600 */
+}
+
+.bg-green-100 {
+	background-color: hsl(var(--success-flat)); /* Tailwind's bg-green-100 */
+}
+
+.border-yellow-600 {
+	border-color: hsl(var(--warning-base)); /* Tailwind's border-yellow-600 */
+}
+
+.bg-yellow-100 {
+	background-color: hsl(var(--warning-flat)); /* Tailwind's bg-yellow-100 */
+}
+
+.border-red-600 {
+	border-color: hsl(var(--danger-base)); /* Tailwind's border-red-600 */
+}
+
+.bg-red-100 {
+	background-color: hsl(var(--danger-flat)); /* Tailwind's bg-red-100 */
+}

@@ -4,11 +4,12 @@
   "description": "Add a blog to your StudioCMS project with ease!",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
-    "url": "https://studiocms.xyz"
+    "url": "https://studiocms.dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astrolicious/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_blog"
   },
   "contributors": [
     "Adammatthiesen",
@@ -20,7 +21,6 @@
     "astro",
     "astrocms",
     "astrodb",
-    "astrolicious",
     "astrostudio",
     "astro-integration",
     "astro-studio",
@@ -33,36 +33,39 @@
     "astro-blog",
     "astro-studio-blog",
     "studiocms-blog",
-    "theme",
-    "astro-theme",
-    "studiocms-theme",
-    "astro-studiocms-theme"
+    "plugin",
+    "studiocms-plugin"
   ],
-  "homepage": "https://studiocms.xyz",
+  "homepage": "https://studiocms.dev",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "sideEffects": false,
   "files": [
-    "index.ts",
-    "schema.ts",
-    "src"
+    "dist"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.{ts,css}'",
+    "dev": "build-scripts dev 'src/**/*.{ts,css}'"
+  },
   "exports": {
-    ".": "./index.ts",
-    "./schema": "./schema.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/core": "workspace:*",
-    "@studiocms/frontend": "workspace:*",
     "@astrojs/rss": "catalog:",
-    "astro-theme-provider": "catalog:"
+    "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "studiocms": "workspace:*",
+    "vite": "catalog:min"
   }
 }

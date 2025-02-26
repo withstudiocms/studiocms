@@ -1,0 +1,63 @@
+{
+  "displayName": "English (en-US)",
+  "translations": {
+    "@studiocms/auth:login": {
+      "title": "Login Page",
+      "description": "Login Page",
+      "header": "Login",
+      "sub-header-usernamepasswordoauth": "Enter your username & password or log in using one of the options below.",
+      "sub-header-usernamepassword": "Enter your username & password.",
+      "sub-header-oauth": "Log in using one of the options below.",
+      "sub-header-noprovider": "No Login provider configured. Please contact your administrator.",
+      "username-label": "Username",
+      "password-label": "Password",
+      "login-button": "Log In",
+      "allow-registration-noaccount": "Don't have an account?",
+      "allow-registration-register": "Register here!"
+    },
+    "@studiocms/auth:signup": {
+      "title": "Sign Up Page",
+      "description": "Sign Up Page",
+      "header": "Sign Up",
+      "sub-header-usernamepasswordoauth": "Create an account or log in using one of the options below.",
+      "sub-header-usernamepassword": "Create an account using the form below.",
+      "sub-header-oauth": "Log in using one of the options below.",
+      "sub-header-noprovider": "No Login provider configured. Please contact your administrator.",
+      "username-label": "Username",
+      "email-label": "Email",
+      "displayname-label": "Display Name",
+      "password-label": "Password",
+      "confirm-password-label": "Confirm Password",
+      "create-account-button": "Create Account",
+      "allow-login-haveaccount": "Already have an account?",
+      "allow-login-login": "Login here!"
+    },
+    "@studiocms/auth:logout": {
+      "title": "Logout Page",
+      "description": "Logout Page"
+    },
+    "@studiocms/auth:oauth-stack": {
+      "or-login-with": "or log in using"
+    },
+    "@studiocms/dashboard:index": {
+      "title": "Dashboard",
+      "welcome-title": "Welcome",
+      "title-button:discord": "Join the Community",
+      "title-button:feedback": "Give Feedback",
+      "sub-header": "StudioCMS is a free and open-source content management system built from the ground up by the Astro community."
+    },
+    "@studiocms/dashboard:sidebar": {
+      "category-1-header": "Dashboard",
+      "dashboard-link-label": "Dashboard",
+      "content-management-label": "Content Management",
+      "category-2-header": "Admin",
+      "site-configuration-label": "Site Configuration",
+      "user-management-label": "User Management",
+      "category-3-header": "Plugins",
+      "category-3-empty-placeholder": "No plugins with settings pages found.",
+      "user-dropdown:settings": "User Settings",
+      "user-dropdown:view-site": "View Site",
+      "user-dropdown:logout": "Log Out"
+    }
+  }
+}

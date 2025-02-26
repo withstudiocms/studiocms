@@ -1,0 +1,83 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import './navigation.css';
+import { frontendNavigation } from 'studiocms:plugin-helpers';
+import studioCMS_SDK from 'studiocms:sdk/cache';
+
+type Props = {
+	topLevelLinkCount?: number;
+};
+
+const { topLevelLinkCount = 3 } = Astro.props;
+
+const config = (await studioCMS_SDK.GET.siteConfig()).data;
+
+const { title } = config || { title: 'StudioCMS' };
+const {
+	mainLinks: { baseSiteURL },
+} = StudioCMSRoutes;
+
+type LinkProps = {
+	text: string;
+	href: string;
+};
+
+const links: LinkProps[] = await frontendNavigation();
+---
+
+<!-- If no dropdown items -->
+{ ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.map(({ text, href }) => (
+                <a class="links" {href}>{text}</a>
+            )) 
+        }
+
+<a class="avatar" href={StudioCMSRoutes.authLinks.loginURL}>Dashboard</a>
+    </div> 
+) }
+
+<!-- If dropdown items -->
+{ links.length > topLevelLinkCount && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.slice(0, topLevelLinkCount).map(({ text, href }) => (
+                    <a class="links" {href}>{text}</a>
+            ))
+        }
+            <div class="dropdown">
+                <button>More ▼</button>
+                <div class="dropdown-content">
+                    { links.slice(topLevelLinkCount).map(({ text, href }) => (
+                        <a {href}>{text}</a>
+                    )) }
+                </div>
+            </div>
+
+<a class="avatar" href={StudioCMSRoutes.authLinks.loginURL}>Dashboard</a>
+    </div>
+) }

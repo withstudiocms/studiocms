@@ -1,0 +1,57 @@
+---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { AuthConfig } from 'studiocms:config';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
+import APITokens from '../../components/dashboard/islands/profile/APITokens.astro';
+import BasicInfo from '../../components/dashboard/islands/profile/BasicInfo.astro';
+import SocialSignin from '../../components/dashboard/islands/profile/SocialSignin.astro';
+import UpdatePassword from '../../components/dashboard/islands/profile/UpdatePassword.astro';
+import {
+	providerData,
+	showOAuth,
+} from '../../components/dashboard/islands/profile/oAuthButtonProviders';
+import Layout from '../../layouts/dashboard/Layout.astro';
+
+const lang = 'en-us';
+
+const {
+	providers: { usernameAndPassword },
+} = AuthConfig;
+
+const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
+
+const userSession = await getUserData(Astro);
+
+const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
+---
+
+<Layout 
+  title={'User Profile'}
+  requiredPermission="visitor"
+  {lang}
+  >
+
+  <div slot="header">
+    <PageHeader title="Your Profile" />
+  </div>
+
+  <div class="page-content">
+
+    <BasicInfo />
+
+    { usernameAndPassword && <UpdatePassword /> }
+
+    { shouldShowOAuth && <SocialSignin /> }
+
+    { isAllowedAPITokens && <APITokens {userSession} /> }
+
+  </div>
+</Layout>
+
+<style>
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>

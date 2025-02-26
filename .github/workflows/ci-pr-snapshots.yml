@@ -1,0 +1,24 @@
+name: CI - Snapshot Release on PRs
+
+on: 
+  pull_request:
+    paths:
+        - 'packages/**'
+
+jobs:
+  release:
+    name: Pkg-pr-new Snapshot Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@main
+
+      - name: Run Prepublish
+        run: pnpm ci:prepublish
+  
+      - name: Publish packages
+        run: pnpm ci:snapshot
+        

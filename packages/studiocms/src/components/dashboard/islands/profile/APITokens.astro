@@ -1,0 +1,267 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { FormattedDate } from 'studiocms:components';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK from 'studiocms:sdk';
+import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
+
+interface Props {
+	userSession: UserSessionData;
+}
+
+const { userSession } = Astro.props;
+
+const { user } = userSession;
+
+if (!user) {
+	throw new Error('User not found');
+}
+
+const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
+---
+<Card fullWidth class="api-tokens">
+    <div slot="header">
+        <h2>API Tokens</h2>
+    
+        <div class="form-header">
+            <Button 
+                type='submit' 
+                id="create-api-token"
+                variant='solid' 
+                color='primary'
+                size='sm'
+                >
+                <Icon slot="start-content" name="plus" width={24} height={24} />
+                Create API Token
+            </Button> 
+        </div>
+    </div>
+    <div class="api-tokens-content">
+        <span class="description">API tokens are used to authenticate with the StudioCMS REST API.</span>
+
+        { userTokens.length > 0 ? userTokens.map((token) => (
+            <Card fullWidth class="token-list-item">
+                <div slot="header" class="token-list-item-header">
+                    <div class="token-list-item-header-row">
+                        <h4>
+                            <Icon name="key" width={24} height={24} />
+                            {token.description}
+                        </h4>
+                        <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={user.id} disabled>
+                            <Icon slot="start-content" name="trash" width={24} height={24} />
+                            Delete
+                        </Button>
+                    </div>
+                </div>
+
+                <div class="token-list-item-content">
+                    <div class="token-list-item-content-row">
+                        <span class="created-at">Created - <FormattedDate date={token.creationDate} /></span>
+                    </div>
+                </div>
+            </Card>
+        )) : (
+            <Card fullWidth class="token-list-item">
+                <Center>
+                    <p class="description">No API tokens found.</p>
+                </Center>
+            </Card>
+        ) }
+    </div>
+    
+</Card>
+<Modal
+  id='create-api-token-modal'
+  cancelButton={{ label: 'Cancel', color: 'default' }}
+  actionButton={{ label: 'Confirm', color: 'primary' }}
+  isForm
+>
+  <h2 slot='header'>Create New API Token</h2>
+  <div class="modal-body">
+    <Input label="Description" name="description" type="text" isRequired />
+    <input type="hidden" name="user" value={user.id} />
+  </div>
+</Modal>
+
+<Modal id='create-token-response-modal'>
+  <h2 slot="header">New Token</h2>
+  <Center>
+    <div class="modal-body">
+        <span>This will only be shown once, please save this information.</span>
+      <code id="create-token-response-placeholder"></code>
+    </div>
+  </Center>
+</Modal>
+
+<div 
+    id="token-api-links" style="display: none;"
+    data-token_api={StudioCMSRoutes.endpointLinks.apiTokens}
+></div>
+
+<script>
+    import { ModalHelper, toast } from 'studiocms:ui/components';
+
+    const createAPITokenModal = new ModalHelper('create-api-token-modal', 'create-api-token');
+    const createTokenResponseModal = new ModalHelper('create-token-response-modal');
+    const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
+
+    const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
+
+    const tokenAPI = tokenAPILinks.dataset.token_api!;
+
+    createAPITokenModal.registerConfirmCallback(async (formData) => {
+        const description = formData?.get('description');
+        const user = formData?.get('user');
+
+        if (!description) {
+            toast({
+                title: 'Error',
+                description: 'Description is required',
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        if (!user) {
+            toast({
+                title: 'Error',
+                description: 'User ID not found',
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        const response = await fetch(tokenAPI, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                description,
+                user
+            })
+        });
+
+        const res = await response.json();
+
+        if (!response.ok) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger',
+                duration: 5000
+            })
+            return;
+        }
+
+        createTokenResponseModal.show();
+        document.getElementById('create-token-response-placeholder')!.innerText = res.token;
+
+    })
+
+    deleteButtons.forEach((button) => {
+        button.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const tokenID = button.getAttribute('data-token');
+            const userID = button.getAttribute('data-user');
+
+            const response = await fetch(tokenAPI, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tokenID,
+                    userID
+                })
+            });
+
+            const res = await response.json();
+
+            if (!response.ok) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger',
+                    duration: 5000
+                })
+                return;
+            }
+
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success',
+                duration: 5000
+            })
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+    });
+</script>
+
+<style>
+    .api-tokens {
+        position: relative;
+    }
+
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .api-tokens-content {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+
+        .description {
+            color: hsl(var(--text-muted));
+        }
+
+        .token-list-item {
+            display: flex;
+            flex-direction: column;
+            background-color: hsl(var(--background-step-2));
+
+            .token-list-item-header {
+                display: flex;
+                flex-direction: column;
+
+                .token-list-item-header-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    h4 {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+                }
+            }
+
+            .token-list-item-content {
+                display: flex;
+                flex-direction: column;
+
+                .token-list-item-content-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .created-at {
+                        font-size: 0.75rem;
+                        color: hsl(var(--text-muted));
+                    }
+                }
+            }
+        }
+    }
+</style>

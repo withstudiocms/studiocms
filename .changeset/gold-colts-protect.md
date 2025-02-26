@@ -1,7 +1,5 @@
 ---
-"@studiocms/dashboard": patch
-"@studiocms/auth": patch
-"@studiocms/core": patch
+"studiocms": patch
 ---
 
 [Code Scanning Fix] Polynomial regular expression used on uncontrolled data

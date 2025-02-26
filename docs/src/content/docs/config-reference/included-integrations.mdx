@@ -1,0 +1,56 @@
+---
+i18nReady: true
+title: Image Service
+description: Reference page for StudioCMSOptions imageService
+sidebar:
+  order: 7
+---
+
+import ReadMore from '~/components/ReadMore.astro';
+
+StudioCMS Integration config options schema reference
+
+```ts twoslash title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  includedIntegrations: {
+    robotsTXT: true
+  },
+});
+```
+
+## `robotsTXT`
+
+`robotsTXT` is a boolean or object that is used to determine if the robots.txt file is enabled.
+
+- **Type:** `boolean` | [`RobotsConfig`](#robotsconfig) | `undefined`
+- **Default:** `true`
+
+### Usage
+
+```ts twoslash {3} title="studiocms.config.mjs"
+import { defineStudioCMSConfig } from 'studiocms/config';
+// ---cut---
+export default defineStudioCMSConfig({
+  includedIntegrations: {
+    robotsTXT: true, // DEFAULT - This enables the robots.txt file.
+  }
+})
+```
+
+##### `RobotsConfig`
+
+```ts
+interface RobotsConfig {
+  host?: boolean | string;
+  sitemap?: boolean | string | string[];
+  policy?: {
+    userAgent?: string;
+    disallow?: string | string[];
+    allow?: string | string[];
+    crawlDelay?: number;
+    cleanParam?: string | string[];
+  }[] | undefined;
+}
+```

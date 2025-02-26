@@ -1,0 +1,12 @@
+---
+import config from 'studiocms:config';
+
+interface Props {
+	date: Date;
+}
+
+const datetime = Astro.props.date.toISOString();
+const formattedDate = Astro.props.date.toLocaleDateString(config.dateLocale, config.dateTimeFormat);
+---
+
+<time {datetime}>{formattedDate}</time>

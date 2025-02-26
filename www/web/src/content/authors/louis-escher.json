@@ -1,6 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/authors.schema.json",
-  "name": "Louis Escher",
-  "link": "https://github.com/louisescher",
-  "avatar": "./avatars/louis-escher.jpeg"
-}

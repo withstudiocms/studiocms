@@ -1,14 +1,15 @@
 {
   "name": "studiocms",
   "version": "0.1.0-beta.7",
-  "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
+  "description": "A dedicated CMS for Astro and Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
-    "url": "https://studiocms.xyz"
+    "url": "https://studiocms.dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astrolicious/studiocms.git"
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms"
   },
   "contributors": [
     "Adammatthiesen",
@@ -17,84 +18,212 @@
   ],
   "license": "MIT",
   "keywords": [
-    "astro",
+    "cms",
     "astrocms",
     "astrodb",
-    "astrolicious",
     "astrostudio",
-    "astro-integration",
+    "astrostudiocms",
+    "studiocms",
     "astro-studio",
     "astro-studiocms",
-    "cms",
-    "studiocms",
-    "withastro"
+    "astro",
+    "withastro",
+    "astro-integration",
+    "headlesscms",
+    "headless-cms",
+    "headless"
   ],
-  "homepage": "https://studiocms.xyz",
+  "homepage": "https://studiocms.dev",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "sideEffects": false,
   "files": [
-    "src"
+    "auth.d.ts",
+    "CHANGELOG.md",
+    "core.d.ts",
+    "custom-renderers",
+    "LICENSE",
+    "README.md",
+    "renderer.d.ts",
+    "ui.d.ts",
+    "dist",
+    "static",
+    "studiocms-cli.mjs"
   ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.{ts,css}'",
+    "dev": "build-scripts dev 'src/**/*.{ts,css}'"
+  },
+  "bin": {
+    "studiocms": "./studiocms-cli.mjs"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./blog": "./src/blog/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
+    "./consts": {
+      "types": "./dist/consts.d.ts",
+      "default": "./dist/consts.js"
+    },
+    "./contentRenderer": {
+      "types": "./dist/lib/renderer/contentRenderer.d.ts",
+      "default": "./dist/lib/renderer/contentRenderer.js"
+    },
+    "./Renderer": "./dist/components/Renderer.astro",
+    "./custom-renderers": "./custom-renderers/index.ts",
+    "./db/config": {
+      "types": "./dist/db/config.d.ts",
+      "default": "./dist/db/config.js"
+    },
+    "./db/tables": {
+      "types": "./dist/db/tables.d.ts",
+      "default": "./dist/db/tables.js"
+    },
+    "./errors": {
+      "types": "./dist/errors.d.ts",
+      "default": "./dist/errors.js"
+    },
+    "./plugins": {
+      "types": "./dist/plugins.d.ts",
+      "default": "./dist/plugins.js"
+    },
+    "./sdk/base": {
+      "types": "./dist/sdk/index.d.ts",
+      "default": "./dist/sdk/index.js"
+    },
+    "./sdk/cache": {
+      "types": "./dist/sdk/cache.d.ts",
+      "default": "./dist/sdk/cache.js"
+    },
+    "./sdk/tables": {
+      "types": "./dist/sdk/tables.d.ts",
+      "default": "./dist/sdk/tables.js"
+    },
+    "./sdk/types": {
+      "types": "./dist/sdk/types/index.d.ts",
+      "default": "./dist/sdk/types/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "./schemas/renderer": {
+      "types": "./dist/schemas/config/rendererConfig.d.ts",
+      "default": "./dist/schemas/config/rendererConfig.js"
+    },
+    "./components/*": "./dist/components/*",
+    "./layouts/*": "./dist/layouts/*",
+    "./lib/*": "./dist/lib/*",
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./v/core.d.ts": "./core.d.ts",
+    "./v/auth.d.ts": "./auth.d.ts",
+    "./v/renderer.d.ts": "./renderer.d.ts"
   },
   "type": "module",
   "dependencies": {
-    "@cloudinary/url-gen": "catalog:studiocms-imagehandler",
-    "@inox-tools/runtime-logger": "catalog:studiocms-shared",
-    "@markdoc/markdoc": "catalog:studiocms-shared",
-    "@matthiesenxyz/astrolace": "catalog:studiocms-shared",
-    "@matthiesenxyz/integration-utils": "catalog:studiocms-shared",
-    "@matthiesenxyz/unocss-preset-daisyui": "catalog:studiocms-shared",
-    "@noble/hashes": "catalog:studiocms-shared",
-    "@shikijs/transformers": "catalog:studiocms-renderer",
-    "@studiocms/assets": "workspace:*",
-    "@studiocms/auth": "workspace:*",
-    "@studiocms/betaresources": "workspace:*",
-    "@studiocms/core": "workspace:*",
-    "@studiocms/dashboard": "workspace:*",
-    "@studiocms/frontend": "workspace:*",
-    "@studiocms/imagehandler": "workspace:*",
-    "@studiocms/renderers": "workspace:*",
-    "@studiocms/robotstxt": "workspace:*",
-    "@unocss/astro": "catalog:studiocms-shared",
-    "@unocss/reset": "catalog:studiocms-shared",
-    "@unpic/astro": "catalog:studiocms-imagehandler",
+    "@studiocms/markdown-remark-processor": "^1.0.0",
+    "@studiocms/ui": "catalog:",
+
     "astro-integration-kit": "catalog:",
-    "arctic": "catalog:studiocms-shared",
-    "daisyui": "catalog:studiocms-shared",
-    "lucia": "catalog:studiocms-shared",
-    "marked": "catalog:studiocms-shared",
-    "marked-alert": "catalog:studiocms-renderer",
-    "marked-emoji": "catalog:studiocms-renderer",
-    "marked-footnote": "catalog:studiocms-renderer",
-    "marked-shiki": "catalog:studiocms-renderer",
-    "marked-smartypants": "catalog:studiocms-renderer",
-    "micromatch": "catalog:studiocms-shared",
-    "mrmime": "catalog:studiocms-shared",
-    "package-json": "catalog:studiocms",
-    "semver": "catalog:studiocms",
-    "shiki": "catalog:studiocms-shared",
-    "unocss": "catalog:studiocms-shared",
-    "unpic": "catalog:studiocms-shared"
+    "@inox-tools/inline-mod": "^2.0.3",
+    "@inox-tools/runtime-logger": "0.4.2",
+
+    "package-json": "^10.0.1",
+    "semver": "^7.7.1",
+
+    "@markdoc/markdoc": "^0.4.0",
+    "@mdx-js/mdx": "^3.1.0",
+    "react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "remark-gfm": "^4.0.1",
+    "rehype-highlight": "^7.0.2",
+
+    "@oslojs/binary": "^1.0.0",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "arctic": "^2.3.1",
+    "three": "0.170.0",
+
+    "mrmime": "^2.0.0",
+    "unified": "^11.0.5",
+    "remark-rehype": "^11.1.1",
+    "mdast-util-to-hast": "^13.2.0",
+    "drizzle-orm": "^0.31.2",
+    "@libsql/client": "^0.14.0",
+    
+    "@cloudinary/url-gen": "^1.21.0",
+
+    "@matthiesenxyz/astrodtsbuilder": "^0.2.0",
+    "@matthiesenxyz/integration-utils": "^0.3.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "mdast": "^3.0.0",
+    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-to-markdown": "^2.1.1",
+    "mdast-util-to-string": "^4.0.0",
+    "unist-util-visit": "^5.0.0",
+    "lodash": "^4.17.21",
+    "@fontsource-variable/onest": "5.1.1",
+
+    "@bluwy/giget-core": "^0.1.2",
+    "@clack/core": "0.4.1",
+    "@clack/prompts": "0.9.1",
+    "@commander-js/extra-typings": "^13.0.0",
+    "commander": "^13.0.0",
+    "figlet": "^1.8.0",
+    "chalk": "^5.4.1",
+    "strip-ansi": "^7.1.0",
+    "wrap-ansi": "^9.0.0",
+    "boxen": "^8.0.1",
+    "is-unicode-supported": "^2.1.0",
+    "ansi-escapes": "^7.0.0",
+    "cli-cursor": "^5.0.0",
+    "slice-ansi": "^7.1.0",
+    "ultrahtml": "^1.5.3",
+    "jsonwebtoken": "^9.0.2",
+    "diff": "^7.0.0",
+    "diff2html": "^3.4.51",
+    "dompurify": "^3.2.3",
+    "fuse.js": "^7.0.0",
+    "@iconify-json/simple-icons": "^1.2.23",
+    "@iconify-json/flat-color-icons": "^1.2.1"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/semver": "^7.5.8",
+    "@types/mdast": "^4.0.4",
+    "@types/lodash": "^4.17.13",
+    "@types/figlet": "^1.7.0",
+    "@types/node": "catalog:",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/diff": "^7.0.1",
+    "@types/three": "0.169.0",
+    "@types/react-dom": "^19.0.3",
+    "@types/react": "^19.0.8"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
+    "@astrojs/markdown-remark": "catalog:min",
+    "@astrojs/react": "catalog:",
+    "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:min",
-    "@studiocms/blog": "workspace:*"
+    "vite": "catalog:min"
   },
   "peerDependenciesMeta": {
-    "@studiocms/blog": {
+    "@astrojs/react": {
+      "optional": true
+    },
+    "@astrojs/web-vitals": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "vite": "catalog:",
-    "typescript": "catalog:",
-    "@types/micromatch": "catalog:studiocms-shared",
-    "@types/semver": "catalog:studiocms"
   }
 }

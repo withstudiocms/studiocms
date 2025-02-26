@@ -1,0 +1,34 @@
+---
+import { Card, Icon } from 'studiocms:ui/components';
+import { createComponentProxy, transformHTML } from '../../../../runtime/AstroComponentProxy.js';
+import type { GridItem } from './shared.js';
+
+export interface Props extends GridItem {}
+
+const { span, variant, body, header, name } = Astro.props;
+
+// @ts-expect-error - `$$result` is a global variable injected by Astro's compiler during rendering
+const components = createComponentProxy($$result, body?.components);
+
+let html: string | undefined = undefined;
+
+if (body?.html) {
+	html = await transformHTML(body.html, components, body.sanitizeOpts);
+}
+---
+<Card
+    fullWidth
+    variant={variant}
+    class="grid-item"
+    class:list={[span > 1 && `span-${span}`]}
+    id={name}>
+    {header && (
+        <div slot="header">
+            <span class="grid-item-title">
+                {header.icon && <Icon name={header.icon} width={24} height={24}/>}
+                <span>{header.title}</span>
+            </span>
+        </div>
+    )}
+    { html && <Fragment set:html={html} /> }
+</Card>

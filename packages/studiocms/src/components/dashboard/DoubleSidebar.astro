@@ -1,0 +1,26 @@
+---
+import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components';
+import MainSidebarContent from './MainSidebarContent.astro';
+---
+
+<SuiDoubleSidebar class='sidebar'>
+  <div slot="outer" class="outer-sidebar-container">
+    <MainSidebarContent transition:persist transition:persist-props />
+  </div>
+  <div slot="inner">
+    <slot />
+  </div>
+</SuiDoubleSidebar>
+
+<script>
+  import { DoubleSidebarHelper } from "studiocms:ui/components";
+
+  if (document.getElementById('sui-sidebars')) {
+    const sidebar = new DoubleSidebarHelper();
+
+    sidebar.showInnerOnClick('nav-open');
+    sidebar.showInnerOnClick('nav-close');
+    sidebar.showOuterOnClick('back-to-outer');
+    sidebar.hideSidebarOnClick('show-page');
+  }
+</script>

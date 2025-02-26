@@ -1,0 +1,253 @@
+---
+import { validImages } from 'studiocms:auth/utils/validImages';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import {
+	Accordion,
+	AccordionItem,
+	Button,
+	Card,
+	Divider,
+	Input,
+	Select,
+} from 'studiocms:ui/components';
+import LightVsDark from '../../components/dashboard/islands/configuration/LightVsDark.astro';
+import Layout from './components/Layout.astro';
+import PageHeader from './components/PageHeader.astro';
+
+const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
+
+const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
+const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
+const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
+---
+<Layout title="Welcome to StudioCMS">
+
+    <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Step 1' }} />
+
+    <Card class='card' style="background-color: hsl(var(--background-step-1))" fullWidth>
+
+        <div slot="header">
+            <h2>Basic Site Information</h2>
+        </div>
+
+        <form id="setup-step-one" action={StudioCMSRoutes.fts.step1}>
+            <div class="form-content">
+
+                <div class="form-row">
+                    <Input label='Site Title' name='site-title' placeholder='My Awesome Website' isRequired />
+                    <Input label='Site Description' name='site-description' placeholder='Built with StudioCMS!' isRequired />
+                </div>
+        
+                <div class="form-row">
+                    <Input label="Default Open Graph Image" name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" />
+                    <Input label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" />
+                </div>
+        
+                <div class="form-row">
+                    <Select label="Page Diff Tracking" name="diff-enabled" options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+                    <Input label="Page Diff Tracking Limit (per page)" name="diff-per-page" placeholder="10" />
+                </div>
+        
+                <Divider />
+        
+                <div class="form-row">
+                    <Select label='Login Page Background Image' name='login-page-background' defaultValue={'studiocms-curves'} options={ogSelectOptions} fullWidth />
+                    <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" />
+                </div>
+
+                
+                <Accordion>
+                    <AccordionItem>
+                        <div slot="summary">Login Page Preview</div>
+
+                        <Card class="login-preview-container">
+                            <div slot="header">
+                                <span>Login Page Preview (Dark/Light)</span>
+                            </div>
+                            <LightVsDark light={curves.light!} dark={curves.dark!} />
+                        </Card>
+                    </AccordionItem>
+                </Accordion>
+
+            </div>
+        </form>
+
+        <div slot="footer">
+            <div class="card-actions">
+                <Button type="submit" form="setup-step-one" color="primary">Continue</Button> 
+            </div>
+        </div>
+
+    </Card>
+
+    <script>
+        import { toast } from 'studiocms:ui/components';
+
+        const form = document.querySelector('#setup-step-one') as HTMLFormElement;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const data = {
+                title: formData.get('site-title') as string,
+                description: formData.get('site-description') as string,
+                defaultOgImage: formData.get('default-og-image') as string,
+                siteIcon: formData.get('site-icon') as string,
+                enableDiffs: formData.get('diff-enabled') as string,
+                diffPerPage: formData.get('diff-per-page') as string,
+                loginPageBackground: formData.get('login-page-background') as string,
+                loginPageBackgroundCustom: formData.get('login-page-background-custom') as string,
+            }
+
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            const res = await response.json();
+
+            if (response.status === 200) {
+                toast({
+                    title: 'Success',
+                    description: 'Basic site information saved successfully!',
+                    type: 'success',
+                })
+                window.location.assign('/setup/2');
+            }
+
+            if (response.status !== 200) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger',
+                })
+            }
+        })
+    </script>
+
+    <style>
+        .form-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    
+        .login-preview-container {
+            width: min-content;
+            height: min-content;
+        }
+    
+        @media screen and (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            margin-left: 20%;
+            margin-right: 20%;
+            width: 60%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .card {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+
+    <div id="login-page-bgs"
+        data-blobs-light={blobs?.light?.src} data-blobs-dark={blobs?.dark?.src}
+        data-blocks-light={blocks?.light?.src} data-blocks-dark={blocks?.dark?.src}
+        data-curves-light={curves?.light?.src} data-curves-dark={curves?.dark?.src}
+    ></div>
+
+    <script is:inline>
+    async function setupLoginPreview() {
+        // Selectors
+        const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
+        const customInput = document.querySelector('input[name="login-page-background-custom"]');
+        const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
+        const previewContainer = document.querySelector('.login-preview-container');
+        const lightImageHolder = document.querySelector('.light-image-holder');
+        const darkImageHolder = document.querySelector('.dark-image-holder');
+
+        // Backgrounds
+        const loginPageBgs = document.querySelector('#login-page-bgs');
+
+        const blobs = {
+            light: loginPageBgs.getAttribute('data-blobs-light'),
+            dark: loginPageBgs.getAttribute('data-blobs-dark'),
+        }
+
+        const blocks = {
+            light: loginPageBgs.getAttribute('data-blocks-light'),
+            dark: loginPageBgs.getAttribute('data-blocks-dark'),
+        }
+
+        const curves = {
+            light: loginPageBgs.getAttribute('data-curves-light'),
+            dark: loginPageBgs.getAttribute('data-curves-dark'),
+        }
+
+        // Event Listeners
+        loginPageBgSelectOptions.forEach((option) => {
+            option.addEventListener('click', () => {
+                const selectedValue = option.getAttribute('value');
+
+                if (selectedValue === 'custom') {
+                    customInput.removeAttribute('disabled');
+                    customInputLabel.classList.remove('disabled');
+                } else {
+                    customInput.setAttribute('disabled', 'disabled');
+                    customInputLabel.classList.add('disabled');
+                }
+
+                if (selectedValue === 'custom') {
+                    previewContainer.style.display = 'none';
+                } else {
+                    previewContainer.style.display = 'block';
+
+                    if (selectedValue === 'studiocms-blobs') {
+                        lightImageHolder.src = blobs.light;
+                        darkImageHolder.src = blobs.dark;
+                    }
+
+                    if (selectedValue === 'studiocms-blocks') {
+                        lightImageHolder.src = blocks.light;
+                        darkImageHolder.src = blocks.dark;
+                    }
+
+                    if (selectedValue === 'studiocms-curves') {
+                        lightImageHolder.src = curves.light;
+                        darkImageHolder.src = curves.dark;
+                    }
+
+                }
+            });
+        });
+    }
+
+    setupLoginPreview();
+    </script>
+
+</Layout>

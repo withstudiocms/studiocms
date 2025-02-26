@@ -1,6 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/authors.schema.json",
-  "name": "Adam Matthiesen",
-  "link": "https://github.com/Adammatthiesen",
-  "avatar": "./avatars/adam-matthiesen.jpg"
-}

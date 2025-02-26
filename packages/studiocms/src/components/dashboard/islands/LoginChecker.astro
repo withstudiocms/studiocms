@@ -1,0 +1,52 @@
+---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:lib';
+
+interface Props {
+	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+}
+
+const { requiredPermission } = Astro.props;
+
+const user = await getUserData(Astro);
+
+const isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
+
+const redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
+const redirectLogin = StudioCMSRoutes.authLinks.loginURL;
+---
+<login-check
+    data-is_logged_in={`${user.isLoggedIn}`}
+    data-authorized={`${isAuthorized}`}
+    data-redirect_profile={redirectProfile}
+    data-redirect_login={redirectLogin}
+    style="display: hidden;" 
+></login-check>
+
+<script>
+    if (!customElements.get('login-check')) {
+        class LoginCheck extends HTMLElement {
+            constructor() {
+                super();
+                const authorized = this.dataset.authorized;
+                const isLoggedIn = this.dataset.is_logged_in;
+                const redirectProfile = this.dataset.redirect_profile;
+                const redirectLogin = this.dataset.redirect_login;
+
+                if (isLoggedIn === 'false') {
+                    window.location.href = redirectLogin!;
+                }
+
+                if (window.location.pathname === redirectProfile) {
+                    return;
+                }
+
+                if (authorized === 'false') {
+                    window.location.href = redirectProfile!;
+                }
+            }
+        }
+
+        customElements.define('login-check', LoginCheck);
+    }
+</script>

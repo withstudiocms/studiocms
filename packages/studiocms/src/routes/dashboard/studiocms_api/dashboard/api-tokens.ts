@@ -1,0 +1,122 @@
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { developerConfig } from 'studiocms:config';
+import studioCMS_SDK from 'studiocms:sdk';
+import type { APIContext, APIRoute } from 'astro';
+import { simpleResponse } from '../../../../utils/simpleResponse';
+
+const { testingAndDemoMode } = developerConfig;
+
+export const POST: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Get Json Data
+	const jsonData: { description: string; user: string } = await context.request.json();
+
+	// Validate form data
+	if (!jsonData.description) {
+		return simpleResponse(400, 'Invalid form data, description is required');
+	}
+
+	if (!jsonData.user) {
+		return simpleResponse(400, 'Invalid form data, user is required');
+	}
+
+	// Update Database
+	try {
+		const newToken = await studioCMS_SDK.REST_API.tokens.new(jsonData.user, jsonData.description);
+
+		return new Response(JSON.stringify({ token: newToken.key }), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+			},
+		});
+	} catch (error) {
+		// Return Error Response
+		return simpleResponse(500, 'Error creating new token');
+	}
+};
+
+export const DELETE: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	if (!isAuthorized) {
+		return simpleResponse(403, 'Unauthorized');
+	}
+
+	// Get Json Data
+	const jsonData: { tokenID: string; userID: string } = await context.request.json();
+
+	// Validate form data
+	if (!jsonData.tokenID) {
+		return simpleResponse(400, 'Invalid form data, tokenID is required');
+	}
+
+	if (!jsonData.userID) {
+		return simpleResponse(400, 'Invalid form data, userID is required');
+	}
+
+	// Update Database
+	try {
+		await studioCMS_SDK.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
+
+		return simpleResponse(200, 'Token deleted');
+	} catch (error) {
+		// Return Error Response
+		return simpleResponse(500, 'Error deleting token');
+	}
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
+};

@@ -1,0 +1,64 @@
+name: CI - Label Management
+
+on:
+  pull_request_target:
+  issues:
+    types:
+      - closed
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  add-labels:
+    name: Label PRs
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PRs
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.STUDIOCMS_SERVICE_TOKEN }}"
+          configuration-path: .github/labeler.yml
+          sync-labels: true
+
+  remove-merged-pr-labels:
+    name: Remove merged pull request labels
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            awaiting review(s)
+            in progress
+            question
+            help wanted
+
+  remove-closed-pr-labels:
+    name: Remove closed pull request labels
+    if: github.event_name == 'pull_request_target' && (! github.event.pull_request.merged)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            in discussion
+            help wanted
+
+  remove-closed-issue-labels:
+    name: Remove closed issue labels
+    if: github.event.issue.state == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            in discussion
+            in progress
+            help wanted

@@ -1,0 +1,13 @@
+---
+import contentRenderer from 'studiocms:renderer/current';
+
+interface Props {
+	content: string;
+}
+
+const { content } = Astro.props;
+
+// @ts-ignore
+const renderedContent = await contentRenderer(content, $$result);
+---
+<Fragment set:html={renderedContent}></Fragment>

@@ -1,0 +1,34 @@
+name: CI - Translation Report Bot
+
+on:
+  schedule:
+    - cron:  '0 10 * * TUE'
+  workflow_dispatch:
+
+jobs:
+  translation:
+    name: translation_report
+    if: ${{ github.repository_owner == 'withstudiocms' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@main
+
+      - id: message
+        name: Format Discord message
+        run: pnpm ci:lunaria:report
+
+  discord_message:
+    name: Send Discord Message
+    uses: withstudiocms/automations/.github/workflows/discord-msg.yml@main
+    needs: translation
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_I18N_REPORT }}
+    with:
+      DISCORD_MESSAGE: ${{ needs.translation.outputs.DISCORD_MESSAGE }}
+      DISCORD_MESSAGE_EMBEDS: ${{ needs.translation.outputs.DISCORD_MESSAGE_EMBEDS }}

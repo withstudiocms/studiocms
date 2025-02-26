@@ -1,0 +1,112 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Input, Select } from 'studiocms:ui/components';
+import { parentFolderOptions } from './shared.js';
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('folder') || '';
+
+const currentFolder = await studioCMS_SDK_Cache.GET.folder(editId);
+
+if (!currentFolder) {
+	return new Response(null, { status: 404 });
+}
+---
+<div id="edit-folder-container">
+
+    <form id="edit-folder-form" action={StudioCMSRoutes.endpointLinks.content.folder}>
+
+        <input type="hidden" name="folder-id" value={currentFolder.id} />
+    
+        <Input 
+            label="Folder Name" 
+            name="folder-name" 
+            defaultValue={currentFolder.name}
+            isRequired 
+            />
+        
+        <Select 
+            label="Parent Folder" 
+            name="parent-folder" 
+            options={parentFolderOptions} 
+            defaultValue={currentFolder.parent || 'null'} 
+            fullWidth 
+            />
+    
+    </form>
+
+</div>
+
+<script>
+import { toast } from "studiocms:ui/components";
+
+    const form = document.getElementById('edit-folder-form') as HTMLFormElement;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        function parseParentFolder(value: string) {
+            if (value === 'null') {
+                return null;
+            }
+
+            return value;
+        }
+
+        type JsonData = {
+            id: string;
+            folderName: string;
+            parentFolder: string | null;
+        }
+        
+        const data: JsonData = {
+            id: formData.get('folder-id') as string,
+            folderName: formData.get('folder-name') as string,
+            parentFolder: parseParentFolder(formData.get('parent-folder') as string),
+        }
+
+        const response = await fetch(form.action, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger'
+            })
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success'
+            })
+        }
+    });
+</script>
+
+<style>
+    #edit-folder-container {
+        height: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+
+    #edit-folder-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-top: .5rem;
+    }
+</style>

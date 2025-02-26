@@ -3,21 +3,10 @@
   "tag": "beta",
   "initialVersions": {
     "studiocms": "0.1.0-beta.1",
-    "@studiocms/assets": "0.1.0-beta.4",
-    "@studiocms/auth": "0.1.0-beta.4",
-    "@studiocms/core": "0.1.0-beta.4",
-    "@studiocms/betaresources": "0.1.0-beta.4",
-    "@studiocms/dashboard": "0.1.0-beta.4",
-    "@studiocms/frontend": "0.1.0-beta.4",
-    "@studiocms/imagehandler": "0.1.0-beta.4",
-    "@studiocms/renderers": "0.1.0-beta.4",
-    "@studiocms/robotstxt": "0.1.0-beta.4",
     "@studiocms/blog": "0.1.0-beta.1",
-    "@studiocms/ui": "0.1.0-beta.7",
+    "@studiocms/devapps": "0.1.0-beta.1",
     "node-playground": "0.0.1",
-    "ui-playground": "0.0.1",
-    "docs": "0.0.1",
-    "web": "0.0.1"
+    "docs": "0.0.1"
   },
   "changesets": [
     "breezy-rockets-lie",

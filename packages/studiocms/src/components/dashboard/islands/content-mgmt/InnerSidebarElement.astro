@@ -1,0 +1,230 @@
+---
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
+import PageList from './PageList.astro';
+
+interface Props {
+	isNewFolder?: boolean;
+	isNewPage?: boolean;
+}
+
+const { isNewFolder, isNewPage } = Astro.props;
+---
+
+<div class="inner-sidebar-header">
+  <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
+    <Icon name="arrow-left" width={24} height={24} slot="start-content" />
+  </Button>
+  <form id="search-form">
+    <Input name='search' placeholder='Search...' type='search' required />
+  </form>
+  <Dropdown
+    transition:persist
+    transition:persist-props
+    id='create-new-dropdown'
+    options={[
+      { 
+        label: 'Create Page', 
+        icon: 'document', 
+        value: StudioCMSRoutes.mainLinks.contentManagementCreate 
+      },
+      { 
+        label: 'Create Folder', 
+        icon: 'folder', 
+        value: StudioCMSRoutes.mainLinks.contentManagementFolderCreate 
+      },
+    ]}
+    align={'end'}
+    offset={8}
+  >
+    <Button variant="solid" color="primary" size='md' class="add-button">
+      <Icon name="plus" width={24} height={24} slot="start-content" />
+    </Button>
+  </Dropdown>
+  <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
+    <Icon name="x-mark" width={24} height={24} slot="start-content" />
+  </Button>
+</div>
+
+<Divider background={'background-step-2'}><span id="sidebar-divider-title">Items</span></Divider>
+
+<div 
+  class="inner-sidebar-items scrollbar" 
+  id="inner-sidebar-items" 
+  >
+  <PageList {isNewFolder} {isNewPage} />
+</div>
+
+<div
+  class="inner-sidebar-items scrollbar"
+  id="inner-sidebar-items-search"
+  style="display: none;"
+  data-searchlist={StudioCMSRoutes.endpointLinks.searchList}
+  data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
+  data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
+  ></div>
+
+<script>
+  import { DropdownHelper } from 'studiocms:ui/components';
+
+  const createNewDropdown = new DropdownHelper('create-new-dropdown');
+
+createNewDropdown.registerClickCallback((value) => {
+  window.location.assign(value);
+});
+</script>
+
+<script>
+  import DOMPurify from 'dompurify';
+  import Fuse from 'fuse.js';
+    
+  type SearchItem = {
+    id: string;
+    name: string;
+    slug?: string;
+    type: 'folder' | 'page';
+    isDraft?: boolean;
+  };
+
+  type SearchList = SearchItem[];
+
+  function getIcon(item: SearchItem) {
+    if (item.type === 'folder') {
+      // heroicons:folder
+      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /> </svg> `;
+    }
+
+    if (item.slug === 'index') {
+      // heroicons:home-modern
+      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819" /> </svg> `;
+    }
+
+    if (item.isDraft) {
+      // heroicons:pencil-square
+      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /> </svg> `;
+    }
+
+    // heroicons:document-text
+    return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /> </svg>`;
+  }
+
+  const itemTemplate = (item: SearchItem, searchTerm: string) => {
+    const url = item.type === 'folder' 
+      ? `${document.getElementById('inner-sidebar-items-search')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
+      : `${document.getElementById('inner-sidebar-items-search')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
+    return `
+  <div id="search-selector" data-href=${url} class="inner-sidebar-link">
+    ${ getIcon(item) }
+    <span class="sidebar-link-text">
+      ${item.name}
+    </span>
+  </div>
+  `;
+  };
+
+  async function getSearchList(searchItems: HTMLDivElement) {
+
+    console.log(`Fetching search list from ${searchItems.dataset.searchlist}`);
+
+    const response = await fetch(searchItems.dataset.searchlist as string);
+
+    if (!response.ok) {
+      console.error('Failed to fetch search list');
+      return [];
+    }
+
+    const data: SearchList = await response.json();
+
+    return data;
+  }
+
+  function clearSearchParams(dividerTitle: HTMLSpanElement, innerSidebarItemsSearch: HTMLDivElement) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('search');
+    window.history.pushState({}, '', url);
+    innerSidebarItemsSearch.innerHTML = '';
+    document.getElementById('inner-sidebar-items')!.style.display = 'block';
+    innerSidebarItemsSearch.style.display = 'none';
+    dividerTitle.innerText = 'Items';
+  }
+
+  async function runSearch(form: HTMLFormElement, divider: HTMLSpanElement, searchItems: HTMLDivElement) {
+    const formData = new FormData(form);
+
+    const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
+
+    if (!searchTerm || searchTerm.length === 0) return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('search', searchTerm);
+    window.history.pushState({}, '', url);
+
+    const searchList = await getSearchList(searchItems);
+
+    const fuse = new Fuse(searchList, {
+      keys: ['name', 'slug'],
+      isCaseSensitive: false,
+      threshold: 0.5,
+    });
+
+    const results = fuse.search(searchTerm);
+
+    console.log(`Search Results (${results.length}) `, results);
+
+    searchItems.innerHTML = results.map(({ item }) => {
+      return itemTemplate(item, searchTerm);
+    }).join('');
+
+    document.getElementById('inner-sidebar-items')!.style.display = 'none';
+    searchItems.style.display = 'block';
+    divider.innerText = `Search Results (${results.length})`;
+
+  const searchResultSelectors = document.querySelectorAll('#search-selector') as NodeListOf<HTMLDivElement>;
+
+    for (const selector of searchResultSelectors) {
+      selector.addEventListener('click', (e) => {
+        const url = selector.dataset.href;
+        window.location.assign(url!);
+      });
+    }
+  }
+
+  // Main Functions
+
+  // Event Listeners
+  async function searchSetup() {
+  const form = document.getElementById('search-form') as HTMLFormElement;
+  const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
+
+  const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
+  const dividerTitle = document.getElementById('sidebar-divider-title') as HTMLSpanElement;
+
+    const url = new URL(window.location.href);
+    const searchTerm = url.searchParams.get('search');
+    if (searchTerm) {
+      const input = searchInput;
+      input.value = searchTerm;
+      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
+    }
+
+    // if the user submits the form, run the search
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
+    });
+
+    // if the user stops typing for 500ms, run the search
+    let timeout: NodeJS.Timeout;
+    form.addEventListener('input', () => {
+      if (searchInput.value.length === 0) clearSearchParams(dividerTitle, innerSidebarItemsSearch);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(async () => await runSearch(form, dividerTitle, innerSidebarItemsSearch), 500);
+    });
+
+    // if the user clears the search, clear the query params
+    searchInput.addEventListener('search', () => clearSearchParams(dividerTitle, innerSidebarItemsSearch));
+  }
+
+  searchSetup();
+</script>
