@@ -4,9 +4,7 @@ on:
   pull_request_target:
     types: [opened, synchronize]
     branches: 
-      # - main
-      # TODO: Remove issue-304 from the list of branches and enable main once PR#333 is ready to merged
-      - issue-304
+      - main
 
 jobs:
   lunaria-overview:
@@ -26,5 +24,5 @@ jobs:
       - name: Generate Lunaria Overview
         uses: lunariajs/action@astro-docs
         with:
-          working-directory: www/docs
+          working-directory: docs
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
