@@ -52,7 +52,6 @@ jobs:
 
   todo-auto-issue:
     name: Create issues from TODOs
-    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
