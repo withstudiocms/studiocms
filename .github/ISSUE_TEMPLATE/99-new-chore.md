@@ -3,6 +3,7 @@ name: New Chore
 about: Used to create a new Chore for a needed task
 title: "Chore: [NAME]"
 labels: chore
+type: "Task"
 ---
 
 **Is your chore related to a problem? Please describe.**

@@ -1,7 +1,8 @@
 name: Feature Request
 description: Suggest an idea/feature for StudioCMS
 title: '[Feature Request]: '
-labels: feat
+labels: [feat]
+type: "Feature"
 body:
   - type: markdown
     attributes:
