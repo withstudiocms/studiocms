@@ -463,6 +463,7 @@ main {
 	align-items: center;
 	text-decoration: none;
 	color: hsl(var(--text-normal));
+	transition: all .15s ease;
 }
 
 .sidebar-user:hover {
