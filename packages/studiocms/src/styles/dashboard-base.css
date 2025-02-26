@@ -558,7 +558,8 @@ main {
 		text-align: left;
 	}
 
-	#sui-sidebar > div, .user-dropdown-trigger-container {
+	#sui-sidebar > div,
+	.user-dropdown-trigger-container {
 		width: 100%;
 	}
 
@@ -570,7 +571,7 @@ main {
 @media screen and (max-width: 440px) {
 	.sidebar-header-text {
 		flex-direction: column;
-		width: fit-content; 
+		width: fit-content;
 	}
 }
 

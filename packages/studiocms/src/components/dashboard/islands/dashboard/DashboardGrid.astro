@@ -1,15 +1,15 @@
 ---
-import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
-import { Center } from 'studiocms:ui/components';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import DashboardGridItem from './DashboardGridItem.astro';
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Center } from 'studiocms:ui/components';
+import DashboardGridItem from './DashboardGridItem.astro';
 
 const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
 
 let gridItems = dashboardGridItems;
 
-const allowedItems: string[] = data.gridItems as string[] ?? [];
+const allowedItems: string[] = (data.gridItems as string[]) ?? [];
 
 const filterItems = allowedItems.length > 0;
 

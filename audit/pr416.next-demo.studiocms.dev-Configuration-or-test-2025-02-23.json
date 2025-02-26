@@ -1,1 +1,79 @@
-{"url":"https://pr416.next-demo.studiocms.dev/dashboard/configuration","extensionVersion":"4.101.0","axeVersion":"4.10.2","standard":"WCAG 2.1 AA","testingStartDate":"2025-02-23T00:55:08.202Z","testingEndDate":"2025-02-23T00:55:08.496Z","bestPracticesEnabled":true,"experimentalEnabled":false,"issueSummary":{"critical":1,"serious":0,"moderate":0,"minor":0,"bestPractices":0,"needsReview":0},"remainingTestingSummary":{"run":false},"igtSummary":[],"failedRules":[{"name":"button-name","count":1,"mode":"automated"}],"needsReview":[],"source":{"productName":"axe-devtools-html","productVersion":"4.101.0","productComponentName":"extension-chrome"},"testDetails":{"testId":"84302b6d-6df4-41ff-96d9-8218b38df4aa","testName":"Configuration | test","axeVersion":"4.10.2","engine":"axe-core","standard":"WCAG 2.1 AA","createdBy":"amatthiesen@outlook.com","startDate":"2025-02-23T00:55:08.202Z","endDate":"2025-02-23T00:55:08.496Z","bestPracticesEnabled":true,"experimentalEnabled":false},"allIssues":[{"issueId":"b7d964ca-24b1-434c-a562-788aff9fceec","ruleId":"button-name","description":"Ensure buttons have discernible text","help":"Buttons must have discernible text","helpUrl":"https://dequeuniversity.com/rules/axe/4.10/button-name?application=AxeChrome","impact":"critical","needsReview":false,"isManual":false,"selector":["#studiocms-theme-toggle"],"summary":"Fix any of the following:\\n  Element does not have inner text that is visible to screen readers\\n  aria-label attribute does not exist or is empty\\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\\n  Element has no title attribute\\n  Element does not have an implicit (wrapped) <label>\\n  Element does not have an explicit <label>\\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"","source":"<button tabindex=\"0\" id=\"studiocms-theme-toggle\" class=\"sui-button sm default outlined\" data-sui-theme-toggle=\"true\">","tags":["cat.name-role-value","wcag2a","wcag412","section508","section508.22.a","TTv5","TT6.a","EN-301-549","EN-9.4.1.2","ACT"],"igt":"","testName":"Configuration | test","shareURL":null,"createdAt":"2025-02-23T00:55:08.397Z","isExperimental":false,"foundBy":"amatthiesen@outlook.com","manifestId":null,"integrationUrl":null,"igtId":null,"testUrl":"https://pr416.next-demo.studiocms.dev/dashboard/configuration","axeVersion":"4.10.2","testPageTitle":"","screenshotURL":"https://axe.deque.com/api/screenshots/c8d12553-ab27-4dda-8f1d-64d664d4fdfc"}]}
+{
+  "url": "https://pr416.next-demo.studiocms.dev/dashboard/configuration",
+  "extensionVersion": "4.101.0",
+  "axeVersion": "4.10.2",
+  "standard": "WCAG 2.1 AA",
+  "testingStartDate": "2025-02-23T00:55:08.202Z",
+  "testingEndDate": "2025-02-23T00:55:08.496Z",
+  "bestPracticesEnabled": true,
+  "experimentalEnabled": false,
+  "issueSummary": {
+    "critical": 1,
+    "serious": 0,
+    "moderate": 0,
+    "minor": 0,
+    "bestPractices": 0,
+    "needsReview": 0
+  },
+  "remainingTestingSummary": { "run": false },
+  "igtSummary": [],
+  "failedRules": [{ "name": "button-name", "count": 1, "mode": "automated" }],
+  "needsReview": [],
+  "source": {
+    "productName": "axe-devtools-html",
+    "productVersion": "4.101.0",
+    "productComponentName": "extension-chrome"
+  },
+  "testDetails": {
+    "testId": "84302b6d-6df4-41ff-96d9-8218b38df4aa",
+    "testName": "Configuration | test",
+    "axeVersion": "4.10.2",
+    "engine": "axe-core",
+    "standard": "WCAG 2.1 AA",
+    "createdBy": "amatthiesen@outlook.com",
+    "startDate": "2025-02-23T00:55:08.202Z",
+    "endDate": "2025-02-23T00:55:08.496Z",
+    "bestPracticesEnabled": true,
+    "experimentalEnabled": false
+  },
+  "allIssues": [
+    {
+      "issueId": "b7d964ca-24b1-434c-a562-788aff9fceec",
+      "ruleId": "button-name",
+      "description": "Ensure buttons have discernible text",
+      "help": "Buttons must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/button-name?application=AxeChrome",
+      "impact": "critical",
+      "needsReview": false,
+      "isManual": false,
+      "selector": ["#studiocms-theme-toggle"],
+      "summary": "Fix any of the following:\\n  Element does not have inner text that is visible to screen readers\\n  aria-label attribute does not exist or is empty\\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\\n  Element has no title attribute\\n  Element does not have an implicit (wrapped) <label>\\n  Element does not have an explicit <label>\\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",
+      "source": "<button tabindex=\"0\" id=\"studiocms-theme-toggle\" class=\"sui-button sm default outlined\" data-sui-theme-toggle=\"true\">",
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT"
+      ],
+      "igt": "",
+      "testName": "Configuration | test",
+      "shareURL": null,
+      "createdAt": "2025-02-23T00:55:08.397Z",
+      "isExperimental": false,
+      "foundBy": "amatthiesen@outlook.com",
+      "manifestId": null,
+      "integrationUrl": null,
+      "igtId": null,
+      "testUrl": "https://pr416.next-demo.studiocms.dev/dashboard/configuration",
+      "axeVersion": "4.10.2",
+      "testPageTitle": "",
+      "screenshotURL": "https://axe.deque.com/api/screenshots/c8d12553-ab27-4dda-8f1d-64d664d4fdfc"
+    }
+  ]
+}

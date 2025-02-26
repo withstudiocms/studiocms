@@ -194,7 +194,6 @@ export const POST: APIRoute = async (context: APIContext) => {
 		const currentURLOrigin = currentRequestJson.currentURLOrigin;
 
 		const partialUrl = new URL(StudioCMSRoutes.endpointLinks.partials.render, currentURLOrigin);
-		
 
 		const partialResponse = await fetch(partialUrl, {
 			method: 'POST',

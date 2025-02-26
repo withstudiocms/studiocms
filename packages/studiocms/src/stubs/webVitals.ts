@@ -27,7 +27,7 @@ dtsFile.addModule('studiocms-dashboard:web-vitals', {
 		{
 			name: 'getWebVitalsSummary',
 			typeDef: `typeof import('${resolve('../lib/webVitals/webVital.js')}').getWebVitalsSummary`,
-		}
+		},
 	],
 	typeExports: [
 		{

@@ -99,11 +99,11 @@ class StudioCMS3DLogo {
 	defaultComputedCameraZ: number | undefined;
 	BackgroundMesh: THREE.Mesh | undefined;
 	frustumHeight: number | undefined;
-	frames: number = 0;
-	fps: number = 0;
-	lastTime: number = 0;
+	frames = 0;
+	fps = 0;
+	lastTime = 0;
 	lastFrameTimes: number[] = [];
-	MAX_FRAME_TIMES_LENGTH: number = 2;
+	MAX_FRAME_TIMES_LENGTH = 2;
 
 	/**
 	 * Creates the StudioCMS Logo along with its background in a specified container.
@@ -179,8 +179,9 @@ class StudioCMS3DLogo {
 		}
 
 		if (this.lastFrameTimes.length === this.MAX_FRAME_TIMES_LENGTH) {
-			const averageFPS = this.lastFrameTimes.reduce((a, b) => a + b, 0) / this.MAX_FRAME_TIMES_LENGTH;
-			
+			const averageFPS =
+				this.lastFrameTimes.reduce((a, b) => a + b, 0) / this.MAX_FRAME_TIMES_LENGTH;
+
 			if (averageFPS < 24) {
 				// Throw an error if the average FPS is below 24
 				this.renderer.clear();
@@ -188,7 +189,7 @@ class StudioCMS3DLogo {
 				throw new Error(`Average FPS is below 24: ${averageFPS}`);
 			}
 		}
-	}
+	};
 
 	animate = () => {
 		if (this.model && this.canvasContainer) {

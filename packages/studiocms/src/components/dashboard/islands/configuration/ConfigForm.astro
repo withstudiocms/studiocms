@@ -1,6 +1,6 @@
 ---
-import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { validImages } from 'studiocms:auth/utils/validImages';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
@@ -18,34 +18,37 @@ const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
 const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
 const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 
-const currentlyEnabledGridItems: string[] = data.gridItems as string[] ?? [];
+const currentlyEnabledGridItems: string[] = (data.gridItems as string[]) ?? [];
 
 interface PreGridItem {
-    name: string;
-    label: string;
+	name: string;
+	label: string;
 }
 
 interface AllGridItems extends PreGridItem {
-    enabled: boolean;
+	enabled: boolean;
 }
 
-const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({ name: item.name, label: item.header?.title ?? item.name }));
+const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({
+	name: item.name,
+	label: item.header?.title ?? item.name,
+}));
 
 const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
-    if (currentlyEnabledGridItems.length === 0) {
-        return {
-            enabled: true,
-            name,
-            label,
-        }
-    }
+	if (currentlyEnabledGridItems.length === 0) {
+		return {
+			enabled: true,
+			name,
+			label,
+		};
+	}
 
-    return {
-        enabled: currentlyEnabledGridItems.includes(name),
-        name,
-        label,
-    }
-})
+	return {
+		enabled: currentlyEnabledGridItems.includes(name),
+		name,
+		label,
+	};
+});
 ---
 
 <form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
