@@ -32,87 +32,31 @@ const safeUsers: {
 });
 ---
 <div class="inner-user-sidebar-header">
-    <form id="search-form">
-      <Input name='search' placeholder='Search...' type='search' required />
-    </form>
-    <Dropdown
-      transition:persist
-      transition:persist-props
-      id='create-user-dropdown'
-      options={[
-        { label: 'Create New User', icon: 'user-plus', value: 'new-user' },
-        { label: 'Create User Invite', icon: 'inbox-arrow-down', value: 'new-invite' },
-      ]}
-      align={'end'}
-      offset={8}
-      >
-      <Button variant="solid" color="primary" size='sm' class="add-button">
+  <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
+    <Icon name="arrow-left" width={24} height={24} slot="start-content" />
+  </Button>
+  <form id="search-form">
+    <Input name='search' placeholder='Search...' type='search' required />
+  </form>
+  <Dropdown
+    transition:persist
+    transition:persist-props
+    id='create-user-dropdown'
+    options={[
+      { label: 'Create New User', icon: 'user-plus', value: 'new-user' },
+      { label: 'Create User Invite', icon: 'inbox-arrow-down', value: 'new-invite' },
+    ]}
+    align={'end'}
+    offset={8}
+  >
+    <Button variant="solid" color="primary" size='md' class="add-button">
       <Icon name="plus" width={24} height={24} />
-      </Button>
-    </Dropdown>
+    </Button>
+  </Dropdown>
+  <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
+    <Icon name="x-mark" width={24} height={24} slot="start-content" />
+  </Button>
 </div>
-<Modal
-  id='create-new-user-modal'
-  cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'danger' }}
-  isForm
->
-  <h2 slot='header'>Create New User</h2>
-  <div class="modal-body">
-    <Input label="Username" name="username" type="text" isRequired />
-    <Input label="Email Address" name="email" type="email" isRequired />
-    <Input label="Display Name" name="display_name" type="text" isRequired />
-    <Input label="Password" name="password" type="password" />
-    <Select fullWidth name='rank' label='User Rank' defaultValue='visitor' options={[
-        { label: 'Visitor', value: 'visitor' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Administrator', value: 'admin' },
-        { label: 'Owner', value: 'owner' },
-    ]} />
-  </div>
-</Modal>
-
-<Modal
-  id='create-user-invite-modal'
-  cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'danger' }}
-  isForm
->
-  <h2 slot='header'>Create User Invite</h2>
-  <div class="modal-body">
-    <Input label="Username" name="username" type="text" isRequired />
-    <Input label="Email Address" name="email" type="email" isRequired />
-    <Input label="Display Name" name="display_name" type="text" isRequired />
-    <Select fullWidth name='rank' label='User Rank' defaultValue='visitor' options={[
-        { label: 'Visitor', value: 'visitor' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Administrator', value: 'admin' },
-        { label: 'Owner', value: 'owner' },
-    ]} />
-  </div>
-</Modal>
-
-<Modal id='create-response-modal'>
-  <h2 slot="header">New User Information</h2>
-  <Center>
-    <div class="modal-body">
-        <span>This will only be shown once, please save this information.</span>
-      <code id="create-response-placeholder"></code>
-    </div>
-  </Center>
-</Modal>
-
-<Modal id='invite-response-modal'>
-  <h2 slot="header"></h2>
-  <Center>
-    <div class="modal-body">
-      <span>This will only be shown once, please save this information.</span>
-      <br />
-      <span>Invite Link: </span>
-      <code id="invite-response-placeholder"></code>
-    </div>
-  </Center>
-</Modal>
 
 <Divider background={'background-step-1'}></Divider>
 
@@ -145,10 +89,8 @@ const safeUsers: {
     const createNewUserModal = new ModalHelper('create-new-user-modal');
     const createUserInviteModal = new ModalHelper('create-user-invite-modal');
 
-    const createResponseModal = new ModalHelper('create-response-modal');
     const inviteResponseModal = new ModalHelper('invite-response-modal');
 
-    const createResponsePlaceholder = document.getElementById('create-response-placeholder') as HTMLElement;
     const inviteResponsePlaceholder = document.getElementById('invite-response-placeholder') as HTMLElement;
 
     const newUsersLinks = document.getElementById('new-users-links') as HTMLDivElement;
@@ -199,10 +141,11 @@ const safeUsers: {
             return;
         }
 
-        createResponsePlaceholder.innerText = JSON.stringify(response, null, 2);
-
         createNewUserModal.hide();
-        createResponseModal.show();
+        toast({
+            title: 'User created successfully.',
+            type: 'success',
+        });
     });
 
     createUserInviteModal.registerConfirmCallback(async (formData) => {
@@ -353,21 +296,3 @@ const safeUsers: {
 
 searchSetup();
 </script>
-
-<style>
-  .modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    span {
-        font-size: .875rem;
-    }
-
-    code {
-        background-color: hsl(var(--background-step-3));
-        padding: .25rem;
-        border-radius: 4px;
-    }
-  }
-</style>

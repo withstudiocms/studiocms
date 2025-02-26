@@ -106,46 +106,34 @@ jobs:
           PR_URL: ${{ steps.changesets.outputs.pull_request_url }}
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
-      - name: Create Sentry release
-        if: steps.changesets.outputs.published == 'true'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: withstudiocms
-          SENTRY_URL: https://sentry.studiocms.dev/
+  lunaria-build:
+    name: Build Lunaria Overview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
-          environment: production
-          projects: node-playground ui-testing
-
-# TODO: Migrate Lunaria workflows here once PR#333 is ready to be merged
-#   lunaria-build:
-#     name: Build Lunaria Overview
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-#         with:
-#           fetch-depth: 0
-#           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          fetch-depth: 0
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
     
-#       - name: Install Tools & Dependencies
-#         uses: withstudiocms/automations/.github/actions/install@main
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@main
 
-#       - name: Build Lunaria Overview
-#         run: pnpm ci:lunaria:build
+      - name: Build Lunaria Overview
+        run: pnpm ci:lunaria:build
 
-#       - name: Upload Overview
-#         uses: actions/upload-pages-artifact@v3
-#         with:
-#           path: "docs/dist/lunaria/"
+      - name: Upload Overview
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "docs/dist/lunaria/"
 
-#   lunaria-deploy:
-#     name: Deploy Lunaria Overview
-#     runs-on: ubuntu-latest
-#     needs: lunaria-build
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.lunaria-build.outputs.page_url }}
-#     steps:
-#       - name: Deploy to GitHub Pages
-#         uses: actions/deploy-pages@v4
+  lunaria-deploy:
+    name: Deploy Lunaria Overview
+    runs-on: ubuntu-latest
+    needs: lunaria-build
+    environment:
+      name: github-pages
+      url: ${{ steps.lunaria-build.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

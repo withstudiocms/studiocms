@@ -63,6 +63,9 @@ const currentMode = editPage
 ---
 <header class="page-header">
   <div class="page-title-container">
+    <Button color='primary' id='nav-open' class='mobile-btn'>
+      <Icon name="bars-3" height={24} width={24} slot="start-content" />
+    </Button>
     <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>{pageTitle}</h1>
   </div>
   <div id="page-actions-container" class="page-actions-container">
@@ -84,7 +87,7 @@ const currentMode = editPage
         cancelButton={{ label: 'Cancel', color: 'default' }}
         actionButton={{ label: 'Confirm', color: 'danger' }}
         >
-        <h2 slot='header'>Are you sure you want to Delete this page?</h2>
+        <h2 slot='header'>Are you sure you want to delete this page?</h2>
         <Center>
           <div class="modal-body">
             <input type="hidden" name="page-id" value={currentId} />
@@ -342,12 +345,14 @@ const currentMode = editPage
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .page-title-container {
   display: flex;
-  flex-direction: column;
-  gap: .5rem;
+  flex-direction: row;
+  gap: 1rem;
   width: fit-content;
 }
 

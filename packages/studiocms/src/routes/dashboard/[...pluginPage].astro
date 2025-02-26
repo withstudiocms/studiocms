@@ -1,5 +1,6 @@
 ---
 import { getPluginDashboardPages } from 'studiocms:plugin-helpers';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 import type { FinalDashboardPage } from '../../schemas/index.js';
 
@@ -32,7 +33,7 @@ if (!page) {
 // Destructure the page object
 const {
 	sidebar,
-	components: { PageBodyComponent, PageHeaderComponent, InnerSidebarComponent },
+	components: { PageBodyComponent, PageActionsComponent, InnerSidebarComponent },
 	title,
 	description,
 	requiredPermissions,
@@ -62,7 +63,13 @@ const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' :
     )}
 
   <div slot="header">
-    <PageHeaderComponent />
+    <PageHeader title={title[lang]}>
+      {PageActionsComponent && ( 
+        <div slot="page-actions-container">
+          <PageActionsComponent />
+        </div>
+      )}
+    </PageHeader>
   </div>
 
   <PageBodyComponent />
@@ -76,6 +83,6 @@ const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' :
     justify-content: space-between;
     min-height: 100vh;
     height: 100%;
-    padding: 1rem;
+    padding: 1.5rem;
   }
 </style>

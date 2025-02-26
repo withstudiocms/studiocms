@@ -274,9 +274,9 @@ const BaseDashboardPagePropsSchema = z.object({
 		.default('none')
 		.optional(),
 	/**
-	 * The component to render in the page header
+	 * The component to render in the page header to display action buttons
 	 */
-	pageHeaderComponent: z.string(),
+	pageActionsComponent: z.string().optional(),
 	/**
 	 * The component to render in the page body
 	 */
@@ -310,7 +310,7 @@ const AstroComponentSchema = z.custom<(_props: any) => any>();
  */
 const FinalBaseSchema = AvailableBaseSchema.extend({
 	components: z.object({
-		PageHeaderComponent: AstroComponentSchema,
+		PageActionsComponent: AstroComponentSchema.optional(),
 		PageBodyComponent: AstroComponentSchema,
 		InnerSidebarComponent: AstroComponentSchema.optional(),
 	}),

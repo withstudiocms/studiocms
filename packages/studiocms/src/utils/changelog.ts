@@ -9,7 +9,7 @@ export const changelogHelper = defineUtility('astro:config:setup')(async (params
 	const changelog = loadChangelog(resolve('../../CHANGELOG.md'));
 
 	// Generate markdown output
-	const output: string[] = ['# Release Notes'];
+	const output: string[] = [];
 
 	const ast: Root = {
 		type: 'root',

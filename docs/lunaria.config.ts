@@ -3,10 +3,9 @@ import { defineConfig } from '@lunariajs/core/config';
 export default defineConfig({
 	repository: {
 		name: 'withstudiocms/studiocms',
-		rootDir: 'www/docs',
+		rootDir: 'docs',
 		hosting: 'github',
-		// TODO: Change to 'main' this once the branch is ready to merge
-		branch: 'issue-0304',
+		branch: 'main',
 	},
 	sourceLocale: {
 		label: 'English',

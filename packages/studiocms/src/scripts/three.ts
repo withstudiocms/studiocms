@@ -99,6 +99,11 @@ class StudioCMS3DLogo {
 	defaultComputedCameraZ: number | undefined;
 	BackgroundMesh: THREE.Mesh | undefined;
 	frustumHeight: number | undefined;
+	frames: number = 0;
+	fps: number = 0;
+	lastTime: number = 0;
+	lastFrameTimes: number[] = [];
+	MAX_FRAME_TIMES_LENGTH: number = 2;
 
 	/**
 	 * Creates the StudioCMS Logo along with its background in a specified container.
@@ -124,7 +129,7 @@ class StudioCMS3DLogo {
 
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: false,
-			failIfMajorPerformanceCaveat: true,
+			// failIfMajorPerformanceCaveat: true,
 		});
 		this.renderer.setSize(window.innerWidth / 2, window.innerHeight);
 		this.renderer.setPixelRatio(window.devicePixelRatio * 2);
@@ -152,6 +157,37 @@ class StudioCMS3DLogo {
 
 		this.initListeners(reducedMotion);
 		this.registerLoadingCallback();
+
+		this.lastTime = performance.now();
+		this.updateFPS();
+	}
+
+	updateFPS = () => {
+		const now = performance.now();
+		this.frames++;
+
+		if (now - this.lastTime >= 1000) {
+			this.fps = this.frames;
+			this.frames = 0;
+			this.lastTime = now;
+
+			if (this.lastFrameTimes.length >= this.MAX_FRAME_TIMES_LENGTH) {
+				this.lastFrameTimes.shift();
+			}
+
+			this.lastFrameTimes.push(this.fps);
+		}
+
+		if (this.lastFrameTimes.length === this.MAX_FRAME_TIMES_LENGTH) {
+			const averageFPS = this.lastFrameTimes.reduce((a, b) => a + b, 0) / this.MAX_FRAME_TIMES_LENGTH;
+			
+			if (averageFPS < 24) {
+				// Throw an error if the average FPS is below 24
+				this.renderer.clear();
+				this.renderer.domElement.remove();
+				throw new Error(`Average FPS is below 24: ${averageFPS}`);
+			}
+		}
 	}
 
 	animate = () => {
@@ -182,6 +218,7 @@ class StudioCMS3DLogo {
 		}
 
 		this.composer.render();
+		this.updateFPS();
 	};
 
 	loadLogoModel = () => {

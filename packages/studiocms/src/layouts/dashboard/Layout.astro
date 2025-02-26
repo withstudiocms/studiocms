@@ -1,9 +1,10 @@
 ---
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button, Icon, Toaster } from 'studiocms:ui/components';
+import { Toaster } from 'studiocms:ui/components';
 import BaseHead from '../../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
+import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import LoginChecker from '../../components/dashboard/islands/LoginChecker.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
 
@@ -37,14 +38,11 @@ const description = propDescription ?? dbConfig.description;
     { requiredPermission !== 'none' && ( 
       <LoginChecker requiredPermission={requiredPermission} />
      ) }
+     <SidebarModals />
     { sidebar === 'single' && <SingleSidebar /> }
     { sidebar === 'double' && <DoubleSidebar><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
-      { sidebar !== false && (
-        <Button variant="outlined" color="primary" class="nav-toggle" id={'nav-toggle'}>
-          <Icon name="bars-3" height={24} width={24} />
-        </Button> )}
       <div class="container">
 
         <div class="page-header">
@@ -57,5 +55,10 @@ const description = propDescription ?? dbConfig.description;
 
       </div>
     </main>
+    <style>
+      .page-header {
+        margin-bottom: 1.5rem;
+      }
+    </style>
   </body>
 </html>
