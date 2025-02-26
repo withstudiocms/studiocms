@@ -5,6 +5,7 @@ import BaseHead from '../../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
 import LoginChecker from '../../components/dashboard/islands/LoginChecker.astro';
+import VersionCheckModal from '../../components/dashboard/islands/sidebar/VersionCheckModal.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
 
 const { data: dbConfig } = await studioCMS_SDK_Cache.GET.siteConfig();
@@ -34,6 +35,7 @@ const description = propDescription ?? dbConfig.description;
   <BaseHead {title} {description} />
   <body>
     <Toaster />
+    <VersionCheckModal />
     { requiredPermission !== 'none' && ( 
       <LoginChecker requiredPermission={requiredPermission} />
      ) }
