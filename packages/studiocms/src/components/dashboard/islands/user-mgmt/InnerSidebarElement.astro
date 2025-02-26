@@ -89,10 +89,8 @@ const safeUsers: {
     const createNewUserModal = new ModalHelper('create-new-user-modal');
     const createUserInviteModal = new ModalHelper('create-user-invite-modal');
 
-    const createResponseModal = new ModalHelper('create-response-modal');
     const inviteResponseModal = new ModalHelper('invite-response-modal');
 
-    const createResponsePlaceholder = document.getElementById('create-response-placeholder') as HTMLElement;
     const inviteResponsePlaceholder = document.getElementById('invite-response-placeholder') as HTMLElement;
 
     const newUsersLinks = document.getElementById('new-users-links') as HTMLDivElement;
@@ -143,10 +141,11 @@ const safeUsers: {
             return;
         }
 
-        createResponsePlaceholder.innerText = JSON.stringify(response, null, 2);
-
         createNewUserModal.hide();
-        createResponseModal.show();
+        toast({
+            title: 'User created successfully.',
+            type: 'success',
+        });
     });
 
     createUserInviteModal.registerConfirmCallback(async (formData) => {

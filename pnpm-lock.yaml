@@ -31,8 +31,8 @@ catalogs:
       specifier: ^8.45.0
       version: 8.45.0
     '@studiocms/ui':
-      specifier: ^0.4.15
-      version: 0.4.15
+      specifier: ^0.4.16
+      version: 0.4.16
     '@types/node':
       specifier: ^20.14.11
       version: 20.17.10
@@ -170,7 +170,7 @@ importers:
         version: link:../packages/studiocms_devapps
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.15(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.11(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.7.0))
+        version: 0.4.16(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.11(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.7.0))
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -344,7 +344,7 @@ importers:
         version: 1.0.0
       '@studiocms/ui':
         specifier: 'catalog:'
-        version: 0.4.15(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0))
+        version: 0.4.16(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0))
       ansi-escapes:
         specifier: ^7.0.0
         version: 7.0.0
@@ -2057,8 +2057,8 @@ packages:
   '@studiocms/markdown-remark-processor@1.0.0':
     resolution: {integrity: sha512-W3wszWS00bc+cQEe+HgynVam5sQcU6kQFv5ZJ/gSwG/KGMYmhKLrHDQBwn9PfjIWORkSqSBMQdsSoAD8fhg3tQ==}
 
-  '@studiocms/ui@0.4.15':
-    resolution: {integrity: sha512-M4O0PDROCyEu/zSOZZqw78K5KqKwTugvVRhe0vZNoDIToG3PpBf98hkujyoOGwdZWJ7RYzzznGv4e9+YilX9cA==}
+  '@studiocms/ui@0.4.16':
+    resolution: {integrity: sha512-X1LKS/OX5tT5rcNKR1nPU6saSH8YXyYVMZk2LKuaJkgRyEqkKocbNeXV3qebHIaOY5jL/jhwAXYvz+lwSInF9A==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
@@ -7310,7 +7310,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@0.4.15(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0))':
+  '@studiocms/ui@0.4.16(astro@5.2.5(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0))':
     dependencies:
       '@iconify-json/heroicons': 1.2.1
       '@iconify/types': 2.0.0
@@ -7319,7 +7319,7 @@ snapshots:
       pathe: 1.1.2
       vite: 6.0.3(@types/node@20.17.10)(jiti@2.4.1)(yaml@2.7.0)
 
-  '@studiocms/ui@0.4.15(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.11(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.7.0))':
+  '@studiocms/ui@0.4.16(astro@5.3.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.28.1)(typescript@5.7.2)(yaml@2.7.0))(vite@6.0.11(@types/node@22.10.2)(jiti@2.4.1)(yaml@2.7.0))':
     dependencies:
       '@iconify-json/heroicons': 1.2.1
       '@iconify/types': 2.0.0
