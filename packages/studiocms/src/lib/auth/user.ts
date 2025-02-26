@@ -89,8 +89,6 @@ export async function createLocalUser(
 		avatar,
 	});
 
-	await studioCMS_SDK.POST.databaseEntry.permissions(newUser.id, 'visitor');
-
 	return newUser;
 }
 
