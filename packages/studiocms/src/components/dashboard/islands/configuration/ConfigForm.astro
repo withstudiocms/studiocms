@@ -1,6 +1,6 @@
 ---
-import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { validImages } from 'studiocms:auth/utils/validImages';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
@@ -18,34 +18,37 @@ const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
 const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
 const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
 
-const currentlyEnabledGridItems: string[] = data.gridItems as string[] ?? [];
+const currentlyEnabledGridItems: string[] = (data.gridItems as string[]) ?? [];
 
 interface PreGridItem {
-    name: string;
-    label: string;
+	name: string;
+	label: string;
 }
 
 interface AllGridItems extends PreGridItem {
-    enabled: boolean;
+	enabled: boolean;
 }
 
-const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({ name: item.name, label: item.header?.title ?? item.name }));
+const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({
+	name: item.name,
+	label: item.header?.title ?? item.name,
+}));
 
 const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
-    if (currentlyEnabledGridItems.length === 0) {
-        return {
-            enabled: true,
-            name,
-            label,
-        }
-    }
+	if (currentlyEnabledGridItems.length === 0) {
+		return {
+			enabled: true,
+			name,
+			label,
+		};
+	}
 
-    return {
-        enabled: currentlyEnabledGridItems.includes(name),
-        name,
-        label,
-    }
-})
+	return {
+		enabled: currentlyEnabledGridItems.includes(name),
+		name,
+		label,
+	};
+});
 ---
 
 <form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
@@ -62,7 +65,7 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
         </div>
 
         <div class="form-row">
-            <Select label="Page Diff Tracking" name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <Select multiple={false} label="Page Diff Tracking" name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
             <Input label="Page Diff Tracking Limit (per page)" name="diff-per-page" placeholder="10" value={data.diffPerPage} />
         </div>
 
@@ -83,7 +86,7 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
         <Divider />
 
         <div class="form-row">
-            <Select label='Login Page Background Image' name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
+            <Select multiple={false} label='Login Page Background Image' name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
             <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
 
@@ -167,7 +170,7 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
         });
 </script>
 
-<script is:inline>
+<!-- <script is:inline>
 async function setupLoginPreview() {
     // Selectors
     const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
@@ -235,7 +238,7 @@ async function setupLoginPreview() {
 
 document.addEventListener('astro:page-load', setupLoginPreview);
 setupLoginPreview();
-</script>
+</script> -->
 
 <style>
     .form-content {
