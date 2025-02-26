@@ -4,6 +4,7 @@ import { Toaster } from 'studiocms:ui/components';
 import BaseHead from '../../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
+import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import LoginChecker from '../../components/dashboard/islands/LoginChecker.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
 
@@ -37,6 +38,7 @@ const description = propDescription ?? dbConfig.description;
     { requiredPermission !== 'none' && ( 
       <LoginChecker requiredPermission={requiredPermission} />
      ) }
+     <SidebarModals />
     { sidebar === 'single' && <SingleSidebar /> }
     { sidebar === 'double' && <DoubleSidebar><slot name="double-sidebar" /></DoubleSidebar> }
 
