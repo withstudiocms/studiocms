@@ -1018,26 +1018,18 @@ export const studiocms = defineIntegration({
 
 					const dashboardPagesComponentsUser =
 						availableDashboardPages.user
-							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
-								if (item.sidebar === 'double') {
-									const components = {
-										innerSidebarComponent: item.innerSidebarComponent,
-										pageHeaderComponent,
-										pageBodyComponent,
-									};
-
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
-
-									return remappedComps.join('\n');
-								}
-
-								const components = {
-									pageHeaderComponent,
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
 									pageBodyComponent,
 								};
+
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
+
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
 								const remappedComps = Object.entries(components).map(
 									([key, value]) =>
@@ -1050,26 +1042,18 @@ export const studiocms = defineIntegration({
 
 					const dashboardPagesComponentsAdmin =
 						availableDashboardPages.admin
-							?.map(({ pageBodyComponent, pageHeaderComponent, ...item }) => {
-								if (item.sidebar === 'double') {
-									const components = {
-										innerSidebarComponent: item.innerSidebarComponent,
-										pageHeaderComponent,
-										pageBodyComponent,
-									};
-
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
-
-									return remappedComps.join('\n');
-								}
-
-								const components = {
-									pageHeaderComponent,
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
 									pageBodyComponent,
 								};
+
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
+
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
 								const remappedComps = Object.entries(components).map(
 									([key, value]) =>
@@ -1191,16 +1175,14 @@ export const studiocms = defineIntegration({
 								const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
 
 								const dashboardPages = currentComponents.map((item) => {
-									const page = { ...item };
-
-									page.components = {
-										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
-										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
+									const page = { 
+										...item,
+										components: {
+											PageBodyComponent: components[convertToSafeString(item.title + 'pageBodyComponent')],
+											PageActionsComponent: components[convertToSafeString(item.title + 'pageActionsComponent')] || null,
+											InnerSidebarComponent: item.sidebar === 'double' ? components[convertToSafeString(item.title + 'innerSidebarComponent')] || null : null,
+										},
 									};
-
-									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
-									}
 
 									return page;
 								});
@@ -1218,16 +1200,14 @@ export const studiocms = defineIntegration({
 								const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
 
 								const dashboardPages = currentComponents.map((item) => {
-									const page = { ...item };
-
-									page.components = {
-										PageHeaderComponent: components[convertToSafeString(page.title + 'pageHeaderComponent')],
-										PageBodyComponent: components[convertToSafeString(page.title + 'pageBodyComponent')],
+									const page = { 
+										...item,
+										components: {
+											PageBodyComponent: components[convertToSafeString(item.title + 'pageBodyComponent')],
+											PageActionsComponent: components[convertToSafeString(item.title + 'pageActionsComponent')] || null,
+											InnerSidebarComponent: item.sidebar === 'double' ? components[convertToSafeString(item.title + 'innerSidebarComponent')] || null : null,
+										},
 									};
-
-									if (page.sidebar === 'double') {
-										page.components.InnerSidebarComponent = components[convertToSafeString(page.title + 'innerSidebarComponent')];
-									}
 
 									return page;
 								});
