@@ -578,3 +578,7 @@ main {
 #search-form {
 	width: 100%;
 }
+
+#sui-sidebar-inner > div:has(> .inner-sidebar-container) {
+	height: 100%;
+}
