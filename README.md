@@ -55,9 +55,10 @@ The primary playground is the [Node Playground](./playground/)
 
 Steps to get a running playground should be the following:
 
-- clone repo
-- run `pnpm i --frozen-lockfile`
-- change `dbStartPage` in the [node playground's](./playground/studiocms.config.mjs) config to `true`
+- Clone the GitHub repository
+- Run `pnpm i --frozen-lockfile`
+- Change `dbStartPage` in the [node playground's](./playground/studiocms.config.mjs) config to `true`
+- Ensure `.env` variables are configured
 
   Commands to run:
 
