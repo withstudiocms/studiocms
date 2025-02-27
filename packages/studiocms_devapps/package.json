@@ -62,7 +62,7 @@
     "cheerio": "^1.0.0",
     "turndown": "^7.2.0",
     "html-entities": "^2.5.2",
-    "@outerbase/sdk-transform": "^1.0.4"
+    "@outerbase/sdk-transform": "^1.0.5"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
