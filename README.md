@@ -58,7 +58,7 @@ Steps to get a running playground should be the following:
 - Clone the GitHub repository
 - Run `pnpm i --frozen-lockfile`
 - Change `dbStartPage` in the [node playground's](./playground/studiocms.config.mjs) config to `true`
-- Ensure `.env` variables are configured
+- Ensure `.env` variables are configured (see [`.env.demo`](./playground/.env.demo) for an example of available environment variables)
 
   Commands to run:
 
