@@ -13,14 +13,14 @@ catalog: # Confirmed Current Master Catalog - 02.27.2025
   astro-integration-kit: ^0.18
   sharp: ^0.33.5
   typescript: ^5.7
-  vite: ^6.0.5
+  vite: ^6.2.0
 
 catalogs:
   min: # Confirmed Current Min Deps - 02.27.2025
     astro: ^5.4.0
     '@astrojs/db': ^0.14.7
     '@astrojs/markdown-remark': ^6.1.0
-    vite: ^6.0
+    vite: ^6.2.0
 
 packages:
   - "packages/*"
