@@ -16,7 +16,7 @@ import boxen from 'boxen';
 import packageJson from 'package-json';
 import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
-import { type PluginOption, loadEnv } from 'vite';
+import { loadEnv } from 'vite';
 import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
