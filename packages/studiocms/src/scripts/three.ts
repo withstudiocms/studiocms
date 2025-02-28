@@ -13,7 +13,7 @@ const loginPageBackground = configElement.dataset.config_background;
 const loginPageCustomImage = configElement.dataset.config_custom_image;
 const currentMode = document.documentElement.dataset.theme || 'dark';
 
-const studioCMS3DModal = 'https://cdn.studiocms.dev/studiocms-logo.glb';
+const studioCMS3DModel = 'https://cdn.studiocms.dev/studiocms-logo.glb';
 
 /**
  * A valid image that can be used as a background for the StudioCMS Logo.
@@ -228,7 +228,7 @@ class StudioCMS3DLogo {
 		const loader = new GLTFLoader();
 
 		// Load the GLTF Model from the public dir & apply the material to all children
-		loader.loadAsync(studioCMS3DModal).then((gltf) => {
+		loader.loadAsync(studioCMS3DModel).then((gltf) => {
 			this.model = gltf.scene;
 
 			this.model.traverse((child) => {
