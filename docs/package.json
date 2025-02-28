@@ -16,7 +16,6 @@
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
     "@studiocms/ui": "catalog:",
-
     "astro": "catalog:",
     "@astrojs/check": "catalog:",
     "@astrojs/starlight": "catalog:",
@@ -27,7 +26,6 @@
     "sharp": "catalog:",
     "typescript": "catalog:",
     "astro-integration-kit": "catalog:",
-
     "tsm": "2.3.0",
     "@lunariajs/core": "https://pkg.pr.new/lunariajs/lunaria/@lunariajs/core@4c8b9b0",
     "expressive-code-twoslash": "^0.4.0",
@@ -57,7 +55,6 @@
     "rehype-external-links": "^3.0.0",
     "@types/html-escaper": "^3.0.4",
     "html-escaper": "^3.0.3",
-
     "@fontsource-variable/onest": "5.1.1",
     "unified": "^11.0.5",
     "ultrahtml": "^1.5.3"

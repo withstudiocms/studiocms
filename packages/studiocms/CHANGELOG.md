@@ -1,5 +1,280 @@
 # studiocms
 
+## 0.1.0-beta.8
+
+### Patch Changes
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@column.text({](https://github.com/column.text({)! - Auth system overhaul:
+
+  ## **`studiocms`**
+
+  - Updated all Dependencies
+
+  ## **`@studiocms/auth`**
+
+  - Update `astro:env` schema:
+    - `CMS_ENCRYPTION_KEY`: NEW - Required variable used for auth encryption, can be generated using `openssl rand --base64 16`.
+    - `CMS_GITHUB_REDIRECT_URI`: NEW - Optional variable for GitHub Redirect URI if using multiple redirect URIs with Github oAuth.
+  - Removed `Luicia` based auth system and `Lucia-astrodb-adapter`
+  - Removed old `authHelper`
+  - Add new OAuthButton components
+    - `<OAuthButton />`
+    - `<OAuthButtonStack />`
+    - `oAuthButtonProviders.ts`
+  - Add new `<AuthLayout />` component and CSS
+  - Add new authentication library:
+    - Auth library is built using the lucia-next resources and will now be maintained under `@studiocms/auth` as its own full module
+    - Created Virtual module exports available during runtime
+  - Add new login/signup backgrounds
+  - Remove Middleware
+  - Add `studiocms-logo.glb` for usage with New ThreeJS login/signup page
+  - Update all Auth Routes
+  - Update schema
+  - Add new Scripts for ThreeJS
+  - Update Stubs files and Utils
+  - Refactor Integration to use new system.
+
+  ## **`@studiocms/core`**
+
+  - Disable interactivity for `<Avatar />` component. (Will always show a empty profile icon until we setup the new system for the front-end)
+  - Update table schema:
+
+    - `StudioCMSUsers`: Removed oAuth ID's from main user table
+
+    ```diff
+    export const StudioCMSUsers = defineTable({
+        columns: {
+            id: column.text({ primaryKey: true }),
+            url: column.text({ optional: true }),
+            name: column.text(),
+            email: column.text({ unique: true, optional: true }),
+            avatar: column.text({ optional: true }),
+    -	    githubId: column.number({ unique: true, optional: true }),
+    -	    githubURL: column.text({ optional: true }),
+    -	    discordId: column.text({ unique: true, optional: true }),
+    -	    googleId: column.text({ unique: true, optional: true }),
+    -	    auth0Id: column.text({ unique: true, optional: true }),
+            username: column.text(),
+            password: column.text({ optional: true }),
+            updatedAt: column.date({ default: NOW, optional: true }),
+            createdAt: column.date({ default: NOW, optional: true }),
+        },
+    });
+    ```
+
+    - `StudioCMSOAuthAccounts`: New table to handle all oAuth accounts and linking to Users
+
+    ```ts
+    export const StudioCMSOAuthAccounts = defineTable({
+      columns: {
+        provider: column.text(), // github, google, discord, auth0
+        providerUserId: column.text({ primaryKey: true }),
+        userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+      },
+    });
+    ```
+
+    - `StudioCMSPermissions`: Updated to use direct reference to users table
+
+    ```ts
+    export const StudioCMSPermissions = defineTable({
+        columns: {
+    references: () => StudioCMSUsers.columns.id }),
+            rank: column.text(),
+        },
+    });
+    ```
+
+    - `StudioCMSSiteConfig`: Added new options for login page
+
+    ```ts
+    export const StudioCMSSiteConfig = defineTable({
+      columns: {
+        id: column.number({ primaryKey: true }),
+        title: column.text(),
+        description: column.text(),
+        defaultOgImage: column.text({ optional: true }),
+        siteIcon: column.text({ optional: true }),
+        loginPageBackground: column.text({ default: "studiocms-curves" }),
+        loginPageCustomImage: column.text({ optional: true }),
+      },
+    });
+    ```
+
+  - Updated Routemap:
+
+    - All Auth api routes are now located at `yourhost.tld/studiocms_api/auth/*`
+
+  - Updated Strings:
+
+    - Add new Encryption messages for the new `CMS_ENCRYPTION_KEY` variable
+
+  - Removed now unused auth types.
+
+  ## **`@studiocms/dashboard`**
+
+  - Refactor to utilize new `@studiocms/auth` lib for user verification
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Update First time setup routes and API endpoints
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Translation Updated (PR: #391)
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Expand PageData table schema and add Catagory and Tags schemas, and extend WP-importer
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Added Author and Contributor tracking
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Docs, Docs, and more Docs
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement new Dashboard design and update API endpoints
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Dynamic Sitemap integration
+
+  ### Dynamic Sitemap Generation:
+
+  - `packages/studiocms/src/index.ts`: Replaced the static sitemap integration with the new `dynamicSitemap` function to support multiple sitemaps from plugins.
+  - `packages/studiocms/src/lib/dynamic-sitemap/index.ts`: Added the `dynamicSitemap` function to generate sitemaps dynamically based on the provided plugin configurations.
+  - `packages/studiocms/src/lib/dynamic-sitemap/sitemap-index.xml.ts`: Created a new route to serve the sitemap index file, which lists all the individual sitemaps.
+
+  ### Plugin Schema Updates:
+
+  - `packages/studiocms/src/schemas/plugins/index.ts`: Updated the plugin schema to include an optional `sitemaps` field, allowing plugins to specify their own sitemap configurations.
+
+  ### Plugin-Specific Sitemaps:
+
+  - `packages/studiocms_blog/src/index.ts`: Updated the StudioCMS Blog plugin to include its own sitemaps for posts and markdown pages.
+  - `packages/studiocms_blog/src/routes/sitemap-md.xml.ts`: Added a new route to generate the sitemap for markdown pages.
+  - `packages/studiocms_blog/src/routes/sitemap-posts.xml.ts`: Added a new route to generate the sitemap for blog posts.
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Remove Astro ViewTransitions/ClientRouter
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - User invite and creation systems
+
+  ### User Management Enhancements:
+
+  - Added modals for creating new users and user invites in `InnerSidebarElement.astro` to streamline the user creation process.
+  - Implemented new API routes `create-user` and `create-user-invite` to handle user creation and invite processes.
+  - Updated `routeMap.ts` to include new endpoints for user creation and invites.
+
+  ### UI Improvements:
+
+  - Modified icons for 'Create Page' and 'Create Folder' options in `InnerSidebarElement.astro` to use standard document and folder icons.
+  - Enhanced the user management dropdown by reordering properties for better readability.
+  - Added custom styles for modal bodies to improve the user interface.
+
+  ### Utility and SDK Updates:
+
+  - Added new utility functions for generating random passwords and IDs in `generators.ts`, and updated references in `core.ts`.
+  - Updated the SDK core to support rank assignment during user creation.
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Enhance StudioCMS Plugin system
+
+  - Implement Dashboard pages
+  - Add Optional API Routes and Fields for page types
+  - Update Astro Web Vital plugin to add new dashboard page
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement Build step with esbuild and Update for Astro v5
+
+- [#430](https://github.com/withstudiocms/studiocms/pull/430) [`36474b5`](https://github.com/withstudiocms/studiocms/commit/36474b592dd014635019d346f28688f8f5a60585) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update dependencies
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Add @studiocms/markdown-remark as a renderer option, and implement component proxy system to actually be used by this renderer
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement User quick action toolbar for frontend when user's are logged in
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Translation Updated (PR: #376)
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement Diff tracking system
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - New Renderer component
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Introduce Dashboard i18n logic
+
+  - `studiocms` & `@studiocms/core`:
+
+    - Introduce new virtual module `studiocms:i18n`:
+      This module includes utilities for our new i18n system.
+    - Add new LanguageSelector component
+    - Add `en-us` translation file. (`packages/studiocms_core/i18n/translations/`)
+
+  - `@studiocms/auth`:
+    - Update login/signup routes to utilize new i18n translations
+    - Transition routes to Hybrid type setup, All API routes will remain server rendered, while pages are now prerendered (Server islands when needed).
+
+- [#312](https://github.com/withstudiocms/studiocms/pull/312) [`9c59d72`](https://github.com/withstudiocms/studiocms/commit/9c59d7230c86d8122c90c8b42c382a32a6d9820e) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - ♻️ Chore: We are now Turso Sponsored!
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Update Frontend logic and fix some small issues with rendering.
+
+  - New Renderer Partial for rendering on-the-fly
+  - Updated changelog endpoint to use new partial to fix rendering
+  - Fixed TS Error in SDK
+  - Fixed changelog rendering
+  - Cleaned up Frontend package layout
+  - Simplified Frontend route generation to use 1 file
+  - Updated all exports.
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Introduce BASIC version of our plugin system.
+
+  Currently Supports:
+
+  - Custom Settings Page
+    - Assign your fields
+    - Bring your own API Endpoint function
+  - Ability to add Frontend page links
+  - Set the minimum StudioCMS Version
+  - Bring your own Astro Integrations
+  - Basic Page type identifier system
+    - This system will eventually be expanded to allow custom Content types and access to passing custom content handling methods for custom implementations.
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement Component Proxy functionality
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement new StudioCMS SDK in @studiocms/core and integrate it into the new dashboard and frontend package
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Remove Unpic and simplify imageHandler
+
+- [#301](https://github.com/withstudiocms/studiocms/pull/301) [`ebc297f`](https://github.com/withstudiocms/studiocms/commit/ebc297f2818deda6efca880a857f7e0929ad2378) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Update `.d.ts` file generation (non breaking)
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Merge StudioCMS packages into main package
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement new StudioCMS Auth lib
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Update URLs
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Small css tweak
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - New CLI, Updated integration logic and updated config processing.
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Add warning if no Adapter is present
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Fix CSS issue that caused sidebar to flow off the screen
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Adjusted strings to account for Astro Studio sunsetting
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Implement dashboard grid components system
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - StudioCMS is now headless, all routes have been moved to `@studiocms/blog` and that is now the recommended default plugin to install for users who want a basic headful setup
+
+- [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - New REST API endpoints and Dashboard UI features
+
+  New Routes:
+
+  - `/studiocms_api/rest/v1/folders`
+  - `/studiocms_api/rest/v1/folders/[id]`
+  - `/studiocms_api/rest/v1/pages`
+  - `/studiocms_api/rest/v1/pages/[id]`
+  - `/studiocms_api/rest/v1/pages/[id]/history`
+  - `/studiocms_api/rest/v1/pages/[id]/history/[id]`
+  - `/studiocms_api/rest/v1/settings`
+  - `/studiocms_api/rest/v1/users`
+  - `/studiocms_api/rest/v1/users/[id]`
+
+  All routes listed above are behind authentication.
+
+  There is the following PUBLIC endpoints that ONLY support GET requests to published pages/folders
+
+  - `/studiocms_api/rest/v1/public/pages`
+  - `/studiocms_api/rest/v1/public/pages/[id]`
+  - `/studiocms_api/rest/v1/public/folders`
+  - `/studiocms_api/rest/v1/public/folders/[id]`
+
 ## 0.1.0-beta.7
 
 ### Patch Changes

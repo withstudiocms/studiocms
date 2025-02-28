@@ -1,6 +1,6 @@
 {
   "name": "studiocms",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.8",
   "description": "A dedicated CMS for Astro and Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
@@ -133,36 +133,29 @@
   "dependencies": {
     "@studiocms/markdown-remark-processor": "^1.0.0",
     "@studiocms/ui": "catalog:",
-
     "astro-integration-kit": "catalog:",
     "@inox-tools/inline-mod": "^2.0.3",
     "@inox-tools/runtime-logger": "0.4.2",
-
     "package-json": "^10.0.1",
     "semver": "^7.7.1",
-
     "@markdoc/markdoc": "^0.4.0",
     "@mdx-js/mdx": "^3.1.0",
     "react-dom": "^19.0.0",
     "react": "^19.0.0",
     "remark-gfm": "^4.0.1",
     "rehype-highlight": "^7.0.2",
-
     "@oslojs/binary": "^1.0.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "arctic": "^2.3.1",
     "three": "0.170.0",
-
     "mrmime": "^2.0.0",
     "unified": "^11.0.5",
     "remark-rehype": "^11.1.1",
     "mdast-util-to-hast": "^13.2.0",
     "drizzle-orm": "^0.31.2",
     "@libsql/client": "^0.14.0",
-    
     "@cloudinary/url-gen": "^1.21.0",
-
     "@matthiesenxyz/astrodtsbuilder": "^0.2.0",
     "@matthiesenxyz/integration-utils": "^0.3.0",
     "rollup-plugin-copy": "^3.5.0",
@@ -173,7 +166,6 @@
     "unist-util-visit": "^5.0.0",
     "lodash": "^4.17.21",
     "@fontsource-variable/onest": "5.1.1",
-
     "@bluwy/giget-core": "^0.1.2",
     "@clack/core": "0.4.1",
     "@clack/prompts": "0.9.1",
