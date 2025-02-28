@@ -1,5 +1,12 @@
 # @studiocms/blog
 
+## 0.1.0-beta.9
+
+### Patch Changes
+
+- Updated dependencies [[`8931327`](https://github.com/withstudiocms/studiocms/commit/89313277bac0f5e17929eb8d4e064d42fe9c5ce5), [`4ac1dc2`](https://github.com/withstudiocms/studiocms/commit/4ac1dc295c56069cb126bd8c876fd98b31f9a8d8), [`e99f3d0`](https://github.com/withstudiocms/studiocms/commit/e99f3d0a1b089e24ca9a0c1f9d8f2ae1ba3d8b8e), [`9dbe621`](https://github.com/withstudiocms/studiocms/commit/9dbe62125bd77ee674175dbb4fb64f5fa9ffc1ce)]:
+  - studiocms@0.1.0-beta.9
+
 ## 0.1.0-beta.8
 
 ### Patch Changes
