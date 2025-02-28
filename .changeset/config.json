@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["docs", "node-playground", "build-scripts"]
+  "ignore": ["node-playground", "build-scripts"]
 }

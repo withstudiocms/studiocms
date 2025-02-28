@@ -1,9 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/package-catalog.schema.json",
-  "name": "@studiocms/blog",
-  "description": "StudioCMS Frontend blog plugin, Provides a blog frontend for StudioCMS.",
-  "docsLink": "/package-catalog/studiocms-plugins/studiocms-blog/",
-  "githubURL": "https://github.com/withstudiocms/studiocms/tree/main/packages/studiocms_blog/",
-  "catalog": "studiocms",
-  "isPlugin": true
-}

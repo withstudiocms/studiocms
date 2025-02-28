@@ -1,9 +1,0 @@
-{
-  "$schema": "../../../.astro/collections/package-catalog.schema.json",
-  "name": "@astrojs/web-vitals",
-  "description": "This Astro integration enables tracking real-world website performance and storing the data in Astro DB.",
-  "docsLink": "/package-catalog/community-plugins/web-vitals/",
-  "githubURL": "https://github.com/withastro/astro/tree/main/packages/integrations/web-vitals/",
-  "catalog": "community",
-  "isPlugin": true
-}
