@@ -1,0 +1,63 @@
+{
+    "displayName": "",
+    "translations": {
+        "@studiocms/auth:login": {
+            "title": "",
+            "description": "",
+            "header": "",
+            "sub-header-usernamepasswordoauth": "",
+            "sub-header-usernamepassword": "",
+            "sub-header-oauth": "",
+            "sub-header-noprovider": "",
+            "username-label": "",
+            "password-label": "",
+            "login-button": "",
+            "allow-registration-noaccount": "",
+            "allow-registration-register": ""
+        },
+        "@studiocms/auth:signup": {
+            "title": "",
+            "description": "",
+            "header": "",
+            "sub-header-usernamepasswordoauth": "",
+            "sub-header-usernamepassword": "",
+            "sub-header-oauth": "",
+            "sub-header-noprovider": "",
+            "username-label": "",
+            "email-label": "",
+            "displayname-label": "",
+            "password-label": "",
+            "confirm-password-label": "",
+            "create-account-button": "",
+            "allow-login-haveaccount": "",
+            "allow-login-login": ""
+        },
+        "@studiocms/auth:logout": {
+            "title": "",
+            "description": ""
+        },
+        "@studiocms/auth:oauth-stack": {
+            "or-login-with": ""
+        },
+        "@studiocms/dashboard:index": {
+            "title": "",
+            "welcome-title": "",
+            "title-button:discord": "",
+            "title-button:feedback": "",
+            "sub-header": ""
+        },
+        "@studiocms/dashboard:sidebar": {
+            "category-1-header": "",
+            "dashboard-link-label": "",
+            "content-management-label": "",
+            "category-2-header": "",
+            "site-configuration-label": "",
+            "user-management-label": "",
+            "category-3-header": "",
+            "category-3-empty-placeholder": "",
+            "user-dropdown:settings": "",
+            "user-dropdown:view-site": "",
+            "user-dropdown:logout": ""
+        }
+    }
+}
