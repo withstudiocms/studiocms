@@ -2,4 +2,4 @@
 
 translations:
   - changed-files:
-      - any-glob-to-any-file: packages/studiocms_core/src/i18n/translations/*
+      - any-glob-to-any-file: packages/studiocms/src/lib/i18n/translations/*
