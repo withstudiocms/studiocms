@@ -1,19 +1,19 @@
 {
-    "displayName": "",
+    "displayName": "Español (es)",
     "translations": {
         "@studiocms/auth:login": {
-            "title": "",
-            "description": "",
-            "header": "",
-            "sub-header-usernamepasswordoauth": "",
-            "sub-header-usernamepassword": "",
-            "sub-header-oauth": "",
-            "sub-header-noprovider": "",
-            "username-label": "",
-            "password-label": "",
-            "login-button": "",
-            "allow-registration-noaccount": "",
-            "allow-registration-register": ""
+            "title": "Página de Inicio de sesión",
+            "description": "Página de Inicio de sesión",
+            "header": "Inicio de sesión",
+            "sub-header-usernamepasswordoauth": "Ingresa tu usuario y contraseña o inicia sesión con alguna de las opciones de abajo.",
+            "sub-header-usernamepassword": "Ingresa tu usuario y contraseña.",
+            "sub-header-oauth": "Inicia sesión usando alguna de las opciones de abajo.",
+            "sub-header-noprovider": "No se ha configurado ningún proveedor de inicio de sesión. Póngase en contacto con su administrador.",
+            "username-label": "Usuario",
+            "password-label": "Contraseña",
+            "login-button": "Iniciar sesión",
+            "allow-registration-noaccount": "¿Tienes cuenta?",
+            "allow-registration-register": "¡Registrarse aquí!"
         },
         "@studiocms/auth:signup": {
             "title": "",
