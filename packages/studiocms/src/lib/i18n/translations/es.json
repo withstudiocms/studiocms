@@ -49,15 +49,15 @@
         "@studiocms/dashboard:sidebar": {
             "category-1-header": "Panel de control",
             "dashboard-link-label": "Panel de control",
-            "content-management-label": "",
-            "category-2-header": "",
-            "site-configuration-label": "",
-            "user-management-label": "",
-            "category-3-header": "",
-            "category-3-empty-placeholder": "",
-            "user-dropdown:settings": "",
-            "user-dropdown:view-site": "",
-            "user-dropdown:logout": ""
+            "content-management-label": "Gestión de contenido",
+            "category-2-header": "Administrador",
+            "site-configuration-label": "Configuración de sitio",
+            "user-management-label": "Administración de usuarios",
+            "category-3-header": "Complementos",
+            "category-3-empty-placeholder": "No se han encontrado plugins con páginas de configuración.",
+            "user-dropdown:settings": "Configuración de usuario",
+            "user-dropdown:view-site": "Ver sitio",
+            "user-dropdown:logout": "Cerrar sesión"
         }
     }
 }
