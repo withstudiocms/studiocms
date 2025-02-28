@@ -27,6 +27,7 @@
     "ci:install": "pnpm install --frozen-lockfile",
     "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm changeset publish",
+    "ci:translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'"
   },
   "devDependencies": {
