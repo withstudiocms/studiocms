@@ -1,0 +1,1 @@
+These resources have been relocated to StudioCMS R2 CDN bucket. these are being left here as references of what is currently in the CDN.

@@ -14,7 +14,6 @@ import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
 import packageJson from 'package-json';
-import copy from 'rollup-plugin-copy';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { routesDir } from './consts.js';
@@ -1302,19 +1301,7 @@ export const studiocms = defineIntegration({
 							optimizeDeps: {
 								exclude: ['three'],
 							},
-							plugins: [
-								inlineModPlugin(),
-								copy({
-									copyOnce: true,
-									hook: 'buildStart',
-									targets: [
-										{
-											src: resolve('../static/studiocms-resources/*'),
-											dest: 'public/studiocms-resources/',
-										},
-									],
-								}),
-							],
+							plugins: [inlineModPlugin()],
 						},
 					});
 
