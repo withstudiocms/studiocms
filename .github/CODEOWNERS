@@ -1,22 +1,7 @@
 # root (Exalted)
 * @withstudiocms/exalted
 
-# branding (Exalted)
-/www/assets/ @withstudiocms/exalted
-
-# docs and web site (Exalted & Revered(added when they are lead of such feature))
-/www/ @withstudiocms/exalted
-
 # packages (Exalted & Revered(added when they are lead of such feature))
 /packages/studiocms @withstudiocms/exalted
-/packages/studiocms_assets @withstudiocms/exalted
-/packages/studiocms_auth @withstudiocms/exalted
-/packages/studiocms_betaresources @withstudiocms/exalted
 /packages/studiocms_blog @withstudiocms/exalted
-/packages/studiocms_core @withstudiocms/exalted
-/packages/studiocms_dashboard @withstudiocms/exalted
-/packages/studiocms_frontend @withstudiocms/exalted
-/packages/studiocms_imagehandler @withstudiocms/exalted
-/packages/studiocms_renderers @withstudiocms/exalted
-/packages/studiocms_robotstxt @withstudiocms/exalted
-/packages/studiocms_ui @withstudiocms/exalted @louisescher
+/packages/studiocms_devapps @withstudiocms/exalted

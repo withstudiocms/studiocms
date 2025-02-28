@@ -9,7 +9,6 @@
     "build": "pnpm build:studiocms && pnpm --filter node-playground build",
     "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
     "build:docs": "pnpm build:studiocms && pnpm --filter docs build",
-    "docs:dev": "pnpm build:studiocms && pnpm --filter docs dev",
     "playground:dev": "pnpm --filter node-playground dev",
     "playground:push": "pnpm --filter node-playground db:push",
     "playground:preview": "pnpm --filter node-playground preview",
@@ -24,9 +23,6 @@
     "lint:fix": "biome check --write .",
 
     "ci:prepublish": "pnpm build:studiocms",
-    "ci:lunaria:build": "pnpm --filter docs lunaria:build",
-    "ci:lunaria:report": "pnpm tsm --require=./scripts/filter-warnings.cjs ./www/docs/scripts/lunaria-report-bot.ts",
-    "ci:translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
     "ci:lint": "biome ci --formatter-enabled=true --organize-imports-enabled=true  --reporter=github",
     "ci:install": "pnpm install --frozen-lockfile",
     "ci:version": "pnpm changeset version",

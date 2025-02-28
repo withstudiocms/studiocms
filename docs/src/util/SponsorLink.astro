@@ -1,8 +1,0 @@
----
-interface Props {
-	text: string;
-	href: string | URL;
-}
-const { text, href } = Astro.props;
----
-<a {href} aria-label={text} target="_blank" rel="noopener sponsored">{text} ^</a>
