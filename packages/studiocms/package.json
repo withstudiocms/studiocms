@@ -49,7 +49,6 @@
     "renderer.d.ts",
     "ui.d.ts",
     "dist",
-    "static",
     "studiocms-cli.mjs"
   ],
   "scripts": {
@@ -158,7 +157,6 @@
     "@cloudinary/url-gen": "^1.21.0",
     "@matthiesenxyz/astrodtsbuilder": "^0.2.0",
     "@matthiesenxyz/integration-utils": "^0.3.0",
-    "rollup-plugin-copy": "^3.5.0",
     "mdast": "^3.0.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-to-markdown": "^2.1.1",
