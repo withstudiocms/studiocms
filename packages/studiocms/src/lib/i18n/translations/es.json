@@ -1,0 +1,63 @@
+{
+    "displayName": "Español (es)",
+    "translations": {
+        "@studiocms/auth:login": {
+            "title": "Página de Inicio de sesión",
+            "description": "Página de Inicio de sesión",
+            "header": "Inicio de sesión",
+            "sub-header-usernamepasswordoauth": "Ingresa tu usuario y contraseña o inicia sesión con alguna de las opciones de abajo.",
+            "sub-header-usernamepassword": "Ingresa tu usuario y contraseña.",
+            "sub-header-oauth": "Inicia sesión usando alguna de las opciones de abajo.",
+            "sub-header-noprovider": "No se ha configurado ningún proveedor de inicio de sesión. Póngase en contacto con su administrador.",
+            "username-label": "Usuario",
+            "password-label": "Contraseña",
+            "login-button": "Iniciar sesión",
+            "allow-registration-noaccount": "¿Tienes cuenta?",
+            "allow-registration-register": "¡Registrarse aquí!"
+        },
+        "@studiocms/auth:signup": {
+            "title": "Página de registro",
+            "description": "Página de registro",
+            "header": "Registrarse",
+            "sub-header-usernamepasswordoauth": "Crea una cuenta o inicia sesión con una de las opciones de abajo.",
+            "sub-header-usernamepassword": "Crea una cuenta usando el formulario de abajo.",
+            "sub-header-oauth": "Inicia sesión utilizando una de las opciones de abajo.",
+            "sub-header-noprovider": "No se ha configurado ningún proveedor de inicio de sesión. Póngase en contacto con su administrador.",
+            "username-label": "Usuario",
+            "email-label": "Correo electrónico",
+            "displayname-label": "Nombre de visualización",
+            "password-label": "Contraseña",
+            "confirm-password-label": "Confirmar contraseña",
+            "create-account-button": "Crear cuenta",
+            "allow-login-haveaccount": "¿Ya tienes cuenta?",
+            "allow-login-login": "¡Inicia sesión aquí!"
+        },
+        "@studiocms/auth:logout": {
+            "title": "Página de cierre de sesión",
+            "description": "Página de cierre de sesión"
+        },
+        "@studiocms/auth:oauth-stack": {
+            "or-login-with": "o inicia sesión utilizando"
+        },
+        "@studiocms/dashboard:index": {
+            "title": "Panel de control",
+            "welcome-title": "Bienvenido",
+            "title-button:discord": "Unirse a la comunidad",
+            "title-button:feedback": "Dar retroalimentación",
+            "sub-header": "StudioCMS es un sistema de gestión de contenido gratuito y de código abierto construido desde cero por la comunidad Astro."
+        },
+        "@studiocms/dashboard:sidebar": {
+            "category-1-header": "Panel de control",
+            "dashboard-link-label": "Panel de control",
+            "content-management-label": "Gestión de contenido",
+            "category-2-header": "Administrador",
+            "site-configuration-label": "Configuración de sitio",
+            "user-management-label": "Administración de usuarios",
+            "category-3-header": "Complementos",
+            "category-3-empty-placeholder": "No se han encontrado plugins con páginas de configuración.",
+            "user-dropdown:settings": "Configuración de usuario",
+            "user-dropdown:view-site": "Ver sitio",
+            "user-dropdown:logout": "Cerrar sesión"
+        }
+    }
+}
