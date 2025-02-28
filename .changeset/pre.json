@@ -6,7 +6,6 @@
     "@studiocms/blog": "0.1.0-beta.1",
     "@studiocms/devapps": "0.1.0-beta.1",
     "node-playground": "0.0.1",
-    "docs": "0.0.1",
     "build-scripts": "0.0.14"
   },
   "changesets": [
