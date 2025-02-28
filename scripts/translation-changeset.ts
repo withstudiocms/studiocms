@@ -27,7 +27,7 @@ async function run() {
 
 	// Create a new changeset
 	const changesetId = await write(
-		{ summary, releases: [{ name: '@studiocms/core', type: 'patch' }] },
+		{ summary, releases: [{ name: 'studiocms', type: 'patch' }] },
 		process.cwd()
 	);
 

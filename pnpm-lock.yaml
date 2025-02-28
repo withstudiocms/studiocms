@@ -84,6 +84,9 @@ importers:
       '@changesets/write':
         specifier: 0.4.0
         version: 0.4.0
+      '@types/node':
+        specifier: 'catalog:'
+        version: 20.17.10
       build-scripts:
         specifier: workspace:*
         version: link:build-scripts
