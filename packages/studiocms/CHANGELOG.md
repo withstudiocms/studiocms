@@ -1,5 +1,17 @@
 # studiocms
 
+## 0.1.0-beta.9
+
+### Patch Changes
+
+- [#433](https://github.com/withstudiocms/studiocms/pull/433) [`8931327`](https://github.com/withstudiocms/studiocms/commit/89313277bac0f5e17929eb8d4e064d42fe9c5ce5) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #433)
+
+- [#432](https://github.com/withstudiocms/studiocms/pull/432) [`4ac1dc2`](https://github.com/withstudiocms/studiocms/commit/4ac1dc295c56069cb126bd8c876fd98b31f9a8d8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Relocate static assets to CDN R2 bucket, Users can now delete the `studiocms-resources/` folder within their project `public/` folder.
+
+- [#437](https://github.com/withstudiocms/studiocms/pull/437) [`e99f3d0`](https://github.com/withstudiocms/studiocms/commit/e99f3d0a1b089e24ca9a0c1f9d8f2ae1ba3d8b8e) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #437)
+
+- [#441](https://github.com/withstudiocms/studiocms/pull/441) [`9dbe621`](https://github.com/withstudiocms/studiocms/commit/9dbe62125bd77ee674175dbb4fb64f5fa9ffc1ce) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix firsttime setup page redirect, and fix sdk
+
 ## 0.1.0-beta.8
 
 ### Patch Changes

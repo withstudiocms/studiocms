@@ -1,6 +1,6 @@
 {
   "name": "studiocms",
-  "version": "0.1.0-beta.8",
+  "version": "0.1.0-beta.9",
   "description": "A dedicated CMS for Astro and Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
