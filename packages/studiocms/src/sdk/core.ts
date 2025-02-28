@@ -1561,9 +1561,9 @@ export function studiocmsSDKCore() {
 					} = pageData;
 
 					const stringified = {
-						categories: JSON.stringify(categories || []),
-						tags: JSON.stringify(tags || []),
-						contributorIds: JSON.stringify(contributorIds || []),
+						categories: categories || [],
+						tags: tags || [],
+						contributorIds: contributorIds || [],
 					};
 
 					const contentData = {
@@ -1948,9 +1948,9 @@ export function studiocmsSDKCore() {
 						} = pageData;
 
 						const stringified = {
-							categories: JSON.stringify(categories || []),
-							tags: JSON.stringify(tags || []),
-							contributorIds: JSON.stringify(contributorIds || []),
+							categories: categories || [],
+							tags: tags || [],
+							contributorIds: contributorIds || [],
 						};
 
 						const contentData = {
