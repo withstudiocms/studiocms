@@ -1,43 +1,63 @@
 {
-  "displayName": "German (de-DE)",
-  "translations": {
-    "@studiocms/auth:login": {
-      "title": "Login-Seite",
-      "description": "Login-Seite",
-      "header": "Login",
-      "sub-header-usernamepasswordoauth": "Gebe deinen Nutzername & Passwort ein oder verwende einen der Login-Anbieter, um dich einzuloggen.",
-      "sub-header-usernamepassword": "Gebe deinen Nutzername und Passwort ein.",
-      "sub-header-oauth": "Wähle einen der Anbieter um dich einzuloggen.",
-      "sub-header-noprovider": "Kein Login-Anbieter konfiguriert. Bitte kontaktiere deinen Administrator.",
-      "username-label": "Nutzername",
-      "password-label": "Passwort",
-      "login-button": "Einloggen",
-      "allow-registration-noaccount": "Du hast keinen Account?",
-      "allow-registration-register": "Registriere dich hier!"
-    },
-    "@studiocms/auth:signup": {
-      "title": "Registrierung",
-      "description": "Registrierung",
-      "header": "Registrierung",
-      "sub-header-usernamepasswordoauth": "Erstelle einen Account mit einer der vorliegenden Optionen.",
-      "sub-header-usernamepassword": "Erstelle einen Account mit dem Registrierungs-Formular.",
-      "sub-header-oauth": "Nutze eine der Optionen, um dich einzuloggen.",
-      "sub-header-noprovider": "",
-      "username-label": "",
-      "email-label": "",
-      "displayname-label": "",
-      "password-label": "",
-      "confirm-password-label": "",
-      "create-account-button": "",
-      "allow-login-haveaccount": "",
-      "allow-login-login": ""
-    },
-    "@studiocms/auth:logout": {
-      "title": "",
-      "description": ""
-    },
-    "@studiocms/auth:oauth-stack": {
-      "or-login-with": ""
+    "displayName": "German (de-DE)",
+    "translations": {
+        "@studiocms/auth:login": {
+            "title": "Login-Seite",
+            "description": "Login-Seite",
+            "header": "Login",
+            "sub-header-usernamepasswordoauth": "Gebe deinen Nutzername & Passwort ein oder verwende einen der Login-Anbieter, um dich einzuloggen.",
+            "sub-header-usernamepassword": "Gebe deinen Nutzername und Passwort ein.",
+            "sub-header-oauth": "Wähle einen der Anbieter um dich einzuloggen.",
+            "sub-header-noprovider": "Kein Login-Anbieter konfiguriert. Bitte kontaktiere deinen Administrator.",
+            "username-label": "Nutzername",
+            "password-label": "Passwort",
+            "login-button": "Einloggen",
+            "allow-registration-noaccount": "Du hast keinen Account?",
+            "allow-registration-register": "Registriere dich hier!"
+        },
+        "@studiocms/auth:signup": {
+            "title": "Registrierungsseite",
+            "description": "Registrierungsseite",
+            "header": "Registrierung",
+            "sub-header-usernamepasswordoauth": "Erstelle einen Account mit einer der vorliegenden Optionen.",
+            "sub-header-usernamepassword": "Erstelle einen Account mit dem Registrierungs-Formular.",
+            "sub-header-oauth": "Nutze eine der Optionen, um dich einzuloggen.",
+            "sub-header-noprovider": "Kein Login-Provider konfiguriert. Bitte kontaktiere deinen Administrator.",
+            "username-label": "Benutzername",
+            "email-label": "E-Mail",
+            "displayname-label": "Anzeigename",
+            "password-label": "Passwort",
+            "confirm-password-label": "Passwort bestätigen",
+            "create-account-button": "Account erstellen",
+            "allow-login-haveaccount": "Du hast bereits einen Account?",
+            "allow-login-login": "Logge dich hier ein!"
+        },
+        "@studiocms/auth:logout": {
+            "title": "Logout-Seite",
+            "description": "Logout-Seite"
+        },
+        "@studiocms/auth:oauth-stack": {
+            "or-login-with": "oder logge dich ein mit:"
+        },
+        "@studiocms/dashboard:index": {
+            "title-button:discord": "Trete der Community bei",
+            "sub-header": "StudioCMS ist ein gratis, open-source content management system, welches von Grund auf von der Astro Community erstellt wurde.",
+            "title": "Dashboard",
+            "welcome-title": "Willkommen",
+            "title-button:feedback": "Gib' uns Feedback"
+        },
+        "@studiocms/dashboard:sidebar": {
+            "category-1-header": "Dashboard",
+            "dashboard-link-label": "Dashboard",
+            "content-management-label": "Content Management",
+            "category-2-header": "Admin",
+            "site-configuration-label": "Seitenkonfiguration",
+            "user-management-label": "Nutzermanagement",
+            "category-3-header": "Plugins",
+            "category-3-empty-placeholder": "Keine Plugins mit Einstellungsseiten gefunden.",
+            "user-dropdown:settings": "Nutzereinstellungen",
+            "user-dropdown:view-site": "Website besuchen",
+            "user-dropdown:logout": "Ausloggen"
+        }
     }
-  }
 }
