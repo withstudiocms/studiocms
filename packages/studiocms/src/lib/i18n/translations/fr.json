@@ -1,63 +1,63 @@
 {
-    "displayName": "Français (fr)",
-    "translations": {
-        "@studiocms/auth:login": {
-            "title": "Page de connexion",
-            "description": "Page de connexion",
-            "header": "Connexion",
-            "sub-header-usernamepasswordoauth": "Entrez votre nom d’utilisateur et votre mot de passe ou connectez-vous en utilisant l’une des options ci-dessous.",
-            "sub-header-usernamepassword": "Saisissez votre nom d'utilisateur et mot de passe.",
-            "sub-header-oauth": "Ouvrez une session en utilisant l'une des options ci-dessous.",
-            "sub-header-noprovider": "Aucun fournisseur de connexion configuré. Veuillez contacter votre administrateur.",
-            "username-label": "Nom d'utilisateur",
-            "password-label": "Mot de passe",
-            "login-button": "Se connecter",
-            "allow-registration-noaccount": "Vous n'avez pas de compte ?",
-            "allow-registration-register": "Inscrivez-vous ici !"
-        },
-        "@studiocms/auth:signup": {
-            "title": "Page d'inscription",
-            "description": "Page d'inscription",
-            "header": "Inscription",
-            "sub-header-usernamepasswordoauth": "Créez un compte ou connectez-vous en utilisant l’une des options ci-dessous.",
-            "sub-header-usernamepassword": "Créez un compte en utilisant le formulaire ci-dessous.",
-            "sub-header-oauth": "Ouvrez une session en utilisant l’une des options ci-dessous.",
-            "sub-header-noprovider": "Aucun fournisseur de connexion configuré. Veuillez contacter votre administrateur.",
-            "username-label": "Nom d'utilisateur",
-            "email-label": "Email",
-            "displayname-label": "Nom d'affichage",
-            "password-label": "Mot de passe",
-            "confirm-password-label": "Confirmer le mot de passe",
-            "create-account-button": "Créer un compte",
-            "allow-login-haveaccount": "Vous avez déjà un compte ?",
-            "allow-login-login": "Connectez-vous ici !"
-        },
-        "@studiocms/auth:logout": {
-            "title": "Page de déconnexion",
-            "description": "Page de déconnexion"
-        },
-        "@studiocms/auth:oauth-stack": {
-            "or-login-with": "ou connectez-vous avec"
-        },
-        "@studiocms/dashboard:index": {
-            "title": "Tableau de bord",
-            "welcome-title": "Bienvenue",
-            "title-button:discord": "Rejoignez la communauté",
-            "title-button:feedback": "Donner votre avis",
-            "sub-header": "StudioCMS est un système de gestion de contenu gratuit et open-source construit à partir de zéro par la communauté Astro."
-        },
-        "@studiocms/dashboard:sidebar": {
-            "category-1-header": "Tableau de bord",
-            "dashboard-link-label": "Tableau de bord",
-            "content-management-label": "Gestion de contenu",
-            "category-2-header": "Admin",
-            "site-configuration-label": "Configuration du site",
-            "user-management-label": "Gestion des utilisateurs",
-            "category-3-header": "Plugins",
-            "category-3-empty-placeholder": "Aucun plugin avec des pages de configuration n'a été trouvé.",
-            "user-dropdown:settings": "Paramètres utilisateur",
-            "user-dropdown:view-site": "Voir le site",
-            "user-dropdown:logout": "Se déconnecter"
-        }
+  "displayName": "Français (fr)",
+  "translations": {
+    "@studiocms/auth:login": {
+      "title": "Page de connexion",
+      "description": "Page de connexion",
+      "header": "Connexion",
+      "sub-header-usernamepasswordoauth": "Entrez votre nom d’utilisateur et votre mot de passe ou connectez-vous en utilisant l’une des options ci-dessous.",
+      "sub-header-usernamepassword": "Saisissez votre nom d'utilisateur et mot de passe.",
+      "sub-header-oauth": "Ouvrez une session en utilisant l'une des options ci-dessous.",
+      "sub-header-noprovider": "Aucun fournisseur de connexion configuré. Veuillez contacter votre administrateur.",
+      "username-label": "Nom d'utilisateur",
+      "password-label": "Mot de passe",
+      "login-button": "Se connecter",
+      "allow-registration-noaccount": "Vous n'avez pas de compte ?",
+      "allow-registration-register": "Inscrivez-vous ici !"
+    },
+    "@studiocms/auth:signup": {
+      "title": "Page d'inscription",
+      "description": "Page d'inscription",
+      "header": "Inscription",
+      "sub-header-usernamepasswordoauth": "Créez un compte ou connectez-vous en utilisant l’une des options ci-dessous.",
+      "sub-header-usernamepassword": "Créez un compte en utilisant le formulaire ci-dessous.",
+      "sub-header-oauth": "Ouvrez une session en utilisant l’une des options ci-dessous.",
+      "sub-header-noprovider": "Aucun fournisseur de connexion configuré. Veuillez contacter votre administrateur.",
+      "username-label": "Nom d'utilisateur",
+      "email-label": "Email",
+      "displayname-label": "Nom d'affichage",
+      "password-label": "Mot de passe",
+      "confirm-password-label": "Confirmer le mot de passe",
+      "create-account-button": "Créer un compte",
+      "allow-login-haveaccount": "Vous avez déjà un compte ?",
+      "allow-login-login": "Connectez-vous ici !"
+    },
+    "@studiocms/auth:logout": {
+      "title": "Page de déconnexion",
+      "description": "Page de déconnexion"
+    },
+    "@studiocms/auth:oauth-stack": {
+      "or-login-with": "ou connectez-vous avec"
+    },
+    "@studiocms/dashboard:index": {
+      "title": "Tableau de bord",
+      "welcome-title": "Bienvenue",
+      "title-button:discord": "Rejoignez la communauté",
+      "title-button:feedback": "Donner votre avis",
+      "sub-header": "StudioCMS est un système de gestion de contenu gratuit et open-source construit à partir de zéro par la communauté Astro."
+    },
+    "@studiocms/dashboard:sidebar": {
+      "category-1-header": "Tableau de bord",
+      "dashboard-link-label": "Tableau de bord",
+      "content-management-label": "Gestion de contenu",
+      "category-2-header": "Admin",
+      "site-configuration-label": "Configuration du site",
+      "user-management-label": "Gestion des utilisateurs",
+      "category-3-header": "Plugins",
+      "category-3-empty-placeholder": "Aucun plugin avec des pages de configuration n'a été trouvé.",
+      "user-dropdown:settings": "Paramètres utilisateur",
+      "user-dropdown:view-site": "Voir le site",
+      "user-dropdown:logout": "Se déconnecter"
     }
+  }
 }
