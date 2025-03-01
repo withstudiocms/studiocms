@@ -194,6 +194,15 @@ export const studiocms = defineIntegration({
 		// Define the Safe Plugin List
 		const safePluginList: SafePluginListType = [];
 
+		// Define if the Sitemap is enabled
+		let sitemapEnabled = false;
+
+		// Define the Sitemaps Array
+		const sitemaps: {
+			pluginName: string;
+			sitemapXMLEndpointPath: string | URL;
+		}[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -828,18 +837,9 @@ export const studiocms = defineIntegration({
 						{ integration: ui({ noInjectCSS: true }) },
 					];
 
-					integrationLogger(logInfo, 'Adding optional integrations...');
-
 					integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
 
 					if (!dbStartPage) {
-						let sitemapEnabled = false;
-
-						const sitemaps: {
-							pluginName: string;
-							sitemapXMLEndpointPath: string | URL;
-						}[] = [];
-
 						// Check for `@astrojs/web-vitals` Integration
 						const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
 
