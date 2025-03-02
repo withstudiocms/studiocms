@@ -4,6 +4,10 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@astrojs/db" />
+/// <reference types="./auth.d.ts" />
+/// <reference types="./core.d.ts" />
+/// <reference types="./renderer.d.ts" />
+/// <reference types="./virtual.d.ts" />
 
 import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';

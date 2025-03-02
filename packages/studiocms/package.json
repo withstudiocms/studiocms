@@ -40,13 +40,10 @@
   },
   "sideEffects": false,
   "files": [
-    "auth.d.ts",
     "CHANGELOG.md",
-    "core.d.ts",
     "custom-renderers",
     "LICENSE",
     "README.md",
-    "renderer.d.ts",
     "ui.d.ts",
     "dist",
     "studiocms-cli.mjs"
@@ -124,9 +121,9 @@
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
     },
-    "./v/core.d.ts": "./core.d.ts",
-    "./v/auth.d.ts": "./auth.d.ts",
-    "./v/renderer.d.ts": "./renderer.d.ts"
+    "./v/core.d.ts": "./dist/core.d.ts",
+    "./v/auth.d.ts": "./dist/auth.d.ts",
+    "./v/renderer.d.ts": "./dist/renderer.d.ts"
   },
   "type": "module",
   "dependencies": {
