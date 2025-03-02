@@ -1,5 +1,13 @@
 # studiocms
 
+## 0.1.0-beta.10
+
+### Patch Changes
+
+- [#442](https://github.com/withstudiocms/studiocms/pull/442) [`8d9025d`](https://github.com/withstudiocms/studiocms/commit/8d9025dde99dd64fdae31a015357eff31027d481) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor integration index to prevent parts of the StudioCMS integration from being enabled during the first-time-setup stage.
+
+- [#443](https://github.com/withstudiocms/studiocms/pull/443) [`730b7d9`](https://github.com/withstudiocms/studiocms/commit/730b7d9a3a6818d20773b11e7e856e9a79884da2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update declaration files to use dist directory instead of src
+
 ## 0.1.0-beta.9
 
 ### Patch Changes
