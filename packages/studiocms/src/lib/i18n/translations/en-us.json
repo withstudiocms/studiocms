@@ -101,6 +101,22 @@
       "password-label": "Password",
       "confirm-password-label": "Confirm Password",
       "reset-button": "Reset Password"
+    },
+    "@studiocms/dashboard:configuration": {
+      "title": "Configuration",
+      "description": "Configuration",
+      "header": "Site Configuration",
+      "save-button": "Save",
+      "dashboard-grid-label": "Dashboard Grid Items",
+      "login-page-preview": "Login Page Preview (Dark/Light)",
+      "input-site-title": "Site Title",
+      "input-site-description": "Site Description",
+      "input-og-image": "Default Open Graph Image",
+      "input-site-icon": "Site Icon (Public Favicon)",
+      "input-diff-tracking-limit": "Diff Tracking Limit (per page)",
+      "input-custom-login-page": "Login Page Background Image (Custom)",
+      "select-page-diff-tracking": "Page Diff Tracking",
+      "select-login-page-bg": "Login Page Background Image"
     }
   }
 }

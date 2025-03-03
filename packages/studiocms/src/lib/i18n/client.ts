@@ -76,6 +76,13 @@ export const updateElmLabel = (el: string, translation: string) => {
 	label.textContent = translation;
 };
 
+export const updateSelectElmLabel = (el: string, translation: string) => {
+	const label = document.querySelector<HTMLLabelElement>(
+		`label[for="${el}-select-btn"]`
+	) as HTMLLabelElement;
+	label.textContent = translation;
+};
+
 export const pageHeaderUpdater = (translation: string) => {
 	const pageHeader = document.querySelector('.page-header') as HTMLElement;
 	const header = pageHeader.querySelector('.page-title') as HTMLElement;

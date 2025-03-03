@@ -1,6 +1,7 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
@@ -49,29 +50,34 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
 		label,
 	};
 });
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
 <form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
     <div class="form-content">
 
         <div class="form-row">
-            <Input label='Site Title' name='site-title' placeholder='My Awesome Website' value={data.title} isRequired />
-            <Input label='Site Description' name='site-description' placeholder='Built with StudioCMS!' value={data.description} isRequired />
+            <Input label={t('input-site-title')} name='site-title' placeholder='My Awesome Website' value={data.title} isRequired />
+            <Input label={t('input-site-description')} name='site-description' placeholder='Built with StudioCMS!' value={data.description} isRequired />
         </div>
 
         <div class="form-row">
-            <Input label="Default Open Graph Image" name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.defaultOgImage} />
+            <Input label={t('input-og-image')} name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.defaultOgImage} />
             <Input label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.siteIcon} />
         </div>
 
         <div class="form-row">
-            <Select label="Page Diff Tracking" name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
-            <Input label="Page Diff Tracking Limit (per page)" name="diff-per-page" placeholder="10" value={data.diffPerPage} />
+            <Select label={t('select-page-diff-tracking')} name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <Input label={t('input-diff-tracking-limit')} name="diff-per-page" placeholder="10" value={data.diffPerPage} />
         </div>
 
         <Divider />
 
-        <span>Dashboard Grid Items</span>
+        <span>
+            <t-config-form key="dashboard-grid-label">{t('dashboard-grid-label')}</t-config-form>
+        </span>
 
         <div class="grid-items-container">
             {
@@ -86,13 +92,15 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
         <Divider />
 
         <div class="form-row">
-            <Select label='Login Page Background Image' name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
-            <Input label="Login Page Background Image (Custom)" name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
+            <Select label={t('select-login-page-bg')} name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
+            <Input label={t('input-custom-login-page')} name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
 
         <Card class="login-preview-container">
             <div slot="header">
-                <span>Login Page Preview (Dark/Light)</span>
+                <span>
+                    <t-config-form key="login-page-preview">{t('login-page-preview')}</t-config-form>
+                </span>
             </div>
             {
                 currentLoginPageBg && currentLoginPageBg.name !== 'custom' && (
@@ -103,6 +111,43 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
 
     </div>
 </form>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        makeTranslation,
+        updateElmLabel,
+        updateSelectElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:configuration';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        updateElmLabel('site-title', comp['input-site-title']);
+        updateElmLabel('site-description', comp['input-site-description']);
+        updateElmLabel('default-og-image', comp['input-og-image']);
+        updateElmLabel('site-icon', comp['input-site-icon']);
+        updateElmLabel('diff-per-page', comp['input-diff-tracking-limit']);
+        updateElmLabel('login-page-background-custom', comp['input-custom-login-page']);
+        updateSelectElmLabel('login-page-background', comp['select-login-page-bg']);
+        updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
+    });
+    
+    if (!customElements.get('t-config-form')) {
+        customElements.define('t-config-form', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <div id="login-page-bgs"
     data-blobs-light={blobs?.light?.src} data-blobs-dark={blobs?.dark?.src}
