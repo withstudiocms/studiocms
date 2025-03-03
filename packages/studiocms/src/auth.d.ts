@@ -1,14 +1,14 @@
 declare module 'studiocms:auth/utils/authEnvCheck' {
-	export const authEnvCheck: typeof import('./dist/utils/authEnvCheck.js').authEnvCheck;
+	export const authEnvCheck: typeof import('./utils/authEnvCheck.js').authEnvCheck;
 }
 
 declare module 'studiocms:auth/utils/validImages' {
-	export const validImages: typeof import('./dist/utils/validImages.js').validImages;
+	export const validImages: typeof import('./utils/validImages.js').validImages;
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
 	export const getLabelForPermissionLevel: typeof import(
-		'./dist/utils/getLabelForPermissionLevel.js'
+		'./utils/getLabelForPermissionLevel.js'
 	).getLabelForPermissionLevel;
 }
 
@@ -24,7 +24,7 @@ declare module 'studiocms:auth/scripts/three' {
 }
 
 declare module 'studiocms:auth/scripts/formListener' {
-	export const formListener: typeof import('./dist/scripts/formListener.js').formListener;
+	export const formListener: typeof import('./scripts/formListener.js').formListener;
 }
 
 declare module 'studiocms:auth/lib/encryption' {
@@ -34,14 +34,14 @@ declare module 'studiocms:auth/lib/encryption' {
 	 * @param data - The data to be encrypted as a Uint8Array.
 	 * @returns The encrypted data as a Uint8Array, which includes the initialization vector (IV), the encrypted content, and the authentication tag.
 	 */
-	export const encrypt: typeof import('./dist/lib/auth/encryption.js').encrypt;
+	export const encrypt: typeof import('./lib/auth/encryption.js').encrypt;
 	/**
 	 * Encrypts a given string and returns the encrypted data as a Uint8Array.
 	 *
 	 * @param data - The string to be encrypted.
 	 * @returns The encrypted data as a Uint8Array.
 	 */
-	export const encryptString: typeof import('./dist/lib/auth/encryption.js').encryptString;
+	export const encryptString: typeof import('./lib/auth/encryption.js').encryptString;
 	/**
 	 * Decrypts the given encrypted data using AES-128-GCM.
 	 *
@@ -49,14 +49,14 @@ declare module 'studiocms:auth/lib/encryption' {
 	 * @returns The decrypted data as a Uint8Array.
 	 * @throws Will throw an error if the encrypted data is less than 33 bytes.
 	 */
-	export const decrypt: typeof import('./dist/lib/auth/encryption.js').decrypt;
+	export const decrypt: typeof import('./lib/auth/encryption.js').decrypt;
 	/**
 	 * Decrypts the given Uint8Array data and returns the result as a string.
 	 *
 	 * @param data - The encrypted data as a Uint8Array.
 	 * @returns The decrypted data as a string.
 	 */
-	export const decryptToString: typeof import('./dist/lib/auth/encryption.js').decryptToString;
+	export const decryptToString: typeof import('./lib/auth/encryption.js').decryptToString;
 }
 
 declare module 'studiocms:auth/lib/password' {
@@ -66,7 +66,7 @@ declare module 'studiocms:auth/lib/password' {
 	 * @param password - The plain text password to hash.
 	 * @returns A promise that resolves to the hashed password.
 	 */
-	export const hashPassword: typeof import('./dist/lib/auth/password.js').hashPassword;
+	export const hashPassword: typeof import('./lib/auth/password.js').hashPassword;
 	/**
 	 * Verifies if the provided password matches the hashed password.
 	 *
@@ -74,7 +74,7 @@ declare module 'studiocms:auth/lib/password' {
 	 * @param password - The plain text password to verify.
 	 * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
 	 */
-	export const verifyPasswordHash: typeof import('./dist/lib/auth/password.js').verifyPasswordHash;
+	export const verifyPasswordHash: typeof import('./lib/auth/password.js').verifyPasswordHash;
 	/**
 	 * Verifies the strength of a given password.
 	 *
@@ -87,7 +87,7 @@ declare module 'studiocms:auth/lib/password' {
 	 * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
 	 */
 	export const verifyPasswordStrength: typeof import(
-		'./dist/lib/auth/password.js'
+		'./lib/auth/password.js'
 	).verifyPasswordStrength;
 }
 
@@ -237,15 +237,13 @@ declare module 'studiocms:auth/lib/session' {
 	 *
 	 * @returns The generated session token as a string.
 	 */
-	export const generateSessionToken: typeof import(
-		'./dist/lib/auth/session.js'
-	).generateSessionToken;
+	export const generateSessionToken: typeof import('./lib/auth/session.js').generateSessionToken;
 	/**
 	 * The name of the cookie used to store the authentication session.
 	 *
 	 * @constant {string}
 	 */
-	export const sessionCookieName: typeof import('./dist/lib/auth/session.js').sessionCookieName;
+	export const sessionCookieName: typeof import('./lib/auth/session.js').sessionCookieName;
 	/**
 	 * Creates a new session for a user.
 	 *
@@ -253,7 +251,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param userId - The ID of the user for whom the session is being created.
 	 * @returns A promise that resolves to the created session object.
 	 */
-	export const createSession: typeof import('./dist/lib/auth/session.js').createSession;
+	export const createSession: typeof import('./lib/auth/session.js').createSession;
 	/**
 	 * Validates a session token by checking its existence and expiration in the database.
 	 * If the session is valid but close to expiration, it extends the session expiration time.
@@ -262,16 +260,14 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param token - The session token to validate.
 	 * @returns A promise that resolves to an object containing the session and user information. If the session is invalid or expired, both session and user will be null.
 	 */
-	export const validateSessionToken: typeof import(
-		'./dist/lib/auth/session.js'
-	).validateSessionToken;
+	export const validateSessionToken: typeof import('./lib/auth/session.js').validateSessionToken;
 	/**
 	 * Invalidates a session by deleting it from the database.
 	 *
 	 * @param token - The session token to invalidate.
 	 * @returns A promise that resolves to `true` if the session was successfully invalidated; otherwise, `false`.
 	 */
-	export const invalidateSession: typeof import('./dist/lib/auth/session.js').invalidateSession;
+	export const invalidateSession: typeof import('./lib/auth/session.js').invalidateSession;
 	/**
 	 * Sets the session token cookie in the response object.
 	 *
@@ -279,16 +275,14 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param token - The session token to set in the cookie.
 	 * @param expiresAt - The expiration date and time of the session token.
 	 */
-	export const setSessionTokenCookie: typeof import(
-		'./dist/lib/auth/session.js'
-	).setSessionTokenCookie;
+	export const setSessionTokenCookie: typeof import('./lib/auth/session.js').setSessionTokenCookie;
 	/**
 	 * Deletes the session token cookie from the response object.
 	 *
 	 * @param context - The context object containing the request and response objects.
 	 */
 	export const deleteSessionTokenCookie: typeof import(
-		'./dist/lib/auth/session.js'
+		'./lib/auth/session.js'
 	).deleteSessionTokenCookie;
 	/**
 	 * Sets the OAuth session token cookie in the response object.
@@ -298,19 +292,19 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param expiresAt - The expiration date and time of the session token.
 	 */
 	export const setOAuthSessionTokenCookie: typeof import(
-		'./dist/lib/auth/session.js'
+		'./lib/auth/session.js'
 	).setOAuthSessionTokenCookie;
 	/**
 	 * Generates a new expiration date for a session.
 	 *
 	 * @returns The expiration date calculated by adding the session expiration time to the current date and time.
 	 */
-	export const makeExpirationDate: typeof import('./dist/lib/auth/session.js').makeExpirationDate;
+	export const makeExpirationDate: typeof import('./lib/auth/session.js').makeExpirationDate;
 	/**
 	 * The session expiration time in milliseconds.
 	 * This value represents 14 days.
 	 */
-	export const sessionExpTime: typeof import('./dist/lib/auth/session.js').sessionExpTime;
+	export const sessionExpTime: typeof import('./lib/auth/session.js').sessionExpTime;
 	/**
 	 * Creates a new user session.
 	 *
@@ -318,7 +312,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param context - The context object containing the request and response objects.
 	 * @returns A promise that resolves to the created session object.
 	 */
-	export const createUserSession: typeof import('./dist/lib/auth/session.js').createUserSession;
+	export const createUserSession: typeof import('./lib/auth/session.js').createUserSession;
 }
 
 declare module 'studiocms:auth/lib/types' {
@@ -330,7 +324,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} providerUserId - The unique identifier for the user provided by the OAuth provider.
 	 * @property {string} userId - The unique identifier for the user within the application.
 	 */
-	export type OAuthAccountsTable = import('./dist/lib/auth/types.js').OAuthAccountsTable;
+	export type OAuthAccountsTable = import('./lib/auth/types.js').OAuthAccountsTable;
 	/**
 	 * Interface representing a table of user permissions.
 	 *
@@ -338,7 +332,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} user - The username of the individual.
 	 * @property {string} rank - The rank or role assigned to the user.
 	 */
-	export type PermissionsTable = import('./dist/lib/auth/types.js').PermissionsTable;
+	export type PermissionsTable = import('./lib/auth/types.js').PermissionsTable;
 	/**
 	 * Represents the session data for a user.
 	 *
@@ -346,20 +340,20 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {UserTable | null} user - The user data, or null if no user is logged in.
 	 * @property {'owner' | 'admin' | 'editor' | 'visitor' | 'unknown'} permissionLevel - The permission level of the user.
 	 */
-	export type UserSessionData = import('./dist/lib/auth/types.js').UserSessionData;
+	export type UserSessionData = import('./lib/auth/types.js').UserSessionData;
 	/**
 	 * Represents a user session which includes user information and session details.
 	 *
 	 * @property {UserTable} user - The user data.
 	 * @property {SessionTable} session - The session data.
 	 */
-	export type UserSession = import('./dist/lib/auth/types.js').UserSession;
+	export type UserSession = import('./lib/auth/types.js').UserSession;
 	/**
 	 * Represents the result of validating a session token.
 	 *
 	 * This type can either be a valid `UserSession` or an object indicating an invalid session with both `session` and `user` properties set to `null`.
 	 */
-	export type SessionValidationResult = import('./dist/lib/auth/types.js').SessionValidationResult;
+	export type SessionValidationResult = import('./lib/auth/types.js').SessionValidationResult;
 	/**
 	 * Represents an individual refillable token bucket.
 	 *
@@ -367,7 +361,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} refillAt - The time at which the bucket was last refilled.
 	 */
-	export type RefillBucket = import('./dist/lib/auth/types.js').RefillBucket;
+	export type RefillBucket = import('./lib/auth/types.js').RefillBucket;
 	/**
 	 * Represents a bucket with an expiration mechanism.
 	 *
@@ -375,7 +369,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} createdAt - The timestamp when the bucket was created.
 	 */
-	export type ExpiringBucket = import('./dist/lib/auth/types.js').ExpiringBucket;
+	export type ExpiringBucket = import('./lib/auth/types.js').ExpiringBucket;
 	/**
 	 * Interface representing a throttling counter.
 	 *
@@ -383,23 +377,21 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} timeout - The duration (in milliseconds) for which the throttling is applied.
 	 * @property {number} updatedAt - The timestamp (in milliseconds since epoch) when the throttling counter was last updated.
 	 */
-	export type ThrottlingCounter = import('./dist/lib/auth/types.js').ThrottlingCounter;
+	export type ThrottlingCounter = import('./lib/auth/types.js').ThrottlingCounter;
 }
 
 declare module 'studiocms:auth/lib/user' {
-	export const verifyUsernameInput: typeof import('./dist/lib/auth/user.js').verifyUsernameInput;
-	export const createUserAvatar: typeof import('./dist/lib/auth/user.js').createUserAvatar;
-	export const createLocalUser: typeof import('./dist/lib/auth/user.js').createLocalUser;
-	export const createOAuthUser: typeof import('./dist/lib/auth/user.js').createOAuthUser;
-	export const updateUserPassword: typeof import('./dist/lib/auth/user.js').updateUserPassword;
-	export const getUserPasswordHash: typeof import('./dist/lib/auth/user.js').getUserPasswordHash;
-	export const getUserFromEmail: typeof import('./dist/lib/auth/user.js').getUserFromEmail;
-	export const getUserData: typeof import('./dist/lib/auth/user.js').getUserData;
-	export const permissionRanksMap: typeof import('./dist/lib/auth/user.js').permissionRanksMap;
+	export const verifyUsernameInput: typeof import('./lib/auth/user.js').verifyUsernameInput;
+	export const createUserAvatar: typeof import('./lib/auth/user.js').createUserAvatar;
+	export const createLocalUser: typeof import('./lib/auth/user.js').createLocalUser;
+	export const createOAuthUser: typeof import('./lib/auth/user.js').createOAuthUser;
+	export const updateUserPassword: typeof import('./lib/auth/user.js').updateUserPassword;
+	export const getUserPasswordHash: typeof import('./lib/auth/user.js').getUserPasswordHash;
+	export const getUserFromEmail: typeof import('./lib/auth/user.js').getUserFromEmail;
+	export const getUserData: typeof import('./lib/auth/user.js').getUserData;
+	export const permissionRanksMap: typeof import('./lib/auth/user.js').permissionRanksMap;
 	export const verifyUserPermissionLevel: typeof import(
-		'./dist/lib/auth/user.js'
+		'./lib/auth/user.js'
 	).verifyUserPermissionLevel;
-	export const LinkNewOAuthCookieName: typeof import(
-		'./dist/lib/auth/user.js'
-	).LinkNewOAuthCookieName;
+	export const LinkNewOAuthCookieName: typeof import('./lib/auth/user.js').LinkNewOAuthCookieName;
 }
