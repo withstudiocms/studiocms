@@ -11,7 +11,7 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 ---
 { shouldShowOAuth && ( 
 	<Divider>
-		<t-comp-key-oauth key="or-login-with">{t('or-login-with')}</t-comp-key-oauth>
+		<t-comp-oauth key="or-login-with">{t('or-login-with')}</t-comp-oauth>
 	</Divider>
     <div class="button-stack">
 	{
@@ -30,7 +30,7 @@ const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled)
 
 	const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-	if (!customElements.get('t-comp-key-oauth')) {
-		customElements.define('t-comp-key-oauth', makeTranslation(currentPage, i18n));
+	if (!customElements.get('t-comp-oauth')) {
+		customElements.define('t-comp-oauth', makeTranslation(currentPage, i18n));
 	}
 </script>
