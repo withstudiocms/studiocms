@@ -10,10 +10,25 @@ const t = useTranslations(lang, '@studiocms/auth:oauth-stack');
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 ---
 { shouldShowOAuth && ( 
-	<Divider>{t('or-login-with')}</Divider>
+	<Divider><translation-key key="or-login-with">{t('or-login-with')}</translation-key></Divider>
     <div class="button-stack">
 	{
 		providerData.map(({enabled, ...props}) => enabled && <OAuthButton {...props} />)
 	}
     </div>
 )}
+<script>
+	import { 
+		$i18n,
+		baseTranslation,
+		makeTranslation,
+	} from 'studiocms:i18n/client';
+
+	const currentPage = '@studiocms/auth:oauth-stack';
+
+	const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+	if (!customElements.get('translation-key')) {
+		customElements.define('translation-key', makeTranslation(currentPage, i18n));
+	}
+</script>
