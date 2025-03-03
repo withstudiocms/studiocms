@@ -117,6 +117,12 @@
       "input-custom-login-page": "Login Page Background Image (Custom)",
       "select-page-diff-tracking": "Page Diff Tracking",
       "select-login-page-bg": "Login Page Background Image"
+    },
+    "@studiocms/dashboard:user-mngmt-index": {
+      "title": "User Management",
+      "description": "User Management",
+      "header": "User Management",
+      "placeholder": "Select or Create a user to get started."
     }
   }
 }

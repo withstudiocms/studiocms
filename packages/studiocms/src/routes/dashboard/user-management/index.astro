@@ -1,12 +1,15 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/islands/user-mgmt/InnerSidebarElement.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
 ---
 <Layout 
-  title="User Management"
+  title={t('title')}
+  description={t('description')}
   requiredPermission='admin'
   sidebar='double'
   {lang}
@@ -19,14 +22,47 @@ const lang = 'en-us';
   </div>
 
   <div slot="header">
-    <PageHeader title="User Management" />
+    <PageHeader title={t('header')} />
   </div>
 
   <div id="placeholder-info" class="placeholder-info">
-    <p>Select a user get started!</p>
+    <p>
+      <t-users-index key="placeholder">{t('placeholder')}</t-users-index>
+    </p>
   </div>
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        pageHeaderUpdater,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:user-mngmt-index';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+      pageHeaderUpdater(comp.header)
+    });
+    
+    if (!customElements.get('t-users-index')) {
+        customElements.define('t-users-index', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <style>
 
