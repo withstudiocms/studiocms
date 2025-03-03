@@ -9,7 +9,8 @@ import { defaultLang } from '../../lib/i18n/config.js';
  * Represents a link in the sidebar of the dashboard.
  */
 interface SidebarLink {
-	title: string;
+	title?: string;
+	key?: string;
 	icon: HeroIconName;
 	href: string;
 }
@@ -114,7 +115,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	// Base links
 	const baseLinks: SidebarLink[] = [
 		{
-			title: t('dashboard-link-label'),
+			key: 'dashboard-link-label',
 			icon: 'home',
 			href: StudioCMSRoutes.mainLinks.dashboardIndex,
 		},
@@ -124,7 +125,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	// Editor links
 	const editorLinks: SidebarLink[] = [
 		{
-			title: t('content-management-label'),
+			key: 'content-management-label',
 			icon: 'pencil-square',
 			href: StudioCMSRoutes.mainLinks.contentManagement,
 		},
@@ -134,7 +135,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	// Admin links
 	const adminLinks: SidebarLink[] = [
 		{
-			title: t('user-management-label'),
+			key: 'user-management-label',
 			icon: 'user-group',
 			href: StudioCMSRoutes.mainLinks.userManagement,
 		},
@@ -144,7 +145,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	// Owner links
 	const ownerLinks: SidebarLink[] = [
 		{
-			title: t('site-configuration-label'),
+			key: 'site-configuration-label',
 			icon: 'cog-6-tooth',
 			href: StudioCMSRoutes.mainLinks.siteConfiguration,
 		},
