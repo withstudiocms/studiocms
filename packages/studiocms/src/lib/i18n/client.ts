@@ -12,7 +12,7 @@ import { type UiTranslationKey, defaultLang, uiTranslationsAvailable } from './c
 
 export const baseTranslation = (await import('./translations/en-us.json')).translations;
 
-export { defaultLang };
+export { defaultLang, type UiTranslationKey, uiTranslationsAvailable };
 
 const localeMap: Record<UiTranslationKey, ComponentsJSON> = {
 	'en-us': baseTranslation,

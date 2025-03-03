@@ -92,6 +92,8 @@ declare module 'studiocms:i18n/client' {
 	export const makeTranslation: typeof import('./lib/i18n/client').makeTranslation;
 	export const updateElmLabel: typeof import('./lib/i18n/client').updateElmLabel;
 	export const defaultLang: typeof import('./lib/i18n/client').defaultLang;
+	export const uiTranslationsAvailable: typeof import('./lib/i18n/client').uiTranslationsAvailable;
+	export type UiTranslationKey = import('./lib/i18n/client').UiTranslationKey;
 }
 
 declare module 'studiocms:imageHandler/components' {

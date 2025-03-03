@@ -1,7 +1,5 @@
 ---
-import { languageSelectorOptions, switchLanguage } from './index.js';
-
-const switcher = switchLanguage(Astro);
+import { languageSelectorOptions } from './index.js';
 
 // TODO: Update the language selector's styles to match StudioCMS's new design
 ---
@@ -17,7 +15,7 @@ const switcher = switchLanguage(Astro);
     {
         //Language Buttons Auto-Generated
         languageSelectorOptions.map(({ key, value }) => (
-            <a class="btn btn-primary" href={switcher(key)}>{value}</a>
+            <span class="btn btn-primary" id="language-selector-option" data-key={key}>{value}</span>
         ))
     }
     <div class="flex flex-row-reverse">
@@ -64,10 +62,14 @@ const switcher = switchLanguage(Astro);
 </style>
 
 <script>
+import { $localeSettings, type UiTranslationKey } from "studiocms:i18n/client";
+
     // Get the Language Selector elements
     const LanguageSelector = document.getElementById('language-selector') as HTMLButtonElement;
     const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel') as HTMLButtonElement;
     const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
+
+    const Selectors = document.querySelectorAll('#language-selector-option') as NodeListOf<HTMLSpanElement>;
 
     // Show the Language Selector on page load
     setTimeout(() => {
@@ -100,4 +102,13 @@ const switcher = switchLanguage(Astro);
     LanguageSectorMenuCancel.addEventListener('click', () => 
         toggleLanguageSelector(LanguageSectorMenu)
     );
+
+    // Language Selector Options Event Listeners
+    Selectors.forEach((selector) => {
+        selector.addEventListener('click', () => {
+            const lang = selector.dataset.key as UiTranslationKey;
+
+            $localeSettings.set(lang);
+        })
+    })
 </script>
