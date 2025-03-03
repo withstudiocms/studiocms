@@ -41,6 +41,7 @@
     },
     "@studiocms/dashboard:index": {
       "title": "Dashboard",
+      "description": "Dashboard",
       "welcome-title": "Welcome",
       "title-button:discord": "Join the Community",
       "title-button:feedback": "Give Feedback",
