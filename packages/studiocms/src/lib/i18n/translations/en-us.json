@@ -59,6 +59,38 @@
       "user-dropdown:settings": "User Settings",
       "user-dropdown:view-site": "View Site",
       "user-dropdown:logout": "Log Out"
+    },
+    "@studiocms/dashboard:profile": {
+      "title": "User Profile",
+      "description": "User Profile",
+      "header": "Your Profile",
+      "basic-info-header": "Basic Information",
+      "basic-info-save-button": "Save",
+      "basic-info-display-name": "Display Name",
+      "basic-info-email": "Email",
+      "basic-info-username": "Username",
+      "basic-info-website": "Website",
+      "user-password-header": "Create or Update Password",
+      "user-password-save-button": "Save",
+      "user-password-no-password": "It looks like your account doesn't have a password set. You can set one by using the form below.",
+      "user-password-current": "Current Password",
+      "user-password-new": "New Password",
+      "user-password-confirm": "Confirm New Password",
+      "social-accounts-header": "Social Sign-in Accounts",
+      "social-accounts-connected": "Connected Accounts",
+      "social-accounts-no-connected": "No connected accounts found.",
+      "social-accounts-other": "Other Sign-In Options",
+      "social-accounts-no-other": "No other sign-in options found.",
+      "api-tokens-header": "API Tokens",
+      "api-tokens-create": "Create API Token",
+      "api-tokens-description": "API tokens are used to authenticate with the StudioCMS REST API.",
+      "api-tokens-delete-button": "Delete",
+      "api-tokens-created": "Created",
+      "api-tokens-no-tokens": "No API tokens found.",
+      "api-tokens-modal-header": "Create New API Token",
+      "api-tokens-modal-description": "Description",
+      "api-tokens-modal-response-header": "New Token",
+      "api-tokens-modal-response-description": "Please copy your new token. It will not be shown again."
     }
   }
 }

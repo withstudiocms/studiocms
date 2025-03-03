@@ -75,3 +75,10 @@ export const updateElmLabel = (el: string, translation: string) => {
 		?.querySelector('.label') as HTMLSpanElement;
 	label.textContent = translation;
 };
+
+export const pageHeaderUpdater = (translation: string) => {
+	const pageHeader = document.querySelector('.page-header') as HTMLElement;
+	const header = pageHeader.querySelector('.page-title') as HTMLElement;
+
+	header.textContent = translation;
+};

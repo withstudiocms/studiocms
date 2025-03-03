@@ -1,6 +1,7 @@
 ---
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/islands/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/islands/profile/BasicInfo.astro';
@@ -13,6 +14,7 @@ import {
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 const {
 	providers: { usernameAndPassword },
@@ -26,13 +28,14 @@ const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor'
 ---
 
 <Layout 
-  title={'User Profile'}
+  title={t('title')}
+  description={t('description')}
   requiredPermission="visitor"
   {lang}
   >
 
   <div slot="header">
-    <PageHeader title="Your Profile" />
+    <PageHeader title={t('header')} />
   </div>
 
   <div class="page-content">
@@ -47,6 +50,33 @@ const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor'
 
   </div>
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        pageHeaderUpdater,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+      pageHeaderUpdater(comp.header)
+    });
+</script>
+
 
 <style>
   .page-content {

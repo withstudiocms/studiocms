@@ -1,4 +1,4 @@
-import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import type { UiLanguageKeys } from 'studiocms:i18n';
 import { StudioCMSRoutes, makeDashboardRoute } from 'studiocms:lib';
 import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
@@ -106,9 +106,6 @@ function filterAndProcessPages(
  * - `ownerLinks`: Links accessible to users with owner role.
  */
 export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
-	// Get translations
-	const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
-
 	// Get the dashboard pages from the plugins
 	const { adminPages, userPages } = getPluginDashboardPages();
 
