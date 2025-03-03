@@ -41,6 +41,7 @@
     },
     "@studiocms/dashboard:index": {
       "title": "Panel de control",
+      "description": "Panel de control",
       "welcome-title": "Bienvenido",
       "title-button:discord": "Unirse a la comunidad",
       "title-button:feedback": "Dar retroalimentación",

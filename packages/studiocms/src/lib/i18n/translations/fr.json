@@ -41,6 +41,7 @@
     },
     "@studiocms/dashboard:index": {
       "title": "Tableau de bord",
+      "description": "Tableau de bord",
       "welcome-title": "Bienvenue",
       "title-button:discord": "Rejoignez la communauté",
       "title-button:feedback": "Donner votre avis",
