@@ -19,16 +19,20 @@ const {
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
 
-let paragraph: string;
+let paragraph:
+	| 'sub-header-usernamepasswordoauth'
+	| 'sub-header-usernamepassword'
+	| 'sub-header-oauth'
+	| 'sub-header-noprovider';
 
 if (usernameAndPassword && SHOW_OAUTH) {
-	paragraph = t('sub-header-usernamepasswordoauth');
+	paragraph = 'sub-header-usernamepasswordoauth';
 } else if (usernameAndPassword && !SHOW_OAUTH) {
-	paragraph = t('sub-header-usernamepassword');
+	paragraph = 'sub-header-usernamepassword';
 } else if (!usernameAndPassword && SHOW_OAUTH) {
-	paragraph = t('sub-header-oauth');
+	paragraph = 'sub-header-oauth';
 } else {
-	paragraph = t('sub-header-noprovider');
+	paragraph = 'sub-header-noprovider';
 }
 ---
 <AuthLayout 
@@ -39,8 +43,12 @@ if (usernameAndPassword && SHOW_OAUTH) {
     >
     
     <div slot="header" class="form-header">
-        <h1>{t('header')}</h1>
-        <p>{paragraph}</p>
+        <h1>
+            <translation-key key="header">{t('header')}</translation-key>
+        </h1>
+        <p>
+            <translation-key key={paragraph}>{t(paragraph)}</translation-key>
+        </p>
     </div>
 
     { usernameAndPassword && (
@@ -52,15 +60,61 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <Input label={t('password-label')} name="password" type="password" />
             <Input label={t('confirm-password-label')} name="confirm-password" type="password" />
 
-            <Button fullWidth type="submit" as="button" type="submit" color='primary' variant='solid'>{t('create-account-button')}</Button>
+            <Button fullWidth type="submit" as="button" type="submit" color='primary' variant='solid'>
+                <translation-key key="create-account-button">{t('create-account-button')}</translation-key>
+            </Button>
         </form>
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">{t('allow-login-haveaccount')} <a href={StudioCMSRoutes.authLinks.loginURL}>{t('allow-login-login')}</a></p>
+        <p slot="footer">
+            <translation-key key="allow-login-haveaccount">
+                {t('allow-login-haveaccount')}
+            </translation-key> 
+            <a href={StudioCMSRoutes.authLinks.loginURL}>
+                <translation-key key="allow-login-login">
+                    {t('allow-login-login')}
+                </translation-key>
+            </a>
+        </p>
     )}
 
 </AuthLayout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/auth:signup';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+        updateElmLabel('username', comp['username-label']);
+        updateElmLabel('email', comp['email-label']);
+        updateElmLabel('displayname', comp['displayname-label']);
+        updateElmLabel('password', comp['password-label']);
+        updateElmLabel('confirm-password', comp['confirm-password-label']);
+    });
+
+    if (!customElements.get('translation-key')) {
+        customElements.define('translation-key', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
     import { formListener } from '../../scripts/formListener.js';
