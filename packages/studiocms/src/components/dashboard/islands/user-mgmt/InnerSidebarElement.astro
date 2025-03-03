@@ -1,17 +1,15 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
-import {
-	Button,
-	Center,
-	Divider,
-	Dropdown,
-	Icon,
-	Input,
-	Modal,
-	Select,
-} from 'studiocms:ui/components';
+import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import UserListItem from './UserListItem.astro';
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
 
 const Users = await studioCMS_SDK.GET.database.users();
 
@@ -30,21 +28,23 @@ const safeUsers: {
 }[] = Users.map(({ avatar, email, id, name, username, permissionsData }) => {
 	return { avatar, email, id, name, username, permissionsData };
 });
+
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 ---
 <div class="inner-user-sidebar-header">
   <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
     <Icon name="arrow-left" width={24} height={24} slot="start-content" />
   </Button>
   <form id="search-form">
-    <Input name='search' placeholder='Search...' type='search' required />
+    <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
   </form>
   <Dropdown
     transition:persist
     transition:persist-props
     id='create-user-dropdown'
     options={[
-      { label: 'Create New User', icon: 'user-plus', value: 'new-user' },
-      { label: 'Create User Invite', icon: 'inbox-arrow-down', value: 'new-invite' },
+      { label: t('dropdown-create-user'), icon: 'user-plus', value: 'new-user' },
+      { label: t('dropdown-create-invite'), icon: 'inbox-arrow-down', value: 'new-invite' },
     ]}
     align={'end'}
     offset={8}
@@ -81,6 +81,56 @@ const safeUsers: {
   data-create_user={StudioCMSRoutes.endpointLinks.newUsers.create}
   data-create_invite={StudioCMSRoutes.endpointLinks.newUsers.invite}
   ></div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        updateElmPlaceholder,
+    } from 'studiocms:i18n/client';
+
+    const dropdownKeys: Record<string, string> = {
+        'new-user': 'dropdown-create-user',
+        'new-invite': 'dropdown-create-invite',
+    }
+
+    const getDropdownOptions = () => {
+        const dropdownElm = document.getElementById('create-user-dropdown-dropdown') as HTMLUListElement;
+        const options = dropdownElm?.querySelectorAll('.sui-dropdown-option') as NodeListOf<HTMLLIElement>;
+
+        const returnData: Record<string, HTMLSpanElement> = {};
+
+        for (const option of options) {
+            const value = option.dataset.value as string;
+            const key = dropdownKeys[value];
+
+            if (!key) continue;
+
+            const SelectedElm = (option.querySelector('.sui-dropdown-line-container') as HTMLDivElement).querySelector('span');
+
+            if (!SelectedElm) continue;
+
+            returnData[key] = SelectedElm;
+        }
+
+        return returnData;
+    }
+  
+    const currentPage = '@studiocms/dashboard:user-mngmt-sidebar';
+  
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+        updateElmPlaceholder('search', comp['input-placeholder-search']);
+
+        const dropdownOptions = getDropdownOptions();
+
+        for (const [key, elm] of Object.entries(dropdownOptions)) {
+            // @ts-ignore
+            elm.textContent = comp[key];
+        }
+    });
+</script>
 
 <script>
     import { DropdownHelper, ModalHelper, toast } from 'studiocms:ui/components';

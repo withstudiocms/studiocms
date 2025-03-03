@@ -118,6 +118,11 @@
       "select-page-diff-tracking": "Page Diff Tracking",
       "select-login-page-bg": "Login Page Background Image"
     },
+    "@studiocms/dashboard:user-mngmt-sidebar": {
+      "input-placeholder-search": "Search...",
+      "dropdown-create-user": "Create New User",
+      "dropdown-create-invite": "Create User Invite"
+    },
     "@studiocms/dashboard:user-mngmt-index": {
       "title": "User Management",
       "description": "User Management",

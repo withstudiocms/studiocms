@@ -76,6 +76,11 @@ export const updateElmLabel = (el: string, translation: string) => {
 	label.textContent = translation;
 };
 
+export const updateElmPlaceholder = (el: string, translation: string) => {
+	const input = document.querySelector<HTMLInputElement>(`#${el}`) as HTMLInputElement;
+	input.placeholder = translation;
+};
+
 export const updateSelectElmLabel = (el: string, translation: string) => {
 	const label = document.querySelector<HTMLLabelElement>(
 		`label[for="${el}-select-btn"]`
