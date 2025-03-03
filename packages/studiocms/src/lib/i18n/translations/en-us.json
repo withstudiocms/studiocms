@@ -91,6 +91,16 @@
       "api-tokens-modal-description": "Description",
       "api-tokens-modal-response-header": "New Token",
       "api-tokens-modal-response-description": "Please copy your new token. It will not be shown again."
+    },
+    "@studiocms/dashboard:password-reset": {
+      "title": "Password Reset",
+      "description": "Password Reset",
+      "header": "Password Reset",
+      "sub-header-start": "Hello",
+      "sub-header-end": "Please enter your new password below.",
+      "password-label": "Password",
+      "confirm-password-label": "Confirm Password",
+      "reset-button": "Reset Password"
     }
   }
 }
