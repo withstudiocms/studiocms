@@ -44,10 +44,10 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
     <div slot="header" class="form-header">
         <h1>
-            <translation-key key="header">{t('header')}</translation-key>
+            <t-key-login key="header">{t('header')}</t-key-login>
         </h1>
         <p>
-            <translation-key key={paragraph}>{t(paragraph)}</translation-key>
+            <t-key-login key={paragraph}>{t(paragraph)}</t-key-login>
         </p>
     </div>
 
@@ -58,20 +58,20 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <Input label={t('password-label')} name="password" type='password' />
 
             <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'>
-                <translation-key key="login-button">{t('login-button')}</translation-key>
+                <t-key-login key="login-button">{t('login-button')}</t-key-login>
             </Button>
         </form>
     )}
 
     { allowUserRegistration && (
         <p slot="footer">
-            <translation-key key="allow-registration-noaccount">
+            <t-key-login key="allow-registration-noaccount">
                 {t('allow-registration-noaccount')}
-            </translation-key> 
+            </t-key-login> 
             <a href={StudioCMSRoutes.authLinks.signupURL}>
-                <translation-key key="allow-registration-register">
+                <t-key-login key="allow-registration-register">
                     {t('allow-registration-register')}
-                </translation-key>
+                </t-key-login>
             </a>
         </p>
     )}
@@ -105,8 +105,8 @@ if (usernameAndPassword && SHOW_OAUTH) {
         updateElmLabel('password', comp['password-label']);
     });
 
-    if (!customElements.get('translation-key')) {
-        customElements.define('translation-key', makeTranslation(currentPage, i18n));
+    if (!customElements.get('t-key-login')) {
+        customElements.define('t-key-login', makeTranslation(currentPage, i18n));
     }
 </script>
 

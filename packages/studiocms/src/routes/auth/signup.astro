@@ -44,10 +44,10 @@ if (usernameAndPassword && SHOW_OAUTH) {
     
     <div slot="header" class="form-header">
         <h1>
-            <translation-key key="header">{t('header')}</translation-key>
+            <t-key-signup key="header">{t('header')}</t-key-signup>
         </h1>
         <p>
-            <translation-key key={paragraph}>{t(paragraph)}</translation-key>
+            <t-key-signup key={paragraph}>{t(paragraph)}</t-key-signup>
         </p>
     </div>
 
@@ -61,20 +61,20 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <Input label={t('confirm-password-label')} name="confirm-password" type="password" />
 
             <Button fullWidth type="submit" as="button" type="submit" color='primary' variant='solid'>
-                <translation-key key="create-account-button">{t('create-account-button')}</translation-key>
+                <t-key-signup key="create-account-button">{t('create-account-button')}</t-key-signup>
             </Button>
         </form>
     )}
 
     { allowUserRegistration && (
         <p slot="footer">
-            <translation-key key="allow-login-haveaccount">
+            <t-key-signup key="allow-login-haveaccount">
                 {t('allow-login-haveaccount')}
-            </translation-key> 
+            </t-key-signup> 
             <a href={StudioCMSRoutes.authLinks.loginURL}>
-                <translation-key key="allow-login-login">
+                <t-key-signup key="allow-login-login">
                     {t('allow-login-login')}
-                </translation-key>
+                </t-key-signup>
             </a>
         </p>
     )}
@@ -111,8 +111,8 @@ if (usernameAndPassword && SHOW_OAUTH) {
         updateElmLabel('confirm-password', comp['confirm-password-label']);
     });
 
-    if (!customElements.get('translation-key')) {
-        customElements.define('translation-key', makeTranslation(currentPage, i18n));
+    if (!customElements.get('t-key-signup')) {
+        customElements.define('t-key-signup', makeTranslation(currentPage, i18n));
     }
 </script>
 

@@ -70,9 +70,8 @@ export const makeTranslation = <Body extends Translations>(
 };
 
 export const updateElmLabel = (el: string, translation: string) => {
-	const label = document.querySelector(`label[for="${el}"]`)?.querySelector('.label');
-	if (!label) {
-		return;
-	}
+	const label = document
+		.querySelector<HTMLLabelElement>(`label[for="${el}"]`)
+		?.querySelector('.label') as HTMLSpanElement;
 	label.textContent = translation;
 };
