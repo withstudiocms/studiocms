@@ -1,5 +1,6 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
+import { useTranslations } from 'studiocms:i18n';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon } from 'studiocms:ui/components';
@@ -36,11 +37,16 @@ const socialProviders = providerData.map((providerData) => ({
 
 const connectedProviders = socialProviders.filter(({ connected }) => connected);
 const unconnectedProviders = socialProviders.filter(({ connected }) => !connected);
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="social-signin-options">
 
     <div slot="header">
-        <h2>Social Sign-in Accounts</h2>
+        <h2>
+            <t-profile-socials key="social-accounts-header">{t('social-accounts-header')}</t-profile-socials>
+        </h2>
     </div>
 
     <div class="social-signin-cards">
@@ -48,7 +54,9 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
         <Card fullWidth class="social-signin-bg">
     
             <div slot="header">
-                <h3>Connected Accounts</h3>
+                <h3>
+                    <t-profile-socials key="social-accounts-connected">{t('social-accounts-connected')}</t-profile-socials>
+                </h3>
             </div>
 
             <div class="button-holder">
@@ -66,7 +74,9 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
 
                 {
                     connectedProviders.length === 0 && (
-                        <Center><div>No connected accounts found.</div></Center>
+                        <Center><div>
+                            <t-profile-socials key="social-accounts-no-connected">{t('social-accounts-no-connected')}</t-profile-socials>    
+                        </div></Center>
                     )
                 }
             </div>
@@ -76,7 +86,9 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
         <Card fullWidth class="social-signin-bg">
     
             <div slot="header">
-                <h3>Other Sign-In Options</h3>
+                <h3>
+                    <t-profile-socials key="social-accounts-other">{t('social-accounts-other')}</t-profile-socials>
+                </h3>
             </div>
 
             <div class="button-holder">
@@ -94,7 +106,9 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
 
                 {
                     unconnectedProviders.length === 0 && (
-                        <Center><div>No other sign-in options found.</div></Center>
+                        <Center><div>
+                            <t-profile-socials key="social-accounts-no-other">{t('social-accounts-no-other')}</t-profile-socials>    
+                        </div></Center>
                     )
                 }
             </div>
@@ -104,6 +118,22 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
     </div>
 
 </Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get('t-profile-socials')) {
+        customElements.define('t-profile-socials', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <style>
     .social-signin-options {

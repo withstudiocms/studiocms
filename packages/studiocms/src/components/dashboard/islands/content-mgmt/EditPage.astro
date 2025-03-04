@@ -1,6 +1,7 @@
 ---
 import '../../../../styles/dashboard-tiny-mde.css';
 import { FormattedDate } from 'studiocms:components';
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import type { SettingsField } from 'studiocms:plugin-helpers';
 import pluginList from 'studiocms:plugins';
@@ -64,29 +65,37 @@ const pluginFields = pluginList
 		return pageTypeOutput;
 	})
 	.find((pageType) => pageType.identifier === pageData.package);
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
 <div id="edit-page-container">
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
 
         <Tabs variant={'starlight'}>
-          <TabItem label='Basic Information' icon={'information-circle-20-solid'} color={'primary'}>
+          <TabItem label={t('tab-label-basic-info')} icon={'information-circle-20-solid'} color={'primary'}>
             <div class="tab-section">
                 <div class="form-row">
-                    <Input label='Page Title' name='page-title' isRequired defaultValue={pageData.title} />
-                    <Input label='Slug' name='page-slug' disabled isRequired defaultValue={pageData.slug} />
+                    <Input label={t('input-page-title')} name='page-title' isRequired defaultValue={pageData.title} />
+                    <Input label={t('input-page-slug')} name='page-slug' disabled isRequired defaultValue={pageData.slug} />
         
                     <input type="hidden" name="page-slug" value={pageData.slug} />
                     <input type="hidden" name="page-id" value={pageData.id} />
                 </div>
         
                 <div class="form-row">
-                    <Input label='Description' name='page-description' isRequired defaultValue={pageData.description}/>
-                    <Input label='OpenGraph/Hero Image' name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
+                    <Input label={t('input-page-description')} name='page-description' isRequired defaultValue={pageData.description}/>
+                    <Input label={t('input-page-hero-image')} name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
                 </div>
         
                 <div class="form-row">
                     <Select 
-                        label="Page type" 
+                        label={t('select-page-type')} 
                         name="page-type" 
                         isRequired 
                         fullWidth 
@@ -94,7 +103,7 @@ const pluginFields = pluginList
                         options={pageTypeOptions} 
                         />
                     <Select 
-                        label="Show in Navigation" 
+                        label={t('select-page-show-in-nav')} 
                         name="show-in-nav" 
                         isRequired 
                         defaultValue={`${pageData.showOnNav}`}
@@ -104,32 +113,33 @@ const pluginFields = pluginList
                 </div>
         
                 <div class="form-row">
-                    <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
-                    <Select label="Draft" name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index'} />
+                    <Select label={t('select-page-parent-folder')}  name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
+                    <Select label={t('select-page-draft')} name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index'} />
                 </div>
         
                 <div class="form-row">
-                    <Select label="Categories" name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-                    <Select label="Tags" name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
+                    <Select label={t('select-page-categories')} name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
+                    <Select label={t('select-page-tags')} name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
                 </div>
         
                 <div class="form-row">
-                    <Select label="Show Author" name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
-                    <Select label="Show Contributors" name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
+                    <Select label={t('select-page-show-author')} name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
+                    <Select label={t('select-page-show-contributors')} name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
                 </div>
 
                   <div id="custom-page-type-fields" class:list={[pluginFields?.fields ? '' : 'page-types-hidden']}>
                     <Card fullWidth>
                       <div slot="header">
-                        <span>Plugin Page Type Fields</span>
+                        <span>
+                          <t-content-edit-page key="custom-page-type-fields-header">{t('custom-page-type-fields-header')}</t-content-edit-page>
+                        </span>
                       </div>
                       {pluginFields?.fields && (<PluginFields fields={pluginFields.fields} /> )}
-                      <div>You have changed your pageType. Please save your changes and refresh the page to see the new fields.</div>
                     </Card>
                   </div>
             </div>
           </TabItem>
-          <TabItem label='Page Content' icon={'document-text-20-solid'} color={'success'}>
+          <TabItem label={t('tab-label-content')} icon={'document-text-20-solid'} color={'success'}>
 
             <input type="hidden" name="page-content-id" value={pageData.defaultContent?.id} />
 
@@ -143,7 +153,7 @@ const pluginFields = pluginList
 
           {
             enableDiffs && (
-                <TabItem label='Edit History' icon={'archive-box-20-solid'} color={'warning'}>
+                <TabItem label={t('tab-label-diff')} icon={'archive-box-20-solid'} color={'warning'}>
                     <div class="tab-section">
                         <div class="edit-card-list">
                     
@@ -153,7 +163,7 @@ const pluginFields = pluginList
                                 <Card fullWidth class={'edit-card'}>
                                 <div class="card-row">
                                     <span class="card-title">{pageData.title}</span>
-                                    <span class="card-date">Edited: <FormattedDate date={diff.timestamp!} /> by {user(diff.userId)}</span>
+                                    <span class="card-date"><t-content-edit-page key="diff-edited-by-1">{t('diff-edited-by-1')}</t-content-edit-page>: <FormattedDate date={diff.timestamp!} /> <t-content-edit-page key="diff-edited-by-2">{t('diff-edited-by-2')}</t-content-edit-page> {user(diff.userId)}</span>
                                 </div>
                     
                                 <div class="card-row">
@@ -166,7 +176,7 @@ const pluginFields = pluginList
                             ))
                             ) : (
                             <Card fullWidth style="background-color: hsl(var(--background-step-1));">
-                                <Center>No history found.</Center>
+                                <Center><t-content-edit-page key="diff-no-history">{t('diff-no-history')}</t-content-edit-page></Center>
                             </Card>
                             )
                         }
@@ -181,6 +191,40 @@ const pluginFields = pluginList
 
     </form>
 </div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmLabel,
+        updateSelectElmLabel
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-page';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+        updateElmLabel('page-title', comp['input-page-title']);
+        updateElmLabel('page-slug', comp['input-page-slug']);
+        updateElmLabel('page-description', comp['input-page-description']);
+        updateElmLabel('page-hero-image', comp['input-page-hero-image']);
+
+        updateSelectElmLabel('page-type', comp['select-page-type']);
+        updateSelectElmLabel('show-in-nav', comp['select-page-show-in-nav']);
+        updateSelectElmLabel('parent-folder', comp['select-page-parent-folder']);
+        updateSelectElmLabel('draft', comp['select-page-draft']);
+        updateSelectElmLabel('categories', comp['select-page-categories']);
+        updateSelectElmLabel('tags', comp['select-page-tags']);
+        updateSelectElmLabel('show-author', comp['select-page-show-author']);
+        updateSelectElmLabel('show-contributors', comp['select-page-show-contributors']);
+    });
+    
+    if (!customElements.get('t-content-edit-page')) {
+        customElements.define('t-content-edit-page', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script is:inline define:vars={{ editors: editorKeys }}>
 

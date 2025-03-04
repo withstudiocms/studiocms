@@ -43,6 +43,7 @@
       "title-button:discord": "Trete der Community bei",
       "sub-header": "StudioCMS ist ein gratis, open-source content management system, welches von Grund auf von der Astro Community erstellt wurde.",
       "title": "Dashboard",
+      "description": "Dashboard",
       "welcome-title": "Willkommen",
       "title-button:feedback": "Gib' uns Feedback"
     },

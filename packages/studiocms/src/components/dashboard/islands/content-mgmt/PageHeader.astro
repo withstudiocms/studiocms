@@ -1,23 +1,23 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Center, Group, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
+	lang: UiLanguageKeys;
 	editPage?: boolean;
 	createPage?: boolean;
-	title?: string;
+	// title?: string;
 	editFolder?: boolean;
 	createFolder?: boolean;
 }
 
-const {
-	editPage,
-	createPage,
-	createFolder,
-	editFolder,
-	title = 'Content Management',
-} = Astro.props;
+const { editPage, createPage, createFolder, editFolder, lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-header');
+
+const title = t('title');
 
 let pageTitle = title;
 let pageSlug: string | undefined = undefined;
@@ -31,7 +31,7 @@ if (editId) {
 	const res = await studioCMS_SDK_Cache.GET.page.byId(editId);
 
 	if (editPage) {
-		pageTitle = `Edit Page: ${res.data.title}`;
+		pageTitle = `${res.data.title}`;
 		pageSlug = res.data.slug;
 		currentId = res.data.id;
 	}
@@ -45,7 +45,7 @@ if (folderId) {
 	const folder = res.data.find((folder) => folder.id === folderId);
 
 	if (editFolder && folder) {
-		pageTitle = `Edit Folder: ${folder.name}`;
+		pageTitle = `${folder.name}`;
 		currentId = folder.id;
 		folderName = folder.name;
 	}
@@ -66,7 +66,25 @@ const currentMode = editPage
     <Button color='primary' id='nav-open' class='mobile-btn'>
       <Icon name="bars-3" height={24} width={24} slot="start-content" />
     </Button>
-    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>{pageTitle}</h1>
+    <h1 class="page-title" data-link={StudioCMSRoutes.sdk.pages}>
+      {currentMode === 'none' ? (
+        <t-content-header key="title">
+          {pageTitle}
+        </t-content-header>
+      ) : currentMode === 'edit-folder' ? (
+        <><t-content-header key="edit-folder-title">{t('edit-folder-title')}</t-content-header>: {folderName}</>
+      ) : currentMode === 'edit-page' ? (
+        <><t-content-header key="edit-page-title">{t('edit-page-title')}</t-content-header>: {pageTitle}</>
+      ) : currentMode === 'create-folder' ? (
+        <t-content-header key="create-folder-title">
+          {t('create-folder-title')}
+        </t-content-header>
+      ) : (
+        <t-content-header key="create-page-title">
+          {t('create-page-title')}
+        </t-content-header>
+      )}
+    </h1>
   </div>
   <div id="page-actions-container" class="page-actions-container">
 
@@ -74,11 +92,15 @@ const currentMode = editPage
       <Group>
         <Button id="delete-page-modal-trigger" color="danger" type="submit" size="sm" disabled={pageSlug === 'index'}>
             <Icon name="trash-20-solid" width={20} height={20} />
-            Delete
+            <t-content-header key="delete-button">
+              {t('delete-button')}
+            </t-content-header>
         </Button>
         <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-page-form">
           <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-          Save Changes
+          <t-content-header key="save-button">
+            {t('save-button')}
+          </t-content-header>
         </Button>
       </Group>
       <Modal 
@@ -87,18 +109,28 @@ const currentMode = editPage
         cancelButton={{ label: 'Cancel', color: 'default' }}
         actionButton={{ label: 'Confirm', color: 'danger' }}
         >
-        <h2 slot='header'>Are you sure you want to delete this page?</h2>
+        <h2 slot='header'>
+          <t-content-header key="delete-modal-header">
+            {t('delete-modal-header')}
+          </t-content-header>
+        </h2>
         <Center>
           <div class="modal-body">
             <input type="hidden" name="page-id" value={currentId} />
             <input type="hidden" name="page-slug" value={pageSlug} />
             <input type="hidden" name="action-route" value={StudioCMSRoutes.endpointLinks.content.page} />
                     
-            <span>Enter the slug <code>{pageSlug}</code> to confirm</span>
+            <span><t-content-header key="delete-modal-desc-1">
+            {t('delete-modal-desc-1')}
+          </t-content-header> <code>{pageSlug}</code> <t-content-header key="delete-modal-desc-2">
+            {t('delete-modal-desc-2')}
+          </t-content-header></span>
            
             <Input name="slug-confirm" placeholder={`${pageSlug?.slice(0, pageSlug.length-2)}...`} isRequired />
             
-            <span style="color: hsl(var(--danger-base))">This action cannot be undone.</span>
+            <span style="color: hsl(var(--danger-base))"><t-content-header key="delete-modal-warning">
+            {t('delete-modal-warning')}
+          </t-content-header></span>
           </div>
         </Center>
       </Modal>
@@ -108,11 +140,15 @@ const currentMode = editPage
       <Group>
         <Button id="delete-folder-modal-trigger" color="danger" type="submit" size="sm">
           <Icon name="trash-20-solid" width={20} height={20} />
-          Delete
+          <t-content-header key="delete-button">
+            {t('delete-button')}
+          </t-content-header>
         </Button>
         <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-folder-form">
           <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-          Save Changes
+          <t-content-header key="save-button">
+            {t('save-button')}
+          </t-content-header>
         </Button>
       </Group>
       <Modal
@@ -121,18 +157,28 @@ const currentMode = editPage
         cancelButton={{ label: 'Cancel', color: 'default' }}
         actionButton={{ label: 'Delete', color: 'danger' }}
         >
-        <h2 slot="header">Are you sure you want to delete this folder?</h2>
+        <h2 slot="header">
+          <t-content-header key="delete-modal-header">
+            {t('delete-modal-header')}
+          </t-content-header>
+        </h2>
         <Center>
           <div class="modal-body">
             <input type="hidden" name="folder-id" value={currentId} />
             <input type="hidden" name="folder-name" value={folderName} />
             <input type="hidden" name="action-route" value={StudioCMSRoutes.endpointLinks.content.folder} />
 
-            <span>Enter the folder name <code>{folderName}</code> to confirm</span>
+            <span><t-content-header key="delete-folder-modal-desc-1">
+            {t('delete-folder-modal-desc-1')}
+          </t-content-header> <code>{folderName}</code> <t-content-header key="delete-folder-modal-desc-2">
+            {t('delete-folder-modal-desc-2')}
+          </t-content-header></span>
 
             <Input name="confirm-folder-name" placeholder={`${folderName.slice(0, folderName.length-2)}...`} isRequired />
           
-            <span style="color: hsl(var(--danger-base))">This action cannot be undone.</span>
+            <span style="color: hsl(var(--danger-base))"><t-content-header key="delete-modal-warning">
+            {t('delete-modal-warning')}
+          </t-content-header></span>
           </div>
         </Center>
       </Modal>
@@ -141,7 +187,9 @@ const currentMode = editPage
     { createFolder && ( 
       <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="create-folder-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-        Create
+          <t-content-header key="create-button">
+            {t('create-button')}
+          </t-content-header>
       </Button>
     )}
 
@@ -149,11 +197,15 @@ const currentMode = editPage
       <Group>
       <Button id="draft-button" variant="outlined" size="sm" color="primary" type="submit" form="page-create-form" disabled>
         <Icon slot="start-content" name="document-text-20-solid" width={20} height={20} />
-        Save Draft
+          <t-content-header key="draft-button">
+            {t('draft-button')}
+          </t-content-header>
       </Button>
       <Button id="publish-button" variant="solid" size="sm"  color="primary" type="submit" form="page-create-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-        Publish
+          <t-content-header key="publish-button">
+            {t('publish-button')}
+          </t-content-header>
       </Button>
       </Group>
     )}
@@ -165,6 +217,22 @@ const currentMode = editPage
   style="display: none;"
   data-mode={currentMode}
 ></div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-header';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    if (!customElements.get('t-content-header')) {
+        customElements.define('t-content-header', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
     import { ModalHelper } from 'studiocms:ui/components';

@@ -19,16 +19,20 @@ const {
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
 
-let paragraph: string;
+let paragraph:
+	| 'sub-header-usernamepasswordoauth'
+	| 'sub-header-usernamepassword'
+	| 'sub-header-oauth'
+	| 'sub-header-noprovider';
 
 if (usernameAndPassword && SHOW_OAUTH) {
-	paragraph = t('sub-header-usernamepasswordoauth');
+	paragraph = 'sub-header-usernamepasswordoauth';
 } else if (usernameAndPassword && !SHOW_OAUTH) {
-	paragraph = t('sub-header-usernamepassword');
+	paragraph = 'sub-header-usernamepassword';
 } else if (!usernameAndPassword && SHOW_OAUTH) {
-	paragraph = t('sub-header-oauth');
+	paragraph = 'sub-header-oauth';
 } else {
-	paragraph = t('sub-header-noprovider');
+	paragraph = 'sub-header-noprovider';
 }
 ---
 <AuthLayout 
@@ -39,8 +43,12 @@ if (usernameAndPassword && SHOW_OAUTH) {
     >
 
     <div slot="header" class="form-header">
-        <h1>{t('header')}</h1>
-        <p>{paragraph}</p>
+        <h1>
+            <t-login key="header">{t('header')}</t-login>
+        </h1>
+        <p>
+            <t-login key={paragraph}>{t(paragraph)}</t-login>
+        </p>
     </div>
 
     { usernameAndPassword && (
@@ -49,15 +57,58 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('password-label')} name="password" type='password' />
 
-            <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'><span>{t('login-button')}</span></Button>
+            <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'>
+                <t-login key="login-button">{t('login-button')}</t-login>
+            </Button>
         </form>
     )}
 
     { allowUserRegistration && (
-        <p slot="footer">{t('allow-registration-noaccount')} <a href={StudioCMSRoutes.authLinks.signupURL}>{t('allow-registration-register')}</a></p>
+        <p slot="footer">
+            <t-login key="allow-registration-noaccount">
+                {t('allow-registration-noaccount')}
+            </t-login> 
+            <a href={StudioCMSRoutes.authLinks.signupURL}>
+                <t-login key="allow-registration-register">
+                    {t('allow-registration-register')}
+                </t-login>
+            </a>
+        </p>
     )}
 
 </AuthLayout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/auth:login';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+        updateElmLabel('username', comp['username-label']);
+        updateElmLabel('password', comp['password-label']);
+    });
+
+    if (!customElements.get('t-login')) {
+        customElements.define('t-login', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
     import { formListener } from '../../scripts/formListener.js';

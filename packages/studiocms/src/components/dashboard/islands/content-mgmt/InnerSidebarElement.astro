@@ -1,14 +1,17 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
 
 interface Props {
+	lang: UiLanguageKeys;
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
 }
 
-const { isNewFolder, isNewPage } = Astro.props;
+const { isNewFolder, isNewPage, lang } = Astro.props;
+const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 ---
 
 <div class="inner-sidebar-header">
@@ -16,7 +19,7 @@ const { isNewFolder, isNewPage } = Astro.props;
     <Icon name="arrow-left" width={24} height={24} slot="start-content" />
   </Button>
   <form id="search-form">
-    <Input name='search' placeholder='Search...' type='search' required />
+    <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
   </form>
   <Dropdown
     transition:persist
@@ -24,12 +27,12 @@ const { isNewFolder, isNewPage } = Astro.props;
     id='create-new-dropdown'
     options={[
       { 
-        label: 'Create Page', 
+        label: t('dropdown-create-page'), 
         icon: 'document', 
         value: StudioCMSRoutes.mainLinks.contentManagementCreate 
       },
       { 
-        label: 'Create Folder', 
+        label: t('dropdown-create-folder'), 
         icon: 'folder', 
         value: StudioCMSRoutes.mainLinks.contentManagementFolderCreate 
       },
@@ -46,7 +49,7 @@ const { isNewFolder, isNewPage } = Astro.props;
   </Button>
 </div>
 
-<Divider background={'background-step-2'}><span id="sidebar-divider-title">Items</span></Divider>
+<Divider background={'background-step-2'}><span id="sidebar-divider-title"><t-content-sidebar key="items-divider">{t('items-divider')}</t-content-sidebar></span></Divider>
 
 <div 
   class="inner-sidebar-items scrollbar" 
@@ -64,14 +67,80 @@ const { isNewFolder, isNewPage } = Astro.props;
   data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
   ></div>
 
+
+<div id="i-dropdown-options"
+  data-createpage={StudioCMSRoutes.mainLinks.contentManagementCreate}
+  data-createfolder={StudioCMSRoutes.mainLinks.contentManagementFolderCreate}
+  ></div>
+
+  <script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmPlaceholder
+    } from 'studiocms:i18n/client';
+
+    const i18nOptions = document.getElementById('i-dropdown-options') as HTMLDivElement;
+
+    const createPage = i18nOptions.getAttribute('data-createpage') as string;
+    const createFolder = i18nOptions.getAttribute('data-createfolder') as string;
+
+    const dropdownKeys: Record<string, string> = {
+      [createPage]: 'dropdown-create-page',
+      [createFolder]: 'dropdown-create-folder',
+    };
+
+    const getDropdownOptions = () => {
+        const dropdownElm = document.getElementById('create-new-dropdown-dropdown') as HTMLUListElement;
+        const options = dropdownElm?.querySelectorAll('.sui-dropdown-option') as NodeListOf<HTMLLIElement>;
+
+        const returnData: Record<string, HTMLSpanElement> = {};
+
+        for (const option of options) {
+            const value = option.dataset.value as string;
+            const key = dropdownKeys[value];
+
+            if (!key) continue;
+
+            const SelectedElm = (option.querySelector('.sui-dropdown-line-container') as HTMLDivElement).querySelector('span');
+
+            if (!SelectedElm) continue;
+
+            returnData[key] = SelectedElm;
+        }
+
+        return returnData;
+    }
+
+    const currentPage = '@studiocms/dashboard:content-sidebar';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    i18n.subscribe(comp => {
+      updateElmPlaceholder('search', comp['input-placeholder-search']);
+
+      const dropdownOptions = getDropdownOptions();
+
+      for (const [key, elm] of Object.entries(dropdownOptions)) {
+          // @ts-ignore
+          elm.textContent = comp[key];
+      }
+    });
+    
+    if (!customElements.get('t-content-sidebar')) {
+        customElements.define('t-content-sidebar', makeTranslation(currentPage, i18n));
+    }
+</script>
+
 <script>
   import { DropdownHelper } from 'studiocms:ui/components';
 
   const createNewDropdown = new DropdownHelper('create-new-dropdown');
 
-createNewDropdown.registerClickCallback((value) => {
-  window.location.assign(value);
-});
+  createNewDropdown.registerClickCallback((value) => {
+    window.location.assign(value);
+  });
 </script>
 
 <script>

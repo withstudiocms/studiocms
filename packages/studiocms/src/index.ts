@@ -1035,6 +1035,9 @@ export const studiocms = defineIntegration({
 								export * from '${resolve('./lib/i18n/index.js')}';
 								export { default as LanguageSelector } from '${resolve('./lib/i18n/LanguageSelector.astro')}';
 							`,
+							'studiocms:i18n/client': `
+								export * from '${resolve('./lib/i18n/client.js')}';
+							`,
 
 							'studiocms:logger': `
 								import { logger } from '@it-astro:logger:studiocms-runtime';

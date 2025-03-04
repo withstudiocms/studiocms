@@ -1,14 +1,17 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import EditFolder from '../../../components/dashboard/islands/content-mgmt/EditFolder.astro';
 import InnerSidebarElement from '../../../components/dashboard/islands/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/islands/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 ---
 
 <Layout 
-  title="Content Management"
+  title={t('title')}
+  description={t('description')}
   requiredPermission='editor'
   sidebar='double'
   {lang}
@@ -16,17 +19,41 @@ const lang = 'en-us';
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement />
+      <InnerSidebarElement {lang} />
     </div>
   </div>
 
   <div slot="header">
-    <PageHeader editFolder title="Edit Folder:" />
+    <PageHeader {lang} editFolder />
   </div>
 
-  <EditFolder />
+  <EditFolder {lang} />
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+    } from 'studiocms:i18n/client';
+  
+    let lang = defaultLang;
+
+    const currentPage = '@studiocms/dashboard:content-index';
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+    });
+</script>
 
 <style>
   .inner-sidebar-container {

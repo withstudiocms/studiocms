@@ -10,15 +10,47 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 <Layout 
   title={t('title')}
+  description={t('description')}
   requiredPermission='editor'
   {lang}
   >
 
   <div slot="header">
     <DashboardPageHeader />
-    <span class="index-sub-header">{t('sub-header')}</span>
+    <span class="index-sub-header">
+      <t-dashboard key="sub-header">{t('sub-header')}</t-dashboard>
+    </span>
   </div>
 
   <DashboardGrid />
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:index';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get('t-dashboard')) {
+        customElements.define('t-dashboard', makeTranslation(currentPage, i18n));
+    }
+</script>

@@ -82,6 +82,23 @@ declare module 'studiocms:i18n' {
 	export type UiTranslations = import('./lib/i18n/index.js').UiTranslations;
 }
 
+declare module 'studiocms:i18n/client' {
+	export const $localeSettings: typeof import('./lib/i18n/client').$localeSettings;
+	export const $locale: typeof import('./lib/i18n/client').$locale;
+	export const format: typeof import('./lib/i18n/client').format;
+	export const $i18n: typeof import('./lib/i18n/client').$i18n;
+	export const baseTranslation: typeof import('./lib/i18n/client').baseTranslation;
+	export const documentUpdater: typeof import('./lib/i18n/client').documentUpdater;
+	export const makeTranslation: typeof import('./lib/i18n/client').makeTranslation;
+	export const updateElmLabel: typeof import('./lib/i18n/client').updateElmLabel;
+	export const defaultLang: typeof import('./lib/i18n/client').defaultLang;
+	export const uiTranslationsAvailable: typeof import('./lib/i18n/client').uiTranslationsAvailable;
+	export type UiTranslationKey = import('./lib/i18n/client').UiTranslationKey;
+	export const pageHeaderUpdater: typeof import('./lib/i18n/client').pageHeaderUpdater;
+	export const updateSelectElmLabel: typeof import('./lib/i18n/client').updateSelectElmLabel;
+	export const updateElmPlaceholder: typeof import('./lib/i18n/client').updateElmPlaceholder;
+}
+
 declare module 'studiocms:imageHandler/components' {
 	export const CustomImage: typeof import('./components/image/CustomImage.astro').default;
 }

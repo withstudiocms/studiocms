@@ -1,37 +1,70 @@
 ---
 import { getUserData } from 'studiocms:auth/lib/user';
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Card, Icon, Input } from 'studiocms:ui/components';
 
 const data = await getUserData(Astro);
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 
 <Card fullWidth as="form" id="basic-info-form" class="basic-info-form" action={StudioCMSRoutes.endpointLinks.profile}>
 
     <div slot="header">
-        <h2>Basic Info</h2>
+        <h2>
+            <t-profile-basic key="basic-info-header">{t('basic-info-header')}</t-profile-basic>
+        </h2>
     
         <div class="form-header">
             <Button type='submit' size='sm' variant={'solid'} color='primary'>
                 <Icon slot="start-content" name="check" width={24} height={24} />
-                Save
+                <t-profile-basic key="basic-info-save-button">
+                    {t('basic-info-save-button')}
+                </t-profile-basic>
             </Button> 
         </div>
     </div>
 
     <div class="form-inputs">
 
-        <Input label='Display Name' placeholder='John Doe' value={data.user?.name} isRequired name='display-name' />
+        <Input label={t('basic-info-display-name')} placeholder='John Doe' value={data.user?.name} isRequired name='display-name' />
 
-        <Input label='Username' placeholder='johndoe' value={data.user?.username} isRequired name='username' />
+        <Input label={t('basic-info-username')} placeholder='johndoe' value={data.user?.username} isRequired name='username' />
     
-        <Input label='Email' placeholder='john@doe.com' value={data.user?.email} isRequired name='email' />
+        <Input label={t('basic-info-email')} placeholder='john@doe.com' value={data.user?.email} isRequired name='email' />
     
-        <Input label='Website' placeholder='https://doe.com' value={data.user?.url} name='account-url' />
+        <Input label={t('basic-info-website')} placeholder='https://doe.com' value={data.user?.url} name='account-url' />
 
     </div>
 
 </Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    i18n.subscribe(comp => {
+        updateElmLabel('display-name', comp['basic-info-display-name']);
+        updateElmLabel('username', comp['basic-info-username']);
+        updateElmLabel('email', comp['basic-info-email']);
+        updateElmLabel('account-url', comp['basic-info-website']);
+    });
+
+    if (!customElements.get('t-profile-basic')) {
+        customElements.define('t-profile-basic', makeTranslation(currentPage, i18n));
+    }
+</script>
+
 
 <script>
     import { toast } from "studiocms:ui/components";

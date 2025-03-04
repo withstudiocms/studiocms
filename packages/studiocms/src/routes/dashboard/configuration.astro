@@ -1,14 +1,17 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import { Button, Icon } from 'studiocms:ui/components';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import ConfigForm from '../../components/dashboard/islands/configuration/ConfigForm.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
 <Layout 
-  title={"Configuration"}
+  title={t('title')}
+  description={t('description')}
   requiredPermission='owner'
   {lang}
   >
@@ -17,7 +20,7 @@ const lang = 'en-us';
     <PageHeader title="Site Configuration">
       <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-        Save Changes
+        <t-config key="save-button">{t('save-button')}</t-config>
       </Button>
     </PageHeader>
   </div>
@@ -25,3 +28,34 @@ const lang = 'en-us';
   <ConfigForm />
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        pageHeaderUpdater,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:configuration';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+      pageHeaderUpdater(comp.header)
+    });
+    
+    if (!customElements.get('t-config')) {
+        customElements.define('t-config', makeTranslation(currentPage, i18n));
+    }
+</script>

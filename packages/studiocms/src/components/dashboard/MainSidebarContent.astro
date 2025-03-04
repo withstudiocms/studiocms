@@ -1,13 +1,14 @@
 ---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import pluginList from 'studiocms:plugins';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
 import Footer from './Footer.astro';
 import SidebarLink from './SidebarLink.astro';
+import SidebarPluginLink from './SidebarPluginLink.astro';
 import StudioCMSLogo from './StudioCMSLogo.astro';
-import Admin from './islands/sidebar/Admin.astro';
-import Editor from './islands/sidebar/Editor.astro';
 import UserAccount from './islands/sidebar/UserAccount.astro';
 import VersionCheck from './islands/sidebar/VersionCheck.astro';
 import { getSidebarLinks } from './sidebarConfig.js';
@@ -16,6 +17,12 @@ const { versionCheck } = dashboardConfig;
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
+const userData = await getUserData(Astro);
+const isEditor = await verifyUserPermissionLevel(userData, 'editor');
+const isAdmin = await verifyUserPermissionLevel(userData, 'admin');
+const isOwner = await verifyUserPermissionLevel(userData, 'owner');
+
+const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ---
 
 <div class="sidebar-links-container">
@@ -45,20 +52,83 @@ const sidebar = getSidebarLinks(lang);
     </div>
   </div>
   
-  <Divider background='background-step-1'>{t("category-1-header")}</Divider>
+  <Divider background='background-step-1'>
+    <t-sidebar key="category-1-header">{t("category-1-header")}</t-sidebar>
+  </Divider>
   
   <div class="sidebar-link-group">
     {
-      sidebar.baseLinks.map(({ href, icon, title }) => (
-        <SidebarLink {icon} {href}>{title}</SidebarLink>
-      ))
+      sidebar.baseLinks.map(({ href, icon, title, key }) => {
+        if (title) {
+          return <SidebarLink {icon} {href}>{title}</SidebarLink>
+        }
+        if (key) {
+          // @ts-ignore
+          return <SidebarLink {icon} {href}><t-sidebar key={key}>{t(key)}</t-sidebar></SidebarLink>
+        }
+      })
     }
   
-    <Editor />
+    { isEditor && sidebar.editorLinks.map(({ href, icon, title, key }) => {
+      if (title) {
+        return <SidebarLink {icon} {href}>{title}</SidebarLink>
+      }
+      if (key) {
+        // @ts-ignore
+        return <SidebarLink {icon} {href}><t-sidebar key={key}>{t(key)}</t-sidebar></SidebarLink>
+      }
+    })}
   
   </div>
-  
-  <Admin />
+
+  {isAdmin && (
+    <Divider background='background-step-1'>
+      <t-sidebar key="category-2-header">{t('category-2-header')}</t-sidebar>
+    </Divider>
+    <div class="sidebar-link-group">
+      {
+        isOwner && sidebar.ownerLinks.map(({ href, icon, title, key }) => {
+          if (title) {
+            return <SidebarLink {icon} {href}>{title}</SidebarLink>
+          }
+          if (key) {
+            // @ts-ignore
+            return <SidebarLink {icon} {href}><t-sidebar key={key}>{t(key)}</t-sidebar></SidebarLink>
+          }
+        })
+      }
+      {
+        sidebar.adminLinks.map(({ href, icon, title, key }) => {
+          if (title) {
+            return <SidebarLink {icon} {href}>{title}</SidebarLink>
+          }
+          if (key) {
+            // @ts-ignore
+            return <SidebarLink {icon} {href}><t-sidebar key={key}>{t(key)}</t-sidebar></SidebarLink>
+          }
+        })
+      }
+    </div>
+    <Divider background='background-step-1'>
+      <t-sidebar key="category-3-header">{t('category-3-header')}</t-sidebar>
+    </Divider>
+    <div class="sidebar-link-group">
+      { filteredPluginList.length > 0 
+        ? filteredPluginList.map(({ identifier, name }) => (
+          <SidebarPluginLink 
+            identifier={identifier}
+            name={name}
+          />
+        )) 
+        : ( 
+          <span class="empty-placeholder-span">
+            <t-sidebar key="category-3-empty-placeholder">
+              {t('category-3-empty-placeholder')}
+            </t-sidebar>
+          </span>
+        )}
+    </div>
+  )}
 
 </div>  
 
@@ -83,6 +153,87 @@ const sidebar = getSidebarLinks(lang);
 
   <Footer />
 </div>
+
+<div style="display: none;" id="dropdown-user-options"
+  data-settings={StudioCMSRoutes.mainLinks.userProfile}
+  data-view-site={StudioCMSRoutes.mainLinks.baseSiteURL}
+  data-logout={StudioCMSRoutes.authLinks.logoutURL}
+></div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const dropdownUserOptions = document.getElementById('dropdown-user-options') as HTMLDivElement;
+
+    const userDropdownOptions = {
+        settings: dropdownUserOptions.dataset.settings,
+        viewSite: dropdownUserOptions.dataset.viewSite,
+        logout: dropdownUserOptions.dataset.logout,
+    };
+
+    const getDropdownUserOptionsElms = () => {
+      const DropdownElm = document.getElementById('sidebar-user-dropdown-dropdown') as HTMLUListElement;
+
+      const DropdownOptions = DropdownElm.querySelectorAll('.sui-dropdown-option') as NodeListOf<HTMLLIElement>;
+
+      const Options: { 
+        settings: HTMLSpanElement | null; 
+        viewSite: HTMLSpanElement | null; 
+        logout: HTMLSpanElement | null; 
+      } = {
+        settings: null,
+        viewSite: null,
+        logout: null,
+      };
+
+      for (const Elm of DropdownOptions) {
+        const value = Elm.dataset.value;
+
+        const SelectedValue = Object.entries(userDropdownOptions).find(([key, val]) => val === value)?.[0] as 'settings' | 'viewSite' | 'logout';
+
+        if (!SelectedValue) {
+          continue;
+        }
+
+        if (userDropdownOptions[SelectedValue]) {
+
+          const SelectedElm = (Elm.querySelector('.sui-dropdown-line-container') as HTMLDivElement).querySelector('span');
+
+          Options[SelectedValue] = SelectedElm;
+        }
+      }
+
+      return Options;
+    }
+
+    const currentPage = '@studiocms/dashboard:sidebar';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    i18n.subscribe(comp => {
+        const DropdownUserOptions = getDropdownUserOptionsElms();
+
+        if (DropdownUserOptions.settings) {
+          DropdownUserOptions.settings.textContent = comp['user-dropdown:settings'];
+        }
+
+        if (DropdownUserOptions.viewSite) {
+          DropdownUserOptions.viewSite.textContent = comp['user-dropdown:view-site'];
+        }
+
+        if (DropdownUserOptions.logout) {
+          DropdownUserOptions.logout.textContent = comp['user-dropdown:logout'];
+        }
+    });
+
+    if (!customElements.get('t-sidebar')) {
+        customElements.define('t-sidebar', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
   import { DropdownHelper } from "studiocms:ui/components";
@@ -120,5 +271,47 @@ const sidebar = getSidebarLinks(lang);
       display: flex;
       margin-left: .75rem;
     }
+  }
+
+  .sidebar-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: .375rem;
+    width: 100%;
+  }
+
+  .sidebar-link-group.hidden {
+    display: none;
+  }
+
+  .empty-placeholder-span {
+    width: 100%;
+    text-align: center;
+    color: hsl(var(--text-muted));
+    font-size: .875em;
+  }
+
+  .user-dropdown-trigger-container {
+    width: calc(280px - 3rem);
+    cursor: pointer;
+    border: 1px solid hsl(var(--border));
+    padding: .5rem;
+    border-radius: .5rem;
+    transition: all .15s ease;
+  }
+
+  .user-dropdown-trigger-container:hover {
+    background-color: hsla(var(--border) / .5);
+  }
+
+  .sidebar {
+    justify-content: space-between;
+  }
+
+  .sidebar-links-container {
+    gap: .75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 </style>
