@@ -86,15 +86,7 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 								};
 							`,
 							'virtual:studiocms-devapps/db': `
-								import { createClient } from '@libsql/client/web';
-
-								const client = createClient({
-									url: "${astroDbEnv.ASTRO_DB_REMOTE_URL}",
-									intMode: 'bigint',
-									authToken: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
-								})
-
-								export { client };
+								export * from '${resolve('./db-mod.js')}';
 							`,
 						},
 					});
