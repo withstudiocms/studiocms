@@ -1,8 +1,10 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Button, Card, Center } from 'studiocms:ui/components';
 import { providerData } from '../profile/oAuthButtonProviders.js';
 
 interface Props {
+	lang: UiLanguageKeys;
 	oAuthData?: {
 		provider: string;
 		providerUserId: string;
@@ -10,7 +12,7 @@ interface Props {
 	}[];
 }
 
-const { oAuthData } = Astro.props;
+const { oAuthData, lang } = Astro.props;
 
 const hasOAuthData = oAuthData && oAuthData.length > 0;
 
@@ -30,16 +32,19 @@ const socialProviders = providerData.map((providerData) => ({
 }));
 
 const connectedProviders = socialProviders.filter(({ connected }) => connected);
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 ---
     
-<div class="text-h3">Connected Accounts</div>
+<div class="text-h3">
+    <t-users-edit-socials key="social-accounts-header">{t('social-accounts-header')}</t-users-edit-socials>
+</div>
 
 <Card fullWidth class="social-signin-bg">
 
 
     {
         connectedProviders.length === 0 ? (
-            <Center>No connected accounts found.</Center>
+            <Center><t-users-edit-socials key="social-accounts-non">{t('social-accounts-non')}</t-users-edit-socials></Center>
         ) : (
             <div class="button-holder">
                 {
@@ -57,6 +62,22 @@ const connectedProviders = socialProviders.filter(({ connected }) => connected);
     }
 
 </Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:user-mngmt-edit';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    if (!customElements.get('t-users-edit-socials')) {
+        customElements.define('t-users-edit-socials', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <style>
     .social-signin-bg {
