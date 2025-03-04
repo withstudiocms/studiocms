@@ -53,6 +53,8 @@ if (!pluginData) {
     </div>    
   </form>
 
+  <div style="display: none;" id="plugin-name" data-value={pluginData.name}></div>
+
   <script>
       import { 
           $i18n,
@@ -61,11 +63,14 @@ if (!pluginData) {
           defaultLang,
           documentUpdater,
           makeTranslation,
+          pageHeaderUpdater,
       } from 'studiocms:i18n/client';
   
       const currentPage = '@studiocms/dashboard:plugin-settings';
   
       let lang = defaultLang;
+
+      const pluginName = (document.getElementById('plugin-name') as HTMLDivElement).getAttribute('data-value');
   
       const i18n = $i18n(currentPage, baseTranslation[currentPage]);
   
@@ -74,7 +79,14 @@ if (!pluginData) {
       });
       
       i18n.subscribe(comp => {
-        documentUpdater(comp, lang)
+
+        const pluginComp = {
+          ...comp,
+          header: `${comp.header}: ${pluginName}`
+        }
+
+        documentUpdater(pluginComp, lang)
+        pageHeaderUpdater(pluginComp.header)
       });
       
       if (!customElements.get('t-plugins')) {
