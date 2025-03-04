@@ -160,6 +160,12 @@
       "last-edit-pages-header": "Last Edited Pages",
       "last-edit-pages-edited": "Edited",
       "last-edit-pages-no-edits": "No history found."
+    },
+    "@studiocms/dashboard:plugin-settings": {
+      "title": "Plugin Settings",
+      "description": "Plugin Settings",
+      "header": "Settings",
+      "save-button": "Save Changes"
     }
   }
 }

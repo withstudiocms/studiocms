@@ -1,4 +1,5 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
 import { Button, Icon } from 'studiocms:ui/components';
@@ -7,6 +8,7 @@ import SettingsRenderer from '../../../components/dashboard/islands/plugins/Sett
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:plugin-settings');
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
@@ -24,16 +26,17 @@ if (!pluginData) {
 ---
 
 <Layout 
-  title='Plugin Settings'
+  title={t('title')}
+  description={t('description')}
   requiredPermission='editor'
   {lang}
   >
 
   <div slot="header">
-    <PageHeader title=`Settings: ${pluginData.name}`>
+    <PageHeader title=`${t('header')}: ${pluginData.name}`>
       <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
-        Save Changes
+        <t-plugins key="save-button">{t('save-button')}</t-plugins>
       </Button>
     </PageHeader>
   </div>
@@ -49,6 +52,35 @@ if (!pluginData) {
     
     </div>    
   </form>
+
+  <script>
+      import { 
+          $i18n,
+          $localeSettings,
+          baseTranslation,
+          defaultLang,
+          documentUpdater,
+          makeTranslation,
+      } from 'studiocms:i18n/client';
+  
+      const currentPage = '@studiocms/dashboard:plugin-settings';
+  
+      let lang = defaultLang;
+  
+      const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+  
+      $localeSettings.subscribe((locale) => {
+          lang = locale || defaultLang;
+      });
+      
+      i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+      });
+      
+      if (!customElements.get('t-plugins')) {
+          customElements.define('t-plugins', makeTranslation(currentPage, i18n));
+      }
+  </script>
 
   <style>
     .form-settings {
