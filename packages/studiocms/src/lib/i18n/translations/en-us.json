@@ -227,6 +227,12 @@
       "diff-edited-by-1": "Edited",
       "diff-edited-by-2": "by",
       "diff-no-history": "No history found."
+    },
+    "@studiocms/dashboard:404": {
+      "title": "Error 404",
+      "description": "Error 404 - Page Not Found",
+      "sub-description": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
+      "back-button": "Go back"
     }
   }
 }

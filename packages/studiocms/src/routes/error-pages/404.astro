@@ -1,14 +1,16 @@
 ---
 import '../../styles/404.css';
+import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-// export const prerender = true;
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:404');
 ---
 
 <Layout 
-  title="Error 404" 
-  description="Error 404 - Page not found" 
+  title={t('title')}
+  description={t('description')}
   sidebar={false} 
   requiredPermission="none">
   <div class="notfound-container">
@@ -18,15 +20,44 @@ import Layout from '../../layouts/dashboard/Layout.astro';
         <path d="M262 176V434C262 470.451 291.549 500 328 500H599.5V597C599.5 609.15 589.65 619 577.5 619H180C167.85 619 158 609.15 158 597V198C158 185.85 167.85 176 180 176H262Z" stroke="currentColor" stroke-width="20"/>
         <path d="M114 339V597C114 633.451 143.549 663 180 663H451.5V760C451.5 772.15 441.65 782 429.5 782H32C19.8497 782 10 772.15 10 760V361C10 348.85 19.8497 339 32 339H114Z" stroke="currentColor" stroke-width="20"/>
       </svg>
-      <h1>Error 404</h1>
-      <h2>Page not found</h2>
-      <p>The page you are looking for might have been removed, had its name changed or is temporarily unavailable.</p>
+      <h1><t-four key="title">{t('title')}</t-four></h1>
+      <h2><t-four key="description">{t('description')}</t-four></h2>
+      <p><t-four key="sub-description">{t('sub-description')}</t-four></p>
       <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth>
-        <span>Go back</span>
+        <span><t-four key="back-button">{t('back-button')}</t-four></span>
       </Button>
     </div>
   </div>
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:404';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get('t-four')) {
+        customElements.define('t-four', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
   document.getElementById('back-button')!.addEventListener('click', () => {
