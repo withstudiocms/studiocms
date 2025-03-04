@@ -39,7 +39,7 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
     </div>
 
     <div slot="header">
-        <PageHeader title=`Page Diff: ${page.title}` />
+        <PageHeader {lang} title=`Page Diff: ${page.title}` />
         <span style="width: 100%; display: flex; padding: 1rem 0;">
             <Button 
             variant="outlined" 
