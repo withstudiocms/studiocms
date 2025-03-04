@@ -1,5 +1,21 @@
 # studiocms
 
+## 0.1.0-beta.10
+
+### Patch Changes
+
+- [#445](https://github.com/withstudiocms/studiocms/pull/445) [`a3b0b6d`](https://github.com/withstudiocms/studiocms/commit/a3b0b6dab8dc59a1c2dad2251e3d95d22da62a37) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor `.d.ts` files to prevent weird type errors from popping up
+
+- [#442](https://github.com/withstudiocms/studiocms/pull/442) [`8d9025d`](https://github.com/withstudiocms/studiocms/commit/8d9025dde99dd64fdae31a015357eff31027d481) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor integration index to prevent parts of the StudioCMS integration from being enabled during the first-time-setup stage.
+
+- [#446](https://github.com/withstudiocms/studiocms/pull/446) [`610b759`](https://github.com/withstudiocms/studiocms/commit/610b759959b3fff33c541669b4c96a7e08d7ecaa) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement nanostore i18n client-side system to be used once i18n is ready
+
+  This system is implemented in the dashboard but only the base locale ("en-us") is available at this time.
+
+- [#447](https://github.com/withstudiocms/studiocms/pull/447) [`a9a2d43`](https://github.com/withstudiocms/studiocms/commit/a9a2d43f731c9ed32e9cdd0b2467b5b80ce8b693) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Create page form was sending the wrong type of data.
+
+- [#443](https://github.com/withstudiocms/studiocms/pull/443) [`730b7d9`](https://github.com/withstudiocms/studiocms/commit/730b7d9a3a6818d20773b11e7e856e9a79884da2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update declaration files to use dist directory instead of src
+
 ## 0.1.0-beta.9
 
 ### Patch Changes
