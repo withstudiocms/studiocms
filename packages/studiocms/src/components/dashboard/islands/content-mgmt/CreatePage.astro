@@ -248,6 +248,9 @@ import { toast } from "studiocms:ui/components";
       const response = await fetch(createPageForm.action, {
           method: 'POST',
           body: formData,
+          headers: {
+              'Content-Type': 'application/json',
+          },
       });
 
       const res = await response.json();
@@ -297,10 +300,7 @@ import { toast } from "studiocms:ui/components";
 
       const response = await fetch(createPageForm.action, {
           method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ data, content }),
+          body: formData,
       });
 
       const res = await response.json();

@@ -131,6 +131,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 			await apiRoute(context);
 		}
 
+		studioCMS_SDK_Cache.CLEAR.pages();
+
 		return simpleResponse(200, 'Page created successfully');
 	} catch (error) {
 		return simpleResponse(500, 'Failed to create page');
