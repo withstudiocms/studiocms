@@ -166,6 +166,12 @@
       "description": "Plugin Settings",
       "header": "Settings",
       "save-button": "Save Changes"
+    },
+    "@studiocms/dashboard:content-sidebar": {
+      "input-placeholder-search": "Search...",
+      "dropdown-create-page": "Create Page",
+      "dropdown-create-folder": "Create Folder",
+      "items-divider": "Items"
     }
   }
 }
