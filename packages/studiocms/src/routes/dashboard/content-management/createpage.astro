@@ -1,4 +1,5 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import TinyMDE from '../../../components/dashboard/component-scripts/TinyMDE.astro';
 import CreatePage from '../../../components/dashboard/islands/content-mgmt/CreatePage.astro';
 import InnerSidebarElement from '../../../components/dashboard/islands/content-mgmt/InnerSidebarElement.astro';
@@ -6,10 +7,12 @@ import PageHeader from '../../../components/dashboard/islands/content-mgmt/PageH
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 ---
 
 <Layout 
-  title="Content Management"
+  title={t('title')}
+  description={t('description')}
   requiredPermission='editor'
   sidebar='double'
   {lang}
@@ -22,14 +25,38 @@ const lang = 'en-us';
   </div>
 
   <div slot="header">
-    <PageHeader {lang} createPage title="Create new Page"/>
+    <PageHeader {lang} createPage />
   </div>
 
-  <CreatePage />
+  <CreatePage {lang} />
 
   <TinyMDE />
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+    } from 'studiocms:i18n/client';
+  
+    let lang = defaultLang;
+
+    const currentPage = '@studiocms/dashboard:content-index';
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+    });
+</script>
 
 <style>
   .inner-sidebar-container {

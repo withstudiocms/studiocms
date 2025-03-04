@@ -8,7 +8,7 @@ interface Props {
 	lang: UiLanguageKeys;
 	editPage?: boolean;
 	createPage?: boolean;
-	title?: string;
+	// title?: string;
 	editFolder?: boolean;
 	createFolder?: boolean;
 }
@@ -17,7 +17,7 @@ const { editPage, createPage, createFolder, editFolder, lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-header');
 
-const { title = t('title') } = Astro.props;
+const title = t('title');
 
 let pageTitle = title;
 let pageSlug: string | undefined = undefined;
@@ -31,7 +31,7 @@ if (editId) {
 	const res = await studioCMS_SDK_Cache.GET.page.byId(editId);
 
 	if (editPage) {
-		pageTitle = `${t('edit-page-title')}: ${res.data.title}`;
+		pageTitle = `${res.data.title}`;
 		pageSlug = res.data.slug;
 		currentId = res.data.id;
 	}
@@ -45,7 +45,7 @@ if (folderId) {
 	const folder = res.data.find((folder) => folder.id === folderId);
 
 	if (editFolder && folder) {
-		pageTitle = `${t('edit-folder-title')}: ${folder.name}`;
+		pageTitle = `${folder.name}`;
 		currentId = folder.id;
 		folderName = folder.name;
 	}
@@ -72,13 +72,9 @@ const currentMode = editPage
           {pageTitle}
         </t-content-header>
       ) : currentMode === 'edit-folder' ? (
-        <t-content-header key="edit-folder-title">
-          {t('edit-folder-title')}: {folderName}
-        </t-content-header>
+        <><t-content-header key="edit-folder-title">{t('edit-folder-title')}</t-content-header>: {folderName}</>
       ) : currentMode === 'edit-page' ? (
-        <t-content-header key="edit-page-title">
-          {t('edit-page-title')}: {pageTitle}
-        </t-content-header>
+        <><t-content-header key="edit-page-title">{t('edit-page-title')}</t-content-header>: {pageTitle}</>
       ) : currentMode === 'create-folder' ? (
         <t-content-header key="create-folder-title">
           {t('create-folder-title')}

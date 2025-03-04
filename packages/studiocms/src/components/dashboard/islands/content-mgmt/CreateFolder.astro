@@ -1,19 +1,46 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select } from 'studiocms:ui/components';
 import { parentFolderOptions } from './shared.js';
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 ---
 <div id="create-folder-container">
 
     <form id="create-folder-form" action={StudioCMSRoutes.endpointLinks.content.folder}>
     
-        <Input label="Folder Name" name="folder-name" isRequired />
+        <Input label={t('input-folder-name')} name="folder-name" isRequired />
         
-        <Select label="Parent Folder" name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
+        <Select label={t('input-folder-parent')} name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
     
     </form>
 
 </div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        updateElmLabel,
+        updateSelectElmLabel
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-folder';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+        updateElmLabel('folder-name', comp['input-folder-name']);
+        updateSelectElmLabel('parent-folder', comp['input-folder-parent']);
+    });
+</script>
 
 <script>
 import { toast } from "studiocms:ui/components";

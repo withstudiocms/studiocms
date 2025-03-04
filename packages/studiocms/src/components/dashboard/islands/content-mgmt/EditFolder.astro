@@ -1,4 +1,5 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Input, Select } from 'studiocms:ui/components';
@@ -12,6 +13,13 @@ const currentFolder = await studioCMS_SDK_Cache.GET.folder(editId);
 if (!currentFolder) {
 	return new Response(null, { status: 404 });
 }
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 ---
 <div id="edit-folder-container">
 
@@ -20,14 +28,14 @@ if (!currentFolder) {
         <input type="hidden" name="folder-id" value={currentFolder.id} />
     
         <Input 
-            label="Folder Name" 
+            label={t('input-folder-name')}
             name="folder-name" 
             defaultValue={currentFolder.name}
             isRequired 
             />
         
         <Select 
-            label="Parent Folder" 
+            label={t('input-folder-parent')}
             name="parent-folder" 
             options={parentFolderOptions} 
             defaultValue={currentFolder.parent || 'null'} 
@@ -37,6 +45,24 @@ if (!currentFolder) {
     </form>
 
 </div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        updateElmLabel,
+        updateSelectElmLabel
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-folder';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+        updateElmLabel('folder-name', comp['input-folder-name']);
+        updateSelectElmLabel('parent-folder', comp['input-folder-parent']);
+    });
+</script>
 
 <script>
 import { toast } from "studiocms:ui/components";

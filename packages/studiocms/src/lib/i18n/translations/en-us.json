@@ -196,6 +196,37 @@
       "description": "Content Management",
       "header": "Content Management",
       "placeholder": "Select or Create a page to get started."
+    },
+    "@studiocms/dashboard:content-diff": {
+      "view-page": "View Page",
+      "page-metadata": "Page Metadata",
+      "page-content": "Page Content"
+    },
+    "@studiocms/dashboard:content-folder": {
+      "input-folder-name": "Folder Name",
+      "input-folder-parent": "Parent Folder"
+    },
+    "@studiocms/dashboard:content-page": {
+      "tab-label-basic-info": "Basic Information",
+      "tab-label-content": "Page Content",
+      "tab-label-diff": "Edit History",
+      "input-page-title": "Page Title",
+      "input-page-slug": "Slug",
+      "input-page-description": "Description",
+      "input-page-hero-image": "OpenGraph/Hero Image",
+      "select-page-type": "Page Type",
+      "select-page-show-in-nav": "Show in Navigation",
+      "select-page-parent-folder": "Parent Folder",
+      "select-page-draft": "Draft",
+      "select-page-categories": "Categories",
+      "select-page-tags": "Tags",
+      "select-page-show-author": "Show Author",
+      "select-page-show-contributors": "Show Contributors",
+      "custom-page-type-fields-header": "Custom Page Type Fields",
+      "custom-page-types-description-new": "You have changed your pageType. Please save your changes and refresh the page to see the new fields.",
+      "diff-edited-by-1": "Edited",
+      "diff-edited-by-2": "by",
+      "diff-no-history": "No history found."
     }
   }
 }

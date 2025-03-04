@@ -1,4 +1,5 @@
 ---
+import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
@@ -8,6 +9,8 @@ import PageHeader from '../../../components/dashboard/islands/content-mgmt/PageH
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
 
 const urlParams = Astro.url.searchParams;
 const diffId = urlParams.get('diff');
@@ -26,7 +29,8 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
 ---
 
 <Layout 
-  title="Content Management"
+  title={t('title')}
+  description={t('description')}
   requiredPermission='editor'
   sidebar='double'
   {lang}
@@ -39,30 +43,61 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
     </div>
 
     <div slot="header">
-        <PageHeader {lang} title=`Page Diff: ${page.title}` />
+        <PageHeader {lang} />
         <span style="width: 100%; display: flex; padding: 1rem 0;">
             <Button 
             variant="outlined" 
             color="primary" 
             size="sm"
             href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
-            >View Page</Button>
+            ><t-content-diff key="view-page">{td('view-page')}</t-content-diff></Button>
         </span>
     </div>
 
     <h4>
-        Page Metadata
+      <t-content-diff key="page-metadata">{td('page-metadata')}</t-content-diff>
     </h4>
 
     <div set:html={diff.metadataDiffHtml} class="diff-screen"></div>
 
     <h4>
-        Page Content
+      <t-content-diff key="page-content">{td('page-content')}</t-content-diff>
     </h4>
 
     <div set:html={diff.contentDiffHtml} class="diff-screen"></div>
 
 </Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+  
+    let lang = defaultLang;
+
+    const currentPage = '@studiocms/dashboard:content-index';
+    const currentDiffPage = '@studiocms/dashboard:content-diff';
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    const i18nDiff = $i18n(currentDiffPage, baseTranslation[currentDiffPage]);
+      
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+    });
+    
+    if (!customElements.get('t-content-diff')) {
+        customElements.define('t-content-diff', makeTranslation(currentPage, i18nDiff));
+    }
+</script>
 
 <style>
   .inner-sidebar-container {
