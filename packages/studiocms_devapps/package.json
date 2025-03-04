@@ -52,8 +52,8 @@
     }
   },
   "scripts": {
-    "build": "build-scripts build 'src/**/*.ts'",
-    "dev": "build-scripts dev 'src/**/*.ts'"
+    "build": "build-scripts build 'src/**/*.{ts,tsx}'",
+    "dev": "build-scripts dev 'src/**/*.{ts,tsx}'"
   },
   "type": "module",
   "dependencies": {
@@ -62,7 +62,8 @@
     "cheerio": "^1.0.0",
     "turndown": "^7.2.0",
     "html-entities": "^2.5.2",
-    "@outerbase/sdk-transform": "^1.0.5"
+    "@outerbase/sdk-transform": "^1.0.5",
+    "preact": "^10.26.4"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",

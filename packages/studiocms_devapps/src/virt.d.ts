@@ -11,3 +11,8 @@ declare module 'virtual:studiocms-devapps/config' {
 		token: string;
 	};
 }
+
+declare module 'virtual:studiocms-devapps/db' {
+	const client: import('@libsql/client/web').Client;
+	export { client };
+}

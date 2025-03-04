@@ -12,7 +12,7 @@ import {
 	downloadAndUpdateImages,
 	downloadPostImage,
 	stripHtml,
-} from './utils';
+} from './utils.js';
 
 const ASTROPUBLICFOLDER = path.resolve(userProjectRoot, 'public');
 const WPImportFolder = path.resolve(ASTROPUBLICFOLDER, 'wp-import');

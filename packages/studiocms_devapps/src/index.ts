@@ -85,6 +85,17 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 									token: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
 								};
 							`,
+							'virtual:studiocms-devapps/db': `
+								import { createClient } from '@libsql/client/web';
+
+								const client = createClient({
+									url: "${astroDbEnv.ASTRO_DB_REMOTE_URL}",
+									intMode: 'bigint',
+									authToken: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
+								})
+
+								export { client };
+							`,
 						},
 					});
 
