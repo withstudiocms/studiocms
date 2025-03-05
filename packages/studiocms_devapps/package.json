@@ -58,11 +58,9 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-    "@libsql/client": "^0.14.0",
     "cheerio": "^1.0.0",
     "turndown": "^7.2.0",
-    "html-entities": "^2.5.2",
-    "@outerbase/sdk-transform": "^1.0.5"
+    "html-entities": "^2.5.2"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",

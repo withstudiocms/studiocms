@@ -69,6 +69,7 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 				if (command === 'dev') {
 					// Generate Endpoint Paths
 					const wpAPIPath = makeEndpointPath(options.appsConfig.wpImporter.endpoint);
+					const libsqlIFrame = makeEndpointPath(options.appsConfig.libSQLViewer.endpoint);
 
 					// Add Virtual Imports
 					addVirtualImports(params, {
@@ -76,6 +77,7 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 						imports: {
 							'virtual:studiocms-devapps/endpoints': `
 								export const wpAPIEndpoint = "${wpAPIPath}";
+								export const libsqlEndpoint = "${libsqlIFrame}";
 							`,
 							'virtual:studiocms-devapps/config': `
 								export const userProjectRoot = "${config.root.pathname}";
@@ -94,11 +96,16 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 					if (options.appsConfig.libSQLViewer.enabled) {
 						options.verbose && logger.info('Adding Dev Toolbar App: LibSQL Viewer');
 
+						injectDevRoute(params, {
+							entrypoint: resolve('./routes/outerbase.astro'),
+							pattern: libsqlIFrame,
+						});
+
 						addDevToolbarApp({
-							name: 'LibSQL Viewer',
+							name: 'Outerbase Studio Embedded',
 							id: 'studiocms-devapps-libsql-viewer',
 							entrypoint: resolve('./apps/libsql-viewer.js'),
-							icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>',
+							icon: '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-4 hidden size-4 md:block"><path fill-rule="evenodd" clip-rule="evenodd" d="M20 0C8.97048 0 0 8.96666 0 19.9999C0 31.0227 8.97048 40 20 40C31.0294 40 40 31.0333 40 19.9999C40 8.96666 31.0294 0 20 0ZM27.4346 33.7676L27.3343 33.8966C26.2881 35.1776 25.0082 35.5974 24.1178 35.7158C23.8841 35.748 23.6504 35.759 23.4056 35.759C20.9794 35.759 18.5308 34.112 16.3272 30.9795C14.5353 28.4284 12.9771 25.027 11.9421 21.3992C10.1057 14.9299 10.3172 9.03117 12.4763 6.36169C13.5225 5.08067 14.8024 4.66086 15.6928 4.5425C18.2192 4.19787 20.8013 5.67267 23.1385 8.79421C25.0749 11.3779 26.7445 14.9408 27.8576 18.8481C29.6716 25.2207 29.4935 31.0549 27.4346 33.7676Z" fill="currentColor"></path></svg>',
 						});
 					}
 

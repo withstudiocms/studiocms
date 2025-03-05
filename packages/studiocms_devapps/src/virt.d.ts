@@ -2,6 +2,7 @@
 
 declare module 'virtual:studiocms-devapps/endpoints' {
 	export const wpAPIEndpoint: string;
+	export const libsqlEndpoint: string;
 }
 
 declare module 'virtual:studiocms-devapps/config' {
@@ -10,4 +11,9 @@ declare module 'virtual:studiocms-devapps/config' {
 		remoteUrl: string;
 		token: string;
 	};
+}
+
+declare module 'virtual:studiocms-devapps/db' {
+	const client: import('@libsql/client/web').Client;
+	export { client };
 }

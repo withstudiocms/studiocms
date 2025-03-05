@@ -28,7 +28,12 @@ export const AppsConfigSchema = z
 		/**
 		 * Astro DB LibSQL Viewer App Config
 		 */
-		libSQLViewer: z.boolean().default(true),
+		libSQLViewer: z.union([
+			z.boolean(),
+			z.object({
+				endpoint: z.string().optional().default('outerbase'),
+			}),
+		]),
 		/**
 		 * StudioCMS WP API Importer App Config
 		 */
@@ -42,16 +47,16 @@ export const AppsConfigSchema = z
 	.optional()
 	.default({
 		wpImporter: { endpoint: 'wp-api-importer' },
-		libSQLViewer: true,
+		libSQLViewer: { endpoint: 'outerbase' },
 	})
 	.transform((val) => {
-		let libSQL: { enabled: boolean };
+		let libSQL: { enabled: boolean; endpoint: string };
 		let wpAPI: { enabled: boolean; endpoint: string };
 
 		if (typeof val.libSQLViewer === 'boolean') {
-			libSQL = { enabled: val.libSQLViewer };
+			libSQL = { enabled: val.libSQLViewer, endpoint: 'outerbase' };
 		} else {
-			libSQL = { enabled: true };
+			libSQL = { enabled: true, endpoint: val.libSQLViewer.endpoint };
 		}
 
 		if (typeof val.wpImporter === 'boolean') {
