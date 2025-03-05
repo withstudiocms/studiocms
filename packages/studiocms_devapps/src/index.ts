@@ -87,9 +87,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 									token: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
 								};
 							`,
-							'virtual:studiocms-devapps/db': `
-								export * from '${resolve('./db-mod.js')}';
-							`,
 						},
 					});
 

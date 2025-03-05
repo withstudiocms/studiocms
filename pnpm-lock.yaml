@@ -383,12 +383,6 @@ importers:
       '@astrojs/db':
         specifier: catalog:min
         version: 0.14.7(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.8)(react@19.0.0)
-      '@libsql/client':
-        specifier: ^0.14.0
-        version: 0.14.0
-      '@outerbase/sdk-transform':
-        specifier: ^1.0.5
-        version: 1.0.5
       astro:
         specifier: catalog:min
         version: 5.4.0(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
@@ -401,9 +395,6 @@ importers:
       html-entities:
         specifier: ^2.5.2
         version: 2.5.2
-      preact:
-        specifier: ^10.26.4
-        version: 10.26.4
       studiocms:
         specifier: workspace:*
         version: link:../studiocms
@@ -1472,9 +1463,6 @@ packages:
 
   '@oslojs/jwt@0.2.0':
     resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
-
-  '@outerbase/sdk-transform@1.0.5':
-    resolution: {integrity: sha512-JOBHD8svYDxK77Myr9peSWgr4eR/+Pu3Lv8i+A4o42Wz08Vb6b/bVOkvjkOjLY4ZD6sApeIdOKXLjOM3Gr4Pfg==}
 
   '@pnpm/config.env-replace@1.1.0':
     resolution: {integrity: sha512-htyl8TWnKL7K/ESFa1oW2UB5lVDxuF5DpM7tBi6Hu2LNL3mWkIzNLG6N4zoCUP1lCKNxWy/3iu8mS8MvToGd6w==}
@@ -3614,9 +3602,6 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  preact@10.26.4:
-    resolution: {integrity: sha512-KJhO7LBFTjP71d83trW+Ilnjbo+ySsaAgCfXOXUlmGzJ4ygYPWmysm77yg4emwfmoz3b22yvH5IsVFHbhUaH5w==}
-
   preferred-pm@4.1.1:
     resolution: {integrity: sha512-rU+ZAv1Ur9jAUZtGPebQVQPzdGhNzaEiQ7VL9+cjsAWPHFYOccNXPNiev1CCDSOg/2j7UujM7ojNhpkuILEVNQ==}
     engines: {node: '>=18.12'}
@@ -5672,8 +5657,6 @@ snapshots:
   '@oslojs/jwt@0.2.0':
     dependencies:
       '@oslojs/encoding': 0.4.1
-
-  '@outerbase/sdk-transform@1.0.5': {}
 
   '@pnpm/config.env-replace@1.1.0': {}
 
@@ -8375,8 +8358,6 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
-
-  preact@10.26.4: {}
 
   preferred-pm@4.1.1:
     dependencies:
