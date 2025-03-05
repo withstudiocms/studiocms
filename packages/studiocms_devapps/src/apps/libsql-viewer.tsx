@@ -111,8 +111,8 @@ const App = () => {
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		const appWindow = document.createElement('astro-dev-toolbar-window');
-		appWindow.style.width = '95%';
-		appWindow.style.height = '95%';
+		appWindow.style.width = '100%';
+		appWindow.style.height = '100%';
 
 		closeOnOutsideClick(eventTarget);
 
