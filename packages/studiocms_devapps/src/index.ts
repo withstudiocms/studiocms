@@ -71,8 +71,6 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 					const wpAPIPath = makeEndpointPath(options.appsConfig.wpImporter.endpoint);
 					const libsqlIFrame = makeEndpointPath(options.appsConfig.libSQLViewer.endpoint);
 
-					console.log('libsqlIFrame', libsqlIFrame);
-
 					// Add Virtual Imports
 					addVirtualImports(params, {
 						name: '@studiocms/devapps',
