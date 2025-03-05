@@ -961,10 +961,10 @@ export const studiocms = defineIntegration({
 								prerender: false,
 							});
 						}
-
-						// Setup Integrations
-						addIntegrationArray(params, integrations);
 					}
+
+					// Setup Integrations
+					addIntegrationArray(params, integrations);
 
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');

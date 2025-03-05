@@ -37,6 +37,8 @@ interface GetSessionResponse {
 	routes: Routes;
 }
 
+const knownAPIRoutes = ['/studiocms_api/', '/_studiocms-devapps/'];
+
 /**
  * Verifies if the user's permission level meets the required permission rank.
  *
@@ -64,7 +66,13 @@ class UserQuickTools extends HTMLElement {
 			return;
 		}
 
+		// If the user is on the dashboard, don't render the quick tools
 		if (window.location.pathname.includes(data.routes.dashboardIndex)) {
+			return;
+		}
+
+		// If the user is on any of the known StudioCMS API routes, don't render the quick tools
+		if (knownAPIRoutes.some((route) => window.location.pathname.includes(route))) {
 			return;
 		}
 
