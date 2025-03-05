@@ -28,7 +28,8 @@ function getIFrameSrc(dbUrl: string) {
         <script>
             // @ts-ignore
             import { createClient } from 'https://esm.sh/@libsql/client@0.14.0/web';
-            import { transformTursoResult } from '@outerbase/sdk-transform';
+            // @ts-ignore
+            import { transformTursoResult } from 'https://esm.sh/@outerbase/sdk-transform@1.0.7';
 
             interface ClientRequest {
                 type: 'query' | 'transaction';
