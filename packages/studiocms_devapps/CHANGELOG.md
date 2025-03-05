@@ -1,5 +1,14 @@
 # @studiocms/devapps
 
+## 0.1.0-beta.11
+
+### Patch Changes
+
+- [#448](https://github.com/withstudiocms/studiocms/pull/448) [`78dfc7e`](https://github.com/withstudiocms/studiocms/commit/78dfc7e301c2e7ca304a0cc3b3ff3b79a8765aa1) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix issue during production where the libsql client would not work
+
+- Updated dependencies [[`bceda0a`](https://github.com/withstudiocms/studiocms/commit/bceda0a52fc51ea98914864e75201a147cb0ae46)]:
+  - studiocms@0.1.0-beta.11
+
 ## 0.1.0-beta.10
 
 ### Patch Changes

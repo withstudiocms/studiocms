@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.1.0-beta.11
+
+### Patch Changes
+
+- [#451](https://github.com/withstudiocms/studiocms/pull/451) [`bceda0a`](https://github.com/withstudiocms/studiocms/commit/bceda0a52fc51ea98914864e75201a147cb0ae46) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix integration injection, and when quicktools are usable
+
 ## 0.1.0-beta.10
 
 ### Patch Changes
