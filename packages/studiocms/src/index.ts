@@ -1319,7 +1319,7 @@ export const studiocms = defineIntegration({
 								`,
 
 								'studiocms:plugins/endpoints': `
-									import * as pluginEndpoints from 'virtual:studiocms/plugins/endpoints';
+									import * as endpoints from 'virtual:studiocms/plugins/endpoints';
 
 									const pluginEndpoints = ${JSON.stringify(
 										pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
@@ -1330,9 +1330,9 @@ export const studiocms = defineIntegration({
 
 									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
 											identifier,
-											onCreate: pluginEndpoints[safeIdentifier + '_onCreate'] || null,
-											onEdit: pluginEndpoints[safeIdentifier + '_onEdit'] || null,
-											onDelete: pluginEndpoints[safeIdentifier + '_onDelete'] || null,
+											onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
+											onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
+											onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
 									}));
 								`,
 							},
