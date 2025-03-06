@@ -1,9 +1,9 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../utils/auth-token.js';
 
 type JSONData = {
@@ -24,7 +24,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const users = await studioCMS_SDK.GET.database.users();
@@ -84,7 +84,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const jsonData: JSONData = await context.request.json();
@@ -92,7 +92,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	let { username, password, email, displayname, rank: newUserRank } = jsonData;
 
 	if (!username) {
-		return simpleResponse(400, 'Missing field: Username is required');
+		return apiResponseLogger(400, 'Missing field: Username is required');
 	}
 
 	if (!password) {
@@ -100,20 +100,20 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	if (!email) {
-		return simpleResponse(400, 'Missing field: Email is required');
+		return apiResponseLogger(400, 'Missing field: Email is required');
 	}
 
 	if (!displayname) {
-		return simpleResponse(400, 'Missing field: Display name is required');
+		return apiResponseLogger(400, 'Missing field: Display name is required');
 	}
 
 	if (!newUserRank) {
-		return simpleResponse(400, 'Missing field: Rank is required');
+		return apiResponseLogger(400, 'Missing field: Rank is required');
 	}
 
 	// If the username is invalid, return an error
 	if (verifyUsernameInput(username) !== true) {
-		return simpleResponse(
+		return apiResponseLogger(
 			400,
 			'Invalid username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
 		);
@@ -121,7 +121,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// If the password is invalid, return an error
 	if ((await verifyPasswordStrength(password)) !== true) {
-		return simpleResponse(
+		return apiResponseLogger(
 			400,
 			'Invalid password: Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
 		);
@@ -134,18 +134,18 @@ export const POST: APIRoute = async (context: APIContext) => {
 		.safeParse(email);
 
 	if (!checkEmail.success) {
-		return simpleResponse(400, `Invalid email: ${checkEmail.error.message}`);
+		return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
 	}
 
 	const { usernameSearch, emailSearch } =
 		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
 
 	if (usernameSearch.length > 0) {
-		return simpleResponse(400, 'Invalid username: Username is already in use');
+		return apiResponseLogger(400, 'Invalid username: Username is already in use');
 	}
 
 	if (emailSearch.length > 0) {
-		return simpleResponse(400, 'Invalid email: Email is already in use');
+		return apiResponseLogger(400, 'Invalid email: Email is already in use');
 	}
 
 	// Create a new user
@@ -156,7 +156,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 		rank: rank,
 	});
 
-	return simpleResponse(
+	return apiResponseLogger(
 		200,
 		JSON.stringify({ username, email, displayname, rank: updateRank.rank, password })
 	);

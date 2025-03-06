@@ -1,15 +1,15 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -17,13 +17,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Get Json Data
@@ -31,11 +31,11 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// Validate form data
 	if (!jsonData.description) {
-		return simpleResponse(400, 'Invalid form data, description is required');
+		return apiResponseLogger(400, 'Invalid form data, description is required');
 	}
 
 	if (!jsonData.user) {
-		return simpleResponse(400, 'Invalid form data, user is required');
+		return apiResponseLogger(400, 'Invalid form data, user is required');
 	}
 
 	// Update Database
@@ -51,14 +51,14 @@ export const POST: APIRoute = async (context: APIContext) => {
 		});
 	} catch (error) {
 		// Return Error Response
-		return simpleResponse(500, 'Error creating new token');
+		return apiResponseLogger(500, 'Error creating new token');
 	}
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -66,13 +66,13 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Get Json Data
@@ -80,21 +80,21 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 	// Validate form data
 	if (!jsonData.tokenID) {
-		return simpleResponse(400, 'Invalid form data, tokenID is required');
+		return apiResponseLogger(400, 'Invalid form data, tokenID is required');
 	}
 
 	if (!jsonData.userID) {
-		return simpleResponse(400, 'Invalid form data, userID is required');
+		return apiResponseLogger(400, 'Invalid form data, userID is required');
 	}
 
 	// Update Database
 	try {
 		await studioCMS_SDK.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
 
-		return simpleResponse(200, 'Token deleted');
+		return apiResponseLogger(200, 'Token deleted');
 	} catch (error) {
 		// Return Error Response
-		return simpleResponse(500, 'Error deleting token');
+		return apiResponseLogger(500, 'Error deleting token');
 	}
 };
 

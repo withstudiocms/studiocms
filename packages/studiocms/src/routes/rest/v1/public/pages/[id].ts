@@ -1,22 +1,22 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	const page = await studioCMS_SDK_Cache.GET.page.byId(id);
 
 	if (!page) {
-		return simpleResponse(404, 'Page not found');
+		return apiResponseLogger(404, 'Page not found');
 	}
 
 	if (page.data.draft) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	return new Response(JSON.stringify(page), {

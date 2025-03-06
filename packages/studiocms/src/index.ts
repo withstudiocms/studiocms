@@ -1081,7 +1081,30 @@ export const studiocms = defineIntegration({
 
 							'studiocms:logger': `
 								import { logger } from '@it-astro:logger:studiocms-runtime';
-								export default logger.fork('studiocms:runtime');
+
+								const runtimeLogger = logger.fork('studiocms:runtime');
+								const isVerbose = ${verbose};
+								function buildErrorMessage(message, error) {
+									if (!error) return message;
+									if (error instanceof Error) return message + ': ' + error.message + '\\n' + error.stack;
+									return message + ': ' + error;
+								};
+
+								export function apiResponseLogger(status, message, error) {
+									if (status !== 200) {
+										isVerbose && runtimeLogger.error(buildErrorMessage(message, error));
+										return new Response(JSON.stringify({ error: message }), { 
+											status, 
+											headers: { 'Content-Type': 'application/json' } 
+										});
+									}
+									return new Response(JSON.stringify({ message }), { 
+										status, 
+										headers: { 'Content-Type': 'application/json' } 
+									});
+								};
+
+								export default runtimeLogger;
 							`,
 
 							// Plugin Helpers

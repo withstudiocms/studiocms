@@ -1,7 +1,7 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../../../utils/auth-token.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
@@ -14,19 +14,19 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	const page = await studioCMS_SDK_Cache.GET.page.byId(id);
 
 	if (!page) {
-		return simpleResponse(404, 'Page not found');
+		return apiResponseLogger(404, 'Page not found');
 	}
 
 	const searchParams = context.url.searchParams;

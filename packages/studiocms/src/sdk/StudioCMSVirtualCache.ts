@@ -1,7 +1,6 @@
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
 import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
-import type { PageType } from './lib/packages.js';
 import type {
 	BaseCacheObject,
 	CombinedPageData,

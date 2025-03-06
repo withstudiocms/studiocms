@@ -1,7 +1,7 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../utils/auth-token.js';
 
 interface FolderBase {
@@ -19,19 +19,19 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid folder ID');
+		return apiResponseLogger(400, 'Invalid folder ID');
 	}
 
 	const folder = await studioCMS_SDK_Cache.GET.folder(id);
 
 	if (!folder) {
-		return simpleResponse(404, 'Folder not found');
+		return apiResponseLogger(404, 'Folder not found');
 	}
 
 	return new Response(JSON.stringify(folder), {
@@ -51,13 +51,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid folder ID');
+		return apiResponseLogger(400, 'Invalid folder ID');
 	}
 
 	const jsonData: FolderBase = await context.request.json();
@@ -65,7 +65,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { folderName, parentFolder } = jsonData;
 
 	if (!folderName) {
-		return simpleResponse(400, 'Invalid form data, folderName is required');
+		return apiResponseLogger(400, 'Invalid form data, folderName is required');
 	}
 
 	try {
@@ -75,9 +75,9 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			parent: parentFolder || null,
 		});
 
-		return simpleResponse(200, 'Folder updated successfully');
+		return apiResponseLogger(200, 'Folder updated successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to update folder');
+		return apiResponseLogger(500, 'Failed to update folder', error);
 	}
 };
 
@@ -91,13 +91,13 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid folder ID');
+		return apiResponseLogger(400, 'Invalid folder ID');
 	}
 
 	try {
@@ -106,9 +106,9 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
 
-		return simpleResponse(200, 'Folder deleted successfully');
+		return apiResponseLogger(200, 'Folder deleted successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to delete folder');
+		return apiResponseLogger(500, 'Failed to delete folder', error);
 	}
 };
 

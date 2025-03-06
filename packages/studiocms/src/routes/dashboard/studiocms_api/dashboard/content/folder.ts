@@ -1,9 +1,9 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
@@ -19,7 +19,7 @@ interface FolderEdit extends FolderBase {
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -27,13 +27,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData: FolderBase = await context.request.json();
@@ -41,7 +41,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const { folderName, parentFolder } = jsonData;
 
 	if (!folderName) {
-		return simpleResponse(400, 'Invalid form data, folderName is required');
+		return apiResponseLogger(400, 'Invalid form data, folderName is required');
 	}
 
 	try {
@@ -54,16 +54,16 @@ export const POST: APIRoute = async (context: APIContext) => {
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
 
-		return simpleResponse(200, 'Folder created successfully');
+		return apiResponseLogger(200, 'Folder created successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to create folder');
+		return apiResponseLogger(500, 'Failed to create folder');
 	}
 };
 
 export const PATCH: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -71,13 +71,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData: FolderEdit = await context.request.json();
@@ -85,11 +85,11 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { id, folderName, parentFolder } = jsonData;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	if (!folderName) {
-		return simpleResponse(400, 'Invalid form data, folderName is required');
+		return apiResponseLogger(400, 'Invalid form data, folderName is required');
 	}
 
 	try {
@@ -99,16 +99,16 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			parent: parentFolder || null,
 		});
 
-		return simpleResponse(200, 'Folder updated successfully');
+		return apiResponseLogger(200, 'Folder updated successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to update folder');
+		return apiResponseLogger(500, 'Failed to update folder');
 	}
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -116,13 +116,13 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData: FolderEdit = await context.request.json();
@@ -130,7 +130,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { id } = jsonData;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	try {
@@ -139,9 +139,9 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
 
-		return simpleResponse(200, 'Folder deleted successfully');
+		return apiResponseLogger(200, 'Folder deleted successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to delete folder');
+		return apiResponseLogger(500, 'Failed to delete folder');
 	}
 };
 

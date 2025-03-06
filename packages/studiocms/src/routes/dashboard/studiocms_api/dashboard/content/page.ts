@@ -1,12 +1,12 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
 const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	const pageTypeOutput: {
@@ -63,7 +63,7 @@ function getParentFolderValue(value?: string) {
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -71,13 +71,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const formData = await context.request.formData();
@@ -103,18 +103,18 @@ export const POST: APIRoute = async (context: APIContext) => {
 	} as UpdatePageContent;
 
 	if (!data) {
-		return simpleResponse(400, 'Invalid form data, data is required');
+		return apiResponseLogger(400, 'Invalid form data, data is required');
 	}
 
 	if (!content) {
-		return simpleResponse(400, 'Invalid form data, content is required');
+		return apiResponseLogger(400, 'Invalid form data, content is required');
 	}
 
 	const dataId = crypto.randomUUID();
 	const contentId = crypto.randomUUID();
 
 	if (!data.title) {
-		return simpleResponse(400, 'Invalid form data, title is required');
+		return apiResponseLogger(400, 'Invalid form data, title is required');
 	}
 
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
@@ -140,16 +140,16 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 		studioCMS_SDK_Cache.CLEAR.pages();
 
-		return simpleResponse(200, 'Page created successfully');
+		return apiResponseLogger(200, 'Page created successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to create page');
+		return apiResponseLogger(500, 'Failed to create page');
 	}
 };
 
 export const PATCH: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -157,13 +157,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'editor');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const formData = await context.request.formData();
@@ -190,25 +190,25 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	};
 
 	if (!data) {
-		return simpleResponse(400, 'Invalid form data, data is required');
+		return apiResponseLogger(400, 'Invalid form data, data is required');
 	}
 
 	if (!content) {
-		return simpleResponse(400, 'Invalid form data, content is required');
+		return apiResponseLogger(400, 'Invalid form data, content is required');
 	}
 
 	if (!data.id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	if (!content.id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	const currentPageData = await studioCMS_SDK_Cache.GET.page.byId(data.id);
 
 	if (!currentPageData.data) {
-		return simpleResponse(404, 'Page not found');
+		return apiResponseLogger(404, 'Page not found');
 	}
 
 	const { authorId, contributorIds } = currentPageData.data;
@@ -275,16 +275,16 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			await apiRoute(context);
 		}
 
-		return simpleResponse(200, 'Page updated successfully');
+		return apiResponseLogger(200, 'Page updated successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to update page');
+		return apiResponseLogger(500, 'Failed to update page');
 	}
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -292,13 +292,13 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData = await context.request.json();
@@ -306,17 +306,17 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { id, slug } = jsonData;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid request');
+		return apiResponseLogger(400, 'Invalid request');
 	}
 
 	if (!slug) {
-		return simpleResponse(400, 'Invalid request');
+		return apiResponseLogger(400, 'Invalid request');
 	}
 
 	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index');
 
 	if (isHomePage.data && isHomePage.data.id === id) {
-		return simpleResponse(400, 'Cannot delete home page');
+		return apiResponseLogger(400, 'Cannot delete home page');
 	}
 
 	const pageToDelete = await studioCMS_SDK_Cache.GET.page.byId(id);
@@ -331,9 +331,9 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 			await apiRoute(context);
 		}
 
-		return simpleResponse(200, 'Page deleted successfully');
+		return apiResponseLogger(200, 'Page deleted successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to delete page');
+		return apiResponseLogger(500, 'Failed to delete page');
 	}
 };
 

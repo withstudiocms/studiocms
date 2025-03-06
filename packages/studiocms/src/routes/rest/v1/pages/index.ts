@@ -1,8 +1,8 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
@@ -23,7 +23,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const pages = await studioCMS_SDK_Cache.GET.pages(true);
@@ -80,7 +80,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const { rank, userId } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const jsonData: CreatePageJson = await context.request.json();
@@ -88,15 +88,15 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const { data, content } = jsonData;
 
 	if (!data) {
-		return simpleResponse(400, 'Invalid form data, data is required');
+		return apiResponseLogger(400, 'Invalid form data, data is required');
 	}
 
 	if (!content) {
-		return simpleResponse(400, 'Invalid form data, content is required');
+		return apiResponseLogger(400, 'Invalid form data, content is required');
 	}
 
 	if (!data.title) {
-		return simpleResponse(400, 'Invalid form data, title is required');
+		return apiResponseLogger(400, 'Invalid form data, title is required');
 	}
 
 	const dataId = crypto.randomUUID();
@@ -116,9 +116,9 @@ export const POST: APIRoute = async (context: APIContext) => {
 			{ id: contentId, ...content }
 		);
 
-		return simpleResponse(200, `Page created successfully with id: ${dataId}`);
+		return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
 	} catch (error) {
-		return simpleResponse(500, 'Internal Server Error');
+		return apiResponseLogger(500, 'Internal Server Error');
 	}
 };
 

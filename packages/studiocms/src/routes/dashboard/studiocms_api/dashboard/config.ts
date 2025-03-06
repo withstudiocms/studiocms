@@ -1,16 +1,16 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsSiteConfigSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -18,13 +18,13 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Get Json Data
@@ -32,29 +32,29 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// Validate form data
 	if (!siteConfig.title) {
-		return simpleResponse(400, 'Invalid form data, title is required');
+		return apiResponseLogger(400, 'Invalid form data, title is required');
 	}
 
 	if (!siteConfig.description) {
-		return simpleResponse(400, 'Invalid form data, description is required');
+		return apiResponseLogger(400, 'Invalid form data, description is required');
 	}
 
 	if (!siteConfig.loginPageBackground) {
-		return simpleResponse(400, 'Invalid form data, loginPageBackground is required');
+		return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
 	}
 
 	if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
-		return simpleResponse(400, 'Invalid form data, loginPageCustomImage is required');
+		return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
 	}
 
 	// Update Database
 	try {
 		await studioCMS_SDK_Cache.UPDATE.siteConfig(siteConfig);
 
-		return simpleResponse(200, 'Site config updated');
+		return apiResponseLogger(200, 'Site config updated');
 	} catch (error) {
 		// Return Error Response
-		return simpleResponse(500, 'Error updating site config');
+		return apiResponseLogger(500, 'Error updating site config', error);
 	}
 };
 

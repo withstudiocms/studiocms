@@ -1,6 +1,13 @@
 declare module 'studiocms:logger' {
 	export const logger: import('astro').AstroIntegrationLogger;
 	export default logger;
+
+	export const apiResponseLogger: (
+		status: number,
+		message: string,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		error?: Error | any
+	) => Response;
 }
 
 declare module 'studiocms:components/dashboard-grid-items' {
