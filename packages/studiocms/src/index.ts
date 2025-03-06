@@ -1084,15 +1084,15 @@ export const studiocms = defineIntegration({
 
 								const runtimeLogger = logger.fork('studiocms:runtime');
 								const isVerbose = ${verbose};
-								function buildErrorMessage(message: string, error?: Error | any) {
+								function buildErrorMessage(message, error) {
 									if (!error) return message;
 									if (error instanceof Error) return message + ': ' + error.message + '\\n' + error.stack;
 									return message + ': ' + error;
 								};
 
-								export function apiResponseLogger(status: number, message: string, error?: Error | any) {
+								export function apiResponseLogger(status, message, error) {
 									if (status !== 200) {
-										isVerbose && runtimeLogger.error(buildErrorMessage(message));
+										isVerbose && runtimeLogger.error(buildErrorMessage(message, error));
 										return new Response(JSON.stringify({ error: message }), { 
 											status, 
 											headers: { 'Content-Type': 'application/json' } 
