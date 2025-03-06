@@ -1,6 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import plugins from 'studiocms:plugins';
+import { apiEndpoints } from 'studiocms:plugins/endpoints';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
@@ -13,11 +14,12 @@ const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 		label: string;
 		description?: string | undefined;
 		pageContentComponent?: string | undefined;
+		apiEndpoint?: string;
 		apiEndpoints?:
 			| {
-					onCreate?: APIRoute | undefined;
-					onEdit?: APIRoute | undefined;
-					onDelete?: APIRoute | undefined;
+					onCreate?: APIRoute | null;
+					onEdit?: APIRoute | null;
+					onDelete?: APIRoute | null;
 			  }
 			| undefined;
 	}[] = [];
@@ -27,7 +29,12 @@ const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	}
 
 	for (const pageType of pageTypes) {
-		pageTypeOutput.push(pageType);
+		pageTypeOutput.push({
+			...pageType,
+			apiEndpoints: {
+				...apiEndpoints.find((endpoint) => endpoint.identifier === pageType.identifier),
+			},
+		});
 	}
 
 	return pageTypeOutput;

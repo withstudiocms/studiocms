@@ -1325,7 +1325,7 @@ export const studiocms = defineIntegration({
 										pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
 											identifier,
 											safeIdentifier,
-										}))
+										})) || []
 									)};
 
 									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({

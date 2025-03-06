@@ -222,40 +222,6 @@ export const StudioCMSPluginSchema = z.object({
 				 * ```
 				 */
 				apiEndpoint: z.string().optional(),
-
-				/**
-				 * API Endpoints for the page type
-				 *
-				 * API endpoints are used to create, edit, and delete pages of this type,
-				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
-				 *
-				 * @deprecated Use `apiEndpoint` instead
-				 */
-				apiEndpoints: z
-					.object({
-						/**
-						 * POST
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 * @deprecated Use `apiEndpoint` instead
-						 */
-						onCreate: AstroAPIRouteSchema.optional(),
-						/**
-						 * PATCH
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 * @deprecated Use `apiEndpoint` instead
-						 */
-						onEdit: AstroAPIRouteSchema.optional(),
-						/**
-						 * DELETE
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 * @deprecated Use `apiEndpoint` instead
-						 */
-						onDelete: AstroAPIRouteSchema.optional(),
-					})
-					.optional(),
 			})
 		)
 		.optional(),
