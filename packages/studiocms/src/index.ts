@@ -207,6 +207,18 @@ export const studiocms = defineIntegration({
 			sitemapXMLEndpointPath: string | URL;
 		}[] = [];
 
+		const pluginEndpoints: {
+			apiEndpoint: string;
+			identifier: string;
+			safeIdentifier: string;
+		}[] = [];
+
+		const pluginSettingsEndpoints: {
+			apiEndpoint: string;
+			identifier: string;
+			safeIdentifier: string;
+		}[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -915,6 +927,34 @@ export const studiocms = defineIntegration({
 								}
 							}
 
+							for (const { apiEndpoint, identifier } of safePlugin.pageTypes || []) {
+								if (apiEndpoint) {
+									pluginEndpoints.push({
+										identifier: identifier,
+										safeIdentifier: convertToSafeString(identifier),
+										apiEndpoint: `
+											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
+											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
+											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
+										`,
+									});
+								}
+							}
+
+							if (safePlugin.settingsPage) {
+								const { endpoint } = safePlugin.settingsPage;
+
+								if (endpoint) {
+									pluginSettingsEndpoints.push({
+										identifier: safePlugin.identifier,
+										safeIdentifier: convertToSafeString(safePlugin.identifier),
+										apiEndpoint: `
+											export { onSave as ${convertToSafeString(safePlugin.identifier)}_onSave } from '${endpoint}';
+										`,
+									});
+								}
+							}
+
 							safePluginList.push(safePlugin);
 						}
 
@@ -1292,6 +1332,42 @@ export const studiocms = defineIntegration({
 									});
 	
 									export default dashboardPages;
+								`,
+
+								'virtual:studiocms/plugins/endpoints': `
+									${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
+
+									${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
+								`,
+
+								'studiocms:plugins/endpoints': `
+									import * as endpoints from 'virtual:studiocms/plugins/endpoints';
+
+									const pluginEndpoints = ${JSON.stringify(
+										pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
+											identifier,
+											safeIdentifier,
+										})) || []
+									)};
+
+									const pluginSettingsEndpoints = ${JSON.stringify(
+										pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({
+											identifier,
+											safeIdentifier,
+										})) || []
+									)};
+
+									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
+										identifier,
+										onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
+										onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
+										onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
+									}));
+
+									export const settingsEndpoints = pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({
+										identifier,
+										onSave: endpoints[safeIdentifier + '_onSave'] || null,
+									}));
 								`,
 							},
 						});

@@ -1,6 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import pluginList from 'studiocms:plugins';
+import { settingsEndpoints } from 'studiocms:plugins/endpoints';
 import type { APIContext, APIRoute } from 'astro';
 import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
@@ -36,9 +37,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return simpleResponse(404, 'Plugin not found');
 	}
 
-	const { settingsPage } = pluginData;
+	const settingsPage = settingsEndpoints.find((endpoint) => endpoint.identifier === plugin);
 
 	if (!settingsPage) {
+		return simpleResponse(404, 'Plugin does not have a settings page');
+	}
+
+	if (!settingsPage.onSave) {
 		return simpleResponse(404, 'Plugin does not have a settings page');
 	}
 

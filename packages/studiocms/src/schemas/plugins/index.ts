@@ -1,4 +1,4 @@
-import type { APIRoute, AstroIntegration } from 'astro';
+import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
@@ -9,11 +9,6 @@ import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
  * Converts the AstroIntegration type to a Zod schema.
  */
 const AstroIntegrationSchema = z.custom<AstroIntegration>();
-
-/**
- * Schema for Astro API Route.
- */
-const AstroAPIRouteSchema = z.custom<APIRoute>();
 
 /**
  * Schema for Astro Integration, which can be an array of Astro Integrations.
@@ -108,12 +103,11 @@ export const StudioCMSPluginSchema = z.object({
 			fields: z.array(SettingsFieldSchema),
 
 			/**
-			 * Function that runs on when the settings page is saved
+			 * The endpoint for the settings
 			 *
-			 * Should return a string if there is an error,
-			 * otherwise return boolean true to indicate success
+			 * Should export a APIRoute named `onSave` that runs when the settings page is saved
 			 */
-			onSave: AstroAPIRouteSchema,
+			endpoint: z.string(),
 		})
 		.optional(),
 
@@ -192,33 +186,36 @@ export const StudioCMSPluginSchema = z.object({
 				fields: z.array(SettingsFieldSchema).optional(),
 
 				/**
-				 * API Endpoints for the page type
+				 * API Endpoint file for the page type
 				 *
 				 * API endpoints are used to create, edit, and delete pages of this type,
 				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
+				 *
+				 * File should export at least one of the following:
+				 * - `onCreate`
+				 * - `onEdit`
+				 * - `onDelete`
+				 *
+				 * @example
+				 * ```ts
+				 * // my-plugin.ts
+				 * import { createResolver } from 'astro-integration-kit';
+				 * const { resolve } = createResolver(import.meta.url)
+				 *
+				 * {
+				 *  apiEndpoint: resolve('./api/pageTypeApi.ts'),
+				 * }
+				 *
+				 * // api/pageTypeApi.ts
+				 * import { APIRoute } from 'astro';
+				 *
+				 * export const onCreate: APIRoute = async (ctx) => {
+				 *   // Custom logic here
+				 *   return new Response();
+				 * }
+				 * ```
 				 */
-				apiEndpoints: z
-					.object({
-						/**
-						 * POST
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 */
-						onCreate: AstroAPIRouteSchema.optional(),
-						/**
-						 * PATCH
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 */
-						onEdit: AstroAPIRouteSchema.optional(),
-						/**
-						 * DELETE
-						 *
-						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
-						 */
-						onDelete: AstroAPIRouteSchema.optional(),
-					})
-					.optional(),
+				apiEndpoint: z.string().optional(),
 			})
 		)
 		.optional(),
