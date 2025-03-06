@@ -11,11 +11,6 @@ import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
 const AstroIntegrationSchema = z.custom<AstroIntegration>();
 
 /**
- * Schema for Astro API Route.
- */
-const AstroAPIRouteSchema = z.custom<APIRoute>();
-
-/**
  * Schema for Astro Integration, which can be an array of Astro Integrations.
  */
 const AstroIntegrationPossiblyArraySchema = z.union([
@@ -108,12 +103,11 @@ export const StudioCMSPluginSchema = z.object({
 			fields: z.array(SettingsFieldSchema),
 
 			/**
-			 * Function that runs on when the settings page is saved
+			 * The endpoint for the settings
 			 *
-			 * Should return a string if there is an error,
-			 * otherwise return boolean true to indicate success
+			 * Should export a APIRoute named `onSave` that runs when the settings page is saved
 			 */
-			onSave: AstroAPIRouteSchema,
+			endpoint: z.string(),
 		})
 		.optional(),
 

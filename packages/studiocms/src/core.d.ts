@@ -25,6 +25,11 @@ declare module 'studiocms:plugins/endpoints' {
 		onEdit: import('astro').APIRoute | null;
 		onDelete: import('astro').APIRoute | null;
 	}[];
+
+	export const settingsEndpoints: {
+		identifier: string;
+		onSave: import('astro').APIRoute | null;
+	}[];
 }
 
 interface Window {

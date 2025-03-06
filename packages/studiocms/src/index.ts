@@ -213,6 +213,12 @@ export const studiocms = defineIntegration({
 			safeIdentifier: string;
 		}[] = [];
 
+		const pluginSettingsEndpoints: {
+			apiEndpoint: string;
+			identifier: string;
+			safeIdentifier: string;
+		}[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -935,6 +941,20 @@ export const studiocms = defineIntegration({
 								}
 							}
 
+							if (safePlugin.settingsPage) {
+								const { endpoint } = safePlugin.settingsPage;
+
+								if (endpoint) {
+									pluginSettingsEndpoints.push({
+										identifier: safePlugin.identifier,
+										safeIdentifier: convertToSafeString(safePlugin.identifier),
+										apiEndpoint: `
+											export { onSave as ${convertToSafeString(safePlugin.identifier)}_onSave } from '${endpoint}';
+										`,
+									});
+								}
+							}
+
 							safePluginList.push(safePlugin);
 						}
 
@@ -1316,6 +1336,8 @@ export const studiocms = defineIntegration({
 
 								'virtual:studiocms/plugins/endpoints': `
 									${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
+
+									${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
 								`,
 
 								'studiocms:plugins/endpoints': `
@@ -1328,11 +1350,23 @@ export const studiocms = defineIntegration({
 										})) || []
 									)};
 
+									const pluginSettingsEndpoints = ${JSON.stringify(
+										pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({
+											identifier,
+											safeIdentifier,
+										})) || []
+									)};
+
 									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
 											identifier,
 											onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
 											onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
 											onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
+									}));
+
+									export const settingsEndpoints = pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({
+										identifier,
+										onSave: endpoints[safeIdentifier + '_onSave'] || null,
 									}));
 								`,
 							},
