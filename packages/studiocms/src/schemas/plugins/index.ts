@@ -192,10 +192,44 @@ export const StudioCMSPluginSchema = z.object({
 				fields: z.array(SettingsFieldSchema).optional(),
 
 				/**
+				 * API Endpoint file for the page type
+				 *
+				 * API endpoints are used to create, edit, and delete pages of this type,
+				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
+				 *
+				 * File should export at least one of the following:
+				 * - `onCreate`
+				 * - `onEdit`
+				 * - `onDelete`
+				 *
+				 * @example
+				 * ```ts
+				 * // my-plugin.ts
+				 * import { createResolver } from 'astro-integration-kit';
+				 * const { resolve } = createResolver(import.meta.url)
+				 *
+				 * {
+				 *  apiEndpoint: resolve('./api/pageTypeApi.ts'),
+				 * }
+				 *
+				 * // api/pageTypeApi.ts
+				 * import { APIRoute } from 'astro';
+				 *
+				 * export const onCreate: APIRoute = async (ctx) => {
+				 *   // Custom logic here
+				 *   return new Response();
+				 * }
+				 * ```
+				 */
+				apiEndpoint: z.string().optional(),
+
+				/**
 				 * API Endpoints for the page type
 				 *
 				 * API endpoints are used to create, edit, and delete pages of this type,
 				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
+				 *
+				 * @deprecated Use `apiEndpoint` instead
 				 */
 				apiEndpoints: z
 					.object({
@@ -203,18 +237,21 @@ export const StudioCMSPluginSchema = z.object({
 						 * POST
 						 *
 						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 * @deprecated Use `apiEndpoint` instead
 						 */
 						onCreate: AstroAPIRouteSchema.optional(),
 						/**
 						 * PATCH
 						 *
 						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 * @deprecated Use `apiEndpoint` instead
 						 */
 						onEdit: AstroAPIRouteSchema.optional(),
 						/**
 						 * DELETE
 						 *
 						 * API endpoint will be provided the full Astro APIContext from the Astro APIRoute.
+						 * @deprecated Use `apiEndpoint` instead
 						 */
 						onDelete: AstroAPIRouteSchema.optional(),
 					})

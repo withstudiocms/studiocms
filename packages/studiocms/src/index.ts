@@ -207,6 +207,12 @@ export const studiocms = defineIntegration({
 			sitemapXMLEndpointPath: string | URL;
 		}[] = [];
 
+		const pluginEndpoints: {
+			apiEndpoint: string;
+			identifier: string;
+			safeIdentifier: string;
+		}[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -915,6 +921,20 @@ export const studiocms = defineIntegration({
 								}
 							}
 
+							for (const { apiEndpoint, identifier } of safePlugin.pageTypes || []) {
+								if (apiEndpoint) {
+									pluginEndpoints.push({
+										identifier: identifier,
+										safeIdentifier: convertToSafeString(identifier),
+										apiEndpoint: `
+											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
+											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
+											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
+										`,
+									});
+								}
+							}
+
 							safePluginList.push(safePlugin);
 						}
 
@@ -1292,6 +1312,28 @@ export const studiocms = defineIntegration({
 									});
 	
 									export default dashboardPages;
+								`,
+
+								'virtual:studiocms/plugins/endpoints': `
+									${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
+								`,
+
+								'studiocms:plugins/endpoints': `
+									import * as pluginEndpoints from 'virtual:studiocms/plugins/endpoints';
+
+									const pluginEndpoints = ${JSON.stringify(
+										pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
+											identifier,
+											safeIdentifier,
+										}))
+									)};
+
+									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
+											identifier,
+											onCreate: pluginEndpoints[safeIdentifier + '_onCreate'] || null,
+											onEdit: pluginEndpoints[safeIdentifier + '_onEdit'] || null,
+											onDelete: pluginEndpoints[safeIdentifier + '_onDelete'] || null,
+									}));
 								`,
 							},
 						});

@@ -18,6 +18,15 @@ declare module 'studiocms:plugins/dashboard-pages/admin' {
 	export default dashboardPages;
 }
 
+declare module 'studiocms:plugins/endpoints' {
+	export const apiEndpoints: {
+		identifier: string;
+		onCreate: import('astro').APIRoute | null;
+		onEdit: import('astro').APIRoute | null;
+		onDelete: import('astro').APIRoute | null;
+	}[];
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;
