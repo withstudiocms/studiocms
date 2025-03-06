@@ -1,15 +1,15 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	const jsonData = await ctx.request.json();
@@ -17,64 +17,31 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	const { token, id, userid, password, confirm_password } = jsonData;
 
 	if (!token) {
-		return new Response(JSON.stringify({ error: 'Invalid form data, token is required' }), {
-			headers: {
-				'content-type': 'application/json',
-			},
-			status: 400,
-		});
+		return apiResponseLogger(400, 'Invalid form data, token is required');
 	}
 
 	if (!id) {
-		return new Response(JSON.stringify({ error: 'Invalid form data, id is required' }), {
-			headers: {
-				'content-type': 'application/json',
-			},
-			status: 400,
-		});
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	if (!userid) {
-		return new Response(JSON.stringify({ error: 'Invalid form data, userid is required' }), {
-			headers: {
-				'content-type': 'application/json',
-			},
-			status: 400,
-		});
+		return apiResponseLogger(400, 'Invalid form data, userid is required');
 	}
 
 	if (!password) {
-		return new Response(JSON.stringify({ error: 'Invalid form data, password is required' }), {
-			headers: {
-				'content-type': 'application/json',
-			},
-			status: 400,
-		});
+		return apiResponseLogger(400, 'Invalid form data, password is required');
 	}
 
 	if (!confirm_password) {
-		return new Response(
-			JSON.stringify({ error: 'Invalid form data, confirm_password is required' }),
-			{
-				headers: {
-					'content-type': 'application/json',
-				},
-				status: 400,
-			}
-		);
+		return apiResponseLogger(400, 'Invalid form data, confirm_password is required');
 	}
 
 	if (password !== confirm_password) {
-		return new Response(JSON.stringify({ error: 'Passwords do not match' }), {
-			headers: {
-				'content-type': 'application/json',
-			},
-			status: 400,
-		});
+		return apiResponseLogger(400, 'Passwords do not match');
 	}
 
 	if ((await verifyPasswordStrength(password)) !== true) {
-		return simpleResponse(
+		return apiResponseLogger(
 			400,
 			'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
 		);
@@ -89,10 +56,10 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 		await studioCMS_SDK.resetTokenBucket.delete(userid);
 
-		return simpleResponse(200, 'User password updated successfully');
+		return apiResponseLogger(200, 'User password updated successfully');
 	} catch (error) {
 		// Return Error Response
-		return simpleResponse(500, 'Error updating user password');
+		return apiResponseLogger(500, 'Error updating user password', error);
 	}
 };
 

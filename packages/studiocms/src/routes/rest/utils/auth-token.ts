@@ -1,7 +1,7 @@
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext } from 'astro';
-import { simpleResponse } from '../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
@@ -44,19 +44,19 @@ const getAuthToken = (headerString?: string | null) => {
 export async function verifyAuthToken(context: APIContext) {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	const authToken = getAuthToken(context.request.headers.get('Authorization'));
 
 	if (!authToken) {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const user = await studioCMS_SDK.REST_API.tokens.verify(authToken);
 
 	if (!user) {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	return user;

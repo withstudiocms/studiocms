@@ -5,9 +5,9 @@ import {
 } from 'studiocms:auth/lib/session';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 export const POST: APIRoute = async (context: APIContext) => {
 	const { cookies } = context;
@@ -15,24 +15,24 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const sessionToken = cookies.get(sessionCookieName)?.value ?? null;
 
 	if (!sessionToken) {
-		return simpleResponse(400, 'No session token found');
+		return apiResponseLogger(400, 'No session token found');
 	}
 
 	const { session, user } = await validateSessionToken(sessionToken);
 
 	if (session === null) {
 		deleteSessionTokenCookie(context);
-		return simpleResponse(400, 'Invalid session token');
+		return apiResponseLogger(400, 'Invalid session token');
 	}
 
 	if (!user || user === null) {
-		return simpleResponse(400, 'Invalid user');
+		return apiResponseLogger(400, 'Invalid user');
 	}
 
 	const result = await studioCMS_SDK.AUTH.permission.currentStatus(user.id);
 
 	if (!result) {
-		return simpleResponse(400, 'Failed to get user permission level');
+		return apiResponseLogger(400, 'Failed to get user permission level');
 	}
 
 	let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';

@@ -1,17 +1,13 @@
+import logger, { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async (): Promise<Response> => {
+	logger.info('Updating latest version cache');
 	const latestVersion = await studioCMS_SDK_Cache.UPDATE.latestVersion().catch((err) => {
-		return new Response(JSON.stringify({ success: false, error: err }), {
-			status: 500,
-			headers: {
-				'Content-Type': 'application/json',
-				Date: new Date().toUTCString(),
-			},
-		});
+		return apiResponseLogger(500, 'Failed to update latest version cache ', err);
 	});
-
+	logger.info('Latest version cache updated');
 	return new Response(JSON.stringify({ success: true, latestVersion }), {
 		status: 200,
 		headers: {

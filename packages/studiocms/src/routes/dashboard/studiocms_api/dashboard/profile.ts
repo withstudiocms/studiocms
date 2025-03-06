@@ -5,18 +5,18 @@ import {
 	verifyUsernameInput,
 } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsUsersUpdate } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -24,13 +24,13 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'visitor');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	type UserBasicUpdate = Omit<tsUsersUpdate, 'id'>;
@@ -56,19 +56,19 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		const data = r as UserBasicUpdate;
 
 		if (!data.name) {
-			return simpleResponse(400, 'Invalid form data, name is required');
+			return apiResponseLogger(400, 'Invalid form data, name is required');
 		}
 
 		if (!data.email) {
-			return simpleResponse(400, 'Invalid form data, email is required');
+			return apiResponseLogger(400, 'Invalid form data, email is required');
 		}
 
 		if (!data.username) {
-			return simpleResponse(400, 'Invalid form data, username is required');
+			return apiResponseLogger(400, 'Invalid form data, username is required');
 		}
 
 		if (verifyUsernameInput(data.username) !== true) {
-			return simpleResponse(
+			return apiResponseLogger(
 				400,
 				'Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
 			);
@@ -81,18 +81,18 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			.safeParse(data.email);
 
 		if (!checkEmail.success)
-			return simpleResponse(400, `Invalid email: ${checkEmail.error.message}`);
+			return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
 
 		const { usernameSearch, emailSearch } =
 			await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(data.username, checkEmail.data);
 
 		if (userData.user?.username !== data.username) {
 			if (usernameSearch.length > 0)
-				return simpleResponse(400, 'Invalid username: Username is already in use');
+				return apiResponseLogger(400, 'Invalid username: Username is already in use');
 		}
 		if (userData.user?.email !== data.email) {
 			if (emailSearch.length > 0)
-				return simpleResponse(400, 'Invalid email: Email is already in use');
+				return apiResponseLogger(400, 'Invalid email: Email is already in use');
 		}
 
 		const toUpdate: tsUsersUpdate = {
@@ -105,10 +105,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			await studioCMS_SDK.AUTH.user.update(userData.user!.id!, toUpdate);
 
-			return simpleResponse(200, 'User profile updated successfully');
+			return apiResponseLogger(200, 'User profile updated successfully');
 		} catch (error) {
 			// Return Error Response
-			return simpleResponse(500, 'Error updating user profile');
+			return apiResponseLogger(500, 'Error updating user profile', error);
 		}
 	} else if (userProfileUpdate.mode === 'password') {
 		const { data: r } = userProfileUpdate;
@@ -119,27 +119,27 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 		if (!currentPassword) {
 			if (userData.user?.password) {
-				return simpleResponse(400, 'Invalid form data, current password is required');
+				return apiResponseLogger(400, 'Invalid form data, current password is required');
 			}
 		}
 
 		if (!newPassword) {
-			return simpleResponse(400, 'Invalid form data, new password is required');
+			return apiResponseLogger(400, 'Invalid form data, new password is required');
 		}
 
 		if (!confirmNewPassword) {
-			return simpleResponse(400, 'Invalid form data, confirm new password is required');
+			return apiResponseLogger(400, 'Invalid form data, confirm new password is required');
 		}
 
 		if (newPassword !== confirmNewPassword) {
-			return simpleResponse(
+			return apiResponseLogger(
 				400,
 				'Invalid form data, new password and confirm new password do not match'
 			);
 		}
 
 		if ((await verifyPasswordStrength(newPassword)) !== true) {
-			return simpleResponse(
+			return apiResponseLogger(
 				400,
 				'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
 			);
@@ -153,14 +153,14 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			await studioCMS_SDK.AUTH.user.update(userData.user!.id, userUpdate);
 
-			return simpleResponse(200, 'User password updated successfully');
+			return apiResponseLogger(200, 'User password updated successfully');
 		} catch (error) {
 			// Return Error Response
-			return simpleResponse(500, 'Error updating user password');
+			return apiResponseLogger(500, 'Error updating user password');
 		}
 	}
 
-	return simpleResponse(400, 'Invalid form data, mode is required');
+	return apiResponseLogger(400, 'Invalid form data, mode is required');
 };
 
 export const OPTIONS: APIRoute = async () => {

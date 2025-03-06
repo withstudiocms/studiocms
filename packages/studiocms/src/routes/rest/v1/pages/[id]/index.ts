@@ -1,8 +1,8 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
@@ -24,19 +24,19 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	const page = await studioCMS_SDK_Cache.GET.page.byId(id);
 
 	if (!page) {
-		return simpleResponse(404, 'Page not found');
+		return apiResponseLogger(404, 'Page not found');
 	}
 
 	return new Response(JSON.stringify(page), {
@@ -56,13 +56,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { rank, userId } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	const jsonData: UpdatePageJson = await context.request.json();
@@ -70,25 +70,25 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { data, content } = jsonData;
 
 	if (!data) {
-		return simpleResponse(400, 'Invalid form data, data is required');
+		return apiResponseLogger(400, 'Invalid form data, data is required');
 	}
 
 	if (!content) {
-		return simpleResponse(400, 'Invalid form data, content is required');
+		return apiResponseLogger(400, 'Invalid form data, content is required');
 	}
 
 	if (!data.id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	if (!content.id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	const currentPageData = await studioCMS_SDK_Cache.GET.page.byId(id);
 
 	if (!currentPageData) {
-		return simpleResponse(404, 'Page not found');
+		return apiResponseLogger(404, 'Page not found');
 	}
 
 	const { authorId, contributorIds } = currentPageData.data;
@@ -147,10 +147,10 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
 
-		return simpleResponse(200, 'Page updated successfully');
+		return apiResponseLogger(200, 'Page updated successfully');
 	} catch (error) {
 		console.error(error);
-		return simpleResponse(500, 'Failed to update page');
+		return apiResponseLogger(500, 'Failed to update page');
 	}
 };
 
@@ -164,13 +164,13 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	const jsonData = await context.request.json();
@@ -178,22 +178,22 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { slug } = jsonData;
 
 	if (!slug) {
-		return simpleResponse(400, 'Invalid request');
+		return apiResponseLogger(400, 'Invalid request');
 	}
 
 	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index');
 
 	if (isHomePage.data && isHomePage.data.id === id) {
-		return simpleResponse(400, 'Cannot delete home page');
+		return apiResponseLogger(400, 'Cannot delete home page');
 	}
 
 	try {
 		await studioCMS_SDK.DELETE.page(id);
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
 
-		return simpleResponse(200, 'Page deleted successfully');
+		return apiResponseLogger(200, 'Page deleted successfully');
 	} catch (error) {
-		return simpleResponse(500, 'Failed to delete page');
+		return apiResponseLogger(500, 'Failed to delete page');
 	}
 };
 

@@ -1,16 +1,16 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import pluginList from 'studiocms:plugins';
 import { settingsEndpoints } from 'studiocms:plugins/endpoints';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -18,13 +18,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const { plugin } = context.params;
@@ -34,17 +34,17 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const pluginData = filteredPluginList.find((pl) => pl.identifier === plugin);
 
 	if (!pluginData) {
-		return simpleResponse(404, 'Plugin not found');
+		return apiResponseLogger(404, 'Plugin not found');
 	}
 
 	const settingsPage = settingsEndpoints.find((endpoint) => endpoint.identifier === plugin);
 
 	if (!settingsPage) {
-		return simpleResponse(404, 'Plugin does not have a settings page');
+		return apiResponseLogger(404, 'Plugin does not have a settings page');
 	}
 
 	if (!settingsPage.onSave) {
-		return simpleResponse(404, 'Plugin does not have a settings page');
+		return apiResponseLogger(404, 'Plugin does not have a settings page');
 	}
 
 	return settingsPage.onSave(context);

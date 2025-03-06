@@ -1,6 +1,6 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../../../utils/auth-token.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
@@ -13,23 +13,23 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id, diffid } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid page ID');
+		return apiResponseLogger(400, 'Invalid page ID');
 	}
 
 	if (!diffid) {
-		return simpleResponse(400, 'Invalid diff ID');
+		return apiResponseLogger(400, 'Invalid diff ID');
 	}
 
 	const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffid);
 
 	if (!diff) {
-		return simpleResponse(404, 'Diff not found');
+		return apiResponseLogger(404, 'Diff not found');
 	}
 
 	return new Response(JSON.stringify(diff), {

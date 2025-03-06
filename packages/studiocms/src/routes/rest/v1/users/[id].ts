@@ -1,7 +1,7 @@
 import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../utils/auth-token.js';
 
 type PermissionRank = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
@@ -16,19 +16,19 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
 
 	if (!existingUser) {
-		return simpleResponse(400, 'User not found');
+		return apiResponseLogger(400, 'User not found');
 	}
 
 	const { avatar, createdAt, email, name, permissionsData, updatedAt, url, username } =
@@ -53,7 +53,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 	);
 
 	if (!loggedInUser || loggedInUser === undefined) {
-		return simpleResponse(400, 'User Error');
+		return apiResponseLogger(400, 'User Error');
 	}
 
 	const permissionLevelInput = {
@@ -65,7 +65,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
 
 	if (!isAllowed) {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	return new Response(JSON.stringify(data), {
@@ -85,19 +85,19 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
 
 	if (!existingUser) {
-		return simpleResponse(400, 'User not found');
+		return apiResponseLogger(400, 'User not found');
 	}
 
 	const { permissionsData } = existingUser;
@@ -109,7 +109,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	);
 
 	if (!loggedInUser || loggedInUser === undefined) {
-		return simpleResponse(400, 'User Error');
+		return apiResponseLogger(400, 'User Error');
 	}
 
 	const permissionLevelInput = {
@@ -121,7 +121,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
 
 	if (!isAllowed) {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const jsonData = await context.request.json();
@@ -129,13 +129,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { rank: newRank } = jsonData;
 
 	if (!newRank) {
-		return simpleResponse(400, 'Missing field: Rank is required');
+		return apiResponseLogger(400, 'Missing field: Rank is required');
 	}
 
 	const isRankValid = ['visitor', 'editor', 'admin', 'owner'].includes(newRank);
 
 	if (!isRankValid) {
-		return simpleResponse(400, 'Invalid rank');
+		return apiResponseLogger(400, 'Invalid rank');
 	}
 
 	const updateRank = await studioCMS_SDK.UPDATE.permissions({
@@ -144,13 +144,13 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	});
 
 	if (!updateRank) {
-		return simpleResponse(400, 'Failed to update rank');
+		return apiResponseLogger(400, 'Failed to update rank');
 	}
 
 	const updatedUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
 
 	if (!updatedUser) {
-		return simpleResponse(400, 'Failed to get updated user');
+		return apiResponseLogger(400, 'Failed to get updated user');
 	}
 
 	const {
@@ -195,19 +195,19 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner' && rank !== 'admin') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const { id } = context.params;
 
 	if (!id) {
-		return simpleResponse(400, 'Invalid form data, id is required');
+		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
 	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
 
 	if (!existingUser) {
-		return simpleResponse(400, 'User not found');
+		return apiResponseLogger(400, 'User not found');
 	}
 
 	const { permissionsData } = existingUser;
@@ -219,7 +219,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	);
 
 	if (!loggedInUser || loggedInUser === undefined) {
-		return simpleResponse(400, 'User Error');
+		return apiResponseLogger(400, 'User Error');
 	}
 
 	const permissionLevelInput = {
@@ -231,23 +231,23 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
 
 	if (!isAllowed) {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	try {
 		const response = await studioCMS_SDK.DELETE.user(id);
 
 		if (!response) {
-			return simpleResponse(400, 'Failed to delete user');
+			return apiResponseLogger(400, 'Failed to delete user');
 		}
 
 		if (response.status === 'error') {
-			return simpleResponse(400, response.message);
+			return apiResponseLogger(400, response.message);
 		}
 
-		return simpleResponse(200, response.message);
+		return apiResponseLogger(200, response.message);
 	} catch (error) {
-		return simpleResponse(400, `Failed to delete user: ${error}`);
+		return apiResponseLogger(400, `Failed to delete user: ${error}`);
 	}
 };
 

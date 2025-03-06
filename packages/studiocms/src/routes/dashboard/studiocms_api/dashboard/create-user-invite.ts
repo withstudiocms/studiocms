@@ -4,11 +4,11 @@ import {
 	verifyUsernameInput,
 } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
-import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
@@ -23,7 +23,7 @@ type JSONData = {
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -31,13 +31,13 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData: JSONData = await ctx.request.json();
@@ -46,24 +46,24 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	// If the username, password, email, or display name is missing, return an error
 	if (!username) {
-		return simpleResponse(400, 'Missing field: Username is required');
+		return apiResponseLogger(400, 'Missing field: Username is required');
 	}
 
 	if (!email) {
-		return simpleResponse(400, 'Missing field: Email is required');
+		return apiResponseLogger(400, 'Missing field: Email is required');
 	}
 
 	if (!displayname) {
-		return simpleResponse(400, 'Missing field: Display name is required');
+		return apiResponseLogger(400, 'Missing field: Display name is required');
 	}
 
 	if (!rank) {
-		return simpleResponse(400, 'Missing field: Rank is required');
+		return apiResponseLogger(400, 'Missing field: Rank is required');
 	}
 
 	// If the username is invalid, return an error
 	if (verifyUsernameInput(username) !== true) {
-		return simpleResponse(
+		return apiResponseLogger(
 			400,
 			'Invalid username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
 		);
@@ -76,18 +76,18 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		.safeParse(email);
 
 	if (!checkEmail.success) {
-		return simpleResponse(400, `Invalid email: ${checkEmail.error.message}`);
+		return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
 	}
 
 	const { usernameSearch, emailSearch } =
 		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
 
 	if (usernameSearch.length > 0) {
-		return simpleResponse(400, 'Invalid username: Username is already in use');
+		return apiResponseLogger(400, 'Invalid username: Username is already in use');
 	}
 
 	if (emailSearch.length > 0) {
-		return simpleResponse(400, 'Invalid email: Email is already in use');
+		return apiResponseLogger(400, 'Invalid email: Email is already in use');
 	}
 
 	function generateResetLink(token: {
@@ -113,7 +113,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	const token = await studioCMS_SDK.resetTokenBucket.new(newUser.id);
 
 	if (!token) {
-		return simpleResponse(500, 'Failed to create reset token');
+		return apiResponseLogger(500, 'Failed to create reset token');
 	}
 
 	const resetLink = generateResetLink(token);

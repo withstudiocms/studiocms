@@ -1,7 +1,7 @@
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsSiteConfigSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 import { verifyAuthToken } from '../../utils/auth-token.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
@@ -14,7 +14,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const siteConfig = await studioCMS_SDK_Cache.GET.siteConfig();
@@ -36,33 +36,33 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	const { rank } = user;
 
 	if (rank !== 'owner') {
-		return simpleResponse(401, 'Unauthorized');
+		return apiResponseLogger(401, 'Unauthorized');
 	}
 
 	const siteConfig: Omit<tsSiteConfigSelect, 'id'> = await context.request.json();
 
 	if (!siteConfig.title) {
-		return simpleResponse(400, 'Invalid form data, title is required');
+		return apiResponseLogger(400, 'Invalid form data, title is required');
 	}
 
 	if (!siteConfig.description) {
-		return simpleResponse(400, 'Invalid form data, description is required');
+		return apiResponseLogger(400, 'Invalid form data, description is required');
 	}
 
 	if (!siteConfig.loginPageBackground) {
-		return simpleResponse(400, 'Invalid form data, loginPageBackground is required');
+		return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
 	}
 
 	if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
-		return simpleResponse(400, 'Invalid form data, loginPageCustomImage is required');
+		return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
 	}
 
 	try {
 		await studioCMS_SDK_Cache.UPDATE.siteConfig(siteConfig);
 
-		return simpleResponse(200, 'Site config updated');
+		return apiResponseLogger(200, 'Site config updated');
 	} catch (error) {
-		return simpleResponse(500, 'Error updating site config');
+		return apiResponseLogger(500, 'Error updating site config', error);
 	}
 };
 

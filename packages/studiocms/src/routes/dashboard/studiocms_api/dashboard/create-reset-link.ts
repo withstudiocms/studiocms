@@ -1,15 +1,15 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { simpleResponse } from '../../../../utils/simpleResponse.js';
 
 const { testingAndDemoMode } = developerConfig;
 
 export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
-		return simpleResponse(400, 'Testing and demo mode is enabled, this action is disabled.');
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
 	}
 
 	// Get user data
@@ -17,13 +17,13 @@ export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
 	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
 	if (!isAuthorized) {
-		return simpleResponse(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	const jsonData = await ctx.request.json();
@@ -31,13 +31,13 @@ export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
 	const { userId } = jsonData;
 
 	if (!userId) {
-		return simpleResponse(400, 'Invalid form data, userId is required');
+		return apiResponseLogger(400, 'Invalid form data, userId is required');
 	}
 
 	const token = await studioCMS_SDK.resetTokenBucket.new(userId);
 
 	if (!token) {
-		return simpleResponse(500, 'Failed to create reset link');
+		return apiResponseLogger(500, 'Failed to create reset link');
 	}
 
 	return new Response(JSON.stringify(token), {
