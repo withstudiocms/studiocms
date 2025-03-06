@@ -1358,10 +1358,10 @@ export const studiocms = defineIntegration({
 									)};
 
 									export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
-											identifier,
-											onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
-											onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
-											onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
+										identifier,
+										onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
+										onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
+										onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
 									}));
 
 									export const settingsEndpoints = pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({

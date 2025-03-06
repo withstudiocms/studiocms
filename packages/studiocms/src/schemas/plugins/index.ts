@@ -1,4 +1,4 @@
-import type { APIRoute, AstroIntegration } from 'astro';
+import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
