@@ -1086,7 +1086,7 @@ export const studiocms = defineIntegration({
 								const isVerbose = ${verbose};
 								function buildErrorMessage(message: string, error?: Error | any) {
 									if (!error) return message;
-									if (error instanceof Error) return message + ': ' + error.message + '\n' + error.stack;
+									if (error instanceof Error) return message + ': ' + error.message + '\\n' + error.stack;
 									return message + ': ' + error;
 								};
 
