@@ -1083,38 +1083,28 @@ export const studiocms = defineIntegration({
 								import { logger } from '@it-astro:logger:studiocms-runtime';
 
 								const runtimeLogger = logger.fork('studiocms:runtime');
-
-								export default runtimeLogger;
-
 								const isVerbose = ${verbose};
-
 								function buildErrorMessage(message: string, error?: Error | any) {
 									if (!error) return message;
-
 									if (error instanceof Error) return message + ': ' + error.message + '\n' + error.stack;
-
 									return message + ': ' + error;
-								}
+								};
 
 								export function apiResponseLogger(status: number, message: string, error?: Error | any) {
 									if (status !== 200) {
-
 										isVerbose && runtimeLogger.error(buildErrorMessage(message));
-										return new Response(
-											JSON.stringify({ error: message }), { 
-												status, 
-												headers: { 'Content-Type': 'application/json' } 
-											}
-										);	
-									}
-									
-									return new Response(
-										JSON.stringify({ message }), { 
+										return new Response(JSON.stringify({ error: message }), { 
 											status, 
 											headers: { 'Content-Type': 'application/json' } 
-										}
-									);
-								}
+										});
+									}
+									return new Response(JSON.stringify({ message }), { 
+										status, 
+										headers: { 'Content-Type': 'application/json' } 
+									});
+								};
+
+								export default runtimeLogger;
 							`,
 
 							// Plugin Helpers
