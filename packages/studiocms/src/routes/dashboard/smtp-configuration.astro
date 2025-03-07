@@ -169,9 +169,123 @@ if (!mailerConfig) {
   
     </Card>
   </div>
-
-
 </Layout>
+
+<script>
+  import { toast } from 'studiocms:ui/components';
+
+  const smtpConfigForm = document.getElementById('smtp-config-form') as HTMLFormElement;
+  const testSmtpForm = document.getElementById('test-smtp-form') as HTMLFormElement;
+
+  smtpConfigForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(smtpConfigForm);
+
+    const data: {
+      port: number;
+      host: string;
+      secure: boolean;
+      proxy: string | null;
+      auth_user: string | null;
+      auth_pass: string | null;
+      tls_rejectUnauthorized: boolean | null;
+      tls_servername: string | null;
+      default_sender: string;
+    } = {
+      host: formData.get('host') as string,
+      port: parseInt(formData.get('port') as string),
+      secure: formData.get('secure') === 'true',
+      proxy: formData.get('proxy')?.toString() || null,
+      tls_rejectUnauthorized: formData.get('tls_rejectUnauthorized') === 'true' || null,
+      tls_servername: formData.get('tls_servername')?.toString() || null,
+      auth_user: formData.get('auth_user')?.toString() || null,
+      auth_pass: formData.get('auth_pass')?.toString() || null,
+      default_sender: formData.get('default_sender') as string,
+    }
+
+    const createNewConfig = formData.get('create-new-config') as string;
+
+    const response = await fetch(smtpConfigForm.action, {
+      method: createNewConfig ? 'POST' : 'UPDATE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save SMTP configuration',
+        type: 'danger',
+      })
+      return;
+    }
+
+    const result = await response.json();
+
+    if (result.message) {
+      toast({
+        title: 'Success',
+        description: result.message,
+        type: 'success',
+      })
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
+    } else {
+      toast({
+        title: 'Error',
+        description: result.error,
+        type: 'danger',
+      })
+    }
+  })
+
+  testSmtpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(testSmtpForm);
+
+    const data = {
+      test_email: formData.get('test_email') as string,
+    }
+
+    const response = await fetch(testSmtpForm.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      toast({
+        title: 'Error',
+        description: 'Failed to send test email',
+        type: 'danger',
+      })
+      return;
+    }
+
+    const result = await response.json();
+
+    if (result.message) {
+      toast({
+        title: 'Success',
+        description: result.message,
+        type: 'success',
+      })
+    } else {
+      toast({
+        title: 'Error',
+        description: result.error,
+        type: 'danger',
+      })
+    }
+  })
+</script>
 
 <script>
     import { 
