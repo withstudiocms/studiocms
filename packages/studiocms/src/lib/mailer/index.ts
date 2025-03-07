@@ -1,5 +1,5 @@
 import { db, eq } from 'astro:db';
-import _logger from 'studiocms:logger';
+import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
@@ -162,7 +162,7 @@ function mailerResponse(data: MailerResponse): MailerResponse {
 		logger.error(data.error);
 		return data;
 	}
-	logger.info(data.message);
+	isVerbose && logger.info(data.message);
 	return data;
 }
 

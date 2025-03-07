@@ -2,6 +2,8 @@ declare module 'studiocms:logger' {
 	export const logger: import('astro').AstroIntegrationLogger;
 	export default logger;
 
+	export const isVerbose: boolean;
+
 	export const apiResponseLogger: (
 		status: number,
 		message: string,
