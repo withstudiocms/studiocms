@@ -73,6 +73,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             <Input label={t('input-diff-tracking-limit')} name="diff-per-page" placeholder="10" value={data.diffPerPage} />
         </div>
 
+        <div class="form-row">
+            <Select label="SMTP Mailer" name="enable-mailer" defaultValue="false" options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <div> </div>
+        </div>
+
         <Divider />
 
         <span>
@@ -184,6 +189,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                 enableDiffs: formData.get('diff-enabled') === 'true',
                 diffPerPage: parseInt(formData.get('diff-per-page') as string),
                 gridItems: enabledGridItems,
+                enableMailer: formData.get('enable-mailer') === 'true',
             }
 
             console.log(data);
