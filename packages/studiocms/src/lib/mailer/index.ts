@@ -2,7 +2,7 @@ import _logger from 'studiocms:logger';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
-import { StudioCMSCoreError } from '../../errors';
+import { StudioCMSCoreError } from '../../errors.js';
 
 /**
  * Configuration options for the mail transporter.
