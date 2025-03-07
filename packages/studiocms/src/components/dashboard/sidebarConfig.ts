@@ -146,6 +146,11 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'cog-6-tooth',
 			href: StudioCMSRoutes.mainLinks.siteConfiguration,
 		},
+		{
+			key: 'mailer-configuration-label',
+			icon: 'inbox',
+			href: StudioCMSRoutes.mainLinks.smtpConfiguration,
+		},
 		...filterAndProcessPages(adminPages, true, ['owner'], lang),
 	];
 

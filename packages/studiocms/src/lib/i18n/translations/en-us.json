@@ -58,7 +58,8 @@
       "category-3-empty-placeholder": "No plugins with settings pages found.",
       "user-dropdown:settings": "User Settings",
       "user-dropdown:view-site": "View Site",
-      "user-dropdown:logout": "Log Out"
+      "user-dropdown:logout": "Log Out",
+      "mailer-configuration-label": "SMTP Configuration"
     },
     "@studiocms/dashboard:profile": {
       "title": "User Profile",
@@ -127,7 +128,7 @@
       "smtp-settings": "SMTP Settings",
       "test-smtp": "Send Test Email",
       "smtp-host": "Host",
-      "smtp-host-placeholder": "smtp.example.com",
+      "smtp-host-placeholder": "smtp.example.com / 1.1.1.1",
       "smtp-port": "Port",
       "smtp-port-placeholder": "587",
       "smtp-secure": "Secure",

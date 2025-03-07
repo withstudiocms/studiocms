@@ -1,6 +1,7 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
 import { getMailerConfigTable } from 'studiocms:mailer';
+import studioCMS_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Icon, Input, Select } from 'studiocms:ui/components';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
@@ -15,6 +16,10 @@ let createConfig = false;
 if (!mailerConfig) {
 	createConfig = true;
 }
+
+const {
+	data: { enableMailer },
+} = await studioCMS_Cache.GET.siteConfig();
 ---
 
 <Layout 
@@ -33,130 +38,136 @@ if (!mailerConfig) {
     </PageHeader>
   </div>
 
-  <Card fullWidth>
-    <div slot="header">
-      <h2><t-smtp key="smtp-settings">{t('smtp-settings')}</t-smtp></h2>
-    </div>
-
-    <form id="smtp-config-form" action="#">
-      <div class="form-content">
-
-        { createConfig && <input type="hidden" name="create-new-config" value="true" /> }
-
-        <div class="form-row">
-          <Input
-            type="text"
-            name="host"
-            label={t('smtp-host')}
-            placeholder={t('smtp-host-placeholder')}
-            defaultValue={mailerConfig?.host}
-            isRequired
-          />
-          <Input
-            type="number"
-            name="port"
-            label={t('smtp-port')}
-            placeholder={t('smtp-port-placeholder')}
-            defaultValue={`${mailerConfig?.port}`}
-            isRequired
-          /> 
-        </div>
-
-        <div class="form-row">
-          <Select
-            label={t('smtp-secure')}
-            name="secure"
-            options={[
-              { label: 'True', value: 'true' },
-              { label: 'False', value: 'false' },
-            ]}
-            defaultValue={`${mailerConfig?.secure}`}
-            isRequired
+  <div class="smtp-content">
+    <Card fullWidth>
+      <div slot="header">
+        <h2><t-smtp key="smtp-settings">{t('smtp-settings')}</t-smtp></h2>
+      </div>
+  
+      <form id="smtp-config-form" action="#">
+        <div class="form-content">
+  
+          { createConfig && <input type="hidden" name="create-new-config" value="true" /> }
+  
+          <div class="form-row">
+            <Input
+              type="text"
+              name="host"
+              label={t('smtp-host')}
+              placeholder={t('smtp-host-placeholder')}
+              defaultValue={mailerConfig?.host}
+              isRequired
             />
-
-          <Input
-            type="text"
-            name="proxy"
-            label={t('smtp-proxy')}
-            placeholder={t('smtp-proxy-placeholder')}
-            defaultValue={mailerConfig?.proxy || undefined}
-          />
-        </div>
-
-        <div class="form-row">
-          <Select
-            label={t('smtp-tls-reject-unauthorized')}
-            name="tls_rejectUnauthorized"
-            options={[
-              { label: 'True', value: 'true' },
-              { label: 'False', value: 'false' },
-            ]}
-            defaultValue={`${mailerConfig?.tls_rejectUnauthorized || false}`}
-            isRequired
+            <Input
+              type="number"
+              name="port"
+              label={t('smtp-port')}
+              placeholder={t('smtp-port-placeholder')}
+              defaultValue={`${mailerConfig?.port}`}
+              isRequired
+            /> 
+          </div>
+  
+          <div class="form-row">
+            <Select
+              label={t('smtp-secure')}
+              name="secure"
+              options={[
+                { label: 'True', value: 'true' },
+                { label: 'False', value: 'false' },
+              ]}
+              defaultValue={`${mailerConfig?.secure || false}`}
+              isRequired
+              fullWidth
+              />
+  
+            <Input
+              type="text"
+              name="proxy"
+              label={t('smtp-proxy')}
+              placeholder={t('smtp-proxy-placeholder')}
+              defaultValue={mailerConfig?.proxy || undefined}
             />
+          </div>
+  
+          <div class="form-row">
+            <Select
+              label={t('smtp-tls-reject-unauthorized')}
+              name="tls_rejectUnauthorized"
+              options={[
+                { label: 'True', value: 'true' },
+                { label: 'False', value: 'false' },
+              ]}
+              defaultValue={`${mailerConfig?.tls_rejectUnauthorized || false}`}
+              fullWidth
+              />
+            <Input 
+              type="text"
+              name="tls_servername"
+              label={t('smtp-tls-servername')}
+              placeholder={t('smtp-tls-servername-placeholder')}
+              defaultValue={mailerConfig?.tls_servername || undefined}
+              />
+          </div>
+  
+          <div class="form-row">
+            <Input
+              type="text"
+              name="auth_user"
+              label={t('smtp-user')}
+              placeholder={t('smtp-user-placeholder')}
+              defaultValue={mailerConfig?.auth_user || undefined}
+            />
+            <Input
+              type="password"
+              name="auth_pass"
+              label={t('smtp-password')}
+              placeholder={t('smtp-password-placeholder')}
+            />
+          </div>
+  
           <Input 
             type="text"
-            name="tls_servername"
-            label={t('smtp-tls-servername')}
-            placeholder={t('smtp-tls-servername-placeholder')}
-            defaultValue={mailerConfig?.tls_servername || undefined}
+            name="default_sender"
+            label={t('smtp-default-sender')}
+            placeholder={t('smtp-default-sender-placeholder')}
+            defaultValue={mailerConfig?.default_sender || undefined}
+            isRequired
             />
+  
         </div>
-
-        <div class="form-row">
+      </form>
+  
+    </Card>
+  
+    <Card fullWidth>
+      <div slot="header">
+        <h2><t-smtp key="test-smtp">{t('test-smtp')}</t-smtp></h2>
+      </div>
+  
+      <form id="test-smtp-form" action="#">
+        <div class="form-content">
           <Input
             type="text"
-            name="auth_user"
-            label={t('smtp-user')}
-            placeholder={t('smtp-user-placeholder')}
-            defaultValue={mailerConfig?.auth_user || undefined}
+            name="test_email"
+            label={t('test-email')}
+            placeholder={t('test-email-placeholder')}
             isRequired
-          />
-          <Input
-            type="password"
-            name="auth_pass"
-            label={t('smtp-password')}
-            placeholder={t('smtp-password-placeholder')}
-            isRequired={createConfig}
+            disabled={!enableMailer}
           />
         </div>
+      </form>
 
-        <Input 
-          type="text"
-          name="default_sender"
-          label={t('smtp-default-sender')}
-          placeholder={t('smtp-default-sender-placeholder')}
-          defaultValue={mailerConfig?.default_sender || undefined}
-          isRequired
-          />
-
+      <div slot="footer">
+        <Button variant="solid" color="primary" size="sm" type="submit" form="test-smtp-form" disabled={!enableMailer}>
+          <Icon slot="start-content" name="inbox-20-solid" width={20} height={20} />
+          <t-smtp key="send-test-email">{t('send-test-email')}</t-smtp>
+        </Button>
       </div>
-    </form>
+  
+    </Card>
+  </div>
 
-  </Card>
-
-  <Card fullWidth>
-    <div slot="header">
-      <h2><t-smtp key="test-smtp">{t('test-smtp')}</t-smtp></h2>
-    </div>
-
-    <form id="test-smtp-form" action="#">
-      <div class="form-content">
-        <Input
-          type="text"
-          name="test_email"
-          label={t('test-email')}
-          placeholder={t('test-email-placeholder')}
-          isRequired
-        />
-      </div>
-      <Button variant="solid" color="primary" size="sm" type="submit" form="test-smtp-form">
-        <Icon slot="start-content" name="inbox-20-solid" width={20} height={20} />
-        <t-smtp key="send-test-email">{t('send-test-email')}</t-smtp>
-      </Button>
-    </form>
-
-  </Card>
 
 </Layout>
 
@@ -213,21 +224,27 @@ if (!mailerConfig) {
 </script>
 
 <style>
-    .form-content {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .smtp-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media screen and (max-width: 768px) {
     .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+      grid-template-columns: 1fr;
     }
-
-    @media screen and (max-width: 768px) {
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-    }
+  }
 </style>

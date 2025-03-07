@@ -146,6 +146,11 @@ export const StudioCMSRoutes = {
 		siteConfiguration: makeDashboardRoute('configuration'),
 
 		/**
+		 * URL for the smtp configuration page.
+		 */
+		smtpConfiguration: makeDashboardRoute('smtp-configuration'),
+
+		/**
 		 * URL for the user management page.
 		 */
 		userManagement: makeDashboardRoute('user-management'),

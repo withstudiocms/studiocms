@@ -673,6 +673,11 @@ export const studiocms = defineIntegration({
 									pattern: 'plugins/[plugin]',
 									entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
 								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'smtp-configuration',
+									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
+								},
 							],
 						},
 						false
@@ -1091,7 +1096,7 @@ export const studiocms = defineIntegration({
 								export const logger = _logger.fork('studiocms:runtime');
 
 								export default logger;
-								
+
 								const apiLogger = _logger.fork('studiocms:runtime/api');
 
 								export const isVerbose = ${verbose};

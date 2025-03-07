@@ -673,8 +673,7 @@ export class StudioCMSVirtualCache {
 				return returnConfig;
 			}
 
-			// Update the cache
-			this.siteConfig.set(this.SiteConfigMapID, returnConfig);
+			this.siteConfig.clear();
 
 			// Return the data
 			return returnConfig;
