@@ -21,7 +21,7 @@ export type tsMailer = typeof tsMailerConfig.$inferSelect;
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
  */
-export type tsMailerInsert = typeof tsMailerConfig.$inferInsert;
+export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
 
 /**
  * Configuration options for the mail transporter.
@@ -174,9 +174,7 @@ export const updateMailerConfigTable = async (config: tsMailerInsert): Promise<v
  * @param config - The mailer configuration object to create.
  * @returns A promise that resolves with the new mailer configuration object.
  */
-export const createMailerConfigTable = async (
-	config: Omit<tsMailerInsert, 'id'>
-): Promise<tsMailer> => {
+export const createMailerConfigTable = async (config: tsMailerInsert): Promise<tsMailer> => {
 	try {
 		return await db
 			.insert(tsMailerConfig)
