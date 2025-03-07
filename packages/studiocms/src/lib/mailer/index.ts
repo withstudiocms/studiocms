@@ -12,6 +12,7 @@ export interface TransporterConfig {
 	};
 	tls?: {
 		rejectUnauthorized?: boolean;
+		servername?: string;
 	};
 }
 
