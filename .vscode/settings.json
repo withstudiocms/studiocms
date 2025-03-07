@@ -5,14 +5,26 @@
     "source.organizeImports.biome": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",
-  "[mdx]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "editor.gotoLocation.multipleDefinitions": "goto",
+  "cSpell.ignorePaths": [
+    "package-lock.json",
+    "node_modules",
+    "vscode-extension",
+    ".git/{info,lfs,logs,refs,objects}/**",
+    ".git/{index,*refs,*HEAD}",
+    ".vscode",
+    ".vscode-insiders",
+    ".env"
+  ],
   "cSpell.words": [
     "Adammatthiesen",
+    "astrocms",
+    "astrodb",
     "astrodtsbuilder",
     "astrojs",
+    "astrostudio",
+    "astrostudiocms",
+    "bluwy",
     "CMSAPI",
     "CMSO",
     "CMSSDK",
@@ -31,8 +43,11 @@
     "favicons",
     "foldertree",
     "frontmatter",
+    "giget",
     "haveaccount",
+    "headlesscms",
     "heroicons",
+    "iconify",
     "inox",
     "jdtjenkins",
     "johndoe",
@@ -86,6 +101,7 @@
     "vite",
     "Weblate",
     "webvitals",
+    "withastro",
     "withstudiocms",
     "yourname"
   ]
