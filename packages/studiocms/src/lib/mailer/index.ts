@@ -11,7 +11,6 @@ export interface TransporterConfig {
 		pass?: string;
 	};
 	tls?: {
-		// do not fail on invalid certs
 		rejectUnauthorized?: boolean;
 	};
 }
