@@ -22,6 +22,9 @@ import type {
 } from './types/index.js';
 import type { useDB } from './utils/db.js';
 
+type StudioCMSSDK = ReturnType<typeof studiocmsSDKCore>;
+type Database = ReturnType<typeof useDB>;
+
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
  * It supports caching for site configurations, versions, and page data.
@@ -32,7 +35,7 @@ import type { useDB } from './utils/db.js';
  * and page data.
  *
  * @param {ProcessedCacheConfig} cacheConfig - The configuration for the cache.
- * @param {ReturnType<typeof studiocmsSDKCore>} sdkCore - The StudioCMS SDK instance.
+ * @param {StudioCMSSDK} sdkCore - The StudioCMS SDK instance.
  */
 export class StudioCMSVirtualCache {
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';
@@ -45,7 +48,7 @@ export class StudioCMSVirtualCache {
 	private readonly versionCacheLifetime = versionCacheLifetime;
 
 	private readonly cacheConfig: ProcessedCacheConfig;
-	private readonly sdk: ReturnType<typeof studiocmsSDKCore>;
+	private readonly sdk: StudioCMSSDK;
 
 	private pages = new Map<string, PageDataCacheObject>();
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
@@ -69,6 +72,7 @@ export class StudioCMSVirtualCache {
 			folder: (
 				id: string
 			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
+			databaseTable: StudioCMSSDK['GET']['databaseTable'];
 		};
 		POST: {
 			page: (data: {
@@ -108,10 +112,15 @@ export class StudioCMSVirtualCache {
 				data: tsPageFolderSelect
 			) => Promise<{ name: string; id: string; parent: string | null }>;
 		};
-		db: ReturnType<typeof useDB>;
+		DELETE: {
+			page: (id: string) => Promise<void>;
+			folder: (id: string) => Promise<void>;
+		};
+		db: Database;
+		diffTracking: StudioCMSSDK['diffTracking'];
 	};
 
-	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: ReturnType<typeof studiocmsSDKCore>) {
+	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: StudioCMSSDK) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = sdkCore;
 
@@ -129,6 +138,7 @@ export class StudioCMSVirtualCache {
 					await this.getPageFolderTree(includeDrafts),
 				folderList: async () => await this.getFolderList(),
 				folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
+				databaseTable: sdkCore.GET.databaseTable,
 			},
 			POST: {
 				page: async (data) => await this.createPage(data),
@@ -173,7 +183,20 @@ export class StudioCMSVirtualCache {
 					return updatedEntry;
 				},
 			},
+			DELETE: {
+				page: async (id: string) => {
+					await this.sdk.DELETE.page(id);
+					this.clearPageById(id);
+				},
+				folder: async (id: string) => {
+					await this.sdk.DELETE.folder(id);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+				},
+			},
 			db: sdkCore.db,
+			diffTracking: sdkCore.diffTracking,
 		};
 	}
 

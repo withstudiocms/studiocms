@@ -3,7 +3,6 @@ import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
-import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
@@ -231,7 +230,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	data.contributorIds = JSON.stringify(ContributorIds);
 	data.updatedAt = new Date();
 
-	const startMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+	const startMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
 		(metaData) => metaData.id === data.id
 	);
 
@@ -248,14 +247,14 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			pageContent: content as tsPageContentSelect,
 		});
 
-		const updatedMetaData = (await studioCMS_SDK.GET.databaseTable.pageData()).find(
+		const updatedMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
 			(metaData) => metaData.id === data.id
 		);
 
 		const { enableDiffs, diffPerPage } = (await studioCMS_SDK_Cache.GET.siteConfig()).data;
 
 		if (enableDiffs) {
-			await studioCMS_SDK.diffTracking.insert(
+			await studioCMS_SDK_Cache.diffTracking.insert(
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				userData.user!.id,
 				data.id,
@@ -324,8 +323,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
 
 	try {
-		await studioCMS_SDK.DELETE.page(id);
-		studioCMS_SDK_Cache.CLEAR.page.byId(id);
+		await studioCMS_SDK_Cache.DELETE.page(id);
 
 		if (apiRoute) {
 			await apiRoute(context);
