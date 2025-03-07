@@ -238,26 +238,12 @@ export function convertTransporterConfig(config: tsMailer): MailerConfig {
 /**
  * Sends an email using the provided mailer configuration and mail options.
  *
- * @param mailerConfig - The configuration object for the mailer, including the transporter and sender details.
  * @param mailOptions - The options for the mail, including the subject and other message details.
  * @returns A promise that resolves with the result of the mail sending operation.
  * @throws Will throw an error if the mail sending operation fails.
  *
  * @example
  * ```typescript
- * const mailerConfig = {
- *   transporter: {
- *     host: 'smtp.example.com',
- *     port: 587,
- *     auth: {
- *       user: 'username',
- *       pass: 'password'
- *     },
- *     proxy: 'socks5://proxy.example.com:1080'
- *   },
- *   sender: 'no-reply@example.com'
- * };
- *
  * const mailOptions = {
  *   subject: 'Test Email',
  *   to: 'recipient@example.com',
@@ -269,7 +255,19 @@ export function convertTransporterConfig(config: tsMailer): MailerConfig {
  *   .catch(error => console.error('Error sending email:', error));
  * ```
  */
-export async function sendMail(mailerConfig: MailerConfig, { subject, ...message }: MailOptions) {
+export async function sendMail({ subject, ...message }: MailOptions) {
+	// Get the mailer configuration from the database
+	const mailerConfigTable = await getMailerConfigTable();
+
+	// If the mailer configuration is not found, throw an
+	// error indicating that the configuration is missing
+	if (!mailerConfigTable) {
+		throw new StudioCMSMailerError('Mailer configuration not found');
+	}
+
+	// Convert the mailer configuration to a nodemailer transporter configuration
+	const mailerConfig = convertTransporterConfig(mailerConfigTable);
+
 	// Create a new nodemailer transport
 	const transporter = nodemailer.createTransport(mailerConfig.transporter, {
 		from: mailerConfig.sender,
@@ -312,22 +310,11 @@ export async function sendMail(mailerConfig: MailerConfig, { subject, ...message
 /**
  * Verifies the mail connection using the provided transporter configuration.
  *
- * @param transporterConfig - The configuration object for the mail transporter.
  * @returns A promise that resolves to an object containing either a success message or an error message.
  *
  * @example
  * ```typescript
- * const transporterConfig = {
- *   host: 'smtp.example.com',
- *   port: 587,
- *   auth: {
- *     user: 'username',
- *     pass: 'password'
- *   },
- *   proxy: 'socks5://proxy.example.com:1080'
- * };
- *
- * const result = await verifyMailConnection(transporterConfig);
+ * const result = await verifyMailConnection();
  * if ('message' in result) {
  *   console.log(result.message);
  * } else {
@@ -335,9 +322,19 @@ export async function sendMail(mailerConfig: MailerConfig, { subject, ...message
  * }
  * ```
  */
-export async function verifyMailConnection(
-	transporterConfig: TransporterConfig
-): Promise<VerificationResponse> {
+export async function verifyMailConnection(): Promise<VerificationResponse> {
+	// Get the mailer configuration from the database
+	const mailerConfigTable = await getMailerConfigTable();
+
+	// If the mailer configuration is not found, throw an
+	// error indicating that the configuration is missing
+	if (!mailerConfigTable) {
+		throw new StudioCMSMailerError('Mailer configuration not found');
+	}
+
+	// Convert the mailer configuration to a nodemailer transporter configuration
+	const { transporter: transporterConfig } = convertTransporterConfig(mailerConfigTable);
+
 	// Create a new nodemailer transport
 	const transporter = nodemailer.createTransport(transporterConfig);
 
