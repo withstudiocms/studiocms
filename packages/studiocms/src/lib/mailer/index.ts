@@ -1,7 +1,8 @@
-import logger from 'studiocms:logger';
+import _logger from 'studiocms:logger';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
+import { StudioCMSCoreError } from '../../errors';
 
 /**
  * Configuration options for the mail transporter.
@@ -99,6 +100,17 @@ export interface MailOptions {
 }
 
 /**
+ * Interface representing the response from a mail verification operation.
+ */
+export type VerificationResponse = { message: string } | { error: string };
+
+const logger = _logger.fork('studiocms:runtime/mailer');
+
+export class StudioCMSMailerError extends StudioCMSCoreError {
+	name = 'StudioCMSMailer_Error';
+}
+
+/**
  * Sends an email using the provided mailer configuration and mail options.
  *
  * @param mailerConfig - The configuration object for the mailer, including the transporter and sender details.
@@ -168,7 +180,7 @@ export async function sendMail(mailerConfig: MailerConfig, { subject, ...message
 		return result;
 	} catch (error) {
 		logger.error(`Error sending mail: ${error}`);
-		throw error;
+		throw new StudioCMSMailerError('Error sending mail', (error as Error).message);
 	}
 }
 
@@ -200,7 +212,7 @@ export async function sendMail(mailerConfig: MailerConfig, { subject, ...message
  */
 export async function verifyMailConnection(
 	transporterConfig: TransporterConfig
-): Promise<{ message: string } | { error: string }> {
+): Promise<VerificationResponse> {
 	// Create a new nodemailer transport
 	const transporter = nodemailer.createTransport(transporterConfig);
 
