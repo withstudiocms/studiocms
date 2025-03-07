@@ -2,14 +2,24 @@ import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user'
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendMail } from 'studiocms:mailer';
+import studioCMS_cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
 
 const { testingAndDemoMode } = developerConfig;
+
+const {
+	data: { enableMailer },
+} = await studioCMS_cache.GET.siteConfig();
 
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
 		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Check if mailer is enabled
+	if (!enableMailer) {
+		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 	}
 
 	// Get user data
