@@ -9,6 +9,10 @@ import Layout from '../../layouts/dashboard/Layout.astro';
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
+const {
+	data: { enableMailer },
+} = await studioCMS_Cache.GET.siteConfig();
+
 const mailerConfig = await getMailerConfigTable();
 
 let createConfig = false;
@@ -16,10 +20,6 @@ let createConfig = false;
 if (!mailerConfig) {
 	createConfig = true;
 }
-
-const {
-	data: { enableMailer },
-} = await studioCMS_Cache.GET.siteConfig();
 ---
 
 <Layout 
@@ -117,12 +117,14 @@ const {
               label={t('smtp-user')}
               placeholder={t('smtp-user-placeholder')}
               defaultValue={mailerConfig?.auth_user || undefined}
+              isRequired
             />
             <Input
               type="password"
               name="auth_pass"
               label={t('smtp-password')}
               placeholder={t('smtp-password-placeholder')}
+              isRequired
             />
           </div>
   
