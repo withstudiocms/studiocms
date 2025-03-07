@@ -207,12 +207,14 @@ export const studiocms = defineIntegration({
 			sitemapXMLEndpointPath: string | URL;
 		}[] = [];
 
+		// Define the Plugin Endpoints
 		const pluginEndpoints: {
 			apiEndpoint: string;
 			identifier: string;
 			safeIdentifier: string;
 		}[] = [];
 
+		// Define the Plugin Settings Endpoints
 		const pluginSettingsEndpoints: {
 			apiEndpoint: string;
 			identifier: string;
