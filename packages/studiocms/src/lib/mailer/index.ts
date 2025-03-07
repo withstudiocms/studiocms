@@ -1,8 +1,10 @@
+import { db, eq } from 'astro:db';
 import _logger from 'studiocms:logger';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
+import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
 import { StudioCMSCoreError } from '../../errors.js';
 
@@ -15,6 +17,11 @@ export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSM
  * TypeSafe Table definition for use in StudioCMS Integrations
  */
 export type tsMailer = typeof tsMailerConfig.$inferSelect;
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export type tsMailerInsert = typeof tsMailerConfig.$inferInsert;
 
 /**
  * Configuration options for the mail transporter.
@@ -124,7 +131,7 @@ const logger = _logger.fork('studiocms:runtime/mailer');
 /**
  * Error class for mailer errors.
  */
-export class StudioCMSMailerError extends StudioCMSCoreError {
+class StudioCMSMailerError extends StudioCMSCoreError {
 	name = 'StudioCMSMailer_Error';
 }
 
@@ -137,6 +144,55 @@ export class StudioCMSMailerError extends StudioCMSCoreError {
 function nullToUndefined<T>(value: T | null): T | undefined {
 	return value === null ? undefined : value;
 }
+
+/**
+ * Gets the mailer configuration from the database.
+ *
+ * @returns A promise that resolves with the mailer configuration object.
+ */
+export const getMailerConfigTable = async (): Promise<tsMailer | undefined> =>
+	await db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get();
+
+/**
+ * Updates the mailer configuration in the database.
+ *
+ * @param config - The new mailer configuration object.
+ * @returns A promise that resolves when the mailer configuration has been updated.
+ */
+export const updateMailerConfigTable = async (config: tsMailerInsert): Promise<void> => {
+	try {
+		await db.update(tsMailerConfig).set(config).where(eq(tsMailerConfig.id, CMSMailerConfigId));
+	} catch (error) {
+		logger.error(`Error updating mailer configuration: ${error}`);
+		throw new StudioCMSMailerError('Error updating mailer configuration', (error as Error).message);
+	}
+};
+
+/**
+ * Creates a new mailer configuration in the database.
+ *
+ * @param config - The mailer configuration object to create.
+ * @returns A promise that resolves with the new mailer configuration object.
+ */
+export const createMailerConfigTable = async (
+	config: Omit<tsMailerInsert, 'id'>
+): Promise<tsMailer> => {
+	try {
+		return await db
+			.insert(tsMailerConfig)
+			.values({ ...config, id: CMSMailerConfigId })
+			.onConflictDoUpdate({
+				target: tsMailerConfig.id,
+				set: config,
+				where: eq(tsMailerConfig.id, CMSMailerConfigId),
+			})
+			.returning()
+			.get();
+	} catch (error) {
+		logger.error(`Error creating mailer configuration: ${error}`);
+		throw new StudioCMSMailerError('Error creating mailer configuration', (error as Error).message);
+	}
+};
 
 /**
  * Converts a StudioCMS mailer configuration object to a nodemailer transporter configuration object.

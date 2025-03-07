@@ -9,6 +9,11 @@ const { resolve } = createResolver(import.meta.url);
 export const CMSSiteConfigId: number = 1;
 
 /**
+ * StudioCMS Mailer Config Table Entry ID
+ */
+export const CMSMailerConfigId: string = '1';
+
+/**
  * The default lifetime for cached items.
  * This value is used to determine how long an item should remain in the cache before it is considered expired.
  * This value is used in ./schemas/config/sdk.ts to set the default cache lifetime.

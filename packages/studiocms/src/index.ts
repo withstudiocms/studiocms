@@ -1057,6 +1057,10 @@ export const studiocms = defineIntegration({
 								export * from '${resolve('./lib/urlGen.js')}';
 							`,
 
+							'studiocms:mailer': `
+								export * from '${resolve('./lib/mailer/index.js')}';
+							`,
+
 							// SDK Virtual Modules
 							'virtual:studiocms/sdk/env': `
 								export const dbUrl = '${env.ASTRO_DB_REMOTE_URL}';
