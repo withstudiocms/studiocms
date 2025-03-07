@@ -185,7 +185,8 @@
     "@iconify-json/flat-color-icons": "^1.2.1",
     "nanostores": "^0.11.4",
     "@nanostores/i18n": "^0.12.2",
-    "@nanostores/persistent": "^0.10.2"
+    "@nanostores/persistent": "^0.10.2",
+    "nodemailer": "^6.10.0"
   },
   "devDependencies": {
     "typescript": "catalog:",
@@ -198,7 +199,8 @@
     "@types/diff": "^7.0.1",
     "@types/three": "0.169.0",
     "@types/react-dom": "^19.0.3",
-    "@types/react": "^19.0.8"
+    "@types/react": "^19.0.8",
+    "@types/nodemailer": "^6.4.17"
   },
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
