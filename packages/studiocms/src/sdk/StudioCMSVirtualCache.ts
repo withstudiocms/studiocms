@@ -3,6 +3,7 @@ import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
 import type {
 	BaseCacheObject,
+	CombinedInsertContent,
 	CombinedPageData,
 	FolderListCacheObject,
 	FolderListItem,
@@ -14,10 +15,15 @@ import type {
 	SiteConfigCacheObject,
 	VersionCacheObject,
 	tsPageContentSelect,
+	tsPageDataInsert,
 	tsPageDataSelect,
+	tsPageFolderInsert,
 	tsPageFolderSelect,
 } from './types/index.js';
 import type { useDB } from './utils/db.js';
+
+type StudioCMSSDK = ReturnType<typeof studiocmsSDKCore>;
+type Database = ReturnType<typeof useDB>;
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
@@ -29,7 +35,7 @@ import type { useDB } from './utils/db.js';
  * and page data.
  *
  * @param {ProcessedCacheConfig} cacheConfig - The configuration for the cache.
- * @param {STUDIOCMS_SDK} studioCMS_SDK - The StudioCMS SDK instance.
+ * @param {StudioCMSSDK} sdkCore - The StudioCMS SDK instance.
  */
 export class StudioCMSVirtualCache {
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';
@@ -42,7 +48,7 @@ export class StudioCMSVirtualCache {
 	private readonly versionCacheLifetime = versionCacheLifetime;
 
 	private readonly cacheConfig: ProcessedCacheConfig;
-	private readonly sdk: ReturnType<typeof studiocmsSDKCore>;
+	private readonly sdk: StudioCMSSDK;
 
 	private pages = new Map<string, PageDataCacheObject>();
 	private siteConfig = new Map<string, SiteConfigCacheObject>();
@@ -65,6 +71,16 @@ export class StudioCMSVirtualCache {
 			folderList: () => Promise<FolderListCacheObject>;
 			folder: (
 				id: string
+			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
+			databaseTable: StudioCMSSDK['GET']['databaseTable'];
+		};
+		POST: {
+			page: (data: {
+				pageData: tsPageDataInsert;
+				pageContent: CombinedInsertContent;
+			}) => Promise<PageDataCacheObject>;
+			folder: (
+				data: tsPageFolderInsert
 			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
 		};
 		CLEAR: {
@@ -96,10 +112,15 @@ export class StudioCMSVirtualCache {
 				data: tsPageFolderSelect
 			) => Promise<{ name: string; id: string; parent: string | null }>;
 		};
-		db: ReturnType<typeof useDB>;
+		DELETE: {
+			page: (id: string) => Promise<void>;
+			folder: (id: string) => Promise<void>;
+		};
+		db: Database;
+		diffTracking: StudioCMSSDK['diffTracking'];
 	};
 
-	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: ReturnType<typeof studiocmsSDKCore>) {
+	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: StudioCMSSDK) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = sdkCore;
 
@@ -117,6 +138,17 @@ export class StudioCMSVirtualCache {
 					await this.getPageFolderTree(includeDrafts),
 				folderList: async () => await this.getFolderList(),
 				folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
+				databaseTable: sdkCore.GET.databaseTable,
+			},
+			POST: {
+				page: async (data) => await this.createPage(data),
+				folder: async (data) => {
+					const newEntry = await this.sdk.POST.databaseEntry.folder(data);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+					return newEntry;
+				},
 			},
 			CLEAR: {
 				page: {
@@ -145,13 +177,26 @@ export class StudioCMSVirtualCache {
 				folderList: async () => await this.updateFolderList(),
 				folder: async (data: tsPageFolderSelect) => {
 					const updatedEntry = await this.sdk.UPDATE.folder(data);
+					this.clearFolderTree();
 					await this.updateFolderTree();
 					await this.updateFolderList();
-					this.clearFolderTree();
 					return updatedEntry;
 				},
 			},
+			DELETE: {
+				page: async (id: string) => {
+					await this.sdk.DELETE.page(id);
+					this.clearPageById(id);
+				},
+				folder: async (id: string) => {
+					await this.sdk.DELETE.folder(id);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+				},
+			},
 			db: sdkCore.db,
+			diffTracking: sdkCore.diffTracking,
 		};
 	}
 
@@ -865,6 +910,51 @@ export class StudioCMSVirtualCache {
 			return cachedPage;
 		} catch (error) {
 			throw new StudioCMSCacheError('Error fetching page by slug');
+		}
+	}
+
+	public async createPage(data: {
+		pageData: tsPageDataInsert;
+		pageContent: CombinedInsertContent;
+	}): Promise<PageDataCacheObject> {
+		try {
+			if (!this.isEnabled()) {
+				const newPage = await this.sdk.POST.databaseEntry.pages(data.pageData, data.pageContent);
+
+				if (!newPage) {
+					throw new StudioCMSCacheError('Error creating page');
+				}
+
+				const toReturn = await this.sdk.GET.databaseEntry.pages.byId(newPage.pageData[0].id);
+
+				if (!toReturn) {
+					throw new StudioCMSCacheError('Error creating page');
+				}
+
+				return this.pageDataReturn(toReturn);
+			}
+
+			const { data: tree } = await this.updateFolderTree();
+
+			const newPage = await this.sdk.POST.databaseEntry.pages(data.pageData, data.pageContent);
+
+			if (!newPage) {
+				throw new StudioCMSCacheError('Error creating page');
+			}
+
+			const toReturn = await this.sdk.GET.databaseEntry.pages.byId(newPage.pageData[0].id, tree);
+
+			if (!toReturn) {
+				throw new StudioCMSCacheError('Error creating page');
+			}
+
+			this.pages.set(toReturn.id, this.pageDataReturn(toReturn));
+			this.clearFolderTree();
+			this.getFolderTree();
+
+			return this.pageDataReturn(toReturn);
+		} catch (error) {
+			throw new StudioCMSCacheError('Error creating page');
 		}
 	}
 

@@ -1,7 +1,6 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
 
@@ -45,10 +44,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
-		await studioCMS_SDK.POST.databaseEntry.folder({
+		await studioCMS_SDK_Cache.POST.folder({
+			id: crypto.randomUUID(),
 			name: folderName,
 			parent: parentFolder || null,
-			id: crypto.randomUUID(),
 		});
 
 		await studioCMS_SDK_Cache.UPDATE.folderList();
@@ -134,10 +133,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
-		await studioCMS_SDK.DELETE.folder(id);
-
-		await studioCMS_SDK_Cache.UPDATE.folderList();
-		await studioCMS_SDK_Cache.UPDATE.folderTree();
+		await studioCMS_SDK_Cache.DELETE.folder(id);
 
 		return apiResponseLogger(200, 'Folder deleted successfully');
 	} catch (error) {
