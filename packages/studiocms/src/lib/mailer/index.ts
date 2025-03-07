@@ -27,12 +27,12 @@ export interface TransporterConfig {
 	 */
 	auth: {
 		/**
-		 * The username for authentication (optional).
+		 * The username for authentication.
 		 */
 		user?: string;
 
 		/**
-		 * The password for authentication (optional).
+		 * The password for authentication.
 		 */
 		pass?: string;
 	};
