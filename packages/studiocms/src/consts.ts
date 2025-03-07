@@ -16,10 +16,17 @@ export const CMSSiteConfigId: number = 1;
 export const defaultCacheLifeTime: TimeString = '5m';
 
 /**
+ * Utility Constant for One Day in Milliseconds
+ *
+ * This is used for the `versionCacheLifetime` constant.
+ */
+const OneDay = 1000 * 60 * 60 * 24;
+
+/**
  * The default lifetime for cached items in milliseconds.
  * This value is used to determine how long an item should remain in the cache before it is considered expired.
  */
-export const versionCacheLifetime = 1000 * 60 * 60 * 24 * 7; // 1 week
+export const versionCacheLifetime = OneDay * 7; // 1 week
 
 /**
  * Current REST API Versions
@@ -32,24 +39,29 @@ export const currentRESTAPIVersions = ['v1'] as const;
 export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 
 /**
+ * Routes Directory Resolver
+ */
+const _routes_dir = (path: string) => resolve(`./routes/${path}`);
+
+/**
  * REST API Directory Resolver
  */
 const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
-	resolve(`./routes/rest/${version}/${file}`);
+	_routes_dir(`rest/${version}/${file}`);
 
 /**
  * REST API Directory
  */
 export const routesDir = {
-	fts: (file: string) => resolve(`./routes/firstTimeSetupRoutes/${file}`),
-	dashRoute: (file: string) => resolve(`./routes/dashboard/${file}`),
-	dashApi: (file: string) => resolve(`./routes/dashboard/studiocms_api/dashboard/${file}`),
-	errors: (file: string) => resolve(`./routes/error-pages/${file}`),
+	fts: (file: string) => _routes_dir(`firstTimeSetupRoutes/${file}`),
+	dashRoute: (file: string) => _routes_dir(`dashboard/${file}`),
+	dashApi: (file: string) => _routes_dir(`dashboard/studiocms_api/dashboard/${file}`),
+	errors: (file: string) => _routes_dir(`error-pages/${file}`),
 	v1Rest: (file: string) => _rest_dir('v1')(file),
-	sdk: (file: string) => resolve(`./routes/sdk/${file}`),
-	api: (file: string) => resolve(`./routes/api/${file}`),
-	authPage: (file: string) => resolve(`./routes/auth/${file}`),
-	authAPI: (file: string) => resolve(`./routes/auth/api/${file}`),
+	sdk: (file: string) => _routes_dir(`sdk/${file}`),
+	api: (file: string) => _routes_dir(`api/${file}`),
+	authPage: (file: string) => _routes_dir(`auth/${file}`),
+	authAPI: (file: string) => _routes_dir(`auth/api/${file}`),
 };
 
 /**
