@@ -131,14 +131,11 @@ export async function sendMail(mailerConfig: MailerConfig, { subject, ...message
 		from: mailerConfig.sender,
 	});
 
-	// Get the proxy from the transporter config
-	const proxy = mailerConfig.transporter.proxy;
-
 	// Create the mail options object
 	const toSend: Mail.Options = { subject };
 
 	// If the proxy is a socks proxy, set the socks module
-	if (proxy?.startsWith('socks')) {
+	if (mailerConfig.transporter.proxy?.startsWith('socks')) {
 		transporter.set('proxy_socks_module', socks);
 	}
 
@@ -200,11 +197,8 @@ export async function verifyMailConnection(
 	// Create a new nodemailer transport
 	const transporter = nodemailer.createTransport(transporterConfig);
 
-	// Get the proxy from the transporter config
-	const proxy = transporterConfig.proxy;
-
 	// If the proxy is a socks proxy, set the socks module
-	if (proxy?.startsWith('socks')) {
+	if (transporterConfig.proxy?.startsWith('socks')) {
 		transporter.set('proxy_socks_module', socks);
 	}
 
