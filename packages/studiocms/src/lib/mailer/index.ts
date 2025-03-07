@@ -1,8 +1,20 @@
 import _logger from 'studiocms:logger';
+import { asDrizzleTable } from '@astrojs/db/utils';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
+import { StudioCMSMailerConfig } from '../../db/tables.js';
 import { StudioCMSCoreError } from '../../errors.js';
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export type tsMailer = typeof tsMailerConfig.$inferSelect;
 
 /**
  * Configuration options for the mail transporter.
@@ -22,6 +34,11 @@ export interface TransporterConfig {
 	 * If true, the connection will use TLS when connecting to the server.
 	 */
 	secure: boolean;
+
+	/**
+	 * The proxy URL to use for the connection (optional).
+	 */
+	proxy?: string;
 
 	/**
 	 * Authentication details for the SMTP server.
@@ -52,11 +69,6 @@ export interface TransporterConfig {
 		 */
 		servername?: string;
 	};
-
-	/**
-	 * The proxy URL to use for the connection (optional).
-	 */
-	proxy?: string;
 }
 
 /**
@@ -104,10 +116,69 @@ export interface MailOptions {
  */
 export type VerificationResponse = { message: string } | { error: string };
 
+/**
+ * The logger for the mailer module.
+ */
 const logger = _logger.fork('studiocms:runtime/mailer');
 
+/**
+ * Error class for mailer errors.
+ */
 export class StudioCMSMailerError extends StudioCMSCoreError {
 	name = 'StudioCMSMailer_Error';
+}
+
+/**
+ * Converts a null value to undefined.
+ *
+ * @param value - The value to convert.
+ * @returns The value if it is not null, otherwise undefined.
+ */
+function nullToUndefined<T>(value: T | null): T | undefined {
+	return value === null ? undefined : value;
+}
+
+/**
+ * Converts a StudioCMS mailer configuration object to a nodemailer transporter configuration object.
+ *
+ * @param config - The StudioCMS mailer configuration object.
+ * @returns The nodemailer transporter configuration object.
+ */
+export function convertTransporterConfig(config: tsMailer): MailerConfig {
+	// Extract the required fields from the configuration object
+	const {
+		host,
+		port,
+		secure,
+		proxy,
+		auth_user,
+		auth_pass,
+		tls_rejectUnauthorized,
+		tls_servername,
+		default_sender,
+	} = config;
+
+	// Create the transporter configuration object
+	const transporterConfig: TransporterConfig = {
+		host,
+		port,
+		secure,
+		auth: {
+			user: nullToUndefined(auth_user),
+			pass: nullToUndefined(auth_pass),
+		},
+		proxy: nullToUndefined(proxy),
+		tls:
+			tls_rejectUnauthorized || tls_servername
+				? {
+						rejectUnauthorized: nullToUndefined(tls_rejectUnauthorized),
+						servername: nullToUndefined(tls_servername),
+					}
+				: undefined,
+	};
+
+	// Return the transporter configuration object
+	return { transporter: transporterConfig, sender: default_sender };
 }
 
 /**
