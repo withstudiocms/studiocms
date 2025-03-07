@@ -74,8 +74,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         </div>
 
         <div class="form-row">
-            <Select label="SMTP Mailer" name="enable-mailer" defaultValue="false" options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
-            <div> </div>
+            <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <div> {/* PLACEHOLDER */} </div>
         </div>
 
         <Divider />
@@ -147,6 +147,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateElmLabel('login-page-background-custom', comp['input-custom-login-page']);
         updateSelectElmLabel('login-page-background', comp['select-login-page-bg']);
         updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
+        updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
     });
     
     if (!customElements.get('t-config-form')) {

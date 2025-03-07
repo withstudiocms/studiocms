@@ -116,7 +116,8 @@
       "input-diff-tracking-limit": "Diff Tracking Limit (per page)",
       "input-custom-login-page": "Login Page Background Image (Custom)",
       "select-page-diff-tracking": "Page Diff Tracking",
-      "select-login-page-bg": "Login Page Background Image"
+      "select-login-page-bg": "Login Page Background Image",
+      "select-smtp-mailer": "SMTP Mailer"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
