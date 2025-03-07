@@ -67,6 +67,7 @@ export const routesDir = {
 	api: (file: string) => _routes_dir(`api/${file}`),
 	authPage: (file: string) => _routes_dir(`auth/${file}`),
 	authAPI: (file: string) => _routes_dir(`auth/api/${file}`),
+	mailer: (file: string) => _routes_dir(`mailer/${file}`),
 };
 
 /**

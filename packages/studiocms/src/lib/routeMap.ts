@@ -327,6 +327,21 @@ export const StudioCMSRoutes = {
 		 * API route for verifying a user session.
 		 */
 		verifySession: dashboardAPIRoute('verify-session'),
+
+		/**
+		 * API routes for the mailer configuration.
+		 */
+		mailer: {
+			/**
+			 * API route for updating the mailer configuration
+			 */
+			config: dashboardAPIRoute('mailer/config'),
+
+			/**
+			 * API route for testing the mailer configuration.
+			 */
+			testEmail: dashboardAPIRoute('mailer/test-email'),
+		},
 	},
 	sdk: {
 		/**

@@ -1,5 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { getMailerConfigTable } from 'studiocms:mailer';
 import studioCMS_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Icon, Input, Select } from 'studiocms:ui/components';
@@ -44,7 +45,7 @@ if (!mailerConfig) {
         <h2><t-smtp key="smtp-settings">{t('smtp-settings')}</t-smtp></h2>
       </div>
   
-      <form id="smtp-config-form" action="#">
+      <form id="smtp-config-form" action={StudioCMSRoutes.endpointLinks.mailer.config}>
         <div class="form-content">
   
           { createConfig && <input type="hidden" name="create-new-config" value="true" /> }
@@ -147,7 +148,7 @@ if (!mailerConfig) {
         <h2><t-smtp key="test-smtp">{t('test-smtp')}</t-smtp></h2>
       </div>
   
-      <form id="test-smtp-form" action="#">
+      <form id="test-smtp-form" action={StudioCMSRoutes.endpointLinks.mailer.testEmail}>
         <div class="form-content">
           <Input
             type="text"

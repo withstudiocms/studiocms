@@ -599,6 +599,16 @@ export const studiocms = defineIntegration({
 								pattern: 'verify-session',
 								entrypoint: routesDir.dashApi('verify-session.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'mailer/config',
+								entrypoint: routesDir.mailer('config.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'mailer/test-email',
+								entrypoint: routesDir.mailer('test-email.js'),
+							},
 						],
 					});
 
