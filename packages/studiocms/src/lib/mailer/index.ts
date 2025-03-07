@@ -6,7 +6,6 @@ import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { StudioCMSCoreError } from '../../errors.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
@@ -119,21 +118,28 @@ export interface MailOptions {
 }
 
 /**
+ * Interface representing an error response from the mailer.
+ */
+interface MailerErrorResponse {
+	error: string;
+}
+
+/**
+ * Interface representing a success response from the mailer.
+ */
+interface MailerSuccessResponse {
+	message: string;
+}
+
+/**
  * Interface representing the response from a mail verification operation.
  */
-export type VerificationResponse = { message: string } | { error: string };
+export type MailerResponse = MailerSuccessResponse | MailerErrorResponse;
 
 /**
  * The logger for the mailer module.
  */
 const logger = _logger.fork('studiocms:runtime/mailer');
-
-/**
- * Error class for mailer errors.
- */
-class StudioCMSMailerError extends StudioCMSCoreError {
-	name = 'StudioCMSMailer_Error';
-}
 
 /**
  * Converts a null value to undefined.
@@ -143,6 +149,21 @@ class StudioCMSMailerError extends StudioCMSCoreError {
  */
 function nullToUndefined<T>(value: T | null): T | undefined {
 	return value === null ? undefined : value;
+}
+
+/**
+ * Logs the response from the mailer.
+ *
+ * @param data - The response from the mailer.
+ * @returns The response from the mailer.
+ */
+function mailerResponse(data: MailerResponse): MailerResponse {
+	if ('error' in data) {
+		logger.error(data.error);
+		return data;
+	}
+	logger.info(data.message);
+	return data;
 }
 
 /**
@@ -159,12 +180,14 @@ export const getMailerConfigTable = async (): Promise<tsMailer | undefined> =>
  * @param config - The new mailer configuration object.
  * @returns A promise that resolves when the mailer configuration has been updated.
  */
-export const updateMailerConfigTable = async (config: tsMailerInsert): Promise<void> => {
+export const updateMailerConfigTable = async (config: tsMailerInsert): Promise<MailerResponse> => {
 	try {
 		await db.update(tsMailerConfig).set(config).where(eq(tsMailerConfig.id, CMSMailerConfigId));
+		return mailerResponse({ message: 'Mailer configuration updated successfully' });
 	} catch (error) {
-		logger.error(`Error updating mailer configuration: ${error}`);
-		throw new StudioCMSMailerError('Error updating mailer configuration', (error as Error).message);
+		return mailerResponse({
+			error: `Error updating mailer configuration: ${(error as Error).message}`,
+		});
 	}
 };
 
@@ -174,7 +197,9 @@ export const updateMailerConfigTable = async (config: tsMailerInsert): Promise<v
  * @param config - The mailer configuration object to create.
  * @returns A promise that resolves with the new mailer configuration object.
  */
-export const createMailerConfigTable = async (config: tsMailerInsert): Promise<tsMailer> => {
+export const createMailerConfigTable = async (
+	config: tsMailerInsert
+): Promise<tsMailer | MailerErrorResponse> => {
 	try {
 		return await db
 			.insert(tsMailerConfig)
@@ -187,8 +212,9 @@ export const createMailerConfigTable = async (config: tsMailerInsert): Promise<t
 			.returning()
 			.get();
 	} catch (error) {
-		logger.error(`Error creating mailer configuration: ${error}`);
-		throw new StudioCMSMailerError('Error creating mailer configuration', (error as Error).message);
+		return mailerResponse({
+			error: `Error creating mailer configuration: ${(error as Error).message}`,
+		}) as MailerErrorResponse;
 	}
 };
 
@@ -255,14 +281,17 @@ export function convertTransporterConfig(config: tsMailer): MailerConfig {
  *   .catch(error => console.error('Error sending email:', error));
  * ```
  */
-export async function sendMail({ subject, ...message }: MailOptions) {
+export async function sendMail({ subject, ...message }: MailOptions): Promise<MailerResponse> {
 	// Get the mailer configuration from the database
 	const mailerConfigTable = await getMailerConfigTable();
 
 	// If the mailer configuration is not found, throw an
 	// error indicating that the configuration is missing
 	if (!mailerConfigTable) {
-		throw new StudioCMSMailerError('Mailer configuration not found');
+		return mailerResponse({
+			error:
+				'Mailer configuration not found, please configure the mailer first using the StudioCMS dashboard',
+		});
 	}
 
 	// Convert the mailer configuration to a nodemailer transporter configuration
@@ -297,13 +326,9 @@ export async function sendMail({ subject, ...message }: MailOptions) {
 	// Try to send the mail
 	try {
 		const result = await transporter.sendMail(toSend);
-
-		logger.info(`Message sent: ${result.messageId}`);
-
-		return result;
+		return mailerResponse({ message: `Message sent: ${result.messageId}` });
 	} catch (error) {
-		logger.error(`Error sending mail: ${error}`);
-		throw new StudioCMSMailerError('Error sending mail', (error as Error).message);
+		return mailerResponse({ error: `Error sending mail: ${error}` });
 	}
 }
 
@@ -322,14 +347,17 @@ export async function sendMail({ subject, ...message }: MailOptions) {
  * }
  * ```
  */
-export async function verifyMailConnection(): Promise<VerificationResponse> {
+export async function verifyMailConnection(): Promise<MailerResponse> {
 	// Get the mailer configuration from the database
 	const mailerConfigTable = await getMailerConfigTable();
 
 	// If the mailer configuration is not found, throw an
 	// error indicating that the configuration is missing
 	if (!mailerConfigTable) {
-		throw new StudioCMSMailerError('Mailer configuration not found');
+		return mailerResponse({
+			error:
+				'Mailer configuration not found, please configure the mailer first using the StudioCMS dashboard',
+		});
 	}
 
 	// Convert the mailer configuration to a nodemailer transporter configuration
@@ -348,11 +376,9 @@ export async function verifyMailConnection(): Promise<VerificationResponse> {
 
 	// If the result is not true, log an error and return an error message
 	if (result !== true) {
-		logger.error('Mail connection verification failed');
-		return { error: 'Mail connection verification failed' };
+		return mailerResponse({ error: 'Mail connection verification failed' });
 	}
 
 	// Log a success message and return a success message
-	logger.info('Mail connection verified successfully');
-	return { message: 'Mail connection verified successfully' };
+	return mailerResponse({ message: 'Mail connection verified successfully' });
 }
