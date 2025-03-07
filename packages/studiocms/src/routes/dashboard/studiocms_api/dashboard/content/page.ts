@@ -121,8 +121,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
 
 	try {
-		await studioCMS_SDK.POST.databaseEntry.pages(
-			{
+		await studioCMS_SDK_Cache.POST.page({
+			pageData: {
 				id: dataId,
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				title: data.title!,
@@ -131,8 +131,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 				authorId: userData.user?.id || null,
 				...data,
 			},
-			{ id: contentId, ...content }
-		);
+			pageContent: { id: contentId, ...content },
+		});
 
 		if (apiRoute) {
 			await apiRoute(context);

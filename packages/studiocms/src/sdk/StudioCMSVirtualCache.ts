@@ -32,7 +32,7 @@ import type { useDB } from './utils/db.js';
  * and page data.
  *
  * @param {ProcessedCacheConfig} cacheConfig - The configuration for the cache.
- * @param {STUDIOCMS_SDK} studioCMS_SDK - The StudioCMS SDK instance.
+ * @param {ReturnType<typeof studiocmsSDKCore>} sdkCore - The StudioCMS SDK instance.
  */
 export class StudioCMSVirtualCache {
 	private readonly SiteConfigMapID: string = '__StudioCMS_Site_Config';

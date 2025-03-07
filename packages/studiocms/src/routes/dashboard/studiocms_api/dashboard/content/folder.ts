@@ -45,10 +45,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
-		await studioCMS_SDK.POST.databaseEntry.folder({
+		await studioCMS_SDK_Cache.POST.folder({
+			id: crypto.randomUUID(),
 			name: folderName,
 			parent: parentFolder || null,
-			id: crypto.randomUUID(),
 		});
 
 		await studioCMS_SDK_Cache.UPDATE.folderList();
