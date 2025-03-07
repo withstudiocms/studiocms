@@ -62,7 +62,14 @@ export interface TransporterConfig {
  * Configuration interface for the mailer.
  */
 export interface MailerConfig {
+	/**
+	 * The configuration object for the mail transporter.
+	 */
 	transporter: TransporterConfig;
+
+	/**
+	 * The email address of the sender.
+	 */
 	sender: string;
 }
 
