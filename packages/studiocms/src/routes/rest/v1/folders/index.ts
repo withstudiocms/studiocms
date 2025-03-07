@@ -73,13 +73,11 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
-		const newFolder = (
-			await studioCMS_SDK.POST.databaseEntry.folder({
-				name: folderName,
-				parent: parentFolder || null,
-				id: crypto.randomUUID(),
-			})
-		)[0];
+		const newFolder = await studioCMS_SDK.POST.databaseEntry.folder({
+			name: folderName,
+			parent: parentFolder || null,
+			id: crypto.randomUUID(),
+		});
 
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
