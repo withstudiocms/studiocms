@@ -119,6 +119,14 @@
       "select-login-page-bg": "Login Page Background Image",
       "select-smtp-mailer": "SMTP Mailer"
     },
+    "@studiocms/dashboard:smtp": {
+      "title": "SMTP Configuration",
+      "description": "SMTP Configuration",
+      "header": "SMTP Configuration",
+      "save-button": "Save",
+      "smtp-settings": "SMTP Settings",
+      "test-smtp": "Send Test Email"
+    },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
       "dropdown-create-user": "Create New User",
