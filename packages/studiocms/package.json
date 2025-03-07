@@ -186,7 +186,8 @@
     "nanostores": "^0.11.4",
     "@nanostores/i18n": "^0.12.2",
     "@nanostores/persistent": "^0.10.2",
-    "nodemailer": "^6.10.0"
+    "nodemailer": "^6.10.0",
+    "socks": "^2.8.4"
   },
   "devDependencies": {
     "typescript": "catalog:",
