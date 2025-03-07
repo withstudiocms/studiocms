@@ -1779,7 +1779,7 @@ export function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted folder.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 			 */
-			folder: async (folder: tsPageFolderInsert): Promise<tsPageFolderSelect[]> => {
+			folder: async (folder: tsPageFolderInsert): Promise<tsPageFolderSelect> => {
 				try {
 					return await db
 						.insert(tsPageFolderStructure)
@@ -1788,7 +1788,8 @@ export function studiocmsSDKCore() {
 							name: folder.name,
 							parent: folder.parent || null,
 						})
-						.returning();
+						.returning()
+						.get();
 				} catch (error) {
 					if (error instanceof Error) {
 						throw new StudioCMS_SDK_Error(`Error inserting folder: ${error.message}`, error.stack);
