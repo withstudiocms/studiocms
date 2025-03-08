@@ -1017,6 +1017,10 @@ export function studiocmsSDKCore() {
 					const users = await db.select().from(tsUsers);
 
 					for (const user of users) {
+						if (user.id === GhostUserDefaults.id) {
+							continue;
+						}
+
 						const UserData = await collectUserData(user);
 
 						combinedUserData.push(UserData);
