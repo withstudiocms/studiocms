@@ -1,5 +1,29 @@
 # studiocms
 
+## 0.1.0-beta.12
+
+### Patch Changes
+
+- [#456](https://github.com/withstudiocms/studiocms/pull/456) [`d66d081`](https://github.com/withstudiocms/studiocms/commit/d66d081748399e30d3940b6d1447f576d2e14c1c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Expand SDK virtual cache system to allow more functionality either with the cache or passthrough to the normal SDK
+
+- [#455](https://github.com/withstudiocms/studiocms/pull/455) [`a23a95e`](https://github.com/withstudiocms/studiocms/commit/a23a95e5bf8209d456fc02468622840aa2167d40) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement runtime logger on all API routes
+
+- [#454](https://github.com/withstudiocms/studiocms/pull/454) [`1021093`](https://github.com/withstudiocms/studiocms/commit/1021093c253085dbe9dadf6a37913dc57654409e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor pageType api endpoint management to prevent errors when using virtual modules within a APIRoute
+
+- [#458](https://github.com/withstudiocms/studiocms/pull/458) [`d445247`](https://github.com/withstudiocms/studiocms/commit/d4452478a83e59218f228c2d30a58447295841c4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Hide and protect the deleted "Ghost" user from the dashboard
+
+- [#457](https://github.com/withstudiocms/studiocms/pull/457) [`1421e4c`](https://github.com/withstudiocms/studiocms/commit/1421e4c79907ddf1cb2d7360f2f87e81aabb719f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new SMTP `nodemailer` configuration for sending emails from StudioCMS
+
+  #### SMTP Mailer Configuration:
+
+  - Added SMTP mailer configuration options in the ConfigForm.astro file, including enabling/disabling the mailer and configuring SMTP settings.
+  - Introduced new routes and entry points for mailer configuration and test email functionalities in index.ts.
+
+  #### Database Schema Updates:
+
+  - Added a new table StudioCMSMailerConfig to store SMTP mailer settings.
+  - Updated existing tables to remove default values from JSON columns. (Potentially breaking)
+
 ## 0.1.0-beta.11
 
 ### Patch Changes
