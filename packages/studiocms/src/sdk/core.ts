@@ -2434,6 +2434,11 @@ export function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the user.
 		 */
 		user: async (id: string): Promise<DeletionResponse> => {
+			if (id === GhostUserDefaults.id) {
+				throw new StudioCMS_SDK_Error(
+					`User with ID ${id} is an internal user and cannot be deleted.`
+				);
+			}
 			try {
 				const verifyNoReference = await clearUserReferences(id);
 
