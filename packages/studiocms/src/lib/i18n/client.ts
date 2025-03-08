@@ -69,10 +69,17 @@ export const makeTranslation = <Body extends Translations>(
 	};
 };
 
+const requiredLabelRegex = /.*?<span class="req-star.*?>\*<\/span>/;
+
 export const updateElmLabel = (el: string, translation: string) => {
 	const label = document
 		.querySelector<HTMLLabelElement>(`label[for="${el}"]`)
 		?.querySelector('.label') as HTMLSpanElement;
+
+	if (requiredLabelRegex.test(label.innerHTML)) {
+		label.innerHTML = `${translation} <span class="req-star">*</span>`;
+		return;
+	}
 	label.textContent = translation;
 };
 
@@ -85,6 +92,11 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 	const label = document.querySelector<HTMLLabelElement>(
 		`label[for="${el}-select-btn"]`
 	) as HTMLLabelElement;
+
+	if (requiredLabelRegex.test(label.innerHTML)) {
+		label.innerHTML = `${translation} <span class="req-star">*</span>`;
+		return;
+	}
 	label.textContent = translation;
 };
 

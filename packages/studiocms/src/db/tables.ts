@@ -105,7 +105,7 @@ export const StudioCMSDiffTracking = defineTable({
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 		pageId: column.text({ references: () => StudioCMSPageData.columns.id }),
 		timestamp: column.date({ default: NOW, optional: true }),
-		pageMetaData: column.json({ default: {}, optional: true }),
+		pageMetaData: column.json({ optional: true }),
 		pageContentStart: column.text({ multiline: true }),
 		diff: column.text({ multiline: true, optional: true }),
 	},
@@ -118,7 +118,7 @@ export const StudioCMSPageDataTags = defineTable({
 		description: column.text(),
 		name: column.text(),
 		slug: column.text(),
-		meta: column.json({ default: {} }),
+		meta: column.json(),
 	},
 });
 
@@ -130,7 +130,7 @@ export const StudioCMSPageDataCategories = defineTable({
 		description: column.text(),
 		name: column.text(),
 		slug: column.text(),
-		meta: column.json({ default: {} }),
+		meta: column.json(),
 	},
 });
 
@@ -157,6 +157,22 @@ export const StudioCMSSiteConfig = defineTable({
 		enableDiffs: column.boolean({ default: false }),
 		diffPerPage: column.number({ default: 10 }),
 		gridItems: column.json({ default: [] }),
+		enableMailer: column.boolean({ default: false }),
+	},
+});
+
+export const StudioCMSMailerConfig = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		host: column.text(),
+		port: column.number(),
+		secure: column.boolean(),
+		proxy: column.text({ optional: true }),
+		auth_user: column.text({ optional: true }),
+		auth_pass: column.text({ optional: true }),
+		tls_rejectUnauthorized: column.boolean({ optional: true }),
+		tls_servername: column.text({ optional: true }),
+		default_sender: column.text(),
 	},
 });
 
@@ -174,4 +190,5 @@ export const tables = {
 	StudioCMSPageFolderStructure,
 	StudioCMSUserResetTokens,
 	StudioCMSAPIKeys,
+	StudioCMSMailerConfig,
 };

@@ -146,6 +146,11 @@ export const StudioCMSRoutes = {
 		siteConfiguration: makeDashboardRoute('configuration'),
 
 		/**
+		 * URL for the smtp configuration page.
+		 */
+		smtpConfiguration: makeDashboardRoute('smtp-configuration'),
+
+		/**
 		 * URL for the user management page.
 		 */
 		userManagement: makeDashboardRoute('user-management'),
@@ -322,6 +327,21 @@ export const StudioCMSRoutes = {
 		 * API route for verifying a user session.
 		 */
 		verifySession: dashboardAPIRoute('verify-session'),
+
+		/**
+		 * API routes for the mailer configuration.
+		 */
+		mailer: {
+			/**
+			 * API route for updating the mailer configuration
+			 */
+			config: dashboardAPIRoute('mailer/config'),
+
+			/**
+			 * API route for testing the mailer configuration.
+			 */
+			testEmail: dashboardAPIRoute('mailer/test-email'),
+		},
 	},
 	sdk: {
 		/**

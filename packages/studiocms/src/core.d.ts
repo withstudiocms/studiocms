@@ -2,6 +2,8 @@ declare module 'studiocms:logger' {
 	export const logger: import('astro').AstroIntegrationLogger;
 	export default logger;
 
+	export const isVerbose: boolean;
+
 	export const apiResponseLogger: (
 		status: number,
 		message: string,
@@ -37,6 +39,24 @@ declare module 'studiocms:plugins/endpoints' {
 		identifier: string;
 		onSave: import('astro').APIRoute | null;
 	}[];
+}
+
+declare module 'studiocms:mailer' {
+	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
+	export type tsMailer = import('./lib/mailer/index').tsMailer;
+	export type tsMailerInsert = import('./lib/mailer/index').tsMailerInsert;
+	export type TransporterConfig = import('./lib/mailer/index').TransporterConfig;
+	export type MailerConfig = import('./lib/mailer/index').MailerConfig;
+	export type MailOptions = import('./lib/mailer/index').MailOptions;
+	export type VerificationResponse = import('./lib/mailer/index').VerificationResponse;
+	export const convertTransporterConfig: typeof import(
+		'./lib/mailer/index'
+	).convertTransporterConfig;
+	export const sendMail: typeof import('./lib/mailer/index').sendMail;
+	export const verifyMailConnection: typeof import('./lib/mailer/index').verifyMailConnection;
+	export const getMailerConfigTable: typeof import('./lib/mailer/index').getMailerConfigTable;
+	export const updateMailerConfigTable: typeof import('./lib/mailer/index').updateMailerConfigTable;
+	export const createMailerConfigTable: typeof import('./lib/mailer/index').createMailerConfigTable;
 }
 
 interface Window {

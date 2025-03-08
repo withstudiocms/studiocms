@@ -17,7 +17,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
   >
 
   <div slot="header">
-    <PageHeader title="Site Configuration">
+    <PageHeader title={t('header')}>
       <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
         <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
         <t-config key="save-button">{t('save-button')}</t-config>

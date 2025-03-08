@@ -73,6 +73,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             <Input label={t('input-diff-tracking-limit')} name="diff-per-page" placeholder="10" value={data.diffPerPage} />
         </div>
 
+        <div class="form-row">
+            <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <div> {/* PLACEHOLDER */} </div>
+        </div>
+
         <Divider />
 
         <span>
@@ -142,6 +147,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateElmLabel('login-page-background-custom', comp['input-custom-login-page']);
         updateSelectElmLabel('login-page-background', comp['select-login-page-bg']);
         updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
+        updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
     });
     
     if (!customElements.get('t-config-form')) {
@@ -184,6 +190,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                 enableDiffs: formData.get('diff-enabled') === 'true',
                 diffPerPage: parseInt(formData.get('diff-per-page') as string),
                 gridItems: enabledGridItems,
+                enableMailer: formData.get('enable-mailer') === 'true',
             }
 
             console.log(data);

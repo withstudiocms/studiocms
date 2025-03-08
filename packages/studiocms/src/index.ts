@@ -599,6 +599,16 @@ export const studiocms = defineIntegration({
 								pattern: 'verify-session',
 								entrypoint: routesDir.dashApi('verify-session.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'mailer/config',
+								entrypoint: routesDir.mailer('config.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'mailer/test-email',
+								entrypoint: routesDir.mailer('test-email.js'),
+							},
 						],
 					});
 
@@ -672,6 +682,11 @@ export const studiocms = defineIntegration({
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'plugins/[plugin]',
 									entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'smtp-configuration',
+									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
 								},
 							],
 						},
@@ -1057,6 +1072,10 @@ export const studiocms = defineIntegration({
 								export * from '${resolve('./lib/urlGen.js')}';
 							`,
 
+							'studiocms:mailer': `
+								export * from '${resolve('./lib/mailer/index.js')}';
+							`,
+
 							// SDK Virtual Modules
 							'virtual:studiocms/sdk/env': `
 								export const dbUrl = '${env.ASTRO_DB_REMOTE_URL}';
@@ -1082,10 +1101,16 @@ export const studiocms = defineIntegration({
 							`,
 
 							'studiocms:logger': `
-								import { logger } from '@it-astro:logger:studiocms-runtime';
+								import { logger as _logger } from '@it-astro:logger:studiocms-runtime';
 
-								const runtimeLogger = logger.fork('studiocms:runtime');
-								const isVerbose = ${verbose};
+								export const logger = _logger.fork('studiocms:runtime');
+
+								export default logger;
+
+								const apiLogger = _logger.fork('studiocms:runtime/api');
+
+								export const isVerbose = ${verbose};
+
 								function buildErrorMessage(message, error) {
 									if (!error) return message;
 									if (error instanceof Error) return message + ': ' + error.message + '\\n' + error.stack;
@@ -1094,19 +1119,18 @@ export const studiocms = defineIntegration({
 
 								export function apiResponseLogger(status, message, error) {
 									if (status !== 200) {
-										isVerbose && runtimeLogger.error(buildErrorMessage(message, error));
+										apiLogger.error(buildErrorMessage(message, error));
 										return new Response(JSON.stringify({ error: message }), { 
 											status, 
 											headers: { 'Content-Type': 'application/json' } 
 										});
 									}
+									isVerbose &&  apiLogger.info(message);
 									return new Response(JSON.stringify({ message }), { 
 										status, 
 										headers: { 'Content-Type': 'application/json' } 
 									});
 								};
-
-								export default runtimeLogger;
 							`,
 
 							// Plugin Helpers

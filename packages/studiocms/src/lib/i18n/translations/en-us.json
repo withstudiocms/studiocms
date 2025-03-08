@@ -58,7 +58,8 @@
       "category-3-empty-placeholder": "No plugins with settings pages found.",
       "user-dropdown:settings": "User Settings",
       "user-dropdown:view-site": "View Site",
-      "user-dropdown:logout": "Log Out"
+      "user-dropdown:logout": "Log Out",
+      "mailer-configuration-label": "SMTP Configuration"
     },
     "@studiocms/dashboard:profile": {
       "title": "User Profile",
@@ -116,7 +117,35 @@
       "input-diff-tracking-limit": "Diff Tracking Limit (per page)",
       "input-custom-login-page": "Login Page Background Image (Custom)",
       "select-page-diff-tracking": "Page Diff Tracking",
-      "select-login-page-bg": "Login Page Background Image"
+      "select-login-page-bg": "Login Page Background Image",
+      "select-smtp-mailer": "SMTP Mailer"
+    },
+    "@studiocms/dashboard:smtp": {
+      "title": "SMTP Configuration",
+      "description": "SMTP Configuration",
+      "header": "SMTP Configuration",
+      "save-button": "Save",
+      "smtp-settings": "SMTP Settings",
+      "test-smtp": "Send Test Email",
+      "smtp-host": "Host",
+      "smtp-host-placeholder": "smtp.example.com / 1.1.1.1",
+      "smtp-port": "Port",
+      "smtp-port-placeholder": "587",
+      "smtp-secure": "Secure",
+      "smtp-proxy": "Proxy",
+      "smtp-proxy-placeholder": "http://proxy.example.com",
+      "smtp-tls-reject-unauthorized": "TLS Reject Unauthorized",
+      "smtp-tls-servername": "TLS Servername",
+      "smtp-tls-servername-placeholder": "smtp.example.com",
+      "smtp-user": "Auth Username",
+      "smtp-user-placeholder": "no-reply@example.com",
+      "smtp-password": "Auth Password",
+      "smtp-password-placeholder": "********",
+      "smtp-default-sender": "Default Sender",
+      "smtp-default-sender-placeholder": "StudioCMS no-reply <no-reply@example.com>",
+      "test-email": "Email Address",
+      "test-email-placeholder": "john@example.com",
+      "send-test-email": "Send Test Email"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
