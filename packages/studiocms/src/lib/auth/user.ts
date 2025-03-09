@@ -1,5 +1,5 @@
 import studioCMS_SDK from 'studiocms:sdk';
-import type { tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
+import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 // import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password.js';
@@ -291,9 +291,20 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  * @returns A promise that resolves to a boolean indicating whether the user's permission level meets the required rank.
  */
 export async function verifyUserPermissionLevel(
-	userData: UserSessionData,
+	userData: UserSessionData | CombinedUserData,
 	requiredPermission: AvailablePermissionRanks
 ): Promise<boolean> {
-	const { permissionLevel } = userData;
+	let permissionLevel: AvailablePermissionRanks = 'unknown';
+
+	if ('permissionLevel' in userData) {
+		permissionLevel = userData.permissionLevel;
+	}
+
+	if ('permissionsData' in userData) {
+		permissionLevel = userData.permissionsData?.rank
+			? (userData.permissionsData.rank as AvailablePermissionRanks)
+			: 'unknown';
+	}
+
 	return permissionRanksMap[requiredPermission].includes(permissionLevel);
 }

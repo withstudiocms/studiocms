@@ -1,7 +1,9 @@
+// @ts-expect-error - Astro:config seems to only export a fake default export
 import { site } from 'astro:config/client';
 import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
+import type { CombinedUserData } from 'studiocms:sdk/types';
 
 export async function getEmailVerificationRequest(id: string) {
 	return await studioCMS_SDK.AUTH.verifyEmail.get(id);
@@ -42,4 +44,58 @@ export async function sendVerificationEmail(userId: string) {
 	});
 
 	return mailResponse;
+}
+
+export async function isEmailVerified(user: CombinedUserData | undefined) {
+	const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
+
+	if (!user) {
+		return false;
+	}
+
+	if (!enableMailer) {
+		return true;
+	}
+
+	const settings = (await studioCMS_SDK.GET.databaseTable.notificationSettings()) || {
+		id: '1',
+		emailVerification: false,
+		requireAdminVerification: false,
+		requireEditorVerification: false,
+		oAuthBypassVerification: false,
+	};
+
+	const {
+		emailVerification,
+		oAuthBypassVerification,
+		requireAdminVerification,
+		requireEditorVerification,
+	} = settings;
+
+	if (!emailVerification) {
+		return true;
+	}
+
+	if (oAuthBypassVerification && user.oAuthData && user.oAuthData.length > 0) {
+		return true;
+	}
+
+	switch (user.permissionsData?.rank) {
+		case 'owner':
+			return true;
+		case 'admin': {
+			if (requireAdminVerification) {
+				return user.emailVerified;
+			}
+			return true;
+		}
+		case 'editor': {
+			if (requireEditorVerification) {
+				return user.emailVerified;
+			}
+			return true;
+		}
+		default:
+			return user.emailVerified;
+	}
 }

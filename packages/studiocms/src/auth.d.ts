@@ -409,4 +409,5 @@ declare module 'studiocms:auth/lib/verify-email' {
 	export const sendVerificationEmail: typeof import(
 		'./lib/auth/verify-email.js'
 	).sendVerificationEmail;
+	export const isEmailVerified: typeof import('./lib/auth/verify-email.js').isEmailVerified;
 }
