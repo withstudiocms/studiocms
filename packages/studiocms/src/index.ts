@@ -1450,6 +1450,9 @@ export const studiocms = defineIntegration({
 						'Updating Astro Config with StudioCMS Resources and settings...'
 					);
 					updateConfig({
+						experimental: {
+							serializeConfig: true,
+						},
 						image: {
 							remotePatterns: [
 								{
