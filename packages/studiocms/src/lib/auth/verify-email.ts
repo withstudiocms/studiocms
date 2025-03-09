@@ -1,4 +1,4 @@
-import AstroConfig from 'astro:config/server';
+import AstroConfig from 'astro:config/client';
 import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
