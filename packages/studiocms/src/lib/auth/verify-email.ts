@@ -4,21 +4,110 @@ import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
+import { CMSNotificationSettingsId } from '../../consts';
 
+/**
+ * Retrieves the notification settings from the database.
+ * If the settings are not found, it returns a default settings object.
+ *
+ * @returns {Promise<{
+ *   id: string;
+ *   emailVerification: boolean;
+ *   requireAdminVerification: boolean;
+ *   requireEditorVerification: boolean;
+ *   oAuthBypassVerification: boolean;
+ * }>} The notification settings.
+ */
+async function getSettings(): Promise<{
+	id: string;
+	emailVerification: boolean;
+	requireAdminVerification: boolean;
+	requireEditorVerification: boolean;
+	oAuthBypassVerification: boolean;
+}> {
+	const settings = (await studioCMS_SDK.GET.databaseTable.notificationSettings()) || {
+		id: CMSNotificationSettingsId,
+		emailVerification: false,
+		requireAdminVerification: false,
+		requireEditorVerification: false,
+		oAuthBypassVerification: false,
+	};
+
+	return settings;
+}
+
+/**
+ * Checks if the mailer service is enabled in the StudioCMS configuration.
+ *
+ * This function retrieves the configuration from the StudioCMS SDK and
+ * returns the value of the `enableMailer` property. If the configuration
+ * is not available, it defaults to `false`.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the mailer
+ * service is enabled, otherwise `false`.
+ */
+async function isMailerEnabled(): Promise<boolean> {
+	const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
+	return enableMailer;
+}
+
+/**
+ * Retrieves an email verification request by its ID.
+ *
+ * @param id - The unique identifier of the email verification request.
+ * @returns A promise that resolves to the email verification request.
+ */
 export async function getEmailVerificationRequest(id: string) {
 	return await studioCMS_SDK.AUTH.verifyEmail.get(id);
 }
 
+/**
+ * Deletes an email verification request by its ID.
+ *
+ * @param id - The unique identifier of the email verification request to be deleted.
+ * @returns A promise that resolves when the email verification request is successfully deleted.
+ */
 export async function deleteEmailVerificationRequest(id: string) {
 	return await studioCMS_SDK.AUTH.verifyEmail.delete(id);
 }
 
+/**
+ * Creates an email verification request for a given user.
+ *
+ * This function first deletes any existing email verification requests for the user,
+ * and then creates a new email verification request using the studioCMS SDK.
+ *
+ * @param userId - The unique identifier of the user for whom the email verification request is being created.
+ * @returns A promise that resolves to the result of the email verification request creation.
+ */
 export async function createEmailVerificationRequest(userId: string) {
 	await deleteEmailVerificationRequest(userId);
 	return await studioCMS_SDK.AUTH.verifyEmail.create(userId);
 }
 
-export async function sendVerificationEmail(userId: string) {
+/**
+ * Sends a verification email to the user with the given userId.
+ *
+ * @param userId - The ID of the user to send the verification email to.
+ * @param isOAuth - Optional. Indicates if the user is authenticated via OAuth. Defaults to false.
+ *
+ * @returns A promise that resolves to the response of the mail sending operation.
+ *
+ * @throws Will throw an error if the user is not found, if the verification token creation fails, or if the user does not have an email.
+ */
+export async function sendVerificationEmail(userId: string, isOAuth = false) {
+	const enableMailer = await isMailerEnabled();
+
+	const settings = await getSettings();
+
+	if (!enableMailer) {
+		return;
+	}
+
+	if (isOAuth && settings.oAuthBypassVerification) {
+		return;
+	}
+
 	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
 	if (!user) {
 		throw new Error('User not found');
@@ -46,8 +135,25 @@ export async function sendVerificationEmail(userId: string) {
 	return mailResponse;
 }
 
+/**
+ * Checks if the user's email is verified based on various conditions.
+ *
+ * @param user - The user data which includes email verification status and permissions.
+ * @returns A promise that resolves to a boolean indicating whether the user's email is verified.
+ *
+ * The function performs the following checks:
+ * 1. If the user is undefined, returns false.
+ * 2. If the mailer is not enabled, returns true.
+ * 3. If email verification is not required in settings, returns true.
+ * 4. If OAuth bypass verification is enabled and the user has OAuth data, returns true.
+ * 5. Based on the user's rank:
+ *    - 'owner': Always returns true.
+ *    - 'admin': Returns the user's email verification status if admin verification is required, otherwise returns true.
+ *    - 'editor': Returns the user's email verification status if editor verification is required, otherwise returns true.
+ *    - Default: Returns the user's email verification status.
+ */
 export async function isEmailVerified(user: CombinedUserData | undefined) {
-	const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
+	const enableMailer = await isMailerEnabled();
 
 	if (!user) {
 		return false;
@@ -57,13 +163,7 @@ export async function isEmailVerified(user: CombinedUserData | undefined) {
 		return true;
 	}
 
-	const settings = (await studioCMS_SDK.GET.databaseTable.notificationSettings()) || {
-		id: '1',
-		emailVerification: false,
-		requireAdminVerification: false,
-		requireEditorVerification: false,
-		oAuthBypassVerification: false,
-	};
+	const settings = await getSettings();
 
 	const {
 		emailVerification,

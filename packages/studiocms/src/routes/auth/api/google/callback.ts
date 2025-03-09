@@ -1,6 +1,6 @@
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
-import { isEmailVerified } from 'studiocms:auth/lib/verify-email';
+import { isEmailVerified, sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -117,6 +117,8 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		if (config.dbStartPage) {
 			return redirect('/done');
 		}
+
+		await sendVerificationEmail(newUser.id, true);
 
 		const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(newUser.id);
 
