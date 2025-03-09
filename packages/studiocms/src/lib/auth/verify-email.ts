@@ -1,4 +1,4 @@
-import AstroConfig from 'astro:config/client';
+import { site } from 'astro:config/client';
 import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -37,7 +37,7 @@ export async function sendVerificationEmail(userId: string) {
 		subject: 'StudioCMS Email Verification',
 		text: `Please verify your email by clicking the following link: ${
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			removeLeadingTrailingSlashes(AstroConfig.site!)
+			removeLeadingTrailingSlashes(site!)
 		}${StudioCMSRoutes.endpointLinks.verifyEmail}?token=${verificationToken.id}&userId=${userId}`,
 	});
 
