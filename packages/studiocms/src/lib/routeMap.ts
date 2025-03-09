@@ -342,6 +342,8 @@ export const StudioCMSRoutes = {
 			 */
 			testEmail: dashboardAPIRoute('mailer/test-email'),
 		},
+
+		verifyEmail: dashboardAPIRoute('verify-email'),
 	},
 	sdk: {
 		/**

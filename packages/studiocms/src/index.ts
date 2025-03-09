@@ -609,6 +609,11 @@ export const studiocms = defineIntegration({
 								pattern: 'mailer/test-email',
 								entrypoint: routesDir.mailer('test-email.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'verify-email',
+								entrypoint: routesDir.dashApi('verify-email.js'),
+							},
 						],
 					});
 
@@ -1191,6 +1196,9 @@ export const studiocms = defineIntegration({
 							`,
 							'studiocms:auth/scripts/three': `
 								import '${resolve('./scripts/three.js')}';
+							`,
+							'studiocms:auth/lib/verify-email': `
+								export * from '${resolve('./lib/auth/verify-email.js')}';
 							`,
 						},
 					});

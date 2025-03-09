@@ -14,6 +14,11 @@ export const CMSSiteConfigId: number = 1;
 export const CMSMailerConfigId: string = '1';
 
 /**
+ * StudioCMS Notification Settings Table Entry ID
+ */
+export const CMSNotificationSettingsId: string = '1';
+
+/**
  * The default lifetime for cached items.
  * This value is used to determine how long an item should remain in the cache before it is considered expired.
  * This value is used in ./schemas/config/sdk.ts to set the default cache lifetime.
