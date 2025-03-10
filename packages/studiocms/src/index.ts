@@ -1091,7 +1091,9 @@ export const studiocms = defineIntegration({
 								export * from '${resolve('./lib/mailer/index.js')}';
 							`,
 							'studiocms:mailer/templates': `
-								export { getTemplate as default } from '${resolve('./lib/mailer/template.js')}';
+								import { getTemplate } from '${resolve('./lib/mailer/template.js')}';
+								export { getTemplate };
+								export default getTemplate;
 							`,
 
 							// SDK Virtual Modules

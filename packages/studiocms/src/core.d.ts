@@ -61,8 +61,7 @@ declare module 'studiocms:mailer' {
 }
 
 declare module 'studiocms:mailer/templates' {
-	const getTemplate: typeof import('./lib/mailer/template').getTemplate;
-
+	export const getTemplate: typeof import('./lib/mailer/template').getTemplate;
 	export default getTemplate;
 }
 
