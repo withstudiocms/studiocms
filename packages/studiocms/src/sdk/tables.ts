@@ -2,6 +2,8 @@ import { asDrizzleTable } from '@astrojs/db/utils';
 import {
 	StudioCMSAPIKeys,
 	StudioCMSDiffTracking,
+	StudioCMSEmailVerificationTokens,
+	StudioCMSNotificationSettings,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -17,6 +19,24 @@ import {
 import { tsMetric } from '../lib/webVitals/consts.js';
 
 export { tsMetric };
+
+/**
+ * # StudioCMS - Email Verification Tokens Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsEmailVerificationTokens = asDrizzleTable(
+	'StudioCMSEmailVerificationTokens',
+	StudioCMSEmailVerificationTokens
+);
+
+/**
+ * # StudioCMS - Notification Settings Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsNotificationSettings = asDrizzleTable(
+	'StudioCMSNotificationSettings',
+	StudioCMSNotificationSettings
+);
 
 export const tsAPIKeys = asDrizzleTable('StudioCMSAPIKeys', StudioCMSAPIKeys);
 

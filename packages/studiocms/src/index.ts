@@ -609,6 +609,21 @@ export const studiocms = defineIntegration({
 								pattern: 'mailer/test-email',
 								entrypoint: routesDir.mailer('test-email.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'verify-email',
+								entrypoint: routesDir.dashApi('verify-email.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'email-notification-settings-site',
+								entrypoint: routesDir.dashApi('email-notification-settings-site.js'),
+							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'resend-verify-email',
+								entrypoint: routesDir.dashApi('resend-verify-email.js'),
+							},
 						],
 					});
 
@@ -687,6 +702,11 @@ export const studiocms = defineIntegration({
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'smtp-configuration',
 									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'unverified-email',
+									entrypoint: routesDir.dashRoute('unverified-email.astro'),
 								},
 							],
 						},
@@ -1075,6 +1095,11 @@ export const studiocms = defineIntegration({
 							'studiocms:mailer': `
 								export * from '${resolve('./lib/mailer/index.js')}';
 							`,
+							'studiocms:mailer/templates': `
+								import { getTemplate } from '${resolve('./lib/mailer/template.js')}';
+								export { getTemplate };
+								export default getTemplate;
+							`,
 
 							// SDK Virtual Modules
 							'virtual:studiocms/sdk/env': `
@@ -1191,6 +1216,9 @@ export const studiocms = defineIntegration({
 							`,
 							'studiocms:auth/scripts/three': `
 								import '${resolve('./scripts/three.js')}';
+							`,
+							'studiocms:auth/lib/verify-email': `
+								export * from '${resolve('./lib/auth/verify-email.js')}';
 							`,
 						},
 					});
@@ -1442,6 +1470,9 @@ export const studiocms = defineIntegration({
 						'Updating Astro Config with StudioCMS Resources and settings...'
 					);
 					updateConfig({
+						experimental: {
+							serializeConfig: true,
+						},
 						image: {
 							remotePatterns: [
 								{

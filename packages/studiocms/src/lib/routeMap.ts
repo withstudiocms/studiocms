@@ -164,6 +164,11 @@ export const StudioCMSRoutes = {
 		 * URL for the plugins page.
 		 */
 		plugins: makeDashboardRoute('plugins/'),
+
+		/**
+		 * URL for unverified email page.
+		 */
+		unverifiedEmail: makeDashboardRoute('unverified-email'),
 	},
 	authLinks: {
 		/**
@@ -342,6 +347,12 @@ export const StudioCMSRoutes = {
 			 */
 			testEmail: dashboardAPIRoute('mailer/test-email'),
 		},
+
+		verifyEmail: dashboardAPIRoute('verify-email'),
+
+		emailNotificationSettingsSite: dashboardAPIRoute('email-notification-settings-site'),
+
+		resendVerificationEmail: dashboardAPIRoute('resend-verify-email'),
 	},
 	sdk: {
 		/**

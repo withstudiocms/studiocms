@@ -20,6 +20,10 @@ import type {
 	CombinedInsertContent,
 	tsDiffTrackingInsert,
 	tsDiffTrackingSelect,
+	tsEmailVerificationTokensInsert,
+	tsEmailVerificationTokensSelect,
+	tsNotificationSettingsInsert,
+	tsNotificationSettingsSelect,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
 	tsPageContentSelect,
@@ -81,6 +85,10 @@ export type {
 	tsUsersUpdate,
 	tsPageFolderInsert,
 	tsPageFolderSelect,
+	tsEmailVerificationTokensInsert,
+	tsEmailVerificationTokensSelect,
+	tsNotificationSettingsInsert,
+	tsNotificationSettingsSelect,
 };
 
 export interface FolderNode {
