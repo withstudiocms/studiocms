@@ -609,6 +609,11 @@ export const studiocms = defineIntegration({
 								pattern: 'mailer/test-email',
 								entrypoint: routesDir.mailer('test-email.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'verify-email',
+								entrypoint: routesDir.dashApi('verify-email.js'),
+							},
 						],
 					});
 
@@ -687,6 +692,11 @@ export const studiocms = defineIntegration({
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'smtp-configuration',
 									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
+								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'unverified-email',
+									entrypoint: routesDir.dashRoute('unverified-email.astro'),
 								},
 							],
 						},
@@ -1192,6 +1202,9 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/scripts/three': `
 								import '${resolve('./scripts/three.js')}';
 							`,
+							'studiocms:auth/lib/verify-email': `
+								export * from '${resolve('./lib/auth/verify-email.js')}';
+							`,
 						},
 					});
 
@@ -1442,6 +1455,9 @@ export const studiocms = defineIntegration({
 						'Updating Astro Config with StudioCMS Resources and settings...'
 					);
 					updateConfig({
+						experimental: {
+							serializeConfig: true,
+						},
 						image: {
 							remotePatterns: [
 								{

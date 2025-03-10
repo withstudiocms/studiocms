@@ -180,6 +180,7 @@
       "password-reset-modal-desc-2": "has been created.",
       "password-reset-modal-link": "Link",
       "edit-role-header": "User Role",
+      "email-verification-status": "Email Verification Status",
       "social-accounts-header": "Connected Accounts",
       "social-accounts-non": "No connected accounts found.",
       "api-tokens-header": "API Tokens",
@@ -262,6 +263,12 @@
       "description": "Error 404 - Page Not Found",
       "sub-description": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
       "back-button": "Go back"
+    },
+    "@studiocms/dashboard:unverifiedEmail": {
+      "title": "Email Not Verified",
+      "description": "Email Not Verified",
+      "sub-description": "Your email address has not been verified. Please check your email for a verification link.",
+      "back-button": "Go home"
     }
   }
 }
