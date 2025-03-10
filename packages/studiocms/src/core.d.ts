@@ -60,6 +60,12 @@ declare module 'studiocms:mailer' {
 	export const isMailerEnabled: typeof import('./lib/mailer/index').isMailerEnabled;
 }
 
+declare module 'studiocms:mailer/templates' {
+	const getTemplate: typeof import('./lib/mailer/template').getTemplate;
+
+	export default getTemplate;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;

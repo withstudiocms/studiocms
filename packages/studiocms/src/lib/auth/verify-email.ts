@@ -1,7 +1,8 @@
 // @ts-expect-error - Astro:config seems to only export a fake default export
 import { site } from 'astro:config/client';
-import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { isMailerEnabled, sendMail } from 'studiocms:mailer';
+import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type {
 	CombinedUserData,
@@ -128,13 +129,18 @@ export async function sendVerificationEmail(
 		throw new Error('User does not have an email');
 	}
 
+	const config = await studioCMS_SDK.GET.database.config();
+
+	const verifyLink = new URL(StudioCMSRoutes.endpointLinks.verifyEmail, site as string);
+	verifyLink.searchParams.append('token', verificationToken.id);
+	verifyLink.searchParams.append('userId', userId);
+
+	const htmlTemplate = getTemplate('verifyEmail');
+
 	const mailResponse = await sendMail({
 		to: email,
-		subject: 'StudioCMS Email Verification',
-		text: `Please verify your email by clicking the following link: ${
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			removeLeadingTrailingSlashes(site!)
-		}${StudioCMSRoutes.endpointLinks.verifyEmail}?token=${verificationToken.id}&userId=${userId}`,
+		subject: `Email Verification | ${config?.title || 'StudioCMS'}`,
+		html: htmlTemplate(verifyLink),
 	});
 
 	return mailResponse;

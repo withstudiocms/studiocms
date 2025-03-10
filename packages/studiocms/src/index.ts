@@ -1090,6 +1090,9 @@ export const studiocms = defineIntegration({
 							'studiocms:mailer': `
 								export * from '${resolve('./lib/mailer/index.js')}';
 							`,
+							'studiocms:mailer/templates': `
+								export { getTemplate as default } from '${resolve('./lib/mailer/template.js')}';
+							`,
 
 							// SDK Virtual Modules
 							'virtual:studiocms/sdk/env': `
