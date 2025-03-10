@@ -349,6 +349,8 @@ export const StudioCMSRoutes = {
 		},
 
 		verifyEmail: dashboardAPIRoute('verify-email'),
+
+		emailNotificationSettingsSite: dashboardAPIRoute('email-notification-settings-site'),
 	},
 	sdk: {
 		/**

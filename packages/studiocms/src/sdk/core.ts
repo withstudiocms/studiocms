@@ -1,7 +1,12 @@
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import { and, asc, desc, eq } from 'drizzle-orm';
-import { CMSNotificationSettingsId, CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
+import {
+	CMSNotificationSettingsId,
+	CMSSiteConfigId,
+	GhostUserDefaults,
+	NotificationSettingsDefaults,
+} from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
 	addPageToFolderTree,
@@ -53,6 +58,7 @@ import type {
 	addDatabaseEntryInsertPage,
 	tsDiffTrackingInsert,
 	tsDiffTrackingSelect,
+	tsNotificationSettingsInsert,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
 	tsPageContentSelect,
@@ -1037,6 +1043,36 @@ export function studiocmsSDKCore() {
 				}
 				throw new StudioCMS_SDK_Error('Error creating ghost user: An unknown error occurred.');
 			}
+		},
+	};
+
+	const notificationSettings = {
+		site: {
+			get: async () => {
+				const data = await db
+					.select()
+					.from(tsNotificationSettings)
+					.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+					.get();
+
+				if (!data) {
+					return await db
+						.insert(tsNotificationSettings)
+						.values(NotificationSettingsDefaults)
+						.returning()
+						.get();
+				}
+
+				return data;
+			},
+			update: async (settings: tsNotificationSettingsInsert) => {
+				return await db
+					.update(tsNotificationSettings)
+					.set(settings)
+					.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+					.returning()
+					.get();
+			},
 		},
 	};
 
@@ -2562,5 +2598,6 @@ export function studiocmsSDKCore() {
 		DELETE,
 		db,
 		REST_API,
+		notificationSettings,
 	};
 }

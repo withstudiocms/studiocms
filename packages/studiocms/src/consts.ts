@@ -105,3 +105,14 @@ export const GhostUserDefaults = {
 	username: 'studiocms_ghost_user',
 	avatar: 'https://seccdn.libravatar.org/static/img/mm/80.png',
 };
+
+/**
+ * Default values for the site Notifications configuration.
+ */
+export const NotificationSettingsDefaults = {
+	id: CMSNotificationSettingsId,
+	emailVerification: false,
+	oAuthBypassVerification: false,
+	requireEditorVerification: false,
+	requireAdminVerification: false,
+};

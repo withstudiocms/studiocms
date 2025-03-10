@@ -138,6 +138,7 @@ declare module 'studiocms:i18n/client' {
 	export const pageHeaderUpdater: typeof import('./lib/i18n/client').pageHeaderUpdater;
 	export const updateSelectElmLabel: typeof import('./lib/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./lib/i18n/client').updateElmPlaceholder;
+	export const updateToggleElmLabel: typeof import('./lib/i18n/client').updateToggleElmLabel;
 }
 
 declare module 'studiocms:imageHandler/components' {

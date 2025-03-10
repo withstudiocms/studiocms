@@ -145,7 +145,13 @@
       "smtp-default-sender-placeholder": "StudioCMS no-reply <no-reply@example.com>",
       "test-email": "Email Address",
       "test-email-placeholder": "john@example.com",
-      "send-test-email": "Send Test Email"
+      "send-test-email": "Send Test Email",
+      "site-email-settings": "Site Email Settings",
+      "emailVerification": "Enable Email Verification for Users",
+      "requireAdminVerification": "Require Admins to have their email verified",
+      "requireEditorVerification": "Require Editors to have their email verified",
+      "oAuthBypassVerification": "Skip Email Verification for OAuth Users",
+      "save-email-settings": "Save"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
