@@ -27,9 +27,13 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData = await ctx.request.json();
+	const jsonData: {
+		id: string;
+		rank: string;
+		emailVerified: boolean;
+	} = await ctx.request.json();
 
-	const { id, rank } = jsonData;
+	const { id, rank, emailVerified } = jsonData;
 
 	if (!id || !rank) {
 		return apiResponseLogger(400, 'Invalid request');
@@ -45,6 +49,13 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	if (!updatedData) {
 		return apiResponseLogger(400, 'Failed to update user rank');
+	}
+
+	if (emailVerified) {
+		// Update user email verification status
+		await studioCMS_SDK.AUTH.user.update(id, {
+			emailVerified: emailVerified,
+		});
 	}
 
 	return apiResponseLogger(200, 'User rank updated successfully');

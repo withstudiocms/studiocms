@@ -34,9 +34,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (!validPassword)
 		return badFormDataEntry('Invalid credentials', 'Invalid username or password');
 
+	// Check if the user's email is verified (if the mailer is enabled)
 	const isEmailAccountVerified = await isEmailVerified(existingUser);
 
-	// If Mailer is enabled, is the user verified?
+	// If the email is not verified, return an error
 	if (!isEmailAccountVerified) {
 		return badFormDataEntry('Email not verified', 'Please verify your email before logging in');
 	}

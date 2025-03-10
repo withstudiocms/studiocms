@@ -164,6 +164,11 @@ export const StudioCMSRoutes = {
 		 * URL for the plugins page.
 		 */
 		plugins: makeDashboardRoute('plugins/'),
+
+		/**
+		 * URL for unverified email page.
+		 */
+		unverifiedEmail: makeDashboardRoute('unverified-email'),
 	},
 	authLinks: {
 		/**

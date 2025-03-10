@@ -693,6 +693,11 @@ export const studiocms = defineIntegration({
 									pattern: 'smtp-configuration',
 									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
 								},
+								{
+									enabled: dashboardEnabled && !dbStartPage,
+									pattern: 'unverified-email',
+									entrypoint: routesDir.dashRoute('unverified-email.astro'),
+								},
 							],
 						},
 						false

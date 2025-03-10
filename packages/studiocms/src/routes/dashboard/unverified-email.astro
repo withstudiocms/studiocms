@@ -1,0 +1,66 @@
+---
+import '../../styles/404.css';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components';
+import Layout from '../../layouts/dashboard/Layout.astro';
+
+const lang = 'en-us';
+const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  sidebar={false} 
+  requiredPermission="none">
+  <div class="notfound-container">
+    <div class="notfound">
+      <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="305" y="10" width="440" height="446" rx="22" stroke="currentColor" stroke-width="20"/>
+        <path d="M262 176V434C262 470.451 291.549 500 328 500H599.5V597C599.5 609.15 589.65 619 577.5 619H180C167.85 619 158 609.15 158 597V198C158 185.85 167.85 176 180 176H262Z" stroke="currentColor" stroke-width="20"/>
+        <path d="M114 339V597C114 633.451 143.549 663 180 663H451.5V760C451.5 772.15 441.65 782 429.5 782H32C19.8497 782 10 772.15 10 760V361C10 348.85 19.8497 339 32 339H114Z" stroke="currentColor" stroke-width="20"/>
+      </svg>
+      <h1><t-unverified key="title">{t('title')}</t-unverified></h1>
+      <h2><t-unverified key="description">{t('description')}</t-unverified></h2>
+      <p><t-unverified key="sub-description">{t('sub-description')}</t-unverified></p>
+      <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth>
+        <span><t-unverified key="back-button">{t('back-button')}</t-unverified></span>
+      </Button>
+    </div>
+  </div>
+</Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:unverifiedEmail';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get('t-unverified')) {
+        customElements.define('t-unverified', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+  document.getElementById('back-button')!.addEventListener('click', () => {
+    window.location.href = '/';
+  });
+</script>

@@ -1,5 +1,6 @@
 ---
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { isEmailVerificationEnabled } from 'studiocms:auth/lib/verify-email';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -41,6 +42,8 @@ const {
 const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
 
 const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
+
+const emailVerificationEnabled = await isEmailVerificationEnabled();
 ---
 <Layout 
   title={t('title')}
@@ -108,11 +111,25 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
 
     <Card class="user-information-block" fullWidth variant={'filled'}>
       <table>
-        <tr> <td><t-users-edit key="user-info-email">{t('user-info-email')}</t-users-edit></td> <td>{user?.email}</td> </tr>
-        <tr> <td><t-users-edit key="user-info-username">{t('user-info-username')}</t-users-edit></td> <td>{user?.username}</td> </tr>
-        {user?.url && <tr> <td><t-users-edit key="user-info-website">{t('user-info-website')}</t-users-edit></td> <td>{user?.url}</td> </tr> }
-        <tr> <td><t-users-edit key="user-info-created-at">{t('user-info-created-at')}</t-users-edit></td> <td><FormattedDate date={user?.createdAt!} /></td> </tr>
-        { user?.updatedAt && <tr> <td><t-users-edit key="user-info-updated-at">{t('user-info-updated-at')}</t-users-edit></td> <td><FormattedDate date={user?.updatedAt} /></td> </tr> }
+        <tr>
+          <td><t-users-edit key="user-info-email">{t('user-info-email')}</t-users-edit></td>
+          <td>{user?.email}{emailVerificationEnabled && <>{user?.emailVerified ? ' 🟢' : ' 🔴'}</>}</td>
+        </tr>
+        <tr>
+          <td><t-users-edit key="user-info-username">{t('user-info-username')}</t-users-edit></td> 
+          <td>{user?.username}</td> 
+        </tr>
+        {user?.url && <tr> 
+          <td><t-users-edit key="user-info-website">{t('user-info-website')}</t-users-edit></td> <td>{user?.url}</td> 
+        </tr> }
+        <tr>
+          <td><t-users-edit key="user-info-created-at">{t('user-info-created-at')}</t-users-edit></td>
+          <td><FormattedDate date={user?.createdAt!} /></td>
+        </tr>
+        { user?.updatedAt && <tr>
+          <td><t-users-edit key="user-info-updated-at">{t('user-info-updated-at')}</t-users-edit></td>
+          <td><FormattedDate date={user?.updatedAt} /></td>
+        </tr> }
       </table>
     </Card>
 
@@ -151,6 +168,20 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
           { label: 'Administrator', value: 'admin' },
           { label: 'Editor', value: 'editor' },
           { label: 'Visitor', value: 'visitor' },
+        ]}
+        />
+
+      <div class="text-h3"><t-users-edit key="email-verification-status">{t('email-verification-status')}</t-users-edit></div>
+
+      <Select 
+        name="email-verified"  
+        isRequired 
+        fullWidth 
+        defaultValue={`${user?.emailVerified}`}
+        disabled={emailVerificationEnabled ? false : true}
+        options={[
+          { label: 'Verified', value: 'true' },
+          { label: 'Not Verified', value: 'false' },
         ]}
         />
 
@@ -372,6 +403,7 @@ const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
       const data = {
         id: formData.get('user-id')?.toString(),
         rank: formData.get('rank')?.toString(),
+        emailVerified: formData.get('email-verified') === 'true'
       }
 
       const response = await fetch(editUserForm.action, {

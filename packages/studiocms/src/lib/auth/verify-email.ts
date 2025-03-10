@@ -3,36 +3,31 @@ import { site } from 'astro:config/client';
 import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
-import type { CombinedUserData } from 'studiocms:sdk/types';
-import { CMSNotificationSettingsId } from '../../consts';
+import type {
+	CombinedUserData,
+	tsEmailVerificationTokensSelect,
+	tsNotificationSettingsSelect,
+} from 'studiocms:sdk/types';
+import { CMSNotificationSettingsId } from '../../consts.js';
+import type { MailerResponse } from '../mailer/index.js';
+import type { UserSessionData } from './types.js';
 
 /**
  * Retrieves the notification settings from the database.
  * If the settings are not found, it returns a default settings object.
  *
- * @returns {Promise<{
- *   id: string;
- *   emailVerification: boolean;
- *   requireAdminVerification: boolean;
- *   requireEditorVerification: boolean;
- *   oAuthBypassVerification: boolean;
- * }>} The notification settings.
+ * @returns {Promise<tsNotificationSettingsSelect>} The notification settings.
  */
-async function getSettings(): Promise<{
-	id: string;
-	emailVerification: boolean;
-	requireAdminVerification: boolean;
-	requireEditorVerification: boolean;
-	oAuthBypassVerification: boolean;
-}> {
-	const settings = (await studioCMS_SDK.GET.databaseTable.notificationSettings()) || {
-		id: CMSNotificationSettingsId,
-		emailVerification: false,
-		requireAdminVerification: false,
-		requireEditorVerification: false,
-		oAuthBypassVerification: false,
-	};
-
+async function getSettings(): Promise<tsNotificationSettingsSelect> {
+	const settings = await studioCMS_SDK.GET.databaseTable.notificationSettings();
+	if (!settings)
+		return {
+			id: CMSNotificationSettingsId,
+			emailVerification: false,
+			requireAdminVerification: false,
+			requireEditorVerification: false,
+			oAuthBypassVerification: false,
+		};
 	return settings;
 }
 
@@ -52,12 +47,32 @@ async function isMailerEnabled(): Promise<boolean> {
 }
 
 /**
+ * Checks if email verification is enabled in the StudioCMS configuration.
+ *
+ * This function retrieves the notification settings from the database and
+ * returns the value of the `emailVerification` property. If the settings
+ * are not available, it defaults to `false`.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to `true` if email
+ * verification is enabled, otherwise `false`.
+ */
+export async function isEmailVerificationEnabled(): Promise<boolean> {
+	const mailer = await isMailerEnabled();
+	if (!mailer) return false;
+
+	const settings = await getSettings();
+	return settings.emailVerification;
+}
+
+/**
  * Retrieves an email verification request by its ID.
  *
  * @param id - The unique identifier of the email verification request.
  * @returns A promise that resolves to the email verification request.
  */
-export async function getEmailVerificationRequest(id: string) {
+export async function getEmailVerificationRequest(
+	id: string
+): Promise<tsEmailVerificationTokensSelect | null> {
 	return await studioCMS_SDK.AUTH.verifyEmail.get(id);
 }
 
@@ -67,7 +82,7 @@ export async function getEmailVerificationRequest(id: string) {
  * @param id - The unique identifier of the email verification request to be deleted.
  * @returns A promise that resolves when the email verification request is successfully deleted.
  */
-export async function deleteEmailVerificationRequest(id: string) {
+export async function deleteEmailVerificationRequest(id: string): Promise<void> {
 	return await studioCMS_SDK.AUTH.verifyEmail.delete(id);
 }
 
@@ -80,7 +95,9 @@ export async function deleteEmailVerificationRequest(id: string) {
  * @param userId - The unique identifier of the user for whom the email verification request is being created.
  * @returns A promise that resolves to the result of the email verification request creation.
  */
-export async function createEmailVerificationRequest(userId: string) {
+export async function createEmailVerificationRequest(
+	userId: string
+): Promise<tsEmailVerificationTokensSelect> {
 	await deleteEmailVerificationRequest(userId);
 	return await studioCMS_SDK.AUTH.verifyEmail.create(userId);
 }
@@ -95,7 +112,10 @@ export async function createEmailVerificationRequest(userId: string) {
  *
  * @throws Will throw an error if the user is not found, if the verification token creation fails, or if the user does not have an email.
  */
-export async function sendVerificationEmail(userId: string, isOAuth = false) {
+export async function sendVerificationEmail(
+	userId: string,
+	isOAuth = false
+): Promise<MailerResponse | undefined> {
 	const enableMailer = await isMailerEnabled();
 
 	const settings = await getSettings();
@@ -152,7 +172,9 @@ export async function sendVerificationEmail(userId: string, isOAuth = false) {
  *    - 'editor': Returns the user's email verification status if editor verification is required, otherwise returns true.
  *    - Default: Returns the user's email verification status.
  */
-export async function isEmailVerified(user: CombinedUserData | undefined) {
+export async function isEmailVerified(
+	user: CombinedUserData | UserSessionData | undefined
+): Promise<boolean> {
 	const enableMailer = await isMailerEnabled();
 
 	if (!user) {
@@ -176,26 +198,52 @@ export async function isEmailVerified(user: CombinedUserData | undefined) {
 		return true;
 	}
 
-	if (oAuthBypassVerification && user.oAuthData && user.oAuthData.length > 0) {
+	let userToCheck: CombinedUserData | undefined = 'id' in user ? user : undefined;
+
+	if ('user' in user) {
+		const tUser = user.user;
+
+		if (!tUser) {
+			return false;
+		}
+
+		const possibleUser = await studioCMS_SDK.GET.databaseEntry.users.byId(tUser.id);
+
+		if (!possibleUser) {
+			return false;
+		}
+
+		userToCheck = possibleUser;
+	}
+
+	if ('id' in user) {
+		userToCheck = user;
+	}
+
+	if (!userToCheck) {
+		return false;
+	}
+
+	if (oAuthBypassVerification && userToCheck.oAuthData && userToCheck.oAuthData.length > 0) {
 		return true;
 	}
 
-	switch (user.permissionsData?.rank) {
+	switch (userToCheck.permissionsData?.rank) {
 		case 'owner':
 			return true;
 		case 'admin': {
 			if (requireAdminVerification) {
-				return user.emailVerified;
+				return userToCheck.emailVerified;
 			}
 			return true;
 		}
 		case 'editor': {
 			if (requireEditorVerification) {
-				return user.emailVerified;
+				return userToCheck.emailVerified;
 			}
 			return true;
 		}
 		default:
-			return user.emailVerified;
+			return userToCheck.emailVerified;
 	}
 }

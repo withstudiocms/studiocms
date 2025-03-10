@@ -250,6 +250,18 @@ declare module 'studiocms:sdk/types' {
 	export type CombinedUserData = import('./sdk/types/index.js').CombinedUserData;
 	export type CombinedPageData = import('./sdk/types/index.js').CombinedPageData;
 	export type DeletionResponse = import('./sdk/types/index.js').DeletionResponse;
+	export type tsEmailVerificationTokensInsert = import(
+		'./sdk/types/index.js'
+	).tsEmailVerificationTokensInsert;
+	export type tsEmailVerificationTokensSelect = import(
+		'./sdk/types/index.js'
+	).tsEmailVerificationTokensSelect;
+	export type tsNotificationSettingsInsert = import(
+		'./sdk/types/index.js'
+	).tsNotificationSettingsInsert;
+	export type tsNotificationSettingsSelect = import(
+		'./sdk/types/index.js'
+	).tsNotificationSettingsSelect;
 }
 
 declare module 'studiocms:sdk/cache' {
