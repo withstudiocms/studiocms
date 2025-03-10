@@ -274,6 +274,7 @@
       "title": "Email Not Verified",
       "description": "Email Not Verified",
       "sub-description": "Your email address has not been verified. Please check your email for a verification link.",
+      "resend-button": "Resend Verification Email",
       "back-button": "Go home"
     }
   }

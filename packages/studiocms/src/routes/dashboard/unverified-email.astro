@@ -1,11 +1,21 @@
 ---
 import '../../styles/404.css';
+import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
+
+const { user: userData } = await getUserData(Astro);
+
+const userId = userData?.id;
+
+if (!userId) {
+	window.location.href = '/';
+}
 ---
 
 <Layout 
@@ -23,12 +33,67 @@ const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
       <h1><t-unverified key="title">{t('title')}</t-unverified></h1>
       <h2><t-unverified key="description">{t('description')}</t-unverified></h2>
       <p><t-unverified key="sub-description">{t('sub-description')}</t-unverified></p>
+
+      <Button id="resend-button" variant={'solid'} color="primary" class="resend" fullWidth>
+        <div style="display: none;" data-userid={userId} data-url={StudioCMSRoutes.endpointLinks.resendVerificationEmail}> </div>
+        <span><t-unverified key="resend-button">{t('resend-button')}</t-unverified></span>
+      </Button>
+
+      <br />
+
       <Button id="back-button" variant={'outlined'} color="primary" class="return" fullWidth>
         <span><t-unverified key="back-button">{t('back-button')}</t-unverified></span>
       </Button>
     </div>
   </div>
 </Layout>
+
+<script>
+  import { toast } from 'studiocms:ui/components';
+
+  document.getElementById('back-button')!.addEventListener('click', () => {
+    window.location.href = '/';
+  });
+
+  const resendButton = document.getElementById('resend-button') as HTMLButtonElement;
+
+  resendButton.addEventListener('click', async () => {
+    const userId = resendButton.querySelector('div')!.dataset.userid;
+    const url = resendButton.querySelector('div')!.dataset.url;
+
+    console.log(userId, url);
+
+    if (!userId || !url) {
+      return;
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast({
+        title: 'Success',
+        description: data.message,
+        type: 'success',
+      })
+      return;
+    } else {
+      toast({
+        title: 'Error',
+        description: data.error,
+        type: 'danger',
+      });
+      return;
+    }
+  })
+</script>
 
 <script>
     import { 
@@ -57,10 +122,4 @@ const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
     if (!customElements.get('t-unverified')) {
         customElements.define('t-unverified', makeTranslation(currentPage, i18n));
     }
-</script>
-
-<script>
-  document.getElementById('back-button')!.addEventListener('click', () => {
-    window.location.href = '/';
-  });
 </script>

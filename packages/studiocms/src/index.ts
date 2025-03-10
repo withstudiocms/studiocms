@@ -619,6 +619,11 @@ export const studiocms = defineIntegration({
 								pattern: 'email-notification-settings-site',
 								entrypoint: routesDir.dashApi('email-notification-settings-site.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'resend-verify-email',
+								entrypoint: routesDir.dashApi('resend-verify-email.js'),
+							},
 						],
 					});
 
