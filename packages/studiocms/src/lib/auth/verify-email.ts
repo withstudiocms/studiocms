@@ -1,7 +1,7 @@
 // @ts-expect-error - Astro:config seems to only export a fake default export
 import { site } from 'astro:config/client';
 import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
-import { sendMail } from 'studiocms:mailer';
+import { isMailerEnabled, sendMail } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
 import type {
 	CombinedUserData,
@@ -29,21 +29,6 @@ async function getSettings(): Promise<tsNotificationSettingsSelect> {
 			oAuthBypassVerification: false,
 		};
 	return settings;
-}
-
-/**
- * Checks if the mailer service is enabled in the StudioCMS configuration.
- *
- * This function retrieves the configuration from the StudioCMS SDK and
- * returns the value of the `enableMailer` property. If the configuration
- * is not available, it defaults to `false`.
- *
- * @returns {Promise<boolean>} A promise that resolves to `true` if the mailer
- * service is enabled, otherwise `false`.
- */
-async function isMailerEnabled(): Promise<boolean> {
-	const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
-	return enableMailer;
 }
 
 /**

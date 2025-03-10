@@ -57,6 +57,7 @@ declare module 'studiocms:mailer' {
 	export const getMailerConfigTable: typeof import('./lib/mailer/index').getMailerConfigTable;
 	export const updateMailerConfigTable: typeof import('./lib/mailer/index').updateMailerConfigTable;
 	export const createMailerConfigTable: typeof import('./lib/mailer/index').createMailerConfigTable;
+	export const isMailerEnabled: typeof import('./lib/mailer/index').isMailerEnabled;
 }
 
 interface Window {
