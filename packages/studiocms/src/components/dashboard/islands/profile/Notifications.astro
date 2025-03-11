@@ -73,7 +73,7 @@ if (enableMailer) {
             isEditor && NotificationOptions.editor.map((option) => (
                 <Toggle 
                     name={option} 
-                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
+                    label={`Editor: ${notificationTitleStrings[option as keyof typeof notificationTitleStrings]}`} 
                     defaultChecked={userNotifications.includes(option)} 
                     color={'primary'}
                     disabled={!isNotificationsEnabled}
@@ -85,7 +85,7 @@ if (enableMailer) {
             isAdmin && NotificationOptions.admin.map((option) => (
                 <Toggle 
                     name={option} 
-                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
+                    label={`Admin: ${notificationTitleStrings[option as keyof typeof notificationTitleStrings]}`} 
                     defaultChecked={userNotifications.includes(option)} 
                     color={'primary'}
                     disabled={!isNotificationsEnabled}
