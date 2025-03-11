@@ -1,9 +1,9 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import studioCMS_SDK from 'studiocms:sdk';
 import type { tsNotificationSettingsSelect } from 'studiocms:sdk/types';
 import type { APIRoute } from 'astro';
-import studioCMS_SDK from '../../../../sdk';
 
 const { testingAndDemoMode } = developerConfig;
 

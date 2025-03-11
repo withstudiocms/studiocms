@@ -3,7 +3,6 @@ import { sendMail as _sendMail, verifyMailConnection } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { StudioCMSCoreError } from '../../errors.js';
 import type { UserNotificationOptions } from './client.js';
 
 /**
@@ -113,13 +112,6 @@ export type EditorNotification = keyof EditorNotifications;
 export type AdminNotification = keyof AdminNotifications;
 
 /**
- * An error class for StudioCMS notifier errors.
- */
-class StudioCMSNotifierError extends StudioCMSCoreError {
-	name = 'StudioCMSNotifierError';
-}
-
-/**
  * An array of user ranks.
  */
 const userRanks = ['visitor', 'editor', 'admin', 'owner'];
@@ -207,7 +199,6 @@ async function sendMail({
  * @template T - The type of the user notification.
  * @param {T} notification - The notification to be sent.
  * @param {string} userId - The ID of the user to whom the notification will be sent.
- * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection or if the user is not found.
  * @returns {Promise<void>} A promise that resolves when the notification is sent or if the mailer is disabled.
  */
 export async function sendUserNotification<T extends UserNotification>(
@@ -256,7 +247,6 @@ export async function sendUserNotification<T extends UserNotification>(
  * @template K - The type of the data required by the notification.
  * @param {T} notification - The type of notification to send.
  * @param {K} data - The data to include in the notification.
- * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection.
  */
 export async function sendEditorNotification<
 	T extends EditorNotification,
@@ -298,7 +288,6 @@ export async function sendEditorNotification<
  * @template K - The type of the data required by the notification.
  * @param {T} notification - The type of notification to send.
  * @param {K} data - The data to include in the notification.
- * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection.
  */
 export async function sendAdminNotification<
 	T extends AdminNotification,

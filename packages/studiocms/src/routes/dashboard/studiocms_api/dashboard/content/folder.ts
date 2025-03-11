@@ -4,7 +4,6 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-import { send } from 'vite';
 
 const { testingAndDemoMode } = developerConfig;
 
