@@ -88,31 +88,13 @@ type EditorNotifications = typeof editorNotifications;
 type AdminNotifications = typeof adminNotifications;
 
 /**
- * An array of user notification types.
+ * An object containing all notification types.
  */
-export const userNotificationTypes = ['account_updated'] as const;
-
-/**
- * An array of editor notification types.
- */
-export const editorNotificationTypes = [
-	'page_updated',
-	'page_deleted',
-	'new_page',
-	'folder_updated',
-	'folder_deleted',
-	'new_folder',
-] as const;
-
-/**
- * An array of admin notification types.
- */
-export const adminNotificationTypes = [
-	'user_updated',
-	'user_deleted',
-	'new_user',
-	'user_deleted',
-] as const;
+export const notificationTypes = {
+	user: Object.keys(userNotifications),
+	editor: Object.keys(editorNotifications),
+	admin: Object.keys(adminNotifications),
+};
 
 /**
  * The type of the `userNotificationTypes` array.
