@@ -1,5 +1,6 @@
 import { verifyPasswordHash } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
+import { isEmailVerified } from 'studiocms:auth/lib/verify-email';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { badFormDataEntry, parseFormDataEntryToString } from './shared.js';
@@ -32,6 +33,14 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	// If the password is invalid, return an error
 	if (!validPassword)
 		return badFormDataEntry('Invalid credentials', 'Invalid username or password');
+
+	// Check if the user's email is verified (if the mailer is enabled)
+	const isEmailAccountVerified = await isEmailVerified(existingUser);
+
+	// If the email is not verified, return an error
+	if (!isEmailAccountVerified) {
+		return badFormDataEntry('Email not verified', 'Please verify your email before logging in');
+	}
 
 	await createUserSession(existingUser.id, context);
 

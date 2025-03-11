@@ -100,6 +100,18 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 	label.textContent = translation;
 };
 
+export const updateToggleElmLabel = (el: string, translation: string) => {
+	const label = document.querySelector<HTMLLabelElement>(`label[for="${el}"]`) as HTMLLabelElement;
+
+	const span = label.querySelector(`#label-${el}`) as HTMLSpanElement;
+
+	if (requiredLabelRegex.test(span.innerHTML)) {
+		span.innerHTML = `${translation} <span class="req-star">*</span>`;
+		return;
+	}
+	span.textContent = translation;
+};
+
 export const pageHeaderUpdater = (translation: string) => {
 	const pageHeader = document.querySelector('.page-header') as HTMLElement;
 	const header = pageHeader.querySelector('.page-title') as HTMLElement;

@@ -15,6 +15,8 @@ export const StudioCMSUsers = defineTable({
 		password: column.text({ optional: true }),
 		updatedAt: column.date({ default: NOW, optional: true }),
 		createdAt: column.date({ default: NOW, optional: true }),
+		emailVerified: column.boolean({ default: false }),
+		notifications: column.text({ optional: true }),
 	},
 });
 
@@ -176,6 +178,25 @@ export const StudioCMSMailerConfig = defineTable({
 	},
 });
 
+export const StudioCMSNotificationSettings = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		emailVerification: column.boolean({ default: false }),
+		requireAdminVerification: column.boolean({ default: false }),
+		requireEditorVerification: column.boolean({ default: false }),
+		oAuthBypassVerification: column.boolean({ default: false }),
+	},
+});
+
+export const StudioCMSEmailVerificationTokens = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
+		token: column.text(),
+		expiresAt: column.date(),
+	},
+});
+
 export const tables = {
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -191,4 +212,6 @@ export const tables = {
 	StudioCMSUserResetTokens,
 	StudioCMSAPIKeys,
 	StudioCMSMailerConfig,
+	StudioCMSNotificationSettings,
+	StudioCMSEmailVerificationTokens,
 };

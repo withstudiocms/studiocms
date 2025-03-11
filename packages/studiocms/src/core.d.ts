@@ -57,6 +57,12 @@ declare module 'studiocms:mailer' {
 	export const getMailerConfigTable: typeof import('./lib/mailer/index').getMailerConfigTable;
 	export const updateMailerConfigTable: typeof import('./lib/mailer/index').updateMailerConfigTable;
 	export const createMailerConfigTable: typeof import('./lib/mailer/index').createMailerConfigTable;
+	export const isMailerEnabled: typeof import('./lib/mailer/index').isMailerEnabled;
+}
+
+declare module 'studiocms:mailer/templates' {
+	export const getTemplate: typeof import('./lib/mailer/template').getTemplate;
+	export default getTemplate;
 }
 
 interface Window {
@@ -138,6 +144,7 @@ declare module 'studiocms:i18n/client' {
 	export const pageHeaderUpdater: typeof import('./lib/i18n/client').pageHeaderUpdater;
 	export const updateSelectElmLabel: typeof import('./lib/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./lib/i18n/client').updateElmPlaceholder;
+	export const updateToggleElmLabel: typeof import('./lib/i18n/client').updateToggleElmLabel;
 }
 
 declare module 'studiocms:imageHandler/components' {
@@ -250,6 +257,18 @@ declare module 'studiocms:sdk/types' {
 	export type CombinedUserData = import('./sdk/types/index.js').CombinedUserData;
 	export type CombinedPageData = import('./sdk/types/index.js').CombinedPageData;
 	export type DeletionResponse = import('./sdk/types/index.js').DeletionResponse;
+	export type tsEmailVerificationTokensInsert = import(
+		'./sdk/types/index.js'
+	).tsEmailVerificationTokensInsert;
+	export type tsEmailVerificationTokensSelect = import(
+		'./sdk/types/index.js'
+	).tsEmailVerificationTokensSelect;
+	export type tsNotificationSettingsInsert = import(
+		'./sdk/types/index.js'
+	).tsNotificationSettingsInsert;
+	export type tsNotificationSettingsSelect = import(
+		'./sdk/types/index.js'
+	).tsNotificationSettingsSelect;
 }
 
 declare module 'studiocms:sdk/cache' {

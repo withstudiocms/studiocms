@@ -1,6 +1,7 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
+import { sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
@@ -59,6 +60,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// Create a new user
 	const newUser = await createLocalUser(name, username, email, password);
+
+	await sendVerificationEmail(newUser.id);
 
 	await createUserSession(newUser.id, context);
 

@@ -1,5 +1,6 @@
 import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
+import { isEmailVerified, sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -52,6 +53,17 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 				return new Response('User not found', { status: 404 });
 			}
 
+			const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(user.id);
+
+			const isEmailAccountVerified = await isEmailVerified(existingUser);
+
+			// If Mailer is enabled, is the user verified?
+			if (!isEmailAccountVerified) {
+				return new Response('Email not verified, please verify your account first.', {
+					status: 400,
+				});
+			}
+
 			await createUserSession(user.id, context);
 
 			return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
@@ -69,6 +81,15 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 					provider: ProviderID,
 					providerUserId: googleUserId,
 				});
+
+				const isEmailAccountVerified = await isEmailVerified(existingUser);
+
+				// If Mailer is enabled, is the user verified?
+				if (!isEmailAccountVerified) {
+					return new Response('Email not verified, please verify your account first.', {
+						status: 400,
+					});
+				}
 
 				await createUserSession(existingUser.id, context);
 
@@ -95,6 +116,17 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 		// FIRST-TIME-SETUP
 		if (config.dbStartPage) {
 			return redirect('/done');
+		}
+
+		await sendVerificationEmail(newUser.id, true);
+
+		const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(newUser.id);
+
+		const isEmailAccountVerified = await isEmailVerified(existingUser);
+
+		// If Mailer is enabled, is the user verified?
+		if (!isEmailAccountVerified) {
+			return new Response('Email not verified, please verify your account first.', { status: 400 });
 		}
 
 		await createUserSession(newUser.id, context);

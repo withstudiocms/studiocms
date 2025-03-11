@@ -1,7 +1,12 @@
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import { and, asc, desc, eq } from 'drizzle-orm';
-import { CMSSiteConfigId, GhostUserDefaults } from '../consts.js';
+import {
+	CMSNotificationSettingsId,
+	CMSSiteConfigId,
+	GhostUserDefaults,
+	NotificationSettingsDefaults,
+} from '../consts.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
 	addPageToFolderTree,
@@ -23,6 +28,8 @@ import { combineRanks, verifyRank } from './lib/users.js';
 import {
 	tsAPIKeys,
 	tsDiffTracking,
+	tsEmailVerificationTokens,
+	tsNotificationSettings,
 	tsOAuthAccounts,
 	tsPageContent,
 	tsPageData,
@@ -51,6 +58,7 @@ import type {
 	addDatabaseEntryInsertPage,
 	tsDiffTrackingInsert,
 	tsDiffTrackingSelect,
+	tsNotificationSettingsInsert,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
 	tsPageContentSelect,
@@ -542,6 +550,45 @@ export function studiocmsSDKCore() {
 	};
 
 	const AUTH = {
+		verifyEmail: {
+			get: async (id: string) => {
+				const request = await db
+					.select()
+					.from(tsEmailVerificationTokens)
+					.where(eq(tsEmailVerificationTokens.id, id))
+					.get();
+
+				if (!request) {
+					return null;
+				}
+
+				return request;
+			},
+			create: async (userId: string) => {
+				await db
+					.delete(tsEmailVerificationTokens)
+					.where(eq(tsEmailVerificationTokens.userId, userId));
+
+				const token = generateToken(userId);
+
+				return await db
+					.insert(tsEmailVerificationTokens)
+					.values({
+						id: crypto.randomUUID(),
+						userId,
+						token,
+						expiresAt: new Date(Date.now() + 1000 * 60 * 10),
+					})
+					.returning()
+					.get();
+			},
+			delete: async (userId: string) => {
+				await db
+					.delete(tsEmailVerificationTokens)
+					.where(eq(tsEmailVerificationTokens.userId, userId));
+			},
+		},
+
 		/**
 		 * Provides various methods to create, delete, and search for OAuth accounts in the StudioCMS database.
 		 */
@@ -999,6 +1046,36 @@ export function studiocmsSDKCore() {
 		},
 	};
 
+	const notificationSettings = {
+		site: {
+			get: async () => {
+				const data = await db
+					.select()
+					.from(tsNotificationSettings)
+					.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+					.get();
+
+				if (!data) {
+					return await db
+						.insert(tsNotificationSettings)
+						.values(NotificationSettingsDefaults)
+						.returning()
+						.get();
+				}
+
+				return data;
+			},
+			update: async (settings: tsNotificationSettingsInsert) => {
+				return await db
+					.update(tsNotificationSettings)
+					.set(settings)
+					.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+					.returning()
+					.get();
+			},
+		},
+	};
+
 	const GET = {
 		/**
 		 * Retrieves data from the database
@@ -1366,6 +1443,25 @@ export function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page folder structure data.
 			 */
 			pageFolderStructure: async () => await db.select().from(tsPageFolderStructure),
+
+			/**
+			 * Retrieves all data from the notification settings table.
+			 *
+			 * @returns A promise that resolves to an array of notification settings data.
+			 */
+			notificationSettings: async () =>
+				await db
+					.select()
+					.from(tsNotificationSettings)
+					.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+					.get(),
+
+			/**
+			 * Retrieves all data from the email verification tokens table.
+			 *
+			 * @returns A promise that resolves to an array of email verification token data.
+			 */
+			emailVerificationTokens: async () => await db.select().from(tsEmailVerificationTokens),
 		},
 
 		/**
@@ -2502,5 +2598,6 @@ export function studiocmsSDKCore() {
 		DELETE,
 		db,
 		REST_API,
+		notificationSettings,
 	};
 }

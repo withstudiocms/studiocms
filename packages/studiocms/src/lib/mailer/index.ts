@@ -1,5 +1,6 @@
 import { db, eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
+import studioCMS_SDK from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
@@ -381,4 +382,19 @@ export async function verifyMailConnection(): Promise<MailerResponse> {
 
 	// Log a success message and return a success message
 	return mailerResponse({ message: 'Mail connection verified successfully' });
+}
+
+/**
+ * Checks if the mailer service is enabled in the StudioCMS configuration.
+ *
+ * This function retrieves the configuration from the StudioCMS SDK and
+ * returns the value of the `enableMailer` property. If the configuration
+ * is not available, it defaults to `false`.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the mailer
+ * service is enabled, otherwise `false`.
+ */
+export async function isMailerEnabled(): Promise<boolean> {
+	const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
+	return enableMailer;
 }

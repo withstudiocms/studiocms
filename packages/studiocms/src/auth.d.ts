@@ -395,3 +395,22 @@ declare module 'studiocms:auth/lib/user' {
 	).verifyUserPermissionLevel;
 	export const LinkNewOAuthCookieName: typeof import('./lib/auth/user.js').LinkNewOAuthCookieName;
 }
+
+declare module 'studiocms:auth/lib/verify-email' {
+	export const getEmailVerificationRequest: typeof import(
+		'./lib/auth/verify-email.js'
+	).getEmailVerificationRequest;
+	export const deleteEmailVerificationRequest: typeof import(
+		'./lib/auth/verify-email.js'
+	).deleteEmailVerificationRequest;
+	export const createEmailVerificationRequest: typeof import(
+		'./lib/auth/verify-email.js'
+	).createEmailVerificationRequest;
+	export const sendVerificationEmail: typeof import(
+		'./lib/auth/verify-email.js'
+	).sendVerificationEmail;
+	export const isEmailVerified: typeof import('./lib/auth/verify-email.js').isEmailVerified;
+	export const isEmailVerificationEnabled: typeof import(
+		'./lib/auth/verify-email.js'
+	).isEmailVerificationEnabled;
+}
