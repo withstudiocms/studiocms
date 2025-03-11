@@ -1,5 +1,6 @@
 import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { verifyAuthToken } from '../../utils/auth-token.js';
@@ -178,6 +179,9 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		username,
 	};
 
+	await sendUserNotification('account_updated', id);
+	await sendAdminNotification('user_updated', username);
+
 	return new Response(JSON.stringify(data), {
 		headers: {
 			'Content-Type': 'application/json',
@@ -244,6 +248,8 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		if (response.status === 'error') {
 			return apiResponseLogger(400, response.message);
 		}
+
+		await sendAdminNotification('user_deleted', existingUser.username);
 
 		return apiResponseLogger(200, response.message);
 	} catch (error) {

@@ -1,7 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendAdminNotification } from 'studiocms:notifier';
+import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
@@ -65,6 +65,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		});
 	}
 
+	await sendUserNotification('account_updated', id);
 	await sendAdminNotification('user_updated', user.username);
 
 	return apiResponseLogger(200, 'User rank updated successfully');

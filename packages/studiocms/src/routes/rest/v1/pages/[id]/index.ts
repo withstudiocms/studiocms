@@ -1,4 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
@@ -147,6 +148,9 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
 
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		await sendEditorNotification('page_updated', updatedMetaData!.title);
+
 		return apiResponseLogger(200, 'Page updated successfully');
 	} catch (error) {
 		console.error(error);
@@ -187,9 +191,17 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(400, 'Cannot delete home page');
 	}
 
+	const page = await studioCMS_SDK.GET.databaseEntry.pages.byId(id);
+
+	if (!page) {
+		return apiResponseLogger(404, 'Page not found');
+	}
+
 	try {
 		await studioCMS_SDK.DELETE.page(id);
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
+
+		await sendEditorNotification('page_deleted', page.title);
 
 		return apiResponseLogger(200, 'Page deleted successfully');
 	} catch (error) {

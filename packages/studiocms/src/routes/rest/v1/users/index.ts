@@ -1,6 +1,7 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
@@ -155,6 +156,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 		user: newUser.id,
 		rank: rank,
 	});
+
+	await sendAdminNotification('new_user', newUser.username);
 
 	return apiResponseLogger(
 		200,

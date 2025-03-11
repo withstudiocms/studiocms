@@ -1,4 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
@@ -81,6 +82,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
+
+		await sendEditorNotification('new_folder', folderName);
 
 		return apiResponseLogger(200, `Folder created successfully with id: ${newFolder.id}`);
 	} catch (error) {
