@@ -169,16 +169,16 @@ async function getUsersWithNotifications(
  */
 async function sendMessage(
 	users: CombinedUserData[],
-	config: { title: string },
+	{ title }: { title: string },
 	message: string
 ): Promise<void> {
-	for (const user of users) {
-		if (!user.email) {
+	for (const { email } of users) {
+		if (!email) {
 			continue;
 		}
 		await sendMail({
-			to: user.email,
-			subject: `${config.title} - Notification`,
+			to: email,
+			subject: `${title} - Notification`,
 			text: message,
 		});
 	}
