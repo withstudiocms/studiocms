@@ -3,7 +3,8 @@ import { sendMail as _sendMail, verifyMailConnection } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { StudioCMSCoreError } from '../errors.js';
+import { StudioCMSCoreError } from '../../errors.js';
+import type { UserNotificationOptions } from './client.js';
 
 /**
  * Retrieves the configuration settings for StudioCMS.
@@ -54,7 +55,7 @@ const adminNotifications = {
 /**
  * An object containing notification titles for each notification type.
  */
-const notificationTitleStrings = {
+const notificationTitleStrings: Record<UserNotificationOptions, string> = {
 	account_updated: 'Account Updated',
 	page_updated: 'Page Updated',
 	page_deleted: 'Page Deleted',
@@ -223,7 +224,7 @@ export async function sendUserNotification<T extends UserNotification>(
 
 	if ('error' in testConnection) {
 		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+		return;
 	}
 
 	const users = await getUsersWithNotifications(notification, userRanks);
@@ -231,7 +232,7 @@ export async function sendUserNotification<T extends UserNotification>(
 	const user = users.find((user) => user.id === userId);
 
 	if (!user) {
-		throw new StudioCMSNotifierError('User not found');
+		return;
 	}
 
 	try {
@@ -241,8 +242,10 @@ export async function sendUserNotification<T extends UserNotification>(
 			message: userNotifications[notification](user.name),
 			notification,
 		});
+		return;
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
+		return;
 	}
 }
 
@@ -269,7 +272,7 @@ export async function sendEditorNotification<
 
 	if ('error' in testConnection) {
 		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+		return;
 	}
 
 	const editors = await getUsersWithNotifications(notification, editorRanks);
@@ -281,8 +284,10 @@ export async function sendEditorNotification<
 			message: editorNotifications[notification](data),
 			notification,
 		});
+		return;
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
+		return;
 	}
 }
 
@@ -309,7 +314,7 @@ export async function sendAdminNotification<
 
 	if ('error' in testConnection) {
 		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+		return;
 	}
 
 	const admins = await getUsersWithNotifications(notification, adminRanks);
@@ -321,7 +326,9 @@ export async function sendAdminNotification<
 			message: adminNotifications[notification](data),
 			notification,
 		});
+		return;
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
+		return;
 	}
 }

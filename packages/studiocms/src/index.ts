@@ -1101,7 +1101,10 @@ export const studiocms = defineIntegration({
 								export default getTemplate;
 							`,
 							'studiocms:notifier': `
-								export * from '${resolve('./lib/notifier.js')}';
+								export * from '${resolve('./lib/notifier/index.js')}';
+							`,
+							'studiocms:notifier/client': `
+								export * from '${resolve('./lib/notifier/client.js')}';
 							`,
 
 							// SDK Virtual Modules
