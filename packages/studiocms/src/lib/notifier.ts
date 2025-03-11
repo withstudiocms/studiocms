@@ -173,12 +173,17 @@ async function getUsersWithNotifications(
  *
  * @returns A promise that resolves when all emails have been sent.
  */
-async function sendMail(
-	users: CombinedUserData[],
-	{ title }: { title: string },
-	message: string,
-	notification: NotificationTitle
-): Promise<void> {
+async function sendMail({
+	users,
+	config: { title },
+	message,
+	notification,
+}: {
+	users: CombinedUserData[];
+	config: { title: string };
+	message: string;
+	notification: NotificationTitle;
+}): Promise<void> {
 	const htmlTemplate = getTemplate('notification');
 	for (const { email } of users) {
 		if (!email) {
@@ -186,8 +191,11 @@ async function sendMail(
 		}
 		await _sendMail({
 			to: email,
-			subject: `${title} - Notification`,
-			html: htmlTemplate(`New Notification - ${notificationTitleStrings[notification]}`, message),
+			subject: `${title} - New Notification`,
+			html: htmlTemplate({
+				title: `New Notification - ${notificationTitleStrings[notification]}`,
+				message,
+			}),
 		});
 	}
 }
@@ -226,10 +234,13 @@ export async function sendUserNotification<T extends UserNotification>(
 		throw new StudioCMSNotifierError('User not found');
 	}
 
-	const message = userNotifications[notification](user.name);
-
 	try {
-		await sendMail([user], config, message, notification);
+		await sendMail({
+			users: [user],
+			config,
+			message: userNotifications[notification](user.name),
+			notification,
+		});
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -263,10 +274,13 @@ export async function sendEditorNotification<
 
 	const editors = await getUsersWithNotifications(notification, editorRanks);
 
-	const message = editorNotifications[notification](data);
-
 	try {
-		await sendMail(editors, config, message, notification);
+		await sendMail({
+			users: editors,
+			config,
+			message: editorNotifications[notification](data),
+			notification,
+		});
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -300,10 +314,13 @@ export async function sendAdminNotification<
 
 	const admins = await getUsersWithNotifications(notification, adminRanks);
 
-	const message = adminNotifications[notification](data);
-
 	try {
-		await sendMail(admins, config, message, notification);
+		await sendMail({
+			users: admins,
+			config,
+			message: adminNotifications[notification](data),
+			notification,
+		});
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}

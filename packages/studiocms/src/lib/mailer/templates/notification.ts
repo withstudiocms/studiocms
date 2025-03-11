@@ -1,4 +1,4 @@
-const notification = (title: string, message: string) => `<!doctype html>
+const notification = ({ title, message }: { title: string; message: string }) => `<!doctype html>
 <html>
   <body>
     <div
