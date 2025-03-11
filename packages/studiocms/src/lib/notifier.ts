@@ -1,3 +1,4 @@
+import logger from 'studiocms:logger';
 import { sendMail, verifyMailConnection } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
@@ -205,6 +206,7 @@ export async function sendUserNotification<T extends UserNotification>(
 	const testConnection = await verifyMailConnection();
 
 	if ('error' in testConnection) {
+		logger.error(`Error verifying mail connection: ${testConnection.error}`);
 		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
 	}
 
@@ -221,7 +223,7 @@ export async function sendUserNotification<T extends UserNotification>(
 	try {
 		await sendMessage([user], config, message);
 	} catch (error) {
-		console.error('Error sending email', error);
+		logger.error(`Error sending email: ${error}`);
 	}
 }
 
@@ -247,6 +249,7 @@ export async function sendEditorNotification<
 	const testConnection = await verifyMailConnection();
 
 	if ('error' in testConnection) {
+		logger.error(`Error verifying mail connection: ${testConnection.error}`);
 		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
 	}
 
@@ -257,7 +260,7 @@ export async function sendEditorNotification<
 	try {
 		await sendMessage(editors, config, message);
 	} catch (error) {
-		console.error('Error sending email', error);
+		logger.error(`Error sending email: ${error}`);
 	}
 }
 
@@ -283,6 +286,7 @@ export async function sendAdminNotification<
 	const testConnection = await verifyMailConnection();
 
 	if ('error' in testConnection) {
+		logger.error(`Error verifying mail connection: ${testConnection.error}`);
 		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
 	}
 
@@ -293,6 +297,6 @@ export async function sendAdminNotification<
 	try {
 		await sendMessage(admins, config, message);
 	} catch (error) {
-		console.error('Error sending email', error);
+		logger.error(`Error sending email: ${error}`);
 	}
 }
