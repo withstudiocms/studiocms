@@ -1,0 +1,76 @@
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
+import studioCMS_SDK from 'studiocms:sdk';
+import type { APIContext, APIRoute } from 'astro';
+
+const { testingAndDemoMode } = developerConfig;
+
+export const POST: APIRoute = async (context: APIContext) => {
+	// Check if testing and demo mode is enabled
+	if (testingAndDemoMode) {
+		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	// Get user data
+	const userData = await getUserData(context);
+
+	// Check if user is logged in
+	if (!userData.isLoggedIn) {
+		return apiResponseLogger(403, 'Unauthorized');
+	}
+
+	// Check if user has permission
+	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	if (!isAuthorized) {
+		return apiResponseLogger(403, 'Unauthorized');
+	}
+
+	const jsonData = await context.request.json();
+
+	const userId = jsonData.id;
+	const notifications = jsonData.notifications;
+
+	if (!userId) {
+		return apiResponseLogger(400, 'Invalid request');
+	}
+
+	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
+
+	if (!user) {
+		return apiResponseLogger(404, 'User not found');
+	}
+
+	const updatedData = await studioCMS_SDK.AUTH.user.update(userId, {
+		notifications,
+	});
+
+	if (!updatedData) {
+		return apiResponseLogger(400, 'Failed to update user notifications');
+	}
+
+	return apiResponseLogger(200, 'User notifications updated successfully');
+};
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST',
+			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+		},
+	});
+};

@@ -624,6 +624,11 @@ export const studiocms = defineIntegration({
 								pattern: 'resend-verify-email',
 								entrypoint: routesDir.dashApi('resend-verify-email.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'update-user-notifications',
+								entrypoint: routesDir.dashApi('update-user-notifications.js'),
+							},
 						],
 					});
 

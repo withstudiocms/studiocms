@@ -1,0 +1,179 @@
+---
+import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { StudioCMSRoutes } from 'studiocms:lib';
+import { verifyMailConnection } from 'studiocms:mailer';
+import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Button, Card, Icon, Toggle } from 'studiocms:ui/components';
+
+const data = await getUserData(Astro);
+
+if (!data.user) {
+	throw new Error('User not found');
+}
+
+const NotificationOptions = notificationTypes;
+
+const userNotifications = data.user.notifications?.split(',') || [];
+
+const isUser = await verifyUserPermissionLevel(data, 'visitor');
+const isEditor = await verifyUserPermissionLevel(data, 'editor');
+const isAdmin = await verifyUserPermissionLevel(data, 'admin');
+
+const siteConfig = await studioCMS_SDK_Cache.GET.siteConfig();
+
+let isNotificationsEnabled = false;
+
+const { enableMailer } = siteConfig.data;
+
+if (enableMailer) {
+	const test = await verifyMailConnection();
+
+	if ('message' in test) {
+		isNotificationsEnabled = true;
+	}
+}
+---
+<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={StudioCMSRoutes.endpointLinks.updateUserNotifications}>
+
+    <div slot="header">
+        <h2>Notifications Events</h2>
+
+        <div class="form-header">
+            <Button 
+                type='submit' 
+                variant='solid' 
+                color='primary' 
+                size='sm'
+                disabled={!isNotificationsEnabled}
+                >
+                <Icon slot="start-content" name="check" width={24} height={24} />
+                Save
+            </Button>
+
+    </div>
+
+    <div class="toggle-grid">
+
+        <input type="hidden" name="user_id" value={data.user.id} />
+
+        {
+            isUser && NotificationOptions.user.map((option) => (
+                <Toggle 
+                    name={option} 
+                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
+                    defaultChecked={userNotifications.includes(option)} 
+                    color={'primary'}
+                    disabled={!isNotificationsEnabled}
+                    />
+            ))
+        }
+
+        {
+            isEditor && NotificationOptions.editor.map((option) => (
+                <Toggle 
+                    name={option} 
+                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
+                    defaultChecked={userNotifications.includes(option)} 
+                    color={'primary'}
+                    disabled={!isNotificationsEnabled}
+                    />
+            ))
+        }
+
+        {
+            isAdmin && NotificationOptions.admin.map((option) => (
+                <Toggle 
+                    name={option} 
+                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
+                    defaultChecked={userNotifications.includes(option)} 
+                    color={'primary'}
+                    disabled={!isNotificationsEnabled}
+                    />
+            ))
+        }
+
+    </div>
+
+</Card>
+
+<script>
+    import { toast } from 'studiocms:ui/components';
+    import { getEnabledNotificationCheckboxes, formatNotificationOptions } from 'studiocms:notifier/client'
+
+    const form = document.getElementById('notifications-form') as HTMLFormElement;
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        const enabledCheckboxes = getEnabledNotificationCheckboxes(formData);
+
+        const formattedOptions = formatNotificationOptions(enabledCheckboxes);
+
+        const data = {
+            userId: formData.get('user_id'),
+            notifications: formattedOptions
+        };
+
+        const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            toast({
+                title: 'Notifications Updated',
+                description: result.message,
+                type: 'success',
+            })
+        } else {
+            toast({
+                title: 'Error',
+                description: result.error,
+                type: 'danger',
+            })
+        }
+    });
+</script>
+
+<style>
+
+    .notifications-update-form {
+        position: relative;
+    }
+
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .toggle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        padding: 0.25rem;
+        margin-top: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .toggle-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+    }
+
+    @media screen and (max-width: 480px) {
+        .toggle-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>

@@ -54,7 +54,7 @@ const adminNotifications = {
 /**
  * An object containing notification titles for each notification type.
  */
-const notificationTitleStrings: Record<UserNotificationOptions, string> = {
+export const notificationTitleStrings: Record<UserNotificationOptions, string> = {
 	account_updated: 'Account Updated',
 	page_updated: 'Page Updated',
 	page_deleted: 'Page Deleted',

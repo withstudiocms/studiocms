@@ -73,6 +73,9 @@ declare module 'studiocms:notifier' {
 	export const sendUserNotification: typeof import('./lib/notifier/index').sendUserNotification;
 	export const sendEditorNotification: typeof import('./lib/notifier/index').sendEditorNotification;
 	export const sendAdminNotification: typeof import('./lib/notifier/index').sendAdminNotification;
+	export const notificationTitleStrings: typeof import(
+		'./lib/notifier/index'
+	).notificationTitleStrings;
 }
 
 declare module 'studiocms:notifier/client' {
