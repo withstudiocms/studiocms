@@ -1,5 +1,5 @@
 import logger from 'studiocms:logger';
-import { sendMail, verifyMailConnection } from 'studiocms:mailer';
+import { sendMail as _sendMail, verifyMailConnection } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
@@ -26,28 +26,29 @@ async function getConfig(): Promise<{ title: string; enableMailer: boolean }> {
  * An object containing notification messages for user-related events.
  */
 const userNotifications = {
-	account_updated: (name: string) => `${name}, your account has been updated.`,
+	account_updated: (name: string) =>
+		`Hello ${name}, There has been an update to your account. If you did not make this change, please contact a system administrator.`,
 };
 
 /**
  * An object containing functions to generate notification messages for various editor events.
  */
 const editorNotifications = {
-	page_updated: (title: string) => `The page ${title} has been updated.`,
-	page_deleted: (title: string) => `The page ${title} has been deleted.`,
-	new_page: (title: string) => `A new page ${title} has been created.`,
-	folder_updated: (name: string) => `The folder ${name} has been updated.`,
-	folder_deleted: (name: string) => `The folder ${name} has been deleted.`,
-	new_folder: (name: string) => `A new folder ${name} has been created.`,
+	page_updated: (title: string) => `The page "${title}" has been updated.`,
+	page_deleted: (title: string) => `The page "${title}" has been deleted.`,
+	new_page: (title: string) => `A new page "${title}" has been created.`,
+	folder_updated: (name: string) => `The folder "${name}" has been updated.`,
+	folder_deleted: (name: string) => `The folder "${name}" has been deleted.`,
+	new_folder: (name: string) => `A new folder "${name}" has been created.`,
 };
 
 /**
  * An object containing functions to generate notification messages for various admin events.
  */
 const adminNotifications = {
-	user_updated: (username: string) => `The user ${username} has been updated.`,
-	user_deleted: (username: string) => `The user ${username} has been deleted.`,
-	new_user: (username: string) => `A new user ${username} has been created.`,
+	user_updated: (username: string) => `The user "${username}" has been updated.`,
+	user_deleted: (username: string) => `The user "${username}" has been deleted.`,
+	new_user: (username: string) => `A new user "${username}" has been created.`,
 };
 
 /**
@@ -170,8 +171,9 @@ async function getUsersWithNotifications(
 	const usersWithEnabledNotifications: CombinedUserData[] = [];
 
 	for (const user of users) {
-		if (user.notifications?.length) {
-			if (user.notifications.includes(notification)) {
+		if (user.notifications) {
+			const enabledNotifications = user.notifications.split(',');
+			if (enabledNotifications.includes(notification)) {
 				usersWithEnabledNotifications.push(user);
 			}
 		}
@@ -189,7 +191,7 @@ async function getUsersWithNotifications(
  *
  * @returns A promise that resolves when all emails have been sent.
  */
-async function sendMessage(
+async function sendMail(
 	users: CombinedUserData[],
 	{ title }: { title: string },
 	message: string,
@@ -200,7 +202,7 @@ async function sendMessage(
 		if (!email) {
 			continue;
 		}
-		await sendMail({
+		await _sendMail({
 			to: email,
 			subject: `${title} - Notification`,
 			html: htmlTemplate(`New Notification - ${notificationTitleStrings[notification]}`, message),
@@ -245,7 +247,7 @@ export async function sendUserNotification<T extends UserNotification>(
 	const message = userNotifications[notification](user.name);
 
 	try {
-		await sendMessage([user], config, message, notification);
+		await sendMail([user], config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -282,7 +284,7 @@ export async function sendEditorNotification<
 	const message = editorNotifications[notification](data);
 
 	try {
-		await sendMessage(editors, config, message, notification);
+		await sendMail(editors, config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -319,7 +321,7 @@ export async function sendAdminNotification<
 	const message = adminNotifications[notification](data);
 
 	try {
-		await sendMessage(admins, config, message, notification);
+		await sendMail(admins, config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
