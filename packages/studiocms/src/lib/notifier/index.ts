@@ -27,7 +27,7 @@ async function getConfig(): Promise<{ title: string; enableMailer: boolean }> {
  */
 const userNotifications = {
 	account_updated: (name: string) =>
-		`Hello ${name}, There has been an update to your account. If you did not make this change, please contact a system administrator.`,
+		`Hello ${name}! There has been an update to your account. If you did not make this change, please contact a system administrator.`,
 };
 
 /**

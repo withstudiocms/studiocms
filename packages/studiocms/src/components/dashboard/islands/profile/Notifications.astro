@@ -16,11 +16,12 @@ const NotificationOptions = notificationTypes;
 
 const userNotifications = data.user.notifications?.split(',') || [];
 
-const isUser = await verifyUserPermissionLevel(data, 'visitor');
-const isEditor = await verifyUserPermissionLevel(data, 'editor');
-const isAdmin = await verifyUserPermissionLevel(data, 'admin');
-
-const siteConfig = await studioCMS_SDK_Cache.GET.siteConfig();
+const [isUser, isEditor, isAdmin, siteConfig] = await Promise.all([
+    verifyUserPermissionLevel(data, 'visitor');
+    verifyUserPermissionLevel(data, 'editor');
+    verifyUserPermissionLevel(data, 'admin');
+    studioCMS_SDK_Cache.GET.siteConfig();
+]);
 
 let isNotificationsEnabled = false;
 
