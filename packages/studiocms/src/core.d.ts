@@ -65,6 +65,18 @@ declare module 'studiocms:mailer/templates' {
 	export default getTemplate;
 }
 
+declare module 'studiocms:notifier' {
+	export type UserNotification = import('./lib/notifier').UserNotification;
+	export type EditorNotification = import('./lib/notifier').EditorNotification;
+	export type AdminNotification = import('./lib/notifier').AdminNotification;
+	export const userNotificationTypes: typeof import('./lib/notifier').userNotificationTypes;
+	export const editorNotificationTypes: typeof import('./lib/notifier').editorNotificationTypes;
+	export const adminNotificationTypes: typeof import('./lib/notifier').adminNotificationTypes;
+	export const sendUserNotification: typeof import('./lib/notifier').sendUserNotification;
+	export const sendEditorNotification: typeof import('./lib/notifier').sendEditorNotification;
+	export const sendAdminNotification: typeof import('./lib/notifier').sendAdminNotification;
+}
+
 interface Window {
 	theme: {
 		setTheme: (theme: 'system' | 'dark' | 'light') => void;

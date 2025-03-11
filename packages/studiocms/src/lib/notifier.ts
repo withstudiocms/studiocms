@@ -1,5 +1,6 @@
 import logger from 'studiocms:logger';
 import { sendMail, verifyMailConnection } from 'studiocms:mailer';
+import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { StudioCMSCoreError } from '../errors.js';
@@ -48,6 +49,27 @@ const adminNotifications = {
 	user_deleted: (username: string) => `The user ${username} has been deleted.`,
 	new_user: (username: string) => `A new user ${username} has been created.`,
 };
+
+/**
+ * An object containing notification titles for each notification type.
+ */
+const notificationTitleStrings = {
+	account_updated: 'Account Updated',
+	page_updated: 'Page Updated',
+	page_deleted: 'Page Deleted',
+	new_page: 'New Page',
+	folder_updated: 'Folder Updated',
+	folder_deleted: 'Folder Deleted',
+	new_folder: 'New Folder',
+	user_updated: 'User Updated',
+	user_deleted: 'User Deleted',
+	new_user: 'New User',
+};
+
+/**
+ * The type of the `notificationTitleStrings` object.
+ */
+type NotificationTitle = keyof typeof notificationTitleStrings;
 
 /**
  * The type of the `userNotifications` object.
@@ -170,8 +192,10 @@ async function getUsersWithNotifications(
 async function sendMessage(
 	users: CombinedUserData[],
 	{ title }: { title: string },
-	message: string
+	message: string,
+	notification: NotificationTitle
 ): Promise<void> {
+	const htmlTemplate = getTemplate('notification');
 	for (const { email } of users) {
 		if (!email) {
 			continue;
@@ -179,7 +203,7 @@ async function sendMessage(
 		await sendMail({
 			to: email,
 			subject: `${title} - Notification`,
-			text: message,
+			html: htmlTemplate(`New Notification - ${notificationTitleStrings[notification]}`, message),
 		});
 	}
 }
@@ -221,7 +245,7 @@ export async function sendUserNotification<T extends UserNotification>(
 	const message = userNotifications[notification](user.name);
 
 	try {
-		await sendMessage([user], config, message);
+		await sendMessage([user], config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -258,7 +282,7 @@ export async function sendEditorNotification<
 	const message = editorNotifications[notification](data);
 
 	try {
-		await sendMessage(editors, config, message);
+		await sendMessage(editors, config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
@@ -295,7 +319,7 @@ export async function sendAdminNotification<
 	const message = adminNotifications[notification](data);
 
 	try {
-		await sendMessage(admins, config, message);
+		await sendMessage(admins, config, message, notification);
 	} catch (error) {
 		logger.error(`Error sending email: ${error}`);
 	}
