@@ -1,64 +1,143 @@
+import { sendMail, verifyMailConnection } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { StudioCMSCoreError } from '../errors.js';
 
-const userNotificationTypes = ['account_updated'] as const;
+/**
+ * Retrieves the configuration settings for StudioCMS.
+ *
+ * This function fetches the configuration data from the StudioCMS SDK's database.
+ * If the data is not available, it returns a default configuration with a title of 'StudioCMS'
+ * and mailer functionality disabled.
+ *
+ * @returns {Promise<{ title: string, enableMailer: boolean }>} A promise that resolves to the configuration object.
+ */
+async function getConfig(): Promise<{ title: string; enableMailer: boolean }> {
+	const data = (await studioCMS_SDK.GET.database.config()) || {
+		title: 'StudioCMS',
+		enableMailer: false,
+	};
+	return data;
+}
 
-const editorNotificationTypes = ['page_updated', 'page_deleted', 'new_page'] as const;
-
-const adminNotificationTypes = [
-	'user_updated',
-	'user_deleted',
-	'new_user',
-	'user_deleted',
-] as const;
-
+/**
+ * An object containing notification messages for user-related events.
+ */
 const userNotifications = {
 	account_updated: (name: string) => `${name}, your account has been updated.`,
 };
 
+/**
+ * An object containing functions to generate notification messages for various editor events.
+ */
 const editorNotifications = {
 	page_updated: (title: string) => `The page ${title} has been updated.`,
 	page_deleted: (title: string) => `The page ${title} has been deleted.`,
 	new_page: (title: string) => `A new page ${title} has been created.`,
+	folder_updated: (name: string) => `The folder ${name} has been updated.`,
+	folder_deleted: (name: string) => `The folder ${name} has been deleted.`,
+	new_folder: (name: string) => `A new folder ${name} has been created.`,
 };
 
+/**
+ * An object containing functions to generate notification messages for various admin events.
+ */
 const adminNotifications = {
 	user_updated: (username: string) => `The user ${username} has been updated.`,
 	user_deleted: (username: string) => `The user ${username} has been deleted.`,
 	new_user: (username: string) => `A new user ${username} has been created.`,
 };
 
-type UserNotification = (typeof userNotificationTypes)[number];
+/**
+ * The type of the `userNotifications` object.
+ */
+type UserNotifications = typeof userNotifications;
 
-type EditorNotification = (typeof editorNotificationTypes)[number];
-
-type AdminNotification = (typeof adminNotificationTypes)[number];
-
-type UserNotificationOptions = UserNotification[];
-
-type EditorNotificationOptions = EditorNotification[];
-
-type AdminNotificationOptions = AdminNotification[];
-
+/**
+ * The type of the `editorNotifications` object.
+ */
 type EditorNotifications = typeof editorNotifications;
 
+/**
+ * The type of the `adminNotifications` object.
+ */
 type AdminNotifications = typeof adminNotifications;
 
+/**
+ * An array of user notification types.
+ */
+export const userNotificationTypes = ['account_updated'] as const;
+
+/**
+ * An array of editor notification types.
+ */
+export const editorNotificationTypes = [
+	'page_updated',
+	'page_deleted',
+	'new_page',
+	'folder_updated',
+	'folder_deleted',
+	'new_folder',
+] as const;
+
+/**
+ * An array of admin notification types.
+ */
+export const adminNotificationTypes = [
+	'user_updated',
+	'user_deleted',
+	'new_user',
+	'user_deleted',
+] as const;
+
+/**
+ * The type of the `userNotificationTypes` array.
+ */
+export type UserNotification = keyof UserNotifications;
+
+/**
+ * The type of the `editorNotificationTypes` array.
+ */
+export type EditorNotification = keyof EditorNotifications;
+
+/**
+ * The type of the `adminNotificationTypes` array.
+ */
+export type AdminNotification = keyof AdminNotifications;
+
+/**
+ * An error class for StudioCMS notifier errors.
+ */
 class StudioCMSNotifierError extends StudioCMSCoreError {
 	name = 'StudioCMSNotifierError';
 }
 
+/**
+ * An array of user ranks.
+ */
 const userRanks = ['visitor', 'editor', 'admin', 'owner'];
 
+/**
+ * An array of editor ranks.
+ */
 const editorRanks = ['editor', 'admin', 'owner'];
 
+/**
+ * An array of admin ranks.
+ */
 const adminRanks = ['admin', 'owner'];
 
+/**
+ * Retrieves users who have enabled a specific notification type and belong to specified user ranks.
+ *
+ * @param notification - The notification type to check for each user. It can be of type `UserNotification`, `EditorNotification`, or `AdminNotification`.
+ * @param userRanks - An array of user rank strings to filter users by their rank.
+ * @returns A promise that resolves to an array of `CombinedUserData` objects representing users who have the specified notification enabled and belong to the specified ranks.
+ */
 async function getUsersWithNotifications(
-	notifications: UserNotificationOptions | EditorNotificationOptions | AdminNotificationOptions,
+	notification: UserNotification | EditorNotification | AdminNotification,
 	userRanks: string[]
-) {
+): Promise<CombinedUserData[]> {
 	const userTable = await studioCMS_SDK.GET.database.users();
 
 	const users = userTable.filter(
@@ -69,10 +148,8 @@ async function getUsersWithNotifications(
 
 	for (const user of users) {
 		if (user.notifications?.length) {
-			for (const notification of notifications) {
-				if (user.notifications.includes(notification)) {
-					usersWithEnabledNotifications.push(user);
-				}
+			if (user.notifications.includes(notification)) {
+				usersWithEnabledNotifications.push(user);
 			}
 		}
 	}
@@ -80,13 +157,58 @@ async function getUsersWithNotifications(
 	return usersWithEnabledNotifications;
 }
 
+/**
+ * Sends a notification message to a list of users via email.
+ *
+ * @param users - An array of user data objects. Each object should contain user information, including an email address.
+ * @param config - Configuration object containing the title of the notification.
+ * @param message - The message to be sent to the users.
+ *
+ * @returns A promise that resolves when all emails have been sent.
+ */
+async function sendMessage(
+	users: CombinedUserData[],
+	config: { title: string },
+	message: string
+): Promise<void> {
+	for (const user of users) {
+		if (!user.email) {
+			continue;
+		}
+		await sendMail({
+			to: user.email,
+			subject: `${config.title} - Notification`,
+			text: message,
+		});
+	}
+}
+
+/**
+ * Sends a user notification if the mailer is enabled and the mail connection is verified.
+ *
+ * @template T - The type of the user notification.
+ * @param {T} notification - The notification to be sent.
+ * @param {string} userId - The ID of the user to whom the notification will be sent.
+ * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection or if the user is not found.
+ * @returns {Promise<void>} A promise that resolves when the notification is sent or if the mailer is disabled.
+ */
 export async function sendUserNotification<T extends UserNotification>(
 	notification: T,
 	userId: string
-) {
-	console.log('sendUserNotification', `${notification} to ${userId}`);
+): Promise<void> {
+	const config = await getConfig();
 
-	const users = await getUsersWithNotifications([notification], userRanks);
+	if (!config.enableMailer) {
+		return;
+	}
+
+	const testConnection = await verifyMailConnection();
+
+	if ('error' in testConnection) {
+		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+	}
+
+	const users = await getUsersWithNotifications(notification, userRanks);
 
 	const user = users.find((user) => user.id === userId);
 
@@ -94,39 +216,83 @@ export async function sendUserNotification<T extends UserNotification>(
 		throw new StudioCMSNotifierError('User not found');
 	}
 
-	console.log('User found', user);
-
 	const message = userNotifications[notification](user.name);
 
-	console.log('Message', message);
+	try {
+		await sendMessage([user], config, message);
+	} catch (error) {
+		console.error('Error sending email', error);
+	}
 }
 
+/**
+ * Sends an editor notification if the mailer is enabled and the mail connection is verified.
+ *
+ * @template T - The type of the editor notification.
+ * @template K - The type of the data required by the notification.
+ * @param {T} notification - The type of notification to send.
+ * @param {K} data - The data to include in the notification.
+ * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection.
+ */
 export async function sendEditorNotification<
 	T extends EditorNotification,
 	K extends Parameters<EditorNotifications[T]>[0],
->(notification: T, data: K) {
-	console.log('sendEditorNotification', notification);
+>(notification: T, data: K): Promise<void> {
+	const config = await getConfig();
 
-	const editors = await getUsersWithNotifications([notification], editorRanks);
+	if (!config.enableMailer) {
+		return;
+	}
 
-	console.log('Editors found', editors);
+	const testConnection = await verifyMailConnection();
+
+	if ('error' in testConnection) {
+		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+	}
+
+	const editors = await getUsersWithNotifications(notification, editorRanks);
 
 	const message = editorNotifications[notification](data);
 
-	console.log('Message', message);
+	try {
+		await sendMessage(editors, config, message);
+	} catch (error) {
+		console.error('Error sending email', error);
+	}
 }
 
+/**
+ * Sends an admin notification if the mailer is enabled and the mail connection is verified.
+ *
+ * @template T - The type of the admin notification.
+ * @template K - The type of the data required by the notification.
+ * @param {T} notification - The type of notification to send.
+ * @param {K} data - The data to include in the notification.
+ * @throws {StudioCMSNotifierError} If there is an error verifying the mail connection.
+ */
 export async function sendAdminNotification<
 	T extends AdminNotification,
 	K extends Parameters<AdminNotifications[T]>[0],
->(notification: T, data: K) {
-	console.log('sendAdminNotification', notification);
+>(notification: T, data: K): Promise<void> {
+	const config = await getConfig();
 
-	const admins = await getUsersWithNotifications([notification], adminRanks);
+	if (!config.enableMailer) {
+		return;
+	}
 
-	console.log('Admins found', admins);
+	const testConnection = await verifyMailConnection();
+
+	if ('error' in testConnection) {
+		throw new StudioCMSNotifierError('Error verifying mail connection', testConnection.error);
+	}
+
+	const admins = await getUsersWithNotifications(notification, adminRanks);
 
 	const message = adminNotifications[notification](data);
 
-	console.log('Message', message);
+	try {
+		await sendMessage(admins, config, message);
+	} catch (error) {
+		console.error('Error sending email', error);
+	}
 }
