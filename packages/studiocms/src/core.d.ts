@@ -80,6 +80,9 @@ declare module 'studiocms:notifier/client' {
 	export const getEnabledNotificationCheckboxes: typeof import(
 		'./lib/notifier/client'
 	).getEnabledNotificationCheckboxes;
+	export const formatNotificationOptions: typeof import(
+		'./lib/notifier/client'
+	).formatNotificationOptions;
 }
 
 interface Window {

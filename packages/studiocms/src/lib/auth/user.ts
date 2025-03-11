@@ -1,3 +1,4 @@
+import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 // import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
@@ -89,6 +90,8 @@ export async function createLocalUser(
 		avatar,
 	});
 
+	await sendAdminNotification('new_user', newUser.username);
+
 	return newUser;
 }
 
@@ -111,6 +114,8 @@ export async function createOAuthUser(
 			provider: oAuthFields.provider,
 			providerUserId: oAuthFields.providerUserId,
 		});
+
+		await sendAdminNotification('new_user', newUser.username);
 
 		return newUser;
 	} catch (error) {

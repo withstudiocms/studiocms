@@ -6,6 +6,7 @@ import {
 } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsUsersUpdate } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
@@ -152,6 +153,11 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		try {
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			await studioCMS_SDK.AUTH.user.update(userData.user!.id, userUpdate);
+
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			await sendUserNotification('account_updated', userData.user!.id);
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			await sendAdminNotification('user_updated', userData.user!.username);
 
 			return apiResponseLogger(200, 'User password updated successfully');
 		} catch (error) {

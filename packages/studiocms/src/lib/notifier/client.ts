@@ -13,7 +13,11 @@ const notificationOptions = [
 
 export type UserNotificationOptions = (typeof notificationOptions)[number];
 
-export function getEnabledNotificationCheckboxes(formData: FormData) {
+export function getEnabledNotificationCheckboxes(formData: FormData): UserNotificationOptions[] {
 	const data = Object.fromEntries(formData.entries());
 	return notificationOptions.filter((option) => data[option] === 'on');
+}
+
+export function formatNotificationOptions(options: UserNotificationOptions[]): string {
+	return options.join(', ');
 }
