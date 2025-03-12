@@ -13,7 +13,11 @@
       "password-label": "Password",
       "login-button": "Log In",
       "allow-registration-noaccount": "Don't have an account?",
-      "allow-registration-register": "Register here!"
+      "allow-registration-register": "Register here!",
+      "forgot-password": "Forgot Password? Click here.",
+      "forgot-password-title": "Forgot Password",
+      "forgot-password-message": "Forgot your password? Enter your email below and we'll send you a reset link.",
+      "email-label": "Email Address"
     },
     "@studiocms/auth:signup": {
       "title": "Sign Up Page",

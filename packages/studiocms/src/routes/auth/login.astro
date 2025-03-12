@@ -3,7 +3,8 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Button, Input } from 'studiocms:ui/components';
+import studioCMS_SDK from 'studiocms:sdk';
+import { Button, Center, Input, Modal } from 'studiocms:ui/components';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
 const lang = 'en-us';
@@ -34,6 +35,10 @@ if (usernameAndPassword && SHOW_OAUTH) {
 } else {
 	paragraph = 'sub-header-noprovider';
 }
+
+const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
+	enableMailer: false,
+};
 ---
 <AuthLayout 
     title={t('title')} 
@@ -41,6 +46,21 @@ if (usernameAndPassword && SHOW_OAUTH) {
     {lang}
     checkLogin
     >
+
+    <Modal id="forgot-password-modal" size='md' isForm actionButton={'Submit'} cancelButton={'Cancel'}>
+        <h2 slot='header'>
+            <t-login key="forgot-password-title">{t('forgot-password-title')}</t-login>
+        </h2>
+
+        <input type="hidden" name="action-url" value={StudioCMSRoutes.authLinks.forgotPasswordAPI} />
+
+        <p>
+            <t-login key="forgot-password-message">{t('forgot-password-message')}</t-login>
+        </p>
+
+        <Input label={t('email-label')} name="email" type="email" />
+
+    </Modal>
 
     <div slot="header" class="form-header">
         <h1>
@@ -60,6 +80,14 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'>
                 <t-login key="login-button">{t('login-button')}</t-login>
             </Button>
+
+            { enableMailer && ( 
+                <Center>
+                    <div id="forgot-password" class="forgot-password">
+                        <t-login key="forgot-password">{t('forgot-password')}</t-login>
+                    </div>
+                </Center>
+            )}
         </form>
     )}
 
@@ -77,6 +105,19 @@ if (usernameAndPassword && SHOW_OAUTH) {
     )}
 
 </AuthLayout>
+
+<style>
+    .forgot-password {
+        color: hsl(var(--text-muted));
+        font-size: 0.875rem;
+        text-decoration: underline;
+    }
+
+    .forgot-password:hover {
+        color: hsl(var(--primary-hover));
+        cursor: pointer;
+    }
+</style>
 
 <script>
     import { 
@@ -103,6 +144,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
         documentUpdater(comp, lang)
         updateElmLabel('username', comp['username-label']);
         updateElmLabel('password', comp['password-label']);
+        updateElmLabel('email', comp['email-label']);
     });
 
     if (!customElements.get('t-login')) {
@@ -112,7 +154,46 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
 <script>
     import { formListener } from '../../scripts/formListener.js';
+    import { ModalHelper, toast } from 'studiocms:ui/components';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 
     loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+
+    const forgotPasswordModal = new ModalHelper('forgot-password-modal', 'forgot-password');
+
+    forgotPasswordModal.registerConfirmCallback(async (formData) => {
+        if (!formData) return;
+
+        const actionUrl = formData.get('action-url')?.toString() as string;
+
+        const data = {
+            email: formData.get('email')?.toString(),
+        };
+
+        const response = await fetch(actionUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            toast({
+                title: 'Success',
+                description: result.message,
+                type: 'success',
+            })
+            return;
+        } else {
+            toast({
+                title: 'Error',
+                description: result.error || 'An error occurred',
+                type: 'danger',
+            })
+            return;
+        }
+    })
 </script>
