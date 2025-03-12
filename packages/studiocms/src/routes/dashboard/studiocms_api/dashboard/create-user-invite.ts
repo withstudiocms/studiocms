@@ -6,6 +6,8 @@ import {
 import { developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendMail, verifyMailConnection } from 'studiocms:mailer';
+import getTemplate from 'studiocms:mailer/templates';
 import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
@@ -21,10 +23,19 @@ type JSONData = {
 	originalUrl: string;
 };
 
+const noMailerError = (message: string, resetLink: URL) =>
+	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
+
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Check if testing and demo mode is enabled
 	if (testingAndDemoMode) {
 		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	}
+
+	const siteConfig = await studioCMS_SDK.GET.database.config();
+
+	if (!siteConfig) {
+		return apiResponseLogger(500, 'Failed to get site config');
 	}
 
 	// Get user data
@@ -96,7 +107,12 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		userId: string;
 		token: string;
 	}) {
-		return `${originalUrl}${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
+		const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password`, originalUrl);
+		url.searchParams.append('userid', token.userId);
+		url.searchParams.append('token', token.token);
+		url.searchParams.append('id', token.id);
+
+		return url;
 	}
 
 	// Creates a new user invite
@@ -121,12 +137,37 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	await sendAdminNotification('new_user', newUser.username);
 
-	return new Response(JSON.stringify({ link: resetLink }), {
-		headers: {
-			'content-type': 'application/json',
-		},
-		status: 200,
-	});
+	if (siteConfig.enableMailer) {
+		const checkMailConnection = await verifyMailConnection();
+
+		if (!checkMailConnection) {
+			return apiResponseLogger(500, noMailerError('Failed to connect to mail server', resetLink));
+		}
+
+		if ('error' in checkMailConnection) {
+			return apiResponseLogger(500, noMailerError('Failed to connect to mail server', resetLink));
+		}
+
+		const htmlTemplate = getTemplate('userInvite');
+
+		const mailResponse = await sendMail({
+			to: checkEmail.data,
+			subject: `You have been invited to join ${siteConfig.title}!`,
+			html: htmlTemplate({ title: siteConfig.title, link: resetLink }),
+		});
+
+		if (!mailResponse) {
+			return apiResponseLogger(500, noMailerError('Failed to send email', resetLink));
+		}
+
+		if ('error' in mailResponse) {
+			return apiResponseLogger(500, noMailerError(mailResponse.error, resetLink));
+		}
+
+		return apiResponseLogger(200, 'User invite created and email sent');
+	}
+
+	return apiResponseLogger(200, resetLink.toString());
 };
 
 export const OPTIONS: APIRoute = async () => {

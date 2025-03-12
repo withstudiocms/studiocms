@@ -1,9 +1,10 @@
-import { notification, passwordReset, verifyEmail } from './templates/index.js';
+import { notification, passwordReset, userInvite, verifyEmail } from './templates/index.js';
 
 const templates = {
 	verifyEmail,
 	notification,
 	passwordReset,
+	userInvite,
 };
 
 type Templates = typeof templates;
