@@ -240,6 +240,8 @@ export const StudioCMSRoutes = {
 		 * API route for Auth0 authentication callback.
 		 */
 		auth0Callback: authAPIRoute('auth0/callback'),
+
+		forgotPasswordAPI: authAPIRoute('forgot-password'),
 	},
 	endpointLinks: {
 		/**
