@@ -1,6 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendEditorNotification } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
@@ -139,6 +140,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 		studioCMS_SDK_Cache.CLEAR.pages();
 
+		await sendEditorNotification('new_page', data.title);
+
 		return apiResponseLogger(200, 'Page created successfully');
 	} catch (error) {
 		return apiResponseLogger(500, 'Failed to create page');
@@ -274,6 +277,8 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			await apiRoute(context);
 		}
 
+		await sendEditorNotification('page_updated', data.title || startMetaData?.title || '');
+
 		return apiResponseLogger(200, 'Page updated successfully');
 	} catch (error) {
 		return apiResponseLogger(500, 'Failed to update page');
@@ -328,6 +333,8 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		if (apiRoute) {
 			await apiRoute(context);
 		}
+
+		await sendEditorNotification('page_deleted', pageToDelete.data.title);
 
 		return apiResponseLogger(200, 'Page deleted successfully');
 	} catch (error) {

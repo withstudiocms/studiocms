@@ -6,6 +6,7 @@ import {
 import { developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
@@ -117,6 +118,8 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	const resetLink = generateResetLink(token);
+
+	await sendAdminNotification('new_user', newUser.username);
 
 	return new Response(JSON.stringify({ link: resetLink }), {
 		headers: {

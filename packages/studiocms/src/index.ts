@@ -624,6 +624,11 @@ export const studiocms = defineIntegration({
 								pattern: 'resend-verify-email',
 								entrypoint: routesDir.dashApi('resend-verify-email.js'),
 							},
+							{
+								enabled: dashboardEnabled && !dbStartPage && authEnabled,
+								pattern: 'update-user-notifications',
+								entrypoint: routesDir.dashApi('update-user-notifications.js'),
+							},
 						],
 					});
 
@@ -1099,6 +1104,13 @@ export const studiocms = defineIntegration({
 								import { getTemplate } from '${resolve('./lib/mailer/template.js')}';
 								export { getTemplate };
 								export default getTemplate;
+							`,
+
+							'studiocms:notifier': `
+								export * from '${resolve('./lib/notifier/index.js')}';
+							`,
+							'studiocms:notifier/client': `
+								export * from '${resolve('./lib/notifier/client.js')}';
 							`,
 
 							// SDK Virtual Modules

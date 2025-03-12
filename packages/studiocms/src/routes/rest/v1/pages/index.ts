@@ -1,4 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
@@ -115,6 +116,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 			},
 			{ id: contentId, ...content }
 		);
+
+		await sendEditorNotification('new_page', data.title);
 
 		return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
 	} catch (error) {

@@ -1,6 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
@@ -44,6 +45,12 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		rank,
 	};
 
+	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
+
+	if (!user) {
+		return apiResponseLogger(404, 'User not found');
+	}
+
 	// Update user rank
 	const updatedData = await studioCMS_SDK.UPDATE.permissions(insertData);
 
@@ -57,6 +64,9 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 			emailVerified: emailVerified,
 		});
 	}
+
+	await sendUserNotification('account_updated', id);
+	await sendAdminNotification('user_updated', user.username);
 
 	return apiResponseLogger(200, 'User rank updated successfully');
 };
@@ -104,6 +114,8 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 		if (response.status === 'error') {
 			return apiResponseLogger(400, response.message);
 		}
+
+		await sendAdminNotification('user_deleted', username);
 
 		return apiResponseLogger(200, response.message);
 	} catch (error) {

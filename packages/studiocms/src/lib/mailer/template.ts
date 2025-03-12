@@ -1,8 +1,13 @@
-import { verifyEmail } from './templates/index.js';
+import { notification, verifyEmail } from './templates/index.js';
 
-const currentTemplates = ['verifyEmail'] as const;
+const templates = {
+	verifyEmail,
+	notification,
+};
 
-type Template = (typeof currentTemplates)[number];
+type Templates = typeof templates;
+
+type TemplateKeys = keyof Templates;
 
 /**
  * Retrieves the specified email template.
@@ -10,9 +15,6 @@ type Template = (typeof currentTemplates)[number];
  * @param template - The template to retrieve.
  * @returns The specified email template.
  */
-export function getTemplate(template: Template) {
-	switch (template) {
-		case 'verifyEmail':
-			return verifyEmail;
-	}
+export function getTemplate<T extends TemplateKeys>(template: T): Templates[T] {
+	return templates[template];
 }

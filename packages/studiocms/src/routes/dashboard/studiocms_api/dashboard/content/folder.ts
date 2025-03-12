@@ -1,6 +1,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
 
@@ -53,6 +54,8 @@ export const POST: APIRoute = async (context: APIContext) => {
 		await studioCMS_SDK_Cache.UPDATE.folderList();
 		await studioCMS_SDK_Cache.UPDATE.folderTree();
 
+		await sendEditorNotification('new_folder', folderName);
+
 		return apiResponseLogger(200, 'Folder created successfully');
 	} catch (error) {
 		return apiResponseLogger(500, 'Failed to create folder');
@@ -98,6 +101,8 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			parent: parentFolder || null,
 		});
 
+		await sendEditorNotification('folder_updated', folderName);
+
 		return apiResponseLogger(200, 'Folder updated successfully');
 	} catch (error) {
 		return apiResponseLogger(500, 'Failed to update folder');
@@ -132,8 +137,16 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(400, 'Invalid form data, id is required');
 	}
 
+	const { name: folderName } = (await studioCMS_SDK_Cache.GET.folder(id)) || {};
+
+	if (!folderName) {
+		return apiResponseLogger(404, 'Folder not found');
+	}
+
 	try {
 		await studioCMS_SDK_Cache.DELETE.folder(id);
+
+		await sendEditorNotification('folder_deleted', folderName);
 
 		return apiResponseLogger(200, 'Folder deleted successfully');
 	} catch (error) {

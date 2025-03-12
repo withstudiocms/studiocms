@@ -1,6 +1,7 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
+import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 
@@ -51,10 +52,19 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		password: password,
 	};
 
+	const userData = await studioCMS_SDK.GET.databaseEntry.users.byId(userid);
+
+	if (!userData) {
+		return apiResponseLogger(404, 'User not found');
+	}
+
 	try {
 		await studioCMS_SDK.AUTH.user.update(userid, userUpdate);
 
 		await studioCMS_SDK.resetTokenBucket.delete(userid);
+
+		await sendUserNotification('account_updated', userid);
+		await sendAdminNotification('user_updated', userData.username);
 
 		return apiResponseLogger(200, 'User password updated successfully');
 	} catch (error) {
