@@ -20,7 +20,6 @@ import boxen from 'boxen';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
@@ -441,22 +440,22 @@ export const studiocms = defineIntegration({
 						);
 						injectRoute({
 							pattern: 'start',
-							entrypoint: routesDir.fts('1-start.astro'),
+							entrypoint: 'studiocms/routes/fts/1-start.astro',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: 'start/1',
-							entrypoint: routesDir.fts('1-start.astro'),
+							entrypoint: 'studiocms/routes/fts/1-start.astro',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: 'start/2',
-							entrypoint: routesDir.fts('2-next.astro'),
+							entrypoint: 'studiocms/routes/fts/2-next.astro',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: 'done',
-							entrypoint: routesDir.fts('3-done.astro'),
+							entrypoint: 'studiocms/routes/fts/3-done.astro',
 							prerender: false,
 						});
 					}
@@ -464,25 +463,25 @@ export const studiocms = defineIntegration({
 					if (!dbStartPage) {
 						injectRoute({
 							pattern: sdkRouteResolver('list-pages'),
-							entrypoint: routesDir.sdk('list-pages.js'),
+							entrypoint: 'studiocms/routes/sdk/list-pages.js',
 							prerender: false,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('update-latest-version-cache'),
-							entrypoint: routesDir.sdk('update-latest-version-cache.js'),
+							entrypoint: 'studiocms/routes/sdk/update-latest-version-cache.js',
 							prerender: false,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('fallback-list-pages.json'),
-							entrypoint: routesDir.sdk('fallback-list-pages.json.js'),
+							entrypoint: 'studiocms/routes/sdk/fallback-list-pages.json.js',
 							prerender: true,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('full-changelog.json'),
-							entrypoint: routesDir.sdk('full-changelog.json.js'),
+							entrypoint: 'studiocms/routes/sdk/full-changelog.json.js',
 							prerender: false,
 						});
 
@@ -490,7 +489,7 @@ export const studiocms = defineIntegration({
 
 						injectRoute({
 							pattern: apiRoute('render'),
-							entrypoint: routesDir.api('render.astro'),
+							entrypoint: 'studiocms/routes/api/render.astro',
 							prerender: false,
 						});
 
@@ -499,7 +498,7 @@ export const studiocms = defineIntegration({
 							integrationLogger(logInfo, 'Injecting 404 Route...');
 							injectRoute({
 								pattern: '404',
-								entrypoint: routesDir.errors('404.astro'),
+								entrypoint: 'studiocms/routes/errors/404.astro',
 								prerender: false,
 							});
 						}
@@ -512,122 +511,122 @@ export const studiocms = defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'live-render',
-								entrypoint: routesDir.dashApi('partials/LiveRender.astro'),
+								entrypoint: 'studiocms/routes/dash-api/partials/LiveRender.astro',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'editor',
-								entrypoint: routesDir.dashApi('partials/Editor.astro'),
+								entrypoint: 'studiocms/routes/dash-api/partials/Editor.astro',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
-								entrypoint: routesDir.dashApi('search-list.js'),
+								entrypoint: 'studiocms/routes/dash-api/search-list.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'user-list-items',
-								entrypoint: routesDir.dashApi('partials/UserListItems.astro'),
+								entrypoint: 'studiocms/routes/dash-api/partials/UserListItems.astro',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'config',
-								entrypoint: routesDir.dashApi('config.js'),
+								entrypoint: 'studiocms/routes/dash-api/config.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'profile',
-								entrypoint: routesDir.dashApi('profile.js'),
+								entrypoint: 'studiocms/routes/dash-api/profile.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'users',
-								entrypoint: routesDir.dashApi('users.js'),
+								entrypoint: 'studiocms/routes/dash-api/users.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/page',
-								entrypoint: routesDir.dashApi('content/page.js'),
+								entrypoint: 'studiocms/routes/dash-api/content/page.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/folder',
-								entrypoint: routesDir.dashApi('content/folder.js'),
+								entrypoint: 'studiocms/routes/dash-api/content/folder.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-reset-link',
-								entrypoint: routesDir.dashApi('create-reset-link.js'),
+								entrypoint: 'studiocms/routes/dash-api/create-reset-link.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'reset-password',
-								entrypoint: routesDir.dashApi('reset-password.js'),
+								entrypoint: 'studiocms/routes/dash-api/reset-password.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'plugins/[plugin]',
-								entrypoint: routesDir.dashApi('plugins/[plugin].js'),
+								entrypoint: 'studiocms/routes/dash-api/plugins/[plugin].js',
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-1',
-								entrypoint: routesDir.fts('api/step-1.js'),
+								entrypoint: 'studiocms/routes/fts/api/step-1.js',
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-2',
-								entrypoint: routesDir.fts('api/step-2.js'),
+								entrypoint: 'studiocms/routes/fts/api/step-2.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user',
-								entrypoint: routesDir.dashApi('create-user.js'),
+								entrypoint: 'studiocms/routes/dash-api/create-user.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user-invite',
-								entrypoint: routesDir.dashApi('create-user-invite.js'),
+								entrypoint: 'studiocms/routes/dash-api/create-user-invite.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
-								entrypoint: routesDir.dashApi('api-tokens.js'),
+								entrypoint: 'studiocms/routes/dash-api/api-tokens.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'verify-session',
-								entrypoint: routesDir.dashApi('verify-session.js'),
+								entrypoint: 'studiocms/routes/dash-api/verify-session.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'mailer/config',
-								entrypoint: routesDir.mailer('config.js'),
+								entrypoint: 'studiocms/routes/mailer/config.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'mailer/test-email',
-								entrypoint: routesDir.mailer('test-email.js'),
+								entrypoint: 'studiocms/routes/mailer/test-email.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'verify-email',
-								entrypoint: routesDir.dashApi('verify-email.js'),
+								entrypoint: 'studiocms/routes/dash-api/verify-email.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'email-notification-settings-site',
-								entrypoint: routesDir.dashApi('email-notification-settings-site.js'),
+								entrypoint: 'studiocms/routes/dash-api/email-notification-settings-site.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'resend-verify-email',
-								entrypoint: routesDir.dashApi('resend-verify-email.js'),
+								entrypoint: 'studiocms/routes/dash-api/resend-verify-email.js',
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'update-user-notifications',
-								entrypoint: routesDir.dashApi('update-user-notifications.js'),
+								entrypoint: 'studiocms/routes/dash-api/update-user-notifications.js',
 							},
 						],
 					});
@@ -641,77 +640,77 @@ export const studiocms = defineIntegration({
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: '/',
-									entrypoint: routesDir.dashRoute('index.astro'),
+									entrypoint: 'studiocms/routes/dashboard/index.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management',
-									entrypoint: routesDir.dashRoute('content-management/index.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/index.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create',
-									entrypoint: routesDir.dashRoute('content-management/createpage.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/createpage.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/create-folder',
-									entrypoint: routesDir.dashRoute('content-management/createfolder.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/createfolder.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit',
-									entrypoint: routesDir.dashRoute('content-management/editpage.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/editpage.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/edit-folder',
-									entrypoint: routesDir.dashRoute('content-management/editfolder.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/editfolder.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'content-management/diff',
-									entrypoint: routesDir.dashRoute('content-management/diff.astro'),
+									entrypoint: 'studiocms/routes/dashboard/content-management/diff.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'profile',
-									entrypoint: routesDir.dashRoute('profile.astro'),
+									entrypoint: 'studiocms/routes/dashboard/profile.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'configuration',
-									entrypoint: routesDir.dashRoute('configuration.astro'),
+									entrypoint: 'studiocms/routes/dashboard/configuration.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management',
-									entrypoint: routesDir.dashRoute('user-management/index.astro'),
+									entrypoint: 'studiocms/routes/dashboard/user-management/index.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'user-management/edit',
-									entrypoint: routesDir.dashRoute('user-management/edit.astro'),
+									entrypoint: 'studiocms/routes/dashboard/user-management/edit.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage && authEnabled,
 									pattern: 'password-reset',
-									entrypoint: routesDir.dashRoute('password-reset.astro'),
+									entrypoint: 'studiocms/routes/dashboard/password-reset.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'plugins/[plugin]',
-									entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
+									entrypoint: 'studiocms/routes/dashboard/plugins/[plugin].astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'smtp-configuration',
-									entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
+									entrypoint: 'studiocms/routes/dashboard/smtp-configuration.astro',
 								},
 								{
 									enabled: dashboardEnabled && !dbStartPage,
 									pattern: 'unverified-email',
-									entrypoint: routesDir.dashRoute('unverified-email.astro'),
+									entrypoint: 'studiocms/routes/dashboard/unverified-email.astro',
 								},
 							],
 						},
@@ -724,62 +723,62 @@ export const studiocms = defineIntegration({
 						routes: [
 							{
 								pattern: 'login',
-								entrypoint: routesDir.authAPI('login.js'),
+								entrypoint: 'studiocms/routes/auth/api/login.js',
 								enabled: usernameAndPasswordAPI,
 							},
 							{
 								pattern: 'logout',
-								entrypoint: routesDir.authAPI('logout.js'),
+								entrypoint: 'studiocms/routes/auth/api/logout.js',
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
-								entrypoint: routesDir.authAPI('register.js'),
+								entrypoint: 'studiocms/routes/auth/api/register.js',
 								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
 								pattern: 'github',
-								entrypoint: routesDir.authAPI('github/index.js'),
+								entrypoint: 'studiocms/routes/auth/api/github/index.js',
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'github/callback',
-								entrypoint: routesDir.authAPI('github/callback.js'),
+								entrypoint: 'studiocms/routes/auth/api/github/callback.js',
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'discord',
-								entrypoint: routesDir.authAPI('discord/index.js'),
+								entrypoint: 'studiocms/routes/auth/api/discord/index.js',
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'discord/callback',
-								entrypoint: routesDir.authAPI('discord/callback.js'),
+								entrypoint: 'studiocms/routes/auth/api/discord/callback.js',
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'google',
-								entrypoint: routesDir.authAPI('google/index.js'),
+								entrypoint: 'studiocms/routes/auth/api/google/index.js',
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'google/callback',
-								entrypoint: routesDir.authAPI('google/callback.js'),
+								entrypoint: 'studiocms/routes/auth/api/google/callback.js',
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'auth0',
-								entrypoint: routesDir.authAPI('auth0/index.js'),
+								entrypoint: 'studiocms/routes/auth/api/auth0/index.js',
 								enabled: auth0API,
 							},
 							{
 								pattern: 'auth0/callback',
-								entrypoint: routesDir.authAPI('auth0/callback.js'),
+								entrypoint: 'studiocms/routes/auth/api/auth0/callback.js',
 								enabled: auth0API,
 							},
 							{
 								pattern: 'forgot-password',
-								entrypoint: routesDir.authAPI('forgot-password.js'),
+								entrypoint: 'studiocms/routes/auth/api/forgot-password.js',
 								enabled: usernameAndPasswordAPI,
 							},
 						],
@@ -792,17 +791,17 @@ export const studiocms = defineIntegration({
 							routes: [
 								{
 									pattern: 'login/',
-									entrypoint: routesDir.authPage('login.astro'),
+									entrypoint: 'studiocms/routes/auth/login.astro',
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'logout/',
-									entrypoint: routesDir.authPage('logout.astro'),
+									entrypoint: 'studiocms/routes/auth/logout.astro',
 									enabled: dashboardEnabled && !options.dbStartPage,
 								},
 								{
 									pattern: 'signup/',
-									entrypoint: routesDir.authPage('signup.astro'),
+									entrypoint: 'studiocms/routes/auth/signup.astro',
 									enabled: usernameAndPasswordAPI && allowUserRegistration,
 								},
 							],
@@ -817,79 +816,79 @@ export const studiocms = defineIntegration({
 						// Folders API Routes
 						injectRoute({
 							pattern: v1RestRoute('folders'),
-							entrypoint: routesDir.v1Rest('folders/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/folders/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('folders/[id]'),
-							entrypoint: routesDir.v1Rest('folders/[id].js'),
+							entrypoint: 'studiocms/routes/rest/v1/folders/[id].js',
 							prerender: false,
 						});
 
 						// Pages API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages'),
-							entrypoint: routesDir.v1Rest('pages/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/pages/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/pages/[id]/index.js',
 							prerender: false,
 						});
 
 						// Page Diff (History) API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]/history'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/pages/[id]/history/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]/history/[diffid]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].js'),
+							entrypoint: 'studiocms/routes/rest/v1/pages/[id]/history/[diffid].js',
 							prerender: false,
 						});
 
 						// Settings API Routes
 						injectRoute({
 							pattern: v1RestRoute('settings'),
-							entrypoint: routesDir.v1Rest('settings/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/settings/index.js',
 							prerender: false,
 						});
 
 						// Users API Routes
 						injectRoute({
 							pattern: v1RestRoute('users'),
-							entrypoint: routesDir.v1Rest('users/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/users/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('users/[id]'),
-							entrypoint: routesDir.v1Rest('users/[id].js'),
+							entrypoint: 'studiocms/routes/rest/v1/users/[id].js',
 							prerender: false,
 						});
 
 						// Public Pages API Routes
 						injectRoute({
 							pattern: v1RestRoute('public/pages'),
-							entrypoint: routesDir.v1Rest('public/pages/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/public/pages/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('public/pages/[id]'),
-							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
+							entrypoint: 'studiocms/routes/rest/v1/public/pages/[id].js',
 							prerender: false,
 						});
 
 						// Public Folders API Routes
 						injectRoute({
 							pattern: v1RestRoute('public/folders'),
-							entrypoint: routesDir.v1Rest('public/folders/index.js'),
+							entrypoint: 'studiocms/routes/rest/v1/public/folders/index.js',
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('public/folders/[id]'),
-							entrypoint: routesDir.v1Rest('public/folders/[id].js'),
+							entrypoint: 'studiocms/routes/rest/v1/public/folders/[id].js',
 							prerender: false,
 						});
 					}
@@ -1044,7 +1043,7 @@ export const studiocms = defineIntegration({
 						) {
 							injectRoute({
 								pattern: makeDashboardRoute('[...pluginPage]'),
-								entrypoint: routesDir.dashRoute('[...pluginPage].astro'),
+								entrypoint: 'studiocms/routes/dashboard/[...pluginPage].astro',
 								prerender: false,
 							});
 						}

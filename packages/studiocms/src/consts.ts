@@ -61,6 +61,8 @@ const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
 
 /**
  * REST API Directory
+ *
+ * @deprecated
  */
 export const routesDir = {
 	fts: (file: string) => _routes_dir(`firstTimeSetupRoutes/${file}`),

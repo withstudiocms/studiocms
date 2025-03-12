@@ -123,7 +123,16 @@
     },
     "./v/core.d.ts": "./dist/core.d.ts",
     "./v/auth.d.ts": "./dist/auth.d.ts",
-    "./v/renderer.d.ts": "./dist/renderer.d.ts"
+    "./v/renderer.d.ts": "./dist/renderer.d.ts",
+    "./routes/fts/*": "./dist/routes/firstTimeSetupRoutes/*",
+    "./routes/dashboard/*": "./dist/routes/dashboard/*",
+    "./routes/dash-api/*": "./dist/routes/dashboard/studiocms_api/dashboard/*",
+    "./routes/errors/*": "./dist/routes/error-pages/*",
+    "./routes/rest/v1/*": "./dist/routes/rest/v1/*",
+    "./routes/sdk/*": "./dist/routes/sdk/*",
+    "./routes/api/*": "./dist/routes/api/*",
+    "./routes/auth/*": "./dist/routes/auth/*",
+    "./routes/mailer/*": "./dist/routes/mailer/*"
   },
   "type": "module",
   "dependencies": {
