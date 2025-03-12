@@ -74,26 +74,26 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 
 					if (injectRoutes) {
 						injectRoute({
-							entrypoint: resolve('./routes/[...slug].astro'),
+							entrypoint: '@studiocms/blog/routes/[...slug].astro',
 							pattern: pathWithBase('[...slug]'),
 							prerender: false,
 						});
 
 						injectRoute({
-							entrypoint: resolve('./routes/blog/index.astro'),
+							entrypoint: '@studiocms/blog/routes/blog/index.astro',
 							pattern: `${route}`,
 							prerender: false,
 						});
 
 						injectRoute({
-							entrypoint: resolve('./routes/blog/[...slug].astro'),
+							entrypoint: '@studiocms/blog/routes/blog/[...slug].astro',
 							pattern: `${route}/[...slug]`,
 							prerender: false,
 						});
 
 						if (enableRSS) {
 							injectRoute({
-								entrypoint: resolve('./routes/rss.xml.js'),
+								entrypoint: '@studiocms/blog/routes/rss.xml.js',
 								pattern: pathWithBase('rss.xml'),
 								prerender: false,
 							});

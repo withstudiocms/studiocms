@@ -53,7 +53,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./routes/*": "./dist/routes/*"
   },
   "type": "module",
   "dependencies": {
