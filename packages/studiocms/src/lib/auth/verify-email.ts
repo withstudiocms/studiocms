@@ -1,4 +1,3 @@
-// @ts-expect-error - Astro:config seems to only export a fake default export
 import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { isMailerEnabled, sendMail } from 'studiocms:mailer';

@@ -26,6 +26,10 @@ const passwordReset = (link: string | URL) => `<!doctype html>
               >
                 Click the button below, or copy-paste the link to reset your
                 password!
+                <br />
+                <br />
+                If you didn't request a password reset, you can ignore this email and
+                your password will not be changed.
               </div>
               <div style="text-align:left;padding:12px 24px 32px 24px">
                 <a

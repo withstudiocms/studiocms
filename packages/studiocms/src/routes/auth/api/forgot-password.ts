@@ -1,4 +1,3 @@
-// @ts-expect-error - Invalid type
 import { site } from 'astro:config/server';
 import { developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
