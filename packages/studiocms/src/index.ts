@@ -777,6 +777,11 @@ export const studiocms = defineIntegration({
 								entrypoint: routesDir.authAPI('auth0/callback.js'),
 								enabled: auth0API,
 							},
+							{
+								pattern: 'forgot-password',
+								entrypoint: routesDir.authAPI('forgot-password.js'),
+								enabled: usernameAndPasswordAPI,
+							},
 						],
 					});
 
