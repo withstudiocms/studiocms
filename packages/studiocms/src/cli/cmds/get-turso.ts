@@ -1,5 +1,5 @@
 import { Command } from '../lib/commander.js';
-import { runInteractiveCommand } from '../lib/runExternal';
+import { runInteractiveCommand } from '../lib/runExternal.js';
 
 await new Command('getTurso')
 	.description('Turso CLI Utilities')
