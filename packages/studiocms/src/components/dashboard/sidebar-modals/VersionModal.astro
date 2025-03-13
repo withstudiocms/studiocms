@@ -7,7 +7,7 @@ import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
 import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone';
 import { timeAgo } from '../component-scripts/timeAgo';
-import VersionCheckChangelog from '../islands/sidebar/VersionCheckChangelog.astro';
+import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
 
 const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
 

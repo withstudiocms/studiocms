@@ -3,9 +3,9 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Toaster } from 'studiocms:ui/components';
 import BaseHead from '../../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
+import LoginChecker from '../../components/dashboard/LoginChecker.astro';
 import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
-import LoginChecker from '../../components/dashboard/islands/LoginChecker.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
 
 const { data: dbConfig } = await studioCMS_SDK_Cache.GET.siteConfig();
