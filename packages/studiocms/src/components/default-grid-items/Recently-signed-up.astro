@@ -4,7 +4,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Icon, User } from 'studiocms:ui/components';
 import Card from '@studiocms/ui/components/Card/Card.astro';
-import { sortByDate } from './utils';
+import { sortByDate } from './utils.js';
 
 const totalUsers = await studioCMS_SDK.GET.database.users();
 

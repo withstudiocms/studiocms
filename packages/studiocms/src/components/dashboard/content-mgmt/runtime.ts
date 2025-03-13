@@ -1,7 +1,7 @@
 import * as mod from 'virtual:studiocms/components/Editors';
-import { StudioCMSError } from '../../../../errors.js';
-import { prefixError } from '../../../../lib/renderer/errors.js';
-import { convertToSafeString } from '../../../../utils/safeString.js';
+import { StudioCMSError } from '../../../errors.js';
+import { prefixError } from '../../../lib/renderer/errors.js';
+import { convertToSafeString } from '../../../utils/safeString.js';
 
 export { convertToSafeString };
 

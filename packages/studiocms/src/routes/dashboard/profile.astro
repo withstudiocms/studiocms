@@ -2,18 +2,13 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
-import { verifyMailConnection } from 'studiocms:mailer';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
-import APITokens from '../../components/dashboard/islands/profile/APITokens.astro';
-import BasicInfo from '../../components/dashboard/islands/profile/BasicInfo.astro';
-import Notifications from '../../components/dashboard/islands/profile/Notifications.astro';
-import SocialSignin from '../../components/dashboard/islands/profile/SocialSignin.astro';
-import UpdatePassword from '../../components/dashboard/islands/profile/UpdatePassword.astro';
-import {
-	providerData,
-	showOAuth,
-} from '../../components/dashboard/islands/profile/oAuthButtonProviders';
+import APITokens from '../../components/dashboard/profile/APITokens.astro';
+import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
+import Notifications from '../../components/dashboard/profile/Notifications.astro';
+import SocialSignin from '../../components/dashboard/profile/SocialSignin.astro';
+import UpdatePassword from '../../components/dashboard/profile/UpdatePassword.astro';
+import { providerData, showOAuth } from '../../components/dashboard/profile/oAuthButtonProviders';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en-us';
