@@ -1,3 +1,4 @@
+import type { Database } from '@astrojs/db/runtime';
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
 import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
@@ -20,10 +21,8 @@ import type {
 	tsPageFolderInsert,
 	tsPageFolderSelect,
 } from './types/index.js';
-import type { useDB } from './utils/db.js';
 
 type StudioCMSSDK = ReturnType<typeof studiocmsSDKCore>;
-type Database = ReturnType<typeof useDB>;
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
