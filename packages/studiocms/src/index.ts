@@ -477,7 +477,7 @@ export const studiocms = defineIntegration({
 						injectRoute({
 							pattern: sdkRouteResolver('fallback-list-pages.json'),
 							entrypoint: routesDir.sdk('fallback-list-pages.json.js'),
-							prerender: true,
+							prerender: false,
 						});
 
 						injectRoute({

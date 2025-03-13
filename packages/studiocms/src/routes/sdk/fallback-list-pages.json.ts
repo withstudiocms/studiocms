@@ -1,8 +1,6 @@
 import studioCMS_SDK from 'studiocms:sdk/cache';
 import type { APIRoute } from 'astro';
 
-export const prerender = true;
-
 export const GET: APIRoute = async (): Promise<Response> => {
 	const pages = await studioCMS_SDK.GET.pages();
 
