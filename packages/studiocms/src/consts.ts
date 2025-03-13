@@ -53,26 +53,28 @@ export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
  */
 const _routes_dir = (path: string) => resolve(`./routes/${path}`);
 
+const __temp = (path: string) => `studiocms/src/routes/${path}`;
+
 /**
  * REST API Directory Resolver
  */
 const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
-	_routes_dir(`rest/${version}/${file}`);
+	__temp(`rest/${version}/${file}`);
 
 /**
  * REST API Directory
  */
 export const routesDir = {
-	fts: (file: string) => _routes_dir(`firstTimeSetupRoutes/${file}`),
-	dashRoute: (file: string) => _routes_dir(`dashboard/${file}`),
-	dashApi: (file: string) => _routes_dir(`dashboard/studiocms_api/dashboard/${file}`),
-	errors: (file: string) => _routes_dir(`error-pages/${file}`),
+	fts: (file: string) => __temp(`firstTimeSetupRoutes/${file}`),
+	dashRoute: (file: string) => __temp(`dashboard/${file}`),
+	dashApi: (file: string) => __temp(`dashboard/studiocms_api/dashboard/${file}`),
+	errors: (file: string) => __temp(`error-pages/${file}`),
 	v1Rest: (file: string) => _rest_dir('v1')(file),
-	sdk: (file: string) => _routes_dir(`sdk/${file}`),
-	api: (file: string) => _routes_dir(`api/${file}`),
-	authPage: (file: string) => _routes_dir(`auth/${file}`),
-	authAPI: (file: string) => _routes_dir(`auth/api/${file}`),
-	mailer: (file: string) => _routes_dir(`mailer/${file}`),
+	sdk: (file: string) => __temp(`sdk/${file}`),
+	api: (file: string) => __temp(`api/${file}`),
+	authPage: (file: string) => __temp(`auth/${file}`),
+	authAPI: (file: string) => __temp(`auth/api/${file}`),
+	mailer: (file: string) => __temp(`mailer/${file}`),
 };
 
 /**

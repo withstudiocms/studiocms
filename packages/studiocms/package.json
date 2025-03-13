@@ -46,7 +46,8 @@
     "README.md",
     "ui.d.ts",
     "dist",
-    "studiocms-cli.mjs"
+    "studiocms-cli.mjs",
+    "src"
   ],
   "scripts": {
     "build": "build-scripts build 'src/**/*.{ts,css}'",
@@ -123,7 +124,8 @@
     },
     "./v/core.d.ts": "./dist/core.d.ts",
     "./v/auth.d.ts": "./dist/auth.d.ts",
-    "./v/renderer.d.ts": "./dist/renderer.d.ts"
+    "./v/renderer.d.ts": "./dist/renderer.d.ts",
+    "./src/*": "./src/*"
   },
   "type": "module",
   "dependencies": {

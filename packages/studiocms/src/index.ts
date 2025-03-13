@@ -464,25 +464,25 @@ export const studiocms = defineIntegration({
 					if (!dbStartPage) {
 						injectRoute({
 							pattern: sdkRouteResolver('list-pages'),
-							entrypoint: routesDir.sdk('list-pages.js'),
+							entrypoint: routesDir.sdk('list-pages.ts'),
 							prerender: false,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('update-latest-version-cache'),
-							entrypoint: routesDir.sdk('update-latest-version-cache.js'),
+							entrypoint: routesDir.sdk('update-latest-version-cache.ts'),
 							prerender: false,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('fallback-list-pages.json'),
-							entrypoint: routesDir.sdk('fallback-list-pages.json.js'),
+							entrypoint: routesDir.sdk('fallback-list-pages.json.ts'),
 							prerender: false,
 						});
 
 						injectRoute({
 							pattern: sdkRouteResolver('full-changelog.json'),
-							entrypoint: routesDir.sdk('full-changelog.json.js'),
+							entrypoint: routesDir.sdk('full-changelog.json.ts'),
 							prerender: false,
 						});
 
@@ -522,7 +522,7 @@ export const studiocms = defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage,
 								pattern: 'search-list',
-								entrypoint: routesDir.dashApi('search-list.js'),
+								entrypoint: routesDir.dashApi('search-list.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage,
@@ -532,102 +532,102 @@ export const studiocms = defineIntegration({
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'config',
-								entrypoint: routesDir.dashApi('config.js'),
+								entrypoint: routesDir.dashApi('config.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'profile',
-								entrypoint: routesDir.dashApi('profile.js'),
+								entrypoint: routesDir.dashApi('profile.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'users',
-								entrypoint: routesDir.dashApi('users.js'),
+								entrypoint: routesDir.dashApi('users.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/page',
-								entrypoint: routesDir.dashApi('content/page.js'),
+								entrypoint: routesDir.dashApi('content/page.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'content/folder',
-								entrypoint: routesDir.dashApi('content/folder.js'),
+								entrypoint: routesDir.dashApi('content/folder.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-reset-link',
-								entrypoint: routesDir.dashApi('create-reset-link.js'),
+								entrypoint: routesDir.dashApi('create-reset-link.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'reset-password',
-								entrypoint: routesDir.dashApi('reset-password.js'),
+								entrypoint: routesDir.dashApi('reset-password.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'plugins/[plugin]',
-								entrypoint: routesDir.dashApi('plugins/[plugin].js'),
+								entrypoint: routesDir.dashApi('plugins/[plugin].ts'),
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-1',
-								entrypoint: routesDir.fts('api/step-1.js'),
+								entrypoint: routesDir.fts('api/step-1.ts'),
 							},
 							{
 								enabled: dbStartPage,
 								pattern: 'step-2',
-								entrypoint: routesDir.fts('api/step-2.js'),
+								entrypoint: routesDir.fts('api/step-2.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user',
-								entrypoint: routesDir.dashApi('create-user.js'),
+								entrypoint: routesDir.dashApi('create-user.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'create-user-invite',
-								entrypoint: routesDir.dashApi('create-user-invite.js'),
+								entrypoint: routesDir.dashApi('create-user-invite.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'api-tokens',
-								entrypoint: routesDir.dashApi('api-tokens.js'),
+								entrypoint: routesDir.dashApi('api-tokens.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'verify-session',
-								entrypoint: routesDir.dashApi('verify-session.js'),
+								entrypoint: routesDir.dashApi('verify-session.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'mailer/config',
-								entrypoint: routesDir.mailer('config.js'),
+								entrypoint: routesDir.mailer('config.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'mailer/test-email',
-								entrypoint: routesDir.mailer('test-email.js'),
+								entrypoint: routesDir.mailer('test-email.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'verify-email',
-								entrypoint: routesDir.dashApi('verify-email.js'),
+								entrypoint: routesDir.dashApi('verify-email.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'email-notification-settings-site',
-								entrypoint: routesDir.dashApi('email-notification-settings-site.js'),
+								entrypoint: routesDir.dashApi('email-notification-settings-site.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'resend-verify-email',
-								entrypoint: routesDir.dashApi('resend-verify-email.js'),
+								entrypoint: routesDir.dashApi('resend-verify-email.ts'),
 							},
 							{
 								enabled: dashboardEnabled && !dbStartPage && authEnabled,
 								pattern: 'update-user-notifications',
-								entrypoint: routesDir.dashApi('update-user-notifications.js'),
+								entrypoint: routesDir.dashApi('update-user-notifications.ts'),
 							},
 						],
 					});
@@ -724,62 +724,62 @@ export const studiocms = defineIntegration({
 						routes: [
 							{
 								pattern: 'login',
-								entrypoint: routesDir.authAPI('login.js'),
+								entrypoint: routesDir.authAPI('login.ts'),
 								enabled: usernameAndPasswordAPI,
 							},
 							{
 								pattern: 'logout',
-								entrypoint: routesDir.authAPI('logout.js'),
+								entrypoint: routesDir.authAPI('logout.ts'),
 								enabled: dashboardEnabled && !options.dbStartPage,
 							},
 							{
 								pattern: 'register',
-								entrypoint: routesDir.authAPI('register.js'),
+								entrypoint: routesDir.authAPI('register.ts'),
 								enabled: usernameAndPasswordAPI && allowUserRegistration,
 							},
 							{
 								pattern: 'github',
-								entrypoint: routesDir.authAPI('github/index.js'),
+								entrypoint: routesDir.authAPI('github/index.ts'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'github/callback',
-								entrypoint: routesDir.authAPI('github/callback.js'),
+								entrypoint: routesDir.authAPI('github/callback.ts'),
 								enabled: githubAPI,
 							},
 							{
 								pattern: 'discord',
-								entrypoint: routesDir.authAPI('discord/index.js'),
+								entrypoint: routesDir.authAPI('discord/index.ts'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'discord/callback',
-								entrypoint: routesDir.authAPI('discord/callback.js'),
+								entrypoint: routesDir.authAPI('discord/callback.ts'),
 								enabled: discordAPI,
 							},
 							{
 								pattern: 'google',
-								entrypoint: routesDir.authAPI('google/index.js'),
+								entrypoint: routesDir.authAPI('google/index.ts'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'google/callback',
-								entrypoint: routesDir.authAPI('google/callback.js'),
+								entrypoint: routesDir.authAPI('google/callback.ts'),
 								enabled: googleAPI,
 							},
 							{
 								pattern: 'auth0',
-								entrypoint: routesDir.authAPI('auth0/index.js'),
+								entrypoint: routesDir.authAPI('auth0/index.ts'),
 								enabled: auth0API,
 							},
 							{
 								pattern: 'auth0/callback',
-								entrypoint: routesDir.authAPI('auth0/callback.js'),
+								entrypoint: routesDir.authAPI('auth0/callback.ts'),
 								enabled: auth0API,
 							},
 							{
 								pattern: 'forgot-password',
-								entrypoint: routesDir.authAPI('forgot-password.js'),
+								entrypoint: routesDir.authAPI('forgot-password.ts'),
 								enabled: usernameAndPasswordAPI,
 							},
 						],
@@ -817,79 +817,79 @@ export const studiocms = defineIntegration({
 						// Folders API Routes
 						injectRoute({
 							pattern: v1RestRoute('folders'),
-							entrypoint: routesDir.v1Rest('folders/index.js'),
+							entrypoint: routesDir.v1Rest('folders/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('folders/[id]'),
-							entrypoint: routesDir.v1Rest('folders/[id].js'),
+							entrypoint: routesDir.v1Rest('folders/[id].ts'),
 							prerender: false,
 						});
 
 						// Pages API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages'),
-							entrypoint: routesDir.v1Rest('pages/index.js'),
+							entrypoint: routesDir.v1Rest('pages/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/index.js'),
+							entrypoint: routesDir.v1Rest('pages/[id]/index.ts'),
 							prerender: false,
 						});
 
 						// Page Diff (History) API Routes
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]/history'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/index.js'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('pages/[id]/history/[diffid]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].js'),
+							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].ts'),
 							prerender: false,
 						});
 
 						// Settings API Routes
 						injectRoute({
 							pattern: v1RestRoute('settings'),
-							entrypoint: routesDir.v1Rest('settings/index.js'),
+							entrypoint: routesDir.v1Rest('settings/index.ts'),
 							prerender: false,
 						});
 
 						// Users API Routes
 						injectRoute({
 							pattern: v1RestRoute('users'),
-							entrypoint: routesDir.v1Rest('users/index.js'),
+							entrypoint: routesDir.v1Rest('users/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('users/[id]'),
-							entrypoint: routesDir.v1Rest('users/[id].js'),
+							entrypoint: routesDir.v1Rest('users/[id].ts'),
 							prerender: false,
 						});
 
 						// Public Pages API Routes
 						injectRoute({
 							pattern: v1RestRoute('public/pages'),
-							entrypoint: routesDir.v1Rest('public/pages/index.js'),
+							entrypoint: routesDir.v1Rest('public/pages/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('public/pages/[id]'),
-							entrypoint: routesDir.v1Rest('public/pages/[id].js'),
+							entrypoint: routesDir.v1Rest('public/pages/[id].ts'),
 							prerender: false,
 						});
 
 						// Public Folders API Routes
 						injectRoute({
 							pattern: v1RestRoute('public/folders'),
-							entrypoint: routesDir.v1Rest('public/folders/index.js'),
+							entrypoint: routesDir.v1Rest('public/folders/index.ts'),
 							prerender: false,
 						});
 						injectRoute({
 							pattern: v1RestRoute('public/folders/[id]'),
-							entrypoint: routesDir.v1Rest('public/folders/[id].js'),
+							entrypoint: routesDir.v1Rest('public/folders/[id].ts'),
 							prerender: false,
 						});
 					}
