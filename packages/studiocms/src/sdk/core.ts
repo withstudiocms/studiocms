@@ -1,6 +1,6 @@
+import { and, asc, db, desc, eq } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
-import { and, asc, desc, eq } from 'drizzle-orm';
 import {
 	CMSNotificationSettingsId,
 	CMSSiteConfigId,
@@ -80,9 +80,6 @@ import type {
 	tsUsersSelect,
 	tsUsersUpdate,
 } from './types/index.js';
-import { useDB } from './utils/db.js';
-
-const db = useDB();
 
 /**
  * The core SDK for StudioCMS.

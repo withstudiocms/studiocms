@@ -15,6 +15,7 @@
     "build:studiocms:main": "pnpm --filter studiocms build",
 
     "test:built": "pnpm build:studiocms && pnpm playground:dev",
+    "test-build:studiocms": "pnpm --filter studiocms build",
 
     "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* -r -parallel dev",
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter node-playground -r -parallel dev",
