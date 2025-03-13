@@ -168,9 +168,6 @@ importers:
       '@inox-tools/runtime-logger':
         specifier: 0.4.2
         version: 0.4.2(astro@5.4.3(@types/node@20.17.10)(jiti@2.4.1)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
-      '@libsql/client':
-        specifier: ^0.14.0
-        version: 0.14.0
       '@markdoc/markdoc':
         specifier: ^0.4.0
         version: 0.4.0(@types/react@19.0.8)(react@19.0.0)
@@ -237,9 +234,6 @@ importers:
       dompurify:
         specifier: ^3.2.3
         version: 3.2.3
-      drizzle-orm:
-        specifier: ^0.31.2
-        version: 0.31.4(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.8)(react@19.0.0)
       figlet:
         specifier: ^1.8.0
         version: 1.8.0
