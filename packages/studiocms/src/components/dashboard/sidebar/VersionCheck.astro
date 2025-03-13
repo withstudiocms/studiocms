@@ -19,9 +19,9 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
 
 <script>
     import { ModalHelper } from 'studiocms:ui/components';
-    import { dateTimeListener } from '../../component-scripts/dateTimeListener';
-    import { dateWithTimeAndZone } from '../../component-scripts/dateWithTimeAndZone';
-    import { timeAgo } from '../../component-scripts/timeAgo';
+    import { dateTimeListener } from '../component-scripts/dateTimeListener.js';
+    import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js';
+    import { timeAgo } from '../component-scripts/timeAgo.js';
     import type { VersionCacheObject } from 'studiocms:sdk/cache';
 
     function setupVersionChecker() {
