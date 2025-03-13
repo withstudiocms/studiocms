@@ -80,7 +80,6 @@ import type {
 	tsUsersSelect,
 	tsUsersUpdate,
 } from './types/index.js';
-import { useDB } from './utils/db.js';
 
 /**
  * The core SDK for StudioCMS.
