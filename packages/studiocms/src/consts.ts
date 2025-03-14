@@ -1,7 +1,4 @@
-import { createResolver } from 'astro-integration-kit';
 import type { TimeString } from './schemas/config/sdk.js';
-
-const { resolve } = createResolver(import.meta.url);
 
 /**
  * StudioCMS Site Config Table Entry ID
@@ -51,7 +48,7 @@ export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 /**
  * Routes Directory Resolver
  */
-const _routes_dir = (path: string) => resolve(`./routes/${path}`);
+const _routes_dir = (path: string) => `studiocms/src/routes/${path}`;
 
 /**
  * REST API Directory Resolver
