@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:earlyMondays",
+    ":preserveSemverRanges",
+    "group:allNonMajor",
+    ":disablePeerDependencies",
+    "customManagers:biomeVersions"
+  ],
+  "dependencyDashboard": true,
+  "postUpdateOptions": ["pnpmDedupe"],
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
+  "labels": ["dependencies"],
+  "additionalBranchPrefix": "{{parentDir}}-",
+  "gitIgnoredAuthors": ["no-reply@studiocms.dev"],
+  "prHourlyLimit": 3,
+  "rangeStrategy": "bump",
+  "updatePinnedDependencies": false,
+  "packageRules": [
+    {
+      "matchDepTypes": ["packageManager", "engines"],
+      "enabled": false
+    },
+    {
+      "matchFileNames": [".node-version"],
+      "enabled": false
+    }
+  ]
+}
