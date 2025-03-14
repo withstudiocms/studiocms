@@ -1,5 +1,14 @@
 # @studiocms/devapps
 
+## 0.1.0-beta.12
+
+### Patch Changes
+
+- [#452](https://github.com/withstudiocms/studiocms/pull/452) [`ee21f53`](https://github.com/withstudiocms/studiocms/commit/ee21f532a18ee4caa0c5d2895707b9cdc9bc17fd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix double toolbar showing within outerbase toolbar app
+
+- Updated dependencies [[`66ca9c7`](https://github.com/withstudiocms/studiocms/commit/66ca9c7a5209edf2eb8e4a6336cb0db24936179e), [`d66d081`](https://github.com/withstudiocms/studiocms/commit/d66d081748399e30d3940b6d1447f576d2e14c1c), [`a23a95e`](https://github.com/withstudiocms/studiocms/commit/a23a95e5bf8209d456fc02468622840aa2167d40), [`1021093`](https://github.com/withstudiocms/studiocms/commit/1021093c253085dbe9dadf6a37913dc57654409e), [`d445247`](https://github.com/withstudiocms/studiocms/commit/d4452478a83e59218f228c2d30a58447295841c4), [`49171af`](https://github.com/withstudiocms/studiocms/commit/49171af77f341b458cbb5155f656d9e7e1061a05), [`feb37bf`](https://github.com/withstudiocms/studiocms/commit/feb37bf059aea1280eb466b4a1ff3807ce4518f8), [`c77c4c7`](https://github.com/withstudiocms/studiocms/commit/c77c4c712982c3debdf0c34a2a635fb22c2d85d7), [`c914ec4`](https://github.com/withstudiocms/studiocms/commit/c914ec4e10f7b33503f958d5c06fba8f1bd9fd1d), [`0b4c1fe`](https://github.com/withstudiocms/studiocms/commit/0b4c1fef2f69c2b593a3c82d7eb4036aabb4efd9), [`1421e4c`](https://github.com/withstudiocms/studiocms/commit/1421e4c79907ddf1cb2d7360f2f87e81aabb719f), [`bf1b118`](https://github.com/withstudiocms/studiocms/commit/bf1b118852da3cd40293b71e96780f25d915c710)]:
+  - studiocms@0.1.0-beta.12
+
 ## 0.1.0-beta.11
 
 ### Patch Changes
