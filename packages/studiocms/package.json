@@ -125,7 +125,7 @@
     "./v/core.d.ts": "./dist/core.d.ts",
     "./v/auth.d.ts": "./dist/auth.d.ts",
     "./v/renderer.d.ts": "./dist/renderer.d.ts",
-    "./src/*": "./src/*"
+    "./src/routes/*": "./src/routes/*"
   },
   "type": "module",
   "dependencies": {
