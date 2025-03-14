@@ -17,6 +17,7 @@
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "updatePinnedDependencies": false,
+  "dependencyDashboardLabels": ["TRACKER"],
   "packageRules": [
     {
       "matchDepTypes": ["packageManager", "engines"],
