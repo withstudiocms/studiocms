@@ -29,6 +29,10 @@
     {
       "matchDepTypes": ["pnpm.catalog.min"],
       "enabled": false
+    },
+    {
+      "matchPackageNames": ["drizzle-orm"],
+      "enabled": false
     }
   ]
 }
