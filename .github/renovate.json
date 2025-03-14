@@ -25,6 +25,10 @@
     {
       "matchFileNames": [".node-version"],
       "enabled": false
+    },
+    {
+      "matchDepTypes": ["pnpm.catalog.min"],
+      "enabled": false
     }
   ]
 }
