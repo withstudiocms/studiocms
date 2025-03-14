@@ -1,5 +1,43 @@
 # studiocms
 
+## 0.1.0-beta.12
+
+### Patch Changes
+
+- [#465](https://github.com/withstudiocms/studiocms/pull/465) [`66ca9c7`](https://github.com/withstudiocms/studiocms/commit/66ca9c7a5209edf2eb8e4a6336cb0db24936179e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Revert the SDK back to `@astrojs/db` instead of `drizzle-orm` as `drizzle-orm` was not causing our issues
+
+- [#456](https://github.com/withstudiocms/studiocms/pull/456) [`d66d081`](https://github.com/withstudiocms/studiocms/commit/d66d081748399e30d3940b6d1447f576d2e14c1c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Expand SDK virtual cache system to allow more functionality either with the cache or passthrough to the normal SDK
+
+- [#455](https://github.com/withstudiocms/studiocms/pull/455) [`a23a95e`](https://github.com/withstudiocms/studiocms/commit/a23a95e5bf8209d456fc02468622840aa2167d40) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement runtime logger on all API routes
+
+- [#454](https://github.com/withstudiocms/studiocms/pull/454) [`1021093`](https://github.com/withstudiocms/studiocms/commit/1021093c253085dbe9dadf6a37913dc57654409e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor pageType api endpoint management to prevent errors when using virtual modules within a APIRoute
+
+- [#458](https://github.com/withstudiocms/studiocms/pull/458) [`d445247`](https://github.com/withstudiocms/studiocms/commit/d4452478a83e59218f228c2d30a58447295841c4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Hide and protect the deleted "Ghost" user from the dashboard
+
+- [#461](https://github.com/withstudiocms/studiocms/pull/461) [`49171af`](https://github.com/withstudiocms/studiocms/commit/49171af77f341b458cbb5155f656d9e7e1061a05) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement forgot password functionality if mailer is enabled
+
+- [#466](https://github.com/withstudiocms/studiocms/pull/466) [`feb37bf`](https://github.com/withstudiocms/studiocms/commit/feb37bf059aea1280eb466b4a1ff3807ce4518f8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Move routes to their ts variant to resolve weird bundling issue with astro
+
+- [#464](https://github.com/withstudiocms/studiocms/pull/464) [`c77c4c7`](https://github.com/withstudiocms/studiocms/commit/c77c4c712982c3debdf0c34a2a635fb22c2d85d7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Internal package organization, no user facing changes
+
+- [#459](https://github.com/withstudiocms/studiocms/pull/459) [`c914ec4`](https://github.com/withstudiocms/studiocms/commit/c914ec4e10f7b33503f958d5c06fba8f1bd9fd1d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Extend mailer functionality into the auth system for optional Email verification
+
+- [#460](https://github.com/withstudiocms/studiocms/pull/460) [`0b4c1fe`](https://github.com/withstudiocms/studiocms/commit/0b4c1fef2f69c2b593a3c82d7eb4036aabb4efd9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement basic email notifier system for User and Admin notifications
+
+- [#457](https://github.com/withstudiocms/studiocms/pull/457) [`1421e4c`](https://github.com/withstudiocms/studiocms/commit/1421e4c79907ddf1cb2d7360f2f87e81aabb719f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new SMTP `nodemailer` configuration for sending emails from StudioCMS
+
+  #### SMTP Mailer Configuration:
+
+  - Added SMTP mailer configuration options in the ConfigForm.astro file, including enabling/disabling the mailer and configuring SMTP settings.
+  - Introduced new routes and entry points for mailer configuration and test email functionalities in index.ts.
+
+  #### Database Schema Updates:
+
+  - Added a new table StudioCMSMailerConfig to store SMTP mailer settings.
+  - Updated existing tables to remove default values from JSON columns. (Potentially breaking)
+
+- [#462](https://github.com/withstudiocms/studiocms/pull/462) [`bf1b118`](https://github.com/withstudiocms/studiocms/commit/bf1b118852da3cd40293b71e96780f25d915c710) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update the email templates, modifying the user invite API route, and improving the handling of email sending errors.
+
 ## 0.1.0-beta.11
 
 ### Patch Changes
