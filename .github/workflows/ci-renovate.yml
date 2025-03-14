@@ -1,0 +1,22 @@
+name: Add changeset to Renovate updates
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, labeled]
+    paths:
+      - 'package/**'
+
+jobs:
+  renovate:
+    name: Update Renovate PR
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+
+    steps:
+      - name: Update PR
+        uses: mscharley/dependency-changesets-action@b73462eb4c2cf1fe16a8d9d681932fd05eea5c9f # v1.1.1
+        with:
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          use-conventional-commits: true
+          author-name: StudioCMS
+          author-email: no-reply@studiocms.dev
