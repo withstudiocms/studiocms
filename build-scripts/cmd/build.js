@@ -29,7 +29,7 @@ const dtsGen = (buildTsConfig) => ({
 			console.log(`${dim(`[${date}]`)} Generating TypeScript declarations...`);
 			try {
 				const res = execSync(
-					`tsc --emitDeclarationOnly ${buildTsConfig ? '-p tsconfig.build.json' : ''} --outDir ./dist`
+					`tsc --emitDeclarationOnly ${buildTsConfig ? '-p tsconfig.build.json' : '-p tsconfig.json'} --outDir ./dist`
 				);
 				console.log(res.toString());
 				console.log(dim(`[${date}] `) + green('√ Generated TypeScript declarations'));

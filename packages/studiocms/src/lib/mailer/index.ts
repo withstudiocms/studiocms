@@ -225,7 +225,7 @@ export const createMailerConfigTable = async (
  * @param config - The StudioCMS mailer configuration object.
  * @returns The nodemailer transporter configuration object.
  */
-export function convertTransporterConfig(config: tsMailer): MailerConfig {
+function convertTransporterConfig(config: tsMailer): MailerConfig {
 	// Extract the required fields from the configuration object
 	const {
 		host,

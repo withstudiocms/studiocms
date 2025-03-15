@@ -45,7 +45,7 @@
     "build-scripts": "workspace:*",
     "studiocms": "workspace:*",
     "execa": "9.5.2",
-    "pkg-pr-new": "0.0.40",
+    "pkg-pr-new": "0.0.41",
     "typescript": "catalog:",
     "tsm": "2.3.0"
   }

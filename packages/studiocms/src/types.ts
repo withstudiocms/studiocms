@@ -5,7 +5,6 @@ import type { StudioCMSOptions } from './schemas/index.js';
  * Represents an array of message objects.
  * Each message object contains information about a log message.
  *
- * @typedef {Object} Messages
  * @property {string} label - The label associated with the message.
  * @property {'info' | 'warn' | 'error' | 'debug'} logLevel - The level of the log message.
  * @property {string} message - The content of the log message.

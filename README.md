@@ -8,7 +8,7 @@
 
 This is an SSR CMS built with AstroDB for the Astro Ecosystem.
 
-To see how to get started, check out the [StudioCMS README](./packages/studiocms/README.md).
+To see how to get started, check out the [StudioCMS Docs](./packages/studiocms/README.md).
 
 > [!IMPORTANT]
 > This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
@@ -57,21 +57,21 @@ Steps to get a running playground should be the following:
 
 - Clone the GitHub repository
 - Run `pnpm i --frozen-lockfile`
-- Change `dbStartPage` in the [node playground's](./playground/studiocms.config.mjs) config to `true`
+- Change `dbStartPage` in the node playground's [StudioCMS config](./playground/studiocms.config.mjs) config to `true`
 - Ensure `.env` variables are configured (see [`.env.demo`](./playground/.env.demo) for an example of available environment variables)
 
   Commands to run:
 
   - `pnpm playground:push` - Push to your libSQL database assigned via environment variables
-  - `pnpm playground:dev` - Starts the Dev server connected to the linked database
+  - `pnpm dev` - Starts the Dev server connected to the linked database (as well as builds all repo packages)
 
 Once that process completes successfully you are ready to navigate to http://localhost:4321/start and follow the instructions to get started.
 
-It will redirect and ask you to shutdown and change the above mentioned config option `dbStartPage` to `false` at which point that will enable full functionality of the CMS. you can now restart the dev server with `astro dev --remote` to continue viewing your new site!
+It will redirect and ask you to shutdown and change the above mentioned config option `dbStartPage` to `false` at which point that will enable full functionality of the CMS. you can now restart the dev server with `pnpm dev` to continue viewing your new site!
 
 That will give you a running dev environment of what we work with daily.
 
-To start the playground again use the command `pnpm playground:dev`
+To start the playground again use the command `pnpm dev`
 
 ## Licensing
 

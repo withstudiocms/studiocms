@@ -3,11 +3,8 @@
  * loaded when a user imports the StudioCMS integration in their Astro configuration file. These
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
-/// <reference types="@astrojs/db" />
-/// <reference types="./auth.d.ts" />
-/// <reference types="./core.d.ts" />
-/// <reference types="./renderer.d.ts" />
-/// <reference types="./virtual.d.ts" />
+/// <reference types="@astrojs/db" preserve="true" />
+/// <reference types="./virtual.d.ts" preserve="true" />
 
 import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
@@ -40,7 +37,6 @@ import type {
 	StudioCMSOptions,
 	StudioCMSPlugin,
 } from './schemas/index.js';
-import { getInjectedTypes } from './stubs/index.js';
 import type { Messages } from './types.js';
 import { injectDashboardAPIRoutes } from './utils/addAPIRoutes.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
@@ -1505,6 +1501,8 @@ export const studiocms = defineIntegration({
 						},
 					});
 
+					changelogHelper(params);
+
 					let pluginListLength = 0;
 					let pluginListMessage = '';
 
@@ -1521,23 +1519,9 @@ export const studiocms = defineIntegration({
 						logLevel: 'info',
 						message: ` \n \n${messageBox} \n \n`,
 					});
-
-					changelogHelper(params);
 				},
-				// Config Done: Make DTS file for StudioCMS Plugins Virtual Module
-				'astro:config:done': ({ injectTypes, config }) => {
-					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
-
-					const injectedTypes = getInjectedTypes(
-						ComponentRegistry,
-						imageComponentPath,
-						astroConfigResolve
-					);
-
-					for (const type of injectedTypes) {
-						injectTypes(type);
-					}
-
+				// CONFIG DONE: Inject the Markdown configuration into the shared state
+				'astro:config:done': ({ config }) => {
 					// Inject the Markdown configuration into the shared state
 					shared.markdownConfig = config.markdown;
 					shared.studiocms = options.rendererConfig.studiocms;

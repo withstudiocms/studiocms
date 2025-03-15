@@ -88,5 +88,5 @@ The following env variables set (`@astrojs/db`):
 
 ## Licensing
 
-[MIT Licensed](https://github.com/astrolicious/studiocms/blob/main/LICENSE).
+[MIT Licensed](./LICENSE).
 
