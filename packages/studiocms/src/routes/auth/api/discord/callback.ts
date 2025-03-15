@@ -6,23 +6,30 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { type DiscordUser, ProviderCookieName, ProviderID, discord } from './shared.js';
+import {
+	type DiscordUser,
+	ProviderCodeVerifier,
+	ProviderCookieName,
+	ProviderID,
+	discord,
+} from './shared.js';
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const { url, cookies, redirect } = context;
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
+	const codeVerifier = cookies.get(ProviderCodeVerifier)?.value ?? null;
 	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
-	if (!code || !state || !storedState || state !== storedState) {
+	if (!code || !codeVerifier || !storedState || state !== storedState) {
 		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	let tokens: OAuth2Tokens;
 
 	try {
-		tokens = await discord.validateAuthorizationCode(code);
+		tokens = await discord.validateAuthorizationCode(code, codeVerifier);
 
 		const discordResponse = await fetch('https://discord.com/api/users/@me', {
 			headers: {

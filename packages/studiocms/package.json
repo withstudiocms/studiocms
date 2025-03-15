@@ -145,7 +145,7 @@
     "@oslojs/binary": "^1.0.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "arctic": "^2.3.1",
+    "arctic": "^3.5.0",
     "three": "0.170.0",
     "mrmime": "^2.0.0",
     "unified": "^11.0.5",

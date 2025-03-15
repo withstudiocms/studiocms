@@ -16,6 +16,7 @@ export const getClientDomain = () => {
 
 export const ProviderID = 'auth0';
 export const ProviderCookieName = 'auth0_oauth_state';
+export const ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 
 export const auth0 = new Auth0(getClientDomain(), CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 

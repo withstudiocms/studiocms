@@ -8,6 +8,7 @@ import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
 import {
 	type Auth0User,
+	ProviderCodeVerifier,
 	ProviderCookieName,
 	ProviderID,
 	auth0,
@@ -19,18 +20,19 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
+	const codeVerifier = cookies.get(ProviderCodeVerifier)?.value ?? null;
 	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 	const CLIENT_DOMAIN = getClientDomain();
 
-	if (!code || !state || !storedState || state !== storedState) {
+	if (!code || !codeVerifier || !storedState || state !== storedState) {
 		return redirect(StudioCMSRoutes.authLinks.loginURL);
 	}
 
 	let tokens: OAuth2Tokens;
 
 	try {
-		tokens = await auth0.validateAuthorizationCode(code);
+		tokens = await auth0.validateAuthorizationCode(code, codeVerifier);
 
 		const auth0Response = await fetch(`${CLIENT_DOMAIN}/userinfo`, {
 			headers: {
