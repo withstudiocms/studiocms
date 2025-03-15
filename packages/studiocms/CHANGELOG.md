@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.1.0-beta.13
+
+### Patch Changes
+
+- [#471](https://github.com/withstudiocms/studiocms/pull/471) [`9512aac`](https://github.com/withstudiocms/studiocms/commit/9512aac4a928423caf91cbaa1c89a29e9d40a731) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Arctic to v3.5.0 and implement new required code verifier for auth0 and discord
+
 ## 0.1.0-beta.12
 
 ### Patch Changes
