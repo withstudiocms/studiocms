@@ -48,10 +48,7 @@ declare module 'studiocms:mailer' {
 	export type TransporterConfig = import('./lib/mailer/index').TransporterConfig;
 	export type MailerConfig = import('./lib/mailer/index').MailerConfig;
 	export type MailOptions = import('./lib/mailer/index').MailOptions;
-	export type VerificationResponse = import('./lib/mailer/index').VerificationResponse;
-	export const convertTransporterConfig: typeof import(
-		'./lib/mailer/index'
-	).convertTransporterConfig;
+	export type MailerResponse = import('./lib/mailer/index').MailerResponse;
 	export const sendMail: typeof import('./lib/mailer/index').sendMail;
 	export const verifyMailConnection: typeof import('./lib/mailer/index').verifyMailConnection;
 	export const getMailerConfigTable: typeof import('./lib/mailer/index').getMailerConfigTable;
@@ -744,10 +741,6 @@ declare module 'studiocms:renderer/current' {
 	const deModule: typeof import('./lib/renderer/contentRenderer.js').default;
 	export default deModule;
 	export const contentRenderer: typeof import('./lib/renderer/contentRenderer.js').contentRenderer;
-}
-
-declare module 'studiocms:component-proxy' {
-	export const componentKeys: string[];
 }
 
 declare module 'virtual:studiocms/sdk/env' {

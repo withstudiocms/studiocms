@@ -123,9 +123,7 @@
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
     },
-    "./v/core.d.ts": "./dist/core.d.ts",
-    "./v/auth.d.ts": "./dist/auth.d.ts",
-    "./v/renderer.d.ts": "./dist/renderer.d.ts",
+    "./v/types": "./dist/virtual.d.ts",
     "./src/routes/*": "./src/routes/*"
   },
   "type": "module",
