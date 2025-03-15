@@ -4,9 +4,6 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@astrojs/db" preserve="true" />
-/// <reference types="./auth.d.ts" preserve="true" />
-/// <reference types="./core.d.ts" preserve="true" />
-/// <reference types="./renderer.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 
 import fs from 'node:fs';
