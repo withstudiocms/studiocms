@@ -1504,6 +1504,8 @@ export const studiocms = defineIntegration({
 						},
 					});
 
+					changelogHelper(params);
+
 					let pluginListLength = 0;
 					let pluginListMessage = '';
 
@@ -1520,8 +1522,6 @@ export const studiocms = defineIntegration({
 						logLevel: 'info',
 						message: ` \n \n${messageBox} \n \n`,
 					});
-
-					changelogHelper(params);
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
