@@ -5,6 +5,7 @@
     "outDir": "./dist",
     "emitDeclarationOnly": true,
     "resolveJsonModule": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "removeComments": false
   }
 }
