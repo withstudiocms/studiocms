@@ -1,16 +1,20 @@
 import { setOAuthSessionTokenCookie } from 'studiocms:auth/lib/session';
-import { generateState } from 'arctic';
+import { generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { ProviderCookieName, discord } from './shared.js';
+import { ProviderCodeVerifier, ProviderCookieName, discord } from './shared.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
 	const state = generateState();
 
 	const scopes = ['identify', 'email'];
 
-	const url: URL = discord.createAuthorizationURL(state, scopes);
+	const codeVerifier = generateCodeVerifier();
+
+	const url: URL = discord.createAuthorizationURL(state, codeVerifier, scopes);
 
 	setOAuthSessionTokenCookie(context, ProviderCookieName, state);
+
+	setOAuthSessionTokenCookie(context, ProviderCodeVerifier, codeVerifier);
 
 	return context.redirect(url.toString());
 };

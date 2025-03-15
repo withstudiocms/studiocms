@@ -8,6 +8,7 @@ export const {
 
 export const ProviderID = 'discord';
 export const ProviderCookieName = 'discord_oauth_state';
+export const ProviderCodeVerifier = 'discord_oauth_code_verifier';
 
 export const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
