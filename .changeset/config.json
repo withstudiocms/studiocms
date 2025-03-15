@@ -7,5 +7,6 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["node-playground", "build-scripts"]
+  "ignore": ["node-playground", "build-scripts"],
+  "privatePackages": false
 }

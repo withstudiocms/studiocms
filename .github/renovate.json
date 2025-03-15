@@ -17,6 +17,7 @@
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "updatePinnedDependencies": false,
+  "dependencyDashboardLabels": ["TRACKER"],
   "packageRules": [
     {
       "matchDepTypes": ["packageManager", "engines"],
@@ -28,6 +29,10 @@
     },
     {
       "matchDepTypes": ["pnpm.catalog.min"],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": ["drizzle-orm"],
       "enabled": false
     }
   ]
