@@ -1,4 +1,5 @@
 /// <reference types="../ui.d.ts" />
+import type { InjectedRoute, InjectedScriptStage } from 'astro';
 import type { StudioCMSOptions } from './schemas/index.js';
 
 /**
@@ -14,6 +15,10 @@ export type Messages = {
 	logLevel: 'info' | 'warn' | 'error' | 'debug';
 	message: string;
 }[];
+
+export type Route = InjectedRoute & { enabled: boolean };
+
+export type Script = { stage: InjectedScriptStage; content: string; enabled: boolean };
 
 /**
  * Options for starting the server.

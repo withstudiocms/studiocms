@@ -1,3 +1,6 @@
+import type { AstroConfig } from 'astro';
+import { envField } from 'astro/config';
+import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
 /**
@@ -112,4 +115,105 @@ export const NotificationSettingsDefaults = {
 	oAuthBypassVerification: false,
 	requireEditorVerification: false,
 	requireAdminVerification: false,
+};
+
+export const StudioCMSENV: AstroConfig['env'] = {
+	validateSecrets: true,
+	schema: {
+		// Auth Encryption Key
+		CMS_ENCRYPTION_KEY: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: false,
+		}),
+		// GitHub Auth Provider Environment Variables
+		CMS_GITHUB_CLIENT_ID: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_GITHUB_CLIENT_SECRET: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_GITHUB_REDIRECT_URI: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		// Discord Auth Provider Environment Variables
+		CMS_DISCORD_CLIENT_ID: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_DISCORD_CLIENT_SECRET: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_DISCORD_REDIRECT_URI: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		// Google Auth Provider Environment Variables
+		CMS_GOOGLE_CLIENT_ID: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_GOOGLE_CLIENT_SECRET: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_GOOGLE_REDIRECT_URI: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		// Auth0 Auth Provider Environment Variables
+		CMS_AUTH0_CLIENT_ID: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_AUTH0_CLIENT_SECRET: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_AUTH0_DOMAIN: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		CMS_AUTH0_REDIRECT_URI: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+		// Cloudinary Environment Variables for Custom Image Component
+		CMS_CLOUDINARY_CLOUDNAME: envField.string({
+			context: 'server',
+			access: 'secret',
+			optional: true,
+		}),
+	},
+};
+
+export const dashboardAPIRoute = makeAPIRoute('dashboard');
+
+export const authAPIRoute = makeAPIRoute('auth');
+
+export const makeDashboardRoute = (route?: string | undefined) => {
+	let defaultRoute = 'dashboard';
+
+	if (route) defaultRoute = removeLeadingTrailingSlashes(route);
+
+	if (route === '/') defaultRoute = '';
+
+	return (path: string) => `${defaultRoute}/${path}`;
 };
