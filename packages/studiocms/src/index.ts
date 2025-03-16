@@ -11,18 +11,13 @@ import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import {
-	StudioCMSENV,
-	authAPIRoute,
-	dashboardAPIRoute,
-	makeDashboardRoute,
-	routesDir,
-} from './consts.js';
+import { authAPIRoute, dashboardAPIRoute, makeDashboardRoute, routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
@@ -303,7 +298,92 @@ export const studiocms = defineIntegration({
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
 					// Add Astro Environment Configuration
-					addAstroEnvConfig(params, StudioCMSENV);
+					addAstroEnvConfig(params, {
+						validateSecrets: true,
+						schema: {
+							// Auth Encryption Key
+							CMS_ENCRYPTION_KEY: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: false,
+							}),
+							// GitHub Auth Provider Environment Variables
+							CMS_GITHUB_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GITHUB_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Discord Auth Provider Environment Variables
+							CMS_DISCORD_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_DISCORD_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Google Auth Provider Environment Variables
+							CMS_GOOGLE_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_GOOGLE_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Auth0 Auth Provider Environment Variables
+							CMS_AUTH0_CLIENT_ID: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_CLIENT_SECRET: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_DOMAIN: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							CMS_AUTH0_REDIRECT_URI: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+							// Cloudinary Environment Variables for Custom Image Component
+							CMS_CLOUDINARY_CLOUDNAME: envField.string({
+								context: 'server',
+								access: 'secret',
+								optional: true,
+							}),
+						},
+					});
 					checkEnvKeys(logger, options);
 					changelogHelper(params);
 
@@ -709,13 +789,13 @@ export const studiocms = defineIntegration({
 
 					const scripts: Script[] = [
 						{
-							stage: 'page-ssr',
 							content: 'import "studiocms:renderer/markdown-remark/css";',
+							stage: 'page-ssr',
 							enabled: rendererConfig.renderer === 'studiocms',
 						},
 						{
-							stage: 'head-inline',
 							content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
+							stage: 'head-inline',
 							enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
 						},
 					];
@@ -873,7 +953,7 @@ export const studiocms = defineIntegration({
 					}
 
 					// Inject Scripts
-					for (const { enabled, stage, content } of scripts) {
+					for (const { content, enabled, stage } of scripts) {
 						if (enabled) injectScript(stage, content);
 					}
 
