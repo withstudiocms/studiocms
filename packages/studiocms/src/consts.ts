@@ -1,3 +1,4 @@
+import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
 /**
@@ -112,4 +113,18 @@ export const NotificationSettingsDefaults = {
 	oAuthBypassVerification: false,
 	requireEditorVerification: false,
 	requireAdminVerification: false,
+};
+
+export const dashboardAPIRoute = makeAPIRoute('dashboard');
+
+export const authAPIRoute = makeAPIRoute('auth');
+
+export const makeDashboardRoute = (route?: string | undefined) => {
+	let defaultRoute = 'dashboard';
+
+	if (route) defaultRoute = removeLeadingTrailingSlashes(route);
+
+	if (route === '/') defaultRoute = '';
+
+	return (path: string) => `${defaultRoute}/${path}`;
 };
