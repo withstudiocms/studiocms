@@ -6,7 +6,7 @@ catalog:
   '@astrojs/starlight': ^0.32.1
   '@astrojs/web-vitals': ^3.0.1
   '@astrojs/node': ^9.1.2
-  '@types/node': ^20.14.11
+  '@types/node': ^22.0.0
   "@studiocms/ui": ^0.4.16
   "@sentry/astro": ^9.2.0
   astro: ^5.4.3
