@@ -14,7 +14,7 @@ function generateResetLink(token: {
 	userId: string;
 	token: string;
 }) {
-	const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password`, site);
+	const url = new URL(StudioCMSRoutes.mainLinks.passwordReset, site);
 	url.searchParams.append('userid', token.userId);
 	url.searchParams.append('token', token.token);
 	url.searchParams.append('id', token.id);

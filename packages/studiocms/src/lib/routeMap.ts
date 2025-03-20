@@ -1,4 +1,5 @@
 import { dashboardConfig } from 'studiocms:config';
+import { password } from '@clack/prompts';
 import { makeAPIRoute } from './makeAPIRoute.js';
 import urlGenFactory from './urlGen.js';
 
@@ -169,6 +170,8 @@ export const StudioCMSRoutes = {
 		 * URL for unverified email page.
 		 */
 		unverifiedEmail: makeDashboardRoute('unverified-email'),
+
+		passwordReset: makeDashboardRoute('password-reset'),
 	},
 	authLinks: {
 		/**
