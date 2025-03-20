@@ -5,6 +5,7 @@
  */
 /// <reference types="@astrojs/db" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
+/// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
