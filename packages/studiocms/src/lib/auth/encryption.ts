@@ -1,5 +1,4 @@
 import { createCipheriv, createDecipheriv } from 'node:crypto';
-// @ts-ignore
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { DynamicBuffer } from '@oslojs/binary';
 import { decodeBase64 } from '@oslojs/encoding';

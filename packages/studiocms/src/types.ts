@@ -1,4 +1,5 @@
 /// <reference types="../ui.d.ts" />
+/// <reference types="../astroenv.d.ts" />
 import type { InjectedRoute, InjectedScriptStage } from 'astro';
 import type { StudioCMSOptions } from './schemas/index.js';
 
