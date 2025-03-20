@@ -1,17 +1,9 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 
-const { testingAndDemoMode } = developerConfig;
-
 export const POST: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 

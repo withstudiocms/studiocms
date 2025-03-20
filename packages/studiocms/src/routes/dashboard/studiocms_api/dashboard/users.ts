@@ -6,14 +6,7 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 
-const { testingAndDemoMode } = developerConfig;
-
 export const POST: APIRoute = async (ctx: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(ctx);
 
@@ -72,9 +65,9 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 };
 
 export const DELETE: APIRoute = async (ctx: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	// Get user data

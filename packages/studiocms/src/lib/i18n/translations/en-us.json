@@ -17,7 +17,8 @@
       "forgot-password": "Forgot Password? Click here.",
       "forgot-password-title": "Forgot Password",
       "forgot-password-message": "Forgot your password? Enter your email below and we'll send you a reset link.",
-      "email-label": "Email Address"
+      "email-label": "Email Address",
+      "demo-mode-credentials": "Demo Mode Credentials"
     },
     "@studiocms/auth:signup": {
       "title": "Sign Up Page",

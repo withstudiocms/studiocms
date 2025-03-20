@@ -85,15 +85,6 @@ declare module 'studiocms:notifier/client' {
 	).formatNotificationOptions;
 }
 
-interface Window {
-	theme: {
-		setTheme: (theme: 'system' | 'dark' | 'light') => void;
-		getTheme: () => 'system' | 'dark' | 'light';
-		getSystemTheme: () => 'light' | 'dark';
-		getDefaultTheme: () => 'system' | 'dark' | 'light';
-	};
-}
-
 declare module 'studiocms:config' {
 	export const config: import('./schemas/index.js').StudioCMSConfig;
 	export default config;

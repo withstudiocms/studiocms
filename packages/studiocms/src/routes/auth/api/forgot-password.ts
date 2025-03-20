@@ -9,14 +9,12 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 
-const { testingAndDemoMode } = developerConfig;
-
 function generateResetLink(token: {
 	id: string;
 	userId: string;
 	token: string;
 }) {
-	const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password`, site);
+	const url = new URL(StudioCMSRoutes.mainLinks.passwordReset, site);
 	url.searchParams.append('userid', token.userId);
 	url.searchParams.append('token', token.token);
 	url.searchParams.append('id', token.id);
@@ -25,9 +23,9 @@ function generateResetLink(token: {
 }
 
 export const POST: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	const config = (await studioCMS_SDK.GET.database.config()) || {

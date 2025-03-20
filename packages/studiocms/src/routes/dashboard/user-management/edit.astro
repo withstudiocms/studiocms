@@ -260,7 +260,7 @@ const emailVerificationEnabled = await isEmailVerificationEnabled();
 
   </div>
 
-  <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex}></div>
+  <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex} data-reseturl={StudioCMSRoutes.mainLinks.passwordReset}></div>
 
   <div 
       id="token-api-links" style="display: none;"
@@ -320,12 +320,14 @@ const emailVerificationEnabled = await isEmailVerificationEnabled();
     const userId = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.userid;
     const dashboardIndex = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.dashboard;
 
+    const passwordResetUrl = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.reseturl;
+
     function generateResetLink(token: {
       id: string;
       userId: string;
       token: string;
     }) {
-      return `${window.location.origin}${dashboardIndex}/reset-password?userid=${token.userId}&token=${token.token}&id=${token.id}`;
+      return `${window.location.origin}${passwordResetUrl}?userid=${token.userId}&token=${token.token}&id=${token.id}`;
     }
 
     passwordResetLinkTrigger.addEventListener('click', async (e) => {

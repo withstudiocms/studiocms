@@ -3,7 +3,6 @@ import {
 	verifyUserPermissionLevel,
 	verifyUsernameInput,
 } from 'studiocms:auth/lib/user';
-import { developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendMail, verifyMailConnection } from 'studiocms:mailer';
@@ -12,8 +11,6 @@ import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-
-const { testingAndDemoMode } = developerConfig;
 
 type JSONData = {
 	username: string | undefined;
@@ -27,11 +24,6 @@ const noMailerError = (message: string, resetLink: URL) =>
 	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
 
 export const POST: APIRoute = async (ctx: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	const siteConfig = await studioCMS_SDK.GET.database.config();
 
 	if (!siteConfig) {

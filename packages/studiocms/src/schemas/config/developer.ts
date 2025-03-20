@@ -3,13 +3,25 @@ import { z } from 'astro/zod';
 export const developerConfigSchema = z
 	.object({
 		/**
-		 * Enable Testing and Demo Mode
+		 * Enable demo mode for the site
 		 *
-		 * This will enable the testing and demo mode for the Astro StudioCMS dashboard, this will allow you to test the dashboard without having to authenticate. This is useful for testing and demo purposes as it will allow you to see how the dashboard works and looks but disable any changes to the database.
+		 * If set to an object, the site will be in demo mode, and the user will be able to login with the provided username and password.
 		 *
 		 * @default false
+		 * @example
+		 * ```ts
+		 * {
+		 *   demoMode: {
+		 *     username: "demo_user",
+		 *     password: "some-demo-password"
+		 *   }
+		 * }
+		 * ```
 		 */
-		testingAndDemoMode: z.boolean().optional().default(false),
+		demoMode: z
+			.union([z.literal(false), z.object({ username: z.string(), password: z.string() })])
+			.optional()
+			.default(false),
 	})
 	.optional()
-	.default({});
+	.default({ demoMode: false });

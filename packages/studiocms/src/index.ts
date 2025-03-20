@@ -5,6 +5,7 @@
  */
 /// <reference types="@astrojs/db" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
+/// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
@@ -255,6 +256,7 @@ export const studiocms = defineIntegration({
 									usernameAndPasswordConfig: { allowUserRegistration },
 								},
 							},
+							developerConfig: { demoMode },
 						},
 						defaultFrontEndConfig,
 					} = options;
@@ -728,62 +730,62 @@ export const studiocms = defineIntegration({
 						{
 							pattern: v1RestRoute('folders'),
 							entrypoint: routesDir.v1Rest('folders/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('folders/[id]'),
 							entrypoint: routesDir.v1Rest('folders/[id].ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('pages'),
 							entrypoint: routesDir.v1Rest('pages/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('pages/[id]'),
 							entrypoint: routesDir.v1Rest('pages/[id]/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('pages/[id]/history'),
 							entrypoint: routesDir.v1Rest('pages/[id]/history/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('pages/[id]/history/[diffid]'),
 							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('settings'),
 							entrypoint: routesDir.v1Rest('settings/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('users'),
 							entrypoint: routesDir.v1Rest('users/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('users/[id]'),
 							entrypoint: routesDir.v1Rest('users/[id].ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('public/pages'),
 							entrypoint: routesDir.v1Rest('public/pages/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('public/pages/[id]'),
 							entrypoint: routesDir.v1Rest('public/pages/[id].ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 						{
 							pattern: v1RestRoute('public/folders'),
 							entrypoint: routesDir.v1Rest('public/folders/index.ts'),
-							enabled: !dbStartPage && authEnabled,
+							enabled: !dbStartPage && authEnabled && !demoMode,
 						},
 					];
 
@@ -1473,6 +1475,13 @@ export const studiocms = defineIntegration({
 							'Start Page is Enabled.  This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.'
 						);
 					}
+
+					if (options.dashboardConfig.developerConfig.demoMode !== false) {
+						integrationLogger(
+							{ logger, logLevel: 'info', verbose: true },
+							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'
+						);
+					}
 				},
 				// BUILD: Log messages at the end of the build
 				'astro:build:done': ({ logger }) => {
@@ -1485,6 +1494,13 @@ export const studiocms = defineIntegration({
 								verbose: logLevel === 'info' ? options.verbose : true,
 							},
 							message
+						);
+					}
+
+					if (options.dashboardConfig.developerConfig.demoMode !== false) {
+						integrationLogger(
+							{ logger, logLevel: 'info', verbose: true },
+							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'
 						);
 					}
 				},

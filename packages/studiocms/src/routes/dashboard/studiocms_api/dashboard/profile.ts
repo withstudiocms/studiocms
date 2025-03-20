@@ -12,12 +12,10 @@ import type { tsUsersUpdate } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 
-const { testingAndDemoMode } = developerConfig;
-
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	// Get user data
