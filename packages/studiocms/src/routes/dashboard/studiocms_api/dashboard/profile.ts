@@ -12,16 +12,14 @@ import type { tsUsersUpdate } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 
-const { testingAndDemoMode } = developerConfig;
-
 export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
+
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return apiResponseLogger(403, 'Unauthorized');
+	}
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {

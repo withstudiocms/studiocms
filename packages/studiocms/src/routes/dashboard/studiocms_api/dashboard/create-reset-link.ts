@@ -5,12 +5,10 @@ import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 
-const { testingAndDemoMode } = developerConfig;
-
 export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Get user data

@@ -1,9 +1,6 @@
-import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext } from 'astro';
-
-const { testingAndDemoMode } = developerConfig;
 
 /**
  * Get the auth token from the Authorization header
@@ -42,11 +39,6 @@ const getAuthToken = (headerString?: string | null) => {
  * @returns The user data if the auth token is valid, otherwise a 401 response
  */
 export async function verifyAuthToken(context: APIContext) {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	const authToken = getAuthToken(context.request.headers.get('Authorization'));
 
 	if (!authToken) {

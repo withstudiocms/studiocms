@@ -14,5 +14,8 @@ export default defineStudioCMSConfig({
 				discord: true,
 			},
 		},
+		developerConfig: {
+			demoMode: false,
+		},
 	},
 });

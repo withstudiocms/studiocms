@@ -1,11 +1,8 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendEditorNotification } from 'studiocms:notifier';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-
-const { testingAndDemoMode } = developerConfig;
 
 interface FolderBase {
 	folderName: string;
@@ -17,11 +14,6 @@ interface FolderEdit extends FolderBase {
 }
 
 export const POST: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 
@@ -63,11 +55,6 @@ export const POST: APIRoute = async (context: APIContext) => {
 };
 
 export const PATCH: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 
@@ -110,11 +97,6 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 

@@ -1,19 +1,11 @@
 import { sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
-import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 
-const { testingAndDemoMode } = developerConfig;
-
 const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
 
 export const POST: APIRoute = async (ctx) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Check if mailer is enabled
 	if (!enableMailer) {
 		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');

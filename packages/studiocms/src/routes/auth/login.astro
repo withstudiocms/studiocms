@@ -1,14 +1,30 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { AuthConfig } from 'studiocms:config';
+import { AuthConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
-import { Button, Center, Input, Modal } from 'studiocms:ui/components';
+import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/auth:login');
+
+let DemoMode: {
+	enabled: boolean;
+	username?: string;
+	password?: string;
+} = {
+	enabled: false,
+};
+
+if (developerConfig.demoMode) {
+	DemoMode = {
+		enabled: true,
+		username: developerConfig.demoMode.username,
+		password: developerConfig.demoMode.password,
+	};
+}
 
 const {
 	providers,
@@ -63,6 +79,24 @@ const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
     </Modal>
 
     <div slot="header" class="form-header">
+
+        { DemoMode.enabled && ( 
+            <Card fullWidth>
+                <h2 slot="header"><t-login key="demo-mode-credentials">{t('demo-mode-credentials')}</t-login></h2>
+
+                <table class="demo-table">
+                    <tr>
+                        <td><t-login key="username-label">{t('username-label')}</t-login></td>
+                        <td>{DemoMode.username}</td>
+                    </tr>
+                    <tr>
+                        <td><t-login key="password-label">{t('password-label')}</t-login></td>
+                        <td>{DemoMode.password}</td>
+                    </tr>
+                </table>
+            </Card>
+        )}
+
         <h1>
             <t-login key="header">{t('header')}</t-login>
         </h1>
@@ -116,6 +150,32 @@ const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
     .forgot-password:hover {
         color: hsl(var(--primary-hover));
         cursor: pointer;
+    }
+
+    .demo-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .demo-table td {
+        padding: 0.5rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .demo-table td:first-child {
+        font-weight: bold;
+    }
+
+    .demo-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .demo-table tr:nth-child(odd) {
+        background-color: hsl(var(--background-step-1));
+    }
+
+    .form-header {
+        margin-bottom: 1rem;
     }
 </style>
 

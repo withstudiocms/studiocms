@@ -1,5 +1,4 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendEditorNotification } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
@@ -50,8 +49,6 @@ function getPageTypeEndpoints(pkg: string, type: 'onCreate' | 'onEdit' | 'onDele
 	return currentPageType.apiEndpoints?.[type];
 }
 
-const { testingAndDemoMode } = developerConfig;
-
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
 
@@ -61,11 +58,6 @@ function getParentFolderValue(value?: string) {
 }
 
 export const POST: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 
@@ -149,11 +141,6 @@ export const POST: APIRoute = async (context: APIContext) => {
 };
 
 export const PATCH: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 
@@ -286,11 +273,6 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 };
 
 export const DELETE: APIRoute = async (context: APIContext) => {
-	// Check if testing and demo mode is enabled
-	if (testingAndDemoMode) {
-		return apiResponseLogger(400, 'Testing and demo mode is enabled, this action is disabled.');
-	}
-
 	// Get user data
 	const userData = await getUserData(context);
 
