@@ -17,8 +17,14 @@ export type Messages = {
 	message: string;
 }[];
 
+/**
+ * Represents a route object that can be used for a Array of routes for the Astro integration injectRoute() function.
+ */
 export type Route = InjectedRoute & { enabled: boolean };
 
+/**
+ * Represents a script object that can be used for a Array of scripts for the Astro integration injectScript() function.
+ */
 export type Script = { stage: InjectedScriptStage; content: string; enabled: boolean };
 
 /**
