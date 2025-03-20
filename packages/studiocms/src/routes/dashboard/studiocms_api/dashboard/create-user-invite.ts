@@ -74,11 +74,9 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// If the username is invalid, return an error
-	if (verifyUsernameInput(username) !== true) {
-		return apiResponseLogger(
-			400,
-			'Invalid username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
-		);
+	const verifyUsernameResponse = verifyUsernameInput(username);
+	if (verifyUsernameResponse !== true) {
+		return apiResponseLogger(400, verifyUsernameResponse);
 	}
 
 	// If the email is invalid, return an error

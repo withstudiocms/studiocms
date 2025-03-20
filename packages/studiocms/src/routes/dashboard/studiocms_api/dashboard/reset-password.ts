@@ -41,13 +41,11 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		return apiResponseLogger(400, 'Passwords do not match');
 	}
 
-	if ((await verifyPasswordStrength(password)) !== true) {
-		return apiResponseLogger(
-			400,
-			'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
-		);
+	// If the password is invalid, return an error
+	const verifyPasswordResponse = await verifyPasswordStrength(password);
+	if (verifyPasswordResponse !== true) {
+		return apiResponseLogger(400, verifyPasswordResponse);
 	}
-
 	const userUpdate = {
 		password: password,
 	};

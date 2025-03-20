@@ -1,7 +1,7 @@
 import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
-// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
+import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password.js';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session.js';
@@ -18,21 +18,21 @@ import type { UserSessionData } from './types.js';
  * @param username - The username to verify.
  * @returns `true` if the username is valid, `false` otherwise.
  */
-export function verifyUsernameInput(username: string): boolean {
+export function verifyUsernameInput(username: string): true | string {
 	// Check if the username is between 3 and 32 characters
 	if (username.length < 3 || username.length > 32) {
-		return false;
+		return 'Username must be between 3 and 32 characters';
 	}
 
 	// Check if the username only contains lowercase letters, numbers, -, and _
 	if (!/^[a-z0-9_-]+$/.test(username)) {
-		return false;
+		return 'Username may only contain lowercase letters, numbers, - and _';
 	}
 
 	// Check if the username is unsafe
-	// if (checkIfUnsafe(username).username()) {
-	// 	return false;
-	// }
+	if (checkIfUnsafe(username).username()) {
+		return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+	}
 
 	return true;
 }
