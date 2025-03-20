@@ -25,7 +25,7 @@ function generateResetLink(token: {
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
-		return apiResponseLogger(403, 'Unauthorized');
+		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	const config = (await studioCMS_SDK.GET.database.config()) || {
