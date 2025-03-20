@@ -1,5 +1,29 @@
 # studiocms
 
+## 0.1.0-beta.13
+
+### Patch Changes
+
+- [#476](https://github.com/withstudiocms/studiocms/pull/476) [`a430661`](https://github.com/withstudiocms/studiocms/commit/a4306618aeb3479f9d7b074637a54dc65798fe78) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix(auth): Re-enable the verification for usernames and passwords to ensure data safety
+
+- [#474](https://github.com/withstudiocms/studiocms/pull/474) [`4fc5d6b`](https://github.com/withstudiocms/studiocms/commit/4fc5d6b9528968d7681dbf2f549e844989e10eb5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor internal integration logic to cleanup old logic and simplify main integration
+
+- [#477](https://github.com/withstudiocms/studiocms/pull/477) [`0901215`](https://github.com/withstudiocms/studiocms/commit/0901215cf33b7e0283c1b31265038fd15efd7dfb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove old `testingAndDemoMode` developer option and add new `demoMode` option with a simple interface
+
+  Demo mode can either be `false` or an object with the following type `{ username: string; password: string; }`. This will allow you to create demo user credentials that are public.
+
+  Please note, this does not prevent changes and resetting the DB is up to the developer to configure on their own. (a github action that clears the tables and adds the desired values back on a schedule is one idea for this.)
+
+- [#473](https://github.com/withstudiocms/studiocms/pull/473) [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix ambient types, and remove now unused stub files and type injection
+
+  Consolidate all virtual types into a single file,
+
+  - Previous exports such as `studiocms/v/core.d.ts` are now all under `studiocms/v/types`
+
+- [#471](https://github.com/withstudiocms/studiocms/pull/471) [`9512aac`](https://github.com/withstudiocms/studiocms/commit/9512aac4a928423caf91cbaa1c89a29e9d40a731) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Arctic to v3.5.0 and implement new required code verifier for auth0 and discord
+
+- [#473](https://github.com/withstudiocms/studiocms/pull/473) [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update READMEs
+
 ## 0.1.0-beta.12
 
 ### Patch Changes
