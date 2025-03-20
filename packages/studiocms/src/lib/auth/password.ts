@@ -1,7 +1,7 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
 // @ts-ignore
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
-// import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
+import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 
@@ -71,17 +71,17 @@ export async function verifyPasswordHash(hash: string, password: string): Promis
  * @param password - The password to verify.
  * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
  */
-export async function verifyPasswordStrength(password: string): Promise<boolean> {
+export async function verifyPasswordStrength(password: string): Promise<true | string> {
 	// Password must be between 6 ~ 255 characters
 	if (password.length < 6 || password.length > 255) {
-		return false;
+		return 'Password must be between 6 and 255 characters';
 	}
 
 	// Check if password is known unsafe password
-	// const isUnsafe = checkIfUnsafe(password).password();
-	// if (isUnsafe) {
-	// 	return false;
-	// }
+	const isUnsafe = checkIfUnsafe(password).password();
+	if (isUnsafe) {
+		return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+	}
 
 	// Check if password is in pwned password database
 	const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(password)));
@@ -92,7 +92,7 @@ export async function verifyPasswordStrength(password: string): Promise<boolean>
 	for (const line of lines) {
 		const hashSuffix = line.slice(0, 35).toLowerCase();
 		if (hash === hashPrefix + hashSuffix) {
-			return false;
+			return 'Password must not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.';
 		}
 	}
 

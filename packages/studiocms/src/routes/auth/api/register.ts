@@ -20,19 +20,15 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (!password) return badFormDataEntry('Missing field', 'Password is required');
 
 	// If the username is invalid, return an error
-	if (verifyUsernameInput(username) !== true) {
-		return badFormDataEntry(
-			'Invalid username',
-			'Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
-		);
+	const verifyUsernameResponse = verifyUsernameInput(username);
+	if (verifyUsernameResponse !== true) {
+		return badFormDataEntry('Invalid username', verifyUsernameResponse);
 	}
 
 	// If the password is invalid, return an error
-	if ((await verifyPasswordStrength(password)) !== true) {
-		return badFormDataEntry(
-			'Invalid password',
-			'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
-		);
+	const verifyPasswordResponse = await verifyPasswordStrength(password);
+	if (verifyPasswordResponse !== true) {
+		return badFormDataEntry('Invalid password', verifyPasswordResponse);
 	}
 
 	// Get the email and display name from the form data
@@ -50,6 +46,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		.safeParse(email);
 
 	if (!checkEmail.success) return badFormDataEntry('Invalid email', checkEmail.error.message);
+
+	const invalidEmailDomains: string[] = ['example.com', 'text.com', 'testing.com'];
+
+	if (invalidEmailDomains.includes(checkEmail.data.split('@')[1])) {
+		return badFormDataEntry('Invalid Email', 'Must be from a valid domain');
+	}
 
 	const { usernameSearch, emailSearch } =
 		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);

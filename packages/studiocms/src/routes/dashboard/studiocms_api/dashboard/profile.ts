@@ -68,11 +68,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			return apiResponseLogger(400, 'Invalid form data, username is required');
 		}
 
-		if (verifyUsernameInput(data.username) !== true) {
-			return apiResponseLogger(
-				400,
-				'Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)'
-			);
+		// If the username is invalid, return an error
+		const verifyUsernameResponse = verifyUsernameInput(data.username);
+		if (verifyUsernameResponse !== true) {
+			return apiResponseLogger(400, verifyUsernameResponse);
 		}
 
 		// If the email is invalid, return an error
@@ -139,11 +138,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 			);
 		}
 
-		if ((await verifyPasswordStrength(newPassword)) !== true) {
-			return apiResponseLogger(
-				400,
-				'Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.'
-			);
+		// If the password is invalid, return an error
+		const verifyPasswordResponse = await verifyPasswordStrength(newPassword);
+		if (verifyPasswordResponse !== true) {
+			return apiResponseLogger(400, verifyPasswordResponse);
 		}
 
 		const userUpdate = {
