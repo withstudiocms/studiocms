@@ -43,6 +43,7 @@ import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
+import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
 import { readJson } from './utils/readJson.js';
 import { convertToSafeString } from './utils/safeString.js';
 
@@ -60,13 +61,15 @@ const env = loadEnv('', process.cwd(), '');
 // Renderer Component Resolver
 const RendererComponent = resolve('./components/Renderer.astro');
 
-const studiocmsMarkdownRenderer = resolve('./components/renderers/studiocms-markdown.astro');
-
-// Default Editor Component Resolver
-const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
-
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
+
+const DefaultPageTypeComponents = {
+	'studiocms/markdown': {
+		pageContentComponent: resolve('./components/DefaultEditor.astro'),
+		rendererComponent: resolve('./components/renderers/studiocms-markdown.astro'),
+	},
+};
 
 /**
  * **Default StudioCMS Plugin**
@@ -143,8 +146,8 @@ const defaultPlugin: StudioCMSPlugin = {
 		{
 			label: 'Markdown (Built-in)',
 			identifier: 'studiocms/markdown',
-			pageContentComponent: defaultEditorComponent,
-			rendererComponent: studiocmsMarkdownRenderer,
+			pageContentComponent: DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
+			rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
 		},
 		// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
 	],
@@ -906,17 +909,24 @@ export const studiocms = defineIntegration({
 								}
 
 								if (rendererComponent) {
-									pluginRenderers.push({
-										pageType: identifier,
-										safePageType: convertToSafeString(identifier),
-										content: `export { default as ${convertToSafeString(identifier)} } from '${rendererComponent}';`,
-									});
-								} else {
-									pluginRenderers.push({
-										pageType: identifier,
-										safePageType: convertToSafeString(identifier),
-										content: `export { default as ${convertToSafeString(identifier)} } from '${studiocmsMarkdownRenderer}';`,
-									});
+									const builtIns = rendererComponentFilter(
+										rendererComponent,
+										convertToSafeString(identifier),
+										DefaultPageTypeComponents
+									);
+									if (builtIns) {
+										pluginRenderers.push({
+											pageType: identifier,
+											safePageType: convertToSafeString(identifier),
+											content: builtIns,
+										});
+									} else {
+										pluginRenderers.push({
+											pageType: identifier,
+											safePageType: convertToSafeString(identifier),
+											content: `export { default as ${convertToSafeString(identifier)} } from '${rendererComponent}';`,
+										});
+									}
 								}
 							}
 
@@ -1178,10 +1188,11 @@ export const studiocms = defineIntegration({
 
 						const editorComponents = allPageTypes
 							.map(({ identifier, pageContentComponent }) => {
-								if (!pageContentComponent) {
-									return `export { default as ${convertToSafeString(identifier)} } from '${defaultEditorComponent}';`;
-								}
-								return `export { default as ${convertToSafeString(identifier)} } from '${pageContentComponent}';`;
+								return pageContentComponentFilter(
+									pageContentComponent,
+									convertToSafeString(identifier),
+									DefaultPageTypeComponents
+								);
 							})
 							.join('\n');
 
