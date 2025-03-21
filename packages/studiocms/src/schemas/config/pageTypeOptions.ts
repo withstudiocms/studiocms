@@ -22,12 +22,12 @@ export const StudioCMSSanitizeOptionsSchema = z
 	.optional();
 
 export const AstroMarkdownSchema = z.object({
-	flavor: z.literal('astro').optional(),
+	flavor: z.literal('astro'),
 	sanitize: StudioCMSSanitizeOptionsSchema,
 });
 
 export const StudioCMSMarkdownSchema = AstroMarkdownSchema.extend({
-	flavor: z.literal('studiocms').optional().default('studiocms'),
+	flavor: z.literal('studiocms'),
 	callouts: z
 		.union([z.literal('github'), z.literal('obsidian'), z.literal('vitepress'), z.literal(false)])
 		.optional()
