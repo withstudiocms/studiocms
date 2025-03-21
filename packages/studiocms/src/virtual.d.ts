@@ -721,15 +721,7 @@ declare module 'studiocms:auth/lib/verify-email' {
 	).isEmailVerificationEnabled;
 }
 
-declare module 'studiocms:renderer/config' {
-	const config: import('./schemas/config/pageTypeOptions.ts').MarkdownSchemaOptions;
-	export default config;
-}
-
-declare module 'studiocms:renderer/astroMarkdownConfig' {
-	const config: import('astro').AstroConfig['markdown'];
-	export default config;
-}
+declare module 'virtual:studiocms/plugins/renderers' {}
 
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;

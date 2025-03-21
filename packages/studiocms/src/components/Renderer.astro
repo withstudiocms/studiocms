@@ -1,7 +1,6 @@
 ---
 import { pluginRenderers } from 'studiocms:plugins/renderers';
 import type { CombinedPageData } from 'studiocms:sdk/types';
-// @ts-ignore
 import * as renderers from 'virtual:studiocms/plugins/renderers';
 
 interface Props {
@@ -20,6 +19,7 @@ if (!renderer) {
 	return;
 }
 
+// @ts-ignore - This is a dynamic import
 const RendererModule = renderers[renderer.safePageType];
 
 if (!RendererModule) {
