@@ -1128,11 +1128,6 @@ export const studiocms = defineIntegration({
 							'studiocms:renderer': `
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
 							`,
-							'studiocms:renderer/current': `
-								export * from '${resolve('./lib/renderer/contentRenderer.js')}';
-								import contentRenderer from '${resolve('./lib/renderer/contentRenderer.js')}';
-								export default contentRenderer;
-							`,
 							'studiocms:renderer/markdown-remark/css': `
 								import '${resolve('./styles/md-remark-headings.css')}';
 								${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
