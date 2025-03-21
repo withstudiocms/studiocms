@@ -168,9 +168,6 @@ importers:
       '@inox-tools/runtime-logger':
         specifier: 0.4.2
         version: 0.4.2(astro@5.4.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
-      '@markdoc/markdoc':
-        specifier: ^0.5.1
-        version: 0.5.1(@types/react@19.0.8)(react@19.0.0)
       '@matthiesenxyz/astrodtsbuilder':
         specifier: ^0.2.0
         version: 0.2.0(astro@5.4.3(@types/node@22.10.2)(jiti@2.4.1)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
