@@ -149,7 +149,7 @@ const defaultPlugin: StudioCMSPlugin = {
 			pageContentComponent: DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
 			rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
 		},
-		// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
+		// { label: 'HTML (Built-in)', identifier: 'studiocms/html' },
 	],
 };
 
