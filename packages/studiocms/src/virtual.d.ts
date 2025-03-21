@@ -735,12 +735,6 @@ declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
 }
 
-declare module 'studiocms:renderer/current' {
-	const deModule: typeof import('./lib/renderer/contentRenderer.js').default;
-	export default deModule;
-	export const contentRenderer: typeof import('./lib/renderer/contentRenderer.js').contentRenderer;
-}
-
 declare module 'virtual:studiocms/sdk/env' {
 	export const dbUrl: string;
 	export const dbSecret: string;
