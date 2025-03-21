@@ -10,19 +10,20 @@ interface Props {
 
 const { data } = Astro.props;
 
-console.log('pluginRenderers', pluginRenderers);
-console.log('data', data);
+if (!data) {
+	return;
+}
 
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
 if (!renderer) {
-	throw new Error(`No renderer found for page type ${data.package}`);
+	return;
 }
 
 const RendererModule = renderers[renderer.safePageType];
 
 if (!RendererModule) {
-	throw new Error(`No renderer module found for page type ${data.package}`);
+	return;
 }
 ---
 <RendererModule {data} />
