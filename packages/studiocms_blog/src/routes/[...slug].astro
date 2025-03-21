@@ -8,10 +8,6 @@ import Layout from '../layouts/Layout.astro';
 // This is here to refresh the cache when needed
 const allPages = await studioCMS_SDK_Cache.GET.pages();
 
-if (config.dbStartPage) {
-	return Astro.redirect('/start');
-}
-
 let { slug } = Astro.params;
 
 if (!slug) {
@@ -24,13 +20,13 @@ if (!page) {
 	return new Response(null, { status: 404 });
 }
 
-const { title, description, heroImage, defaultContent } = page;
+const { title, description, heroImage } = page;
 
-const content = defaultContent?.content || '';
+console.log('page', page);
 ---
 
 <Layout title={title} description={description} heroImage={heroImage}>
 	<main>
-		<StudioCMSRenderer content={content} />
+		<StudioCMSRenderer data={page} />
 	</main>
 </Layout>

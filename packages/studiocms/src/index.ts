@@ -60,6 +60,8 @@ const env = loadEnv('', process.cwd(), '');
 // Renderer Component Resolver
 const RendererComponent = resolve('./components/Renderer.astro');
 
+const studiocmsMarkdownRenderer = resolve('./components/renderers/studiocms-markdown.astro');
+
 // Default Editor Component Resolver
 const defaultEditorComponent = resolve('./components/DefaultEditor.astro');
 
@@ -142,6 +144,7 @@ const defaultPlugin: StudioCMSPlugin = {
 			label: 'Markdown (Built-in)',
 			identifier: 'studiocms/markdown',
 			pageContentComponent: defaultEditorComponent,
+			rendererComponent: studiocmsMarkdownRenderer,
 		},
 		// { label: 'HTML (StudioCMS)', identifier: 'studiocms/html' },
 	],
@@ -170,7 +173,7 @@ export const studiocms = defineIntegration({
 		let ComponentRegistry: Record<string, string>;
 
 		// Define the resolved Callout Theme
-		let resolvedCalloutTheme: string;
+		let resolvedCalloutTheme: string | undefined;
 
 		// Define the Image Component Path
 		let imageComponentPath: string;
@@ -210,6 +213,8 @@ export const studiocms = defineIntegration({
 			safeIdentifier: string;
 		}[] = [];
 
+		const pluginRenderers: { pageType: string; safePageType: string; content: string }[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -234,7 +239,7 @@ export const studiocms = defineIntegration({
 
 					const {
 						verbose,
-						rendererConfig,
+						pageTypeOptions,
 						includedIntegrations,
 						imageService,
 						plugins,
@@ -280,12 +285,6 @@ export const studiocms = defineIntegration({
 					if (componentRegistry) ComponentRegistry = componentRegistry;
 
 					const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
-
-					// Resolve the callout theme based on the user's configuration
-					resolvedCalloutTheme = resolve(
-						`./styles/md-remark-callouts/${rendererConfig.studiocms.callouts.theme}.css`
-					);
-
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS...');
 
@@ -789,17 +788,28 @@ export const studiocms = defineIntegration({
 						},
 					];
 
+					// Resolve the callout theme based on the user's configuration
+					if (
+						pageTypeOptions.markdown.flavor === 'studiocms' &&
+						pageTypeOptions.markdown.callouts !== false
+					) {
+						resolvedCalloutTheme = resolve(
+							`./styles/md-remark-callouts/${pageTypeOptions.markdown.callouts || 'obsidian'}.css`
+						);
+					}
+
 					const scripts: Script[] = [
 						{
 							content: 'import "studiocms:renderer/markdown-remark/css";',
 							stage: 'page-ssr',
-							enabled: rendererConfig.renderer === 'studiocms',
+							enabled: pageTypeOptions.markdown.flavor === 'studiocms',
 						},
-						{
-							content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
-							stage: 'head-inline',
-							enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
-						},
+						// TODO: Figure out why when this is added it causes extra loads on the page resulting in a weird error that causes the data to not load properly
+						// {
+						// 	content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
+						// 	stage: 'page',
+						// 	enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
+						// },
 					];
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
@@ -882,7 +892,8 @@ export const studiocms = defineIntegration({
 								}
 							}
 
-							for (const { apiEndpoint, identifier } of safePlugin.pageTypes || []) {
+							for (const { apiEndpoint, identifier, rendererComponent } of safePlugin.pageTypes ||
+								[]) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
 										identifier: identifier,
@@ -892,6 +903,14 @@ export const studiocms = defineIntegration({
 											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
 											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
 										`,
+									});
+								}
+
+								if (rendererComponent) {
+									pluginRenderers.push({
+										pageType: identifier,
+										safePageType: convertToSafeString(identifier),
+										content: `export { default as ${convertToSafeString(identifier)} } from '${rendererComponent}';`,
 									});
 								}
 							}
@@ -1088,7 +1107,7 @@ export const studiocms = defineIntegration({
 
 							// Renderer Virtual Imports
 							'studiocms:renderer/config': `
-								export default ${JSON.stringify(options.rendererConfig)};
+								export default ${JSON.stringify(options.pageTypeOptions.markdown)};
 							`,
 							'studiocms:renderer': `
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
@@ -1100,7 +1119,7 @@ export const studiocms = defineIntegration({
 							`,
 							'studiocms:renderer/markdown-remark/css': `
 								import '${resolve('./styles/md-remark-headings.css')}';
-								${rendererConfig.studiocms.callouts.enabled ? `import '${resolvedCalloutTheme}';` : ''}
+								${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
 							`,
 
 							// Image Handler Virtual Imports
@@ -1368,6 +1387,19 @@ export const studiocms = defineIntegration({
 										onSave: endpoints[safeIdentifier + '_onSave'] || null,
 									}));
 								`,
+
+								'virtual:studiocms/plugins/renderers': `
+									${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}
+								`,
+								'studiocms:plugins/renderers': `
+									import * as renderers from 'virtual:studiocms/plugins/renderers';
+									export const pluginRenderers = ${JSON.stringify(
+										pluginRenderers.map(({ pageType, safePageType }) => ({
+											pageType,
+											safePageType,
+										})) || []
+									)};
+								`,
 							},
 						});
 					}
@@ -1417,7 +1449,9 @@ export const studiocms = defineIntegration({
 				'astro:config:done': ({ config }) => {
 					// Inject the Markdown configuration into the shared state
 					shared.markdownConfig = config.markdown;
-					shared.studiocms = options.rendererConfig.studiocms;
+					if (options.pageTypeOptions.markdown.flavor === 'studiocms') {
+						shared.studiocms = options.pageTypeOptions.markdown;
+					}
 
 					// Log Setup Complete
 					messages.push({

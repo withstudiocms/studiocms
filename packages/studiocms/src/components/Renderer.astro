@@ -1,13 +1,28 @@
 ---
-import contentRenderer from 'studiocms:renderer/current';
+import { pluginRenderers } from 'studiocms:plugins/renderers';
+import type { CombinedPageData } from 'studiocms:sdk/types';
+// @ts-ignore
+import * as renderers from 'virtual:studiocms/plugins/renderers';
 
 interface Props {
-	content: string;
+	data: CombinedPageData;
 }
 
-const { content } = Astro.props;
+const { data } = Astro.props;
 
-// @ts-ignore
-const renderedContent = await contentRenderer(content, $$result);
+console.log('pluginRenderers', pluginRenderers);
+console.log('data', data);
+
+const renderer = pluginRenderers.find((r) => r.pageType === data.package);
+
+if (!renderer) {
+	throw new Error(`No renderer found for page type ${data.package}`);
+}
+
+const RendererModule = renderers[renderer.safePageType];
+
+if (!RendererModule) {
+	throw new Error(`No renderer module found for page type ${data.package}`);
+}
 ---
-<Fragment set:html={renderedContent}></Fragment>
+<RendererModule {data} />

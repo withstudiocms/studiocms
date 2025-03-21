@@ -1,11 +1,9 @@
 import rendererConfig from 'studiocms:renderer/config';
 import type { SSRResult } from 'astro';
 import renderAstroMD from './astro-remark.js';
-import renderMarkDoc from './markdoc.js';
-import renderAstroMDX from './mdx.js';
 import renderStudioCMS from './studiocms.js';
 
-const { renderer } = rendererConfig;
+const { flavor } = rendererConfig;
 
 /**
  * Renders the given content using a specified renderer.
@@ -18,24 +16,11 @@ const { renderer } = rendererConfig;
  * @throws Will throw an error if the custom renderer object is invalid.
  */
 export async function contentRenderer(content: string, SSRResult: SSRResult): Promise<string> {
-	if (typeof renderer === 'object') {
-		if (!renderer.renderer || !renderer.name) {
-			throw new Error('Invalid custom renderer');
-		}
-		return await renderer.renderer(content);
-	}
-
-	switch (renderer) {
-		case 'studiocms':
-			return await renderStudioCMS(content, SSRResult);
+	switch (flavor) {
 		case 'astro':
 			return await renderAstroMD(content);
-		case 'markdoc':
-			return await renderMarkDoc(content);
-		case 'mdx':
-			return await renderAstroMDX(content);
 		default:
-			return await renderAstroMD(content);
+			return await renderStudioCMS(content, SSRResult);
 	}
 }
 

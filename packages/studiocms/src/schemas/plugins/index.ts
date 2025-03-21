@@ -181,6 +181,11 @@ export const StudioCMSPluginSchema = z.object({
 				pageContentComponent: z.string().optional(),
 
 				/**
+				 * The path to the actual component that is displayed for the page renderer
+				 */
+				rendererComponent: z.string().optional(),
+
+				/**
 				 * Fields that are shown in the page metadata tab when creating or editing a page of this type
 				 */
 				fields: z.array(SettingsFieldSchema).optional(),

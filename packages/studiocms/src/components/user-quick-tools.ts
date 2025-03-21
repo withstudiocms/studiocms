@@ -378,9 +378,11 @@ class UserQuickTools extends HTMLElement {
 	async getSession(): Promise<GetSessionResponse | null> {
 		const userResponse = await fetch('/studiocms_api/dashboard/verify-session', {
 			method: 'POST',
-		});
+		})
+			.catch((error) => null)
+			.then((response) => response);
 
-		if (!userResponse.ok) {
+		if (!userResponse || !userResponse.ok) {
 			return null;
 		}
 

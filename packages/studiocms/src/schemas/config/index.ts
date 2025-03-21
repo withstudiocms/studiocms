@@ -5,6 +5,7 @@ import { dashboardConfigSchema } from './dashboard.js';
 import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFrontend.js';
 import { imageServiceSchema } from './imageService.js';
 import { includedIntegrationsSchema } from './integrations.js';
+import { BuiltInPageTypeOptionsSchema } from './pageTypeOptions.js';
 import {
 	type CustomRenderer,
 	type Renderer,
@@ -42,6 +43,8 @@ export const StudioCMSOptionsSchema = z
 		 * Renderer Configuration
 		 *
 		 * Allows customization of the current renderer being used
+		 *
+		 * @deprecated
 		 */
 		rendererConfig: StudioCMSRendererConfigSchema,
 		/**
@@ -100,6 +103,12 @@ export const StudioCMSOptionsSchema = z
 		 * validated by the `SDKCacheSchema`.
 		 */
 		sdk: SDKSchema,
+
+		/**
+		 * Page Type Options
+		 */
+		pageTypeOptions: BuiltInPageTypeOptionsSchema,
+
 		/**
 		 * Component Registry
 		 */

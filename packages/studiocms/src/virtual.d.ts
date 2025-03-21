@@ -41,6 +41,13 @@ declare module 'studiocms:plugins/endpoints' {
 	}[];
 }
 
+declare module 'studiocms:plugins/renderers' {
+	export const pluginRenderers: {
+		pageType: string;
+		safePageType: string;
+	}[];
+}
+
 declare module 'studiocms:mailer' {
 	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
 	export type tsMailer = import('./lib/mailer/index').tsMailer;
@@ -715,7 +722,7 @@ declare module 'studiocms:auth/lib/verify-email' {
 }
 
 declare module 'studiocms:renderer/config' {
-	const config: import('./schemas/config/rendererConfig.ts').StudioCMSRendererConfig;
+	const config: import('./schemas/config/pageTypeOptions.ts').MarkdownSchemaOptions;
 	export default config;
 }
 
