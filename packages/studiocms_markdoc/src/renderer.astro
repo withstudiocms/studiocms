@@ -1,0 +1,76 @@
+---
+/// <reference types="studiocms" />
+import type { CombinedPageData } from 'studiocms:sdk/types';
+import Markdoc, {
+	type RenderableTreeNode,
+	type ConfigType,
+	type ParserArgs,
+} from '@markdoc/markdoc';
+import { shared } from './shared.js';
+
+interface Props {
+	data: CombinedPageData;
+}
+
+const markdocConfig = shared.markdoc;
+
+if (!markdocConfig) {
+	throw new Error('No markdoc config found');
+}
+const renderType = markdocConfig?.renderType || 'html';
+const argsParser = markdocConfig?.argsParser as ParserArgs | undefined;
+const transformConfig = markdocConfig?.transformConfig as ConfigType | undefined;
+
+const { defaultContent } = Astro.props.data;
+
+// Get content to render
+const contentToRender = defaultContent?.content || '# Error: No content found';
+
+const ast = Markdoc.parse(contentToRender, argsParser);
+
+const content = Markdoc.transform(ast, transformConfig) as RenderableTreeNode;
+
+const renderers: {
+	name: string;
+	renderer: (content: RenderableTreeNode) => Promise<string>;
+}[] = [
+	{
+		name: 'html',
+		renderer: async (content: RenderableTreeNode) => {
+			return Markdoc.renderers.html(content);
+		},
+	},
+	{
+		name: 'react-static',
+		renderer: async (content: RenderableTreeNode) => {
+			return Markdoc.renderers.reactStatic(content);
+		},
+	},
+];
+
+let render: ((content: RenderableTreeNode) => Promise<string>) | null = null;
+
+if (typeof renderType === typeof 'object') {
+	if (renderType.name && renderType.renderer) {
+		render = renderType.renderer;
+	} else {
+		return;
+	}
+}
+
+if (typeof renderType === typeof 'string') {
+	const renderer = renderers.find((r) => r.name === renderType);
+	if (renderer) {
+		render = renderer.renderer;
+	} else {
+		return;
+	}
+}
+
+if (!render) {
+	return;
+}
+
+const html = await render(content);
+---
+<Fragment set:html={html} />

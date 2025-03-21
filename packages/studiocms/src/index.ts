@@ -64,6 +64,7 @@ const RendererComponent = resolve('./components/Renderer.astro');
 // Default Custom Image Component Resolver
 const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
 
+// Default Page Type Components
 const DefaultPageTypeComponents = {
 	'studiocms/markdown': {
 		pageContentComponent: resolve('./components/editors/markdown.astro'),
