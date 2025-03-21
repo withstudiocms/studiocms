@@ -6,27 +6,18 @@ import { DefaultFrontEndConfigSchema, FrontEndConfigSchema } from './defaultFron
 import { imageServiceSchema } from './imageService.js';
 import { includedIntegrationsSchema } from './integrations.js';
 import { BuiltInPageTypeOptionsSchema } from './pageTypeOptions.js';
-import {
-	type CustomRenderer,
-	type Renderer,
-	type StudioCMSRendererConfig,
-	StudioCMSRendererConfigSchema,
-	TransformToProcessor,
-} from './rendererConfig.js';
 import { SDKSchema } from './sdk.js';
 
 //
 // Exported Schemas for use in other internal packages
 //
 export {
-	StudioCMSRendererConfigSchema,
+	dashboardConfigSchema,
+	DefaultFrontEndConfigSchema,
+	imageServiceSchema,
+	overridesSchema,
 	FrontEndConfigSchema,
-	TransformToProcessor,
-	type StudioCMSRendererConfig,
-	type CustomRenderer,
-	type Renderer,
 };
-export { dashboardConfigSchema, DefaultFrontEndConfigSchema, imageServiceSchema, overridesSchema };
 
 //
 // MAIN SCHEMA
@@ -39,14 +30,6 @@ export const StudioCMSOptionsSchema = z
 		 * @default true
 		 */
 		dbStartPage: z.boolean().optional().default(true),
-		/**
-		 * Renderer Configuration
-		 *
-		 * Allows customization of the current renderer being used
-		 *
-		 * @deprecated
-		 */
-		rendererConfig: StudioCMSRendererConfigSchema,
 		/**
 		 * Allows customization of the Image Service Options
 		 */

@@ -168,8 +168,6 @@
     "nanostores": "^0.11.4",
     "nodemailer": "^6.10.0",
     "package-json": "^10.0.1",
-    "react-dom": "^19.0.0",
-    "react": "^19.0.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "remark-rehype": "^11.1.1",
@@ -191,8 +189,6 @@
     "@types/mdast": "^4.0.4",
     "@types/node": "catalog:",
     "@types/nodemailer": "^6.4.17",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.5.8",
     "@types/three": "0.169.0",
     "typescript": "catalog:"
@@ -200,15 +196,11 @@
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
     "@astrojs/markdown-remark": "catalog:min",
-    "@astrojs/react": "catalog:",
     "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:min",
     "vite": "catalog:min"
   },
   "peerDependenciesMeta": {
-    "@astrojs/react": {
-      "optional": true
-    },
     "@astrojs/web-vitals": {
       "optional": true
     }
