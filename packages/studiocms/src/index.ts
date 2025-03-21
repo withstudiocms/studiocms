@@ -804,12 +804,11 @@ export const studiocms = defineIntegration({
 							stage: 'page-ssr',
 							enabled: pageTypeOptions.markdown.flavor === 'studiocms',
 						},
-						// TODO: Figure out why when this is added it causes extra loads on the page resulting in a weird error that causes the data to not load properly
-						// {
-						// 	content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
-						// 	stage: 'page',
-						// 	enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
-						// },
+						{
+							content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
+							stage: 'page',
+							enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
+						},
 					];
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
@@ -911,6 +910,12 @@ export const studiocms = defineIntegration({
 										pageType: identifier,
 										safePageType: convertToSafeString(identifier),
 										content: `export { default as ${convertToSafeString(identifier)} } from '${rendererComponent}';`,
+									});
+								} else {
+									pluginRenderers.push({
+										pageType: identifier,
+										safePageType: convertToSafeString(identifier),
+										content: `export { default as ${convertToSafeString(identifier)} } from '${studiocmsMarkdownRenderer}';`,
 									});
 								}
 							}

@@ -70,12 +70,8 @@
       "types": "./dist/consts.d.ts",
       "default": "./dist/consts.js"
     },
-    "./contentRenderer": {
-      "types": "./dist/lib/renderer/contentRenderer.d.ts",
-      "default": "./dist/lib/renderer/contentRenderer.js"
-    },
     "./Renderer": "./dist/components/Renderer.astro",
-    "./custom-renderers": "./custom-renderers/index.ts",
+    "./renderers/*": "./dist/custom-renderers/*",
     "./db/config": {
       "types": "./dist/db/config.d.ts",
       "default": "./dist/db/config.js"

@@ -55,7 +55,7 @@ switch (rendererConfig.flavor) {
 // Define render function
 const render: (content: string) => Promise<string> = async (content: string) => {
 	const html = await preRender(content);
-	return await transformHTML(html, components);
+	return await transformHTML(html, components, shared.studiocms?.sanitize);
 };
 
 // Render content
