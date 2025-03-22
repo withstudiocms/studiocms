@@ -1,6 +1,5 @@
 ---
 export const partial = true;
-// @ts-ignore
 import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
 
 type Content = string;
@@ -26,6 +25,9 @@ const content: Content = await setContent();
 const data = {
 	defaultContent: {
 		content,
+		contentId: '',
+		contentLang: 'default',
+		id: '',
 	},
 };
 ---
