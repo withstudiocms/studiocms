@@ -217,7 +217,11 @@ export const studiocms = defineIntegration({
 			safeIdentifier: string;
 		}[] = [];
 
-		const pluginRenderers: { pageType: string; safePageType: string; content: string }[] = [];
+		const pluginRenderers: {
+			pageType: string;
+			safePageType: string;
+			content: string;
+		}[] = [];
 
 		// Return the Integration
 		return {
