@@ -58,7 +58,7 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 		pageTypes: [
 			// Define the MDX page type
 			{
-				identifier: packageIdentifier,
+				identifier: 'studiocms/mdx',
 				label: 'MDX',
 				pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MDX
 				rendererComponent: renderer,

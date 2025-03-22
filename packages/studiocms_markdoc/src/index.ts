@@ -39,7 +39,7 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 		pageTypes: [
 			// Define the MarkDoc page type
 			{
-				identifier: packageIdentifier,
+				identifier: 'studiocms/markdoc',
 				label: 'MarkDoc',
 				pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MarkDoc editor in the future
 				rendererComponent: renderer,
