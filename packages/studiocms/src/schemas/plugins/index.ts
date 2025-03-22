@@ -18,7 +18,7 @@ const AstroIntegrationPossiblyArraySchema = z.union([
 	z.array(AstroIntegrationSchema),
 ]);
 
-type PageTypeDefaultsOrStringT = 'studiocms/markdown'; // | 'studiocms/html';
+type PageTypeDefaultsOrStringT = 'studiocms/markdown'; // | 'studiocms/html'; (html is not yet implemented)
 
 const PageTypeDefaultsOrString = z.custom<PageTypeDefaultsOrStringT>();
 

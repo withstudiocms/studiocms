@@ -9,21 +9,15 @@ interface Props {
 
 const { data } = Astro.props;
 
-if (!data) {
-	return;
-}
+if (!data) return;
 
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
-if (!renderer) {
-	return;
-}
+if (!renderer) return;
 
 // @ts-ignore - This is a dynamic import
 const RendererModule = renderers[renderer.safePageType];
 
-if (!RendererModule) {
-	return;
-}
+if (!RendererModule) return;
 ---
 <RendererModule {data} />

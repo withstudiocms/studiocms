@@ -962,9 +962,7 @@ export const studiocms = defineIntegration({
 
 						if (sitemapEnabled) {
 							integrations.push({
-								integration: dynamicSitemap({
-									sitemaps: sitemaps,
-								}),
+								integration: dynamicSitemap({ sitemaps }),
 							});
 						}
 
@@ -990,7 +988,7 @@ export const studiocms = defineIntegration({
 					}
 
 					// Inject Scripts
-					for (const { content, enabled, stage } of scripts) {
+					for (const { enabled, stage, content } of scripts) {
 						if (enabled) injectScript(stage, content);
 					}
 
