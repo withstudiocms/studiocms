@@ -21,7 +21,7 @@ jobs:
       runs-on: ubuntu-latest
       env:
         NODE_OPTIONS: "--max_old_space_size=4096"
-      name: Ubuntu/Node v20
+      name: Run Knip Linter
       steps:
         - name: Checkout Repo
           uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
