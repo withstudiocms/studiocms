@@ -1,6 +1,7 @@
 ---
 export const partial = true;
-import { StudioCMSRenderer } from 'studiocms:renderer';
+// @ts-ignore
+import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
 
 type Content = string;
 
@@ -21,5 +22,11 @@ async function setContent() {
 }
 
 const content: Content = await setContent();
+
+const data = {
+	defaultContent: {
+		content,
+	},
+};
 ---
-<StudioCMSRenderer {content} />
+<MarkdownRenderer {data} />
