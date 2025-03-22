@@ -7,7 +7,9 @@ Refactor rendering system to rely on plugin PageTypes instead of the old built-i
 
 #### Breaking Changes
 
-Rendering system is now directly tied into the plugin PageTypes defined within plugins. Instead of passing just the content to the renderer, you now must pass the entire PageData from the SDK.
+- Removed MDX, and MarkDoc from built-in renderer. These will be replaced by plugins.
+- Rendering system is now directly tied into the plugin PageTypes defined within plugins. Instead of passing just the content to the renderer, you now must pass the entire PageData from the SDK.
+- New Rendering Component is now able to auto adapt to the pageType's provided renderer. (This means you can use the provided <StudioCMSRenderer /> component to render any pageType that has been configured for StudioCMS through plugins. or use the data directly and render it yourself.)
 
 **OLD Method** (`[...slug].astro`)
 
@@ -15,7 +17,6 @@ Rendering system is now directly tied into the plugin PageTypes defined within p
 ---
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import Layout from '../layouts/Layout.astro';
 
 let { slug } = Astro.params;
@@ -48,7 +49,6 @@ const content = defaultContent.content || '';
 ---
 import { StudioCMSRenderer } from 'studiocms:renderer';
 import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import Layout from '../layouts/Layout.astro';
 
 let { slug } = Astro.params;
