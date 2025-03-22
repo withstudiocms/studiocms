@@ -18,6 +18,10 @@ const AstroIntegrationPossiblyArraySchema = z.union([
 	z.array(AstroIntegrationSchema),
 ]);
 
+type PageTypeDefaultsOrStringT = 'studiocms/markdown'; // | 'studiocms/html'; (html is not yet implemented)
+
+const PageTypeDefaultsOrString = z.custom<PageTypeDefaultsOrStringT>();
+
 /**
  * Schema for StudioCMS Plugin configuration.
  */
@@ -178,7 +182,12 @@ export const StudioCMSPluginSchema = z.object({
 				 * }
 				 * ```
 				 */
-				pageContentComponent: z.string().optional(),
+				pageContentComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
+
+				/**
+				 * The path to the actual component that is displayed for the page renderer
+				 */
+				rendererComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
 
 				/**
 				 * Fields that are shown in the page metadata tab when creating or editing a page of this type

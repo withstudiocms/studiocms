@@ -1,5 +1,5 @@
-import type { StudioCMSConfigOptions } from '@studiocms/markdown-remark-processor';
 import type { AstroConfig } from 'astro';
+import type { StudioCMSMarkdownOptions } from '../../schemas/config/pageTypeOptions.js';
 
 /**
  * Interface representing shared configuration for markdown.
@@ -9,5 +9,5 @@ import type { AstroConfig } from 'astro';
  */
 export interface Shared {
 	markdownConfig: AstroConfig['markdown'];
-	studiocms: StudioCMSConfigOptions;
+	studiocms: StudioCMSMarkdownOptions | undefined;
 }

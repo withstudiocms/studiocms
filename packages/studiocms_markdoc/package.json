@@ -1,7 +1,7 @@
 {
-  "name": "@studiocms/blog",
+  "name": "@studiocms/markdoc",
   "version": "0.1.0-beta.12",
-  "description": "Add a blog to your StudioCMS project with ease!",
+  "description": "Add MarkDoc Support to your StudioCMS project with ease!",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
     "url": "https://studiocms.dev"
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/studiocms_blog"
+    "directory": "packages/studiocms_markdoc"
   },
   "contributors": [
     "Adammatthiesen",
@@ -29,11 +29,6 @@
     "cms",
     "studiocms",
     "withastro",
-    "blog",
-    "studio-blog",
-    "astro-blog",
-    "astro-studio-blog",
-    "studiocms-blog",
     "plugin",
     "studiocms-plugin"
   ],
@@ -47,26 +42,48 @@
     "dist"
   ],
   "scripts": {
-    "build": "build-scripts build 'src/**/*.{ts,css}'",
-    "dev": "build-scripts dev 'src/**/*.{ts,css}'"
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./v/types": {
+      "types": "./dist/virtual.d.ts",
+      "default": "./dist/virtual.d.js"
+    },
+    "./react": {
+      "types": "./dist/react-renderer/renderReact.d.ts",
+      "default": "./dist/react-renderer/renderReact.js"
     }
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/rss": "catalog:",
-    "astro-integration-kit": "catalog:"
+    "@markdoc/markdoc": "^0.5.1",
+    "astro-integration-kit": "catalog:",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4"
   },
   "peerDependencies": {
+    "@astrojs/react": "catalog:",
     "astro": "catalog:min",
     "studiocms": "workspace:*",
     "vite": "catalog:min"
+  },
+  "peerDependenciesMeta": {
+    "@astrojs/react": {
+      "optional": true
+    }
   }
 }

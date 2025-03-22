@@ -1,6 +1,5 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import TinyMDE from '../../../components/dashboard/component-scripts/TinyMDE.astro';
 import CreatePage from '../../../components/dashboard/content-mgmt/CreatePage.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -29,8 +28,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
   </div>
 
   <CreatePage {lang} />
-
-  <TinyMDE />
 
 </Layout>
 

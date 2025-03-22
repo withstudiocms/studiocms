@@ -1,13 +1,29 @@
 ---
-import contentRenderer from 'studiocms:renderer/current';
+import { pluginRenderers } from 'studiocms:plugins/renderers';
+import type { CombinedPageData } from 'studiocms:sdk/types';
+import * as renderers from 'virtual:studiocms/plugins/renderers';
+
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+type Data = DeepPartial<CombinedPageData>;
 
 interface Props {
-	content: string;
+	data: Data;
 }
 
-const { content } = Astro.props;
+const { data } = Astro.props;
 
-// @ts-ignore
-const renderedContent = await contentRenderer(content, $$result);
+if (!data) return;
+
+const renderer = pluginRenderers.find((r) => r.pageType === data.package);
+
+if (!renderer) return;
+
+// @ts-ignore - This is a dynamic import
+const RendererModule = renderers[renderer.safePageType];
+
+if (!RendererModule) return;
 ---
-<Fragment set:html={renderedContent}></Fragment>
+<RendererModule {data} />

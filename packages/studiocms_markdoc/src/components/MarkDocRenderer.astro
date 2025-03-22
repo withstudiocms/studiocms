@@ -1,0 +1,23 @@
+---
+import renderMarkDoc from 'studiocms:markdoc/renderer';
+import type { CombinedPageData } from 'studiocms:sdk/types';
+
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+type Data = DeepPartial<CombinedPageData>;
+
+interface Props {
+	data: Data;
+}
+
+// Get default content
+const { defaultContent } = Astro.props.data;
+
+// Get content to render
+const contentToRender = defaultContent?.content || '# Error: No content found';
+
+const renderedContent = await renderMarkDoc(contentToRender);
+---
+<Fragment set:html={renderedContent} />

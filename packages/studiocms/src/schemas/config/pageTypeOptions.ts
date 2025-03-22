@@ -1,4 +1,3 @@
-import type { StudioCMSConfigOptions } from '@studiocms/markdown-remark-processor';
 import { z } from 'astro/zod';
 
 export const StudioCMSSanitizeOptionsSchema = z
@@ -22,57 +21,33 @@ export const StudioCMSSanitizeOptionsSchema = z
 	})
 	.optional();
 
-export const StudioCMSMarkdownExtendedSchema = z
-	.union([
-		z.literal(false),
-		z.object({
-			callouts: z
-				.union([
-					z.literal(false),
-					z.object({
-						theme: z
-							.union([z.literal('github'), z.literal('obsidian'), z.literal('vitepress')])
-							.optional()
-							.default('obsidian'),
-					}),
-				])
-				.optional()
-				.default({})
-				.transform((value) => {
-					if (value === false) {
-						return { theme: 'obsidian' as const, enabled: false };
-					}
-					return { ...value, enabled: true };
-				}),
+export const AstroMarkdownSchema = z.object({
+	flavor: z.literal('astro'),
+	sanitize: StudioCMSSanitizeOptionsSchema,
+});
 
-			autoLinkHeadings: z.boolean().optional().default(true),
+export const StudioCMSMarkdownSchema = AstroMarkdownSchema.extend({
+	flavor: z.literal('studiocms'),
+	callouts: z
+		.union([z.literal('github'), z.literal('obsidian'), z.literal('vitepress'), z.literal(false)])
+		.optional()
+		.default('obsidian'),
+	autoLinkHeadings: z.boolean().optional().default(true),
+	discordSubtext: z.boolean().optional().default(true),
+});
 
-			discordSubtext: z.boolean().optional().default(true),
-
-			sanitize: StudioCMSSanitizeOptionsSchema,
-		}),
-	])
+export const MarkdownSchema = z
+	.union([AstroMarkdownSchema, StudioCMSMarkdownSchema])
 	.optional()
-	.default({})
-	.transform((value) => {
-		if (value === false) {
-			return {
-				callouts: { enabled: false, theme: 'obsidian' as const },
-				autoLinkHeadings: false,
-				discordSubtext: false,
-			};
-		}
-		return value;
-	});
+	.default({ flavor: 'studiocms' });
 
-export const TransformToProcessor = StudioCMSMarkdownExtendedSchema.transform(
-	({ autoLinkHeadings, callouts, discordSubtext, sanitize }) => {
-		return {
-			studiocms: {
-				callouts: callouts.enabled ? { theme: callouts.theme } : false,
-				autolink: autoLinkHeadings,
-				discordSubtext,
-			},
-		} as { studiocms: StudioCMSConfigOptions };
-	}
-);
+export const BuiltInPageTypeOptionsSchema = z
+	.object({
+		/** Options for the `studiocms/markdown` pageType */
+		markdown: MarkdownSchema,
+	})
+	.optional()
+	.default({});
+
+export type StudioCMSMarkdownOptions = z.infer<typeof StudioCMSMarkdownSchema>;
+export type MarkdownSchemaOptions = z.infer<typeof MarkdownSchema>;
