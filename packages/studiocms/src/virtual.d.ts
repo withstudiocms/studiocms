@@ -41,6 +41,13 @@ declare module 'studiocms:plugins/endpoints' {
 	}[];
 }
 
+declare module 'studiocms:plugins/renderers' {
+	export const pluginRenderers: {
+		pageType: string;
+		safePageType: string;
+	}[];
+}
+
 declare module 'studiocms:mailer' {
 	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
 	export type tsMailer = import('./lib/mailer/index').tsMailer;
@@ -714,24 +721,19 @@ declare module 'studiocms:auth/lib/verify-email' {
 	).isEmailVerificationEnabled;
 }
 
-declare module 'studiocms:renderer/config' {
-	const config: import('./schemas/config/rendererConfig.ts').StudioCMSRendererConfig;
-	export default config;
-}
-
-declare module 'studiocms:renderer/astroMarkdownConfig' {
-	const config: import('astro').AstroConfig['markdown'];
-	export default config;
+declare module 'virtual:studiocms/plugins/renderers' {
+	export const studiocms_markdown: typeof import(
+		'./components/renderers/studiocms-markdown.astro'
+	).default;
 }
 
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
 }
 
-declare module 'studiocms:renderer/current' {
-	const deModule: typeof import('./lib/renderer/contentRenderer.js').default;
-	export default deModule;
-	export const contentRenderer: typeof import('./lib/renderer/contentRenderer.js').contentRenderer;
+declare module 'studiocms:renderer/config' {
+	const config: import('./schemas/config/pageTypeOptions').MarkdownSchemaOptions;
+	export default config;
 }
 
 declare module 'virtual:studiocms/sdk/env' {

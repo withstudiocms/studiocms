@@ -1,0 +1,71 @@
+---
+import rendererConfig from 'studiocms:renderer/config';
+import type { CombinedPageData } from 'studiocms:sdk/types';
+import { createMarkdownProcessor as createAstroMD } from '@astrojs/markdown-remark';
+import {
+	type StudioCMSConfigOptions,
+	createMarkdownProcessor as createStudioCMSMD,
+} from '@studiocms/markdown-remark-processor';
+import { importComponentsKeys } from '../../lib/renderer/runtime.js';
+import { shared } from '../../lib/renderer/shared.js';
+import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
+
+// Initialize markdown processor (Astro)
+const astroMD = await createAstroMD(shared.markdownConfig);
+
+// Initialize markdown processor (StudioCMS)
+const studioCMSMD = await createStudioCMSMD({
+	...shared.markdownConfig,
+	studiocms: shared.studiocms ? (shared.studiocms as StudioCMSConfigOptions) : undefined,
+});
+
+// Define pre-render function
+let preRender: (content: string) => Promise<string>;
+
+// Determine which markdown processor to use (default to StudioCMS)
+switch (rendererConfig.flavor) {
+	case 'astro':
+		preRender = async (content: string) => {
+			return (await astroMD.render(content)).code;
+		};
+		break;
+	default:
+		preRender = async (content: string) => {
+			return (await studioCMSMD.render(content)).code;
+		};
+		break;
+}
+
+// Import components
+const _components = await importComponentsKeys();
+
+// Create component proxy
+// @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
+const components = createComponentProxy($$result, _components);
+
+// Define render function
+const render = async (content: string): Promise<string> => {
+	const html = await preRender(content);
+	return await transformHTML(html, components, shared.studiocms?.sanitize);
+};
+
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+type Data = DeepPartial<CombinedPageData>;
+
+interface Props {
+	data: Data;
+}
+
+// Get default content
+const { defaultContent } = Astro.props.data;
+
+// Get content to render
+const contentToRender = defaultContent?.content || '# Error: No content found';
+
+// Render content
+const renderedContent = await render(contentToRender);
+---
+<Fragment set:html={renderedContent} />

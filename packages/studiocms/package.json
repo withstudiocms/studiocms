@@ -41,14 +41,14 @@
   },
   "sideEffects": false,
   "files": [
-    "CHANGELOG.md",
-    "custom-renderers",
-    "LICENSE",
-    "README.md",
-    "ui.d.ts",
     "dist",
+    "src",
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md",
     "studiocms-cli.mjs",
-    "src"
+    "astroenv.d.ts",
+    "ui.d.ts"
   ],
   "scripts": {
     "build": "build-scripts build 'src/**/*.{ts,css}'",
@@ -70,12 +70,8 @@
       "types": "./dist/consts.d.ts",
       "default": "./dist/consts.js"
     },
-    "./contentRenderer": {
-      "types": "./dist/lib/renderer/contentRenderer.d.ts",
-      "default": "./dist/lib/renderer/contentRenderer.js"
-    },
     "./Renderer": "./dist/components/Renderer.astro",
-    "./custom-renderers": "./custom-renderers/index.ts",
+    "./renderers/*": "./dist/custom-renderers/*",
     "./db/config": {
       "types": "./dist/db/config.d.ts",
       "default": "./dist/db/config.js"
@@ -138,10 +134,8 @@
     "@iconify-json/simple-icons": "^1.2.23",
     "@inox-tools/inline-mod": "^2.0.3",
     "@inox-tools/runtime-logger": "0.4.2",
-    "@markdoc/markdoc": "^0.5.1",
     "@matthiesenxyz/astrodtsbuilder": "^0.2.0",
     "@matthiesenxyz/integration-utils": "^0.3.0",
-    "@mdx-js/mdx": "^3.1.0",
     "@nanostores/i18n": "^0.12.2",
     "@nanostores/persistent": "^0.10.2",
     "@oslojs/binary": "^1.0.0",
@@ -173,18 +167,12 @@
     "nanostores": "^0.11.4",
     "nodemailer": "^6.10.0",
     "package-json": "^10.0.1",
-    "react-dom": "^19.0.0",
-    "react": "^19.0.0",
-    "rehype-highlight": "^7.0.2",
-    "remark-gfm": "^4.0.1",
-    "remark-rehype": "^11.1.1",
     "semver": "^7.7.1",
     "slice-ansi": "^7.1.0",
     "socks": "^2.8.4",
     "strip-ansi": "^7.1.0",
     "three": "0.170.0",
     "ultrahtml": "^1.5.3",
-    "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "wrap-ansi": "^9.0.0"
   },
@@ -196,8 +184,6 @@
     "@types/mdast": "^4.0.4",
     "@types/node": "catalog:",
     "@types/nodemailer": "^6.4.17",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.5.8",
     "@types/three": "0.169.0",
     "typescript": "catalog:"
@@ -205,15 +191,11 @@
   "peerDependencies": {
     "@astrojs/db": "catalog:min",
     "@astrojs/markdown-remark": "catalog:min",
-    "@astrojs/react": "catalog:",
     "@astrojs/web-vitals": "catalog:",
     "astro": "catalog:min",
     "vite": "catalog:min"
   },
   "peerDependenciesMeta": {
-    "@astrojs/react": {
-      "optional": true
-    },
     "@astrojs/web-vitals": {
       "optional": true
     }

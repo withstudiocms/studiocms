@@ -51,7 +51,6 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		// TODO: Update this to the correct version when the package is ready to be published
 		studiocmsMinimumVersion: '0.1.0-beta.8',
 		frontendNavigationLinks: [{ label: title, href: route }],
 		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],

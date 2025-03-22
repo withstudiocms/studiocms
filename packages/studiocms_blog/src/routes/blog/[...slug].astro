@@ -26,19 +26,12 @@ if (!post) {
 }
 
 const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post;
-
-// If no content is found, redirect to 404
-if (!defaultContent) {
-	return new Response(null, { status: 404 });
-}
-
-const content = defaultContent.content || '';
 ---
 <Layout {title} {description} {heroImage}>
     <main>
         <article>
             <PostHeader {title} {description} {heroImage} {publishedAt} {updatedAt} />
-            <StudioCMSRenderer {content} />
+            <StudioCMSRenderer data={post} />
         </article>
     </main>
 </Layout>
