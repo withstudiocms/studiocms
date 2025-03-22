@@ -727,6 +727,11 @@ declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
 }
 
+declare module 'studiocms:renderer/config' {
+	const config: import('./schemas/config/pageTypeOptions').MarkdownSchemaOptions;
+	export default config;
+}
+
 declare module 'virtual:studiocms/sdk/env' {
 	export const dbUrl: string;
 	export const dbSecret: string;

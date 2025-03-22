@@ -1,4 +1,6 @@
 ---
+import TinyMDE from './utils/TinyMDE.astro';
+
 interface Props {
 	content?: string;
 }
@@ -9,6 +11,7 @@ const { content } = Astro.props;
 <div class="editor-container">
     <textarea id="page-content" name="page-content">{content}</textarea>
 </div>
+<TinyMDE />
 <script>
     function listener() {
     const pageContentTextarea = document.querySelector('#page-content');
