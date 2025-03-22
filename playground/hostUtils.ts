@@ -29,5 +29,3 @@ export const getCoolifyURL = (returnHttps?: boolean) => {
 	}
 	return setHTTP(url);
 };
-
-export default getCoolifyURL;
