@@ -1,0 +1,89 @@
+{
+  "name": "@studiocms/markdoc",
+  "version": "0.1.0-beta.12",
+  "description": "Add MarkDoc Support to your StudioCMS project with ease!",
+  "author": {
+    "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_markdoc"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-integration",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "withastro",
+    "plugin",
+    "studiocms-plugin"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "build-scripts build 'src/**/*.ts'",
+    "dev": "build-scripts dev 'src/**/*.ts'"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./v/types": {
+      "types": "./dist/virtual.d.ts",
+      "default": "./dist/virtual.d.js"
+    },
+    "./react": {
+      "types": "./dist/react-renderer/renderReact.d.ts",
+      "default": "./dist/react-renderer/renderReact.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@markdoc/markdoc": "^0.5.1",
+    "astro-integration-kit": "catalog:",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4"
+  },
+  "peerDependencies": {
+    "@astrojs/react": "catalog:",
+    "astro": "catalog:min",
+    "studiocms": "workspace:*",
+    "vite": "catalog:min"
+  },
+  "peerDependenciesMeta": {
+    "@astrojs/react": {
+      "optional": true
+    }
+  }
+}
