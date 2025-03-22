@@ -10,10 +10,18 @@ export function rendererComponentFilter(
 	safePageType: string,
 	defaultPageTypeComponents: DefaultPageTypeComponents
 ) {
-	if (comp in defaultPageTypeComponents) {
+	let safeComp = comp;
+
+	if (!safeComp) {
+		safeComp = `export { default as ${safePageType} } from '${defaultPageTypeComponents['studiocms/markdown'].rendererComponent}';`;
+		return safeComp;
+	}
+
+	if (safeComp in defaultPageTypeComponents) {
 		return `export { default as ${safePageType} } from '${defaultPageTypeComponents[comp].rendererComponent}';`;
 	}
-	return null;
+
+	return `export { default as ${safePageType} } from '${safeComp}';`;
 }
 
 export function pageContentComponentFilter(

@@ -919,19 +919,11 @@ export const studiocms = defineIntegration({
 										convertToSafeString(identifier),
 										DefaultPageTypeComponents
 									);
-									if (builtIns) {
-										pluginRenderers.push({
-											pageType: identifier,
-											safePageType: convertToSafeString(identifier),
-											content: builtIns,
-										});
-									} else {
-										pluginRenderers.push({
-											pageType: identifier,
-											safePageType: convertToSafeString(identifier),
-											content: `export { default as ${convertToSafeString(identifier)} } from '${rendererComponent}';`,
-										});
-									}
+									pluginRenderers.push({
+										pageType: identifier,
+										safePageType: convertToSafeString(identifier),
+										content: builtIns,
+									});
 								}
 							}
 
