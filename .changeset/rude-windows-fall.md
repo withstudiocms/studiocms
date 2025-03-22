@@ -9,7 +9,7 @@ Refactor rendering system to rely on plugin PageTypes instead of the old built-i
 
 Rendering system is now directly tied into the plugin PageTypes defined within plugins. Instead of passing just the content to the renderer, you now must pass the entire PageData from the SDK.
 
-**OLD Method**
+**OLD Method** (`[...slug].astro`)
 
 ```astro title="[...slug].astro"
 ---
@@ -42,7 +42,7 @@ const content = defaultContent.content || '';
 </Layout>
 ```
 
-**New Method**
+**New Method** (`[...slug].astro`)
 
 ```astro title="[...slug].astro"
 ---
