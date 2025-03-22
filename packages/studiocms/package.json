@@ -41,14 +41,14 @@
   },
   "sideEffects": false,
   "files": [
-    "CHANGELOG.md",
-    "custom-renderers",
-    "LICENSE",
-    "README.md",
-    "ui.d.ts",
     "dist",
+    "src",
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md",
     "studiocms-cli.mjs",
-    "src"
+    "astroenv.d.ts",
+    "ui.d.ts"
   ],
   "scripts": {
     "build": "build-scripts build 'src/**/*.{ts,css}'",
