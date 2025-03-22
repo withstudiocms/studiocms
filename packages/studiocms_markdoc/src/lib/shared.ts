@@ -4,10 +4,7 @@ export const symbol: symbol = Symbol.for('@studiocms/markdoc');
 
 /**
  * A shared object that is either retrieved from the global scope using a symbol or
- * initialized as a new object with a `markdownConfig` property.
- *
- * @constant
- * @type {Shared}
+ * initialized as a new object with a `markDocConfig` property.
  *
  * @remarks
  * The `@ts-ignore` comments are used to suppress TypeScript errors related to the use of
