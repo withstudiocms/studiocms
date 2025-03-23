@@ -70,6 +70,10 @@ const DefaultPageTypeComponents = {
 		pageContentComponent: resolve('./components/editors/markdown.astro'),
 		rendererComponent: resolve('./components/renderers/studiocms-markdown.astro'),
 	},
+	'studiocms/html': {
+		pageContentComponent: resolve('./components/editors/html.astro'),
+		rendererComponent: resolve('./components/renderers/studiocms-html.astro'),
+	},
 };
 
 /**
@@ -150,7 +154,12 @@ const defaultPlugin: StudioCMSPlugin = {
 			pageContentComponent: DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
 			rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
 		},
-		// { label: 'HTML (Built-in)', identifier: 'studiocms/html' },
+		{
+			label: 'HTML (Built-in)',
+			identifier: 'studiocms/html',
+			pageContentComponent: DefaultPageTypeComponents['studiocms/html'].pageContentComponent,
+			rendererComponent: DefaultPageTypeComponents['studiocms/html'].rendererComponent,
+		},
 	],
 };
 
@@ -1405,6 +1414,8 @@ export const studiocms = defineIntegration({
 											safePageType,
 										})) || []
 									)};
+
+									export { preRender as mdPreRender } from '${resolve('./components/renderers/markdown-prerender.js')}';
 								`,
 							},
 						});
