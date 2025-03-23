@@ -2,10 +2,9 @@
 import 'suneditor/dist/css/suneditor.min.css';
 import 'codemirror/lib/codemirror.css';
 import 'katex/dist/katex.min.css';
+import type { PluginPageTypeEditorProps } from '../../types.js';
 
-interface Props {
-	content?: string;
-}
+interface Props extends PluginPageTypeEditorProps {}
 
 const { content } = Astro.props;
 ---

@@ -1,10 +1,11 @@
 ---
 import { mdPreRender } from 'studiocms:plugins/renderers';
-import type { CombinedPageData } from 'studiocms:sdk/types';
 import { importComponentsKeys } from '../../lib/renderer/runtime.js';
 import { shared } from '../../lib/renderer/shared.js';
 import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
+import type { PluginPageTypeRendererProps } from '../../types.js';
 
+// Get the pre-renderer for Markdown Content
 const preRender = mdPreRender();
 
 // Import components
@@ -20,15 +21,7 @@ const render = async (content: string): Promise<string> => {
 	return await transformHTML(html, components, shared.studiocms?.sanitize);
 };
 
-type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-type Data = DeepPartial<CombinedPageData>;
-
-interface Props {
-	data: Data;
-}
+interface Props extends PluginPageTypeRendererProps {}
 
 // Get default content
 const { defaultContent } = Astro.props.data;

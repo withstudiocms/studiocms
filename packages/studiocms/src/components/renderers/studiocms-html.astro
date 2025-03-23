@@ -1,8 +1,8 @@
 ---
-import type { CombinedPageData } from 'studiocms:sdk/types';
 import { importComponentsKeys } from '../../lib/renderer/runtime.js';
 import { shared } from '../../lib/renderer/shared.js';
 import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
+import type { PluginPageTypeRendererProps } from '../../types.js';
 
 // Import components
 const _components = await importComponentsKeys();
@@ -16,15 +16,7 @@ const render = async (content: string): Promise<string> => {
 	return await transformHTML(content, components, shared.studiocms?.sanitize);
 };
 
-type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-type Data = DeepPartial<CombinedPageData>;
-
-interface Props {
-	data: Data;
-}
+interface Props extends PluginPageTypeRendererProps {}
 
 // Get default content
 const { defaultContent } = Astro.props.data;

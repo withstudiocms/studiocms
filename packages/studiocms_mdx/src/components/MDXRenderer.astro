@@ -1,16 +1,8 @@
 ---
 import renderMDX from 'studiocms:mdx/renderer';
-import type { CombinedPageData } from 'studiocms:sdk/types';
+import type { PluginPageTypeRendererProps } from 'studiocms/types';
 
-type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-type Data = DeepPartial<CombinedPageData>;
-
-interface Props {
-	data: Data;
-}
+interface Props extends PluginPageTypeRendererProps {}
 
 // Get default content
 const { defaultContent } = Astro.props.data;
