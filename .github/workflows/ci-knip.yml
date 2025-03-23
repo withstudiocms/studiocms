@@ -1,0 +1,36 @@
+name: ci - Knip Lint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  issues: write
+  repository-projects: read
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+    lint:
+      runs-on: ubuntu-latest
+      env:
+        NODE_OPTIONS: "--max_old_space_size=4096"
+      name: Run Knip Linter
+      steps:
+        - name: Checkout Repo
+          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+          with:
+            ref: ${{ github.head_ref }}
+            token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+  
+        - name: Install Tools & Dependencies
+          uses: withstudiocms/automations/.github/actions/install@main
+
+        - name: Run Knip Linter
+          run: pnpm knip
