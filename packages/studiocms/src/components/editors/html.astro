@@ -146,10 +146,10 @@ const { content } = Astro.props;
     });
 
     editor.onChange = (contents, core) => { 
-        console.log("Saving new Update")
+        console.debug("Saving new Update")
         editor.save() 
-        console.log("Updating Content to:", contents)
+        console.debug("Updating Content to:", contents)
         core.context.element.originElement.innerHTML = contents;
-        console.log('Save complete!')
+        console.debug('Save complete!')
     }
 </script>
