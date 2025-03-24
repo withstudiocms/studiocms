@@ -32,7 +32,7 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["drizzle-orm"],
+      "matchPackageNames": ["drizzle-orm", "codemirror"],
       "enabled": false
     }
   ]
