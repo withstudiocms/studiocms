@@ -1,9 +1,9 @@
 ---
+import '../../styles/dashboard-tiny-mde.css';
+import type { PluginPageTypeEditorProps } from '../../types.js';
 import TinyMDE from './utils/TinyMDE.astro';
 
-interface Props {
-	content?: string;
-}
+interface Props extends PluginPageTypeEditorProps {}
 
 const { content } = Astro.props;
 ---

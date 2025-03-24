@@ -12,7 +12,8 @@
       "**/.astro/**",
       "**/package.json",
       "**/dist/**",
-      "**/min.js",
+      "**/*.min.js",
+      "**/*.min.css",
       "dashboard-code.css",
       "translation-statistics/**"
     ]

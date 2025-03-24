@@ -2,6 +2,7 @@
 /// <reference types="../astroenv.d.ts" />
 import type { InjectedRoute, InjectedScriptStage } from 'astro';
 import type { StudioCMSOptions } from './schemas/index.js';
+import type { CombinedPageData } from './sdk/types/index.js';
 
 /**
  * Represents an array of message objects.
@@ -56,3 +57,22 @@ export type ConfigSetupOptions = {
 	opts: StudioCMSOptions;
 	messages: Messages;
 };
+
+/**
+ * A utility type that recursively makes all properties of a given type `T` optional.
+ *
+ * This is particularly useful for creating partial versions of deeply nested objects.
+ *
+ * @template T - The type to be transformed into a deep partial.
+ */
+export type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export interface PluginPageTypeRendererProps {
+	data: DeepPartial<CombinedPageData>;
+}
+
+export interface PluginPageTypeEditorProps {
+	content?: string;
+}

@@ -1,12 +1,8 @@
 ---
-import { mdPreRender } from 'studiocms:plugins/renderers';
 import { importComponentsKeys } from '../../lib/renderer/runtime.js';
 import { shared } from '../../lib/renderer/shared.js';
 import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
 import type { PluginPageTypeRendererProps } from '../../types.js';
-
-// Get the pre-renderer for Markdown Content
-const preRender = mdPreRender();
 
 // Import components
 const _components = await importComponentsKeys();
@@ -17,8 +13,7 @@ const components = createComponentProxy($$result, _components);
 
 // Define render function
 const render = async (content: string): Promise<string> => {
-	const html = await preRender(content);
-	return await transformHTML(html, components, shared.studiocms?.sanitize);
+	return await transformHTML(content, components, shared.studiocms?.sanitize);
 };
 
 interface Props extends PluginPageTypeRendererProps {}
@@ -27,7 +22,7 @@ interface Props extends PluginPageTypeRendererProps {}
 const { defaultContent } = Astro.props.data;
 
 // Get content to render
-const contentToRender = defaultContent?.content || '# Error: No content found';
+const contentToRender = defaultContent?.content || '<h1>Error: No content found</h1>';
 
 // Render content
 const renderedContent = await render(contentToRender);
