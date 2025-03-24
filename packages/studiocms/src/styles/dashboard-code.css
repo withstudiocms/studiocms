@@ -17,11 +17,31 @@
 		8 #9ecbff /* few chars */;
 }
 
+@font-palette-values --github-light {
+	font-family: "Monaspace";
+	override-colors:
+		0 #cf222e /* keywords, {} */, 
+		1 #6e7781 /* comments */, 
+		2 #000d99 /* literals */,
+		3 #000d99 /* numbers */, 
+		4 #6639ba /* functions, [] */, 
+		5 #000000 /* js others */, 
+		6 #d19a66 /* not in use */, 
+		7 #000d99 /* inside quotes, css properties, few chars */, 
+		8 #000d99 /* few chars */;
+}
+
 .custom-code {
 	font-family: "Monaspace", monospace;
 	font-palette: --github-dark;
 	font-size: 14px;
 	line-height: 1.6;
+}
+
+[data-theme="light"] {
+	.custom-code {
+		font-palette: --github-light;
+	}
 }
 
 .code-container {
