@@ -425,22 +425,22 @@ export const studiocms = defineIntegration({
 					const routes: Route[] = [
 						{
 							pattern: 'start',
-							entrypoint: routesDir.sdk('1-start.astro'),
+							entrypoint: routesDir.fts('1-start.astro'),
 							enabled: dbStartPage,
 						},
 						{
 							pattern: 'start/1',
-							entrypoint: routesDir.sdk('1-start.astro'),
+							entrypoint: routesDir.fts('1-start.astro'),
 							enabled: dbStartPage,
 						},
 						{
 							pattern: 'start/2',
-							entrypoint: routesDir.sdk('2-next.astro'),
+							entrypoint: routesDir.fts('2-next.astro'),
 							enabled: dbStartPage,
 						},
 						{
 							pattern: 'done',
-							entrypoint: routesDir.sdk('3-done.astro'),
+							entrypoint: routesDir.fts('3-done.astro'),
 							enabled: dbStartPage,
 						},
 						{
