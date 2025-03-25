@@ -522,6 +522,26 @@ export function studiocmsSDKCore() {
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				const differences: { label: string; previous: any; current: any }[] = [];
 
+				const Labels: Record<string, string> = {
+					package: 'Page Type',
+					title: 'Page Title',
+					description: 'Page Description',
+					showOnNav: 'Show in Navigation',
+					slug: 'Page Slug',
+					contentLang: 'Content Language',
+					heroImage: 'Hero/OG Image',
+					categories: 'Page Categories',
+					tags: 'Page Tags',
+					showAuthor: 'Show Author',
+					showContributors: 'Show Contributors',
+					parentFolder: 'Parent Folder',
+					draft: 'Draft',
+				};
+
+				function processLabel(label: string) {
+					return Labels[label] ? Labels[label] : label;
+				}
+
 				for (const label in obj1) {
 					const blackListedLabels: string[] = [
 						'publishedAt',
@@ -537,7 +557,11 @@ export function studiocmsSDKCore() {
 							if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
 								if (obj1[label].length === obj2[label].length) continue;
 							}
-							differences.push({ label, previous: obj1[label], current: obj2[label] });
+							differences.push({
+								label: processLabel(label),
+								previous: obj1[label],
+								current: obj2[label],
+							});
 						}
 					}
 				}
