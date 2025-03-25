@@ -4,7 +4,7 @@ import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button, Input } from 'studiocms:ui/components';
+import { Button, Group, Input } from 'studiocms:ui/components';
 import { convertChangesToDMP, diffJson } from 'diff';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -116,13 +116,45 @@ for (const {
 
     <div slot="header">
         <PageHeader {lang} />
-        <span style="width: 100%; display: flex; padding: 1rem 0;">
+        <span style="width: 100%; display: flex; padding: 1rem 0; gap: 1rem;">
             <Button 
-            variant="outlined" 
-            color="primary" 
-            size="sm"
-            href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
-            ><t-content-diff key="view-page">{td('view-page')}</t-content-diff></Button>
+              variant="outlined" 
+              color="info" 
+              size="sm"
+              href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
+              ><t-content-diff key="view-page">{td('view-page')}</t-content-diff>
+            </Button>
+
+            <Group>
+              <Button 
+                id="revert-metadata" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                disabled={changes.length === 0} 
+                data-id={diff.id} 
+                data-url="#"
+                >Revert MetaData
+              </Button>
+              <Button 
+                id="revert-content" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                data-id={diff.id} 
+                data-url="#"
+                >Revert Content
+              </Button>
+              <Button 
+                id="revert-all-changes" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                data-id={diff.id} 
+                data-url="#"
+                >Revert All
+              </Button>
+            </Group>
         </span>
         <span>
           Edited by {user(diff.userId)} on <FormattedDate date={diff.timestamp!} />
@@ -159,6 +191,60 @@ for (const {
     <div set:html={diff.contentDiffHtml} class="diff-screen"></div>
 
 </Layout>
+
+<script>
+import { toast } from "studiocms:ui/components";
+
+  const revertMetaData = document.getElementById('revert-metadata') as HTMLButtonElement;
+  const revertContent = document.getElementById('revert-content') as HTMLButtonElement;
+  const revertAllChanges = document.getElementById('revert-all-changes') as HTMLButtonElement;
+
+  async function runEvent(Elm: HTMLButtonElement, event: MouseEvent) {
+    event.preventDefault();
+    const url = Elm.dataset.url as string;
+    const id = Elm.dataset.id as string;
+
+    toast({
+      title: 'Not yet Implemented',
+      description: 'This function has not yet been implemented',
+      type: 'warning',
+    })
+
+    // const response = await fetch(url, {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    //   body: JSON.stringify({ id })
+    // });
+
+    // const res = await response.json();
+
+    // if (response.status !== 200) {
+    //     toast({
+    //         title: 'Error',
+    //         description: res.error,
+    //         type: 'danger'
+    //     })
+    //     return;
+    // }
+
+    // if (response.status === 200) {
+    //     toast({
+    //         title: 'Success',
+    //         description: res.message,
+    //         type: 'success'
+    //     })
+    //     return;
+    // }
+  }
+
+  revertMetaData.addEventListener('click', async (e) => await runEvent(revertMetaData, e))
+
+  revertContent.addEventListener('click', async (e) => await runEvent(revertContent, e))
+
+  revertAllChanges.addEventListener('click', async (e) => await runEvent(revertAllChanges, e))
+</script>
 
 <script>
     import { 
