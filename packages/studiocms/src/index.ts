@@ -1470,9 +1470,10 @@ export const studiocms = defineIntegration({
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
 					// Inject the Markdown configuration into the shared state
-					shared.markdownConfig = config.markdown;
+					shared.astroMDRemark = config.markdown;
+					shared.studiocmsHTML = options.pageTypeOptions.html;
 					if (options.pageTypeOptions.markdown.flavor === 'studiocms') {
-						shared.studiocms = options.pageTypeOptions.markdown;
+						shared.studiocmsMarkdown = options.pageTypeOptions.markdown;
 					}
 
 					// Log Setup Complete
