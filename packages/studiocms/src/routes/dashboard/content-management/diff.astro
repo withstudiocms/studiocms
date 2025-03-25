@@ -134,6 +134,7 @@ for (const {
                 disabled={changes.length === 0} 
                 data-id={diff.id} 
                 data-url="#"
+                data-type="data"
                 >Revert MetaData
               </Button>
               <Button 
@@ -143,6 +144,7 @@ for (const {
                 size="sm" 
                 data-id={diff.id} 
                 data-url="#"
+                data-type="content"
                 >Revert Content
               </Button>
               <Button 
@@ -152,6 +154,7 @@ for (const {
                 size="sm" 
                 data-id={diff.id} 
                 data-url="#"
+                data-type="both"
                 >Revert All
               </Button>
             </Group>
@@ -199,10 +202,8 @@ import { toast } from "studiocms:ui/components";
   const revertContent = document.getElementById('revert-content') as HTMLButtonElement;
   const revertAllChanges = document.getElementById('revert-all-changes') as HTMLButtonElement;
 
-  async function runEvent(Elm: HTMLButtonElement, event: MouseEvent) {
+  async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
     event.preventDefault();
-    const url = Elm.dataset.url as string;
-    const id = Elm.dataset.id as string;
 
     toast({
       title: 'Not yet Implemented',
@@ -210,12 +211,23 @@ import { toast } from "studiocms:ui/components";
       type: 'warning',
     })
 
+    // const { url, id, type } = dataset;
+
+    // if (!url || !id || !type) {
+    //   toast({
+    //     title: 'Error',
+    //     description: 'Something went wrong, Please refresh the page and try again.',
+    //     type: 'danger'
+    //   })
+    //   return;
+    // }
+
     // const response = await fetch(url, {
     //   headers: {
     //     'Content-Type': 'application/json',
     //   },
     //   method: 'POST',
-    //   body: JSON.stringify({ id })
+    //   body: JSON.stringify({ id, type })
     // });
 
     // const res = await response.json();
