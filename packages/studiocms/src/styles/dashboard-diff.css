@@ -184,7 +184,7 @@
 	-moz-user-select: text;
 	-ms-user-select: text;
 	user-select: text;
-	vertical-align: middle;
+	vertical-align: top;
 	white-space: break-spaces;
 	width: 100%;
 }
