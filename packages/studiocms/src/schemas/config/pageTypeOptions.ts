@@ -41,13 +41,22 @@ export const MarkdownSchema = z
 	.optional()
 	.default({ flavor: 'studiocms' });
 
+export const HTMLSchema = z
+	.object({
+		sanitize: StudioCMSSanitizeOptionsSchema,
+	})
+	.optional()
+	.default({});
+
 export const BuiltInPageTypeOptionsSchema = z
 	.object({
 		/** Options for the `studiocms/markdown` pageType */
 		markdown: MarkdownSchema,
+		html: HTMLSchema,
 	})
 	.optional()
 	.default({});
 
 export type StudioCMSMarkdownOptions = z.infer<typeof StudioCMSMarkdownSchema>;
 export type MarkdownSchemaOptions = z.infer<typeof MarkdownSchema>;
+export type HTMLSchemaOptions = z.infer<typeof HTMLSchema>;

@@ -128,3 +128,10 @@ export const makeDashboardRoute = (route?: string | undefined) => {
 
 	return (path: string) => `${defaultRoute}/${path}`;
 };
+
+export const StudioCMSMarkdownDefaults = {
+	flavor: 'studiocms' as const,
+	autoLinkHeadings: false,
+	callouts: false as const,
+	discordSubtext: false,
+};

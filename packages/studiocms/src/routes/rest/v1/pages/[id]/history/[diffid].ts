@@ -26,7 +26,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(400, 'Invalid diff ID');
 	}
 
-	const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffid);
+	const diff = await studioCMS_SDK.diffTracking.get.single(diffid);
 
 	if (!diff) {
 		return apiResponseLogger(404, 'Diff not found');

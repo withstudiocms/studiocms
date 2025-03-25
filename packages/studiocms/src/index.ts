@@ -18,7 +18,13 @@ import boxen from 'boxen';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { authAPIRoute, dashboardAPIRoute, makeDashboardRoute, routesDir } from './consts.js';
+import {
+	StudioCMSMarkdownDefaults,
+	authAPIRoute,
+	dashboardAPIRoute,
+	makeDashboardRoute,
+	routesDir,
+} from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
@@ -517,6 +523,11 @@ export const studiocms = defineIntegration({
 							enabled: dashboardEnabled && !dbStartPage && authEnabled,
 							pattern: dashboardAPIRoute('content/folder'),
 							entrypoint: routesDir.dashApi('content/folder.ts'),
+						},
+						{
+							enabled: dashboardEnabled && !dbStartPage && authEnabled,
+							pattern: dashboardAPIRoute('content/diff'),
+							entrypoint: routesDir.dashApi('content/diff.ts'),
 						},
 						{
 							enabled: dashboardEnabled && !dbStartPage && authEnabled,
@@ -1465,9 +1476,15 @@ export const studiocms = defineIntegration({
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
 					// Inject the Markdown configuration into the shared state
-					shared.markdownConfig = config.markdown;
+					shared.astroMDRemark = config.markdown;
+					shared.studiocmsHTML = options.pageTypeOptions.html;
 					if (options.pageTypeOptions.markdown.flavor === 'studiocms') {
-						shared.studiocms = options.pageTypeOptions.markdown;
+						shared.studiocmsMarkdown = options.pageTypeOptions.markdown;
+					} else {
+						shared.studiocmsMarkdown = {
+							...StudioCMSMarkdownDefaults,
+							sanitize: options.pageTypeOptions.markdown.sanitize,
+						};
 					}
 
 					// Log Setup Complete

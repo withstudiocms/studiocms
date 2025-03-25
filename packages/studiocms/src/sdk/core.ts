@@ -23,7 +23,7 @@ import {
 	generateToken,
 	testToken,
 } from './lib/generators.js';
-import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
+import { fixDiff, parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { combineRanks, verifyRank } from './lib/users.js';
 import {
 	tsAPIKeys,
@@ -398,7 +398,7 @@ export function studiocmsSDKCore() {
 
 			await checkDiffsLengthAndRemoveOldestIfToLong(pageId, diffLength);
 
-			return await db
+			const inputted = await db
 				.insert(tsDiffTracking)
 				.values({
 					id: crypto.randomUUID(),
@@ -411,6 +411,8 @@ export function studiocmsSDKCore() {
 				})
 				.returning()
 				.get();
+
+			return fixDiff(inputted);
 		},
 		clear: async (pageId: string) => {
 			await db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, pageId));
@@ -418,11 +420,13 @@ export function studiocmsSDKCore() {
 		get: {
 			byPageId: {
 				all: async (pageId: string) => {
-					return await db
+					const items = await db
 						.select()
 						.from(tsDiffTracking)
 						.where(eq(tsDiffTracking.pageId, pageId))
 						.orderBy(desc(tsDiffTracking.timestamp));
+
+					return fixDiff(items);
 				},
 				latest: async (pageId: string, count: number) => {
 					const diffs = await db
@@ -431,16 +435,20 @@ export function studiocmsSDKCore() {
 						.where(eq(tsDiffTracking.pageId, pageId))
 						.orderBy(desc(tsDiffTracking.timestamp));
 
-					return diffs.slice(0, count);
+					const split = diffs.slice(0, count);
+
+					return fixDiff(split);
 				},
 			},
 			byUserId: {
 				all: async (userId: string) => {
-					return await db
+					const items = await db
 						.select()
 						.from(tsDiffTracking)
 						.where(eq(tsDiffTracking.userId, userId))
 						.orderBy(desc(tsDiffTracking.timestamp));
+
+					return fixDiff(items);
 				},
 				latest: async (userId: string, count: number) => {
 					const diffs = await db
@@ -449,55 +457,15 @@ export function studiocmsSDKCore() {
 						.where(eq(tsDiffTracking.userId, userId))
 						.orderBy(desc(tsDiffTracking.timestamp));
 
-					return diffs.slice(0, count);
+					const split = diffs.slice(0, count);
+
+					return fixDiff(split);
 				},
 			},
 			single: async (id: string) => {
-				return await db.select().from(tsDiffTracking).where(eq(tsDiffTracking.id, id)).get();
-			},
-			withHtml: async (id: string, options?: Diff2HtmlConfig) => {
-				const diffEntry = await db
-					.select()
-					.from(tsDiffTracking)
-					.where(eq(tsDiffTracking.id, id))
-					.get();
-
-				if (!diffEntry) {
-					throw new StudioCMS_SDK_Error('Diff not found');
-				}
-
-				if (!diffEntry.diff) {
-					throw new StudioCMS_SDK_Error('Diff not found');
-				}
-
-				const contentDiffHtml = html(diffEntry.diff, {
-					diffStyle: 'word',
-					matching: 'lines',
-					drawFileList: false,
-					outputFormat: 'side-by-side',
-					...options,
-				});
-
-				const diff = createTwoFilesPatch(
-					'Metadata',
-					'Metadata',
-					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).start, null, 2),
-					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).end, null, 2)
-				);
-
-				const metadataDiffHtml = html(diff, {
-					diffStyle: 'word',
-					matching: 'lines',
-					drawFileList: false,
-					outputFormat: 'side-by-side',
-					...options,
-				});
-
-				return {
-					...diffEntry,
-					metadataDiffHtml,
-					contentDiffHtml,
-				};
+				const data = await db.select().from(tsDiffTracking).where(eq(tsDiffTracking.id, id)).get();
+				if (!data) return;
+				return fixDiff(data);
 			},
 		},
 		revertToDiff: async (id: string, type: 'content' | 'data' | 'both') => {
@@ -542,7 +510,73 @@ export function studiocmsSDKCore() {
 				await db.delete(tsDiffTracking).where(eq(tsDiffTracking.id, diff.id));
 			}
 
-			return diffEntry;
+			return fixDiff(diffEntry);
+		},
+		utils: {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			getMetaDataDifferences<T extends Record<string, any>>(
+				obj1: T,
+				obj2: T
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			): { label: string; previous: any; current: any }[] {
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				const differences: { label: string; previous: any; current: any }[] = [];
+
+				const Labels: Record<string, string> = {
+					package: 'Page Type',
+					title: 'Page Title',
+					description: 'Page Description',
+					showOnNav: 'Show in Navigation',
+					slug: 'Page Slug',
+					contentLang: 'Content Language',
+					heroImage: 'Hero/OG Image',
+					categories: 'Page Categories',
+					tags: 'Page Tags',
+					showAuthor: 'Show Author',
+					showContributors: 'Show Contributors',
+					parentFolder: 'Parent Folder',
+					draft: 'Draft',
+				};
+
+				function processLabel(label: string) {
+					return Labels[label] ? Labels[label] : label;
+				}
+
+				for (const label in obj1) {
+					const blackListedLabels: string[] = [
+						'publishedAt',
+						'updatedAt',
+						'authorId',
+						'contributorIds',
+					];
+					if (blackListedLabels.includes(label)) continue;
+
+					// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+					if (obj1.hasOwnProperty(label) && obj2.hasOwnProperty(label)) {
+						if (obj1[label] !== obj2[label]) {
+							if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
+								if (obj1[label].length === obj2[label].length) continue;
+							}
+							differences.push({
+								label: processLabel(label),
+								previous: obj1[label],
+								current: obj2[label],
+							});
+						}
+					}
+				}
+
+				return differences;
+			},
+			getDiffHTML(diff: string | null, options?: Diff2HtmlConfig) {
+				return html(diff || '', {
+					diffStyle: 'word',
+					matching: 'lines',
+					drawFileList: false,
+					outputFormat: 'side-by-side',
+					...options,
+				});
+			},
 		},
 	};
 

@@ -1,5 +1,4 @@
 import { dashboardConfig } from 'studiocms:config';
-import { password } from '@clack/prompts';
 import { makeAPIRoute } from './makeAPIRoute.js';
 import urlGenFactory from './urlGen.js';
 
@@ -309,6 +308,8 @@ export const StudioCMSRoutes = {
 			 * API route for fetching folder content.
 			 */
 			folder: dashboardAPIRoute('content/folder'),
+
+			diff: dashboardAPIRoute('content/diff'),
 		},
 
 		/**

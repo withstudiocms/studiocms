@@ -1,6 +1,8 @@
 import type { Shared } from './types.js';
 
-export const symbol: symbol = Symbol.for('@studiocms/markdown-remark');
+declare global {
+	var studiocmsBuiltInRendererConfig: Shared;
+}
 
 /**
  * A shared object that is either retrieved from the global scope using a symbol or
@@ -8,17 +10,12 @@ export const symbol: symbol = Symbol.for('@studiocms/markdown-remark');
  *
  * @constant
  * @type {Shared}
- *
- * @remarks
- * The `@ts-ignore` comments are used to suppress TypeScript errors related to the use of
- * the global scope and assignment within expressions. The `biome-ignore` comment is used
- * to suppress linting errors for the same reason.
  */
 export const shared: Shared =
-	// @ts-ignore
-	globalThis[symbol] ||
-	// @ts-ignore
+	globalThis.studiocmsBuiltInRendererConfig ||
 	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-	(globalThis[symbol] = {
-		markdownConfig: {},
+	(globalThis.studiocmsBuiltInRendererConfig = {
+		astroMDRemark: undefined,
+		studiocmsMarkdown: undefined,
+		studiocmsHTML: undefined,
 	});

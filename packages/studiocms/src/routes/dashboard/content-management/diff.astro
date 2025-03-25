@@ -1,31 +1,35 @@
 ---
+import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button } from 'studiocms:ui/components';
+import { Button, Card, Group, Input } from 'studiocms:ui/components';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
+const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
+const users = await studioCMS_SDK.GET.database.users();
+const user = (id: string) => users.find((u) => u.id === id)?.name;
+
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
-
 const urlParams = Astro.url.searchParams;
 const diffId = urlParams.get('diff');
 
-if (!diffId) {
-	return new Response(null, { status: 404 });
-}
+if (!diffId) return Astro.redirect('/404');
 
-const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffId);
+const diff = await studioCMS_SDK.diffTracking.get.single(diffId);
 
-if (!diff) {
-	return new Response(null, { status: 404 });
-}
+if (!diff) return Astro.redirect('/404');
 
 const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
+
+const metaDataChanges = getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
+
+const diffContentHTML = getDiffHTML(diff.diff);
 ---
 
 <Layout 
@@ -44,29 +48,151 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
 
     <div slot="header">
         <PageHeader {lang} />
-        <span style="width: 100%; display: flex; padding: 1rem 0;">
+        <span style="width: 100%; display: flex; padding: 1rem 0; gap: 1rem;">
             <Button 
-            variant="outlined" 
-            color="primary" 
-            size="sm"
-            href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
-            ><t-content-diff key="view-page">{td('view-page')}</t-content-diff></Button>
+              variant="outlined" 
+              color="info" 
+              size="sm"
+              href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
+              ><t-content-diff key="view-page">{td('view-page')}</t-content-diff>
+            </Button>
+
+            <Group>
+              <Button 
+                id="revert-metadata" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                disabled={metaDataChanges.length === 0} 
+                data-id={diff.id} 
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-type="data"
+                ><t-content-diff key="revert-metadata">{td('revert-metadata')}</t-content-diff>
+              </Button>
+              <Button 
+                id="revert-content" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                data-id={diff.id} 
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-type="content"
+                ><t-content-diff key="revert-content">{td('revert-content')}</t-content-diff>
+              </Button>
+              <Button 
+                id="revert-all-changes" 
+                variant={'outlined'} 
+                color={'primary'} 
+                size="sm" 
+                data-id={diff.id} 
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-type="both"
+                ><t-content-diff key="revert-all">{td('revert-all')}</t-content-diff>
+              </Button>
+            </Group>
         </span>
+        <Card style="margin-left: 2rem;">
+          <table class="page-diff-info">
+            <tr>
+              <td><t-content-diff key="page-title">{td('page-title')}</t-content-diff></td>
+              <td>{page.title}</td>
+            </tr>
+            <tr>
+              <td><t-content-diff key="edited-by">{td('edited-by')}</t-content-diff></td>
+              <td>{user(diff.userId)}</td>
+            </tr>
+            <tr>
+              <td><t-content-diff key="edited-on">{td('edited-on')}</t-content-diff></td>
+              <td><FormattedDate date={diff.timestamp!} /></td>
+            </tr>
+          </table>
+        </Card>
     </div>
 
     <h4>
       <t-content-diff key="page-metadata">{td('page-metadata')}</t-content-diff>
     </h4>
 
-    <div set:html={diff.metadataDiffHtml} class="diff-screen"></div>
+    {
+      metaDataChanges.length > 0 ? metaDataChanges.map(({ current, label, previous }) => (
+        <div class="diff-screen metadata-diffs">
+          <div>{label}</div>
+          <div class="form-row">
+            <Input label="Previous" value={`${previous}`} disabled />
+            <Input label="Current" value={`${current}`} disabled />
+          </div>
+        </div>
+      )) : (
+        <div class="diff-screen metadata-diffs">
+          <div><t-content-diff key="no-metadata-changes">{td('no-metadata-changes')}</t-content-diff></div>
+        </div>
+      )
+    }
 
     <h4>
       <t-content-diff key="page-content">{td('page-content')}</t-content-diff>
     </h4>
 
-    <div set:html={diff.contentDiffHtml} class="diff-screen"></div>
+    <div set:html={diffContentHTML} class="diff-screen"></div>
 
 </Layout>
+
+<script>
+import { toast } from "studiocms:ui/components";
+
+  const revertMetaData = document.getElementById('revert-metadata') as HTMLButtonElement;
+  const revertContent = document.getElementById('revert-content') as HTMLButtonElement;
+  const revertAllChanges = document.getElementById('revert-all-changes') as HTMLButtonElement;
+
+  async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
+    const { url, id, type } = dataset;
+
+    event.preventDefault();
+
+    if (!url || !id || !type) {
+      toast({
+        title: 'Error',
+        description: 'Something went wrong, Please refresh the page and try again.',
+        type: 'danger'
+      })
+      return;
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({ id, type })
+    });
+
+    const res = await response.json();
+
+    if (response.status !== 200) {
+        toast({
+            title: 'Error',
+            description: res.error,
+            type: 'danger'
+        })
+        return;
+    }
+
+    if (response.status === 200) {
+        toast({
+            title: 'Success',
+            description: res.message,
+            type: 'success'
+        })
+        return;
+    }
+  }
+
+  revertMetaData.addEventListener('click', async (e) => await runEvent(revertMetaData, e))
+
+  revertContent.addEventListener('click', async (e) => await runEvent(revertContent, e))
+
+  revertAllChanges.addEventListener('click', async (e) => await runEvent(revertAllChanges, e))
+</script>
 
 <script>
     import { 
@@ -129,6 +255,42 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
   @media screen and (max-width: 1380px) {
     .diff-screen {
         max-width: 600px;
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: .5rem;
+  }
+
+  .metadata-diffs {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: .5rem;
+  }
+
+  table {
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: 2px solid hsl(var(--background-step-2));
+    }
+
+    tr:nth-child(even) {
+      background-color: hsl(var(--background-step-2));
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: .5rem;
+    }
+
+    td:last-child {
+      border-left: 2px solid hsl(var(--background-step-3));
     }
   }
 

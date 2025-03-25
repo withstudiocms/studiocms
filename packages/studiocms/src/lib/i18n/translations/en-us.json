@@ -241,7 +241,14 @@
     "@studiocms/dashboard:content-diff": {
       "view-page": "View Page",
       "page-metadata": "Page Metadata",
-      "page-content": "Page Content"
+      "page-content": "Page Content",
+      "revert-metadata": "Revert MetaData",
+      "revert-content": "Revert Content",
+      "revert-all": "Revert All",
+      "page-title": "Page Title",
+      "edited-by": "Edited by",
+      "edited-on": "Edited on",
+      "no-metadata-changes": "No Metadata changes found"
     },
     "@studiocms/dashboard:content-folder": {
       "input-folder-name": "Folder Name",

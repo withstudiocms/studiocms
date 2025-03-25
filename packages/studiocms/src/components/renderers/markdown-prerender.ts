@@ -7,12 +7,14 @@ import {
 import { shared } from '../../lib/renderer/shared.js';
 
 // Initialize markdown processor (Astro)
-const astroMD = await createAstroMD(shared.markdownConfig);
+const astroMD = await createAstroMD(shared.astroMDRemark);
 
 // Initialize markdown processor (StudioCMS)
 const studioCMSMD = await createStudioCMSMD({
-	...shared.markdownConfig,
-	studiocms: shared.studiocms ? (shared.studiocms as StudioCMSConfigOptions) : undefined,
+	...shared.astroMDRemark,
+	studiocms: shared.studiocmsMarkdown
+		? (shared.studiocmsMarkdown as StudioCMSConfigOptions)
+		: undefined,
 });
 
 /**

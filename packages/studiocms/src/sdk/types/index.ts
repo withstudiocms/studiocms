@@ -91,6 +91,25 @@ export type {
 	tsNotificationSettingsSelect,
 };
 
+export interface diffItem {
+	id: string;
+	userId: string;
+	pageId: string;
+	timestamp: Date | null;
+	pageMetaData: unknown;
+	pageContentStart: string;
+	diff: string | null;
+}
+
+export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
+	pageMetaData: {
+		start: Partial<tsPageDataSelect>;
+		end: Partial<tsPageDataSelect>;
+	};
+}
+
+export type DiffReturnType<T> = T extends diffItem ? diffReturn : diffReturn[];
+
 export interface FolderNode {
 	id: string;
 	name: string;
