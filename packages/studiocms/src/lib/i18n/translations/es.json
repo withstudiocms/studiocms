@@ -167,6 +167,85 @@
             "title": "Administración de usuarios",
             "description": "Administración de usuarios",
             "header": "Administración de usuarios"
+        },
+        "@studiocms/dashboard:content-header": {
+            "delete-modal-desc-2": "para confirmar.",
+            "delete-folder-modal-desc-1": "Ingresa el nombre de la carpeta",
+            "edit-folder-title": "Editar la carpeta",
+            "delete-modal-desc-1": "Ingresa el slug",
+            "delete-modal-warning": "Esta acción no puede ser anulada.",
+            "delete-modal-header": "¿Estás seguro de que quieres eliminar este elemento?",
+            "publish-button": "Publicar",
+            "draft-button": "Guardar borrador",
+            "create-button": "Crear",
+            "save-button": "Guardar cambios",
+            "delete-button": "Eliminar",
+            "create-folder-title": "Crear carpeta",
+            "create-page-title": "Crear página",
+            "edit-page-title": "Editar página",
+            "title": "Gestión de contenido",
+            "delete-folder-modal-desc-2": "para confirmar."
+        },
+        "@studiocms/dashboard:content-diff": {
+            "edited-on": "Editado el",
+            "edited-by": "Editado por",
+            "page-title": "Título de página",
+            "revert-all": "Revertir todos",
+            "revert-content": "Revertir contenido",
+            "revert-metadata": "Revertir metadatos",
+            "no-metadata-changes": "No se han encontrado cambios en los metadatos",
+            "page-content": "Contenido de página",
+            "page-metadata": "Metadatos de la página",
+            "view-page": "Ver página"
+        },
+        "@studiocms/dashboard:user-mngmt-edit": {
+            "last-edit-pages-no-edits": "No se ha encontrado ningún historial.",
+            "email-verification-status": "Estado de verificación del correo electrónico",
+            "last-edit-pages-edited": "Editado",
+            "last-edit-pages-header": "Últimas páginas editadas",
+            "api-tokens-no-tokens": "No se encontraron tokens de API.",
+            "api-tokens-created": "Creado",
+            "api-tokens-delete-button": "Borrar",
+            "api-tokens-header": "Tokens API",
+            "social-accounts-non": "No se encontraron cuentas conectadas.",
+            "social-accounts-header": "Cuentas conectadas",
+            "edit-role-header": "Rol de usuario",
+            "password-reset-modal-link": "Enlace",
+            "password-reset-modal-desc-2": "ha sido creado."
+        },
+        "@studiocms/dashboard:content-page": {
+            "select-page-parent-folder": "Carpeta principal",
+            "select-page-show-in-nav": "Mostrar en la navegación",
+            "select-page-type": "Tipo de página",
+            "input-page-hero-image": "OpenGraph/Imagen principal",
+            "input-page-description": "Descripción",
+            "input-page-slug": "Slug",
+            "input-page-title": "Título de página",
+            "tab-label-diff": "Historial de edición",
+            "tab-label-content": "Contenido de página",
+            "tab-label-basic-info": "Información básica"
+        },
+        "@studiocms/dashboard:content-folder": {
+            "input-folder-parent": "Carpeta principal",
+            "input-folder-name": "Nombre de carpeta"
+        },
+        "@studiocms/dashboard:content-sidebar": {
+            "items-divider": "Elementos",
+            "dropdown-create-folder": "Crear carpeta",
+            "dropdown-create-page": "Crear página",
+            "input-placeholder-search": "Buscar..."
+        },
+        "@studiocms/dashboard:plugin-settings": {
+            "save-button": "Guardar cambios",
+            "header": "Ajustes",
+            "description": "Ajustes del plugin",
+            "title": "Ajustes del plugin"
+        },
+        "@studiocms/dashboard:content-index": {
+            "placeholder": "Selecciona o crea una página para comenzar.",
+            "header": "Gestión de contenido",
+            "description": "Gestión de contenido",
+            "title": "Gestión de contenido"
         }
     }
 }
