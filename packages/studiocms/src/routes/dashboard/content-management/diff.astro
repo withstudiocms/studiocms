@@ -9,30 +9,23 @@ import InnerSidebarElement from '../../../components/dashboard/content-mgmt/Inne
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
+const { getDiffHTML, getDifferences } = studioCMS_SDK.diffTracking.utils;
+const users = await studioCMS_SDK.GET.database.users();
+const user = (id: string) => users.find((u) => u.id === id)?.name;
+
 const lang = 'en-us';
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
-
 const urlParams = Astro.url.searchParams;
 const diffId = urlParams.get('diff');
 
-if (!diffId) {
-	return new Response(null, { status: 404 });
-}
+if (!diffId) return Astro.redirect('/404');
 
 const diff = await studioCMS_SDK.diffTracking.get.single(diffId);
 
-if (!diff) {
-	return new Response(null, { status: 404 });
-}
+if (!diff) return Astro.redirect('/404');
 
 const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
-
-const users = await studioCMS_SDK.GET.database.users();
-
-const user = (id: string) => users.find((u) => u.id === id)?.name;
-
-const { getDiffHTML, getDifferences } = studioCMS_SDK.diffTracking.utils;
 
 const metaDataChanges = getDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
 
