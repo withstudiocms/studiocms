@@ -67,7 +67,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 data-id={diff.id} 
                 data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="data"
-                >Revert MetaData
+                ><t-content-diff key="revert-metadata">{td('revert-metadata')}</t-content-diff>
               </Button>
               <Button 
                 id="revert-content" 
@@ -77,7 +77,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 data-id={diff.id} 
                 data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="content"
-                >Revert Content
+                ><t-content-diff key="revert-content">{td('revert-content')}</t-content-diff>
               </Button>
               <Button 
                 id="revert-all-changes" 
@@ -87,22 +87,22 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 data-id={diff.id} 
                 data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="both"
-                >Revert All
+                ><t-content-diff key="revert-all">{td('revert-all')}</t-content-diff>
               </Button>
             </Group>
         </span>
         <Card style="margin-left: 2rem;">
           <table class="page-diff-info">
             <tr>
-              <td>Page Title</td>
+              <td><t-content-diff key="page-title">{td('page-title')}</t-content-diff></td>
               <td>{page.title}</td>
             </tr>
             <tr>
-              <td>Edited by</td>
+              <td><t-content-diff key="edited-by">{td('edited-by')}</t-content-diff></td>
               <td>{user(diff.userId)}</td>
             </tr>
             <tr>
-              <td>Edited on</td>
+              <td><t-content-diff key="edited-on">{td('edited-on')}</t-content-diff></td>
               <td><FormattedDate date={diff.timestamp!} /></td>
             </tr>
           </table>
@@ -124,7 +124,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
         </div>
       )) : (
         <div class="diff-screen metadata-diffs">
-          <div>No Metadata changes</div>
+          <div><t-content-diff key="no-metadata-changes">{td('no-metadata-changes')}</t-content-diff></div>
         </div>
       )
     }
