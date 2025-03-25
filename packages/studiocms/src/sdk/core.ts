@@ -467,50 +467,6 @@ export function studiocmsSDKCore() {
 				if (!data) return;
 				return fixDiff(data);
 			},
-			withHtml: async (id: string, options?: Diff2HtmlConfig) => {
-				const diffEntry = await db
-					.select()
-					.from(tsDiffTracking)
-					.where(eq(tsDiffTracking.id, id))
-					.get();
-
-				if (!diffEntry) {
-					throw new StudioCMS_SDK_Error('Diff not found');
-				}
-
-				if (!diffEntry.diff) {
-					throw new StudioCMS_SDK_Error('Diff not found');
-				}
-
-				const contentDiffHtml = html(diffEntry.diff, {
-					diffStyle: 'word',
-					matching: 'lines',
-					drawFileList: false,
-					outputFormat: 'side-by-side',
-					...options,
-				});
-
-				const diff = createTwoFilesPatch(
-					'Metadata',
-					'Metadata',
-					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).start, null, 2),
-					JSON.stringify(JSON.parse(diffEntry.pageMetaData as string).end, null, 2)
-				);
-
-				const metadataDiffHtml = html(diff, {
-					diffStyle: 'word',
-					matching: 'lines',
-					drawFileList: false,
-					outputFormat: 'side-by-side',
-					...options,
-				});
-
-				return {
-					...fixDiff(diffEntry),
-					metadataDiffHtml,
-					contentDiffHtml,
-				};
-			},
 		},
 		revertToDiff: async (id: string, type: 'content' | 'data' | 'both') => {
 			const diffEntry = await db
@@ -555,6 +511,48 @@ export function studiocmsSDKCore() {
 			}
 
 			return fixDiff(diffEntry);
+		},
+		utils: {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			getDifferences<T extends Record<string, any>>(
+				obj1: T,
+				obj2: T
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			): { label: string; previous: any; current: any }[] {
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				const differences: { label: string; previous: any; current: any }[] = [];
+
+				for (const label in obj1) {
+					const blackListedLabels: string[] = [
+						'publishedAt',
+						'updatedAt',
+						'authorId',
+						'contributorIds',
+					];
+					if (blackListedLabels.includes(label)) continue;
+
+					// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+					if (obj1.hasOwnProperty(label) && obj2.hasOwnProperty(label)) {
+						if (obj1[label] !== obj2[label]) {
+							if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
+								if (obj1[label].length === obj2[label].length) continue;
+							}
+							differences.push({ label, previous: obj1[label], current: obj2[label] });
+						}
+					}
+				}
+
+				return differences;
+			},
+			getDiffHTML(diff: string | null, options?: Diff2HtmlConfig) {
+				return html(diff || '', {
+					diffStyle: 'word',
+					matching: 'lines',
+					drawFileList: false,
+					outputFormat: 'side-by-side',
+					...options,
+				});
+			},
 		},
 	};
 

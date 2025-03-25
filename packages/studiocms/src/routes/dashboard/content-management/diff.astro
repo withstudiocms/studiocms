@@ -5,7 +5,6 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Group, Input } from 'studiocms:ui/components';
-import { convertChangesToDMP, diffJson } from 'diff';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
@@ -21,7 +20,7 @@ if (!diffId) {
 	return new Response(null, { status: 404 });
 }
 
-const diff = await studioCMS_SDK.diffTracking.get.withHtml(diffId);
+const diff = await studioCMS_SDK.diffTracking.get.single(diffId);
 
 if (!diff) {
 	return new Response(null, { status: 404 });
@@ -33,69 +32,11 @@ const users = await studioCMS_SDK.GET.database.users();
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-type ChangeType = -1 | 0 | 1;
+const { getDiffHTML, getDifferences } = studioCMS_SDK.diffTracking.utils;
 
-type ParsedChanges = Record<string, { previous?: string; current?: string }>;
+const metaDataChanges = getDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
 
-type CleanedChanges = {
-	label: string;
-	current?: string;
-	previous?: string;
-};
-
-function trimCommas(text: string) {
-	return text.replace(',', '');
-}
-
-function parseChanges(data: [ChangeType, string][]) {
-	const parsed: ParsedChanges = {};
-	const keyValueRegex = /"(.*?)": (.*)/;
-
-	for (const [type, value] of data) {
-		const trimmedValue = value.trim();
-		const match = keyValueRegex.exec(trimmedValue);
-
-		if (match) {
-			const key = match[1];
-			const val = match[2];
-
-			if (type === -1) {
-				parsed[key] = { previous: trimCommas(val) };
-			} else if (type === 1) {
-				if (parsed[key]) {
-					parsed[key].current = trimCommas(val);
-				} else {
-					parsed[key] = { current: trimCommas(val) };
-				}
-			}
-		}
-	}
-
-	const modifiedItems = Object.entries(parsed);
-
-	const cleaned: CleanedChanges[] = [];
-
-	for (const {
-		'0': label,
-		'1': { current, previous },
-	} of modifiedItems) {
-		const blackListedLabels: string[] = ['publishedAt', 'updatedAt', 'authorId', 'contributorIds'];
-
-		if (blackListedLabels.includes(label)) {
-			continue;
-		}
-
-		cleaned.push({ label, current, previous });
-	}
-
-	return cleaned;
-}
-
-const metaDataDiffChanges = diffJson(diff.pageMetaData.start, diff.pageMetaData.end);
-
-const metaDataDiffDMP = convertChangesToDMP(metaDataDiffChanges);
-
-const metaDataChanges = parseChanges(metaDataDiffDMP);
+const diffContentHTML = getDiffHTML(diff.diff);
 ---
 
 <Layout 
@@ -167,15 +108,12 @@ const metaDataChanges = parseChanges(metaDataDiffDMP);
     </h4>
 
     {
-      metaDataChanges.length > 0 ? metaDataChanges.map((item) => (
+      metaDataChanges.length > 0 ? metaDataChanges.map(({ current, label, previous }) => (
         <div class="diff-screen metadata-diffs">
-          <div>{item.label}</div>
+          <div>{label}</div>
           <div class="form-row">
-
-            <Input label="Previous" value={item.previous} disabled />
-
-            <Input label="Current" value={item.current} disabled />
-
+            <Input label="Previous" value={`${previous}`} disabled />
+            <Input label="Current" value={`${current}`} disabled />
           </div>
         </div>
       )) : (
@@ -189,7 +127,7 @@ const metaDataChanges = parseChanges(metaDataDiffDMP);
       <t-content-diff key="page-content">{td('page-content')}</t-content-diff>
     </h4>
 
-    <div set:html={diff.contentDiffHtml} class="diff-screen"></div>
+    <div set:html={diffContentHTML} class="diff-screen"></div>
 
 </Layout>
 
