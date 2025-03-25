@@ -7,6 +7,7 @@ import {
 	GhostUserDefaults,
 	NotificationSettingsDefaults,
 } from '../consts.js';
+import { jsonParse } from '../utils/jsonParse.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
 	addPageToFolderTree,
@@ -23,7 +24,7 @@ import {
 	generateToken,
 	testToken,
 } from './lib/generators.js';
-import { parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
+import { fixDiff, parseIdNumberArray, parseIdStringArray } from './lib/parsers.js';
 import { combineRanks, verifyRank } from './lib/users.js';
 import {
 	tsAPIKeys,
@@ -398,7 +399,7 @@ export function studiocmsSDKCore() {
 
 			await checkDiffsLengthAndRemoveOldestIfToLong(pageId, diffLength);
 
-			return await db
+			const inputted = await db
 				.insert(tsDiffTracking)
 				.values({
 					id: crypto.randomUUID(),
@@ -411,6 +412,8 @@ export function studiocmsSDKCore() {
 				})
 				.returning()
 				.get();
+
+			return fixDiff(inputted);
 		},
 		clear: async (pageId: string) => {
 			await db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, pageId));
@@ -418,11 +421,13 @@ export function studiocmsSDKCore() {
 		get: {
 			byPageId: {
 				all: async (pageId: string) => {
-					return await db
+					const items = await db
 						.select()
 						.from(tsDiffTracking)
 						.where(eq(tsDiffTracking.pageId, pageId))
 						.orderBy(desc(tsDiffTracking.timestamp));
+
+					return fixDiff(items);
 				},
 				latest: async (pageId: string, count: number) => {
 					const diffs = await db
@@ -431,16 +436,20 @@ export function studiocmsSDKCore() {
 						.where(eq(tsDiffTracking.pageId, pageId))
 						.orderBy(desc(tsDiffTracking.timestamp));
 
-					return diffs.slice(0, count);
+					const split = diffs.slice(0, count);
+
+					return fixDiff(split);
 				},
 			},
 			byUserId: {
 				all: async (userId: string) => {
-					return await db
+					const items = await db
 						.select()
 						.from(tsDiffTracking)
 						.where(eq(tsDiffTracking.userId, userId))
 						.orderBy(desc(tsDiffTracking.timestamp));
+
+					return fixDiff(items);
 				},
 				latest: async (userId: string, count: number) => {
 					const diffs = await db
@@ -449,11 +458,15 @@ export function studiocmsSDKCore() {
 						.where(eq(tsDiffTracking.userId, userId))
 						.orderBy(desc(tsDiffTracking.timestamp));
 
-					return diffs.slice(0, count);
+					const split = diffs.slice(0, count);
+
+					return fixDiff(split);
 				},
 			},
 			single: async (id: string) => {
-				return await db.select().from(tsDiffTracking).where(eq(tsDiffTracking.id, id)).get();
+				const data = await db.select().from(tsDiffTracking).where(eq(tsDiffTracking.id, id)).get();
+				if (!data) return;
+				return fixDiff(data);
 			},
 			withHtml: async (id: string, options?: Diff2HtmlConfig) => {
 				const diffEntry = await db
@@ -494,7 +507,7 @@ export function studiocmsSDKCore() {
 				});
 
 				return {
-					...diffEntry,
+					...fixDiff(diffEntry),
 					metadataDiffHtml,
 					contentDiffHtml,
 				};
