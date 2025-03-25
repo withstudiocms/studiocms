@@ -215,8 +215,8 @@
             "publish-button": "Veröffentlichen",
             "delete-modal-header": "Bist du dir sicher, dass du diesen Eintrag löschen willst?",
             "delete-modal-warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
-            "delete-folder-modal-desc-1": "Gebe den Ordnernamen zum Bestätigen ein.",
-            "delete-modal-desc-1": "Gebe den Slug zum Bestätigen ein.",
+            "delete-folder-modal-desc-1": "Gebe den Ordnernamen",
+            "delete-modal-desc-1": "Gebe den Slug",
             "delete-modal-desc-2": "zum Bestätigen ein.",
             "delete-folder-modal-desc-2": "zum Bestätigen ein."
         },
@@ -235,7 +235,7 @@
         "@studiocms/dashboard:content-diff": {
             "view-page": "Seite ansehen",
             "page-metadata": "Seiten-Metadaten",
-            "page-content": "Seiten-Content"
+            "page-content": "Seiteninhalt"
         },
         "@studiocms/dashboard:content-page": {
             "select-page-categories": "Kategorien",
