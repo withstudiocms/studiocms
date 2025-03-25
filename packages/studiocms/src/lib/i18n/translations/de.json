@@ -165,7 +165,7 @@
             "placeholder": "Wähle oder erstelle einen Benutzer um fortzufahren."
         },
         "@studiocms/dashboard:user-mngmt-edit": {
-            "delete-modal-desc-1": "Gebe zum Bestätigen den Benutzernamen ein.",
+            "delete-modal-desc-1": "Gebe den Benutzernamen",
             "delete-modal-warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
             "password-reset-modal-desc-1": "Link zum Zurücksetzen für Benutzer",
             "social-accounts-non": "Keine verbundenen Konten gefunden.",
