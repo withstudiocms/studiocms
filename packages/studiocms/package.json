@@ -139,7 +139,7 @@
     "@oslojs/binary": "^1.0.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "@studiocms/markdown-remark-processor": "^1.0.0",
+    "@studiocms/markdown-remark-processor": "^1.2.0",
     "@studiocms/ui": "catalog:",
     "ansi-escapes": "^7.0.0",
     "arctic": "^3.5.0",
