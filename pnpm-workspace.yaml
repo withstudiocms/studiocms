@@ -9,7 +9,7 @@ catalog:
   '@types/node': ^22.0.0
   "@studiocms/ui": ^0.4.16
   "@sentry/astro": ^9.2.0
-  astro: ^5.4.3
+  astro: ^5.5.0
   astro-integration-kit: ^0.18
   sharp: ^0.33.5
   typescript: ^5.7
@@ -17,9 +17,9 @@ catalog:
 
 catalogs:
   min:
-    astro: ^5.4.3
+    astro: ^5.5.0
     '@astrojs/db': ^0.14.7
-    '@astrojs/markdown-remark': ^6.2.1
+    '@astrojs/markdown-remark': ^6.3.1
     vite: ^6.2.0
 
 packages:
