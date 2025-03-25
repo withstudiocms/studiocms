@@ -18,7 +18,13 @@ import boxen from 'boxen';
 import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { authAPIRoute, dashboardAPIRoute, makeDashboardRoute, routesDir } from './consts.js';
+import {
+	StudioCMSMarkdownDefaults,
+	authAPIRoute,
+	dashboardAPIRoute,
+	makeDashboardRoute,
+	routesDir,
+} from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
@@ -1474,6 +1480,11 @@ export const studiocms = defineIntegration({
 					shared.studiocmsHTML = options.pageTypeOptions.html;
 					if (options.pageTypeOptions.markdown.flavor === 'studiocms') {
 						shared.studiocmsMarkdown = options.pageTypeOptions.markdown;
+					} else {
+						shared.studiocmsMarkdown = {
+							...StudioCMSMarkdownDefaults,
+							sanitize: options.pageTypeOptions.markdown.sanitize,
+						};
 					}
 
 					// Log Setup Complete
