@@ -1,4 +1,5 @@
 ---
+import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -27,6 +28,10 @@ if (!diff) {
 }
 
 const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
+
+const users = await studioCMS_SDK.GET.database.users();
+
+const user = (id: string) => users.find((u) => u.id === id)?.name;
 
 const testing = diffJson(diff.pageMetaData.start, diff.pageMetaData.end);
 
@@ -118,6 +123,9 @@ for (const {
             size="sm"
             href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
             ><t-content-diff key="view-page">{td('view-page')}</t-content-diff></Button>
+        </span>
+        <span>
+          Edited by {user(diff.userId)} on <FormattedDate date={diff.timestamp!} />
         </span>
     </div>
 
