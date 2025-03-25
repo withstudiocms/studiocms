@@ -175,7 +175,7 @@
             "header-delete-button": "Löschen",
             "header-save-button": "Änderungen speichern",
             "delete-modal-header": "Willst du diesen Benutzer wirklich löschen?",
-            "delete-modal-desc-2": "",
+            "delete-modal-desc-2": "zum Bestätigen ein.",
             "user-info-header": "Benutzerinformationen",
             "user-info-email": "E-Mail",
             "user-info-username": "Benutzername",
@@ -216,7 +216,9 @@
             "delete-modal-header": "Bist du dir sicher, dass du diesen Eintrag löschen willst?",
             "delete-modal-warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
             "delete-folder-modal-desc-1": "Gebe den Ordnernamen zum Bestätigen ein.",
-            "delete-modal-desc-1": "Gebe den Slug zum Bestätigen ein."
+            "delete-modal-desc-1": "Gebe den Slug zum Bestätigen ein.",
+            "delete-modal-desc-2": "zum Bestätigen ein.",
+            "delete-folder-modal-desc-2": "zum Bestätigen ein."
         },
         "@studiocms/dashboard:content-sidebar": {
             "input-placeholder-search": "Suche...",
