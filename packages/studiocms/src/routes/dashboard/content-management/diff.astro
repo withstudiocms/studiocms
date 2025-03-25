@@ -9,7 +9,7 @@ import InnerSidebarElement from '../../../components/dashboard/content-mgmt/Inne
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const { getDiffHTML, getDifferences } = studioCMS_SDK.diffTracking.utils;
+const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
 const users = await studioCMS_SDK.GET.database.users();
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
@@ -27,7 +27,7 @@ if (!diff) return Astro.redirect('/404');
 
 const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
 
-const metaDataChanges = getDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
+const metaDataChanges = getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
 
 const diffContentHTML = getDiffHTML(diff.diff);
 ---

@@ -514,7 +514,7 @@ export function studiocmsSDKCore() {
 		},
 		utils: {
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			getDifferences<T extends Record<string, any>>(
+			getMetaDataDifferences<T extends Record<string, any>>(
 				obj1: T,
 				obj2: T
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
