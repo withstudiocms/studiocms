@@ -33,20 +33,22 @@ const users = await studioCMS_SDK.GET.database.users();
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-const testing = diffJson(diff.pageMetaData.start, diff.pageMetaData.end);
-
 type ChangeType = -1 | 0 | 1;
 
-interface ParsedChanges {
-	modified: Record<string, { previous?: string; current?: string }>;
-}
+type ParsedChanges = Record<string, { previous?: string; current?: string }>;
+
+type CleanedChanges = {
+	label: string;
+	current?: string;
+	previous?: string;
+};
 
 function trimCommas(text: string) {
 	return text.replace(',', '');
 }
 
-function parseChanges(data: [ChangeType, string][]): ParsedChanges {
-	const parsed: ParsedChanges = { modified: {} };
+function parseChanges(data: [ChangeType, string][]) {
+	const parsed: ParsedChanges = {};
 	const keyValueRegex = /"(.*?)": (.*)/;
 
 	for (const [type, value] of data) {
@@ -58,46 +60,42 @@ function parseChanges(data: [ChangeType, string][]): ParsedChanges {
 			const val = match[2];
 
 			if (type === -1) {
-				parsed.modified[key] = { previous: trimCommas(val) };
+				parsed[key] = { previous: trimCommas(val) };
 			} else if (type === 1) {
-				if (parsed.modified[key]) {
-					parsed.modified[key].current = trimCommas(val);
+				if (parsed[key]) {
+					parsed[key].current = trimCommas(val);
 				} else {
-					parsed.modified[key] = { current: trimCommas(val) };
+					parsed[key] = { current: trimCommas(val) };
 				}
 			}
 		}
 	}
 
-	return parsed;
-}
+	const modifiedItems = Object.entries(parsed);
 
-// Example data
-const data: [ChangeType, string][] = convertChangesToDMP(testing);
+	const cleaned: CleanedChanges[] = [];
 
-// Parse changes
-const result = parseChanges(data);
+	for (const {
+		'0': label,
+		'1': { current, previous },
+	} of modifiedItems) {
+		const blackListedLabels: string[] = ['publishedAt', 'updatedAt', 'authorId', 'contributorIds'];
 
-const changes: {
-	label: string;
-	current?: string;
-	previous?: string;
-}[] = [];
+		if (blackListedLabels.includes(label)) {
+			continue;
+		}
 
-const ModifiedItems = Object.entries(result.modified);
-
-for (const {
-	'0': label,
-	'1': { current, previous },
-} of ModifiedItems) {
-	const blackListedLabels: string[] = ['publishedAt', 'updatedAt', 'authorId', 'contributorIds'];
-
-	if (blackListedLabels.includes(label)) {
-		continue;
+		cleaned.push({ label, current, previous });
 	}
 
-	changes.push({ label, current, previous });
+	return cleaned;
 }
+
+const metaDataDiffChanges = diffJson(diff.pageMetaData.start, diff.pageMetaData.end);
+
+const metaDataDiffDMP = convertChangesToDMP(metaDataDiffChanges);
+
+const metaDataChanges = parseChanges(metaDataDiffDMP);
 ---
 
 <Layout 
@@ -131,7 +129,7 @@ for (const {
                 variant={'outlined'} 
                 color={'primary'} 
                 size="sm" 
-                disabled={changes.length === 0} 
+                disabled={metaDataChanges.length === 0} 
                 data-id={diff.id} 
                 data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="data"
@@ -169,7 +167,7 @@ for (const {
     </h4>
 
     {
-      changes.length > 0 ? changes.map((item) => (
+      metaDataChanges.length > 0 ? metaDataChanges.map((item) => (
         <div class="diff-screen metadata-diffs">
           <div>{item.label}</div>
           <div class="form-row">
@@ -204,7 +202,7 @@ import { toast } from "studiocms:ui/components";
 
   async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
     const { url, id, type } = dataset;
-    
+
     event.preventDefault();
 
     if (!url || !id || !type) {
