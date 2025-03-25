@@ -108,7 +108,12 @@
             "input-site-icon": "Icono del sitio (Favicon público)",
             "title": "Configuración",
             "description": "Configuración",
-            "dashboard-grid-label": "Elementos de la cuadrícula del tablero"
+            "dashboard-grid-label": "Elementos de la cuadrícula del tablero",
+            "select-login-page-bg": "Imagen de fondo de página de inicio de sesión",
+            "select-page-diff-tracking": "Seguimiento de diferencias de página",
+            "select-smtp-mailer": "Mensajería SMTP",
+            "input-diff-tracking-limit": "Límite de seguimiento de diferencias (por página)",
+            "input-custom-login-page": "Página de inicio de sesión Imagen de fondo (personalizada)"
         },
         "@studiocms/dashboard:password-reset": {
             "title": "Restablecimiento de contraseña",
@@ -119,6 +124,49 @@
             "confirm-password-label": "Confirmar contraseña",
             "reset-button": "Restablecer contraseña",
             "sub-header-end": "Introduzca su nueva contraseña a continuación."
+        },
+        "@studiocms/dashboard:smtp": {
+            "smtp-tls-reject-unauthorized": "Rechazar TLS no autorizado",
+            "smtp-default-sender-placeholder": "StudioCMS no-reply <no-reply@example.mx>",
+            "title": "Configuración SMTP",
+            "description": "Configuración SMTP",
+            "header": "Configuración SMTP",
+            "save-button": "Guardar",
+            "smtp-settings": "Ajustes SMTP",
+            "test-smtp": "Enviar correo electrónico de prueba",
+            "smtp-host": "Host",
+            "smtp-host-placeholder": "smtp.example.mx / 1.1.1.1",
+            "smtp-port": "Puerto",
+            "smtp-port-placeholder": "587",
+            "smtp-secure": "Seguro",
+            "smtp-proxy": "Proxy",
+            "smtp-proxy-placeholder": "http://proxy.example.mx",
+            "smtp-tls-servername": "Nombre de servidor TLS",
+            "smtp-tls-servername-placeholder": "smtp.example.mx",
+            "smtp-user": "Nombre de usuario de autenticación",
+            "smtp-user-placeholder": "no-reply@example.mx",
+            "smtp-password": "Contraseña de autenticación",
+            "smtp-password-placeholder": "********",
+            "smtp-default-sender": "Remitente predeterminado",
+            "test-email": "Dirección de correo electrónico",
+            "test-email-placeholder": "john@example.mx",
+            "send-test-email": "Enviar correo electrónico de prueba",
+            "site-email-settings": "Configuración de correo electrónico del sitio",
+            "emailVerification": "Habilitar verificación de correo electrónico para los usuarios",
+            "requireAdminVerification": "Requerir que los administradores verifiquen su correo electrónico",
+            "requireEditorVerification": "Requerir que los editores verifiquen su correo electrónico",
+            "oAuthBypassVerification": "Saltar verificación de correo electrónico para los usuarios de OAuth",
+            "save-email-settings": "Guardar"
+        },
+        "@studiocms/dashboard:user-mngmt-sidebar": {
+            "input-placeholder-search": "Buscar...",
+            "dropdown-create-user": "Crear nuevo usuario",
+            "dropdown-create-invite": "Crear invitación de usuario"
+        },
+        "@studiocms/dashboard:user-mngmt-index": {
+            "title": "Administración de usuarios",
+            "description": "Administración de usuarios",
+            "header": "Administración de usuarios"
         }
     }
 }
