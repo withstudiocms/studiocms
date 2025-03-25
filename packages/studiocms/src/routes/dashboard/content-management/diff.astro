@@ -3,7 +3,8 @@ import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button } from 'studiocms:ui/components';
+import { Button, Input } from 'studiocms:ui/components';
+import { convertChangesToDMP, diffJson } from 'diff';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
@@ -26,6 +27,72 @@ if (!diff) {
 }
 
 const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
+
+const testing = diffJson(diff.pageMetaData.start, diff.pageMetaData.end);
+
+type ChangeType = -1 | 0 | 1;
+
+interface ParsedChanges {
+	modified: Record<string, { previous?: string; current?: string }>;
+}
+
+function trimCommas(text: string) {
+	return text.replace(',', '');
+}
+
+function parseChanges(data: [ChangeType, string][]): ParsedChanges {
+	const parsed: ParsedChanges = { modified: {} };
+	const keyValueRegex = /"(.*?)": (.*)/;
+
+	for (const [type, value] of data) {
+		const trimmedValue = value.trim();
+		const match = keyValueRegex.exec(trimmedValue);
+
+		if (match) {
+			const key = match[1];
+			const val = match[2];
+
+			if (type === -1) {
+				parsed.modified[key] = { previous: trimCommas(val) };
+			} else if (type === 1) {
+				if (parsed.modified[key]) {
+					parsed.modified[key].current = trimCommas(val);
+				} else {
+					parsed.modified[key] = { current: trimCommas(val) };
+				}
+			}
+		}
+	}
+
+	return parsed;
+}
+
+// Example data
+const data: [ChangeType, string][] = convertChangesToDMP(testing);
+
+// Parse changes
+const result = parseChanges(data);
+
+const changes: {
+	label: string;
+	current?: string;
+	previous?: string;
+}[] = [];
+
+const ModifiedItems = Object.entries(result.modified);
+
+for (const {
+	'0': label,
+	'1': { current, previous },
+} of ModifiedItems) {
+	const blackListedLabels: string[] = ['publishedAt', 'updatedAt', 'authorId', 'contributorIds'];
+
+	if (blackListedLabels.includes(label)) {
+		continue;
+	}
+
+	changes.push({ label, current, previous });
+}
 ---
 
 <Layout 
@@ -58,7 +125,24 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
       <t-content-diff key="page-metadata">{td('page-metadata')}</t-content-diff>
     </h4>
 
-    <div set:html={diff.metadataDiffHtml} class="diff-screen"></div>
+    {
+      changes.length > 0 ? changes.map((item) => (
+        <div class="diff-screen metadata-diffs">
+          <div>{item.label}</div>
+          <div class="form-row">
+
+            <Input label="Previous" value={item.previous} disabled />
+
+            <Input label="Current" value={item.current} disabled />
+
+          </div>
+        </div>
+      )) : (
+        <div class="diff-screen metadata-diffs">
+          <div>No Metadata changes</div>
+        </div>
+      )
+    }
 
     <h4>
       <t-content-diff key="page-content">{td('page-content')}</t-content-diff>
@@ -130,6 +214,18 @@ const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
     .diff-screen {
         max-width: 600px;
     }
+  }
+
+  .form-row {
+    display: flex;
+    gap: .5rem;
+  }
+
+  .metadata-diffs {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: .5rem;
   }
 
 </style>
