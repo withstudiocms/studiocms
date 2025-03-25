@@ -1,5 +1,6 @@
 import { componentKeys } from 'studiocms:component-proxy';
 import * as mod from 'studiocms:component-proxy';
+import logger from 'studiocms:logger';
 import { StudioCMSRendererError, prefixError } from './errors.js';
 
 /**
@@ -23,14 +24,14 @@ export async function importComponentsKeys() {
 					e,
 					`Failed to import component "${key}" from Virtual Module "studiocms:component-proxy"`
 				);
-				console.error(newErr);
+				logger.error(newErr);
 				throw new StudioCMSRendererError(newErr.message, newErr.stack);
 			}
 			const newErr = prefixError(
 				new Error('Unknown error'),
 				`Failed to import component "${key}" from Virtual Module "studiocms:component-proxy"`
 			);
-			console.error(newErr);
+			logger.error(newErr);
 			throw new StudioCMSRendererError(newErr.message, newErr.stack);
 		}
 	}
