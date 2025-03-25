@@ -130,7 +130,10 @@
             "header": "SMTP-Einstellungen",
             "smtp-settings": "SMTP-Einstellungen",
             "test-smtp": "Test-E-Mail senden",
-            "save-button": "Speichern"
+            "save-button": "Speichern",
+            "smtp-port": "Port",
+            "smtp-host": "Host",
+            "smtp-host-placeholder": "smtp.beispiel.de / 1.1.1.1"
         }
     }
 }
