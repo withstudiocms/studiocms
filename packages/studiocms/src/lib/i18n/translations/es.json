@@ -83,7 +83,42 @@
             "user-password-no-password": "Parece que tu cuenta no tiene una contraseña. Puedes establecer una usando el formulario de abajo.",
             "user-password-current": "Contraseña actual",
             "user-password-new": "Contraseña nueva",
-            "user-password-confirm": "Confirmar nueva contraseña"
+            "user-password-confirm": "Confirmar nueva contraseña",
+            "api-tokens-delete-button": "Eliminar",
+            "api-tokens-no-tokens": "No se encontraron tokens API.",
+            "api-tokens-modal-header": "Crear nuevo token API",
+            "api-tokens-modal-description": "Descripción",
+            "api-tokens-modal-response-header": "Nuevo token",
+            "api-tokens-modal-response-description": "Porfavor, copia tu nuevo token. No se mostrará de nuevo.",
+            "api-tokens-description": "Los tokens API se utilizan para autenticarse con la API REST de StudioCMS.",
+            "api-tokens-created": "Creados",
+            "social-accounts-no-connected": "No se encontraron cuentas conectadas.",
+            "social-accounts-other": "Otras opciones de inicio de sesión",
+            "social-accounts-no-other": "No se han encontrado otras opciones de inicio de sesión.",
+            "api-tokens-header": "Tokens de API",
+            "api-tokens-create": "Crear un token de API"
+        },
+        "@studiocms/dashboard:configuration": {
+            "header": "Configuración de sitio",
+            "save-button": "Guardar",
+            "login-page-preview": "Vista previa de la página de inicio de sesión (Oscuro/Claro)",
+            "input-site-title": "Título de sitio",
+            "input-site-description": "Descripción de sitio",
+            "input-og-image": "Imagen Open Graph por defecto",
+            "input-site-icon": "Icono del sitio (Favicon público)",
+            "title": "Configuración",
+            "description": "Configuración",
+            "dashboard-grid-label": "Elementos de la cuadrícula del tablero"
+        },
+        "@studiocms/dashboard:password-reset": {
+            "title": "Restablecimiento de contraseña",
+            "description": "Restablecimiento de contraseña",
+            "header": "Restablecimiento de contraseña",
+            "sub-header-start": "Hola",
+            "password-label": "Contraseña",
+            "confirm-password-label": "Confirmar contraseña",
+            "reset-button": "Restablecer contraseña",
+            "sub-header-end": "Introduzca su nueva contraseña a continuación."
         }
     }
 }
