@@ -7,7 +7,6 @@ import {
 	GhostUserDefaults,
 	NotificationSettingsDefaults,
 } from '../consts.js';
-import { jsonParse } from '../utils/jsonParse.js';
 import { StudioCMS_SDK_Error } from './errors.js';
 import {
 	addPageToFolderTree,
