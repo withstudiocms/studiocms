@@ -4,7 +4,7 @@ import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button, Group, Input } from 'studiocms:ui/components';
+import { Button, Card, Group, Input } from 'studiocms:ui/components';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
@@ -91,9 +91,22 @@ const diffContentHTML = getDiffHTML(diff.diff);
               </Button>
             </Group>
         </span>
-        <span>
-          Edited by {user(diff.userId)} on <FormattedDate date={diff.timestamp!} />
-        </span>
+        <Card>
+          <table class="page-diff-info">
+            <tr>
+              <td>Page Title</td>
+              <td>{page.title}</td>
+            </tr>
+            <tr>
+              <td>Edited by</td>
+              <td>{user(diff.userId)}</td>
+            </tr>
+            <tr>
+              <td>Edited on</td>
+              <td><FormattedDate date={diff.timestamp!} /></td>
+            </tr>
+          </table>
+        </Card>
     </div>
 
     <h4>
@@ -255,6 +268,30 @@ import { toast } from "studiocms:ui/components";
     flex-direction: column;
     gap: .5rem;
     margin-top: .5rem;
+  }
+
+  table {
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: 2px solid hsl(var(--background-step-2));
+    }
+
+    tr:nth-child(even) {
+      background-color: hsl(var(--background-step-2));
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: .5rem;
+    }
+
+    td:last-child {
+      border-left: 2px solid hsl(var(--background-step-3));
+    }
   }
 
 </style>
