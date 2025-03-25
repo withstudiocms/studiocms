@@ -554,7 +554,7 @@ export function studiocmsSDKCore() {
 				await db.delete(tsDiffTracking).where(eq(tsDiffTracking.id, diff.id));
 			}
 
-			return diffEntry;
+			return fixDiff(diffEntry);
 		},
 	};
 

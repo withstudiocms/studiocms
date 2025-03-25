@@ -520,6 +520,11 @@ export const studiocms = defineIntegration({
 						},
 						{
 							enabled: dashboardEnabled && !dbStartPage && authEnabled,
+							pattern: dashboardAPIRoute('content/diff'),
+							entrypoint: routesDir.dashApi('content/diff.ts'),
+						},
+						{
+							enabled: dashboardEnabled && !dbStartPage && authEnabled,
 							pattern: dashboardAPIRoute('create-reset-link'),
 							entrypoint: routesDir.dashApi('create-reset-link.ts'),
 						},

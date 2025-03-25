@@ -133,7 +133,7 @@ for (const {
                 size="sm" 
                 disabled={changes.length === 0} 
                 data-id={diff.id} 
-                data-url="#"
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="data"
                 >Revert MetaData
               </Button>
@@ -143,7 +143,7 @@ for (const {
                 color={'primary'} 
                 size="sm" 
                 data-id={diff.id} 
-                data-url="#"
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="content"
                 >Revert Content
               </Button>
@@ -153,7 +153,7 @@ for (const {
                 color={'primary'} 
                 size="sm" 
                 data-id={diff.id} 
-                data-url="#"
+                data-url={StudioCMSRoutes.endpointLinks.content.diff}
                 data-type="both"
                 >Revert All
               </Button>
@@ -203,52 +203,46 @@ import { toast } from "studiocms:ui/components";
   const revertAllChanges = document.getElementById('revert-all-changes') as HTMLButtonElement;
 
   async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
+    const { url, id, type } = dataset;
+    
     event.preventDefault();
 
-    toast({
-      title: 'Not yet Implemented',
-      description: 'This function has not yet been implemented',
-      type: 'warning',
-    })
+    if (!url || !id || !type) {
+      toast({
+        title: 'Error',
+        description: 'Something went wrong, Please refresh the page and try again.',
+        type: 'danger'
+      })
+      return;
+    }
 
-    // const { url, id, type } = dataset;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({ id, type })
+    });
 
-    // if (!url || !id || !type) {
-    //   toast({
-    //     title: 'Error',
-    //     description: 'Something went wrong, Please refresh the page and try again.',
-    //     type: 'danger'
-    //   })
-    //   return;
-    // }
+    const res = await response.json();
 
-    // const response = await fetch(url, {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   method: 'POST',
-    //   body: JSON.stringify({ id, type })
-    // });
+    if (response.status !== 200) {
+        toast({
+            title: 'Error',
+            description: res.error,
+            type: 'danger'
+        })
+        return;
+    }
 
-    // const res = await response.json();
-
-    // if (response.status !== 200) {
-    //     toast({
-    //         title: 'Error',
-    //         description: res.error,
-    //         type: 'danger'
-    //     })
-    //     return;
-    // }
-
-    // if (response.status === 200) {
-    //     toast({
-    //         title: 'Success',
-    //         description: res.message,
-    //         type: 'success'
-    //     })
-    //     return;
-    // }
+    if (response.status === 200) {
+        toast({
+            title: 'Success',
+            description: res.message,
+            type: 'success'
+        })
+        return;
+    }
   }
 
   revertMetaData.addEventListener('click', async (e) => await runEvent(revertMetaData, e))
