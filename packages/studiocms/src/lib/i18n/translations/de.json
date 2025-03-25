@@ -15,7 +15,10 @@
             "allow-registration-noaccount": "Du hast keinen Account?",
             "allow-registration-register": "Registriere dich hier!",
             "forgot-password": "Passwort vergessen?",
-            "forgot-password-title": "Passwort Vergessen"
+            "forgot-password-title": "Passwort Vergessen",
+            "demo-mode-credentials": "Demo-Modus-Zugangsdaten",
+            "forgot-password-message": "Hast du dein Passwort vergessen? Gebe deine E-Mail-Adresse ein und wir senden dir einen Link zum zurücksetzen.",
+            "email-label": "E-Mail-Adresse"
         },
         "@studiocms/auth:signup": {
             "title": "Registrierungsseite",
@@ -60,7 +63,74 @@
             "category-3-empty-placeholder": "Keine Plugins mit Einstellungsseiten gefunden.",
             "user-dropdown:settings": "Nutzereinstellungen",
             "user-dropdown:view-site": "Website besuchen",
-            "user-dropdown:logout": "Ausloggen"
+            "user-dropdown:logout": "Ausloggen",
+            "mailer-configuration-label": "SMTP-Einstellungen"
+        },
+        "@studiocms/dashboard:profile": {
+            "user-password-save-button": "Speichern",
+            "user-password-current": "Aktuelles Passwort",
+            "user-password-new": "Neues Passwort",
+            "user-password-confirm": "Neues Passwort bestätigen",
+            "social-accounts-connected": "Verbundene Konten",
+            "social-accounts-no-connected": "Keine verbundenen Kontos gefunden.",
+            "api-tokens-header": "API-Tokens",
+            "api-tokens-create": "API-Token erstellen",
+            "api-tokens-description": "API-Tokens werden zum Authentifizieren mit der StudioCMS REST API verwendet.",
+            "api-tokens-delete-button": "Löschen",
+            "api-tokens-created": "Erstellt",
+            "api-tokens-no-tokens": "Keine API-Tokens gefunden.",
+            "api-tokens-modal-header": "Neuen API-Token erstellen",
+            "api-tokens-modal-description": "Beschreibung",
+            "api-tokens-modal-response-description": "Bitte speichere deinen neuen Token. Er wird nie wieder sichtbar sein.",
+            "description": "Benutzerprofil",
+            "header": "Dein Profil",
+            "basic-info-save-button": "Speichern",
+            "basic-info-display-name": "Anzeigename",
+            "basic-info-email": "E-Mail",
+            "basic-info-username": "Benutzername",
+            "social-accounts-other": "Andere Login-Optionen",
+            "social-accounts-no-other": "Keine weiteren Login-Optionen gefunden.",
+            "title": "Benutzerprofil",
+            "basic-info-header": "Grundlegende Informationen",
+            "user-password-header": "Passwort erstellen / updaten",
+            "user-password-no-password": "Dein Konto hat noch kein Passwort. Mit dem folgenden Formular kannst du eins erstellen.",
+            "api-tokens-modal-response-header": "Neuer Token",
+            "basic-info-website": "Webseite"
+        },
+        "@studiocms/dashboard:password-reset": {
+            "title": "Passwort zurücksetzen",
+            "description": "Password zurücksetzen",
+            "header": "Passwort zurücksetzen",
+            "sub-header-start": "Hallo",
+            "sub-header-end": "Bitte gebe dein neues Passwort ein.",
+            "password-label": "Passwort",
+            "reset-button": "Passwort zurücksetzen",
+            "confirm-password-label": "Passwort bestätigen"
+        },
+        "@studiocms/dashboard:configuration": {
+            "title": "Konfiguration",
+            "description": "Konfiguration",
+            "header": "Seitenkonfiguration",
+            "save-button": "Speichern",
+            "dashboard-grid-label": "Dashboard-Rasterelemente",
+            "input-site-title": "Seitentitel",
+            "input-site-description": "Seitenbeschreibung",
+            "input-og-image": "Standard Open Graph-Bild",
+            "input-diff-tracking-limit": "Diff-Tracking-Limit (pro Seite)",
+            "input-custom-login-page": "Hintergrundbild der Anmeldeseite (Benutzerdefiniert)",
+            "select-page-diff-tracking": "Seiten-Diff-Verfolgung",
+            "select-login-page-bg": "Hintergrundbild der Anmeldeseite",
+            "select-smtp-mailer": "SMTP-Mailer",
+            "login-page-preview": "Loginseitenvorschau (Dunkel/Hell)",
+            "input-site-icon": "Seitenicon (Öffentliches Favicon)"
+        },
+        "@studiocms/dashboard:smtp": {
+            "title": "SMTP-Einstellungen",
+            "description": "SMTP-Konfiguration",
+            "header": "SMTP-Einstellungen",
+            "smtp-settings": "SMTP-Einstellungen",
+            "test-smtp": "Test-E-Mail senden",
+            "save-button": "Speichern"
         }
     }
 }
