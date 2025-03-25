@@ -104,7 +104,9 @@
       "header": "Réinitialisation du mot de passe",
       "sub-header-end": "Veuillez saisir votre nouveau mot de passe ci-dessous.",
       "password-label": "Mot de passe",
-      "confirm-password-label": "Confirmer le mot de passe"
+      "confirm-password-label": "Confirmer le mot de passe",
+      "sub-header-start": "Bonjour",
+      "reset-button": "Réinitialiser le mot de passe"
     },
     "@studiocms/dashboard:configuration": {
       "title": "Configuration",
@@ -180,7 +182,105 @@
       "user-info-header": "Informations de l'utilisateur",
       "user-info-email": "E-mail",
       "user-info-username": "Nom d'utilisateur",
-      "user-info-website": "Site web"
+      "user-info-website": "Site web",
+      "api-tokens-header": "Jetons API",
+      "api-tokens-delete-button": "Supprimer",
+      "api-tokens-no-tokens": "Aucun jeton API trouvé.",
+      "last-edit-pages-header": "Dernières pages modifiées",
+      "last-edit-pages-no-edits": "Aucun historique trouvé.",
+      "api-tokens-created": "Création",
+      "last-edit-pages-edited": "Modifié",
+      "user-info-created-at": "Créé le",
+      "user-info-updated-at": "Mis à jour le",
+      "password-reset-button": "Créer un lien de réinitialisation",
+      "password-reset-modal-header": "Lien de réinitialisation du mot de passe",
+      "password-reset-modal-desc-1": "Lien de réinitialisation pour l'utilisateur",
+      "password-reset-modal-desc-2": "a été créé.",
+      "password-reset-modal-link": "Lien",
+      "edit-role-header": "Rôle de l'utilisateur",
+      "email-verification-status": "Statut de vérification de l'e-mail",
+      "social-accounts-header": "Comptes connectés",
+      "social-accounts-non": "Aucun compte connecté trouvé."
+    },
+    "@studiocms/dashboard:content-index": {
+      "header": "Gestion de contenu",
+      "title": "Gestion de contenu",
+      "description": "Gestion de contenu",
+      "placeholder": "Sélectionnez ou créez une page pour commencer."
+    },
+    "@studiocms/dashboard:plugin-settings": {
+      "title": "Paramètres du plugin",
+      "description": "Paramètres du plugin",
+      "header": "Paramètres",
+      "save-button": "Enregistrer les modifications"
+    },
+    "@studiocms/dashboard:content-sidebar": {
+      "input-placeholder-search": "Rechercher...",
+      "dropdown-create-page": "Créer une page",
+      "dropdown-create-folder": "Créer un dossier",
+      "items-divider": "Éléments"
+    },
+    "@studiocms/dashboard:content-header": {
+      "title": "Gestion de contenu",
+      "edit-page-title": "Modifier la page",
+      "edit-folder-title": "Modifier le dossier",
+      "create-page-title": "Créer une page",
+      "create-folder-title": "Créer un dossier",
+      "delete-button": "Supprimer",
+      "save-button": "Enregistrer les modifications",
+      "draft-button": "Enregistrer le brouillon",
+      "publish-button": "Publier",
+      "delete-modal-header": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+      "delete-modal-warning": "Cette action ne peut pas être annulée.",
+      "delete-modal-desc-1": "Saisissez le slug",
+      "delete-modal-desc-2": "pour confirmer.",
+      "delete-folder-modal-desc-1": "Saisissez le nom du dossier",
+      "delete-folder-modal-desc-2": "pour confirmer.",
+      "create-button": "Créer"
+    },
+    "@studiocms/dashboard:content-diff": {
+      "view-page": "Voir la page",
+      "page-metadata": "Métadonnées de la page",
+      "page-content": "Contenu de la page"
+    },
+    "@studiocms/dashboard:content-folder": {
+      "input-folder-name": "Nom du dossier",
+      "input-folder-parent": "Dossier parent"
+    },
+    "@studiocms/dashboard:content-page": {
+      "tab-label-basic-info": "Informations de base",
+      "tab-label-content": "Contenu de la page",
+      "tab-label-diff": "Modifier l'historique",
+      "input-page-title": "Titre de la page",
+      "input-page-slug": "Slug",
+      "input-page-description": "Description",
+      "select-page-type": "Type de page",
+      "select-page-show-in-nav": "Afficher dans la navigation",
+      "select-page-parent-folder": "Dossier parent",
+      "select-page-draft": "Brouillon",
+      "select-page-categories": "Catégories",
+      "input-page-hero-image": "Image de couverture/OpenGraph",
+      "select-page-tags": "Étiquettes",
+      "select-page-show-author": "Afficher l'auteur",
+      "select-page-show-contributors": "Afficher les contributeurs",
+      "custom-page-type-fields-header": "Champs de type de page personnalisés",
+      "custom-page-types-description-new": "Vous avez modifié votre type de page. Veuillez enregistrer vos modifications et actualiser la page pour voir les nouveaux champs.",
+      "diff-edited-by-1": "Modifié",
+      "diff-edited-by-2": "par",
+      "diff-no-history": "Aucun historique trouvé."
+    },
+    "@studiocms/dashboard:unverifiedEmail": {
+      "resend-button": "Renvoyer l'e-mail de vérification",
+      "back-button": "Aller à la page d'accueil",
+      "title": "E-mail non vérifié",
+      "description": "E-mail non vérifié",
+      "sub-description": "Votre adresse e-mail n'a pas été vérifiée. Veuillez consulter votre boîte de réception pour obtenir un lien de vérification."
+    },
+    "@studiocms/dashboard:404": {
+      "title": "Erreur 404",
+      "description": "Erreur 404 - Page introuvable",
+      "sub-description": "La page que vous recherchez a peut-être été supprimée, son nom a été modifié ou elle est temporairement indisponible.",
+      "back-button": "Retour"
     }
   }
 }
