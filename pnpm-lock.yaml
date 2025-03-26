@@ -93,6 +93,9 @@ importers:
       studiocms:
         specifier: workspace:*
         version: link:packages/studiocms
+      tinyglobby:
+        specifier: ^0.2.12
+        version: 0.2.12
       tsm:
         specifier: 2.3.0
         version: 2.3.0

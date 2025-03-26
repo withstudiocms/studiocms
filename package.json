@@ -43,6 +43,7 @@
     "pkg-pr-new": "0.0.41",
     "studiocms": "workspace:*",
     "tsm": "2.3.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "tinyglobby": "^0.2.12"
   }
 }
