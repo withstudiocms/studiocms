@@ -1,5 +1,84 @@
 # @studiocms/blog
 
+## 0.1.0-beta.13
+
+### Patch Changes
+
+- [#478](https://github.com/withstudiocms/studiocms/pull/478) [`df24828`](https://github.com/withstudiocms/studiocms/commit/df2482847269c1b0d1ab7c6443deff243601fc08) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor rendering system to rely on plugin PageTypes instead of the old built-in system, this will allow new page types to easily bring their own renderer that can get called from the main renderer component.
+
+  #### Breaking Changes
+
+  - Removed MDX, and MarkDoc from built-in renderer. These will be replaced by plugins.
+  - Rendering system is now directly tied into the plugin PageTypes defined within plugins. Instead of passing just the content to the renderer, you now must pass the entire PageData from the SDK.
+  - New Rendering Component is now able to auto adapt to the pageType's provided renderer. (This means you can use the provided `<StudioCMSRenderer />` component to render any pageType that has been configured for StudioCMS through plugins. or use the data directly and render it yourself.)
+
+  **OLD Method** (`[...slug].astro`)
+
+  ```astro title="[...slug].astro"
+  ---
+  import { StudioCMSRenderer } from 'studiocms:renderer';
+  import studioCMS_SDK from 'studiocms:sdk';
+  import Layout from '../layouts/Layout.astro';
+
+  let { slug } = Astro.params;
+
+  if (!slug) {
+  	slug = 'index';
+  }
+
+  const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+
+  if (!page) {
+  	return new Response(null, { status: 404 });
+  }
+
+  const { title, description, heroImage, defaultContent } = page;
+
+  const content = defaultContent.content || '';
+  ---
+
+  <Layout title={title} description={description} heroImage={heroImage}>
+  	<main>
+  		<StudioCMSRenderer content={content} />
+  	</main>
+  </Layout>
+  ```
+
+  **New Method** (`[...slug].astro`)
+
+  ```astro title="[...slug].astro"
+  ---
+  import { StudioCMSRenderer } from 'studiocms:renderer';
+  import studioCMS_SDK from 'studiocms:sdk';
+  import Layout from '../layouts/Layout.astro';
+
+  let { slug } = Astro.params;
+
+  if (!slug) {
+  	slug = 'index';
+  }
+
+  const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+
+  if (!page) {
+  	return new Response(null, { status: 404 });
+  }
+
+  const { title, description, heroImage } = page;
+  ---
+
+  <Layout title={title} description={description} heroImage={heroImage}>
+  	<main>
+  		<StudioCMSRenderer data={page} />
+  	</main>
+  </Layout>
+  ```
+
+- [#473](https://github.com/withstudiocms/studiocms/pull/473) [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update READMEs
+
+- Updated dependencies [[`48630ef`](https://github.com/withstudiocms/studiocms/commit/48630ef21bac514baa23aeb07d4fbf6fd09fb909), [`3612916`](https://github.com/withstudiocms/studiocms/commit/3612916cf393488e4ba850312cc0a8ce27fd9122), [`77f89d6`](https://github.com/withstudiocms/studiocms/commit/77f89d6ecec0f06ffdb03bb8b86e99880345ee48), [`5780894`](https://github.com/withstudiocms/studiocms/commit/578089449210d017748df5fd27b34569a6899ce0), [`a430661`](https://github.com/withstudiocms/studiocms/commit/a4306618aeb3479f9d7b074637a54dc65798fe78), [`4fc5d6b`](https://github.com/withstudiocms/studiocms/commit/4fc5d6b9528968d7681dbf2f549e844989e10eb5), [`3f8b220`](https://github.com/withstudiocms/studiocms/commit/3f8b220a118b7829d9680b579fc50dd379d25c4b), [`501d11c`](https://github.com/withstudiocms/studiocms/commit/501d11cb41dd89e0280eecba9db57a49fce260a5), [`ab1714c`](https://github.com/withstudiocms/studiocms/commit/ab1714ce7d89560c545b42601c888a004941f992), [`0901215`](https://github.com/withstudiocms/studiocms/commit/0901215cf33b7e0283c1b31265038fd15efd7dfb), [`df24828`](https://github.com/withstudiocms/studiocms/commit/df2482847269c1b0d1ab7c6443deff243601fc08), [`dae7795`](https://github.com/withstudiocms/studiocms/commit/dae77957cac866e47d09997ac6c990e3326459ea), [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9), [`4880ce8`](https://github.com/withstudiocms/studiocms/commit/4880ce877a0c4bea3dcbe1c1565a78ab56603afc), [`9512aac`](https://github.com/withstudiocms/studiocms/commit/9512aac4a928423caf91cbaa1c89a29e9d40a731), [`ddee17d`](https://github.com/withstudiocms/studiocms/commit/ddee17de1be97d05345caa4008de95c36e30333d), [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9)]:
+  - studiocms@0.1.0-beta.13
+
 ## 0.1.0-beta.12
 
 ### Patch Changes

@@ -1,5 +1,124 @@
 # studiocms
 
+## 0.1.0-beta.13
+
+### Patch Changes
+
+- [#484](https://github.com/withstudiocms/studiocms/pull/484) [`48630ef`](https://github.com/withstudiocms/studiocms/commit/48630ef21bac514baa23aeb07d4fbf6fd09fb909) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #484)
+
+- [#483](https://github.com/withstudiocms/studiocms/pull/483) [`3612916`](https://github.com/withstudiocms/studiocms/commit/3612916cf393488e4ba850312cc0a8ce27fd9122) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix Missing CSS on DB start pages for the code blocks
+
+- [#489](https://github.com/withstudiocms/studiocms/pull/489) [`77f89d6`](https://github.com/withstudiocms/studiocms/commit/77f89d6ecec0f06ffdb03bb8b86e99880345ee48) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update dependencies
+
+- [#490](https://github.com/withstudiocms/studiocms/pull/490) [`5780894`](https://github.com/withstudiocms/studiocms/commit/578089449210d017748df5fd27b34569a6899ce0) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #490)
+
+- [#476](https://github.com/withstudiocms/studiocms/pull/476) [`a430661`](https://github.com/withstudiocms/studiocms/commit/a4306618aeb3479f9d7b074637a54dc65798fe78) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix(auth): Re-enable the verification for usernames and passwords to ensure data safety
+
+- [#474](https://github.com/withstudiocms/studiocms/pull/474) [`4fc5d6b`](https://github.com/withstudiocms/studiocms/commit/4fc5d6b9528968d7681dbf2f549e844989e10eb5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor internal integration logic to cleanup old logic and simplify main integration
+
+- [#480](https://github.com/withstudiocms/studiocms/pull/480) [`3f8b220`](https://github.com/withstudiocms/studiocms/commit/3f8b220a118b7829d9680b579fc50dd379d25c4b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - NEW: HTML pageType available for pages, build HTML pages with the new SunEditor HTML builder.
+
+- [#488](https://github.com/withstudiocms/studiocms/pull/488) [`501d11c`](https://github.com/withstudiocms/studiocms/commit/501d11cb41dd89e0280eecba9db57a49fce260a5) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #488)
+
+- [#485](https://github.com/withstudiocms/studiocms/pull/485) [`ab1714c`](https://github.com/withstudiocms/studiocms/commit/ab1714ce7d89560c545b42601c888a004941f992) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Diff page
+
+  - Update pageMetaData section to use disabled inputs to display previous/current data
+  - Implement diff endpoint for reverting changes
+  - Add interactive buttons for reverting changes
+  - Add helpful information to the top section to display info about the diff
+
+- [#477](https://github.com/withstudiocms/studiocms/pull/477) [`0901215`](https://github.com/withstudiocms/studiocms/commit/0901215cf33b7e0283c1b31265038fd15efd7dfb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove old `testingAndDemoMode` developer option and add new `demoMode` option with a simple interface
+
+  Demo mode can either be `false` or an object with the following type `{ username: string; password: string; }`. This will allow you to create demo user credentials that are public.
+
+  Please note, this does not prevent changes and resetting the DB is up to the developer to configure on their own. (a github action that clears the tables and adds the desired values back on a schedule is one idea for this.)
+
+- [#478](https://github.com/withstudiocms/studiocms/pull/478) [`df24828`](https://github.com/withstudiocms/studiocms/commit/df2482847269c1b0d1ab7c6443deff243601fc08) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor rendering system to rely on plugin PageTypes instead of the old built-in system, this will allow new page types to easily bring their own renderer that can get called from the main renderer component.
+
+  #### Breaking Changes
+
+  - Removed MDX, and MarkDoc from built-in renderer. These will be replaced by plugins.
+  - Rendering system is now directly tied into the plugin PageTypes defined within plugins. Instead of passing just the content to the renderer, you now must pass the entire PageData from the SDK.
+  - New Rendering Component is now able to auto adapt to the pageType's provided renderer. (This means you can use the provided `<StudioCMSRenderer />` component to render any pageType that has been configured for StudioCMS through plugins. or use the data directly and render it yourself.)
+
+  **OLD Method** (`[...slug].astro`)
+
+  ```astro title="[...slug].astro"
+  ---
+  import { StudioCMSRenderer } from 'studiocms:renderer';
+  import studioCMS_SDK from 'studiocms:sdk';
+  import Layout from '../layouts/Layout.astro';
+
+  let { slug } = Astro.params;
+
+  if (!slug) {
+  	slug = 'index';
+  }
+
+  const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+
+  if (!page) {
+  	return new Response(null, { status: 404 });
+  }
+
+  const { title, description, heroImage, defaultContent } = page;
+
+  const content = defaultContent.content || '';
+  ---
+
+  <Layout title={title} description={description} heroImage={heroImage}>
+  	<main>
+  		<StudioCMSRenderer content={content} />
+  	</main>
+  </Layout>
+  ```
+
+  **New Method** (`[...slug].astro`)
+
+  ```astro title="[...slug].astro"
+  ---
+  import { StudioCMSRenderer } from 'studiocms:renderer';
+  import studioCMS_SDK from 'studiocms:sdk';
+  import Layout from '../layouts/Layout.astro';
+
+  let { slug } = Astro.params;
+
+  if (!slug) {
+  	slug = 'index';
+  }
+
+  const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+
+  if (!page) {
+  	return new Response(null, { status: 404 });
+  }
+
+  const { title, description, heroImage } = page;
+  ---
+
+  <Layout title={title} description={description} heroImage={heroImage}>
+  	<main>
+  		<StudioCMSRenderer data={page} />
+  	</main>
+  </Layout>
+  ```
+
+- [#481](https://github.com/withstudiocms/studiocms/pull/481) [`dae7795`](https://github.com/withstudiocms/studiocms/commit/dae77957cac866e47d09997ac6c990e3326459ea) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #481)
+
+- [#473](https://github.com/withstudiocms/studiocms/pull/473) [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix ambient types, and remove now unused stub files and type injection
+
+  Consolidate all virtual types into a single file,
+
+  - Previous exports such as `studiocms/v/core.d.ts` are now all under `studiocms/v/types`
+
+- [#479](https://github.com/withstudiocms/studiocms/pull/479) [`4880ce8`](https://github.com/withstudiocms/studiocms/commit/4880ce877a0c4bea3dcbe1c1565a78ab56603afc) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove unused dependencies and references
+
+- [#471](https://github.com/withstudiocms/studiocms/pull/471) [`9512aac`](https://github.com/withstudiocms/studiocms/commit/9512aac4a928423caf91cbaa1c89a29e9d40a731) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Arctic to v3.5.0 and implement new required code verifier for auth0 and discord
+
+- [#486](https://github.com/withstudiocms/studiocms/pull/486) [`ddee17d`](https://github.com/withstudiocms/studiocms/commit/ddee17de1be97d05345caa4008de95c36e30333d) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #486)
+
+- [#473](https://github.com/withstudiocms/studiocms/pull/473) [`ddc7eb8`](https://github.com/withstudiocms/studiocms/commit/ddc7eb8a9a351d851bb5820dcb2297dc4de793d9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update READMEs
+
 ## 0.1.0-beta.12
 
 ### Patch Changes
