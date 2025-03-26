@@ -16,7 +16,7 @@
             "allow-registration-register": "¡Registrarse aquí!",
             "demo-mode-credentials": "Credenciales de modo demo",
             "forgot-password": "¿Olvidaste la contraseña? Presiona aquí.",
-            "forgot-password-title": "Olvidó contraseña",
+            "forgot-password-title": "Olvidé mi contraseña",
             "forgot-password-message": "¿Olvidaste la contraseña? Ingresa tu correo electrónico debajo y te mandaremos una liga para reestablecerla.",
             "email-label": "Dirección de correo electrónico"
         },
@@ -89,7 +89,7 @@
             "api-tokens-modal-header": "Crear nuevo token API",
             "api-tokens-modal-description": "Descripción",
             "api-tokens-modal-response-header": "Nuevo token",
-            "api-tokens-modal-response-description": "Porfavor, copia tu nuevo token. No se mostrará de nuevo.",
+            "api-tokens-modal-response-description": "Por favor, copia tu nuevo token. No se mostrará de nuevo.",
             "api-tokens-description": "Los tokens API se utilizan para autenticarse con la API REST de StudioCMS.",
             "api-tokens-created": "Creados",
             "social-accounts-no-connected": "No se encontraron cuentas conectadas.",
@@ -113,7 +113,7 @@
             "select-page-diff-tracking": "Seguimiento de diferencias de página",
             "select-smtp-mailer": "Mensajería SMTP",
             "input-diff-tracking-limit": "Límite de seguimiento de diferencias (por página)",
-            "input-custom-login-page": "Página de inicio de sesión Imagen de fondo (personalizada)"
+            "input-custom-login-page": "Imagen de fondo de la página de inicio de sesión (personalizada)"
         },
         "@studiocms/dashboard:password-reset": {
             "title": "Restablecimiento de contraseña",
@@ -141,7 +141,7 @@
             "smtp-secure": "Seguro",
             "smtp-proxy": "Proxy",
             "smtp-proxy-placeholder": "http://proxy.example.mx",
-            "smtp-tls-servername": "Nombre de servidor TLS",
+            "smtp-tls-servername": "Nombre del servidor TLS",
             "smtp-tls-servername-placeholder": "smtp.example.mx",
             "smtp-user": "Nombre de usuario de autenticación",
             "smtp-user-placeholder": "no-reply@example.mx",
@@ -242,7 +242,17 @@
             "input-page-title": "Título de página",
             "tab-label-diff": "Historial de edición",
             "tab-label-content": "Contenido de página",
-            "tab-label-basic-info": "Información básica"
+            "tab-label-basic-info": "Información básica",
+            "select-page-show-contributors": "Mostrar contribuyentes",
+            "custom-page-type-fields-header": "Campos de tipo de página personalizada",
+            "select-page-draft": "Borrador",
+            "select-page-categories": "Categorías",
+            "select-page-tags": "Etiquetas",
+            "select-page-show-author": "Mostrar autor",
+            "custom-page-types-description-new": "Ha cambiado tu tipo de página. Guarde sus cambios y actualice la página para ver los nuevos campos.",
+            "diff-edited-by-1": "Editado",
+            "diff-edited-by-2": "por",
+            "diff-no-history": "No se ha encontrado ningún historial."
         },
         "@studiocms/dashboard:content-folder": {
             "input-folder-parent": "Carpeta principal",
@@ -265,6 +275,19 @@
             "header": "Gestión de contenido",
             "description": "Gestión de contenido",
             "title": "Gestión de contenido"
+        },
+        "@studiocms/dashboard:404": {
+            "sub-description": "La página que buscas puede haber sido eliminada, su nombre ha cambiado o no está temporalmente disponible.",
+            "title": "Error 404",
+            "description": "Error 404 - Página no encontrada",
+            "back-button": "Regresar"
+        },
+        "@studiocms/dashboard:unverifiedEmail": {
+            "title": "Correo electrónico no verificado",
+            "description": "Correo electrónico no verificado",
+            "sub-description": "Tu dirección de correo electrónico no ha sido verificada. Por favor, consulta tu correo electrónico para obtener un enlace de verificación.",
+            "resend-button": "Reenviar correo electrónico de verificación",
+            "back-button": "Ir al inicio"
         }
     }
 }
