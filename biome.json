@@ -15,7 +15,8 @@
       "**/*.min.js",
       "**/*.min.css",
       "dashboard-code.css",
-      "translation-statistics/**"
+      "translation-statistics/**",
+      "**/i18n/translations/*.json"
     ]
   },
   "formatter": {
