@@ -1,6 +1,7 @@
 name: CI - Crowdin Upload
 
 on:
+  workflow_dispatch:
   push:
     paths: [ '/packages/studiocms/src/lib/i18n/translations/**' ]
     branches: [ main ]
