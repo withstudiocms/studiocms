@@ -5,6 +5,7 @@
 [![NPM Version](https://img.shields.io/npm/v/studiocms)](https://npm.im/studiocms)
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
+[![Crowdin](https://badges.crowdin.net/studiocms/localized.svg)](https://crowdin.com/project/studiocms)
 
 This is an SSR CMS built with AstroDB for the Astro Ecosystem.
 
@@ -16,10 +17,6 @@ To see how to get started, check out the [StudioCMS Docs](./packages/studiocms/R
 ## Sponsor
 
 <a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
-
-## StudioCMS Dashboard i18n Status
-
-<a href="https://i18n.studiocms.dev/engage/studiocms/"><img src="https://i18n.studiocms.dev/widget/studiocms/287x66-black.png" alt="Translation status" /></a>
 
 ## Contributing
 
