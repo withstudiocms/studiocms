@@ -26,8 +26,8 @@ jobs:
           download_translations: true
           localization_branch_name: l10n_main
           create_pull_request: true
-          pull_request_title: 'feat(i18n): New Crowdin translations'
-          pull_request_body: 'New Crowdin pull request with translations'
+          pull_request_title: 'feat(i18n): Crowdin Translation Sync'
+          pull_request_body: 'Merge this PR to sync with Crowdin (New PR will be opened)'
           pull_request_base_branch_name: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
