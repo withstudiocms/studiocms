@@ -1,4 +1,4 @@
-name: Crowdin Action
+name: CI - Crowdin Scheduled PRs
 
 on:
   workflow_dispatch:
