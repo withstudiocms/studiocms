@@ -1,9 +1,15 @@
-name: CI - Crowdin Scheduled PRs
+name: CI - Crowdin Sync PR
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 6 * * *"
+  repository_dispatch:
+    types:
+      - file-fully-translated
+      - file-fully-reviewed
+      - file-added
+      - file-updated
+      - file-reverted
+      - file-deleted
 
 permissions:
   contents: write
@@ -27,7 +33,7 @@ jobs:
           localization_branch_name: l10n_main
           create_pull_request: true
           pull_request_title: 'feat(i18n): Crowdin Translation Sync'
-          pull_request_body: 'Merge this PR to sync with Crowdin (New PR will be opened)'
+          pull_request_body: 'Merge this PR to sync with Crowdin'
           pull_request_base_branch_name: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
