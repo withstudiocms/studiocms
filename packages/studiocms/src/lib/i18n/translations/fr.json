@@ -14,11 +14,11 @@
       "login-button": "Se connecter",
       "allow-registration-noaccount": "Vous n'avez pas de compte ?",
       "allow-registration-register": "Inscrivez-vous ici !",
-      "demo-mode-credentials": "Informations d’identification du mode de démonstration",
       "forgot-password": "Mot de passe oublié ? Cliquez ici.",
       "forgot-password-title": "Mot de passe oublié",
       "forgot-password-message": "Vous avez oublié votre mot de passe ? Entrez votre adresse e-mail ci-dessous et nous vous enverrons un lien de réinitialisation.",
-      "email-label": "Adresse e-mail"
+      "email-label": "Adresse e-mail",
+      "demo-mode-credentials": "Informations d’identification du mode de démonstration"
     },
     "@studiocms/auth:signup": {
       "title": "Page d'inscription",
@@ -67,9 +67,6 @@
       "mailer-configuration-label": "Configuration SMTP"
     },
     "@studiocms/dashboard:profile": {
-      "basic-info-website": "Site web",
-      "user-password-no-password": "Il semble qu'aucun mot de passe ne soit défini pour votre compte. Vous pouvez en définir un en utilisant le formulaire ci-dessous.",
-      "api-tokens-description": "Les jetons API sont utilisés pour s'authentifier auprès de l'API REST de StudioCMS.",
       "title": "Profil utilisateur",
       "description": "Profil utilisateur",
       "header": "Votre profil",
@@ -78,8 +75,10 @@
       "basic-info-display-name": "Nom d'affichage",
       "basic-info-email": "E-mail",
       "basic-info-username": "Nom d'utilisateur",
+      "basic-info-website": "Site web",
       "user-password-header": "Créer ou mettre à jour votre mot de passe",
       "user-password-save-button": "Enregistrer",
+      "user-password-no-password": "Il semble qu'aucun mot de passe ne soit défini pour votre compte. Vous pouvez en définir un en utilisant le formulaire ci-dessous.",
       "user-password-current": "Mot de passe actuel",
       "user-password-new": "Nouveau mot de passe",
       "user-password-confirm": "Confirmer le nouveau mot de passe",
@@ -90,6 +89,7 @@
       "social-accounts-no-other": "Aucune autre option de connexion trouvée.",
       "api-tokens-header": "Jetons API",
       "api-tokens-create": "Créer un jeton API",
+      "api-tokens-description": "Les jetons API sont utilisés pour s'authentifier auprès de l'API REST de StudioCMS.",
       "api-tokens-delete-button": "Supprimer",
       "api-tokens-created": "Créés",
       "api-tokens-no-tokens": "Aucun jeton API trouvé.",
@@ -102,10 +102,10 @@
       "title": "Réinitialisation du mot de passe",
       "description": "Réinitialisation du mot de passe",
       "header": "Réinitialisation du mot de passe",
+      "sub-header-start": "Bonjour",
       "sub-header-end": "Veuillez saisir votre nouveau mot de passe ci-dessous.",
       "password-label": "Mot de passe",
       "confirm-password-label": "Confirmer le mot de passe",
-      "sub-header-start": "Bonjour",
       "reset-button": "Réinitialiser le mot de passe"
     },
     "@studiocms/dashboard:configuration": {
@@ -183,13 +183,6 @@
       "user-info-email": "E-mail",
       "user-info-username": "Nom d'utilisateur",
       "user-info-website": "Site web",
-      "api-tokens-header": "Jetons API",
-      "api-tokens-delete-button": "Supprimer",
-      "api-tokens-no-tokens": "Aucun jeton API trouvé.",
-      "last-edit-pages-header": "Dernières pages modifiées",
-      "last-edit-pages-no-edits": "Aucun historique trouvé.",
-      "api-tokens-created": "Création",
-      "last-edit-pages-edited": "Modifié",
       "user-info-created-at": "Créé le",
       "user-info-updated-at": "Mis à jour le",
       "password-reset-button": "Créer un lien de réinitialisation",
@@ -200,13 +193,14 @@
       "edit-role-header": "Rôle de l'utilisateur",
       "email-verification-status": "Statut de vérification de l'e-mail",
       "social-accounts-header": "Comptes connectés",
-      "social-accounts-non": "Aucun compte connecté trouvé."
-    },
-    "@studiocms/dashboard:content-index": {
-      "header": "Gestion de contenu",
-      "title": "Gestion de contenu",
-      "description": "Gestion de contenu",
-      "placeholder": "Sélectionnez ou créez une page pour commencer."
+      "social-accounts-non": "Aucun compte connecté trouvé.",
+      "api-tokens-header": "Jetons API",
+      "api-tokens-delete-button": "Supprimer",
+      "api-tokens-created": "Création",
+      "api-tokens-no-tokens": "Aucun jeton API trouvé.",
+      "last-edit-pages-header": "Dernières pages modifiées",
+      "last-edit-pages-edited": "Modifié",
+      "last-edit-pages-no-edits": "Aucun historique trouvé."
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Paramètres du plugin",
@@ -228,6 +222,7 @@
       "create-folder-title": "Créer un dossier",
       "delete-button": "Supprimer",
       "save-button": "Enregistrer les modifications",
+      "create-button": "Créer",
       "draft-button": "Enregistrer le brouillon",
       "publish-button": "Publier",
       "delete-modal-header": "Êtes-vous sûr de vouloir supprimer cet élément ?",
@@ -235,8 +230,13 @@
       "delete-modal-desc-1": "Saisissez le slug",
       "delete-modal-desc-2": "pour confirmer.",
       "delete-folder-modal-desc-1": "Saisissez le nom du dossier",
-      "delete-folder-modal-desc-2": "pour confirmer.",
-      "create-button": "Créer"
+      "delete-folder-modal-desc-2": "pour confirmer."
+    },
+    "@studiocms/dashboard:content-index": {
+      "title": "Gestion de contenu",
+      "description": "Gestion de contenu",
+      "header": "Gestion de contenu",
+      "placeholder": "Sélectionnez ou créez une page pour commencer."
     },
     "@studiocms/dashboard:content-diff": {
       "view-page": "Voir la page",
@@ -261,12 +261,12 @@
       "input-page-title": "Titre de la page",
       "input-page-slug": "Slug",
       "input-page-description": "Description",
+      "input-page-hero-image": "Image de couverture/OpenGraph",
       "select-page-type": "Type de page",
       "select-page-show-in-nav": "Afficher dans la navigation",
       "select-page-parent-folder": "Dossier parent",
       "select-page-draft": "Brouillon",
       "select-page-categories": "Catégories",
-      "input-page-hero-image": "Image de couverture/OpenGraph",
       "select-page-tags": "Étiquettes",
       "select-page-show-author": "Afficher l'auteur",
       "select-page-show-contributors": "Afficher les contributeurs",
@@ -276,18 +276,18 @@
       "diff-edited-by-2": "par",
       "diff-no-history": "Aucun historique trouvé."
     },
-    "@studiocms/dashboard:unverifiedEmail": {
-      "resend-button": "Renvoyer l'e-mail de vérification",
-      "back-button": "Aller à la page d'accueil",
-      "title": "E-mail non vérifié",
-      "description": "E-mail non vérifié",
-      "sub-description": "Votre adresse e-mail n'a pas été vérifiée. Veuillez consulter votre boîte de réception pour obtenir un lien de vérification."
-    },
     "@studiocms/dashboard:404": {
       "title": "Erreur 404",
       "description": "Erreur 404 - Page introuvable",
       "sub-description": "La page que vous recherchez a peut-être été supprimée, son nom a été modifié ou elle est temporairement indisponible.",
       "back-button": "Retour"
+    },
+    "@studiocms/dashboard:unverifiedEmail": {
+      "title": "E-mail non vérifié",
+      "description": "E-mail non vérifié",
+      "sub-description": "Votre adresse e-mail n'a pas été vérifiée. Veuillez consulter votre boîte de réception pour obtenir un lien de vérification.",
+      "resend-button": "Renvoyer l'e-mail de vérification",
+      "back-button": "Aller à la page d'accueil"
     }
   }
 }
