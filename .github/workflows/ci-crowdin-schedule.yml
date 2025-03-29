@@ -3,7 +3,7 @@ name: CI - Crowdin Scheduled PRs
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */1 * * *"
+    - cron: "0 6 * * *"
 
 permissions:
   contents: write
@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Synchronize with Crowdin
         uses: crowdin/github-action@v2
