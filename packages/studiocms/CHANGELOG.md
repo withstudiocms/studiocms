@@ -1,5 +1,15 @@
 # studiocms
 
+## 0.1.0-beta.14
+
+### Patch Changes
+
+- [#500](https://github.com/withstudiocms/studiocms/pull/500) [`1e61e13`](https://github.com/withstudiocms/studiocms/commit/1e61e13c2d7d02a4d00f733a268884904a644e37) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #500)
+
+- [#492](https://github.com/withstudiocms/studiocms/pull/492) [`7d14e58`](https://github.com/withstudiocms/studiocms/commit/7d14e583406c2afcbd398d4c7da2187ba79a840c) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #492)
+
+- [#495](https://github.com/withstudiocms/studiocms/pull/495) [`62ee6fc`](https://github.com/withstudiocms/studiocms/commit/62ee6fc4a3afc7a57470e3a72d8ec61785d39a18) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #495)
+
 ## 0.1.0-beta.13
 
 ### Patch Changes
