@@ -22,7 +22,7 @@ async function setDiscordMessage() {
 	};
 
 	// initialization of crowdin client
-	// @ts-expect-error - Seems to me a module version issue?
+	// @ts-expect-error - Seems to me a module conversion issue? (using `tsm` to convert on-the-fly to JS)
 	const { translationStatusApi } = new crowdin.default(credentials) as crowdin;
 
 	let response: ResponseList<TranslationStatusModel.LanguageProgress>;
