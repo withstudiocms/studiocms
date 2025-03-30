@@ -25,15 +25,15 @@ async function setDiscordMessage() {
 	// @ts-expect-error - Seems to me a module version issue?
 	const { translationStatusApi } = new crowdin.default(credentials) as crowdin;
 
-	let data: ResponseList<TranslationStatusModel.LanguageProgress>;
+	let response: ResponseList<TranslationStatusModel.LanguageProgress>;
 
 	try {
-		data = await translationStatusApi.getProjectProgress(PROJECT_ID);
+		response = await translationStatusApi.getProjectProgress(PROJECT_ID);
 	} catch (e) {
 		throw new Error(`Failed to fetch project progress from Crowdin: ${(e as Error).message}`);
 	}
 
-	const remappedData = data.data.map(
+	const remappedData = response.data.map(
 		({
 			data: {
 				language: { id, name },
