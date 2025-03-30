@@ -1,12 +1,12 @@
 {
-  "displayName": "German (de-DE)",
+  "displayName": "Deutsch (de-DE)",
   "translations": {
     "@studiocms/auth:login": {
       "title": "Login-Seite",
       "description": "Login-Seite",
-      "header": "",
-      "sub-header-usernamepasswordoauth": "Gebe deinen Nutzername & Passwort ein oder verwende einen der Login-Anbieter, um dich einzuloggen.",
-      "sub-header-usernamepassword": "Gebe deinen Nutzername und Passwort ein.",
+      "header": "Login",
+      "sub-header-usernamepasswordoauth": "Gebe deinen Benutzernamen & Passwort ein oder verwende einen der Login-Anbieter, um dich einzuloggen.",
+      "sub-header-usernamepassword": "Gebe deinen Benutzernamen und Passwort ein.",
       "sub-header-oauth": "Wähle einen der Anbieter um dich einzuloggen.",
       "sub-header-noprovider": "Kein Login-Anbieter konfiguriert. Bitte kontaktiere deinen Administrator.",
       "username-label": "Nutzername",
@@ -14,9 +14,9 @@
       "login-button": "Einloggen",
       "allow-registration-noaccount": "Du hast keinen Account?",
       "allow-registration-register": "Registriere dich hier!",
-      "forgot-password": "Passwort vergessen?",
+      "forgot-password": "Passwort vergessen? Klicke hier.",
       "forgot-password-title": "Passwort vergessen",
-      "forgot-password-message": "Hast du dein Passwort vergessen? Gebe deine E-Mail-Adresse ein und wir senden dir einen Link zum zurücksetzen.",
+      "forgot-password-message": "Hast du dein Passwort vergessen? Gebe deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen.",
       "email-label": "E-Mail-Adresse",
       "demo-mode-credentials": "Demo-Modus-Zugangsdaten"
     },
@@ -25,7 +25,7 @@
       "description": "Registrierungsseite",
       "header": "Registrierung",
       "sub-header-usernamepasswordoauth": "Erstelle einen Account mit einer der vorliegenden Optionen.",
-      "sub-header-usernamepassword": "Erstelle einen Account mit dem Registrierungs-Formular.",
+      "sub-header-usernamepassword": "Erstelle einen Account mit dem Registrierungsformular.",
       "sub-header-oauth": "Nutze eine der Optionen, um dich einzuloggen.",
       "sub-header-noprovider": "Kein Login-Provider konfiguriert. Bitte kontaktiere deinen Administrator.",
       "username-label": "Benutzername",
@@ -42,24 +42,24 @@
       "description": "Logout-Seite"
     },
     "@studiocms/auth:oauth-stack": {
-      "or-login-with": "oder logge dich ein mit:"
+      "or-login-with": "oder logge dich ein mit"
     },
     "@studiocms/dashboard:index": {
-      "title": "",
-      "description": "",
+      "title": "Dashboard",
+      "description": "Dashboard",
       "welcome-title": "Willkommen",
       "title-button:discord": "Trete der Community bei",
       "title-button:feedback": "Gib' uns Feedback",
-      "sub-header": "StudioCMS ist ein kostenloses open-source Content Management System, das von der Astro-Community entwickelt wurde."
+      "sub-header": "StudioCMS ist ein kostenloses open source Content-Management-System, das von der Astro Community entwickelt wurde."
     },
     "@studiocms/dashboard:sidebar": {
-      "category-1-header": "",
-      "dashboard-link-label": "",
-      "content-management-label": "",
-      "category-2-header": "",
+      "category-1-header": "Dashboard",
+      "dashboard-link-label": "Dashboard",
+      "content-management-label": "Content-Management",
+      "category-2-header": "Administrator",
       "site-configuration-label": "Seitenkonfiguration",
       "user-management-label": "Nutzermanagement",
-      "category-3-header": "",
+      "category-3-header": "Plugins",
       "category-3-empty-placeholder": "Keine Plugins mit Einstellungsseiten gefunden.",
       "user-dropdown:settings": "Nutzereinstellungen",
       "user-dropdown:view-site": "Website besuchen",
@@ -82,7 +82,7 @@
       "user-password-current": "Aktuelles Passwort",
       "user-password-new": "Neues Passwort",
       "user-password-confirm": "Neues Passwort bestätigen",
-      "social-accounts-header": "Social-Login-Konten",
+      "social-accounts-header": "Externe Login-Konten",
       "social-accounts-connected": "Verbundene Konten",
       "social-accounts-no-connected": "Keine verbundenen Kontos gefunden.",
       "social-accounts-other": "Andere Login-Optionen",
@@ -117,11 +117,11 @@
       "login-page-preview": "Loginseitenvorschau (Dunkel/Hell)",
       "input-site-title": "Seitentitel",
       "input-site-description": "Seitenbeschreibung",
-      "input-og-image": "Standard Open Graph-Bild",
+      "input-og-image": "Standard Open Graph Bild",
       "input-site-icon": "Seitenicon (Öffentliches Favicon)",
-      "input-diff-tracking-limit": "Diff-Tracking-Limit (pro Seite)",
+      "input-diff-tracking-limit": "Differenzverfolgungslimit (pro Seite)",
       "input-custom-login-page": "Hintergrundbild der Anmeldeseite (Benutzerdefiniert)",
-      "select-page-diff-tracking": "Seiten-Diff-Verfolgung",
+      "select-page-diff-tracking": "Differenzverfolgung",
       "select-login-page-bg": "Hintergrundbild der Anmeldeseite",
       "select-smtp-mailer": "SMTP-Mailer"
     },
@@ -132,20 +132,20 @@
       "save-button": "Speichern",
       "smtp-settings": "SMTP-Einstellungen",
       "test-smtp": "Test-E-Mail senden",
-      "smtp-host": "",
+      "smtp-host": "Host",
       "smtp-host-placeholder": "smtp.beispiel.de / 1.1.1.1",
-      "smtp-port": "",
-      "smtp-port-placeholder": "",
-      "smtp-secure": "Sicher (SSL)",
-      "smtp-proxy": "",
+      "smtp-port": "Port",
+      "smtp-port-placeholder": "587",
+      "smtp-secure": "Sichere Verbindung",
+      "smtp-proxy": "Proxy",
       "smtp-proxy-placeholder": "http://proxy.beispiel.de",
-      "smtp-tls-reject-unauthorized": "TLS-Ablehnung (Unauthorized)",
+      "smtp-tls-reject-unauthorized": "TLS - nicht autorisierte Verbindungen ablehnen",
       "smtp-tls-servername": "TLS-Servername",
       "smtp-tls-servername-placeholder": "smtp.beispiel.de",
-      "smtp-user": "Auth-Benutzername",
+      "smtp-user": "SMTP-Benutzername",
       "smtp-user-placeholder": "no-reply@beispiel.de",
-      "smtp-password": "Auth-Passwort",
-      "smtp-password-placeholder": "",
+      "smtp-password": "SMTP-Passwort",
+      "smtp-password-placeholder": "********",
       "smtp-default-sender": "Standardabsender",
       "smtp-default-sender-placeholder": "StudioCMS no-reply <no-reply@beispiel.de>",
       "test-email": "E-Mail-Adresse",
@@ -160,7 +160,7 @@
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Suchen...",
-      "dropdown-create-user": "Neuen Bentzer erstellen",
+      "dropdown-create-user": "Neuen Benutzer erstellen",
       "dropdown-create-invite": "Einladung für Benutzer erstellen"
     },
     "@studiocms/dashboard:user-mngmt-index": {
@@ -189,7 +189,7 @@
       "password-reset-modal-header": "Link zum Zurücksetzen des Passworts",
       "password-reset-modal-desc-1": "Link zum Zurücksetzen für Benutzer",
       "password-reset-modal-desc-2": "wurde erstellt.",
-      "password-reset-modal-link": "",
+      "password-reset-modal-link": "Link",
       "edit-role-header": "Benutzerrolle",
       "email-verification-status": "E-Mail-Verifizierungsstatus",
       "social-accounts-header": "Verbundene Konten",
@@ -212,10 +212,10 @@
       "input-placeholder-search": "Suche...",
       "dropdown-create-page": "Seite erstellen",
       "dropdown-create-folder": "Ordner erstellen",
-      "items-divider": ""
+      "items-divider": "Elemente"
     },
     "@studiocms/dashboard:content-header": {
-      "title": "",
+      "title": "Content-Management",
       "edit-page-title": "Seite bearbeiten",
       "edit-folder-title": "Ordner bearbeiten",
       "create-page-title": "Seite erstellen",
@@ -233,9 +233,9 @@
       "delete-folder-modal-desc-2": "zum Bestätigen ein."
     },
     "@studiocms/dashboard:content-index": {
-      "title": "",
-      "description": "",
-      "header": "",
+      "title": "Content-Management",
+      "description": "Content-Management",
+      "header": "Content-Management",
       "placeholder": "Wähle oder erstelle eine Seite, um zu beginnen."
     },
     "@studiocms/dashboard:content-diff": {
@@ -259,7 +259,7 @@
       "tab-label-content": "Seiteninhalt",
       "tab-label-diff": "Bearbeitungshistorie",
       "input-page-title": "Seitentitel",
-      "input-page-slug": "",
+      "input-page-slug": "Slug",
       "input-page-description": "Beschreibung",
       "input-page-hero-image": "OpenGraph/Hero-Bild",
       "select-page-type": "Seitentyp",
