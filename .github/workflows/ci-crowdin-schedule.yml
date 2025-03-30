@@ -3,13 +3,7 @@ name: CI - Crowdin Sync PR
 on:
   workflow_dispatch:
   repository_dispatch:
-    types:
-      - file-fully-translated
-      - file-fully-reviewed
-      - file-added
-      - file-updated
-      - file-reverted
-      - file-deleted
+    types: [file.translated, file.approved, file.added, file.updated]
 
 permissions:
   contents: write
