@@ -11,7 +11,10 @@ await setDiscordMessage();
 
 async function setDiscordMessage() {
 	if (!CROWDIN_PERSONAL_TOKEN || !CROWDIN_PROJECT_ID) {
-		throw new Error('Missing Environment variables! CROWDIN_PERSONAL_TOKEN, or CROWDIN_PROJECT_ID');
+		const missing: string[] = [];
+		if (!CROWDIN_PERSONAL_TOKEN) missing.push('CROWDIN_PERSONAL_TOKEN');
+		if (!CROWDIN_PROJECT_ID) missing.push('CROWDIN_PROJECT_ID');
+		throw new Error(`Missing environment variables: ${missing.join(', ')}`);
 	}
 
 	const PROJECT_ID = Number(CROWDIN_PROJECT_ID);
@@ -56,9 +59,22 @@ async function setDiscordMessage() {
 
 	const maxLengthWithoutSuffix = 2000 - suffix.length;
 
-	while (message.length > maxLengthWithoutSuffix) {
-		const lastNewline = message.lastIndexOf('\n', maxLengthWithoutSuffix);
-		message = message.slice(0, lastNewline);
+	// If message is too long, keep languages until we hit the limit
+	if (message.length > maxLengthWithoutSuffix) {
+		const lines = message.split('\n');
+		message = `${lines[0]}\n${lines[1]}\n`;
+		let currentLength = message.length;
+
+		for (let i = 2; i < lines.length; i++) {
+			const lineLength = lines[i].length + 1; // +1 for newline
+			if (currentLength + lineLength <= maxLengthWithoutSuffix) {
+				message += `${lines[i]}\n`;
+				currentLength += lineLength;
+			} else {
+				message += '... and more languages (truncated due to length)';
+				break;
+			}
+		}
 	}
 
 	message += suffix;

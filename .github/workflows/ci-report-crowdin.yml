@@ -2,7 +2,7 @@ name: CI - Translation Report Bot
 
 on:
   schedule:
-    - cron:  '0 10 * * TUE'
+    - cron: '0 10 * * TUE'
   workflow_dispatch:
 
 jobs:
@@ -33,3 +33,4 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         with:
           args: "${{ steps.message.outputs.DISCORD_MESSAGE }}"
+          

@@ -39,15 +39,15 @@
     "@changesets/cli": "2.28.1",
     "@changesets/config": "3.1.1",
     "@changesets/write": "0.4.0",
-    "@crowdin/crowdin-api-client": "^1.41.4",
+    "@crowdin/crowdin-api-client": "1.41.4",
     "@types/node": "catalog:",
     "build-scripts": "workspace:*",
     "execa": "9.5.2",
-    "knip": "^5.46.0",
+    "knip": "5.46.0",
     "pkg-pr-new": "0.0.41",
     "studiocms": "workspace:*",
     "tsm": "2.3.0",
     "typescript": "catalog:",
-    "tinyglobby": "^0.2.12"
+    "tinyglobby": "0.2.12"
   }
 }
