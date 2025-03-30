@@ -1,5 +1,9 @@
 import { setOutput } from '@actions/core';
-import crowdin, { type Credentials } from '@crowdin/crowdin-api-client';
+import crowdin, {
+	type ResponseList,
+	type TranslationStatusModel,
+	type Credentials,
+} from '@crowdin/crowdin-api-client';
 
 const { WORKFLOW_DISPATCH, CROWDIN_PROJECT_ID, CROWDIN_PERSONAL_TOKEN } = process.env;
 
@@ -21,7 +25,13 @@ async function setDiscordMessage() {
 	// @ts-expect-error - Seems to me a module version issue?
 	const { translationStatusApi } = new crowdin.default(credentials) as crowdin;
 
-	const data = await translationStatusApi.getProjectProgress(PROJECT_ID);
+	let data: ResponseList<TranslationStatusModel.LanguageProgress>;
+
+	try {
+		data = await translationStatusApi.getProjectProgress(PROJECT_ID);
+	} catch (e) {
+		throw new Error(`Failed to fetch project progress from Crowdin: ${(e as Error).message}`);
+	}
 
 	const remappedData = data.data.map(
 		({

@@ -24,12 +24,12 @@ jobs:
         run: pnpm ci:crowdin:bot
         env:
           WORKFLOW_DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Send a Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_I18N_REPORT }}
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
         uses: Ilshidur/action-discord@0.3.2
         with:
           args: "${{ steps.message.outputs.DISCORD_MESSAGE }}"
