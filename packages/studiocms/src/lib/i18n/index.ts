@@ -1,9 +1,6 @@
 import type { AstroGlobal } from 'astro';
 import { defaultLang, showDefaultLang } from './config.js';
 
-// Note: Translations are not currently used in StudioCMS, so we
-// will only allow 'en-us' to be used for now on the Dashboard.
-
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
 // https://i18n.studiocms.dev/ or PR them into the `translations` folder:
@@ -15,7 +12,10 @@ import { defaultLang, showDefaultLang } from './config.js';
  * The UI translations available in the StudioCMS app.
  */
 const uiTranslations = {
-	'en-us': await import('./translations/en-us.json'),
+	en: await import('./translations/en.json'),
+	de: await import('./translations/de.json'),
+	es: await import('./translations/es.json'),
+	fr: await import('./translations/fr.json'),
 } as const;
 
 // Some options are stored in the `./config.ts` file.
@@ -35,11 +35,11 @@ export type UiTranslations = typeof uiTranslations;
 export type UiLanguageKeys = keyof UiTranslations;
 
 /**
- * Represents the keys of the UI component translations for the 'en-us' locale.
+ * Represents the keys of the UI component translations for the 'en' locale.
  * This type is derived from the 'translations' property of the 'UiTranslations' interface
- * for the 'en-us' locale (Source of truth), ensuring that only valid translation keys are used.
+ * for the 'en' locale (Source of truth), ensuring that only valid translation keys are used.
  */
-export type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
+export type UiComponentKeys = keyof UiTranslations['en']['translations'];
 
 // God please forgive me for what I am about to do
 type UiTranslationComponent<

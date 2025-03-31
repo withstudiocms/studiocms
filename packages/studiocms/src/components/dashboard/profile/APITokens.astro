@@ -20,7 +20,7 @@ if (!user) {
 
 const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
 
-const lang = 'en-us';
+const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="api-tokens">

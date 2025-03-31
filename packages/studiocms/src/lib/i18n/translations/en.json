@@ -1,5 +1,5 @@
 {
-  "displayName": "English (en-US)",
+  "displayName": "English (en)",
   "translations": {
     "@studiocms/auth:login": {
       "title": "Login Page",

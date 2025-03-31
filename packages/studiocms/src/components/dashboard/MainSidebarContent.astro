@@ -14,7 +14,7 @@ import VersionCheck from './sidebar/VersionCheck.astro';
 import { getSidebarLinks } from './sidebarConfig.js';
 
 const { versionCheck } = dashboardConfig;
-const lang = 'en-us';
+const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
 const userData = await getUserData(Astro);
