@@ -1158,7 +1158,11 @@ export function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of combined page data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
-			pages: async (includeDrafts = false, tree?: FolderNode[]): Promise<CombinedPageData[]> => {
+			pages: async (
+				includeDrafts = false,
+				hideDefaultIndex = false,
+				tree?: FolderNode[]
+			): Promise<CombinedPageData[]> => {
 				try {
 					const pages: CombinedPageData[] = [];
 
@@ -1166,6 +1170,10 @@ export function studiocmsSDKCore() {
 
 					if (!includeDrafts) {
 						pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
+					}
+
+					if (hideDefaultIndex) {
+						pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
 					}
 
 					const folders = tree || (await buildFolderTree());

@@ -75,7 +75,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
         <div class="form-row">
             <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
-            <div> {/* PLACEHOLDER */} </div>
+            <Select label={t('select-hide-default-index')} name="hide-default-index" defaultValue={`${data.hideDefaultIndex}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
         </div>
 
         <Divider />
@@ -148,6 +148,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateSelectElmLabel('login-page-background', comp['select-login-page-bg']);
         updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
         updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
+        updateSelectElmLabel('hide-default-index', comp['select-hide-default-index'])
     });
     
     if (!customElements.get('t-config-form')) {
@@ -191,6 +192,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                 diffPerPage: parseInt(formData.get('diff-per-page') as string),
                 gridItems: enabledGridItems,
                 enableMailer: formData.get('enable-mailer') === 'true',
+                hideDefaultIndex: formData.get('hide-default-index') === 'true'
             }
 
             console.log(data);

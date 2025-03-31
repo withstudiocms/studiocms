@@ -160,6 +160,7 @@ export const StudioCMSSiteConfig = defineTable({
 		diffPerPage: column.number({ default: 10 }),
 		gridItems: column.json({ default: [] }),
 		enableMailer: column.boolean({ default: false }),
+		hideDefaultIndex: column.boolean({ default: false }),
 	},
 });
 
