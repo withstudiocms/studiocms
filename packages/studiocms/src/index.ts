@@ -15,7 +15,6 @@ import { addVirtualImports, createResolver, defineIntegration } from 'astro-inte
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
-import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import {
@@ -47,6 +46,7 @@ import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
 import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
+import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
@@ -238,6 +238,10 @@ export const studiocms = defineIntegration({
 			content: string;
 		}[] = [];
 
+		let cacheJsonFile: URL | undefined = undefined;
+
+		let isDevMode = false;
+
 		// Return the Integration
 		return {
 			name,
@@ -248,11 +252,21 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript } = params;
+					const {
+						logger,
+						config,
+						updateConfig,
+						injectRoute,
+						injectScript,
+						createCodegenDir,
+						command,
+					} = params;
 
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					logger.info('Checking configuration...');
+
+					isDevMode = command === 'dev';
 
 					// Watch the StudioCMS Config File
 					watchStudioCMSConfig(params);
@@ -1472,6 +1486,14 @@ export const studiocms = defineIntegration({
 						logLevel: 'info',
 						message: ` \n \n${messageBox} \n \n`,
 					});
+
+					if (isDevMode) {
+						const codegenDir = createCodegenDir();
+						cacheJsonFile = new URL('cache.json', codegenDir);
+						if (fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' }).length === 0) {
+							fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
+						}
+					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
@@ -1499,7 +1521,11 @@ export const studiocms = defineIntegration({
 					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const { version: latestVersion } = await packageJson(name.toLowerCase());
+						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile, isDevMode);
+
+						if (!latestVersion) {
+							return;
+						}
 
 						const comparison = semCompare(pkgVersion, latestVersion);
 

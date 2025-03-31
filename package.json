@@ -28,22 +28,26 @@
     "ci:publish": "pnpm changeset publish",
     "ci:translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
-    "knip": "knip"
+    "knip": "knip",
+
+    "ci:crowdin:bot": "tsm --require=./scripts/filter-warnings.cjs ./scripts/crowdin-report-bot.ts"
   },
   "devDependencies": {
+    "@actions/core": "1.11.1",
     "@biomejs/biome": "1.9.4",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.28.1",
     "@changesets/config": "3.1.1",
     "@changesets/write": "0.4.0",
+    "@crowdin/crowdin-api-client": "1.41.4",
     "@types/node": "catalog:",
     "build-scripts": "workspace:*",
     "execa": "9.5.2",
-    "knip": "^5.46.0",
+    "knip": "5.46.0",
     "pkg-pr-new": "0.0.41",
     "studiocms": "workspace:*",
     "tsm": "2.3.0",
     "typescript": "catalog:",
-    "tinyglobby": "^0.2.12"
+    "tinyglobby": "0.2.12"
   }
 }

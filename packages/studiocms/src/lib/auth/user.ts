@@ -1,11 +1,11 @@
 import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import type { APIContext, AstroGlobal } from 'astro';
 import { hashPassword } from './password.js';
 import { deleteSessionTokenCookie, sessionCookieName, validateSessionToken } from './session.js';
 import type { UserSessionData } from './types.js';
+import checkIfUnsafe from './utils/unsafeCheck.js';
 
 /**
  * Verifies if the provided username meets the required criteria.
