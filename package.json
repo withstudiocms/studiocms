@@ -41,7 +41,7 @@
     "@changesets/write": "0.4.0",
     "@crowdin/crowdin-api-client": "1.41.4",
     "@types/node": "catalog:",
-    "build-scripts": "workspace:*",
+    "@withstudiocms/buildkit": "workspace:*",
     "execa": "9.5.2",
     "knip": "5.46.0",
     "pkg-pr-new": "0.0.41",
