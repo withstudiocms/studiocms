@@ -28,7 +28,7 @@ export function generateToken(userId: string, noExpire?: boolean): string {
  * @throws Will throw an error if the token is invalid or verification fails.
  */
 export function testToken(token: string) {
-	return verifyJwt(cmsEncryptionKey, token);
+	return verifyJwt(token, cmsEncryptionKey);
 }
 
 /**

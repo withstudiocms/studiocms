@@ -299,6 +299,10 @@ export function studiocmsSDKCore() {
 		check: async (token: string) => {
 			const _token = testToken(token);
 
+			if (!_token.isValid) {
+				return false;
+			}
+
 			if (!_token.userId) {
 				return false;
 			}

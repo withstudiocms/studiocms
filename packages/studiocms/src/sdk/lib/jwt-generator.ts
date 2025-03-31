@@ -35,7 +35,9 @@ export function generateJwt(
 	const currentDate = new Date();
 	const ThirtyYearsFromToday = new Date(currentDate.setFullYear(currentDate.getFullYear() + 30));
 
-	const exp = noExpire ? ThirtyYearsFromToday.getTime() : new Date().getTime() + 86400; // 24 hours
+	const exp = noExpire
+		? Math.floor(ThirtyYearsFromToday.getTime() / 1000)
+		: Math.floor(Date.now() / 1000) + 86400; // 24 hours in seconds
 
 	// 2. Payload (a simple payload can include a user ID, expiration time, etc.)
 	const payloadObj = {
