@@ -7,7 +7,7 @@ import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = 'en-us';
+const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:plugin-settings');
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);

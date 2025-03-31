@@ -6,7 +6,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en-us';
+const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
 
 const { user: userData } = await getUserData(Astro);

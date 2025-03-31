@@ -10,12 +10,15 @@ import {
 import { persistentAtom } from '@nanostores/persistent';
 import { type UiTranslationKey, defaultLang, uiTranslationsAvailable } from './config.js';
 
-export const baseTranslation = (await import('./translations/en-us.json')).translations;
+export const baseTranslation = (await import('./translations/en.json')).translations;
 
 export { defaultLang, type UiTranslationKey, uiTranslationsAvailable };
 
 const localeMap: Record<UiTranslationKey, ComponentsJSON> = {
-	'en-us': baseTranslation,
+	en: baseTranslation,
+	de: (await import('./translations/de.json')).translations,
+	es: (await import('./translations/es.json')).translations,
+	fr: (await import('./translations/fr.json')).translations,
 };
 
 export const $localeSettings = persistentAtom<UiTranslationKey | undefined>(
@@ -28,7 +31,6 @@ export const $locale = localeFrom(
 	browser({
 		// or browser’s locale auto-detect
 		available: uiTranslationsAvailable,
-		fallback: defaultLang,
 	})
 );
 

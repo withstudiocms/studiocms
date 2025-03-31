@@ -13,7 +13,7 @@ const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils
 const users = await studioCMS_SDK.GET.database.users();
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-const lang = 'en-us';
+const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
 const urlParams = Astro.url.searchParams;

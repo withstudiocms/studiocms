@@ -15,7 +15,10 @@ import { defaultLang, showDefaultLang } from './config.js';
  * The UI translations available in the StudioCMS app.
  */
 const uiTranslations = {
-	'en-us': await import('./translations/en-us.json'),
+	en: await import('./translations/en.json'),
+	de: await import('./translations/de.json'),
+	es: await import('./translations/es.json'),
+	fr: await import('./translations/fr.json'),
 } as const;
 
 // Some options are stored in the `./config.ts` file.
@@ -39,7 +42,7 @@ export type UiLanguageKeys = keyof UiTranslations;
  * This type is derived from the 'translations' property of the 'UiTranslations' interface
  * for the 'en-us' locale (Source of truth), ensuring that only valid translation keys are used.
  */
-export type UiComponentKeys = keyof UiTranslations['en-us']['translations'];
+export type UiComponentKeys = keyof UiTranslations['en']['translations'];
 
 // God please forgive me for what I am about to do
 type UiTranslationComponent<
