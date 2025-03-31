@@ -1,5 +1,38 @@
 # studiocms
 
+## 0.1.0-beta.14
+
+### Patch Changes
+
+- [#505](https://github.com/withstudiocms/studiocms/pull/505) [`ae5176d`](https://github.com/withstudiocms/studiocms/commit/ae5176dd683c0abc5b997c2e5f5935df5eb7d33e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor StudioCMS and remove dependencies,
+
+  - `package-json` is now removed, as we have an included function to get the latest version from npm directly. (much simpler interface)
+  - Move functionality from `@matthiesenxyz/integrationUtils` for checkIfUnsafe() util, since that is the only util we are using, into StudioCMS. removing the need for this dep all together
+
+- [#500](https://github.com/withstudiocms/studiocms/pull/500) [`1e61e13`](https://github.com/withstudiocms/studiocms/commit/1e61e13c2d7d02a4d00f733a268884904a644e37) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #500)
+
+- [#507](https://github.com/withstudiocms/studiocms/pull/507) [`4d42b42`](https://github.com/withstudiocms/studiocms/commit/4d42b4289ce43f2812fbb80913485db8a300163e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor SDK and page scripts
+
+  - SDK cache is now busted when it should be
+  - Content management page sidebar now refreshes
+  - You can now hide the default index in the siteConfig on the dashboard
+
+  ### NOTICE (non-breaking schema update)
+
+  - You will need to push the new schema `astro db push --remote`
+
+- [#503](https://github.com/withstudiocms/studiocms/pull/503) [`55663b2`](https://github.com/withstudiocms/studiocms/commit/55663b243fd516ed77a90987b9768f82184c180b) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #503)
+
+- [#506](https://github.com/withstudiocms/studiocms/pull/506) [`b26cfb5`](https://github.com/withstudiocms/studiocms/commit/b26cfb58f19c1b571a1395a6bc6c6d3963e0a19a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Export runtime functions in package.json for plugins to use.
+
+- [#496](https://github.com/withstudiocms/studiocms/pull/496) [`f45607e`](https://github.com/withstudiocms/studiocms/commit/f45607e2efc61242db96d5cc9a408e9af27d7650) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update responses for username or password when invalid
+
+- [#492](https://github.com/withstudiocms/studiocms/pull/492) [`7d14e58`](https://github.com/withstudiocms/studiocms/commit/7d14e583406c2afcbd398d4c7da2187ba79a840c) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #492)
+
+- [#495](https://github.com/withstudiocms/studiocms/pull/495) [`62ee6fc`](https://github.com/withstudiocms/studiocms/commit/62ee6fc4a3afc7a57470e3a72d8ec61785d39a18) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #495)
+
+- [#504](https://github.com/withstudiocms/studiocms/pull/504) [`055824c`](https://github.com/withstudiocms/studiocms/commit/055824c6a5a52b74ed169050745328bdac07e6bb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduce new JWT Token system to reduce dependencies
+
 ## 0.1.0-beta.13
 
 ### Patch Changes
