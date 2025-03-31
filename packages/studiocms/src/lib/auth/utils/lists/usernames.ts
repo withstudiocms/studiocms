@@ -478,7 +478,6 @@ const usernames: string[] = [
 	'survey',
 	'sync',
 	'sysadmin',
-	'sysadmin',
 	'system',
 	'tablet',
 	'tag',
