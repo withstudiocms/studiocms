@@ -1,6 +1,20 @@
 {
   "name": "@withstudiocms/buildkit",
   "version": "0.0.1",
+  "description": "Build kit based on esbuild for the withstudiocms github org",
+  "author": {
+    "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/withstudiocms_buildkit"
+  },
+  "files": [
+    "index.js",
+    "cmd"
+  ],
   "type": "module",
   "main": "./index.js",
   "publishConfig": {
