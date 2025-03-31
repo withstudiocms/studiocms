@@ -15,22 +15,25 @@ import { jsonParse } from './jsonParse.js';
 export async function getLatestVersion(
 	packageName: string,
 	logger: AstroIntegrationLogger,
-	cacheJsonFile: URL | undefined
+	cacheJsonFile: URL | undefined,
+	isDevMode: boolean
 ): Promise<string | null> {
-	if (!cacheJsonFile) return null;
+	let cacheData: {
+		latestVersionCheck?: {
+			lastChecked: Date;
+			version: 'string';
+		};
+	} = {};
 
-	const file = fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' });
+	if (isDevMode && cacheJsonFile) {
+		const file = fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' });
 
-	const cacheData = jsonParse<{ latestVersionCheck: { lastChecked: Date; version: 'string' } }>(
-		file
-	);
+		cacheData = jsonParse<{ latestVersionCheck: { lastChecked: Date; version: 'string' } }>(file);
 
-	console.log('Cache Data ', JSON.stringify(cacheData, null, 2));
-
-	if (cacheData.latestVersionCheck?.lastChecked) {
 		if (
-			cacheData.latestVersionCheck.lastChecked.getTime() >
-			new Date(Date.now() - 60 * 60 * 1000).getTime()
+			cacheData.latestVersionCheck?.lastChecked &&
+			new Date(cacheData.latestVersionCheck.lastChecked).getTime() >
+				new Date(Date.now() - 60 * 60 * 1000).getTime()
 		) {
 			return cacheData.latestVersionCheck.version;
 		}
@@ -45,15 +48,16 @@ export async function getLatestVersion(
 
 		const data = await response.json();
 
-		const updatedCacheData: { latestVersionCheck: { lastChecked: Date; version: 'string' } } = {
-			...cacheData,
-			latestVersionCheck: {
-				lastChecked: new Date(),
-				version: data.version,
-			},
-		};
-
-		fs.writeFileSync(cacheJsonFile, JSON.stringify(updatedCacheData, null, 2), 'utf-8');
+		if (isDevMode && cacheJsonFile) {
+			const updatedCacheData: { latestVersionCheck: { lastChecked: Date; version: 'string' } } = {
+				...cacheData,
+				latestVersionCheck: {
+					lastChecked: new Date(),
+					version: data.version,
+				},
+			};
+			fs.writeFileSync(cacheJsonFile, JSON.stringify(updatedCacheData, null, 2), 'utf-8');
+		}
 
 		return data.version;
 	} catch (error) {

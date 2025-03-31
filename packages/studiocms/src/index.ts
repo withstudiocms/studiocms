@@ -240,6 +240,8 @@ export const studiocms = defineIntegration({
 
 		let cacheJsonFile: URL | undefined = undefined;
 
+		let isDevMode = false;
+
 		// Return the Integration
 		return {
 			name,
@@ -250,12 +252,21 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript, createCodegenDir } =
-						params;
+					const {
+						logger,
+						config,
+						updateConfig,
+						injectRoute,
+						injectScript,
+						createCodegenDir,
+						command,
+					} = params;
 
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
 					logger.info('Checking configuration...');
+
+					isDevMode = command === 'dev';
 
 					// Watch the StudioCMS Config File
 					watchStudioCMSConfig(params);
@@ -1476,10 +1487,13 @@ export const studiocms = defineIntegration({
 						message: ` \n \n${messageBox} \n \n`,
 					});
 
-					const codegenDir = createCodegenDir();
-					cacheJsonFile = new URL('cache.json', codegenDir);
-					if (fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' }).length === 0)
-						fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
+					if (isDevMode) {
+						const codegenDir = createCodegenDir();
+						cacheJsonFile = new URL('cache.json', codegenDir);
+						if (fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' }).length === 0) {
+							fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
+						}
+					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
@@ -1507,7 +1521,7 @@ export const studiocms = defineIntegration({
 					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile);
+						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile, isDevMode);
 
 						if (!latestVersion) {
 							return;
