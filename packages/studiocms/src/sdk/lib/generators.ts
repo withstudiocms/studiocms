@@ -1,5 +1,5 @@
 import { cmsEncryptionKey } from 'virtual:studiocms/sdk/env';
-import jwt from 'jsonwebtoken';
+import { generateJwt, verifyJwt } from './jwt-generator.js';
 /**
  * Generates a random ID number with the specified length.
  *
@@ -16,8 +16,8 @@ export function generateRandomIDNumber(length: number): number {
  * @param userId - The unique identifier of the user for whom the token is being generated.
  * @returns A signed JWT string that expires in 3 hours.
  */
-export function generateToken(userId: string): string {
-	return jwt.sign({ userId }, cmsEncryptionKey, { expiresIn: '3h' });
+export function generateToken(userId: string, noExpire?: boolean): string {
+	return generateJwt(cmsEncryptionKey, { userId }, noExpire);
 }
 
 /**
@@ -28,7 +28,7 @@ export function generateToken(userId: string): string {
  * @throws Will throw an error if the token is invalid or verification fails.
  */
 export function testToken(token: string) {
-	return jwt.verify(token, cmsEncryptionKey);
+	return verifyJwt(cmsEncryptionKey, token);
 }
 
 /**

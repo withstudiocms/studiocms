@@ -297,7 +297,11 @@ export function studiocmsSDKCore() {
 			await db.delete(tsUserResetTokens).where(eq(tsUserResetTokens.userId, userId));
 		},
 		check: async (token: string) => {
-			const _token = testToken(token) as { userId: string };
+			const _token = testToken(token);
+
+			if (!_token.userId) {
+				return false;
+			}
 
 			const resetToken = await db
 				.select()
@@ -333,7 +337,7 @@ export function studiocmsSDKCore() {
 				return await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId));
 			},
 			new: async (userId: string, description: string) => {
-				const key = generateToken(userId);
+				const key = generateToken(userId, true);
 
 				return await db
 					.insert(tsAPIKeys)
