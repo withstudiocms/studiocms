@@ -1,6 +1,12 @@
 ---
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import TreeRenderer from './TreeRenderer.astro';
-import { PageFolderTree } from './shared.js';
+
+const config = await studioCMS_SDK_Cache.GET.siteConfig();
+
+const hideDefaults = config.data.hideDefaultIndex;
+
+const { data: PageFolderTree } = await studioCMS_SDK_Cache.GET.pageFolderTree(true, hideDefaults);
 
 interface Props {
 	isNewFolder?: boolean;

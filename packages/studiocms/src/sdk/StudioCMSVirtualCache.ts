@@ -66,7 +66,10 @@ export class StudioCMSVirtualCache {
 			siteConfig: () => Promise<SiteConfigCacheObject>;
 			latestVersion: () => Promise<VersionCacheObject>;
 			folderTree: () => Promise<FolderTreeCacheObject>;
-			pageFolderTree: (includeDrafts?: boolean) => Promise<FolderTreeCacheObject>;
+			pageFolderTree: (
+				includeDrafts?: boolean,
+				hideDefaultIndex?: boolean
+			) => Promise<FolderTreeCacheObject>;
 			folderList: () => Promise<FolderListCacheObject>;
 			folder: (
 				id: string
@@ -133,8 +136,8 @@ export class StudioCMSVirtualCache {
 				siteConfig: async () => await this.getSiteConfig(),
 				latestVersion: async () => await this.getVersion(),
 				folderTree: async () => await this.getFolderTree(),
-				pageFolderTree: async (includeDrafts?: boolean) =>
-					await this.getPageFolderTree(includeDrafts),
+				pageFolderTree: async (includeDrafts?: boolean, hideDefaultIndex?: boolean) =>
+					await this.getPageFolderTree(includeDrafts, hideDefaultIndex),
 				folderList: async () => await this.getFolderList(),
 				folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
 				databaseTable: sdkCore.GET.databaseTable,
@@ -185,7 +188,7 @@ export class StudioCMSVirtualCache {
 			DELETE: {
 				page: async (id: string) => {
 					await this.sdk.DELETE.page(id);
-					this.clearPageById(id);
+					this.clearAllPages();
 				},
 				folder: async (id: string) => {
 					await this.sdk.DELETE.folder(id);
@@ -403,11 +406,14 @@ export class StudioCMSVirtualCache {
 	 * @returns {Promise<FolderTreeCacheObject>} A promise that resolves to the folder tree.
 	 * @throws {StudioCMSCacheError} If the folder tree is not found in the database or if there is an error fetching the folder tree.
 	 */
-	public async getPageFolderTree(includeDrafts = false): Promise<FolderTreeCacheObject> {
+	public async getPageFolderTree(
+		includeDrafts = false,
+		hideDefaultIndex = false
+	): Promise<FolderTreeCacheObject> {
 		try {
 			if (!this.isEnabled()) {
 				const folderTree = await this.sdk.buildFolderTree();
-				const pages = await this.sdk.GET.database.pages(includeDrafts);
+				const pages = await this.sdk.GET.database.pages(includeDrafts, hideDefaultIndex);
 
 				if (!folderTree) {
 					throw new StudioCMSCacheError('Folder tree not found in database');
@@ -444,7 +450,7 @@ export class StudioCMSVirtualCache {
 
 			if (!tree || this.isCacheExpired(tree)) {
 				const folderTree = await this.sdk.buildFolderTree();
-				const pages = await this.sdk.GET.database.pages(includeDrafts);
+				const pages = await this.sdk.GET.database.pages(includeDrafts, hideDefaultIndex);
 
 				if (!folderTree) {
 					throw new StudioCMSCacheError('Folder tree could not be constructed from database');
@@ -747,6 +753,8 @@ export class StudioCMSVirtualCache {
 
 		// Clear all pages from the cache
 		this.pages.clear();
+		this.clearFolderTree();
+		this.clearFolderList();
 
 		// Return void
 		return;
@@ -764,7 +772,10 @@ export class StudioCMSVirtualCache {
 	 * - If the cache is empty, the data is retrieved from the database and stored in the cache.
 	 * - If the cache contains data, it checks for expired entries and updates them from the database if necessary.
 	 */
-	public async getAllPages(includeDrafts = false): Promise<PageDataCacheObject[]> {
+	public async getAllPages(
+		includeDrafts = false,
+		hideDefaultIndex = false
+	): Promise<PageDataCacheObject[]> {
 		try {
 			// Check if caching is disabled
 			if (!this.isEnabled()) {
@@ -777,7 +788,11 @@ export class StudioCMSVirtualCache {
 			// Check if the cache is empty
 			if (this.pages.size === 0) {
 				// Retrieve the data from the database
-				const updatedData = await this.sdk.GET.database.pages(includeDrafts, tree);
+				const updatedData = await this.sdk.GET.database.pages(
+					includeDrafts,
+					hideDefaultIndex,
+					tree
+				);
 
 				// Check if the data was retrieved successfully
 				if (!updatedData) {
@@ -946,7 +961,7 @@ export class StudioCMSVirtualCache {
 				throw new StudioCMSCacheError('Error creating page');
 			}
 
-			this.pages.set(toReturn.id, this.pageDataReturn(toReturn));
+			this.clearAllPages();
 			this.clearFolderTree();
 			this.getFolderTree();
 

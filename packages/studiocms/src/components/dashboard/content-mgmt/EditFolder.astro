@@ -21,7 +21,7 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 ---
-<div id="edit-folder-container">
+<div id="edit-folder-container" data-content-management-url={StudioCMSRoutes.mainLinks.contentManagement}>
 
     <form id="edit-folder-form" action={StudioCMSRoutes.endpointLinks.content.folder}>
 
@@ -68,6 +68,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 import { toast } from "studiocms:ui/components";
 
     const form = document.getElementById('edit-folder-form') as HTMLFormElement;
+    const createContainer = document.getElementById('edit-folder-container') as HTMLDivElement;
+
+    const { contentManagementUrl } = createContainer.dataset;
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -110,6 +113,7 @@ import { toast } from "studiocms:ui/components";
                 description: res.error,
                 type: 'danger'
             })
+            return;
         }
 
         if (response.status === 200) {
@@ -118,6 +122,8 @@ import { toast } from "studiocms:ui/components";
                 description: res.message,
                 type: 'success'
             })
+            if (contentManagementUrl) window.location.href = contentManagementUrl;
+            return;
         }
     });
 </script>

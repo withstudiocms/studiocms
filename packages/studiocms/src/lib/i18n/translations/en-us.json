@@ -123,7 +123,8 @@
       "input-custom-login-page": "Login Page Background Image (Custom)",
       "select-page-diff-tracking": "Page Diff Tracking",
       "select-login-page-bg": "Login Page Background Image",
-      "select-smtp-mailer": "SMTP Mailer"
+      "select-smtp-mailer": "SMTP Mailer",
+      "select-hide-default-index": "Hide Index Page from dashboard"
     },
     "@studiocms/dashboard:smtp": {
       "title": "SMTP Configuration",

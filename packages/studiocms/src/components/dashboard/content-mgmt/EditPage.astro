@@ -73,7 +73,7 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
-<div id="edit-page-container">
+<div id="edit-page-container" data-content-management-url={StudioCMSRoutes.mainLinks.contentManagement}>
     <form id="edit-page-form" action={StudioCMSRoutes.endpointLinks.content.page}>
 
         <Tabs variant={'starlight'}>
@@ -299,6 +299,9 @@ import { toast } from "studiocms:ui/components";
 
 // get the elements
 const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
+    const createContainer = document.getElementById('edit-page-container') as HTMLDivElement;
+
+    const { contentManagementUrl } = createContainer.dataset;
 
 editPageForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -326,6 +329,7 @@ editPageForm.addEventListener('submit', async (e) => {
             description: res.message,
             type: 'success'
         })
+        if (contentManagementUrl) window.location.href = contentManagementUrl;
         return;
     }
 });

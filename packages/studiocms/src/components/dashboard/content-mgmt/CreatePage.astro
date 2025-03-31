@@ -46,7 +46,7 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
-<div id="create-page-container">
+<div id="create-page-container" data-content-management-url={StudioCMSRoutes.mainLinks.contentManagement}>
     <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
 
       <Tabs variant={'starlight'}>
@@ -226,11 +226,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 import { toast } from "studiocms:ui/components";
     // get the elements
     const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
+    const createContainer = document.getElementById('create-page-container') as HTMLDivElement;
 
-    function getParentFolderValue(value?: string) {
-      if (value === 'null') return null;
-      return value;
-    }
+    const { contentManagementUrl } = createContainer.dataset;
 
     const draftButton = document.getElementById('draft-button') as HTMLElement;
     const publishButton = document.getElementById('publish-button') as HTMLElement;
@@ -269,6 +267,7 @@ import { toast } from "studiocms:ui/components";
               description: res.message,
               type: 'success'
           })
+          if (contentManagementUrl) window.location.href = contentManagementUrl;
           return;
       }
       })
@@ -276,26 +275,6 @@ import { toast } from "studiocms:ui/components";
     publishButton.addEventListener('click', async (e) => {
       e.preventDefault();
       const formData = new FormData(createPageForm);
-
-      const data = {
-        title: formData.get('page-title')?.toString(),
-        slug: formData.get('page-slug')?.toString(),
-        description: formData.get('page-description')?.toString(),
-        type: formData.get('page-type')?.toString(),
-        showInNav: formData.get('show-in-nav')?.toString() === 'true',
-        heroImage: formData.get('page-hero-image')?.toString(),
-        parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-        showAuthor: formData.get('show-author')?.toString() === 'true',
-        showContributors: formData.get('show-contributors')?.toString() === 'true',
-        categories: [],
-        tags: [],
-        draft: false,
-      };
-
-      const content = {
-        id: crypto.randomUUID(),
-        content: formData.get('page-content')?.toString(),
-      }
 
       const response = await fetch(createPageForm.action, {
           method: 'POST',
@@ -319,6 +298,7 @@ import { toast } from "studiocms:ui/components";
               description: res.message,
               type: 'success'
           })
+          if (contentManagementUrl) window.location.href = contentManagementUrl;
           return;
       }
       })
