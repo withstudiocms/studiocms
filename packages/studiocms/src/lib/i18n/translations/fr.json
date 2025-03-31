@@ -123,7 +123,8 @@
       "input-custom-login-page": "Image d’arrière-plan de la page de connexion (Personnalisée)",
       "select-page-diff-tracking": "Suivi des différences de pages",
       "select-login-page-bg": "Image d'arrière-plan de la page de connexion",
-      "select-smtp-mailer": "Messagerie SMTP"
+      "select-smtp-mailer": "Messagerie SMTP",
+      "select-hide-default-index": "Masquer la page d'index du tableau de bord"
     },
     "@studiocms/dashboard:smtp": {
       "title": "Configuration SMTP",

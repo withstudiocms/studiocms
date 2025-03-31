@@ -1,21 +1,21 @@
 {
-  "displayName": "डिस्प्ले नेम",
+  "displayName": "",
   "translations": {
     "@studiocms/auth:login": {
-      "title": "लॉगिन पेज",
-      "description": "लॉगिन पेज",
-      "header": "लॉगिन",
-      "sub-header-usernamepasswordoauth": "अपना यूज़रनेम नाम और पासवर्ड दर्ज करें या नीचे दिए गए विकल्पों में से किसी एक का उपयोग करके लॉग इन करें।",
-      "sub-header-usernamepassword": "अपना यूज़रनेम नाम और पासवर्ड दर्ज करें।",
-      "sub-header-oauth": "नीचे दिए गए विकल्पों में से किसी एक का उपयोग करके लॉग इन करें।",
-      "sub-header-noprovider": "कोई लॉगिन प्रदाता कॉन्फ़िगर नहीं किया गया है। कृपया अपने व्यवस्थापक से संपर्क करें।",
-      "username-label": "प्रयोक्ता नाम",
-      "password-label": "पासवर्ड",
-      "login-button": "लॉगिन",
-      "allow-registration-noaccount": "क्या आपके पास खाता नहीं है?",
-      "allow-registration-register": "यहां रजिस्टर करें!",
-      "forgot-password": "पासवर्ड भूल गए? यहां क्लिक करें।",
-      "forgot-password-title": "पासवर्ड भूल गए",
+      "title": "",
+      "description": "",
+      "header": "",
+      "sub-header-usernamepasswordoauth": "",
+      "sub-header-usernamepassword": "",
+      "sub-header-oauth": "",
+      "sub-header-noprovider": "",
+      "username-label": "",
+      "password-label": "",
+      "login-button": "",
+      "allow-registration-noaccount": "",
+      "allow-registration-register": "",
+      "forgot-password": "",
+      "forgot-password-title": "",
       "forgot-password-message": "",
       "email-label": "",
       "demo-mode-credentials": ""
@@ -123,7 +123,8 @@
       "input-custom-login-page": "",
       "select-page-diff-tracking": "",
       "select-login-page-bg": "",
-      "select-smtp-mailer": ""
+      "select-smtp-mailer": "",
+      "select-hide-default-index": ""
     },
     "@studiocms/dashboard:smtp": {
       "title": "",
