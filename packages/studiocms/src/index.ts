@@ -238,6 +238,8 @@ export const studiocms = defineIntegration({
 			content: string;
 		}[] = [];
 
+		let cacheJsonFile: URL | undefined = undefined;
+
 		// Return the Integration
 		return {
 			name,
@@ -248,7 +250,8 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, injectRoute, injectScript } = params;
+					const { logger, config, updateConfig, injectRoute, injectScript, createCodegenDir } =
+						params;
 
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
 
@@ -1472,6 +1475,11 @@ export const studiocms = defineIntegration({
 						logLevel: 'info',
 						message: ` \n \n${messageBox} \n \n`,
 					});
+
+					const codegenDir = createCodegenDir();
+					cacheJsonFile = new URL('cache.json', codegenDir);
+					if (fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' }).length === 0)
+						fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': ({ config }) => {
@@ -1499,7 +1507,7 @@ export const studiocms = defineIntegration({
 					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const latestVersion = await getLatestVersion(pkgName, logger);
+						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile);
 
 						if (!latestVersion) {
 							return;

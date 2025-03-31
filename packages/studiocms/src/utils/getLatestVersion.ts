@@ -1,4 +1,6 @@
+import fs from 'node:fs';
 import type { AstroIntegrationLogger } from 'astro';
+import { jsonParse } from './jsonParse.js';
 
 /**
  * Fetches the latest version of a given npm package from the npm registry.
@@ -12,8 +14,28 @@ import type { AstroIntegrationLogger } from 'astro';
  */
 export async function getLatestVersion(
 	packageName: string,
-	logger: AstroIntegrationLogger
+	logger: AstroIntegrationLogger,
+	cacheJsonFile: URL | undefined
 ): Promise<string | null> {
+	if (!cacheJsonFile) return null;
+
+	const file = fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' });
+
+	const cacheData = jsonParse<{ latestVersionCheck: { lastChecked: Date; version: 'string' } }>(
+		file
+	);
+
+	console.log('Cache Data ', JSON.stringify(cacheData, null, 2));
+
+	if (cacheData.latestVersionCheck?.lastChecked) {
+		if (
+			cacheData.latestVersionCheck.lastChecked.getTime() >
+			new Date(Date.now() - 60 * 60 * 1000).getTime()
+		) {
+			return cacheData.latestVersionCheck.version;
+		}
+	}
+
 	try {
 		const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`);
 
@@ -22,6 +44,17 @@ export async function getLatestVersion(
 		}
 
 		const data = await response.json();
+
+		const updatedCacheData: { latestVersionCheck: { lastChecked: Date; version: 'string' } } = {
+			...cacheData,
+			latestVersionCheck: {
+				lastChecked: new Date(),
+				version: data.version,
+			},
+		};
+
+		fs.writeFileSync(cacheJsonFile, JSON.stringify(updatedCacheData, null, 2), 'utf-8');
+
 		return data.version;
 	} catch (error) {
 		logger.error(`Error fetching latest version of ${packageName}: ${error}`);
