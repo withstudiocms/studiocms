@@ -1,9 +1,6 @@
 import type { AstroGlobal } from 'astro';
 import { defaultLang, showDefaultLang } from './config.js';
 
-// Note: Translations are not currently used in StudioCMS, so we
-// will only allow 'en-us' to be used for now on the Dashboard.
-
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
 // https://i18n.studiocms.dev/ or PR them into the `translations` folder:

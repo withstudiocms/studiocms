@@ -1,6 +1,3 @@
-// Note: Translations are not currently used in StudioCMS, so we
-// will only allow 'en-us' to be used for now on the Dashboard.
-
 /**
  * The UI translations available in the StudioCMS app.
  */
