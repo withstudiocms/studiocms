@@ -112,6 +112,10 @@
       "types": "./dist/schemas/config/rendererConfig.d.ts",
       "default": "./dist/schemas/config/rendererConfig.js"
     },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "default": "./dist/runtime/index.js"
+    },
     "./components/*": "./dist/components/*",
     "./layouts/*": "./dist/layouts/*",
     "./lib/*": "./dist/lib/*",
