@@ -90,7 +90,10 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 				admin: [
 					{
 						title: {
-							'en-us': 'Analytics and Vitals',
+							en: 'Analytics and Vitals',
+							de: '',
+							es: 'Análisis y datos vitales',
+							fr: '',
 						},
 						icon: 'chart-pie',
 						route: 'analytics',
