@@ -341,6 +341,7 @@ export function studiocmsSDKCore() {
 				return await db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId));
 			},
 			new: async (userId: string, description: string) => {
+				// Generate non-expiring token for API key
 				const key = generateToken(userId, true);
 
 				return await db
