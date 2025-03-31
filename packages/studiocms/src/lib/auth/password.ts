@@ -1,8 +1,8 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
-import { checkIfUnsafe } from '@matthiesenxyz/integration-utils/securityUtils';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
+import checkIfUnsafe from './utils/unsafeCheck.js';
 
 /**
  * Removes the last element from a tuple type.
@@ -77,8 +77,7 @@ export async function verifyPasswordStrength(password: string): Promise<true | s
 	}
 
 	// Check if password is known unsafe password
-	const isUnsafe = checkIfUnsafe(password).password();
-	if (isUnsafe) {
+	if (checkIfUnsafe(password).password()) {
 		return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 	}
 
