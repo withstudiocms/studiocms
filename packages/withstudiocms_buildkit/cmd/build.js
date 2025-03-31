@@ -1,7 +1,6 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import esbuild from 'esbuild';
-import { copy } from 'esbuild-plugin-copy';
 import glob from 'fast-glob';
 import { dim, gray, green, red, yellow } from 'kleur/colors';
 
@@ -13,6 +12,12 @@ const defaultConfig = {
 	target: 'node18',
 	sourcemap: false,
 	sourcesContent: false,
+	loader: {
+		'.astro': 'copy',
+		'.d.ts': 'copy',
+		'.json': 'copy',
+		'.png': 'copy',
+	},
 };
 
 const dt = new Intl.DateTimeFormat('en-us', {
@@ -40,15 +45,6 @@ const dtsGen = (buildTsConfig) => ({
 	},
 });
 
-const CopyConfig = {
-	assets: [
-		{
-			from: ['./src/**/*.!(ts|js|css)'],
-			to: '.',
-		},
-	],
-};
-
 export default async function build(...args) {
 	const config = Object.assign({}, defaultConfig);
 	const isDev = args.slice(-1)[0] === 'IS_DEV';
@@ -69,10 +65,6 @@ export default async function build(...args) {
 
 	const { type = 'module', dependencies = {} } = await readPackageJSON('./package.json');
 
-	config.define = {};
-	for (const [key, value] of await getDefinedEntries()) {
-		config.define[`process.env.${key}`] = JSON.stringify(value);
-	}
 	const format = type === 'module' && !forceCJS ? 'esm' : 'cjs';
 
 	const outdir = 'dist';
@@ -96,7 +88,7 @@ export default async function build(...args) {
 			outdir,
 			outExtension: forceCJS ? { '.js': '.cjs' } : {},
 			format,
-			plugins: [copy(CopyConfig), dtsGen(buildTsConfig)],
+			plugins: [dtsGen(buildTsConfig)],
 		});
 		console.log(dim(`[${date}] `) + green('√ Build Complete'));
 		return;
@@ -127,7 +119,7 @@ export default async function build(...args) {
 		outdir,
 		format,
 		sourcemap: 'linked',
-		plugins: [copy(CopyConfig), rebuildPlugin],
+		plugins: [rebuildPlugin],
 	});
 
 	console.log(
@@ -145,43 +137,6 @@ async function clean(outdir, skip = []) {
 	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
 }
 
-/**
- * Contextual `define` values to statically replace in the built JS output.
- * Available to all packages, but mostly useful for CLIs like `create-astro`.
- */
-async function getDefinedEntries() {
-	const define = {
-		/** The current version (at the time of building) for the current package, such as `astro` or `@astrojs/sitemap` */
-		PACKAGE_VERSION: await getInternalPackageVersion('./package.json'),
-		/** The current version (at the time of building) for `typescript` */
-		TYPESCRIPT_VERSION: await getWorkspacePackageVersion('typescript'),
-	};
-	for (const [key, value] of Object.entries(define)) {
-		if (value === undefined) {
-			delete define[key];
-		}
-	}
-	return Object.entries(define);
-}
-
 async function readPackageJSON(path) {
 	return await fs.readFile(path, { encoding: 'utf8' }).then((res) => JSON.parse(res));
-}
-
-async function getInternalPackageVersion(path) {
-	return readPackageJSON(path).then((res) => res.version);
-}
-
-async function getWorkspacePackageVersion(packageName) {
-	const { dependencies, devDependencies } = await readPackageJSON(
-		new URL('../../package.json', import.meta.url)
-	);
-	const deps = { ...dependencies, ...devDependencies };
-	const version = deps[packageName];
-	if (!version) {
-		throw new Error(
-			`Unable to resolve "${packageName}". Is it a dependency of the workspace root?`
-		);
-	}
-	return version.replace(/^\D+/, '');
 }

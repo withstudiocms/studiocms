@@ -47,8 +47,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "build-scripts build 'src/**/*.{ts,css}'",
-    "dev": "build-scripts dev 'src/**/*.{ts,css}'"
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
   },
   "exports": {
     ".": {

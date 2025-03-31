@@ -25,4 +25,3 @@ catalogs:
 packages:
   - "packages/*"
   - "playground"
-  - "build-scripts"
