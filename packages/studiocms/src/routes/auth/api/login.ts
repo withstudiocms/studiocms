@@ -21,7 +21,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byUsername(username);
 
 	// If the user does not exist, return an ambiguous error
-	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Invalid username');
+	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Username is invalid');
 
 	// Check if the user has a password or is using a oAuth login
 	if (!existingUser.password)
@@ -31,7 +31,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	const validPassword = await verifyPasswordHash(existingUser.password, password);
 
 	// If the password is invalid, return an error
-	if (!validPassword) return badFormDataEntry('Invalid credentials', 'Invalid password');
+	if (!validPassword) return badFormDataEntry('Invalid credentials', 'Password is invalid');
 
 	// Check if the user's email is verified (if the mailer is enabled)
 	const isEmailAccountVerified = await isEmailVerified(existingUser);
