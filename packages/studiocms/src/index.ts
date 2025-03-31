@@ -15,7 +15,6 @@ import { addVirtualImports, createResolver, defineIntegration } from 'astro-inte
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
-import packageJson from 'package-json';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import {
@@ -47,6 +46,7 @@ import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
 import { watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
+import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
@@ -1499,7 +1499,11 @@ export const studiocms = defineIntegration({
 					const logger = l.fork(`${name}:update-check`);
 
 					try {
-						const { version: latestVersion } = await packageJson(name.toLowerCase());
+						const latestVersion = await getLatestVersion(pkgName, logger);
+
+						if (!latestVersion) {
+							return;
+						}
 
 						const comparison = semCompare(pkgVersion, latestVersion);
 
