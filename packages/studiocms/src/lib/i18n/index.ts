@@ -35,9 +35,9 @@ export type UiTranslations = typeof uiTranslations;
 export type UiLanguageKeys = keyof UiTranslations;
 
 /**
- * Represents the keys of the UI component translations for the 'en-us' locale.
+ * Represents the keys of the UI component translations for the 'en' locale.
  * This type is derived from the 'translations' property of the 'UiTranslations' interface
- * for the 'en-us' locale (Source of truth), ensuring that only valid translation keys are used.
+ * for the 'en' locale (Source of truth), ensuring that only valid translation keys are used.
  */
 export type UiComponentKeys = keyof UiTranslations['en']['translations'];
 
