@@ -119,7 +119,7 @@ async function generateMessage() {
 	const descriptor = item(descriptors);
 	const verb = item(verbs);
 
-	let message = '<&1309310416362537020>\n';
+	let message = '<@&1309310416362537020>\n';
 
 	if (packages.length === 1) {
 		const { name, version, url } = packages[0];
