@@ -5,6 +5,7 @@ import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../lib/utils.js';
+import { createUserAvatar } from './utils/avatar.js';
 import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
 import { hashPassword } from './utils/password.js';
 
@@ -122,6 +123,7 @@ export async function libsqlCreateUsers(ctx: Context) {
 		password,
 		createdAt: new Date(),
 		updatedAt: new Date(),
+		avatar: await createUserAvatar(email),
 	};
 
 	const newRank: typeof tsPermissions.$inferInsert = {
