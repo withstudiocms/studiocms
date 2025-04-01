@@ -31,55 +31,64 @@ export async function libsqlCreateUsers(ctx: Context) {
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
 
-	const username = await ctx.p.text({
-		message: 'Username',
-		placeholder: 'johndoe',
-	});
+	const inputData = await ctx.p.group(
+		{
+			username: () =>
+				ctx.p.text({
+					message: 'Username',
+					placeholder: 'johndoe',
+				}),
+			name: () =>
+				ctx.p.text({
+					message: 'Display Name',
+					placeholder: 'John Doe',
+				}),
+			email: () =>
+				ctx.p.text({
+					message: 'E-Mail Address',
+					placeholder: 'john@doe.tld',
+				}),
+			newPassword: () =>
+				ctx.p.password({
+					message: 'Password',
+					validate: (password) => {
+						if (password.length < 6 || password.length > 255) {
+							return 'Password must be between 6 and 255 characters';
+						}
 
-	if (typeof username === 'symbol') {
-		ctx.pCancel(username);
-		ctx.exit(0);
-	}
+						// Check if password is known unsafe password
+						if (checkIfUnsafe(password).password()) {
+							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+						}
 
-	const name = await ctx.p.text({
-		message: 'Display Name',
-		placeholder: 'John Doe',
-	});
-
-	if (typeof name === 'symbol') {
-		ctx.pCancel(name);
-		ctx.exit(0);
-	}
-
-	const email = await ctx.p.text({
-		message: 'E-Mail Address',
-		placeholder: 'john@doe.tld',
-	});
-
-	if (typeof email === 'symbol') {
-		ctx.pCancel(email);
-		ctx.exit(0);
-	}
-
-	const newPassword = await ctx.p.password({
-		message: 'Password',
-		validate: (password) => {
-			if (password.length < 6 || password.length > 255) {
-				return 'Password must be between 6 and 255 characters';
-			}
-
-			// Check if password is known unsafe password
-			if (checkIfUnsafe(password).password()) {
-				return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
-			}
-
-			return undefined;
+						return undefined;
+					},
+				}),
+			confirmPassword: () =>
+				ctx.p.password({
+					message: 'Confirm Password',
+				}),
+			rank: () =>
+				ctx.p.select({
+					message: 'What Role should this user have?',
+					options: [
+						{ value: 'visitor', label: 'Visitor' },
+						{ value: 'editor', label: 'Editor' },
+						{ value: 'admin', label: 'Admin' },
+						{ value: 'owner', label: 'Owner' },
+					],
+				}),
 		},
-	});
+		{
+			onCancel: () => ctx.pOnCancel(),
+		}
+	);
 
-	if (typeof newPassword === 'symbol') {
-		ctx.pCancel(newPassword);
-		ctx.exit(0);
+	const { confirmPassword, email, name, newPassword, rank, username } = inputData;
+
+	if (newPassword !== confirmPassword) {
+		ctx.p.log.error('Passwords do not match!');
+		ctx.exit(1);
 	}
 
 	// Check if password is in pwned password database
@@ -88,36 +97,8 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 	await checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
 
-	const confirmPassword = await ctx.p.password({
-		message: 'Confirm Password',
-		validate: (confirmPass) => {
-			if (confirmPass !== newPassword) return 'Passwords do not match';
-			return undefined;
-		},
-	});
-
-	if (typeof confirmPassword === 'symbol') {
-		ctx.pCancel(confirmPassword);
-		ctx.exit(0);
-	}
-
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
-
-	const rank = await ctx.p.select({
-		message: 'What Role should this user have?',
-		options: [
-			{ value: 'visitor', label: 'Visitor' },
-			{ value: 'editor', label: 'Editor' },
-			{ value: 'admin', label: 'Admin' },
-			{ value: 'owner', label: 'Owner' },
-		],
-	});
-
-	if (typeof rank === 'symbol') {
-		ctx.pCancel(rank);
-		ctx.exit(0);
-	}
 
 	const newUserId = crypto.randomUUID();
 
