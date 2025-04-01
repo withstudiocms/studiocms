@@ -145,12 +145,12 @@ export async function libsqlCreateUsers(ctx: Context) {
 				} catch (e) {
 					if (e instanceof Error) {
 						ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-						process.exit(1);
+						ctx.exit(1);
 					} else {
 						ctx.p.log.error(
 							StudioCMSColorwayError('Unknown Error: Unable to create environment file.')
 						);
-						process.exit(1);
+						ctx.exit(1);
 					}
 				}
 			},
