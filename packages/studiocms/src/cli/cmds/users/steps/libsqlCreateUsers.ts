@@ -1,5 +1,4 @@
-import { sha1 } from '@oslojs/crypto/sha1';
-import { encodeHexLowerCase } from '@oslojs/encoding';
+import { z } from 'astro/zod';
 import color from 'chalk';
 import dotenv from 'dotenv';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
@@ -7,7 +6,7 @@ import type { Context } from '../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../lib/utils.js';
 import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
-import { checkPassword, hashPassword } from './utils/password.js';
+import { hashPassword } from './utils/password.js';
 
 dotenv.config();
 
@@ -23,12 +22,19 @@ export async function libsqlCreateUsers(ctx: Context) {
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
 
+	const currentUsers = await db.select().from(tsUsers);
+
 	const inputData = await ctx.p.group(
 		{
 			username: () =>
 				ctx.p.text({
 					message: 'Username',
 					placeholder: 'johndoe',
+					validate: (user) => {
+						const isUser = currentUsers.find(({ username }) => username === user);
+						if (isUser) return 'Username is already in use, please try another one';
+						return undefined;
+					},
 				}),
 			name: () =>
 				ctx.p.text({
@@ -39,6 +45,15 @@ export async function libsqlCreateUsers(ctx: Context) {
 				ctx.p.text({
 					message: 'E-Mail Address',
 					placeholder: 'john@doe.tld',
+					validate: (email) => {
+						const emailSchema = z.string().email({ message: 'Email address is invalid' });
+						const response = emailSchema.safeParse(email);
+						if (!response.success) return response.error.message;
+						if (currentUsers.find((user) => user.email === email)) {
+							return 'There is already a user with that email.';
+						}
+						return undefined;
+					},
 				}),
 			newPassword: () =>
 				ctx.p.password({
@@ -47,12 +62,10 @@ export async function libsqlCreateUsers(ctx: Context) {
 						if (password.length < 6 || password.length > 255) {
 							return 'Password must be between 6 and 255 characters';
 						}
-
 						// Check if password is known unsafe password
 						if (checkIfUnsafe(password).password()) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}
-
 						return undefined;
 					},
 				}),
@@ -83,12 +96,6 @@ export async function libsqlCreateUsers(ctx: Context) {
 		ctx.exit(1);
 	}
 
-	// Check if password is in pwned password database
-	const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(newPassword)));
-	const hashPrefix = hash.slice(0, 5);
-
-	await checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
-
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
 
@@ -108,17 +115,6 @@ export async function libsqlCreateUsers(ctx: Context) {
 		user: newUserId,
 		rank,
 	};
-
-	const currentUsers = await db.select().from(tsUsers);
-
-	if (currentUsers.find((user) => user.username === username)) {
-		ctx.logger.error('There is already a user with that username.');
-		ctx.exit(1);
-	}
-	if (currentUsers.find((user) => user.email === email)) {
-		ctx.logger.error('There is already a user with that email.');
-		ctx.exit(1);
-	}
 
 	if (ctx.dryRun) {
 		ctx.tasks.push({

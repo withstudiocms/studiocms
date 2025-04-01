@@ -1,12 +1,10 @@
-import { sha1 } from '@oslojs/crypto/sha1';
-import { encodeHexLowerCase } from '@oslojs/encoding';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
 import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
-import { checkPassword, hashPassword } from './utils/password.js';
+import { hashPassword } from './utils/password.js';
 
 dotenv.config();
 
@@ -100,6 +98,11 @@ export async function libsqlModifyUsers(ctx: Context) {
 			const newUserName = await ctx.p.text({
 				message: `Enter the user's new username`,
 				placeholder: 'johndoe',
+				validate: (user) => {
+					const isUser = currentUsers.find(({ username }) => username === user);
+					if (isUser) return 'Username is already in use, please try another one';
+					return undefined;
+				},
 			});
 
 			if (typeof newUserName === 'symbol') {
@@ -142,12 +145,6 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.pCancel(newPassword);
 				ctx.exit(0);
 			}
-
-			// Check if password is in pwned password database
-			const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(newPassword)));
-			const hashPrefix = hash.slice(0, 5);
-
-			await checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
