@@ -18,6 +18,6 @@ export async function createUserAvatar(email: string) {
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
 	// convert bytes to hex string
 	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-	// return the gravatar url
+	// return the Libravatar url
 	return `https://seccdn.libravatar.org/avatar/${hashHex}?s=400&d=retro`;
 }

@@ -57,7 +57,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 	ctx.p.note(`User ID Selected: ${userSelection}`);
 
 	const action = await ctx.p.select({
-		message: 'What user field you like to update?',
+		message: 'Which user field would you like to update?',
 		options: [
 			{ value: 'password', label: 'Password' },
 			{ value: 'username', label: 'Username' },
@@ -99,7 +99,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 								.set({ name: newDisplayName })
 								.where(eq(tsUsers.id, userSelection));
 
-							message('User modified Successfully');
+							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
 								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
@@ -150,7 +150,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 								.set({ username: newUserName })
 								.where(eq(tsUsers.id, userSelection));
 
-							message('User modified Successfully');
+							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
 								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
@@ -217,7 +217,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 								.set({ password: hashedPassword })
 								.where(eq(tsUsers.id, userSelection));
 
-							message('User modified Successfully');
+							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
 								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
