@@ -11,7 +11,7 @@ dotenv.config();
 
 const { tsUsers, tsPermissions } = tables;
 
-export async function libsqlUsers(ctx: Context) {
+export async function libsqlModifyUsers(ctx: Context) {
 	ctx.debug && ctx.logger.debug('Running libsqlUsers...');
 
 	ctx.debug && ctx.logger.debug('Checking for environment variables');

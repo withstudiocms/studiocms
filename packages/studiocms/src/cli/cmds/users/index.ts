@@ -3,7 +3,7 @@ import type { instanceCommand } from '../../lib/commander.js';
 import { type Context, getContext } from '../../lib/context.js';
 import { StudioCMSColorwayBg, label } from '../../lib/utils.js';
 import { intro } from '../../shared/intro.js';
-import { libsqlUsers } from './steps/libsqlUsers.js';
+import { libsqlModifyUsers } from './steps/libsqlModifyUsers.js';
 import { next } from './steps/nextSteps.js';
 
 export { getContext };
@@ -42,9 +42,31 @@ export async function initCMD(this: instanceCommand) {
 	});
 
 	switch (options) {
-		case 'libsql':
-			steps.push(libsqlUsers);
+		case 'libsql': {
+			const libsqlAction = await ctx.p.select({
+				message: 'What would you like to do?',
+				options: [
+					{ value: 'modify', label: 'Modify an existing user' },
+					{ value: 'create', label: 'Create new user' },
+				],
+			});
+
+			if (typeof libsqlAction === 'symbol') {
+				ctx.pCancel(libsqlAction);
+				ctx.exit(0);
+			}
+
+			switch (libsqlAction) {
+				case 'modify': {
+					steps.push(libsqlModifyUsers);
+					break;
+				}
+				case 'create': {
+					break;
+				}
+			}
 			break;
+		}
 		default:
 			ctx.pCancel(options);
 	}
