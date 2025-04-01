@@ -4,21 +4,11 @@ import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
-import { tables, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
+import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
+import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
 import { checkPassword, hashPassword } from './utils/password.js';
 
 dotenv.config();
-
-const { tsUsers, tsPermissions } = tables;
-
-function checkRequiredEnvVars(ctx: Context, envVars: string[]) {
-	for (const varName of envVars) {
-		if (!process.env[varName]) {
-			ctx.logger.error(`${varName} is a required environment variable when using this utility.`);
-			ctx.exit(1);
-		}
-	}
-}
 
 export async function libsqlModifyUsers(ctx: Context) {
 	ctx.debug && ctx.logger.debug('Running libsqlUsers...');

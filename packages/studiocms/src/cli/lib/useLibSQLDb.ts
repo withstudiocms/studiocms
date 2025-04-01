@@ -17,4 +17,6 @@ export const useLibSQLDb = (url: string, authToken: string) => {
 	}
 };
 
-export { schema as tables };
+const { tsUsers, tsPermissions } = schema;
+
+export { tsUsers, tsPermissions };
