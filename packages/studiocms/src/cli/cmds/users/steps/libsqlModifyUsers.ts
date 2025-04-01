@@ -19,8 +19,8 @@ export async function libsqlModifyUsers(ctx: Context) {
 
 	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
+	// Environment variables are already checked by checkRequiredEnvVars
+	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
 	ctx.debug && ctx.logger.debug('Getting Users from DB...');
 
@@ -178,6 +178,16 @@ export async function libsqlModifyUsers(ctx: Context) {
 						return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 					}
 
+					// Check for complexity requirements
+					const hasUpperCase = /[A-Z]/.test(password);
+					const hasLowerCase = /[a-z]/.test(password);
+					const hasNumbers = /\d/.test(password);
+					const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+					if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
+						return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
+					}
+
 					return undefined;
 				},
 			});
@@ -199,8 +209,8 @@ export async function libsqlModifyUsers(ctx: Context) {
 					title: color.dim('Modifying user...'),
 					task: async (message) => {
 						try {
-							// biome-ignore lint/style/noNonNullAssertion: <explanation>
-							const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
+							// Environment variables are already checked by checkRequiredEnvVars
+							const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY as string);
 
 							await db
 								.update(tsUsers)

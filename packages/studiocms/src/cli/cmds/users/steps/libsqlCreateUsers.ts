@@ -19,8 +19,8 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
+	// Environment variables are already checked by checkRequiredEnvVars
+	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
 	const currentUsers = await db.select().from(tsUsers);
 
@@ -69,6 +69,16 @@ export async function libsqlCreateUsers(ctx: Context) {
 						if (checkIfUnsafe(password).password()) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}
+
+						// Check for complexity requirements
+						const hasUpperCase = /[A-Z]/.test(password);
+						const hasLowerCase = /[a-z]/.test(password);
+						const hasNumbers = /\d/.test(password);
+						const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+						if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
+							return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
+						}
 						return undefined;
 					},
 				}),
@@ -99,8 +109,8 @@ export async function libsqlCreateUsers(ctx: Context) {
 		ctx.exit(1);
 	}
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
+	// Environment variables are already checked by checkRequiredEnvVars
+	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY as string);
 
 	const newUserId = crypto.randomUUID();
 
@@ -137,7 +147,13 @@ export async function libsqlCreateUsers(ctx: Context) {
 					]);
 
 					if (insertedUser.length === 0 || insertedRank.length === 0) {
-						message('There was an error inserting the user');
+						message('Failed to create user or assign permissions');
+						ctx.logger.debug(
+							`User insertion results: ${JSON.stringify({
+								userInserted: insertedUser.length > 0,
+								permissionsInserted: insertedRank.length > 0,
+							})}`
+						);
 						ctx.exit(1);
 					}
 
