@@ -2,6 +2,9 @@ import { scrypt as nodeScrypt } from 'node:crypto';
 
 export function checkPassword(hashPrefix: string, hash: string) {
 	return fetch(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
+		.catch((error) => {
+			throw new Error(`Failed to check password security: ${error.message}`);
+		})
 		.then((res) => res.text())
 		.then((data) => {
 			const lines = data.split('\n');
@@ -49,9 +52,10 @@ function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buf
 }
 
 /**
- * Hashes a plain text password using bcrypt.
+ * Hashes a plain text password using scrypt.
  *
  * @param password - The plain text password to hash.
+ * @param CMS_ENCRYPTION_KEY - The encryption key used for password hashing.
  * @returns A promise that resolves to the hashed password.
  */
 export async function hashPassword(password: string, CMS_ENCRYPTION_KEY: string): Promise<string> {

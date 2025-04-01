@@ -1,7 +1,6 @@
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 import dotenv from 'dotenv';
-import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
 import { tables, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
@@ -11,6 +10,15 @@ dotenv.config();
 
 const { tsUsers, tsPermissions } = tables;
 
+function checkRequiredEnvVars(ctx: Context, envVars: string[]) {
+	for (const varName of envVars) {
+		if (!process.env[varName]) {
+			ctx.logger.error(`${varName} is a required environment variable when using this utility.`);
+			ctx.exit(1);
+		}
+	}
+}
+
 export async function libsqlCreateUsers(ctx: Context) {
 	ctx.debug && ctx.logger.debug('Running libsqlUsers...');
 
@@ -18,28 +26,10 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
 
-	if (!ASTRO_DB_REMOTE_URL) {
-		ctx.logger.error(
-			'ASTRO_DB_REMOTE_URL is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
+	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
-	if (!ASTRO_DB_APP_TOKEN) {
-		ctx.logger.error(
-			'ASTRO_DB_APP_TOKEN is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
-
-	if (!CMS_ENCRYPTION_KEY) {
-		ctx.logger.error(
-			'CMS_ENCRYPTION_KEY is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
-
-	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN);
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
 
 	const username = await ctx.p.text({
 		message: 'Username',
@@ -111,7 +101,8 @@ export async function libsqlCreateUsers(ctx: Context) {
 		ctx.exit(0);
 	}
 
-	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY);
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
 
 	const rank = await ctx.p.select({
 		message: 'What Role should this user have?',
@@ -149,9 +140,11 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 	if (currentUsers.find((user) => user.username === username)) {
 		ctx.logger.error('There is already a user with that username.');
+		ctx.exit(1);
 	}
 	if (currentUsers.find((user) => user.email === email)) {
 		ctx.logger.error('There is already a user with that email.');
+		ctx.exit(1);
 	}
 
 	const [insertedUser, insertedRank] = await db.batch([
@@ -161,6 +154,7 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 	if (insertedUser.length === 0 || insertedRank.length === 0) {
 		ctx.logger.error('There was an error inserting the user');
+		ctx.exit(1);
 	}
 
 	ctx.p.note('User created Successfully', 'Success');

@@ -11,6 +11,15 @@ dotenv.config();
 
 const { tsUsers, tsPermissions } = tables;
 
+function checkRequiredEnvVars(ctx: Context, envVars: string[]) {
+	for (const varName of envVars) {
+		if (!process.env[varName]) {
+			ctx.logger.error(`${varName} is a required environment variable when using this utility.`);
+			ctx.exit(1);
+		}
+	}
+}
+
 export async function libsqlModifyUsers(ctx: Context) {
 	ctx.debug && ctx.logger.debug('Running libsqlUsers...');
 
@@ -18,28 +27,10 @@ export async function libsqlModifyUsers(ctx: Context) {
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
 
-	if (!ASTRO_DB_REMOTE_URL) {
-		ctx.logger.error(
-			'ASTRO_DB_REMOTE_URL is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
+	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
-	if (!ASTRO_DB_APP_TOKEN) {
-		ctx.logger.error(
-			'ASTRO_DB_APP_TOKEN is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
-
-	if (!CMS_ENCRYPTION_KEY) {
-		ctx.logger.error(
-			'CMS_ENCRYPTION_KEY is a required environment variable when using this utility.'
-		);
-		ctx.exit(1);
-	}
-
-	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN);
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL!, ASTRO_DB_APP_TOKEN!);
 
 	ctx.debug && ctx.logger.debug('Getting Users from DB...');
 
@@ -168,7 +159,8 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.exit(0);
 			}
 
-			const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY);
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
 
 			const newData = await db
 				.update(tsUsers)

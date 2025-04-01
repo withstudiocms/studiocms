@@ -9,6 +9,16 @@ import { next } from './steps/nextSteps.js';
 
 export { getContext };
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function exitIfEmpty(ctx: Context, items: any[], itemType: string) {
+	if (items.length === 0) {
+		ctx.p.log.error(`No ${itemType} selected, exiting...`);
+		ctx.exit(0);
+	}
+}
+
+type ContextStep = (ctx: Context) => Promise<void>;
+
 export async function initCMD(this: instanceCommand) {
 	// Parse options
 	const opts = this.opts();
@@ -34,12 +44,15 @@ export async function initCMD(this: instanceCommand) {
 	await intro(ctx);
 
 	// Steps
-	const steps: Array<(ctx: Context) => Promise<void>> = [];
+	const steps: ContextStep[] = [];
 
 	// Get options for steps
 	const options = await ctx.p.select({
 		message: 'What kind of Database are you using?',
-		options: [{ value: 'libsql', label: 'libSQL Remote' }],
+		options: [
+			{ value: 'libsql', label: 'libSQL Remote' },
+			// TODO: Add support for other database types (e.g., PostgreSQL, MySQL)
+		],
 	});
 
 	switch (options) {
@@ -76,10 +89,7 @@ export async function initCMD(this: instanceCommand) {
 	ctx.debug && ctx.logger.debug('Running steps...');
 
 	// No steps? Exit
-	if (steps.length === 0) {
-		ctx.p.log.error('No steps selected, exiting...');
-		ctx.exit(0);
-	}
+	exitIfEmpty(ctx, steps, 'steps');
 
 	// Run steps
 	for (const step of steps) {
@@ -89,10 +99,7 @@ export async function initCMD(this: instanceCommand) {
 	ctx.debug && ctx.logger.debug('Running tasks...');
 
 	// No tasks? Exit
-	if (ctx.tasks.length === 0) {
-		ctx.p.log.error('No tasks selected, exiting...');
-		ctx.exit(0);
-	}
+	exitIfEmpty(ctx, ctx.tasks, 'tasks');
 
 	// Run tasks
 	await ctx.p.tasks(ctx.tasks);
