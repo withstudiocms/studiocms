@@ -22,6 +22,9 @@ await new Command('studiocms')
 	.command('init', 'Initialize the StudioCMS project after new installation.', {
 		executableFile: 'init.js',
 	})
+	.command('users', 'Utilities for Tweaking Users in StudioCMS', {
+		executableFile: 'users.js',
+	})
 	.command('get-turso', 'Turso CLI Utilities', { executableFile: 'get-turso.js' })
 
 	// Parse the command line arguments
