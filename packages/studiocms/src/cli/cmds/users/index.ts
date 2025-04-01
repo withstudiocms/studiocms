@@ -3,8 +3,8 @@ import type { instanceCommand } from '../../lib/commander.js';
 import { type Context, getContext } from '../../lib/context.js';
 import { StudioCMSColorwayBg, label } from '../../lib/utils.js';
 import { intro } from '../../shared/intro.js';
-import { libsqlCreateUsers } from './steps/libsqlCreateUsers.js';
-import { libsqlModifyUsers } from './steps/libsqlModifyUsers.js';
+import { libsqlCreateUsers } from './steps/libsql/createUsers.js';
+import { libsqlModifyUsers } from './steps/libsql/modifyUsers.js';
 import { next } from './steps/nextSteps.js';
 
 export { getContext };

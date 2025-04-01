@@ -1,12 +1,12 @@
 import color from 'chalk';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
-import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
-import type { Context } from '../../../lib/context.js';
-import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../lib/utils.js';
-import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
-import { hashPassword } from './utils/password.js';
+import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
+import type { Context } from '../../../../lib/context.js';
+import { tsPermissions, tsUsers, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../../lib/utils.js';
+import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
+import { hashPassword } from '../utils/password.js';
 
 dotenv.config();
 
