@@ -1,11 +1,16 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
 
-export function checkPassword(hashPrefix: string, hash: string) {
+export async function checkPassword(hashPrefix: string, hash: string) {
 	return fetch(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
 		.catch((error) => {
 			throw new Error(`Failed to check password security: ${error.message}`);
 		})
-		.then((res) => res.text())
+		.then((res) => {
+			if (!res.ok) {
+				throw new Error(`Pwned Passwords API returned status ${res.status}`);
+			}
+			return res.text();
+		})
 		.then((data) => {
 			const lines = data.split('\n');
 			for (const line of lines) {

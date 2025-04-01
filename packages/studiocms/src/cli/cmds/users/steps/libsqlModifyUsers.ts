@@ -144,12 +144,6 @@ export async function libsqlModifyUsers(ctx: Context) {
 						return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 					}
 
-					// Check if password is in pwned password database
-					const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(password)));
-					const hashPrefix = hash.slice(0, 5);
-
-					checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
-
 					return undefined;
 				},
 			});
@@ -158,6 +152,12 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.pCancel(newPassword);
 				ctx.exit(0);
 			}
+
+			// Check if password is in pwned password database
+			const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(newPassword)));
+			const hashPrefix = hash.slice(0, 5);
+
+			await checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
 
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);

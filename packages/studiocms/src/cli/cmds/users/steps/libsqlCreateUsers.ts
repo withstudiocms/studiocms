@@ -73,12 +73,6 @@ export async function libsqlCreateUsers(ctx: Context) {
 				return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 			}
 
-			// Check if password is in pwned password database
-			const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(password)));
-			const hashPrefix = hash.slice(0, 5);
-
-			checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
-
 			return undefined;
 		},
 	});
@@ -87,6 +81,12 @@ export async function libsqlCreateUsers(ctx: Context) {
 		ctx.pCancel(newPassword);
 		ctx.exit(0);
 	}
+
+	// Check if password is in pwned password database
+	const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(newPassword)));
+	const hashPrefix = hash.slice(0, 5);
+
+	await checkPassword(hashPrefix, hash).catch((err) => ctx.p.log.error(err.message));
 
 	const confirmPassword = await ctx.p.password({
 		message: 'Confirm Password',
