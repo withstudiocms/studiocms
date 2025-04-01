@@ -147,9 +147,7 @@ export async function libsqlCreateUsers(ctx: Context) {
 						ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
 						ctx.exit(1);
 					} else {
-						ctx.p.log.error(
-							StudioCMSColorwayError('Unknown Error: Unable to create environment file.')
-						);
+						ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
 						ctx.exit(1);
 					}
 				}

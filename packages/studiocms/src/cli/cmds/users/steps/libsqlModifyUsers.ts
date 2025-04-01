@@ -1,8 +1,10 @@
+import color from 'chalk';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../lib/utils.js';
 import { checkRequiredEnvVars } from './utils/checkRequiredEnvVars.js';
 import { hashPassword } from './utils/password.js';
 
@@ -80,17 +82,35 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.exit(0);
 			}
 
-			const newData = await db
-				.update(tsUsers)
-				.set({ name: newDisplayName })
-				.where(eq(tsUsers.id, userSelection))
-				.returning()
-				.get();
-
-			if (newData.name === newDisplayName) {
-				ctx.p.note('User Display Name updated successfully');
+			if (ctx.dryRun) {
+				ctx.tasks.push({
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					task: async (message) => {
+						message('Modifying user... (skipped)');
+					},
+				});
 			} else {
-				ctx.p.log.error('There was an Unknown error');
+				ctx.tasks.push({
+					title: color.dim('Modifying user...'),
+					task: async (message) => {
+						try {
+							await db
+								.update(tsUsers)
+								.set({ name: newDisplayName })
+								.where(eq(tsUsers.id, userSelection));
+
+							message('User modified Successfully');
+						} catch (e) {
+							if (e instanceof Error) {
+								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								ctx.exit(1);
+							} else {
+								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
+								ctx.exit(1);
+							}
+						}
+					},
+				});
 			}
 			break;
 		}
@@ -113,17 +133,35 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.exit(0);
 			}
 
-			const newData = await db
-				.update(tsUsers)
-				.set({ username: newUserName })
-				.where(eq(tsUsers.id, userSelection))
-				.returning()
-				.get();
-
-			if (newData.username === newUserName) {
-				ctx.p.note('Username updated successfully');
+			if (ctx.dryRun) {
+				ctx.tasks.push({
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					task: async (message) => {
+						message('Modifying user... (skipped)');
+					},
+				});
 			} else {
-				ctx.p.log.error('There was an Unknown error');
+				ctx.tasks.push({
+					title: color.dim('Modifying user...'),
+					task: async (message) => {
+						try {
+							await db
+								.update(tsUsers)
+								.set({ username: newUserName })
+								.where(eq(tsUsers.id, userSelection));
+
+							message('User modified Successfully');
+						} catch (e) {
+							if (e instanceof Error) {
+								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								ctx.exit(1);
+							} else {
+								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
+								ctx.exit(1);
+							}
+						}
+					},
+				});
 			}
 			break;
 		}
@@ -149,20 +187,38 @@ export async function libsqlModifyUsers(ctx: Context) {
 				ctx.exit(0);
 			}
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
-
-			const newData = await db
-				.update(tsUsers)
-				.set({ password: hashedPassword })
-				.where(eq(tsUsers.id, userSelection))
-				.returning()
-				.get();
-
-			if (newData.password === hashedPassword) {
-				ctx.p.note('User Password updated successfully');
+			if (ctx.dryRun) {
+				ctx.tasks.push({
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					task: async (message) => {
+						message('Modifying user... (skipped)');
+					},
+				});
 			} else {
-				ctx.p.log.error('There was an Unknown error');
+				ctx.tasks.push({
+					title: color.dim('Modifying user...'),
+					task: async (message) => {
+						try {
+							// biome-ignore lint/style/noNonNullAssertion: <explanation>
+							const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY!);
+
+							await db
+								.update(tsUsers)
+								.set({ password: hashedPassword })
+								.where(eq(tsUsers.id, userSelection));
+
+							message('User modified Successfully');
+						} catch (e) {
+							if (e instanceof Error) {
+								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								ctx.exit(1);
+							} else {
+								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
+								ctx.exit(1);
+							}
+						}
+					},
+				});
 			}
 			break;
 		}
