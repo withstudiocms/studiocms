@@ -1,9 +1,11 @@
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
+import color from 'chalk';
 import dotenv from 'dotenv';
 import checkIfUnsafe from '../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../lib/context.js';
 import { tables, useLibSQLDb } from '../../../lib/useLibSQLDb.js';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../lib/utils.js';
 import { checkPassword, hashPassword } from './utils/password.js';
 
 dotenv.config();
@@ -128,15 +130,41 @@ export async function libsqlCreateUsers(ctx: Context) {
 		ctx.exit(1);
 	}
 
-	const [insertedUser, insertedRank] = await db.batch([
-		db.insert(tsUsers).values(newUser).returning(),
-		db.insert(tsPermissions).values(newRank).returning(),
-	]);
+	if (ctx.dryRun) {
+		ctx.tasks.push({
+			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user creation')}`,
+			task: async (message) => {
+				message('Creating user... (skipped)');
+			},
+		});
+	} else {
+		ctx.tasks.push({
+			title: color.dim('Creating user...'),
+			task: async (message) => {
+				try {
+					const [insertedUser, insertedRank] = await db.batch([
+						db.insert(tsUsers).values(newUser).returning(),
+						db.insert(tsPermissions).values(newRank).returning(),
+					]);
 
-	if (insertedUser.length === 0 || insertedRank.length === 0) {
-		ctx.logger.error('There was an error inserting the user');
-		ctx.exit(1);
+					if (insertedUser.length === 0 || insertedRank.length === 0) {
+						message('There was an error inserting the user');
+						ctx.exit(1);
+					}
+
+					message('User created Successfully');
+				} catch (e) {
+					if (e instanceof Error) {
+						ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+						process.exit(1);
+					} else {
+						ctx.p.log.error(
+							StudioCMSColorwayError('Unknown Error: Unable to create environment file.')
+						);
+						process.exit(1);
+					}
+				}
+			},
+		});
 	}
-
-	ctx.p.note('User created Successfully', 'Success');
 }
