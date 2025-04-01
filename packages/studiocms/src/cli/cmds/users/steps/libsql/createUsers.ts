@@ -34,7 +34,7 @@ export async function libsqlCreateUsers(ctx: Context) {
 					validate: (user) => {
 						const isUser = currentUsers.find(({ username }) => username === user);
 						if (isUser) return 'Username is already in use, please try another one';
-						if (checkIfUnsafe(username).username()) {
+						if (checkIfUnsafe(user).username()) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
 						return undefined;
