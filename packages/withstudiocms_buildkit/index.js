@@ -33,7 +33,7 @@ const dt = new Intl.DateTimeFormat('en-us', {
 	minute: '2-digit',
 });
 
-const dtsGen = (buildTsConfig) => ({
+const dtsGen = (buildTsConfig, outdir) => ({
 	name: 'TypeScriptDeclarationsPlugin',
 	setup(build) {
 		build.onEnd((result) => {
@@ -42,7 +42,7 @@ const dtsGen = (buildTsConfig) => ({
 			console.log(`${dim(`[${date}]`)} Generating TypeScript declarations...`);
 			try {
 				const res = execSync(
-					`tsc --emitDeclarationOnly ${buildTsConfig ? '-p tsconfig.build.json' : '-p tsconfig.json'} --outDir ./dist`
+					`tsc --emitDeclarationOnly ${buildTsConfig ? '-p tsconfig.build.json' : '-p tsconfig.json'} --outDir ./${outdir}`
 				);
 				console.log(res.toString());
 				console.log(dim(`[${date}] `) + green('√ Generated TypeScript declarations'));
@@ -137,7 +137,7 @@ export default async function run() {
 				outdir,
 				outExtension: forceCJS ? { '.js': '.cjs' } : {},
 				format,
-				plugins: [dtsGen(buildTsConfig)],
+				plugins: [dtsGen(buildTsConfig, outdir)],
 			});
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
