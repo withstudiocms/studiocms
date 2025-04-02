@@ -70,12 +70,11 @@ export default async function run() {
 	const bundle = args.includes('--bundle');
 	const forceCJS = args.includes('--force-cjs');
 	const buildTsConfig = args.includes('--build-tsconfig');
+	const outdir = args.find((arg) => arg.startsWith('--outdir='))?.split('=')[1] || 'dist';
 
 	const { type = 'module', dependencies = {} } = await readPackageJSON('./package.json');
 
 	const format = type === 'module' && !forceCJS ? 'esm' : 'cjs';
-
-	const outdir = 'dist';
 
 	if (!noClean) {
 		console.log(
@@ -150,6 +149,7 @@ run();
 
 async function clean(outdir, skip = []) {
 	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
+	console.log(dim(`[${date}] `) + dim(`Cleaning ${files.length} files from ${outdir}`));
 	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
 }
 

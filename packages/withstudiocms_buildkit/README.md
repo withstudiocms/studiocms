@@ -43,6 +43,7 @@ The command pattern is `buildkit <command> 'path/to/file or glob/**/**.{ts}' [fl
 - `--bundle`: Enable bundling.
 - `--force-cjs`: Force CJS output.
 - `--build-tsconfig`: Allows you to have a normal dev tsconfig (`tsconfig.json`) and a `tsconfig.build.json` for build time.
+- `--outdir=dist`: Allows settings the output directory.
 
 #### Files considered Assets
 
