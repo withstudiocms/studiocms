@@ -154,5 +154,14 @@ async function clean(outdir, skip = []) {
 }
 
 async function readPackageJSON(path) {
-	return await fs.readFile(path, { encoding: 'utf8' }).then((res) => JSON.parse(res));
+	try {
+		const content = await fs.readFile(path, { encoding: 'utf8' });
+		try {
+			return JSON.parse(content);
+		} catch (parseError) {
+			throw new Error(`Invalid JSON in ${path}: ${parseError.message}`);
+		}
+	} catch (readError) {
+		throw new Error(`Failed to read ${path}: ${readError.message}`);
+	}
 }
