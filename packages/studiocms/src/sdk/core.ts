@@ -1,5 +1,4 @@
 import { and, asc, db, desc, eq } from 'astro:db';
-import logger from 'studiocms:logger';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import {
