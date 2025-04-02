@@ -142,6 +142,7 @@ export default async function run() {
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
 		}
+		// TODO: Add default/help command
 	}
 }
 
