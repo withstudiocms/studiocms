@@ -80,7 +80,7 @@ export default async function run() {
 		console.log(
 			`${dim(`[${date}]`)} Cleaning dist directory... ${dim(`(${entryPoints.length} files found)`)}`
 		);
-		await clean(outdir, [`!${outdir}/**/*.d.ts`]);
+		await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
 	}
 
 	switch (cmd) {
@@ -147,7 +147,7 @@ export default async function run() {
 
 run();
 
-async function clean(outdir, skip = []) {
+async function clean(outdir, date, skip = []) {
 	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
 	console.log(dim(`[${date}] `) + dim(`Cleaning ${files.length} files from ${outdir}`));
 	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
