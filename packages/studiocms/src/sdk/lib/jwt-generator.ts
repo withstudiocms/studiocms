@@ -10,17 +10,11 @@ function base64UrlEncode(input: string): string {
 }
 
 function base64UrlDecode(input: string): string {
-	let newInput = input;
-	// Replace URL-safe characters with standard Base64 characters
-	newInput = input.replace(/-/g, '+').replace(/_/g, '/');
-
-	// Correct padding to make the length a multiple of 4
-	while (input.length % 4 !== 0) {
+	let newInput = input.replace(/-/g, '+').replace(/_/g, '/');
+	while (newInput.length % 4 !== 0) {
 		newInput += '=';
 	}
-
-	// Decode using 'utf-8'
-	return Buffer.from(input, 'base64').toString();
+	return Buffer.from(newInput, 'base64').toString();
 }
 
 export interface JwtVerificationResult {
@@ -33,78 +27,66 @@ export function generateJwt(
 	payload: { userId: string },
 	noExpire?: boolean
 ): string {
-	// 1. Header (JSON object)
-	const header = {
-		alg: 'HS256',
-		typ: 'JWT',
-	};
+	const header = { alg: 'HS256', typ: 'JWT' };
 
 	const currentDate = new Date();
-	const ThirtyYearsFromToday = new Date(currentDate.setFullYear(currentDate.getFullYear() + 30));
+	const thirtyYearsFromToday = Math.floor(
+		currentDate.setFullYear(currentDate.getFullYear() + 30) / 1000
+	);
 
-	const exp = noExpire
-		? Math.floor(ThirtyYearsFromToday.getTime() / 1000)
-		: Math.floor(Date.now() / 1000) + 86400; // 24 hours in seconds
+	const exp = noExpire ? thirtyYearsFromToday : Math.floor(Date.now() / 1000) + 86400; // 24 hours in seconds
 
-	// 2. Payload (a simple payload can include a user ID, expiration time, etc.)
 	const payloadObj = {
 		...payload,
-		iat: new Date().getTime(), // issued at time
+		iat: Math.floor(Date.now() / 1000), // Corrected iat
 		exp,
 	};
 
-	// 3. Encode Header and Payload
 	const encodedHeader = base64UrlEncode(JSON.stringify(header));
 	const encodedPayload = base64UrlEncode(JSON.stringify(payloadObj));
 
-	// 4. Signature (using HMAC SHA256 with the secret)
 	const signatureInput = `${encodedHeader}.${encodedPayload}`;
-	const signature = crypto
-		.createHmac('sha256', secret + secret)
-		.update(signatureInput)
-		.digest('base64');
+	const signature = Buffer.from(
+		crypto
+			.createHmac('sha256', secret + secret)
+			.update(signatureInput)
+			.digest()
+	).toString('base64url');
 
-	const encodedSignature = base64UrlEncode(signature);
-
-	// Return the complete JWT
-	return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
+	return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
 
 export function verifyJwt(token: string, secret: string): JwtVerificationResult {
-	// Split the token into its parts: Header, Payload, Signature
 	const [encodedHeader, encodedPayload, encodedSignature] = token.split('.');
 
-	// Base64 URL-decode the Header and Payload
 	const header = JSON.parse(base64UrlDecode(encodedHeader));
 	const payload = JSON.parse(base64UrlDecode(encodedPayload));
 
-	// Check if the token has expired
+	// Check if algorithm is correct
+	if (header.alg !== 'HS256') {
+		logger.warn('Invalid algorithm');
+		return { isValid: false };
+	}
+
 	const currentTime = Math.floor(Date.now() / 1000);
 	if (payload.exp && currentTime > payload.exp) {
 		logger.warn('Token has expired');
 		return { isValid: false };
 	}
 
-	// Recreate the signature to verify it
 	const signatureInput = `${encodedHeader}.${encodedPayload}`;
-	const signature = crypto
-		.createHmac('sha256', secret + secret)
-		.update(signatureInput)
-		.digest('base64');
+	const generatedSignature = Buffer.from(
+		crypto
+			.createHmac('sha256', secret + secret)
+			.update(signatureInput)
+			.digest()
+	).toString('base64url');
 
-	// Base64 URL-encode the recreated signature
-	const encodedGeneratedSignature = base64UrlEncode(signature);
-
-	// Compare the generated signature with the token's signature
-	if (encodedGeneratedSignature !== encodedSignature) {
+	if (generatedSignature !== encodedSignature) {
 		logger.warn('Invalid signature');
 		return { isValid: false };
 	}
 
-	// If the token is valid, return the userId from the payload
 	logger.info('Token is valid');
-	return {
-		isValid: true,
-		userId: payload.userId, // Assuming `userId` exists in the payload
-	};
+	return { isValid: true, userId: payload.userId };
 }
