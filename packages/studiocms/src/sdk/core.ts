@@ -316,15 +316,14 @@ export function studiocmsSDKCore() {
 			const resetToken = await db
 				.select()
 				.from(tsUserResetTokens)
-				.where(eq(tsUserResetTokens.userId, _token.userId))
-				.get();
+				.where(eq(tsUserResetTokens.userId, _token.userId));
 
 			if (!resetToken) {
 				logger.info('No reset token found in DB');
 				return false;
 			}
 
-			return resetToken.token === token;
+			return !!resetToken.find((t) => t.token === token);
 		},
 	};
 
