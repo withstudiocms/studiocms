@@ -16,7 +16,14 @@ const defaultConfig = {
 		'.astro': 'copy',
 		'.d.ts': 'copy',
 		'.json': 'copy',
+		'.gif': 'copy',
+		'.jpeg': 'copy',
+		'.jpg': 'copy',
 		'.png': 'copy',
+		'.tiff': 'copy',
+		'.webp': 'copy',
+		'.avif': 'copy',
+		'.svg': 'copy',
 	},
 };
 
