@@ -87,6 +87,5 @@ export function verifyJwt(token: string, secret: string): JwtVerificationResult 
 		return { isValid: false };
 	}
 
-	logger.info('Token is valid');
 	return { isValid: true, userId: payload.userId };
 }

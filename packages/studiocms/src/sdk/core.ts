@@ -299,19 +299,14 @@ export function studiocmsSDKCore() {
 		},
 		check: async (token: string) => {
 			const _token = testToken(token);
-			logger.info('Checking Token Results');
 
 			if (!_token.isValid) {
-				logger.info('Token is not valid');
 				return false;
 			}
 
 			if (!_token.userId) {
-				logger.info('No user ID');
 				return false;
 			}
-
-			logger.info('Checking existing Tokens');
 
 			const resetToken = await db
 				.select()
@@ -319,7 +314,6 @@ export function studiocmsSDKCore() {
 				.where(eq(tsUserResetTokens.userId, _token.userId));
 
 			if (!resetToken) {
-				logger.info('No reset token found in DB');
 				return false;
 			}
 
