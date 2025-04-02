@@ -83,7 +83,7 @@ import type {
 	tsUsersUpdate,
 } from './types/index.js';
 
-// TODO: Get pages by folder
+// TODO: Get pages by folder - DONE
 // TODO: Add authors and contributors data to pageData - DONE
 // TODO: Allow pageData to return without pageContent - DONE
 
@@ -362,6 +362,57 @@ export function studiocmsSDKCore() {
 			const pageData = await collectPageData(page, folders);
 
 			return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting page by ID: An unknown error occurred.');
+		}
+	}
+
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData[]>;
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData[]>;
+
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts = false,
+		hideDefaultIndex = false,
+		tree?: FolderNode[],
+		metaOnly = false
+	) {
+		try {
+			const pages: CombinedPageData[] = [];
+
+			let pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
+
+			if (!includeDrafts) {
+				pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
+			}
+
+			if (hideDefaultIndex) {
+				pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
+			}
+
+			const folders = tree || (await buildFolderTree());
+
+			for (const page of pagesRaw) {
+				const PageData = await collectPageData(page, folders);
+
+				pages.push(PageData);
+			}
+
+			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
@@ -1335,6 +1386,11 @@ export function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
 			pages: _getAllPages,
+
+			/**
+			 * Retrieves all the pages from the database that are related to a specific folder
+			 */
+			folderPages: _getPagesByFolderID,
 
 			/**
 			 * Retrieves the site configuration from the database.

@@ -23,7 +23,7 @@ import type {
 	tsPageFolderSelect,
 } from './types/index.js';
 
-// TODO: Get pages by folder
+// TODO: Get pages by folder - DONE
 // TODO: Add authors and contributors data to pageData - DONE
 // TODO: Allow pageData to return without pageContent - DONE
 
@@ -93,6 +93,7 @@ export class StudioCMSVirtualCache {
 				bySlug: this.getPageBySlug,
 			},
 			pages: this.getAllPages,
+			folderPages: this.folderPages,
 			siteConfig: this.getSiteConfig,
 			latestVersion: this.getVersion,
 			folderTree: this.getFolderTree,
@@ -712,6 +713,88 @@ export class StudioCMSVirtualCache {
 		return;
 	}
 
+	public async folderPages(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean
+	): Promise<PageDataCacheObject[]>;
+	public async folderPages(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageDataCacheObject[]>;
+
+	public async folderPages(
+		id: string,
+		includeDrafts = false,
+		hideDefaultIndex = false,
+		metaOnly = false
+	) {
+		try {
+			// Check if caching is disabled
+			if (!this.isEnabled()) {
+				const pages = await this.sdk.GET.database.folderPages(id, includeDrafts, hideDefaultIndex);
+				const data = pages.map((page) => this.pageDataReturn(page));
+				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+			}
+
+			const { data: tree } = await this.getFolderTree();
+
+			// Check if the cache is empty
+			if (this.pages.size === 0) {
+				// Retrieve the data from the database
+				const updatedData = await this.sdk.GET.database.pages(
+					includeDrafts,
+					hideDefaultIndex,
+					tree
+				);
+
+				// Check if the data was retrieved successfully
+				if (!updatedData) {
+					throw new StudioCMSCacheError('Cache is empty and could not be updated.');
+				}
+
+				// Loop through the updated data and store it in the cache
+				for (const data of updatedData) {
+					this.pages.set(data.id, this.pageDataReturn(data));
+				}
+
+				const data = updatedData
+					.filter(({ parentFolder }) => parentFolder === id)
+					.map((data) => this.pageDataReturn(data));
+
+				// Transform and return the data
+				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+			}
+
+			// Create a map of the cache
+			const cacheMap = Array.from(this.pages.values());
+
+			// Loop through the cache and update the expired entries
+			for (const object of cacheMap) {
+				// Check if the cache is expired
+				if (this.isCacheExpired(object)) {
+					const updatedData = await this.sdk.GET.databaseEntry.pages.byId(object.data.id, tree);
+
+					if (!updatedData) {
+						throw new StudioCMSCacheError('Cache is expired and could not be updated.');
+					}
+
+					this.pages.set(updatedData.id, this.pageDataReturn(updatedData));
+				}
+			}
+
+			// Transform and return the data
+			const data = Array.from(this.pages.values()).filter(
+				({ data: { parentFolder } }) => parentFolder === id
+			);
+			return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+		} catch (error) {
+			throw new StudioCMSCacheError('Error fetching all pages');
+		}
+	}
+
 	public async getAllPages(
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean
@@ -720,7 +803,7 @@ export class StudioCMSVirtualCache {
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
 		metaOnly?: boolean
-	): Promise<PageDataCacheObject[]>;
+	): Promise<MetaOnlyPageDataCacheObject[]>;
 
 	/**
 	 * Retrieves all pages from the cache or the database.
