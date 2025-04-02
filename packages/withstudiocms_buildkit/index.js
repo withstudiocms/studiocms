@@ -41,9 +41,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 			const date = dt.format(new Date());
 			console.log(`${dim(`[${date}]`)} Generating TypeScript declarations...`);
 			try {
-				const res = execSync(
-					`tsc --emitDeclarationOnly ${buildTsConfig ? '-p tsconfig.build.json' : '-p tsconfig.json'} --outDir ./${outdir}`
-				);
+				const res = execSync(`tsc --emitDeclarationOnly -p ${buildTsConfig} --outDir ./${outdir}`);
 				console.log(res.toString());
 				console.log(dim(`[${date}] `) + green('√ Generated TypeScript declarations'));
 			} catch (error) {
@@ -69,7 +67,8 @@ export default async function run() {
 	const noClean = args.includes('--no-clean-dist');
 	const bundle = args.includes('--bundle');
 	const forceCJS = args.includes('--force-cjs');
-	const buildTsConfig = args.includes('--build-tsconfig');
+	const buildTsConfig =
+		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || 'tsconfig.json';
 	const outdir = args.find((arg) => arg.startsWith('--outdir='))?.split('=')[1] || 'dist';
 
 	const { type = 'module', dependencies = {} } = await readPackageJSON('./package.json');
