@@ -102,6 +102,7 @@ export function verifyJwt(token: string, secret: string): JwtVerificationResult 
 	}
 
 	// If the token is valid, return the userId from the payload
+	logger.info('Token is valid');
 	return {
 		isValid: true,
 		userId: payload.userId, // Assuming `userId` exists in the payload
