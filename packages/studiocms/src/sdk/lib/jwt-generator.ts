@@ -52,7 +52,10 @@ export function generateJwt(
 
 	// 4. Signature (using HMAC SHA256 with the secret)
 	const signatureInput = `${encodedHeader}.${encodedPayload}`;
-	const signature = crypto.createHmac('sha256', secret).update(signatureInput).digest('base64');
+	const signature = crypto
+		.createHmac('sha256', secret + secret)
+		.update(signatureInput)
+		.digest('base64');
 
 	const encodedSignature = base64UrlEncode(signature);
 
@@ -77,7 +80,10 @@ export function verifyJwt(token: string, secret: string): JwtVerificationResult 
 
 	// Recreate the signature to verify it
 	const signatureInput = `${encodedHeader}.${encodedPayload}`;
-	const signature = crypto.createHmac('sha256', secret).update(signatureInput).digest('base64');
+	const signature = crypto
+		.createHmac('sha256', secret + secret)
+		.update(signatureInput)
+		.digest('base64');
 
 	// Base64 URL-encode the recreated signature
 	const encodedGeneratedSignature = base64UrlEncode(signature);
