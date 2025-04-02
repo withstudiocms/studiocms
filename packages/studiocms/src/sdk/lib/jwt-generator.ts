@@ -9,11 +9,16 @@ function base64UrlEncode(input: string): string {
 }
 
 function base64UrlDecode(input: string): string {
-	// Replace URL-safe characters and decode from base64
+	// Replace URL-safe characters with standard Base64 characters
 	input = input.replace(/-/g, '+').replace(/_/g, '/');
-	const padding = input.length % 4 === 0 ? '' : '='.repeat(4 - (input.length % 4));
-	const decoded = Buffer.from(input + padding, 'base64').toString('utf8');
-	return decoded;
+
+	// Correct padding to make the length a multiple of 4
+	while (input.length % 4 !== 0) {
+		input += '=';
+	}
+
+	// Decode using 'utf-8'
+	return Buffer.from(input, 'base64').toString();
 }
 
 export interface JwtVerificationResult {
