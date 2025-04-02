@@ -1,4 +1,5 @@
 import * as crypto from 'node:crypto';
+import logger from 'studiocms:logger';
 
 function base64UrlEncode(input: string): string {
 	return Buffer.from(input)
@@ -9,12 +10,13 @@ function base64UrlEncode(input: string): string {
 }
 
 function base64UrlDecode(input: string): string {
+	let newInput = input;
 	// Replace URL-safe characters with standard Base64 characters
-	input = input.replace(/-/g, '+').replace(/_/g, '/');
+	newInput = input.replace(/-/g, '+').replace(/_/g, '/');
 
 	// Correct padding to make the length a multiple of 4
 	while (input.length % 4 !== 0) {
-		input += '=';
+		newInput += '=';
 	}
 
 	// Decode using 'utf-8'
@@ -79,7 +81,7 @@ export function verifyJwt(token: string, secret: string): JwtVerificationResult 
 	// Check if the token has expired
 	const currentTime = Math.floor(Date.now() / 1000);
 	if (payload.exp && currentTime > payload.exp) {
-		console.log('Token has expired');
+		logger.warn('Token has expired');
 		return { isValid: false };
 	}
 
@@ -95,7 +97,7 @@ export function verifyJwt(token: string, secret: string): JwtVerificationResult 
 
 	// Compare the generated signature with the token's signature
 	if (encodedGeneratedSignature !== encodedSignature) {
-		console.log('Invalid signature');
+		logger.warn('Invalid signature');
 		return { isValid: false };
 	}
 
