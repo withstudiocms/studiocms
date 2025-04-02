@@ -11,6 +11,7 @@
     "url": "git+https://github.com/withstudiocms/studiocms.git",
     "directory": "packages/withstudiocms_buildkit"
   },
+  "license": "MIT",
   "files": [
     "index.js",
     "cmd"
