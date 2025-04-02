@@ -44,7 +44,7 @@ import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
 import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
-import { watchStudioCMSConfig } from './utils/configManager.js';
+import { exists, watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
@@ -1487,12 +1487,11 @@ export const studiocms = defineIntegration({
 						message: ` \n \n${messageBox} \n \n`,
 					});
 
-					if (isDevMode) {
-						const codegenDir = createCodegenDir();
-						cacheJsonFile = new URL('cache.json', codegenDir);
-						if (fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' }).length === 0) {
-							fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
-						}
+					const codegenDir = createCodegenDir();
+					cacheJsonFile = new URL('cache.json', codegenDir);
+
+					if (!exists(cacheJsonFile.href)) {
+						fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
 					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
