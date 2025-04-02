@@ -91,6 +91,16 @@ export type {
 	tsNotificationSettingsSelect,
 };
 
+export type MetaOnlyPageData = Omit<CombinedPageData, 'multiLangContent' | 'defaultContent'>;
+
+export type PageDataReturnType<T> = T extends CombinedPageData
+	? MetaOnlyPageData
+	: MetaOnlyPageData[];
+
+export type PageDataCacheReturnType<T> = T extends PageDataCacheObject
+	? MetaOnlyPageDataCacheObject
+	: MetaOnlyPageDataCacheObject[];
+
 export interface diffItem {
 	id: string;
 	userId: string;
@@ -167,6 +177,19 @@ export interface BaseCacheObject {
  */
 export interface PageDataCacheObject extends BaseCacheObject {
 	data: CombinedPageData;
+}
+
+/**
+ * Represents a cache object for page data.
+ * Extends the BaseCacheObject interface.
+ *
+ * @interface MetaOnlyPageDataCacheObject
+ * @extends {BaseCacheObject}
+ *
+ * @property {MetaOnlyPageData} data - The combined page data to be cached.
+ */
+export interface MetaOnlyPageDataCacheObject extends BaseCacheObject {
+	data: MetaOnlyPageData;
 }
 
 /**
@@ -274,6 +297,8 @@ export interface CombinedPageData extends PageDataStripped {
 	multiLangContent: tsPageContentSelect[];
 	defaultContent: tsPageContentSelect | undefined;
 	urlRoute: string;
+	authorData: tsUsersSelect | undefined;
+	contributorsData: tsUsersSelect[];
 }
 
 /**

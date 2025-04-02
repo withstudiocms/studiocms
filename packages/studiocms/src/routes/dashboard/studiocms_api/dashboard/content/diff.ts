@@ -28,7 +28,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
-		const data = await studioCMS_SDK_Cache.diffTracking.revertToDiff(id, type);
+		const data = await studioCMS_SDK_Cache.diffTracking().revertToDiff(id, type);
 
 		studioCMS_SDK_Cache.CLEAR.pages();
 
