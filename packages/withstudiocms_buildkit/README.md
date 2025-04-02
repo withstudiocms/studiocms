@@ -40,8 +40,8 @@ The command pattern is `buildkit <command> 'path/to/file or glob/**/**.{ts}' [fl
 #### Available Flags
 
 - `--no-clean-dist`: Do not clean the dist output during build.
-- `--bundle`: Enable bundling
-- `--force-cjs`: Force CJS output
+- `--bundle`: Enable bundling.
+- `--force-cjs`: Force CJS output.
 - `--build-tsconfig`: Allows you to have a normal dev tsconfig (`tsconfig.json`) and a `tsconfig.build.json` for build time.
 
 #### Files considered Assets
