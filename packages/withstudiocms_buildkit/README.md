@@ -64,4 +64,5 @@ For other content types and how to use them see [The esBuild Docs](https://esbui
 
 ## Licensing
 
-[MIT Licensed](https://github.com/withstudiocms/cachedfetch/blob/main/LICENSE).
+-[MIT Licensed](https://github.com/withstudiocms/cachedfetch/blob/main/LICENSE).
++[MIT Licensed](https://github.com/withstudiocms/studiocms/blob/main/LICENSE).
