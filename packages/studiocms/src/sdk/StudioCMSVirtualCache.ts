@@ -23,10 +23,6 @@ import type {
 	tsPageFolderSelect,
 } from './types/index.js';
 
-// TODO: Get pages by folder - DONE
-// TODO: Add authors and contributors data to pageData - DONE
-// TODO: Allow pageData to return without pageContent - DONE
-
 type StudioCMSSDK = ReturnType<typeof studiocmsSDKCore>;
 
 /**

@@ -83,10 +83,6 @@ import type {
 	tsUsersUpdate,
 } from './types/index.js';
 
-// TODO: Get pages by folder - DONE
-// TODO: Add authors and contributors data to pageData - DONE
-// TODO: Allow pageData to return without pageContent - DONE
-
 /**
  * The core SDK for StudioCMS.
  *
