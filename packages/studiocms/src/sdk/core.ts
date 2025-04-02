@@ -1,4 +1,4 @@
-import { and, asc, db, desc, eq } from 'astro:db';
+import { and, asc, db, desc, eq, inArray } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import {
@@ -245,11 +245,11 @@ export function studiocmsSDKCore() {
 
 			const contributorIds = parseIdStringArray(page.contributorIds || []);
 
-			const users = await db.select().from(tsUsers);
+			const authorData = await db.select().from(tsUsers).where(eq(tsUsers.id, page.id)).get();
 
-			const authorData = users.find((author) => author.id === page.authorId);
-
-			const contributorsData = users.filter((user) => contributorIds.includes(user.id));
+			const contributorsData = contributorIds.length
+				? await db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))
+				: [];
 
 			const multiLanguageContentData = await db
 				.select()

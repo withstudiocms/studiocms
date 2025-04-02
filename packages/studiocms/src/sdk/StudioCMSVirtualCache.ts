@@ -924,15 +924,19 @@ export class StudioCMSVirtualCache {
 		}
 	}
 
-	public async getPageBySlug(id: string): Promise<PageDataCacheObject>;
-	public async getPageBySlug(id: string, metaOnly?: boolean): Promise<MetaOnlyPageDataCacheObject>;
+	public async getPageBySlug(slug: string): Promise<PageDataCacheObject>;
+	public async getPageBySlug(
+		slug: string,
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageDataCacheObject>;
 
 	/**
-	 * Retrieves a page by its slug from the cache or database.
+	 * Retrieves a page by its slug, either from the cache or the database.
 	 *
-	 * @param {string} slug - The slug of the page to retrieve.
-	 * @returns {Promise<PageDataCacheObject>} A promise that resolves to the page data.
-	 * @throws {StudioCMSCacheError} If the page is not found in the database or if there is an error fetching the page.
+	 * @param slug - The slug of the page to retrieve
+	 * @param metaOnly - If true, returns only metadata without content fields
+	 * @returns A promise that resolves to the page data, either full or metadata-only
+	 * @throws {StudioCMSCacheError} If the page is not found in the database or cache
 	 */
 	public async getPageBySlug(slug: string, metaOnly = false) {
 		try {
