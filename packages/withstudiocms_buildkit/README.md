@@ -1,6 +1,6 @@
 # `@withstudiocms/buildkit`
 
-This is a esbuild based CLI kit for building Astro Integrations
+This is an esbuild based CLI kit for building Astro Integrations
 
 ## Usage
 
