@@ -245,7 +245,11 @@ export function studiocmsSDKCore() {
 
 			const contributorIds = parseIdStringArray(page.contributorIds || []);
 
-			const authorData = await db.select().from(tsUsers).where(eq(tsUsers.id, page.id)).get();
+			const authorData = await db
+				.select()
+				.from(tsUsers)
+				.where(eq(tsUsers.id, page.authorId || ''))
+				.get();
 
 			const contributorsData = contributorIds.length
 				? await db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))

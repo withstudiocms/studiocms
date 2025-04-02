@@ -77,9 +77,14 @@ export class StudioCMSVirtualCache {
 				})
 			) as PageDataCacheReturnType<T>;
 		}
-		data = { ...data, defaultContent: undefined };
-		data = { ...data, multiLangContent: undefined };
-		return data as PageDataCacheReturnType<T>;
+		const {
+			lastCacheUpdate,
+			data: { defaultContent, multiLangContent, ...metaOnlyData },
+		} = data;
+		return {
+			lastCacheUpdate,
+			data: metaOnlyData,
+		} as PageDataCacheReturnType<T>;
 	}
 
 	public cacheModule = {
