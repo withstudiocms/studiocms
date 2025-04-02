@@ -37,12 +37,13 @@ Once you install the buildkit package you now have access to a `buildkit` CLI ut
 
 The command pattern is `buildkit <command> 'path/to/file or glob/**/**.{ts}' [flags]`
 
-#### Available Flags
+#### Available Flags (All are optional)
 
 - `--no-clean-dist`: Do not clean the dist output during build.
 - `--bundle`: Enable bundling.
 - `--force-cjs`: Force CJS output.
-- `--build-tsconfig`: Allows you to have a normal dev tsconfig (`tsconfig.json`) and a `tsconfig.build.json` for build time.
+- `--tsconfig=tsconfig.json`: Allows setting custom tsconfig for build time.
+- `--outdir=dist`: Allows settings the output directory.
 
 #### Files considered Assets
 
