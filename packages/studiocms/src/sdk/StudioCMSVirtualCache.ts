@@ -71,9 +71,9 @@ export class StudioCMSVirtualCache {
 	): PageDataCacheReturnType<T> {
 		if (Array.isArray(data)) {
 			return data.map(
-				({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...item } }) => ({
+				({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...data } }) => ({
 					lastCacheUpdate,
-					data: item,
+					data,
 				})
 			) as PageDataCacheReturnType<T>;
 		}
