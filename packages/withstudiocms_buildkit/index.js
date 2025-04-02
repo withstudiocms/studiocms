@@ -78,7 +78,7 @@ export default async function run() {
 
 	if (!noClean) {
 		console.log(
-			`${dim(`[${date}]`)} Cleaning dist directory... ${dim(`(${entryPoints.length} files found)`)}`
+			`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
 		);
 		await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
 	}
