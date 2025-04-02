@@ -92,7 +92,8 @@ export default async function run() {
 					build.onEnd(async (result) => {
 						const date = dt.format(new Date());
 						if (result?.errors.length) {
-							console.error(dim(`[${date}] `) + red(error || result.errors.join('\n')));
+							const errMsg = result.errors.join('\n');
+							console.error(dim(`[${date}] `) + red(errMsg));
 						} else {
 							if (result.warnings.length) {
 								console.info(
