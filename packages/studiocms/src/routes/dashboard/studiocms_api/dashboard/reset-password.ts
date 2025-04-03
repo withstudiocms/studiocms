@@ -1,4 +1,4 @@
-import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
+import { hashPassword, verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
@@ -44,8 +44,11 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	if (verifyPasswordResponse !== true) {
 		return apiResponseLogger(400, verifyPasswordResponse);
 	}
+
+	const hashedPassword = await hashPassword(password);
+
 	const userUpdate = {
-		password: password,
+		password: hashedPassword,
 	};
 
 	const userData = await studioCMS_SDK.GET.databaseEntry.users.byId(userid);
