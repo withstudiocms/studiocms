@@ -33,12 +33,26 @@ const PageFolderTreeMapID: string = '__StudioCMS_Page_Folder_Tree';
 const FolderListMapID: string = '__StudioCMS_Folder_List';
 const StudioCMSPkgId: string = 'studiocms';
 
-const pages = new Map<string, PageDataCacheObject>();
-const siteConfig = new Map<string, SiteConfigCacheObject>();
-const version = new Map<string, VersionCacheObject>();
-const folderTree = new Map<string, FolderTreeCacheObject>();
-const pageFolderTree = new Map<string, FolderTreeCacheObject>();
-const FolderList = new Map<string, FolderListCacheObject>();
+type CacheMap<K, V> = ReadonlyMap<K, V> & Map<K, V>;
+
+const pages: CacheMap<string, PageDataCacheObject> = new Map<string, PageDataCacheObject>();
+const siteConfig: CacheMap<string, SiteConfigCacheObject> = new Map<
+	string,
+	SiteConfigCacheObject
+>();
+const version: CacheMap<string, VersionCacheObject> = new Map<string, VersionCacheObject>();
+const folderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
+	string,
+	FolderTreeCacheObject
+>();
+const pageFolderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
+	string,
+	FolderTreeCacheObject
+>();
+const FolderList: CacheMap<string, FolderListCacheObject> = new Map<
+	string,
+	FolderListCacheObject
+>();
 
 /**
  * Checks if the cache entry has expired based on the provided lifetime.
@@ -544,7 +558,8 @@ async function updateSiteConfig(data: SiteConfig): Promise<SiteConfigCacheObject
 			return returnConfig;
 		}
 
-		siteConfig.clear();
+		// Update the cache with the new configuration
+		siteConfig.set(SiteConfigMapID, returnConfig);
 
 		// Return the data
 		return returnConfig;
@@ -1007,7 +1022,14 @@ async function updatePageBySlug(
 		// Update the cache
 		const returnData = pageDataReturn(updatedData);
 		pages.set(updatedData.id, returnData);
-		clearFolderTree();
+
+		// Only clear folder tree if structural properties changed
+		if (
+			data.pageData.title !== cachedPage.data.title ||
+			data.pageData.parentFolder !== cachedPage.data.parentFolder
+		) {
+			clearFolderTree();
+		}
 
 		// Return the data
 		return returnData;
