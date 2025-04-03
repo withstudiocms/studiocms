@@ -324,52 +324,6 @@ async function getFolderTree(): Promise<FolderTreeCacheObject> {
 	}
 }
 
-async function updateFolderTreeWithNewPage(newPageData: CombinedPageData): Promise<void> {
-	try {
-		if (!isEnabled()) return;
-
-		// Get the current folder tree
-		const cachedTree = folderTree.get(FolderTreeMapID);
-		if (!cachedTree) return; // No tree to update
-
-		const tree = [...cachedTree.data]; // Create a copy to avoid direct mutation
-
-		// Create a page node to add to the tree
-		const pageNode = {
-			id: newPageData.id,
-			name: newPageData.title,
-			page: true,
-			pageData: newPageData,
-			children: [],
-		};
-
-		// If page has no parent, add to root
-		if (!newPageData.parentFolder) {
-			tree.push(pageNode);
-		} else {
-			// Otherwise add to appropriate folder
-			const success = sdk.addPageToFolderTree(tree, newPageData.parentFolder, pageNode);
-
-			// If adding to folder failed (folder not found), fall back to full rebuild
-			if (!success) {
-				clearFolderTree();
-				await getFolderTree();
-				return;
-			}
-		}
-
-		// Update the cache with modified tree
-		folderTree.set(FolderTreeMapID, {
-			data: tree,
-			lastCacheUpdate: new Date(),
-		});
-	} catch (error) {
-		// On any error, fall back to a full rebuild to ensure consistency
-		clearFolderTree();
-		await getFolderTree();
-	}
-}
-
 async function getPageFolderTree(
 	includeDrafts = false,
 	hideDefaultIndex = false
@@ -942,7 +896,8 @@ async function createPage(data: {
 		}
 
 		pages.set(toReturn.id, pageDataReturn(toReturn));
-		await updateFolderTreeWithNewPage(toReturn);
+		pageFolderTree.clear();
+		folderTree.clear();
 
 		return pageDataReturn(toReturn);
 	} catch (error) {
