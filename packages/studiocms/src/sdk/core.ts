@@ -240,23 +240,25 @@ export function studiocmsSDKCore() {
 			const tagIds = parseIdNumberArray(page.tags || []);
 			const contributorIds = parseIdStringArray(page.contributorIds || []);
 
-			const [categories, tags, [authorDataArray, contributorsData, multiLanguageContentData]] =
+			const [categories, tags, [authorDataArray, contributorsData], multiLanguageContentData] =
 				await Promise.all([
-					await collectCategories(categoryIds),
-					await collectTags(tagIds),
-					await db.batch([
+					collectCategories(categoryIds),
+					collectTags(tagIds),
+					db.batch([
 						db
 							.select()
 							.from(tsUsers)
 							.where(eq(tsUsers.id, page.authorId || '')),
 						db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds)),
-						db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
 					]),
+					metaOnly
+						? db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id))
+						: undefined,
 				]);
 
 			const authorData = authorDataArray[0] || undefined;
 
-			const defaultLanguageContentData = multiLanguageContentData.find(
+			const defaultLanguageContentData = multiLanguageContentData?.find(
 				(content) => content.contentLang === page.contentLang
 			);
 
