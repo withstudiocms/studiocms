@@ -292,7 +292,7 @@ export function studiocmsSDKCore() {
 		}
 	}
 
-	function __pagesQuickFilter(
+	function filterPagesByDraftAndIndex(
 		pages: tsPageDataSelect[],
 		includeDrafts: boolean,
 		hideDefaultIndex: boolean
@@ -325,7 +325,7 @@ export function studiocmsSDKCore() {
 		try {
 			const pagesRaw = await db.select().from(tsPageData);
 
-			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
+			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
@@ -394,7 +394,7 @@ export function studiocmsSDKCore() {
 		try {
 			const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
 
-			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
+			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
