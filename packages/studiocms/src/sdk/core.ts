@@ -1,4 +1,4 @@
-import { and, asc, db, desc, eq } from 'astro:db';
+import { and, asc, db, desc, eq, inArray } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import {
@@ -50,9 +50,11 @@ import type {
 	DeletionResponse,
 	FolderListItem,
 	FolderNode,
+	MetaOnlyPageData,
 	MultiPageInsert,
 	PageContentReturnId,
 	PageDataCategoriesInsertResponse,
+	PageDataReturnType,
 	PageDataTagsInsertResponse,
 	SingleRank,
 	addDatabaseEntryInsertPage,
@@ -201,32 +203,62 @@ export function studiocmsSDKCore() {
 		}
 	}
 
+	function transformPageDataToMetaOnly<T extends CombinedPageData[] | CombinedPageData>(
+		data: T
+	): PageDataReturnType<T> {
+		if (Array.isArray(data)) {
+			return data.map(
+				({ defaultContent, multiLangContent, ...rest }) => rest
+			) as PageDataReturnType<T>;
+		}
+		const { defaultContent, multiLangContent, ...rest } = data as CombinedPageData;
+		return rest as PageDataReturnType<T>;
+	}
+
+	async function collectPageData(
+		page: tsPageDataSelect,
+		tree: FolderNode[]
+	): Promise<CombinedPageData>;
+	async function collectPageData(
+		page: tsPageDataSelect,
+		tree: FolderNode[],
+		metaOnly: boolean
+	): Promise<MetaOnlyPageData>;
+
 	/**
 	 * Collects and combines various data related to a page.
 	 *
 	 * @param page - The page data to collect additional information for.
+	 * @param tree - The FolderNode tree
+	 * @param metaOnly - Only return the metadata and not the pageContent
 	 * @returns A promise that resolves to the combined page data.
 	 * @throws {StudioCMS_SDK_Error} If an error occurs while collecting page data.
 	 */
-	async function collectPageData(
-		page: tsPageDataSelect,
-		tree: FolderNode[]
-	): Promise<CombinedPageData> {
+	async function collectPageData(page: tsPageDataSelect, tree: FolderNode[], metaOnly = false) {
 		try {
 			const categoryIds = parseIdNumberArray(page.categories || []);
-			const categories = await collectCategories(categoryIds);
-
 			const tagIds = parseIdNumberArray(page.tags || []);
-			const tags = await collectTags(tagIds);
+			const contributorIds = Array.isArray(page.contributorIds) ? page.contributorIds : [];
 
-			const contributorIds = parseIdStringArray(page.contributorIds || []);
+			const [categories, tags, authorDataArray, contributorsData, multiLanguageContentData] =
+				await Promise.all([
+					collectCategories(categoryIds),
+					collectTags(tagIds),
+					db
+						.select()
+						.from(tsUsers)
+						.where(eq(tsUsers.id, page.authorId || '')),
+					contributorIds.length
+						? db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))
+						: undefined,
+					metaOnly
+						? undefined
+						: db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
+				]);
 
-			const multiLanguageContentData = await db
-				.select()
-				.from(tsPageContent)
-				.where(eq(tsPageContent.contentId, page.id));
+			const authorData = authorDataArray[0] || undefined;
 
-			const defaultLanguageContentData = multiLanguageContentData.find(
+			const defaultLanguageContentData = multiLanguageContentData?.find(
 				(content) => content.contentLang === page.contentLang
 			);
 
@@ -239,20 +271,205 @@ export function studiocmsSDKCore() {
 				urlRoute = urlParts.map((part) => part.name).join('/') + safeSlug;
 			}
 
-			return {
+			const returnData = {
 				...page,
 				urlRoute,
 				categories,
 				tags,
 				contributorIds,
+				authorData,
+				contributorsData,
 				multiLangContent: multiLanguageContentData,
 				defaultContent: defaultLanguageContentData,
-			};
+			} as CombinedPageData;
+
+			return metaOnly ? transformPageDataToMetaOnly(returnData) : returnData;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error collecting page data: ${error.message}`, error.stack);
 			}
 			throw new StudioCMS_SDK_Error('Error collecting page data: An unknown error occurred.');
+		}
+	}
+
+	function filterPagesByDraftAndIndex(
+		pages: tsPageDataSelect[],
+		includeDrafts: boolean,
+		hideDefaultIndex: boolean
+	): tsPageDataSelect[] {
+		return pages.filter(
+			({ draft, slug }) =>
+				(includeDrafts || draft === false || draft === null) &&
+				(!hideDefaultIndex || slug !== 'index')
+		);
+	}
+
+	async function _getAllPages(
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData[]>;
+	async function _getAllPages(
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData[]>;
+
+	async function _getAllPages(
+		includeDrafts = false,
+		hideDefaultIndex = false,
+		tree?: FolderNode[],
+		metaOnly = false
+	) {
+		try {
+			const pagesRaw = await db.select().from(tsPageData);
+
+			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
+
+			const folders = tree || (await buildFolderTree());
+
+			const pages = await Promise.all(
+				pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
+			);
+
+			return pages;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.');
+		}
+	}
+
+	async function _getPagesByID(
+		id: string,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData | undefined>;
+	async function _getPagesByID(
+		id: string,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData | undefined>;
+
+	async function _getPagesByID(id: string, tree?: FolderNode[], metaOnly = false) {
+		try {
+			const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
+
+			if (!page) return undefined;
+			const folders = tree || (await buildFolderTree());
+
+			const pageData = await collectPageData(page, folders, metaOnly);
+
+			return pageData;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting page by ID: An unknown error occurred.');
+		}
+	}
+
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData[]>;
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts?: boolean,
+		hideDefaultIndex?: boolean,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData[]>;
+
+	async function _getPagesByFolderID(
+		id: string,
+		includeDrafts = false,
+		hideDefaultIndex = false,
+		tree?: FolderNode[],
+		metaOnly = false
+	) {
+		try {
+			const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
+
+			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
+
+			const folders = tree || (await buildFolderTree());
+
+			const pages = await Promise.all(
+				pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
+			);
+
+			return pages;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(
+					`Error getting pages by folder ID: ${error.message}`,
+					error.stack
+				);
+			}
+			throw new StudioCMS_SDK_Error('Error getting pages by folder ID: An unknown error occurred.');
+		}
+	}
+
+	async function _getPagesBySlug(
+		slug: string,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData | undefined>;
+	async function _getPagesBySlug(
+		slug: string,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData | undefined>;
+
+	async function _getPagesBySlug(slug: string, tree?: FolderNode[], metaOnly = false) {
+		try {
+			const page = await db.select().from(tsPageData).where(eq(tsPageData.slug, slug)).get();
+
+			if (!page) return undefined;
+			const folders = tree || (await buildFolderTree());
+
+			const pageData = await collectPageData(page, folders, metaOnly);
+
+			return pageData;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting page by slug: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting page by slug: An unknown error occurred.');
+		}
+	}
+
+	async function _getPackagesPages(
+		packageName: string,
+		tree?: FolderNode[]
+	): Promise<CombinedPageData[]>;
+	async function _getPackagesPages(
+		packageName: string,
+		tree?: FolderNode[],
+		metaOnly?: boolean
+	): Promise<MetaOnlyPageData[]>;
+
+	async function _getPackagesPages(packageName: string, tree?: FolderNode[], metaOnly = false) {
+		try {
+			const pagesRaw = await db
+				.select()
+				.from(tsPageData)
+				.where(eq(tsPageData.package, packageName));
+			const folders = tree || (await buildFolderTree());
+
+			const pages = await Promise.all(
+				pagesRaw.map(async (page) => await collectPageData(page, folders, metaOnly))
+			);
+
+			return pages;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
+			}
+			throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.');
 		}
 	}
 
@@ -1157,40 +1374,12 @@ export function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of combined page data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
-			pages: async (
-				includeDrafts = false,
-				hideDefaultIndex = false,
-				tree?: FolderNode[]
-			): Promise<CombinedPageData[]> => {
-				try {
-					const pages: CombinedPageData[] = [];
+			pages: _getAllPages,
 
-					let pagesRaw = await db.select().from(tsPageData);
-
-					if (!includeDrafts) {
-						pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
-					}
-
-					if (hideDefaultIndex) {
-						pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
-					}
-
-					const folders = tree || (await buildFolderTree());
-
-					for (const page of pagesRaw) {
-						const PageData = await collectPageData(page, folders);
-
-						pages.push(PageData);
-					}
-
-					return pages;
-				} catch (error) {
-					if (error instanceof Error) {
-						throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
-					}
-					throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.');
-				}
-			},
+			/**
+			 * Retrieves all the pages from the database that are related to a specific folder
+			 */
+			folderPages: _getPagesByFolderID,
 
 			/**
 			 * Retrieves the site configuration from the database.
@@ -1333,24 +1522,7 @@ export function studiocmsSDKCore() {
 				 * @returns A promise that resolves to the page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
 				 */
-				byId: async (id: string, tree?: FolderNode[]): Promise<CombinedPageData | undefined> => {
-					try {
-						const page = await db.select().from(tsPageData).where(eq(tsPageData.id, id)).get();
-
-						if (!page) return undefined;
-						const folders = tree || (await buildFolderTree());
-
-						return await collectPageData(page, folders);
-					} catch (error) {
-						if (error instanceof Error) {
-							throw new StudioCMS_SDK_Error(
-								`Error getting page by ID: ${error.message}`,
-								error.stack
-							);
-						}
-						throw new StudioCMS_SDK_Error('Error getting page by ID: An unknown error occurred.');
-					}
-				},
+				byId: _getPagesByID,
 
 				/**
 				 * Retrieves a page by slug.
@@ -1359,27 +1531,7 @@ export function studiocmsSDKCore() {
 				 * @returns A promise that resolves to the page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page.
 				 */
-				bySlug: async (
-					slug: string,
-					tree?: FolderNode[]
-				): Promise<CombinedPageData | undefined> => {
-					try {
-						const page = await db.select().from(tsPageData).where(eq(tsPageData.slug, slug)).get();
-
-						if (!page) return undefined;
-						const folders = tree || (await buildFolderTree());
-
-						return await collectPageData(page, folders);
-					} catch (error) {
-						if (error instanceof Error) {
-							throw new StudioCMS_SDK_Error(
-								`Error getting page by slug: ${error.message}`,
-								error.stack
-							);
-						}
-						throw new StudioCMS_SDK_Error('Error getting page by slug: An unknown error occurred.');
-					}
-				},
+				bySlug: _getPagesBySlug,
 			},
 
 			folder: async (id: string): Promise<tsPageFolderSelect | undefined> => {
@@ -1642,30 +1794,7 @@ export function studiocmsSDKCore() {
 		/**
 		 * Retrieves data from the database by package.
 		 */
-		packagePages: async (packageName: string, tree?: FolderNode[]): Promise<CombinedPageData[]> => {
-			try {
-				const pages: CombinedPageData[] = [];
-
-				const pagesRaw = await db
-					.select()
-					.from(tsPageData)
-					.where(eq(tsPageData.package, packageName));
-				const folders = tree || (await buildFolderTree());
-
-				for (const page of pagesRaw) {
-					const PageData = await collectPageData(page, folders);
-
-					pages.push(PageData);
-				}
-
-				return pages;
-			} catch (error) {
-				if (error instanceof Error) {
-					throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
-				}
-				throw new StudioCMS_SDK_Error('Error getting pages: An unknown error occurred.');
-			}
-		},
+		packagePages: _getPackagesPages,
 	};
 
 	const POST = {

@@ -217,7 +217,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	}
 
 	data.authorId = AuthorId;
-	data.contributorIds = JSON.stringify(ContributorIds);
+	data.contributorIds = ContributorIds;
 	data.updatedAt = new Date();
 
 	const startMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
