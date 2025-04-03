@@ -253,7 +253,7 @@ export function studiocmsSDKCore() {
 				db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
 			]);
 
-			const authorData = authorDataArray.pop();
+			const authorData = authorDataArray[0] || undefined;
 
 			const defaultLanguageContentData = multiLanguageContentData.find(
 				(content) => content.contentLang === page.contentLang
@@ -289,6 +289,18 @@ export function studiocmsSDKCore() {
 		}
 	}
 
+	function __pagesQuickFilter(
+		pages: tsPageDataSelect[],
+		includeDrafts: boolean,
+		hideDefaultIndex: boolean
+	): tsPageDataSelect[] {
+		let pagesRaw = pages;
+		if (!includeDrafts)
+			pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
+		if (hideDefaultIndex) pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
+		return pagesRaw;
+	}
+
 	async function _getAllPages(
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
@@ -310,19 +322,13 @@ export function studiocmsSDKCore() {
 		try {
 			const pages: CombinedPageData[] = [];
 
-			let pagesRaw = await db.select().from(tsPageData);
+			const pagesRaw = await db.select().from(tsPageData);
 
-			if (!includeDrafts) {
-				pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
-			}
-
-			if (hideDefaultIndex) {
-				pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
-			}
+			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
-			for (const page of pagesRaw) {
+			for (const page of pagesFiltered) {
 				const PageData = await collectPageData(page, folders);
 
 				pages.push(PageData);
@@ -389,19 +395,13 @@ export function studiocmsSDKCore() {
 		try {
 			const pages: CombinedPageData[] = [];
 
-			let pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
+			const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
 
-			if (!includeDrafts) {
-				pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
-			}
-
-			if (hideDefaultIndex) {
-				pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
-			}
+			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
-			for (const page of pagesRaw) {
+			for (const page of pagesFiltered) {
 				const PageData = await collectPageData(page, folders);
 
 				pages.push(PageData);
