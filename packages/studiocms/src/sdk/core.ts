@@ -208,12 +208,11 @@ export function studiocmsSDKCore() {
 	): PageDataReturnType<T> {
 		if (Array.isArray(data)) {
 			return data.map(
-				({ defaultContent, multiLangContent, ...data }) => data as MetaOnlyPageData
+				({ defaultContent, multiLangContent, ...rest }) => rest
 			) as PageDataReturnType<T>;
 		}
-		data = { ...data, defaultContent: undefined };
-		data = { ...data, multiLangContent: undefined };
-		return data as PageDataReturnType<T>;
+		const { defaultContent, multiLangContent, ...rest } = data as CombinedPageData;
+		return rest as PageDataReturnType<T>;
 	}
 
 	async function collectPageData(
@@ -245,20 +244,16 @@ export function studiocmsSDKCore() {
 
 			const contributorIds = parseIdStringArray(page.contributorIds || []);
 
-			const authorData = await db
-				.select()
-				.from(tsUsers)
-				.where(eq(tsUsers.id, page.authorId || ''))
-				.get();
+			const [authorDataArray, contributorsData, multiLanguageContentData] = await db.batch([
+				db
+					.select()
+					.from(tsUsers)
+					.where(eq(tsUsers.id, page.authorId || '')),
+				db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds)),
+				db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
+			]);
 
-			const contributorsData = contributorIds.length
-				? await db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))
-				: [];
-
-			const multiLanguageContentData = await db
-				.select()
-				.from(tsPageContent)
-				.where(eq(tsPageContent.contentId, page.id));
+			const authorData = authorDataArray.pop();
 
 			const defaultLanguageContentData = multiLanguageContentData.find(
 				(content) => content.contentLang === page.contentLang
@@ -420,9 +415,7 @@ export function studiocmsSDKCore() {
 					error.stack
 				);
 			}
-			throw new StudioCMS_SDK_Error(
-				'Error getting pages by folder ID: An unknown error occurred.'
-			);
+			throw new StudioCMS_SDK_Error('Error getting pages by folder ID: An unknown error occurred.');
 		}
 	}
 
