@@ -444,7 +444,7 @@ async function getPageFolderTree(
 				}
 			}
 
-			folderTree.set(PageFolderTreeMapID, folderTreeReturn(newFolderTree));
+			pageFolderTree.set(PageFolderTreeMapID, folderTreeReturn(newFolderTree));
 
 			return folderTreeReturn(newFolderTree);
 		}
