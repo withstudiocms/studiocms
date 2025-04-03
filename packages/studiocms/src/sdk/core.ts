@@ -203,7 +203,7 @@ export function studiocmsSDKCore() {
 		}
 	}
 
-	function convertCombinedPageDataToMetaOnly<T extends CombinedPageData[] | CombinedPageData>(
+	function transformPageDataToMetaOnly<T extends CombinedPageData[] | CombinedPageData>(
 		data: T
 	): PageDataReturnType<T> {
 		if (Array.isArray(data)) {
@@ -283,7 +283,7 @@ export function studiocmsSDKCore() {
 				defaultContent: defaultLanguageContentData,
 			} as CombinedPageData;
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(returnData) : returnData;
+			return metaOnly ? transformPageDataToMetaOnly(returnData) : returnData;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error collecting page data: ${error.message}`, error.stack);
