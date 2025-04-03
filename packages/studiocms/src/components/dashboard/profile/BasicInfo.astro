@@ -2,7 +2,7 @@
 import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { Button, Card, Icon, Input } from 'studiocms:ui/components';
+import { Button, Card, Group, Icon, Input } from 'studiocms:ui/components';
 
 const data = await getUserData(Astro);
 
@@ -18,12 +18,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         </h2>
     
         <div class="form-header">
-            <Button type='submit' size='sm' variant={'solid'} color='primary'>
-                <Icon slot="start-content" name="check" width={24} height={24} />
-                <t-profile-basic key="basic-info-save-button">
-                    {t('basic-info-save-button')}
-                </t-profile-basic>
-            </Button> 
+            <Group>
+                <Button id="refresh-avatar" size='sm' variant={'outlined'} color={'info'} data-url={StudioCMSRoutes.endpointLinks.profile}>
+                    <Icon slot="start-content" name="user-circle" width={24} height={24} />
+                    <t-profile-basic key="sync-with-libravatar">
+                        {t('sync-with-libravatar')}
+                    </t-profile-basic>
+                </Button>
+                <Button type='submit' size='sm' variant={'solid'} color='primary'>
+                    <Icon slot="start-content" name="check" width={24} height={24} />
+                    <t-profile-basic key="basic-info-save-button">
+                        {t('basic-info-save-button')}
+                    </t-profile-basic>
+                </Button> 
+            </Group>
         </div>
     </div>
 
@@ -36,6 +44,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         <Input label={t('basic-info-email')} placeholder='john@doe.com' value={data.user?.email} isRequired name='email' />
     
         <Input label={t('basic-info-website')} placeholder='https://doe.com' value={data.user?.url} name='account-url' />
+
+        <Input label={t('basic-avatar-url')} placeholder="https://seccdn.libravatar.org/avatar/..." value={data.user?.avatar} name="avatar" />
 
     </div>
 
@@ -69,6 +79,39 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 <script>
     import { toast } from "studiocms:ui/components";
 
+    const syncAvatar = document.getElementById('refresh-avatar') as HTMLButtonElement;
+    const syncUrl = syncAvatar.dataset.url as string;
+
+    syncAvatar.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const response = await fetch(syncUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mode: 'avatar' })
+        })
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger'
+            })
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success'
+            })
+        }
+    })
+
     const basicInfoForm = document.getElementById('basic-info-form') as HTMLFormElement;
         basicInfoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -82,6 +125,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                     username: formData.get('username') as string,
                     email: formData.get('email') as string,
                     url: formData.get('account-url') ?? null,
+                    avatar: formData.get('avatar') ?? null,
                 }
             }
 
