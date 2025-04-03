@@ -253,7 +253,7 @@ export function studiocmsSDKCore() {
 						: undefined,
 					metaOnly
 						? undefined
-						: await db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
+						: db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
 				]);
 
 			const authorData = authorDataArray[0] || undefined;

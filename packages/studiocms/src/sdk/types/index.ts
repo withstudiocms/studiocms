@@ -3,7 +3,7 @@ import type {
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../schemas/config/sdk.js';
-import type StudioCMSVirtualCache from '../StudioCMSVirtualCache.js';
+import type { cacheModule } from '../cache-core.js';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -140,24 +140,9 @@ export type AstroDBVirtualModule = typeof import('astro:db');
 export type { CacheConfig, ProcessedCacheConfig, ProcessedSDKConfig };
 
 /**
- * Type definition for the constructor of the StudioCMS SDK Cache.
- *
- * This type represents the constructor function of the `StudioCMSVirtualCache` class.
- */
-export type STUDIOCMS_SDK_CACHEConstructor = typeof StudioCMSVirtualCache;
-
-/**
- * Type representing an instance of the STUDIOCMS SDK cache.
- *
- * This type is derived from the constructor type `STUDIOCMS_SDK_CACHEConstructor`.
- * It is used to define the shape of the cache instance within the STUDIOCMS SDK.
- */
-export type STUDIOCMS_SDK_CACHEInstance = InstanceType<STUDIOCMS_SDK_CACHEConstructor>;
-
-/**
  * Type representing the return type of the `STUDIOCMS_SDK_CACHEModule` function.
  */
-export type STUDIOCMS_SDK_CACHE = STUDIOCMS_SDK_CACHEInstance['cacheModule'];
+export type STUDIOCMS_SDK_CACHE = typeof cacheModule;
 
 /**
  * Represents a base cache object with a timestamp of the last cache update.

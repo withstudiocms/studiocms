@@ -5,7 +5,7 @@ import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import Layout from '../layouts/Layout.astro';
 
 // This is here to refresh the cache when needed
-// const allPages = await studioCMS_SDK_Cache.GET.pages();
+const allPages = await studioCMS_SDK_Cache.GET.pages();
 
 let { slug } = Astro.params;
 
