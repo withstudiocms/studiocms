@@ -220,7 +220,7 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 	data.contributorIds = JSON.stringify(ContributorIds);
 	data.updatedAt = new Date();
 
-	const startMetaData = (await studioCMS_SDK_Cache.GET.databaseTable().pageData()).find(
+	const startMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
 		(metaData) => metaData.id === data.id
 	);
 
@@ -237,14 +237,14 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 			pageContent: content as tsPageContentSelect,
 		});
 
-		const updatedMetaData = (await studioCMS_SDK_Cache.GET.databaseTable().pageData()).find(
+		const updatedMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
 			(metaData) => metaData.id === data.id
 		);
 
 		const { enableDiffs, diffPerPage } = (await studioCMS_SDK_Cache.GET.siteConfig()).data;
 
 		if (enableDiffs) {
-			await studioCMS_SDK_Cache.diffTracking().insert(
+			await studioCMS_SDK_Cache.diffTracking.insert(
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				userData.user!.id,
 				data.id,

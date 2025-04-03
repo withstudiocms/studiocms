@@ -258,7 +258,7 @@ export class StudioCMSVirtualCache {
 	 * @param lifetime - The lifetime duration in milliseconds. Defaults to the cacheConfig's lifetime if not provided.
 	 * @returns A boolean indicating whether the cache entry has expired.
 	 */
-	public isCacheExpired(entry: BaseCacheObject, lifetime = this.cacheConfig.lifetime): boolean {
+	private isCacheExpired(entry: BaseCacheObject, lifetime = this.cacheConfig.lifetime): boolean {
 		return new Date().getTime() - entry.lastCacheUpdate.getTime() > lifetime;
 	}
 
@@ -267,8 +267,8 @@ export class StudioCMSVirtualCache {
 	 *
 	 * @returns {boolean} True if the cache is enabled, false otherwise.
 	 */
-	public isEnabled(): boolean {
-		return this.cacheConfig.enabled || false;
+	private isEnabled(): boolean {
+		return this.cacheConfig.enabled;
 	}
 
 	/**
