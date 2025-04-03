@@ -297,11 +297,11 @@ export function studiocmsSDKCore() {
 		includeDrafts: boolean,
 		hideDefaultIndex: boolean
 	): tsPageDataSelect[] {
-		let pagesRaw = pages;
-		if (!includeDrafts)
-			pagesRaw = pagesRaw.filter(({ draft }) => draft === false || draft === null);
-		if (hideDefaultIndex) pagesRaw = pagesRaw.filter(({ slug }) => slug !== 'index');
-		return pagesRaw;
+		return pages.filter(
+			({ draft, slug }) =>
+				(includeDrafts || draft === false || draft === null) &&
+				(!hideDefaultIndex || slug !== 'index')
+		);
 	}
 
 	async function _getAllPages(
@@ -330,9 +330,7 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				metaOnly
-					? pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
-					: pagesFiltered.map(async (page) => await collectPageData(page, folders))
+				pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
 			);
 
 			return pages;
@@ -361,9 +359,7 @@ export function studiocmsSDKCore() {
 			if (!page) return undefined;
 			const folders = tree || (await buildFolderTree());
 
-			const pageData = metaOnly
-				? ((await collectPageData(page, folders, metaOnly)) as MetaOnlyPageData)
-				: ((await collectPageData(page, folders)) as CombinedPageData);
+			const pageData = await collectPageData(page, folders, metaOnly);
 
 			return pageData;
 		} catch (error) {
@@ -403,9 +399,7 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				metaOnly
-					? pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
-					: pagesFiltered.map(async (page) => await collectPageData(page, folders))
+				pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
 			);
 
 			return pages;
@@ -437,9 +431,7 @@ export function studiocmsSDKCore() {
 			if (!page) return undefined;
 			const folders = tree || (await buildFolderTree());
 
-			const pageData = metaOnly
-				? ((await collectPageData(page, folders, metaOnly)) as MetaOnlyPageData)
-				: ((await collectPageData(page, folders)) as CombinedPageData);
+			const pageData = await collectPageData(page, folders, metaOnly);
 
 			return pageData;
 		} catch (error) {
@@ -469,9 +461,7 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				metaOnly
-					? pagesRaw.map(async (page) => await collectPageData(page, folders, metaOnly))
-					: pagesRaw.map(async (page) => await collectPageData(page, folders))
+				pagesRaw.map(async (page) => await collectPageData(page, folders, metaOnly))
 			);
 
 			return pages;
