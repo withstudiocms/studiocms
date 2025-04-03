@@ -81,34 +81,57 @@ function isEnabled(): boolean {
  * @throws {StudioCMSCacheError} If there is an error fetching the latest version from NPM.
  */
 async function getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
-	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+	const maxRetries = 3;
+	let retries = 0;
 
-	try {
-		const npmResponse = await fetch(`https://registry.npmjs.org/${pkg}/${ver}`, {
-			signal: controller.signal,
-		});
-		clearTimeout(timeout);
+	while (retries < maxRetries) {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort(), 5000); // 5-second timeout
 
-		if (!npmResponse.ok) {
-			throw new Error(`Failed to fetch data: ${npmResponse.statusText}`);
+		try {
+			const npmResponse = await fetch(`https://registry.npmjs.org/${pkg}/${ver}`, {
+				signal: controller.signal,
+			});
+			clearTimeout(timeout);
+
+			if (!npmResponse.ok) {
+				if (npmResponse.status >= 500 && retries < maxRetries - 1) {
+					retries++;
+					await new Promise((resolve) => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+					continue;
+				}
+				throw new Error(`Failed to fetch data: ${npmResponse.statusText}`);
+			}
+
+			const npmData = await npmResponse.json();
+
+			if (!npmData.version) {
+				throw new Error('Invalid response: version field missing');
+			}
+
+			return npmData.version as string;
+		} catch (error) {
+			if ((error as Error).name === 'AbortError') {
+				if (retries < maxRetries - 1) {
+					retries++;
+					await new Promise((resolve) => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+					continue;
+				}
+				throw new StudioCMSCacheError('Request timed out while fetching latest version from NPM');
+			}
+			if (retries < maxRetries - 1) {
+				retries++;
+				await new Promise((resolve) => setTimeout(resolve, 1000 * retries)); // Exponential backoff
+				continue;
+			}
+			throw new StudioCMSCacheError(
+				`Error fetching latest version from NPM: ${(error as Error).message}`
+			);
 		}
-
-		const npmData = await npmResponse.json();
-
-		if (!npmData.version) {
-			throw new Error('Invalid response: version field missing');
-		}
-
-		return npmData.version as string;
-	} catch (error) {
-		if ((error as Error).name === 'AbortError') {
-			throw new StudioCMSCacheError('Request timed out while fetching latest version from NPM');
-		}
-		throw new StudioCMSCacheError(
-			`Error fetching latest version from NPM: ${(error as Error).message}`
-		);
 	}
+
+	// This should never be reached due to the throws above, but TypeScript needs it
+	throw new StudioCMSCacheError('Exceeded maximum retries');
 }
 
 /**
