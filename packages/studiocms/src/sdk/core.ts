@@ -415,9 +415,14 @@ export function studiocmsSDKCore() {
 			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
 		} catch (error) {
 			if (error instanceof Error) {
-				throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
+				throw new StudioCMS_SDK_Error(
+					`Error getting pages by folder ID: ${error.message}`,
+					error.stack
+				);
 			}
-			throw new StudioCMS_SDK_Error('Error getting page by ID: An unknown error occurred.');
+			throw new StudioCMS_SDK_Error(
+				'Error getting pages by folder ID: An unknown error occurred.'
+			);
 		}
 	}
 
