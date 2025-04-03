@@ -445,7 +445,6 @@ async function getPageFolderTree(
 			}
 
 			folderTree.set(PageFolderTreeMapID, folderTreeReturn(newFolderTree));
-			clearFolderTree();
 
 			return folderTreeReturn(newFolderTree);
 		}
