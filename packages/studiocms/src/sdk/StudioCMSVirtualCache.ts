@@ -277,7 +277,7 @@ export class StudioCMSVirtualCache {
 	 * @returns {Promise<string>} A promise that resolves to the latest version string of the StudioCMS package.
 	 * @throws {StudioCMSCacheError} If there is an error fetching the latest version from NPM.
 	 */
-	public async getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
+	private async getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
 		try {
 			const npmResponse = await fetch(`https://registry.npmjs.org/${pkg}/${ver}`);
 			const npmData = await npmResponse.json();
