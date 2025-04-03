@@ -96,7 +96,9 @@
       "api-tokens-modal-header": "Crear nuevo token API",
       "api-tokens-modal-description": "Descripción",
       "api-tokens-modal-response-header": "Nuevo token",
-      "api-tokens-modal-response-description": "Por favor, copia tu nuevo token. No se mostrará de nuevo."
+      "api-tokens-modal-response-description": "Por favor, copia tu nuevo token. No se mostrará de nuevo.",
+      "sync-with-libravatar": "",
+      "basic-avatar-url": ""
     },
     "@studiocms/dashboard:password-reset": {
       "title": "Restablecimiento de contraseña",

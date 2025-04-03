@@ -96,7 +96,9 @@
       "api-tokens-modal-header": "Créer un nouveau jeton API",
       "api-tokens-modal-description": "Description",
       "api-tokens-modal-response-header": "Nouveau jeton",
-      "api-tokens-modal-response-description": "Veuillez copier votre nouveau jeton. Il ne s'affichera plus."
+      "api-tokens-modal-response-description": "Veuillez copier votre nouveau jeton. Il ne s'affichera plus.",
+      "sync-with-libravatar": "Synchroniser avec Libravatar",
+      "basic-avatar-url": "URL de l'avatar"
     },
     "@studiocms/dashboard:password-reset": {
       "title": "Réinitialisation du mot de passe",
