@@ -237,21 +237,22 @@ export function studiocmsSDKCore() {
 	async function collectPageData(page: tsPageDataSelect, tree: FolderNode[], metaOnly = false) {
 		try {
 			const categoryIds = parseIdNumberArray(page.categories || []);
-			const categories = await collectCategories(categoryIds);
-
 			const tagIds = parseIdNumberArray(page.tags || []);
-			const tags = await collectTags(tagIds);
-
 			const contributorIds = parseIdStringArray(page.contributorIds || []);
 
-			const [authorDataArray, contributorsData, multiLanguageContentData] = await db.batch([
-				db
-					.select()
-					.from(tsUsers)
-					.where(eq(tsUsers.id, page.authorId || '')),
-				db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds)),
-				db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
-			]);
+			const [categories, tags, [authorDataArray, contributorsData, multiLanguageContentData]] =
+				await Promise.all([
+					await collectCategories(categoryIds),
+					await collectTags(tagIds),
+					await db.batch([
+						db
+							.select()
+							.from(tsUsers)
+							.where(eq(tsUsers.id, page.authorId || '')),
+						db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds)),
+						db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
+					]),
+				]);
 
 			const authorData = authorDataArray[0] || undefined;
 
@@ -320,19 +321,15 @@ export function studiocmsSDKCore() {
 		metaOnly = false
 	) {
 		try {
-			const pages: CombinedPageData[] = [];
-
 			const pagesRaw = await db.select().from(tsPageData);
 
 			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
-			for (const page of pagesFiltered) {
-				const PageData = await collectPageData(page, folders);
-
-				pages.push(PageData);
-			}
+			const pages = await Promise.all(
+				pagesFiltered.map(async (page) => await collectPageData(page, folders))
+			);
 
 			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
 		} catch (error) {
@@ -393,19 +390,15 @@ export function studiocmsSDKCore() {
 		metaOnly = false
 	) {
 		try {
-			const pages: CombinedPageData[] = [];
-
 			const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
 
 			const pagesFiltered = __pagesQuickFilter(pagesRaw, includeDrafts, hideDefaultIndex);
 
 			const folders = tree || (await buildFolderTree());
 
-			for (const page of pagesFiltered) {
-				const PageData = await collectPageData(page, folders);
-
-				pages.push(PageData);
-			}
+			const pages = await Promise.all(
+				pagesFiltered.map(async (page) => await collectPageData(page, folders))
+			);
 
 			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
 		} catch (error) {
@@ -459,19 +452,15 @@ export function studiocmsSDKCore() {
 
 	async function _getPackagesPages(packageName: string, tree?: FolderNode[], metaOnly = false) {
 		try {
-			const pages: CombinedPageData[] = [];
-
 			const pagesRaw = await db
 				.select()
 				.from(tsPageData)
 				.where(eq(tsPageData.package, packageName));
 			const folders = tree || (await buildFolderTree());
 
-			for (const page of pagesRaw) {
-				const PageData = await collectPageData(page, folders);
-
-				pages.push(PageData);
-			}
+			const pages = await Promise.all(
+				pagesRaw.map(async (page) => await collectPageData(page, folders))
+			);
 
 			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
 		} catch (error) {
