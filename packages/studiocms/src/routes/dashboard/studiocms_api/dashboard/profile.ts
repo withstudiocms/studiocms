@@ -1,5 +1,6 @@
 import { hashPassword, verifyPasswordStrength } from 'studiocms:auth/lib/password';
 import {
+	createUserAvatar,
 	getUserData,
 	verifyUserPermissionLevel,
 	verifyUsernameInput,
@@ -40,10 +41,21 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		confirmNewPassword: string;
 	};
 
-	type UserProfileUpdate = {
-		mode: 'basic' | 'password';
-		data: UserBasicUpdate | UserPasswordUpdate;
+	type BasicUserProfileUpdate = {
+		mode: 'basic';
+		data: UserBasicUpdate;
 	};
+
+	type PasswordProfileUpdate = {
+		mode: 'password';
+		data: UserPasswordUpdate;
+	};
+
+	type AvatarProfileUpdate = {
+		mode: 'avatar';
+	};
+
+	type UserProfileUpdate = BasicUserProfileUpdate | PasswordProfileUpdate | AvatarProfileUpdate;
 
 	// Get Json Data
 	const userProfileUpdate: UserProfileUpdate = await context.request.json();
@@ -52,7 +64,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	if (userProfileUpdate.mode === 'basic') {
 		const { data: r } = userProfileUpdate;
 
-		const data = r as UserBasicUpdate;
+		const data = r;
 
 		if (!data.name) {
 			return apiResponseLogger(400, 'Invalid form data, name is required');
@@ -93,15 +105,9 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 				return apiResponseLogger(400, 'Invalid email: Email is already in use');
 		}
 
-		const toUpdate: tsUsersUpdate = {
-			name: data.name,
-			email: data.email,
-			username: data.username,
-		};
-
 		try {
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			await studioCMS_SDK.AUTH.user.update(userData.user!.id!, toUpdate);
+			await studioCMS_SDK.AUTH.user.update(userData.user!.id!, data);
 
 			return apiResponseLogger(200, 'User profile updated successfully');
 		} catch (error) {
@@ -111,7 +117,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	} else if (userProfileUpdate.mode === 'password') {
 		const { data: r } = userProfileUpdate;
 
-		const data = r as UserPasswordUpdate;
+		const data = r;
 
 		const { currentPassword, newPassword, confirmNewPassword } = data;
 
@@ -159,6 +165,26 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 		} catch (error) {
 			// Return Error Response
 			return apiResponseLogger(500, 'Error updating user password');
+		}
+	} else if (userProfileUpdate.mode === 'avatar') {
+		if (!userData.user?.email) {
+			return apiResponseLogger(400, 'User email required');
+		}
+
+		try {
+			const newAvatar = await createUserAvatar(userData.user.email);
+
+			await studioCMS_SDK.AUTH.user.update(userData.user.id, { avatar: newAvatar });
+
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			await sendUserNotification('account_updated', userData.user!.id);
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			await sendAdminNotification('user_updated', userData.user!.username);
+
+			return apiResponseLogger(200, 'User Avatar updated successfully');
+		} catch (error) {
+			// Return Error Response
+			return apiResponseLogger(500, 'Error updating user avatar');
 		}
 	}
 

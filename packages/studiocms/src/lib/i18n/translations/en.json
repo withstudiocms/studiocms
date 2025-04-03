@@ -96,7 +96,9 @@
       "api-tokens-modal-header": "Create New API Token",
       "api-tokens-modal-description": "Description",
       "api-tokens-modal-response-header": "New Token",
-      "api-tokens-modal-response-description": "Please copy your new token. It will not be shown again."
+      "api-tokens-modal-response-description": "Please copy your new token. It will not be shown again.",
+      "sync-with-libravatar": "Sync Libravatar",
+      "basic-avatar-url": "Avatar URL"
     },
     "@studiocms/dashboard:password-reset": {
       "title": "Password Reset",
