@@ -96,7 +96,9 @@
       "api-tokens-modal-header": "",
       "api-tokens-modal-description": "",
       "api-tokens-modal-response-header": "",
-      "api-tokens-modal-response-description": ""
+      "api-tokens-modal-response-description": "",
+      "sync-with-libravatar": "",
+      "basic-avatar-url": ""
     },
     "@studiocms/dashboard:password-reset": {
       "title": "",
