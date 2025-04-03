@@ -192,8 +192,8 @@ export class StudioCMSVirtualCache {
 				folderTree: this.getFolderTree,
 				pageFolderTree: this.getPageFolderTree,
 				folderList: this.getFolderList,
-				folder: this.getFolder,
-				databaseTable: this.sdk.GET.databaseTable,
+				folder: async (id: string) => await this.sdk.GET.databaseEntry.folder(id),
+				databaseTable: sdkCore.GET.databaseTable,
 			},
 			POST: {
 				page: this.createPage,
@@ -244,16 +244,12 @@ export class StudioCMSVirtualCache {
 					await this.updateFolderList();
 				},
 			},
-			db: this.sdk.db,
-			diffTracking: this.sdk.diffTracking,
+			db: sdkCore.db,
+			diffTracking: sdkCore.diffTracking,
 		};
 	}
 
 	// Misc Utils
-
-	public getFolder(id: string) {
-		return this.sdk.GET.databaseEntry.folder(id);
-	}
 
 	/**
 	 * Checks if the cache entry has expired based on the provided lifetime.
