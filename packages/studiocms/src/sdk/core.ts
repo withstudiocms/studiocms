@@ -252,8 +252,8 @@ export function studiocmsSDKCore() {
 						db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds)),
 					]),
 					metaOnly
-						? db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id))
-						: undefined,
+						? undefined
+						: db.select().from(tsPageContent).where(eq(tsPageContent.contentId, page.id)),
 				]);
 
 			const authorData = authorDataArray[0] || undefined;
@@ -330,10 +330,12 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				pagesFiltered.map(async (page) => await collectPageData(page, folders))
+				metaOnly
+					? pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
+					: pagesFiltered.map(async (page) => await collectPageData(page, folders))
 			);
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
+			return pages;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
@@ -359,9 +361,11 @@ export function studiocmsSDKCore() {
 			if (!page) return undefined;
 			const folders = tree || (await buildFolderTree());
 
-			const pageData = await collectPageData(page, folders);
+			const pageData = metaOnly
+				? ((await collectPageData(page, folders, metaOnly)) as MetaOnlyPageData)
+				: ((await collectPageData(page, folders)) as CombinedPageData);
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+			return pageData;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error getting page by ID: ${error.message}`, error.stack);
@@ -399,10 +403,12 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				pagesFiltered.map(async (page) => await collectPageData(page, folders))
+				metaOnly
+					? pagesFiltered.map(async (page) => await collectPageData(page, folders, metaOnly))
+					: pagesFiltered.map(async (page) => await collectPageData(page, folders))
 			);
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
+			return pages;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(
@@ -431,9 +437,11 @@ export function studiocmsSDKCore() {
 			if (!page) return undefined;
 			const folders = tree || (await buildFolderTree());
 
-			const pageData = await collectPageData(page, folders);
+			const pageData = metaOnly
+				? ((await collectPageData(page, folders, metaOnly)) as MetaOnlyPageData)
+				: ((await collectPageData(page, folders)) as CombinedPageData);
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+			return pageData;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error getting page by slug: ${error.message}`, error.stack);
@@ -461,10 +469,12 @@ export function studiocmsSDKCore() {
 			const folders = tree || (await buildFolderTree());
 
 			const pages = await Promise.all(
-				pagesRaw.map(async (page) => await collectPageData(page, folders))
+				metaOnly
+					? pagesRaw.map(async (page) => await collectPageData(page, folders, metaOnly))
+					: pagesRaw.map(async (page) => await collectPageData(page, folders))
 			);
 
-			return metaOnly ? convertCombinedPageDataToMetaOnly(pages) : pages;
+			return pages;
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new StudioCMS_SDK_Error(`Error getting pages: ${error.message}`, error.stack);
