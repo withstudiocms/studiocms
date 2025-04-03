@@ -238,7 +238,7 @@ export function studiocmsSDKCore() {
 		try {
 			const categoryIds = parseIdNumberArray(page.categories || []);
 			const tagIds = parseIdNumberArray(page.tags || []);
-			const contributorIds: string[] = [...(page.contributorIds as string[])];
+			const contributorIds = Array.isArray(page.contributorIds) ? page.contributorIds : [];
 
 			const [categories, tags, authorDataArray, contributorsData, multiLanguageContentData] =
 				await Promise.all([
