@@ -1,3 +1,4 @@
+import type { Database } from '@astrojs/db/runtime';
 import { CMSSiteConfigId, versionCacheLifetime } from '../consts.js';
 import type { studiocmsSDKCore } from './core.js';
 import { StudioCMSCacheError } from './errors.js';
@@ -24,6 +25,32 @@ import type {
 } from './types/index.js';
 
 type StudioCMSSDK = ReturnType<typeof studiocmsSDKCore>;
+
+function convertCombinedPageDataToMetaOnly<T extends PageDataCacheObject[] | PageDataCacheObject>(
+	data: T
+): PageDataCacheReturnType<T> {
+	console.log('Converting');
+	try {
+		if (Array.isArray(data)) {
+			return data.map(
+				({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...data } }) => ({
+					lastCacheUpdate,
+					data,
+				})
+			) as PageDataCacheReturnType<T>;
+		}
+		const {
+			lastCacheUpdate,
+			data: { defaultContent, multiLangContent, ...metaOnlyData },
+		} = data;
+		return {
+			lastCacheUpdate,
+			data: metaOnlyData,
+		} as PageDataCacheReturnType<T>;
+	} catch (error) {
+		throw new StudioCMSCacheError('Error Converting metadata');
+	}
+}
 
 /**
  * The `StudioCMSVirtualCache` class provides caching utilities for the StudioCMS SDK.
@@ -57,106 +84,176 @@ export class StudioCMSVirtualCache {
 	private pageFolderTree = new Map<string, FolderTreeCacheObject>();
 	private FolderList = new Map<string, FolderListCacheObject>();
 
+	public cacheModule: {
+		GET: {
+			page: {
+				byId: {
+					(id: string): Promise<PageDataCacheObject>;
+					(id: string, metaOnly?: boolean): Promise<MetaOnlyPageDataCacheObject>;
+				};
+				bySlug: {
+					(slug: string): Promise<PageDataCacheObject>;
+					(slug: string, metaOnly?: boolean): Promise<MetaOnlyPageDataCacheObject>;
+				};
+			};
+			pages: {
+				(includeDrafts?: boolean, hideDefaultIndex?: boolean): Promise<PageDataCacheObject[]>;
+				(
+					includeDrafts?: boolean,
+					hideDefaultIndex?: boolean,
+					metaOnly?: boolean
+				): Promise<MetaOnlyPageDataCacheObject[]>;
+			};
+			folderPages: {
+				(
+					id: string,
+					includeDrafts?: boolean,
+					hideDefaultIndex?: boolean
+				): Promise<PageDataCacheObject[]>;
+				(
+					id: string,
+					includeDrafts?: boolean,
+					hideDefaultIndex?: boolean,
+					metaOnly?: boolean
+				): Promise<MetaOnlyPageDataCacheObject[]>;
+			};
+			siteConfig: () => Promise<SiteConfigCacheObject>;
+			latestVersion: () => Promise<VersionCacheObject>;
+			folderTree: () => Promise<FolderTreeCacheObject>;
+			pageFolderTree: (
+				includeDrafts?: boolean,
+				hideDefaultIndex?: boolean
+			) => Promise<FolderTreeCacheObject>;
+			folderList: () => Promise<FolderListCacheObject>;
+			folder: (
+				id: string
+			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
+			databaseTable: StudioCMSSDK['GET']['databaseTable'];
+		};
+		POST: {
+			page: (data: {
+				pageData: tsPageDataInsert;
+				pageContent: CombinedInsertContent;
+			}) => Promise<PageDataCacheObject>;
+			folder: (
+				data: tsPageFolderInsert
+			) => Promise<{ name: string; id: string; parent: string | null } | undefined>;
+		};
+		CLEAR: {
+			page: {
+				byId: (id: string) => void;
+				bySlug: (slug: string) => void;
+			};
+			pages: () => void;
+			latestVersion: () => void;
+			folderTree: () => void;
+			folderList: () => void;
+		};
+		UPDATE: {
+			page: {
+				byId: (
+					id: string,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => Promise<PageDataCacheObject>;
+				bySlug: (
+					slug: string,
+					data: { pageData: tsPageDataSelect; pageContent: tsPageContentSelect }
+				) => Promise<PageDataCacheObject>;
+			};
+			siteConfig: (data: SiteConfig) => Promise<SiteConfigCacheObject>;
+			latestVersion: () => Promise<VersionCacheObject>;
+			folderTree: () => Promise<FolderTreeCacheObject>;
+			folderList: () => Promise<FolderListCacheObject>;
+			folder: (
+				data: tsPageFolderSelect
+			) => Promise<{ name: string; id: string; parent: string | null }>;
+		};
+		DELETE: {
+			page: (id: string) => Promise<void>;
+			folder: (id: string) => Promise<void>;
+		};
+		db: Database;
+		diffTracking: StudioCMSSDK['diffTracking'];
+	};
+
 	constructor(cacheConfig: ProcessedCacheConfig, sdkCore: StudioCMSSDK) {
 		this.cacheConfig = cacheConfig;
 		this.sdk = sdkCore;
+		this.cacheModule = {
+			GET: {
+				page: {
+					byId: this.getPageById,
+					bySlug: this.getPageBySlug,
+				},
+				pages: this.getAllPages,
+				folderPages: this.folderPages,
+				siteConfig: this.getSiteConfig,
+				latestVersion: this.getVersion,
+				folderTree: this.getFolderTree,
+				pageFolderTree: this.getPageFolderTree,
+				folderList: this.getFolderList,
+				folder: this.getFolder,
+				databaseTable: this.sdk.GET.databaseTable,
+			},
+			POST: {
+				page: this.createPage,
+				folder: async (data: tsPageFolderInsert) => {
+					const newEntry = await this.sdk.POST.databaseEntry.folder(data);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+					return newEntry;
+				},
+			},
+			CLEAR: {
+				page: {
+					byId: this.clearPageById,
+					bySlug: this.clearPageBySlug,
+				},
+				pages: this.clearAllPages,
+				latestVersion: this.clearVersion,
+				folderTree: this.clearFolderTree,
+				folderList: this.clearFolderList,
+			},
+			UPDATE: {
+				page: {
+					byId: this.updatePageById,
+					bySlug: this.updatePageBySlug,
+				},
+				siteConfig: this.updateSiteConfig,
+				latestVersion: this.updateVersion,
+				folderTree: this.updateFolderTree,
+				folderList: this.updateFolderList,
+				folder: async (data: tsPageFolderSelect) => {
+					const updatedEntry = await this.sdk.UPDATE.folder(data);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+					return updatedEntry;
+				},
+			},
+			DELETE: {
+				page: async (id: string) => {
+					await this.sdk.DELETE.page(id);
+					this.clearAllPages();
+				},
+				folder: async (id: string) => {
+					await this.sdk.DELETE.folder(id);
+					this.clearFolderTree();
+					await this.updateFolderTree();
+					await this.updateFolderList();
+				},
+			},
+			db: this.sdk.db,
+			diffTracking: this.sdk.diffTracking,
+		};
 	}
-
-	private getFolder(id: string) {
-		return this.sdk.GET.databaseEntry.folder(id);
-	}
-
-	private convertCombinedPageDataToMetaOnly<T extends PageDataCacheObject[] | PageDataCacheObject>(
-		data: T
-	): PageDataCacheReturnType<T> {
-		if (Array.isArray(data)) {
-			return data.map(
-				({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...data } }) => ({
-					lastCacheUpdate,
-					data,
-				})
-			) as PageDataCacheReturnType<T>;
-		}
-		const {
-			lastCacheUpdate,
-			data: { defaultContent, multiLangContent, ...metaOnlyData },
-		} = data;
-		return {
-			lastCacheUpdate,
-			data: metaOnlyData,
-		} as PageDataCacheReturnType<T>;
-	}
-
-	public cacheModule = {
-		GET: {
-			page: {
-				byId: this.getPageById,
-				bySlug: this.getPageBySlug,
-			},
-			pages: this.getAllPages,
-			folderPages: this.folderPages,
-			siteConfig: this.getSiteConfig,
-			latestVersion: this.getVersion,
-			folderTree: this.getFolderTree,
-			pageFolderTree: this.getPageFolderTree,
-			folderList: this.getFolderList,
-			folder: this.getFolder,
-			databaseTable: () => this.sdk.GET.databaseTable,
-		},
-		POST: {
-			page: this.createPage,
-			folder: async (data: tsPageFolderInsert) => {
-				const newEntry = await this.sdk.POST.databaseEntry.folder(data);
-				this.clearFolderTree();
-				await this.updateFolderTree();
-				await this.updateFolderList();
-				return newEntry;
-			},
-		},
-		CLEAR: {
-			page: {
-				byId: this.clearPageById,
-				bySlug: this.clearPageBySlug,
-			},
-			pages: this.clearAllPages,
-			latestVersion: this.clearVersion,
-			folderTree: this.clearFolderTree,
-			folderList: this.clearFolderList,
-		},
-		UPDATE: {
-			page: {
-				byId: this.updatePageById,
-				bySlug: this.updatePageBySlug,
-			},
-			siteConfig: this.updateSiteConfig,
-			latestVersion: this.updateVersion,
-			folderTree: this.updateFolderTree,
-			folderList: this.updateFolderList,
-			folder: async (data: tsPageFolderSelect) => {
-				const updatedEntry = await this.sdk.UPDATE.folder(data);
-				this.clearFolderTree();
-				await this.updateFolderTree();
-				await this.updateFolderList();
-				return updatedEntry;
-			},
-		},
-		DELETE: {
-			page: async (id: string) => {
-				await this.sdk.DELETE.page(id);
-				this.clearAllPages();
-			},
-			folder: async (id: string) => {
-				await this.sdk.DELETE.folder(id);
-				this.clearFolderTree();
-				await this.updateFolderTree();
-				await this.updateFolderList();
-			},
-		},
-		db: () => this.sdk.db,
-		diffTracking: () => this.sdk.diffTracking,
-	};
 
 	// Misc Utils
+
+	public getFolder(id: string) {
+		return this.sdk.GET.databaseEntry.folder(id);
+	}
 
 	/**
 	 * Checks if the cache entry has expired based on the provided lifetime.
@@ -165,7 +262,7 @@ export class StudioCMSVirtualCache {
 	 * @param lifetime - The lifetime duration in milliseconds. Defaults to the cacheConfig's lifetime if not provided.
 	 * @returns A boolean indicating whether the cache entry has expired.
 	 */
-	private isCacheExpired(entry: BaseCacheObject, lifetime = this.cacheConfig.lifetime): boolean {
+	public isCacheExpired(entry: BaseCacheObject, lifetime = this.cacheConfig.lifetime): boolean {
 		return new Date().getTime() - entry.lastCacheUpdate.getTime() > lifetime;
 	}
 
@@ -174,8 +271,8 @@ export class StudioCMSVirtualCache {
 	 *
 	 * @returns {boolean} True if the cache is enabled, false otherwise.
 	 */
-	private isEnabled(): boolean {
-		return this.cacheConfig.enabled;
+	public isEnabled(): boolean {
+		return this.cacheConfig.enabled || false;
 	}
 
 	/**
@@ -184,7 +281,7 @@ export class StudioCMSVirtualCache {
 	 * @returns {Promise<string>} A promise that resolves to the latest version string of the StudioCMS package.
 	 * @throws {StudioCMSCacheError} If there is an error fetching the latest version from NPM.
 	 */
-	private async getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
+	public async getLatestVersionFromNPM(pkg: string, ver = 'latest'): Promise<string> {
 		try {
 			const npmResponse = await fetch(`https://registry.npmjs.org/${pkg}/${ver}`);
 			const npmData = await npmResponse.json();
@@ -737,7 +834,7 @@ export class StudioCMSVirtualCache {
 			if (!this.isEnabled()) {
 				const pages = await this.sdk.GET.database.folderPages(id, includeDrafts, hideDefaultIndex);
 				const data = pages.map((page) => this.pageDataReturn(page));
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 			}
 
 			const { data: tree } = await this.getFolderTree();
@@ -766,7 +863,7 @@ export class StudioCMSVirtualCache {
 					.map((data) => this.pageDataReturn(data));
 
 				// Transform and return the data
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 			}
 
 			// Create a map of the cache
@@ -790,7 +887,7 @@ export class StudioCMSVirtualCache {
 			const data = Array.from(this.pages.values()).filter(
 				({ data: { parentFolder } }) => parentFolder === id
 			);
-			return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 		} catch (error) {
 			throw new StudioCMSCacheError('Error fetching all pages');
 		}
@@ -819,15 +916,19 @@ export class StudioCMSVirtualCache {
 	 * - If the cache contains data, it checks for expired entries and updates them from the database if necessary.
 	 */
 	public async getAllPages(includeDrafts = false, hideDefaultIndex = false, metaOnly = false) {
+		console.error('working 0');
 		try {
 			// Check if caching is disabled
 			if (!this.isEnabled()) {
 				const pages = await this.sdk.GET.database.pages(includeDrafts);
 				const data = pages.map((page) => this.pageDataReturn(page));
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 			}
+			console.error('working 1');
 
 			const { data: tree } = await this.getFolderTree();
+
+			console.error('working 2');
 
 			// Check if the cache is empty
 			if (this.pages.size === 0) {
@@ -851,8 +952,10 @@ export class StudioCMSVirtualCache {
 				const data = updatedData.map((data) => this.pageDataReturn(data));
 
 				// Transform and return the data
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 			}
+
+			console.error('working 3');
 
 			// Create a map of the cache
 			const cacheMap = Array.from(this.pages.values());
@@ -871,11 +974,13 @@ export class StudioCMSVirtualCache {
 				}
 			}
 
+			console.error('working 4');
+
 			// Transform and return the data
 			const data = Array.from(this.pages.values());
-			return metaOnly ? this.convertCombinedPageDataToMetaOnly(data) : data;
+			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 		} catch (error) {
-			throw new StudioCMSCacheError('Error fetching all pages');
+			throw new StudioCMSCacheError(`Error fetching all pages: ${error}`);
 		}
 	}
 
@@ -899,7 +1004,7 @@ export class StudioCMSVirtualCache {
 
 				const pageData = this.pageDataReturn(page);
 
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(pageData) : pageData;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
 			}
 
 			const { data: tree } = await this.getFolderTree();
@@ -919,11 +1024,11 @@ export class StudioCMSVirtualCache {
 
 				this.pages.set(id, returnPage);
 
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
 			}
 
 			// Return the cached page
-			return metaOnly ? this.convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
+			return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
 		} catch (error) {
 			throw new StudioCMSCacheError('Error fetching page by ID');
 		}
@@ -955,7 +1060,7 @@ export class StudioCMSVirtualCache {
 
 				const pageData = this.pageDataReturn(page);
 
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(pageData) : pageData;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
 			}
 
 			const { data: tree } = await this.getFolderTree();
@@ -975,11 +1080,11 @@ export class StudioCMSVirtualCache {
 
 				this.pages.set(page.id, returnPage);
 
-				return metaOnly ? this.convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
+				return metaOnly ? convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
 			}
 
 			// Return the cached page
-			return metaOnly ? this.convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
+			return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
 		} catch (error) {
 			throw new StudioCMSCacheError('Error fetching page by slug');
 		}
