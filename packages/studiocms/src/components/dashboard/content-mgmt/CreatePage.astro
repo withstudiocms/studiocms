@@ -238,11 +238,13 @@ import { toast } from "studiocms:ui/components";
       console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
     });
 
-    draftButton.addEventListener('click', async (e) => {
+    async function runFormAction(e: Event, form: HTMLFormElement, draft: boolean = false) {
       e.preventDefault();
-      const formData = new FormData(createPageForm);
+      const formData = new FormData(form);
 
-      const response = await fetch(createPageForm.action, {
+      formData.set('draft', draft ? 'true' : 'false');
+
+      const response = await fetch(form.action, {
           method: 'POST',
           body: formData,
           headers: {
@@ -270,38 +272,11 @@ import { toast } from "studiocms:ui/components";
           if (contentManagementUrl) window.location.href = contentManagementUrl;
           return;
       }
-      })
+    }
 
-    publishButton.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(createPageForm);
+    draftButton.addEventListener('click', async (e) => await runFormAction(e, createPageForm, true));
 
-      const response = await fetch(createPageForm.action, {
-          method: 'POST',
-          body: formData,
-      });
-
-      const res = await response.json();
-
-      if (response.status !== 200) {
-          toast({
-              title: 'Error',
-              description: res.error,
-              type: 'danger'
-          })
-          return;
-      }
-
-      if (response.status === 200) {
-          toast({
-              title: 'Success',
-              description: res.message,
-              type: 'success'
-          })
-          if (contentManagementUrl) window.location.href = contentManagementUrl;
-          return;
-      }
-      })
+    publishButton.addEventListener('click', async (e) => await runFormAction(e, createPageForm))
   </script>
 
 <style>
