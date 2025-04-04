@@ -1,6 +1,7 @@
 import { componentKeys } from 'studiocms:component-proxy';
 import * as mod from 'studiocms:component-proxy';
 import logger from 'studiocms:logger';
+import { convertUnderscoresToHyphens } from '../../utils/convert-hyphens.js';
 import { StudioCMSRendererError, prefixError } from './errors.js';
 
 /**
@@ -17,7 +18,7 @@ export async function importComponentsKeys() {
 	for (const key of componentKeys) {
 		try {
 			// @ts-ignore
-			predefinedComponents[key.toLowerCase()] = mod[key.toLowerCase()];
+			predefinedComponents[convertUnderscoresToHyphens(key.toLowerCase())] = mod[key.toLowerCase()];
 		} catch (e) {
 			if (e instanceof Error) {
 				const newErr = prefixError(

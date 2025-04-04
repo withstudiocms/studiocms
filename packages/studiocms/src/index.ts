@@ -46,6 +46,7 @@ import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
 import { exists, watchStudioCMSConfig } from './utils/configManager.js';
 import { configResolver } from './utils/configResolver.js';
+import { convertHyphensToUnderscores } from './utils/convert-hyphens.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
@@ -1221,14 +1222,16 @@ export const studiocms = defineIntegration({
 							.join('\n');
 
 						const componentKeys = ComponentRegistry
-							? Object.keys(ComponentRegistry).map((key) => key.toLowerCase())
+							? Object.keys(ComponentRegistry).map((key) =>
+									convertHyphensToUnderscores(key.toLowerCase())
+								)
 							: [];
 
 						const components = ComponentRegistry
 							? Object.entries(ComponentRegistry)
 									.map(
 										([key, value]) =>
-											`export { default as ${key} } from '${astroConfigResolve(value)}';`
+											`export { default as ${convertHyphensToUnderscores(key)} } from '${astroConfigResolve(value)}';`
 									)
 									.join('\n')
 							: '';
