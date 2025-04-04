@@ -196,3 +196,6 @@ async function readPackageJSON(path) {
 		throw new Error(`Failed to read ${path}: ${readError.message}`);
 	}
 }
+
+// THIS IS THE ENTRY POINT FOR THE CLI - DO NOT REMOVE
+run();
