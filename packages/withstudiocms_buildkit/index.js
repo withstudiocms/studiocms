@@ -75,15 +75,15 @@ export default async function run() {
 
 	const format = type === 'module' && !forceCJS ? 'esm' : 'cjs';
 
-	if (!noClean) {
-		console.log(
-			`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
-		);
-		await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
-	}
-
 	switch (cmd) {
 		case 'dev': {
+			if (!noClean) {
+				console.log(
+					`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+				);
+				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
+			}
+
 			const rebuildPlugin = {
 				name: 'dev:rebuild',
 				setup(build) {
@@ -125,6 +125,12 @@ export default async function run() {
 			break;
 		}
 		case 'build': {
+			if (!noClean) {
+				console.log(
+					`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+				);
+				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
+			}
 			console.log(
 				`${dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${dim(`(${entryPoints.length} files found)`)}`
 			);
