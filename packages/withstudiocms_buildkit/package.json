@@ -25,9 +25,17 @@
   "bin": {
     "buildkit": "./index.js"
   },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "dependencies": {
     "esbuild": "^0.25.0",
     "fast-glob": "^3.3.3",
     "kleur": "^4.1.5"
+  },
+  "devDependencies": {
+    "vitest": "^1.4.0",
+    "strip-ansi": "^7.1.0"
   }
 }

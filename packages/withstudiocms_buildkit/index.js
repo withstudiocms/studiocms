@@ -141,11 +141,38 @@ export default async function run() {
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
 		}
-		// TODO: Add default/help command
+		default: {
+			showHelp();
+			break;
+		}
 	}
 }
 
-run();
+function showHelp() {
+	console.log(`
+${green('StudioCMS Buildkit')} - Build tool for StudioCMS packages
+
+${yellow('Usage:')}
+  withstudiocms-buildkit <command> [...files] [...options]
+
+${yellow('Commands:')}
+  dev     Watch files and rebuild on changes
+  build   Perform a one-time build
+  help    Show this help message
+
+${yellow('Options:')}
+  --no-clean-dist    Skip cleaning the dist directory
+  --bundle          Enable bundling mode
+  --force-cjs       Force CommonJS output format
+  --tsconfig=<path> Specify TypeScript config file (default: tsconfig.json)
+  --outdir=<path>   Specify output directory (default: dist)
+
+${yellow('Examples:')}
+  withstudiocms-buildkit build "src/**/*.ts"
+  withstudiocms-buildkit dev "src/**/*.ts" --no-clean-dist
+  withstudiocms-buildkit build "src/**/*.ts" --bundle --force-cjs
+`);
+}
 
 async function clean(outdir, date, skip = []) {
 	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
