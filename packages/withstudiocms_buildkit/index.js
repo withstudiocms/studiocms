@@ -75,15 +75,15 @@ export default async function run() {
 
 	const format = type === 'module' && !forceCJS ? 'esm' : 'cjs';
 
-	if (!noClean) {
-		console.log(
-			`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
-		);
-		await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
-	}
-
 	switch (cmd) {
 		case 'dev': {
+			if (!noClean) {
+				console.log(
+					`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+				);
+				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
+			}
+
 			const rebuildPlugin = {
 				name: 'dev:rebuild',
 				setup(build) {
@@ -125,6 +125,12 @@ export default async function run() {
 			break;
 		}
 		case 'build': {
+			if (!noClean) {
+				console.log(
+					`${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+				);
+				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
+			}
 			console.log(
 				`${dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${dim(`(${entryPoints.length} files found)`)}`
 			);
@@ -141,11 +147,42 @@ export default async function run() {
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
 		}
-		// TODO: Add default/help command
+		case 'help': {
+			showHelp();
+			break;
+		}
+		default: {
+			showHelp();
+			break;
+		}
 	}
 }
 
-run();
+function showHelp() {
+	console.log(`
+${green('StudioCMS Buildkit')} - Build tool for StudioCMS packages
+
+${yellow('Usage:')}
+  withstudiocms-buildkit <command> [...files] [...options]
+
+${yellow('Commands:')}
+  dev     Watch files and rebuild on changes
+  build   Perform a one-time build
+  help    Show this help message
+
+${yellow('Options:')}
+  --no-clean-dist    Skip cleaning the dist directory
+  --bundle          Enable bundling mode
+  --force-cjs       Force CommonJS output format
+  --tsconfig=<path> Specify TypeScript config file (default: tsconfig.json)
+  --outdir=<path>   Specify output directory (default: dist)
+
+${yellow('Examples:')}
+  withstudiocms-buildkit build "src/**/*.ts"
+  withstudiocms-buildkit dev "src/**/*.ts" --no-clean-dist
+  withstudiocms-buildkit build "src/**/*.ts" --bundle --force-cjs
+`);
+}
 
 async function clean(outdir, date, skip = []) {
 	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
@@ -165,3 +202,6 @@ async function readPackageJSON(path) {
 		throw new Error(`Failed to read ${path}: ${readError.message}`);
 	}
 }
+
+// THIS IS THE ENTRY POINT FOR THE CLI - DO NOT REMOVE
+run();
