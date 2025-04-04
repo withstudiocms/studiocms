@@ -621,6 +621,15 @@ async function folderPages(
 	paginate?: PaginateInput
 ) {
 	try {
+		if (paginate) {
+			if (paginate.limit < 0 || paginate.offset < 0) {
+				throw new StudioCMSCacheError('Pagination limit and offset must be non-negative values');
+			}
+			if (paginate.limit === 0) {
+				// Either throw an error or set a default value
+				paginate.limit = 10; // Default value
+			}
+		}
 		// Check if caching is disabled
 		if (!isEnabled()) {
 			const dbPages = await sdk.GET.database.folderPages(
@@ -733,6 +742,15 @@ async function getAllPages(
 	paginate?: PaginateInput
 ) {
 	try {
+		if (paginate) {
+			if (paginate.limit < 0 || paginate.offset < 0) {
+				throw new StudioCMSCacheError('Pagination limit and offset must be non-negative values');
+			}
+			if (paginate.limit === 0) {
+				// Either throw an error or set a default value
+				paginate.limit = 10; // Default value
+			}
+		}
 		// Check if caching is disabled
 		if (!isEnabled()) {
 			const dbPages = await sdk.GET.database.pages(
