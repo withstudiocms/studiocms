@@ -13,6 +13,7 @@ import type {
 	MetaOnlyPageDataCacheObject,
 	PageDataCacheObject,
 	PageDataCacheReturnType,
+	PaginateInput,
 	SiteConfig,
 	SiteConfigCacheObject,
 	VersionCacheObject,
@@ -600,25 +601,45 @@ function clearAllPages(): void {
 async function folderPages(
 	id: string,
 	includeDrafts?: boolean,
-	hideDefaultIndex?: boolean
+	hideDefaultIndex?: boolean,
+	metaOnly?: false,
+	paginate?: PaginateInput
 ): Promise<PageDataCacheObject[]>;
 async function folderPages(
 	id: string,
 	includeDrafts?: boolean,
 	hideDefaultIndex?: boolean,
-	metaOnly?: boolean
+	metaOnly?: true,
+	paginate?: PaginateInput
 ): Promise<MetaOnlyPageDataCacheObject[]>;
 
 async function folderPages(
 	id: string,
 	includeDrafts = false,
 	hideDefaultIndex = false,
-	metaOnly = false
+	metaOnly = false,
+	paginate?: PaginateInput
 ) {
 	try {
+		if (paginate) {
+			if (paginate.limit < 0 || paginate.offset < 0) {
+				throw new StudioCMSCacheError('Pagination limit and offset must be non-negative values');
+			}
+			if (paginate.limit === 0) {
+				// Either throw an error or set a default value
+				paginate.limit = 10; // Default value
+			}
+		}
 		// Check if caching is disabled
 		if (!isEnabled()) {
-			const dbPages = await sdk.GET.database.folderPages(id, includeDrafts, hideDefaultIndex);
+			const dbPages = await sdk.GET.database.folderPages(
+				id,
+				includeDrafts,
+				hideDefaultIndex,
+				undefined,
+				false,
+				paginate
+			);
 			const data = dbPages.map((page) => pageDataReturn(page));
 			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 		}
@@ -643,6 +664,13 @@ async function folderPages(
 			const data = updatedData
 				.filter(({ parentFolder }) => parentFolder === id)
 				.map((data) => pageDataReturn(data));
+
+			if (paginate) {
+				const paginatedData = data
+					.sort((a, b) => a.data.title.localeCompare(b.data.title))
+					.slice(paginate.offset, paginate.offset + paginate.limit);
+				return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+			}
 
 			// Transform and return the data
 			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
@@ -669,6 +697,13 @@ async function folderPages(
 		const data = Array.from(pages.values()).filter(
 			({ data: { parentFolder } }) => parentFolder === id
 		);
+
+		if (paginate) {
+			const paginatedData = data
+				.sort((a, b) => a.data.title.localeCompare(b.data.title))
+				.slice(paginate.offset, paginate.offset + paginate.limit);
+			return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+		}
 		return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 	} catch (error) {
 		throw new StudioCMSCacheError('Error fetching all pages');
@@ -677,12 +712,15 @@ async function folderPages(
 
 async function getAllPages(
 	includeDrafts?: boolean,
-	hideDefaultIndex?: boolean
+	hideDefaultIndex?: boolean,
+	metaOnly?: false,
+	paginate?: PaginateInput
 ): Promise<PageDataCacheObject[]>;
 async function getAllPages(
 	includeDrafts?: boolean,
 	hideDefaultIndex?: boolean,
-	metaOnly?: boolean
+	metaOnly?: true,
+	paginate?: PaginateInput
 ): Promise<MetaOnlyPageDataCacheObject[]>;
 
 /**
@@ -697,11 +735,31 @@ async function getAllPages(
  * - If the cache is empty, the data is retrieved from the database and stored in the cache.
  * - If the cache contains data, it checks for expired entries and updates them from the database if necessary.
  */
-async function getAllPages(includeDrafts = false, hideDefaultIndex = false, metaOnly = false) {
+async function getAllPages(
+	includeDrafts = false,
+	hideDefaultIndex = false,
+	metaOnly = false,
+	paginate?: PaginateInput
+) {
 	try {
+		if (paginate) {
+			if (paginate.limit < 0 || paginate.offset < 0) {
+				throw new StudioCMSCacheError('Pagination limit and offset must be non-negative values');
+			}
+			if (paginate.limit === 0) {
+				// Either throw an error or set a default value
+				paginate.limit = 10; // Default value
+			}
+		}
 		// Check if caching is disabled
 		if (!isEnabled()) {
-			const dbPages = await sdk.GET.database.pages(includeDrafts);
+			const dbPages = await sdk.GET.database.pages(
+				includeDrafts,
+				hideDefaultIndex,
+				undefined,
+				false,
+				paginate
+			);
 			const data = dbPages.map((page) => pageDataReturn(page));
 			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 		}
@@ -724,6 +782,13 @@ async function getAllPages(includeDrafts = false, hideDefaultIndex = false, meta
 			}
 
 			const data = updatedData.map((data) => pageDataReturn(data));
+
+			if (paginate) {
+				const paginatedData = data
+					.sort((a, b) => a.data.title.localeCompare(b.data.title))
+					.slice(paginate.offset, paginate.offset + paginate.limit);
+				return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+			}
 
 			// Transform and return the data
 			return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
@@ -748,6 +813,14 @@ async function getAllPages(includeDrafts = false, hideDefaultIndex = false, meta
 
 		// Transform and return the data
 		const data = Array.from(pages.values());
+
+		if (paginate) {
+			const paginatedData = data
+				.sort((a, b) => a.data.title.localeCompare(b.data.title))
+				.slice(paginate.offset, paginate.offset + paginate.limit);
+			return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+		}
+
 		return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 	} catch (error) {
 		throw new StudioCMSCacheError(`Error fetching all pages: ${error}`);

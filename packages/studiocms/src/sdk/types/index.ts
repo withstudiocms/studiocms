@@ -91,6 +91,11 @@ export type {
 	tsNotificationSettingsSelect,
 };
 
+export type PaginateInput = {
+	limit: number;
+	offset: number;
+};
+
 export type MetaOnlyPageData = Omit<CombinedPageData, 'multiLangContent' | 'defaultContent'>;
 
 export type PageDataReturnType<T> = T extends CombinedPageData
