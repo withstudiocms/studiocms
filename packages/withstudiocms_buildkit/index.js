@@ -141,6 +141,10 @@ export default async function run() {
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
 		}
+		case 'help': {
+			showHelp();
+			break;
+		}
 		default: {
 			showHelp();
 			break;
