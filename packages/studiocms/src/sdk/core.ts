@@ -328,6 +328,15 @@ export function studiocmsSDKCore() {
 		paginate?: PaginateInput
 	) {
 		try {
+			if (paginate) {
+				if (paginate.limit < 0 || paginate.offset < 0) {
+					throw new StudioCMS_SDK_Error('Pagination limit and offset must be non-negative values');
+				}
+				if (paginate.limit === 0) {
+					// Either throw an error or set a default value
+					paginate.limit = 10; // Default value
+				}
+			}
 			const pagesRaw = paginate
 				? await db
 						.select()
@@ -335,7 +344,7 @@ export function studiocmsSDKCore() {
 						.orderBy(asc(tsPageData.title))
 						.limit(paginate.limit)
 						.offset(paginate.offset)
-				: await db.select().from(tsPageData);
+				: await db.select().from(tsPageData).orderBy(asc(tsPageData.title));
 
 			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
@@ -408,6 +417,15 @@ export function studiocmsSDKCore() {
 		paginate?: PaginateInput
 	) {
 		try {
+			if (paginate) {
+				if (paginate.limit < 0 || paginate.offset < 0) {
+					throw new StudioCMS_SDK_Error('Pagination limit and offset must be non-negative values');
+				}
+				if (paginate.limit === 0) {
+					// Either throw an error or set a default value
+					paginate.limit = 10; // Default value
+				}
+			}
 			const pagesRaw = paginate
 				? await db
 						.select()
@@ -416,7 +434,11 @@ export function studiocmsSDKCore() {
 						.orderBy(asc(tsPageData.title))
 						.limit(paginate.limit)
 						.offset(paginate.offset)
-				: await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
+				: await db
+						.select()
+						.from(tsPageData)
+						.where(eq(tsPageData.parentFolder, id))
+						.orderBy(asc(tsPageData.title));
 
 			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
