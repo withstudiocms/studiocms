@@ -84,9 +84,9 @@ export const POST: APIRoute = async (context: APIContext) => {
 		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
 		showAuthor: formData.get('show-author')?.toString() === 'true',
 		showContributors: formData.get('show-contributors')?.toString() === 'true',
+		draft: formData.get('draft')?.toString() === 'true',
 		categories: [],
 		tags: [],
-		draft: true,
 	};
 
 	const content = {
