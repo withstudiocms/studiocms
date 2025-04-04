@@ -14,7 +14,7 @@ const config: KnipConfig = {
 			project: '**/*.js',
 		},
 		'packages/studiocms': {
-			ignoreDependencies: ['@clack/core', 'drizzle-orm', 'studiocms-dashboard'],
+			ignoreDependencies: ['@clack/core', 'studiocms-dashboard'],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -64,6 +64,7 @@ const config: KnipConfig = {
 					'astro.config.{js,cjs,mjs,ts,mts}',
 					'src/content/config.ts',
 					'src/content.config.ts',
+					'src/components/**/*.{astro,js,ts}',
 					'src/pages/**/*.{astro,mdx,js,ts}',
 					'src/content/**/*.mdx',
 					'src/middleware.{js,ts}',
