@@ -56,6 +56,7 @@ import type {
 	PageDataCategoriesInsertResponse,
 	PageDataReturnType,
 	PageDataTagsInsertResponse,
+	PaginateInput,
 	SingleRank,
 	addDatabaseEntryInsertPage,
 	tsDiffTrackingInsert,
@@ -307,23 +308,34 @@ export function studiocmsSDKCore() {
 	async function _getAllPages(
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
-		tree?: FolderNode[]
+		tree?: FolderNode[],
+		metaOnly?: false,
+		paginate?: PaginateInput
 	): Promise<CombinedPageData[]>;
 	async function _getAllPages(
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
 		tree?: FolderNode[],
-		metaOnly?: boolean
+		metaOnly?: true,
+		paginate?: PaginateInput
 	): Promise<MetaOnlyPageData[]>;
 
 	async function _getAllPages(
 		includeDrafts = false,
 		hideDefaultIndex = false,
 		tree?: FolderNode[],
-		metaOnly = false
+		metaOnly = false,
+		paginate?: PaginateInput
 	) {
 		try {
-			const pagesRaw = await db.select().from(tsPageData);
+			const pagesRaw = paginate
+				? await db
+						.select()
+						.from(tsPageData)
+						.orderBy(asc(tsPageData.title))
+						.limit(paginate.limit)
+						.offset(paginate.offset)
+				: await db.select().from(tsPageData);
 
 			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
@@ -374,14 +386,17 @@ export function studiocmsSDKCore() {
 		id: string,
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
-		tree?: FolderNode[]
+		tree?: FolderNode[],
+		metaOnly?: false,
+		paginate?: PaginateInput
 	): Promise<CombinedPageData[]>;
 	async function _getPagesByFolderID(
 		id: string,
 		includeDrafts?: boolean,
 		hideDefaultIndex?: boolean,
 		tree?: FolderNode[],
-		metaOnly?: boolean
+		metaOnly?: true,
+		paginate?: PaginateInput
 	): Promise<MetaOnlyPageData[]>;
 
 	async function _getPagesByFolderID(
@@ -389,10 +404,19 @@ export function studiocmsSDKCore() {
 		includeDrafts = false,
 		hideDefaultIndex = false,
 		tree?: FolderNode[],
-		metaOnly = false
+		metaOnly = false,
+		paginate?: PaginateInput
 	) {
 		try {
-			const pagesRaw = await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
+			const pagesRaw = paginate
+				? await db
+						.select()
+						.from(tsPageData)
+						.where(eq(tsPageData.parentFolder, id))
+						.orderBy(asc(tsPageData.title))
+						.limit(paginate.limit)
+						.offset(paginate.offset)
+				: await db.select().from(tsPageData).where(eq(tsPageData.parentFolder, id));
 
 			const pagesFiltered = filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex);
 
