@@ -659,7 +659,7 @@ async function folderPages(
 			if (paginate) {
 				const paginatedData = data
 					.sort((a, b) => a.data.title.localeCompare(b.data.title))
-					.slice(paginate.offset, paginate.limit);
+					.slice(paginate.offset, paginate.offset + paginate.limit);
 				return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 			}
 
@@ -692,7 +692,7 @@ async function folderPages(
 		if (paginate) {
 			const paginatedData = data
 				.sort((a, b) => a.data.title.localeCompare(b.data.title))
-				.slice(paginate.offset, paginate.limit);
+				.slice(paginate.offset, paginate.offset + paginate.limit);
 			return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 		}
 		return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
@@ -768,7 +768,7 @@ async function getAllPages(
 			if (paginate) {
 				const paginatedData = data
 					.sort((a, b) => a.data.title.localeCompare(b.data.title))
-					.slice(paginate.offset, paginate.limit);
+					.slice(paginate.offset, paginate.offset + paginate.limit);
 				return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 			}
 
@@ -799,7 +799,7 @@ async function getAllPages(
 		if (paginate) {
 			const paginatedData = data
 				.sort((a, b) => a.data.title.localeCompare(b.data.title))
-				.slice(paginate.offset, paginate.limit);
+				.slice(paginate.offset, paginate.offset + paginate.limit);
 			return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 		}
 
