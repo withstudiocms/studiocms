@@ -23,27 +23,44 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 const urlParams = Astro.url.searchParams;
 const userId = urlParams.get('user') || '';
 
-const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
+const allowedRanks = [
+	{ label: 'Editor', value: 'editor' },
+	{ label: 'Visitor', value: 'visitor' },
+];
+
+const [
+	userSession,
+	emailVerificationEnabled,
+	user,
+	diffs,
+	pages,
+	{
+		data: { enableDiffs },
+	},
+	userTokens,
+] = await Promise.all([
+	getUserData(Astro),
+	isEmailVerificationEnabled(),
+	studioCMS_SDK.GET.databaseEntry.users.byId(userId),
+	studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
+	studioCMS_SDK_Cache.GET.pages(),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+	studioCMS_SDK.REST_API.tokens.get(userId),
+]);
+
+const [isAllowedAPITokens, isAdministrator, isOwner] = await Promise.all([
+	verifyUserPermissionLevel(userSession, 'editor'),
+	verifyUserPermissionLevel(userSession, 'admin'),
+	verifyUserPermissionLevel(userSession, 'owner'),
+]);
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
-const userSession = await getUserData(Astro);
-
 const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === userSession.user?.id;
 
-const diffs = await studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5);
+if (isOwner) allowedRanks.unshift({ label: 'Owner', value: 'owner' });
 
-const pages = await studioCMS_SDK_Cache.GET.pages();
-
-const {
-	data: { enableDiffs },
-} = await studioCMS_SDK_Cache.GET.siteConfig();
-
-const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
-
-const userTokens = await studioCMS_SDK.REST_API.tokens.get(userId);
-
-const emailVerificationEnabled = await isEmailVerificationEnabled();
+if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 ---
 <Layout 
   title={t('title')}
@@ -163,12 +180,7 @@ const emailVerificationEnabled = await isEmailVerificationEnabled();
         isRequired 
         fullWidth 
         defaultValue={user?.permissionsData?.rank || 'visitor'}
-        options={[
-          { label: 'Owner', value: 'owner' },
-          { label: 'Administrator', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Visitor', value: 'visitor' },
-        ]}
+        options={allowedRanks}
         />
 
       <div class="text-h3"><t-users-edit key="email-verification-status">{t('email-verification-status')}</t-users-edit></div>

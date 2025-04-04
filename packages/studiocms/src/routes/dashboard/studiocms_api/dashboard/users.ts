@@ -6,6 +6,8 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 
+type RankEnum = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
+
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Get user data
 	const userData = await getUserData(ctx);
@@ -42,6 +44,16 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 
 	if (!user) {
 		return apiResponseLogger(404, 'User not found');
+	}
+
+	// Check if the user has permission to update the rank
+	const isAllowedToUpdateRank = await verifyUserPermissionLevel(
+		userData,
+		user.permissionsData?.rank as RankEnum
+	);
+
+	if (!isAllowedToUpdateRank) {
+		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Update user rank
