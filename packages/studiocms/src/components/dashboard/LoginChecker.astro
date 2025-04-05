@@ -1,25 +1,25 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { isEmailVerificationEnabled, isEmailVerified } from 'studiocms:auth/lib/verify-email';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
 interface Props {
 	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	currentUser: UserSessionData;
 }
 
-const { requiredPermission } = Astro.props;
+const { requiredPermission, currentUser } = Astro.props;
 
-const user = await getUserData(Astro);
-
-const emailVerificationEnabled = await isEmailVerificationEnabled();
-
-let isAuthorized = false;
-
-isAuthorized = await verifyUserPermissionLevel(user, requiredPermission);
+let [emailVerificationEnabled, isAuthorized, emailVerified] = await Promise.all([
+	isEmailVerificationEnabled(),
+	verifyUserPermissionLevel(currentUser, requiredPermission),
+	isEmailVerified(currentUser),
+]);
 
 let redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
 
-if (emailVerificationEnabled && (await isEmailVerified(user)) === false) {
+if (emailVerificationEnabled && emailVerified === false) {
 	isAuthorized = false;
 	redirectProfile = StudioCMSRoutes.mainLinks.unverifiedEmail;
 }
@@ -27,7 +27,7 @@ if (emailVerificationEnabled && (await isEmailVerified(user)) === false) {
 const redirectLogin = StudioCMSRoutes.authLinks.loginURL;
 ---
 <login-check
-    data-is_logged_in={`${user.isLoggedIn}`}
+    data-is_logged_in={`${currentUser.isLoggedIn}`}
     data-authorized={`${isAuthorized}`}
     data-redirect_profile={redirectProfile}
     data-redirect_login={redirectLogin}

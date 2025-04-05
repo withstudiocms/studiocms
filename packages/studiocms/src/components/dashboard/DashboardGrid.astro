@@ -1,23 +1,31 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Center } from 'studiocms:ui/components';
 import DashboardGridItem from './DashboardGridItem.astro';
 
-const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
+interface Props {
+	lang: UiLanguageKeys;
+	config: SiteConfigCacheObject;
+	currentUser: UserSessionData;
+}
+
+const {
+	lang,
+	config: { data },
+	currentUser,
+} = Astro.props as Props;
 
 let gridItems = dashboardGridItems;
 
-const allowedItems: string[] = (data.gridItems as string[]) ?? [];
-
-const filterItems = allowedItems.length > 0;
-
-if (filterItems) {
-	gridItems = dashboardGridItems.filter((item) => allowedItems.includes(item.name));
+if (((data.gridItems as string[]) ?? []).length > 0) {
+	gridItems = dashboardGridItems.filter((item) =>
+		((data.gridItems as string[]) ?? []).includes(item.name)
+	);
 }
-
-const currentUser = await getUserData(Astro);
 ---
 <div class="dashboard-grid-container">
 
@@ -27,10 +35,10 @@ const currentUser = await getUserData(Astro);
 			if (item.requiresPermission) {
 				const allowed = await verifyUserPermissionLevel(currentUser, item.requiresPermission);
 				if (allowed) {
-					return <DashboardGridItem {...item} />
+					return <DashboardGridItem {...item} {lang} />
 				}
 			} else {
-				return <DashboardGridItem {...item} />
+				return <DashboardGridItem {...item} {lang} />
 			}
 		}) 
 		: <Center><p>There is nothing to display</p></Center> 

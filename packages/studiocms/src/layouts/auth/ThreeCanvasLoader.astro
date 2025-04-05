@@ -1,10 +1,14 @@
 ---
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
+
+interface Props {
+	config: SiteConfigCacheObject;
+}
 
 // Get the site config
-const {
-	data: { loginPageBackground, loginPageCustomImage },
-} = await studioCMS_SDK_Cache.GET.siteConfig();
+const { config } = Astro.props as Props;
+
+const { loginPageBackground, loginPageCustomImage } = config.data;
 ---
 <div 
     style="display: none;" 

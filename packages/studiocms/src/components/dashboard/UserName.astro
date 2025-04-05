@@ -1,6 +1,10 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 
-const user = await getUserData(Astro);
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser } = Astro.props as Props;
 ---
-<Fragment set:text={user.user?.name} />
+<Fragment set:text={currentUser.user?.name} />

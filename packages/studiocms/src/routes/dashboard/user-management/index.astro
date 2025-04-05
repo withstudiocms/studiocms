@@ -6,6 +6,8 @@ import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 <Layout 
   title={t('title')}
@@ -13,6 +15,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
   requiredPermission='admin'
   sidebar='double'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="double-sidebar" class="inner-sidebar-container">

@@ -1,55 +1,18 @@
 ---
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import studioCMS_SDK_Cache, { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import TreeRenderer from './TreeRenderer.astro';
-
-const config = await studioCMS_SDK_Cache.GET.siteConfig();
-
-const hideDefaults = config.data.hideDefaultIndex;
-
-const { data: PageFolderTree } = await studioCMS_SDK_Cache.GET.pageFolderTree(true, hideDefaults);
 
 interface Props {
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
+	config: SiteConfigCacheObject;
 }
 
-const { isNewFolder, isNewPage } = Astro.props;
+const { config, isNewFolder, isNewPage } = Astro.props as Props;
 
-const testData = [
-	{
-		id: '1',
-		name: 'Page 1',
-		page: true,
-		pageData: null,
-		children: [],
-	},
-	{
-		id: '2',
-		name: 'Page 2',
-		page: true,
-		pageData: null,
-		children: [],
-	},
-	{
-		id: '3',
-		name: 'Test Folder',
-		page: false,
-		pageData: null,
-		children: [
-			{
-				id: '4',
-				name: 'Sub Folder',
-				page: false,
-				pageData: null,
-				children: [
-					{ id: '5', name: 'Page 3', page: true, children: [], pageData: null },
-					{ id: '6', name: 'Page 4', page: true, children: [], pageData: null },
-				],
-			},
-			{ id: '7', name: 'Page 5', page: true, children: [], pageData: null },
-		],
-	},
-];
+const hideDefaults = config.data.hideDefaultIndex;
+
+const { data: PageFolderTree } = await studioCMS_SDK_Cache.GET.pageFolderTree(true, hideDefaults);
 ---
 
 <TreeRenderer data={PageFolderTree} {isNewFolder} {isNewPage} />

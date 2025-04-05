@@ -6,16 +6,17 @@ import {
 } from '@studiocms/markdown-remark-processor';
 import { shared } from '../../lib/renderer/shared.js';
 
-// Initialize markdown processor (Astro)
-const astroMD = await createAstroMD(shared.astroMDRemark);
-
-// Initialize markdown processor (StudioCMS)
-const studioCMSMD = await createStudioCMSMD({
-	...shared.astroMDRemark,
-	studiocms: shared.studiocmsMarkdown
-		? (shared.studiocmsMarkdown as StudioCMSConfigOptions)
-		: undefined,
-});
+const [astroMD, studioCMSMD] = await Promise.all([
+	// Initialize markdown processor (Astro)
+	createAstroMD(shared.astroMDRemark),
+	// Initialize markdown processor (StudioCMS)
+	createStudioCMSMD({
+		...shared.astroMDRemark,
+		studiocms: shared.studiocmsMarkdown
+			? (shared.studiocmsMarkdown as StudioCMSConfigOptions)
+			: undefined,
+	}),
+]);
 
 /**
  * Creates a pre-render function for processing markdown content based on the configured renderer flavor.

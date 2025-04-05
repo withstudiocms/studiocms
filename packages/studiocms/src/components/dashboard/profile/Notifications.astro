@@ -1,12 +1,18 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { verifyMailConnection } from 'studiocms:mailer';
 import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Button, Card, Icon, Toggle } from 'studiocms:ui/components';
 
-const data = await getUserData(Astro);
+interface Props {
+	currentUser: UserSessionData;
+	config: SiteConfigCacheObject;
+}
+
+const { currentUser: data, config: siteConfig } = Astro.props as Props;
 
 if (!data.user) {
 	throw new Error('User not found');
@@ -16,11 +22,10 @@ const NotificationOptions = notificationTypes;
 
 const userNotifications = data.user.notifications?.split(',') || [];
 
-const [isUser, isEditor, isAdmin, siteConfig] = await Promise.all([
+const [isUser, isEditor, isAdmin] = await Promise.all([
 	verifyUserPermissionLevel(data, 'visitor'),
 	verifyUserPermissionLevel(data, 'editor'),
 	verifyUserPermissionLevel(data, 'admin'),
-	studioCMS_SDK_Cache.GET.siteConfig(),
 ]);
 
 let isNotificationsEnabled = false;

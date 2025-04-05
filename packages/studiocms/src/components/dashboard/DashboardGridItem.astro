@@ -1,9 +1,12 @@
 ---
+import type { UiLanguageKeys } from 'studiocms:i18n';
 import { Card, Icon } from 'studiocms:ui/components';
 import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
 import type { GridItem } from './shared.js';
 
-export interface Props extends GridItem {}
+export interface Props extends GridItem {
+	lang: UiLanguageKeys;
+}
 
 const { span, variant, body, header, name } = Astro.props;
 

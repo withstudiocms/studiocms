@@ -39,8 +39,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
   </form>
   <Dropdown
-    transition:persist
-    transition:persist-props
     id='create-user-dropdown'
     options={[
       { label: t('dropdown-create-user'), icon: 'user-plus', value: 'new-user' },
