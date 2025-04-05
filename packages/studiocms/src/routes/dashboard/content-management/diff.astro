@@ -1,5 +1,4 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -12,11 +11,9 @@ import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
 
-const [currentUser, config, users] = await Promise.all([
-	getUserData(Astro),
-	studioCMS_SDK_Cache.GET.siteConfig(),
-	studioCMS_SDK.GET.database.users(),
-]);
+const users = await studioCMS_SDK.GET.database.users();
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 

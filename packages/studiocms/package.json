@@ -124,6 +124,7 @@
       "default": "./dist/types.js"
     },
     "./v/types": "./dist/virtual.d.ts",
+    "./src/middleware/*": "./src/middleware/*",
     "./src/routes/*": "./src/routes/*"
   },
   "type": "module",

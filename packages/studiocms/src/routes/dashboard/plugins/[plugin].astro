@@ -1,9 +1,7 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Icon } from 'studiocms:ui/components';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
@@ -26,10 +24,7 @@ if (!pluginData) {
 	return new Response(null, { status: 404 });
 }
 
-const [currentUser, config] = await Promise.all([
-	getUserData(Astro),
-	studioCMS_SDK_Cache.GET.siteConfig(),
-]);
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 

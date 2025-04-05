@@ -1,7 +1,5 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
 import { getPluginDashboardPages } from 'studiocms:plugin-helpers';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 import type { FinalDashboardPage } from '../../schemas/index.js';
@@ -44,10 +42,7 @@ const {
 // Check if the sidebar is double and if the InnerSidebarComponent exists to determine the sidebar configuration
 const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' : 'single';
 
-const [currentUser, config] = await Promise.all([
-	getUserData(Astro),
-	studioCMS_SDK_Cache.GET.siteConfig(),
-]);
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 

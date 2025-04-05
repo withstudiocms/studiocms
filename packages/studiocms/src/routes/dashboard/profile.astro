@@ -1,8 +1,7 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
@@ -15,10 +14,7 @@ import Layout from '../../layouts/dashboard/Layout.astro';
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
-const [currentUser, config] = await Promise.all([
-	getUserData(Astro),
-	studioCMS_SDK_Cache.GET.siteConfig(),
-]);
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 
 const {
 	providers: { usernameAndPassword },

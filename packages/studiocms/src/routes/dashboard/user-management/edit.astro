@@ -1,5 +1,5 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { isEmailVerificationEnabled } from 'studiocms:auth/lib/verify-email';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
@@ -20,6 +20,8 @@ import Layout from '../../../layouts/dashboard/Layout.astro';
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 
+const { siteConfig: config, userSessionData: userSession } = Astro.locals;
+
 const urlParams = Astro.url.searchParams;
 const userId = urlParams.get('user') || '';
 
@@ -28,16 +30,13 @@ const allowedRanks = [
 	{ label: 'Visitor', value: 'visitor' },
 ];
 
-const [userSession, emailVerificationEnabled, user, diffs, pages, config, userTokens] =
-	await Promise.all([
-		getUserData(Astro),
-		isEmailVerificationEnabled(),
-		studioCMS_SDK.GET.databaseEntry.users.byId(userId),
-		studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
-		studioCMS_SDK_Cache.GET.pages(),
-		studioCMS_SDK_Cache.GET.siteConfig(),
-		studioCMS_SDK.REST_API.tokens.get(userId),
-	]);
+const [emailVerificationEnabled, user, diffs, pages, userTokens] = await Promise.all([
+	isEmailVerificationEnabled(),
+	studioCMS_SDK.GET.databaseEntry.users.byId(userId),
+	studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
+	studioCMS_SDK_Cache.GET.pages(),
+	studioCMS_SDK.REST_API.tokens.get(userId),
+]);
 
 const [isAllowedAPITokens, isAdministrator, isOwner] = await Promise.all([
 	verifyUserPermissionLevel(userSession, 'editor'),

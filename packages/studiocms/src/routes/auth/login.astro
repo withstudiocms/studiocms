@@ -3,7 +3,6 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { AuthConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
@@ -34,12 +33,11 @@ const {
 	},
 } = AuthConfig;
 
-const [{ SHOW_OAUTH }, config] = await Promise.all([
-	authEnvCheck(providers),
-	studioCMS_SDK.GET.database.config(),
-]);
+const { SHOW_OAUTH } = await authEnvCheck(providers);
 
-const { enableMailer } = config || {
+const { siteConfig: config } = Astro.locals;
+
+const { enableMailer } = config.data || {
 	enableMailer: false,
 };
 

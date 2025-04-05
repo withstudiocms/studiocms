@@ -1,3 +1,4 @@
+import { file } from 'astro/loaders';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
@@ -71,6 +72,7 @@ export const routesDir = {
 	authPage: (file: string) => _routes_dir(`auth/${file}`),
 	authAPI: (file: string) => _routes_dir(`auth/api/${file}`),
 	mailer: (file: string) => _routes_dir(`mailer/${file}`),
+	middleware: (file: string) => `studiocms/src/middleware/${file}`,
 };
 
 /**
