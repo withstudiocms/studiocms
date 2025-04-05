@@ -1,7 +1,7 @@
 ---
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { dashboardConfig } from 'studiocms:config';
-import { useTranslations } from 'studiocms:i18n';
+import { languageSelectorOptions, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
@@ -32,6 +32,22 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
       <span class="sidebar-title">StudioCMS</span>
     </div>
     <div class="sidebar-subtitle">
+      {/*
+        This cannot be inside of the Group component due to the
+        way the dropdown component is implemented. (not compatible with group)
+      */}
+      <Dropdown
+        id="studiocms-i18n"
+        options={languageSelectorOptions.map(({ key, value }) => ({
+          label: value,
+          value: key,
+        }))}
+        offset={8}
+        >
+        <Button size='sm' variant="outlined" color={'default'} id={'studiocms-i18n-trigger'}>
+          <Icon name="language-16-solid" height={16} width={16} />
+        </Button>
+      </Dropdown>
       <Group>
         { versionCheck && <VersionCheck /> }
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
@@ -46,6 +62,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
           </div>
         </Button>
       </Group>
+      
       <Button color='primary' size='sm' id='nav-close' class='mobile-btn mid-size-btn'>
         <Icon name="x-mark" height={16} width={16} />
       </Button>
@@ -236,6 +253,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 </script>
 
 <script>
+  import { $localeSettings, type UiTranslationKey } from "studiocms:i18n/client";
   import { DropdownHelper } from "studiocms:ui/components";
   import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
   import { navigate } from 'astro:transitions/client';
@@ -255,11 +273,27 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     themeHelper.onThemeChange((newTheme) => {
       localStorage.setItem('studiocms-theme-preference', newTheme);
     });
+
+    const i18nDropdown = new DropdownHelper('studiocms-i18n', true);
+
+    i18nDropdown.registerClickCallback((value) => {
+      const lang = value as UiTranslationKey;
+
+      $localeSettings.set(lang);
+    })
+
   }
   
   document.addEventListener('astro:page-load', setup);
   setup();
 </script>
+
+<style is:global>
+  #studiocms-i18n-dropdown {
+    max-width: 180px !important;
+    width: 180px !important;
+  }
+</style>
 
 <style>
   #nav-close {
