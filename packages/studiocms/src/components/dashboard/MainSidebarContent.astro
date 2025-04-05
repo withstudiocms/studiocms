@@ -5,6 +5,7 @@ import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
+import type { VersionCacheObject } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
 import Footer from './Footer.astro';
 import SidebarLink from './SidebarLink.astro';
@@ -21,9 +22,10 @@ const sidebar = getSidebarLinks(lang);
 
 interface Props {
 	currentUser: UserSessionData;
+	latestVersion: VersionCacheObject;
 }
 
-const { currentUser: userData } = Astro.props as Props;
+const { currentUser: userData, latestVersion } = Astro.props as Props;
 
 const [isEditor, isAdmin, isOwner] = await Promise.all([
 	verifyUserPermissionLevel(userData, 'editor'),
@@ -42,7 +44,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     </div>
     <div class="sidebar-subtitle">
       <Group>
-        { versionCheck && <VersionCheck /> }
+        { versionCheck && <VersionCheck {latestVersion} /> }
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
           <div id="dark-content">
             <Icon name='moon-16-solid' width={16} height={16} slot="dark" />

@@ -3,6 +3,7 @@ import 'studiocms:ui/global-css';
 import '@fontsource-variable/onest/index.css';
 import '../../styles/authlayout.css';
 import { Generator } from 'studiocms:components';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Toaster } from 'studiocms:ui/components';
 import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import OAuthButtonStack from '../../components/auth/OAuthButtonStack.astro';
@@ -10,6 +11,8 @@ import StaticAuthCheck from '../../components/auth/StaticAuthCheck.astro';
 import FallbackCanvas from './FallbackCanvas.astro';
 import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
+
+const config = await studioCMS_SDK_Cache.GET.siteConfig();
 
 interface Props {
 	title: string;
@@ -50,7 +53,7 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 	<Toaster />
 	<main>
 		<div id="canvas-container">
-			<FallbackCanvas />
+			<FallbackCanvas {config} />
 		</div>
 		<div class="login-form-container">
 
@@ -69,6 +72,6 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 	{ checkLogin && (
 		<StaticAuthCheck />
 	)}
-	<ThreeCanvasLoader />
+	<ThreeCanvasLoader {config} />
   </body>
 </html>

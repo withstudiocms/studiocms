@@ -28,7 +28,7 @@ const [currentUser, config] = await Promise.all([
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement isNewFolder {lang} />
+      <InnerSidebarElement isNewFolder {lang} {config} />
     </div>
   </div>
 

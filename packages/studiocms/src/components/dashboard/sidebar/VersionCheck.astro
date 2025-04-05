@@ -1,10 +1,14 @@
 ---
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type VersionCacheObject } from 'studiocms:sdk/cache';
 import { Button } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
 import { compare } from 'semver';
 
-const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
+interface Props {
+	latestVersion: VersionCacheObject;
+}
+
+const { latestVersion } = Astro.props as Props;
 
 const comparison = compare(currentVersion, latestVersion.version);
 

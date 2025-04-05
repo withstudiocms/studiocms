@@ -1,16 +1,18 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
+import type { VersionCacheObject } from 'studiocms:sdk/cache';
 import { Sidebar } from 'studiocms:ui/components';
 import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
 	currentUser: UserSessionData;
+	latestVersion: VersionCacheObject;
 }
 
-const { currentUser } = Astro.props as Props;
+const { currentUser, latestVersion } = Astro.props as Props;
 ---
 <Sidebar class='sidebar'>
-  <MainSidebarContent {currentUser} />
+  <MainSidebarContent {currentUser} {latestVersion} />
 </Sidebar>
 
 <script>

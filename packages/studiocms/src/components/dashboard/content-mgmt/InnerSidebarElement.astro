@@ -1,16 +1,18 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
 
 interface Props {
+	config: SiteConfigCacheObject;
 	lang: UiLanguageKeys;
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
 }
 
-const { isNewFolder, isNewPage, lang } = Astro.props;
+const { isNewFolder, isNewPage, lang, config } = Astro.props;
 const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 ---
 
@@ -55,7 +57,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   class="inner-sidebar-items scrollbar" 
   id="inner-sidebar-items" 
   >
-  <PageList {isNewFolder} {isNewPage} />
+  <PageList {isNewFolder} {isNewPage} {config} />
 </div>
 
 <div

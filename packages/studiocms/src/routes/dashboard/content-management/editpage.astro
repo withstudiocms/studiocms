@@ -28,7 +28,7 @@ const [currentUser, config] = await Promise.all([
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement {lang} />
+      <InnerSidebarElement {lang} {config} />
     </div>
   </div>
 
@@ -36,7 +36,7 @@ const [currentUser, config] = await Promise.all([
     <PageHeader {lang} editPage />
   </div>
 
-  <EditPage {lang} />
+  <EditPage {lang} {config} />
 
 </Layout>
 

@@ -34,7 +34,14 @@ const {
 	},
 } = AuthConfig;
 
-const { SHOW_OAUTH } = await authEnvCheck(providers);
+const [{ SHOW_OAUTH }, config] = await Promise.all([
+	authEnvCheck(providers),
+	studioCMS_SDK.GET.database.config(),
+]);
+
+const { enableMailer } = config || {
+	enableMailer: false,
+};
 
 let paragraph:
 	| 'sub-header-usernamepasswordoauth'
@@ -51,10 +58,6 @@ if (usernameAndPassword && SHOW_OAUTH) {
 } else {
 	paragraph = 'sub-header-noprovider';
 }
-
-const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
-	enableMailer: false,
-};
 ---
 <AuthLayout 
     title={t('title')} 

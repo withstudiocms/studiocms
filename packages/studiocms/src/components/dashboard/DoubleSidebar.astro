@@ -1,18 +1,20 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
+import type { VersionCacheObject } from 'studiocms:sdk/cache';
 import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components';
 import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
 	currentUser: UserSessionData;
+	latestVersion: VersionCacheObject;
 }
 
-const { currentUser } = Astro.props as Props;
+const { currentUser, latestVersion } = Astro.props as Props;
 ---
 
 <SuiDoubleSidebar class='sidebar'>
   <div slot="outer" class="outer-sidebar-container">
-    <MainSidebarContent {currentUser} />
+    <MainSidebarContent {currentUser} {latestVersion} />
   </div>
   <div slot="inner">
     <slot />

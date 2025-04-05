@@ -1,6 +1,6 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
+import studioCMS_SDK_Cache, { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Toaster } from 'studiocms:ui/components';
 import BaseHead from '../../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
@@ -8,6 +8,8 @@ import LoginChecker from '../../components/dashboard/LoginChecker.astro';
 import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
+
+const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
 
 type Props = {
 	config: SiteConfigCacheObject;
@@ -41,9 +43,9 @@ const description = propDescription ?? config.data.description;
     { requiredPermission !== 'none' && ( 
       <LoginChecker {requiredPermission} {currentUser} />
      ) }
-     <SidebarModals />
-    { sidebar === 'single' && <SingleSidebar {currentUser}/> }
-    { sidebar === 'double' && <DoubleSidebar {currentUser} ><slot name="double-sidebar" /></DoubleSidebar> }
+     <SidebarModals {latestVersion} />
+    { sidebar === 'single' && <SingleSidebar {currentUser} {latestVersion} /> }
+    { sidebar === 'double' && <DoubleSidebar {currentUser} {latestVersion} ><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
       <div class="container">
