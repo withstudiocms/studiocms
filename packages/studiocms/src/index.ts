@@ -1105,7 +1105,6 @@ export const studiocms = defineIntegration({
 							// i18n Virtual Module
 							'studiocms:i18n': `
 								export * from '${resolve('./lib/i18n/index.js')}';
-								export { default as LanguageSelector } from '${resolve('./lib/i18n/LanguageSelector.astro')}';
 							`,
 							'studiocms:i18n/client': `
 								export * from '${resolve('./lib/i18n/client.js')}';
