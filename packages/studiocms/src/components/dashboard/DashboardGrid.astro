@@ -21,7 +21,7 @@ const {
 
 let gridItems = dashboardGridItems;
 
-if ((data.gridItems as string[]) ?? [].length > 0) {
+if (((data.gridItems as string[]) ?? []).length > 0) {
 	gridItems = dashboardGridItems.filter((item) =>
 		((data.gridItems as string[]) ?? []).includes(item.name)
 	);

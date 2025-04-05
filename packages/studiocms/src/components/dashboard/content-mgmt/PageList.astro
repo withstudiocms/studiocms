@@ -3,21 +3,16 @@ import studioCMS_SDK_Cache, { type SiteConfigCacheObject } from 'studiocms:sdk/c
 import TreeRenderer from './TreeRenderer.astro';
 
 interface Props {
+	isNewFolder?: boolean;
+	isNewPage?: boolean;
 	config: SiteConfigCacheObject;
 }
 
-const { config } = Astro.props as Props;
+const { config, isNewFolder, isNewPage } = Astro.props as Props;
 
 const hideDefaults = config.data.hideDefaultIndex;
 
 const { data: PageFolderTree } = await studioCMS_SDK_Cache.GET.pageFolderTree(true, hideDefaults);
-
-interface Props {
-	isNewFolder?: boolean;
-	isNewPage?: boolean;
-}
-
-const { isNewFolder, isNewPage } = Astro.props;
 ---
 
 <TreeRenderer data={PageFolderTree} {isNewFolder} {isNewPage} />
