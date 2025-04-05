@@ -163,7 +163,7 @@ function showHelp() {
 ${green('StudioCMS Buildkit')} - Build tool for StudioCMS packages
 
 ${yellow('Usage:')}
-  withstudiocms-buildkit <command> [...files] [...options]
+  buildkit <command> [...files] [...options]
 
 ${yellow('Commands:')}
   dev     Watch files and rebuild on changes
@@ -178,9 +178,9 @@ ${yellow('Options:')}
   --outdir=<path>   Specify output directory (default: dist)
 
 ${yellow('Examples:')}
-  withstudiocms-buildkit build "src/**/*.ts"
-  withstudiocms-buildkit dev "src/**/*.ts" --no-clean-dist
-  withstudiocms-buildkit build "src/**/*.ts" --bundle --force-cjs
+  buildkit build "src/**/*.ts"
+  buildkit dev "src/**/*.ts" --no-clean-dist
+  buildkit build "src/**/*.ts" --bundle --force-cjs
 `);
 }
 
