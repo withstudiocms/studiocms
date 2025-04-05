@@ -1,11 +1,18 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import DashboardGrid from '../../components/dashboard/DashboardGrid.astro';
 import DashboardPageHeader from '../../components/dashboard/DashboardPageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:index');
+
+const [currentUser, config] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+]);
 ---
 
 <Layout 
@@ -13,16 +20,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
   description={t('description')}
   requiredPermission='editor'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">
-    <DashboardPageHeader />
+    <DashboardPageHeader {lang} {currentUser} />
     <span class="index-sub-header">
       <t-dashboard key="sub-header">{t('sub-header')}</t-dashboard>
     </span>
   </div>
 
-  <DashboardGrid />
+  <DashboardGrid {lang} {config} {currentUser} />
 
 </Layout>
 

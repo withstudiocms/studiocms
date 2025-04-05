@@ -28,25 +28,16 @@ const allowedRanks = [
 	{ label: 'Visitor', value: 'visitor' },
 ];
 
-const [
-	userSession,
-	emailVerificationEnabled,
-	user,
-	diffs,
-	pages,
-	{
-		data: { enableDiffs },
-	},
-	userTokens,
-] = await Promise.all([
-	getUserData(Astro),
-	isEmailVerificationEnabled(),
-	studioCMS_SDK.GET.databaseEntry.users.byId(userId),
-	studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
-	studioCMS_SDK_Cache.GET.pages(),
-	studioCMS_SDK_Cache.GET.siteConfig(),
-	studioCMS_SDK.REST_API.tokens.get(userId),
-]);
+const [userSession, emailVerificationEnabled, user, diffs, pages, config, userTokens] =
+	await Promise.all([
+		getUserData(Astro),
+		isEmailVerificationEnabled(),
+		studioCMS_SDK.GET.databaseEntry.users.byId(userId),
+		studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
+		studioCMS_SDK_Cache.GET.pages(),
+		studioCMS_SDK_Cache.GET.siteConfig(),
+		studioCMS_SDK.REST_API.tokens.get(userId),
+	]);
 
 const [isAllowedAPITokens, isAdministrator, isOwner] = await Promise.all([
 	verifyUserPermissionLevel(userSession, 'editor'),
@@ -68,6 +59,8 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
   requiredPermission='admin'
   sidebar='double'
   {lang}
+  {config}
+  currentUser={userSession}
   >
   {/*
     Check if the user has the required permission to manage the user's rank level
@@ -238,7 +231,7 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
       </div>
     )}
 
-    { enableDiffs && ( 
+    { config.data.enableDiffs && ( 
       <div class="text-h3"><t-users-edit key="last-edit-pages-header">{t('last-edit-pages-header')}</t-users-edit></div>
   
       <div class="edit-card-list">

@@ -1,9 +1,16 @@
 ---
-import { useTranslations } from 'studiocms:i18n';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Button, Icon } from 'studiocms:ui/components';
 import UserName from './UserName.astro';
 
-const lang = 'en';
+interface Props {
+	lang: UiLanguageKeys;
+	currentUser: UserSessionData;
+}
+
+const { lang, currentUser } = Astro.props as Props;
+
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 ---
 
@@ -13,7 +20,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
       <Icon name="bars-3" height={24} width={24} />
     </Button>
     <h1 class="page-title">
-      <t-dashboard-header key="welcome-title">{t("welcome-title")}</t-dashboard-header>, <UserName />.
+      <t-dashboard-header key="welcome-title">{t("welcome-title")}</t-dashboard-header>, <UserName {currentUser} />.
     </h1>
   </div>
   <div class="page-actions-container">

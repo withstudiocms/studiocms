@@ -1,18 +1,27 @@
 ---
 import '../../styles/404.css';
+import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:404');
+
+const [currentUser, config] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+]);
 ---
 
 <Layout 
   title={t('title')}
   description={t('description')}
   sidebar={false} 
-  requiredPermission="none">
+  requiredPermission="none"
+  {config}
+  {currentUser}>
   <div class="notfound-container">
     <div class="notfound">
       <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">

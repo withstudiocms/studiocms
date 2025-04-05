@@ -1,5 +1,7 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import CreateFolder from '../../../components/dashboard/content-mgmt/CreateFolder.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -7,6 +9,11 @@ import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+
+const [currentUser, config] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+]);
 ---
 
 <Layout 
@@ -15,6 +22,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
   requiredPermission='editor'
   sidebar='double'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="double-sidebar" class="inner-sidebar-container">

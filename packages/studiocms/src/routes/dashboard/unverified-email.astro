@@ -3,15 +3,19 @@ import '../../styles/404.css';
 import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
 
-const { user: userData } = await getUserData(Astro);
+const [currentUser, config] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+]);
 
-const userId = userData?.id;
+const userId = currentUser.user?.id;
 
 if (!userId) {
 	window.location.href = '/';
@@ -22,7 +26,9 @@ if (!userId) {
   title={t('title')}
   description={t('description')}
   sidebar={false} 
-  requiredPermission="none">
+  requiredPermission="none"
+  {config}
+  {currentUser}>
   <div class="notfound-container">
     <div class="notfound">
       <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">

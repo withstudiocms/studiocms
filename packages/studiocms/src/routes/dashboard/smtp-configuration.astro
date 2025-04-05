@@ -1,4 +1,5 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { getMailerConfigTable } from 'studiocms:mailer';
@@ -11,19 +12,22 @@ import Layout from '../../layouts/dashboard/Layout.astro';
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
+const [currentUser, config, mailerConfig, notificationSettings] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_Cache.GET.siteConfig(),
+	getMailerConfigTable(),
+	studioCMS_SDK.notificationSettings.site.get(),
+]);
+
 const {
 	data: { enableMailer },
-} = await studioCMS_Cache.GET.siteConfig();
-
-const mailerConfig = await getMailerConfigTable();
+} = config;
 
 let createConfig = false;
 
 if (!mailerConfig) {
 	createConfig = true;
 }
-
-const notificationSettings = await studioCMS_SDK.notificationSettings.site.get();
 
 const notificationSettingKeys = Object.keys(notificationSettings).filter(
 	(key) => key !== 'id'
@@ -35,6 +39,8 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
   description={t('description')}
   requiredPermission='owner'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">

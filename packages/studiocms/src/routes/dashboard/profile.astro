@@ -2,6 +2,7 @@
 import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
+import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
@@ -14,15 +15,18 @@ import Layout from '../../layouts/dashboard/Layout.astro';
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
+const [currentUser, config] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+]);
+
 const {
 	providers: { usernameAndPassword },
 } = AuthConfig;
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
-const userSession = await getUserData(Astro);
-
-const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor');
+const isAllowedAPITokens = await verifyUserPermissionLevel(currentUser, 'editor');
 ---
 
 <Layout 
@@ -30,6 +34,8 @@ const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor'
   description={t('description')}
   requiredPermission="visitor"
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">
@@ -46,7 +52,7 @@ const isAllowedAPITokens = await verifyUserPermissionLevel(userSession, 'editor'
 
     { shouldShowOAuth && <SocialSignin /> }
 
-    { isAllowedAPITokens && <APITokens {userSession} /> }
+    { isAllowedAPITokens && <APITokens userSession={currentUser} /> }
 
   </div>
 </Layout>

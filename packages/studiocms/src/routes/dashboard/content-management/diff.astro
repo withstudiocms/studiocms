@@ -1,4 +1,5 @@
 ---
+import { getUserData } from 'studiocms:auth/lib/user';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -10,7 +11,13 @@ import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.as
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
-const users = await studioCMS_SDK.GET.database.users();
+
+const [currentUser, config, users] = await Promise.all([
+	getUserData(Astro),
+	studioCMS_SDK_Cache.GET.siteConfig(),
+	studioCMS_SDK.GET.database.users(),
+]);
+
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
 const lang = 'en';
@@ -38,6 +45,8 @@ const diffContentHTML = getDiffHTML(diff.diff);
   requiredPermission='editor'
   sidebar='double'
   {lang}
+  {config}
+  {currentUser}
   >
 
     <div slot="double-sidebar" class="inner-sidebar-container">
