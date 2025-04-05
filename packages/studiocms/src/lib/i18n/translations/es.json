@@ -97,8 +97,8 @@
       "api-tokens-modal-description": "Descripción",
       "api-tokens-modal-response-header": "Nuevo token",
       "api-tokens-modal-response-description": "Por favor, copia tu nuevo token. No se mostrará de nuevo.",
-      "sync-with-libravatar": "",
-      "basic-avatar-url": ""
+      "sync-with-libravatar": "Sincronizar Libravatar",
+      "basic-avatar-url": "URL del avatar"
     },
     "@studiocms/dashboard:password-reset": {
       "title": "Restablecimiento de contraseña",
@@ -126,7 +126,7 @@
       "select-page-diff-tracking": "Seguimiento de diferencias de página",
       "select-login-page-bg": "Imagen de fondo de página de inicio de sesión",
       "select-smtp-mailer": "Mensajería SMTP",
-      "select-hide-default-index": ""
+      "select-hide-default-index": "Ocultar página índice del panel"
     },
     "@studiocms/dashboard:smtp": {
       "title": "Configuración SMTP",
