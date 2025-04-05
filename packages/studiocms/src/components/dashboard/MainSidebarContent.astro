@@ -145,8 +145,6 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
 <div>
   <Dropdown 
-    transition:persist
-    transition:persist-props
     id='sidebar-user-dropdown'
     options={[
       { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
@@ -249,13 +247,12 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 <script>
   import { DropdownHelper } from "studiocms:ui/components";
   import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
-  import { navigate } from 'astro:transitions/client';
 
   function setup() {
     const userDropdown = new DropdownHelper('sidebar-user-dropdown', true);
 
     userDropdown.registerClickCallback((value) => {
-      navigate(value)
+      window.location.href = value;
     });
 
     const themeToggle = document.getElementById('studiocms-theme-toggle');
