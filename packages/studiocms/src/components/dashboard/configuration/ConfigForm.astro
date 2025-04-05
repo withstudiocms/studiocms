@@ -3,11 +3,17 @@ import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
 
-const { data } = await studioCMS_SDK_Cache.GET.siteConfig();
+interface Props {
+	config: SiteConfigCacheObject;
+}
+
+const { config } = Astro.props as Props;
+
+const { data } = config;
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
 

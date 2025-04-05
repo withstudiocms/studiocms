@@ -1,16 +1,19 @@
 ---
 import changelog from 'studiocms:changelog';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type VersionCacheObject } from 'studiocms:sdk/cache';
 import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
-// @ts-ignore
 import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
 import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone';
 import { timeAgo } from '../component-scripts/timeAgo';
 import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
 
-const latestVersion = await studioCMS_SDK_Cache.GET.latestVersion();
+interface Props {
+	latestVersion: VersionCacheObject;
+}
+
+const { latestVersion } = Astro.props as Props;
 
 const lastChecked = latestVersion.lastCacheUpdate;
 ---

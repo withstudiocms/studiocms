@@ -41,6 +41,8 @@ const {
 
 // Check if the sidebar is double and if the InnerSidebarComponent exists to determine the sidebar configuration
 const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' : 'single';
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 
@@ -49,6 +51,8 @@ const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' :
   requiredPermission={requiredPermissions}
   sidebar={sidebarConfig}
   {lang}
+  {config}
+  {currentUser}
   >
 
   { 

@@ -23,6 +23,8 @@ const pluginData = filteredPluginList.find((p) => p.identifier === plugin);
 if (!pluginData) {
 	return new Response(null, { status: 404 });
 }
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 
@@ -30,6 +32,8 @@ if (!pluginData) {
   description={t('description')}
   requiredPermission='editor'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">

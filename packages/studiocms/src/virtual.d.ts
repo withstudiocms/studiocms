@@ -748,3 +748,11 @@ declare module 'virtual:studiocms/sdk/env' {
 declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
+
+declare namespace App {
+	interface Locals {
+		latestVersion: import('./sdk/types/index').VersionCacheObject;
+		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+		userSessionData: import('./lib/auth/types').UserSessionData;
+	}
+}

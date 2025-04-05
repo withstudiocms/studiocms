@@ -97,7 +97,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		userId: string;
 		token: string;
 	}) {
-		const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/reset-password`, originalUrl);
+		const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/password-reset`, originalUrl);
 		url.searchParams.append('userid', token.userId);
 		url.searchParams.append('token', token.token);
 		url.searchParams.append('id', token.id);

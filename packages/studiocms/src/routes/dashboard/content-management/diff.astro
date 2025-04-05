@@ -10,7 +10,11 @@ import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.as
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
 const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
+
 const users = await studioCMS_SDK.GET.database.users();
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
 const lang = 'en';
@@ -38,11 +42,13 @@ const diffContentHTML = getDiffHTML(diff.diff);
   requiredPermission='editor'
   sidebar='double'
   {lang}
+  {config}
+  {currentUser}
   >
 
     <div slot="double-sidebar" class="inner-sidebar-container">
         <div class="sidebar-links-container">
-        <InnerSidebarElement {lang} />
+        <InnerSidebarElement {lang} {config} />
         </div>
     </div>
 
