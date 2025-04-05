@@ -45,7 +45,9 @@ const description = propDescription ?? config.data.description;
      ) }
      <SidebarModals {latestVersion} />
     { sidebar === 'single' && <SingleSidebar {currentUser} {latestVersion} /> }
-    { sidebar === 'double' && <DoubleSidebar {currentUser} {latestVersion} ><slot name="double-sidebar" /></DoubleSidebar> }
+    { sidebar === 'double' && <DoubleSidebar {currentUser} {latestVersion} >
+        <slot name="double-sidebar" />
+      </DoubleSidebar> }
 
     <main>
       <div class="container">

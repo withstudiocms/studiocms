@@ -2,6 +2,7 @@
 import 'studiocms:ui/global-css';
 import '@fontsource-variable/onest/index.css';
 import '../../styles/authlayout.css';
+import { getUserData } from 'studiocms:auth/lib/user';
 import { Generator } from 'studiocms:components';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Toaster } from 'studiocms:ui/components';
@@ -12,7 +13,10 @@ import FallbackCanvas from './FallbackCanvas.astro';
 import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
-const config = await studioCMS_SDK_Cache.GET.siteConfig();
+const [config, userData] = await Promise.all([
+	studioCMS_SDK_Cache.GET.siteConfig(),
+	getUserData(Astro),
+]);
 
 interface Props {
 	title: string;
@@ -70,7 +74,7 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 		</div>
 	</main>
 	{ checkLogin && (
-		<StaticAuthCheck />
+		<StaticAuthCheck {userData} />
 	)}
 	<ThreeCanvasLoader {config} />
   </body>
