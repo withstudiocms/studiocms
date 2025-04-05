@@ -1,8 +1,8 @@
-import { defineMiddleware, sequence } from 'astro:middleware';
+import { defineMiddleware } from 'astro:middleware';
 import { getUserData } from 'studiocms:auth/lib/user';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 
-const setupLocals = defineMiddleware(async (context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
 	const [latestVersion, siteConfig, userSessionData] = await Promise.all([
 		studioCMS_SDK_Cache.GET.latestVersion(),
 		studioCMS_SDK_Cache.GET.siteConfig(),
@@ -15,5 +15,3 @@ const setupLocals = defineMiddleware(async (context, next) => {
 
 	return next();
 });
-
-export const onRequest = sequence(setupLocals);
