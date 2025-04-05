@@ -21,7 +21,7 @@ const localeMap: Record<UiTranslationKey, ComponentsJSON> = {
 	fr: (await import('./translations/fr.json')).translations,
 };
 
-export const $localeSettings = persistentAtom<UiTranslationKey | undefined>(
+export const $localeSettings = persistentAtom<UiTranslationKey>(
 	'studiocms-i18n-locale',
 	defaultLang
 );

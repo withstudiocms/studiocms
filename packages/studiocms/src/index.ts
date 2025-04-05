@@ -9,6 +9,7 @@
 
 import fs from 'node:fs';
 import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
+import requestNanostores from '@inox-tools/request-nanostores';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -858,6 +859,7 @@ export const studiocms = defineIntegration({
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
 						{ integration: ui({ noInjectCSS: true }) },
+						{ integration: requestNanostores() },
 					];
 
 					integrationLogger(logInfo, 'Setting up StudioCMS plugins...');

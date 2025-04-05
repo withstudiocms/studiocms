@@ -278,7 +278,6 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
     i18nDropdown.registerClickCallback((value) => {
       const lang = value as UiTranslationKey;
-
       $localeSettings.set(lang);
     })
 
