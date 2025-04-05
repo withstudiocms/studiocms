@@ -2,7 +2,7 @@
 
 #### Description
 
-- Closes # <!-- If aplicable add an issue number to this PR so it can be closed otherwise feel free to remove this. -->
+- Closes # <!-- If applicable add an issue number to this PR so it can be closed otherwise feel free to remove this. -->
 - What does this PR change? Give us a brief description.
 
 <!--
