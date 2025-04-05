@@ -1,9 +1,16 @@
 ---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { Sidebar } from 'studiocms:ui/components';
 import MainSidebarContent from './MainSidebarContent.astro';
+
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser } = Astro.props as Props;
 ---
 <Sidebar class='sidebar'>
-  <MainSidebarContent transition:persist transition:persist-props />
+  <MainSidebarContent {currentUser} />
 </Sidebar>
 
 <script>

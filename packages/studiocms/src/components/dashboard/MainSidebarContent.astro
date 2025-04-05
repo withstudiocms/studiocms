@@ -1,5 +1,6 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -17,10 +18,18 @@ const { versionCheck } = dashboardConfig;
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
-const userData = await getUserData(Astro);
-const isEditor = await verifyUserPermissionLevel(userData, 'editor');
-const isAdmin = await verifyUserPermissionLevel(userData, 'admin');
-const isOwner = await verifyUserPermissionLevel(userData, 'owner');
+
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser: userData } = Astro.props as Props;
+
+const [isEditor, isAdmin, isOwner] = await Promise.all([
+	verifyUserPermissionLevel(userData, 'editor'),
+	verifyUserPermissionLevel(userData, 'admin'),
+	verifyUserPermissionLevel(userData, 'owner'),
+]);
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ---
@@ -146,7 +155,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     >
 
     <div class="user-dropdown-trigger-container">
-      <UserAccount />
+      <UserAccount currentUser={userData} />
     </div>
     
   </Dropdown>

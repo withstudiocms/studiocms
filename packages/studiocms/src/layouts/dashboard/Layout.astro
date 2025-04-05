@@ -42,8 +42,8 @@ const description = propDescription ?? config.data.description;
       <LoginChecker {requiredPermission} {currentUser} />
      ) }
      <SidebarModals />
-    { sidebar === 'single' && <SingleSidebar /> }
-    { sidebar === 'double' && <DoubleSidebar><slot name="double-sidebar" /></DoubleSidebar> }
+    { sidebar === 'single' && <SingleSidebar {currentUser}/> }
+    { sidebar === 'double' && <DoubleSidebar {currentUser} ><slot name="double-sidebar" /></DoubleSidebar> }
 
     <main>
       <div class="container">

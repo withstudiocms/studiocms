@@ -1,11 +1,18 @@
 ---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components';
 import MainSidebarContent from './MainSidebarContent.astro';
+
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser } = Astro.props as Props;
 ---
 
 <SuiDoubleSidebar class='sidebar'>
   <div slot="outer" class="outer-sidebar-container">
-    <MainSidebarContent transition:persist transition:persist-props />
+    <MainSidebarContent {currentUser} />
   </div>
   <div slot="inner">
     <slot />
