@@ -1,10 +1,14 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Card, Group, Icon, Input } from 'studiocms:ui/components';
 
-const data = await getUserData(Astro);
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser: data } = Astro.props as Props;
 
 const lang = 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
