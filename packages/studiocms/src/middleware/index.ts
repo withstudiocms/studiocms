@@ -5,6 +5,8 @@ import { isEmailVerificationEnabled } from 'studiocms:auth/lib/verify-email';
 import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import SCMSUiVersion from 'studiocms:ui/version';
+import SCMSVersion from 'studiocms:version';
 
 export const onRequest = defineMiddleware(async (context, next) => {
 	const userSessionData = await getUserData(context);
@@ -27,6 +29,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		studioCMS_SDK_Cache.GET.siteConfig(),
 	]);
 
+	context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
+	context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
 	context.locals.latestVersion = latestVersion;
 	context.locals.siteConfig = siteConfig;
 	context.locals.userSessionData = userSessionData;

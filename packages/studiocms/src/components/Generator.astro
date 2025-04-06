@@ -1,7 +1,5 @@
 ---
-import uiVersion from 'studiocms:ui/version';
-import version from 'studiocms:version';
 ---
 <meta name="generator" content={Astro.generator} />
-<meta name="generator" content=`StudioCMS v${version}` />
-<meta name="generator" content=`StudioCMS UI v${uiVersion}` />
+<meta name="generator" content={Astro.locals.SCMSGenerator} />
+<meta name="generator" content={Astro.locals.SCMSUiGenerator} />

@@ -759,6 +759,9 @@ declare namespace App {
 		defaultLang: import('./lib/i18n/config').UiTranslationKey;
 		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
 
+		SCMSGenerator: string;
+		SCMSUiGenerator: string;
+
 		userPermissionLevel: {
 			isVisitor: boolean;
 			isEditor: boolean;
