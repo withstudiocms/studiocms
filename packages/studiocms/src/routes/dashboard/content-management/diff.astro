@@ -1,7 +1,6 @@
 ---
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Group, Input } from 'studiocms:ui/components';
@@ -17,7 +16,7 @@ const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
 const urlParams = Astro.url.searchParams;
@@ -59,7 +58,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
               variant="outlined" 
               color="info" 
               size="sm"
-              href={`${StudioCMSRoutes.mainLinks.contentManagementEdit}?edit=${page.id}`}
+              href={`${Astro.locals.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
               ><t-content-diff key="view-page">{td('view-page')}</t-content-diff>
             </Button>
 
@@ -71,7 +70,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 size="sm" 
                 disabled={metaDataChanges.length === 0} 
                 data-id={diff.id} 
-                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
                 data-type="data"
                 ><t-content-diff key="revert-metadata">{td('revert-metadata')}</t-content-diff>
               </Button>
@@ -81,7 +80,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 color={'primary'} 
                 size="sm" 
                 data-id={diff.id} 
-                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
                 data-type="content"
                 ><t-content-diff key="revert-content">{td('revert-content')}</t-content-diff>
               </Button>
@@ -91,7 +90,7 @@ const diffContentHTML = getDiffHTML(diff.diff);
                 color={'primary'} 
                 size="sm" 
                 data-id={diff.id} 
-                data-url={StudioCMSRoutes.endpointLinks.content.diff}
+                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
                 data-type="both"
                 ><t-content-diff key="revert-all">{td('revert-all')}</t-content-diff>
               </Button>

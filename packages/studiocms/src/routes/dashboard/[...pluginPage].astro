@@ -4,7 +4,7 @@ import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 import type { FinalDashboardPage } from '../../schemas/index.js';
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 
 // Get all the pages from the plugins
 const { adminPages, userPages } = getPluginDashboardPages();

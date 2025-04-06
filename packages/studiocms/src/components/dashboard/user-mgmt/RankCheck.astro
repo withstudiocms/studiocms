@@ -1,6 +1,5 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:lib';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 
 interface Props {
 	requiredPermission?: string;
@@ -8,7 +7,7 @@ interface Props {
 
 const { requiredPermission } = Astro.props;
 
-const user = await getUserData(Astro);
+const { userSessionData: user } = Astro.locals;
 
 const isAuthorized = await verifyUserPermissionLevel(
 	user,
@@ -16,7 +15,7 @@ const isAuthorized = await verifyUserPermissionLevel(
 );
 
 if (!isAuthorized) {
-	return Astro.redirect(StudioCMSRoutes.mainLinks.userManagement);
+	return Astro.redirect(Astro.locals.routeMap.mainLinks.userManagement);
 }
 ---
 {/*

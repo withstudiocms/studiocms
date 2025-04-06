@@ -1,14 +1,12 @@
 import { getEmailVerificationRequest } from 'studiocms:auth/lib/verify-email';
-import { StudioCMSRoutes, removeLeadingTrailingSlashes } from 'studiocms:lib';
+import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 
-const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || { enableMailer: false };
-
 export const GET: APIRoute = async (ctx) => {
 	// Check if mailer is enabled
-	if (!enableMailer) {
+	if (!ctx.locals.siteConfig.data.enableMailer) {
 		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 	}
 
@@ -40,7 +38,7 @@ export const GET: APIRoute = async (ctx) => {
 
 	return ctx.redirect(
 		removeLeadingTrailingSlashes(ctx.site?.toString() as string) +
-			StudioCMSRoutes.mainLinks.dashboardIndex
+			ctx.locals.routeMap.mainLinks.dashboardIndex
 	);
 };
 

@@ -1,5 +1,4 @@
 ---
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Card, Icon } from 'studiocms:ui/components';
 import { allowedIdentifiers } from './utils.js';
@@ -16,7 +15,7 @@ const totalDraftPages = totalPages.filter((page) => page.draft === true);
 ---
 <div class="totals-grid-item-container">
     <div class="totals-grid-item">
-        <a href={StudioCMSRoutes.mainLinks.contentManagement}>
+        <a href={Astro.locals.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="document-text" height={24} width={24} />
@@ -29,7 +28,7 @@ const totalDraftPages = totalPages.filter((page) => page.draft === true);
         </a>
     </div>
     <div class="totals-grid-item">
-        <a href={StudioCMSRoutes.mainLinks.contentManagement}>
+        <a href={Astro.locals.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="document" height={24} width={24} />
@@ -42,7 +41,7 @@ const totalDraftPages = totalPages.filter((page) => page.draft === true);
         </a>
     </div>
     <div class="totals-grid-item">
-        <a href={StudioCMSRoutes.mainLinks.userManagement}>
+        <a href={Astro.locals.routeMap.mainLinks.userManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="user-group" height={24} width={24} />

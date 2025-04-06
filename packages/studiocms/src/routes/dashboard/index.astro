@@ -4,7 +4,7 @@ import DashboardGrid from '../../components/dashboard/DashboardGrid.astro';
 import DashboardPageHeader from '../../components/dashboard/DashboardPageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:index');
 
 const { siteConfig: config, userSessionData: currentUser } = Astro.locals;

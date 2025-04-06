@@ -4,7 +4,6 @@ import {
 	sessionCookieName,
 	validateSessionToken,
 } from 'studiocms:auth/lib/session';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import type { APIContext, APIRoute } from 'astro';
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
@@ -19,7 +18,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 
 	// If there is no session token, redirect to the login page
 	if (!sessionToken) {
-		return redirect(StudioCMSRoutes.authLinks.loginURL);
+		return redirect(context.locals.routeMap.authLinks.loginURL);
 	}
 
 	const { session, user } = await validateSessionToken(sessionToken);
@@ -27,12 +26,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	// If there is no session, redirect to the login page
 	if (session === null) {
 		deleteSessionTokenCookie(context);
-		return redirect(StudioCMSRoutes.authLinks.loginURL);
+		return redirect(context.locals.routeMap.authLinks.loginURL);
 	}
 
 	// If there is no user, redirect to the login page
 	if (!user || user === null) {
-		return redirect(StudioCMSRoutes.authLinks.loginURL);
+		return redirect(context.locals.routeMap.authLinks.loginURL);
 	}
 
 	// Invalidate the session and delete the session token cookie
@@ -40,7 +39,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	deleteSessionTokenCookie(context);
 
 	// Redirect to the base site URL
-	return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
+	return redirect(context.locals.routeMap.mainLinks.baseSiteURL);
 };
 
 export const OPTIONS: APIRoute = async () => {

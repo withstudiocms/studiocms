@@ -1,9 +1,4 @@
-import {
-	getUserData,
-	verifyUserPermissionLevel,
-	verifyUsernameInput,
-} from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:lib';
+import { verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendMail, verifyMailConnection } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
@@ -24,14 +19,14 @@ const noMailerError = (message: string, resetLink: URL) =>
 	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
 
 export const POST: APIRoute = async (ctx: APIContext) => {
-	const siteConfig = await studioCMS_SDK.GET.database.config();
+	const siteConfig = ctx.locals.siteConfig.data;
 
 	if (!siteConfig) {
 		return apiResponseLogger(500, 'Failed to get site config');
 	}
 
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = ctx.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -39,7 +34,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
@@ -97,7 +92,10 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		userId: string;
 		token: string;
 	}) {
-		const url = new URL(`${StudioCMSRoutes.mainLinks.dashboardIndex}/password-reset`, originalUrl);
+		const url = new URL(
+			`${ctx.locals.routeMap.mainLinks.dashboardIndex}/password-reset`,
+			originalUrl
+		);
 		url.searchParams.append('userid', token.userId);
 		url.searchParams.append('token', token.token);
 		url.searchParams.append('id', token.id);

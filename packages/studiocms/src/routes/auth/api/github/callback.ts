@@ -2,7 +2,6 @@ import { createUserSession } from 'studiocms:auth/lib/session';
 import { LinkNewOAuthCookieName, createOAuthUser, getUserData } from 'studiocms:auth/lib/user';
 import { isEmailVerified, sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
 import { config } from 'studiocms:config';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { OAuth2RequestError, type OAuth2Tokens } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
@@ -16,7 +15,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 	if (!code || !state || !storedState || state !== storedState) {
-		return redirect(StudioCMSRoutes.authLinks.loginURL);
+		return redirect(context.locals.routeMap.authLinks.loginURL);
 	}
 
 	let tokens: OAuth2Tokens;
@@ -61,7 +60,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 			await createUserSession(user.id, context);
 
-			return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+			return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
 		}
 
 		const loggedInUser = await getUserData(context);
@@ -88,7 +87,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 				await createUserSession(existingUser.id, context);
 
-				return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
 			}
 		}
 
@@ -127,7 +126,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		await createUserSession(newUser.id, context);
 
-		return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+		return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
 	} catch (e) {
 		if (e instanceof OAuth2RequestError) {
 			const code = e.code;

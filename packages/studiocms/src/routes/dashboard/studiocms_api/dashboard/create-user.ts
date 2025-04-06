@@ -1,10 +1,5 @@
 import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import {
-	createLocalUser,
-	getUserData,
-	verifyUserPermissionLevel,
-	verifyUsernameInput,
-} from 'studiocms:auth/lib/user';
+import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -21,7 +16,7 @@ type JSONData = {
 
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = ctx.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -29,7 +24,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}

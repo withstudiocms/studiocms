@@ -147,6 +147,7 @@ declare module 'studiocms:i18n' {
 	export const switchLanguage: typeof import('./lib/i18n/index.js').switchLanguage;
 	export type UiLanguageKeys = import('./lib/i18n/index.js').UiLanguageKeys;
 	export type UiTranslations = import('./lib/i18n/index.js').UiTranslations;
+	export const defaultLang: typeof import('./lib/i18n/index').defaultLang;
 }
 
 declare module 'studiocms:i18n/client' {
@@ -754,5 +755,15 @@ declare namespace App {
 		latestVersion: import('./sdk/types/index').VersionCacheObject;
 		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
 		userSessionData: import('./lib/auth/types').UserSessionData;
+		emailVerificationEnabled: boolean;
+		defaultLang: import('./lib/i18n/config').UiTranslationKey;
+		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+
+		userPermissionLevel: {
+			isVisitor: boolean;
+			isEditor: boolean;
+			isAdmin: boolean;
+			isOwner: boolean;
+		};
 	}
 }

@@ -1,6 +1,4 @@
 ---
-import { StudioCMSRoutes } from 'studiocms:lib';
-
 interface Props {
 	identifier: string;
 	name: string;
@@ -8,7 +6,7 @@ interface Props {
 
 const { name, identifier } = Astro.props;
 
-const href = StudioCMSRoutes.mainLinks.plugins + identifier;
+const href = Astro.locals.routeMap.mainLinks.plugins + identifier;
 
 const isActive = Astro.url.pathname === href && 'active';
 ---

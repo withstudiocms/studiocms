@@ -1,4 +1,3 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { tsNotificationSettingsSelect } from 'studiocms:sdk/types';
@@ -6,7 +5,7 @@ import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async (ctx) => {
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = ctx.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -14,7 +13,7 @@ export const POST: APIRoute = async (ctx) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	const isAuthorized = ctx.locals.userPermissionLevel.isOwner;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}

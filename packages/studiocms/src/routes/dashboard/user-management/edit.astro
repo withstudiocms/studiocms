@@ -1,9 +1,6 @@
 ---
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { isEmailVerificationEnabled } from 'studiocms:auth/lib/verify-email';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
@@ -17,10 +14,15 @@ import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 
-const { siteConfig: config, userSessionData: userSession } = Astro.locals;
+const {
+	siteConfig: config,
+	userSessionData: userSession,
+	emailVerificationEnabled,
+	userPermissionLevel: { isAdmin: isAdministrator, isOwner, isEditor: isAllowedAPITokens },
+} = Astro.locals;
 
 const urlParams = Astro.url.searchParams;
 const userId = urlParams.get('user') || '';
@@ -30,18 +32,11 @@ const allowedRanks = [
 	{ label: 'Visitor', value: 'visitor' },
 ];
 
-const [emailVerificationEnabled, user, diffs, pages, userTokens] = await Promise.all([
-	isEmailVerificationEnabled(),
+const [user, diffs, pages, userTokens] = await Promise.all([
 	studioCMS_SDK.GET.databaseEntry.users.byId(userId),
 	studioCMS_SDK.diffTracking.get.byUserId.latest(userId, 5),
 	studioCMS_SDK_Cache.GET.pages(),
 	studioCMS_SDK.REST_API.tokens.get(userId),
-]);
-
-const [isAllowedAPITokens, isAdministrator, isOwner] = await Promise.all([
-	verifyUserPermissionLevel(userSession, 'editor'),
-	verifyUserPermissionLevel(userSession, 'admin'),
-	verifyUserPermissionLevel(userSession, 'owner'),
 ]);
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
@@ -76,7 +71,7 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
     <PageHeader title={user?.name || t('header')}>
 
       <Group>
-        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={StudioCMSRoutes.endpointLinks.users}>
+        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={Astro.locals.routeMap.endpointLinks.users}>
           <Icon name="trash-20-solid" width={20} height={20} />
           <t-users-edit key="header-delete-button">{t('header-delete-button')}</t-users-edit>
         </Button>
@@ -161,7 +156,7 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
       </Modal>
     </div>
 
-    <form id="edit-user-form" action={StudioCMSRoutes.endpointLinks.users}>
+    <form id="edit-user-form" action={Astro.locals.routeMap.endpointLinks.users}>
 
       <div class="text-h3"><t-users-edit key="edit-role-header">{t('edit-role-header')}</t-users-edit></div>
 
@@ -246,7 +241,7 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
   
                 <div class="card-row">
                   <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
-                  <Button size='sm' as='a' href={StudioCMSRoutes.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                  <Button size='sm' as='a' href={Astro.locals.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
                     <Icon name="eye" width={24} height={24} class="card-icon" />
                   </Button>
                 </div>
@@ -264,11 +259,11 @@ if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admi
 
   </div>
 
-  <div style="display: none;" id="reset-link-selector" data-link={StudioCMSRoutes.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={StudioCMSRoutes.mainLinks.dashboardIndex} data-reseturl={StudioCMSRoutes.mainLinks.passwordReset}></div>
+  <div style="display: none;" id="reset-link-selector" data-link={Astro.locals.routeMap.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={Astro.locals.routeMap.mainLinks.dashboardIndex} data-reseturl={Astro.locals.routeMap.mainLinks.passwordReset}></div>
 
   <div 
       id="token-api-links" style="display: none;"
-      data-token_api={StudioCMSRoutes.endpointLinks.apiTokens}
+      data-token_api={Astro.locals.routeMap.endpointLinks.apiTokens}
   ></div>
 
   <script>

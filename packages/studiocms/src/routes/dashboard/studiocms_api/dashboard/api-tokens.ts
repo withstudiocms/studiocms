@@ -1,4 +1,3 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -11,7 +10,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	// Get user data
-	const userData = await getUserData(context);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -19,7 +18,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	const isAuthorized = context.locals.userPermissionLevel.isEditor;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
@@ -60,7 +59,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	}
 
 	// Get user data
-	const userData = await getUserData(context);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -68,7 +67,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
+	const isAuthorized = context.locals.userPermissionLevel.isEditor;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}

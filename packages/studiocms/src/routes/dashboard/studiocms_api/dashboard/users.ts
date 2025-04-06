@@ -1,4 +1,4 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
@@ -10,7 +10,7 @@ type RankEnum = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
 
 export const POST: APIRoute = async (ctx: APIContext) => {
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = ctx.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -18,7 +18,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
@@ -83,7 +83,7 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = ctx.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -91,7 +91,7 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}

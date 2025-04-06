@@ -1,30 +1,20 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendMail } from 'studiocms:mailer';
-import studioCMS_cache from 'studiocms:sdk/cache';
 import type { APIContext, APIRoute } from 'astro';
-
-const {
-	data: { enableMailer },
-} = await studioCMS_cache.GET.siteConfig();
 
 export const POST: APIRoute = async (context: APIContext) => {
 	// Check if mailer is enabled
-	if (!enableMailer) {
+	if (!context.locals.siteConfig.data.enableMailer) {
 		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 	}
 
-	// Get user data
-	const userData = await getUserData(context);
-
 	// Check if user is logged in
-	if (!userData.isLoggedIn) {
+	if (!context.locals.userSessionData.isLoggedIn) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
-	if (!isAuthorized) {
+	if (!context.locals.userPermissionLevel.isOwner) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
