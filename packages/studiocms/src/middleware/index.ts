@@ -6,30 +6,34 @@ import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 
-export const onRequest = defineMiddleware(async (context, next) => {
-	const { locals } = context;
+export const onRequest = defineMiddleware(async (ctx, next) => {
+	const userSessionData = await getUserData(ctx);
 
-	const [latestVersion, siteConfig, userSessionData, emailVerificationEnabled] = await Promise.all([
-		studioCMS_SDK_Cache.GET.latestVersion(),
-		studioCMS_SDK_Cache.GET.siteConfig(),
-		getUserData(context),
-		isEmailVerificationEnabled(),
-	]);
-
-	const [isVisitor, isEditor, isAdmin, isOwner] = await Promise.all([
+	const [
+		isVisitor,
+		isEditor,
+		isAdmin,
+		isOwner,
+		emailVerificationEnabled,
+		latestVersion,
+		siteConfig,
+	] = await Promise.all([
 		verifyUserPermissionLevel(userSessionData, 'visitor'),
 		verifyUserPermissionLevel(userSessionData, 'editor'),
 		verifyUserPermissionLevel(userSessionData, 'admin'),
 		verifyUserPermissionLevel(userSessionData, 'owner'),
+		isEmailVerificationEnabled(),
+		studioCMS_SDK_Cache.GET.latestVersion(),
+		studioCMS_SDK_Cache.GET.siteConfig(),
 	]);
 
-	locals.latestVersion = latestVersion;
-	locals.siteConfig = siteConfig;
-	locals.userSessionData = userSessionData;
-	locals.emailVerificationEnabled = emailVerificationEnabled;
-	locals.defaultLang = defaultLang;
-	locals.routeMap = StudioCMSRoutes;
-	locals.userPermissionLevel = {
+	ctx.locals.latestVersion = latestVersion;
+	ctx.locals.siteConfig = siteConfig;
+	ctx.locals.userSessionData = userSessionData;
+	ctx.locals.emailVerificationEnabled = emailVerificationEnabled;
+	ctx.locals.defaultLang = defaultLang;
+	ctx.locals.routeMap = StudioCMSRoutes;
+	ctx.locals.userPermissionLevel = {
 		isVisitor,
 		isEditor,
 		isAdmin,
