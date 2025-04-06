@@ -3,9 +3,9 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { tsNotificationSettingsSelect } from 'studiocms:sdk/types';
 import type { APIRoute } from 'astro';
 
-export const POST: APIRoute = async (ctx) => {
+export const POST: APIRoute = async (context) => {
 	// Get user data
-	const userData = ctx.locals.userSessionData;
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -13,12 +13,12 @@ export const POST: APIRoute = async (ctx) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = ctx.locals.userPermissionLevel.isOwner;
+	const isAuthorized = context.locals.userPermissionLevel.isOwner;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData: Omit<tsNotificationSettingsSelect, 'id'> = await ctx.request.json();
+	const jsonData: Omit<tsNotificationSettingsSelect, 'id'> = await context.request.json();
 
 	try {
 		await studioCMS_SDK.notificationSettings.site.update(jsonData);

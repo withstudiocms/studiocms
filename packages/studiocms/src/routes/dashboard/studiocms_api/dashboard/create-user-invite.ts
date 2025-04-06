@@ -18,15 +18,15 @@ type JSONData = {
 const noMailerError = (message: string, resetLink: URL) =>
 	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
 
-export const POST: APIRoute = async (ctx: APIContext) => {
-	const siteConfig = ctx.locals.siteConfig.data;
+export const POST: APIRoute = async (context: APIContext) => {
+	const siteConfig = context.locals.siteConfig.data;
 
 	if (!siteConfig) {
 		return apiResponseLogger(500, 'Failed to get site config');
 	}
 
 	// Get user data
-	const userData = ctx.locals.userSessionData;
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -34,12 +34,12 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
+	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData: JSONData = await ctx.request.json();
+	const jsonData: JSONData = await context.request.json();
 
 	const { username, email, displayname, rank, originalUrl } = jsonData;
 
@@ -93,7 +93,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		token: string;
 	}) {
 		const url = new URL(
-			`${ctx.locals.routeMap.mainLinks.dashboardIndex}/password-reset`,
+			`${context.locals.routeMap.mainLinks.dashboardIndex}/password-reset`,
 			originalUrl
 		);
 		url.searchParams.append('userid', token.userId);

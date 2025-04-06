@@ -5,13 +5,13 @@ import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier'
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 
-export const POST: APIRoute = async (ctx: APIContext) => {
+export const POST: APIRoute = async (context: APIContext) => {
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
 		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
-	const jsonData = await ctx.request.json();
+	const jsonData = await context.request.json();
 
 	const { token, id, userid, password, confirm_password } = jsonData;
 

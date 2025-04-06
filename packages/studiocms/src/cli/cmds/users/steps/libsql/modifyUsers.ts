@@ -10,19 +10,23 @@ import { hashPassword } from '../utils/password.js';
 
 dotenv.config();
 
-export async function libsqlModifyUsers(ctx: Context) {
-	ctx.debug && ctx.logger.debug('Running libsqlUsers...');
+export async function libsqlModifyUsers(context: Context) {
+	context.debug && context.logger.debug('Running libsqlUsers...');
 
-	ctx.debug && ctx.logger.debug('Checking for environment variables');
+	context.debug && context.logger.debug('Checking for environment variables');
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
 
-	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
+	checkRequiredEnvVars(context, [
+		'ASTRO_DB_REMOTE_URL',
+		'ASTRO_DB_APP_TOKEN',
+		'CMS_ENCRYPTION_KEY',
+	]);
 
 	// Environment variables are already checked by checkRequiredEnvVars
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
-	ctx.debug && ctx.logger.debug('Getting Users from DB...');
+	context.debug && context.logger.debug('Getting Users from DB...');
 
 	const allUsers: { value: string; label: string; hint?: string }[] = [];
 
@@ -32,8 +36,8 @@ export async function libsqlModifyUsers(ctx: Context) {
 	]);
 
 	if (currentUsers.length === 0) {
-		ctx.p.note('There are no users in the database.', 'No Users Available');
-		ctx.exit(0);
+		context.p.note('There are no users in the database.', 'No Users Available');
+		context.exit(0);
 	}
 
 	for (const user of currentUsers) {
@@ -44,19 +48,19 @@ export async function libsqlModifyUsers(ctx: Context) {
 		});
 	}
 
-	const userSelection = await ctx.p.select({
+	const userSelection = await context.p.select({
 		message: 'Which user would you like to update?',
 		options: allUsers,
 	});
 
 	if (typeof userSelection === 'symbol') {
-		ctx.pCancel(userSelection);
-		ctx.exit(0);
+		context.pCancel(userSelection);
+		context.exit(0);
 	}
 
-	ctx.p.note(`User ID Selected: ${userSelection}`);
+	context.p.note(`User ID Selected: ${userSelection}`);
 
-	const action = await ctx.p.select({
+	const action = await context.p.select({
 		message: 'Which user field would you like to update?',
 		options: [
 			{ value: 'password', label: 'Password' },
@@ -66,31 +70,31 @@ export async function libsqlModifyUsers(ctx: Context) {
 	});
 
 	if (typeof action === 'symbol') {
-		ctx.pCancel(action);
-		ctx.exit(0);
+		context.pCancel(action);
+		context.exit(0);
 	}
 
 	switch (action) {
 		case 'name': {
-			const newDisplayName = await ctx.p.text({
+			const newDisplayName = await context.p.text({
 				message: `Enter the user's new Display name`,
 				placeholder: 'John Doe',
 			});
 
 			if (typeof newDisplayName === 'symbol') {
-				ctx.pCancel(newDisplayName);
-				ctx.exit(0);
+				context.pCancel(newDisplayName);
+				context.exit(0);
 			}
 
-			if (ctx.dryRun) {
-				ctx.tasks.push({
+			if (context.dryRun) {
+				context.tasks.push({
 					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
-				ctx.tasks.push({
+				context.tasks.push({
 					title: color.dim('Modifying user...'),
 					task: async (message) => {
 						try {
@@ -102,11 +106,13 @@ export async function libsqlModifyUsers(ctx: Context) {
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								ctx.exit(1);
+								context.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								context.exit(1);
 							} else {
-								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								ctx.exit(1);
+								context.p.log.error(
+									StudioCMSColorwayError('Unknown Error: Unable to modify user.')
+								);
+								context.exit(1);
 							}
 						}
 					},
@@ -115,7 +121,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 			break;
 		}
 		case 'username': {
-			const newUserName = await ctx.p.text({
+			const newUserName = await context.p.text({
 				message: `Enter the user's new username`,
 				placeholder: 'johndoe',
 				validate: (user) => {
@@ -129,19 +135,19 @@ export async function libsqlModifyUsers(ctx: Context) {
 			});
 
 			if (typeof newUserName === 'symbol') {
-				ctx.pCancel(newUserName);
-				ctx.exit(0);
+				context.pCancel(newUserName);
+				context.exit(0);
 			}
 
-			if (ctx.dryRun) {
-				ctx.tasks.push({
+			if (context.dryRun) {
+				context.tasks.push({
 					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
-				ctx.tasks.push({
+				context.tasks.push({
 					title: color.dim('Modifying user...'),
 					task: async (message) => {
 						try {
@@ -153,11 +159,13 @@ export async function libsqlModifyUsers(ctx: Context) {
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								ctx.exit(1);
+								context.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								context.exit(1);
 							} else {
-								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								ctx.exit(1);
+								context.p.log.error(
+									StudioCMSColorwayError('Unknown Error: Unable to modify user.')
+								);
+								context.exit(1);
 							}
 						}
 					},
@@ -166,7 +174,7 @@ export async function libsqlModifyUsers(ctx: Context) {
 			break;
 		}
 		case 'password': {
-			const newPassword = await ctx.p.password({
+			const newPassword = await context.p.password({
 				message: `Enter the user's new password`,
 				validate: (password) => {
 					if (password.length < 6 || password.length > 255) {
@@ -193,19 +201,19 @@ export async function libsqlModifyUsers(ctx: Context) {
 			});
 
 			if (typeof newPassword === 'symbol') {
-				ctx.pCancel(newPassword);
-				ctx.exit(0);
+				context.pCancel(newPassword);
+				context.exit(0);
 			}
 
-			if (ctx.dryRun) {
-				ctx.tasks.push({
+			if (context.dryRun) {
+				context.tasks.push({
 					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
-				ctx.tasks.push({
+				context.tasks.push({
 					title: color.dim('Modifying user...'),
 					task: async (message) => {
 						try {
@@ -220,11 +228,13 @@ export async function libsqlModifyUsers(ctx: Context) {
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								ctx.exit(1);
+								context.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								context.exit(1);
 							} else {
-								ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								ctx.exit(1);
+								context.p.log.error(
+									StudioCMSColorwayError('Unknown Error: Unable to modify user.')
+								);
+								context.exit(1);
 							}
 						}
 					},

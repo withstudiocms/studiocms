@@ -4,13 +4,13 @@ import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 
-export const GET: APIRoute = async (ctx) => {
+export const GET: APIRoute = async (context) => {
 	// Check if mailer is enabled
-	if (!ctx.locals.siteConfig.data.enableMailer) {
+	if (!context.locals.siteConfig.data.enableMailer) {
 		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 	}
 
-	const params = new URLSearchParams(ctx.request.url);
+	const params = new URLSearchParams(context.request.url);
 	const token = params.get('token');
 	const userId = params.get('userId');
 
@@ -36,9 +36,9 @@ export const GET: APIRoute = async (ctx) => {
 	// Delete the verification token
 	await studioCMS_SDK.AUTH.verifyEmail.delete(userId);
 
-	return ctx.redirect(
-		removeLeadingTrailingSlashes(ctx.site?.toString() as string) +
-			ctx.locals.routeMap.mainLinks.dashboardIndex
+	return context.redirect(
+		removeLeadingTrailingSlashes(context.site?.toString() as string) +
+			context.locals.routeMap.mainLinks.dashboardIndex
 	);
 };
 

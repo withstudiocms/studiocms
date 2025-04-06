@@ -6,8 +6,8 @@ import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 
-export const onRequest = defineMiddleware(async (ctx, next) => {
-	const userSessionData = await getUserData(ctx);
+export const onRequest = defineMiddleware(async (context, next) => {
+	const userSessionData = await getUserData(context);
 
 	const [
 		isVisitor,
@@ -27,13 +27,13 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
 		studioCMS_SDK_Cache.GET.siteConfig(),
 	]);
 
-	ctx.locals.latestVersion = latestVersion;
-	ctx.locals.siteConfig = siteConfig;
-	ctx.locals.userSessionData = userSessionData;
-	ctx.locals.emailVerificationEnabled = emailVerificationEnabled;
-	ctx.locals.defaultLang = defaultLang;
-	ctx.locals.routeMap = StudioCMSRoutes;
-	ctx.locals.userPermissionLevel = {
+	context.locals.latestVersion = latestVersion;
+	context.locals.siteConfig = siteConfig;
+	context.locals.userSessionData = userSessionData;
+	context.locals.emailVerificationEnabled = emailVerificationEnabled;
+	context.locals.defaultLang = defaultLang;
+	context.locals.routeMap = StudioCMSRoutes;
+	context.locals.userPermissionLevel = {
 		isVisitor,
 		isEditor,
 		isAdmin,

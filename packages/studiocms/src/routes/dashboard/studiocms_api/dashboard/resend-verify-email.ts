@@ -3,13 +3,13 @@ import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 
-export const POST: APIRoute = async (ctx) => {
+export const POST: APIRoute = async (context) => {
 	// Check if mailer is enabled
-	if (!ctx.locals.siteConfig.data.enableMailer) {
+	if (!context.locals.siteConfig.data.enableMailer) {
 		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 	}
 
-	const jsonData = await ctx.request.json();
+	const jsonData = await context.request.json();
 	const { userId } = jsonData;
 
 	if (!userId) {

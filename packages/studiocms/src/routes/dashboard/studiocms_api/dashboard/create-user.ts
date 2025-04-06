@@ -14,9 +14,9 @@ type JSONData = {
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
 };
 
-export const POST: APIRoute = async (ctx: APIContext) => {
+export const POST: APIRoute = async (context: APIContext) => {
 	// Get user data
-	const userData = ctx.locals.userSessionData;
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -24,12 +24,12 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = ctx.locals.userPermissionLevel.isAdmin;
+	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData: JSONData = await ctx.request.json();
+	const jsonData: JSONData = await context.request.json();
 
 	let { username, password, email, displayname, rank } = jsonData;
 
