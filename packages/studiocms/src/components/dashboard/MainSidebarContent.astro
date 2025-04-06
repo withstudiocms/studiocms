@@ -1,9 +1,9 @@
 ---
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { dashboardConfig } from 'studiocms:config';
 import { languageSelectorOptions, useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
+import type { VersionCacheObject } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
 import Footer from './Footer.astro';
 import SidebarLink from './SidebarLink.astro';
@@ -14,13 +14,18 @@ import VersionCheck from './sidebar/VersionCheck.astro';
 import { getSidebarLinks } from './sidebarConfig.js';
 
 const { versionCheck } = dashboardConfig;
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
-const userData = await getUserData(Astro);
-const isEditor = await verifyUserPermissionLevel(userData, 'editor');
-const isAdmin = await verifyUserPermissionLevel(userData, 'admin');
-const isOwner = await verifyUserPermissionLevel(userData, 'owner');
+
+interface Props {
+	currentUser: UserSessionData;
+	latestVersion: VersionCacheObject;
+}
+
+const { currentUser: userData, latestVersion } = Astro.props as Props;
+
+const { isEditor, isAdmin, isOwner } = Astro.locals.userPermissionLevel;
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ---
@@ -49,7 +54,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
         </Button>
       </Dropdown>
       <Group>
-        { versionCheck && <VersionCheck /> }
+        { versionCheck && <VersionCheck {latestVersion} /> }
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
           <div id="dark-content">
             <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
@@ -151,19 +156,17 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
 <div>
   <Dropdown 
-    transition:persist
-    transition:persist-props
     id='sidebar-user-dropdown'
     options={[
-      { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
-      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: StudioCMSRoutes.mainLinks.baseSiteURL },
-      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: StudioCMSRoutes.authLinks.logoutURL },
+      { label: t("user-dropdown:settings"), icon: "user", value: Astro.locals.routeMap.mainLinks.userProfile },
+      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: Astro.locals.routeMap.mainLinks.baseSiteURL },
+      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.routeMap.authLinks.logoutURL },
     ]}
     offset={8}
     >
 
     <div class="user-dropdown-trigger-container">
-      <UserAccount />
+      <UserAccount currentUser={userData} />
     </div>
     
   </Dropdown>
@@ -172,9 +175,9 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 </div>
 
 <div style="display: none;" id="dropdown-user-options"
-  data-settings={StudioCMSRoutes.mainLinks.userProfile}
-  data-view-site={StudioCMSRoutes.mainLinks.baseSiteURL}
-  data-logout={StudioCMSRoutes.authLinks.logoutURL}
+  data-settings={Astro.locals.routeMap.mainLinks.userProfile}
+  data-view-site={Astro.locals.routeMap.mainLinks.baseSiteURL}
+  data-logout={Astro.locals.routeMap.authLinks.logoutURL}
 ></div>
 
 <script>
@@ -256,13 +259,12 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
   import { $localeSettings, type UiTranslationKey } from "studiocms:i18n/client";
   import { DropdownHelper } from "studiocms:ui/components";
   import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
-  import { navigate } from 'astro:transitions/client';
 
   function setup() {
     const userDropdown = new DropdownHelper('sidebar-user-dropdown', true);
 
     userDropdown.registerClickCallback((value) => {
-      navigate(value)
+      window.location.href = value;
     });
 
     const themeToggle = document.getElementById('studiocms-theme-toggle');

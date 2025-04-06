@@ -1,9 +1,13 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
 import { User } from 'studiocms:ui/components';
 
-const data = await getUserData(Astro);
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser } = Astro.props as Props;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
@@ -11,13 +15,13 @@ type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 type UserProps = PropsOf<typeof User>;
 
 const userProps: UserProps = {
-	name: data.user?.name || 'Visitor',
-	description: getLabelForPermissionLevel(data.permissionLevel),
+	name: currentUser.user?.name || 'Visitor',
+	description: getLabelForPermissionLevel(currentUser.permissionLevel),
 	loading: 'eager',
 };
 
-if (data.user?.avatar) {
-	userProps.avatar = data.user.avatar;
+if (currentUser.user?.avatar) {
+	userProps.avatar = currentUser.user.avatar;
 }
 ---
 <User {...userProps} />

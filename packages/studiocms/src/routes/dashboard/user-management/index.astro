@@ -4,7 +4,8 @@ import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
 ---
 <Layout 
@@ -13,6 +14,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
   requiredPermission='admin'
   sidebar='double'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="double-sidebar" class="inner-sidebar-container">

@@ -22,6 +22,8 @@ const uiTranslations = {
 
 // --- i18n Utils --- //
 
+export { defaultLang };
+
 /**
  * Represents the type of UI translations.
  * This type is derived from the structure of the `uiTranslations` object.

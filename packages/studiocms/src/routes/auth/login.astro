@@ -2,12 +2,10 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { AuthConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:login');
 
 let DemoMode: {
@@ -36,6 +34,12 @@ const {
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
 
+const { siteConfig: config } = Astro.locals;
+
+const { enableMailer } = config.data || {
+	enableMailer: false,
+};
+
 let paragraph:
 	| 'sub-header-usernamepasswordoauth'
 	| 'sub-header-usernamepassword'
@@ -51,10 +55,6 @@ if (usernameAndPassword && SHOW_OAUTH) {
 } else {
 	paragraph = 'sub-header-noprovider';
 }
-
-const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
-	enableMailer: false,
-};
 ---
 <AuthLayout 
     title={t('title')} 
@@ -68,7 +68,7 @@ const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
             <t-login key="forgot-password-title">{t('forgot-password-title')}</t-login>
         </h2>
 
-        <input type="hidden" name="action-url" value={StudioCMSRoutes.authLinks.forgotPasswordAPI} />
+        <input type="hidden" name="action-url" value={Astro.locals.routeMap.authLinks.forgotPasswordAPI} />
 
         <p>
             <t-login key="forgot-password-message">{t('forgot-password-message')}</t-login>
@@ -106,7 +106,7 @@ const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="login-form" method="post" action={StudioCMSRoutes.authLinks.loginAPI}>
+        <form class="form" id="login-form" method="post" action={Astro.locals.routeMap.authLinks.loginAPI}>
 
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('password-label')} name="password" type='password' />
@@ -130,7 +130,7 @@ const { enableMailer } = (await studioCMS_SDK.GET.database.config()) || {
             <t-login key="allow-registration-noaccount">
                 {t('allow-registration-noaccount')}
             </t-login> 
-            <a href={StudioCMSRoutes.authLinks.signupURL}>
+            <a href={Astro.locals.routeMap.authLinks.signupURL}>
                 <t-login key="allow-registration-register">
                     {t('allow-registration-register')}
                 </t-login>

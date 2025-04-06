@@ -1,17 +1,14 @@
 ---
 import '../../styles/404.css';
-import { getUserData } from 'studiocms:auth/lib/user';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
 
-const { user: userData } = await getUserData(Astro);
-
-const userId = userData?.id;
+const userId = currentUser.user?.id;
 
 if (!userId) {
 	window.location.href = '/';
@@ -22,7 +19,9 @@ if (!userId) {
   title={t('title')}
   description={t('description')}
   sidebar={false} 
-  requiredPermission="none">
+  requiredPermission="none"
+  {config}
+  {currentUser}>
   <div class="notfound-container">
     <div class="notfound">
       <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +34,7 @@ if (!userId) {
       <p><t-unverified key="sub-description">{t('sub-description')}</t-unverified></p>
 
       <Button id="resend-button" variant={'solid'} color="primary" class="resend" fullWidth>
-        <div style="display: none;" data-userid={userId} data-url={StudioCMSRoutes.endpointLinks.resendVerificationEmail}> </div>
+        <div style="display: none;" data-userid={userId} data-url={Astro.locals.routeMap.endpointLinks.resendVerificationEmail}> </div>
         <span><t-unverified key="resend-button">{t('resend-button')}</t-unverified></span>
       </Button>
 

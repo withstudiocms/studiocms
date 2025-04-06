@@ -1,13 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import StudioCMSLogoSVG from '../../components/auth/StudioCMSLogoSVG.astro';
 
+interface Props {
+	config: SiteConfigCacheObject;
+}
+
 // Get the site config
-const {
-	data: { loginPageBackground, loginPageCustomImage },
-} = await studioCMS_SDK_Cache.GET.siteConfig();
+const { config } = Astro.props as Props;
+
+const { loginPageBackground, loginPageCustomImage } = config.data;
 
 const fallbackImageSrc =
 	loginPageBackground === 'custom'

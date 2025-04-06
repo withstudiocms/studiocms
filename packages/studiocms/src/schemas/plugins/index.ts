@@ -218,7 +218,7 @@ export const StudioCMSPluginSchema = z.object({
 				 * // api/pageTypeApi.ts
 				 * import { APIRoute } from 'astro';
 				 *
-				 * export const onCreate: APIRoute = async (ctx) => {
+				 * export const onCreate: APIRoute = async (context) => {
 				 *   // Custom logic here
 				 *   return new Response();
 				 * }

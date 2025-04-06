@@ -4,15 +4,19 @@ import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:404');
+
+const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 
   title={t('title')}
   description={t('description')}
   sidebar={false} 
-  requiredPermission="none">
+  requiredPermission="none"
+  {config}
+  {currentUser}>
   <div class="notfound-container">
     <div class="notfound">
       <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">

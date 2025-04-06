@@ -2,7 +2,6 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
 
@@ -20,7 +19,7 @@ if (!user) {
 
 const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="api-tokens">
@@ -113,7 +112,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 <div 
     id="token-api-links" style="display: none;"
-    data-token_api={StudioCMSRoutes.endpointLinks.apiTokens}
+    data-token_api={Astro.locals.routeMap.endpointLinks.apiTokens}
 ></div>
 
 <script>

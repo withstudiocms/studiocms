@@ -11,6 +11,8 @@ import FallbackCanvas from './FallbackCanvas.astro';
 import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
+const { siteConfig: config, userSessionData: userData } = Astro.locals;
+
 interface Props {
 	title: string;
 	description: string;
@@ -50,7 +52,7 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 	<Toaster />
 	<main>
 		<div id="canvas-container">
-			<FallbackCanvas />
+			<FallbackCanvas {config} />
 		</div>
 		<div class="login-form-container">
 
@@ -67,8 +69,8 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 		</div>
 	</main>
 	{ checkLogin && (
-		<StaticAuthCheck />
+		<StaticAuthCheck {userData} />
 	)}
-	<ThreeCanvasLoader />
+	<ThreeCanvasLoader {config} />
   </body>
 </html>

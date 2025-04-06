@@ -4,7 +4,6 @@ import {
 	validateSessionToken,
 } from 'studiocms:auth/lib/session';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
@@ -67,10 +66,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 			},
 			permissionLevel,
 			routes: {
-				logout: StudioCMSRoutes.authLinks.logoutURL,
-				userProfile: StudioCMSRoutes.mainLinks.userProfile,
-				contentManagement: StudioCMSRoutes.mainLinks.contentManagement,
-				dashboardIndex: StudioCMSRoutes.mainLinks.dashboardIndex,
+				logout: context.locals.routeMap.authLinks.logoutURL,
+				userProfile: context.locals.routeMap.mainLinks.userProfile,
+				contentManagement: context.locals.routeMap.mainLinks.contentManagement,
+				dashboardIndex: context.locals.routeMap.mainLinks.dashboardIndex,
 			},
 		}),
 		{

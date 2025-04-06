@@ -261,6 +261,7 @@ export const studiocms = defineIntegration({
 						injectScript,
 						createCodegenDir,
 						command,
+						addMiddleware,
 					} = params;
 
 					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
@@ -1204,6 +1205,8 @@ export const studiocms = defineIntegration({
 					});
 
 					if (!dbStartPage) {
+						addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
+
 						const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
 						const editorKeys = allPageTypes.map(({ identifier }) =>

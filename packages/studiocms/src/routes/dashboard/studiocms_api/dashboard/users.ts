@@ -1,4 +1,4 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
@@ -8,9 +8,9 @@ import type { APIContext, APIRoute } from 'astro';
 
 type RankEnum = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
 
-export const POST: APIRoute = async (ctx: APIContext) => {
+export const POST: APIRoute = async (context: APIContext) => {
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -18,7 +18,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
@@ -27,7 +27,7 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 		id: string;
 		rank: string;
 		emailVerified: boolean;
-	} = await ctx.request.json();
+	} = await context.request.json();
 
 	const { id, rank, emailVerified } = jsonData;
 
@@ -76,14 +76,14 @@ export const POST: APIRoute = async (ctx: APIContext) => {
 	return apiResponseLogger(200, 'User rank updated successfully');
 };
 
-export const DELETE: APIRoute = async (ctx: APIContext) => {
+export const DELETE: APIRoute = async (context: APIContext) => {
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
 		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -91,12 +91,12 @@ export const DELETE: APIRoute = async (ctx: APIContext) => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData = await ctx.request.json();
+	const jsonData = await context.request.json();
 
 	const { userId, username, usernameConfirm } = jsonData;
 

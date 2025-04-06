@@ -1,16 +1,17 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import PageList from './PageList.astro';
 
 interface Props {
+	config: SiteConfigCacheObject;
 	lang: UiLanguageKeys;
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
 }
 
-const { isNewFolder, isNewPage, lang } = Astro.props;
+const { isNewFolder, isNewPage, lang, config } = Astro.props;
 const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 ---
 
@@ -22,19 +23,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
   </form>
   <Dropdown
-    transition:persist
-    transition:persist-props
     id='create-new-dropdown'
     options={[
       { 
         label: t('dropdown-create-page'), 
         icon: 'document', 
-        value: StudioCMSRoutes.mainLinks.contentManagementCreate 
+        value: Astro.locals.routeMap.mainLinks.contentManagementCreate 
       },
       { 
         label: t('dropdown-create-folder'), 
         icon: 'folder', 
-        value: StudioCMSRoutes.mainLinks.contentManagementFolderCreate 
+        value: Astro.locals.routeMap.mainLinks.contentManagementFolderCreate 
       },
     ]}
     align={'end'}
@@ -55,22 +54,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   class="inner-sidebar-items scrollbar" 
   id="inner-sidebar-items" 
   >
-  <PageList {isNewFolder} {isNewPage} />
+  <PageList {isNewFolder} {isNewPage} {config} />
 </div>
 
 <div
   class="inner-sidebar-items scrollbar"
   id="inner-sidebar-items-search"
   style="display: none;"
-  data-searchlist={StudioCMSRoutes.endpointLinks.searchList}
-  data-editpage={StudioCMSRoutes.mainLinks.contentManagementEdit}
-  data-editfolder={StudioCMSRoutes.mainLinks.contentManagementFolderEdit}
+  data-searchlist={Astro.locals.routeMap.endpointLinks.searchList}
+  data-editpage={Astro.locals.routeMap.mainLinks.contentManagementEdit}
+  data-editfolder={Astro.locals.routeMap.mainLinks.contentManagementFolderEdit}
   ></div>
 
 
 <div id="i-dropdown-options"
-  data-createpage={StudioCMSRoutes.mainLinks.contentManagementCreate}
-  data-createfolder={StudioCMSRoutes.mainLinks.contentManagementFolderCreate}
+  data-createpage={Astro.locals.routeMap.mainLinks.contentManagementCreate}
+  data-createfolder={Astro.locals.routeMap.mainLinks.contentManagementFolderCreate}
   ></div>
 
   <script>

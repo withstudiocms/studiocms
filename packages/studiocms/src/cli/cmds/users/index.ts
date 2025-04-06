@@ -10,44 +10,44 @@ import { next } from './steps/nextSteps.js';
 export { getContext };
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function exitIfEmpty(ctx: Context, items: any[], itemType: string) {
+function exitIfEmpty(context: Context, items: any[], itemType: string) {
 	if (items.length === 0) {
-		ctx.p.log.error(`No ${itemType} selected, exiting...`);
-		ctx.exit(0);
+		context.p.log.error(`No ${itemType} selected, exiting...`);
+		context.exit(0);
 	}
 }
 
-type ContextStep = (ctx: Context) => Promise<void>;
+type ContextStep = (context: Context) => Promise<void>;
 
 export async function initCMD(this: instanceCommand) {
 	// Parse options
 	const opts = this.opts();
 
 	// Get context
-	const ctx = await getContext(opts);
+	const context = await getContext(opts);
 
-	ctx.logger.log('Starting interactive CLI...');
+	context.logger.log('Starting interactive CLI...');
 
-	ctx.debug && ctx.logger.debug(`Options: ${JSON.stringify(opts, null, 2)}`);
+	context.debug && context.logger.debug(`Options: ${JSON.stringify(opts, null, 2)}`);
 
-	ctx.debug && ctx.logger.debug(`Context: ${JSON.stringify(ctx, null, 2)}`);
+	context.debug && context.logger.debug(`Context: ${JSON.stringify(context, null, 2)}`);
 
 	console.log(''); // Add a line break
 
-	ctx.debug && ctx.logger.debug('Running interactive CLI Steps...');
+	context.debug && context.logger.debug('Running interactive CLI Steps...');
 
-	ctx.p.intro(
+	context.p.intro(
 		`${label('StudioCMS', StudioCMSColorwayBg, color.black)} Interactive CLI - initializing...`
 	);
 
 	// Run intro
-	await intro(ctx);
+	await intro(context);
 
 	// Steps
 	const steps: ContextStep[] = [];
 
 	// Get options for steps
-	const options = await ctx.p.select({
+	const options = await context.p.select({
 		message: 'What kind of Database are you using?',
 		options: [
 			{ value: 'libsql', label: 'libSQL Remote' },
@@ -57,7 +57,7 @@ export async function initCMD(this: instanceCommand) {
 
 	switch (options) {
 		case 'libsql': {
-			const libsqlAction = await ctx.p.select({
+			const libsqlAction = await context.p.select({
 				message: 'What would you like to do?',
 				options: [
 					{ value: 'modify', label: 'Modify an existing user' },
@@ -66,8 +66,8 @@ export async function initCMD(this: instanceCommand) {
 			});
 
 			if (typeof libsqlAction === 'symbol') {
-				ctx.pCancel(libsqlAction);
-				ctx.exit(0);
+				context.pCancel(libsqlAction);
+				context.exit(0);
 			}
 
 			switch (libsqlAction) {
@@ -83,34 +83,34 @@ export async function initCMD(this: instanceCommand) {
 			break;
 		}
 		default:
-			ctx.pCancel(options);
+			context.pCancel(options);
 	}
 
-	ctx.debug && ctx.logger.debug('Running steps...');
+	context.debug && context.logger.debug('Running steps...');
 
 	// No steps? Exit
-	exitIfEmpty(ctx, steps, 'steps');
+	exitIfEmpty(context, steps, 'steps');
 
 	// Run steps
 	for (const step of steps) {
-		await step(ctx);
+		await step(context);
 	}
 
-	ctx.debug && ctx.logger.debug('Running tasks...');
+	context.debug && context.logger.debug('Running tasks...');
 
 	// No tasks? Exit
-	exitIfEmpty(ctx, ctx.tasks, 'tasks');
+	exitIfEmpty(context, context.tasks, 'tasks');
 
 	// Run tasks
-	await ctx.p.tasks(ctx.tasks);
+	await context.p.tasks(context.tasks);
 
-	ctx.debug && ctx.logger.debug('Running next steps...');
+	context.debug && context.logger.debug('Running next steps...');
 
 	// Run next steps
-	await next(ctx);
+	await next(context);
 
-	ctx.debug && ctx.logger.debug('Interactive CLI completed, exiting...');
+	context.debug && context.logger.debug('Interactive CLI completed, exiting...');
 
 	// All done, exit
-	ctx.exit(0);
+	context.exit(0);
 }

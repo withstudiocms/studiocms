@@ -1,8 +1,13 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
-const { isLoggedIn } = await getUserData(Astro);
+interface Props {
+	userData: UserSessionData;
+}
+const { userData } = Astro.props as Props;
+
+const isLoggedIn = userData.isLoggedIn;
 ---
 <div 
   id="login-check" 

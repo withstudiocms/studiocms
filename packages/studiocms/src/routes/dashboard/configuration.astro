@@ -5,7 +5,8 @@ import PageHeader from '../../components/dashboard/PageHeader.astro';
 import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
@@ -14,6 +15,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
   description={t('description')}
   requiredPermission='owner'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">
@@ -25,7 +28,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
     </PageHeader>
   </div>
   
-  <ConfigForm />
+  <ConfigForm {config} />
 
 </Layout>
 

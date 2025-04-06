@@ -1,6 +1,5 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import UserListItem from './UserListItem.astro';
@@ -39,8 +38,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
   </form>
   <Dropdown
-    transition:persist
-    transition:persist-props
     id='create-user-dropdown'
     options={[
       { label: t('dropdown-create-user'), icon: 'user-plus', value: 'new-user' },
@@ -62,7 +59,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 
 <div id="user-list"
     class="inner-sidebar-users scrollbar" 
-    data-userpartial={StudioCMSRoutes.endpointLinks.partials.userListItems}
+    data-userpartial={Astro.locals.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
     { Users.map((user) => <UserListItem user={user} />) }
@@ -71,15 +68,15 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 <div id="search-list"
     class="inner-sidebar-users scrollbar" 
     style="display: none;"
-    data-userpartial={StudioCMSRoutes.endpointLinks.partials.userListItems}
+    data-userpartial={Astro.locals.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
 </div>
 
 <div id="new-users-links"
   style="display: none;"
-  data-create_user={StudioCMSRoutes.endpointLinks.newUsers.create}
-  data-create_invite={StudioCMSRoutes.endpointLinks.newUsers.invite}
+  data-create_user={Astro.locals.routeMap.endpointLinks.newUsers.create}
+  data-create_invite={Astro.locals.routeMap.endpointLinks.newUsers.invite}
   ></div>
 
 <script>

@@ -9,7 +9,7 @@ import {
 } from '../../../lib/utils.js';
 
 export async function next(
-	ctx: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'p'>
+	context: Pick<Context, 'cwd' | 'packageManager' | 'skipBanners' | 'debug' | 'logger' | 'p'>
 ) {
 	const commandMap: { [key: string]: string } = {
 		npm: 'npm run dev',
@@ -18,13 +18,13 @@ export async function next(
 		pnpm: 'pnpm dev',
 	};
 
-	const devCmd = commandMap[ctx.packageManager as keyof typeof commandMap] || 'npm run dev';
+	const devCmd = commandMap[context.packageManager as keyof typeof commandMap] || 'npm run dev';
 
-	ctx.debug && ctx.logger.debug(`Dev command: ${devCmd}`);
+	context.debug && context.logger.debug(`Dev command: ${devCmd}`);
 
-	ctx.debug && ctx.logger.debug('Running next steps fn...');
+	context.debug && context.logger.debug('Running next steps fn...');
 
-	ctx.p.log.success(
+	context.p.log.success(
 		boxen(
 			chalk.bold(
 				`${label('Init Complete!', StudioCMSColorwayInfoBg, chalk.bold)} Get started with StudioCMS:`
@@ -37,9 +37,9 @@ export async function next(
 		)
 	);
 
-	ctx.p.outro(
+	context.p.outro(
 		`${label('Enjoy your new CMS!', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 	);
 
-	ctx.debug && ctx.logger.debug('Next steps complete');
+	context.debug && context.logger.debug('Next steps complete');
 }

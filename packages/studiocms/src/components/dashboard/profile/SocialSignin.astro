@@ -1,12 +1,18 @@
 ---
-import { getUserData } from 'studiocms:auth/lib/user';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon } from 'studiocms:ui/components';
 import { providerData } from './oAuthButtonProviders.js';
 
-const { user } = await getUserData(Astro);
+interface Props {
+	currentUser: UserSessionData;
+}
+
+const { currentUser: data } = Astro.props as Props;
+
+const { user } = data;
 
 let userOAuthData: CombinedUserData['oAuthData'] | undefined;
 
@@ -38,7 +44,7 @@ const socialProviders = providerData.map((providerData) => ({
 const connectedProviders = socialProviders.filter(({ connected }) => connected);
 const unconnectedProviders = socialProviders.filter(({ connected }) => !connected);
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="social-signin-options">

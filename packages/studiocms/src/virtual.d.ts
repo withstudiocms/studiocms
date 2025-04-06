@@ -147,6 +147,7 @@ declare module 'studiocms:i18n' {
 	export const switchLanguage: typeof import('./lib/i18n/index.js').switchLanguage;
 	export type UiLanguageKeys = import('./lib/i18n/index.js').UiLanguageKeys;
 	export type UiTranslations = import('./lib/i18n/index.js').UiTranslations;
+	export const defaultLang: typeof import('./lib/i18n/index').defaultLang;
 }
 
 declare module 'studiocms:i18n/client' {
@@ -747,4 +748,25 @@ declare module 'virtual:studiocms/sdk/env' {
 
 declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
+}
+
+declare namespace App {
+	interface Locals {
+		latestVersion: import('./sdk/types/index').VersionCacheObject;
+		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+		userSessionData: import('./lib/auth/types').UserSessionData;
+		emailVerificationEnabled: boolean;
+		defaultLang: import('./lib/i18n/config').UiTranslationKey;
+		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+
+		SCMSGenerator: string;
+		SCMSUiGenerator: string;
+
+		userPermissionLevel: {
+			isVisitor: boolean;
+			isEditor: boolean;
+			isAdmin: boolean;
+			isOwner: boolean;
+		};
+	}
 }

@@ -1,13 +1,13 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
 import { Button, Icon } from 'studiocms:ui/components';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:plugin-settings');
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
@@ -30,6 +30,8 @@ if (!pluginData) {
   description={t('description')}
   requiredPermission='editor'
   {lang}
+  {config}
+  {currentUser}
   >
 
   <div slot="header">
@@ -41,7 +43,7 @@ if (!pluginData) {
     </PageHeader>
   </div>
 
-  <form id="plugin-settings-form" action={StudioCMSRoutes.endpointLinks.plugins + pluginData.identifier} method="POST"> 
+  <form id="plugin-settings-form" action={Astro.locals.routeMap.endpointLinks.plugins + pluginData.identifier} method="POST"> 
     <div class="form-settings">
       
     {
