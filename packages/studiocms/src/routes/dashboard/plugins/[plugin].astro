@@ -6,7 +6,8 @@ import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = Astro.locals.defaultLang;
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:plugin-settings');
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
@@ -22,8 +23,6 @@ const pluginData = filteredPluginList.find((p) => p.identifier === plugin);
 if (!pluginData) {
 	return new Response(null, { status: 404 });
 }
-
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 

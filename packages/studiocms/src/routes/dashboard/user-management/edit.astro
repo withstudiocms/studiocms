@@ -14,15 +14,15 @@ import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = Astro.locals.defaultLang;
-const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
-
 const {
 	siteConfig: config,
 	userSessionData: userSession,
+	defaultLang: lang,
 	emailVerificationEnabled,
 	userPermissionLevel: { isAdmin: isAdministrator, isOwner, isEditor: isAllowedAPITokens },
 } = Astro.locals;
+
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 
 const urlParams = Astro.url.searchParams;
 const userId = urlParams.get('user') || '';

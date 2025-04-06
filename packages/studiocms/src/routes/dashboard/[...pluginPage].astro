@@ -4,7 +4,7 @@ import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 import type { FinalDashboardPage } from '../../schemas/index.js';
 
-const lang = Astro.locals.defaultLang;
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
 // Get all the pages from the plugins
 const { adminPages, userPages } = getPluginDashboardPages();
@@ -41,8 +41,6 @@ const {
 
 // Check if the sidebar is double and if the InnerSidebarComponent exists to determine the sidebar configuration
 const sidebarConfig = sidebar === 'double' && InnerSidebarComponent ? 'double' : 'single';
-
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 ---
 
 <Layout 

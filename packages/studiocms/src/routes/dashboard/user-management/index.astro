@@ -4,10 +4,9 @@ import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = Astro.locals.defaultLang;
-const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
 ---
 <Layout 
   title={t('title')}
