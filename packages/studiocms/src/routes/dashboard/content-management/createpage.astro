@@ -5,10 +5,9 @@ import InnerSidebarElement from '../../../components/dashboard/content-mgmt/Inne
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
-const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 ---
 
 <Layout 

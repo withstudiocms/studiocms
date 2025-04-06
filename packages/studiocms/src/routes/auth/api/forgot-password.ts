@@ -1,6 +1,5 @@
 import { site } from 'astro:config/server';
 import { developerConfig } from 'studiocms:config';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendMail } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
@@ -9,12 +8,15 @@ import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 
-function generateResetLink(token: {
-	id: string;
-	userId: string;
-	token: string;
-}) {
-	const url = new URL(StudioCMSRoutes.mainLinks.passwordReset, site);
+function generateResetLink(
+	token: {
+		id: string;
+		userId: string;
+		token: string;
+	},
+	context: APIContext
+) {
+	const url = new URL(context.locals.routeMap.mainLinks.passwordReset, site);
 	url.searchParams.append('userid', token.userId);
 	url.searchParams.append('token', token.token);
 	url.searchParams.append('id', token.id);
@@ -28,9 +30,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
-	const config = (await studioCMS_SDK.GET.database.config()) || {
-		enableMailer: false,
-	};
+	const config = context.locals.siteConfig.data;
 
 	if (!config.enableMailer) {
 		return apiResponseLogger(500, 'Mailer is not enabled');
@@ -73,7 +73,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	await sendAdminNotification('user_updated', user.username);
 
-	const resetLink = generateResetLink(token);
+	const resetLink = generateResetLink(token, context);
 
 	if (!user.email) {
 		return apiResponseLogger(500, 'Failed to send email to user, no email address found');

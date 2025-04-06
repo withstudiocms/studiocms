@@ -1,10 +1,5 @@
 import { hashPassword, verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import {
-	createUserAvatar,
-	getUserData,
-	verifyUserPermissionLevel,
-	verifyUsernameInput,
-} from 'studiocms:auth/lib/user';
+import { createUserAvatar, verifyUsernameInput } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
@@ -20,7 +15,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	}
 
 	// Get user data
-	const userData = await getUserData(context);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -28,8 +23,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'visitor');
-	if (!isAuthorized) {
+	if (!context.locals.userPermissionLevel.isVisitor) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 

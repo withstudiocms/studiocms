@@ -44,7 +44,7 @@ const socialProviders = providerData.map((providerData) => ({
 const connectedProviders = socialProviders.filter(({ connected }) => connected);
 const unconnectedProviders = socialProviders.filter(({ connected }) => !connected);
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="social-signin-options">

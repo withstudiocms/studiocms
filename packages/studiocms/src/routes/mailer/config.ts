@@ -1,20 +1,15 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import { createMailerConfigTable, updateMailerConfigTable } from 'studiocms:mailer';
 import type { APIContext, APIRoute } from 'astro';
 
 export const POST: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = await getUserData(context);
-
 	// Check if user is logged in
-	if (!userData.isLoggedIn) {
+	if (!context.locals.userSessionData.isLoggedIn) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
-	if (!isAuthorized) {
+	if (!context.locals.userPermissionLevel.isOwner) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
@@ -60,17 +55,13 @@ export const POST: APIRoute = async (context: APIContext) => {
 };
 
 export const UPDATE: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = await getUserData(context);
-
 	// Check if user is logged in
-	if (!userData.isLoggedIn) {
+	if (!context.locals.userSessionData.isLoggedIn) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'owner');
-	if (!isAuthorized) {
+	if (!context.locals.userPermissionLevel.isOwner) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 

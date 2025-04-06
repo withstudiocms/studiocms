@@ -1,18 +1,17 @@
-import { getUserData, verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 
-export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
+export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
 		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
 	}
 
 	// Get user data
-	const userData = await getUserData(ctx);
+	const userData = context.locals.userSessionData;
 
 	// Check if user is logged in
 	if (!userData.isLoggedIn) {
@@ -20,12 +19,12 @@ export const POST: APIRoute = async (ctx: APIContext): Promise<Response> => {
 	}
 
 	// Check if user has permission
-	const isAuthorized = await verifyUserPermissionLevel(userData, 'admin');
+	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
 	if (!isAuthorized) {
 		return apiResponseLogger(403, 'Unauthorized');
 	}
 
-	const jsonData = await ctx.request.json();
+	const jsonData = await context.request.json();
 
 	const { userId } = jsonData;
 

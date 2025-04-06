@@ -1,6 +1,5 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Input, Select } from 'studiocms:ui/components';
 import { parentFolderOptions } from './shared.js';
 
@@ -12,9 +11,9 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 ---
-<div id="create-folder-container" data-content-management-url={StudioCMSRoutes.mainLinks.contentManagement}>
+<div id="create-folder-container" data-content-management-url={Astro.locals.routeMap.mainLinks.contentManagement}>
 
-    <form id="create-folder-form" action={StudioCMSRoutes.endpointLinks.content.folder}>
+    <form id="create-folder-form" action={Astro.locals.routeMap.endpointLinks.content.folder}>
     
         <Input label={t('input-folder-name')} name="folder-name" isRequired />
         

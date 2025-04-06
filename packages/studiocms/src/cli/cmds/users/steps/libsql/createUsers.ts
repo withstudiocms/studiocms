@@ -11,24 +11,28 @@ import { hashPassword } from '../utils/password.js';
 
 dotenv.config();
 
-export async function libsqlCreateUsers(ctx: Context) {
-	ctx.debug && ctx.logger.debug('Running libsqlUsers...');
+export async function libsqlCreateUsers(context: Context) {
+	context.debug && context.logger.debug('Running libsqlUsers...');
 
-	ctx.debug && ctx.logger.debug('Checking for environment variables');
+	context.debug && context.logger.debug('Checking for environment variables');
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
 
-	checkRequiredEnvVars(ctx, ['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
+	checkRequiredEnvVars(context, [
+		'ASTRO_DB_REMOTE_URL',
+		'ASTRO_DB_APP_TOKEN',
+		'CMS_ENCRYPTION_KEY',
+	]);
 
 	// Environment variables are already checked by checkRequiredEnvVars
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
 	const currentUsers = await db.select().from(tsUsers);
 
-	const inputData = await ctx.p.group(
+	const inputData = await context.p.group(
 		{
 			username: () =>
-				ctx.p.text({
+				context.p.text({
 					message: 'Username',
 					placeholder: 'johndoe',
 					validate: (user) => {
@@ -41,12 +45,12 @@ export async function libsqlCreateUsers(ctx: Context) {
 					},
 				}),
 			name: () =>
-				ctx.p.text({
+				context.p.text({
 					message: 'Display Name',
 					placeholder: 'John Doe',
 				}),
 			email: () =>
-				ctx.p.text({
+				context.p.text({
 					message: 'E-Mail Address',
 					placeholder: 'john@doe.tld',
 					validate: (email) => {
@@ -60,7 +64,7 @@ export async function libsqlCreateUsers(ctx: Context) {
 					},
 				}),
 			newPassword: () =>
-				ctx.p.password({
+				context.p.password({
 					message: 'Password',
 					validate: (password) => {
 						if (password.length < 6 || password.length > 255) {
@@ -84,11 +88,11 @@ export async function libsqlCreateUsers(ctx: Context) {
 					},
 				}),
 			confirmPassword: () =>
-				ctx.p.password({
+				context.p.password({
 					message: 'Confirm Password',
 				}),
 			rank: () =>
-				ctx.p.select({
+				context.p.select({
 					message: 'What Role should this user have?',
 					options: [
 						{ value: 'visitor', label: 'Visitor' },
@@ -99,15 +103,15 @@ export async function libsqlCreateUsers(ctx: Context) {
 				}),
 		},
 		{
-			onCancel: () => ctx.pOnCancel(),
+			onCancel: () => context.pOnCancel(),
 		}
 	);
 
 	const { confirmPassword, email, name, newPassword, rank, username } = inputData;
 
 	if (newPassword !== confirmPassword) {
-		ctx.p.log.error('Passwords do not match!');
-		ctx.exit(1);
+		context.p.log.error('Passwords do not match!');
+		context.exit(1);
 	}
 
 	// Environment variables are already checked by checkRequiredEnvVars
@@ -131,15 +135,15 @@ export async function libsqlCreateUsers(ctx: Context) {
 		rank,
 	};
 
-	if (ctx.dryRun) {
-		ctx.tasks.push({
+	if (context.dryRun) {
+		context.tasks.push({
 			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user creation')}`,
 			task: async (message) => {
 				message('Creating user... (skipped)');
 			},
 		});
 	} else {
-		ctx.tasks.push({
+		context.tasks.push({
 			title: color.dim('Creating user...'),
 			task: async (message) => {
 				try {
@@ -150,23 +154,23 @@ export async function libsqlCreateUsers(ctx: Context) {
 
 					if (insertedUser.length === 0 || insertedRank.length === 0) {
 						message('Failed to create user or assign permissions');
-						ctx.logger.debug(
+						context.logger.debug(
 							`User insertion results: ${JSON.stringify({
 								userInserted: insertedUser.length > 0,
 								permissionsInserted: insertedRank.length > 0,
 							})}`
 						);
-						ctx.exit(1);
+						context.exit(1);
 					}
 
 					message('User created Successfully');
 				} catch (e) {
 					if (e instanceof Error) {
-						ctx.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-						ctx.exit(1);
+						context.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+						context.exit(1);
 					} else {
-						ctx.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
-						ctx.exit(1);
+						context.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
+						context.exit(1);
 					}
 				}
 			},

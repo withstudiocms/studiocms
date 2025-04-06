@@ -1,6 +1,5 @@
 ---
 import changelog from 'studiocms:changelog';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { type VersionCacheObject } from 'studiocms:sdk/cache';
 import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
@@ -22,7 +21,7 @@ const lastChecked = latestVersion.lastCacheUpdate;
 
     <h2 slot="header" class="inline-title">
         <span>Version Information</span>
-        <button data-link={StudioCMSRoutes.sdk.updateLatestVersionCache} 
+        <button data-link={Astro.locals.routeMap.sdk.updateLatestVersionCache} 
             id="version-modal-reload"
             class="reload-button" 
             title="Check for updates" 

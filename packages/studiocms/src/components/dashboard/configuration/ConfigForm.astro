@@ -2,7 +2,6 @@
 import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
 import LightVsDark from './LightVsDark.astro';
@@ -57,11 +56,11 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
 	};
 });
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
-<form id="site-config-form" action={StudioCMSRoutes.endpointLinks.config}>
+<form id="site-config-form" action={Astro.locals.routeMap.endpointLinks.config}>
     <div class="form-content">
 
         <div class="form-row">

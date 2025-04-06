@@ -1,14 +1,12 @@
 ---
 import '../../styles/404.css';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
-const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+const t = useTranslations(lang, '@studiocms/dashboard:unverifiedEmail');
 
 const userId = currentUser.user?.id;
 
@@ -36,7 +34,7 @@ if (!userId) {
       <p><t-unverified key="sub-description">{t('sub-description')}</t-unverified></p>
 
       <Button id="resend-button" variant={'solid'} color="primary" class="resend" fullWidth>
-        <div style="display: none;" data-userid={userId} data-url={StudioCMSRoutes.endpointLinks.resendVerificationEmail}> </div>
+        <div style="display: none;" data-userid={userId} data-url={Astro.locals.routeMap.endpointLinks.resendVerificationEmail}> </div>
         <span><t-unverified key="resend-button">{t('resend-button')}</t-unverified></span>
       </Button>
 

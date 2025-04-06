@@ -1,7 +1,5 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { verifyMailConnection } from 'studiocms:mailer';
 import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
@@ -22,11 +20,7 @@ const NotificationOptions = notificationTypes;
 
 const userNotifications = data.user.notifications?.split(',') || [];
 
-const [isUser, isEditor, isAdmin] = await Promise.all([
-	verifyUserPermissionLevel(data, 'visitor'),
-	verifyUserPermissionLevel(data, 'editor'),
-	verifyUserPermissionLevel(data, 'admin'),
-]);
+const { isEditor, isAdmin, isVisitor: isUser } = Astro.locals.userPermissionLevel;
 
 let isNotificationsEnabled = false;
 
@@ -40,7 +34,7 @@ if (enableMailer) {
 	}
 }
 ---
-<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={StudioCMSRoutes.endpointLinks.updateUserNotifications}>
+<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={Astro.locals.routeMap.endpointLinks.updateUserNotifications}>
 
     <div slot="header">
         <h2>Notifications Events</h2>

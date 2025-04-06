@@ -1,6 +1,5 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import type { SettingsField } from 'studiocms:plugin-helpers';
 import pluginList from 'studiocms:plugins';
 import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
@@ -46,8 +45,8 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
-<div id="create-page-container" data-content-management-url={StudioCMSRoutes.mainLinks.contentManagement}>
-    <form id="page-create-form" action={StudioCMSRoutes.endpointLinks.content.page}>
+<div id="create-page-container" data-content-management-url={Astro.locals.routeMap.mainLinks.contentManagement}>
+    <form id="page-create-form" action={Astro.locals.routeMap.endpointLinks.content.page}>
 
       <Tabs variant={'starlight'}>
         <TabItem label={t('tab-label-basic-info')} icon={'information-circle-20-solid'} color={'primary'}>

@@ -1,6 +1,5 @@
 ---
 import { FormattedDate } from 'studiocms:components';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Badge, Card, Center } from 'studiocms:ui/components';
 import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
@@ -20,7 +19,7 @@ const recentlyUpdatedPages = totalPages
   {
     recentlyUpdatedPages.length > 0 ? (
       recentlyUpdatedPages.map(page => (
-        <Card fullWidth class={'recently-created-page-card'} as='a' href={StudioCMSRoutes.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
+        <Card fullWidth class={'recently-created-page-card'} as='a' href={Astro.locals.routeMap.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
             <div class="card-row">
               <span class="card-title">{page.title} {page.draft && <Badge label="Draft" size="sm" variant="flat" rounding="semi" />}</span>
               <span class="card-date">Created: <FormattedDate date={page.publishedAt} /></span>

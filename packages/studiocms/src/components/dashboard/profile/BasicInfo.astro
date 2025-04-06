@@ -1,7 +1,6 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Card, Group, Icon, Input } from 'studiocms:ui/components';
 
 interface Props {
@@ -10,11 +9,11 @@ interface Props {
 
 const { currentUser: data } = Astro.props as Props;
 
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 
-<Card fullWidth as="form" id="basic-info-form" class="basic-info-form" action={StudioCMSRoutes.endpointLinks.profile}>
+<Card fullWidth as="form" id="basic-info-form" class="basic-info-form" action={Astro.locals.routeMap.endpointLinks.profile}>
 
     <div slot="header">
         <h2>
@@ -23,7 +22,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
     
         <div class="form-header">
             <Group>
-                <Button id="refresh-avatar" size='sm' variant={'outlined'} color={'info'} data-url={StudioCMSRoutes.endpointLinks.profile}>
+                <Button id="refresh-avatar" size='sm' variant={'outlined'} color={'info'} data-url={Astro.locals.routeMap.endpointLinks.profile}>
                     <Icon slot="start-content" name="user-circle" width={24} height={24} />
                     <t-profile-basic key="sync-with-libravatar">
                         {t('sync-with-libravatar')}

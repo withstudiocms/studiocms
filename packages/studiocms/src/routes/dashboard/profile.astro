@@ -1,5 +1,4 @@
 ---
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { AuthConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
@@ -11,10 +10,9 @@ import UpdatePassword from '../../components/dashboard/profile/UpdatePassword.as
 import { providerData, showOAuth } from '../../components/dashboard/profile/oAuthButtonProviders';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
-const t = useTranslations(lang, '@studiocms/dashboard:profile');
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 const {
 	providers: { usernameAndPassword },
@@ -22,7 +20,7 @@ const {
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
-const isAllowedAPITokens = await verifyUserPermissionLevel(currentUser, 'editor');
+const isAllowedAPITokens = Astro.locals.userPermissionLevel.isEditor;
 ---
 
 <Layout 

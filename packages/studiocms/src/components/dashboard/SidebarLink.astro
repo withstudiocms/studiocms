@@ -1,5 +1,4 @@
 ---
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Icon } from 'studiocms:ui/components';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { HTMLAttributes } from 'astro/types';
@@ -26,7 +25,7 @@ const compId = crypto.randomUUID();
   </span>
 </a>
 
-<script is:inline data-astro-rerun define:vars={{ compId, dashboardIndex: StudioCMSRoutes.mainLinks.dashboardIndex }}>
+<script is:inline data-astro-rerun define:vars={{ compId, dashboardIndex: Astro.locals.routeMap.mainLinks.dashboardIndex }}>
   function setSidebarLinks() {
     const link = document.getElementById(compId)
 

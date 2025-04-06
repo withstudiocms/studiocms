@@ -1,9 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import pluginList from 'studiocms:plugins';
 import type { VersionCacheObject } from 'studiocms:sdk/cache';
 import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
@@ -16,7 +14,7 @@ import VersionCheck from './sidebar/VersionCheck.astro';
 import { getSidebarLinks } from './sidebarConfig.js';
 
 const { versionCheck } = dashboardConfig;
-const lang = 'en';
+const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
 
@@ -27,11 +25,7 @@ interface Props {
 
 const { currentUser: userData, latestVersion } = Astro.props as Props;
 
-const [isEditor, isAdmin, isOwner] = await Promise.all([
-	verifyUserPermissionLevel(userData, 'editor'),
-	verifyUserPermissionLevel(userData, 'admin'),
-	verifyUserPermissionLevel(userData, 'owner'),
-]);
+const { isEditor, isAdmin, isOwner } = Astro.locals.userPermissionLevel;
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ---
@@ -147,9 +141,9 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
   <Dropdown 
     id='sidebar-user-dropdown'
     options={[
-      { label: t("user-dropdown:settings"), icon: "user", value: StudioCMSRoutes.mainLinks.userProfile },
-      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: StudioCMSRoutes.mainLinks.baseSiteURL },
-      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: StudioCMSRoutes.authLinks.logoutURL },
+      { label: t("user-dropdown:settings"), icon: "user", value: Astro.locals.routeMap.mainLinks.userProfile },
+      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: Astro.locals.routeMap.mainLinks.baseSiteURL },
+      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.routeMap.authLinks.logoutURL },
     ]}
     offset={8}
     >
@@ -164,9 +158,9 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 </div>
 
 <div style="display: none;" id="dropdown-user-options"
-  data-settings={StudioCMSRoutes.mainLinks.userProfile}
-  data-view-site={StudioCMSRoutes.mainLinks.baseSiteURL}
-  data-logout={StudioCMSRoutes.authLinks.logoutURL}
+  data-settings={Astro.locals.routeMap.mainLinks.userProfile}
+  data-view-site={Astro.locals.routeMap.mainLinks.baseSiteURL}
+  data-logout={Astro.locals.routeMap.authLinks.logoutURL}
 ></div>
 
 <script>

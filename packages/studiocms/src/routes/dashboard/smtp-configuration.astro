@@ -1,21 +1,19 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { getMailerConfigTable } from 'studiocms:mailer';
 import studioCMS_SDK from 'studiocms:sdk';
 import { Button, Card, Icon, Input, Select, Toggle } from 'studiocms:ui/components';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = 'en';
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+
 const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
 const [mailerConfig, notificationSettings] = await Promise.all([
 	getMailerConfigTable(),
 	studioCMS_SDK.notificationSettings.site.get(),
 ]);
-
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
 
 const {
 	data: { enableMailer },
@@ -56,7 +54,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
         <h2><t-smtp key="smtp-settings">{t('smtp-settings')}</t-smtp></h2>
       </div>
   
-      <form id="smtp-config-form" action={StudioCMSRoutes.endpointLinks.mailer.config}>
+      <form id="smtp-config-form" action={Astro.locals.routeMap.endpointLinks.mailer.config}>
         <div class="form-content">
   
           { createConfig && <input type="hidden" name="create-new-config" value="true" /> }
@@ -159,7 +157,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
         <h2><t-smtp key="test-smtp">{t('test-smtp')}</t-smtp></h2>
       </div>
   
-      <form id="test-smtp-form" action={StudioCMSRoutes.endpointLinks.mailer.testEmail}>
+      <form id="test-smtp-form" action={Astro.locals.routeMap.endpointLinks.mailer.testEmail}>
         <div class="form-content">
           <Input
             type="text"
@@ -187,7 +185,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
         <h2><t-smtp key="site-email-settings">{t('site-email-settings')}</t-smtp></h2>
       </div>
 
-      <form id="notification-settings-form" action={StudioCMSRoutes.endpointLinks.emailNotificationSettingsSite}>
+      <form id="notification-settings-form" action={Astro.locals.routeMap.endpointLinks.emailNotificationSettingsSite}>
         <div class="form-content">
           {notificationSettingKeys.map((key) => ( 
             <Toggle 
