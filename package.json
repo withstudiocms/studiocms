@@ -29,7 +29,7 @@
     "ci:translations:changeset": "tsm --require=./scripts/filter-warnings.cjs ./scripts/translation-changeset.ts",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "knip": "knip",
-
+    "ci:vitest": "pnpm --filter @withstudiocms/* test",
     "ci:crowdin:bot": "tsm --require=./scripts/filter-warnings.cjs ./scripts/crowdin-report-bot.ts"
   },
   "devDependencies": {
