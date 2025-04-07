@@ -138,7 +138,7 @@
     "@iconify-json/simple-icons": "^1.2.23",
     "@inox-tools/inline-mod": "^2.0.3",
     "@inox-tools/runtime-logger": "0.4.2",
-    "@libsql/client": "^0.14.0",
+    "@libsql/client": "^0.15.2",
     "@nanostores/i18n": "^0.12.2",
     "@nanostores/persistent": "^0.10.2",
     "@oslojs/binary": "^1.0.0",
