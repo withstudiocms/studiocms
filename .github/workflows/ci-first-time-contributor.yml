@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: First Interaction Check
-        uses: zephyrproject-rtos/action-first-interaction@7e6446f8439d8b4399169880c36a3a12b5747699
+        uses: zephyrproject-rtos/action-first-interaction@58853996b1ac504b8e0f6964301f369d2bb22e5c
         with:
           repo-token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           issue-message: >
