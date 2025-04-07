@@ -26,7 +26,7 @@ jobs:
         uses: withstudiocms/automations/.github/actions/install@main
 
       - name: Build package
-        run: pnpm build
+        run: pnpm build:studiocms
 
       - name: Run Vitest Tests
         run: pnpm ci:vitest
