@@ -17,6 +17,7 @@ To see how to get started, check out the [StudioCMS Docs](./packages/studiocms/R
 ## Sponsor
 
 <a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
+<a href="https://www.skip2.net/?utm_source=studiocms" rel="sponsored" target="_blank"><img src="./assets/skip2-wordmark-red.svg" width="400px" /></a>
 
 ## Contributing
 
