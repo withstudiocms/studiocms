@@ -14,9 +14,10 @@ To see how to get started, check out the [StudioCMS Docs](./packages/studiocms/R
 > [!IMPORTANT]
 > This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
 
-## Sponsor
+## Sponsors
 
 <a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
+<a href="https://www.skip2.net/?utm_source=studiocms" rel="sponsored" target="_blank"><img src="./assets/skip2-wordmark-red.svg" width="400px" /></a>
 
 ## Contributing
 

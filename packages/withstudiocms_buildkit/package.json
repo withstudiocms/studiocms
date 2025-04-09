@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/buildkit",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "description": "Build kit based on esbuild for the withstudiocms github org",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
@@ -35,7 +35,7 @@
     "kleur": "^4.1.5"
   },
   "devDependencies": {
-    "vitest": "^1.4.0",
+    "vitest": "^3.1.1",
     "strip-ansi": "^7.1.0"
   }
 }
