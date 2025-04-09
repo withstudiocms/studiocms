@@ -246,9 +246,6 @@ import { toast } from "studiocms:ui/components";
       const response = await fetch(form.action, {
           method: 'POST',
           body: formData,
-          headers: {
-              'Content-Type': 'application/json',
-          },
       });
 
       const res = await response.json();
