@@ -1,5 +1,14 @@
 # @studiocms/mdx
 
+## 0.1.0-beta.15
+
+### Patch Changes
+
+- [#512](https://github.com/withstudiocms/studiocms/pull/512) [`cd10407`](https://github.com/withstudiocms/studiocms/commit/cd1040779926a55db63ceb6ac1b9ddacb23330a8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to utilize new `@withstudiocms/buildkit` for build and dev
+
+- Updated dependencies [[`ae8cdfc`](https://github.com/withstudiocms/studiocms/commit/ae8cdfcb7f02e4f0d520fd91d0a295a22f05f421), [`83a05db`](https://github.com/withstudiocms/studiocms/commit/83a05db9d05cd88e2a49bc31f5bee20de8a39cd8), [`6944793`](https://github.com/withstudiocms/studiocms/commit/69447937e7379242749a321d71ddd924302560dc), [`ec4530b`](https://github.com/withstudiocms/studiocms/commit/ec4530bac62e192a4abc34826c2a67c57290de2e), [`de1dbec`](https://github.com/withstudiocms/studiocms/commit/de1dbec5590518753aa3fee6db6e6cd060327fa2), [`cd10407`](https://github.com/withstudiocms/studiocms/commit/cd1040779926a55db63ceb6ac1b9ddacb23330a8), [`1ee31e6`](https://github.com/withstudiocms/studiocms/commit/1ee31e6840b05a1619b2959572d484cff8f0116d), [`13f2d99`](https://github.com/withstudiocms/studiocms/commit/13f2d994956488daa7fe5bc9e1597b82cdb165c7), [`d3674d6`](https://github.com/withstudiocms/studiocms/commit/d3674d618141924e88568bb7540debd97f3eaa77), [`c3d0b1e`](https://github.com/withstudiocms/studiocms/commit/c3d0b1e2d083057fc9ec2775dabd029b9dfd7e72), [`9199097`](https://github.com/withstudiocms/studiocms/commit/9199097fc20ca40b4716e57230fdc585af542167), [`a4ab614`](https://github.com/withstudiocms/studiocms/commit/a4ab614954e05d541a8e09178370669a8e501212), [`301ab9f`](https://github.com/withstudiocms/studiocms/commit/301ab9f1ef8da10001536de1634d330400a4fea3), [`a7dc2ad`](https://github.com/withstudiocms/studiocms/commit/a7dc2ad764fb73432c7a6c00986d7f353a871f4b), [`0d0fbd6`](https://github.com/withstudiocms/studiocms/commit/0d0fbd6c13fc3e836bee7724d95ef3a63ce3f714), [`c900ab8`](https://github.com/withstudiocms/studiocms/commit/c900ab85a5c74e52865e7086a5e851d7f1836e4c), [`089dcc3`](https://github.com/withstudiocms/studiocms/commit/089dcc30df37ccecb5903ebeedf81844b34be8f7), [`97bbfc8`](https://github.com/withstudiocms/studiocms/commit/97bbfc8263152c774d7bce20005070273789ca3c), [`7ed3f39`](https://github.com/withstudiocms/studiocms/commit/7ed3f391bc6a67a6891f7a4cf7c3e1ecf171aff6), [`b710b58`](https://github.com/withstudiocms/studiocms/commit/b710b5859625597b14c30fd4c386fcc3d88dae71), [`6b83369`](https://github.com/withstudiocms/studiocms/commit/6b8336988c00c8cfe4254c0e454d6ddbc9a145c1), [`ea82076`](https://github.com/withstudiocms/studiocms/commit/ea82076651a09cdebb13082c627074909b919f44), [`e2aa9d3`](https://github.com/withstudiocms/studiocms/commit/e2aa9d3a56985403cd4810e47ce823def2ad86eb), [`10d64cf`](https://github.com/withstudiocms/studiocms/commit/10d64cfa7fdd6f85fd6af099081675acdea58a92)]:
+  - studiocms@0.1.0-beta.15
+
 ## 0.1.0-beta.14
 
 ### Patch Changes
