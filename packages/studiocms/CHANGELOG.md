@@ -1,5 +1,57 @@
 # studiocms
 
+## 0.1.0-beta.15
+
+### Patch Changes
+
+- [#553](https://github.com/withstudiocms/studiocms/pull/553) [`ae8cdfc`](https://github.com/withstudiocms/studiocms/commit/ae8cdfcb7f02e4f0d520fd91d0a295a22f05f421) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #553)
+
+- [#544](https://github.com/withstudiocms/studiocms/pull/544) [`83a05db`](https://github.com/withstudiocms/studiocms/commit/83a05db9d05cd88e2a49bc31f5bee20de8a39cd8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimized data processing with concurrent operations, resulting in faster content rendering and improved responsiveness.
+
+- [#510](https://github.com/withstudiocms/studiocms/pull/510) [`6944793`](https://github.com/withstudiocms/studiocms/commit/69447937e7379242749a321d71ddd924302560dc) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #510)
+
+- [#531](https://github.com/withstudiocms/studiocms/pull/531) [`ec4530b`](https://github.com/withstudiocms/studiocms/commit/ec4530bac62e192a4abc34826c2a67c57290de2e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix bug with page creation and cache
+
+- [#522](https://github.com/withstudiocms/studiocms/pull/522) [`de1dbec`](https://github.com/withstudiocms/studiocms/commit/de1dbec5590518753aa3fee6db6e6cd060327fa2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix SDK JWT generation and verification
+
+- [#512](https://github.com/withstudiocms/studiocms/pull/512) [`cd10407`](https://github.com/withstudiocms/studiocms/commit/cd1040779926a55db63ceb6ac1b9ddacb23330a8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to utilize new `@withstudiocms/buildkit` for build and dev
+
+- [#552](https://github.com/withstudiocms/studiocms/pull/552) [`1ee31e6`](https://github.com/withstudiocms/studiocms/commit/1ee31e6840b05a1619b2959572d484cff8f0116d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - tweak sidebar css
+
+- [#556](https://github.com/withstudiocms/studiocms/pull/556) [`13f2d99`](https://github.com/withstudiocms/studiocms/commit/13f2d994956488daa7fe5bc9e1597b82cdb165c7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - update script to send proper response
+
+- [#528](https://github.com/withstudiocms/studiocms/pull/528) [`d3674d6`](https://github.com/withstudiocms/studiocms/commit/d3674d618141924e88568bb7540debd97f3eaa77) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #528)
+
+- [#511](https://github.com/withstudiocms/studiocms/pull/511) [`c3d0b1e`](https://github.com/withstudiocms/studiocms/commit/c3d0b1e2d083057fc9ec2775dabd029b9dfd7e72) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update default `en-us` language code to `en`
+
+- [#549](https://github.com/withstudiocms/studiocms/pull/549) [`9199097`](https://github.com/withstudiocms/studiocms/commit/9199097fc20ca40b4716e57230fdc585af542167) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update dependencies (Support Astro v5.6)
+
+- [#539](https://github.com/withstudiocms/studiocms/pull/539) [`a4ab614`](https://github.com/withstudiocms/studiocms/commit/a4ab614954e05d541a8e09178370669a8e501212) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - feat(sdk): add pagination support to folderPages and getAllPages functions
+
+- [#536](https://github.com/withstudiocms/studiocms/pull/536) [`301ab9f`](https://github.com/withstudiocms/studiocms/commit/301ab9f1ef8da10001536de1634d330400a4fea3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - bugfix: Verify user has the correct permissions before allowing user modification.
+
+- [#543](https://github.com/withstudiocms/studiocms/pull/543) [`a7dc2ad`](https://github.com/withstudiocms/studiocms/commit/a7dc2ad764fb73432c7a6c00986d7f353a871f4b) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #543)
+
+- [#514](https://github.com/withstudiocms/studiocms/pull/514) [`0d0fbd6`](https://github.com/withstudiocms/studiocms/commit/0d0fbd6c13fc3e836bee7724d95ef3a63ce3f714) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix webvitals plugin translations for dashboard page
+
+- [#527](https://github.com/withstudiocms/studiocms/pull/527) [`c900ab8`](https://github.com/withstudiocms/studiocms/commit/c900ab85a5c74e52865e7086a5e851d7f1836e4c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix(dashboard): fix css for two dashboard grid components that in some browsers would show the wrong color
+
+- [#529](https://github.com/withstudiocms/studiocms/pull/529) [`089dcc3`](https://github.com/withstudiocms/studiocms/commit/089dcc30df37ccecb5903ebeedf81844b34be8f7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add the ability to both update the Avatar URL, and sync with Libravatar Avatar service.
+
+- [#537](https://github.com/withstudiocms/studiocms/pull/537) [`97bbfc8`](https://github.com/withstudiocms/studiocms/commit/97bbfc8263152c774d7bce20005070273789ca3c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix: components in componentRegistry can now have names such as `test-comp`
+
+- [#530](https://github.com/withstudiocms/studiocms/pull/530) [`7ed3f39`](https://github.com/withstudiocms/studiocms/commit/7ed3f391bc6a67a6891f7a4cf7c3e1ecf171aff6) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #530)
+
+- [#517](https://github.com/withstudiocms/studiocms/pull/517) [`b710b58`](https://github.com/withstudiocms/studiocms/commit/b710b5859625597b14c30fd4c386fcc3d88dae71) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement CLI utils for user management
+
+- [#538](https://github.com/withstudiocms/studiocms/pull/538) [`6b83369`](https://github.com/withstudiocms/studiocms/commit/6b8336988c00c8cfe4254c0e454d6ddbc9a145c1) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - refactor createPage logic to allow for draft pages and published pages correctly
+
+- [#525](https://github.com/withstudiocms/studiocms/pull/525) [`ea82076`](https://github.com/withstudiocms/studiocms/commit/ea82076651a09cdebb13082c627074909b919f44) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update SDK to allow getting pages by folder, add support to only return the page metadata, and add author and contributor data to page metadata.
+
+- [#524](https://github.com/withstudiocms/studiocms/pull/524) [`e2aa9d3`](https://github.com/withstudiocms/studiocms/commit/e2aa9d3a56985403cd4810e47ce823def2ad86eb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix version cache generation
+
+- [#545](https://github.com/withstudiocms/studiocms/pull/545) [`10d64cf`](https://github.com/withstudiocms/studiocms/commit/10d64cfa7fdd6f85fd6af099081675acdea58a92) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - More route optimizations, moving variables that are called on multiple pages/endpoints to middleware
+
 ## 0.1.0-beta.14
 
 ### Patch Changes
