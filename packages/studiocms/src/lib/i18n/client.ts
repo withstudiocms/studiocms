@@ -21,7 +21,7 @@ const localeMap: Record<UiTranslationKey, ComponentsJSON> = {
 	fr: (await import('./translations/fr.json')).translations,
 };
 
-export const $localeSettings = persistentAtom<UiTranslationKey>(
+export const $localeSettings = persistentAtom<UiTranslationKey | undefined>(
 	'studiocms-i18n-locale',
 	defaultLang
 );
@@ -38,10 +38,14 @@ export const format = formatter($locale);
 
 export const $i18n = createI18n($locale, {
 	baseLocale: defaultLang,
-	get: async (code: UiTranslationKey) => {
-		return localeMap[code] as ComponentsJSON;
-	},
+	get: async (code: UiTranslationKey) => localeMap[code] as ComponentsJSON,
 });
+
+export const createPluginI18n = (translations: Record<UiTranslationKey, ComponentsJSON>) =>
+	createI18n($locale, {
+		baseLocale: defaultLang,
+		get: async (code: UiTranslationKey) => translations[code],
+	});
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const documentUpdater = (comp: any, lang: string) => {

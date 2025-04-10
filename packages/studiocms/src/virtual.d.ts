@@ -148,6 +148,7 @@ declare module 'studiocms:i18n' {
 	export type UiLanguageKeys = import('./lib/i18n/index.js').UiLanguageKeys;
 	export type UiTranslations = import('./lib/i18n/index.js').UiTranslations;
 	export const defaultLang: typeof import('./lib/i18n/index').defaultLang;
+	export const pluginUseTranslations: typeof import('./lib/i18n/index').pluginUseTranslations;
 }
 
 declare module 'studiocms:i18n/client' {
@@ -166,6 +167,7 @@ declare module 'studiocms:i18n/client' {
 	export const updateSelectElmLabel: typeof import('./lib/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./lib/i18n/client').updateElmPlaceholder;
 	export const updateToggleElmLabel: typeof import('./lib/i18n/client').updateToggleElmLabel;
+	export const createPluginI18n: typeof import('./lib/i18n/client').createPluginI18n;
 }
 
 declare module 'studiocms:imageHandler/components' {

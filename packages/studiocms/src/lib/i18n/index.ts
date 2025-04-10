@@ -1,3 +1,4 @@
+import type { ComponentsJSON, TranslationsJSON } from '@nanostores/i18n';
 import type { AstroGlobal } from 'astro';
 import { defaultLang, showDefaultLang } from './config.js';
 
@@ -76,6 +77,42 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 		}
 
 		return translation;
+	};
+}
+
+/**
+ * Helper function for Plugins to build server i18n.
+ *
+ * @param translations - object of json files
+ * @example
+ * ```ts
+ * const translations = {
+ *   en: await import('./en.json');
+ *   // ... rest
+ * }
+ *
+ * const useTranslations = pluginUseTranslations(translations);
+ *
+ * const t = useTranslations('en', 'your-component-name');
+ *
+ * const title = t('title');
+ */
+export function pluginUseTranslations(translations: Record<UiLanguageKeys, ComponentsJSON>) {
+	/**
+	 * Retrieves a translation function for a given language and component.
+	 *
+	 * @param lang - The language key to use for translations.
+	 * @param component - The component key to use for translations.
+	 * @returns A function that takes a translation key and returns the corresponding translated string.
+	 */
+	return function useTranslations(lang: UiLanguageKeys, component: string) {
+		return function t(key: string) {
+			const translation = translations[lang][component][key];
+			if (!translation || translation === undefined || translation === '') {
+				return translations[defaultLang as UiLanguageKeys][component][key];
+			}
+			return translation;
+		};
 	};
 }
 
