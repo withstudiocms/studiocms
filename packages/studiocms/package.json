@@ -177,7 +177,6 @@
 		"ultrahtml": "^1.5.3",
 		"unist-util-visit": "^5.0.0",
 		"wrap-ansi": "^9.0.0",
-		"yargs-parser": "^21.1.1",
 		"yocto-spinner": "^0.2.1"
 	},
 	"devDependencies": {
@@ -190,7 +189,6 @@
 		"@types/nodemailer": "^6.4.17",
 		"@types/semver": "^7.5.8",
 		"@types/three": "0.169.0",
-		"@types/yargs-parser": "^21.0.3",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {

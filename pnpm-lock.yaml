@@ -285,9 +285,6 @@ importers:
       wrap-ansi:
         specifier: ^9.0.0
         version: 9.0.0
-      yargs-parser:
-        specifier: ^21.1.1
-        version: 21.1.1
       yocto-spinner:
         specifier: ^0.2.1
         version: 0.2.1
@@ -319,9 +316,6 @@ importers:
       '@types/three':
         specifier: 0.169.0
         version: 0.169.0
-      '@types/yargs-parser':
-        specifier: ^21.0.3
-        version: 21.0.3
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
@@ -2032,9 +2026,6 @@ packages:
 
   '@types/ws@8.5.13':
     resolution: {integrity: sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==}
-
-  '@types/yargs-parser@21.0.3':
-    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
   '@ungap/structured-clone@1.2.1':
     resolution: {integrity: sha512-fEzPV3hSkSMltkw152tJKNARhOupqbH96MZWyRjNaYZOMIzbrTeQDG+MTc6Mr2pgzFQzFxAfmhGDNP5QK++2ZA==}
@@ -6482,8 +6473,6 @@ snapshots:
   '@types/ws@8.5.13':
     dependencies:
       '@types/node': 22.10.2
-
-  '@types/yargs-parser@21.0.3': {}
 
   '@ungap/structured-clone@1.2.1': {}
 
