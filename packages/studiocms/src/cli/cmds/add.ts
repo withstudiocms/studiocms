@@ -22,6 +22,8 @@ const ALIASES = new Map([
 	['markdoc', '@studiocms/markdoc'],
 ]);
 
+const StudioCMSScopes = ['@studiocms', '@withstudiocms'];
+
 interface PluginInfo {
 	id: string;
 	packageName: string;
@@ -440,10 +442,10 @@ async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
 				let pkgJson: any = {};
 				let pkgType: 'first-party' | 'third-party';
 
-				if (scope && scope !== '@studiocms') {
+				if (scope && !StudioCMSScopes.includes(scope)) {
 					pkgType = 'third-party';
 				} else {
-					const firstPartyPkgCheck = await fetchPackageJson('@studiocms', name, tag);
+					const firstPartyPkgCheck = await fetchPackageJson(scope, name, tag);
 					if (firstPartyPkgCheck instanceof Error) {
 						if (firstPartyPkgCheck.message) {
 							spinner.warning(color.yellow(firstPartyPkgCheck.message));
