@@ -19,7 +19,7 @@ await new Command('studiocms')
 	.addOption(new Option('--no-color', 'Disable color output')) // implemented by chalk
 
 	// Commands
-	.command('add <plugins...>', 'Add a StudioCMS Plugin to your project', {
+	.command('add <plugins...>', 'Add StudioCMS plugin(s) to your project', {
 		executableFile: 'add.js',
 	})
 	.command('get-turso', 'Turso CLI Utilities', { executableFile: 'get-turso.js' })

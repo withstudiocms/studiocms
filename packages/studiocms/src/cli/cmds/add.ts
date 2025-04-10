@@ -26,10 +26,9 @@ import {
 import { validatePlugins } from './add/validatePlugins.js';
 
 await new Command('add')
-	.description('Add a StudioCMS Plugin to your project')
-	.summary('Add a StudioCMS Plugin to your project')
-	.argument('<plugins...>', 'Plugin to install')
-	.option('-d, --dry-run', 'Dry run mode.')
+	.description('Add StudioCMS plugin(s) to your project')
+	.summary('Add StudioCMS plugin(s) to your project')
+	.argument('<plugins...>', 'Plugin(s) to install')
 	.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 	.action(async (plugins, opts) => {
 		applyPolyfill();
