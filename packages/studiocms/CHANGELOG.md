@@ -1,5 +1,13 @@
 # studiocms
 
+## 0.1.0-beta.16
+
+### Patch Changes
+
+- [#557](https://github.com/withstudiocms/studiocms/pull/557) [`0536040`](https://github.com/withstudiocms/studiocms/commit/05360407c40674fd6045468a322f066a7284c6c9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new CLI command for StudioCMS
+
+  There is now a `studiocms add <plugin...>` command that allows you to add plugins to studiocms easily!
+
 ## 0.1.0-beta.15
 
 ### Patch Changes

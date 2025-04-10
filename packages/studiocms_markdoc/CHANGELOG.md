@@ -1,5 +1,12 @@
 # @studiocms/markdoc
 
+## 0.1.0-beta.16
+
+### Patch Changes
+
+- Updated dependencies [[`0536040`](https://github.com/withstudiocms/studiocms/commit/05360407c40674fd6045468a322f066a7284c6c9)]:
+  - studiocms@0.1.0-beta.16
+
 ## 0.1.0-beta.15
 
 ### Patch Changes
