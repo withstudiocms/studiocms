@@ -73,14 +73,9 @@ export async function tryToInstallPlugins({
 			spinner.stop('Error installing dependencies');
 			logger.debug(`[add]: Error installing dependencies ${err}`);
 			// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
-			console.error('\n', err.stdout || err.message, '\n');
-			console.error(
-				'\n',
-				color.yellow('You may want to try:'),
-				'\n',
-				'- Checking your network connection\n',
-				'- Running the package manager command manually\n',
-				'- Ensuring you have permissions to install packages\n'
+			logger.error(`\n${err.stdout || err.message}\n`);
+			logger.error(
+				`\n${color.yellow('You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`
 			);
 			return UpdateResult.failure;
 		}
