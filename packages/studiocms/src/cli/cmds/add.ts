@@ -63,7 +63,13 @@ await new Command('add')
 		const context = await getContext(opts);
 
 		const cwd = context.cwd;
-		const logger = context.logger;
+		const isDebugMode = context.debug || false;
+		const logger: Logger = {
+			...context.logger,
+			debug: (message: string) => {
+				if (isDebugMode) context.logger.debug(message);
+			},
+		};
 
 		const pluginNames = plugins.map((name) =>
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
