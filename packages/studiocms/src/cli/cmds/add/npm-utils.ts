@@ -6,7 +6,7 @@ import type { PluginInfo } from './utils.js';
 // Users might lack access to the global npm registry, this function
 // checks the user's project type and will return the proper npm registry
 //
-// A copy of this function also exists in the create-astro package
+// This function is adapted from similar utilities in other projects
 let _registry: string;
 export async function getRegistry(): Promise<string> {
 	if (_registry) return _registry;
@@ -16,7 +16,12 @@ export async function getRegistry(): Promise<string> {
 		const { stdout } = await exec(packageManager, ['config', 'get', 'registry']);
 		_registry = stdout.trim()?.replace(/\/$/, '') || fallback;
 		// Detect cases where the shell command returned a non-URL (e.g. a warning)
-		if (!new URL(_registry).host) _registry = fallback;
+		try {
+			const url = new URL(_registry);
+			if (!url.host || !['http:', 'https:'].includes(url.protocol)) _registry = fallback;
+		} catch {
+			_registry = fallback;
+		}
 	} catch {
 		_registry = fallback;
 	}
@@ -47,7 +52,7 @@ export async function fetchPackageVersions(packageName: string): Promise<string[
 /**
  * Resolves package with a given range to a STABLE version
  * peerDependencies might specify a compatible prerelease,
- * but `astro add` should only ever install stable releases
+ * but `studiocms add` should only ever install stable releases
  */
 export async function resolveRangeToInstallSpecifier(name: string, range: string): Promise<string> {
 	const versions = await fetchPackageVersions(name);
@@ -63,7 +68,7 @@ export async function fetchPackageJson(
 	scope: string | undefined,
 	name: string,
 	tag: string
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: npm package.json structure varies and we only need specific fields
 ): Promise<Record<string, any> | Error> {
 	const packageName = `${scope ? `${scope}/` : ''}${name}`;
 	const registry = await getRegistry();
@@ -84,9 +89,7 @@ export async function fetchPackageJson(
 	}
 }
 
-export async function convertIntegrationsToInstallSpecifiers(
-	plugins: PluginInfo[]
-): Promise<string[]> {
+export async function convertPluginsToInstallSpecifiers(plugins: PluginInfo[]): Promise<string[]> {
 	const ranges: Record<string, string> = {};
 	for (const { dependencies } of plugins) {
 		for (const [name, range] of dependencies) {
@@ -110,9 +113,9 @@ export function parseNpmName(
 	const parts = spec.split('/');
 	if (parts[0][0] === '@') {
 		scope = parts[0];
-		name = `${parts.shift()}/`;
+		parts.shift(); // Remove scope from parts
 	}
-	name += parts.shift();
+	name = parts.shift() || '';
 
 	const subpath = parts.length ? `./${parts.join('/')}` : undefined;
 

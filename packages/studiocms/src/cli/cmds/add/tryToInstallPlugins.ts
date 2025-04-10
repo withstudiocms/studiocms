@@ -3,7 +3,7 @@ import color from 'chalk';
 import { detect, resolveCommand } from 'package-manager-detector';
 import { exec } from '../../lib/exec.js';
 import { askToContinue } from './askToContinue.js';
-import { convertIntegrationsToInstallSpecifiers } from './npm-utils.js';
+import { convertPluginsToInstallSpecifiers } from './npm-utils.js';
 import { type ClackPrompts, type Logger, type PluginInfo, UpdateResult } from './utils.js';
 
 export async function tryToInstallPlugins({
@@ -38,11 +38,10 @@ export async function tryToInstallPlugins({
 	const installCommand = resolveCommand(agent, 'add', []);
 	if (!installCommand) return UpdateResult.none;
 
-	const installSpecifiers = await convertIntegrationsToInstallSpecifiers(plugins).then(
-		(specifiers) =>
-			installCommand.command === 'deno'
-				? specifiers.map((specifier) => `npm:${specifier}`) // Deno requires npm prefix to install packages
-				: specifiers
+	const installSpecifiers = await convertPluginsToInstallSpecifiers(plugins).then((specifiers) =>
+		installCommand.command === 'deno'
+			? specifiers.map((specifier) => `npm:${specifier}`) // Deno requires npm prefix to install packages
+			: specifiers
 	);
 
 	const coloredOutput = `${color.bold(installCommand.command)} ${installCommand.args.join(' ')} ${color.magenta(installSpecifiers.join(' '))}`;
