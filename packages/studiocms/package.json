@@ -1,207 +1,208 @@
 {
-  "name": "studiocms",
-  "version": "0.1.0-beta.15",
-  "description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
-  "author": {
-    "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
-    "url": "https://studiocms.dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/studiocms"
-  },
-  "contributors": [
-    "Adammatthiesen",
-    "jdtjenkins",
-    "dreyfus92",
-    "code.spirit"
-  ],
-  "license": "MIT",
-  "keywords": [
-    "cms",
-    "astrocms",
-    "astrodb",
-    "astrostudio",
-    "astrostudiocms",
-    "studiocms",
-    "astro-studio",
-    "astro-studiocms",
-    "astro",
-    "withastro",
-    "astro-integration",
-    "headlesscms",
-    "headless-cms",
-    "headless"
-  ],
-  "homepage": "https://studiocms.dev",
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "LICENSE",
-    "CHANGELOG.md",
-    "README.md",
-    "studiocms-cli.mjs",
-    "astroenv.d.ts",
-    "ui.d.ts"
-  ],
-  "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
-  },
-  "bin": {
-    "studiocms": "./studiocms-cli.mjs"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./config": {
-      "types": "./dist/config.d.ts",
-      "default": "./dist/config.js"
-    },
-    "./consts": {
-      "types": "./dist/consts.d.ts",
-      "default": "./dist/consts.js"
-    },
-    "./Renderer": "./dist/components/Renderer.astro",
-    "./renderers/*": "./dist/custom-renderers/*",
-    "./db/config": {
-      "types": "./dist/db/config.d.ts",
-      "default": "./dist/db/config.js"
-    },
-    "./db/tables": {
-      "types": "./dist/db/tables.d.ts",
-      "default": "./dist/db/tables.js"
-    },
-    "./errors": {
-      "types": "./dist/errors.d.ts",
-      "default": "./dist/errors.js"
-    },
-    "./plugins": {
-      "types": "./dist/plugins.d.ts",
-      "default": "./dist/plugins.js"
-    },
-    "./sdk/base": {
-      "types": "./dist/sdk/index.d.ts",
-      "default": "./dist/sdk/index.js"
-    },
-    "./sdk/cache": {
-      "types": "./dist/sdk/cache.d.ts",
-      "default": "./dist/sdk/cache.js"
-    },
-    "./sdk/tables": {
-      "types": "./dist/sdk/tables.d.ts",
-      "default": "./dist/sdk/tables.js"
-    },
-    "./sdk/types": {
-      "types": "./dist/sdk/types/index.d.ts",
-      "default": "./dist/sdk/types/index.js"
-    },
-    "./schemas": {
-      "types": "./dist/schemas/index.d.ts",
-      "default": "./dist/schemas/index.js"
-    },
-    "./schemas/renderer": {
-      "types": "./dist/schemas/config/rendererConfig.d.ts",
-      "default": "./dist/schemas/config/rendererConfig.js"
-    },
-    "./runtime": {
-      "types": "./dist/runtime/index.d.ts",
-      "default": "./dist/runtime/index.js"
-    },
-    "./components/*": "./dist/components/*",
-    "./layouts/*": "./dist/layouts/*",
-    "./lib/*": "./dist/lib/*",
-    "./types": {
-      "types": "./dist/types.d.ts",
-      "default": "./dist/types.js"
-    },
-    "./v/types": "./dist/virtual.d.ts",
-    "./src/middleware/*": "./src/middleware/*",
-    "./src/routes/*": "./src/routes/*"
-  },
-  "type": "module",
-  "dependencies": {
-    "@clack/core": "0.4.1",
-    "@clack/prompts": "0.9.1",
-    "@cloudinary/url-gen": "^1.21.0",
-    "@commander-js/extra-typings": "^13.0.0",
-    "@fontsource-variable/onest": "5.1.1",
-    "@iconify-json/flat-color-icons": "^1.2.1",
-    "@iconify-json/simple-icons": "^1.2.23",
-    "@inox-tools/inline-mod": "^2.0.3",
-    "@inox-tools/runtime-logger": "0.4.2",
-    "@libsql/client": "^0.15.2",
-    "@nanostores/i18n": "^0.12.2",
-    "@nanostores/persistent": "^0.10.2",
-    "@oslojs/binary": "^1.0.0",
-    "@oslojs/crypto": "^1.0.1",
-    "@oslojs/encoding": "^1.1.0",
-    "@studiocms/markdown-remark-processor": "^1.2.0",
-    "@studiocms/ui": "catalog:",
-    "ansi-escapes": "^7.0.0",
-    "arctic": "^3.5.0",
-    "astro-integration-kit": "catalog:",
-    "boxen": "^8.0.1",
-    "chalk": "^5.4.1",
-    "cli-cursor": "^5.0.0",
-    "codemirror": "^5.49.0",
-    "commander": "^13.0.0",
-    "diff": "^7.0.0",
-    "diff2html": "^3.4.51",
-    "dompurify": "^3.2.3",
-    "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.31.2",
-    "figlet": "^1.8.0",
-    "fuse.js": "^7.0.0",
-    "katex": "^0.16.21",
-    "is-unicode-supported": "^2.1.0",
-    "lodash": "^4.17.21",
-    "mdast-util-from-markdown": "^2.0.2",
-    "mdast-util-to-markdown": "^2.1.1",
-    "mdast-util-to-string": "^4.0.0",
-    "mrmime": "^2.0.0",
-    "nanostores": "^0.11.4",
-    "nodemailer": "^6.10.0",
-    "semver": "^7.7.1",
-    "slice-ansi": "^7.1.0",
-    "socks": "^2.8.4",
-    "strip-ansi": "^7.1.0",
-    "suneditor": "^2.47.5",
-    "three": "0.170.0",
-    "ultrahtml": "^1.5.3",
-    "unist-util-visit": "^5.0.0",
-    "wrap-ansi": "^9.0.0"
-  },
-  "devDependencies": {
-    "@types/codemirror": "5.60.10",
-    "@types/diff": "^7.0.1",
-    "@types/figlet": "^1.7.0",
-    "@types/lodash": "^4.17.13",
-    "@types/mdast": "^4.0.4",
-    "@types/node": "catalog:",
-    "@types/nodemailer": "^6.4.17",
-    "@types/semver": "^7.5.8",
-    "@types/three": "0.169.0",
-    "typescript": "catalog:"
-  },
-  "peerDependencies": {
-    "@astrojs/db": "catalog:min",
-    "@astrojs/markdown-remark": "catalog:min",
-    "@astrojs/web-vitals": "catalog:",
-    "astro": "catalog:min",
-    "vite": "catalog:min"
-  },
-  "peerDependenciesMeta": {
-    "@astrojs/web-vitals": {
-      "optional": true
-    }
-  }
+	"name": "studiocms",
+	"version": "0.1.0-beta.15",
+	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
+	"author": {
+		"name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/studiocms"
+	},
+	"contributors": ["Adammatthiesen", "jdtjenkins", "dreyfus92", "code.spirit"],
+	"license": "MIT",
+	"keywords": [
+		"cms",
+		"astrocms",
+		"astrodb",
+		"astrostudio",
+		"astrostudiocms",
+		"studiocms",
+		"astro-studio",
+		"astro-studiocms",
+		"astro",
+		"withastro",
+		"astro-integration",
+		"headlesscms",
+		"headless-cms",
+		"headless"
+	],
+	"homepage": "https://studiocms.dev",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"src",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md",
+		"studiocms-cli.mjs",
+		"astroenv.d.ts",
+		"ui.d.ts"
+	],
+	"scripts": {
+		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
+	},
+	"bin": {
+		"studiocms": "./studiocms-cli.mjs"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./config": {
+			"types": "./dist/config.d.ts",
+			"default": "./dist/config.js"
+		},
+		"./consts": {
+			"types": "./dist/consts.d.ts",
+			"default": "./dist/consts.js"
+		},
+		"./Renderer": "./dist/components/Renderer.astro",
+		"./renderers/*": "./dist/custom-renderers/*",
+		"./db/config": {
+			"types": "./dist/db/config.d.ts",
+			"default": "./dist/db/config.js"
+		},
+		"./db/tables": {
+			"types": "./dist/db/tables.d.ts",
+			"default": "./dist/db/tables.js"
+		},
+		"./errors": {
+			"types": "./dist/errors.d.ts",
+			"default": "./dist/errors.js"
+		},
+		"./plugins": {
+			"types": "./dist/plugins.d.ts",
+			"default": "./dist/plugins.js"
+		},
+		"./sdk/base": {
+			"types": "./dist/sdk/index.d.ts",
+			"default": "./dist/sdk/index.js"
+		},
+		"./sdk/cache": {
+			"types": "./dist/sdk/cache.d.ts",
+			"default": "./dist/sdk/cache.js"
+		},
+		"./sdk/tables": {
+			"types": "./dist/sdk/tables.d.ts",
+			"default": "./dist/sdk/tables.js"
+		},
+		"./sdk/types": {
+			"types": "./dist/sdk/types/index.d.ts",
+			"default": "./dist/sdk/types/index.js"
+		},
+		"./schemas": {
+			"types": "./dist/schemas/index.d.ts",
+			"default": "./dist/schemas/index.js"
+		},
+		"./schemas/renderer": {
+			"types": "./dist/schemas/config/rendererConfig.d.ts",
+			"default": "./dist/schemas/config/rendererConfig.js"
+		},
+		"./runtime": {
+			"types": "./dist/runtime/index.d.ts",
+			"default": "./dist/runtime/index.js"
+		},
+		"./components/*": "./dist/components/*",
+		"./layouts/*": "./dist/layouts/*",
+		"./lib/*": "./dist/lib/*",
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"default": "./dist/types.js"
+		},
+		"./v/types": "./dist/virtual.d.ts",
+		"./src/middleware/*": "./src/middleware/*",
+		"./src/routes/*": "./src/routes/*"
+	},
+	"type": "module",
+	"dependencies": {
+		"@clack/core": "0.4.1",
+		"@clack/prompts": "0.9.1",
+		"@cloudinary/url-gen": "^1.21.0",
+		"@commander-js/extra-typings": "^13.0.0",
+		"@fontsource-variable/onest": "5.1.1",
+		"@iconify-json/flat-color-icons": "^1.2.1",
+		"@iconify-json/simple-icons": "^1.2.23",
+		"@inox-tools/inline-mod": "^2.0.3",
+		"@inox-tools/runtime-logger": "0.4.2",
+		"@libsql/client": "^0.15.2",
+		"@nanostores/i18n": "^0.12.2",
+		"@nanostores/persistent": "^0.10.2",
+		"@oslojs/binary": "^1.0.0",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+		"@studiocms/markdown-remark-processor": "^1.2.0",
+		"@studiocms/ui": "catalog:",
+		"ansi-escapes": "^7.0.0",
+		"arctic": "^3.5.0",
+		"astro-integration-kit": "catalog:",
+		"boxen": "^8.0.1",
+		"chalk": "^5.4.1",
+		"cli-cursor": "^5.0.0",
+		"codemirror": "^5.49.0",
+		"commander": "^13.0.0",
+		"diff": "^7.0.0",
+		"diff2html": "^3.4.51",
+		"dompurify": "^3.2.3",
+		"dotenv": "^16.4.7",
+		"drizzle-orm": "^0.31.2",
+		"figlet": "^1.8.0",
+		"fuse.js": "^7.0.0",
+		"katex": "^0.16.21",
+		"is-unicode-supported": "^2.1.0",
+		"lodash": "^4.17.21",
+		"magicast": "^0.3.5",
+		"mdast-util-from-markdown": "^2.0.2",
+		"mdast-util-to-markdown": "^2.1.1",
+		"mdast-util-to-string": "^4.0.0",
+		"mrmime": "^2.0.0",
+		"nanostores": "^0.11.4",
+		"nodemailer": "^6.10.0",
+		"package-manager-detector": "^1.1.0",
+		"semver": "^7.7.1",
+		"slice-ansi": "^7.1.0",
+		"socks": "^2.8.4",
+		"strip-ansi": "^7.1.0",
+		"suneditor": "^2.47.5",
+		"three": "0.170.0",
+		"tinyexec": "^1.0.1",
+		"ultrahtml": "^1.5.3",
+		"unist-util-visit": "^5.0.0",
+		"wrap-ansi": "^9.0.0",
+		"yargs-parser": "^21.1.1",
+		"yocto-spinner": "^0.2.1"
+	},
+	"devDependencies": {
+		"@types/codemirror": "5.60.10",
+		"@types/diff": "^7.0.1",
+		"@types/figlet": "^1.7.0",
+		"@types/lodash": "^4.17.13",
+		"@types/mdast": "^4.0.4",
+		"@types/node": "catalog:",
+		"@types/nodemailer": "^6.4.17",
+		"@types/semver": "^7.5.8",
+		"@types/three": "0.169.0",
+		"@types/yargs-parser": "^21.0.3",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"@astrojs/db": "catalog:min",
+		"@astrojs/markdown-remark": "catalog:min",
+		"@astrojs/web-vitals": "catalog:",
+		"astro": "catalog:min",
+		"vite": "catalog:min"
+	},
+	"peerDependenciesMeta": {
+		"@astrojs/web-vitals": {
+			"optional": true
+		}
+	}
 }

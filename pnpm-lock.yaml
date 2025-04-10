@@ -228,6 +228,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      magicast:
+        specifier: ^0.3.5
+        version: 0.3.5
       mdast-util-from-markdown:
         specifier: ^2.0.2
         version: 2.0.2
@@ -246,6 +249,9 @@ importers:
       nodemailer:
         specifier: ^6.10.0
         version: 6.10.0
+      package-manager-detector:
+        specifier: ^1.1.0
+        version: 1.1.0
       semver:
         specifier: ^7.7.1
         version: 7.7.1
@@ -264,6 +270,9 @@ importers:
       three:
         specifier: 0.170.0
         version: 0.170.0
+      tinyexec:
+        specifier: ^1.0.1
+        version: 1.0.1
       ultrahtml:
         specifier: ^1.5.3
         version: 1.5.3
@@ -276,6 +285,12 @@ importers:
       wrap-ansi:
         specifier: ^9.0.0
         version: 9.0.0
+      yargs-parser:
+        specifier: ^21.1.1
+        version: 21.1.1
+      yocto-spinner:
+        specifier: ^0.2.1
+        version: 0.2.1
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.10
@@ -304,6 +319,9 @@ importers:
       '@types/three':
         specifier: 0.169.0
         version: 0.169.0
+      '@types/yargs-parser':
+        specifier: ^21.0.3
+        version: 21.0.3
       typescript:
         specifier: 'catalog:'
         version: 5.7.2
@@ -2014,6 +2032,9 @@ packages:
 
   '@types/ws@8.5.13':
     resolution: {integrity: sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==}
+
+  '@types/yargs-parser@21.0.3':
+    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
   '@ungap/structured-clone@1.2.1':
     resolution: {integrity: sha512-fEzPV3hSkSMltkw152tJKNARhOupqbH96MZWyRjNaYZOMIzbrTeQDG+MTc6Mr2pgzFQzFxAfmhGDNP5QK++2ZA==}
@@ -4213,6 +4234,9 @@ packages:
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
+
+  tinyexec@1.0.1:
+    resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
 
   tinyglobby@0.2.12:
     resolution: {integrity: sha512-qkf4trmKSIiMTs/E63cxH+ojC2unam7rJ0WrauAzpT3ECNTxGRMlaXxVbfxMUC/w0LaYk6jQ4y/nGR9uBO3tww==}
@@ -6458,6 +6482,8 @@ snapshots:
   '@types/ws@8.5.13':
     dependencies:
       '@types/node': 22.10.2
+
+  '@types/yargs-parser@21.0.3': {}
 
   '@ungap/structured-clone@1.2.1': {}
 
@@ -9183,6 +9209,8 @@ snapshots:
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
+
+  tinyexec@1.0.1: {}
 
   tinyglobby@0.2.12:
     dependencies:
