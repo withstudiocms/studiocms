@@ -25,17 +25,23 @@ export async function getRegistry(): Promise<string> {
 
 export async function fetchPackageVersions(packageName: string): Promise<string[] | Error> {
 	const registry = await getRegistry();
-	const res = await fetch(`${registry}/${packageName}`, {
-		headers: { accept: 'application/vnd.npm.install-v1+json' },
-	});
-	if (res.status >= 200 && res.status < 300) {
-		return await res.json().then((data) => Object.keys(data.versions));
+	try {
+		const res = await fetch(`${registry}/${packageName}`, {
+			headers: { accept: 'application/vnd.npm.install-v1+json' },
+		});
+		if (res.status >= 200 && res.status < 300) {
+			return await res.json().then((data) => Object.keys(data.versions));
+		}
+		if (res.status === 404) {
+			// 404 means the package doesn't exist, so we don't need an error message here
+			return new Error();
+		}
+		return new Error(`Failed to fetch ${registry}/${packageName} - GET ${res.status}`);
+	} catch (error) {
+		return new Error(
+			`Network error while fetching ${registry}/${packageName}: ${(error as Error).message}`
+		);
 	}
-	if (res.status === 404) {
-		// 404 means the package doesn't exist, so we don't need an error message here
-		return new Error();
-	}
-	return new Error(`Failed to fetch ${registry}/${packageName} - GET ${res.status}`);
 }
 
 /**
@@ -61,15 +67,21 @@ export async function fetchPackageJson(
 ): Promise<Record<string, any> | Error> {
 	const packageName = `${scope ? `${scope}/` : ''}${name}`;
 	const registry = await getRegistry();
-	const res = await fetch(`${registry}/${packageName}/${tag}`);
-	if (res.status >= 200 && res.status < 300) {
-		return await res.json();
+	try {
+		const res = await fetch(`${registry}/${packageName}/${tag}`);
+		if (res.status >= 200 && res.status < 300) {
+			return await res.json();
+		}
+		if (res.status === 404) {
+			// 404 means the package doesn't exist, so we don't need an error message here
+			return new Error();
+		}
+		return new Error(`Failed to fetch ${registry}/${packageName}/${tag} - GET ${res.status}`);
+	} catch (error) {
+		return new Error(
+			`Network error while fetching ${registry}/${packageName}/${tag}: ${(error as Error).message}`
+		);
 	}
-	if (res.status === 404) {
-		// 404 means the package doesn't exist, so we don't need an error message here
-		return new Error();
-	}
-	return new Error(`Failed to fetch ${registry}/${packageName}/${tag} - GET ${res.status}`);
 }
 
 export async function convertIntegrationsToInstallSpecifiers(
