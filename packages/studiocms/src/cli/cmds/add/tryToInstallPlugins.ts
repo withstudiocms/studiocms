@@ -23,10 +23,19 @@ export async function tryToInstallPlugins({
 		// used for installation take precedence
 		strategies: ['install-metadata', 'lockfile', 'packageManager-field'],
 	});
-	logger.debug(`[add]: package manager: '${packageManager?.name}'`);
-	if (!packageManager) return UpdateResult.none;
+	logger.debug(`[add]: package manager: '${packageManager?.name || 'none'}'`);
+	if (!packageManager) {
+		logger.error(
+			'[add]: No package manager detected. Please ensure npm, yarn, pnpm, or another supported package manager is installed.'
+		);
+		return UpdateResult.none;
+	}
 
-	const installCommand = resolveCommand(packageManager?.agent ?? 'npm', 'add', []);
+	const agent = packageManager?.agent ?? 'npm';
+	if (!packageManager?.agent) {
+		logger.debug('[add]: No package manager agent detected, falling back to npm');
+	}
+	const installCommand = resolveCommand(agent, 'add', []);
 	if (!installCommand) return UpdateResult.none;
 
 	const installSpecifiers = await convertIntegrationsToInstallSpecifiers(plugins).then(
@@ -66,6 +75,14 @@ export async function tryToInstallPlugins({
 			logger.debug(`[add]: Error installing dependencies ${err}`);
 			// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
 			console.error('\n', err.stdout || err.message, '\n');
+			console.error(
+				'\n',
+				color.yellow('You may want to try:'),
+				'\n',
+				'- Checking your network connection\n',
+				'- Running the package manager command manually\n',
+				'- Ensuring you have permissions to install packages\n'
+			);
 			return UpdateResult.failure;
 		}
 	} else {

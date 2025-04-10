@@ -26,8 +26,8 @@ export interface Logger {
 	warn: (message: string) => void;
 }
 
-// biome-ignore lint/style/useEnumInitializers: <explanation>
-// biome-ignore lint/suspicious/noConstEnum: <explanation>
+// biome-ignore lint/style/useEnumInitializers: We want the natural number progression for UpdateResult
+// biome-ignore lint/suspicious/noConstEnum: Using const enum for better runtime performance
 export const enum UpdateResult {
 	none,
 	updated,
@@ -42,7 +42,7 @@ export const STUBS = {
 export const toIdent = (name: string) => {
 	const ident = name
 		.trim()
-		// Remove astro or (astrojs) prefix and suffix
+		// Remove studiocms prefix and suffix (e.g., studiocms-plugin, studiocms.plugin)
 		.replace(/[-_./]?studiocms?[-_.]?/g, '')
 		// drop .js suffix
 		.replace(/\.js/, '')
@@ -102,6 +102,9 @@ export async function resolveConfigPath(root: URL): Promise<URL | undefined> {
 		const configUrl = new URL(path, root);
 		if (exists(configUrl)) return configUrl;
 	}
+	console.debug(
+		`No StudioCMS config file found in ${root.toString()}. Searched for: ${configPaths.join(', ')}`
+	);
 	return undefined;
 }
 

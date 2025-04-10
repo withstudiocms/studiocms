@@ -112,6 +112,8 @@ export function parseNpmName(
 }
 
 export function parsePluginName(spec: string) {
+	// Parses a string like "@scope/name@tag" into { scope: "@scope", name: "name", tag: "tag" }
+	// If no tag is provided, defaults to "latest"
 	const result = parseNpmName(spec);
 	if (!result) return;
 	let { scope, name } = result;
@@ -124,5 +126,7 @@ export function parsePluginName(spec: string) {
 		name = tagged[0];
 		tag = tagged[1];
 	}
+	// Basic validation to ensure we have a non-empty name
+	if (!name) return undefined;
 	return { scope, name, tag };
 }

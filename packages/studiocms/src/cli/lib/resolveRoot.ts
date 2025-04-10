@@ -1,10 +1,10 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export function resolveRoot(cwd?: string | URL): string {
-	let CWD = cwd;
-	if (CWD instanceof URL) {
-		CWD = fileURLToPath(CWD);
+	let localCwd = cwd;
+	if (localCwd instanceof URL) {
+		localCwd = fileURLToPath(localCwd);
 	}
-	return CWD ? path.resolve(CWD) : process.cwd();
+	return localCwd ? path.resolve(localCwd) : process.cwd();
 }
