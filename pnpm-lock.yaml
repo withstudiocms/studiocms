@@ -285,9 +285,6 @@ importers:
       wrap-ansi:
         specifier: ^9.0.0
         version: 9.0.0
-      yocto-spinner:
-        specifier: ^0.2.1
-        version: 0.2.1
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.10

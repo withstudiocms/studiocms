@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import * as p from '@clack/prompts';
 import boxen from 'boxen';
 import color from 'chalk';
 import { diffWords } from 'diff';
@@ -35,7 +36,7 @@ export async function updateStudioCMSConfig({
 		title: configURL.pathname.split('/').pop(),
 	})}\n`;
 
-	logger.log(
+	p.note(
 		`\n ${color.magenta('StudioCMS will make the following changes to your config file:')}\n${message}`
 	);
 

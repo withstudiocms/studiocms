@@ -37,12 +37,15 @@ await new Command('add')
 
 		const cwd = context.cwd;
 		const isDebugMode = context.debug || false;
+		const p = context.p;
 		const logger: Logger = {
 			...context.logger,
 			debug: (message: string) => {
 				if (isDebugMode) context.logger.debug(message);
 			},
 		};
+
+		p.intro('StudioCMS CLI Utilities (add)');
 
 		const pluginNames = plugins.map((name) =>
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
@@ -65,7 +68,7 @@ await new Command('add')
 				break;
 			}
 			case UpdateResult.cancelled: {
-				logger.log(
+				p.note(
 					cancelled(
 						`Dependencies ${color.bold('NOT')} installed.`,
 						'Be sure to install them manually before continuing!'
@@ -155,7 +158,7 @@ await new Command('add')
 
 		switch (configResult) {
 			case UpdateResult.cancelled: {
-				logger.log(cancelled(`Your configuration has ${color.bold('NOT')} been updated.`));
+				p.outro(cancelled(`Your configuration has ${color.bold('NOT')} been updated.`));
 				break;
 			}
 			case UpdateResult.none: {
@@ -169,12 +172,12 @@ await new Command('add')
 						(plugin) => !deps.includes(plugin.packageName)
 					);
 					if (missingDeps.length === 0) {
-						logger.log('Configuration up-to-date.');
+						p.outro('Configuration up-to-date.');
 						break;
 					}
 				}
 
-				logger.log('Configuration up-to-date.');
+				p.outro('Configuration up-to-date.');
 				break;
 			}
 			// NOTE: failure shouldn't happen in practice because `updateAstroConfig` doesn't return that.
@@ -184,7 +187,7 @@ await new Command('add')
 			case undefined: {
 				const list = validatedPlugins.map((plugin) => `  - ${plugin.pluginName}`).join('\n');
 
-				logger.log(
+				p.outro(
 					success(
 						`Added the following plugin${validatedPlugins.length === 1 ? '' : 's'} to your project:\n ${list}`
 					)

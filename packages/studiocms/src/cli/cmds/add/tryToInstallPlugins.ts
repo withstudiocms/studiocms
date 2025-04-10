@@ -1,7 +1,7 @@
+import * as p from '@clack/prompts';
 import boxen from 'boxen';
 import color from 'chalk';
 import { detect, resolveCommand } from 'package-manager-detector';
-import yoctoSpinner from 'yocto-spinner';
 import { exec } from '../../lib/exec.js';
 import { askToContinue } from './askToContinue.js';
 import { convertIntegrationsToInstallSpecifiers } from './npm-utils.js';
@@ -43,14 +43,13 @@ export async function tryToInstallPlugins({
 		borderStyle: 'round',
 	})}\n`;
 
-	logger.log(
+	p.note(
 		`${color.magenta('StudioCMS will run the following command:')}\n ${color.dim('If you skip this step, you can always run it yourself later')}\n${message}`
 	);
 
 	if (await askToContinue()) {
-		const spinner = yoctoSpinner({
-			text: 'Installing dependencies...',
-		}).start();
+		const spinner = p.spinner();
+		spinner.start('Installing dependencies...');
 		try {
 			await exec(installCommand.command, [...installCommand.args, ...installSpecifiers], {
 				nodeOptions: {
@@ -58,11 +57,11 @@ export async function tryToInstallPlugins({
 					env: { NODE_ENV: undefined },
 				},
 			});
-			spinner.success();
+			spinner.stop('Dependencies installed.');
 			return UpdateResult.updated;
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		} catch (err: any) {
-			spinner.error();
+			spinner.stop('Error installing dependencies');
 			logger.debug(`[add]: Error installing dependencies ${err}`);
 			// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
 			console.error('\n', err.stdout || err.message, '\n');

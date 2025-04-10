@@ -1,11 +1,12 @@
+import * as p from '@clack/prompts';
 import color from 'chalk';
-import yoctoSpinner from 'yocto-spinner';
 import { askToContinue } from './askToContinue.js';
 import { fetchPackageJson, parsePluginName } from './npm-utils.js';
 import { type PluginInfo, StudioCMSScopes } from './utils.js';
 
 export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
-	const spinner = yoctoSpinner({ text: 'Resolving packages...' }).start();
+	const spinner = p.spinner();
+	spinner.start('Resolving packages...');
 	try {
 		const pluginEntries = await Promise.all(
 			names.map(async (plugin): Promise<PluginInfo> => {
@@ -24,9 +25,9 @@ export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
 					const firstPartyPkgCheck = await fetchPackageJson(scope, name, tag);
 					if (firstPartyPkgCheck instanceof Error) {
 						if (firstPartyPkgCheck.message) {
-							spinner.warning(color.yellow(firstPartyPkgCheck.message));
+							spinner.message(color.yellow(firstPartyPkgCheck.message));
 						}
-						spinner.warning(
+						spinner.message(
 							color.yellow(`${color.bold(plugin)} is not an official StudioCMS package.`)
 						);
 						if (!(await askToContinue())) {
@@ -47,7 +48,7 @@ export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
 					const thirdPartyPkgCheck = await fetchPackageJson(scope, name, tag);
 					if (thirdPartyPkgCheck instanceof Error) {
 						if (thirdPartyPkgCheck.message) {
-							spinner.warning(color.yellow(thirdPartyPkgCheck.message));
+							spinner.message(color.yellow(thirdPartyPkgCheck.message));
 						}
 						throw new Error(`Unable to fetch ${color.bold(plugin)}. Does the package exist?`);
 					}
@@ -86,11 +87,11 @@ export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
 				};
 			})
 		);
-		spinner.success();
+		spinner.stop('Packages Resolved.');
 		return pluginEntries;
 	} catch (e) {
 		if (e instanceof Error) {
-			spinner.error(e.message);
+			spinner.stop(e.message, 1);
 			process.exit(1);
 		} else {
 			throw e;

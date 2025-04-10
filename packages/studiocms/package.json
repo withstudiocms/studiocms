@@ -176,8 +176,7 @@
 		"tinyexec": "^1.0.1",
 		"ultrahtml": "^1.5.3",
 		"unist-util-visit": "^5.0.0",
-		"wrap-ansi": "^9.0.0",
-		"yocto-spinner": "^0.2.1"
+		"wrap-ansi": "^9.0.0"
 	},
 	"devDependencies": {
 		"@types/codemirror": "5.60.10",
