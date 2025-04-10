@@ -1,19 +1,24 @@
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import * as p from '@clack/prompts';
 import boxen from 'boxen';
 import color from 'chalk';
 import { diffWords } from 'diff';
 import { type ProxifiedModule, generateCode } from 'magicast';
 import { askToContinue } from './askToContinue.js';
-import { type Logger, UpdateResult } from './utils.js';
+import { type ClackPrompts, type Logger, UpdateResult } from './utils.js';
 
 export async function updateStudioCMSConfig({
 	configURL,
 	logger,
 	mod,
+	p,
+}: {
+	configURL: URL;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-}: { configURL: URL; mod: ProxifiedModule<any>; logger: Logger }): Promise<UpdateResult> {
+	mod: ProxifiedModule<any>;
+	logger: Logger;
+	p: ClackPrompts;
+}): Promise<UpdateResult> {
 	const input = await fs.readFile(fileURLToPath(configURL), { encoding: 'utf-8' });
 	const output = generateCode(mod, {
 		format: {
@@ -40,7 +45,7 @@ export async function updateStudioCMSConfig({
 		`\n ${color.magenta('StudioCMS will make the following changes to your config file:')}\n${message}`
 	);
 
-	if (await askToContinue()) {
+	if (await askToContinue(p)) {
 		await fs.writeFile(fileURLToPath(configURL), output, { encoding: 'utf-8' });
 		logger.debug('Updated studiocms config');
 		return UpdateResult.updated;

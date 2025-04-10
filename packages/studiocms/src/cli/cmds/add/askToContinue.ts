@@ -1,6 +1,6 @@
-import * as p from '@clack/prompts';
+import type { ClackPrompts } from './utils.js';
 
-export async function askToContinue(): Promise<boolean> {
+export async function askToContinue(p: ClackPrompts): Promise<boolean> {
 	const response = await p.confirm({
 		message: 'Continue?',
 		initialValue: true,

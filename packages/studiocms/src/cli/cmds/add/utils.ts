@@ -1,5 +1,8 @@
 import fsMod from 'node:fs';
+import type * as p from '@clack/prompts';
 import color from 'chalk';
+
+export type ClackPrompts = typeof p;
 
 export const ALIASES = new Map([
 	['blog', '@studiocms/blog'],

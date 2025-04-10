@@ -52,11 +52,12 @@ await new Command('add')
 			ALIASES.has(name) ? ALIASES.get(name)! : name
 		);
 
-		const validatedPlugins = await validatePlugins(pluginNames);
+		const validatedPlugins = await validatePlugins(pluginNames, p);
 		const installResult = await tryToInstallPlugins({
 			plugins: validatedPlugins,
 			cwd,
 			logger,
+			p,
 		});
 		const rootPath = resolveRoot(cwd);
 		const root = pathToFileURL(rootPath);
@@ -149,6 +150,7 @@ await new Command('add')
 					configURL,
 					mod,
 					logger,
+					p,
 				});
 			} catch (err) {
 				logger.debug(`Error updating studiocms config ${err}`);

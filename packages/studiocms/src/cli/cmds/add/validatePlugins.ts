@@ -1,10 +1,9 @@
-import * as p from '@clack/prompts';
 import color from 'chalk';
 import { askToContinue } from './askToContinue.js';
 import { fetchPackageJson, parsePluginName } from './npm-utils.js';
-import { type PluginInfo, StudioCMSScopes } from './utils.js';
+import { type ClackPrompts, type PluginInfo, StudioCMSScopes } from './utils.js';
 
-export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
+export async function validatePlugins(names: string[], p: ClackPrompts): Promise<PluginInfo[]> {
 	const spinner = p.spinner();
 	spinner.start('Resolving packages...');
 	try {
@@ -30,7 +29,7 @@ export async function validatePlugins(names: string[]): Promise<PluginInfo[]> {
 						spinner.message(
 							color.yellow(`${color.bold(plugin)} is not an official StudioCMS package.`)
 						);
-						if (!(await askToContinue())) {
+						if (!(await askToContinue(p))) {
 							throw new Error(
 								`No problem! Find our official plugins at ${color.magenta('https://docs.studiocms.dev')}`
 							);

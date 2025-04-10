@@ -1,20 +1,21 @@
-import * as p from '@clack/prompts';
 import boxen from 'boxen';
 import color from 'chalk';
 import { detect, resolveCommand } from 'package-manager-detector';
 import { exec } from '../../lib/exec.js';
 import { askToContinue } from './askToContinue.js';
 import { convertIntegrationsToInstallSpecifiers } from './npm-utils.js';
-import { type Logger, type PluginInfo, UpdateResult } from './utils.js';
+import { type ClackPrompts, type Logger, type PluginInfo, UpdateResult } from './utils.js';
 
 export async function tryToInstallPlugins({
 	plugins,
 	cwd,
 	logger,
+	p,
 }: {
 	plugins: PluginInfo[];
 	cwd?: string;
 	logger: Logger;
+	p: ClackPrompts;
 }): Promise<UpdateResult> {
 	const packageManager = await detect({
 		cwd,
@@ -47,7 +48,7 @@ export async function tryToInstallPlugins({
 		`${color.magenta('StudioCMS will run the following command:')}\n ${color.dim('If you skip this step, you can always run it yourself later')}\n${message}`
 	);
 
-	if (await askToContinue()) {
+	if (await askToContinue(p)) {
 		const spinner = p.spinner();
 		spinner.start('Installing dependencies...');
 		try {
