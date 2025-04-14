@@ -32,7 +32,7 @@ program
 	.description('Generate a JWT token from a keyfile')
 	.summary('Generate JWT token from a keyfile')
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
-	.option('-e, --exp <date-in-seconds>', 'expiry date in seconds from issued at (iat) time')
+	.option('-e, --exp <date-in-seconds>', 'Expiry date in seconds (>=0) from issued at (iat) time')
 	.action(async (keyFile, { claim, exp: maybeExp }) => {
 		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
 
