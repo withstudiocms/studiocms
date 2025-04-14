@@ -9,8 +9,9 @@ import {
 	StudioCMSColorwayInfoBg,
 	boxen,
 	label,
-} from '../lib/utils';
-import { generator } from './crypto/generator';
+} from '../lib/utils.js';
+import { OneYear } from './crypto/consts.js';
+import { generator } from './crypto/generator.js';
 
 const program = new Command('crypto')
 	.description('Crypto Utilities for Security')
@@ -24,7 +25,10 @@ const program = new Command('crypto')
 
 program
 	.command('gen-jwt')
-	.argument('<key-file>', 'Path your your private key file (.pem)')
+	.argument(
+		'<key-file>',
+		'a relative path (`../keys/libsql.pem`) from the current directory your your private key file (.pem)'
+	)
 	.description('Generate a JWT token from a keyfile')
 	.summary('Generate JWT token from a keyfile')
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
@@ -48,7 +52,7 @@ program
 
 			spinner.message('Key Found. Getting Expire Date.');
 
-			const exp: number = maybeExp ? Number.parseInt(maybeExp) : 31556926;
+			const exp: number = maybeExp ? Number.parseInt(maybeExp) : OneYear;
 
 			spinner.message('Expire Date set.  Generating Token.');
 
