@@ -144,6 +144,7 @@
 		"@withstudiocms/cli-kit": "0.1.0",
 		"arctic": "^3.5.0",
 		"astro-integration-kit": "catalog:",
+		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
 		"codemirror": "^5.49.0",
 		"commander": "^13.0.0",
