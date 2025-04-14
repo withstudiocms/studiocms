@@ -1,10 +1,9 @@
-import color from 'chalk';
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../../lib/utils.js';
 import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
 import { hashPassword } from '../utils/password.js';
 
@@ -88,14 +87,14 @@ export async function libsqlModifyUsers(context: Context) {
 
 			if (context.dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: color.dim('Modifying user...'),
+					title: context.c.dim('Modifying user...'),
 					task: async (message) => {
 						try {
 							await db
@@ -141,14 +140,14 @@ export async function libsqlModifyUsers(context: Context) {
 
 			if (context.dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: color.dim('Modifying user...'),
+					title: context.c.dim('Modifying user...'),
 					task: async (message) => {
 						try {
 							await db
@@ -207,14 +206,14 @@ export async function libsqlModifyUsers(context: Context) {
 
 			if (context.dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: color.dim('Modifying user...'),
+					title: context.c.dim('Modifying user...'),
 					task: async (message) => {
 						try {
 							// Environment variables are already checked by checkRequiredEnvVars

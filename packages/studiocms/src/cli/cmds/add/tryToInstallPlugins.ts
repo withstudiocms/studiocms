@@ -1,8 +1,8 @@
+import { askToContinue } from '@withstudiocms/cli-kit/messages';
+import { exec } from '@withstudiocms/cli-kit/utils';
 import boxen from 'boxen';
 import color from 'chalk';
 import { detect, resolveCommand } from 'package-manager-detector';
-import { exec } from '../../lib/exec.js';
-import { askToContinue } from './askToContinue.js';
 import { convertPluginsToInstallSpecifiers } from './npm-utils.js';
 import { type ClackPrompts, type Logger, type PluginInfo, UpdateResult } from './utils.js';
 

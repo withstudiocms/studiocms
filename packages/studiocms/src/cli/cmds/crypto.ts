@@ -1,15 +1,13 @@
 import fs from 'node:fs';
 import * as prompts from '@clack/prompts';
-import { Command } from '@commander-js/extra-typings';
-import chalk from 'chalk';
 import {
-	CLITitle,
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfoBg,
-	boxen,
-	label,
-} from '../lib/utils.js';
+} from '@withstudiocms/cli-kit/colors';
+import { Command } from '@withstudiocms/cli-kit/commander';
+import { getBaseContext } from '@withstudiocms/cli-kit/context';
+import { CLITitle, boxen, label } from '@withstudiocms/cli-kit/messages';
 import { OneYear } from './crypto/consts.js';
 import { generator } from './crypto/generator.js';
 
@@ -58,7 +56,8 @@ program
 		}
 	})
 	.action(async (keyFile, { claim, exp: maybeExp }) => {
-		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
+		const context = await getBaseContext({});
+		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, context.c.bold));
 
 		const spinner = prompts.spinner();
 
@@ -99,14 +98,17 @@ program
 			spinner.stop('Token Generated.');
 
 			prompts.log.success(
-				boxen(chalk.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, chalk.bold)}`), {
-					ln2: 'Your new Token has been generated successfully:',
-					ln3: chalk.magenta(safeToken),
-				})
+				boxen(
+					context.c.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, context.c.bold)}`),
+					{
+						ln2: 'Your new Token has been generated successfully:',
+						ln3: context.c.magenta(safeToken),
+					}
+				)
 			);
 
 			prompts.outro(
-				`${label('You can now use this token where needed.', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
+				`${label('You can now use this token where needed.', StudioCMSColorwayBg, context.c.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 			);
 		} catch (err) {
 			if (err instanceof Error) {

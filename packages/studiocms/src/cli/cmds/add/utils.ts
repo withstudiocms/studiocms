@@ -1,6 +1,5 @@
-import fsMod from 'node:fs';
 import type * as p from '@clack/prompts';
-import color from 'chalk';
+import { exists } from '@withstudiocms/cli-kit/utils';
 
 export type ClackPrompts = typeof p;
 
@@ -64,26 +63,6 @@ export function createPrettyError(err: Error) {
 	return err;
 }
 
-export function cancelled(message: string, tip?: string) {
-	const badge = color.bgYellow(color.black(' cancelled '));
-	const headline = color.yellow(message);
-	const footer = tip ? `\n  ▶ ${tip}` : undefined;
-	return ['', `${badge} ${headline}`, footer]
-		.filter((v) => v !== undefined)
-		.map((msg) => `  ${msg}`)
-		.join('\n');
-}
-
-export function success(message: string, tip?: string) {
-	const badge = color.bgGreen(color.black(' success '));
-	const headline = color.green(message);
-	const footer = tip ? `\n  ▶ ${tip}` : undefined;
-	return ['', `${badge} ${headline}`, footer]
-		.filter((v) => v !== undefined)
-		.map((msg) => `  ${msg}`)
-		.join('\n');
-}
-
 /**
  * Paths to search for the StudioCMS config file,
  * sorted by how likely they're to appear.
@@ -106,42 +85,6 @@ export async function resolveConfigPath(root: URL): Promise<URL | undefined> {
 		`No StudioCMS config file found in ${root.toString()}. Searched for: ${configPaths.join(', ')}`
 	);
 	return undefined;
-}
-
-export function exists(path: URL | string | undefined) {
-	if (!path) return false;
-	try {
-		fsMod.statSync(path);
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-const isWindows = process?.platform === 'win32';
-
-function slash(path: string) {
-	const isExtendedLengthPath = path.startsWith('\\\\?\\');
-
-	if (isExtendedLengthPath) {
-		return path;
-	}
-
-	return path.replace(/\\/g, '/');
-}
-
-export function pathToFileURL(path: string): URL {
-	if (isWindows) {
-		let slashed = slash(path);
-		// Windows like C:/foo/bar
-		if (!slashed.startsWith('/')) {
-			slashed = `/${slashed}`;
-		}
-		return new URL(`file://${slashed}`);
-	}
-
-	// Unix is easy
-	return new URL(`file://${path}`);
 }
 
 export function appendForwardSlash(path: string) {

@@ -171,9 +171,9 @@ importers:
       '@studiocms/ui':
         specifier: 'catalog:'
         version: 0.4.16(astro@5.6.1(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))(vite@6.2.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))
-      ansi-escapes:
-        specifier: ^7.0.0
-        version: 7.0.0
+      '@withstudiocms/cli-kit':
+        specifier: 0.1.0
+        version: 0.1.0
       arctic:
         specifier: ^3.5.0
         version: 3.5.0
@@ -183,15 +183,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.6.1(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
-      boxen:
-        specifier: ^8.0.1
-        version: 8.0.1
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      cli-cursor:
-        specifier: ^5.0.0
-        version: 5.0.0
       codemirror:
         specifier: ^5.49.0
         version: 5.65.19
@@ -213,15 +207,9 @@ importers:
       drizzle-orm:
         specifier: ^0.31.2
         version: 0.31.4(@libsql/client@0.15.2)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.12)(react@19.0.0)
-      figlet:
-        specifier: ^1.8.0
-        version: 1.8.0
       fuse.js:
         specifier: ^7.0.0
         version: 7.0.0
-      is-unicode-supported:
-        specifier: ^2.1.0
-        version: 2.1.0
       katex:
         specifier: ^0.16.21
         version: 0.16.21
@@ -255,24 +243,15 @@ importers:
       semver:
         specifier: ^7.7.1
         version: 7.7.1
-      slice-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
       socks:
         specifier: ^2.8.4
         version: 2.8.4
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
       suneditor:
         specifier: ^2.47.5
         version: 2.47.5
       three:
         specifier: 0.170.0
         version: 0.170.0
-      tinyexec:
-        specifier: ^1.0.1
-        version: 1.0.1
       ultrahtml:
         specifier: ^1.5.3
         version: 1.5.3
@@ -282,9 +261,6 @@ importers:
       vite:
         specifier: catalog:min
         version: 6.2.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0)
-      wrap-ansi:
-        specifier: ^9.0.0
-        version: 9.0.0
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.10
@@ -2064,6 +2040,10 @@ packages:
 
   '@webgpu/types@0.1.51':
     resolution: {integrity: sha512-ktR3u64NPjwIViNCck+z9QeyN0iPkQCUOQ07ZCV1RzlkfP+olLTeEZ95O1QHS+v4w9vJeY9xj/uJuSphsHy5rQ==}
+
+  '@withstudiocms/cli-kit@0.1.0':
+    resolution: {integrity: sha512-Nh2sTjL8YTcJ0eIR06yCLrv9qgeM7072L7eHRmMWKJF3weKL3cKSmYvNX3Kcyv4e7UO8pAdcjGfOxOQrCkM0Aw==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0}
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -6525,6 +6505,24 @@ snapshots:
       tinyrainbow: 2.0.0
 
   '@webgpu/types@0.1.51': {}
+
+  '@withstudiocms/cli-kit@0.1.0':
+    dependencies:
+      '@clack/core': 0.4.1
+      '@clack/prompts': 0.9.1
+      '@commander-js/extra-typings': 13.0.0(commander@13.0.0)
+      ansi-escapes: 7.0.0
+      boxen: 8.0.1
+      chalk: 5.4.1
+      cli-cursor: 5.0.0
+      commander: 13.0.0
+      figlet: 1.8.0
+      is-unicode-supported: 2.1.0
+      package-manager-detector: 1.1.0
+      slice-ansi: 7.1.0
+      strip-ansi: 7.1.0
+      tinyexec: 1.0.1
+      wrap-ansi: 9.0.0
 
   abbrev@1.1.1: {}
 

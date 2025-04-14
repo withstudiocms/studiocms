@@ -1,10 +1,10 @@
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { askToContinue } from '@withstudiocms/cli-kit/messages';
 import boxen from 'boxen';
 import color from 'chalk';
 import { diffWords } from 'diff';
 import { type ProxifiedModule, generateCode } from 'magicast';
-import { askToContinue } from './askToContinue.js';
 import { type ClackPrompts, type Logger, UpdateResult } from './utils.js';
 
 export async function updateStudioCMSConfig({

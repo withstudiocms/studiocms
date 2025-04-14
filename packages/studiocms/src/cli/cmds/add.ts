@@ -1,13 +1,11 @@
 import { promises as fs, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { Option } from '@commander-js/extra-typings';
-import color from 'chalk';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
+import { cancelled, success } from '@withstudiocms/cli-kit/messages';
+import { applyPolyfill, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils';
 import { type ASTNode, type ProxifiedModule, builders, loadFile } from 'magicast';
 import { getDefaultExportOptions } from 'magicast/helpers';
-import { Command } from '../lib/commander.js';
 import { getContext } from '../lib/context.js';
-import { applyPolyfill } from '../lib/polyfill.js';
-import { resolveRoot } from '../lib/resolveRoot.js';
 import { tryToInstallPlugins } from './add/tryToInstallPlugins.js';
 import { updateStudioCMSConfig } from './add/updateStudioCMSConfig.js';
 import {
@@ -16,11 +14,8 @@ import {
 	STUBS,
 	UpdateResult,
 	appendForwardSlash,
-	cancelled,
 	createPrettyError,
-	pathToFileURL,
 	resolveConfigPath,
-	success,
 	toIdent,
 } from './add/utils.js';
 import { validatePlugins } from './add/validatePlugins.js';
@@ -71,7 +66,7 @@ await new Command('add')
 			case UpdateResult.cancelled: {
 				p.note(
 					cancelled(
-						`Dependencies ${color.bold('NOT')} installed.`,
+						`Dependencies ${context.c.bold('NOT')} installed.`,
 						'Be sure to install them manually before continuing!'
 					)
 				);
@@ -160,7 +155,7 @@ await new Command('add')
 
 		switch (configResult) {
 			case UpdateResult.cancelled: {
-				p.outro(cancelled(`Your configuration has ${color.bold('NOT')} been updated.`));
+				p.outro(cancelled(`Your configuration has ${context.c.bold('NOT')} been updated.`));
 				break;
 			}
 			case UpdateResult.none: {
