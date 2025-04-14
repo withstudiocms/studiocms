@@ -3,6 +3,7 @@ import * as prompts from '@clack/prompts';
 import { Command, Option } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import {
+	CLITitle,
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfoBg,
@@ -13,7 +14,13 @@ import { generator } from './crypto/generator';
 
 const program = new Command('crypto')
 	.description('Crypto Utilities for Security')
-	.summary('Crypto Utilities for Security');
+	.summary('Crypto Utilities for Security')
+	.addHelpText('beforeAll', CLITitle)
+	.showHelpAfterError('(add --help for additional information)')
+	.helpOption('-h, --help', 'Display help for command.')
+	.action(function () {
+		this.help();
+	});
 
 program
 	.command('gen-jwt')
