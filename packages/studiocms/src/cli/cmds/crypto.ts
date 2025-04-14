@@ -27,7 +27,7 @@ program
 	.command('gen-jwt')
 	.argument(
 		'<key-file>',
-		'a relative path (`../keys/libsql.pem`) from the current directory your your private key file (.pem)'
+		'a relative path (`../keys/libsql.pem`) from the current directory to your private key file (.pem)'
 	)
 	.description('Generate a JWT token from a keyfile')
 	.summary('Generate JWT token from a keyfile')
