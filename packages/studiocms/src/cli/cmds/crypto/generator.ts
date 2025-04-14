@@ -20,6 +20,30 @@ export function convertJwtToBase64Url(jwtToken: string): string {
 	return base64Encoded.replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
 }
 
+function parseClaims(claims: string[]): Record<string, any> {
+	const result: Record<string, any> = {};
+
+	for (const claim of claims) {
+		const parts = claim.split('=');
+		if (parts.length !== 2) {
+			throw new Error(`Invalid claim format: ${claim}. Expected format: key=value`);
+		}
+
+		const key = parts[0].trim();
+		const value = parts[1].trim();
+
+		try {
+			// Attempt to parse as JSON
+			result[key] = JSON.parse(value);
+		} catch (e) {
+			// If parsing fails, use the raw string
+			result[key] = value;
+		}
+	}
+
+	return result;
+}
+
 /**
  * Generates a JWT token with the specified secret, claims, and expiration time.
  *
@@ -33,18 +57,7 @@ export function generator(secret: string, claims?: string[], exp?: number) {
 	const finalClaims: Record<string, string> = {};
 
 	if (claims) {
-		for (const c of claims) {
-			const parts = c.split('=');
-
-			if (parts.length !== 2) {
-				throw new Error(`invalid claim: ${c}`);
-			}
-			try {
-				finalClaims[parts[0].trim()] = JSON.parse(parts[1].trim());
-			} catch (e) {
-				finalClaims[parts[0].trim()] = parts[1].trim();
-			}
-		}
+		Object.assign(finalClaims, parseClaims(claims));
 	}
 
 	try {
@@ -75,6 +88,10 @@ export function generator(secret: string, claims?: string[], exp?: number) {
 		const token = builder.build();
 		return convertJwtToBase64Url(token);
 	} catch (err) {
-		throw new Error(`Failed to build JWT token: ${(err as Error).message}`);
+		if (err instanceof Error) {
+			err.message = `Failed to build JWT token: ${err.message}`;
+			throw err;
+		}
+		throw new Error(`Failed to build JWT token: ${err}`);
 	}
 }

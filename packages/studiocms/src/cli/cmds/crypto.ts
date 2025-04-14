@@ -54,6 +54,11 @@ program
 
 			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
 
+			if (Number.isNaN(exp)) {
+				spinner.stop('Expiration must be a valid number');
+				process.exit(1);
+			}
+
 			if (exp < 0) {
 				spinner.stop('Expiration must be greater than 0');
 				process.exit(1);
