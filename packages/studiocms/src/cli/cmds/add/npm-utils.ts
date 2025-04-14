@@ -1,6 +1,6 @@
+import { exec } from '@withstudiocms/cli-kit/utils';
 import { detect } from 'package-manager-detector';
 import maxSatisfying from 'semver/ranges/max-satisfying.js';
-import { exec } from '../../lib/exec.js';
 import type { PluginInfo } from './utils.js';
 
 // Users might lack access to the global npm registry, this function

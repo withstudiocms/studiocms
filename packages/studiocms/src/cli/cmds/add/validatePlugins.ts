@@ -1,5 +1,5 @@
+import { askToContinue } from '@withstudiocms/cli-kit/messages';
 import color from 'chalk';
-import { askToContinue } from './askToContinue.js';
 import { fetchPackageJson, parsePluginName } from './npm-utils.js';
 import { type ClackPrompts, type PluginInfo, StudioCMSScopes } from './utils.js';
 

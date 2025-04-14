@@ -2,17 +2,20 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import color from 'chalk';
-import type { Context } from '../../../lib/context.js';
-import { commandExists, runInteractiveCommand, runShellCommand } from '../../../lib/runExternal.js';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
 	StudioCMSColorwayWarnBg,
 	TursoColorway,
+} from '@withstudiocms/cli-kit/colors';
+import { label } from '@withstudiocms/cli-kit/messages';
+import {
+	commandExists,
 	exists,
-	label,
-} from '../../../lib/utils.js';
+	runInteractiveCommand,
+	runShellCommand,
+} from '@withstudiocms/cli-kit/utils';
+import type { Context } from '../../../lib/context.js';
 import { ExampleEnv, buildEnvFile } from './data/studiocmsEnv.js';
 
 interface GenericOAuth {
@@ -39,7 +42,7 @@ export interface EnvBuilderOptions {
 export async function env(
 	context: Pick<
 		Context,
-		'cwd' | 'p' | 'pCancel' | 'pOnCancel' | 'dryRun' | 'tasks' | 'exit' | 'debug' | 'logger'
+		'cwd' | 'p' | 'pCancel' | 'pOnCancel' | 'dryRun' | 'tasks' | 'exit' | 'debug' | 'logger' | 'c'
 	>
 ) {
 	context.debug && context.logger.debug('Running env...');
@@ -52,7 +55,7 @@ export async function env(
 
 	if (envExists) {
 		context.p.log.warn(
-			`${label('Warning', StudioCMSColorwayWarnBg, color.black)} An environment file already exists. Would you like to overwrite it?`
+			`${label('Warning', StudioCMSColorwayWarnBg, context.c.black)} An environment file already exists. Would you like to overwrite it?`
 		);
 
 		const check = await context.p.confirm({
@@ -95,7 +98,7 @@ export async function env(
 
 		if (isWindows) {
 			context.p.log.warn(
-				`${label('Warning', StudioCMSColorwayWarnBg, color.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+				`${label('Warning', StudioCMSColorwayWarnBg, context.c.black)} Turso DB CLI is not supported on Windows outside of WSL.`
 			);
 		}
 
@@ -136,7 +139,7 @@ export async function env(
 							}
 						} else {
 							context.p.log.warn(
-								`${label('Warning', StudioCMSColorwayWarnBg, color.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+								`${label('Warning', StudioCMSColorwayWarnBg, context.c.black)} You will need to setup your own AstroDB and provide the URL and Token.`
 							);
 						}
 					}
@@ -201,11 +204,11 @@ export async function env(
 
 						const tursoSetup = context.p.spinner();
 						tursoSetup.start(
-							`${label('Turso', TursoColorway, color.black)} Setting up Turso DB...`
+							`${label('Turso', TursoColorway, context.c.black)} Setting up Turso DB...`
 						);
 						try {
 							tursoSetup.message(
-								`${label('Turso', TursoColorway, color.black)} Creating Database...`
+								`${label('Turso', TursoColorway, context.c.black)} Creating Database...`
 							);
 							const createRes = await runShellCommand(`turso db create ${dbName ? dbName : ''}`);
 
@@ -214,7 +217,7 @@ export async function env(
 							const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
 
 							tursoSetup.message(
-								`${label('Turso', TursoColorway, color.black)} Retrieving database information...`
+								`${label('Turso', TursoColorway, context.c.black)} Retrieving database information...`
 							);
 							context.debug && context.logger.debug(`Database name: ${dbFinalName}`);
 
@@ -239,7 +242,7 @@ export async function env(
 							envBuilderOpts.astroDbToken = dbToken;
 
 							tursoSetup.stop(
-								`${label('Turso', TursoColorway, color.black)} Database setup complete. New Database: ${dbFinalName}`
+								`${label('Turso', TursoColorway, context.c.black)} Database setup complete. New Database: ${dbFinalName}`
 							);
 							context.p.log.message('Database Token and Url saved to environment file.');
 						} catch (e) {
@@ -258,7 +261,7 @@ export async function env(
 				}
 			} else {
 				context.p.log.warn(
-					`${label('Warning', StudioCMSColorwayWarnBg, color.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+					`${label('Warning', StudioCMSColorwayWarnBg, context.c.black)} You will need to setup your own AstroDB and provide the URL and Token.`
 				);
 				const envBuilderStep_AstroDB = await context.p.group(
 					{
@@ -440,14 +443,14 @@ export async function env(
 
 	if (context.dryRun) {
 		context.tasks.push({
-			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping environment file creation')}`,
+			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping environment file creation')}`,
 			task: async (message) => {
 				message('Creating environment file... (skipped)');
 			},
 		});
 	} else if (_env) {
 		context.tasks.push({
-			title: color.dim('Creating environment file...'),
+			title: context.c.dim('Creating environment file...'),
 			task: async (message) => {
 				try {
 					await fs.writeFile(path.join(context.cwd, '.env'), envFileContent, {

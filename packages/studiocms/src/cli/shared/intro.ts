@@ -1,9 +1,12 @@
-import color from 'chalk';
+import { StudioCMSColorway, StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
+import { label, say } from '@withstudiocms/cli-kit/messages';
 import type { Context } from '../lib/context.js';
-import { StudioCMSColorway, StudioCMSColorwayBg, label, say } from '../lib/utils.js';
 
 export async function intro(
-	context: Pick<Context, 'welcome' | 'version' | 'username' | 'skipBanners' | 'debug' | 'logger'>
+	context: Pick<
+		Context,
+		'welcome' | 'version' | 'username' | 'skipBanners' | 'debug' | 'logger' | 'c'
+	>
 ) {
 	if (!context.skipBanners) {
 		context.debug && context.logger.debug('Printing welcome message...');
@@ -12,7 +15,7 @@ export async function intro(
 				[
 					'Welcome',
 					'to',
-					label('StudioCMS', StudioCMSColorwayBg, color.black),
+					label('StudioCMS', StudioCMSColorwayBg, context.c.black),
 					StudioCMSColorway(`v${context.version}`),
 					context.username,
 				],
