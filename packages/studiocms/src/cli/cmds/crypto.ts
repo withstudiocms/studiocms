@@ -33,6 +33,30 @@ program
 	.summary('Generate JWT token from a keyfile')
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
 	.option('-e, --exp <date-in-seconds>', 'Expiry date in seconds (>=0) from issued at (iat) time')
+	.hook('preAction', (thisCommand) => {
+		const options = thisCommand.opts();
+		if (options.claim) {
+			const invalidClaims = options.claim.filter((c: string) => !c.includes('='));
+			if (invalidClaims.length > 0) {
+				console.error(
+					`Invalid claim format: ${invalidClaims.join(', ')} - claims must be in format key=value`
+				);
+				process.exit(1);
+			}
+		}
+
+		const exp = options.exp ? Number.parseInt(options.exp) : OneYear;
+
+		if (Number.isNaN(exp)) {
+			console.error('Expiration must be a valid number');
+			process.exit(1);
+		}
+
+		if (exp < 0) {
+			console.error('Expiration must be greater than 0');
+			process.exit(1);
+		}
+	})
 	.action(async (keyFile, { claim, exp: maybeExp }) => {
 		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
 
@@ -43,6 +67,7 @@ program
 
 			const keyFilePath = new URL(keyFile, process.cwd());
 
+			// Replace actual newlines with escaped newlines for the JWT generator
 			const keyString = fs.readFileSync(keyFilePath, 'utf8').split(/\r?\n/).join('\\n');
 
 			if (!keyString) {
@@ -50,26 +75,24 @@ program
 				process.exit(1);
 			}
 
+			// Validate key format (check for a basic PEM format)
+			if (!keyString.includes('-----BEGIN') || !keyString.includes('-----END')) {
+				spinner.stop('Invalid key format. Please provide a valid PEM file');
+				process.exit(1);
+			}
+
 			spinner.message('Key Found. Getting Expire Date.');
 
 			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
-
-			if (Number.isNaN(exp)) {
-				spinner.stop('Expiration must be a valid number');
-				process.exit(1);
-			}
-
-			if (exp < 0) {
-				spinner.stop('Expiration must be greater than 0');
-				process.exit(1);
-			}
 
 			spinner.message('Expire Date set.  Generating Token.');
 
 			const safeToken = generator(keyString, claim, exp);
 
 			if (!safeToken) {
-				spinner.stop('Unable to generate token, please check logs and try again.');
+				spinner.stop(
+					'Token generation failed. This could be due to invalid key format or claim structure.'
+				);
 				process.exit(1);
 			}
 
@@ -86,7 +109,17 @@ program
 				`${label('You can now use this token where needed.', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 			);
 		} catch (err) {
-			prompts.log.error(`There was an Error generating your JWT: ${(err as Error).message}`);
+			if (err instanceof Error) {
+				if (err.message.includes('ENOENT')) {
+					prompts.log.error('Key file not found: Please check the file path and try again.');
+				} else if (err.message.includes('permission')) {
+					prompts.log.error('Permission denied: Cannot read the key file.');
+				} else {
+					prompts.log.error(`Error generating JWT: ${err.message}`);
+				}
+			} else {
+				prompts.log.error(`Unexpected error generating JWT: ${err}`);
+			}
 			process.exit(1);
 		}
 	});
