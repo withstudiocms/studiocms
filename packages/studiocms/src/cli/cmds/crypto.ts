@@ -27,7 +27,7 @@ program
 	.command('gen-jwt')
 	.argument(
 		'<key-file>',
-		'a relative path (`../keys/libsql.pem`) from the current directory to your private key file (.pem)'
+		'a relative path (e.g., `../keys/libsql.pem`) from the current directory to your private key file (.pem)'
 	)
 	.description('Generate a JWT token from a keyfile')
 	.summary('Generate JWT token from a keyfile')
@@ -52,7 +52,12 @@ program
 
 			spinner.message('Key Found. Getting Expire Date.');
 
-			const exp: number = maybeExp ? Number.parseInt(maybeExp) : OneYear;
+			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
+
+			if (exp < 0) {
+				spinner.stop('Expiration must be greater than 0');
+				process.exit(1);
+			}
 
 			spinner.message('Expire Date set.  Generating Token.');
 
