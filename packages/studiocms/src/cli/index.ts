@@ -22,7 +22,12 @@ await new Command('studiocms')
 	.command('add <plugins...>', 'Add StudioCMS plugin(s) to your project', {
 		executableFile: 'add.js',
 	})
-	.command('get-turso', 'Turso CLI Utilities', { executableFile: 'get-turso.js' })
+	.command('crypto', 'Crypto Utilities for Security', {
+		executableFile: 'crypto.js',
+	})
+	.command('get-turso', 'Install the Turso CLI', {
+		executableFile: 'get-turso.js',
+	})
 	.command('init', 'Initialize the StudioCMS project after new installation.', {
 		executableFile: 'init.js',
 	})
