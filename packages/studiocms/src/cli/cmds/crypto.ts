@@ -91,7 +91,7 @@ program
 
 			if (!safeToken) {
 				spinner.stop(
-					'Token generation failed. This could be due to invalid key format or claim structure.'
+					'Token generation failed. Please check the key file, claim structure, and parameters.'
 				);
 				process.exit(1);
 			}
