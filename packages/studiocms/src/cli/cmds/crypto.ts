@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import * as prompts from '@clack/prompts';
-import { Command, Option } from '@commander-js/extra-typings';
+import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import {
 	CLITitle,
@@ -30,7 +30,7 @@ program
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
 	.option('-e, --exp <date-in-seconds>', 'expiry date in seconds from issued at (iat) time')
 	.action(async (keyFile, { claim, exp: maybeExp }) => {
-		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.black));
+		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
 
 		const spinner = prompts.spinner();
 

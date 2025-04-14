@@ -1,3 +1,12 @@
+/*
+ * Based on `jwt-simple`
+ *
+ * JSON Web Token encode and decode module for node.js
+ *
+ * Copyright(c) 2011 Kazuhito Hokamura
+ * MIT Licensed
+ */
+
 import crypto from 'node:crypto';
 
 /**
