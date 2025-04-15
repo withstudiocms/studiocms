@@ -1477,7 +1477,7 @@ export const studiocms = defineIntegration({
 						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['three'],
+								exclude: ['three', 'virtual:astro:assets/fonts/internal'],
 							},
 							plugins: [inlineModPlugin()],
 						},
