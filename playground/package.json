@@ -21,7 +21,7 @@
     "@astrojs/db": "catalog:",
     "@astrojs/node": "catalog:",
     "@astrojs/web-vitals": "catalog:",
-    "astro": "catalog:",
+    "astro": "https://pkg.pr.new/astro@13627",
     "studiocms": "workspace:*",
     "sharp": "catalog:",
     "@studiocms/blog": "workspace:*",

@@ -30,9 +30,6 @@ catalogs:
     '@types/node':
       specifier: ^22.0.0
       version: 22.10.2
-    astro:
-      specifier: ^5.7.0
-      version: 5.7.0
     astro-integration-kit:
       specifier: ^0.18
       version: 0.18.0
@@ -455,13 +452,13 @@ importers:
         version: 0.14.11(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.12)(react@19.0.0)
       '@astrojs/node':
         specifier: 'catalog:'
-        version: 9.1.3(astro@5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
+        version: 9.1.3(astro@https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
       '@astrojs/web-vitals':
         specifier: 'catalog:'
         version: 3.0.1(@astrojs/db@0.14.11(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)(@types/react@19.0.12)(react@19.0.0))
       '@sentry/astro':
         specifier: 'catalog:'
-        version: 9.2.0(astro@5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
+        version: 9.2.0(astro@https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/studiocms_blog
@@ -469,8 +466,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/studiocms_devapps
       astro:
-        specifier: 'catalog:'
-        version: 5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
+        specifier: https://pkg.pr.new/astro@13627
+        version: https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
       sharp:
         specifier: 'catalog:'
         version: 0.34.0
@@ -520,6 +517,7 @@ packages:
 
   '@astrojs/node@9.1.3':
     resolution: {integrity: sha512-YcVxEmeZU8khNdrPYNPN3j//4tYPM+Pw6CthAJ6VE/bw65qEX7ErMRApalY2tibc3YhCeHMmsO9rXGhyW0NNyA==}
+    version: 9.1.3
     peerDependencies:
       astro: ^5.3.0
 
@@ -1745,6 +1743,7 @@ packages:
 
   '@sentry/astro@9.2.0':
     resolution: {integrity: sha512-lDUFolwyCKnYntQ0tWGwfFipBC0Hj2yIX6yPTLX3hA5HzJcs0sgN3v6mNDkL3w0hMyZg/MjZ9LO1f2hXNFhX/w==}
+    version: 9.2.0
     engines: {node: '>=18.19.1'}
     peerDependencies:
       astro: '>=3.x || >=4.0.0-beta || >=5.x'
@@ -2150,6 +2149,12 @@ packages:
 
   astro@5.7.0:
     resolution: {integrity: sha512-LxvWFlCQSxRLqvtCfZ/LFzlaHcvX++qtq0NrRmwtDmrZhAyHOoVfLkxEE0STKgn0wjLTuETyBrgCBWe2eb68/A==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
+    hasBin: true
+
+  astro@https://pkg.pr.new/astro@13627:
+    resolution: {tarball: https://pkg.pr.new/astro@13627}
+    version: 5.7.0
     engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -4896,10 +4901,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.1.3(astro@5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))':
+  '@astrojs/node@9.1.3(astro@https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))':
     dependencies:
       '@astrojs/internal-helpers': 0.6.1
-      astro: 5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
+      astro: https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
       send: 1.1.0
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -6234,13 +6239,13 @@ snapshots:
       '@sentry-internal/browser-utils': 9.2.0
       '@sentry/core': 9.2.0
 
-  '@sentry/astro@9.2.0(astro@5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))':
+  '@sentry/astro@9.2.0(astro@https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0))':
     dependencies:
       '@sentry/browser': 9.2.0
       '@sentry/core': 9.2.0
       '@sentry/node': 9.2.0
       '@sentry/vite-plugin': 2.22.7
-      astro: 5.7.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
+      astro: https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -6933,6 +6938,105 @@ snapshots:
       zod: 3.24.2
       zod-to-json-schema: 3.24.5(zod@3.24.2)
       zod-to-ts: 1.2.0(typescript@5.7.3)(zod@3.24.2)
+    optionalDependencies:
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@types/node'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/kv'
+      - aws4fetch
+      - db0
+      - encoding
+      - idb-keyval
+      - ioredis
+      - jiti
+      - less
+      - lightningcss
+      - rollup
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - typescript
+      - uploadthing
+      - yaml
+
+  astro@https://pkg.pr.new/astro@13627(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.34.8)(typescript@5.7.2)(yaml@2.7.0):
+    dependencies:
+      '@astrojs/compiler': 2.11.0
+      '@astrojs/internal-helpers': 0.6.1
+      '@astrojs/markdown-remark': 6.3.1
+      '@astrojs/telemetry': 3.2.0
+      '@capsizecss/metrics': 3.5.0
+      '@capsizecss/unpack': 2.4.0
+      '@oslojs/encoding': 1.1.0
+      '@rollup/pluginutils': 5.1.4(rollup@4.34.8)
+      acorn: 8.14.1
+      aria-query: 5.3.2
+      axobject-query: 4.1.0
+      boxen: 8.0.1
+      ci-info: 4.2.0
+      clsx: 2.1.1
+      common-ancestor-path: 1.0.1
+      cookie: 1.0.2
+      cssesc: 3.0.0
+      debug: 4.4.0
+      deterministic-object-hash: 2.0.2
+      devalue: 5.1.1
+      diff: 5.2.0
+      dlv: 1.1.3
+      dset: 3.1.4
+      es-module-lexer: 1.6.0
+      esbuild: 0.25.0
+      estree-walker: 3.0.3
+      flattie: 1.1.1
+      github-slugger: 2.0.0
+      html-escaper: 3.0.3
+      http-cache-semantics: 4.1.1
+      js-yaml: 4.1.0
+      kleur: 4.1.5
+      magic-string: 0.30.17
+      magicast: 0.3.5
+      mrmime: 2.0.1
+      neotraverse: 0.6.18
+      p-limit: 6.2.0
+      p-queue: 8.1.0
+      package-manager-detector: 1.1.0
+      picomatch: 4.0.2
+      prompts: 2.4.2
+      rehype: 13.0.2
+      semver: 7.7.1
+      shiki: 3.2.1
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.12
+      tsconfck: 3.1.5(typescript@5.7.2)
+      ultrahtml: 1.6.0
+      unifont: 0.1.7
+      unist-util-visit: 5.0.0
+      unstorage: 1.15.0
+      vfile: 6.0.3
+      vite: 6.2.6(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0)
+      vitefu: 1.0.6(vite@6.2.6(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))
+      xxhash-wasm: 1.1.0
+      yargs-parser: 21.1.1
+      yocto-spinner: 0.2.1
+      zod: 3.24.2
+      zod-to-json-schema: 3.24.5(zod@3.24.2)
+      zod-to-ts: 1.2.0(typescript@5.7.2)(zod@3.24.2)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
