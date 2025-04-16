@@ -3,7 +3,7 @@ import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../../lib/context.js';
-import { tsPermissions, tsUsers, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
+import { Permissions, Users, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
 import { createUserAvatar } from '../utils/avatar.js';
 import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
 import { hashPassword } from '../utils/password.js';
@@ -26,7 +26,7 @@ export async function libsqlCreateUsers(context: Context) {
 	// Environment variables are already checked by checkRequiredEnvVars
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
-	const currentUsers = await db.select().from(tsUsers);
+	const currentUsers = await db.select().from(Users);
 
 	const inputData = await context.p.group(
 		{
@@ -118,7 +118,7 @@ export async function libsqlCreateUsers(context: Context) {
 
 	const newUserId = crypto.randomUUID();
 
-	const newUser: typeof tsUsers.$inferInsert = {
+	const newUser: typeof Users.$inferInsert = {
 		id: newUserId,
 		name,
 		username,
@@ -129,7 +129,7 @@ export async function libsqlCreateUsers(context: Context) {
 		avatar: await createUserAvatar(email),
 	};
 
-	const newRank: typeof tsPermissions.$inferInsert = {
+	const newRank: typeof Permissions.$inferInsert = {
 		user: newUserId,
 		rank,
 	};
@@ -147,8 +147,8 @@ export async function libsqlCreateUsers(context: Context) {
 			task: async (message) => {
 				try {
 					const [insertedUser, insertedRank] = await db.batch([
-						db.insert(tsUsers).values(newUser).returning(),
-						db.insert(tsPermissions).values(newRank).returning(),
+						db.insert(Users).values(newUser).returning(),
+						db.insert(Permissions).values(newRank).returning(),
 					]);
 
 					if (insertedUser.length === 0 || insertedRank.length === 0) {
