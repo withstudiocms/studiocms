@@ -10,7 +10,7 @@ body {
 	scrollbar-width: thin;
 	display: flex;
 	align-items: center;
-	font-family: "Onest Variable", sans-serif;
+	font-family: var(--scms-font-onest);
 }
 
 main {

@@ -1,10 +1,9 @@
 ---
 import 'studiocms:ui/global-css';
-import '@fontsource-variable/onest/index.css';
 import '../../styles/authlayout.css';
+import { Font } from 'astro:assets';
 import { Generator } from 'studiocms:components';
 import { Toaster } from 'studiocms:ui/components';
-import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import OAuthButtonStack from '../../components/auth/OAuthButtonStack.astro';
 import StaticAuthCheck from '../../components/auth/StaticAuthCheck.astro';
 import FallbackCanvas from './FallbackCanvas.astro';
@@ -46,7 +45,7 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 	<ThemeManager />
 
     {/* Fonts */}
-    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
+  <Font cssVariable="--scms-font-onest" preload />
 </head>
   <body>
 	<Toaster />

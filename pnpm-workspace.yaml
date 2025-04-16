@@ -1,5 +1,5 @@
 catalog:
-  '@astrojs/db': ^0.14.10
+  '@astrojs/db': ^0.14.11
   '@astrojs/rss': ^4.0.11
   '@astrojs/react': ^4.2.1
   '@astrojs/check': ^0.9.4
@@ -8,18 +8,18 @@ catalog:
   '@types/node': ^22.0.0
   "@studiocms/ui": ^0.4.16
   "@sentry/astro": ^9.2.0
-  astro: ^5.6.1
+  astro: ^5.7.1
   astro-integration-kit: ^0.18
   sharp: ^0.34.0
   typescript: ^5.7
-  vite: ^6.2.5
+  vite: ^6.2.6
 
 catalogs:
   min:
-    astro: ^5.6.0
+    astro: ^5.7.1
     '@astrojs/db': ^0.14.10
     '@astrojs/markdown-remark': ^6.3.1
-    vite: ^6.2.5
+    vite: ^6.2.6
 
 packages:
   - "packages/*"

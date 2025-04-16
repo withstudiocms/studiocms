@@ -1,5 +1,5 @@
 * {
-	font-family: "Onest Variable", sans-serif;
+	font-family: var(--scms-font-onest);
 }
 
 html {

@@ -3,9 +3,8 @@ import 'studiocms:ui/global-css';
 import '../../styles/dashboard-base.css';
 import '../../styles/dashboard-diff.css';
 import '../../styles/dashboard-code.css';
-import '@fontsource-variable/onest/index.css';
+import { Font } from 'astro:assets';
 import { Generator } from 'studiocms:components';
-import onestWoff2 from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import ThemeManager from './ThemeManager.astro';
 
 export interface Props {
@@ -37,5 +36,5 @@ const { title, description } = Astro.props;
   <ThemeManager />
 
   {/* Fonts */}
-  <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href={onestWoff2} />
+  <Font cssVariable="--scms-font-onest" preload />
 </head>

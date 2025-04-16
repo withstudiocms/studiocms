@@ -1,4 +1,3 @@
-import { file } from 'astro/loaders';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 

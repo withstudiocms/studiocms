@@ -128,7 +128,6 @@
 		"@clack/prompts": "0.9.1",
 		"@cloudinary/url-gen": "^1.21.0",
 		"@commander-js/extra-typings": "^13.0.0",
-		"@fontsource-variable/onest": "5.1.1",
 		"@iconify-json/flat-color-icons": "^1.2.1",
 		"@iconify-json/simple-icons": "^1.2.23",
 		"@inox-tools/inline-mod": "^2.0.3",
