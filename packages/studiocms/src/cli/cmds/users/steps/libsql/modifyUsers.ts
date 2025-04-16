@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../../lib/context.js';
-import { tsPermissions, tsUsers, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
+import { Permissions, Users, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
 import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
 import { hashPassword } from '../utils/password.js';
 
@@ -30,8 +30,8 @@ export async function libsqlModifyUsers(context: Context) {
 	const allUsers: { value: string; label: string; hint?: string }[] = [];
 
 	const [currentUsers, currentPermissions] = await db.batch([
-		db.select().from(tsUsers),
-		db.select().from(tsPermissions),
+		db.select().from(Users),
+		db.select().from(Permissions),
 	]);
 
 	if (currentUsers.length === 0) {
@@ -98,9 +98,9 @@ export async function libsqlModifyUsers(context: Context) {
 					task: async (message) => {
 						try {
 							await db
-								.update(tsUsers)
+								.update(Users)
 								.set({ name: newDisplayName })
-								.where(eq(tsUsers.id, userSelection));
+								.where(eq(Users.id, userSelection));
 
 							message('User modified successfully');
 						} catch (e) {
@@ -151,9 +151,9 @@ export async function libsqlModifyUsers(context: Context) {
 					task: async (message) => {
 						try {
 							await db
-								.update(tsUsers)
+								.update(Users)
 								.set({ username: newUserName })
-								.where(eq(tsUsers.id, userSelection));
+								.where(eq(Users.id, userSelection));
 
 							message('User modified successfully');
 						} catch (e) {
@@ -220,9 +220,9 @@ export async function libsqlModifyUsers(context: Context) {
 							const hashedPassword = await hashPassword(newPassword, CMS_ENCRYPTION_KEY as string);
 
 							await db
-								.update(tsUsers)
+								.update(Users)
 								.set({ password: hashedPassword })
-								.where(eq(tsUsers.id, userSelection));
+								.where(eq(Users.id, userSelection));
 
 							message('User modified successfully');
 						} catch (e) {
