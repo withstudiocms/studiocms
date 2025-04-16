@@ -1,10 +1,9 @@
+import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
-import color from 'chalk';
 import dotenv from 'dotenv';
 import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
 import type { Context } from '../../../../lib/context.js';
 import { tsPermissions, tsUsers, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
-import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '../../../../lib/utils.js';
 import { createUserAvatar } from '../utils/avatar.js';
 import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
 import { hashPassword } from '../utils/password.js';
@@ -137,14 +136,14 @@ export async function libsqlCreateUsers(context: Context) {
 
 	if (context.dryRun) {
 		context.tasks.push({
-			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${color.dim('Skipping user creation')}`,
+			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping user creation')}`,
 			task: async (message) => {
 				message('Creating user... (skipped)');
 			},
 		});
 	} else {
 		context.tasks.push({
-			title: color.dim('Creating user...'),
+			title: context.c.dim('Creating user...'),
 			task: async (message) => {
 				try {
 					const [insertedUser, insertedRank] = await db.batch([

@@ -1,5 +1,4 @@
-import { Option } from '@commander-js/extra-typings';
-import { Command } from '../lib/commander.js';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
 import { initCMD } from './init/index.js';
 
 await new Command('init')

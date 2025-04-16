@@ -14,7 +14,12 @@ const config: KnipConfig = {
 			project: '**/*.js',
 		},
 		'packages/studiocms': {
-			ignoreDependencies: ['@clack/core', 'studiocms-dashboard'],
+			ignoreDependencies: [
+				'@clack/core',
+				'@commander-js/extra-typings',
+				'studiocms-dashboard',
+				'commander',
+			],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {

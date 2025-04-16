@@ -42,7 +42,7 @@
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
-	font-family: "Onest Variable", sans-serif;
+	font-family: var(--scms-font-onest);
 	height: 35px;
 	padding: 5px 10px;
 }

@@ -22,7 +22,7 @@ jobs:
       env:
         NODE_OPTIONS: "--max_old_space_size=4096"
       name: Run Knip Linter
-      if: github.repository == 'withstudiocms/studiocms'
+      if: github.event.pull_request.head.repo.full_name == github.repository
       steps:
         - name: Checkout Repo
           uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4

@@ -1,7 +1,7 @@
-import color from 'chalk';
-import type { instanceCommand } from '../../lib/commander.js';
+import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
+import type { instanceCommand } from '@withstudiocms/cli-kit/commander';
+import { label } from '@withstudiocms/cli-kit/messages';
 import { getContext } from '../../lib/context.js';
-import { StudioCMSColorwayBg, label } from '../../lib/utils.js';
 import { intro } from '../../shared/intro.js';
 import { env } from './steps/envBuilder.js';
 import { next } from './steps/nextSteps.js';
@@ -26,7 +26,7 @@ export async function initCMD(this: instanceCommand) {
 	context.debug && context.logger.debug('Running interactive CLI Steps...');
 
 	context.p.intro(
-		`${label('StudioCMS', StudioCMSColorwayBg, color.black)} Interactive CLI - initializing...`
+		`${label('StudioCMS', StudioCMSColorwayBg, context.c.black)} Interactive CLI - initializing...`
 	);
 
 	// Run intro

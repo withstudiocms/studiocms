@@ -1,7 +1,6 @@
-import { Option } from '@commander-js/extra-typings';
-import { Command } from './lib/commander.js';
-import pathUtil from './lib/pathUtil.js';
-import { CLITitle, readJson } from './lib/utils.js';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
+import { CLITitle } from '@withstudiocms/cli-kit/messages';
+import { pathUtil, readJson } from '@withstudiocms/cli-kit/utils';
 
 const pkgJson = readJson<{ version: string }>(new URL('../../package.json', import.meta.url));
 
@@ -19,13 +18,21 @@ await new Command('studiocms')
 	.addOption(new Option('--no-color', 'Disable color output')) // implemented by chalk
 
 	// Commands
+	.command('add <plugins...>', 'Add StudioCMS plugin(s) to your project', {
+		executableFile: 'add.js',
+	})
+	.command('crypto', 'Crypto Utilities for Security', {
+		executableFile: 'crypto.js',
+	})
+	.command('get-turso', 'Install the Turso CLI', {
+		executableFile: 'get-turso.js',
+	})
 	.command('init', 'Initialize the StudioCMS project after new installation.', {
 		executableFile: 'init.js',
 	})
 	.command('users', 'Utilities for Tweaking Users in StudioCMS', {
 		executableFile: 'users.js',
 	})
-	.command('get-turso', 'Turso CLI Utilities', { executableFile: 'get-turso.js' })
 
 	// Parse the command line arguments
 	.parseAsync();

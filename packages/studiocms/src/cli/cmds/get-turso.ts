@@ -1,5 +1,5 @@
-import { Command } from '../lib/commander.js';
-import { runInteractiveCommand } from '../lib/runExternal.js';
+import { Command } from '@withstudiocms/cli-kit/commander';
+import { runInteractiveCommand } from '@withstudiocms/cli-kit/utils';
 
 await new Command('getTurso')
 	.description('Turso CLI Utilities')

@@ -63,6 +63,7 @@
     "liverender",
     "loginsignup",
     "lunariajs",
+    "magicast",
     "Markdoc",
     "Matthiesen",
     "mdast",
@@ -84,6 +85,7 @@
     "oslojs",
     "Outerbase",
     "prototools",
+    "Proxified",
     "recentlycreated",
     "recentlycreatedpages",
     "recentlysignedupusers",
@@ -103,6 +105,7 @@
     "studiocms",
     "studiocmsenv",
     "suneditor",
+    "tinyexec",
     "TTFB",
     "turso",
     "twoslash",
@@ -116,6 +119,7 @@
     "webvitals",
     "withastro",
     "withstudiocms",
+    "yocto",
     "yourname"
   ]
 }
