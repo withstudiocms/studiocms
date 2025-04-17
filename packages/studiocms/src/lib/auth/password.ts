@@ -1,4 +1,5 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
+import crypto from 'node:crypto';
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
@@ -42,7 +43,7 @@ function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buf
  *
  * @deprecated
  */
-async function legacyHashPassword(password: string): Promise<string> {
+async function legacy0HashPassword(password: string): Promise<string> {
 	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
 	return hashedPassword.toString();
 }
@@ -53,9 +54,10 @@ async function legacyHashPassword(password: string): Promise<string> {
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
-export async function hashPassword(password: string): Promise<string> {
-	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
-	return `gen1:${hashedPassword.toString('hex')}`;
+export async function hashPassword(password: string, _salt?: string): Promise<string> {
+	const salt = _salt || crypto.randomBytes(16).toString('hex');
+	const hashedPassword = await scrypt(password + salt, CMS_ENCRYPTION_KEY, 64, {});
+	return `gen1.0:${salt}:${hashedPassword.toString('hex')}`;
 }
 
 /**
@@ -67,8 +69,10 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
 	// Remove this when legacyHashPassword is removed.
-	if (!hash.startsWith('gen1:')) return hash === (await legacyHashPassword(password));
-	return hash === (await hashPassword(password));
+	if (!hash.startsWith('gen1.0:')) return hash === (await legacy0HashPassword(password));
+	// For gen1 format with salt (format: gen1.0:salt:hash)
+	const [_prefix, salt] = hash.split(':');
+	return hash === (await hashPassword(password, salt));
 }
 
 /**
