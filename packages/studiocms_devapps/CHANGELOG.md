@@ -1,5 +1,12 @@
 # @studiocms/devapps
 
+## 0.1.0-beta.16
+
+### Patch Changes
+
+- Updated dependencies [[`1256340`](https://github.com/withstudiocms/studiocms/commit/1256340864ede18cf1e066011b87e13cc16d1c9e), [`ec92a2b`](https://github.com/withstudiocms/studiocms/commit/ec92a2b52588c0db6feca08bc2792cd7701db79e), [`0536040`](https://github.com/withstudiocms/studiocms/commit/05360407c40674fd6045468a322f066a7284c6c9), [`e6276f3`](https://github.com/withstudiocms/studiocms/commit/e6276f3389225109aeda015f9ed77b99a69b3239), [`1b63cc5`](https://github.com/withstudiocms/studiocms/commit/1b63cc5ad70b50c8c7ff8679bd0e390651b1c2b3), [`1f5c3d7`](https://github.com/withstudiocms/studiocms/commit/1f5c3d7f3b9ae9094b06cd3092c04da9af0b5106)]:
+  - studiocms@0.1.0-beta.16
+
 ## 0.1.0-beta.15
 
 ### Patch Changes
