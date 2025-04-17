@@ -1,6 +1,7 @@
 name: CI - Snapshot Release on PRs
 
 on: 
+  workflow_dispatch:
   pull_request:
     paths:
         - 'packages/**'
