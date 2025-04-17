@@ -36,15 +36,26 @@ function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buf
 	});
 }
 
+// TODO: Remove this system in a future update
 /**
- * Hashes a plain text password using bcrypt.
+ * Old Hash Password function
+ *
+ * @deprecated
+ */
+async function legacyHashPassword(password: string): Promise<string> {
+	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
+	return hashedPassword.toString();
+}
+
+/**
+ * Hashes a plain text password using script.
  *
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
 export async function hashPassword(password: string): Promise<string> {
 	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
-	return hashedPassword.toString();
+	return `gen1:${hashedPassword.toString('hex')}`;
 }
 
 /**
@@ -55,8 +66,9 @@ export async function hashPassword(password: string): Promise<string> {
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
-	const passwordHash = await hashPassword(password);
-	return passwordHash === hash;
+	// Remove this when legacyHashPassword is removed.
+	if (!hash.startsWith('gen1:')) return hash === (await legacyHashPassword(password));
+	return hash === (await hashPassword(password));
 }
 
 /**
