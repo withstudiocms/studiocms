@@ -31,6 +31,7 @@ export interface GridItemInput {
 	 * Optional.
 	 */
 	header?: {
+		// TODO: Add support for i18n for Dashboard Grid components
 		/**
 		 * The title of the header.
 		 */
