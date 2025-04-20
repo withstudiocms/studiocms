@@ -1,4 +1,4 @@
-import { scrypt as nodeScrypt } from 'node:crypto';
+import crypto, { scrypt as nodeScrypt } from 'node:crypto';
 
 export async function checkPassword(hashPrefix: string, hash: string) {
 	return fetch(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
@@ -64,6 +64,7 @@ function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buf
  * @returns A promise that resolves to the hashed password.
  */
 export async function hashPassword(password: string, CMS_ENCRYPTION_KEY: string): Promise<string> {
-	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
-	return hashedPassword.toString();
+	const salt = crypto.randomBytes(16).toString('hex');
+	const hashedPassword = await scrypt(password + salt, CMS_ENCRYPTION_KEY, 64, {});
+	return `gen1.0:${salt}:${hashedPassword.toString('hex')}`;
 }
