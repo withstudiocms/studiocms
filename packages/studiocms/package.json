@@ -1,6 +1,6 @@
 {
 	"name": "studiocms",
-	"version": "0.1.0-beta.15",
+	"version": "0.1.0-beta.16",
 	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
 	"author": {
 		"name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
@@ -11,7 +11,12 @@
 		"url": "git+https://github.com/withstudiocms/studiocms.git",
 		"directory": "packages/studiocms"
 	},
-	"contributors": ["Adammatthiesen", "jdtjenkins", "dreyfus92", "code.spirit"],
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
 	"license": "MIT",
 	"keywords": [
 		"cms",
