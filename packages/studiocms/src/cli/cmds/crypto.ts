@@ -8,6 +8,7 @@ import {
 import { Command, Option } from '@withstudiocms/cli-kit/commander';
 import { getBaseContext } from '@withstudiocms/cli-kit/context';
 import { CLITitle, boxen, label } from '@withstudiocms/cli-kit/messages';
+import { logger } from '../lib/utils.js';
 import { OneYear } from './crypto/consts.js';
 import { generator } from './crypto/generator.js';
 
@@ -58,13 +59,14 @@ program
 	})
 	.action(async (keyFile, { claim, exp: maybeExp, debug }) => {
 		if (debug) {
-			console.log('Debug mode enabled');
-			console.log('Key file:', keyFile);
-			console.log('Claim:', claim);
-			console.log('Expiration:', maybeExp);
+			logger.debug('Debug mode enabled');
+			logger.debug(`Key file: ${keyFile}`);
+			logger.debug(`Claim: ${claim}`);
+			logger.debug(`Expiration: ${maybeExp}`);
 		}
 
-		if (debug) console.log('Getting context');
+		if (debug) logger.debug('Getting context');
+
 		const context = await getBaseContext({});
 		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, context.c.bold));
 
@@ -73,12 +75,14 @@ program
 		try {
 			spinner.start('Getting Key from keyFile');
 
-			if (debug) console.log('Key file path:', keyFile);
+			if (debug) logger.debug(`Key file path: ${keyFile}`);
+			if (debug) logger.debug(`Key file exists: ${fs.existsSync(keyFile)}`);
+			if (debug) logger.debug(`Key file is a file: ${fs.statSync(keyFile).isFile()}`);
 
 			// Replace actual newlines with escaped newlines for the JWT generator
 			const keyString = fs.readFileSync(keyFile, 'utf8').split(/\r?\n/).join('\\n');
 
-			if (debug) console.log('Key string:', keyString);
+			if (debug) logger.debug(`Key string: ${keyString}`);
 
 			if (!keyString) {
 				spinner.stop('Key not found, or invalid');
@@ -91,13 +95,13 @@ program
 				process.exit(1);
 			}
 
-			if (debug) console.log('Key string validated');
+			if (debug) logger.debug('Key string validated');
 
 			spinner.message('Key Found. Getting Expire Date.');
 
 			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
 
-			if (debug) console.log('Expiration:', exp);
+			if (debug) logger.debug(`Expiration: ${exp}`);
 
 			spinner.message('Expire Date set.  Generating Token.');
 
