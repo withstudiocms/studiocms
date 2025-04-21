@@ -5,7 +5,7 @@ import {
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfoBg,
 } from '@withstudiocms/cli-kit/colors';
-import { Command } from '@withstudiocms/cli-kit/commander';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
 import { getBaseContext } from '@withstudiocms/cli-kit/context';
 import { CLITitle, boxen, label } from '@withstudiocms/cli-kit/messages';
 import { OneYear } from './crypto/consts.js';
@@ -31,6 +31,7 @@ program
 	.summary('Generate JWT token from a keyfile')
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
 	.option('-e, --exp <date-in-seconds>', 'Expiry date in seconds (>=0) from issued at (iat) time')
+	.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 	.hook('preAction', (thisCommand) => {
 		const options = thisCommand.opts();
 		if (options.claim) {
@@ -55,7 +56,15 @@ program
 			process.exit(1);
 		}
 	})
-	.action(async (keyFile, { claim, exp: maybeExp }) => {
+	.action(async (keyFile, { claim, exp: maybeExp, debug }) => {
+		if (debug) {
+			console.log('Debug mode enabled');
+			console.log('Key file:', keyFile);
+			console.log('Claim:', claim);
+			console.log('Expiration:', maybeExp);
+		}
+
+		if (debug) console.log('Getting context');
 		const context = await getBaseContext({});
 		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, context.c.bold));
 
@@ -64,10 +73,12 @@ program
 		try {
 			spinner.start('Getting Key from keyFile');
 
-			const keyFilePath = new URL(keyFile, process.cwd());
+			if (debug) console.log('Key file path:', keyFile);
 
 			// Replace actual newlines with escaped newlines for the JWT generator
-			const keyString = fs.readFileSync(keyFilePath, 'utf8').split(/\r?\n/).join('\\n');
+			const keyString = fs.readFileSync(keyFile, 'utf8').split(/\r?\n/).join('\\n');
+
+			if (debug) console.log('Key string:', keyString);
 
 			if (!keyString) {
 				spinner.stop('Key not found, or invalid');
@@ -80,9 +91,13 @@ program
 				process.exit(1);
 			}
 
+			if (debug) console.log('Key string validated');
+
 			spinner.message('Key Found. Getting Expire Date.');
 
 			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
+
+			if (debug) console.log('Expiration:', exp);
 
 			spinner.message('Expire Date set.  Generating Token.');
 
