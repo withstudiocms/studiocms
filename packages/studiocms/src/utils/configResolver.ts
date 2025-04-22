@@ -1,6 +1,6 @@
 import { defineUtility } from 'astro-integration-kit';
 import { z } from 'astro/zod';
-import lo from 'lodash';
+import { deepmerge } from 'deepmerge-ts';
 import { StudioCMSCoreError } from '../errors.js';
 import {
 	type StudioCMSConfig,
@@ -68,7 +68,7 @@ function parseAndMerge<T extends z.ZodTypeAny>(
 	try {
 		const ZeroDefaultsSchema = deepRemoveDefaults(schema);
 		const parsedConfigFile = ZeroDefaultsSchema.parse(studioCMSConfigFile);
-		return lo.merge({}, inlineConfig, parsedConfigFile);
+		return deepmerge(inlineConfig, parsedConfigFile);
 	} catch (error) {
 		if (error instanceof Error) {
 			throw new StudioCMSCoreError(
