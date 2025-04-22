@@ -5,9 +5,10 @@ import {
 	StudioCMSColorwayBg,
 	StudioCMSColorwayInfoBg,
 } from '@withstudiocms/cli-kit/colors';
-import { Command } from '@withstudiocms/cli-kit/commander';
+import { Command, Option } from '@withstudiocms/cli-kit/commander';
 import { getBaseContext } from '@withstudiocms/cli-kit/context';
 import { CLITitle, boxen, label } from '@withstudiocms/cli-kit/messages';
+import { logger } from '../lib/utils.js';
 import { OneYear } from './crypto/consts.js';
 import { generator } from './crypto/generator.js';
 
@@ -31,6 +32,7 @@ program
 	.summary('Generate JWT token from a keyfile')
 	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
 	.option('-e, --exp <date-in-seconds>', 'Expiry date in seconds (>=0) from issued at (iat) time')
+	.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 	.hook('preAction', (thisCommand) => {
 		const options = thisCommand.opts();
 		if (options.claim) {
@@ -55,7 +57,16 @@ program
 			process.exit(1);
 		}
 	})
-	.action(async (keyFile, { claim, exp: maybeExp }) => {
+	.action(async (keyFile, { claim, exp: maybeExp, debug }) => {
+		if (debug) {
+			logger.debug('Debug mode enabled');
+			logger.debug(`Key file: ${keyFile}`);
+			logger.debug(`Claim: ${claim}`);
+			logger.debug(`Expiration: ${maybeExp}`);
+		}
+
+		if (debug) logger.debug('Getting context');
+
 		const context = await getBaseContext({});
 		prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, context.c.bold));
 
@@ -64,10 +75,14 @@ program
 		try {
 			spinner.start('Getting Key from keyFile');
 
-			const keyFilePath = new URL(keyFile, process.cwd());
+			if (debug) logger.debug(`Key file path: ${keyFile}`);
+			if (debug) logger.debug(`Key file exists: ${fs.existsSync(keyFile)}`);
+			if (debug) logger.debug(`Key file is a file: ${fs.statSync(keyFile).isFile()}`);
 
 			// Replace actual newlines with escaped newlines for the JWT generator
-			const keyString = fs.readFileSync(keyFilePath, 'utf8').split(/\r?\n/).join('\\n');
+			const keyString = fs.readFileSync(keyFile, 'utf8').split(/\r?\n/).join('\\n');
+
+			if (debug) logger.debug(`Key string: ${keyString}`);
 
 			if (!keyString) {
 				spinner.stop('Key not found, or invalid');
@@ -80,9 +95,13 @@ program
 				process.exit(1);
 			}
 
+			if (debug) logger.debug('Key string validated');
+
 			spinner.message('Key Found. Getting Expire Date.');
 
 			const exp = maybeExp ? Number.parseInt(maybeExp) : OneYear;
+
+			if (debug) logger.debug(`Expiration: ${exp}`);
 
 			spinner.message('Expire Date set.  Generating Token.');
 

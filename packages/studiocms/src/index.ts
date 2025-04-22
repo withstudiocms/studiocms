@@ -1460,8 +1460,8 @@ export const studiocms = defineIntegration({
 						experimental: {
 							fonts: [
 								{
-									provider: fontProviders.fontsource(),
-									name: 'Onest Variable',
+									provider: fontProviders.google(),
+									name: 'Onest',
 									cssVariable: '--scms-font-onest',
 									weights: ['100 900'],
 								},

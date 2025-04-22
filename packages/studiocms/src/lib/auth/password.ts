@@ -1,4 +1,5 @@
 import { scrypt as nodeScrypt } from 'node:crypto';
+import crypto from 'node:crypto';
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
@@ -36,15 +37,27 @@ function scrypt(...opts: RemoveLast<Parameters<typeof nodeScrypt>>): Promise<Buf
 	});
 }
 
+// TODO: Remove this system in a future update
 /**
- * Hashes a plain text password using bcrypt.
+ * Old Hash Password function
+ *
+ * @deprecated
+ */
+async function legacy0HashPassword(password: string): Promise<string> {
+	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
+	return hashedPassword.toString();
+}
+
+/**
+ * Hashes a plain text password using script.
  *
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
-export async function hashPassword(password: string): Promise<string> {
-	const hashedPassword = await scrypt(password, CMS_ENCRYPTION_KEY, 64, {});
-	return hashedPassword.toString();
+export async function hashPassword(password: string, _salt?: string): Promise<string> {
+	const salt = _salt || crypto.randomBytes(16).toString('hex');
+	const hashedPassword = await scrypt(password + salt, CMS_ENCRYPTION_KEY, 64, {});
+	return `gen1.0:${salt}:${hashedPassword.toString('hex')}`;
 }
 
 /**
@@ -55,8 +68,11 @@ export async function hashPassword(password: string): Promise<string> {
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
-	const passwordHash = await hashPassword(password);
-	return passwordHash === hash;
+	// Remove this when legacyHashPassword is removed.
+	if (!hash.startsWith('gen1.0:')) return hash === (await legacy0HashPassword(password));
+	// For gen1 format with salt (format: gen1.0:salt:hash)
+	const [_prefix, salt] = hash.split(':');
+	return hash === (await hashPassword(password, salt));
 }
 
 /**

@@ -1,5 +1,23 @@
 # studiocms
 
+## 0.1.0-beta.16
+
+### Patch Changes
+
+- [#563](https://github.com/withstudiocms/studiocms/pull/563) [`1256340`](https://github.com/withstudiocms/studiocms/commit/1256340864ede18cf1e066011b87e13cc16d1c9e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new CLI functionality to generate JWT tokens usable for custom sqld servers
+
+- [#571](https://github.com/withstudiocms/studiocms/pull/571) [`ec92a2b`](https://github.com/withstudiocms/studiocms/commit/ec92a2b52588c0db6feca08bc2792cd7701db79e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update password system
+
+- [#557](https://github.com/withstudiocms/studiocms/pull/557) [`0536040`](https://github.com/withstudiocms/studiocms/commit/05360407c40674fd6045468a322f066a7284c6c9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new CLI command for StudioCMS
+
+  There is now a `studiocms add <plugin...>` command that allows you to add plugins to studiocms easily!
+
+- [#569](https://github.com/withstudiocms/studiocms/pull/569) [`e6276f3`](https://github.com/withstudiocms/studiocms/commit/e6276f3389225109aeda015f9ed77b99a69b3239) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix editing users for cli
+
+- [#566](https://github.com/withstudiocms/studiocms/pull/566) [`1b63cc5`](https://github.com/withstudiocms/studiocms/commit/1b63cc5ad70b50c8c7ff8679bd0e390651b1c2b3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - migrate cli to utilize @withstudiocms/cli-kit
+
+- [#568](https://github.com/withstudiocms/studiocms/pull/568) [`1f5c3d7`](https://github.com/withstudiocms/studiocms/commit/1f5c3d7f3b9ae9094b06cd3092c04da9af0b5106) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to Astro v5.7 and Implement new Astro Fonts feature
+
 ## 0.1.0-beta.15
 
 ### Patch Changes
