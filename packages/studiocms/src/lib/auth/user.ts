@@ -193,57 +193,48 @@ export async function getUserFromEmail(email: string): Promise<tsUsersSelect | n
  * 6. Retrieves the user's permission level from the database.
  * 7. Returns an object containing the user's login status, user information, and permission level.
  */
-export async function getUserData(Astro: AstroGlobal | APIContext): Promise<UserSessionData> {
-	const { cookies } = Astro;
+export async function getUserData(context: AstroGlobal | APIContext): Promise<UserSessionData> {
+	const getDefaultUserSession = (): UserSessionData => ({
+		isLoggedIn: false,
+		user: null,
+		permissionLevel: 'unknown',
+	});
 
-	const sessionToken = cookies.get(sessionCookieName)?.value ?? null;
+	const rankToPermissionLevel: Record<string, UserSessionData['permissionLevel']> = {
+		owner: 'owner',
+		admin: 'admin',
+		editor: 'editor',
+		visitor: 'visitor',
+	};
+
+	const sessionToken = context.cookies.get(sessionCookieName)?.value ?? null;
 
 	if (!sessionToken) {
-		return { isLoggedIn: false, user: null, permissionLevel: 'unknown' };
+		return getDefaultUserSession();
 	}
 
 	const { session, user } = await validateSessionToken(sessionToken);
 
-	if (session === null) {
-		deleteSessionTokenCookie(Astro);
-		return { isLoggedIn: false, user: null, permissionLevel: 'unknown' };
+	if (!session || !user) {
+		deleteSessionTokenCookie(context);
+		return getDefaultUserSession();
 	}
 
-	if (!user || user === null) {
-		return { isLoggedIn: false, user: null, permissionLevel: 'unknown' };
+	try {
+		const result = await studioCMS_SDK.AUTH.permission.currentStatus(user.id);
+		const permissionLevel = result?.rank
+			? rankToPermissionLevel[result.rank] || 'unknown'
+			: 'unknown';
+
+		return {
+			isLoggedIn: true,
+			user,
+			permissionLevel,
+		};
+	} catch (error) {
+		console.error('Error fetching user permission level:', error);
+		return getDefaultUserSession();
 	}
-
-	const result = await studioCMS_SDK.AUTH.permission.currentStatus(user.id);
-
-	if (!result) {
-		return { isLoggedIn: true, user, permissionLevel: 'unknown' };
-	}
-
-	let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
-
-	switch (result.rank) {
-		case 'owner':
-			permissionLevel = 'owner';
-			break;
-		case 'admin':
-			permissionLevel = 'admin';
-			break;
-		case 'editor':
-			permissionLevel = 'editor';
-			break;
-		case 'visitor':
-			permissionLevel = 'visitor';
-			break;
-		default:
-			permissionLevel = 'unknown';
-			break;
-	}
-
-	return {
-		isLoggedIn: true,
-		user,
-		permissionLevel,
-	};
 }
 
 /**
@@ -294,6 +285,8 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  * @param userData - The session data of the user, which includes their permission level.
  * @param requiredPermission - The required permission rank to be verified against the user's permission level.
  * @returns A promise that resolves to a boolean indicating whether the user's permission level meets the required rank.
+ * @deprecated
+ * This function is deprecated and will be removed in future versions. Use `getUserPermissionLevel` instead.
  */
 export async function verifyUserPermissionLevel(
 	userData: UserSessionData | CombinedUserData,
@@ -312,4 +305,55 @@ export async function verifyUserPermissionLevel(
 	}
 
 	return permissionRanksMap[requiredPermission].includes(permissionLevel);
+}
+
+/**
+ * An enumeration representing different user permission levels.
+ *
+ * The permission levels are defined as follows:
+ * - visitor: 1
+ * - editor: 2
+ * - admin: 3
+ * - owner: 4
+ * - unknown: 0
+ */
+export enum UserPermissionLevel {
+	visitor = 1,
+	editor = 2,
+	admin = 3,
+	owner = 4,
+	unknown = 0,
+}
+
+/**
+ * Retrieves the user's permission level based on their session data.
+ *
+ * @param userData - The session data of the user, which includes their permission level.
+ * @returns The user's permission level as an enum value.
+ */
+export function getUserPermissionLevel(
+	userData: UserSessionData | CombinedUserData
+): UserPermissionLevel {
+	let userPermissionLevel: AvailablePermissionRanks = 'unknown';
+	if ('permissionLevel' in userData) {
+		userPermissionLevel = userData.permissionLevel;
+	}
+	if ('permissionsData' in userData) {
+		userPermissionLevel = userData.permissionsData?.rank
+			? (userData.permissionsData.rank as AvailablePermissionRanks)
+			: 'unknown';
+	}
+
+	switch (userPermissionLevel) {
+		case 'owner':
+			return UserPermissionLevel.owner;
+		case 'admin':
+			return UserPermissionLevel.admin;
+		case 'editor':
+			return UserPermissionLevel.editor;
+		case 'visitor':
+			return UserPermissionLevel.visitor;
+		default:
+			return UserPermissionLevel.unknown;
+	}
 }
