@@ -8,7 +8,6 @@
   "scripts": {
     "build": "pnpm build:studiocms && pnpm --filter node-playground build",
     "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* build",
-    "build:docs": "pnpm build:studiocms && pnpm --filter docs build",
     "playground:dev": "pnpm --filter node-playground dev",
     "playground:push": "pnpm --filter node-playground db:push",
     "playground:preview": "pnpm --filter node-playground preview",
