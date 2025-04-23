@@ -8,7 +8,7 @@ import { getCoolifyURL } from './hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true) || 'https://next-demo.studiocms.dev',
+	site: getCoolifyURL(true) || 'https://playground.studiocms.dev',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
