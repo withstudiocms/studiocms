@@ -1,6 +1,6 @@
 {
 	"name": "studiocms",
-	"version": "0.1.0-beta.16",
+	"version": "0.1.0-beta.17",
 	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
 	"author": {
 		"name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
