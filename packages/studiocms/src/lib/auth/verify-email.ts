@@ -42,10 +42,9 @@ async function getSettings(): Promise<tsNotificationSettingsSelect> {
  * verification is enabled, otherwise `false`.
  */
 export async function isEmailVerificationEnabled(): Promise<boolean> {
-	const mailer = await isMailerEnabled();
-	if (!mailer) return false;
+	const [mailer, settings] = await Promise.all([isMailerEnabled(), getSettings()]);
 
-	const settings = await getSettings();
+	if (!mailer) return false;
 	return settings.emailVerification;
 }
 
@@ -87,6 +86,14 @@ export async function createEmailVerificationRequest(
 	return await studioCMS_SDK.AUTH.verifyEmail.create(userId);
 }
 
+const generateUrl = (base: string, path: string, params?: Record<string, string>) => {
+	const url = new URL(path, base);
+	for (const [key, value] of Object.entries(params || {})) {
+		url.searchParams.append(key, value);
+	}
+	return url;
+};
+
 /**
  * Sends a verification email to the user with the given userId.
  *
@@ -101,19 +108,17 @@ export async function sendVerificationEmail(
 	userId: string,
 	isOAuth = false
 ): Promise<MailerResponse | undefined> {
-	const enableMailer = await isMailerEnabled();
+	const [enableMailer, settings, user, config] = await Promise.all([
+		isMailerEnabled(),
+		getSettings(),
+		studioCMS_SDK.GET.databaseEntry.users.byId(userId),
+		studioCMS_SDK.GET.database.config(),
+	]);
 
-	const settings = await getSettings();
-
-	if (!enableMailer) {
+	if (!enableMailer || (isOAuth && settings.oAuthBypassVerification)) {
 		return;
 	}
 
-	if (isOAuth && settings.oAuthBypassVerification) {
-		return;
-	}
-
-	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
 	if (!user) {
 		throw new Error('User not found');
 	}
@@ -128,11 +133,10 @@ export async function sendVerificationEmail(
 		throw new Error('User does not have an email');
 	}
 
-	const config = await studioCMS_SDK.GET.database.config();
-
-	const verifyLink = new URL(StudioCMSRoutes.endpointLinks.verifyEmail, site as string);
-	verifyLink.searchParams.append('token', verificationToken.id);
-	verifyLink.searchParams.append('userId', userId);
+	const verifyLink = generateUrl(site as string, StudioCMSRoutes.endpointLinks.verifyEmail, {
+		token: verificationToken.id,
+		userId: userId,
+	});
 
 	const htmlTemplate = getTemplate('verifyEmail');
 
@@ -165,17 +169,11 @@ export async function sendVerificationEmail(
 export async function isEmailVerified(
 	user: CombinedUserData | UserSessionData | undefined
 ): Promise<boolean> {
-	const enableMailer = await isMailerEnabled();
-
 	if (!user) {
 		return false;
 	}
 
-	if (!enableMailer) {
-		return true;
-	}
-
-	const settings = await getSettings();
+	const [enableMailer, settings] = await Promise.all([isMailerEnabled(), getSettings()]);
 
 	const {
 		emailVerification,
@@ -184,7 +182,7 @@ export async function isEmailVerified(
 		requireEditorVerification,
 	} = settings;
 
-	if (!emailVerification) {
+	if (!enableMailer || !emailVerification) {
 		return true;
 	}
 

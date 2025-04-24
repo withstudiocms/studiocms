@@ -690,19 +690,145 @@ declare module 'studiocms:auth/lib/types' {
 }
 
 declare module 'studiocms:auth/lib/user' {
+	/**
+	 * Verifies if the provided username meets the required criteria.
+	 *
+	 * The username must:
+	 * - Be between 3 and 32 characters in length.
+	 * - Contain only lowercase letters, numbers, hyphens (-), and underscores (_).
+	 * - Not be considered unsafe.
+	 *
+	 * @param username - The username to verify.
+	 * @returns `true` if the username is valid, `false` otherwise.
+	 */
 	export const verifyUsernameInput: typeof import('./lib/auth/user.js').verifyUsernameInput;
+	/**
+	 * Creates a user avatar URL based on the provided email.
+	 *
+	 * This function takes an email address, processes it to generate a unique hash,
+	 * and returns a URL for the user's avatar using the Libravatar service.
+	 *
+	 * @param email - The email address of the user.
+	 * @returns A promise that resolves to the URL of the user's avatar.
+	 */
 	export const createUserAvatar: typeof import('./lib/auth/user.js').createUserAvatar;
+	/**
+	 * Creates a new local user with the provided details.
+	 *
+	 * @param name - The full name of the user.
+	 * @param username - The username for the user.
+	 * @param email - The email address of the user.
+	 * @param password - The password for the user.
+	 * @returns A promise that resolves to the newly created user record.
+	 */
 	export const createLocalUser: typeof import('./lib/auth/user.js').createLocalUser;
+	/**
+	 * Creates a new user with OAuth credentials.
+	 *
+	 * @param userFields - The fields required to create a new user.
+	 * @param oAuthFields - The OAuth provider information, including the provider name and provider user ID.
+	 * @returns The newly created user object or an error object if the creation fails.
+	 */
 	export const createOAuthUser: typeof import('./lib/auth/user.js').createOAuthUser;
+	/**
+	 * Updates the password for a user.
+	 *
+	 * This function hashes the provided password and updates the user's password
+	 * in the database with the hashed password.
+	 *
+	 * @param userId - The unique identifier of the user whose password is to be updated.
+	 * @param password - The new password to be set for the user.
+	 * @returns A promise that resolves when the password has been successfully updated.
+	 */
 	export const updateUserPassword: typeof import('./lib/auth/user.js').updateUserPassword;
+	/**
+	 * Retrieves the password hash for a given user by their user ID.
+	 *
+	 * @param userId - The unique identifier of the user whose password hash is to be retrieved.
+	 * @returns A promise that resolves to the password hash of the user.
+	 * @throws Will throw an error if the user is not found or if the user does not have a password.
+	 */
 	export const getUserPasswordHash: typeof import('./lib/auth/user.js').getUserPasswordHash;
+	/**
+	 * Retrieves a user from the database based on their email address.
+	 *
+	 * @param email - The email address of the user to retrieve.
+	 * @returns A promise that resolves to the user data if found, or null if no user is found with the given email.
+	 */
 	export const getUserFromEmail: typeof import('./lib/auth/user.js').getUserFromEmail;
+	/**
+	 * Retrieves user session data based on the provided Astro context.
+	 *
+	 * @param Astro - The Astro global object or API context containing cookies.
+	 * @returns A promise that resolves to the user session data.
+	 *
+	 * The function performs the following steps:
+	 * 1. Extracts the session token from cookies.
+	 * 2. If no session token is found, returns an object indicating the user is not logged in.
+	 * 3. Validates the session token.
+	 * 4. If the session is invalid, deletes the session token cookie and returns an object indicating the user is not logged in.
+	 * 5. If the user is not found, returns an object indicating the user is not logged in.
+	 * 6. Retrieves the user's permission level from the database.
+	 * 7. Returns an object containing the user's login status, user information, and permission level.
+	 */
 	export const getUserData: typeof import('./lib/auth/user.js').getUserData;
+	/**
+	 * A mapping of permission ranks to their respective allowed roles.
+	 *
+	 * This map defines the hierarchy of permissions, where each rank includes
+	 * all the roles of the ranks below it. For example, an 'admin' has the roles
+	 * of both 'owner' and 'admin', while an 'editor' has the roles of 'owner',
+	 * 'admin', and 'editor'.
+	 *
+	 * @property {string[]} owner - The 'owner' rank, which includes only the 'owner' role.
+	 * @property {string[]} admin - The 'admin' rank, which includes 'owner' and 'admin' roles.
+	 * @property {string[]} editor - The 'editor' rank, which includes 'owner', 'admin', and 'editor' roles.
+	 * @property {string[]} visitor - The 'visitor' rank, which includes 'owner', 'admin', 'editor', and 'visitor' roles.
+	 * @property {string[]} unknown - The 'unknown' rank, which includes all roles: 'owner', 'admin', 'editor', 'visitor', and 'unknown'.
+	 */
 	export const permissionRanksMap: typeof import('./lib/auth/user.js').permissionRanksMap;
+	/**
+	 * Verifies if the user's permission level meets the required permission rank.
+	 *
+	 * @param userData - The session data of the user, which includes their permission level.
+	 * @param requiredPermission - The required permission rank to be verified against the user's permission level.
+	 * @returns A promise that resolves to a boolean indicating whether the user's permission level meets the required rank.
+	 * @deprecated
+	 * This function is deprecated and will be removed in future versions. Use `getUserPermissionLevel` instead.
+	 */
 	export const verifyUserPermissionLevel: typeof import(
 		'./lib/auth/user.js'
 	).verifyUserPermissionLevel;
+	/**
+	 * The name of the cookie used for linking a new OAuth account.
+	 * This constant is used to identify the specific cookie that handles
+	 * the linking process for new OAuth accounts.
+	 */
 	export const LinkNewOAuthCookieName: typeof import('./lib/auth/user.js').LinkNewOAuthCookieName;
+	/**
+	 * An enumeration representing different user permission levels.
+	 *
+	 * The permission levels are defined as follows:
+	 * - visitor: 1
+	 * - editor: 2
+	 * - admin: 3
+	 * - owner: 4
+	 * - unknown: 0
+	 */
+	export enum UserPermissionLevel {
+		visitor = 1,
+		editor = 2,
+		admin = 3,
+		owner = 4,
+		unknown = 0,
+	}
+	/**
+	 * Retrieves the user's permission level based on their session data.
+	 *
+	 * @param userData - The session data of the user, which includes their permission level.
+	 * @returns The user's permission level as an enum value. `UserPermissionLevel`
+	 */
+	export const getUserPermissionLevel: typeof import('./lib/auth/user.js').getUserPermissionLevel;
 }
 
 declare module 'studiocms:auth/lib/verify-email' {
