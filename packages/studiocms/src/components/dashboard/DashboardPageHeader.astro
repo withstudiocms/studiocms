@@ -83,8 +83,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
       })
       return;
     }
-
-    const response = await sendFeelback('0ed28bbd-7aac-4ced-ae8d-56b8086c44d7', 'general-feedback-dashboard', feedbackText);
+    
+    let response;
+    try {
+      response = await sendFeelback(
+        '0ed28bbd-7aac-4ced-ae8d-56b8086c44d7',
+        'general-feedback-dashboard',
+        feedbackText
+      );
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Network error. Please check your connection and try again.',
+        type: 'danger',
+      });
+      return;
+    }
 
     if (response && 'feelbackId' in response) {
       toast({
