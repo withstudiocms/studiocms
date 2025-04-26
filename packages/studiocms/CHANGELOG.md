@@ -1,5 +1,21 @@
 # studiocms
 
+## 0.1.0-beta.17
+
+### Patch Changes
+
+- [#576](https://github.com/withstudiocms/studiocms/pull/576) [`a09257f`](https://github.com/withstudiocms/studiocms/commit/a09257ffe9fca4226af031113e427f472d6057db) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - replace lodash with deepmerge-ts
+
+- [#573](https://github.com/withstudiocms/studiocms/pull/573) [`77bd274`](https://github.com/withstudiocms/studiocms/commit/77bd274b33801e06946b3f8bcdb32ed7e950ae78) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update CLI hashing utils
+
+- [#581](https://github.com/withstudiocms/studiocms/pull/581) [`63eb2dd`](https://github.com/withstudiocms/studiocms/commit/63eb2dd922eee45542572e93a09bb1be49d2c9c3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new feedback system in the dashboard
+
+- [#580](https://github.com/withstudiocms/studiocms/pull/580) [`1662095`](https://github.com/withstudiocms/studiocms/commit/166209597fcd22b887dac9b9612e4f85e1ecc91a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize promises in middleware and update how permission levels are being processed
+
+- [#577](https://github.com/withstudiocms/studiocms/pull/577) [`e609592`](https://github.com/withstudiocms/studiocms/commit/e6095923d5d8b97e92854062e03e31785c74e542) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix Astro Fonts
+
+- [#575](https://github.com/withstudiocms/studiocms/pull/575) [`bd3b571`](https://github.com/withstudiocms/studiocms/commit/bd3b5714645a52b9f353754463ab64d59590a4be) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update keyfile path detection
+
 ## 0.1.0-beta.16
 
 ### Patch Changes
