@@ -166,6 +166,23 @@ type SCMSConfigSetupHook = z.infer<typeof studiocmsConfigHookSchema>;
 
 type PluginHook<OPT> = (options: OPT) => void | Promise<void>;
 
+const StudioCMSPluginSchemaInternal = z.array(z.custom<StudioCMSPlugin>());
+
+const exposePluginsFn = z.function(
+	z.tuple([StudioCMSPluginSchemaInternal.optional()]),
+	StudioCMSPluginSchemaInternal
+);
+
+const studiocmsPluginAstroHook = z.object({
+	exposePlugins: exposePluginsFn,
+});
+
+type SCMSPluginAstroHook = z.infer<typeof studiocmsPluginAstroHook>;
+
+export interface StudioCMSPluginHook {
+	'studiocms:plugins'?: PluginHook<SCMSPluginAstroHook>;
+}
+
 /**
  * Interface representing the base hooks for plugins in the StudioCMS system.
  */

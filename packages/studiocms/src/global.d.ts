@@ -1,4 +1,4 @@
-import type { BasePluginHooks, StudioCMSPlugin } from './schemas/plugins';
+import type { BasePluginHooks, StudioCMSPlugin, StudioCMSPluginHook } from './schemas/plugins';
 
 // The interfaces in this file can be extended by users
 declare global {
@@ -6,10 +6,6 @@ declare global {
 		export interface PluginHooks extends BasePluginHooks {}
 	}
 	namespace Astro {
-		export interface IntegrationHooks {
-			'studiocms:plugins'?: (options: {
-				exposePlugins: (opts?: StudioCMSPlugin[]) => void;
-			}) => void | Promise<void>;
-		}
+		export interface IntegrationHooks extends StudioCMSPluginHook {}
 	}
 }

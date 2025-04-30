@@ -892,7 +892,8 @@ export const studiocms = defineIntegration({
 						if (plugins) pluginsToProcess.push(...plugins);
 
 						// Resolve StudioCMS Plugins
-						for (const { studiocmsMinimumVersion, hooks, ...safeData } of pluginsToProcess) {
+						for (const plugin of pluginsToProcess) {
+							const { studiocmsMinimumVersion = '0.0.0', hooks = {}, ...safeData } = plugin;
 							// Check if the plugin has a minimum version requirement
 							const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
 
@@ -908,8 +909,8 @@ export const studiocms = defineIntegration({
 								undefined;
 							let foundPageTypes: SafePluginListItemType['pageTypes'] = undefined;
 
-							if (hooks['studiocms:astro:config']) {
-								hooks['studiocms:astro:config']({
+							if (typeof hooks['studiocms:astro:config'] === 'function') {
+								await hooks['studiocms:astro:config']({
 									logger: pluginLogger(safeData.identifier, logger),
 									// Add the plugin Integration to the Astro config
 									addIntegrations(integration) {
@@ -924,8 +925,8 @@ export const studiocms = defineIntegration({
 								});
 							}
 
-							if (hooks['studiocms:config:setup']) {
-								hooks['studiocms:config:setup']({
+							if (typeof hooks['studiocms:config:setup'] === 'function') {
+								await hooks['studiocms:config:setup']({
 									logger: pluginLogger(safeData.identifier, logger),
 
 									setDashboard({ dashboardGridItems, dashboardPages, settingsPage }) {
