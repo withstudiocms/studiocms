@@ -12,7 +12,7 @@ export const SitemapConfigSchema = z.object({
 	/**
 	 * If this is true, the plugin will enable the Sitemap
 	 */
-	triggerSitemap: z.boolean().optional().default(false),
+	triggerSitemap: z.boolean().optional(),
 
 	/**
 	 * Allows the plugin to add sitemap endpoints
@@ -31,8 +31,7 @@ export const SitemapConfigSchema = z.object({
 				sitemapXMLEndpointPath: z.string().or(z.instanceof(URL)),
 			})
 		)
-		.optional()
-		.default([]),
+		.optional(),
 });
 
 export const DashboardConfigSchema = z.object({
@@ -95,7 +94,7 @@ export type HookParameters<
 
 export interface BasePluginHooks {
 	'studiocms:astro:config': (options: {
-		addIntegrations: (opts: { integration: AstroIntegration | AstroIntegration[] }) => void;
+		addIntegrations: (integration: AstroIntegration | AstroIntegration[]) => void;
 	}) => void | Promise<void>;
 	'studiocms:config:setup': (options: {
 		setSitemap: (opts: SitemapConfig) => void;

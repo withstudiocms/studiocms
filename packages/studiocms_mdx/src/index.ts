@@ -58,27 +58,25 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
-					integration: {
-						name: packageIdentifier,
-						hooks: {
-							'astro:config:setup': (params) => {
-								// Add the virtual imports for the MDX renderer
-								addVirtualImports(params, {
-									name: packageIdentifier,
-									imports: {
-										'studiocms:mdx/renderer': `
-											import { renderMDX as _render } from '${internalRenderer}';
-			
-											export const renderMDX = _render;
-											export default renderMDX;
-										`,
-									},
-								});
-							},
-							'astro:config:done': () => {
-								// Store the resolved options in the shared context for the renderer
-								shared.mdxConfig = resolvedOptions;
-							},
+					name: packageIdentifier,
+					hooks: {
+						'astro:config:setup': (params) => {
+							// Add the virtual imports for the MDX renderer
+							addVirtualImports(params, {
+								name: packageIdentifier,
+								imports: {
+									'studiocms:mdx/renderer': `
+										import { renderMDX as _render } from '${internalRenderer}';
+		
+										export const renderMDX = _render;
+										export default renderMDX;
+									`,
+								},
+							});
+						},
+						'astro:config:done': () => {
+							// Store the resolved options in the shared context for the renderer
+							shared.mdxConfig = resolvedOptions;
 						},
 					},
 				});

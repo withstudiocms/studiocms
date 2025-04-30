@@ -906,7 +906,7 @@ export const studiocms = defineIntegration({
 							if (hooks['studiocms:astro:config']) {
 								hooks['studiocms:astro:config']({
 									// Add the plugin Integration to the Astro config
-									addIntegrations({ integration }) {
+									addIntegrations(integration) {
 										if (integration) {
 											if (Array.isArray(integration)) {
 												integrations.push(...integration.map((integration) => ({ integration })));

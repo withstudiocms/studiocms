@@ -39,26 +39,24 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
-					integration: {
-						name: packageIdentifier,
-						hooks: {
-							'astro:config:setup': (params) => {
-								// Add the virtual imports for the MarkDoc renderer
-								addVirtualImports(params, {
-									name: packageIdentifier,
-									imports: {
-										'studiocms:markdoc/renderer': `
-											import { renderMarkDoc as _render } from '${internalRenderer}';
-											export const renderMarkDoc = _render;
-											export default renderMarkDoc;
-										`,
-									},
-								});
-							},
-							'astro:config:done': () => {
-								// Store the resolved options in the shared context for the renderer
-								shared.markDocConfig = resolvedOptions;
-							},
+					name: packageIdentifier,
+					hooks: {
+						'astro:config:setup': (params) => {
+							// Add the virtual imports for the MarkDoc renderer
+							addVirtualImports(params, {
+								name: packageIdentifier,
+								imports: {
+									'studiocms:markdoc/renderer': `
+										import { renderMarkDoc as _render } from '${internalRenderer}';
+										export const renderMarkDoc = _render;
+										export default renderMarkDoc;
+									`,
+								},
+							});
+						},
+						'astro:config:done': () => {
+							// Store the resolved options in the shared context for the renderer
+							shared.markDocConfig = resolvedOptions;
 						},
 					},
 				});

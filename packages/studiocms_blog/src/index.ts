@@ -55,54 +55,52 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
-					integration: {
-						name: packageIdentifier,
-						hooks: {
-							'astro:config:setup': async (params) => {
-								const { injectRoute } = params;
+					name: packageIdentifier,
+					hooks: {
+						'astro:config:setup': async (params) => {
+							const { injectRoute } = params;
 
-								if (injectRoutes) {
-									injectRoute({
-										entrypoint: resolve('./routes/[...slug].astro'),
-										pattern: pathWithBase('[...slug]'),
-										prerender: false,
-									});
-
-									injectRoute({
-										entrypoint: resolve('./routes/blog/index.astro'),
-										pattern: `${route}`,
-										prerender: false,
-									});
-
-									injectRoute({
-										entrypoint: resolve('./routes/blog/[...slug].astro'),
-										pattern: `${route}/[...slug]`,
-										prerender: false,
-									});
-
-									if (enableRSS) {
-										injectRoute({
-											entrypoint: resolve('./routes/rss.xml.js'),
-											pattern: pathWithBase('rss.xml'),
-											prerender: false,
-										});
-									}
-								}
-
-								addVirtualImports(params, {
-									name: packageIdentifier,
-									imports: {
-										'studiocms:blog/config': `
-										const config = {
-											title: "${title}",
-											enableRSS: ${enableRSS},
-											route: "${route}"
-										}
-										export default config;
-									`,
-									},
+							if (injectRoutes) {
+								injectRoute({
+									entrypoint: resolve('./routes/[...slug].astro'),
+									pattern: pathWithBase('[...slug]'),
+									prerender: false,
 								});
-							},
+
+								injectRoute({
+									entrypoint: resolve('./routes/blog/index.astro'),
+									pattern: `${route}`,
+									prerender: false,
+								});
+
+								injectRoute({
+									entrypoint: resolve('./routes/blog/[...slug].astro'),
+									pattern: `${route}/[...slug]`,
+									prerender: false,
+								});
+
+								if (enableRSS) {
+									injectRoute({
+										entrypoint: resolve('./routes/rss.xml.js'),
+										pattern: pathWithBase('rss.xml'),
+										prerender: false,
+									});
+								}
+							}
+
+							addVirtualImports(params, {
+								name: packageIdentifier,
+								imports: {
+									'studiocms:blog/config': `
+									const config = {
+										title: "${title}",
+										enableRSS: ${enableRSS},
+										route: "${route}"
+									}
+									export default config;
+								`,
+								},
+							});
 						},
 					},
 				});
