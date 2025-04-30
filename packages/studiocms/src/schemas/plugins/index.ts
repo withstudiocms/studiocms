@@ -168,10 +168,7 @@ type PluginHook<OPT> = (options: OPT) => void | Promise<void>;
 
 const StudioCMSPluginSchemaInternal = z.array(z.custom<StudioCMSPlugin>());
 
-const exposePluginsFn = z.function(
-	z.tuple([StudioCMSPluginSchemaInternal.optional()]),
-	z.union([StudioCMSPluginSchemaInternal, z.undefined()])
-);
+const exposePluginsFn = z.function(z.tuple([StudioCMSPluginSchemaInternal.optional()]), z.void());
 
 const studiocmsPluginAstroHook = z.object({
 	exposePlugins: exposePluginsFn,
