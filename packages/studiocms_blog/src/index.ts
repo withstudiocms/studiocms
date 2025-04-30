@@ -39,7 +39,7 @@ const packageIdentifier = '@studiocms/blog';
 export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
 	// Resolve the options and set defaults if not provided
 	const title = options?.blog?.title || 'Blog';
-	const enableRSS = options?.blog?.enableRSS || true;
+	const enableRSS = options?.blog?.enableRSS ?? true;
 	const route = pathWithBase(options?.blog?.route || '/blog');
 	const sitemap = options?.sitemap ?? true;
 	const injectRoutes = options?.injectRoutes ?? true;
