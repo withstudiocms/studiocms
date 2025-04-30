@@ -69,40 +69,46 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			name: 'Astro Web Vitals',
 			identifier: webVitalsName,
 			studiocmsMinimumVersion: opts.version,
-			dashboardGridItems: [
-				{
-					name: 'core-web-vitals',
-					span: 2,
-					variant: 'default',
-					header: {
-						title: 'Core Web Vitals',
-						icon: 'chart-pie',
-					},
-					body: {
-						html: '<corevitals></corevitals>',
-						components: {
-							corevitals: resolve('./dashboard-grid-items/CoreVitals.astro'),
+			hooks: {
+				'studiocms:config:setup': ({ setDashboard }) => {
+					setDashboard({
+						dashboardGridItems: [
+							{
+								name: 'core-web-vitals',
+								span: 2,
+								variant: 'default',
+								header: {
+									title: 'Core Web Vitals',
+									icon: 'chart-pie',
+								},
+								body: {
+									html: '<corevitals></corevitals>',
+									components: {
+										corevitals: resolve('./dashboard-grid-items/CoreVitals.astro'),
+									},
+								},
+							},
+						],
+						dashboardPages: {
+							admin: [
+								{
+									title: {
+										en: 'Analytics and Vitals',
+										de: '',
+										es: 'Análisis y datos vitales',
+										fr: '',
+									},
+									icon: 'chart-pie',
+									route: 'analytics',
+									description: 'View the Core Web Vitals and Analytics of your site.',
+									sidebar: 'single',
+									pageBodyComponent: resolve('./pages/analytics/body.astro'),
+									requiredPermissions: 'admin',
+								},
+							],
 						},
-					},
+					});
 				},
-			],
-			dashboardPages: {
-				admin: [
-					{
-						title: {
-							en: 'Analytics and Vitals',
-							de: '',
-							es: 'Análisis y datos vitales',
-							fr: '',
-						},
-						icon: 'chart-pie',
-						route: 'analytics',
-						description: 'View the Core Web Vitals and Analytics of your site.',
-						sidebar: 'single',
-						pageBodyComponent: resolve('./pages/analytics/body.astro'),
-						requiredPermissions: 'admin',
-					},
-				],
 			},
 		};
 

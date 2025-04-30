@@ -1,55 +1,18 @@
 import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
-import { DashboardPageSchema, SettingsFieldSchema } from './shared.js';
+import {
+	DashboardPageSchema,
+	FrontendNavigationLinksSchema,
+	PageTypesSchema,
+	SettingsPageSchema,
+} from './shared.js';
 
-/**
- * Schema for Astro Integration.
- *
- * Converts the AstroIntegration type to a Zod schema.
- */
-const AstroIntegrationSchema = z.custom<AstroIntegration>();
-
-/**
- * Schema for Astro Integration, which can be an array of Astro Integrations.
- */
-const AstroIntegrationPossiblyArraySchema = z.union([
-	AstroIntegrationSchema,
-	z.array(AstroIntegrationSchema),
-]);
-
-type PageTypeDefaultsOrStringT = 'studiocms/markdown' | 'studiocms/html';
-
-const PageTypeDefaultsOrString = z.custom<PageTypeDefaultsOrStringT>();
-
-/**
- * Schema for StudioCMS Plugin configuration.
- */
-export const StudioCMSPluginSchema = z.object({
-	/**
-	 * Identifier of the plugin from the package.json
-	 */
-	identifier: z.string(),
-
-	/**
-	 * Label of the plugin to be displayed in the StudioCMS Dashboard
-	 */
-	name: z.string(),
-
-	/**
-	 * Minimum version of StudioCMS required for the plugin to work
-	 */
-	studiocmsMinimumVersion: z.string(),
-
-	/**
-	 * Astro Integration(s) for the plugin
-	 */
-	integration: AstroIntegrationPossiblyArraySchema.optional(),
-
+export const SitemapConfigSchema = z.object({
 	/**
 	 * If this is true, the plugin will enable the Sitemap
 	 */
-	triggerSitemap: z.boolean().optional(),
+	triggerSitemap: z.boolean().optional().default(false),
 
 	/**
 	 * Allows the plugin to add sitemap endpoints
@@ -68,8 +31,11 @@ export const StudioCMSPluginSchema = z.object({
 				sitemapXMLEndpointPath: z.string().or(z.instanceof(URL)),
 			})
 		)
-		.optional(),
+		.optional()
+		.default([]),
+});
 
+export const DashboardConfigSchema = z.object({
 	/**
 	 * Allows the plugin to add custom dashboard grid items
 	 */
@@ -99,136 +65,54 @@ export const StudioCMSPluginSchema = z.object({
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
-	settingsPage: z
-		.object({
-			/**
-			 * Fields according to specification
-			 */
-			fields: z.array(SettingsFieldSchema),
+	settingsPage: SettingsPageSchema,
+});
 
-			/**
-			 * The endpoint for the settings
-			 *
-			 * Should export a APIRoute named `onSave` that runs when the settings page is saved
-			 */
-			endpoint: z.string(),
-		})
-		.optional(),
-
+export const FrontendConfigSchema = z.object({
 	/**
 	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
 	 */
-	frontendNavigationLinks: z
-		.array(
-			z.object({
-				/**
-				 * Display label for the link
-				 */
-				label: z.string(),
+	frontendNavigationLinks: FrontendNavigationLinksSchema,
+});
 
-				/**
-				 * URL to link to
-				 */
-				href: z.string(),
-			})
-		)
-		.optional(),
-
+export const RenderingConfigSchema = z.object({
 	/**
 	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
 	 */
-	pageTypes: z
-		.array(
-			z.object({
-				/**
-				 * Label that is shown in the select input
-				 */
-				label: z.string(),
-
-				/**
-				 * Identifier that is saved in the database
-				 * @example
-				 * // Single page type per plugin
-				 * 'studiocms'
-				 * '@studiocms/blog'
-				 * // Multiple page types per plugin (Use unique identifiers for each type to avoid conflicts)
-				 * '@mystudiocms/plugin:pageType1'
-				 * '@mystudiocms/plugin:pageType2'
-				 * '@mystudiocms/plugin:pageType3'
-				 * '@mystudiocms/plugin:pageType4'
-				 */
-				identifier: z.string(),
-
-				/**
-				 * Description that is shown below the "Page Content" header if this type is selected
-				 */
-				description: z.string().optional(),
-
-				/**
-				 * The path to the actual component that is displayed for the page content
-				 *
-				 * Component should have a `content` prop that is a string to be able to display current content.
-				 *
-				 * **NOTE:** If you storing a single string in the database, you can use the form name `page-content` for the content output. and it will be stored in the normal `content` field in the database.
-				 * You can also use the apiEndpoints to create custom endpoints for the page type.
-				 *
-				 * @example
-				 * ```ts
-				 * import { createResolver } from 'astro-integration-kit';
-				 * const { resolve } = createResolver(import.meta.url)
-				 *
-				 * {
-				 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
-				 * }
-				 * ```
-				 */
-				pageContentComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
-
-				/**
-				 * The path to the actual component that is displayed for the page renderer
-				 */
-				rendererComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
-
-				/**
-				 * Fields that are shown in the page metadata tab when creating or editing a page of this type
-				 */
-				fields: z.array(SettingsFieldSchema).optional(),
-
-				/**
-				 * API Endpoint file for the page type
-				 *
-				 * API endpoints are used to create, edit, and delete pages of this type,
-				 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
-				 *
-				 * File should export at least one of the following:
-				 * - `onCreate`
-				 * - `onEdit`
-				 * - `onDelete`
-				 *
-				 * @example
-				 * ```ts
-				 * // my-plugin.ts
-				 * import { createResolver } from 'astro-integration-kit';
-				 * const { resolve } = createResolver(import.meta.url)
-				 *
-				 * {
-				 *  apiEndpoint: resolve('./api/pageTypeApi.ts'),
-				 * }
-				 *
-				 * // api/pageTypeApi.ts
-				 * import { APIRoute } from 'astro';
-				 *
-				 * export const onCreate: APIRoute = async (context) => {
-				 *   // Custom logic here
-				 *   return new Response();
-				 * }
-				 * ```
-				 */
-				apiEndpoint: z.string().optional(),
-			})
-		)
-		.optional(),
+	pageTypes: PageTypesSchema,
 });
+
+export type SitemapConfig = z.infer<typeof SitemapConfigSchema>;
+export type DashboardConfig = z.infer<typeof DashboardConfigSchema>;
+export type FrontendConfig = z.infer<typeof FrontendConfigSchema>;
+export type RenderingConfig = z.infer<typeof RenderingConfigSchema>;
+
+export type HookParameters<
+	Hook extends keyof StudioCMSPlugin['hooks'],
+	Fn = StudioCMSPlugin['hooks'][Hook],
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+> = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
+
+export interface BasePluginHooks {
+	'studiocms:astro:config': (options: {
+		addIntegrations: (opts: { integration: AstroIntegration | AstroIntegration[] }) => void;
+	}) => void | Promise<void>;
+	'studiocms:config:setup': (options: {
+		setSitemap: (opts: SitemapConfig) => void;
+		setDashboard: (opts: DashboardConfig) => void;
+		setFrontend: (opts: FrontendConfig) => void;
+		setRendering: (opts: RenderingConfig) => void;
+	}) => void | Promise<void>;
+}
+
+export interface StudioCMSPlugin {
+	identifier: string;
+	name: string;
+	studiocmsMinimumVersion: string;
+	hooks: {
+		[K in keyof StudioCMS.PluginHooks]?: StudioCMS.PluginHooks[K];
+	} & Partial<Record<string, unknown>>;
+}
 
 /**
  * A schema for a safe plugin list item in StudioCMS.
@@ -242,21 +126,37 @@ export const StudioCMSPluginSchema = z.object({
  * These properties are excluded to ensure that the plugin list item schema
  * only includes the necessary and safe properties for use in the application.
  */
-export const SafePluginListItemSchema = StudioCMSPluginSchema.omit({
-	integration: true,
-	studiocmsMinimumVersion: true,
-	sitemaps: true,
-	dashboardGridItems: true,
-	triggerSitemap: true,
-	dashboardPages: true,
+export const SafePluginListItemSchema = z.object({
+	/**
+	 * Identifier of the plugin from the package.json
+	 */
+	identifier: z.string(),
+
+	/**
+	 * Label of the plugin to be displayed in the StudioCMS Dashboard
+	 */
+	name: z.string(),
+
+	/**
+	 * If this exists, the plugin will have its own setting page
+	 */
+	settingsPage: SettingsPageSchema,
+
+	/**
+	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
+	 */
+	frontendNavigationLinks: FrontendNavigationLinksSchema,
+
+	/**
+	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
+	 */
+	pageTypes: PageTypesSchema,
 });
 
 export const SafePluginListSchema = z.array(SafePluginListItemSchema);
 
-export type StudioCMSPluginOptions = typeof StudioCMSPluginSchema._input;
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
-export interface StudioCMSPlugin extends StudioCMSPluginOptions {}
 export type {
 	SettingsField,
 	DashboardPage,
@@ -271,6 +171,6 @@ export type {
  * @param options - The configuration options for the plugin.
  * @returns The plugin configuration.
  */
-export function definePlugin(options: StudioCMSPluginOptions): StudioCMSPlugin {
+export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
 	return options;
 }

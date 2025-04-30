@@ -35,36 +35,46 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MarkDoc',
-		studiocmsMinimumVersion: '0.1.0-beta.12',
-		pageTypes: [
-			// Define the MarkDoc page type
-			{
-				identifier: 'studiocms/markdoc',
-				label: 'MarkDoc',
-				pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MarkDoc editor in the future
-				rendererComponent: renderer,
-			},
-		],
-		integration: {
-			name: packageIdentifier,
-			hooks: {
-				'astro:config:setup': (params) => {
-					// Add the virtual imports for the MarkDoc renderer
-					addVirtualImports(params, {
+		studiocmsMinimumVersion: '0.1.0-beta.17',
+		hooks: {
+			'studiocms:astro:config': ({ addIntegrations }) => {
+				addIntegrations({
+					integration: {
 						name: packageIdentifier,
-						imports: {
-							'studiocms:markdoc/renderer': `
-					            import { renderMarkDoc as _render } from '${internalRenderer}';
-					            export const renderMarkDoc = _render;
-					            export default renderMarkDoc;
-					        `,
+						hooks: {
+							'astro:config:setup': (params) => {
+								// Add the virtual imports for the MarkDoc renderer
+								addVirtualImports(params, {
+									name: packageIdentifier,
+									imports: {
+										'studiocms:markdoc/renderer': `
+											import { renderMarkDoc as _render } from '${internalRenderer}';
+											export const renderMarkDoc = _render;
+											export default renderMarkDoc;
+										`,
+									},
+								});
+							},
+							'astro:config:done': () => {
+								// Store the resolved options in the shared context for the renderer
+								shared.markDocConfig = resolvedOptions;
+							},
 						},
-					});
-				},
-				'astro:config:done': () => {
-					// Store the resolved options in the shared context for the renderer
-					shared.markDocConfig = resolvedOptions;
-				},
+					},
+				});
+			},
+			'studiocms:config:setup': ({ setRendering }) => {
+				setRendering({
+					pageTypes: [
+						// Define the MarkDoc page type
+						{
+							identifier: 'studiocms/markdoc',
+							label: 'MarkDoc',
+							pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MarkDoc editor in the future
+							rendererComponent: renderer,
+						},
+					],
+				});
 			},
 		},
 	});

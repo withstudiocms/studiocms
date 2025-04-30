@@ -4,6 +4,7 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@astrojs/db" preserve="true" />
+/// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
 
@@ -33,6 +34,7 @@ import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	AvailableDashboardPages,
+	SafePluginListItemType,
 	SafePluginListType,
 	StudioCMSConfig,
 	StudioCMSOptions,
@@ -94,80 +96,90 @@ const defaultPlugin: StudioCMSPlugin = {
 	name: 'StudioCMS (Built-in)',
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
-	dashboardGridItems: [
-		{
-			name: 'overview',
-			span: 1,
-			variant: 'default',
-			requiresPermission: 'editor',
-			header: { title: 'Overview', icon: 'bolt' },
-			body: {
-				html: '<totals></totals>',
-				components: {
-					totals: resolve('./components/default-grid-items/Totals.astro'),
-				},
-			},
+	hooks: {
+		'studiocms:config:setup': ({ setDashboard, setRendering }) => {
+			setDashboard({
+				dashboardGridItems: [
+					{
+						name: 'overview',
+						span: 1,
+						variant: 'default',
+						requiresPermission: 'editor',
+						header: { title: 'Overview', icon: 'bolt' },
+						body: {
+							html: '<totals></totals>',
+							components: {
+								totals: resolve('./components/default-grid-items/Totals.astro'),
+							},
+						},
+					},
+					{
+						name: 'recently-updated-pages',
+						span: 2,
+						variant: 'default',
+						requiresPermission: 'editor',
+						header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
+						body: {
+							html: '<recentlyupdatedpages></recentlyupdatedpages>',
+							components: {
+								recentlyupdatedpages: resolve(
+									'./components/default-grid-items/Recently-updated-pages.astro'
+								),
+							},
+						},
+					},
+					{
+						name: 'recently-signed-up-users',
+						span: 1,
+						variant: 'default',
+						requiresPermission: 'admin',
+						header: { title: 'Recently Signed Up Users', icon: 'user-group' },
+						body: {
+							html: '<recentlysignedupusers></recentlysignedupusers>',
+							components: {
+								recentlysignedupusers: resolve(
+									'./components/default-grid-items/Recently-signed-up.astro'
+								),
+							},
+						},
+					},
+					{
+						name: 'recently-created-pages',
+						span: 2,
+						variant: 'default',
+						requiresPermission: 'editor',
+						header: { title: 'Recently Created Pages', icon: 'document-plus' },
+						body: {
+							html: '<recentlycreatedpages></recentlycreatedpages>',
+							components: {
+								recentlycreatedpages: resolve(
+									'./components/default-grid-items/Recently-created-pages.astro'
+								),
+							},
+						},
+					},
+				],
+			});
+
+			setRendering({
+				pageTypes: [
+					{
+						label: 'Markdown (Built-in)',
+						identifier: 'studiocms/markdown',
+						pageContentComponent:
+							DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
+						rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
+					},
+					{
+						label: 'HTML (Built-in)',
+						identifier: 'studiocms/html',
+						pageContentComponent: DefaultPageTypeComponents['studiocms/html'].pageContentComponent,
+						rendererComponent: DefaultPageTypeComponents['studiocms/html'].rendererComponent,
+					},
+				],
+			});
 		},
-		{
-			name: 'recently-updated-pages',
-			span: 2,
-			variant: 'default',
-			requiresPermission: 'editor',
-			header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
-			body: {
-				html: '<recentlyupdatedpages></recentlyupdatedpages>',
-				components: {
-					recentlyupdatedpages: resolve(
-						'./components/default-grid-items/Recently-updated-pages.astro'
-					),
-				},
-			},
-		},
-		{
-			name: 'recently-signed-up-users',
-			span: 1,
-			variant: 'default',
-			requiresPermission: 'admin',
-			header: { title: 'Recently Signed Up Users', icon: 'user-group' },
-			body: {
-				html: '<recentlysignedupusers></recentlysignedupusers>',
-				components: {
-					recentlysignedupusers: resolve(
-						'./components/default-grid-items/Recently-signed-up.astro'
-					),
-				},
-			},
-		},
-		{
-			name: 'recently-created-pages',
-			span: 2,
-			variant: 'default',
-			requiresPermission: 'editor',
-			header: { title: 'Recently Created Pages', icon: 'document-plus' },
-			body: {
-				html: '<recentlycreatedpages></recentlycreatedpages>',
-				components: {
-					recentlycreatedpages: resolve(
-						'./components/default-grid-items/Recently-created-pages.astro'
-					),
-				},
-			},
-		},
-	],
-	pageTypes: [
-		{
-			label: 'Markdown (Built-in)',
-			identifier: 'studiocms/markdown',
-			pageContentComponent: DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
-			rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
-		},
-		{
-			label: 'HTML (Built-in)',
-			identifier: 'studiocms/html',
-			pageContentComponent: DefaultPageTypeComponents['studiocms/html'].pageContentComponent,
-			rendererComponent: DefaultPageTypeComponents['studiocms/html'].rendererComponent,
-		},
-	],
+	},
 };
 
 /**
@@ -875,107 +887,135 @@ export const studiocms = defineIntegration({
 						if (plugins) pluginsToProcess.push(...plugins);
 
 						// Resolve StudioCMS Plugins
-						for (const {
-							studiocmsMinimumVersion,
-							integration,
-							triggerSitemap,
-							sitemaps: pluginSitemaps,
-							dashboardGridItems,
-							dashboardPages,
-							...safePlugin
-						} of pluginsToProcess || []) {
+						for (const { studiocmsMinimumVersion, hooks, ...safeData } of pluginsToProcess || []) {
 							// Check if the plugin has a minimum version requirement
 							const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
 
 							if (comparison === 1) {
 								throw new StudioCMSError(
-									`Plugin ${safePlugin.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-									`Plugin ${safePlugin.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher, please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
+									`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
+									`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher, please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
 								);
 							}
 
-							// Add the plugin Integration to the Astro config
-							if (integration && Array.isArray(integration)) {
-								integrations.push(...integration.map((integration) => ({ integration })));
-							} else if (integration) {
-								integrations.push({ integration });
+							let foundSettingsPage: SafePluginListItemType['settingsPage'] = undefined;
+							let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'] =
+								undefined;
+							let foundPageTypes: SafePluginListItemType['pageTypes'] = undefined;
+
+							if (hooks['studiocms:astro:config']) {
+								hooks['studiocms:astro:config']({
+									// Add the plugin Integration to the Astro config
+									addIntegrations({ integration }) {
+										if (integration) {
+											if (Array.isArray(integration)) {
+												integrations.push(...integration.map((integration) => ({ integration })));
+												return;
+											}
+											integrations.push({ integration });
+										}
+									},
+								});
 							}
 
-							if (triggerSitemap) sitemapEnabled = triggerSitemap;
+							if (hooks['studiocms:config:setup']) {
+								hooks['studiocms:config:setup']({
+									setDashboard({ dashboardGridItems, dashboardPages, settingsPage }) {
+										if (dashboardGridItems) {
+											availableDashboardGridItems.push(
+												...dashboardGridItems.map((item) => ({
+													...item,
+													name: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(item.name)}`,
+												}))
+											);
+										}
 
-							if (pluginSitemaps) {
-								sitemaps.push(...pluginSitemaps);
+										if (dashboardPages) {
+											if (dashboardPages.user) {
+												availableDashboardPages.user?.push(
+													...dashboardPages.user.map((page) => ({
+														...page,
+														slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
+													}))
+												);
+											}
+											if (dashboardPages.admin) {
+												availableDashboardPages.admin?.push(
+													...dashboardPages.admin.map((page) => ({
+														...page,
+														slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
+													}))
+												);
+											}
+										}
+
+										if (settingsPage) {
+											const { endpoint } = settingsPage;
+
+											if (endpoint) {
+												pluginSettingsEndpoints.push({
+													identifier: safeData.identifier,
+													safeIdentifier: convertToSafeString(safeData.identifier),
+													apiEndpoint: `
+														export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from '${endpoint}';
+													`,
+												});
+											}
+
+											foundSettingsPage = settingsPage;
+										}
+									},
+									setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
+										if (triggerSitemap) sitemapEnabled = triggerSitemap;
+
+										if (pluginSitemaps) {
+											sitemaps.push(...pluginSitemaps);
+										}
+									},
+									setFrontend({ frontendNavigationLinks }) {
+										if (frontendNavigationLinks) {
+											foundFrontendNavigationLinks = frontendNavigationLinks;
+										}
+									},
+									setRendering({ pageTypes }) {
+										for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
+											if (apiEndpoint) {
+												pluginEndpoints.push({
+													identifier: identifier,
+													safeIdentifier: convertToSafeString(identifier),
+													apiEndpoint: `
+														export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
+														export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
+														export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
+													`,
+												});
+											}
+
+											if (rendererComponent) {
+												const builtIns = rendererComponentFilter(
+													rendererComponent,
+													convertToSafeString(identifier),
+													DefaultPageTypeComponents
+												);
+												pluginRenderers.push({
+													pageType: identifier,
+													safePageType: convertToSafeString(identifier),
+													content: builtIns,
+												});
+											}
+										}
+
+										foundPageTypes = pageTypes;
+									},
+								});
 							}
 
-							if (dashboardGridItems) {
-								availableDashboardGridItems.push(
-									...dashboardGridItems.map((item) => ({
-										...item,
-										name: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(item.name)}`,
-									}))
-								);
-							}
-
-							if (dashboardPages) {
-								if (dashboardPages.user) {
-									availableDashboardPages.user?.push(
-										...dashboardPages.user.map((page) => ({
-											...page,
-											slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
-										}))
-									);
-								}
-								if (dashboardPages.admin) {
-									availableDashboardPages.admin?.push(
-										...dashboardPages.admin.map((page) => ({
-											...page,
-											slug: `${convertToSafeString(safePlugin.identifier)}/${convertToSafeString(page.route)}`,
-										}))
-									);
-								}
-							}
-
-							for (const { apiEndpoint, identifier, rendererComponent } of safePlugin.pageTypes ||
-								[]) {
-								if (apiEndpoint) {
-									pluginEndpoints.push({
-										identifier: identifier,
-										safeIdentifier: convertToSafeString(identifier),
-										apiEndpoint: `
-											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
-											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
-											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
-										`,
-									});
-								}
-
-								if (rendererComponent) {
-									const builtIns = rendererComponentFilter(
-										rendererComponent,
-										convertToSafeString(identifier),
-										DefaultPageTypeComponents
-									);
-									pluginRenderers.push({
-										pageType: identifier,
-										safePageType: convertToSafeString(identifier),
-										content: builtIns,
-									});
-								}
-							}
-
-							if (safePlugin.settingsPage) {
-								const { endpoint } = safePlugin.settingsPage;
-
-								if (endpoint) {
-									pluginSettingsEndpoints.push({
-										identifier: safePlugin.identifier,
-										safeIdentifier: convertToSafeString(safePlugin.identifier),
-										apiEndpoint: `
-											export { onSave as ${convertToSafeString(safePlugin.identifier)}_onSave } from '${endpoint}';
-										`,
-									});
-								}
-							}
+							const safePlugin: SafePluginListItemType = {
+								...safeData,
+								settingsPage: foundSettingsPage,
+								frontendNavigationLinks: foundFrontendNavigationLinks,
+								pageTypes: foundPageTypes,
+							};
 
 							safePluginList.push(safePlugin);
 						}

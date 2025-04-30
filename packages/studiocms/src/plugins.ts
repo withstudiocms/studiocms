@@ -1,3 +1,6 @@
+/// <reference types="./global.d.ts" preserve="true" />
+/// <reference types="./virtual.d.ts" preserve="true" />
+
 import {
 	type AvailableDashboardPages,
 	type DashboardPage,
@@ -5,7 +8,6 @@ import {
 	type SafePluginListType,
 	type SettingsField,
 	type StudioCMSPlugin,
-	type StudioCMSPluginOptions,
 	definePlugin,
 } from './schemas/index.js';
 
@@ -13,7 +15,6 @@ export {
 	type SettingsField,
 	type SafePluginListType,
 	type StudioCMSPlugin,
-	type StudioCMSPluginOptions,
 	type AvailableDashboardPages,
 	type FinalDashboardPage,
 	type DashboardPage,

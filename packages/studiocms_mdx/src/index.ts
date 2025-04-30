@@ -54,37 +54,47 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MDX',
-		studiocmsMinimumVersion: '0.1.0-beta.12',
-		pageTypes: [
-			// Define the MDX page type
-			{
-				identifier: 'studiocms/mdx',
-				label: 'MDX',
-				pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MDX editor in the future
-				rendererComponent: renderer,
-			},
-		],
-		integration: {
-			name: packageIdentifier,
-			hooks: {
-				'astro:config:setup': (params) => {
-					// Add the virtual imports for the MDX renderer
-					addVirtualImports(params, {
+		studiocmsMinimumVersion: '0.1.0-beta.17',
+		hooks: {
+			'studiocms:astro:config': ({ addIntegrations }) => {
+				addIntegrations({
+					integration: {
 						name: packageIdentifier,
-						imports: {
-							'studiocms:mdx/renderer': `
-                                import { renderMDX as _render } from '${internalRenderer}';
-
-                                export const renderMDX = _render;
-                                export default renderMDX;
-                            `,
+						hooks: {
+							'astro:config:setup': (params) => {
+								// Add the virtual imports for the MDX renderer
+								addVirtualImports(params, {
+									name: packageIdentifier,
+									imports: {
+										'studiocms:mdx/renderer': `
+											import { renderMDX as _render } from '${internalRenderer}';
+			
+											export const renderMDX = _render;
+											export default renderMDX;
+										`,
+									},
+								});
+							},
+							'astro:config:done': () => {
+								// Store the resolved options in the shared context for the renderer
+								shared.mdxConfig = resolvedOptions;
+							},
 						},
-					});
-				},
-				'astro:config:done': () => {
-					// Store the resolved options in the shared context for the renderer
-					shared.mdxConfig = resolvedOptions;
-				},
+					},
+				});
+			},
+			'studiocms:config:setup': ({ setRendering }) => {
+				setRendering({
+					pageTypes: [
+						// Define the MDX page type
+						{
+							identifier: 'studiocms/mdx',
+							label: 'MDX',
+							pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MDX editor in the future
+							rendererComponent: renderer,
+						},
+					],
+				});
 			},
 		},
 	});
