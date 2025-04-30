@@ -170,7 +170,7 @@ const StudioCMSPluginSchemaInternal = z.array(z.custom<StudioCMSPlugin>());
 
 const exposePluginsFn = z.function(
 	z.tuple([StudioCMSPluginSchemaInternal.optional()]),
-	StudioCMSPluginSchemaInternal
+	z.union([StudioCMSPluginSchemaInternal, z.undefined()])
 );
 
 const studiocmsPluginAstroHook = z.object({
