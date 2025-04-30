@@ -53,6 +53,7 @@ import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
+import { pluginLogger } from './utils/pluginLogger.js';
 import { readJson } from './utils/readJson.js';
 import { convertToSafeString } from './utils/safeString.js';
 
@@ -97,9 +98,7 @@ const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:config:setup': ({ setDashboard, setRendering, logger }) => {
-			logger.info('THIS IS A TEST FIND ME');
-
+		'studiocms:config:setup': ({ setDashboard, setRendering }) => {
 			setDashboard({
 				dashboardGridItems: [
 					{
@@ -907,7 +906,7 @@ export const studiocms = defineIntegration({
 
 							if (hooks['studiocms:astro:config']) {
 								hooks['studiocms:astro:config']({
-									logger: logger.fork(safeData.name),
+									logger: pluginLogger(safeData.identifier, logger),
 									// Add the plugin Integration to the Astro config
 									addIntegrations(integration) {
 										if (integration) {
@@ -923,7 +922,7 @@ export const studiocms = defineIntegration({
 
 							if (hooks['studiocms:config:setup']) {
 								hooks['studiocms:config:setup']({
-									logger: logger.fork(safeData.name),
+									logger: pluginLogger(safeData.identifier, logger),
 
 									setDashboard({ dashboardGridItems, dashboardPages, settingsPage }) {
 										if (dashboardGridItems) {
