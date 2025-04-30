@@ -1,4 +1,4 @@
-import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
+import type { AstroIntegrationLogger } from 'astro';
 import { z } from 'astro/zod';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import {
@@ -8,6 +8,10 @@ import {
 	SettingsPageSchema,
 	astroIntegrationSchema,
 } from './shared.js';
+
+const dashboardPagesArray = z.array(DashboardPageSchema).optional();
+
+const astroIntegrationLoggerSchema = z.custom<AstroIntegrationLogger>();
 
 /**
  * A schema for a safe plugin list item in StudioCMS.
@@ -92,14 +96,14 @@ const DashboardConfigSchema = z.object({
 			 *
 			 * These are shown in the "Dashboard" section of the dashboard sidebar
 			 */
-			user: z.array(DashboardPageSchema).default([]).optional(),
+			user: dashboardPagesArray,
 
 			/**
 			 * Pages for the editor role
 			 *
 			 * These are shown in the "Admin" section of the dashboard sidebar
 			 */
-			admin: z.array(DashboardPageSchema).default([]).optional(),
+			admin: dashboardPagesArray,
 		})
 		.optional(),
 
@@ -122,8 +126,6 @@ const RenderingConfigSchema = z.object({
 	 */
 	pageTypes: PageTypesSchema,
 });
-
-const astroIntegrationLoggerSchema = z.custom<AstroIntegrationLogger>();
 
 type BaseHookSchema = {
 	logger: typeof astroIntegrationLoggerSchema;
