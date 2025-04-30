@@ -905,6 +905,7 @@ export const studiocms = defineIntegration({
 
 							if (hooks['studiocms:astro:config']) {
 								hooks['studiocms:astro:config']({
+									logger: logger.fork(safeData.name),
 									// Add the plugin Integration to the Astro config
 									addIntegrations(integration) {
 										if (integration) {
@@ -920,6 +921,8 @@ export const studiocms = defineIntegration({
 
 							if (hooks['studiocms:config:setup']) {
 								hooks['studiocms:config:setup']({
+									logger: logger.fork(safeData.name),
+
 									setDashboard({ dashboardGridItems, dashboardPages, settingsPage }) {
 										if (dashboardGridItems) {
 											availableDashboardGridItems.push(
@@ -965,6 +968,7 @@ export const studiocms = defineIntegration({
 											foundSettingsPage = settingsPage;
 										}
 									},
+
 									setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
 										if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
@@ -972,11 +976,13 @@ export const studiocms = defineIntegration({
 											sitemaps.push(...pluginSitemaps);
 										}
 									},
+
 									setFrontend({ frontendNavigationLinks }) {
 										if (frontendNavigationLinks) {
 											foundFrontendNavigationLinks = frontendNavigationLinks;
 										}
 									},
+
 									setRendering({ pageTypes }) {
 										for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 											if (apiEndpoint) {
