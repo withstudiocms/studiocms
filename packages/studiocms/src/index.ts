@@ -260,6 +260,10 @@ export const studiocms = defineIntegration({
 		return {
 			name,
 			hooks: {
+				// Expose plugins defined in Astro config
+				'studiocms:plugins': ({ exposePlugins }) => {
+					exposePlugins(opts?.plugins);
+				},
 				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
 				'astro:db:setup': ({ extendDb }) => {
 					extendDb({ configEntrypoint: resolve('./db/config.js') });
