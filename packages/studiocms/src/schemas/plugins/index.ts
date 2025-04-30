@@ -39,17 +39,17 @@ export const SafePluginListItemSchema = z.object({
 	/**
 	 * If this exists, the plugin will have its own setting page
 	 */
-	settingsPage: SettingsPageSchema,
+	settingsPage: SettingsPageSchema.optional(),
 
 	/**
 	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
 	 */
-	frontendNavigationLinks: FrontendNavigationLinksSchema,
+	frontendNavigationLinks: FrontendNavigationLinksSchema.optional(),
 
 	/**
 	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
 	 */
-	pageTypes: PageTypesSchema,
+	pageTypes: PageTypesSchema.optional(),
 });
 
 export const SafePluginListSchema = z.array(SafePluginListItemSchema);

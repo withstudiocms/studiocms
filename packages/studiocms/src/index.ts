@@ -892,7 +892,7 @@ export const studiocms = defineIntegration({
 						if (plugins) pluginsToProcess.push(...plugins);
 
 						// Resolve StudioCMS Plugins
-						for (const { studiocmsMinimumVersion, hooks, ...safeData } of pluginsToProcess || []) {
+						for (const { studiocmsMinimumVersion, hooks, ...safeData } of pluginsToProcess) {
 							// Check if the plugin has a minimum version requirement
 							const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
 

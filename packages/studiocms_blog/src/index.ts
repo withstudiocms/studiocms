@@ -93,9 +93,9 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 								imports: {
 									'studiocms:blog/config': `
 									const config = {
-										title: "${title}",
+										title: ${JSON.stringify(title)},
 										enableRSS: ${enableRSS},
-										route: "${route}"
+										route: ${JSON.stringify(route)}
 									}
 									export default config;
 								`,

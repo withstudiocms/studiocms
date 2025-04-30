@@ -460,7 +460,9 @@ export const AvailableDashboardPagesSchema = z.object({
 
 export type PageTypeDefaultsOrStringT = 'studiocms/markdown' | 'studiocms/html';
 
-export const PageTypeDefaultsOrString = z.custom<PageTypeDefaultsOrStringT>();
+export const PageTypeDefaultsOrString = z
+	.enum(['studiocms/markdown', 'studiocms/html'])
+	.or(z.string());
 
 export const SettingsPageSchema = z
 	.object({

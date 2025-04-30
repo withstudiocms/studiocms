@@ -1,4 +1,4 @@
-import type { BasePluginHooks, StudioCMSPlugin } from './schemas/plugins/index.js';
+import type { BasePluginHooks, StudioCMSPlugin } from './schemas/plugins';
 
 // The interfaces in this file can be extended by users
 declare global {
