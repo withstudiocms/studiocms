@@ -97,7 +97,9 @@ const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:config:setup': ({ setDashboard, setRendering }) => {
+		'studiocms:config:setup': ({ setDashboard, setRendering, logger }) => {
+			logger.info('THIS IS A TEST FIND ME');
+
 			setDashboard({
 				dashboardGridItems: [
 					{
