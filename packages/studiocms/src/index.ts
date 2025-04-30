@@ -900,7 +900,7 @@ export const studiocms = defineIntegration({
 							if (comparison === 1) {
 								throw new StudioCMSError(
 									`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-									`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher, please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
+									`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
 								);
 							}
 
