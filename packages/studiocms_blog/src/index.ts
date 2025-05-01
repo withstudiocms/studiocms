@@ -39,7 +39,7 @@ const packageIdentifier = '@studiocms/blog';
 export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
 	// Resolve the options and set defaults if not provided
 	const title = options?.blog?.title || 'Blog';
-	const enableRSS = options?.blog?.enableRSS || true;
+	const enableRSS = options?.blog?.enableRSS ?? true;
 	const route = pathWithBase(options?.blog?.route || '/blog');
 	const sitemap = options?.sitemap ?? true;
 	const injectRoutes = options?.injectRoutes ?? true;
@@ -51,68 +51,82 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		studiocmsMinimumVersion: '0.1.0-beta.8',
-		frontendNavigationLinks: [{ label: title, href: route }],
-		pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
-		triggerSitemap: sitemap,
-		sitemaps: [
-			{
-				pluginName: packageIdentifier,
-				sitemapXMLEndpointPath: resolve('./routes/sitemap-posts.xml.js'),
-			},
-			{
-				pluginName: 'pages',
-				sitemapXMLEndpointPath: resolve('./routes/sitemap-md.xml.js'),
-			},
-		],
-		integration: {
-			name: packageIdentifier,
-			hooks: {
-				'astro:config:setup': async (params) => {
-					const { injectRoute } = params;
+		studiocmsMinimumVersion: '0.1.0-beta.17',
+		hooks: {
+			'studiocms:astro:config': ({ addIntegrations }) => {
+				addIntegrations({
+					name: packageIdentifier,
+					hooks: {
+						'astro:config:setup': async (params) => {
+							const { injectRoute } = params;
 
-					if (injectRoutes) {
-						injectRoute({
-							entrypoint: resolve('./routes/[...slug].astro'),
-							pattern: pathWithBase('[...slug]'),
-							prerender: false,
-						});
+							if (injectRoutes) {
+								injectRoute({
+									entrypoint: resolve('./routes/[...slug].astro'),
+									pattern: pathWithBase('[...slug]'),
+									prerender: false,
+								});
 
-						injectRoute({
-							entrypoint: resolve('./routes/blog/index.astro'),
-							pattern: `${route}`,
-							prerender: false,
-						});
+								injectRoute({
+									entrypoint: resolve('./routes/blog/index.astro'),
+									pattern: `${route}`,
+									prerender: false,
+								});
 
-						injectRoute({
-							entrypoint: resolve('./routes/blog/[...slug].astro'),
-							pattern: `${route}/[...slug]`,
-							prerender: false,
-						});
+								injectRoute({
+									entrypoint: resolve('./routes/blog/[...slug].astro'),
+									pattern: `${route}/[...slug]`,
+									prerender: false,
+								});
 
-						if (enableRSS) {
-							injectRoute({
-								entrypoint: resolve('./routes/rss.xml.js'),
-								pattern: pathWithBase('rss.xml'),
-								prerender: false,
-							});
-						}
-					}
-
-					addVirtualImports(params, {
-						name: packageIdentifier,
-						imports: {
-							'studiocms:blog/config': `
-							const config = {
-								title: "${title}",
-								enableRSS: ${enableRSS},
-								route: "${route}"
+								if (enableRSS) {
+									injectRoute({
+										entrypoint: resolve('./routes/rss.xml.js'),
+										pattern: pathWithBase('rss.xml'),
+										prerender: false,
+									});
+								}
 							}
-							export default config;
-						`,
+
+							addVirtualImports(params, {
+								name: packageIdentifier,
+								imports: {
+									'studiocms:blog/config': `
+									const config = {
+										title: ${JSON.stringify(title)},
+										enableRSS: ${enableRSS},
+										route: ${JSON.stringify(route)}
+									}
+									export default config;
+								`,
+								},
+							});
 						},
-					});
-				},
+					},
+				});
+			},
+			'studiocms:config:setup': ({ setFrontend, setRendering, setSitemap }) => {
+				setFrontend({
+					frontendNavigationLinks: [{ label: title, href: route }],
+				});
+
+				setRendering({
+					pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
+				});
+
+				setSitemap({
+					triggerSitemap: sitemap,
+					sitemaps: [
+						{
+							pluginName: packageIdentifier,
+							sitemapXMLEndpointPath: resolve('./routes/sitemap-posts.xml.js'),
+						},
+						{
+							pluginName: 'pages',
+							sitemapXMLEndpointPath: resolve('./routes/sitemap-md.xml.js'),
+						},
+					],
+				});
 			},
 		},
 	});

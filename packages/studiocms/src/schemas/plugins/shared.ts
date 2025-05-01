@@ -1,6 +1,13 @@
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import { type UiTranslationKey, uiTranslationsAvailable } from '../../lib/i18n/config.js';
+
+// https://github.com/withastro/astro/blob/910eb00fe0b70ca80bd09520ae100e8c78b675b5/packages/astro/src/core/config/schema.ts#L113
+export const astroIntegrationSchema = z.object({
+	name: z.string(),
+	hooks: z.object({}).passthrough().default({}),
+}) as z.Schema<AstroIntegration>;
 
 // export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
 
@@ -450,6 +457,136 @@ export const AvailableDashboardPagesSchema = z.object({
 	 */
 	admin: z.array(AvailableDashboardBaseSchema).optional(),
 });
+
+export type PageTypeDefaultsOrStringT = 'studiocms/markdown' | 'studiocms/html';
+
+export const PageTypeDefaultsOrString = z
+	.enum(['studiocms/markdown', 'studiocms/html'])
+	.or(z.string());
+
+export const SettingsPageSchema = z
+	.object({
+		/**
+		 * Fields according to specification
+		 */
+		fields: z.array(SettingsFieldSchema),
+
+		/**
+		 * The endpoint for the settings
+		 *
+		 * Should export a APIRoute named `onSave` that runs when the settings page is saved
+		 */
+		endpoint: z.string(),
+	})
+	.optional();
+
+export const FrontendNavigationLinksSchema = z
+	.array(
+		z.object({
+			/**
+			 * Display label for the link
+			 */
+			label: z.string(),
+
+			/**
+			 * URL to link to
+			 */
+			href: z.string(),
+		})
+	)
+	.optional();
+
+export const PageTypesSchema = z
+	.array(
+		z.object({
+			/**
+			 * Label that is shown in the select input
+			 */
+			label: z.string(),
+
+			/**
+			 * Identifier that is saved in the database
+			 * @example
+			 * // Single page type per plugin
+			 * 'studiocms'
+			 * '@studiocms/blog'
+			 * // Multiple page types per plugin (Use unique identifiers for each type to avoid conflicts)
+			 * '@mystudiocms/plugin:pageType1'
+			 * '@mystudiocms/plugin:pageType2'
+			 * '@mystudiocms/plugin:pageType3'
+			 * '@mystudiocms/plugin:pageType4'
+			 */
+			identifier: z.string(),
+
+			/**
+			 * Description that is shown below the "Page Content" header if this type is selected
+			 */
+			description: z.string().optional(),
+
+			/**
+			 * The path to the actual component that is displayed for the page content
+			 *
+			 * Component should have a `content` prop that is a string to be able to display current content.
+			 *
+			 * **NOTE:** If you storing a single string in the database, you can use the form name `page-content` for the content output. and it will be stored in the normal `content` field in the database.
+			 * You can also use the apiEndpoints to create custom endpoints for the page type.
+			 *
+			 * @example
+			 * ```ts
+			 * import { createResolver } from 'astro-integration-kit';
+			 * const { resolve } = createResolver(import.meta.url)
+			 *
+			 * {
+			 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
+			 * }
+			 * ```
+			 */
+			pageContentComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
+
+			/**
+			 * The path to the actual component that is displayed for the page renderer
+			 */
+			rendererComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
+
+			/**
+			 * Fields that are shown in the page metadata tab when creating or editing a page of this type
+			 */
+			fields: z.array(SettingsFieldSchema).optional(),
+
+			/**
+			 * API Endpoint file for the page type
+			 *
+			 * API endpoints are used to create, edit, and delete pages of this type,
+			 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
+			 *
+			 * File should export at least one of the following:
+			 * - `onCreate`
+			 * - `onEdit`
+			 * - `onDelete`
+			 *
+			 * @example
+			 * ```ts
+			 * // my-plugin.ts
+			 * import { createResolver } from 'astro-integration-kit';
+			 * const { resolve } = createResolver(import.meta.url)
+			 *
+			 * {
+			 *  apiEndpoint: resolve('./api/pageTypeApi.ts'),
+			 * }
+			 *
+			 * // api/pageTypeApi.ts
+			 * import { APIRoute } from 'astro';
+			 *
+			 * export const onCreate: APIRoute = async (context) => {
+			 *   // Custom logic here
+			 *   return new Response();
+			 * }
+			 * ```
+			 */
+			apiEndpoint: z.string().optional(),
+		})
+	)
+	.optional();
 
 /**
  * Represents the type inferred from the `DashboardPageSchema` schema.
