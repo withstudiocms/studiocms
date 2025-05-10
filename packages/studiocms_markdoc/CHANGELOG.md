@@ -1,5 +1,14 @@
 # @studiocms/markdoc
 
+## 0.1.0-beta.18
+
+### Patch Changes
+
+- [#583](https://github.com/withstudiocms/studiocms/pull/583) [`3198db5`](https://github.com/withstudiocms/studiocms/commit/3198db594e22d15e05300c29c12294c2182f10c0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new StudioCMS hook-based plugin system
+
+- Updated dependencies [[`3226347`](https://github.com/withstudiocms/studiocms/commit/32263470412a3196f1ed9dca6bd5cfb8fe5f258a), [`4b6719b`](https://github.com/withstudiocms/studiocms/commit/4b6719b27fbe696c2568ba4ba10600cda23790a8), [`3198db5`](https://github.com/withstudiocms/studiocms/commit/3198db594e22d15e05300c29c12294c2182f10c0)]:
+  - studiocms@0.1.0-beta.18
+
 ## 0.1.0-beta.17
 
 ### Patch Changes
