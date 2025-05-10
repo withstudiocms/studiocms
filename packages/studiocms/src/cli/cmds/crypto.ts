@@ -8,9 +8,19 @@ import {
 import { Command, Option } from '@withstudiocms/cli-kit/commander';
 import { getBaseContext } from '@withstudiocms/cli-kit/context';
 import { CLITitle, boxen, label } from '@withstudiocms/cli-kit/messages';
+import { SignJWT } from 'jose';
+import { importPKCS8 } from 'jose/key/import';
+import { dateAdd } from '../lib/dateAdd.js';
 import { logger } from '../lib/utils.js';
 import { OneYear } from './crypto/consts.js';
-import { generator } from './crypto/generator.js';
+
+/**
+ * Converts a JWT token to URL-safe base64 format.
+ * @param jwtToken - The original JWT token to convert
+ * @returns The JWT token in URL-safe base64 format
+ */
+const convertJwtToBase64Url = (jwtToken: string): string =>
+	Buffer.from(jwtToken).toString('base64url');
 
 const program = new Command('crypto')
 	.description('Crypto Utilities for Security')
@@ -30,20 +40,10 @@ program
 	)
 	.description('Generate a JWT token from a keyfile')
 	.summary('Generate JWT token from a keyfile')
-	.option('-c, --claim <claim...>', 'claim in the form [key=value]')
 	.option('-e, --exp <date-in-seconds>', 'Expiry date in seconds (>=0) from issued at (iat) time')
 	.addOption(new Option('--debug', 'Enable debug mode.').hideHelp(true))
 	.hook('preAction', (thisCommand) => {
 		const options = thisCommand.opts();
-		if (options.claim) {
-			const invalidClaims = options.claim.filter((c: string) => !c.includes('='));
-			if (invalidClaims.length > 0) {
-				console.error(
-					`Invalid claim format: ${invalidClaims.join(', ')} - claims must be in format key=value`
-				);
-				process.exit(1);
-			}
-		}
 
 		const exp = options.exp ? Number.parseInt(options.exp) : OneYear;
 
@@ -57,11 +57,10 @@ program
 			process.exit(1);
 		}
 	})
-	.action(async (keyFile, { claim, exp: maybeExp, debug }) => {
+	.action(async (keyFile, { exp: maybeExp, debug }) => {
 		if (debug) {
 			logger.debug('Debug mode enabled');
 			logger.debug(`Key file: ${keyFile}`);
-			logger.debug(`Claim: ${claim}`);
 			logger.debug(`Expiration: ${maybeExp}`);
 		}
 
@@ -80,7 +79,7 @@ program
 			if (debug) logger.debug(`Key file is a file: ${fs.statSync(keyFile).isFile()}`);
 
 			// Replace actual newlines with escaped newlines for the JWT generator
-			const keyString = fs.readFileSync(keyFile, 'utf8').split(/\r?\n/).join('\\n');
+			const keyString = fs.readFileSync(keyFile, 'utf8');
 
 			if (debug) logger.debug(`Key string: ${keyString}`);
 
@@ -89,13 +88,15 @@ program
 				process.exit(1);
 			}
 
-			// Validate key format (check for a basic PEM format)
-			if (!keyString.includes('-----BEGIN') || !keyString.includes('-----END')) {
-				spinner.stop('Invalid key format. Please provide a valid PEM file');
+			const alg = 'EdDSA';
+			let privateKey: CryptoKey;
+
+			try {
+				privateKey = await importPKCS8(keyString, alg);
+			} catch (e) {
+				spinner.stop('Invalid or unsupported private key');
 				process.exit(1);
 			}
-
-			if (debug) logger.debug('Key string validated');
 
 			spinner.message('Key Found. Getting Expire Date.');
 
@@ -105,14 +106,17 @@ program
 
 			spinner.message('Expire Date set.  Generating Token.');
 
-			const safeToken = generator(keyString, claim, exp);
+			const NOW = new Date();
+			const expirationDate = dateAdd(NOW, 'second', exp);
 
-			if (!safeToken) {
-				spinner.stop(
-					'Token generation failed. Please check the key file, claim structure, and parameters.'
-				);
-				process.exit(1);
-			}
+			const jwt = await new SignJWT({ sub: 'libsql-client' })
+				.setProtectedHeader({ alg })
+				.setIssuedAt(NOW)
+				.setExpirationTime(expirationDate)
+				.setIssuer('admin')
+				.sign(privateKey);
+
+			const base64UrlJwt = convertJwtToBase64Url(jwt);
 
 			spinner.stop('Token Generated.');
 
@@ -120,8 +124,9 @@ program
 				boxen(
 					context.c.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, context.c.bold)}`),
 					{
-						ln2: 'Your new Token has been generated successfully:',
-						ln3: context.c.magenta(safeToken),
+						ln1: 'Your new Token has been generated successfully:',
+						ln3: `Token: ${context.c.magenta(jwt)}`,
+						ln5: `Base64Url Token: ${context.c.blue(base64UrlJwt)}`,
 					}
 				)
 			);
