@@ -79,7 +79,7 @@ program
 			if (debug) logger.debug(`Key file is a file: ${fs.statSync(keyFile).isFile()}`);
 
 			// Replace actual newlines with escaped newlines for the JWT generator
-			const keyString = fs.readFileSync(keyFile, 'utf8').split(/\r?\n/).join('\\n');
+			const keyString = fs.readFileSync(keyFile, 'utf8');
 
 			if (debug) logger.debug(`Key string: ${keyString}`);
 
@@ -89,8 +89,14 @@ program
 			}
 
 			const alg = 'EdDSA';
+			let privateKey: CryptoKey;
 
-			const privateKey = await importPKCS8(keyString, alg);
+			try {
+				privateKey = await importPKCS8(keyString, alg);
+			} catch (e) {
+				spinner.stop('Invalid or unsupported private key');
+				process.exit(1);
+			}
 
 			spinner.message('Key Found. Getting Expire Date.');
 

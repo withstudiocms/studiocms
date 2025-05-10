@@ -7,10 +7,10 @@
  * @param interval  One of: year, quarter, month, week, day, hour, minute, second
  * @param units  Number of units of the given interval to add.
  */
-export function dateAdd(date: Date, interval: Interval, units: number) {
+export function dateAdd(date: Date, interval: Interval, units: number): Date {
 	const ret: Date = new Date(date); //don't change original date
 	const checkRollover = () => {
-		if (ret?.getDate() !== date.getDate()) ret?.setDate(0);
+		if (ret.getDate() !== date.getDate()) ret.setDate(0);
 	};
 	switch (String(interval).toLowerCase()) {
 		case 'year':
@@ -40,6 +40,12 @@ export function dateAdd(date: Date, interval: Interval, units: number) {
 		case 'second':
 			ret.setTime(ret.getTime() + units * 1000);
 			break;
+		default: {
+			throw new RangeError(
+				`dateAdd: unsupported interval "${interval}". ` +
+					`Expected one of ${['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second'].join(', ')}.`
+			);
+		}
 	}
 	return ret;
 }
