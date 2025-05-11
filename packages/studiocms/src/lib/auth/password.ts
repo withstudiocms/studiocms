@@ -8,6 +8,10 @@ import { Effect, Layer } from 'effect';
 import type { UnknownException } from 'effect/Cause';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
 
+const SCRYPT_N = Number.parseInt(process.env.SCRYPT_N || '16384', 10);
+const SCRYPT_R = Number.parseInt(process.env.SCRYPT_R || '8', 10);
+const SCRYPT_P = Number.parseInt(process.env.SCRYPT_P || '1', 10);
+
 export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/password/Scrypt', {
 	effect: Effect.gen(function* () {
 		return {
@@ -21,7 +25,7 @@ export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/passwor
 								password,
 								CMS_ENCRYPTION_KEY,
 								64,
-								{ N: 16384, r: 8, p: 1 },
+								{ N: SCRYPT_N, r: SCRYPT_R, p: SCRYPT_P },
 								(err, derivedKey) => {
 									if (err) rej(err);
 									else res(derivedKey);
@@ -45,6 +49,27 @@ export const make = Effect.gen(function* () {
 			const hashed = yield* scrypt.run(password);
 			return hashed.toString();
 		}).pipe(Effect.provide(Scrypt.Default));
+
+	/**
+	 * Compares two strings in constant time to prevent timing attacks.
+	 *
+	 * This function ensures that the comparison time is independent of the
+	 * input strings' content, making it resistant to timing attacks that
+	 * could reveal information about the strings.
+	 *
+	 * @param a - The first string to compare.
+	 * @param b - The second string to compare.
+	 * @returns `true` if the strings are equal, `false` otherwise.
+	 * @private
+	 */
+	const constantTimeEqual = (a: string, b: string): boolean => {
+		if (a.length !== b.length) return false;
+		let result = 0;
+		for (let i = 0; i < a.length; i++) {
+			result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+		}
+		return result === 0;
+	};
 
 	/**
 	 * Hashes a plain text password using script.
@@ -71,20 +96,20 @@ export const make = Effect.gen(function* () {
 		Effect.gen(function* () {
 			if (!hash.startsWith('gen1.0:')) {
 				const newHash = yield* legacy0HashPassword(password);
-				return hash === newHash;
+				return constantTimeEqual(hash, newHash);
 			}
 			const [_prefix, salt] = hash.split(':');
 			const newHash = yield* hashPassword(password, salt);
-			return hash === newHash;
+			return constantTimeEqual(hash, newHash);
 		});
 
 	/**
 	 * @private Internal function for the `verifyPasswordStrength` function
 	 */
 	const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, never, never> =>
-		pass.length > 6 && pass.length < 255
+		pass.length >= 8 && pass.length < 255
 			? Effect.succeed(undefined)
-			: Effect.succeed('Password must be between 6 and 255 characters');
+			: Effect.succeed('Password must be between 8 and 255 characters');
 
 	/**
 	 * @private Internal function for the `verifyPasswordStrength` function
