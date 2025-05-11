@@ -32,3 +32,22 @@ export class CheckIfUnsafe extends Effect.Tag('studiocms/lib/auth/utils/unsafeCh
 	static Live = make;
 	static Layer = Layer.scoped(this, this.Live);
 }
+
+const _username = (val: string) => Effect.runSync(CheckIfUnsafe.Live).username(val);
+const _password = (val: string) => Effect.runSync(CheckIfUnsafe.Live).password(val);
+
+/**
+ * Checks if a value is a reserved username or password
+ *
+ * @param value - The value to check
+ * @returns An object containing functions to check if the value is a reserved username or password
+ * @deprecated use Effect `CheckIfUnsafe` Class instead
+ */
+function checkIfUnsafe(value: string) {
+	return {
+		username: () => Effect.runSync(_username(value)),
+		password: () => Effect.runSync(_password(value)),
+	};
+}
+
+export default checkIfUnsafe;
