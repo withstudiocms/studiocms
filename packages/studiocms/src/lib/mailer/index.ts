@@ -201,7 +201,13 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 						mailerResponse({
 							error: `Error updating mailer configuration: ${(error as Error).message}`,
 						}),
-				}).pipe(Effect.catchAll(Console.log));
+				}).pipe(
+					Effect.catchAll((e) =>
+						Effect.succeed(
+							mailerResponse({ error: `Error updating mailer configuration: ${String(e)}` })
+						)
+					)
+				);
 				return mailerResponse({ message: 'Mailer configuration updated successfully' });
 			});
 
