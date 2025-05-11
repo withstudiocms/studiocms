@@ -553,6 +553,9 @@ declare module 'studiocms:auth/lib/types' {
 }
 
 declare module 'studiocms:auth/lib/user' {
+	type Mod = typeof import('./lib/auth/user.js');
+	export const User: Mod['User'];
+
 	/**
 	 * Verifies if the provided username meets the required criteria.
 	 *
@@ -651,18 +654,6 @@ declare module 'studiocms:auth/lib/user' {
 	 */
 	export const permissionRanksMap: typeof import('./lib/auth/user.js').permissionRanksMap;
 	/**
-	 * Verifies if the user's permission level meets the required permission rank.
-	 *
-	 * @param userData - The session data of the user, which includes their permission level.
-	 * @param requiredPermission - The required permission rank to be verified against the user's permission level.
-	 * @returns A promise that resolves to a boolean indicating whether the user's permission level meets the required rank.
-	 * @deprecated
-	 * This function is deprecated and will be removed in future versions. Use `getUserPermissionLevel` instead.
-	 */
-	export const verifyUserPermissionLevel: typeof import(
-		'./lib/auth/user.js'
-	).verifyUserPermissionLevel;
-	/**
 	 * The name of the cookie used for linking a new OAuth account.
 	 * This constant is used to identify the specific cookie that handles
 	 * the linking process for new OAuth accounts.
@@ -695,6 +686,8 @@ declare module 'studiocms:auth/lib/user' {
 }
 
 declare module 'studiocms:auth/lib/verify-email' {
+	type Mod = typeof import('./lib/auth/verify-email.js');
+	export const VerifyEmail: Mod['VerifyEmail'];
 	export const getEmailVerificationRequest: typeof import(
 		'./lib/auth/verify-email.js'
 	).getEmailVerificationRequest;

@@ -1,4 +1,4 @@
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { UserPermissionLevel, getUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
@@ -46,11 +46,24 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(404, 'User not found');
 	}
 
-	// Check if the user has permission to update the rank
-	const isAllowedToUpdateRank = await verifyUserPermissionLevel(
-		userData,
-		user.permissionsData?.rank as RankEnum
-	);
+	const userPermissionLevel = getUserPermissionLevel(userData);
+
+	const requiredPerms = () => {
+		switch (user.permissionsData?.rank) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	};
+
+	const isAllowedToUpdateRank = userPermissionLevel > requiredPerms();
 
 	if (!isAllowedToUpdateRank) {
 		return apiResponseLogger(403, 'Unauthorized');

@@ -209,6 +209,7 @@ export class Session extends Effect.Tag('studiocms/lib/auth/session/Session')<
 >() {
 	static Live = make;
 	static Layer = Layer.scoped(this, this.Live);
+	static sessionCookieName = 'auth_session';
 }
 
 /**
