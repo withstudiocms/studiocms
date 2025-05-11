@@ -683,6 +683,8 @@ declare module 'studiocms:auth/lib/user' {
 	 * @returns The user's permission level as an enum value. `UserPermissionLevel`
 	 */
 	export const getUserPermissionLevel: typeof import('./lib/auth/user.js').getUserPermissionLevel;
+
+	export const isUserAllowed: Mod['isUserAllowed'];
 }
 
 declare module 'studiocms:auth/lib/verify-email' {

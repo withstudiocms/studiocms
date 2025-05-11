@@ -1,6 +1,6 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { isUserAllowed } from 'studiocms:auth/lib/user';
 import { isEmailVerified } from 'studiocms:auth/lib/verify-email';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
@@ -12,7 +12,7 @@ interface Props {
 const { requiredPermission, currentUser } = Astro.props;
 
 let [isAuthorized, emailVerified] = await Promise.all([
-	verifyUserPermissionLevel(currentUser, requiredPermission),
+	isUserAllowed(currentUser, requiredPermission),
 	isEmailVerified(currentUser),
 ]);
 

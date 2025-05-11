@@ -368,6 +368,32 @@ export const make = Effect.gen(function* () {
 			}
 		});
 
+	const parseRequiredPerms = (requiredPerms: AvailablePermissionRanks) => {
+		switch (requiredPerms) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	};
+
+	const isUserAllowed = (
+		userData: UserSessionData | CombinedUserData,
+		requiredPerms: AvailablePermissionRanks
+	) =>
+		Effect.gen(function* () {
+			const userLevel = yield* getUserPermissionLevel(userData);
+			const neededLevel = parseRequiredPerms(requiredPerms);
+
+			return userLevel >= neededLevel;
+		});
+
 	return {
 		verifyUsernameInput,
 		createUserAvatar,
@@ -378,6 +404,7 @@ export const make = Effect.gen(function* () {
 		getUserFromEmail,
 		getUserData,
 		getUserPermissionLevel,
+		isUserAllowed,
 	};
 });
 
@@ -560,6 +587,18 @@ export function getUserPermissionLevel(
 	const program = Effect.gen(function* () {
 		const user = yield* User;
 		return yield* user.getUserPermissionLevel(userData);
+	}).pipe(Effect.provide(User.Layer));
+
+	return Effect.runSync(program);
+}
+
+export function isUserAllowed(
+	userData: UserSessionData | CombinedUserData,
+	requiredPerms: AvailablePermissionRanks
+) {
+	const program = Effect.gen(function* () {
+		const user = yield* User;
+		return yield* user.isUserAllowed(userData, requiredPerms);
 	}).pipe(Effect.provide(User.Layer));
 
 	return Effect.runSync(program);
