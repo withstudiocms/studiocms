@@ -138,7 +138,8 @@ export interface MailerSuccessResponse {
  */
 export type MailerResponse = MailerSuccessResponse | MailerErrorResponse;
 
-export const makeLogger = Effect.try(() => _logger.fork('studiocms:runtime/mailer'));
+const forked = _logger.fork('studiocms:runtime/mailer');
+export const makeLogger = Effect.succeed(forked);
 
 export class Logger extends Effect.Tag('studiocms/lib/mailer/Logger')<
 	Logger,
