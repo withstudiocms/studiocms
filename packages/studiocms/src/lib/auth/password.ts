@@ -8,9 +8,9 @@ import { Effect, Layer } from 'effect';
 import type { UnknownException } from 'effect/Cause';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
 
-const SCRYPT_N = Number.parseInt(process.env.SCRYPT_N || '16384', 10);
-const SCRYPT_R = Number.parseInt(process.env.SCRYPT_R || '8', 10);
-const SCRYPT_P = Number.parseInt(process.env.SCRYPT_P || '1', 10);
+const SCRYPT_N = Math.max(16384, Number.parseInt(process.env.SCRYPT_N || '16384', 10));
+const SCRYPT_R = Math.max(8, Number.parseInt(process.env.SCRYPT_R || '8', 10));
+const SCRYPT_P = Math.max(1, Number.parseInt(process.env.SCRYPT_P || '1', 10));
 
 export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/password/Scrypt', {
 	effect: Effect.gen(function* () {
