@@ -1227,9 +1227,6 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/lib/password': `
 								export * from '${resolve('./lib/auth/password.js')}'
 							`,
-							'studiocms:auth/lib/rate-limit': `
-								export * from '${resolve('./lib/auth/rate-limit.js')}'
-							`,
 							'studiocms:auth/lib/session': `
 								export * from '${resolve('./lib/auth/session.js')}'
 							`,
