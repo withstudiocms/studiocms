@@ -2,7 +2,7 @@ import { db, eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
 import studioCMS_SDK from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
-import { Console, Effect, Layer } from 'effect';
+import { Effect, Layer } from 'effect';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import socks from 'socks';
