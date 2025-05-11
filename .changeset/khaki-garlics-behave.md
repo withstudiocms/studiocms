@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-feat(mailer) Implement Effect TS for mailer
+Refactor lib/mailer to Utilize Effect-TS
