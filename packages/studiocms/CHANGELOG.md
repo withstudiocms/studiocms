@@ -326,11 +326,11 @@
 
 - [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@column.text({](https://github.com/column.text({)! - Auth system overhaul:
 
-  ## **`studiocms`**
+  #### **`studiocms`**
 
   - Updated all Dependencies
 
-  ## **`@studiocms/auth`**
+  #### **`@studiocms/auth`**
 
   - Update `astro:env` schema:
     - `CMS_ENCRYPTION_KEY`: NEW - Required variable used for auth encryption, can be generated using `openssl rand --base64 16`.
@@ -354,7 +354,7 @@
   - Update Stubs files and Utils
   - Refactor Integration to use new system.
 
-  ## **`@studiocms/core`**
+  #### **`@studiocms/core`**
 
   - Disable interactivity for `<Avatar />` component. (Will always show a empty profile icon until we setup the new system for the front-end)
   - Update table schema:
@@ -431,7 +431,7 @@
 
   - Removed now unused auth types.
 
-  ## **`@studiocms/dashboard`**
+  #### **`@studiocms/dashboard`**
 
   - Refactor to utilize new `@studiocms/auth` lib for user verification
 
@@ -449,17 +449,17 @@
 
 - [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - Dynamic Sitemap integration
 
-  ### Dynamic Sitemap Generation:
+  ##### Dynamic Sitemap Generation:
 
   - `packages/studiocms/src/index.ts`: Replaced the static sitemap integration with the new `dynamicSitemap` function to support multiple sitemaps from plugins.
   - `packages/studiocms/src/lib/dynamic-sitemap/index.ts`: Added the `dynamicSitemap` function to generate sitemaps dynamically based on the provided plugin configurations.
   - `packages/studiocms/src/lib/dynamic-sitemap/sitemap-index.xml.ts`: Created a new route to serve the sitemap index file, which lists all the individual sitemaps.
 
-  ### Plugin Schema Updates:
+  ##### Plugin Schema Updates:
 
   - `packages/studiocms/src/schemas/plugins/index.ts`: Updated the plugin schema to include an optional `sitemaps` field, allowing plugins to specify their own sitemap configurations.
 
-  ### Plugin-Specific Sitemaps:
+  ##### Plugin-Specific Sitemaps:
 
   - `packages/studiocms_blog/src/index.ts`: Updated the StudioCMS Blog plugin to include its own sitemaps for posts and markdown pages.
   - `packages/studiocms_blog/src/routes/sitemap-md.xml.ts`: Added a new route to generate the sitemap for markdown pages.
@@ -469,19 +469,19 @@
 
 - [#333](https://github.com/withstudiocms/studiocms/pull/333) [`62ff52f`](https://github.com/withstudiocms/studiocms/commit/62ff52f9f089c9605da9227b0e75c755768ed96c) Thanks [@create-issue-branch](https://github.com/apps/create-issue-branch)! - User invite and creation systems
 
-  ### User Management Enhancements:
+  ##### User Management Enhancements:
 
   - Added modals for creating new users and user invites in `InnerSidebarElement.astro` to streamline the user creation process.
   - Implemented new API routes `create-user` and `create-user-invite` to handle user creation and invite processes.
   - Updated `routeMap.ts` to include new endpoints for user creation and invites.
 
-  ### UI Improvements:
+  ##### UI Improvements:
 
   - Modified icons for 'Create Page' and 'Create Folder' options in `InnerSidebarElement.astro` to use standard document and folder icons.
   - Enhanced the user management dropdown by reordering properties for better readability.
   - Added custom styles for modal bodies to improve the user interface.
 
-  ### Utility and SDK Updates:
+  ##### Utility and SDK Updates:
 
   - Added new utility functions for generating random passwords and IDs in `generators.ts`, and updated references in `core.ts`.
   - Updated the SDK core to support rank assignment during user creation.
