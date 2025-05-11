@@ -51,18 +51,43 @@ declare module 'studiocms:plugins/renderers' {
 }
 
 declare module 'studiocms:mailer' {
+	type Mod = typeof import('./lib/mailer/index');
+	export const Mailer: Mod['Mailer'];
+
+	// Table Def
 	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
+	// Types
 	export type tsMailer = import('./lib/mailer/index').tsMailer;
 	export type tsMailerInsert = import('./lib/mailer/index').tsMailerInsert;
 	export type TransporterConfig = import('./lib/mailer/index').TransporterConfig;
 	export type MailerConfig = import('./lib/mailer/index').MailerConfig;
 	export type MailOptions = import('./lib/mailer/index').MailOptions;
 	export type MailerResponse = import('./lib/mailer/index').MailerResponse;
+
+	// Functions and Consts
+	/**
+	 * @deprecated
+	 */
 	export const sendMail: typeof import('./lib/mailer/index').sendMail;
+	/**
+	 * @deprecated
+	 */
 	export const verifyMailConnection: typeof import('./lib/mailer/index').verifyMailConnection;
+	/**
+	 * @deprecated
+	 */
 	export const getMailerConfigTable: typeof import('./lib/mailer/index').getMailerConfigTable;
+	/**
+	 * @deprecated
+	 */
 	export const updateMailerConfigTable: typeof import('./lib/mailer/index').updateMailerConfigTable;
+	/**
+	 * @deprecated
+	 */
 	export const createMailerConfigTable: typeof import('./lib/mailer/index').createMailerConfigTable;
+	/**
+	 * @deprecated
+	 */
 	export const isMailerEnabled: typeof import('./lib/mailer/index').isMailerEnabled;
 }
 

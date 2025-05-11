@@ -1,6 +1,6 @@
 import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { isMailerEnabled, sendMail } from 'studiocms:mailer';
+import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData, tsEmailVerificationTokensSelect } from 'studiocms:sdk/types';
@@ -10,11 +10,12 @@ import type { MailerResponse } from '../mailer/index.js';
 import type { UserSessionData } from './types.js';
 
 export const make = Effect.gen(function* () {
-	// TODO: Convert mailer functions into an Effect
+	const MailService = yield* Mailer;
+
 	/**
 	 * @private
 	 */
-	const getMailerStatus = () => Effect.tryPromise(() => isMailerEnabled());
+	const getMailerStatus = () => MailService.isEnabled;
 
 	/**
 	 * Retrieves the notification settings from the database.
@@ -150,13 +151,11 @@ export const make = Effect.gen(function* () {
 
 			const htmlTemplate = getTemplate('verifyEmail');
 
-			const mailResponse = yield* Effect.tryPromise(() =>
-				sendMail({
-					to: email,
-					subject: `Email Verification | ${config?.title || 'StudioCMS'}`,
-					html: htmlTemplate(verifyLink),
-				})
-			);
+			const mailResponse = yield* MailService.sendMail({
+				to: email,
+				subject: `Email Verification | ${config?.title || 'StudioCMS'}`,
+				html: htmlTemplate(verifyLink),
+			});
 
 			return mailResponse;
 		});
@@ -256,7 +255,7 @@ export const make = Effect.gen(function* () {
 		sendVerificationEmail,
 		isEmailVerified,
 	};
-});
+}).pipe(Effect.provide(Mailer.Default));
 
 export class VerifyEmail extends Effect.Tag('studiocms/lib/auth/verify-email/VerifyEmail')<
 	VerifyEmail,
