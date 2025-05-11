@@ -109,7 +109,17 @@ export const make = Effect.gen(function* () {
 			const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(pass)));
 			const hashPrefix = hash.slice(0, 5);
 
-			const response = yield* client.get(`https://api.pwnedpasswords.com/range/${hashPrefix}`);
+			const response = yield* client
+				.get(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
+				.pipe(
+					Effect.catchAll((error) => Effect.succeed({ text: Effect.succeed(''), status: 500 }))
+				);
+
+			// If the API is unavailable, skip the check rather than failing
+			if (response.status >= 400) {
+				return;
+			}
+
 			const data = yield* response.text;
 			const lines = data.split('\n');
 
