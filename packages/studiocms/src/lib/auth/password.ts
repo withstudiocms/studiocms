@@ -1,17 +1,34 @@
-import { scryptSync } from 'node:crypto';
+import { scrypt as nodeScrypt } from 'node:crypto';
 import crypto from 'node:crypto';
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { FetchHttpClient, HttpClient } from '@effect/platform';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Effect, Layer } from 'effect';
+import type { UnknownException } from 'effect/Cause';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
 
-export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
+export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/password/Scrypt', {
 	effect: Effect.gen(function* () {
 		return {
-			run: (password: crypto.BinaryLike) =>
-				Effect.try(() => scryptSync(password, CMS_ENCRYPTION_KEY, 64, { N: 16384, r: 8, p: 1 })),
+			run: (
+				password: crypto.BinaryLike
+			): Effect.Effect<Buffer<ArrayBufferLike>, UnknownException, never> =>
+				Effect.tryPromise(
+					() =>
+						new Promise((res, rej) => {
+							nodeScrypt(
+								password,
+								CMS_ENCRYPTION_KEY,
+								64,
+								{ N: 16384, r: 8, p: 1 },
+								(err, derivedKey) => {
+									if (err) rej(err);
+									else res(derivedKey);
+								}
+							);
+						}) as Promise<Buffer>
+				),
 		};
 	}),
 }) {}
@@ -179,7 +196,7 @@ export async function hashPassword(password: string, _salt?: string): Promise<st
 		return yield* pass.hashPassword(password, _salt);
 	}).pipe(Effect.provide(Password.Layer));
 
-	return Effect.runSync(program);
+	return await Effect.runPromise(program);
 }
 
 /**
@@ -195,7 +212,7 @@ export async function verifyPasswordHash(hash: string, password: string): Promis
 		return yield* pass.verifyPasswordHash(hash, password);
 	}).pipe(Effect.provide(Password.Layer));
 
-	return Effect.runSync(program);
+	return await Effect.runPromise(program);
 }
 
 /**
@@ -215,5 +232,5 @@ export async function verifyPasswordStrength(password: string): Promise<true | s
 		return yield* pass.verifyPasswordStrength(password);
 	}).pipe(Effect.provide(Password.Layer));
 
-	return Effect.runSync(program);
+	return await Effect.runPromise(program);
 }

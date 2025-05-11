@@ -135,7 +135,7 @@ export const make = Effect.gen(function* () {
 			context.cookies.set(sessionCookieName, token, {
 				httpOnly: true,
 				sameSite: 'lax',
-				secure: false,
+				secure: import.meta.env.PROD,
 				expires: expiresAt,
 				path: '/',
 			})
@@ -151,7 +151,7 @@ export const make = Effect.gen(function* () {
 			context.cookies.set(sessionCookieName, '', {
 				httpOnly: true,
 				sameSite: 'lax',
-				secure: false,
+				secure: import.meta.env.PROD,
 				maxAge: 0,
 				path: '/',
 			})
@@ -168,7 +168,7 @@ export const make = Effect.gen(function* () {
 		Effect.try(() =>
 			context.cookies.set(key, value, {
 				path: '/',
-				secure: false,
+				secure: import.meta.env.PROD,
 				httpOnly: true,
 				maxAge: 60 * 10,
 				sameSite: 'lax',
