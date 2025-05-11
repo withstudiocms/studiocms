@@ -1,5 +1,5 @@
 ---
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { isUserAllowed } from 'studiocms:auth/lib/user';
 
 interface Props {
 	requiredPermission?: string;
@@ -9,7 +9,7 @@ const { requiredPermission } = Astro.props;
 
 const { userSessionData: user } = Astro.locals;
 
-const isAuthorized = await verifyUserPermissionLevel(
+const isAuthorized = isUserAllowed(
 	user,
 	(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
 );
