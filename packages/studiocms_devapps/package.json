@@ -64,7 +64,6 @@
     "html-entities": "^2.5.2"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.35",
     "@types/turndown": "^5.0.5",
     "typescript": "catalog:"
   },
