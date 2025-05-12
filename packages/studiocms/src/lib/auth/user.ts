@@ -1,4 +1,4 @@
-import { sendAdminNotification } from 'studiocms:notifier';
+import { Notifications } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import type { APIContext, AstroGlobal } from 'astro';
@@ -151,6 +151,7 @@ export const make = Effect.gen(function* () {
 	const createLocalUser = (name: string, username: string, email: string, password: string) =>
 		Effect.gen(function* () {
 			const pass = yield* Password;
+			const notify = yield* Notifications;
 			const passwordHash = yield* pass.hashPassword(password);
 			const avatar = yield* createUserAvatar(email);
 
@@ -166,11 +167,10 @@ export const make = Effect.gen(function* () {
 				})
 			);
 
-			// TODO: Turn the notification system into an Effect system
-			yield* Effect.tryPromise(() => sendAdminNotification('new_user', newUser.username));
+			yield* notify.sendAdminNotification('new_user', newUser.username);
 
 			return newUser;
-		}).pipe(Effect.provide(Password.Layer));
+		}).pipe(Effect.provide(Password.Layer), Effect.provide(Notifications.Default));
 
 	/**
 	 * Creates a new user with OAuth credentials.
@@ -184,6 +184,7 @@ export const make = Effect.gen(function* () {
 		oAuthFields: { provider: string; providerUserId: string }
 	) =>
 		Effect.gen(function* () {
+			const notify = yield* Notifications;
 			const newUser = yield* Effect.tryPromise(() => studioCMS_SDK.AUTH.user.create(userFields));
 
 			yield* Effect.tryPromise(() =>
@@ -194,10 +195,10 @@ export const make = Effect.gen(function* () {
 				})
 			);
 
-			yield* Effect.tryPromise(() => sendAdminNotification('new_user', newUser.username));
+			yield* notify.sendAdminNotification('new_user', newUser.username);
 
 			return newUser;
-		});
+		}).pipe(Effect.provide(Notifications.Default));
 
 	/**
 	 * Updates the password for a user.

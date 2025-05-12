@@ -1,26 +1,11 @@
-import logger from 'studiocms:logger';
-import { sendMail as _sendMail, verifyMailConnection } from 'studiocms:mailer';
+import _logger from 'studiocms:logger';
+import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import studioCMS_SDK from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
+import { Effect } from 'effect';
+import type { UnknownException } from 'effect/Cause';
 import type { UserNotificationOptions } from './client.js';
-
-/**
- * Retrieves the configuration settings for StudioCMS.
- *
- * This function fetches the configuration data from the StudioCMS SDK's database.
- * If the data is not available, it returns a default configuration with a title of 'StudioCMS'
- * and mailer functionality disabled.
- *
- * @returns {Promise<{ title: string, enableMailer: boolean }>} A promise that resolves to the configuration object.
- */
-async function getConfig(): Promise<{ title: string; enableMailer: boolean }> {
-	const data = (await studioCMS_SDK.GET.database.config()) || {
-		title: 'StudioCMS',
-		enableMailer: false,
-	};
-	return data;
-}
 
 /**
  * An object containing notification messages for user-related events.
@@ -126,72 +111,226 @@ const editorRanks = ['editor', 'admin', 'owner'];
  */
 const adminRanks = ['admin', 'owner'];
 
-/**
- * Retrieves users who have enabled a specific notification type and belong to specified user ranks.
- *
- * @param notification - The notification type to check for each user. It can be of type `UserNotification`, `EditorNotification`, or `AdminNotification`.
- * @param userRanks - An array of user rank strings to filter users by their rank.
- * @returns A promise that resolves to an array of `CombinedUserData` objects representing users who have the specified notification enabled and belong to the specified ranks.
- */
-async function getUsersWithNotifications(
-	notification: UserNotification | EditorNotification | AdminNotification,
-	userRanks: string[]
-): Promise<CombinedUserData[]> {
-	const userTable = await studioCMS_SDK.GET.database.users();
+const forked = _logger.fork('studiocms:runtime/notifier');
+export const makeLogger = Effect.succeed(forked);
 
-	const users = userTable.filter(
-		(user) => user.permissionsData?.rank && userRanks.includes(user.permissionsData?.rank)
-	);
+export class Notifications extends Effect.Service<Notifications>()(
+	'studiocms/lib/notifier/Notifications',
+	{
+		effect: Effect.gen(function* () {
+			const MailService = yield* Mailer;
+			const logger = yield* makeLogger;
 
-	const usersWithEnabledNotifications: CombinedUserData[] = [];
+			/**
+			 * Retrieves the configuration settings for StudioCMS.
+			 *
+			 * This function fetches the configuration data from the StudioCMS SDK's database.
+			 * If the data is not available, it returns a default configuration with a title of 'StudioCMS'
+			 * and mailer functionality disabled.
+			 */
+			const getConfig: Effect.Effect<
+				{ title: string; enableMailer: boolean },
+				UnknownException,
+				never
+			> = Effect.gen(function* () {
+				const data = yield* Effect.tryPromise(() => studioCMS_SDK.GET.database.config());
+				if (!data) {
+					return {
+						title: 'StudioCMS',
+						enableMailer: false,
+					};
+				}
+				return data;
+			});
 
-	for (const user of users) {
-		if (user.notifications) {
-			const enabledNotifications = user.notifications.split(',');
-			if (enabledNotifications.includes(notification)) {
-				usersWithEnabledNotifications.push(user);
-			}
-		}
-	}
+			/**
+			 * Retrieves users who have enabled a specific notification type and belong to specified user ranks.
+			 *
+			 * @param notification - The notification type to check for each user. It can be of type `UserNotification`, `EditorNotification`, or `AdminNotification`.
+			 * @param userRanks - An array of user rank strings to filter users by their rank.
+			 * @returns A promise that resolves to an array of `CombinedUserData` objects representing users who have the specified notification enabled and belong to the specified ranks.
+			 */
+			const getUsersWithNotifications = (
+				notification: UserNotification | EditorNotification | AdminNotification,
+				userRanks: string[]
+			) =>
+				Effect.gen(function* () {
+					const userTable = yield* Effect.tryPromise(() => studioCMS_SDK.GET.database.users());
 
-	return usersWithEnabledNotifications;
-}
+					const users = userTable.filter(
+						(user) => user.permissionsData?.rank && userRanks.includes(user.permissionsData?.rank)
+					);
 
-/**
- * Sends a notification message to a list of users via email.
- *
- * @param users - An array of user data objects. Each object should contain user information, including an email address.
- * @param config - Configuration object containing the title of the notification.
- * @param message - The message to be sent to the users.
- *
- * @returns A promise that resolves when all emails have been sent.
- */
-async function sendMail({
-	users,
-	config: { title },
-	message,
-	notification,
-}: {
-	users: CombinedUserData[];
-	config: { title: string };
-	message: string;
-	notification: NotificationTitle;
-}): Promise<void> {
-	const htmlTemplate = getTemplate('notification');
-	for (const { email } of users) {
-		if (!email) {
-			continue;
-		}
-		await _sendMail({
-			to: email,
-			subject: `${title} - New Notification`,
-			html: htmlTemplate({
-				title: `New Notification - ${notificationTitleStrings[notification]}`,
+					const usersWithEnabledNotifications: CombinedUserData[] = [];
+
+					for (const user of users) {
+						if (user.notifications) {
+							const enabledNotifications = user.notifications.split(',');
+							if (enabledNotifications.includes(notification)) {
+								usersWithEnabledNotifications.push(user);
+							}
+						}
+					}
+
+					return usersWithEnabledNotifications;
+				});
+
+			/**
+			 * Sends a notification message to a list of users via email.
+			 *
+			 * @param users - An array of user data objects. Each object should contain user information, including an email address.
+			 * @param config - Configuration object containing the title of the notification.
+			 * @param message - The message to be sent to the users.
+			 *
+			 * @returns A promise that resolves when all emails have been sent.
+			 */
+			const sendMail = ({
+				users,
+				config: { title },
 				message,
-			}),
-		});
+				notification,
+			}: {
+				users: CombinedUserData[];
+				config: { title: string };
+				message: string;
+				notification: NotificationTitle;
+			}) =>
+				Effect.gen(function* () {
+					const htmlTemplate = getTemplate('notification');
+
+					for (const { email } of users) {
+						if (!email) continue;
+
+						yield* MailService.sendMail({
+							to: email,
+							subject: `${title} - New Notification`,
+							html: htmlTemplate({
+								title: `New Notification - ${notificationTitleStrings[notification]}`,
+								message,
+							}),
+						});
+					}
+				});
+
+			/**
+			 * Sends a user notification if the mailer is enabled and the mail connection is verified.
+			 *
+			 * @template T - The type of the user notification.
+			 * @param {T} notification - The notification to be sent.
+			 * @param {string} userId - The ID of the user to whom the notification will be sent.
+			 */
+			const sendUserNotification = <T extends UserNotification>(notification: T, userId: string) =>
+				Effect.gen(function* () {
+					const config = yield* getConfig;
+
+					if (!config.enableMailer) return;
+
+					const testConnection = yield* MailService.verifyMailConnection;
+
+					if ('error' in testConnection) {
+						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						return;
+					}
+
+					const users = yield* getUsersWithNotifications(notification, userRanks);
+
+					const user = users.find(({ id }) => id === userId);
+
+					if (!user) return;
+
+					yield* sendMail({
+						users: [user],
+						config,
+						message: userNotifications[notification](user.name),
+						notification,
+					});
+					return;
+				});
+
+			/**
+			 * Sends an editor notification if the mailer is enabled and the mail connection is verified.
+			 *
+			 * @template T - The type of the editor notification.
+			 * @template K - The type of the data required by the notification.
+			 * @param {T} notification - The type of notification to send.
+			 * @param {K} data - The data to include in the notification.
+			 */
+			const sendEditorNotification = <
+				T extends EditorNotification,
+				K extends Parameters<EditorNotifications[T]>[0],
+			>(
+				notification: T,
+				data: K
+			) =>
+				Effect.gen(function* () {
+					const config = yield* getConfig;
+
+					if (!config.enableMailer) return;
+
+					const testConnection = yield* MailService.verifyMailConnection;
+
+					if ('error' in testConnection) {
+						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						return;
+					}
+
+					const editors = yield* getUsersWithNotifications(notification, editorRanks);
+
+					yield* sendMail({
+						users: editors,
+						config,
+						message: editorNotifications[notification](data),
+						notification,
+					});
+					return;
+				});
+
+			/**
+			 * Sends an admin notification if the mailer is enabled and the mail connection is verified.
+			 *
+			 * @template T - The type of the admin notification.
+			 * @template K - The type of the data required by the notification.
+			 * @param {T} notification - The type of notification to send.
+			 * @param {K} data - The data to include in the notification.
+			 */
+			const sendAdminNotification = <
+				T extends AdminNotification,
+				K extends Parameters<AdminNotifications[T]>[0],
+			>(
+				notification: T,
+				data: K
+			) =>
+				Effect.gen(function* () {
+					const config = yield* getConfig;
+
+					if (!config.enableMailer) return;
+
+					const testConnection = yield* MailService.verifyMailConnection;
+
+					if ('error' in testConnection) {
+						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						return;
+					}
+
+					const admins = yield* getUsersWithNotifications(notification, adminRanks);
+
+					yield* sendMail({
+						users: admins,
+						config,
+						message: adminNotifications[notification](data),
+						notification,
+					});
+					return;
+				});
+
+			return {
+				sendUserNotification,
+				sendEditorNotification,
+				sendAdminNotification,
+			};
+		}).pipe(Effect.provide(Mailer.Default)),
 	}
-}
+) {}
 
 /**
  * Sends a user notification if the mailer is enabled and the mail connection is verified.
@@ -200,44 +339,18 @@ async function sendMail({
  * @param {T} notification - The notification to be sent.
  * @param {string} userId - The ID of the user to whom the notification will be sent.
  * @returns {Promise<void>} A promise that resolves when the notification is sent or if the mailer is disabled.
+ * @deprecated Use the Effect Notifications Service now
  */
 export async function sendUserNotification<T extends UserNotification>(
 	notification: T,
 	userId: string
 ): Promise<void> {
-	const config = await getConfig();
+	const program = Effect.gen(function* () {
+		const notify = yield* Notifications;
+		return yield* notify.sendUserNotification(notification, userId);
+	}).pipe(Effect.provide(Notifications.Default));
 
-	if (!config.enableMailer) {
-		return;
-	}
-
-	const testConnection = await verifyMailConnection();
-
-	if ('error' in testConnection) {
-		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		return;
-	}
-
-	const users = await getUsersWithNotifications(notification, userRanks);
-
-	const user = users.find((user) => user.id === userId);
-
-	if (!user) {
-		return;
-	}
-
-	try {
-		await sendMail({
-			users: [user],
-			config,
-			message: userNotifications[notification](user.name),
-			notification,
-		});
-		return;
-	} catch (error) {
-		logger.error(`Error sending email: ${error}`);
-		return;
-	}
+	return await Effect.runPromise(program);
 }
 
 /**
@@ -247,38 +360,18 @@ export async function sendUserNotification<T extends UserNotification>(
  * @template K - The type of the data required by the notification.
  * @param {T} notification - The type of notification to send.
  * @param {K} data - The data to include in the notification.
+ * @deprecated Use the Effect Notifications Service now
  */
 export async function sendEditorNotification<
 	T extends EditorNotification,
 	K extends Parameters<EditorNotifications[T]>[0],
 >(notification: T, data: K): Promise<void> {
-	const config = await getConfig();
+	const program = Effect.gen(function* () {
+		const notify = yield* Notifications;
+		return yield* notify.sendEditorNotification(notification, data);
+	}).pipe(Effect.provide(Notifications.Default));
 
-	if (!config.enableMailer) {
-		return;
-	}
-
-	const testConnection = await verifyMailConnection();
-
-	if ('error' in testConnection) {
-		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		return;
-	}
-
-	const editors = await getUsersWithNotifications(notification, editorRanks);
-
-	try {
-		await sendMail({
-			users: editors,
-			config,
-			message: editorNotifications[notification](data),
-			notification,
-		});
-		return;
-	} catch (error) {
-		logger.error(`Error sending email: ${error}`);
-		return;
-	}
+	return await Effect.runPromise(program);
 }
 
 /**
@@ -288,36 +381,16 @@ export async function sendEditorNotification<
  * @template K - The type of the data required by the notification.
  * @param {T} notification - The type of notification to send.
  * @param {K} data - The data to include in the notification.
+ * @deprecated Use the Effect Notifications Service now
  */
 export async function sendAdminNotification<
 	T extends AdminNotification,
 	K extends Parameters<AdminNotifications[T]>[0],
 >(notification: T, data: K): Promise<void> {
-	const config = await getConfig();
+	const program = Effect.gen(function* () {
+		const notify = yield* Notifications;
+		return yield* notify.sendAdminNotification(notification, data);
+	}).pipe(Effect.provide(Notifications.Default));
 
-	if (!config.enableMailer) {
-		return;
-	}
-
-	const testConnection = await verifyMailConnection();
-
-	if ('error' in testConnection) {
-		logger.error(`Error verifying mail connection: ${testConnection.error}`);
-		return;
-	}
-
-	const admins = await getUsersWithNotifications(notification, adminRanks);
-
-	try {
-		await sendMail({
-			users: admins,
-			config,
-			message: adminNotifications[notification](data),
-			notification,
-		});
-		return;
-	} catch (error) {
-		logger.error(`Error sending email: ${error}`);
-		return;
-	}
+	return await Effect.runPromise(program);
 }
