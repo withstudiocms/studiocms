@@ -1,4 +1,4 @@
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { UserPermissionLevel, getUserPermissionLevel } from 'studiocms:auth/lib/user';
 import { apiResponseLogger } from 'studiocms:logger';
 import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
 import studioCMS_SDK from 'studiocms:sdk';
@@ -63,7 +63,24 @@ export const GET: APIRoute = async (context: APIContext) => {
 		permissionLevel: rank as PermissionRank,
 	};
 
-	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
+	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
+
+	const requiredPerms = () => {
+		switch (existingUserRank) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	};
+
+	const isAllowed = userPermissionLevel > requiredPerms();
 
 	if (!isAllowed) {
 		return apiResponseLogger(401, 'Unauthorized');
@@ -119,7 +136,24 @@ export const PATCH: APIRoute = async (context: APIContext) => {
 		permissionLevel: rank as PermissionRank,
 	};
 
-	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
+	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
+
+	const requiredPerms = () => {
+		switch (existingUserRank) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	};
+
+	const isAllowed = userPermissionLevel > requiredPerms();
 
 	if (!isAllowed) {
 		return apiResponseLogger(401, 'Unauthorized');
@@ -232,7 +266,24 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		permissionLevel: rank as PermissionRank,
 	};
 
-	const isAllowed = await verifyUserPermissionLevel(permissionLevelInput, existingUserRank);
+	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
+
+	const requiredPerms = () => {
+		switch (existingUserRank) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	};
+
+	const isAllowed = userPermissionLevel > requiredPerms();
 
 	if (!isAllowed) {
 		return apiResponseLogger(401, 'Unauthorized');

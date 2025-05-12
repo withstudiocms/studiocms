@@ -337,20 +337,23 @@ declare module 'studiocms:auth/scripts/formListener' {
 }
 
 declare module 'studiocms:auth/lib/encryption' {
+	type Mod = typeof import('./lib/auth/encryption.js');
+	export const Encryption: Mod['Encryption'];
+
 	/**
 	 * Encrypts the given data using AES-128-GCM encryption.
 	 *
 	 * @param data - The data to be encrypted as a Uint8Array.
 	 * @returns The encrypted data as a Uint8Array, which includes the initialization vector (IV), the encrypted content, and the authentication tag.
 	 */
-	export const encrypt: typeof import('./lib/auth/encryption.js').encrypt;
+	export const encrypt: Mod['encrypt'];
 	/**
 	 * Encrypts a given string and returns the encrypted data as a Uint8Array.
 	 *
 	 * @param data - The string to be encrypted.
 	 * @returns The encrypted data as a Uint8Array.
 	 */
-	export const encryptString: typeof import('./lib/auth/encryption.js').encryptString;
+	export const encryptString: Mod['encryptString'];
 	/**
 	 * Decrypts the given encrypted data using AES-128-GCM.
 	 *
@@ -358,24 +361,27 @@ declare module 'studiocms:auth/lib/encryption' {
 	 * @returns The decrypted data as a Uint8Array.
 	 * @throws Will throw an error if the encrypted data is less than 33 bytes.
 	 */
-	export const decrypt: typeof import('./lib/auth/encryption.js').decrypt;
+	export const decrypt: Mod['decrypt'];
 	/**
 	 * Decrypts the given Uint8Array data and returns the result as a string.
 	 *
 	 * @param data - The encrypted data as a Uint8Array.
 	 * @returns The decrypted data as a string.
 	 */
-	export const decryptToString: typeof import('./lib/auth/encryption.js').decryptToString;
+	export const decryptToString: Mod['decryptToString'];
 }
 
 declare module 'studiocms:auth/lib/password' {
+	type Mod = typeof import('./lib/auth/password.js');
+	export const Password: Mod['Password'];
+
 	/**
 	 * Hashes a plain text password using bcrypt.
 	 *
 	 * @param password - The plain text password to hash.
 	 * @returns A promise that resolves to the hashed password.
 	 */
-	export const hashPassword: typeof import('./lib/auth/password.js').hashPassword;
+	export const hashPassword: Mod['hashPassword'];
 	/**
 	 * Verifies if the provided password matches the hashed password.
 	 *
@@ -383,7 +389,7 @@ declare module 'studiocms:auth/lib/password' {
 	 * @param password - The plain text password to verify.
 	 * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
 	 */
-	export const verifyPasswordHash: typeof import('./lib/auth/password.js').verifyPasswordHash;
+	export const verifyPasswordHash: Mod['verifyPasswordHash'];
 	/**
 	 * Verifies the strength of a given password.
 	 *
@@ -395,164 +401,25 @@ declare module 'studiocms:auth/lib/password' {
 	 * @param password - The password to verify.
 	 * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
 	 */
-	export const verifyPasswordStrength: typeof import(
-		'./lib/auth/password.js'
-	).verifyPasswordStrength;
+	export const verifyPasswordStrength: Mod['verifyPasswordStrength'];
 }
 
-declare module 'studiocms:auth/lib/rate-limit' {
-	/**
-	 * Represents a token bucket that refills tokens at a specified interval.
-	 * Used to control access to resources by limiting the number of tokens
-	 * that can be consumed over time.
-	 *
-	 * @template _Key - The type of key used to identify individual token buckets.
-	 */
-	export class RefillingTokenBucket<_Key> {
-		/**
-		 * The maximum number of tokens that the bucket can hold.
-		 * @type {number}
-		 */
-		public max: number;
-		/**
-		 * The interval in seconds at which tokens are refilled.
-		 * @type {number}
-		 */
-		public refillIntervalSeconds: number;
-		/**
-		 * Initializes a new instance of the RefillingTokenBucket class.
-		 *
-		 * @param {number} max - The maximum number of tokens the bucket can hold.
-		 * @param {number} refillIntervalSeconds - The refill interval in seconds.
-		 */
-		constructor(max: number, refillIntervalSeconds: number);
-		/**
-		 * A map storing individual token buckets associated with specific keys.
-		 * @private
-		 */
-		private storage;
-		/**
-		 * Checks if there are enough tokens available in the bucket for the specified key and cost.
-		 *
-		 * @param {_Key} key - The key associated with the token bucket.
-		 * @param {number} cost - The number of tokens required.
-		 * @returns {boolean} - Returns 'true' if there are enough tokens; otherwise, 'false'.
-		 */
-		public check(key: _Key, cost: number): boolean;
-		/**
-		 * Consumes tokens from the bucket for the specified key and cost.
-		 *
-		 * @param {_Key} key - The key associated with the token bucket.
-		 * @param {number} cost - The number of tokens to consume.
-		 * @returns {boolean} - Returns 'true' if tokens were successfully consumed; otherwise, 'false'.
-		 */
-		public consume(key: _Key, cost: number): boolean;
-	}
-
-	/**
-	 * Represents a throttler that limits the frequency of actions performed with a specified key.
-	 * Uses incremental timeouts to delay repeated actions.
-	 *
-	 * @template _Key - The type of key used to identify throttling counters.
-	 */
-	export class Throttler<_Key> {
-		/**
-		 * Array of timeout durations (in seconds) for each consecutive attempt.
-		 * @type {number[]}
-		 */
-		public timeoutSeconds: number[];
-		/**
-		 * A map storing individual throttling counters associated with specific keys.
-		 * @private
-		 */
-		private storage;
-		/**
-		 * Initializes a new instance of the Throttler class.
-		 *
-		 * @param {number[]} timeoutSeconds - Array of timeout durations in seconds for each consecutive attempt.
-		 */
-		constructor(timeoutSeconds: number[]);
-		/**
-		 * Attempts to consume an action for the specified key.
-		 *
-		 * @param {_Key} key - The key associated with the throttling counter.
-		 * @returns {boolean} - Returns 'true' if the action is allowed; otherwise, 'false'.
-		 */
-		public consume(key: _Key): boolean;
-		/**
-		 * Resets the throttling counter for a specified key.
-		 *
-		 * @param {_Key} key - The key associated with the throttling counter to reset.
-		 */
-		public reset(key: _Key): void;
-	}
-
-	/**
-	 * Represents a token bucket with tokens that expire after a specified duration.
-	 * Used to control access to resources with tokens that reset after expiration.
-	 *
-	 * @template _Key - The type of key used to identify individual token buckets.
-	 */
-	export class ExpiringTokenBucket<_Key> {
-		/**
-		 * The maximum number of tokens the bucket can hold.
-		 * @type {number}
-		 */
-		public max: number;
-		/**
-		 * The duration (in seconds) after which tokens in the bucket expire.
-		 * @type {number}
-		 */
-		public expirationSeconds: number;
-		/**
-		 * A map storing individual expiring token buckets associated with specific keys.
-		 * @private
-		 */
-		constructor(max: number, expirationSeconds: number);
-		/**
-		 * Initializes a new instance of the ExpiringTokenBucket class.
-		 *
-		 * @param {number} max - The maximum number of tokens the bucket can hold.
-		 * @param {number} expiresInSeconds - The duration in seconds after which tokens expire.
-		 */
-		private storage;
-		/**
-		 * Checks if there are enough tokens available in the bucket for the specified key and cost.
-		 *
-		 * @param {_Key} key - The key associated with the token bucket.
-		 * @param {number} cost - The number of tokens required.
-		 * @returns {boolean} - Returns 'true' if there are enough tokens or if the tokens have expired; otherwise, 'false'.
-		 */
-		public check(key: _Key, cost: number): boolean;
-		/**
-		 * Consumes tokens from the bucket for the specified key and cost.
-		 *
-		 * @param {_Key} key - The key associated with the token bucket.
-		 * @param {number} cost - The number of tokens to consume.
-		 * @returns {boolean} - Returns 'true' if tokens were successfully consumed; otherwise, 'false'.
-		 */
-		public consume(key: _Key, cost: number): boolean;
-		/**
-		 * Resets the token bucket for a specified key, removing all tokens.
-		 *
-		 * @param {_Key} key - The key associated with the token bucket to reset.
-		 */
-		public reset(key: _Key): void;
-	}
-}
 declare module 'studiocms:auth/lib/session' {
+	type Mod = typeof import('./lib/auth/session.js');
+	export const Session: Mod['Session'];
+
 	/**
 	 * Generates a new session token.
 	 *
 	 * @returns The generated session token as a string.
 	 */
-	export const generateSessionToken: typeof import('./lib/auth/session.js').generateSessionToken;
+	export const generateSessionToken: Mod['generateSessionToken'];
 	/**
 	 * The name of the cookie used to store the authentication session.
 	 *
 	 * @constant {string}
 	 */
-	export const sessionCookieName: typeof import('./lib/auth/session.js').sessionCookieName;
+	export const sessionCookieName: Mod['sessionCookieName'];
 	/**
 	 * Creates a new session for a user.
 	 *
@@ -560,7 +427,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param userId - The ID of the user for whom the session is being created.
 	 * @returns A promise that resolves to the created session object.
 	 */
-	export const createSession: typeof import('./lib/auth/session.js').createSession;
+	export const createSession: Mod['createSession'];
 	/**
 	 * Validates a session token by checking its existence and expiration in the database.
 	 * If the session is valid but close to expiration, it extends the session expiration time.
@@ -569,14 +436,14 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param token - The session token to validate.
 	 * @returns A promise that resolves to an object containing the session and user information. If the session is invalid or expired, both session and user will be null.
 	 */
-	export const validateSessionToken: typeof import('./lib/auth/session.js').validateSessionToken;
+	export const validateSessionToken: Mod['validateSessionToken'];
 	/**
 	 * Invalidates a session by deleting it from the database.
 	 *
 	 * @param token - The session token to invalidate.
 	 * @returns A promise that resolves to `true` if the session was successfully invalidated; otherwise, `false`.
 	 */
-	export const invalidateSession: typeof import('./lib/auth/session.js').invalidateSession;
+	export const invalidateSession: Mod['invalidateSession'];
 	/**
 	 * Sets the session token cookie in the response object.
 	 *
@@ -584,15 +451,13 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param token - The session token to set in the cookie.
 	 * @param expiresAt - The expiration date and time of the session token.
 	 */
-	export const setSessionTokenCookie: typeof import('./lib/auth/session.js').setSessionTokenCookie;
+	export const setSessionTokenCookie: Mod['setSessionTokenCookie'];
 	/**
 	 * Deletes the session token cookie from the response object.
 	 *
 	 * @param context - The context object containing the request and response objects.
 	 */
-	export const deleteSessionTokenCookie: typeof import(
-		'./lib/auth/session.js'
-	).deleteSessionTokenCookie;
+	export const deleteSessionTokenCookie: Mod['deleteSessionTokenCookie'];
 	/**
 	 * Sets the OAuth session token cookie in the response object.
 	 *
@@ -600,20 +465,18 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param key - The name of the cookie to set.
 	 * @param expiresAt - The expiration date and time of the session token.
 	 */
-	export const setOAuthSessionTokenCookie: typeof import(
-		'./lib/auth/session.js'
-	).setOAuthSessionTokenCookie;
+	export const setOAuthSessionTokenCookie: Mod['setOAuthSessionTokenCookie'];
 	/**
 	 * Generates a new expiration date for a session.
 	 *
 	 * @returns The expiration date calculated by adding the session expiration time to the current date and time.
 	 */
-	export const makeExpirationDate: typeof import('./lib/auth/session.js').makeExpirationDate;
+	export const makeExpirationDate: Mod['makeExpirationDate'];
 	/**
 	 * The session expiration time in milliseconds.
 	 * This value represents 14 days.
 	 */
-	export const sessionExpTime: typeof import('./lib/auth/session.js').sessionExpTime;
+	export const sessionExpTime: Mod['sessionExpTime'];
 	/**
 	 * Creates a new user session.
 	 *
@@ -621,7 +484,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param context - The context object containing the request and response objects.
 	 * @returns A promise that resolves to the created session object.
 	 */
-	export const createUserSession: typeof import('./lib/auth/session.js').createUserSession;
+	export const createUserSession: Mod['createUserSession'];
 }
 
 declare module 'studiocms:auth/lib/types' {
@@ -690,6 +553,9 @@ declare module 'studiocms:auth/lib/types' {
 }
 
 declare module 'studiocms:auth/lib/user' {
+	type Mod = typeof import('./lib/auth/user.js');
+	export const User: Mod['User'];
+
 	/**
 	 * Verifies if the provided username meets the required criteria.
 	 *
@@ -788,18 +654,6 @@ declare module 'studiocms:auth/lib/user' {
 	 */
 	export const permissionRanksMap: typeof import('./lib/auth/user.js').permissionRanksMap;
 	/**
-	 * Verifies if the user's permission level meets the required permission rank.
-	 *
-	 * @param userData - The session data of the user, which includes their permission level.
-	 * @param requiredPermission - The required permission rank to be verified against the user's permission level.
-	 * @returns A promise that resolves to a boolean indicating whether the user's permission level meets the required rank.
-	 * @deprecated
-	 * This function is deprecated and will be removed in future versions. Use `getUserPermissionLevel` instead.
-	 */
-	export const verifyUserPermissionLevel: typeof import(
-		'./lib/auth/user.js'
-	).verifyUserPermissionLevel;
-	/**
 	 * The name of the cookie used for linking a new OAuth account.
 	 * This constant is used to identify the specific cookie that handles
 	 * the linking process for new OAuth accounts.
@@ -829,9 +683,13 @@ declare module 'studiocms:auth/lib/user' {
 	 * @returns The user's permission level as an enum value. `UserPermissionLevel`
 	 */
 	export const getUserPermissionLevel: typeof import('./lib/auth/user.js').getUserPermissionLevel;
+
+	export const isUserAllowed: Mod['isUserAllowed'];
 }
 
 declare module 'studiocms:auth/lib/verify-email' {
+	type Mod = typeof import('./lib/auth/verify-email.js');
+	export const VerifyEmail: Mod['VerifyEmail'];
 	export const getEmailVerificationRequest: typeof import(
 		'./lib/auth/verify-email.js'
 	).getEmailVerificationRequest;

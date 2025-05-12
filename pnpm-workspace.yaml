@@ -13,6 +13,8 @@ catalog:
   sharp: ^0.34.0
   typescript: ^5.7
   vite: ^6.2.6
+  effect: ^3.14.22
+  '@effect/platform': ^0.81.1
 
 catalogs:
   min:

@@ -1,6 +1,6 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { verifyUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { isUserAllowed } from 'studiocms:auth/lib/user';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/cache';
@@ -33,7 +33,7 @@ if (((data.gridItems as string[]) ?? []).length > 0) {
 		gridItems.length > 0 
 		? gridItems.map(async (item) => {
 			if (item.requiresPermission) {
-				const allowed = await verifyUserPermissionLevel(currentUser, item.requiresPermission);
+				const allowed = isUserAllowed(currentUser, item.requiresPermission);
 				if (allowed) {
 					return <DashboardGridItem {...item} {lang} />
 				}
