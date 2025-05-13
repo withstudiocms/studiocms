@@ -127,6 +127,76 @@ const _clearLibSQLError = (id: string, cause: unknown) =>
 		})
 	);
 
+function folderTreeReturn(data: FolderNode[]): FolderTreeCacheObject {
+	return {
+		data,
+		lastCacheUpdate: new Date(),
+	};
+}
+
+function folderListReturn(data: FolderListItem[]): FolderListCacheObject {
+	return {
+		data,
+		lastCacheUpdate: new Date(),
+	};
+}
+
+function pageDataReturn(data: CombinedPageData): PageDataCacheObject {
+	return {
+		data,
+		lastCacheUpdate: new Date(),
+	};
+}
+
+function siteConfigReturn(siteConfig: SiteConfig): SiteConfigCacheObject {
+	return {
+		data: siteConfig,
+		lastCacheUpdate: new Date(),
+	};
+}
+
+function versionReturn(version: string): VersionCacheObject {
+	return {
+		version,
+		lastCacheUpdate: new Date(),
+	};
+}
+
+function convertCombinedPageDataToMetaOnly<T extends PageDataCacheObject[] | PageDataCacheObject>(
+	data: T
+): PageDataCacheReturnType<T> {
+	if (Array.isArray(data)) {
+		return data.map(({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...data } }) => ({
+			lastCacheUpdate,
+			data,
+		})) as PageDataCacheReturnType<T>;
+	}
+	const {
+		lastCacheUpdate,
+		data: { defaultContent, multiLangContent, ...metaOnlyData },
+	} = data;
+	return {
+		lastCacheUpdate,
+		data: metaOnlyData,
+	} as PageDataCacheReturnType<T>;
+}
+
+function isCacheExpired(entry: BaseCacheObject, lifetime = cacheConfig.lifetime): boolean {
+	return new Date().getTime() - entry.lastCacheUpdate.getTime() > lifetime;
+}
+
+function filterPagesByDraftAndIndex(
+	pages: tsPageDataSelect[],
+	includeDrafts: boolean,
+	hideDefaultIndex: boolean
+): tsPageDataSelect[] {
+	return pages.filter(
+		({ draft, slug }) =>
+			(includeDrafts || draft === false || draft === null) &&
+			(!hideDefaultIndex || slug !== 'index')
+	);
+}
+
 export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', {
 	effect: Effect.gen(function* () {
 		// Get Services
@@ -160,6 +230,528 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		const { combineRanks, verifyRank, clearUserReferences } = userService;
 
 		const { collectCategories, collectTags, collectPageData, collectUserData } = collectorService;
+
+		function _getPackagesPages(
+			packageName: string,
+			tree?: FolderNode[]
+		): Effect.Effect<CombinedPageData[], SDKCoreError, never>;
+		function _getPackagesPages(
+			packageName: string,
+			tree?: FolderNode[],
+			metaOnly?: boolean
+		): Effect.Effect<MetaOnlyPageData[], SDKCoreError, never>;
+
+		function _getPackagesPages(packageName: string, tree?: FolderNode[], metaOnly = false) {
+			return Effect.gen(function* () {
+				const pagesRaw = yield* dbService.execute((db) =>
+					db.select().from(tsPageData).where(eq(tsPageData.package, packageName))
+				);
+
+				const folders = tree || (yield* buildFolderTree);
+
+				const pages = [];
+
+				for (const page of pagesRaw) {
+					const data = yield* collectPageData(page, folders, metaOnly);
+					pages.push(data);
+				}
+
+				return pages as MetaOnlyPageData[] | CombinedPageData[];
+			}).pipe(
+				Effect.catchTags({
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('GET.packagePages', cause),
+				})
+			);
+		}
+
+		function _getPageById(id: string): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
+		function _getPageById(
+			id: string,
+			metaOnly?: boolean
+		): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
+
+		function _getPageById(id: string, metaOnly = false) {
+			const getPage = (id: string, tree?: FolderNode[]) =>
+				Effect.gen(function* () {
+					const page = yield* dbService.execute((db) =>
+						db.select().from(tsPageData).where(eq(tsPageData.id, id)).get()
+					);
+
+					if (!page) return undefined;
+
+					const folders = tree || (yield* buildFolderTree);
+
+					return yield* collectPageData(page, folders);
+				});
+
+			return Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+
+				if (!status) {
+					const page = yield* getPage(id);
+
+					if (!page) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error('Page not found in Database'),
+							})
+						);
+					}
+
+					const pageData = pageDataReturn(page);
+
+					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+				}
+
+				const { data: tree } = yield* GET.folderTree();
+
+				const cachedPage = pages.get(id);
+
+				if (!cachedPage || isCacheExpired(cachedPage)) {
+					const page = yield* getPage(id, tree);
+
+					if (!page) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error('Page not found in Database'),
+							})
+						);
+					}
+
+					const returnPage = pageDataReturn(page);
+
+					pages.set(id, returnPage);
+
+					return metaOnly ? convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
+				}
+
+				// Return the cached page
+				return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
+			}).pipe(
+				Effect.catchTags({
+					UnknownException: (cause) => _clearLibSQLError('GET.page.byId', cause),
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('GET.page.byId', cause),
+				})
+			);
+		}
+
+		function _getPageBySlug(slug: string): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
+		function _getPageBySlug(
+			slug: string,
+			metaOnly?: boolean
+		): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
+
+		function _getPageBySlug(slug: string, metaOnly = false) {
+			const getPage = (iSlug: string, tree?: FolderNode[]) =>
+				Effect.gen(function* () {
+					const page = yield* dbService.execute((db) =>
+						db.select().from(tsPageData).where(eq(tsPageData.slug, iSlug)).get()
+					);
+
+					if (!page) return undefined;
+
+					const folders = tree || (yield* buildFolderTree);
+
+					return yield* collectPageData(page, folders);
+				});
+
+			return Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+
+				if (!status) {
+					const page = yield* getPage(slug);
+
+					if (!page) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error('Page not found in Database'),
+							})
+						);
+					}
+
+					const pageData = pageDataReturn(page);
+
+					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+				}
+
+				const { data: tree } = yield* GET.folderTree();
+
+				// Retrieve the cached page
+				const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
+
+				if (!cachedPage || isCacheExpired(cachedPage)) {
+					const page = yield* getPage(slug, tree);
+
+					if (!page) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error('Page not found in Database'),
+							})
+						);
+					}
+
+					const pageData = pageDataReturn(page);
+
+					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
+				}
+
+				// Return the cached page
+				return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
+			}).pipe(
+				Effect.catchTags({
+					UnknownException: (cause) => _clearLibSQLError('GET.page.bySlug', cause),
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('GET.page.bySlug', cause),
+				})
+			);
+		}
+
+		function _getAllPages(
+			includeDrafts?: boolean,
+			hideDefaultIndex?: boolean,
+			metaOnly?: false,
+			paginate?: PaginateInput
+		): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
+		function _getAllPages(
+			includeDrafts?: boolean,
+			hideDefaultIndex?: boolean,
+			metaOnly?: true,
+			paginate?: PaginateInput
+		): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
+
+		function _getAllPages(
+			includeDrafts = false,
+			hideDefaultIndex = false,
+			metaOnly = false,
+			paginate?: PaginateInput
+		) {
+			const getPages = (
+				includeDrafts = false,
+				hideDefaultIndex = false,
+				tree?: FolderNode[],
+				paginate?: PaginateInput
+			) =>
+				Effect.gen(function* () {
+					if (paginate) {
+						if (paginate.limit < 0 || paginate.offset < 0) {
+							return yield* Effect.fail(
+								new SDKCoreError({
+									type: 'UNKNOWN',
+									cause: new StudioCMS_SDK_Error(
+										'Pagination limit and offset must be non-negative values'
+									),
+								})
+							);
+						}
+						if (paginate.limit === 0) {
+							// Either throw an error or set a default value
+							paginate.limit = 10; // Default value
+						}
+					}
+
+					const pagesRaw = paginate
+						? yield* dbService.execute((db) =>
+								db
+									.select()
+									.from(tsPageData)
+									.orderBy(asc(tsPageData.title))
+									.limit(paginate.limit)
+									.offset(paginate.offset)
+							)
+						: yield* dbService.execute((db) =>
+								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
+							);
+
+					const pagesFiltered = filterPagesByDraftAndIndex(
+						pagesRaw,
+						includeDrafts,
+						hideDefaultIndex
+					);
+
+					const folders = tree || (yield* buildFolderTree);
+
+					const pages = [];
+
+					for (const page of pagesFiltered) {
+						const data = yield* collectPageData(page, folders);
+						pages.push(data);
+					}
+
+					return pages;
+				});
+
+			return Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+
+				if (paginate) {
+					if (paginate.limit < 0 || paginate.offset < 0) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error(
+									'Pagination limit and offset must be non-negative values'
+								),
+							})
+						);
+					}
+					if (paginate.limit === 0) {
+						// Either throw an error or set a default value
+						paginate.limit = 10; // Default value
+					}
+				}
+
+				if (!status) {
+					const dbPages = yield* getPages(includeDrafts, hideDefaultIndex, undefined, paginate);
+
+					const data = dbPages.map((page) => pageDataReturn(page));
+					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+				}
+
+				const { data: tree } = yield* GET.folderTree();
+
+				if (pages.size === 0) {
+					const newData = yield* getPages(includeDrafts, hideDefaultIndex, tree);
+
+					// Loop through the updated data and store it in the cache
+					for (const data of newData) {
+						pages.set(data.id, pageDataReturn(data));
+					}
+
+					const data = newData.map((data) => pageDataReturn(data));
+
+					if (paginate) {
+						const paginatedData = data
+							.sort((a, b) => a.data.title.localeCompare(b.data.title))
+							.slice(paginate.offset, paginate.offset + paginate.limit);
+						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+					}
+
+					// Transform and return the data
+					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+				}
+
+				const cacheMap = Array.from(pages.values());
+
+				for (const item of cacheMap) {
+					if (isCacheExpired(item)) {
+						const { data: updatedData } = yield* GET.page.byId(item.data.id);
+
+						pages.set(updatedData.id, pageDataReturn(updatedData));
+					}
+				}
+
+				const data = Array.from(pages.values());
+
+				if (paginate) {
+					const paginatedData = data
+						.sort((a, b) => a.data.title.localeCompare(b.data.title))
+						.slice(paginate.offset, paginate.offset + paginate.limit);
+					return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+				}
+
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+			}).pipe(
+				Effect.catchTags({
+					UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('GET.pages', cause),
+				})
+			);
+		}
+
+		function _folderPages(
+			id: string,
+			includeDrafts?: boolean,
+			hideDefaultIndex?: boolean,
+			metaOnly?: false,
+			paginate?: PaginateInput
+		): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
+		function _folderPages(
+			id: string,
+			includeDrafts?: boolean,
+			hideDefaultIndex?: boolean,
+			metaOnly?: true,
+			paginate?: PaginateInput
+		): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
+
+		function _folderPages(
+			id: string,
+			includeDrafts = false,
+			hideDefaultIndex = false,
+			metaOnly = false,
+			paginate?: PaginateInput
+		) {
+			const getAllPages = (
+				includeDrafts = false,
+				hideDefaultIndex = false,
+				tree?: FolderNode[],
+				paginate?: PaginateInput
+			) =>
+				Effect.gen(function* () {
+					if (paginate) {
+						if (paginate.limit < 0 || paginate.offset < 0) {
+							return yield* Effect.fail(
+								new SDKCoreError({
+									type: 'UNKNOWN',
+									cause: new StudioCMS_SDK_Error(
+										'Pagination limit and offset must be non-negative values'
+									),
+								})
+							);
+						}
+						if (paginate.limit === 0) {
+							// Either throw an error or set a default value
+							paginate.limit = 10; // Default value
+						}
+					}
+
+					const pagesRaw = paginate
+						? yield* dbService.execute((db) =>
+								db
+									.select()
+									.from(tsPageData)
+									.orderBy(asc(tsPageData.title))
+									.limit(paginate.limit)
+									.offset(paginate.offset)
+							)
+						: yield* dbService.execute((db) =>
+								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
+							);
+
+					const pagesFiltered = filterPagesByDraftAndIndex(
+						pagesRaw,
+						includeDrafts,
+						hideDefaultIndex
+					);
+
+					const folders = tree || (yield* buildFolderTree);
+
+					const pages = [];
+
+					for (const page of pagesFiltered) {
+						const data = yield* collectPageData(page, folders);
+						pages.push(data);
+					}
+
+					return pages;
+				});
+			const getPages = (
+				id: string,
+				includeDrafts = false,
+				hideDefaultIndex = false,
+				tree?: FolderNode[]
+			) =>
+				Effect.gen(function* () {
+					const pagesRaw = yield* dbService.execute((db) =>
+						db
+							.select()
+							.from(tsPageData)
+							.where(eq(tsPageData.parentFolder, id))
+							.orderBy(asc(tsPageData.title))
+					);
+
+					const pagesFiltered = filterPagesByDraftAndIndex(
+						pagesRaw,
+						includeDrafts,
+						hideDefaultIndex
+					);
+
+					const folders = tree || (yield* buildFolderTree);
+
+					const pages = [];
+
+					for (const page of pagesFiltered) {
+						pages.push(yield* collectPageData(page, folders));
+					}
+
+					return pages;
+				});
+
+			return Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+
+				if (paginate) {
+					if (paginate.limit < 0 || paginate.offset < 0) {
+						return yield* Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error(
+									'Pagination limit and offset must be non-negative values'
+								),
+							})
+						);
+					}
+					if (paginate.limit === 0) {
+						// Either throw an error or set a default value
+						paginate.limit = 10; // Default value
+					}
+				}
+
+				if (!status) {
+					const dbPages = yield* getPages(id, includeDrafts, hideDefaultIndex);
+					const data = dbPages.map((page) => pageDataReturn(page));
+					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+				}
+
+				const { data: tree } = yield* GET.folderTree();
+
+				if (pages.size === 0) {
+					const updatedData = yield* getAllPages(includeDrafts, hideDefaultIndex, tree);
+
+					for (const data of updatedData) {
+						pages.set(data.id, pageDataReturn(data));
+					}
+
+					const data = updatedData
+						.filter(({ parentFolder }) => parentFolder === id)
+						.map((data) => pageDataReturn(data));
+
+					if (paginate) {
+						const paginatedData = data
+							.sort((a, b) => a.data.title.localeCompare(b.data.title))
+							.slice(paginate.offset, paginate.offset + paginate.limit);
+						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+					}
+
+					// Transform and return the data
+					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+				}
+
+				const cacheMap = Array.from(pages.values());
+
+				for (const item of cacheMap) {
+					if (isCacheExpired(item)) {
+						const { data: updatedData } = yield* GET.page.byId(item.data.id);
+
+						pages.set(updatedData.id, pageDataReturn(updatedData));
+					}
+				}
+
+				const data = Array.from(pages.values()).filter(
+					({ data: { parentFolder } }) => parentFolder === id
+				);
+
+				if (paginate) {
+					const paginatedData = data
+						.sort((a, b) => a.data.title.localeCompare(b.data.title))
+						.slice(paginate.offset, paginate.offset + paginate.limit);
+					return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
+				}
+				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
+			}).pipe(
+				Effect.catchTags({
+					UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('GET.pages', cause),
+				})
+			);
+		}
 
 		const resetTokenBucket = {
 			new: (userId: string): Effect.Effect<tsUserResetTokensSelect, SDKCoreError, never> =>
@@ -1581,600 +2173,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					),
 			},
 		};
-
-		function _getPackagesPages(
-			packageName: string,
-			tree?: FolderNode[]
-		): Effect.Effect<CombinedPageData[], SDKCoreError, never>;
-		function _getPackagesPages(
-			packageName: string,
-			tree?: FolderNode[],
-			metaOnly?: boolean
-		): Effect.Effect<MetaOnlyPageData[], SDKCoreError, never>;
-
-		function _getPackagesPages(packageName: string, tree?: FolderNode[], metaOnly = false) {
-			return Effect.gen(function* () {
-				const pagesRaw = yield* dbService.execute((db) =>
-					db.select().from(tsPageData).where(eq(tsPageData.package, packageName))
-				);
-
-				const folders = tree || (yield* buildFolderTree);
-
-				const pages = [];
-
-				for (const page of pagesRaw) {
-					const data = yield* collectPageData(page, folders, metaOnly);
-					pages.push(data);
-				}
-
-				return pages as MetaOnlyPageData[] | CombinedPageData[];
-			}).pipe(
-				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						_clearLibSQLError('GET.packagePages', cause),
-				})
-			);
-		}
-
-		function folderTreeReturn(data: FolderNode[]): FolderTreeCacheObject {
-			return {
-				data,
-				lastCacheUpdate: new Date(),
-			};
-		}
-
-		function folderListReturn(data: FolderListItem[]): FolderListCacheObject {
-			return {
-				data,
-				lastCacheUpdate: new Date(),
-			};
-		}
-
-		function pageDataReturn(data: CombinedPageData): PageDataCacheObject {
-			return {
-				data,
-				lastCacheUpdate: new Date(),
-			};
-		}
-
-		function siteConfigReturn(siteConfig: SiteConfig): SiteConfigCacheObject {
-			return {
-				data: siteConfig,
-				lastCacheUpdate: new Date(),
-			};
-		}
-
-		function versionReturn(version: string): VersionCacheObject {
-			return {
-				version,
-				lastCacheUpdate: new Date(),
-			};
-		}
-
-		function convertCombinedPageDataToMetaOnly<
-			T extends PageDataCacheObject[] | PageDataCacheObject,
-		>(data: T): PageDataCacheReturnType<T> {
-			if (Array.isArray(data)) {
-				return data.map(
-					({ lastCacheUpdate, data: { defaultContent, multiLangContent, ...data } }) => ({
-						lastCacheUpdate,
-						data,
-					})
-				) as PageDataCacheReturnType<T>;
-			}
-			const {
-				lastCacheUpdate,
-				data: { defaultContent, multiLangContent, ...metaOnlyData },
-			} = data;
-			return {
-				lastCacheUpdate,
-				data: metaOnlyData,
-			} as PageDataCacheReturnType<T>;
-		}
-
-		function isCacheExpired(entry: BaseCacheObject, lifetime = cacheConfig.lifetime): boolean {
-			return new Date().getTime() - entry.lastCacheUpdate.getTime() > lifetime;
-		}
-
-		function _getPageById(id: string): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
-		function _getPageById(
-			id: string,
-			metaOnly?: boolean
-		): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
-
-		function _getPageById(id: string, metaOnly = false) {
-			const getPage = (id: string, tree?: FolderNode[]) =>
-				Effect.gen(function* () {
-					const page = yield* dbService.execute((db) =>
-						db.select().from(tsPageData).where(eq(tsPageData.id, id)).get()
-					);
-
-					if (!page) return undefined;
-
-					const folders = tree || (yield* buildFolderTree);
-
-					return yield* collectPageData(page, folders);
-				});
-
-			return Effect.gen(function* () {
-				const status = yield* isCacheEnabled;
-
-				if (!status) {
-					const page = yield* getPage(id);
-
-					if (!page) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error('Page not found in Database'),
-							})
-						);
-					}
-
-					const pageData = pageDataReturn(page);
-
-					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
-				}
-
-				const { data: tree } = yield* GET.folderTree();
-
-				const cachedPage = pages.get(id);
-
-				if (!cachedPage || isCacheExpired(cachedPage)) {
-					const page = yield* getPage(id, tree);
-
-					if (!page) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error('Page not found in Database'),
-							})
-						);
-					}
-
-					const returnPage = pageDataReturn(page);
-
-					pages.set(id, returnPage);
-
-					return metaOnly ? convertCombinedPageDataToMetaOnly(returnPage) : returnPage;
-				}
-
-				// Return the cached page
-				return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
-			}).pipe(
-				Effect.catchTags({
-					UnknownException: (cause) => _clearLibSQLError('GET.page.byId', cause),
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						_clearLibSQLError('GET.page.byId', cause),
-				})
-			);
-		}
-
-		function _getPageBySlug(slug: string): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
-		function _getPageBySlug(
-			slug: string,
-			metaOnly?: boolean
-		): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
-
-		function _getPageBySlug(slug: string, metaOnly = false) {
-			const getPage = (iSlug: string, tree?: FolderNode[]) =>
-				Effect.gen(function* () {
-					const page = yield* dbService.execute((db) =>
-						db.select().from(tsPageData).where(eq(tsPageData.slug, iSlug)).get()
-					);
-
-					if (!page) return undefined;
-
-					const folders = tree || (yield* buildFolderTree);
-
-					return yield* collectPageData(page, folders);
-				});
-
-			return Effect.gen(function* () {
-				const status = yield* isCacheEnabled;
-
-				if (!status) {
-					const page = yield* getPage(slug);
-
-					if (!page) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error('Page not found in Database'),
-							})
-						);
-					}
-
-					const pageData = pageDataReturn(page);
-
-					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
-				}
-
-				const { data: tree } = yield* GET.folderTree();
-
-				// Retrieve the cached page
-				const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
-
-				if (!cachedPage || isCacheExpired(cachedPage)) {
-					const page = yield* getPage(slug, tree);
-
-					if (!page) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error('Page not found in Database'),
-							})
-						);
-					}
-
-					const pageData = pageDataReturn(page);
-
-					return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
-				}
-
-				// Return the cached page
-				return metaOnly ? convertCombinedPageDataToMetaOnly(cachedPage) : cachedPage;
-			}).pipe(
-				Effect.catchTags({
-					UnknownException: (cause) => _clearLibSQLError('GET.page.bySlug', cause),
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						_clearLibSQLError('GET.page.bySlug', cause),
-				})
-			);
-		}
-
-		function filterPagesByDraftAndIndex(
-			pages: tsPageDataSelect[],
-			includeDrafts: boolean,
-			hideDefaultIndex: boolean
-		): tsPageDataSelect[] {
-			return pages.filter(
-				({ draft, slug }) =>
-					(includeDrafts || draft === false || draft === null) &&
-					(!hideDefaultIndex || slug !== 'index')
-			);
-		}
-
-		function _getAllPages(
-			includeDrafts?: boolean,
-			hideDefaultIndex?: boolean,
-			metaOnly?: false,
-			paginate?: PaginateInput
-		): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
-		function _getAllPages(
-			includeDrafts?: boolean,
-			hideDefaultIndex?: boolean,
-			metaOnly?: true,
-			paginate?: PaginateInput
-		): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
-
-		function _getAllPages(
-			includeDrafts = false,
-			hideDefaultIndex = false,
-			metaOnly = false,
-			paginate?: PaginateInput
-		) {
-			const getPages = (
-				includeDrafts = false,
-				hideDefaultIndex = false,
-				tree?: FolderNode[],
-				paginate?: PaginateInput
-			) =>
-				Effect.gen(function* () {
-					if (paginate) {
-						if (paginate.limit < 0 || paginate.offset < 0) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error(
-										'Pagination limit and offset must be non-negative values'
-									),
-								})
-							);
-						}
-						if (paginate.limit === 0) {
-							// Either throw an error or set a default value
-							paginate.limit = 10; // Default value
-						}
-					}
-
-					const pagesRaw = paginate
-						? yield* dbService.execute((db) =>
-								db
-									.select()
-									.from(tsPageData)
-									.orderBy(asc(tsPageData.title))
-									.limit(paginate.limit)
-									.offset(paginate.offset)
-							)
-						: yield* dbService.execute((db) =>
-								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
-							);
-
-					const pagesFiltered = filterPagesByDraftAndIndex(
-						pagesRaw,
-						includeDrafts,
-						hideDefaultIndex
-					);
-
-					const folders = tree || (yield* buildFolderTree);
-
-					const pages = [];
-
-					for (const page of pagesFiltered) {
-						const data = yield* collectPageData(page, folders);
-						pages.push(data);
-					}
-
-					return pages;
-				});
-
-			return Effect.gen(function* () {
-				const status = yield* isCacheEnabled;
-
-				if (paginate) {
-					if (paginate.limit < 0 || paginate.offset < 0) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error(
-									'Pagination limit and offset must be non-negative values'
-								),
-							})
-						);
-					}
-					if (paginate.limit === 0) {
-						// Either throw an error or set a default value
-						paginate.limit = 10; // Default value
-					}
-				}
-
-				if (!status) {
-					const dbPages = yield* getPages(includeDrafts, hideDefaultIndex, undefined, paginate);
-
-					const data = dbPages.map((page) => pageDataReturn(page));
-					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-				}
-
-				const { data: tree } = yield* GET.folderTree();
-
-				if (pages.size === 0) {
-					const newData = yield* getPages(includeDrafts, hideDefaultIndex, tree);
-
-					// Loop through the updated data and store it in the cache
-					for (const data of newData) {
-						pages.set(data.id, pageDataReturn(data));
-					}
-
-					const data = newData.map((data) => pageDataReturn(data));
-
-					if (paginate) {
-						const paginatedData = data
-							.sort((a, b) => a.data.title.localeCompare(b.data.title))
-							.slice(paginate.offset, paginate.offset + paginate.limit);
-						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
-					}
-
-					// Transform and return the data
-					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-				}
-
-				const cacheMap = Array.from(pages.values());
-
-				for (const item of cacheMap) {
-					if (isCacheExpired(item)) {
-						const { data: updatedData } = yield* GET.page.byId(item.data.id);
-
-						pages.set(updatedData.id, pageDataReturn(updatedData));
-					}
-				}
-
-				const data = Array.from(pages.values());
-
-				if (paginate) {
-					const paginatedData = data
-						.sort((a, b) => a.data.title.localeCompare(b.data.title))
-						.slice(paginate.offset, paginate.offset + paginate.limit);
-					return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
-				}
-
-				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-			}).pipe(
-				Effect.catchTags({
-					UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						_clearLibSQLError('GET.pages', cause),
-				})
-			);
-		}
-
-		function _folderPages(
-			id: string,
-			includeDrafts?: boolean,
-			hideDefaultIndex?: boolean,
-			metaOnly?: false,
-			paginate?: PaginateInput
-		): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
-		function _folderPages(
-			id: string,
-			includeDrafts?: boolean,
-			hideDefaultIndex?: boolean,
-			metaOnly?: true,
-			paginate?: PaginateInput
-		): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
-
-		function _folderPages(
-			id: string,
-			includeDrafts = false,
-			hideDefaultIndex = false,
-			metaOnly = false,
-			paginate?: PaginateInput
-		) {
-			const getAllPages = (
-				includeDrafts = false,
-				hideDefaultIndex = false,
-				tree?: FolderNode[],
-				paginate?: PaginateInput
-			) =>
-				Effect.gen(function* () {
-					if (paginate) {
-						if (paginate.limit < 0 || paginate.offset < 0) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error(
-										'Pagination limit and offset must be non-negative values'
-									),
-								})
-							);
-						}
-						if (paginate.limit === 0) {
-							// Either throw an error or set a default value
-							paginate.limit = 10; // Default value
-						}
-					}
-
-					const pagesRaw = paginate
-						? yield* dbService.execute((db) =>
-								db
-									.select()
-									.from(tsPageData)
-									.orderBy(asc(tsPageData.title))
-									.limit(paginate.limit)
-									.offset(paginate.offset)
-							)
-						: yield* dbService.execute((db) =>
-								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
-							);
-
-					const pagesFiltered = filterPagesByDraftAndIndex(
-						pagesRaw,
-						includeDrafts,
-						hideDefaultIndex
-					);
-
-					const folders = tree || (yield* buildFolderTree);
-
-					const pages = [];
-
-					for (const page of pagesFiltered) {
-						const data = yield* collectPageData(page, folders);
-						pages.push(data);
-					}
-
-					return pages;
-				});
-			const getPages = (
-				id: string,
-				includeDrafts = false,
-				hideDefaultIndex = false,
-				tree?: FolderNode[]
-			) =>
-				Effect.gen(function* () {
-					const pagesRaw = yield* dbService.execute((db) =>
-						db
-							.select()
-							.from(tsPageData)
-							.where(eq(tsPageData.parentFolder, id))
-							.orderBy(asc(tsPageData.title))
-					);
-
-					const pagesFiltered = filterPagesByDraftAndIndex(
-						pagesRaw,
-						includeDrafts,
-						hideDefaultIndex
-					);
-
-					const folders = tree || (yield* buildFolderTree);
-
-					const pages = [];
-
-					for (const page of pagesFiltered) {
-						pages.push(yield* collectPageData(page, folders));
-					}
-
-					return pages;
-				});
-
-			return Effect.gen(function* () {
-				const status = yield* isCacheEnabled;
-
-				if (paginate) {
-					if (paginate.limit < 0 || paginate.offset < 0) {
-						return yield* Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error(
-									'Pagination limit and offset must be non-negative values'
-								),
-							})
-						);
-					}
-					if (paginate.limit === 0) {
-						// Either throw an error or set a default value
-						paginate.limit = 10; // Default value
-					}
-				}
-
-				if (!status) {
-					const dbPages = yield* getPages(id, includeDrafts, hideDefaultIndex);
-					const data = dbPages.map((page) => pageDataReturn(page));
-					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-				}
-
-				const { data: tree } = yield* GET.folderTree();
-
-				if (pages.size === 0) {
-					const updatedData = yield* getAllPages(includeDrafts, hideDefaultIndex, tree);
-
-					for (const data of updatedData) {
-						pages.set(data.id, pageDataReturn(data));
-					}
-
-					const data = updatedData
-						.filter(({ parentFolder }) => parentFolder === id)
-						.map((data) => pageDataReturn(data));
-
-					if (paginate) {
-						const paginatedData = data
-							.sort((a, b) => a.data.title.localeCompare(b.data.title))
-							.slice(paginate.offset, paginate.offset + paginate.limit);
-						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
-					}
-
-					// Transform and return the data
-					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-				}
-
-				const cacheMap = Array.from(pages.values());
-
-				for (const item of cacheMap) {
-					if (isCacheExpired(item)) {
-						const { data: updatedData } = yield* GET.page.byId(item.data.id);
-
-						pages.set(updatedData.id, pageDataReturn(updatedData));
-					}
-				}
-
-				const data = Array.from(pages.values()).filter(
-					({ data: { parentFolder } }) => parentFolder === id
-				);
-
-				if (paginate) {
-					const paginatedData = data
-						.sort((a, b) => a.data.title.localeCompare(b.data.title))
-						.slice(paginate.offset, paginate.offset + paginate.limit);
-					return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
-				}
-				return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
-			}).pipe(
-				Effect.catchTags({
-					UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						_clearLibSQLError('GET.pages', cause),
-				})
-			);
-		}
 
 		const GET = {
 			databaseTable: {
