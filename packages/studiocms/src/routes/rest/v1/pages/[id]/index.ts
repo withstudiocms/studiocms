@@ -201,7 +201,7 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 		await studioCMS_SDK.DELETE.page(id);
 		studioCMS_SDK_Cache.CLEAR.page.byId(id);
 
-		await sendEditorNotification('page_deleted', page.title);
+		await sendEditorNotification('page_deleted', page.data.title);
 
 		return apiResponseLogger(200, 'Page deleted successfully');
 	} catch (error) {

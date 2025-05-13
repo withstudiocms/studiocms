@@ -292,7 +292,7 @@ export async function isEmailVerificationEnabled(): Promise<boolean> {
  */
 export async function getEmailVerificationRequest(
 	id: string
-): Promise<tsEmailVerificationTokensSelect | null> {
+): Promise<tsEmailVerificationTokensSelect | undefined> {
 	const program = Effect.gen(function* () {
 		const verify = yield* VerifyEmail;
 		return yield* verify.getEmailVerificationRequest(id);
@@ -313,7 +313,8 @@ export async function deleteEmailVerificationRequest(id: string): Promise<void> 
 		return yield* verify.deleteEmailVerificationRequest(id);
 	}).pipe(Effect.provide(VerifyEmail.Layer));
 
-	return await Effect.runPromise(program);
+	await Effect.runPromise(program);
+	return;
 }
 
 /**
