@@ -126,6 +126,15 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				return rest as PageDataReturnType<T>;
 			});
 
+		function collectPageData(
+			page: tsPageDataSelect,
+			tree: FolderNode[]
+		): Effect.Effect<CombinedPageData, SDKCoreError, never>;
+		function collectPageData(
+			page: tsPageDataSelect,
+			tree: FolderNode[],
+			metaOnly: boolean
+		): Effect.Effect<MetaOnlyPageData, SDKCoreError, never>;
 		/**
 		 * Collects and combines various data related to a page.
 		 *
@@ -135,12 +144,8 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		 * @returns A promise that resolves to the combined page data.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while collecting page data.
 		 */
-		const collectPageData = (
-			page: tsPageDataSelect,
-			tree: FolderNode[],
-			metaOnly = false
-		): Effect.Effect<MetaOnlyPageData | CombinedPageData, SDKCoreError, never> =>
-			Effect.gen(function* () {
+		function collectPageData(page: tsPageDataSelect, tree: FolderNode[], metaOnly = false) {
+			return Effect.gen(function* () {
 				const categoryIds = yield* parseService.parseIdNumberArray(page.categories || []);
 				const tagIds = yield* parseService.parseIdNumberArray(page.tags || []);
 				const contributorIds = yield* parseService.parseIdStringArray(page.contributorIds || []);
@@ -223,6 +228,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 						),
 				})
 			);
+		}
 
 		/**
 		 * Collects user data by fetching OAuth data and permission data from the database.
