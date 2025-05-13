@@ -3393,9 +3393,9 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 /**
  * Test Effect for testing how SDKCore is shaped
  */
-const testProgram = Effect.gen(function* () {
-	const sdkC = yield* SDKCore;
-	return sdkC;
-}).pipe(Effect.provide(SDKCore.Default));
+// const testProgram = Effect.gen(function* () {
+// 	const sdkC = yield* SDKCore;
+// 	return sdkC;
+// }).pipe(Effect.provide(SDKCore.Default));
 
 // const program = await convertToVanilla(testProgram, true);
