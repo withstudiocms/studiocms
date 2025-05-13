@@ -1,11 +1,15 @@
 import { Effect } from 'effect';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
-import type { FolderNode, tsPageFolderSelect } from '../types/index.js';
+import { tsPageFolderStructure } from '../tables.js';
+import type { FolderListItem, FolderNode, tsPageFolderSelect } from '../types/index.js';
+import { AstroDB, type LibSQLDatabaseError } from './db.js';
 
 export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 	'studiocms/sdk/SDKCore_FolderTree',
 	{
 		effect: Effect.gen(function* () {
+			const dbService = yield* AstroDB;
+
 			/**
 			 * Builds a folder structure from the provided folder data.
 			 *
@@ -263,6 +267,41 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 					return tree;
 				});
 
+			/**
+			 * Gets the folder structure from the database.
+			 *
+			 * @returns A promise that resolves to an array of folder nodes representing the folder structure.
+			 */
+			const buildFolderTree: Effect.Effect<
+				FolderNode[],
+				LibSQLDatabaseError | SDKCoreError,
+				never
+			> = Effect.gen(function* () {
+				const currentFolders = yield* dbService.execute((db) =>
+					db.select().from(tsPageFolderStructure)
+				);
+				return yield* generateFolderTree(currentFolders);
+			});
+
+			/**
+			 * Gets the available folders from the database.
+			 *
+			 * @returns A promise that resolves to an array of folder list items.
+			 */
+			const getAvailableFolders: Effect.Effect<FolderListItem[], LibSQLDatabaseError, never> =
+				Effect.gen(function* () {
+					const folders: FolderListItem[] = [];
+
+					const currentFolders = yield* dbService.execute((db) =>
+						db.select().from(tsPageFolderStructure)
+					);
+
+					for (const current of currentFolders) {
+						folders.push(current);
+					}
+					return folders;
+				});
+
 			return {
 				generateFolderTree,
 				getFullPath,
@@ -271,7 +310,10 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 				findNodesAlongPathToId,
 				findNodeById,
 				addPageToFolderTree,
+				buildFolderTree,
+				getAvailableFolders,
 			};
 		}),
+		dependencies: [AstroDB.Default],
 	}
 ) {}

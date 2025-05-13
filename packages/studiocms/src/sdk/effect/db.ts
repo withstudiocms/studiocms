@@ -1,4 +1,4 @@
-import { db as _db } from 'astro:db';
+import { db as client } from 'astro:db';
 import type { Database as Client } from '@astrojs/db/runtime';
 import { LibsqlError, type ResultSet } from '@libsql/client';
 import type { ExtractTablesWithRelations } from 'drizzle-orm';
@@ -88,7 +88,7 @@ export class TransactionContext extends Context.Tag('studiocms/sdk/effect/db/Tra
 
 export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/AstroDB', {
 	effect: Effect.gen(function* () {
-		const db = _db;
+		const db = client;
 
 		const execute = Effect.fn(<T>(fn: (client: Client) => Promise<T>) =>
 			Effect.tryPromise({

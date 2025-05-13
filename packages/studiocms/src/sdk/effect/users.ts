@@ -1,14 +1,26 @@
+import { eq } from 'astro:db';
 import { Effect } from 'effect';
+import { GhostUserDefaults } from '../../consts.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
+import {
+	tsDiffTracking,
+	tsOAuthAccounts,
+	tsPageData,
+	tsPermissions,
+	tsSessionTable,
+	tsUserResetTokens,
+} from '../tables.js';
 import type {
 	CombinedRank,
 	SingleRank,
 	tsPermissionsSelect,
 	tsUsersSelect,
 } from '../types/index.js';
+import { AstroDB } from './db.js';
 
 export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sdk/SDKCore_Users', {
 	effect: Effect.gen(function* () {
+		const dbService = yield* AstroDB;
 		/**
 		 * Verifies the rank of users based on the provided permissions and rank.
 		 *
@@ -64,9 +76,67 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 					}),
 			});
 
+		/**
+		 * Clears all references to a specific user from various database tables.
+		 *
+		 * This function performs the following operations within a database transaction:
+		 * - Deletes user reset tokens associated with the given user ID.
+		 * - Deletes permissions associated with the given user ID.
+		 * - Deletes OAuth accounts associated with the given user ID.
+		 * - Deletes session records associated with the given user ID.
+		 * - Updates the `tsDiffTracking` table to replace the user's ID with a default "ghost user" ID.
+		 * - Updates the `tsPageData` table to replace the author's ID with a default "ghost user" ID.
+		 *
+		 * If any database operation fails, the transaction is rolled back, and an error is returned.
+		 *
+		 * @param userId - The ID of the user whose references should be cleared.
+		 * @returns An `Effect` that resolves to `true` if the operation succeeds, or fails with an `SDKCoreError` if an error occurs.
+		 *
+		 * @throws SDKCoreError - If a database error occurs during the operation.
+		 */
+		const clearUserReferences = (userId: string): Effect.Effect<boolean, SDKCoreError, never> =>
+			dbService
+				.transaction((tx) =>
+					Effect.gen(function* () {
+						yield* tx((c) =>
+							c.delete(tsUserResetTokens).where(eq(tsUserResetTokens.userId, userId))
+						);
+						yield* tx((c) => c.delete(tsPermissions).where(eq(tsPermissions.user, userId)));
+						yield* tx((c) => c.delete(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, userId)));
+						yield* tx((c) => c.delete(tsSessionTable).where(eq(tsSessionTable.userId, userId)));
+						yield* tx((c) =>
+							c
+								.update(tsDiffTracking)
+								.set({ userId: GhostUserDefaults.id })
+								.where(eq(tsDiffTracking.userId, userId))
+						);
+						yield* tx((c) =>
+							c
+								.update(tsPageData)
+								.set({ authorId: GhostUserDefaults.id })
+								.where(eq(tsPageData.authorId, userId))
+						);
+
+						return true;
+					})
+				)
+				.pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							Effect.fail(
+								new SDKCoreError({
+									type: 'LibSQLDatabaseError',
+									cause: new StudioCMS_SDK_Error(`Error clearing user references: ${cause}`),
+								})
+							),
+					})
+				);
+
 		return {
 			verifyRank,
 			combineRanks,
+			clearUserReferences,
 		};
 	}),
+	dependencies: [AstroDB.Default],
 }) {}
