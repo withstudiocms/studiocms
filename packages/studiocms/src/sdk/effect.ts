@@ -1,8 +1,13 @@
-import { asc, desc, eq } from 'astro:db';
+import { and, asc, desc, eq } from 'astro:db';
+import { sdk as sdkConfig } from 'studiocms:config';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import { Effect } from 'effect';
-import { CMSNotificationSettingsId, NotificationSettingsDefaults } from '../consts.js';
+import {
+	CMSNotificationSettingsId,
+	GhostUserDefaults,
+	NotificationSettingsDefaults,
+} from '../consts.js';
 import {
 	AstroDB,
 	SDKCore_Collectors,
@@ -17,18 +22,76 @@ import {
 	tsNotificationSettings,
 	tsPageContent,
 	tsPageData,
+	tsPageDataCategories,
+	tsPageDataTags,
+	tsPageFolderStructure,
+	tsPermissions,
 	tsUserResetTokens,
+	tsUsers,
 } from './tables.js';
 import type {
 	CombinedPageData,
 	CombinedUserData,
+	FolderListCacheObject,
 	FolderNode,
+	FolderTreeCacheObject,
 	MetaOnlyPageData,
+	PageDataCacheObject,
+	SiteConfigCacheObject,
+	VersionCacheObject,
 	tsNotificationSettingsInsert,
 	tsPageDataSelect,
 	tsUserResetTokensSelect,
 	tsUsersSelect,
 } from './types/index.js';
+
+const cacheConfig = sdkConfig.cacheConfig;
+
+const SiteConfigMapID: string = '__StudioCMS_Site_Config';
+const VersionMapID: string = '__StudioCMS_Latest_Version';
+const FolderTreeMapID: string = '__StudioCMS_Folder_Tree';
+const PageFolderTreeMapID: string = '__StudioCMS_Page_Folder_Tree';
+const FolderListMapID: string = '__StudioCMS_Folder_List';
+const StudioCMSPkgId: string = 'studiocms';
+
+type CacheMap<K, V> = ReadonlyMap<K, V> & Map<K, V>;
+
+const pages: CacheMap<string, PageDataCacheObject> = new Map<string, PageDataCacheObject>();
+const siteConfig: CacheMap<string, SiteConfigCacheObject> = new Map<
+	string,
+	SiteConfigCacheObject
+>();
+const version: CacheMap<string, VersionCacheObject> = new Map<string, VersionCacheObject>();
+const folderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
+	string,
+	FolderTreeCacheObject
+>();
+const pageFolderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
+	string,
+	FolderTreeCacheObject
+>();
+const FolderList: CacheMap<string, FolderListCacheObject> = new Map<
+	string,
+	FolderListCacheObject
+>();
+
+const isCacheEnabled = Effect.try(() => cacheConfig.enabled);
+
+const _ClearUnknownError = (id: string, cause: unknown) =>
+	Effect.fail(
+		new SDKCoreError({
+			type: 'UNKNOWN',
+			cause: new StudioCMS_SDK_Error(`${id} Error: ${cause}`),
+		})
+	);
+
+const _ClearDeleteError = (id: string, cause: unknown) =>
+	Effect.fail(
+		new SDKCoreError({
+			type: 'LibSQLDatabaseError',
+			cause: new StudioCMS_SDK_Error(`${id} Error: ${cause}`),
+		})
+	);
 
 export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', {
 	effect: Effect.gen(function* () {
@@ -578,6 +641,345 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			},
 		};
 
+		const AUTH = {};
+
+		const INIT = {};
+
+		const REST_API = {};
+
+		const GET = {};
+
+		const POST = {};
+
+		const UPDATE = {};
+
+		const DELETE = {
+			/**
+			 * Deletes a page from the database.
+			 *
+			 * @param id - The ID of the page to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page.
+			 */
+			page: (id: string) =>
+				Effect.gen(function* () {
+					yield* dbService.transaction((tx) =>
+						Effect.gen(function* () {
+							yield* tx((db) => db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, id)));
+							yield* tx((db) => db.delete(tsPageContent).where(eq(tsPageContent.contentId, id)));
+							yield* tx((db) => db.delete(tsPageData).where(eq(tsPageData.id, id)));
+						})
+					);
+
+					yield* CLEAR.pages();
+					return {
+						status: 'success',
+						message: `Page with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.page', cause),
+					})
+				),
+			/**
+			 * Deletes a page content from the database.
+			 *
+			 * @param id - The ID of the page content to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content.
+			 */
+			pageContent: (id: string) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsPageContent).where(eq(tsPageContent.contentId, id))
+					);
+					return {
+						status: 'success',
+						message: `Page content with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.pageContent', cause),
+					})
+				),
+			/**
+			 * Deletes a page content lang from the database.
+			 *
+			 * @param id - The ID of the page content to delete.
+			 * @param lang - The lang of the page content to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content lang.
+			 */
+			pageContentLang: (id: string, lang: string) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db
+							.delete(tsPageContent)
+							.where(and(eq(tsPageContent.contentId, id), eq(tsPageContent.contentLang, lang)))
+					);
+					return {
+						status: 'success',
+						message: `Page content with ID ${id} and lang ${lang} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.pageContentLang', cause),
+					})
+				),
+			/**
+			 * Deletes a tag from the database.
+			 *
+			 * @param id - The ID of the tag to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the tag.
+			 */
+			tags: (id: number) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsPageDataTags).where(eq(tsPageDataTags.id, id))
+					);
+					return {
+						status: 'success',
+						message: `Tag with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.tags', cause),
+					})
+				),
+			/**
+			 * Deletes a category from the database.
+			 *
+			 * @param id - The ID of the category to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the category.
+			 */
+			categories: (id: number) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsPageDataCategories).where(eq(tsPageDataCategories.id, id))
+					);
+					return {
+						status: 'success',
+						message: `Category with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.categories', cause),
+					})
+				),
+			/**
+			 * Deletes a permission from the database.
+			 *
+			 * @param userId - The ID of the user to delete the permission for.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the permission.
+			 */
+			permissions: (userId: string) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsPermissions).where(eq(tsPermissions.user, userId))
+					);
+					return {
+						status: 'success',
+						message: `Permissions for user with ID ${userId} have been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.permissions', cause),
+					})
+				),
+			/**
+			 * Deletes a site configuration from the database.
+			 *
+			 * @param id - The ID of the site configuration to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the site configuration.
+			 */
+			diffTracking: (id: string) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsDiffTracking).where(eq(tsDiffTracking.id, id))
+					);
+					return {
+						status: 'success',
+						message: `Diff tracking with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.diffTracking', cause),
+					})
+				),
+			/**
+			 * Deletes a folder from the database.
+			 *
+			 * @param id - The ID of the folder to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the folder.
+			 */
+			folder: (id: string) =>
+				Effect.gen(function* () {
+					yield* dbService.execute((db) =>
+						db.delete(tsPageFolderStructure).where(eq(tsPageFolderStructure.id, id))
+					);
+
+					yield* CLEAR.folderList();
+					yield* CLEAR.folderTree();
+
+					// TODO: Setup update functions for folderList, and FolderTree
+					// yield* UPDATE.FolderList();
+					// yield* UPDATE.FolderTree();
+
+					return {
+						status: 'success',
+						message: `Folder with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.folder', cause),
+					})
+				),
+			/**
+			 * Deletes a user from the database.
+			 *
+			 * @param id - The ID of the user to delete.
+			 * @returns A promise that resolves to a deletion response.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the user.
+			 */
+			user: (id: string) =>
+				Effect.gen(function* () {
+					if (id === GhostUserDefaults.id) {
+						yield* _ClearDeleteError(
+							'DELETE.user',
+							`User with ID ${id} is an internal user and cannot be deleted.`
+						);
+						return void 0;
+					}
+
+					const verifyNoReference = yield* clearUserReferences(id);
+
+					if (!verifyNoReference) {
+						yield* _ClearDeleteError(
+							'DELETE.user',
+							`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
+						);
+						return void 0;
+					}
+
+					yield* dbService.execute((db) => db.delete(tsUsers).where(eq(tsUsers.id, id)));
+
+					return {
+						status: 'success',
+						message: `User with ID ${id} has been deleted successfully`,
+					};
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_ClearDeleteError('DELETE.user', cause),
+					})
+				),
+		};
+
+		const CLEAR = {
+			page: {
+				byId: (id: string) =>
+					Effect.gen(function* () {
+						const status = yield* isCacheEnabled;
+						if (!status) return;
+
+						pages.delete(id);
+						return;
+					}).pipe(
+						Effect.catchTags({
+							UnknownException: (cause) => _ClearUnknownError('CLEAR.page.byId', cause),
+						})
+					),
+				bySlug: (slug: string) =>
+					Effect.gen(function* () {
+						const status = yield* isCacheEnabled;
+						if (!status) return;
+
+						const keyIndex: string[] = [];
+
+						for (const [key, cachedObject] of pages) {
+							if (cachedObject.data.slug === slug) {
+								keyIndex.push(key);
+							}
+						}
+
+						for (const key of keyIndex) {
+							pages.delete(key);
+						}
+
+						return;
+					}).pipe(
+						Effect.catchTags({
+							UnknownException: (cause) => _ClearUnknownError('CLEAR.page.bySlug', cause),
+						})
+					),
+			},
+			pages: () =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					if (!status) return;
+
+					pages.clear();
+					pageFolderTree.clear();
+					folderTree.clear();
+					FolderList.clear();
+					return;
+				}).pipe(
+					Effect.catchTags({
+						UnknownException: (cause) => _ClearUnknownError('CLEAR.pages', cause),
+					})
+				),
+			latestVersion: () =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					if (!status) return;
+
+					version.clear();
+					return;
+				}).pipe(
+					Effect.catchTags({
+						UnknownException: (cause) => _ClearUnknownError('CLEAR.latestVersion', cause),
+					})
+				),
+			folderTree: () =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					if (!status) return;
+
+					folderTree.clear();
+					pageFolderTree.clear();
+					return;
+				}).pipe(
+					Effect.catchTags({
+						UnknownException: (cause) => _ClearUnknownError('CLEAR.folderTree', cause),
+					})
+				),
+			folderList: () =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					if (!status) return;
+
+					FolderList.clear();
+					return;
+				}).pipe(
+					Effect.catchTags({
+						UnknownException: (cause) => _ClearUnknownError('CLEAR.folderList', cause),
+					})
+				),
+		};
+
 		return {
 			db,
 			dbService,
@@ -605,6 +1007,8 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			resetTokenBucket,
 			diffTracking,
 			notificationSettings,
+			CLEAR,
+			DELETE,
 		};
 	}),
 	dependencies: [
