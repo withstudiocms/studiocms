@@ -928,7 +928,7 @@ export function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the user.
 		 */
-		user: async (id: string) => await convertToVanilla(run.DELETE.folder(id), true),
+		user: async (id: string) => await convertToVanilla(run.DELETE.user(id), true),
 	};
 
 	// Return the public methods

@@ -15,7 +15,11 @@ export class SDKCore_Parsers extends Effect.Service<SDKCore_Parsers>()(
 			 */
 			const parseIdNumberArray = (ids: unknown): Effect.Effect<number[], SDKCoreError, never> =>
 				Effect.try({
-					try: () => ids as number[],
+					try: () => {
+						if (!Array.isArray(ids) || !ids.every((n) => typeof n === 'number'))
+							throw new Error('Expected an array of numbers');
+						return ids as number[];
+					},
 					catch: (error) =>
 						new SDKCoreError({
 							type: 'UNKNOWN',
@@ -31,7 +35,11 @@ export class SDKCore_Parsers extends Effect.Service<SDKCore_Parsers>()(
 			 */
 			const parseIdStringArray = (ids: unknown): Effect.Effect<string[], SDKCoreError, never> =>
 				Effect.try({
-					try: () => ids as string[],
+					try: () => {
+						if (!Array.isArray(ids) || !ids.every((n) => typeof n === 'string'))
+							throw new Error('Expected an array of strings');
+						return ids as string[];
+					},
 					catch: (error) =>
 						new SDKCoreError({
 							type: 'UNKNOWN',

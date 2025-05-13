@@ -96,7 +96,7 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 					catch: (error) =>
 						new SDKCoreError({
 							type: 'UNKNOWN',
-							cause: new StudioCMS_SDK_Error(`FindNodesAlongPathToId Error: ${error}`),
+							cause: new StudioCMS_SDK_Error(`getFullPath Error: ${error}`),
 						}),
 				});
 
@@ -243,7 +243,7 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 					catch: (error) =>
 						new SDKCoreError({
 							type: 'UNKNOWN',
-							cause: new StudioCMS_SDK_Error(`FindNodesAlongPathToId Error: ${error}`),
+							cause: new StudioCMS_SDK_Error(`findNodeById Error: ${error}`),
 						}),
 				});
 

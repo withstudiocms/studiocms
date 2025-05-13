@@ -1784,13 +1784,13 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			 */
 			page: (id: string) =>
 				Effect.gen(function* () {
-					yield* dbService.transaction((tx) =>
-						Effect.gen(function* () {
-							yield* tx((db) => db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, id)));
-							yield* tx((db) => db.delete(tsPageContent).where(eq(tsPageContent.contentId, id)));
-							yield* tx((db) => db.delete(tsPageData).where(eq(tsPageData.id, id)));
-						})
+					yield* dbService.execute((db) =>
+						db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, id))
 					);
+					yield* dbService.execute((db) =>
+						db.delete(tsPageContent).where(eq(tsPageContent.contentId, id))
+					);
+					yield* dbService.execute((db) => db.delete(tsPageData).where(eq(tsPageData.id, id)));
 
 					yield* CLEAR.pages();
 					return {

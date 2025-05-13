@@ -43,21 +43,14 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				const categories: CombinedPageData['categories'] = [];
 
 				if (categoryIds.length > 0) {
-					yield* dbService.transaction((tx) =>
-						Effect.gen(function* () {
-							for (const item of categoryIds) {
-								const resItem = yield* tx((c) =>
-									c
-										.select()
-										.from(tsPageDataCategories)
-										.where(eq(tsPageDataCategories.id, item))
-										.get()
-								);
-
-								if (resItem) categories.push(resItem);
-							}
-						})
+					const resItem = yield* dbService.execute((db) =>
+						db
+							.select()
+							.from(tsPageDataCategories)
+							.where(inArray(tsPageDataCategories.id, categoryIds))
 					);
+
+					if (resItem) categories.push(...resItem);
 				}
 
 				return categories as CombinedPageData['categories'];
@@ -87,17 +80,11 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				const tags: CombinedPageData['tags'] = [];
 
 				if (tagIds.length > 0) {
-					yield* dbService.transaction((tx) =>
-						Effect.gen(function* () {
-							for (const item of tagIds) {
-								const resItem = yield* tx((c) =>
-									c.select().from(tsPageDataTags).where(eq(tsPageDataTags.id, item)).get()
-								);
-
-								if (resItem) tags.push(resItem);
-							}
-						})
+					const resItem = yield* dbService.execute((db) =>
+						db.select().from(tsPageDataTags).where(inArray(tsPageDataTags.id, tagIds))
 					);
+
+					if (resItem) tags.push(...resItem);
 				}
 
 				return tags as CombinedPageData['tags'];
@@ -190,7 +177,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 
 				if (page.parentFolder) {
 					const urlParts = yield* folderTreeService.findNodesAlongPathToId(tree, page.parentFolder);
-					urlRoute = urlParts.map((part) => part.name).join('/') + safeSlug;
+					urlRoute = `/${urlParts.map((part) => part.name).join('/')}${safeSlug}`;
 				}
 
 				const returnData = {

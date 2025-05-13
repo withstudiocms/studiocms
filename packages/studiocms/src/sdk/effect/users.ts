@@ -72,7 +72,7 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 				catch: (error) =>
 					new SDKCoreError({
 						type: 'UNKNOWN',
-						cause: new StudioCMS_SDK_Error(`verifyRank Error: ${error}`),
+						cause: new StudioCMS_SDK_Error(`combineRanks Error: ${error}`),
 					}),
 			});
 
@@ -95,42 +95,43 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 		 * @throws SDKCoreError - If a database error occurs during the operation.
 		 */
 		const clearUserReferences = (userId: string): Effect.Effect<boolean, SDKCoreError, never> =>
-			dbService
-				.transaction((tx) =>
-					Effect.gen(function* () {
-						yield* tx((c) =>
-							c.delete(tsUserResetTokens).where(eq(tsUserResetTokens.userId, userId))
-						);
-						yield* tx((c) => c.delete(tsPermissions).where(eq(tsPermissions.user, userId)));
-						yield* tx((c) => c.delete(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, userId)));
-						yield* tx((c) => c.delete(tsSessionTable).where(eq(tsSessionTable.userId, userId)));
-						yield* tx((c) =>
-							c
-								.update(tsDiffTracking)
-								.set({ userId: GhostUserDefaults.id })
-								.where(eq(tsDiffTracking.userId, userId))
-						);
-						yield* tx((c) =>
-							c
-								.update(tsPageData)
-								.set({ authorId: GhostUserDefaults.id })
-								.where(eq(tsPageData.authorId, userId))
-						);
-
-						return true;
-					})
-				)
-				.pipe(
-					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							Effect.fail(
-								new SDKCoreError({
-									type: 'LibSQLDatabaseError',
-									cause: new StudioCMS_SDK_Error(`Error clearing user references: ${cause}`),
-								})
-							),
-					})
+			Effect.gen(function* () {
+				yield* dbService.execute((db) =>
+					db.delete(tsUserResetTokens).where(eq(tsUserResetTokens.userId, userId))
 				);
+				yield* dbService.execute((db) =>
+					db.delete(tsPermissions).where(eq(tsPermissions.user, userId))
+				);
+				yield* dbService.execute((db) =>
+					db.delete(tsOAuthAccounts).where(eq(tsOAuthAccounts.userId, userId))
+				);
+				yield* dbService.execute((db) =>
+					db.delete(tsSessionTable).where(eq(tsSessionTable.userId, userId))
+				);
+				yield* dbService.execute((db) =>
+					db
+						.update(tsDiffTracking)
+						.set({ userId: GhostUserDefaults.id })
+						.where(eq(tsDiffTracking.userId, userId))
+				);
+				yield* dbService.execute((db) =>
+					db
+						.update(tsPageData)
+						.set({ authorId: GhostUserDefaults.id })
+						.where(eq(tsPageData.authorId, userId))
+				);
+				return true;
+			}).pipe(
+				Effect.catchTags({
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						Effect.fail(
+							new SDKCoreError({
+								type: 'LibSQLDatabaseError',
+								cause: new StudioCMS_SDK_Error(`Error clearing user references: ${cause}`),
+							})
+						),
+				})
+			);
 
 		return {
 			verifyRank,

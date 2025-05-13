@@ -9,7 +9,7 @@ import type {
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject, VersionCacheObject };
 
 /**
- * @deprecated
+ * @deprecated Use SDKCore from 'studiocms:sdk' instead, which provides unified effect-based cache functionality.
  */
 export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = cacheModule;
 

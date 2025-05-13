@@ -13,11 +13,12 @@ import type {
 	tsPageFolderSelect,
 } from './types/index.js';
 
-const run = convertToVanilla(
+const run = await convertToVanilla(
 	Effect.gen(function* () {
 		const core = yield* SDKCore;
 		return { ...core };
-	}).pipe(Effect.provide(SDKCore.Default))
+	}).pipe(Effect.provide(SDKCore.Default)),
+	true
 );
 
 const sdkCore = studiocmsSDKCore();
