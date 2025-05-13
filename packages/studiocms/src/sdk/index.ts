@@ -3,7 +3,7 @@ import { studiocmsSDKCore } from './core.js';
 /**
  * @deprecated
  */
-const sdkCore = studiocmsSDKCore();
+const sdkCore = await studiocmsSDKCore();
 
 /**
  * @deprecated

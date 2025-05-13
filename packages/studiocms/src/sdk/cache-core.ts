@@ -21,7 +21,7 @@ const run = await convertToVanilla(
 	true
 );
 
-const sdkCore = studiocmsSDKCore();
+const sdkCore = await studiocmsSDKCore();
 
 /**
  * @deprecated

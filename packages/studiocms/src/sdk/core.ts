@@ -42,8 +42,8 @@ import type {
 /**
  * @deprecated
  */
-export function studiocmsSDKCore() {
-	const run = convertToVanilla(
+export async function studiocmsSDKCore() {
+	const run = await convertToVanilla(
 		Effect.gen(function* () {
 			const core = yield* SDKCore;
 			return { ...core };
