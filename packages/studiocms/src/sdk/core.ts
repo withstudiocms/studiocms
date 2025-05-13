@@ -2814,12 +2814,12 @@ export function studiocmsSDKCore() {
 		resetTokenBucket, //
 		diffTracking, //
 		notificationSettings, //
-		AUTH,
-		INIT,
+		AUTH, //
+		INIT, //
+		DELETE, //
+		REST_API, //
 		GET,
 		POST,
 		UPDATE,
-		DELETE, //
-		REST_API,
 	};
 }

@@ -19,6 +19,7 @@ import {
 } from './effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from './errors.js';
 import {
+	tsAPIKeys,
 	tsDiffTracking,
 	tsEmailVerificationTokens,
 	tsNotificationSettings,
@@ -95,7 +96,7 @@ const _ClearUnknownError = (id: string, cause: unknown) =>
 		})
 	);
 
-const _ClearDeleteError = (id: string, cause: unknown) =>
+const _clearLibSQLError = (id: string, cause: unknown) =>
 	Effect.fail(
 		new SDKCoreError({
 			type: 'LibSQLDatabaseError',
@@ -1183,7 +1184,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.page', cause),
+							_clearLibSQLError('DELETE.page', cause),
 					})
 				),
 			/**
@@ -1205,7 +1206,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.pageContent', cause),
+							_clearLibSQLError('DELETE.pageContent', cause),
 					})
 				),
 			/**
@@ -1230,7 +1231,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.pageContentLang', cause),
+							_clearLibSQLError('DELETE.pageContentLang', cause),
 					})
 				),
 			/**
@@ -1252,7 +1253,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.tags', cause),
+							_clearLibSQLError('DELETE.tags', cause),
 					})
 				),
 			/**
@@ -1274,7 +1275,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.categories', cause),
+							_clearLibSQLError('DELETE.categories', cause),
 					})
 				),
 			/**
@@ -1296,7 +1297,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.permissions', cause),
+							_clearLibSQLError('DELETE.permissions', cause),
 					})
 				),
 			/**
@@ -1318,7 +1319,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.diffTracking', cause),
+							_clearLibSQLError('DELETE.diffTracking', cause),
 					})
 				),
 			/**
@@ -1348,7 +1349,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.folder', cause),
+							_clearLibSQLError('DELETE.folder', cause),
 					})
 				),
 			/**
@@ -1361,7 +1362,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			user: (id: string) =>
 				Effect.gen(function* () {
 					if (id === GhostUserDefaults.id) {
-						yield* _ClearDeleteError(
+						yield* _clearLibSQLError(
 							'DELETE.user',
 							`User with ID ${id} is an internal user and cannot be deleted.`
 						);
@@ -1371,7 +1372,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					const verifyNoReference = yield* clearUserReferences(id);
 
 					if (!verifyNoReference) {
-						yield* _ClearDeleteError(
+						yield* _clearLibSQLError(
 							'DELETE.user',
 							`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
 						);
@@ -1387,7 +1388,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_ClearDeleteError('DELETE.user', cause),
+							_clearLibSQLError('DELETE.user', cause),
 					})
 				),
 		};
@@ -1484,11 +1485,341 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				),
 		};
 
-		// TODO
-		const REST_API = {};
+		const REST_API = {
+			tokens: {
+				get: dbService.makeQuery((ex, userId: string) =>
+					ex((db) => db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId))).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('REST_API.tokens.get', cause),
+						})
+					)
+				),
+				new: (userId: string, description: string) =>
+					Effect.gen(function* () {
+						const key = yield* generateToken(userId, true);
+
+						return yield* dbService.execute((db) =>
+							db
+								.insert(tsAPIKeys)
+								.values({
+									id: crypto.randomUUID(),
+									creationDate: new Date(),
+									userId,
+									key,
+									description,
+								})
+								.returning()
+								.get()
+						);
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('REST_API.tokens.new', cause),
+						})
+					),
+				delete: (userId: string, tokenId: string) =>
+					dbService
+						.execute((db) =>
+							db
+								.delete(tsAPIKeys)
+								.where(and(eq(tsAPIKeys.userId, userId), eq(tsAPIKeys.id, tokenId)))
+						)
+						.pipe(
+							Effect.catchTags({
+								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									_clearLibSQLError('REST_API.tokens.delete', cause),
+							})
+						),
+				verify: (key: string) =>
+					Effect.gen(function* () {
+						const apiKey = yield* dbService.execute((db) =>
+							db.select().from(tsAPIKeys).where(eq(tsAPIKeys.key, key)).get()
+						);
+
+						if (!apiKey) return false;
+
+						const keyRank = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions).where(eq(tsPermissions.user, apiKey.userId)).get()
+						);
+
+						if (!keyRank) return false;
+
+						return {
+							userId: apiKey.userId,
+							key: apiKey.key,
+							rank: keyRank.rank,
+						};
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('REST_API.tokens.verify', cause),
+						})
+					),
+			},
+		};
 
 		// TODO (cached)
-		const GET = {};
+		const GET = {
+			databaseTable: {
+				users: () => dbService.execute((db) => db.select().from(tsUsers)),
+				oAuthAccounts: () => dbService.execute((db) => db.select().from(tsOAuthAccounts)),
+				sessionTable: () => dbService.execute((db) => db.select().from(tsSessionTable)),
+				permissions: () => dbService.execute((db) => db.select().from(tsPermissions)),
+				pageData: () => dbService.execute((db) => db.select().from(tsPageData)),
+				pageDataTags: () => dbService.execute((db) => db.select().from(tsPageDataTags)),
+				pageDataCategories: () => dbService.execute((db) => db.select().from(tsPageDataCategories)),
+				pageContent: () => dbService.execute((db) => db.select().from(tsPageContent)),
+				siteConfig: () =>
+					dbService.execute((db) =>
+						db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get()
+					),
+				diffTracking: () => dbService.execute((db) => db.select().from(tsDiffTracking)),
+				pageFolderStructure: () =>
+					dbService.execute((db) => db.select().from(tsPageFolderStructure)),
+				notificationSettings: () =>
+					dbService.execute((db) =>
+						db
+							.select()
+							.from(tsNotificationSettings)
+							.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+							.get()
+					),
+				emailVerificationTokens: () =>
+					dbService.execute((db) => db.select().from(tsEmailVerificationTokens)),
+			},
+			permissionsLists: {
+				/**
+				 * Retrieves all permissions for users in the database.
+				 *
+				 * @returns A promise that resolves to an array of combined rank data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the permissions.
+				 */
+				all: () =>
+					Effect.gen(function* () {
+						const currentPermittedUsers = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions)
+						);
+						const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						const owners = yield* verifyRank(existingUsers, currentPermittedUsers, 'owner');
+
+						const admins = yield* verifyRank(existingUsers, currentPermittedUsers, 'admin');
+
+						const editors = yield* verifyRank(existingUsers, currentPermittedUsers, 'editor');
+
+						const visitors = yield* verifyRank(existingUsers, currentPermittedUsers, 'visitor');
+
+						return [
+							...(yield* combineRanks('owner', owners)),
+							...(yield* combineRanks('admin', admins)),
+							...(yield* combineRanks('editor', editors)),
+							...(yield* combineRanks('visitor', visitors)),
+						];
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.permissionsLists.all', cause),
+						})
+					),
+				/**
+				 * Retrieves all owners in the database.
+				 *
+				 * @returns A promise that resolves to an array of combined rank data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the owners.
+				 */
+				owners: () =>
+					Effect.gen(function* () {
+						const currentPermittedUsers = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions)
+						);
+						const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						return yield* verifyRank(existingUsers, currentPermittedUsers, 'owner');
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.permissionsLists.owners', cause),
+						})
+					),
+				/**
+				 * Retrieves all admins in the database.
+				 *
+				 * @returns A promise that resolves to an array of combined rank data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the admins.
+				 */
+				admins: () =>
+					Effect.gen(function* () {
+						const currentPermittedUsers = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions)
+						);
+						const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						return yield* verifyRank(existingUsers, currentPermittedUsers, 'admin');
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.permissionsLists.admins', cause),
+						})
+					),
+				/**
+				 * Retrieves all editors in the database.
+				 *
+				 * @returns A promise that resolves to an array of combined rank data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the editors.
+				 */
+				editors: () =>
+					Effect.gen(function* () {
+						const currentPermittedUsers = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions)
+						);
+						const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						return yield* verifyRank(existingUsers, currentPermittedUsers, 'editor');
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.permissionsLists.editors', cause),
+						})
+					),
+				/**
+				 * Retrieves all visitors in the database.
+				 *
+				 * @returns A promise that resolves to an array of combined rank data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the visitors.
+				 */
+				visitors: () =>
+					Effect.gen(function* () {
+						const currentPermittedUsers = yield* dbService.execute((db) =>
+							db.select().from(tsPermissions)
+						);
+						const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						return yield* verifyRank(existingUsers, currentPermittedUsers, 'visitor');
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.permissionsLists.visitors', cause),
+						})
+					),
+			},
+			users: {
+				/**
+				 * Retrieves all users from the database.
+				 *
+				 * @returns A promise that resolves to an array of combined user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the users.
+				 */
+				all: () =>
+					Effect.gen(function* () {
+						const combinedUserData: CombinedUserData[] = [];
+
+						const users = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+						for (const user of users) {
+							if (user.id === GhostUserDefaults.id) {
+								continue;
+							}
+
+							const UserData = yield* collectUserData(user);
+
+							combinedUserData.push(UserData);
+						}
+
+						return combinedUserData;
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.users.all', cause),
+						})
+					),
+				/**
+				 * Retrieves a user by ID.
+				 *
+				 * @param id - The ID of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
+				byId: (id: string) =>
+					Effect.gen(function* () {
+						const user = yield* dbService.execute((db) =>
+							db.select().from(tsUsers).where(eq(tsUsers.id, id)).get()
+						);
+
+						if (!user) return undefined;
+						return yield* collectUserData(user);
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.users.byId', cause),
+						})
+					),
+				/**
+				 * Retrieves a user by username.
+				 *
+				 * @param username - The username of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
+				byUsername: (username: string) =>
+					Effect.gen(function* () {
+						const user = yield* dbService.execute((db) =>
+							db.select().from(tsUsers).where(eq(tsUsers.username, username)).get()
+						);
+
+						if (!user) return undefined;
+						return yield* collectUserData(user);
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.users.byId', cause),
+						})
+					),
+				/**
+				 * Retrieves a user by email.
+				 *
+				 * @param email - The email of the user to retrieve.
+				 * @returns A promise that resolves to the user data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
+				 */
+				byEmail: (email: string) =>
+					Effect.gen(function* () {
+						const user = yield* dbService.execute((db) =>
+							db.select().from(tsUsers).where(eq(tsUsers.email, email)).get()
+						);
+
+						if (!user) return undefined;
+						return yield* collectUserData(user);
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('GET.users.byId', cause),
+						})
+					),
+			},
+			folder: dbService.makeQuery((ex, id: string) =>
+				ex((db) =>
+					db.select().from(tsPageFolderStructure).where(eq(tsPageFolderStructure.id, id)).get()
+				).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('GET.folder', cause),
+					})
+				)
+			),
+			page: {
+				byId: () => {},
+				bySlug: () => {},
+			},
+			packagePages: () => {},
+			pages: () => {},
+			folderPages: () => {},
+			siteConfig: () => {},
+			latestVersion: () => {},
+			folderTree: () => {},
+			pageFolderTree: () => {},
+			folderList: () => {},
+		};
 
 		// TODO (cached)
 		const POST = {};
@@ -1527,6 +1858,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			DELETE,
 			INIT,
 			AUTH,
+			REST_API,
 		};
 	}),
 	dependencies: [
