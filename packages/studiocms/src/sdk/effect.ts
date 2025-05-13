@@ -60,12 +60,17 @@ import type {
 	tsNotificationSettingsInsert,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
+	tsPageContentSelect,
 	tsPageDataCategoriesInsert,
+	tsPageDataCategoriesSelect,
 	tsPageDataInsert,
 	tsPageDataSelect,
 	tsPageDataTagsInsert,
+	tsPageDataTagsSelect,
 	tsPageFolderInsert,
+	tsPageFolderSelect,
 	tsPermissionsInsert,
+	tsPermissionsSelect,
 	tsSessionTableInsert,
 	tsSiteConfigInsert,
 	tsUserResetTokensSelect,
@@ -1357,9 +1362,8 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					yield* CLEAR.folderList();
 					yield* CLEAR.folderTree();
 
-					// TODO: Setup update functions for folderList, and FolderTree
-					// yield* UPDATE.FolderList();
-					// yield* UPDATE.FolderTree();
+					yield* UPDATE.folderList;
+					yield* UPDATE.folderTree;
 
 					return {
 						status: 'success',
@@ -3030,9 +3034,8 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					yield* CLEAR.folderList();
 					yield* CLEAR.folderTree();
 
-					// TODO: Once UPDATE is implemented
-					// yield* UPDATE.folderList();
-					// yield* UPDATE.folderTree();
+					yield* UPDATE.folderList;
+					yield* UPDATE.folderTree;
 
 					return newEntry;
 				}),
@@ -3067,8 +3070,279 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				),
 		};
 
-		// TODO (cached)
-		const UPDATE = {};
+		const UPDATE = {
+			/**
+			 * Updates a page content in the database.
+			 *
+			 * @param data - The data to update in the page content table.
+			 * @returns A promise that resolves to the updated page content.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the page content.
+			 */
+			pageContent: dbService.makeQuery((ex, data: tsPageContentSelect) =>
+				ex((db) =>
+					db.update(tsPageContent).set(data).where(eq(tsPageContent.id, data.id)).returning().get()
+				).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.pageContent', cause),
+					})
+				)
+			),
+			/**
+			 * Updates a tag in the database.
+			 *
+			 * @param data - The data to update in the page data tags table.
+			 * @returns A promise that resolves to the updated tag.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the tag.
+			 */
+			tags: dbService.makeQuery((ex, data: tsPageDataTagsSelect) =>
+				ex((db) =>
+					db
+						.update(tsPageDataTags)
+						.set(data)
+						.where(eq(tsPageDataTags.id, data.id))
+						.returning()
+						.get()
+				).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.tags', cause),
+					})
+				)
+			),
+			/**
+			 * Updates a category in the database.
+			 *
+			 * @param data - The data to update in the page data categories table.
+			 * @returns A promise that resolves to the updated category.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the category.
+			 */
+			categories: dbService.makeQuery((ex, data: tsPageDataCategoriesSelect) =>
+				ex((db) =>
+					db
+						.update(tsPageDataCategories)
+						.set(data)
+						.where(eq(tsPageDataCategories.id, data.id))
+						.returning()
+						.get()
+				).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.categories', cause),
+					})
+				)
+			),
+			/**
+			 * Updates a permission in the database.
+			 *
+			 * @param data - The data to update in the permissions table.
+			 * @returns A promise that resolves to the updated permission.
+			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the permission.
+			 */
+			permissions: dbService.makeQuery((ex, data: tsPermissionsSelect) =>
+				ex((db) =>
+					db
+						.update(tsPermissions)
+						.set(data)
+						.where(eq(tsPermissions.user, data.user))
+						.returning()
+						.get()
+				).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.permissions', cause),
+					})
+				)
+			),
+			folderTree: Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+				yield* CLEAR.folderTree();
+				const newFolderTree = yield* buildFolderTree;
+				if (status) {
+					folderTree.set(FolderTreeMapID, folderTreeReturn(newFolderTree));
+				}
+			}).pipe(
+				Effect.catchTags({
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('UPDATE.folderTree', cause),
+				})
+			),
+			folderList: Effect.gen(function* () {
+				const status = yield* isCacheEnabled;
+				yield* CLEAR.folderList();
+				const folderList = yield* getAvailableFolders;
+				if (status) {
+					FolderList.set(FolderListMapID, folderListReturn(folderList));
+				}
+			}).pipe(
+				Effect.catchTags({
+					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						_clearLibSQLError('UPDATE.folderList', cause),
+				})
+			),
+			folder: (data: tsPageFolderSelect) =>
+				Effect.gen(function* () {
+					const updated = yield* dbService.execute((db) =>
+						db
+							.update(tsPageFolderStructure)
+							.set(data)
+							.where(eq(tsPageFolderStructure.id, data.id))
+							.returning()
+							.get()
+					);
+
+					yield* UPDATE.folderList;
+					yield* UPDATE.folderTree;
+
+					return updated;
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.folder', cause),
+					})
+				),
+			latestVersion: () =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					const latestVersion = yield* getVersionFromNPM.get(StudioCMSPkgId);
+
+					const newVersion = versionReturn(latestVersion);
+
+					if (!status) return newVersion;
+
+					version.set(VersionMapID, newVersion);
+
+					return newVersion;
+				}).pipe(
+					Effect.catchTags({
+						UnknownException: (cause) => _ClearUnknownError('UPDATE.latestVersion', cause),
+					})
+				),
+			siteConfig: (data: SiteConfig) =>
+				Effect.gen(function* () {
+					const status = yield* isCacheEnabled;
+					const newSiteConfig = yield* dbService.execute((db) =>
+						db
+							.update(tsSiteConfig)
+							.set(data)
+							.where(eq(tsSiteConfig.id, CMSSiteConfigId))
+							.returning()
+							.get()
+					);
+
+					const returnConfig = siteConfigReturn(newSiteConfig);
+
+					if (!status) return returnConfig;
+
+					siteConfig.set(SiteConfigMapID, returnConfig);
+
+					return returnConfig;
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError('UPDATE.siteConfig', cause),
+						UnknownException: (cause) => _ClearUnknownError('UPDATE.siteConfig', cause),
+					})
+				),
+			page: {
+				byId: (
+					id: string,
+					data: {
+						pageData: tsPageDataSelect;
+						pageContent: tsPageContentSelect;
+					}
+				) => {
+					const updatePage = dbService.makeQuery((ex, data: tsPageDataSelect) =>
+						ex((db) =>
+							db.update(tsPageData).set(data).where(eq(tsPageData.id, data.id)).returning().get()
+						)
+					);
+
+					return Effect.gen(function* () {
+						const status = yield* isCacheEnabled;
+
+						yield* updatePage(data.pageData);
+						yield* UPDATE.pageContent(data.pageContent);
+
+						const { data: updatedData } = yield* GET.page.byId(id);
+						const returnData = pageDataReturn(updatedData);
+
+						if (!status) {
+							return returnData;
+						}
+
+						pages.set(id, returnData);
+						yield* CLEAR.folderList();
+						yield* CLEAR.folderTree();
+
+						return returnData;
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('UPDATE.page.byId', cause),
+							UnknownException: (cause) => _ClearUnknownError('UPDATE.page.byId', cause),
+						})
+					);
+				},
+				bySlug: (
+					slug: string,
+					data: {
+						pageData: tsPageDataSelect;
+						pageContent: tsPageContentSelect;
+					}
+				) => {
+					const updatePage = dbService.makeQuery((ex, data: tsPageDataSelect) =>
+						ex((db) =>
+							db.update(tsPageData).set(data).where(eq(tsPageData.id, data.id)).returning().get()
+						)
+					);
+
+					return Effect.gen(function* () {
+						const status = yield* isCacheEnabled;
+
+						if (!status) {
+							yield* updatePage(data.pageData);
+							yield* UPDATE.pageContent(data.pageContent);
+
+							const { data: updatedData } = yield* GET.page.bySlug(slug);
+
+							return pageDataReturn(updatedData);
+						}
+
+						const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
+
+						if (!cachedPage) {
+							return yield* Effect.fail(
+								yield* new SDKCoreError({
+									type: 'UNKNOWN',
+									cause: new StudioCMS_SDK_Error('Page not found in cache'),
+								})
+							);
+						}
+
+						yield* updatePage(data.pageData);
+						yield* UPDATE.pageContent(data.pageContent);
+
+						const { data: updatedData } = yield* GET.page.bySlug(slug);
+
+						const returnData = pageDataReturn(updatedData);
+
+						pages.set(updatedData.id, returnData);
+
+						yield* CLEAR.folderList();
+						yield* CLEAR.folderTree();
+
+						return returnData;
+					}).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								_clearLibSQLError('UPDATE.page.byId', cause),
+							UnknownException: (cause) => _ClearUnknownError('UPDATE.page.byId', cause),
+						})
+					);
+				},
+			},
+		};
 
 		return {
 			db,
@@ -3104,6 +3378,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			REST_API,
 			GET,
 			POST,
+			UPDATE,
 		};
 	}),
 	dependencies: [
