@@ -11,6 +11,7 @@ import type {
 	tsPermissions,
 	tsSessionTable,
 	tsSiteConfig,
+	tsUserResetTokens,
 	tsUsers,
 } from '../tables.js';
 
@@ -18,6 +19,9 @@ export type tsEmailVerificationTokensInsert = typeof tsEmailVerificationTokens.$
 export type tsEmailVerificationTokensSelect = typeof tsEmailVerificationTokens.$inferSelect;
 export type tsNotificationSettingsInsert = typeof tsNotificationSettings.$inferInsert;
 export type tsNotificationSettingsSelect = typeof tsNotificationSettings.$inferSelect;
+
+export type tsUserResetTokensInsert = typeof tsUserResetTokens.$inferInsert;
+export type tsUserResetTokensSelect = typeof tsUserResetTokens.$inferSelect;
 
 /**
  * Type alias for the inferred select type of `tsPageFolderStructure`.

@@ -2812,7 +2812,8 @@ export function studiocmsSDKCore() {
 		collectPageData, //
 		collectUserData, //
 		resetTokenBucket, //
-		diffTracking,
+		diffTracking, //
+		notificationSettings, //
 		AUTH,
 		INIT,
 		GET,
@@ -2820,6 +2821,5 @@ export function studiocmsSDKCore() {
 		UPDATE,
 		DELETE,
 		REST_API,
-		notificationSettings,
 	};
 }

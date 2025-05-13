@@ -41,6 +41,8 @@ import type {
 	tsSessionTableSelect,
 	tsSiteConfigInsert,
 	tsSiteConfigSelect,
+	tsUserResetTokensInsert,
+	tsUserResetTokensSelect,
 	tsUsersInsert,
 	tsUsersSelect,
 	tsUsersUpdate,
@@ -89,6 +91,8 @@ export type {
 	tsEmailVerificationTokensSelect,
 	tsNotificationSettingsInsert,
 	tsNotificationSettingsSelect,
+	tsUserResetTokensInsert,
+	tsUserResetTokensSelect,
 };
 
 export type PaginateInput = {
