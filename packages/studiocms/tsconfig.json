@@ -6,6 +6,11 @@
     "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "removeComments": false
+    "removeComments": false,
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   }
 }
