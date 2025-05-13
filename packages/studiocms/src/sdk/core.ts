@@ -2819,7 +2819,7 @@ export function studiocmsSDKCore() {
 		GET,
 		POST,
 		UPDATE,
-		DELETE,
+		DELETE, //
 		REST_API,
 	};
 }
