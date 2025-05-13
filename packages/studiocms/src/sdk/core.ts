@@ -2790,27 +2790,28 @@ export function studiocmsSDKCore() {
 
 	// Return the public methods
 	return {
-		addPageToFolderTree,
-		findNodeById,
-		findNodeByPath,
-		findNodesAlongPath,
-		getFullPath,
-		parseIdNumberArray,
-		parseIdStringArray,
-		generateRandomIDNumber,
-		generateToken,
-		testToken,
-		combineRanks,
-		verifyRank,
-		buildFolderTree,
-		getAvailableFolders,
-		clearUserReferences,
-		collectCategories,
-		collectTags,
-		collectPageData,
-		collectUserData,
-		generateRandomPassword,
-		resetTokenBucket,
+		db, //
+		addPageToFolderTree, //
+		findNodeById, //
+		findNodeByPath, //
+		findNodesAlongPath, //
+		getFullPath, //
+		parseIdNumberArray, //
+		parseIdStringArray, //
+		generateRandomIDNumber, //
+		generateToken, //
+		testToken, //
+		combineRanks, //
+		verifyRank, //
+		generateRandomPassword, //
+		buildFolderTree, //
+		getAvailableFolders, //
+		clearUserReferences, //
+		collectCategories, //
+		collectTags, //
+		collectPageData, //
+		collectUserData, //
+		resetTokenBucket, //
 		diffTracking,
 		AUTH,
 		INIT,
@@ -2818,7 +2819,6 @@ export function studiocmsSDKCore() {
 		POST,
 		UPDATE,
 		DELETE,
-		db,
 		REST_API,
 		notificationSettings,
 	};
