@@ -1157,14 +1157,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			},
 		};
 
-		const REST_API = {};
-
-		const GET = {};
-
-		const POST = {};
-
-		const UPDATE = {};
-
 		const DELETE = {
 			/**
 			 * Deletes a page from the database.
@@ -1491,6 +1483,18 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					})
 				),
 		};
+
+		// TODO
+		const REST_API = {};
+
+		// TODO (cached)
+		const GET = {};
+
+		// TODO (cached)
+		const POST = {};
+
+		// TODO (cached)
+		const UPDATE = {};
 
 		return {
 			db,
