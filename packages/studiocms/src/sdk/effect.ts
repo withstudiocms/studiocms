@@ -8,6 +8,7 @@ import {
 	GhostUserDefaults,
 	NotificationSettingsDefaults,
 } from '../consts.js';
+import { convertToVanilla } from './effect/convertToVanilla.js';
 import type { LibSQLDatabaseError } from './effect/db.js';
 import {
 	AstroDB,
@@ -946,6 +947,9 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 /**
  * Test Effect for testing how SDKCore is shaped
  */
-const testProgram = Effect.gen(function* () {
-	const sdkC = yield* SDKCore;
-}).pipe(Effect.provide(SDKCore.Default));
+// const testProgram = Effect.gen(function* () {
+// 	const sdkC = yield* SDKCore;
+// 	return sdkC;
+// }).pipe(Effect.provide(SDKCore.Default));
+
+// const program = await convertToVanilla(testProgram, true);
