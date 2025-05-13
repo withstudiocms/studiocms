@@ -97,16 +97,29 @@ declare module 'studiocms:mailer/templates' {
 }
 
 declare module 'studiocms:notifier' {
+	type Mod = typeof import('./lib/notifier/index');
+	export const Notifications: Mod['Notifications'];
+
 	export type UserNotification = import('./lib/notifier/index').UserNotification;
 	export type EditorNotification = import('./lib/notifier/index').EditorNotification;
 	export type AdminNotification = import('./lib/notifier/index').AdminNotification;
 	export const notificationTypes: typeof import('./lib/notifier/index').notificationTypes;
-	export const sendUserNotification: typeof import('./lib/notifier/index').sendUserNotification;
-	export const sendEditorNotification: typeof import('./lib/notifier/index').sendEditorNotification;
-	export const sendAdminNotification: typeof import('./lib/notifier/index').sendAdminNotification;
 	export const notificationTitleStrings: typeof import(
 		'./lib/notifier/index'
 	).notificationTitleStrings;
+
+	/**
+	 * @deprecated
+	 */
+	export const sendUserNotification: typeof import('./lib/notifier/index').sendUserNotification;
+	/**
+	 * @deprecated
+	 */
+	export const sendEditorNotification: typeof import('./lib/notifier/index').sendEditorNotification;
+	/**
+	 * @deprecated
+	 */
+	export const sendAdminNotification: typeof import('./lib/notifier/index').sendAdminNotification;
 }
 
 declare module 'studiocms:notifier/client' {
