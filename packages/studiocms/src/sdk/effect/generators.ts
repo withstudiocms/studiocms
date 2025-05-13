@@ -1,7 +1,7 @@
 import { cmsEncryptionKey } from 'virtual:studiocms/sdk/env';
 import { Effect } from 'effect';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
-import { type JwtVerificationResult, generateJwt, verifyJwt } from '../lib/jwt-generator.js';
+import { type JwtVerificationResult, generateJwt, verifyJwt } from './lib/jwt-generator.js';
 
 export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 	'studiocms/sdk/SDKCore_Generators',

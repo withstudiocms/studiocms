@@ -22,6 +22,9 @@ const run = convertToVanilla(
 
 const sdkCore = studiocmsSDKCore();
 
+/**
+ * @deprecated
+ */
 export const cacheModule = {
 	GET: {
 		page: {
