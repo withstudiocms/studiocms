@@ -1,5 +1,5 @@
 import { Notifications } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import type { APIContext, AstroGlobal } from 'astro';
 import { Effect, Layer, pipe } from 'effect';
@@ -54,6 +54,8 @@ const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknow
 type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
 
 export const make = Effect.gen(function* () {
+	const sdk = yield* SDKCore;
+
 	/**
 	 * @private
 	 */
@@ -155,17 +157,15 @@ export const make = Effect.gen(function* () {
 			const passwordHash = yield* pass.hashPassword(password);
 			const avatar = yield* createUserAvatar(email);
 
-			const newUser = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.AUTH.user.create({
-					id: crypto.randomUUID(),
-					name,
-					username,
-					email,
-					password: passwordHash,
-					createdAt: new Date(),
-					avatar,
-				})
-			);
+			const newUser = yield* sdk.AUTH.user.create({
+				id: crypto.randomUUID(),
+				name,
+				username,
+				email,
+				password: passwordHash,
+				createdAt: new Date(),
+				avatar,
+			});
 
 			yield* notify.sendAdminNotification('new_user', newUser.username);
 
@@ -185,15 +185,13 @@ export const make = Effect.gen(function* () {
 	) =>
 		Effect.gen(function* () {
 			const notify = yield* Notifications;
-			const newUser = yield* Effect.tryPromise(() => studioCMS_SDK.AUTH.user.create(userFields));
+			const newUser = yield* sdk.AUTH.user.create(userFields);
 
-			yield* Effect.tryPromise(() =>
-				studioCMS_SDK.AUTH.oAuth.create({
-					userId: newUser.id,
-					provider: oAuthFields.provider,
-					providerUserId: oAuthFields.providerUserId,
-				})
-			);
+			yield* sdk.AUTH.oAuth.create({
+				userId: newUser.id,
+				provider: oAuthFields.provider,
+				providerUserId: oAuthFields.providerUserId,
+			});
 
 			yield* notify.sendAdminNotification('new_user', newUser.username);
 
@@ -216,9 +214,7 @@ export const make = Effect.gen(function* () {
 
 			const passwordHash = yield* pass.hashPassword(password);
 
-			yield* Effect.tryPromise(() =>
-				studioCMS_SDK.AUTH.user.update(userId, { password: passwordHash })
-			);
+			yield* sdk.AUTH.user.update(userId, { password: passwordHash });
 		}).pipe(Effect.provide(Password.Layer));
 
 	/**
@@ -230,9 +226,7 @@ export const make = Effect.gen(function* () {
 	 */
 	const getUserPasswordHash = (userId: string) =>
 		Effect.gen(function* () {
-			const user = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.GET.databaseEntry.users.byId(userId)
-			);
+			const user = yield* sdk.GET.users.byId(userId);
 
 			if (!user) {
 				return yield* Effect.fail(new Error('User not found'));
@@ -253,9 +247,7 @@ export const make = Effect.gen(function* () {
 	 */
 	const getUserFromEmail = (email: string) =>
 		Effect.gen(function* () {
-			const data = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.GET.databaseEntry.users.byEmail(email)
-			);
+			const data = yield* sdk.GET.users.byEmail(email);
 
 			return data ?? null;
 		});
@@ -310,9 +302,7 @@ export const make = Effect.gen(function* () {
 				visitor: 'visitor',
 			};
 
-			const result = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.AUTH.permission.currentStatus(user.id)
-			);
+			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
 			if (!result) {
 				console.error('Error fetching user permission level');
@@ -407,7 +397,7 @@ export const make = Effect.gen(function* () {
 		getUserPermissionLevel,
 		isUserAllowed,
 	};
-});
+}).pipe(Effect.provide(SDKCore.Default));
 
 export class User extends Effect.Tag('studiocms/lib/auth/user/User')<
 	User,

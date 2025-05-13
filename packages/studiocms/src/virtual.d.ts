@@ -264,6 +264,12 @@ declare module 'studiocms:component-proxy' {
 }
 
 declare module 'studiocms:sdk' {
+	type Mod = typeof import('./sdk/index.js');
+	export const SDKCore: Mod['SDKCore'];
+
+	/**
+	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
+	 */
 	const mod: typeof import('./sdk/index.js').studioCMS_SDK;
 	export default mod;
 }
@@ -331,6 +337,9 @@ declare module 'studiocms:sdk/types' {
 }
 
 declare module 'studiocms:sdk/cache' {
+	/**
+	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
+	 */
 	const studioCMS_SDK_Cache: import('./sdk/types/index.js').STUDIOCMS_SDK_CACHE;
 	export default studioCMS_SDK_Cache;
 
