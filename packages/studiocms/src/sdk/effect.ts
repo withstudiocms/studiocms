@@ -38,7 +38,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		const generatorService = yield* SDKCore_Generators;
 		const parseService = yield* SDKCore_Parsers;
 		const userService = yield* SDKCore_Users;
-		const collectors = yield* SDKCore_Collectors;
+		const collectorService = yield* SDKCore_Collectors;
 
 		// Breakout service functions that need to be returned in this.
 		const { db } = dbService;
@@ -61,7 +61,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 
 		const { combineRanks, verifyRank, clearUserReferences } = userService;
 
-		const { collectCategories, collectTags, collectPageData, collectUserData } = collectors;
+		const { collectCategories, collectTags, collectPageData, collectUserData } = collectorService;
 
 		const resetTokenBucket = {
 			new: (userId: string): Effect.Effect<tsUserResetTokensSelect, SDKCoreError, never> =>
