@@ -846,18 +846,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			},
 		};
 
-		const _updateNotificationSettings = dbService.makeQuery(
-			(ex, settings: tsNotificationSettingsInsert) =>
-				ex((db) =>
-					db
-						.update(tsNotificationSettings)
-						.set(settings)
-						.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
-						.returning()
-						.get()
-				)
-		);
-
 		const notificationSettings = {
 			site: {
 				get: () =>
@@ -892,8 +880,15 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 								),
 						})
 					),
-				update: (settings: tsNotificationSettingsInsert) =>
-					_updateNotificationSettings(settings).pipe(
+				update: dbService.makeQuery((ex, settings: tsNotificationSettingsInsert) =>
+					ex((db) =>
+						db
+							.update(tsNotificationSettings)
+							.set(settings)
+							.where(eq(tsNotificationSettings.id, CMSNotificationSettingsId))
+							.returning()
+							.get()
+					).pipe(
 						Effect.catchTags({
 							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
 								Effect.fail(
@@ -905,7 +900,8 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 									})
 								),
 						})
-					),
+					)
+				),
 			},
 		};
 
