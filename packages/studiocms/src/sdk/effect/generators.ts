@@ -33,10 +33,13 @@ export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 				Effect.try({
 					try: () => {
 						const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-						const array = crypto.getRandomValues(new Uint32Array(length));
 						let password = '';
-						for (const n of array) {
-							password += characters[n % characters.length];
+						const maxValidValue = Math.floor((2 ** 32 - 1) / characters.length) * characters.length;
+						while (password.length < length) {
+							const n = crypto.getRandomValues(new Uint32Array(1))[0];
+							if (n < maxValidValue) {
+								password += characters[n % characters.length];
+							}
 						}
 						return password;
 					},
