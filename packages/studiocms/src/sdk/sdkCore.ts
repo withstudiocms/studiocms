@@ -1456,7 +1456,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the OAuth account data if found, otherwise undefined.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the OAuth account.
 				 */
-				searchProviderForId: (providerId: string, userId: string) =>
+				searchProvidersForId: (providerId: string, userId: string) =>
 					dbService
 						.execute((db) =>
 							db
