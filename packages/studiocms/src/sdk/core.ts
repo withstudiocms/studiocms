@@ -47,7 +47,8 @@ export async function studiocmsSDKCore() {
 		Effect.gen(function* () {
 			const core = yield* SDKCore;
 			return { ...core };
-		}).pipe(Effect.provide(SDKCore.Default))
+		}).pipe(Effect.provide(SDKCore.Default)),
+		true
 	);
 
 	// @ts-ignore
