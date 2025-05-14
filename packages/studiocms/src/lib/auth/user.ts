@@ -316,7 +316,7 @@ export const make = Effect.gen(function* () {
 				user,
 				permissionLevel,
 			};
-		}).pipe(Effect.provide(Session.Layer));
+		}).pipe(Effect.provide(Session.Default));
 
 	/**
 	 * @private
