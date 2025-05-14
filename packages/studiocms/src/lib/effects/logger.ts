@@ -16,8 +16,9 @@ import { fromLiteral } from 'effect/LogLevel';
  *          - `LogLevel.Warning`: Logs messages as warnings.
  *          - `LogLevel.All`, `LogLevel.Info`, and `LogLevel.None`: Logs messages as info.
  *          - Any other log level defaults to logging messages as debug.
+ * @internal
  */
-export const makeLogger = (label: string) =>
+const makeLogger = (label: string) =>
 	Logger.make(({ logLevel, message: _message }) => {
 		const logger = _logger.fork(`studiocms:runtime/${label}`);
 		const message = String(_message);
@@ -38,16 +39,38 @@ export const makeLogger = (label: string) =>
 				break;
 			}
 			case LogLevel.All:
-			case LogLevel.Info:
-			case LogLevel.None: {
+			case LogLevel.Info: {
 				logger.info(message);
 				break;
 			}
 			default: {
-				logger.debug(message);
+				logger.info(message);
 			}
 		}
 	});
+
+/**
+ * Sets the minimum log level for the logger based on the provided configuration.
+ *
+ * @remarks
+ * This function utilizes the `Logger.withMinimumLogLevel` method to adjust the logging level dynamically.
+ * The log level is determined by converting the `config.logLevel` value using the `fromLiteral` utility.
+ *
+ * @param config.logLevel - The log level specified in the configuration, which is converted to the appropriate format.
+ * @internal
+ */
+const setLoggerLevel = Logger.withMinimumLogLevel(fromLiteral(config.logLevel));
+
+/**
+ * Sets a custom logger for the Astro Runtime by replacing the default logger with the
+ * runtime AstroIntegrationLogger configured with the specified label.
+ *
+ * @param label - A string used to label the logger, providing context for log messages.
+ * @returns An effect that provides the custom logger to the application.
+ * @internal
+ */
+const setLogger = (label: string) =>
+	Effect.provide(Logger.replace(Logger.defaultLogger, makeLogger(label)));
 
 /**
  * Creates a runtime logger effect transformer that applies a specific label to log messages
@@ -60,10 +83,7 @@ export const makeLogger = (label: string) =>
 export const RuntimeLogger =
 	(label: string) =>
 	<A, E, R>(self: Effect.Effect<A, E, R>) =>
-		self.pipe(
-			Logger.withMinimumLogLevel(fromLiteral(config.logLevel)),
-			Effect.provide(Logger.replace(Logger.defaultLogger, makeLogger(label)))
-		);
+		self.pipe(setLoggerLevel, setLogger(label));
 
 // const program = Effect.gen(function* () {
 // 	yield* Effect.log('start');
