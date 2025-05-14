@@ -93,6 +93,8 @@ export const RuntimeLogger = dual<
 // 	// yield* task1;
 // 	// yield* task2;
 // 	yield* Effect.log('done');
+
+//     return true
 // });
 
-// const test = Effect.runPromise(program.pipe(RuntimeLogger('test')));
+// const test = await Effect.runPromise(program.pipe(RuntimeLogger('test')));

@@ -47,8 +47,7 @@ export async function studiocmsSDKCore() {
 		Effect.gen(function* () {
 			const core = yield* SDKCore;
 			return { ...core };
-		}).pipe(Effect.provide(SDKCore.Default)),
-		true
+		}).pipe(Effect.provide(SDKCore.Default))
 	);
 
 	// @ts-ignore
@@ -74,16 +73,14 @@ export async function studiocmsSDKCore() {
 	) {
 		return await convertToVanilla(
 			// @ts-ignore
-			run.GET.pages(includeDrafts, hideDefaultIndex, metaOnly, paginate),
-			true
+			run.GET.pages(includeDrafts, hideDefaultIndex, metaOnly, paginate)
 		);
 	}
 
 	async function _getPagesByID(id: string) {
 		return await convertToVanilla(
 			// @ts-ignore
-			run.GET.page.byId(id),
-			true
+			run.GET.page.byId(id)
 		);
 	}
 
@@ -112,35 +109,32 @@ export async function studiocmsSDKCore() {
 	) {
 		return await convertToVanilla(
 			// @ts-ignore
-			run.GET.folderPages(id, includeDrafts, hideDefaultIndex, metaOnly, paginate),
-			true
+			run.GET.folderPages(id, includeDrafts, hideDefaultIndex, metaOnly, paginate)
 		);
 	}
 
 	async function _getPagesBySlug(slug: string) {
 		return await convertToVanilla(
 			// @ts-ignore
-			run.GET.page.bySlug(slug),
-			true
+			run.GET.page.bySlug(slug)
 		);
 	}
 
 	async function _getPackagesPages(packageName: string, tree?: FolderNode[]) {
 		return await convertToVanilla(
 			// @ts-ignore
-			run.GET.packagePages(packageName, tree),
-			true
+			run.GET.packagePages(packageName, tree)
 		);
 	}
 
 	const REST_API = {
 		tokens: {
-			get: async (userId: string) => await convertToVanilla(run.REST_API.tokens.get(userId), true),
+			get: async (userId: string) => await convertToVanilla(run.REST_API.tokens.get(userId)),
 			new: async (userId: string, description: string) =>
-				await convertToVanilla(run.REST_API.tokens.new(userId, description), true),
+				await convertToVanilla(run.REST_API.tokens.new(userId, description)),
 			delete: async (userId: string, tokenId: string) =>
-				await convertToVanilla(run.REST_API.tokens.delete(userId, tokenId), true),
-			verify: async (key: string) => await convertToVanilla(run.REST_API.tokens.verify(key), true),
+				await convertToVanilla(run.REST_API.tokens.delete(userId, tokenId)),
+			verify: async (key: string) => await convertToVanilla(run.REST_API.tokens.verify(key)),
 		},
 	};
 
@@ -159,33 +153,33 @@ export async function studiocmsSDKCore() {
 				};
 			},
 			diffLength: number
-		) => await convertToVanilla(run.diffTracking.insert(userId, pageId, data, diffLength), true),
-		clear: async (pageId: string) => await convertToVanilla(run.diffTracking.clear(pageId), true),
+		) => await convertToVanilla(run.diffTracking.insert(userId, pageId, data, diffLength)),
+		clear: async (pageId: string) => await convertToVanilla(run.diffTracking.clear(pageId)),
 		get: {
 			byPageId: {
 				all: async (pageId: string) =>
-					await convertToVanilla(run.diffTracking.get.byPageId.all(pageId), true),
+					await convertToVanilla(run.diffTracking.get.byPageId.all(pageId)),
 				latest: async (pageId: string, count: number) =>
-					await convertToVanilla(run.diffTracking.get.byPageId.latest(pageId, count), true),
+					await convertToVanilla(run.diffTracking.get.byPageId.latest(pageId, count)),
 			},
 			byUserId: {
 				all: async (pageId: string) =>
-					await convertToVanilla(run.diffTracking.get.byUserId.all(pageId), true),
+					await convertToVanilla(run.diffTracking.get.byUserId.all(pageId)),
 				latest: async (pageId: string, count: number) =>
-					await convertToVanilla(run.diffTracking.get.byUserId.latest(pageId, count), true),
+					await convertToVanilla(run.diffTracking.get.byUserId.latest(pageId, count)),
 			},
-			single: async (id: string) => await convertToVanilla(run.diffTracking.get.single(id), true),
+			single: async (id: string) => await convertToVanilla(run.diffTracking.get.single(id)),
 		},
 		revertToDiff: async (id: string, type: 'content' | 'data' | 'both') =>
-			await convertToVanilla(run.diffTracking.revertToDiff(id, type), true),
+			await convertToVanilla(run.diffTracking.revertToDiff(id, type)),
 		utils: {
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			getMetaDataDifferences<T extends Record<string, any>>(
+			async getMetaDataDifferences<T extends Record<string, any>>(
 				obj1: T,
 				obj2: T
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			): { label: string; previous: any; current: any }[] {
-				return convertToVanilla(run.diffTracking.utils.getMetaDataDifferences(obj1, obj2));
+			): Promise<{ label: string; previous: any; current: any }[]> {
+				return await convertToVanilla(run.diffTracking.utils.getMetaDataDifferences(obj1, obj2));
 			},
 			getDiffHTML: (diff: string | null, options?: Diff2HtmlConfig) =>
 				convertToVanilla(run.diffTracking.utils.getDiffHTML(diff, options)),
@@ -194,11 +188,9 @@ export async function studiocmsSDKCore() {
 
 	const AUTH = {
 		verifyEmail: {
-			get: async (id: string) => await convertToVanilla(run.AUTH.verifyEmail.get(id), true),
-			create: async (userId: string) =>
-				await convertToVanilla(run.AUTH.verifyEmail.create(userId), true),
-			delete: async (userId: string) =>
-				await convertToVanilla(run.AUTH.verifyEmail.delete(userId), true),
+			get: async (id: string) => await convertToVanilla(run.AUTH.verifyEmail.get(id)),
+			create: async (userId: string) => await convertToVanilla(run.AUTH.verifyEmail.create(userId)),
+			delete: async (userId: string) => await convertToVanilla(run.AUTH.verifyEmail.delete(userId)),
 		},
 
 		/**
@@ -213,7 +205,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the OAuth account.
 			 */
 			create: async (data: tsOAuthAccountsSelect) =>
-				await convertToVanilla(run.AUTH.oAuth.create(data), true),
+				await convertToVanilla(run.AUTH.oAuth.create(data)),
 
 			/**
 			 * Deletes an OAuth account from the database.
@@ -224,7 +216,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the OAuth account.
 			 */
 			delete: async (userId: string, provider: string) =>
-				await convertToVanilla(run.AUTH.oAuth.delete(userId, provider), true),
+				await convertToVanilla(run.AUTH.oAuth.delete(userId, provider)),
 
 			/**
 			 * Searches for OAuth accounts based on the provider ID and user ID.
@@ -235,7 +227,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the OAuth account.
 			 */
 			searchProvidersForId: async (providerId: string, userId: string) =>
-				await convertToVanilla(run.AUTH.oAuth.searchProvidersForId(providerId, userId), true),
+				await convertToVanilla(run.AUTH.oAuth.searchProvidersForId(providerId, userId)),
 		},
 
 		/**
@@ -246,7 +238,7 @@ export async function studiocmsSDKCore() {
 			 * Checks the current status of a user's permissions.
 			 */
 			currentStatus: async (userId: string) =>
-				await convertToVanilla(run.AUTH.permission.currentStatus(userId), true),
+				await convertToVanilla(run.AUTH.permission.currentStatus(userId)),
 		},
 
 		/**
@@ -261,7 +253,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the session.
 			 */
 			create: async (data: tsSessionTableInsert) =>
-				await convertToVanilla(run.AUTH.session.create(data), true),
+				await convertToVanilla(run.AUTH.session.create(data)),
 
 			/**
 			 * Gets a session with the associated user.
@@ -271,7 +263,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the session with the user.
 			 */
 			sessionWithUser: async (sessionId: string) =>
-				await convertToVanilla(run.AUTH.session.sessionWithUser(sessionId), true),
+				await convertToVanilla(run.AUTH.session.sessionWithUser(sessionId)),
 
 			/**
 			 * Deletes a session from the database.
@@ -281,7 +273,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the session.
 			 */
 			delete: async (sessionId: string) =>
-				await convertToVanilla(run.AUTH.session.delete(sessionId), true),
+				await convertToVanilla(run.AUTH.session.delete(sessionId)),
 
 			/**
 			 * Updates the expiration date of a session.
@@ -292,7 +284,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the session.
 			 */
 			update: async (sessionId: string, newDate: Date) =>
-				await convertToVanilla(run.AUTH.session.update(sessionId, newDate), true),
+				await convertToVanilla(run.AUTH.session.update(sessionId, newDate)),
 		},
 
 		/**
@@ -307,7 +299,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the user.
 			 */
 			create: async (newUserData: tsUsersInsert, rank?: 'visitor' | 'editor' | 'admin' | 'owner') =>
-				await convertToVanilla(run.AUTH.user.create(newUserData, rank), true),
+				await convertToVanilla(run.AUTH.user.create(newUserData, rank)),
 
 			/**
 			 * Updates a user in the database.
@@ -318,7 +310,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the user.
 			 */
 			update: async (userId: string, userData: tsUsersUpdate) =>
-				await convertToVanilla(run.AUTH.user.update(userId, userData), true),
+				await convertToVanilla(run.AUTH.user.update(userId, userData)),
 
 			/**
 			 * Searches for users based on the provided username or email.
@@ -329,7 +321,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the username or email.
 			 */
 			searchUsersForUsernameOrEmail: async (username: string, email: string) =>
-				await convertToVanilla(run.AUTH.user.searchUsersForUsernameOrEmail(username, email), true),
+				await convertToVanilla(run.AUTH.user.searchUsersForUsernameOrEmail(username, email)),
 
 			/**
 			 * Ghost user utilities.
@@ -341,7 +333,7 @@ export async function studiocmsSDKCore() {
 				 * @returns A promise that resolves to a boolean indicating if the ghost user exists.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while verifying the ghost user.
 				 */
-				verifyExists: async () => await convertToVanilla(run.AUTH.user.ghost.verifyExists(), true),
+				verifyExists: async () => await convertToVanilla(run.AUTH.user.ghost.verifyExists()),
 
 				/**
 				 * Creates the ghost user in the database.
@@ -349,7 +341,7 @@ export async function studiocmsSDKCore() {
 				 * @returns A promise that resolves to the inserted ghost user.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the ghost user.
 				 */
-				create: async () => await convertToVanilla(run.AUTH.user.ghost.create(), true),
+				create: async () => await convertToVanilla(run.AUTH.user.ghost.create()),
 
 				/**
 				 * Gets the ghost user from the database.
@@ -357,7 +349,7 @@ export async function studiocmsSDKCore() {
 				 * @returns A promise that resolves to the ghost user.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the ghost user.
 				 */
-				get: async () => await convertToVanilla(run.AUTH.user.ghost.get(), true),
+				get: async () => await convertToVanilla(run.AUTH.user.ghost.get()),
 			},
 		},
 	};
@@ -371,7 +363,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 		 */
 		siteConfig: async (config: tsSiteConfigInsert) =>
-			await convertToVanilla(run.INIT.siteConfig(config), true),
+			await convertToVanilla(run.INIT.siteConfig(config)),
 
 		/**
 		 * Initializes the StudioCMS Ghost User.
@@ -381,14 +373,14 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to the ghost user record.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the ghost user.
 		 */
-		ghostUser: async () => await convertToVanilla(run.INIT.ghostUser(), true),
+		ghostUser: async () => await convertToVanilla(run.INIT.ghostUser()),
 	};
 
 	const notificationSettings = {
 		site: {
-			get: async () => await convertToVanilla(run.notificationSettings.site.get(), true),
+			get: async () => await convertToVanilla(run.notificationSettings.site.get()),
 			update: async (settings: tsNotificationSettingsInsert) =>
-				await convertToVanilla(run.notificationSettings.site.update(settings), true),
+				await convertToVanilla(run.notificationSettings.site.update(settings)),
 		},
 	};
 
@@ -403,8 +395,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of combined user data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the users.
 			 */
-			users: async (): Promise<CombinedUserData[]> =>
-				await convertToVanilla(run.GET.users.all(), true),
+			users: async (): Promise<CombinedUserData[]> => await convertToVanilla(run.GET.users.all()),
 
 			/**
 			 * Retrieves all pages from the database.
@@ -425,10 +416,10 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the site configuration.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
 			 */
-			config: async () => (await convertToVanilla(run.GET.siteConfig(), true)).data,
+			config: async () => (await convertToVanilla(run.GET.siteConfig())).data,
 
 			folders: async (): Promise<tsPageFolderSelect[]> =>
-				await convertToVanilla(run.GET.databaseTable.pageFolderStructure(), true),
+				await convertToVanilla(run.GET.databaseTable.pageFolderStructure()),
 		},
 
 		/**
@@ -447,7 +438,7 @@ export async function studiocmsSDKCore() {
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
 				 */
 				byId: async (id: string): Promise<CombinedUserData | undefined> =>
-					await convertToVanilla(run.GET.users.byId(id), true),
+					await convertToVanilla(run.GET.users.byId(id)),
 
 				/**
 				 * Retrieves a user by username.
@@ -457,7 +448,7 @@ export async function studiocmsSDKCore() {
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
 				 */
 				byUsername: async (username: string): Promise<CombinedUserData | undefined> =>
-					await convertToVanilla(run.GET.users.byUsername(username), true),
+					await convertToVanilla(run.GET.users.byUsername(username)),
 
 				/**
 				 * Retrieves a user by email.
@@ -467,7 +458,7 @@ export async function studiocmsSDKCore() {
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the user.
 				 */
 				byEmail: async (email: string): Promise<CombinedUserData | undefined> =>
-					await convertToVanilla(run.GET.users.byEmail(email), true),
+					await convertToVanilla(run.GET.users.byEmail(email)),
 			},
 
 			/**
@@ -494,7 +485,7 @@ export async function studiocmsSDKCore() {
 			},
 
 			folder: async (id: string): Promise<tsPageFolderSelect | undefined> =>
-				await convertToVanilla(run.GET.folder(id), true),
+				await convertToVanilla(run.GET.folder(id)),
 		},
 
 		/**
@@ -507,7 +498,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of user data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the users.
 			 */
-			users: async () => await convertToVanilla(run.GET.databaseTable.users(), true),
+			users: async () => await convertToVanilla(run.GET.databaseTable.users()),
 
 			/**
 			 * Retrieves all data from the OAuth accounts table.
@@ -515,8 +506,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of OAuth account data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the OAuth accounts.
 			 */
-			oAuthAccounts: async () =>
-				await convertToVanilla(run.GET.databaseTable.oAuthAccounts(), true),
+			oAuthAccounts: async () => await convertToVanilla(run.GET.databaseTable.oAuthAccounts()),
 
 			/**
 			 * Retrieves all data from the session table.
@@ -524,7 +514,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of session data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the sessions.
 			 */
-			sessionTable: async () => await convertToVanilla(run.GET.databaseTable.sessionTable(), true),
+			sessionTable: async () => await convertToVanilla(run.GET.databaseTable.sessionTable()),
 
 			/**
 			 * Retrieves all data from the permissions table.
@@ -532,7 +522,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of permission data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the permissions.
 			 */
-			permissions: async () => await convertToVanilla(run.GET.databaseTable.permissions(), true),
+			permissions: async () => await convertToVanilla(run.GET.databaseTable.permissions()),
 
 			/**
 			 * Retrieves all data from the page data table.
@@ -540,7 +530,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of page data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the pages.
 			 */
-			pageData: async () => await convertToVanilla(run.GET.databaseTable.pageData(), true),
+			pageData: async () => await convertToVanilla(run.GET.databaseTable.pageData()),
 
 			/**
 			 * Retrieves all data from the page data tags table.
@@ -548,7 +538,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of page data tags.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page data tags.
 			 */
-			pageDataTags: async () => await convertToVanilla(run.GET.databaseTable.pageDataTags(), true),
+			pageDataTags: async () => await convertToVanilla(run.GET.databaseTable.pageDataTags()),
 
 			/**
 			 * Retrieves all data from the page data categories table.
@@ -557,7 +547,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page data categories.
 			 */
 			pageDataCategories: async () =>
-				await convertToVanilla(run.GET.databaseTable.pageDataCategories(), true),
+				await convertToVanilla(run.GET.databaseTable.pageDataCategories()),
 
 			/**
 			 * Retrieves all data from the page content table.
@@ -565,7 +555,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of page content.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page content.
 			 */
-			pageContent: async () => await convertToVanilla(run.GET.databaseTable.pageContent(), true),
+			pageContent: async () => await convertToVanilla(run.GET.databaseTable.pageContent()),
 
 			/**
 			 * Retrieves all data from the site config table.
@@ -573,7 +563,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of site configuration data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
 			 */
-			siteConfig: async () => await convertToVanilla(run.GET.databaseTable.siteConfig(), true),
+			siteConfig: async () => await convertToVanilla(run.GET.databaseTable.siteConfig()),
 
 			/**
 			 * Retrieves all data from the diff tracking table.
@@ -581,7 +571,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of diff tracking data.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the diff tracking data.
 			 */
-			diffTracking: async () => await convertToVanilla(run.GET.databaseTable.diffTracking(), true),
+			diffTracking: async () => await convertToVanilla(run.GET.databaseTable.diffTracking()),
 
 			/**
 			 * Retrieves all data from the page folder structure table.
@@ -590,7 +580,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the page folder structure data.
 			 */
 			pageFolderStructure: async () =>
-				await convertToVanilla(run.GET.databaseTable.pageFolderStructure(), true),
+				await convertToVanilla(run.GET.databaseTable.pageFolderStructure()),
 
 			/**
 			 * Retrieves all data from the notification settings table.
@@ -598,7 +588,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of notification settings data.
 			 */
 			notificationSettings: async () =>
-				await convertToVanilla(run.GET.databaseTable.notificationSettings(), true),
+				await convertToVanilla(run.GET.databaseTable.notificationSettings()),
 
 			/**
 			 * Retrieves all data from the email verification tokens table.
@@ -606,7 +596,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to an array of email verification token data.
 			 */
 			emailVerificationTokens: async () =>
-				await convertToVanilla(run.GET.databaseTable.emailVerificationTokens(), true),
+				await convertToVanilla(run.GET.databaseTable.emailVerificationTokens()),
 		},
 
 		/**
@@ -620,7 +610,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the permissions.
 			 */
 			all: async (): Promise<CombinedRank[]> =>
-				await convertToVanilla(run.GET.permissionsLists.all(), true),
+				await convertToVanilla(run.GET.permissionsLists.all()),
 
 			/**
 			 * Retrieves all owners in the database.
@@ -629,7 +619,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the owners.
 			 */
 			owners: async (): Promise<SingleRank[]> =>
-				await convertToVanilla(run.GET.permissionsLists.owners(), true),
+				await convertToVanilla(run.GET.permissionsLists.owners()),
 
 			/**
 			 * Retrieves all admins in the database.
@@ -638,7 +628,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the admins.
 			 */
 			admins: async (): Promise<SingleRank[]> =>
-				await convertToVanilla(run.GET.permissionsLists.admins(), true),
+				await convertToVanilla(run.GET.permissionsLists.admins()),
 
 			/**
 			 * Retrieves all editors in the database.
@@ -647,7 +637,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the editors.
 			 */
 			editors: async (): Promise<SingleRank[]> =>
-				await convertToVanilla(run.GET.permissionsLists.editors(), true),
+				await convertToVanilla(run.GET.permissionsLists.editors()),
 
 			/**
 			 * Retrieves all visitors in the database.
@@ -656,7 +646,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the visitors.
 			 */
 			visitors: async (): Promise<SingleRank[]> =>
-				await convertToVanilla(run.GET.permissionsLists.visitors(), true),
+				await convertToVanilla(run.GET.permissionsLists.visitors()),
 		},
 
 		/**
@@ -679,7 +669,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 			 */
 			pages: async (pageData: tsPageDataInsert, pageContent: CombinedInsertContent) =>
-				await convertToVanilla(run.POST.databaseEntry.pages(pageData, pageContent), true),
+				await convertToVanilla(run.POST.databaseEntry.pages(pageData, pageContent)),
 
 			/**
 			 * Inserts new page content into the database.
@@ -689,7 +679,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page content.
 			 */
 			pageContent: async (pageContent: tsPageContentInsert): Promise<PageContentReturnId[]> =>
-				await convertToVanilla(run.POST.databaseEntry.pageContent(pageContent), true),
+				await convertToVanilla(run.POST.databaseEntry.pageContent(pageContent)),
 
 			/**
 			 * Inserts a new tag into the database.
@@ -699,7 +689,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tag.
 			 */
 			tags: async (tag: tsPageDataTagsInsert): Promise<PageDataTagsInsertResponse[]> =>
-				await convertToVanilla(run.POST.databaseEntry.tags(tag), true),
+				await convertToVanilla(run.POST.databaseEntry.tags(tag)),
 
 			/**
 			 * Inserts a new category into the database.
@@ -709,7 +699,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the category.
 			 */
 			categories: async (category: tsPageDataCategoriesInsert) =>
-				await convertToVanilla(run.POST.databaseEntry.categories(category), true),
+				await convertToVanilla(run.POST.databaseEntry.categories(category)),
 
 			/**
 			 * Inserts a new permission into the database.
@@ -720,7 +710,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permission.
 			 */
 			permissions: async (userId: string, rank: string): Promise<tsPermissionsSelect[]> =>
-				await convertToVanilla(run.POST.databaseEntry.permissions(userId, rank), true),
+				await convertToVanilla(run.POST.databaseEntry.permissions(userId, rank)),
 
 			/**
 			 * Inserts a new diff tracking entry into the database.
@@ -730,7 +720,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the diff tracking entry.
 			 */
 			diffTracking: async (diff: tsDiffTrackingInsert): Promise<tsDiffTrackingSelect[]> =>
-				await convertToVanilla(run.POST.databaseEntry.diffTracking(diff), true),
+				await convertToVanilla(run.POST.databaseEntry.diffTracking(diff)),
 
 			/**
 			 * Inserts a new folder into the database.
@@ -740,7 +730,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 			 */
 			folder: async (folder: tsPageFolderInsert): Promise<tsPageFolderSelect> =>
-				await convertToVanilla(run.POST.databaseEntry.folder(folder), true),
+				await convertToVanilla(run.POST.databaseEntry.folder(folder)),
 		},
 
 		/**
@@ -755,7 +745,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tags.
 			 */
 			tags: async (data: tsPageDataTagsInsert[]): Promise<PageDataTagsInsertResponse[]> =>
-				await convertToVanilla(run.POST.databaseEntries.tags(data), true),
+				await convertToVanilla(run.POST.databaseEntries.tags(data)),
 
 			/**
 			 * Inserts multiple categories into the database.
@@ -767,7 +757,7 @@ export async function studiocmsSDKCore() {
 			categories: async (
 				data: tsPageDataCategoriesInsert[]
 			): Promise<PageDataCategoriesInsertResponse[]> =>
-				await convertToVanilla(run.POST.databaseEntries.categories(data), true),
+				await convertToVanilla(run.POST.databaseEntries.categories(data)),
 
 			/**
 			 * Inserts multiple permissions into the database.
@@ -777,7 +767,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permissions.
 			 */
 			permissions: async (data: tsPermissionsInsert[]): Promise<tsPermissionsSelect[]> =>
-				await convertToVanilla(run.POST.databaseEntries.permissions(data), true),
+				await convertToVanilla(run.POST.databaseEntries.permissions(data)),
 
 			/**
 			 * Inserts multiple pages into the database.
@@ -787,7 +777,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the pages.
 			 */
 			pages: async (pages: MultiPageInsert): Promise<void> =>
-				await convertToVanilla(run.POST.databaseEntries.pages(pages), true),
+				await convertToVanilla(run.POST.databaseEntries.pages(pages)),
 		},
 	};
 
@@ -800,7 +790,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the page content.
 		 */
 		pageContent: async (data: tsPageContentSelect): Promise<tsPageContentSelect> =>
-			await convertToVanilla(run.UPDATE.pageContent(data), true),
+			await convertToVanilla(run.UPDATE.pageContent(data)),
 
 		/**
 		 * Updates a tag in the database.
@@ -810,7 +800,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the tag.
 		 */
 		tags: async (data: tsPageDataTagsSelect): Promise<tsPageDataTagsSelect> =>
-			await convertToVanilla(run.UPDATE.tags(data), true),
+			await convertToVanilla(run.UPDATE.tags(data)),
 
 		/**
 		 * Updates a category in the database.
@@ -820,7 +810,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the category.
 		 */
 		categories: async (data: tsPageDataCategoriesSelect): Promise<tsPageDataCategoriesSelect> =>
-			await convertToVanilla(run.UPDATE.categories(data), true),
+			await convertToVanilla(run.UPDATE.categories(data)),
 
 		/**
 		 * Updates a permission in the database.
@@ -830,7 +820,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the permission.
 		 */
 		permissions: async (data: tsPermissionsSelect): Promise<tsPermissionsSelect> =>
-			await convertToVanilla(run.UPDATE.permissions(data), true),
+			await convertToVanilla(run.UPDATE.permissions(data)),
 
 		/**
 		 * Updates a site configuration in the database.
@@ -840,10 +830,10 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while updating the site configuration.
 		 */
 		siteConfig: async (data: SiteConfig) =>
-			(await convertToVanilla(run.UPDATE.siteConfig(data), true)).data,
+			(await convertToVanilla(run.UPDATE.siteConfig(data))).data,
 
 		folder: async (data: tsPageFolderSelect): Promise<tsPageFolderSelect> =>
-			await convertToVanilla(run.UPDATE.folder(data), true),
+			await convertToVanilla(run.UPDATE.folder(data)),
 	};
 
 	const DELETE = {
@@ -854,7 +844,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page.
 		 */
-		page: async (id: string) => await convertToVanilla(run.DELETE.page(id), true),
+		page: async (id: string) => await convertToVanilla(run.DELETE.page(id)),
 
 		/**
 		 * Deletes a page content from the database.
@@ -863,7 +853,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content.
 		 */
-		pageContent: async (id: string) => await convertToVanilla(run.DELETE.pageContent(id), true),
+		pageContent: async (id: string) => await convertToVanilla(run.DELETE.pageContent(id)),
 
 		/**
 		 * Deletes a page content lang from the database.
@@ -874,7 +864,7 @@ export async function studiocmsSDKCore() {
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the page content lang.
 		 */
 		pageContentLang: async (id: string, lang: string) =>
-			await convertToVanilla(run.DELETE.pageContentLang(id, lang), true),
+			await convertToVanilla(run.DELETE.pageContentLang(id, lang)),
 
 		/**
 		 * Deletes a tag from the database.
@@ -883,7 +873,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the tag.
 		 */
-		tags: async (id: number) => await convertToVanilla(run.DELETE.tags(id), true),
+		tags: async (id: number) => await convertToVanilla(run.DELETE.tags(id)),
 
 		/**
 		 * Deletes a category from the database.
@@ -892,7 +882,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the category.
 		 */
-		categories: async (id: number) => await convertToVanilla(run.DELETE.categories(id), true),
+		categories: async (id: number) => await convertToVanilla(run.DELETE.categories(id)),
 
 		/**
 		 * Deletes a permission from the database.
@@ -901,8 +891,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the permission.
 		 */
-		permissions: async (userId: string) =>
-			await convertToVanilla(run.DELETE.permissions(userId), true),
+		permissions: async (userId: string) => await convertToVanilla(run.DELETE.permissions(userId)),
 
 		/**
 		 * Deletes a site configuration from the database.
@@ -911,7 +900,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the site configuration.
 		 */
-		diffTracking: async (id: string) => await convertToVanilla(run.DELETE.diffTracking(id), true),
+		diffTracking: async (id: string) => await convertToVanilla(run.DELETE.diffTracking(id)),
 
 		/**
 		 * Deletes a folder from the database.
@@ -920,7 +909,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the folder.
 		 */
-		folder: async (id: string) => await convertToVanilla(run.DELETE.folder(id), true),
+		folder: async (id: string) => await convertToVanilla(run.DELETE.folder(id)),
 
 		/**
 		 * Deletes a user from the database.
@@ -929,51 +918,50 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to a deletion response.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the user.
 		 */
-		user: async (id: string) => await convertToVanilla(run.DELETE.user(id), true),
+		user: async (id: string) => await convertToVanilla(run.DELETE.user(id)),
 	};
 
 	// Return the public methods
 	return {
 		db: run.db,
-		addPageToFolderTree: (tree: FolderNode[], folderId: string, newPage: FolderNode) =>
-			convertToVanilla(run.addPageToFolderTree(tree, folderId, newPage)),
-		findNodeById: (tree: FolderNode[], id: string) => convertToVanilla(run.findNodeById(tree, id)),
-		findNodeByPath: (tree: FolderNode[], path: string[]) =>
-			convertToVanilla(run.findNodeByPath(tree, path)),
-		findNodesAlongPath: (tree: FolderNode[], path: string[]) =>
-			convertToVanilla(run.findNodesAlongPath(tree, path)),
-		getFullPath: (tree: FolderNode[], path: string[]) =>
-			convertToVanilla(run.getFullPath(tree, path)),
-		parseIdNumberArray: (ids: unknown) => convertToVanilla(run.parseIdNumberArray(ids)),
-		parseIdStringArray: (ids: unknown) => convertToVanilla(run.parseIdStringArray(ids)),
-		generateRandomIDNumber: (length: number) =>
-			convertToVanilla(run.generateRandomIDNumber(length)),
-		generateToken: (userId: string, noExpire?: boolean) =>
-			convertToVanilla(run.generateToken(userId, noExpire)),
-		testToken: (token: string) => convertToVanilla(run.testToken(token)),
-		combineRanks: (rank: string, users: SingleRank[]) =>
-			convertToVanilla(run.combineRanks(rank, users)),
-		verifyRank: (users: tsUsersSelect[], permissions: tsPermissionsSelect[], rank: string) =>
-			convertToVanilla(run.verifyRank(users, permissions, rank)),
-		generateRandomPassword: (length: number) =>
-			convertToVanilla(run.generateRandomPassword(length)),
-		buildFolderTree: async () => await convertToVanilla(run.buildFolderTree, true),
-		getAvailableFolders: async () => await convertToVanilla(run.getAvailableFolders, true),
+		addPageToFolderTree: async (tree: FolderNode[], folderId: string, newPage: FolderNode) =>
+			await convertToVanilla(run.addPageToFolderTree(tree, folderId, newPage)),
+		findNodeById: async (tree: FolderNode[], id: string) =>
+			await convertToVanilla(run.findNodeById(tree, id)),
+		findNodeByPath: async (tree: FolderNode[], path: string[]) =>
+			await convertToVanilla(run.findNodeByPath(tree, path)),
+		findNodesAlongPath: async (tree: FolderNode[], path: string[]) =>
+			await convertToVanilla(run.findNodesAlongPath(tree, path)),
+		getFullPath: async (tree: FolderNode[], path: string[]) =>
+			await convertToVanilla(run.getFullPath(tree, path)),
+		parseIdNumberArray: async (ids: unknown) => await convertToVanilla(run.parseIdNumberArray(ids)),
+		parseIdStringArray: async (ids: unknown) => await convertToVanilla(run.parseIdStringArray(ids)),
+		generateRandomIDNumber: async (length: number) =>
+			await convertToVanilla(run.generateRandomIDNumber(length)),
+		generateToken: async (userId: string, noExpire?: boolean) =>
+			await convertToVanilla(run.generateToken(userId, noExpire)),
+		testToken: async (token: string) => await convertToVanilla(run.testToken(token)),
+		combineRanks: async (rank: string, users: SingleRank[]) =>
+			await convertToVanilla(run.combineRanks(rank, users)),
+		verifyRank: async (users: tsUsersSelect[], permissions: tsPermissionsSelect[], rank: string) =>
+			await convertToVanilla(run.verifyRank(users, permissions, rank)),
+		generateRandomPassword: async (length: number) =>
+			await convertToVanilla(run.generateRandomPassword(length)),
+		buildFolderTree: async () => await convertToVanilla(run.buildFolderTree),
+		getAvailableFolders: async () => await convertToVanilla(run.getAvailableFolders),
 		clearUserReferences: async (userId: string) =>
-			await convertToVanilla(run.clearUserReferences(userId), true),
+			await convertToVanilla(run.clearUserReferences(userId)),
 		collectCategories: async (categoryIds: number[]) =>
-			await convertToVanilla(run.collectCategories(categoryIds), true),
-		collectTags: async (tagIds: number[]) => await convertToVanilla(run.collectTags(tagIds), true),
+			await convertToVanilla(run.collectCategories(categoryIds)),
+		collectTags: async (tagIds: number[]) => await convertToVanilla(run.collectTags(tagIds)),
 		collectPageData: async (page: tsPageDataSelect, tree: FolderNode[]) =>
-			await convertToVanilla(run.collectPageData(page, tree), true),
+			await convertToVanilla(run.collectPageData(page, tree)),
 		collectUserData: async (user: tsUsersSelect) =>
-			await convertToVanilla(run.collectUserData(user), true),
+			await convertToVanilla(run.collectUserData(user)),
 		resetTokenBucket: {
-			new: async (userId: string) => await convertToVanilla(run.resetTokenBucket.new(userId), true),
-			delete: async (userId: string) =>
-				await convertToVanilla(run.resetTokenBucket.delete(userId), true),
-			check: async (token: string) =>
-				await convertToVanilla(run.resetTokenBucket.check(token), true),
+			new: async (userId: string) => await convertToVanilla(run.resetTokenBucket.new(userId)),
+			delete: async (userId: string) => await convertToVanilla(run.resetTokenBucket.delete(userId)),
+			check: async (token: string) => await convertToVanilla(run.resetTokenBucket.check(token)),
 		},
 		diffTracking,
 		notificationSettings,

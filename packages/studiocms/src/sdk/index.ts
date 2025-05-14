@@ -47,8 +47,7 @@ export const SDKCoreJs = await convertToVanilla(
 	Effect.gen(function* () {
 		const { _tag, ...core } = yield* SDKCore;
 		return core;
-	}).pipe(Effect.provide(SDKCore.Default)),
-	true
+	}).pipe(Effect.provide(SDKCore.Default))
 );
 
 /**
@@ -61,5 +60,4 @@ export const SDKCoreJs = await convertToVanilla(
  * const pages = await runSDK(SDKCoreJs.GET.pages());
  * ```
  */
-export const runSDK = async <A, E>(program: Effect.Effect<A, E, never>) =>
-	await Effect.runPromise<A, E>(program);
+export const runSDK = convertToVanilla;
