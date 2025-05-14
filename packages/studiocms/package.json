@@ -125,7 +125,11 @@
 		},
 		"./v/types": "./dist/virtual.d.ts",
 		"./src/middleware/*": "./src/middleware/*",
-		"./src/routes/*": "./src/routes/*"
+		"./src/routes/*": "./src/routes/*",
+		"./effect": {
+			"types": "./dist/effect.d.ts",
+			"default": "./dist/effect.js"
+		}
 	},
 	"type": "module",
 	"dependencies": {

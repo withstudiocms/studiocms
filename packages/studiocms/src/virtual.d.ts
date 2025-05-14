@@ -265,7 +265,48 @@ declare module 'studiocms:component-proxy' {
 
 declare module 'studiocms:sdk' {
 	type Mod = typeof import('./sdk/index.js');
+
+	/**
+	 * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
+	 * This unified SDK merges the normal and cached SDK functionalities.
+	 *
+	 * @example
+	 * ```ts
+	 * import { Effect } from 'studiocms/effect';
+	 * import { SDKCore } from 'studiocms:sdk';
+	 *
+	 * const db = Effect.gen(function* () {
+	 *   const sdk = yield* SDKCore;
+	 *
+	 *   return sdk.db;
+	 * }).pipe(Effect.provide(SDKCore.Default));
+	 * ```
+	 */
 	export const SDKCore: Mod['SDKCore'];
+
+	/**
+	 * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
+	 *
+	 * @example
+	 * ```ts
+	 * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+	 *
+	 * const pages = await runSDK(SDKCoreJs.GET.pages());
+	 * ```
+	 */
+	export const SDKCoreJs: Mod['SDKCoreJs'];
+
+	/**
+	 * Utility function for running components of the SDKCoreJs
+	 *
+	 * @example
+	 * ```ts
+	 * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+	 *
+	 * const pages = await runSDK(SDKCoreJs.GET.pages());
+	 * ```
+	 */
+	export const runSDK: Mod['runSDK'];
 
 	/**
 	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
