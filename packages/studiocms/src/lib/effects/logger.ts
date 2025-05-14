@@ -1,8 +1,23 @@
+import config from 'studiocms:config';
 import _logger from 'studiocms:logger';
-import { Effect, LogLevel, Logger, pipe } from 'effect';
+import { Effect, LogLevel, Logger } from 'effect';
+import { fromLiteral } from 'effect/LogLevel';
 
-// Custom logger that outputs log messages to the console
-export const logger = (label: string) =>
+/**
+ * Creates a logger instance with a specific label for categorizing log messages.
+ *
+ * @param label - A string used to label the logger instance. This label is appended
+ *                to the logger's namespace to help identify the source of log messages.
+ *
+ * @returns A logger function that processes log messages based on their log level.
+ *          The logger supports the following log levels:
+ *          - `LogLevel.Trace` and `LogLevel.Debug`: Logs messages as debug.
+ *          - `LogLevel.Error` and `LogLevel.Fatal`: Logs messages as errors.
+ *          - `LogLevel.Warning`: Logs messages as warnings.
+ *          - `LogLevel.All`, `LogLevel.Info`, and `LogLevel.None`: Logs messages as info.
+ *          - Any other log level defaults to logging messages as debug.
+ */
+export const makeLogger = (label: string) =>
 	Logger.make(({ logLevel, message: _message }) => {
 		const logger = _logger.fork(`studiocms:runtime/${label}`);
 		const message = String(_message);
@@ -34,12 +49,21 @@ export const logger = (label: string) =>
 		}
 	});
 
-const layer = (label: string) => Logger.replace(Logger.defaultLogger, logger(label));
-
+/**
+ * Creates a runtime logger effect transformer that applies a specific label to log messages
+ * and configures the logging behavior based on the provided log level.
+ *
+ * @param label - A string label to associate with the logger for identifying log messages.
+ * @returns A higher-order function that takes an `Effect` and returns a new `Effect` with
+ *          the logger configuration applied.
+ */
 export const RuntimeLogger =
-	(label: string, logLevel: LogLevel.LogLevel) =>
+	(label: string) =>
 	<A, E, R>(self: Effect.Effect<A, E, R>) =>
-		pipe(self, Logger.withMinimumLogLevel(logLevel), Effect.provide(layer(label)));
+		self.pipe(
+			Logger.withMinimumLogLevel(fromLiteral(config.logLevel)),
+			Effect.provide(Logger.replace(Logger.defaultLogger, makeLogger(label)))
+		);
 
 // const program = Effect.gen(function* () {
 // 	yield* Effect.log('start');
@@ -48,4 +72,4 @@ export const RuntimeLogger =
 // 	yield* Effect.log('done');
 // });
 
-// const test = Effect.runPromise(program.pipe(RuntimeLogger('test', LogLevel.Debug)));
+// const test = Effect.runPromise(program.pipe(RuntimeLogger('test')));

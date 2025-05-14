@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import type { Literal } from 'effect/LogLevel';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { overridesSchema } from './componentoverrides.js';
 import { dashboardConfigSchema } from './dashboard.js';
@@ -71,6 +72,10 @@ export const StudioCMSOptionsSchema = z
 		 * @default false
 		 */
 		verbose: z.boolean().optional().default(false),
+		/**
+		 * Set the LogLevel for Effect based code
+		 */
+		logLevel: z.custom<Literal>().optional().default('Info'),
 		/**
 		 * Add Plugins to the StudioCMS
 		 */
