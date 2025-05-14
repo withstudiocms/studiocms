@@ -3,11 +3,10 @@ import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
-import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
-import socks from 'socks';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
+import { SMTPMailer, type SMTPOptionsBase } from '../effects/smtp.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
@@ -268,7 +267,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				return { transporter: transporterConfig, sender: default_sender } as MailerConfig;
 			});
 
-		const buildTransporter = Effect.gen(function* () {
+		const buildTransporterConfig = Effect.gen(function* () {
 			const configTable = yield* getMailerConfigTable;
 			// If the mailer configuration is not found, throw an
 			// error indicating that the configuration is missing
@@ -280,21 +279,14 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				);
 			}
 
-			const mailerConfig = yield* convertTransporterConfig(configTable);
-
-			const transporter = yield* Effect.try(() =>
-				nodemailer.createTransport(mailerConfig.transporter, {
-					from: mailerConfig.sender,
-				})
-			);
-
-			// If the proxy is a socks proxy, set the socks module
-			if (mailerConfig.transporter.proxy?.startsWith('socks')) {
-				transporter.set('proxy_socks_module', socks);
-			}
-
-			return transporter;
+			return yield* convertTransporterConfig(configTable);
 		});
+
+		const SMTP = (opts: SMTPOptionsBase) =>
+			Effect.gen(function* () {
+				const { _tag, ...smtp } = yield* SMTPMailer;
+				return smtp;
+			}).pipe(Effect.provide(SMTPMailer.Live(opts)));
 
 		/**
 		 * Sends an email using the provided mailer configuration and mail options.
@@ -318,7 +310,12 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const sendMail = ({ subject, ...message }: MailOptions) =>
 			Effect.gen(function* () {
-				const transporter = yield* buildTransporter;
+				const { transporter, sender } = yield* buildTransporterConfig;
+				const smtp = yield* SMTP({
+					transport: transporter,
+					defaults: { sender },
+					proxy: transporter.proxy?.startsWith('socks'),
+				});
 
 				// Create the mail options object
 				const toSend: Mail.Options = { subject };
@@ -336,7 +333,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 					toSend.html = message.html;
 				}
 
-				const result = yield* Effect.tryPromise(() => transporter.sendMail(toSend));
+				const result = yield* smtp.sendMail(toSend);
 
 				return mailerResponse({ message: `Message sent: ${result.messageId}` });
 			});
@@ -357,9 +354,14 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * ```
 		 */
 		const verifyMailConnection = Effect.gen(function* () {
-			const transporter = yield* buildTransporter;
+			const { transporter, sender } = yield* buildTransporterConfig;
+			const smtp = yield* SMTP({
+				transport: transporter,
+				defaults: { sender },
+				proxy: transporter.proxy?.startsWith('socks'),
+			});
 
-			const result = yield* Effect.tryPromise(() => transporter.verify());
+			const result = yield* smtp.verify();
 
 			// If the result is not true, log an error and return an error message
 			if (result !== true) {
