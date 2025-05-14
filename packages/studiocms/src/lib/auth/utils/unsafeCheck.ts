@@ -1,40 +1,47 @@
-import { Effect, Layer } from 'effect';
+import { Effect } from 'effect';
+import { genLogger, pipeLogger } from '../../effects/index.js';
 import passwordList from './lists/passwords.js';
 import usernameList from './lists/usernames.js';
 
-export const make = Effect.gen(function* () {
-	/**
-	 * Checks if a value is a reserved username
-	 *
-	 * @param value - The value to check
-	 * @returns An object containing functions to check if the value is a reserved username or password
-	 */
-	const username = (val: string) => Effect.try(() => usernameList.includes(val));
+export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
+	'studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe',
+	{
+		effect: genLogger('studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe.effect')(function* () {
+			/**
+			 * Checks if a value is a reserved username
+			 *
+			 * @param value - The value to check
+			 * @returns An object containing functions to check if the value is a reserved username or password
+			 */
+			const username = (val: string) =>
+				pipeLogger('studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe.username')(
+					Effect.try(() => usernameList.includes(val))
+				);
 
-	/**
-	 * Checks if a value is a password
-	 *
-	 * @param value - The value to check
-	 * @returns An object containing functions to check if the value is a reserved username or password
-	 */
-	const password = (val: string) => Effect.try(() => passwordList.includes(val));
+			/**
+			 * Checks if a value is a password
+			 *
+			 * @param value - The value to check
+			 * @returns An object containing functions to check if the value is a reserved username or password
+			 */
+			const password = (val: string) =>
+				pipeLogger('studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe.password')(
+					Effect.try(() => passwordList.includes(val))
+				);
 
-	return {
-		username,
-		password,
-	};
-});
+			return {
+				username,
+				password,
+			};
+		}),
+		accessors: true,
+	}
+) {}
 
-export class CheckIfUnsafe extends Effect.Tag('studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe')<
-	CheckIfUnsafe,
-	Effect.Effect.Success<typeof make>
->() {
-	static Live = make;
-	static Layer = Layer.scoped(this, this.Live);
-}
-
-const _username = (val: string) => Effect.runSync(CheckIfUnsafe.Live).username(val);
-const _password = (val: string) => Effect.runSync(CheckIfUnsafe.Live).password(val);
+const _username = (val: string) =>
+	Effect.runSync(CheckIfUnsafe.username(val).pipe(Effect.provide(CheckIfUnsafe.Default)));
+const _password = (val: string) =>
+	Effect.runSync(CheckIfUnsafe.password(val).pipe(Effect.provide(CheckIfUnsafe.Default)));
 
 /**
  * Checks if a value is a reserved username or password
@@ -45,8 +52,8 @@ const _password = (val: string) => Effect.runSync(CheckIfUnsafe.Live).password(v
  */
 function checkIfUnsafe(value: string) {
 	return {
-		username: () => Effect.runSync(_username(value)),
-		password: () => Effect.runSync(_password(value)),
+		username: () => _username(value),
+		password: () => _password(value),
 	};
 }
 

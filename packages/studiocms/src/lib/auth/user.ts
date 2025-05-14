@@ -86,7 +86,7 @@ export const make = Effect.gen(function* () {
 				return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 			}
 			return;
-		}).pipe(Effect.provide(CheckIfUnsafe.Layer));
+		}).pipe(Effect.provide(CheckIfUnsafe.Default));
 
 	/**
 	 * Verifies if the provided username meets the required criteria.
@@ -170,7 +170,7 @@ export const make = Effect.gen(function* () {
 			yield* notify.sendAdminNotification('new_user', newUser.username);
 
 			return newUser;
-		}).pipe(Effect.provide(Password.Layer), Effect.provide(Notifications.Default));
+		}).pipe(Effect.provide(Password.Default), Effect.provide(Notifications.Default));
 
 	/**
 	 * Creates a new user with OAuth credentials.
@@ -215,7 +215,7 @@ export const make = Effect.gen(function* () {
 			const passwordHash = yield* pass.hashPassword(password);
 
 			yield* sdk.AUTH.user.update(userId, { password: passwordHash });
-		}).pipe(Effect.provide(Password.Layer));
+		}).pipe(Effect.provide(Password.Default));
 
 	/**
 	 * Retrieves the password hash for a given user by their user ID.

@@ -1,2 +1,2 @@
-export { convertToVanilla } from './convertToVanilla.js';
-export { RuntimeLogger } from './logger.js';
+export * from './convertToVanilla.js';
+export * from './logger.js';
