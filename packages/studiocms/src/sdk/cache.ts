@@ -9,11 +9,7 @@ import type {
 export type { STUDIOCMS_SDK_CACHE, PageDataCacheObject, SiteConfigCacheObject, VersionCacheObject };
 
 /**
- * A constant representing the StudioCMS SDK Cache.
- * This cache is used to store and retrieve data within the StudioCMS SDK.
- *
- * @constant
- * @type {STUDIOCMS_SDK_CACHE}
+ * @deprecated Use SDKCore from 'studiocms:sdk' instead, which provides unified effect-based cache functionality.
  */
 export const studioCMS_SDK_Cache: STUDIOCMS_SDK_CACHE = cacheModule;
 

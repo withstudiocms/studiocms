@@ -1,6 +1,6 @@
-import { db, eq } from 'astro:db';
+import { eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
 import nodemailer from 'nodemailer';
@@ -162,6 +162,7 @@ function nullToUndefined<T>(value: T | null): T | undefined {
 export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Mailer', {
 	effect: Effect.gen(function* () {
 		const logger = yield* Logger;
+		const sdk = yield* SDKCore;
 
 		/**
 		 * Logs the response from the mailer.
@@ -184,7 +185,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * @returns A promise that resolves with the mailer configuration object.
 		 */
 		const getMailerConfigTable = Effect.tryPromise(() =>
-			db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
+			sdk.db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
 		);
 
 		/**
@@ -197,7 +198,10 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			Effect.gen(function* () {
 				yield* Effect.tryPromise({
 					try: () =>
-						db.update(tsMailerConfig).set(config).where(eq(tsMailerConfig.id, CMSMailerConfigId)),
+						sdk.db
+							.update(tsMailerConfig)
+							.set(config)
+							.where(eq(tsMailerConfig.id, CMSMailerConfigId)),
 					catch: (error) =>
 						mailerResponse({
 							error: `Error updating mailer configuration: ${(error as Error).message}`,
@@ -213,20 +217,18 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			});
 
 		const createMailerConfigTable = (config: tsMailerInsert) =>
-			Effect.gen(function* () {
-				return yield* Effect.tryPromise(() =>
-					db
-						.insert(tsMailerConfig)
-						.values({ ...config, id: CMSMailerConfigId })
-						.onConflictDoUpdate({
-							target: tsMailerConfig.id,
-							set: config,
-							where: eq(tsMailerConfig.id, CMSMailerConfigId),
-						})
-						.returning()
-						.get()
-				);
-			});
+			Effect.tryPromise(() =>
+				sdk.db
+					.insert(tsMailerConfig)
+					.values({ ...config, id: CMSMailerConfigId })
+					.onConflictDoUpdate({
+						target: tsMailerConfig.id,
+						set: config,
+						where: eq(tsMailerConfig.id, CMSMailerConfigId),
+					})
+					.returning()
+					.get()
+			);
 
 		const convertTransporterConfig = (config: tsMailer) =>
 			Effect.try(() => {
@@ -376,7 +378,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * is not available, it defaults to `false`.
 		 */
 		const isEnabled = Effect.gen(function* () {
-			const data = yield* Effect.tryPromise(() => studioCMS_SDK.GET.database.config());
+			const { data } = yield* sdk.GET.siteConfig();
 			const status = data?.enableMailer || false;
 
 			return status;
@@ -390,7 +392,8 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			verifyMailConnection,
 			isEnabled,
 		};
-	}).pipe(Effect.provide(Logger.Layer)),
+	}),
+	dependencies: [SDKCore.Default, Logger.Layer],
 }) {}
 
 /**

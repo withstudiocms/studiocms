@@ -1,17 +1,19 @@
 import { studiocmsSDKCore } from './core.js';
 
 /**
- * Initializes the core functionality of the StudioCMS SDK.
- *
- * @constant
+ * @deprecated
  */
-const sdkCore = studiocmsSDKCore();
+const sdkCore = await studiocmsSDKCore();
 
 /**
- * The main SDK export for StudioCMS.
- *
- * This constant provides access to the core functionality of the StudioCMS SDK.
+ * @deprecated
  */
 export const studioCMS_SDK = sdkCore;
 
 export default studioCMS_SDK;
+
+/**
+ * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
+ * This unified SDK merges the normal and cached SDK functionalities.
+ */
+export { SDKCore } from './sdkCore.js';

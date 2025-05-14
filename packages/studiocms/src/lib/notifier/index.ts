@@ -1,10 +1,9 @@
 import _logger from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Effect } from 'effect';
-import type { UnknownException } from 'effect/Cause';
 import type { UserNotificationOptions } from './client.js';
 
 /**
@@ -120,6 +119,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 		effect: Effect.gen(function* () {
 			const MailService = yield* Mailer;
 			const logger = yield* makeLogger;
+			const sdk = yield* SDKCore;
 
 			/**
 			 * Retrieves the configuration settings for StudioCMS.
@@ -128,12 +128,8 @@ export class Notifications extends Effect.Service<Notifications>()(
 			 * If the data is not available, it returns a default configuration with a title of 'StudioCMS'
 			 * and mailer functionality disabled.
 			 */
-			const getConfig: Effect.Effect<
-				{ title: string; enableMailer: boolean },
-				UnknownException,
-				never
-			> = Effect.gen(function* () {
-				const data = yield* Effect.tryPromise(() => studioCMS_SDK.GET.database.config());
+			const getConfig = Effect.gen(function* () {
+				const { data } = yield* sdk.GET.siteConfig();
 				if (!data) {
 					return {
 						title: 'StudioCMS',
@@ -155,7 +151,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				userRanks: string[]
 			) =>
 				Effect.gen(function* () {
-					const userTable = yield* Effect.tryPromise(() => studioCMS_SDK.GET.database.users());
+					const userTable = yield* sdk.GET.users.all();
 
 					const users = userTable.filter(
 						(user) => user.permissionsData?.rank && userRanks.includes(user.permissionsData?.rank)
@@ -328,7 +324,8 @@ export class Notifications extends Effect.Service<Notifications>()(
 				sendEditorNotification,
 				sendAdminNotification,
 			};
-		}).pipe(Effect.provide(Mailer.Default)),
+		}),
+		dependencies: [SDKCore.Default, Mailer.Default],
 	}
 ) {}
 

@@ -2,7 +2,7 @@ import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData, tsEmailVerificationTokensSelect } from 'studiocms:sdk/types';
 import { Effect, Layer } from 'effect';
 import { CMSNotificationSettingsId } from '../../consts.js';
@@ -11,6 +11,7 @@ import type { UserSessionData } from './types.js';
 
 export const make = Effect.gen(function* () {
 	const MailService = yield* Mailer;
+	const sdk = yield* SDKCore;
 
 	/**
 	 * @private
@@ -25,9 +26,7 @@ export const make = Effect.gen(function* () {
 	 */
 	const getSettings = () =>
 		Effect.gen(function* () {
-			const settings = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.GET.databaseTable.notificationSettings()
-			);
+			const settings = yield* sdk.GET.databaseTable.notificationSettings();
 
 			if (!settings) {
 				return {
@@ -64,8 +63,7 @@ export const make = Effect.gen(function* () {
 	 * @param id - The unique identifier of the email verification request.
 	 * @returns A promise that resolves to the email verification request.
 	 */
-	const getEmailVerificationRequest = (id: string) =>
-		Effect.tryPromise(() => studioCMS_SDK.AUTH.verifyEmail.get(id));
+	const getEmailVerificationRequest = (id: string) => sdk.AUTH.verifyEmail.get(id);
 
 	/**
 	 * Deletes an email verification request by its ID.
@@ -73,8 +71,7 @@ export const make = Effect.gen(function* () {
 	 * @param id - The unique identifier of the email verification request to be deleted.
 	 * @returns A promise that resolves when the email verification request is successfully deleted.
 	 */
-	const deleteEmailVerificationRequest = (id: string) =>
-		Effect.tryPromise(() => studioCMS_SDK.AUTH.verifyEmail.delete(id));
+	const deleteEmailVerificationRequest = (id: string) => sdk.AUTH.verifyEmail.delete(id);
 
 	/**
 	 * Creates an email verification request for a given user.
@@ -88,7 +85,7 @@ export const make = Effect.gen(function* () {
 	const createEmailVerificationRequest = (userId: string) =>
 		Effect.gen(function* () {
 			yield* deleteEmailVerificationRequest(userId);
-			return yield* Effect.tryPromise(() => studioCMS_SDK.AUTH.verifyEmail.create(userId));
+			return yield* sdk.AUTH.verifyEmail.create(userId);
 		});
 
 	/**
@@ -118,12 +115,8 @@ export const make = Effect.gen(function* () {
 			const mailer = yield* getMailerStatus();
 			const settings = yield* getSettings();
 
-			const [user, config] = yield* Effect.tryPromise(() =>
-				Promise.all([
-					studioCMS_SDK.GET.databaseEntry.users.byId(userId),
-					studioCMS_SDK.GET.database.config(),
-				])
-			);
+			const user = yield* sdk.GET.users.byId(userId);
+			const { data: config } = yield* sdk.GET.siteConfig();
 
 			if (!mailer || (isOAuth && settings.oAuthBypassVerification)) {
 				return;
@@ -204,9 +197,7 @@ export const make = Effect.gen(function* () {
 					return false;
 				}
 
-				const possibleUser = yield* Effect.tryPromise(() =>
-					studioCMS_SDK.GET.databaseEntry.users.byId(tUser.id)
-				);
+				const possibleUser = yield* sdk.GET.users.byId(tUser.id);
 
 				if (!possibleUser) {
 					return false;
@@ -255,7 +246,7 @@ export const make = Effect.gen(function* () {
 		sendVerificationEmail,
 		isEmailVerified,
 	};
-}).pipe(Effect.provide(Mailer.Default));
+}).pipe(Effect.provide(Mailer.Default), Effect.provide(SDKCore.Default));
 
 export class VerifyEmail extends Effect.Tag('studiocms/lib/auth/verify-email/VerifyEmail')<
 	VerifyEmail,
@@ -292,7 +283,7 @@ export async function isEmailVerificationEnabled(): Promise<boolean> {
  */
 export async function getEmailVerificationRequest(
 	id: string
-): Promise<tsEmailVerificationTokensSelect | null> {
+): Promise<tsEmailVerificationTokensSelect | undefined> {
 	const program = Effect.gen(function* () {
 		const verify = yield* VerifyEmail;
 		return yield* verify.getEmailVerificationRequest(id);
@@ -313,7 +304,8 @@ export async function deleteEmailVerificationRequest(id: string): Promise<void> 
 		return yield* verify.deleteEmailVerificationRequest(id);
 	}).pipe(Effect.provide(VerifyEmail.Layer));
 
-	return await Effect.runPromise(program);
+	await Effect.runPromise(program);
+	return;
 }
 
 /**

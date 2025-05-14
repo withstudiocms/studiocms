@@ -1,4 +1,4 @@
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
@@ -26,6 +26,8 @@ const expTimeHalf = sessionExpTime / 2;
 export const sessionCookieName = 'auth_session';
 
 export const make = Effect.gen(function* () {
+	const sdk = yield* SDKCore;
+
 	/**
 	 * Generates a session token.
 	 *
@@ -65,7 +67,7 @@ export const make = Effect.gen(function* () {
 				userId,
 				expiresAt: new Date(Date.now() + sessionExpTime),
 			};
-			return yield* Effect.tryPromise(() => studioCMS_SDK.AUTH.session.create(session));
+			return yield* sdk.AUTH.session.create(session);
 		});
 
 	/**
@@ -83,9 +85,7 @@ export const make = Effect.gen(function* () {
 
 			const nullSession: SessionValidationResult = { session: null, user: null };
 
-			const result = yield* Effect.tryPromise(() =>
-				studioCMS_SDK.AUTH.session.sessionWithUser(sessionId)
-			);
+			const result = yield* sdk.AUTH.session.sessionWithUser(sessionId);
 
 			if (result.length < 1) {
 				return nullSession;
@@ -100,15 +100,13 @@ export const make = Effect.gen(function* () {
 			const { user, session }: UserSession = userSession;
 
 			if (Date.now() >= session.expiresAt.getTime()) {
-				yield* Effect.tryPromise(() => studioCMS_SDK.AUTH.session.delete(session.id));
+				yield* sdk.AUTH.session.delete(session.id);
 				return nullSession;
 			}
 
 			if (Date.now() >= session.expiresAt.getTime() - expTimeHalf) {
 				session.expiresAt = new Date(Date.now() + sessionExpTime);
-				yield* Effect.tryPromise(() =>
-					studioCMS_SDK.AUTH.session.update(session.id, session.expiresAt)
-				);
+				yield* sdk.AUTH.session.update(session.id, session.expiresAt);
 			}
 
 			return { session, user } as SessionValidationResult;
@@ -120,8 +118,7 @@ export const make = Effect.gen(function* () {
 	 * @param sessionId - The unique identifier of the session to be invalidated.
 	 * @returns A promise that resolves when the session has been successfully deleted.
 	 */
-	const invalidateSession = (sessionId: string) =>
-		Effect.tryPromise(() => studioCMS_SDK.AUTH.session.delete(sessionId));
+	const invalidateSession = (sessionId: string) => sdk.AUTH.session.delete(sessionId);
 
 	/**
 	 * Sets a session token cookie in the provided API context.
@@ -201,7 +198,7 @@ export const make = Effect.gen(function* () {
 		setOAuthSessionTokenCookie,
 		createUserSession,
 	};
-});
+}).pipe(Effect.provide(SDKCore.Default));
 
 export class Session extends Effect.Tag('studiocms/lib/auth/session/Session')<
 	Session,

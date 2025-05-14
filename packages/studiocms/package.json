@@ -182,6 +182,7 @@
 		"unist-util-visit": "^5.0.0"
 	},
 	"devDependencies": {
+		"@effect/language-service": "catalog:effect",
 		"@types/codemirror": "5.60.10",
 		"@types/diff": "^7.0.1",
 		"@types/mdast": "^4.0.4",
