@@ -5,6 +5,11 @@ import type { Adapter } from 'effect/Effect';
 import { dual, pipe } from 'effect/Function';
 import type { YieldWrap } from 'effect/Utils';
 
+function stripNameFromLabel(label: string): string {
+	const prefix = 'studiocms/';
+	return label.startsWith(prefix) ? label.slice(prefix.length) : label;
+}
+
 /**
  * Creates a logger instance with a specific label for categorizing log messages.
  *
@@ -21,9 +26,9 @@ import type { YieldWrap } from 'effect/Utils';
  * @internal
  */
 const makeLogger = (label: string) =>
-	Logger.make(({ logLevel, message: _message }) => {
-		const logger = _logger.fork(`studiocms:runtime/${label}`);
-		const message = String(_message);
+	Logger.make(({ logLevel, message: _message, spans }) => {
+		const logger = _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
+		const message = `${String(_message)} - - - ${spans.toString()}`;
 
 		switch (logLevel) {
 			case LogLevel.Trace:
@@ -97,33 +102,11 @@ export const runtimeLogger = dual<
  * @param effect - The `Effect` to be wrapped with logging functionality.
  *
  * @returns A new `Effect` that includes runtime logging and a log span.
- *
- * @deprecated replaced by pipeLogger
  */
-export const logWrapper = <A, E, R>({
-	label,
-	effect,
-}: {
-	label: string;
-	effect: Effect.Effect<A, E, R>;
-}): Effect.Effect<A, E, R> =>
-	pipe(effect, runtimeLogger(label), Effect.withLogSpan(`span-${label}`));
-
-/**
- * Wraps an `Effect` with additional logging functionality.
- *
- * This function applies a runtime logger and a log span to the provided `Effect`,
- * enabling detailed logging for debugging and monitoring purposes.
- *
- * @param label - A string label used to identify the log entries and span.
- * @param effect - The `Effect` to be wrapped with logging functionality.
- *
- * @returns A new `Effect` that includes runtime logging and a log span.
- */
-export const pipeLogger =
-	(label: string) =>
-	<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> =>
-		pipe(effect, runtimeLogger(label), Effect.withLogSpan(`span-${label}`));
+export const pipeLogger = dual<
+	(label: string) => <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>,
+	<A, E, R>(effect: Effect.Effect<A, E, R>, label: string) => Effect.Effect<A, E, R>
+>(2, (effect, label) => pipe(effect, runtimeLogger(label), Effect.withLogSpan(`span-${label}`)));
 
 /**
  * Generates a logger function that wraps an effectful generator function with logging capabilities.
@@ -199,22 +182,15 @@ export const errorTap = dual<
 // 	// yield* task1;
 // 	// yield* task2;
 // 	yield* Effect.log('done');
-
 // 	return true;
 // }).pipe(Effect.withLogSpan('span-program1'));
-
 // const test1 = await Effect.runPromise(program1.pipe(runtimeLogger('test')));
 
-// const program2 = logWrapper({
-// 	label: 'program2',
-// 	effect: Effect.gen(function* () {
-// 		yield* Effect.log('start');
-// 		// yield* task1;
-// 		// yield* task2;
-// 		yield* Effect.log('done');
-
-// 		return true;
-// 	}),
+// const program2 = genLogger('program2')(function* () {
+// 	yield* Effect.log('start');
+// 	// yield* task1;
+// 	// yield* task2;
+// 	yield* Effect.log('done');
+// 	return true;
 // });
-
 // const test2 = await Effect.runPromise(program2);
