@@ -3,6 +3,23 @@ import { genLogger, pipeLogger } from '../../effects/index.js';
 import passwordList from './lists/passwords.js';
 import usernameList from './lists/usernames.js';
 
+/**
+ * A service class that provides utility functions to check if a value is unsafe,
+ * such as being a reserved username or a password.
+ *
+ * @remarks
+ * This service uses logging and effect-based programming to perform the checks.
+ *
+ * @example
+ * ```typescript
+ * const checkIfUnsafe = CheckIfUnsafe;
+ * const isReservedUsername = yield* checkIfUnsafe.username('admin');
+ * const isPassword = yield* checkIfUnsafe.password('123456');
+ * ```
+ *
+ * @class
+ * @implements {Effect.Service<CheckIfUnsafe>}
+ */
 export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 	'studiocms/lib/auth/utils/unsafeCheck/CheckIfUnsafe',
 	{

@@ -5,6 +5,32 @@ import { decodeBase64 } from '@oslojs/encoding';
 import { Effect } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
 
+/**
+ * The `Encryption` class provides methods for encrypting and decrypting data using AES-128-GCM encryption.
+ * It includes utilities for handling encryption keys, encrypting/decrypting data as `Uint8Array`, and converting
+ * encrypted/decrypted data to and from strings.
+ *
+ * ### Methods:
+ * - `getKey`: Retrieves the encryption key from the environment variable `CMS_ENCRYPTION_KEY`.
+ * - `encrypt`: Encrypts a `Uint8Array` using AES-128-GCM and returns the encrypted data.
+ * - `encryptToString`: Encrypts a string and returns the encrypted data as a `Uint8Array`.
+ * - `decrypt`: Decrypts a `Uint8Array` encrypted with AES-128-GCM and returns the decrypted data.
+ * - `decryptToString`: Decrypts a `Uint8Array` and returns the decrypted data as a string.
+ *
+ * ### Encryption Details:
+ * - The encryption algorithm used is `aes-128-gcm`.
+ * - The encrypted data includes the initialization vector (IV), the encrypted content, and the authentication tag.
+ * - The IV is randomly generated for each encryption operation.
+ *
+ * ### Error Handling:
+ * - The `decrypt` method throws an error if the encrypted data is less than 33 bytes.
+ *
+ * ### Dependencies:
+ * - `Effect`: A utility for managing asynchronous effects.
+ * - `pipeLogger` and `genLogger`: Logging utilities for tracing method calls.
+ * - `DynamicBuffer`: A utility for dynamically managing byte buffers.
+ * - `crypto`: Used for generating random values and creating cipher/decipher instances.
+ */
 export class Encryption extends Effect.Service<Encryption>()(
 	'studiocms/lib/auth/encryption/Encryption',
 	{
@@ -94,30 +120,6 @@ export class Encryption extends Effect.Service<Encryption>()(
 		}),
 	}
 ) {}
-
-/**
- * Provides encryption and decryption utilities using AES-128-GCM algorithm.
- *
- * This module includes methods for encrypting and decrypting data, both as raw
- * `Uint8Array` and as strings. It also provides a method to retrieve the encryption key.
- *
- * @returns An object containing the following methods:
- *
- * - `getKey`: Retrieves the encryption key as a `Uint8Array`.
- * - `encrypt`: Encrypts a `Uint8Array` using AES-128-GCM and returns the encrypted data.
- * - `encryptToString`: Encrypts a string using AES-128-GCM and returns the encrypted data as a `Uint8Array`.
- * - `decrypt`: Decrypts an encrypted `Uint8Array` using AES-128-GCM and returns the decrypted data.
- * - `decryptToString`: Decrypts an encrypted `Uint8Array` using AES-128-GCM and returns the decrypted data as a string.
- *
- * @throws Will throw an error if the encryption key is invalid or if decryption fails due to invalid data.
- */
-// export class Encryption extends Effect.Tag('studiocms/lib/auth/encryption/Encryption')<
-// 	Encryption,
-// 	Effect.Effect.Success<typeof make>
-// >() {
-// 	static Live = make;
-// 	static Layer = Layer.scoped(this, this.Live);
-// }
 
 /**
  * Encrypts the given data using AES-128-GCM encryption.

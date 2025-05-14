@@ -7,6 +7,30 @@ import { genLogger, pipeLogger } from '../effects/index.js';
 import { Scrypt } from './utils/scrypt.js';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
 
+/**
+ * The `Password` class provides methods for hashing passwords, verifying password hashes,
+ * and checking the strength of passwords. It includes functionality for ensuring passwords
+ * meet security standards, such as length requirements, avoiding unsafe passwords, and
+ * checking against the pwned password database.
+ *
+ * ### Methods:
+ * - `hashPassword`: Hashes a plain text password using a secure algorithm.
+ * - `verifyPasswordHash`: Verifies if a plain text password matches a hashed password.
+ * - `verifyPasswordStrength`: Checks if a password meets strength requirements, including
+ *   length, safety, and absence from the pwned password database.
+ *
+ * ### Dependencies:
+ * - `Scrypt`: Used for password hashing.
+ * - `CheckIfUnsafe`: Used to check if a password is a commonly known unsafe password.
+ * - `FetchHttpClient`: Used for making HTTP requests to external services, such as the
+ *   pwned password database API.
+ *
+ * ### Notes:
+ * - The `legacy0HashPassword` function is marked as deprecated and should not be used in
+ *   new implementations.
+ * - The `constantTimeEqual` function ensures secure string comparison to prevent timing
+ *   attacks.
+ */
 export class Password extends Effect.Service<Password>()('studiocms/lib/auth/password/Password', {
 	effect: genLogger('studiocms/lib/auth/password/Password.effect')(function* () {
 		const scrypt = yield* Scrypt;
@@ -175,26 +199,6 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 	}),
 	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, FetchHttpClient.layer],
 }) {}
-
-/**
- * Represents a `Password` class that extends an `Effect.Tag` with specific types.
- * This class is used to manage password-related functionality within the application.
- *
- * - The `Effect.Tag` is parameterized with:
- *   - A unique identifier string for the tag: `'studiocms/lib/auth/password/Password'`.
- *   - The success type of the `Effect` created by the `make` function.
- *
- * Static Members:
- * - `Live`: An instance of the `Effect` created by the `make` function, provided with the default `Scrypt` implementation.
- * - `Layer`: A scoped layer that provides the `Password` instance using the `Live` effect.
- */
-// export class Password extends Effect.Tag('studiocms/lib/auth/password/Password')<
-// 	Password,
-// 	Effect.Effect.Success<typeof make>
-// >() {
-// 	static Live = make;
-// 	static Layer = Layer.scoped(this, this.Live);
-// }
 
 /**
  * Hashes a plain text password using script.
