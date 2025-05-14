@@ -1,6 +1,7 @@
 import config from 'studiocms:config';
 import _logger from 'studiocms:logger';
 import { Effect, LogLevel, Logger } from 'effect';
+import { dual, pipe } from 'effect/Function';
 import { fromLiteral } from 'effect/LogLevel';
 
 /**
@@ -80,10 +81,12 @@ const setLogger = (label: string) =>
  * @returns A higher-order function that takes an `Effect` and returns a new `Effect` with
  *          the logger configuration applied.
  */
-export const RuntimeLogger =
-	(label: string) =>
-	<A, E, R>(self: Effect.Effect<A, E, R>) =>
-		self.pipe(setLoggerLevel, setLogger(label));
+export const RuntimeLogger = dual<
+	(label: string) => <A, E, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>,
+	<A, E, R>(self: Effect.Effect<A, E, R>, label: string) => Effect.Effect<A, E, R>
+>(2, (self, label) => pipe(self, setLoggerLevel, setLogger(label)));
+
+// // Testing Example
 
 // const program = Effect.gen(function* () {
 // 	yield* Effect.log('start');
