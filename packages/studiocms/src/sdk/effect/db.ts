@@ -164,4 +164,5 @@ export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/
 			transaction,
 		};
 	}),
+	accessors: true,
 }) {}

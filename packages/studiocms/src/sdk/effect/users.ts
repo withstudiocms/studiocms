@@ -140,4 +140,5 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 		};
 	}),
 	dependencies: [AstroDB.Default],
+	accessors: true,
 }) {}

@@ -261,4 +261,5 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		return { collectCategories, collectTags, collectPageData, collectUserData };
 	}),
 	dependencies: [AstroDB.Default, SDKCore_FolderTree.Default, SDKCore_Parsers.Default],
+	accessors: true,
 }) {}
