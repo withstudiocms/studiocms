@@ -15,7 +15,6 @@ import { genLogger } from '../lib/effects/index.js';
 export const getUserPermissions = (userData: UserSessionData) =>
 	genLogger('studiocms/middleware/utils/getUserPermissions')(function* () {
 		const user = yield* User;
-
 		const userPermissionLevel = yield* user.getUserPermissionLevel(userData);
 
 		return {

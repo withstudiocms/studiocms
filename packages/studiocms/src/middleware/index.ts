@@ -11,6 +11,22 @@ import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
 import { getUserPermissions } from './utils.js';
 
+/**
+ * Middleware function for handling StudioCMS-specific context initialization.
+ * This middleware performs the following operations:
+ * - Retrieves the latest version of the StudioCMS SDK.
+ * - Fetches the site configuration.
+ * - Retrieves user session data.
+ * - Checks if email verification is enabled.
+ * - Determines the user's permission level.
+ * - Populates the `context.locals` object with various StudioCMS-related data.
+ *
+ * @param context - The API context object containing request and response information.
+ * @param next - The next middleware function in the chain to be executed.
+ *
+ * @returns A generator function that yields effects for SDK, user, and email operations,
+ *          and then proceeds to the next middleware.
+ */
 const middlewareEffect = (context: APIContext, next: MiddlewareNext) =>
 	genLogger('studiocms/middleware/middlewareEffect')(function* () {
 		const sdk = yield* SDKCore;
