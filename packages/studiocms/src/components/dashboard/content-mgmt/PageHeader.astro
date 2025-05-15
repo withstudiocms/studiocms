@@ -1,6 +1,6 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Button, Center, Group, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
@@ -27,7 +27,7 @@ const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
 
 if (editId) {
-	const res = await studioCMS_SDK_Cache.GET.page.byId(editId);
+	const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
 
 	if (editPage) {
 		pageTitle = `${res.data.title}`;
@@ -39,7 +39,7 @@ if (editId) {
 const folderId = urlParams.get('folder') || '';
 
 if (folderId) {
-	const res = await studioCMS_SDK_Cache.GET.folderList();
+	const res = await runSDK(SDKCoreJs.GET.folderList());
 
 	const folder = res.data.find((folder) => folder.id === folderId);
 

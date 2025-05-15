@@ -2,7 +2,7 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
@@ -17,7 +17,7 @@ if (!user) {
 	throw new Error('User not found');
 }
 
-const userTokens = await studioCMS_SDK.REST_API.tokens.get(user.id);
+const userTokens = await runSDK(SDKCoreJs.REST_API.tokens.get(user.id));
 
 const lang = Astro.locals.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');

@@ -1,6 +1,6 @@
 import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
 import plugins from 'studiocms:plugins';
-import studioCMS_SDK from 'studiocms:sdk/cache';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 
 // Define the link props for the navigation
 type LinkProps = {
@@ -23,7 +23,7 @@ type LinkProps = {
 export async function frontendNavigation(basePackage?: string): Promise<LinkProps[]> {
 	const searchPackage = basePackage || 'studiocms/markdown';
 
-	const fullPageList = await studioCMS_SDK.GET.pages();
+	const fullPageList = await runSDK(SDKCoreJs.GET.pages());
 	const pageListData = fullPageList.map(({ data }) => data);
 
 	// Define the links for the navigation
