@@ -26,7 +26,7 @@ catalogs:
     '@effect/platform-browser': ^0.62.0
     '@effect/platform-node': ^0.80.0
     '@effect/platform-node-shared': ^0.34.0
-    '@effect/language-service': ^0.14.0
+    '@effect/language-service': ^0.16.0
 
 packages:
   - "packages/*"

@@ -44,8 +44,8 @@ catalogs:
       version: 5.8.3
   effect:
     '@effect/language-service':
-      specifier: ^0.14.0
-      version: 0.14.0
+      specifier: ^0.16.0
+      version: 0.16.0
     '@effect/platform':
       specifier: ^0.82.0
       version: 0.82.0
@@ -301,7 +301,7 @@ importers:
     devDependencies:
       '@effect/language-service':
         specifier: catalog:effect
-        version: 0.14.0
+        version: 0.16.0
       '@types/codemirror':
         specifier: 5.60.10
         version: 5.60.10
@@ -827,8 +827,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.14.0':
-    resolution: {integrity: sha512-3HQIAKuaRKIQUIUBHuLKHiERf3Hbvo/j4jr7E7gbyQapZMVOYvQe1WbpYkRjf2m3vN5l0KrWalGG8MIdcm+sDg==}
+  '@effect/language-service@0.16.0':
+    resolution: {integrity: sha512-PRFDcRQwvKXj2gn7v1kvmzxenmE3xUy3xCO0OKB49885/n1g5sIglRttN1LYOZB4DcSMqLbnWJnEVgJJrWXZTw==}
 
   '@effect/platform-browser@0.62.0':
     resolution: {integrity: sha512-qbo6st7CaEoTwszFzDXxgEoQXbXQ/G9btmaWIlPo4cButVMG5G1y4P82Ls+Z1ZJkXWHMr9XJcVM+Exu4b+hgJA==}
@@ -5674,7 +5674,7 @@ snapshots:
       effect: 3.15.0
       uuid: 11.1.0
 
-  '@effect/language-service@0.14.0': {}
+  '@effect/language-service@0.16.0': {}
 
   '@effect/platform-browser@0.62.0(@effect/platform@0.82.0(effect@3.15.0))(effect@3.15.0)':
     dependencies:
