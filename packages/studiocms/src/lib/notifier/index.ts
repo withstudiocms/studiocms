@@ -4,6 +4,7 @@ import getTemplate from 'studiocms:mailer/templates';
 import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Effect } from 'effect';
+import { genLogger } from '../effects/index.js';
 import type { UserNotificationOptions } from './client.js';
 
 /**
@@ -116,7 +117,7 @@ export const makeLogger = Effect.succeed(forked);
 export class Notifications extends Effect.Service<Notifications>()(
 	'studiocms/lib/notifier/Notifications',
 	{
-		effect: Effect.gen(function* () {
+		effect: genLogger('studiocms/lib/notifier/Notifications.effect')(function* () {
 			const MailService = yield* Mailer;
 			const logger = yield* makeLogger;
 			const sdk = yield* SDKCore;
@@ -128,7 +129,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 			 * If the data is not available, it returns a default configuration with a title of 'StudioCMS'
 			 * and mailer functionality disabled.
 			 */
-			const getConfig = Effect.gen(function* () {
+			const getConfig = genLogger('studiocms/lib/notifier/Notifications.getConfig')(function* () {
 				const { data } = yield* sdk.GET.siteConfig();
 				if (!data) {
 					return {
@@ -150,7 +151,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				notification: UserNotification | EditorNotification | AdminNotification,
 				userRanks: string[]
 			) =>
-				Effect.gen(function* () {
+				genLogger('studiocms/lib/notifier/Notifications.getUsersWithNotifications')(function* () {
 					const userTable = yield* sdk.GET.users.all();
 
 					const users = userTable.filter(
@@ -191,7 +192,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				message: string;
 				notification: NotificationTitle;
 			}) =>
-				Effect.gen(function* () {
+				genLogger('studiocms/lib/notifier/Notifications.sendMail')(function* () {
 					const htmlTemplate = getTemplate('notification');
 
 					for (const { email } of users) {
@@ -216,7 +217,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 			 * @param {string} userId - The ID of the user to whom the notification will be sent.
 			 */
 			const sendUserNotification = <T extends UserNotification>(notification: T, userId: string) =>
-				Effect.gen(function* () {
+				genLogger('studiocms/lib/notifier/Notifications.sendUserNotification')(function* () {
 					const config = yield* getConfig;
 
 					if (!config.enableMailer) return;
@@ -258,7 +259,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				notification: T,
 				data: K
 			) =>
-				Effect.gen(function* () {
+				genLogger('studiocms/lib/notifier/Notifications.sendEditorNotification')(function* () {
 					const config = yield* getConfig;
 
 					if (!config.enableMailer) return;
@@ -296,7 +297,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				notification: T,
 				data: K
 			) =>
-				Effect.gen(function* () {
+				genLogger('studiocms/lib/notifier/Notifications.sendAdminNotification')(function* () {
 					const config = yield* getConfig;
 
 					if (!config.enableMailer) return;

@@ -1237,6 +1237,9 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/lib/user': `
 								export * from '${resolve('./lib/auth/user.js')}'
 							`,
+							'studiocms:auth/lib/verify-email': `
+								export * from '${resolve('./lib/auth/verify-email.js')}';
+							`,
 							'studiocms:auth/utils/authEnvCheck': `
 								export * from '${resolve('./utils/authEnvCheck.js')}'
 							`,
@@ -1248,9 +1251,6 @@ export const studiocms = defineIntegration({
 							`,
 							'studiocms:auth/scripts/three': `
 								import '${resolve('./scripts/three.js')}';
-							`,
-							'studiocms:auth/lib/verify-email': `
-								export * from '${resolve('./lib/auth/verify-email.js')}';
 							`,
 						},
 					});

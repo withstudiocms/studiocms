@@ -1,16 +1,17 @@
 {
   "extends": "../../tsconfig.base.json",
   "include": ["src"],
+  "exclude": ["src/db/**"],
   "compilerOptions": {
     "outDir": "./dist",
-    "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "removeComments": false,
+    "noEmit": true,
     "pretty": true,
     "plugins": [
       {
-        "name": "@effect/language-service"
+        "name": "@effect/language-service",
+        "transform": "@effect/language-service/transform"
       }
     ]
   }

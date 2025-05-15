@@ -39,7 +39,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	if (!password) {
-		password = studioCMS_SDK.generateRandomPassword(12);
+		password = await studioCMS_SDK.generateRandomPassword(12);
 	}
 
 	if (!email) {

@@ -265,7 +265,48 @@ declare module 'studiocms:component-proxy' {
 
 declare module 'studiocms:sdk' {
 	type Mod = typeof import('./sdk/index.js');
+
+	/**
+	 * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
+	 * This unified SDK merges the normal and cached SDK functionalities.
+	 *
+	 * @example
+	 * ```ts
+	 * import { Effect } from 'studiocms/effect';
+	 * import { SDKCore } from 'studiocms:sdk';
+	 *
+	 * const db = Effect.gen(function* () {
+	 *   const sdk = yield* SDKCore;
+	 *
+	 *   return sdk.db;
+	 * }).pipe(Effect.provide(SDKCore.Default));
+	 * ```
+	 */
 	export const SDKCore: Mod['SDKCore'];
+
+	/**
+	 * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk' to run these as normal async functions
+	 *
+	 * @example
+	 * ```ts
+	 * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+	 *
+	 * const pages = await runSDK(SDKCoreJs.GET.pages());
+	 * ```
+	 */
+	export const SDKCoreJs: Mod['SDKCoreJs'];
+
+	/**
+	 * Utility function for running components of the SDKCoreJs
+	 *
+	 * @example
+	 * ```ts
+	 * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+	 *
+	 * const pages = await runSDK(SDKCoreJs.GET.pages());
+	 * ```
+	 */
+	export const runSDK: Mod['runSDK'];
 
 	/**
 	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
@@ -392,6 +433,7 @@ declare module 'studiocms:auth/lib/encryption' {
 	 *
 	 * @param data - The data to be encrypted as a Uint8Array.
 	 * @returns The encrypted data as a Uint8Array, which includes the initialization vector (IV), the encrypted content, and the authentication tag.
+	 * @deprecated use the Effect instead
 	 */
 	export const encrypt: Mod['encrypt'];
 	/**
@@ -399,6 +441,7 @@ declare module 'studiocms:auth/lib/encryption' {
 	 *
 	 * @param data - The string to be encrypted.
 	 * @returns The encrypted data as a Uint8Array.
+	 * @deprecated use the Effect instead
 	 */
 	export const encryptString: Mod['encryptString'];
 	/**
@@ -407,6 +450,7 @@ declare module 'studiocms:auth/lib/encryption' {
 	 * @param encrypted - The encrypted data as a Uint8Array. The data must be at least 33 bytes long.
 	 * @returns The decrypted data as a Uint8Array.
 	 * @throws Will throw an error if the encrypted data is less than 33 bytes.
+	 * @deprecated use the Effect instead
 	 */
 	export const decrypt: Mod['decrypt'];
 	/**
@@ -414,6 +458,7 @@ declare module 'studiocms:auth/lib/encryption' {
 	 *
 	 * @param data - The encrypted data as a Uint8Array.
 	 * @returns The decrypted data as a string.
+	 * @deprecated use the Effect instead
 	 */
 	export const decryptToString: Mod['decryptToString'];
 }
@@ -427,6 +472,7 @@ declare module 'studiocms:auth/lib/password' {
 	 *
 	 * @param password - The plain text password to hash.
 	 * @returns A promise that resolves to the hashed password.
+	 * @deprecated use the Effect instead
 	 */
 	export const hashPassword: Mod['hashPassword'];
 	/**
@@ -435,6 +481,7 @@ declare module 'studiocms:auth/lib/password' {
 	 * @param hash - The hashed password to compare against.
 	 * @param password - The plain text password to verify.
 	 * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
+	 * @deprecated use the Effect instead
 	 */
 	export const verifyPasswordHash: Mod['verifyPasswordHash'];
 	/**
@@ -447,6 +494,7 @@ declare module 'studiocms:auth/lib/password' {
 	 *
 	 * @param password - The password to verify.
 	 * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
+	 * @deprecated use the Effect instead
 	 */
 	export const verifyPasswordStrength: Mod['verifyPasswordStrength'];
 }
@@ -459,12 +507,14 @@ declare module 'studiocms:auth/lib/session' {
 	 * Generates a new session token.
 	 *
 	 * @returns The generated session token as a string.
+	 * @deprecated use the Effect instead
 	 */
 	export const generateSessionToken: Mod['generateSessionToken'];
 	/**
 	 * The name of the cookie used to store the authentication session.
 	 *
 	 * @constant {string}
+	 * @deprecated use the Effect instead
 	 */
 	export const sessionCookieName: Mod['sessionCookieName'];
 	/**
@@ -473,6 +523,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param token - The token used to create the session.
 	 * @param userId - The ID of the user for whom the session is being created.
 	 * @returns A promise that resolves to the created session object.
+	 * @deprecated use the Effect instead
 	 */
 	export const createSession: Mod['createSession'];
 	/**
@@ -482,6 +533,7 @@ declare module 'studiocms:auth/lib/session' {
 	 *
 	 * @param token - The session token to validate.
 	 * @returns A promise that resolves to an object containing the session and user information. If the session is invalid or expired, both session and user will be null.
+	 * @deprecated use the Effect instead
 	 */
 	export const validateSessionToken: Mod['validateSessionToken'];
 	/**
@@ -489,6 +541,7 @@ declare module 'studiocms:auth/lib/session' {
 	 *
 	 * @param token - The session token to invalidate.
 	 * @returns A promise that resolves to `true` if the session was successfully invalidated; otherwise, `false`.
+	 * @deprecated use the Effect instead
 	 */
 	export const invalidateSession: Mod['invalidateSession'];
 	/**
@@ -497,12 +550,14 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param context - The context object containing the request and response objects.
 	 * @param token - The session token to set in the cookie.
 	 * @param expiresAt - The expiration date and time of the session token.
+	 * @deprecated use the Effect instead
 	 */
 	export const setSessionTokenCookie: Mod['setSessionTokenCookie'];
 	/**
 	 * Deletes the session token cookie from the response object.
 	 *
 	 * @param context - The context object containing the request and response objects.
+	 * @deprecated use the Effect instead
 	 */
 	export const deleteSessionTokenCookie: Mod['deleteSessionTokenCookie'];
 	/**
@@ -511,17 +566,20 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param context - The context object containing the request and response objects.
 	 * @param key - The name of the cookie to set.
 	 * @param expiresAt - The expiration date and time of the session token.
+	 * @deprecated use the Effect instead
 	 */
 	export const setOAuthSessionTokenCookie: Mod['setOAuthSessionTokenCookie'];
 	/**
 	 * Generates a new expiration date for a session.
 	 *
 	 * @returns The expiration date calculated by adding the session expiration time to the current date and time.
+	 * @deprecated use the Effect instead
 	 */
 	export const makeExpirationDate: Mod['makeExpirationDate'];
 	/**
 	 * The session expiration time in milliseconds.
 	 * This value represents 14 days.
+	 * @deprecated use the Effect instead
 	 */
 	export const sessionExpTime: Mod['sessionExpTime'];
 	/**
@@ -530,6 +588,7 @@ declare module 'studiocms:auth/lib/session' {
 	 * @param userId - The ID of the user to create the session for.
 	 * @param context - The context object containing the request and response objects.
 	 * @returns A promise that resolves to the created session object.
+	 * @deprecated use the Effect instead
 	 */
 	export const createUserSession: Mod['createUserSession'];
 }
@@ -613,6 +672,7 @@ declare module 'studiocms:auth/lib/user' {
 	 *
 	 * @param username - The username to verify.
 	 * @returns `true` if the username is valid, `false` otherwise.
+	 * @deprecated use the Effect instead
 	 */
 	export const verifyUsernameInput: typeof import('./lib/auth/user.js').verifyUsernameInput;
 	/**
@@ -623,6 +683,7 @@ declare module 'studiocms:auth/lib/user' {
 	 *
 	 * @param email - The email address of the user.
 	 * @returns A promise that resolves to the URL of the user's avatar.
+	 * @deprecated use the Effect instead
 	 */
 	export const createUserAvatar: typeof import('./lib/auth/user.js').createUserAvatar;
 	/**
@@ -633,6 +694,7 @@ declare module 'studiocms:auth/lib/user' {
 	 * @param email - The email address of the user.
 	 * @param password - The password for the user.
 	 * @returns A promise that resolves to the newly created user record.
+	 * @deprecated use the Effect instead
 	 */
 	export const createLocalUser: typeof import('./lib/auth/user.js').createLocalUser;
 	/**
@@ -641,6 +703,7 @@ declare module 'studiocms:auth/lib/user' {
 	 * @param userFields - The fields required to create a new user.
 	 * @param oAuthFields - The OAuth provider information, including the provider name and provider user ID.
 	 * @returns The newly created user object or an error object if the creation fails.
+	 * @deprecated use the Effect instead
 	 */
 	export const createOAuthUser: typeof import('./lib/auth/user.js').createOAuthUser;
 	/**
@@ -652,6 +715,7 @@ declare module 'studiocms:auth/lib/user' {
 	 * @param userId - The unique identifier of the user whose password is to be updated.
 	 * @param password - The new password to be set for the user.
 	 * @returns A promise that resolves when the password has been successfully updated.
+	 * @deprecated use the Effect instead
 	 */
 	export const updateUserPassword: typeof import('./lib/auth/user.js').updateUserPassword;
 	/**
@@ -660,6 +724,7 @@ declare module 'studiocms:auth/lib/user' {
 	 * @param userId - The unique identifier of the user whose password hash is to be retrieved.
 	 * @returns A promise that resolves to the password hash of the user.
 	 * @throws Will throw an error if the user is not found or if the user does not have a password.
+	 * @deprecated use the Effect instead
 	 */
 	export const getUserPasswordHash: typeof import('./lib/auth/user.js').getUserPasswordHash;
 	/**
@@ -667,6 +732,7 @@ declare module 'studiocms:auth/lib/user' {
 	 *
 	 * @param email - The email address of the user to retrieve.
 	 * @returns A promise that resolves to the user data if found, or null if no user is found with the given email.
+	 * @deprecated use the Effect instead
 	 */
 	export const getUserFromEmail: typeof import('./lib/auth/user.js').getUserFromEmail;
 	/**
@@ -683,6 +749,7 @@ declare module 'studiocms:auth/lib/user' {
 	 * 5. If the user is not found, returns an object indicating the user is not logged in.
 	 * 6. Retrieves the user's permission level from the database.
 	 * 7. Returns an object containing the user's login status, user information, and permission level.
+	 * @deprecated use the Effect instead
 	 */
 	export const getUserData: typeof import('./lib/auth/user.js').getUserData;
 	/**
@@ -728,28 +795,49 @@ declare module 'studiocms:auth/lib/user' {
 	 *
 	 * @param userData - The session data of the user, which includes their permission level.
 	 * @returns The user's permission level as an enum value. `UserPermissionLevel`
+	 * @deprecated use the Effect instead
 	 */
 	export const getUserPermissionLevel: typeof import('./lib/auth/user.js').getUserPermissionLevel;
-
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const isUserAllowed: Mod['isUserAllowed'];
 }
 
 declare module 'studiocms:auth/lib/verify-email' {
 	type Mod = typeof import('./lib/auth/verify-email.js');
 	export const VerifyEmail: Mod['VerifyEmail'];
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const getEmailVerificationRequest: typeof import(
 		'./lib/auth/verify-email.js'
 	).getEmailVerificationRequest;
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const deleteEmailVerificationRequest: typeof import(
 		'./lib/auth/verify-email.js'
 	).deleteEmailVerificationRequest;
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const createEmailVerificationRequest: typeof import(
 		'./lib/auth/verify-email.js'
 	).createEmailVerificationRequest;
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const sendVerificationEmail: typeof import(
 		'./lib/auth/verify-email.js'
 	).sendVerificationEmail;
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const isEmailVerified: typeof import('./lib/auth/verify-email.js').isEmailVerified;
+	/**
+	 * @deprecated use the Effect instead
+	 */
 	export const isEmailVerificationEnabled: typeof import(
 		'./lib/auth/verify-email.js'
 	).isEmailVerificationEnabled;

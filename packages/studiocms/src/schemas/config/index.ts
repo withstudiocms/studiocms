@@ -72,6 +72,22 @@ export const StudioCMSOptionsSchema = z
 		 */
 		verbose: z.boolean().optional().default(false),
 		/**
+		 * Set the LogLevel for Effect based code
+		 */
+		logLevel: z
+			.union([
+				z.literal('All'),
+				z.literal('Fatal'),
+				z.literal('Error'),
+				z.literal('Warning'),
+				z.literal('Info'),
+				z.literal('Debug'),
+				z.literal('Trace'),
+				z.literal('None'),
+			])
+			.optional()
+			.default('Info'),
+		/**
 		 * Add Plugins to the StudioCMS
 		 */
 		plugins: z.custom<StudioCMSPlugin[]>().optional(),
