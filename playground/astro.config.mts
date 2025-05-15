@@ -14,5 +14,12 @@ export default defineConfig({
 	security: {
 		checkOrigin: false,
 	},
+	vite: {
+		build: {
+			rollupOptions: {
+				external: ['@libsql/client', '@libsql/win32-x64-msvc', '@libsql/linux-x64-gnu'],
+			},
+		},
+	},
 	integrations: [db(), studioCMS(), devApps(), webVitals()],
 });
