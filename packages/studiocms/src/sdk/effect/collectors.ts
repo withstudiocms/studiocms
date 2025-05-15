@@ -148,9 +148,15 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 						.get()
 				);
 
-				const contributorsData = yield* dbService.execute((db) =>
-					db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))
-				);
+				let contributorsData: tsUsersSelect[];
+
+				if (contributorIds.length) {
+					contributorsData = yield* dbService.execute((db) =>
+						db.select().from(tsUsers).where(inArray(tsUsers.id, contributorIds))
+					);
+				} else {
+					contributorsData = [];
+				}
 
 				let multiLanguageContentData:
 					| {
