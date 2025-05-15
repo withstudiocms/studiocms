@@ -52,7 +52,8 @@
 	],
 	"scripts": {
 		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
+		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"typecheck": "tspc --noEmit --pretty -p tsconfig.json"
 	},
 	"bin": {
 		"studiocms": "./studiocms-cli.mjs"
@@ -194,7 +195,8 @@
 		"@types/nodemailer": "^6.4.17",
 		"@types/semver": "^7.5.8",
 		"@types/three": "0.169.0",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"ts-patch": "3.3.0"
 	},
 	"peerDependencies": {
 		"@astrojs/db": "catalog:min",

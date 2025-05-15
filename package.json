@@ -29,7 +29,8 @@
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "knip": "knip",
     "ci:vitest": "pnpm --filter @withstudiocms/* test",
-    "ci:crowdin:bot": "tsm --require=./scripts/filter-warnings.cjs ./scripts/crowdin-report-bot.ts"
+    "ci:crowdin:bot": "tsm --require=./scripts/filter-warnings.cjs ./scripts/crowdin-report-bot.ts",
+    "ci:typecheck": "pnpm --filter studiocms typecheck"
   },
   "devDependencies": {
     "@actions/core": "1.11.1",
