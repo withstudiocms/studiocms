@@ -1,5 +1,6 @@
 ---
-import { isUserAllowed } from 'studiocms:auth/lib/user';
+import { User } from 'studiocms:auth/lib/user';
+import { Effect } from 'effect';
 
 interface Props {
 	requiredPermission?: string;
@@ -9,9 +10,11 @@ const { requiredPermission } = Astro.props;
 
 const { userSessionData: user } = Astro.locals;
 
-const isAuthorized = isUserAllowed(
-	user,
-	(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
+const isAuthorized = Effect.runPromise(
+	User.isUserAllowed(
+		user,
+		(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
+	).pipe(User.Provide)
 );
 
 if (!isAuthorized) {

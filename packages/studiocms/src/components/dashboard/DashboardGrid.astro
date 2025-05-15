@@ -1,10 +1,11 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { isUserAllowed } from 'studiocms:auth/lib/user';
+import { User } from 'studiocms:auth/lib/user';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Center } from 'studiocms:ui/components';
+import { Effect } from 'effect';
 import DashboardGridItem from './DashboardGridItem.astro';
 
 interface Props {
@@ -33,7 +34,7 @@ if (((data.gridItems as string[]) ?? []).length > 0) {
 		gridItems.length > 0 
 		? gridItems.map(async (item) => {
 			if (item.requiresPermission) {
-				const allowed = isUserAllowed(currentUser, item.requiresPermission);
+				const allowed = await Effect.runPromise(User.isUserAllowed(currentUser, item.requiresPermission).pipe(User.Provide));
 				if (allowed) {
 					return <DashboardGridItem {...item} {lang} />
 				}

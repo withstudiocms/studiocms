@@ -249,7 +249,9 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		};
 	}),
 	dependencies: [SDKCore.Default],
+	accessors: true,
 }) {
+	static Provide = Effect.provide(this.Default);
 	static sessionCookieName = sessionCookieName;
 }
 

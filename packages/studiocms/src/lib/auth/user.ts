@@ -416,7 +416,10 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		Password.Default,
 		Notifications.Default,
 	],
-}) {}
+	accessors: true,
+}) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Verifies if the provided username meets the required criteria.
