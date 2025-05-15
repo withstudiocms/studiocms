@@ -3,10 +3,9 @@ import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
-import type Mail from 'nodemailer/lib/mailer';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { SMTPMailer, type SMTPOptionsBase } from '../effects/smtp.js';
+import { type Mail, SMTPMailer, type SMTPOptionsBase } from '../effects/index.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
@@ -163,6 +162,12 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		const logger = yield* Logger;
 		const sdk = yield* SDKCore;
 
+		const SMTP = (opts: SMTPOptionsBase) =>
+			Effect.gen(function* () {
+				const { _tag, ...smtp } = yield* SMTPMailer;
+				return smtp;
+			}).pipe(Effect.provide(SMTPMailer.Live(opts)));
+
 		/**
 		 * Logs the response from the mailer.
 		 *
@@ -281,12 +286,6 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 
 			return yield* convertTransporterConfig(configTable);
 		});
-
-		const SMTP = (opts: SMTPOptionsBase) =>
-			Effect.gen(function* () {
-				const { _tag, ...smtp } = yield* SMTPMailer;
-				return smtp;
-			}).pipe(Effect.provide(SMTPMailer.Live(opts)));
 
 		/**
 		 * Sends an email using the provided mailer configuration and mail options.

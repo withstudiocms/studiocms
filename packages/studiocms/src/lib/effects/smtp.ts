@@ -5,6 +5,8 @@ import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
 import { errorTap, genLogger, pipeLogger } from './logger.js';
 
+export type { Mail };
+
 /**
  * Represents an error specific to SMTP operations.
  *
@@ -119,7 +121,9 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 	{
 		effect: genLogger('studiocms/lib/effects/smtp/SMTPMailer.effect')(function* () {
 			const { transport, defaults, proxy } = yield* SMTPOptions;
-			const transporter = yield* pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.transporter')(
+			const MailTransporter = yield* pipeLogger(
+				'studiocms/lib/effects/smtp/SMTPMailer.transporter'
+			)(
 				Effect.try({
 					try: () => nodemailer.createTransport(transport, defaults),
 					catch: (error) => new SMTPError({ error }),
@@ -128,10 +132,86 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 
 			// If the proxy is a socks proxy, set the socks module
 			if (proxy) {
-				transporter.set('proxy_socks_module', socks);
+				MailTransporter.set('proxy_socks_module', socks);
 			}
 
-			const { verify: _verify, sendMail: _sendMail } = transporter;
+			const {
+				options: _options,
+				meta: _meta,
+				dkim: _dkim,
+				transporter: _transporter,
+				MailMessage: _MailMessage,
+				close: _close,
+				isIdle: _isIdle,
+				verify: _verify,
+				use: _use,
+				sendMail: _sendMail,
+				getVersionString: _getVersionString,
+				setupProxy: _setupProxy,
+			} = MailTransporter;
+
+			const options = Effect.succeed(_options);
+			const meta = Effect.succeed(_meta);
+			const dkim = Effect.succeed(_dkim);
+			const transporter = Effect.succeed(_transporter);
+			/** Usage: typeof transporter.MailMessage */
+			const MailMessage = Effect.succeed(_MailMessage);
+
+			/** Closes all connections in the pool. If there is a message being sent, the connection is closed later */
+			const close = pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.close')(
+				Effect.try({
+					try: () => _close(),
+					catch: (error) => new SMTPError({ error }),
+				})
+			);
+
+			/** Returns true if there are free slots in the queue */
+			const isIdle = pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.isIdle')(
+				Effect.try({
+					try: () => _isIdle(),
+					catch: (error) => new SMTPError({ error }),
+				})
+			);
+
+			/**
+			 * Verifies the SMTP connection asynchronously.
+			 *
+			 * This function wraps the `verify` method and converts its callback-based
+			 * implementation into an Effect. It resumes with a success or failure Effect
+			 * based on the result of the verification.
+			 *
+			 * @returns An `Effect` that resolves to `true` on success or fails with an `SMTPError` on error.
+			 */
+			const verify = (): Effect.Effect<true, SMTPError, never> =>
+				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.verify')(
+					Effect.async<true, SMTPError>((resume) => {
+						_verify((error, success) => {
+							if (error) {
+								const toFail = new SMTPError({ error });
+								resume(errorTap(Effect.fail(toFail), toFail));
+							} else {
+								resume(Effect.succeed(success));
+							}
+						});
+					})
+				);
+
+			/**
+			 * A utility function to safely apply a mail plugin function within an effect.
+			 * It wraps the plugin execution in a try-catch block to handle errors gracefully.
+			 *
+			 * @param step - A string representing the current step or context for the plugin.
+			 * @param plugin - The mail plugin function to be executed.
+			 * @returns An `Effect` that attempts to execute the plugin and catches any errors,
+			 *          wrapping them in an `SMTPError` instance.
+			 */
+			const use = (step: string, plugin: Mail.PluginFunction) =>
+				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.use')(
+					Effect.try({
+						try: () => _use(step, plugin),
+						catch: (error) => new SMTPError({ error }),
+					})
+				);
 
 			/**
 			 * Sends an email using the provided mail options.
@@ -161,31 +241,50 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 				);
 
 			/**
-			 * Verifies the SMTP connection asynchronously.
+			 * An effect that attempts to retrieve the version string by invoking the `_getVersionString` function.
+			 * If an error occurs during the operation, it catches the error and wraps it in an `SMTPError` instance.
 			 *
-			 * This function wraps the `verify` method and converts its callback-based
-			 * implementation into an Effect. It resumes with a success or failure Effect
-			 * based on the result of the verification.
-			 *
-			 * @returns An `Effect` that resolves to `true` on success or fails with an `SMTPError` on error.
+			 * @constant
+			 * @throws {SMTPError} If an error occurs while retrieving the version string.
 			 */
-			const verify = (): Effect.Effect<true, SMTPError, never> =>
-				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.verify')(
-					Effect.async<true, SMTPError>((resume) => {
-						_verify((error, success) => {
-							if (error) {
-								const toFail = new SMTPError({ error });
-								resume(errorTap(Effect.fail(toFail), toFail));
-							} else {
-								resume(Effect.succeed(success));
-							}
-						});
+			const getVersionString = pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.getVersionString')(
+				Effect.try({
+					try: () => _getVersionString(),
+					catch: (error) => new SMTPError({ error }),
+				})
+			);
+
+			/**
+			 * Sets up a proxy for SMTP communication.
+			 *
+			 * This function wraps the `_setupProxy` function in an `Effect.try` block to handle
+			 * potential errors gracefully. If an error occurs during the setup, it will be
+			 * caught and wrapped in an `SMTPError` instance.
+			 *
+			 * @param proxyUrl - The URL of the proxy to be set up.
+			 * @returns An `Effect` that attempts to set up the proxy and handles any errors.
+			 */
+			const setupProxy = (proxyUrl: string) =>
+				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.setupProxy')(
+					Effect.try({
+						try: () => _setupProxy(proxyUrl),
+						catch: (error) => new SMTPError({ error }),
 					})
 				);
 
 			return {
-				sendMail,
+				options,
+				meta,
+				dkim,
+				transporter,
+				MailMessage,
+				close,
+				isIdle,
 				verify,
+				use,
+				sendMail,
+				getVersionString,
+				setupProxy,
 			};
 		}),
 	}
