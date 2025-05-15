@@ -125,10 +125,9 @@ export const pipeLogger = dual<
  * - `E`: The error type inferred from the yielded effects, or `never` if no effects are yielded.
  * - `R`: The environment type inferred from the yielded effects, or `never` if no effects are yielded.
  */
-export const genLogger =
-	(label: string) =>
+export function genLogger(label: string) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	<Eff extends YieldWrap<Effect.Effect<any, any, any>>, AEff>(
+	return <Eff extends YieldWrap<Effect.Effect<any, any, any>>, AEff>(
 		f: (resume: Adapter) => Generator<Eff, AEff, never>
 	): Effect.Effect<
 		AEff,
@@ -142,8 +141,8 @@ export const genLogger =
 			: [Eff] extends [YieldWrap<Effect.Effect<infer _A, infer _E, infer R>>]
 				? R
 				: never
-	> =>
-		pipeLogger(label)(Effect.gen(f));
+	> => pipeLogger(label)(Effect.gen(f));
+}
 
 /**
  * A utility function that logs an error message when an `Effect.fail()` is executed.
