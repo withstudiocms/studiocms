@@ -1,5 +1,12 @@
 # @studiocms/markdoc
 
+## 0.1.0-beta.19
+
+### Patch Changes
+
+- Updated dependencies [[`231cf43`](https://github.com/withstudiocms/studiocms/commit/231cf438ae7465805ce456d198e170d17331e911), [`a3c2c53`](https://github.com/withstudiocms/studiocms/commit/a3c2c5376073e95a88d22dc290b56705be0907a3), [`688dd08`](https://github.com/withstudiocms/studiocms/commit/688dd08b1062b47132d90d39c6a5a946f40bb8b6), [`f13e396`](https://github.com/withstudiocms/studiocms/commit/f13e396308426df2b8f08f1502f3c43c20c7241e), [`c71b5fc`](https://github.com/withstudiocms/studiocms/commit/c71b5fcf98821a73333da21c7bfd92a244febb22), [`599aaf7`](https://github.com/withstudiocms/studiocms/commit/599aaf7d6760fa5c71913f541b11b67338354e0b)]:
+  - studiocms@0.1.0-beta.19
+
 ## 0.1.0-beta.18
 
 ### Patch Changes

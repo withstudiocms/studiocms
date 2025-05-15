@@ -1,5 +1,29 @@
 # studiocms
 
+## 0.1.0-beta.19
+
+### Patch Changes
+
+- [#590](https://github.com/withstudiocms/studiocms/pull/590) [`231cf43`](https://github.com/withstudiocms/studiocms/commit/231cf438ae7465805ce456d198e170d17331e911) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor lib/mailer to Utilize Effect-TS
+
+- [#598](https://github.com/withstudiocms/studiocms/pull/598) [`a3c2c53`](https://github.com/withstudiocms/studiocms/commit/a3c2c5376073e95a88d22dc290b56705be0907a3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor lib/notifier to Utilize Effect-TS
+
+- [#589](https://github.com/withstudiocms/studiocms/pull/589) [`688dd08`](https://github.com/withstudiocms/studiocms/commit/688dd08b1062b47132d90d39c6a5a946f40bb8b6) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor lib/auth to Utilize Effect-TS
+
+- [#601](https://github.com/withstudiocms/studiocms/pull/601) [`f13e396`](https://github.com/withstudiocms/studiocms/commit/f13e396308426df2b8f08f1502f3c43c20c7241e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor middleware, add new effect utils, and effect cleanup
+
+  - Middleware files are now Effects.
+  - Updated all current effects to Effect Services, and created new effect utils in `lib/effects/`
+    - New SMTP Effect for wrapping `nodemailer`
+    - New Logger utils for Effect
+    - Updated lib/auth effects
+    - Updated lib/mailer effect
+    - Updated lib/notifier effect
+
+- [#599](https://github.com/withstudiocms/studiocms/pull/599) [`c71b5fc`](https://github.com/withstudiocms/studiocms/commit/c71b5fcf98821a73333da21c7bfd92a244febb22) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #599)
+
+- [#600](https://github.com/withstudiocms/studiocms/pull/600) [`599aaf7`](https://github.com/withstudiocms/studiocms/commit/599aaf7d6760fa5c71913f541b11b67338354e0b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor sdk to Utilize Effect-TS, This change also merges the normal and the cached SDK functionalities to simplify the overall SDK structure. The old functionality is now deprecated.
+
 ## 0.1.0-beta.18
 
 ### Patch Changes
