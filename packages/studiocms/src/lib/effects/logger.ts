@@ -4,6 +4,7 @@ import type { AstroIntegrationLogger } from 'astro';
 import { Effect, LogLevel, Logger } from 'effect';
 import type { Adapter } from 'effect/Effect';
 import { dual, pipe } from 'effect/Function';
+import { toArray } from 'effect/List';
 import type { YieldWrap } from 'effect/Utils';
 
 function stripNameFromLabel(label: string): string {
@@ -38,7 +39,10 @@ const makeLogger = (label: string) =>
 			loggerCache.get(label) ?? _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
 		loggerCache.set(label, logger);
 
-		const message = `${String(_message)} :: ${[...spans].join(' › ')}`;
+		const list = toArray(spans);
+
+		const spanPart = list.length ? ` :: ${list.join(' › ')}` : '';
+		const message = `${String(_message)}${spanPart}`;
 
 		switch (logLevel) {
 			case LogLevel.Trace:

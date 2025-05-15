@@ -122,7 +122,7 @@ export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/utils/s
 		return (password: string) =>
 			pipeLogger('studiocms/lib/auth/utils/scrypt/Scrypt.Default')(
 				Effect.async<Buffer, ScryptError>((resume) => {
-					scrypt(password, salt, keylen, options, (error, derivedKey) => {
+					const req = scrypt(password, salt, keylen, options, (error, derivedKey) => {
 						if (error) {
 							const toFail = new ScryptError({ error });
 							resume(errorTap(Effect.fail(toFail), toFail));
@@ -130,6 +130,8 @@ export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/utils/s
 							resume(Effect.succeed(derivedKey));
 						}
 					});
+
+					return req;
 				})
 			);
 	}),

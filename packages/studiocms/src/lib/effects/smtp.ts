@@ -238,7 +238,11 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 								resume(Effect.succeed(info));
 							}
 						});
-						return send;
+						() => {
+							try {
+								send;
+							} catch {}
+						};
 					})
 				);
 
