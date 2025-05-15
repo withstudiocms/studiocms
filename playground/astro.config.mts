@@ -17,7 +17,7 @@ export default defineConfig({
 	vite: {
 		build: {
 			rollupOptions: {
-				external: ['@libsql/client', '@libsql/win32-x64-msvc', '@libsql/linux-x64-gnu'],
+				external: ['@libsql/win32-x64-msvc', '@libsql/linux-x64-gnu'],
 			},
 		},
 	},
