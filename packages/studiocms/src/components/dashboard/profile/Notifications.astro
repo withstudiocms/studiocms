@@ -1,9 +1,10 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { verifyMailConnection } from 'studiocms:mailer';
+import { Mailer } from 'studiocms:mailer';
 import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Button, Card, Icon, Toggle } from 'studiocms:ui/components';
+import { Effect } from 'effect';
 
 interface Props {
 	currentUser: UserSessionData;
@@ -27,7 +28,7 @@ let isNotificationsEnabled = false;
 const { enableMailer } = siteConfig.data;
 
 if (enableMailer) {
-	const test = await verifyMailConnection();
+	const test = await Effect.runPromise(Mailer.verifyMailConnection.pipe(Mailer.Provide));
 
 	if ('message' in test) {
 		isNotificationsEnabled = true;

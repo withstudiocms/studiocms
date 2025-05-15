@@ -411,7 +411,10 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		};
 	}),
 	dependencies: [SDKCore.Default, Logger.Layer],
-}) {}
+	accessors: true,
+}) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Gets the mailer configuration from the database.
