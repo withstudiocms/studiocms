@@ -261,6 +261,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
  * a session token.
  *
  * @returns {string} The generated session token.
+ * @deprecated use the Effect instead
  */
 export function generateSessionToken(): string {
 	const program = Effect.gen(function* () {
@@ -275,6 +276,7 @@ export function generateSessionToken(): string {
  * Generates a new expiration date for a session.
  *
  * @returns {Date} The expiration date calculated by adding the session expiration time to the current date and time.
+ * @deprecated use the Effect instead
  */
 export function makeExpirationDate(): Date {
 	const program = Effect.gen(function* () {
@@ -291,6 +293,7 @@ export function makeExpirationDate(): Date {
  * @param token - The token used to create the session.
  * @param userId - The ID of the user for whom the session is being created.
  * @returns A promise that resolves to the created session object.
+ * @deprecated use the Effect instead
  */
 export async function createSession(token: string, userId: string): Promise<tsSessionTableSelect> {
 	const program = Effect.gen(function* () {
@@ -309,6 +312,7 @@ export async function createSession(token: string, userId: string): Promise<tsSe
  * @param token - The session token to validate.
  * @returns A promise that resolves to an object containing the session and user information.
  *          If the session is invalid or expired, both session and user will be null.
+ * @deprecated use the Effect instead
  */
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
 	const program = Effect.gen(function* () {
@@ -324,6 +328,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
  *
  * @param sessionId - The unique identifier of the session to be invalidated.
  * @returns A promise that resolves when the session has been successfully deleted.
+ * @deprecated use the Effect instead
  */
 export async function invalidateSession(sessionId: string): Promise<void> {
 	const program = Effect.gen(function* () {
@@ -340,6 +345,7 @@ export async function invalidateSession(sessionId: string): Promise<void> {
  * @param context - The API context where the cookie will be set.
  * @param token - The session token to be stored in the cookie.
  * @param expiresAt - The expiration date of the cookie.
+ * @deprecated use the Effect instead
  */
 export function setSessionTokenCookie(context: APIContext, token: string, expiresAt: Date): void {
 	const program = Effect.gen(function* () {
@@ -354,6 +360,7 @@ export function setSessionTokenCookie(context: APIContext, token: string, expire
  * Deletes the session token cookie by setting it with an empty value and a max age of 0.
  *
  * @param context - The context in which the cookie is being set. This can be either an APIContext or AstroGlobal.
+ * @deprecated use the Effect instead
  */
 export function deleteSessionTokenCookie(context: APIContext | AstroGlobal): void {
 	const program = Effect.gen(function* () {
@@ -370,6 +377,7 @@ export function deleteSessionTokenCookie(context: APIContext | AstroGlobal): voi
  * @param context - The API context which contains the cookies object.
  * @param key - The name of the cookie to set.
  * @param value - The value of the cookie to set.
+ * @deprecated use the Effect instead
  */
 export function setOAuthSessionTokenCookie(context: APIContext, key: string, value: string): void {
 	const program = Effect.gen(function* () {
@@ -386,6 +394,7 @@ export function setOAuthSessionTokenCookie(context: APIContext, key: string, val
  * @param userId - The ID of the user for whom the session is being created.
  * @param context - The API context which includes request and response objects.
  * @returns A promise that resolves when the session has been successfully created.
+ * @deprecated use the Effect instead
  */
 export async function createUserSession(userId: string, context: APIContext): Promise<void> {
 	const program = Effect.gen(function* () {

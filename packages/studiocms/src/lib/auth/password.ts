@@ -205,6 +205,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
  *
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
+ * @deprecated use the Effect instead
  */
 export async function hashPassword(password: string, _salt?: string): Promise<string> {
 	const program = Effect.gen(function* () {
@@ -221,6 +222,7 @@ export async function hashPassword(password: string, _salt?: string): Promise<st
  * @param hash - The hashed password to compare against.
  * @param password - The plain text password to verify.
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
+ * @deprecated use the Effect instead
  */
 export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
 	const program = Effect.gen(function* () {
@@ -241,6 +243,7 @@ export async function verifyPasswordHash(hash: string, password: string): Promis
  *
  * @param password - The password to verify.
  * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
+ * @deprecated use the Effect instead
  */
 export async function verifyPasswordStrength(password: string): Promise<true | string> {
 	const program = Effect.gen(function* () {

@@ -428,6 +428,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
  *
  * @param username - The username to verify.
  * @returns `true` if the username is valid, `false` otherwise.
+ * @deprecated use the Effect instead
  */
 export function verifyUsernameInput(username: string): true | string {
 	const program = Effect.gen(function* () {
@@ -446,6 +447,7 @@ export function verifyUsernameInput(username: string): true | string {
  *
  * @param email - The email address of the user.
  * @returns A promise that resolves to the URL of the user's avatar.
+ * @deprecated use the Effect instead
  */
 export async function createUserAvatar(email: string) {
 	const program = Effect.gen(function* () {
@@ -464,6 +466,7 @@ export async function createUserAvatar(email: string) {
  * @param email - The email address of the user.
  * @param password - The password for the user.
  * @returns A promise that resolves to the newly created user record.
+ * @deprecated use the Effect instead
  */
 export async function createLocalUser(
 	name: string,
@@ -485,6 +488,7 @@ export async function createLocalUser(
  * @param userFields - The fields required to create a new user.
  * @param oAuthFields - The OAuth provider information, including the provider name and provider user ID.
  * @returns The newly created user object or an error object if the creation fails.
+ * @deprecated use the Effect instead
  */
 export async function createOAuthUser(
 	userFields: tsUsersInsert,
@@ -512,6 +516,7 @@ export async function createOAuthUser(
  * @param userId - The unique identifier of the user whose password is to be updated.
  * @param password - The new password to be set for the user.
  * @returns A promise that resolves when the password has been successfully updated.
+ * @deprecated use the Effect instead
  */
 export async function updateUserPassword(userId: string, password: string): Promise<void> {
 	const program = Effect.gen(function* () {
@@ -528,6 +533,7 @@ export async function updateUserPassword(userId: string, password: string): Prom
  * @param userId - The unique identifier of the user whose password hash is to be retrieved.
  * @returns A promise that resolves to the password hash of the user.
  * @throws Will throw an error if the user is not found or if the user does not have a password.
+ * @deprecated use the Effect instead
  */
 export async function getUserPasswordHash(userId: string): Promise<string> {
 	const program = Effect.gen(function* () {
@@ -543,6 +549,7 @@ export async function getUserPasswordHash(userId: string): Promise<string> {
  *
  * @param email - The email address of the user to retrieve.
  * @returns A promise that resolves to the user data if found, or null if no user is found with the given email.
+ * @deprecated use the Effect instead
  */
 export async function getUserFromEmail(email: string): Promise<tsUsersSelect | null> {
 	const program = Effect.gen(function* () {
@@ -567,6 +574,7 @@ export async function getUserFromEmail(email: string): Promise<tsUsersSelect | n
  * 5. If the user is not found, returns an object indicating the user is not logged in.
  * 6. Retrieves the user's permission level from the database.
  * 7. Returns an object containing the user's login status, user information, and permission level.
+ * @deprecated use the Effect instead
  */
 export async function getUserData(context: AstroGlobal | APIContext): Promise<UserSessionData> {
 	const program = Effect.gen(function* () {
@@ -582,6 +590,7 @@ export async function getUserData(context: AstroGlobal | APIContext): Promise<Us
  *
  * @param userData - The session data of the user, which includes their permission level.
  * @returns The user's permission level as an enum value.
+ * @deprecated use the Effect instead
  */
 export function getUserPermissionLevel(
 	userData: UserSessionData | CombinedUserData
@@ -594,6 +603,10 @@ export function getUserPermissionLevel(
 	return Effect.runSync(program);
 }
 
+/**
+ *
+ * @deprecated use the Effect instead
+ */
 export function isUserAllowed(
 	userData: UserSessionData | CombinedUserData,
 	requiredPerms: AvailablePermissionRanks

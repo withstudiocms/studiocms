@@ -309,6 +309,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
  *
  * @returns {Promise<boolean>} A promise that resolves to `true` if email
  * verification is enabled, otherwise `false`.
+ * @deprecated use the Effect instead
  */
 export async function isEmailVerificationEnabled(): Promise<boolean> {
 	const program = Effect.gen(function* () {
@@ -324,6 +325,7 @@ export async function isEmailVerificationEnabled(): Promise<boolean> {
  *
  * @param id - The unique identifier of the email verification request.
  * @returns A promise that resolves to the email verification request.
+ * @deprecated use the Effect instead
  */
 export async function getEmailVerificationRequest(
 	id: string
@@ -341,6 +343,7 @@ export async function getEmailVerificationRequest(
  *
  * @param id - The unique identifier of the email verification request to be deleted.
  * @returns A promise that resolves when the email verification request is successfully deleted.
+ * @deprecated use the Effect instead
  */
 export async function deleteEmailVerificationRequest(id: string): Promise<void> {
 	const program = Effect.gen(function* () {
@@ -360,6 +363,7 @@ export async function deleteEmailVerificationRequest(id: string): Promise<void> 
  *
  * @param userId - The unique identifier of the user for whom the email verification request is being created.
  * @returns A promise that resolves to the result of the email verification request creation.
+ * @deprecated use the Effect instead
  */
 export async function createEmailVerificationRequest(
 	userId: string
@@ -381,6 +385,7 @@ export async function createEmailVerificationRequest(
  * @returns A promise that resolves to the response of the mail sending operation.
  *
  * @throws Will throw an error if the user is not found, if the verification token creation fails, or if the user does not have an email.
+ * @deprecated use the Effect instead
  */
 export async function sendVerificationEmail(
 	userId: string,
@@ -410,6 +415,7 @@ export async function sendVerificationEmail(
  *    - 'admin': Returns the user's email verification status if admin verification is required, otherwise returns true.
  *    - 'editor': Returns the user's email verification status if editor verification is required, otherwise returns true.
  *    - Default: Returns the user's email verification status.
+ * @deprecated use the Effect instead
  */
 export async function isEmailVerified(
 	user: CombinedUserData | UserSessionData | undefined

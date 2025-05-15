@@ -127,6 +127,7 @@ export class Encryption extends Effect.Service<Encryption>()(
  * @param data - The data to be encrypted as a Uint8Array.
  * @returns The encrypted data as a Uint8Array, which includes the initialization vector (IV),
  *          the encrypted content, and the authentication tag.
+ * @deprecated use the Effect instead
  */
 export function encrypt(data: Uint8Array): Uint8Array {
 	const program = Effect.gen(function* () {
@@ -142,6 +143,7 @@ export function encrypt(data: Uint8Array): Uint8Array {
  *
  * @param data - The string to be encrypted.
  * @returns The encrypted data as a Uint8Array.
+ * @deprecated use the Effect instead
  */
 export function encryptString(data: string): Uint8Array {
 	const program = Effect.gen(function* () {
@@ -158,6 +160,7 @@ export function encryptString(data: string): Uint8Array {
  * @param encrypted - The encrypted data as a Uint8Array. The data must be at least 33 bytes long.
  * @returns The decrypted data as a Uint8Array.
  * @throws Will throw an error if the encrypted data is less than 33 bytes.
+ * @deprecated use the Effect instead
  */
 export function decrypt(data: Uint8Array): Uint8Array {
 	const program = Effect.gen(function* () {
@@ -173,6 +176,7 @@ export function decrypt(data: Uint8Array): Uint8Array {
  *
  * @param data - The encrypted data as a Uint8Array.
  * @returns The decrypted data as a string.
+ * @deprecated use the Effect instead
  */
 export function decryptToString(data: Uint8Array): string {
 	const program = Effect.gen(function* () {
