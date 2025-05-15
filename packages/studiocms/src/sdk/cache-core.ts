@@ -50,7 +50,7 @@ export const cacheModule = {
 		siteConfig: async () => await convertToVanilla(run.GET.siteConfig()),
 		latestVersion: async () => await convertToVanilla(run.GET.latestVersion()),
 		folderTree: async () => await convertToVanilla(run.GET.folderTree()),
-		pageFolderTree: async (includeDrafts?: boolean, hideDefaultIndex?: boolean) =>
+		pageFolderTree: async (_includeDrafts?: boolean, hideDefaultIndex?: boolean) =>
 			await convertToVanilla(run.GET.pageFolderTree(hideDefaultIndex)),
 		folderList: async () => await convertToVanilla(run.GET.folderList()),
 		folder: sdkCore.GET.databaseEntry.folder,
