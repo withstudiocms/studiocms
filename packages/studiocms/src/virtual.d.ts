@@ -285,7 +285,7 @@ declare module 'studiocms:sdk' {
 	export const SDKCore: Mod['SDKCore'];
 
 	/**
-	 * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
+	 * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk' to run these as normal async functions
 	 *
 	 * @example
 	 * ```ts

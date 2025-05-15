@@ -94,7 +94,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 					const newHash = yield* legacy0HashPassword(password);
 					return constantTimeEqual(hash, newHash);
 				}
-				const [_prefix, salt] = hash.split(':');
+				const [_prefix, salt] = hash.split(':', 3);
 				const newHash = yield* hashPassword(password, salt);
 				return constantTimeEqual(hash, newHash);
 			});
@@ -161,7 +161,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 * Verifies the strength of a given password.
 		 *
 		 * The password must meet the following criteria:
-		 * - Be between 6 and 255 characters in length.
+		 * - Be between 8 and 255 characters in length.
 		 * - Not be a known unsafe password.
 		 * - Not be found in the pwned password database.
 		 *
@@ -170,7 +170,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const verifyPasswordStrength = (password: string) =>
 			genLogger('studiocms/lib/auth/password/Password.verifyPasswordStrength')(function* () {
-				// Password must be between 6 ~ 255 characters
+				// Password must be between 8 ~ 255 characters
 				const lengthCheck = yield* verifyPasswordLength(password);
 				if (lengthCheck) {
 					return lengthCheck;
@@ -201,7 +201,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 }) {}
 
 /**
- * Hashes a plain text password using script.
+ * Hashes a plain text password using scrypt.
  *
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.

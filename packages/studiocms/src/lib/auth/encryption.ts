@@ -111,7 +111,6 @@ export class Encryption extends Effect.Service<Encryption>()(
 				});
 
 			return {
-				getKey,
 				encrypt,
 				encryptToString,
 				decrypt,

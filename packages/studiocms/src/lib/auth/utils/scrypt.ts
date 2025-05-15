@@ -3,9 +3,12 @@ import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { Brand, Context, Data, Effect, Layer } from 'effect';
 import { errorTap, genLogger, pipeLogger } from '../../effects/index.js';
 
-const SCRYPT_N = Math.max(16384, Number.parseInt(process.env.SCRYPT_N || '16384', 10));
-const SCRYPT_R = Math.max(8, Number.parseInt(process.env.SCRYPT_R || '8', 10));
-const SCRYPT_P = Math.max(1, Number.parseInt(process.env.SCRYPT_P || '1', 10));
+const parsedN = Number.parseInt(process.env.SCRYPT_N ?? '', 10);
+const SCRYPT_N = Number.isFinite(parsedN) ? Math.max(16384, parsedN) : 16384;
+const parsedR = Number.parseInt(process.env.SCRYPT_R ?? '', 10);
+const SCRYPT_R = Number.isFinite(parsedR) ? Math.max(8, parsedR) : 8;
+const parsedP = Number.parseInt(process.env.SCRYPT_P ?? '', 10);
+const SCRYPT_P = Number.isFinite(parsedP) ? Math.max(1, parsedP) : 1;
 
 /**
  * Represents an error specific to the Scrypt operation.
@@ -118,7 +121,7 @@ export class Scrypt extends Effect.Service<Scrypt>()('studiocms/lib/auth/utils/s
 		const { salt, keylen, options } = yield* ScryptConfig;
 		return (password: string) =>
 			pipeLogger('studiocms/lib/auth/utils/scrypt/Scrypt.Default')(
-				Effect.async<Buffer<ArrayBufferLike>, ScryptError>((resume) => {
+				Effect.async<Buffer, ScryptError>((resume) => {
 					scrypt(password, salt, keylen, options, (error, derivedKey) => {
 						if (error) {
 							const toFail = new ScryptError({ error });

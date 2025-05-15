@@ -32,7 +32,7 @@ export class SMTPError extends Data.TaggedError('SMTPError')<{ error: Error | un
 export type SMTPOptionsBase = {
 	transport?: SMTPTransport | SMTPTransport.Options;
 	defaults?: SMTPTransport.Options;
-	proxy?: boolean;
+	proxy?: string | undefined;
 };
 
 /**
@@ -131,8 +131,9 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 			);
 
 			// If the proxy is a socks proxy, set the socks module
-			if (proxy) {
+			if (proxy?.startsWith('socks')) {
 				MailTransporter.set('proxy_socks_module', socks);
+				MailTransporter.setupProxy(proxy);
 			}
 
 			const {
@@ -229,7 +230,7 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 			): Effect.Effect<SMTPTransport.SentMessageInfo, SMTPError, never> =>
 				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.sendMail')(
 					Effect.async<SMTPTransport.SentMessageInfo, SMTPError>((resume) => {
-						_sendMail(mailOptions, (error, info) => {
+						const send = _sendMail(mailOptions, (error, info) => {
 							if (error) {
 								const toFail = new SMTPError({ error });
 								resume(errorTap(Effect.fail(toFail), toFail));
@@ -237,6 +238,7 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 								resume(Effect.succeed(info));
 							}
 						});
+						return send;
 					})
 				);
 

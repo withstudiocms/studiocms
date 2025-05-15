@@ -33,10 +33,14 @@ const middlewareEffect = (context: APIContext, next: MiddlewareNext) =>
 		const user = yield* User;
 		const email = yield* VerifyEmail;
 
-		const latestVersion = yield* sdk.GET.latestVersion();
-		const siteConfig = yield* sdk.GET.siteConfig();
-		const userSessionData = yield* user.getUserData(context);
-		const emailVerificationEnabled = yield* email.isEmailVerificationEnabled();
+		const [latestVersion, siteConfig, userSessionData, emailVerificationEnabled] =
+			yield* Effect.all([
+				sdk.GET.latestVersion(),
+				sdk.GET.siteConfig(),
+				user.getUserData(context),
+				email.isEmailVerificationEnabled(),
+			]);
+
 		const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 		context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;

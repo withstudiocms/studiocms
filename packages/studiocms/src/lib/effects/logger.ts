@@ -1,5 +1,6 @@
 import config from 'studiocms:config';
 import _logger from 'studiocms:logger';
+import type { AstroIntegrationLogger } from 'astro';
 import { Effect, LogLevel, Logger } from 'effect';
 import type { Adapter } from 'effect/Effect';
 import { dual, pipe } from 'effect/Function';
@@ -9,6 +10,12 @@ function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';
 	return label.startsWith(prefix) ? label.slice(prefix.length) : label;
 }
+
+/**
+ * A cache that stores instances of `AstroIntegrationLogger` associated with their string keys.
+ * This is used to avoid creating multiple logger instances for the same key.
+ */
+const loggerCache = new Map<string, AstroIntegrationLogger>();
 
 /**
  * Creates a logger instance with a specific label for categorizing log messages.
@@ -27,8 +34,11 @@ function stripNameFromLabel(label: string): string {
  */
 const makeLogger = (label: string) =>
 	Logger.make(({ logLevel, message: _message, spans }) => {
-		const logger = _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
-		const message = `${String(_message)} - - - ${spans.toString()}`;
+		const logger =
+			loggerCache.get(label) ?? _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
+		loggerCache.set(label, logger);
+
+		const message = `${String(_message)} :: ${[...spans].join(' › ')}`;
 
 		switch (logLevel) {
 			case LogLevel.Trace:
@@ -66,7 +76,8 @@ const makeLogger = (label: string) =>
  * @param config.logLevel - The log level specified in the configuration, which is converted to the appropriate format.
  * @internal
  */
-const setLoggerLevel = Logger.withMinimumLogLevel(LogLevel.fromLiteral(config.logLevel));
+const level = LogLevel.fromLiteral(config.logLevel ?? 'info');
+const setLoggerLevel = Logger.withMinimumLogLevel(level);
 
 /**
  * Sets a custom logger for the Astro Runtime by replacing the default logger with the
@@ -171,7 +182,10 @@ export const errorTap = dual<
 		message: any | ReadonlyArray<any>
 	) => Effect.Effect<A, E, R>
 >(2, (self, message) =>
-	pipe(self, Effect.tap(Effect.logError(...(Array.isArray(message) ? message : [message]))))
+	pipe(
+		self,
+		Effect.tapError(() => Effect.logError(...(Array.isArray(message) ? message : [message])))
+	)
 );
 
 // // Testing Examples

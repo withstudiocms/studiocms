@@ -326,8 +326,8 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				const { transporter, sender } = yield* buildTransporterConfig;
 				const smtp = yield* SMTP({
 					transport: transporter,
-					defaults: { sender },
-					proxy: transporter.proxy?.startsWith('socks'),
+					defaults: { sender, from: sender },
+					proxy: transporter.proxy,
 				});
 
 				// Create the mail options object
@@ -372,7 +372,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				const smtp = yield* SMTP({
 					transport: transporter,
 					defaults: { sender },
-					proxy: transporter.proxy?.startsWith('socks'),
+					proxy: transporter.proxy,
 				});
 
 				const result = yield* smtp.verify();

@@ -1,5 +1,4 @@
 import { z } from 'astro/zod';
-import type { Literal } from 'effect/LogLevel';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { overridesSchema } from './componentoverrides.js';
 import { dashboardConfigSchema } from './dashboard.js';
