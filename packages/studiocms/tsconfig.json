@@ -10,8 +10,7 @@
     "pretty": true,
     "plugins": [
       {
-        "name": "@effect/language-service",
-        "transform": "@effect/language-service/transform"
+        "name": "@effect/language-service"
       }
     ]
   }
