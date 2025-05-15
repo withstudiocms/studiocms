@@ -253,6 +253,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 }) {
 	static Provide = Effect.provide(this.Default);
 	static sessionCookieName = sessionCookieName;
+	static sessionExpTime = sessionExpTime;
 }
 
 /**

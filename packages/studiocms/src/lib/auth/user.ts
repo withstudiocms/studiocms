@@ -54,6 +54,65 @@ const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknow
  */
 type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
 
+/**
+ * A mapping of permission ranks to their respective allowed roles.
+ *
+ * This map defines the hierarchy of permissions, where each rank includes
+ * all the roles of the ranks below it. For example, an 'admin' has the roles
+ * of both 'owner' and 'admin', while an 'editor' has the roles of 'owner',
+ * 'admin', and 'editor'.
+ *
+ * @property {string[]} owner - The 'owner' rank, which includes only the 'owner' role.
+ * @property {string[]} admin - The 'admin' rank, which includes 'owner' and 'admin' roles.
+ * @property {string[]} editor - The 'editor' rank, which includes 'owner', 'admin', and 'editor' roles.
+ * @property {string[]} visitor - The 'visitor' rank, which includes 'owner', 'admin', 'editor', and 'visitor' roles.
+ * @property {string[]} unknown - The 'unknown' rank, which includes all roles: 'owner', 'admin', 'editor', 'visitor', and 'unknown'.
+ */
+export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
+	owner: ['owner'],
+	admin: ['owner', 'admin'],
+	editor: ['owner', 'admin', 'editor'],
+	visitor: ['owner', 'admin', 'editor', 'visitor'],
+	unknown: ['owner', 'admin', 'editor', 'visitor', 'unknown'],
+};
+
+/**
+ * The `User` class provides a set of methods and utilities for managing user authentication,
+ * user data, and permissions within the StudioCMS application. It includes functionality for:
+ *
+ * - Verifying usernames based on length, character restrictions, and safety checks.
+ * - Creating user avatars using the Libravatar service.
+ * - Creating new users with local credentials or OAuth credentials.
+ * - Updating user passwords and retrieving password hashes.
+ * - Fetching user data based on email or session context.
+ * - Determining user permission levels and checking access permissions.
+ *
+ * ### Dependencies
+ * This class relies on the following services:
+ * - `SDKCore`: Core SDK for interacting with the backend.
+ * - `CheckIfUnsafe`: Utility for checking unsafe usernames.
+ * - `Session`: Session management service.
+ * - `Password`: Password hashing and validation service.
+ * - `Notifications`: Notification service for sending admin alerts.
+ *
+ * ### Methods
+ * - `verifyUsernameInput(username: string)`: Verifies if a username meets the required criteria.
+ * - `createUserAvatar(email: string)`: Generates a user avatar URL based on the provided email.
+ * - `createLocalUser(name: string, username: string, email: string, password: string)`: Creates a new local user.
+ * - `createOAuthUser(userFields: tsUsersInsert, oAuthFields: { provider: string; providerUserId: string })`: Creates a new user with OAuth credentials.
+ * - `updateUserPassword(userId: string, password: string)`: Updates the password for a user.
+ * - `getUserPasswordHash(userId: string)`: Retrieves the password hash for a given user.
+ * - `getUserFromEmail(email: string)`: Retrieves a user based on their email address.
+ * - `getUserData(context: AstroGlobal | APIContext)`: Retrieves user session data based on the provided context.
+ * - `getUserPermissionLevel(userData: UserSessionData | CombinedUserData)`: Retrieves the user's permission level.
+ * - `isUserAllowed(userData: UserSessionData | CombinedUserData, requiredPerms: AvailablePermissionRanks)`: Checks if a user has the required permissions.
+ *
+ * ### Static Properties
+ * - `Provide`: Provides the default instance of the `User` service.
+ * - `LinkNewOAuthCookieName`: The cookie name used for linking new OAuth accounts.
+ * - `UserPermissionLevel`: Enum representing different user permission levels.
+ * - `permissionRanksMap`: Mapping of permission ranks to their corresponding levels.
+ */
 export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User', {
 	effect: genLogger('studiocms/lib/auth/user/User.effect')(function* () {
 		const sdk = yield* SDKCore;
@@ -419,6 +478,9 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
+	static LinkNewOAuthCookieName = LinkNewOAuthCookieName;
+	static UserPermissionLevel = UserPermissionLevel;
+	static permissionRanksMap = permissionRanksMap;
 }
 
 /**
@@ -621,25 +683,3 @@ export function isUserAllowed(
 
 	return Effect.runSync(program);
 }
-
-/**
- * A mapping of permission ranks to their respective allowed roles.
- *
- * This map defines the hierarchy of permissions, where each rank includes
- * all the roles of the ranks below it. For example, an 'admin' has the roles
- * of both 'owner' and 'admin', while an 'editor' has the roles of 'owner',
- * 'admin', and 'editor'.
- *
- * @property {string[]} owner - The 'owner' rank, which includes only the 'owner' role.
- * @property {string[]} admin - The 'admin' rank, which includes 'owner' and 'admin' roles.
- * @property {string[]} editor - The 'editor' rank, which includes 'owner', 'admin', and 'editor' roles.
- * @property {string[]} visitor - The 'visitor' rank, which includes 'owner', 'admin', 'editor', and 'visitor' roles.
- * @property {string[]} unknown - The 'unknown' rank, which includes all roles: 'owner', 'admin', 'editor', 'visitor', and 'unknown'.
- */
-export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
-	owner: ['owner'],
-	admin: ['owner', 'admin'],
-	editor: ['owner', 'admin', 'editor'],
-	visitor: ['owner', 'admin', 'editor', 'visitor'],
-	unknown: ['owner', 'admin', 'editor', 'visitor', 'unknown'],
-};

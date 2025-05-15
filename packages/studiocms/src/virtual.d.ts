@@ -429,8 +429,17 @@ declare module 'studiocms:auth/scripts/formListener' {
 	export const formListener: typeof import('./scripts/formListener.js').formListener;
 }
 
+declare module 'studiocms:auth/lib' {
+	type Mod = import('./lib/auth/index.js').Mod;
+	const mod: Mod;
+	export = mod;
+}
+
 declare module 'studiocms:auth/lib/encryption' {
 	type Mod = typeof import('./lib/auth/encryption.js');
+	/**
+	 * @deprecated use 'studiocms:auth/lib' instead
+	 */
 	export const Encryption: Mod['Encryption'];
 
 	/**
@@ -470,6 +479,9 @@ declare module 'studiocms:auth/lib/encryption' {
 
 declare module 'studiocms:auth/lib/password' {
 	type Mod = typeof import('./lib/auth/password.js');
+	/**
+	 * @deprecated use 'studiocms:auth/lib' instead
+	 */
 	export const Password: Mod['Password'];
 
 	/**
@@ -506,6 +518,9 @@ declare module 'studiocms:auth/lib/password' {
 
 declare module 'studiocms:auth/lib/session' {
 	type Mod = typeof import('./lib/auth/session.js');
+	/**
+	 * @deprecated use 'studiocms:auth/lib' instead
+	 */
 	export const Session: Mod['Session'];
 
 	/**
@@ -665,6 +680,9 @@ declare module 'studiocms:auth/lib/types' {
 
 declare module 'studiocms:auth/lib/user' {
 	type Mod = typeof import('./lib/auth/user.js');
+	/**
+	 * @deprecated use 'studiocms:auth/lib' instead
+	 */
 	export const User: Mod['User'];
 
 	/**
@@ -811,6 +829,9 @@ declare module 'studiocms:auth/lib/user' {
 
 declare module 'studiocms:auth/lib/verify-email' {
 	type Mod = typeof import('./lib/auth/verify-email.js');
+	/**
+	 * @deprecated use 'studiocms:auth/lib' instead
+	 */
 	export const VerifyEmail: Mod['VerifyEmail'];
 	/**
 	 * @deprecated use the Effect instead
