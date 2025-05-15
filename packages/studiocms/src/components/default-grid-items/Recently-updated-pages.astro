@@ -1,14 +1,16 @@
 ---
 import { FormattedDate } from 'studiocms:components';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Badge, Card, Center } from 'studiocms:ui/components';
 import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
 
 // Get all pages and users from the database
-const allPages = await studioCMS_SDK.GET.database.pages(true);
+const allPages = await runSDK(SDKCoreJs.GET.pages(true));
 
 // Filter out the pages that are not allowed
-const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.package));
+const totalPages = allPages
+	.map((page) => page.data)
+	.filter((page) => allowedIdentifiers.includes(page.package));
 
 const recentlyUpdatedPages = totalPages
 	// biome-ignore lint/style/noNonNullAssertion: <explanation>
