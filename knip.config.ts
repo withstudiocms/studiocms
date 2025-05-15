@@ -2,7 +2,7 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
-	ignoreBinaries: ['db:push', 'preview'],
+	ignoreBinaries: ['db:push', 'preview', 'typecheck'],
 	workspaces: {
 		'.': {
 			ignoreDependencies: ['@changesets/config'],
@@ -39,7 +39,6 @@ const config: KnipConfig = {
 			},
 		},
 		'packages/studiocms_devapps': {
-			ignoreDependencies: ['@types/cheerio'],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
