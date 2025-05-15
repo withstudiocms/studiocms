@@ -86,10 +86,10 @@ export class TransactionContext extends Context.Tag('studiocms/sdk/effect/db/Tra
 		Effect.provideService(this, transaction);
 }
 
+const db = client;
+
 export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/AstroDB', {
 	effect: Effect.gen(function* () {
-		const db = client;
-
 		const execute = Effect.fn(<T>(fn: (client: Client) => Promise<T>) =>
 			Effect.tryPromise({
 				try: () => fn(db),
