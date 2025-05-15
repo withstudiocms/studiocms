@@ -3,6 +3,7 @@
   "include": ["src"],
   "exclude": ["src/db/**"],
   "compilerOptions": {
+    "outDir": "./dist",
     "resolveJsonModule": true,
     "rootDir": "./src",
     "noEmit": true,
