@@ -1,7 +1,7 @@
 import { eq } from 'astro:db';
 import { SDKCoreJs } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
-import { Data, Effect, Schema, pipe } from 'effect';
+import { Data, Effect, pipe } from 'effect';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
