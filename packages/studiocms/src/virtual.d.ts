@@ -375,6 +375,7 @@ declare module 'studiocms:sdk/types' {
 	export type tsNotificationSettingsSelect = import(
 		'./sdk/types/index.js'
 	).tsNotificationSettingsSelect;
+	export type FolderNode = import('./sdk/types/index.js').FolderNode;
 
 	export type STUDIOCMS_SDK_CACHE = import('./sdk/types/index.js').STUDIOCMS_SDK_CACHE;
 	export type PageDataCacheObject = import('./sdk/types/index.js').PageDataCacheObject;

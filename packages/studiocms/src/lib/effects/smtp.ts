@@ -1,11 +1,42 @@
-import { Brand, Context, Data, Effect, Layer, pipe } from 'effect';
+import { eq } from 'astro:db';
+import { SDKCoreJs } from 'studiocms:sdk';
+import { asDrizzleTable } from '@astrojs/db/utils';
+import { Data, Effect, Schema, pipe } from 'effect';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
-import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import socks from 'socks';
+import { CMSMailerConfigId } from '../../consts.js';
+import { StudioCMSMailerConfig } from '../../db/tables.js';
 import { errorTap, genLogger, pipeLogger } from './logger.js';
+import { MailerConfig, TransporterConfig } from './smtp.config.js';
 
 export type { Mail };
+
+/**
+ * Converts a null value to undefined.
+ *
+ * @param value - The value to convert.
+ * @returns The value if it is not null, otherwise undefined.
+ */
+function nullToUndefined<T>(value: T | null): T | undefined {
+	return value === null ? undefined : value;
+}
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export type tsMailer = typeof tsMailerConfig.$inferSelect;
+
+/**
+ * TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
 
 /**
  * Represents an error specific to SMTP operations.
@@ -21,62 +52,75 @@ export type { Mail };
 export class SMTPError extends Data.TaggedError('SMTPError')<{ error: Error | unknown }> {}
 
 /**
- * Represents the base options for configuring an SMTP (Simple Mail Transfer Protocol) connection.
+ * Gets the mailer configuration from the database.
  *
- * @property transport - Specifies the SMTP transport configuration. This can either be an instance of `SMTPTransport`
- * or an object containing transport options.
- * @property defaults - Defines default options for the SMTP transport, such as default sender address or other
- * email-related settings.
- * @property proxy - Indicates whether a proxy should be used for the SMTP connection. Defaults to `false` if not specified.
+ * @returns A promise that resolves with the mailer configuration object.
  */
-export type SMTPOptionsBase = {
-	transport?: SMTPTransport | SMTPTransport.Options;
-	defaults?: SMTPTransport.Options;
-	proxy?: string | undefined;
-};
+const getMailerConfigTable = pipeLogger('studiocms/lib/effects/smtp/getMailerConfigTable')(
+	SDKCoreJs.dbService.execute((db) =>
+		db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
+	)
+);
 
-/**
- * Represents the complete set of SMTP options, combining the base options
- * with a branded type to ensure type safety and distinguish it from other types.
- *
- * @extends {SMTPOptionsBase}
- * @see Brand.Brand
- */
-export type SMTPOptionsComplete = SMTPOptionsBase & Brand.Brand<'SMTPOptionsComplete'>;
+const convertTransporterConfig = (config: tsMailer) =>
+	pipeLogger('studiocms/lib/effects/smtp/convertTransporterConfig')(
+		Effect.try(() => {
+			// Extract the required fields from the configuration object
+			const {
+				host,
+				port,
+				secure,
+				proxy,
+				auth_user,
+				auth_pass,
+				tls_rejectUnauthorized,
+				tls_servername,
+				default_sender,
+			} = config;
 
-/**
- * A branded type representing complete SMTP options.
- * This is used to ensure type safety by leveraging TypeScript's nominal typing.
- * The `Brand.nominal` utility creates a unique type that cannot be confused with other types.
- *
- * @remarks
- * This type is part of the SMTP effects module and is used to enforce stricter typing
- * for SMTP configuration options.
- *
- * @see Brand.nominal
- */
-export const SMTPOptionsComplete = Brand.nominal<SMTPOptionsComplete>();
+			// Create the transporter configuration object
+			const transporterConfig = new TransporterConfig({
+				host,
+				port,
+				secure,
+				auth: {
+					user: nullToUndefined(auth_user),
+					pass: nullToUndefined(auth_pass),
+				},
+				proxy: nullToUndefined(proxy),
+				tls:
+					tls_rejectUnauthorized || tls_servername
+						? {
+								rejectUnauthorized: nullToUndefined(tls_rejectUnauthorized),
+								servername: nullToUndefined(tls_servername),
+							}
+						: undefined,
+			});
 
-/**
- * Represents the SMTP options configuration used within the application.
- * This class extends a tagged context to provide a strongly-typed layer
- * for managing SMTP-related options.
- *
- * @template SMTPOptions - The base type for SMTP options.
- * @template SMTPOptionsComplete - The complete type for SMTP options.
- *
- * @method make
- * Creates a new layer containing the SMTP options.
- *
- * @param opts - The base SMTP options to be completed.
- * @returns A layer containing the completed SMTP options.
- */
-export class SMTPOptions extends Context.Tag('studiocms/lib/effects/smtp/SMTPOptions')<
-	SMTPOptions,
-	SMTPOptionsComplete
->() {
-	static make = (opts: SMTPOptionsBase) => Layer.succeed(this, this.of(SMTPOptionsComplete(opts)));
-}
+			// Return the transporter configuration object
+			return new MailerConfig({
+				transporter: transporterConfig,
+				defaults: { sender: default_sender, from: default_sender },
+			});
+		})
+	);
+
+const buildTransporterConfig = genLogger('studiocms/lib/effects/smtp/buildTransporterConfig')(
+	function* () {
+		const configTable = yield* getMailerConfigTable;
+		// If the mailer configuration is not found, throw an
+		// error indicating that the configuration is missing
+		if (!configTable) {
+			return yield* Effect.fail(
+				new Error(
+					'Mailer configuration not found, please configure the mailer first using the StudioCMS dashboard'
+				)
+			);
+		}
+
+		return yield* convertTransporterConfig(configTable);
+	}
+);
 
 /**
  * SMTPMailer is a service that provides functionality for sending emails and verifying SMTP connections.
@@ -120,20 +164,24 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 	'studiocms/lib/effects/smtp/SMTPMailer',
 	{
 		effect: genLogger('studiocms/lib/effects/smtp/SMTPMailer.effect')(function* () {
-			const { transport, defaults, proxy } = yield* SMTPOptions;
+			const { transporter: __transporter, defaults } = yield* buildTransporterConfig;
 			const MailTransporter = yield* pipeLogger(
 				'studiocms/lib/effects/smtp/SMTPMailer.transporter'
 			)(
 				Effect.try({
-					try: () => nodemailer.createTransport(transport, defaults),
+					try: () =>
+						nodemailer.createTransport(
+							__transporter as SMTPTransport.Options,
+							defaults as SMTPTransport.Options
+						),
 					catch: (error) => new SMTPError({ error }),
 				})
 			);
 
 			// If the proxy is a socks proxy, set the socks module
-			if (proxy?.startsWith('socks')) {
+			if (__transporter.proxy?.startsWith('socks')) {
 				MailTransporter.set('proxy_socks_module', socks);
-				MailTransporter.setupProxy(proxy);
+				MailTransporter.setupProxy(__transporter.proxy);
 			}
 
 			const {
@@ -302,6 +350,5 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 	 * @param opts - The SMTP options to configure the live layer.
 	 * @returns A new SMTP layer with the provided options applied.
 	 */
-	static Live = (opts: SMTPOptionsBase) =>
-		pipe(this.Default, Layer.provide(SMTPOptions.make(opts)));
+	static Live = () => pipe(this.Default);
 }

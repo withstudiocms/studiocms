@@ -10,6 +10,9 @@ export { Session };
 export { User };
 export { VerifyEmail };
 
+/**
+ * This is the types for the `studiocms:auth/lib` virtual module
+ */
 export type Mod = {
 	/**
 	 * The `Encryption` class provides methods for encrypting and decrypting data using AES-128-GCM encryption.

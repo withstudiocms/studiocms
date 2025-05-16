@@ -5,13 +5,7 @@ import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import {
-	type Mail,
-	SMTPMailer,
-	type SMTPOptionsBase,
-	genLogger,
-	pipeLogger,
-} from '../effects/index.js';
+import { type Mail, SMTPMailer, genLogger, pipeLogger } from '../effects/index.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
@@ -27,76 +21,6 @@ export type tsMailer = typeof tsMailerConfig.$inferSelect;
  * TypeSafe Table definition for use in StudioCMS Integrations
  */
 export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
-
-/**
- * Configuration options for the mail transporter.
- */
-export interface TransporterConfig {
-	/**
-	 * The hostname or IP address of the SMTP server.
-	 */
-	host: string;
-
-	/**
-	 * The port number to connect to the SMTP server.
-	 */
-	port: number;
-
-	/**
-	 * If true, the connection will use TLS when connecting to the server.
-	 */
-	secure: boolean;
-
-	/**
-	 * The proxy URL to use for the connection (optional).
-	 */
-	proxy?: string;
-
-	/**
-	 * Authentication details for the SMTP server.
-	 */
-	auth: {
-		/**
-		 * The username for authentication.
-		 */
-		user?: string;
-
-		/**
-		 * The password for authentication.
-		 */
-		pass?: string;
-	};
-
-	/**
-	 * TLS configuration options (optional).
-	 */
-	tls?: {
-		/**
-		 * If true, the server certificate will not be validated (optional).
-		 */
-		rejectUnauthorized?: boolean;
-
-		/**
-		 * The server name for SNI (optional).
-		 */
-		servername?: string;
-	};
-}
-
-/**
- * Configuration interface for the mailer.
- */
-export interface MailerConfig {
-	/**
-	 * The configuration object for the mail transporter.
-	 */
-	transporter: TransporterConfig;
-
-	/**
-	 * The email address of the sender.
-	 */
-	sender: string;
-}
 
 /**
  * Interface representing the options for sending an email.
@@ -153,26 +77,11 @@ export class Logger extends Effect.Tag('studiocms/lib/mailer/Logger')<
 	static Layer = Layer.scoped(this, this.Live);
 }
 
-/**
- * Converts a null value to undefined.
- *
- * @param value - The value to convert.
- * @returns The value if it is not null, otherwise undefined.
- */
-function nullToUndefined<T>(value: T | null): T | undefined {
-	return value === null ? undefined : value;
-}
-
 export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Mailer', {
 	effect: genLogger('studiocms/lib/mailer/Mailer.effect')(function* () {
 		const logger = yield* Logger;
 		const sdk = yield* SDKCore;
-
-		const SMTP = (opts: SMTPOptionsBase) =>
-			genLogger('studiocms/lib/mailer/Mailer.SMTP')(function* () {
-				const { _tag, ...smtp } = yield* SMTPMailer;
-				return smtp;
-			}).pipe(Effect.provide(SMTPMailer.Live(opts)));
+		const SMTP = yield* SMTPMailer;
 
 		/**
 		 * Logs the response from the mailer.
@@ -195,8 +104,8 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * @returns A promise that resolves with the mailer configuration object.
 		 */
 		const getMailerConfigTable = pipeLogger('studiocms/lib/mailer/Mailer.getMailerConfigTable')(
-			Effect.tryPromise(() =>
-				sdk.db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
+			sdk.dbService.execute((db) =>
+				db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
 			)
 		);
 
@@ -208,30 +117,24 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const updateMailerConfigTable = (config: tsMailerInsert) =>
 			genLogger('studiocms/lib/mailer/Mailer.updateMailerConfigTable')(function* () {
-				yield* Effect.tryPromise({
-					try: () =>
-						sdk.db
-							.update(tsMailerConfig)
-							.set(config)
-							.where(eq(tsMailerConfig.id, CMSMailerConfigId)),
-					catch: (error) =>
-						mailerResponse({
-							error: `Error updating mailer configuration: ${(error as Error).message}`,
-						}),
-				}).pipe(
-					Effect.catchAll((e) =>
-						Effect.succeed(
-							mailerResponse({ error: `Error updating mailer configuration: ${String(e)}` })
-						)
+				yield* sdk.dbService
+					.execute((db) =>
+						db.update(tsMailerConfig).set(config).where(eq(tsMailerConfig.id, CMSMailerConfigId))
 					)
-				);
+					.pipe(
+						Effect.catchAll((e) =>
+							Effect.succeed(
+								mailerResponse({ error: `Error updating mailer configuration: ${String(e)}` })
+							)
+						)
+					);
 				return mailerResponse({ message: 'Mailer configuration updated successfully' });
 			});
 
 		const createMailerConfigTable = (config: tsMailerInsert) =>
 			pipeLogger('studiocms/lib/mailer/Mailer.createMailerConfigTable')(
-				Effect.tryPromise(() =>
-					sdk.db
+				sdk.dbService.execute((db) =>
+					db
 						.insert(tsMailerConfig)
 						.values({ ...config, id: CMSMailerConfigId })
 						.onConflictDoUpdate({
@@ -243,63 +146,6 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 						.get()
 				)
 			);
-
-		const convertTransporterConfig = (config: tsMailer) =>
-			pipeLogger('studiocms/lib/mailer/Mailer.convertTransporterConfig')(
-				Effect.try(() => {
-					// Extract the required fields from the configuration object
-					const {
-						host,
-						port,
-						secure,
-						proxy,
-						auth_user,
-						auth_pass,
-						tls_rejectUnauthorized,
-						tls_servername,
-						default_sender,
-					} = config;
-
-					// Create the transporter configuration object
-					const transporterConfig: TransporterConfig = {
-						host,
-						port,
-						secure,
-						auth: {
-							user: nullToUndefined(auth_user),
-							pass: nullToUndefined(auth_pass),
-						},
-						proxy: nullToUndefined(proxy),
-						tls:
-							tls_rejectUnauthorized || tls_servername
-								? {
-										rejectUnauthorized: nullToUndefined(tls_rejectUnauthorized),
-										servername: nullToUndefined(tls_servername),
-									}
-								: undefined,
-					};
-
-					// Return the transporter configuration object
-					return { transporter: transporterConfig, sender: default_sender } as MailerConfig;
-				})
-			);
-
-		const buildTransporterConfig = genLogger('studiocms/lib/mailer/Mailer.buildTransporterConfig')(
-			function* () {
-				const configTable = yield* getMailerConfigTable;
-				// If the mailer configuration is not found, throw an
-				// error indicating that the configuration is missing
-				if (!configTable) {
-					return yield* Effect.fail(
-						new Error(
-							'Mailer configuration not found, please configure the mailer first using the StudioCMS dashboard'
-						)
-					);
-				}
-
-				return yield* convertTransporterConfig(configTable);
-			}
-		);
 
 		/**
 		 * Sends an email using the provided mailer configuration and mail options.
@@ -323,13 +169,6 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const sendMail = ({ subject, ...message }: MailOptions) =>
 			genLogger('studiocms/lib/mailer/Mailer.sendMail')(function* () {
-				const { transporter, sender } = yield* buildTransporterConfig;
-				const smtp = yield* SMTP({
-					transport: transporter,
-					defaults: { sender, from: sender },
-					proxy: transporter.proxy,
-				});
-
 				// Create the mail options object
 				const toSend: Mail.Options = { subject };
 
@@ -346,7 +185,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 					toSend.html = message.html;
 				}
 
-				const result = yield* smtp.sendMail(toSend);
+				const result = yield* SMTP.sendMail(toSend);
 
 				return mailerResponse({ message: `Message sent: ${result.messageId}` });
 			});
@@ -368,14 +207,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const verifyMailConnection = genLogger('studiocms/lib/mailer/Mailer.verifyMailConnection')(
 			function* () {
-				const { transporter, sender } = yield* buildTransporterConfig;
-				const smtp = yield* SMTP({
-					transport: transporter,
-					defaults: { sender },
-					proxy: transporter.proxy,
-				});
-
-				const result = yield* smtp.verify();
+				const result = yield* SMTP.verify();
 
 				// If the result is not true, log an error and return an error message
 				if (result !== true) {
@@ -410,7 +242,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			isEnabled,
 		};
 	}),
-	dependencies: [SDKCore.Default, Logger.Layer],
+	dependencies: [SDKCore.Default, Logger.Layer, SMTPMailer.Default],
 	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
