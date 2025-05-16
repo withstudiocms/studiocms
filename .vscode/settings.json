@@ -7,12 +7,15 @@
         { "ugly": "\\bEffect\\b", "pretty": "𝓔" },
         { "ugly": "\\bLayer\\b", "pretty": "𝓛" },
         { "ugly": "\\bOption\\b", "pretty": "𝓞" },
-        { "ugly": "\\.pipe", "pretty": "∘" },
-        { "ugly": "\\pipe", "pretty": "∘" },
+        { "ugly": "\\bData\\b", "pretty": "ⅅ" },
+        { "ugly": "\\bContext\\b", "pretty": "ℂ" },
+        { "ugly": "\\bBrand\\b", "pretty": "ℬ" },
+        { "ugly": "\\bpipe", "pretty": "⅏" },
         { "ugly": "\\bSchema\\b", "pretty": "𝓢" },
+        { "ugly": "\\bSchedule\\b", "pretty": "⏲" },
         { "ugly": "\\bChunk\\b", "pretty": "𝓒" },
-        { "ugly": "\"unbounded\"", "pretty": "∞" },
-        { "ugly": "function", "pretty": "𝒇" }
+        { "ugly": "function", "pretty": "𝒇" },
+        { "ugly": "\\bz\\b", "pretty": "ℤ" }
       ]
     }
   ],

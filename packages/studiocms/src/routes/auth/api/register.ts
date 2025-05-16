@@ -1,7 +1,4 @@
-import { Password } from 'studiocms:auth/lib/password';
-import { Session } from 'studiocms:auth/lib/session';
-import { User } from 'studiocms:auth/lib/user';
-import { VerifyEmail } from 'studiocms:auth/lib/verify-email';
+import { Password, Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
