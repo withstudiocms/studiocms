@@ -3401,4 +3401,4 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 // 	return sdkC;
 // }).pipe(Effect.provide(SDKCore.Default));
 
-// const program = await convertToVanilla(testProgram, true);
+// const program = await Effect.runPromise(testProgram);
