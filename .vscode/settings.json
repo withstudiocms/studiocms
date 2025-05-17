@@ -1,5 +1,28 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
+  "mdPrettify.substitutions": [
+    {
+      "language": ["typescriptreact", "typescript", "astro"],
+      "substitutions": [
+        { "ugly": "\\bEffect\\b", "pretty": "𝓔" },
+        { "ugly": "\\bLayer\\b", "pretty": "𝓛" },
+        { "ugly": "\\bOption\\b", "pretty": "𝓞" },
+        { "ugly": "\\bData\\b", "pretty": "ⅅ" },
+        { "ugly": "\\bContext\\b", "pretty": "ℂ" },
+        { "ugly": "\\bBrand\\b", "pretty": "ℬ" },
+        { "ugly": "\\bpipe", "pretty": "⅏" },
+        { "ugly": "\\bSchema\\b", "pretty": "𝓢" },
+        { "ugly": "\\bSchedule\\b", "pretty": "⏲" },
+        { "ugly": "\\bChunk\\b", "pretty": "𝓒" },
+        { "ugly": "function", "pretty": "𝒇" },
+        { "ugly": "\\bz\\b", "pretty": "ℤ" }
+      ]
+    }
+  ],
+  "editor.fontFamily": "Fira Code Retina, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14.2,
+  "editor.fontWeight": "400",
   "editor.codeActionsOnSave": {
     "quickfix.biome": "explicit",
     "source.organizeImports.biome": "explicit"

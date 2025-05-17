@@ -1,12 +1,12 @@
 import pluginsList from 'studiocms:plugins';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 
 interface PluginListItem {
 	label: string;
 	value: string;
 }
 
-const { data: folderList } = await studioCMS_SDK_Cache.GET.folderList();
+const { data: folderList } = await runSDK(SDKCoreJs.GET.folderList());
 
 export const parentFolders = folderList.map(({ id: value, name: label }) => ({ value, label }));
 

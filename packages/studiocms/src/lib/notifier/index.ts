@@ -327,8 +327,11 @@ export class Notifications extends Effect.Service<Notifications>()(
 			};
 		}),
 		dependencies: [SDKCore.Default, Mailer.Default],
+		accessors: true,
 	}
-) {}
+) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Sends a user notification if the mailer is enabled and the mail connection is verified.

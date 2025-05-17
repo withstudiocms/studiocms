@@ -1,7 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon } from 'studiocms:ui/components';
 import { providerData } from './oAuthButtonProviders.js';
@@ -17,7 +17,7 @@ const { user } = data;
 let userOAuthData: CombinedUserData['oAuthData'] | undefined;
 
 if (user) {
-	const userFullData = await studioCMS_SDK.GET.databaseEntry.users.byId(user.id);
+	const userFullData = await runSDK(SDKCoreJs.GET.users.byId(user.id));
 
 	if (userFullData) {
 		userOAuthData = userFullData.oAuthData;

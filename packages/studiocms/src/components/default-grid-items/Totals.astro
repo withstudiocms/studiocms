@@ -1,17 +1,17 @@
 ---
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Card, Icon } from 'studiocms:ui/components';
 import { allowedIdentifiers } from './utils.js';
 
 // Get all pages and users from the database
-const allPages = await studioCMS_SDK.GET.database.pages(true);
-const totalUsers = await studioCMS_SDK.GET.database.users();
+const allPages = await runSDK(SDKCoreJs.GET.pages(true));
+const totalUsers = await runSDK(SDKCoreJs.GET.users.all());
 
 // Filter out the pages that are not allowed
-const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.package));
+const totalPages = allPages.filter(({ data: page }) => allowedIdentifiers.includes(page.package));
 
 // Filter out for draft pages
-const totalDraftPages = totalPages.filter((page) => page.draft === true);
+const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === true);
 ---
 <div class="totals-grid-item-container">
     <div class="totals-grid-item">

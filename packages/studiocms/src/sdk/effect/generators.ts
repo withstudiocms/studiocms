@@ -95,5 +95,6 @@ export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 				testToken,
 			};
 		}),
+		accessors: true,
 	}
 ) {}

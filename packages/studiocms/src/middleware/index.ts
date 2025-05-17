@@ -1,6 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { User } from 'studiocms:auth/lib/user';
-import { VerifyEmail } from 'studiocms:auth/lib/verify-email';
+import { User, VerifyEmail } from 'studiocms:auth/lib';
 import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';

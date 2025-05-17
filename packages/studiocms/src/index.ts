@@ -1222,6 +1222,9 @@ export const studiocms = defineIntegration({
 							`,
 
 							// Auth Virtual Imports
+							'studiocms:auth/lib': `
+								export * from '${resolve('./lib/auth/index.js')}';
+							`,
 							'studiocms:auth/lib/encryption': `
 								export * from '${resolve('./lib/auth/encryption.js')}'
 							`,

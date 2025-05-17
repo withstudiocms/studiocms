@@ -117,8 +117,11 @@ export class Encryption extends Effect.Service<Encryption>()(
 				decryptToString,
 			};
 		}),
+		accessors: true,
 	}
-) {}
+) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Encrypts the given data using AES-128-GCM encryption.

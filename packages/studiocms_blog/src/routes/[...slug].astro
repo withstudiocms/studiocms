@@ -13,7 +13,7 @@ if (!slug) {
 	slug = 'index';
 }
 
-const page = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+const { data: page } = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
 
 if (!page) {
 	return new Response(null, { status: 404 });

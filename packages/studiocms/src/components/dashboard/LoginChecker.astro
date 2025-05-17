@@ -1,8 +1,8 @@
 ---
+import { User, VerifyEmail } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { isUserAllowed } from 'studiocms:auth/lib/user';
-import { isEmailVerified } from 'studiocms:auth/lib/verify-email';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { Effect } from 'effect';
 
 interface Props {
 	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
@@ -11,9 +11,13 @@ interface Props {
 
 const { requiredPermission, currentUser } = Astro.props;
 
-let isAuthorized = isUserAllowed(currentUser, requiredPermission);
+let isAuthorized = await Effect.runPromise(
+	User.isUserAllowed(currentUser, requiredPermission).pipe(User.Provide)
+);
 
-let [emailVerified] = await Promise.all([isEmailVerified(currentUser)]);
+const emailVerified = await Effect.runPromise(
+	VerifyEmail.isEmailVerified(currentUser).pipe(VerifyEmail.Provide)
+);
 
 let redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
 

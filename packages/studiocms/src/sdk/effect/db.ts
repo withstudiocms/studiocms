@@ -1,6 +1,6 @@
 import { db as client } from 'astro:db';
 import type { Database as Client } from '@astrojs/db/runtime';
-import { LibsqlError, type ResultSet } from '@libsql/client';
+import type { ResultSet } from '@libsql/client';
 import type { ExtractTablesWithRelations } from 'drizzle-orm';
 import type { SQLiteTransaction } from 'drizzle-orm/sqlite-core';
 import { Cause, Context, Data, Effect, Exit, Option, Runtime } from 'effect';
@@ -24,7 +24,7 @@ export class LibSQLDatabaseError extends Data.TaggedError(
 		| 'INTERNAL_ERROR'
 		| 'UNKNOWN'
 		| 'WEBSOCKETS_NOT_SUPPORTED';
-	readonly cause: LibsqlError;
+	readonly cause: Error;
 }> {
 	public override toString() {
 		return `DatabaseError: ${this.cause.message}`;
@@ -36,7 +36,7 @@ export class LibSQLDatabaseError extends Data.TaggedError(
 }
 
 export const LibSQLmatchClientError = (error: unknown) => {
-	if (error instanceof LibsqlError) {
+	if (error instanceof Error && 'code' in error) {
 		switch (error.code) {
 			case 'URL_INVALID':
 			case 'URL_PARAM_NOT_SUPPORTED':
@@ -164,4 +164,5 @@ export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/
 			transaction,
 		};
 	}),
+	accessors: true,
 }) {}
