@@ -162,7 +162,7 @@
 		"codemirror": "^5.49.0",
 		"commander": "^13.0.0",
 		"deepmerge-ts": "^7.1.5",
-		"diff": "^7.0.0",
+		"diff": "^8.0.0",
 		"diff2html": "^3.4.51",
 		"dompurify": "^3.2.3",
 		"dotenv": "^16.4.7",
@@ -189,7 +189,7 @@
 	"devDependencies": {
 		"@effect/language-service": "catalog:effect",
 		"@types/codemirror": "5.60.10",
-		"@types/diff": "^7.0.1",
+		"@types/diff": "^8.0.0",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "catalog:",
 		"@types/nodemailer": "^6.4.17",
