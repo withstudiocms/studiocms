@@ -160,7 +160,7 @@
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
 		"codemirror": "^5.49.0",
-		"commander": "^13.0.0",
+		"commander": "^14.0.0",
 		"deepmerge-ts": "^7.1.5",
 		"diff": "^7.0.0",
 		"diff2html": "^3.4.51",
