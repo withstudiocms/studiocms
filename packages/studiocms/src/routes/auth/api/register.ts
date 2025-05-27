@@ -3,7 +3,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { Effect, Layer } from 'effect';
-import { genLogger, pipeLogger } from '../../../lib/effects/index.js';
+import { convertToVanilla, genLogger, pipeLogger } from '../../../lib/effects/index.js';
 import { AuthAPIUtils } from './shared.js';
 
 const deps = Layer.mergeAll(
@@ -16,7 +16,7 @@ const deps = Layer.mergeAll(
 );
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
-	await Effect.runPromise(
+	await convertToVanilla(
 		genLogger('studiocms/routes/auth/api/register/POST')(function* () {
 			const sdk = yield* SDKCore;
 			const formData = yield* pipeLogger('studiocms/routes/auth/api/register/POST.formData')(

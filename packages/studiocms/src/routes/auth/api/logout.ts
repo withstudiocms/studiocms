@@ -1,14 +1,13 @@
 import { Session } from 'studiocms:auth/lib';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../lib/effects/index.js';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 	return POST(context);
 };
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
-	await Effect.runPromise(
+	await convertToVanilla(
 		genLogger('studiocms/routes/auth/api/logout/POST')(function* () {
 			const s = yield* Session;
 
