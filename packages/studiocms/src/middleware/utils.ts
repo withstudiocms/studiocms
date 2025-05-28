@@ -1,6 +1,36 @@
+import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { User, UserPermissionLevel } from 'studiocms:auth/lib/user';
+import type { MiddlewareHandler } from 'astro';
+import { defineMiddleware, sequence } from 'astro/middleware';
+import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
+
+/**
+ * Middleware Router Type.
+ */
+export type Router = Record<string, MiddlewareHandler>;
+
+/**
+ * Define a middleware router that routes requests to different handlers based on the request path.
+ *
+ * @example
+ * ```ts
+ * const router: Router = {};
+ * router["/"] = (context, next) => {};
+ * router["/about"] = (context, next) => {};
+ * export const onRequest = defineMiddlewareRouter(router);
+ * ```
+ */
+export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
+	const entries = Object.entries(router);
+	return defineMiddleware((context, next) => {
+		return sequence(
+			...entries
+				.filter(([path]) => micromatch.isMatch(context.url.pathname, path))
+				.map(([_, handler]) => handler)
+		)(context, next);
+	});
+}
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -18,9 +48,9 @@ export const getUserPermissions = (userData: UserSessionData) =>
 		const userPermissionLevel = yield* user.getUserPermissionLevel(userData);
 
 		return {
-			isVisitor: userPermissionLevel >= UserPermissionLevel.visitor,
-			isEditor: userPermissionLevel >= UserPermissionLevel.editor,
-			isAdmin: userPermissionLevel >= UserPermissionLevel.admin,
-			isOwner: userPermissionLevel >= UserPermissionLevel.owner,
+			isVisitor: userPermissionLevel >= User.UserPermissionLevel.visitor,
+			isEditor: userPermissionLevel >= User.UserPermissionLevel.editor,
+			isAdmin: userPermissionLevel >= User.UserPermissionLevel.admin,
+			isOwner: userPermissionLevel >= User.UserPermissionLevel.owner,
 		};
 	});

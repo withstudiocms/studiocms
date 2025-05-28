@@ -1,50 +1,73 @@
-import { verifyPasswordHash } from 'studiocms:auth/lib/password';
-import { createUserSession } from 'studiocms:auth/lib/session';
-import { isEmailVerified } from 'studiocms:auth/lib/verify-email';
-import studioCMS_SDK from 'studiocms:sdk';
+import { Password, Session, VerifyEmail } from 'studiocms:auth/lib';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { badFormDataEntry, parseFormDataEntryToString } from './shared.js';
+import { Effect, Layer } from 'effect';
+import { convertToVanilla, genLogger, pipeLogger } from '../../../lib/effects/index.js';
+import { AuthAPIUtils } from './shared.js';
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
-	// Get the form data
-	const formData = await context.request.formData();
+const deps = Layer.mergeAll(
+	SDKCore.Default,
+	Password.Default,
+	AuthAPIUtils.Default,
+	VerifyEmail.Default,
+	Session.Default
+);
 
-	// Get the username and password from the form data
-	const username = parseFormDataEntryToString(formData, 'username');
-	const password = parseFormDataEntryToString(formData, 'password');
+export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/auth/api/login/POST')(function* () {
+			const sdk = yield* SDKCore;
 
-	// If the username or password is missing, return an error
-	if (!username) return badFormDataEntry('Missing field', 'Username is required');
-	if (!password) return badFormDataEntry('Missing field', 'Password is required');
+			const formData = yield* pipeLogger('studiocms/routes/auth/api/login/POST.formData')(
+				Effect.tryPromise(() => context.request.formData())
+			);
 
-	// Get the user from the database
-	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byUsername(username);
+			const [username, password] = yield* pipeLogger(
+				'studiocms/routes/auth/api/login/POST.parseFormData'
+			)(
+				Effect.all([
+					AuthAPIUtils.parseFormDataEntryToString(formData, 'username'),
+					AuthAPIUtils.parseFormDataEntryToString(formData, 'password'),
+				])
+			);
 
-	// If the user does not exist, return an ambiguous error
-	if (!existingUser) return badFormDataEntry('Invalid credentials', 'Username is invalid');
+			if (!username)
+				return yield* AuthAPIUtils.badFormDataEntry('Missing field', 'Username is required');
+			if (!password)
+				return yield* AuthAPIUtils.badFormDataEntry('Missing field', 'Password is required');
 
-	// Check if the user has a password or is using a oAuth login
-	if (!existingUser.password)
-		return badFormDataEntry('Incorrect method', 'User is using OAuth login');
+			const existingUser = yield* sdk.GET.users.byUsername(username);
 
-	// Verify the password
-	const validPassword = await verifyPasswordHash(existingUser.password, password);
+			// If the user does not exist, return an ambiguous error
+			if (!existingUser)
+				return yield* AuthAPIUtils.badFormDataEntry('Invalid credentials', 'Username is invalid');
 
-	// If the password is invalid, return an error
-	if (!validPassword) return badFormDataEntry('Invalid credentials', 'Password is invalid');
+			// Check if the user has a password or is using a oAuth login
+			if (!existingUser.password)
+				return yield* AuthAPIUtils.badFormDataEntry(
+					'Incorrect method',
+					'User is using OAuth login'
+				);
 
-	// Check if the user's email is verified (if the mailer is enabled)
-	const isEmailAccountVerified = await isEmailVerified(existingUser);
+			const validPassword = yield* Password.verifyPasswordHash(existingUser.password, password);
 
-	// If the email is not verified, return an error
-	if (!isEmailAccountVerified) {
-		return badFormDataEntry('Email not verified', 'Please verify your email before logging in');
-	}
+			if (!validPassword)
+				return yield* AuthAPIUtils.badFormDataEntry('Invalid credentials', 'Password is invalid');
 
-	await createUserSession(existingUser.id, context);
+			const isEmailAccountVerified = yield* VerifyEmail.isEmailVerified(existingUser);
 
-	return new Response();
-};
+			// If the email is not verified, return an error
+			if (!isEmailAccountVerified)
+				return yield* AuthAPIUtils.badFormDataEntry(
+					'Email not verified',
+					'Please verify your email before logging in'
+				);
+
+			yield* Session.createUserSession(existingUser.id, context);
+
+			return new Response();
+		}).pipe(Effect.provide(deps))
+	);
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

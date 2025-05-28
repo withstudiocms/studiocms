@@ -1,6 +1,6 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
 import UserListItem from './UserListItem.astro';
 
@@ -10,7 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 
-const Users = await studioCMS_SDK.GET.database.users();
+const Users = await runSDK(SDKCoreJs.GET.users.all());
 
 const safeUsers: {
 	id: string;

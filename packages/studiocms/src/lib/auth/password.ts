@@ -198,7 +198,10 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		};
 	}),
 	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, FetchHttpClient.layer],
-}) {}
+	accessors: true,
+}) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Hashes a plain text password using scrypt.

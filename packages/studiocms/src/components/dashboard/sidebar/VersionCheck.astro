@@ -1,5 +1,5 @@
 ---
-import { type VersionCacheObject } from 'studiocms:sdk/cache';
+import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
 import { compare } from 'semver';
@@ -26,7 +26,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     import { dateTimeListener } from '../component-scripts/dateTimeListener.js';
     import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js';
     import { timeAgo } from '../component-scripts/timeAgo.js';
-    import type { VersionCacheObject } from 'studiocms:sdk/cache';
+    import type { VersionCacheObject } from 'studiocms:sdk/types';
 
     function setupVersionChecker() {
         const reloadButton = document.getElementById('version-modal-reload') as HTMLButtonElement;

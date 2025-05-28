@@ -297,8 +297,11 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			};
 		}),
 		dependencies: [Mailer.Default, SDKCore.Default],
+		accessors: true,
 	}
-) {}
+) {
+	static Provide = Effect.provide(this.Default);
+}
 
 /**
  * Checks if email verification is enabled in the StudioCMS configuration.

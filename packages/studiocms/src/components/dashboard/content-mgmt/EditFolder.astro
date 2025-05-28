@@ -1,13 +1,13 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Input, Select } from 'studiocms:ui/components';
 import { parentFolderOptions } from './shared.js';
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('folder') || '';
 
-const currentFolder = await studioCMS_SDK_Cache.GET.folder(editId);
+const currentFolder = await runSDK(SDKCoreJs.GET.folder(editId));
 
 if (!currentFolder) {
 	return new Response(null, { status: 404 });
