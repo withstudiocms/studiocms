@@ -38,9 +38,5 @@ export const POST: APIRoute = async (context: APIContext) => {
 		return apiResponseLogger(404, 'Plugin does not have a settings page');
 	}
 
-	if (!settingsPage.onSave) {
-		return apiResponseLogger(404, 'Plugin does not have a settings page');
-	}
-
 	return settingsPage.onSave(context);
 };
