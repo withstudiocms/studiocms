@@ -21,13 +21,13 @@ catalogs:
     '@astrojs/markdown-remark': ^6.3.1
     vite: ^6.2.6
   effect:
-    effect: ^3.15.0
+    effect: ^3.15.4
     '@effect/platform': ^0.82.0
     '@effect/platform-browser': ^0.62.0
     '@effect/platform-node': ^0.80.0
     '@effect/platform-node-shared': ^0.34.0
-    '@effect/language-service': ^0.16.0
-
+    '@effect/language-service': ^0.17.1
+    
 packages:
   - "packages/*"
   - "playground"

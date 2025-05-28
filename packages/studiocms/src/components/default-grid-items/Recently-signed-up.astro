@@ -1,11 +1,11 @@
 ---
 import config from 'studiocms:config';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import { Icon, User } from 'studiocms:ui/components';
 import Card from '@studiocms/ui/components/Card/Card.astro';
 import { sortByDate } from './utils.js';
 
-const totalUsers = await studioCMS_SDK.GET.database.users();
+const totalUsers = await runSDK(SDKCoreJs.GET.users.all());
 
 const recentlyCreatedUsers = totalUsers
 	.sort((a, b) => sortByDate(a.createdAt, b.createdAt))
