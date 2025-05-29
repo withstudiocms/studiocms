@@ -1,165 +1,193 @@
-import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
+import { Password, User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendAdminNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { verifyAuthToken } from '../../utils/auth-token.js';
+import { Effect, Schema } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-type JSONData = {
-	username: string | undefined;
-	password: string | undefined;
-	email: string | undefined;
-	displayname: string | undefined;
-	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
-};
+export class JSONData extends Schema.Class<JSONData>('JSONData')({
+	username: Schema.Union(Schema.String, Schema.Undefined),
+	password: Schema.Union(Schema.String, Schema.Undefined),
+	email: Schema.Union(Schema.String, Schema.Undefined),
+	displayname: Schema.Union(Schema.String, Schema.Undefined),
+	rank: Schema.Union(
+		Schema.Literal('owner'),
+		Schema.Literal('admin'),
+		Schema.Literal('editor'),
+		Schema.Literal('visitor'),
+		Schema.Undefined
+	),
+}) {}
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:users:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (user instanceof Response) {
-		return user;
-	}
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank } = user;
 
-	const users = await studioCMS_SDK.GET.database.users();
+			if (rank !== 'owner' && rank !== 'admin') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	let data = users.map(
-		({ avatar, createdAt, email, id, name, permissionsData, updatedAt, url, username }) => ({
-			avatar,
-			createdAt,
-			email,
-			id,
-			name,
-			rank: permissionsData?.rank ?? 'unknown',
-			updatedAt,
-			url,
-			username,
-		})
-	);
+			const users = yield* sdk.GET.users.all();
 
-	if (rank !== 'owner') {
-		data = data.filter((user) => user.rank !== 'owner');
-	}
+			let data = users.map(
+				({ avatar, createdAt, email, id, name, permissionsData, updatedAt, url, username }) => ({
+					avatar,
+					createdAt,
+					email,
+					id,
+					name,
+					rank: permissionsData?.rank ?? 'unknown',
+					updatedAt,
+					url,
+					username,
+				})
+			);
 
-	const searchParams = context.url.searchParams;
+			if (rank !== 'owner') {
+				data = data.filter((user) => user.rank !== 'owner');
+			}
 
-	const rankFilter = searchParams.get('rank');
-	const usernameFilter = searchParams.get('username');
-	const nameFilter = searchParams.get('name');
+			const searchParams = context.url.searchParams;
 
-	let filteredData = data;
+			const rankFilter = searchParams.get('rank');
+			const usernameFilter = searchParams.get('username');
+			const nameFilter = searchParams.get('name');
 
-	if (rankFilter) {
-		filteredData = filteredData.filter((user) => user.rank === rankFilter);
-	}
+			let filteredData = data;
 
-	if (usernameFilter) {
-		filteredData = filteredData.filter((user) => user.username.includes(usernameFilter));
-	}
+			if (rankFilter) {
+				filteredData = filteredData.filter((user) => user.rank === rankFilter);
+			}
 
-	if (nameFilter) {
-		filteredData = filteredData.filter((user) => user.name.includes(nameFilter));
-	}
+			if (usernameFilter) {
+				filteredData = filteredData.filter((user) => user.username.includes(usernameFilter));
+			}
 
-	return new Response(JSON.stringify(filteredData), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
-};
+			if (nameFilter) {
+				filteredData = filteredData.filter((user) => user.name.includes(nameFilter));
+			}
 
-export const POST: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
-
-	if (user instanceof Response) {
-		return user;
-	}
-
-	const { rank } = user;
-
-	if (rank !== 'owner' && rank !== 'admin') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
-
-	const jsonData: JSONData = await context.request.json();
-
-	let { username, password, email, displayname, rank: newUserRank } = jsonData;
-
-	if (!username) {
-		return apiResponseLogger(400, 'Missing field: Username is required');
-	}
-
-	if (!password) {
-		password = await studioCMS_SDK.generateRandomPassword(12);
-	}
-
-	if (!email) {
-		return apiResponseLogger(400, 'Missing field: Email is required');
-	}
-
-	if (!displayname) {
-		return apiResponseLogger(400, 'Missing field: Display name is required');
-	}
-
-	if (!newUserRank) {
-		return apiResponseLogger(400, 'Missing field: Rank is required');
-	}
-
-	// If the username is invalid, return an error
-	const verifyUsernameResponse = verifyUsernameInput(username);
-	if (verifyUsernameResponse !== true) {
-		return apiResponseLogger(400, verifyUsernameResponse);
-	}
-
-	// If the password is invalid, return an error
-	const verifyPasswordResponse = await verifyPasswordStrength(password);
-	if (verifyPasswordResponse !== true) {
-		return apiResponseLogger(400, verifyPasswordResponse);
-	}
-
-	// If the email is invalid, return an error
-	const checkEmail = z.coerce
-		.string()
-		.email({ message: 'Email address is invalid' })
-		.safeParse(email);
-
-	if (!checkEmail.success) {
-		return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
-	}
-
-	const { usernameSearch, emailSearch } =
-		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
-
-	if (usernameSearch.length > 0) {
-		return apiResponseLogger(400, 'Invalid username: Username is already in use');
-	}
-
-	if (emailSearch.length > 0) {
-		return apiResponseLogger(400, 'Invalid email: Email is already in use');
-	}
-
-	// Create a new user
-	const newUser = await createLocalUser(displayname, username, email, password);
-
-	const updateRank = await studioCMS_SDK.UPDATE.permissions({
-		user: newUser.id,
-		rank: rank,
+			return new Response(JSON.stringify(filteredData), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Failed to fetch users', error);
 	});
 
-	await sendAdminNotification('new_user', newUser.username);
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:users:POST')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	return apiResponseLogger(
-		200,
-		JSON.stringify({ username, email, displayname, rank: updateRank.rank, password })
-	);
-};
+			if (user instanceof Response) {
+				return user;
+			}
+
+			const { rank } = user;
+
+			if (rank !== 'owner' && rank !== 'admin') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
+
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			let {
+				username,
+				password,
+				email,
+				displayname,
+				rank: newUserRank,
+			} = yield* Schema.decodeUnknown(JSONData)(jsonData);
+
+			if (!username) {
+				return apiResponseLogger(400, 'Missing field: Username is required');
+			}
+
+			if (!password) {
+				password = yield* sdk.generateRandomPassword(12);
+			}
+
+			if (!email) {
+				return apiResponseLogger(400, 'Missing field: Email is required');
+			}
+
+			if (!displayname) {
+				return apiResponseLogger(400, 'Missing field: Display name is required');
+			}
+
+			if (!newUserRank) {
+				return apiResponseLogger(400, 'Missing field: Rank is required');
+			}
+
+			// If the username is invalid, return an error
+			const verifyUsernameResponse = yield* User.verifyUsernameInput(username);
+			if (verifyUsernameResponse !== true) {
+				return apiResponseLogger(400, verifyUsernameResponse);
+			}
+
+			// If the password is invalid, return an error
+			const verifyPasswordResponse = yield* Password.verifyPasswordStrength(password);
+			if (verifyPasswordResponse !== true) {
+				return apiResponseLogger(400, verifyPasswordResponse);
+			}
+
+			// If the email is invalid, return an error
+			const checkEmail = z.coerce
+				.string()
+				.email({ message: 'Email address is invalid' })
+				.safeParse(email);
+			if (!checkEmail.success) {
+				return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
+			}
+
+			const { usernameSearch, emailSearch } = yield* sdk.AUTH.user.searchUsersForUsernameOrEmail(
+				username,
+				checkEmail.data
+			);
+
+			if (usernameSearch.length > 0) {
+				return apiResponseLogger(400, 'Invalid username: Username is already in use');
+			}
+			if (emailSearch.length > 0) {
+				return apiResponseLogger(400, 'Invalid email: Email is already in use');
+			}
+
+			// Create a new user
+			const newUser = yield* User.createLocalUser(displayname, username, checkEmail.data, password);
+			const updateRank = yield* sdk.UPDATE.permissions({
+				user: newUser.id,
+				rank: newUserRank,
+			});
+			yield* Notifications.sendAdminNotification('new_user', newUser.username);
+			return apiResponseLogger(
+				200,
+				JSON.stringify({
+					username,
+					email: checkEmail.data,
+					displayname,
+					rank: updateRank.rank,
+					password,
+				})
+			);
+		}).pipe(SDKCore.Provide, Notifications.Provide, User.Provide, Password.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Failed to create user', error);
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

@@ -1,34 +1,31 @@
 ---
 export const partial = true;
 import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
+import { pipe } from 'effect';
 
-type Content = string;
-
+const astroJsonData = await Astro.request.json();
 const queryParam = Astro.url.searchParams.get('content');
 
-async function setContent() {
-	const jsonData: { content: string | undefined } | undefined = await Astro.request.json();
+const data = pipe(
+	() => {
+		const jsonData: { content: string | undefined } | undefined = astroJsonData;
 
-	if (jsonData?.content) {
-		return jsonData.content;
-	}
+		if (jsonData?.content) {
+			return jsonData.content;
+		}
 
-	if (queryParam && queryParam !== 'null') {
-		return queryParam;
-	}
+		if (queryParam && queryParam !== 'null') {
+			return queryParam;
+		}
 
-	return 'No content to display';
-}
-
-const content: Content = await setContent();
-
-const data = {
-	defaultContent: {
-		content,
+		return 'No content to display';
+	},
+	(content) => ({
+		content: content(),
 		contentId: '',
 		contentLang: 'default',
 		id: '',
-	},
-};
+	})
+);
 ---
 <MarkdownRenderer {data} />
