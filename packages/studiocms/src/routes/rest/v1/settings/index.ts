@@ -1,70 +1,80 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import type { tsSiteConfigSelect } from 'studiocms:sdk/types';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyAuthToken } from '../../utils/auth-token.js';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:settings:GET')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	if (user instanceof Response) {
-		return user;
-	}
+			if (user instanceof Response) {
+				return user;
+			}
 
-	const { rank } = user;
+			const { rank } = user;
 
-	if (rank !== 'owner') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (rank !== 'owner') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const siteConfig = await studioCMS_SDK_Cache.GET.siteConfig();
+			const siteConfig = yield* sdk.GET.siteConfig();
 
-	return new Response(JSON.stringify(siteConfig), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			return new Response(JSON.stringify(siteConfig), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Error fetching site config', error);
 	});
-};
 
-export const PATCH: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const PATCH: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:settings:PATCH')(function* () {
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	if (user instanceof Response) {
-		return user;
-	}
+			if (user instanceof Response) {
+				return user;
+			}
 
-	const { rank } = user;
+			const { rank } = user;
 
-	if (rank !== 'owner') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (rank !== 'owner') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const siteConfig: Omit<tsSiteConfigSelect, 'id'> = await context.request.json();
+			const siteConfig = yield* Effect.tryPromise(() => context.request.json());
 
-	if (!siteConfig.title) {
-		return apiResponseLogger(400, 'Invalid form data, title is required');
-	}
+			if (!siteConfig.title) {
+				return apiResponseLogger(400, 'Invalid form data, title is required');
+			}
 
-	if (!siteConfig.description) {
-		return apiResponseLogger(400, 'Invalid form data, description is required');
-	}
+			if (!siteConfig.description) {
+				return apiResponseLogger(400, 'Invalid form data, description is required');
+			}
 
-	if (!siteConfig.loginPageBackground) {
-		return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
-	}
+			if (!siteConfig.loginPageBackground) {
+				return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
+			}
 
-	if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
-		return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
-	}
+			if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
+				return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
+			}
 
-	try {
-		await studioCMS_SDK_Cache.UPDATE.siteConfig(siteConfig);
+			const sdk = yield* SDKCore;
 
-		return apiResponseLogger(200, 'Site config updated');
-	} catch (error) {
+			yield* sdk.UPDATE.siteConfig(siteConfig);
+
+			return apiResponseLogger(200, 'Site config updated');
+		}).pipe(SDKCore.Provide)
+	).catch((error) => {
 		return apiResponseLogger(500, 'Error updating site config', error);
-	}
-};
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

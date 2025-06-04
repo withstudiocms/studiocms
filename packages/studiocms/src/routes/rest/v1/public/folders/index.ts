@@ -1,35 +1,46 @@
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { apiResponseLogger } from 'studiocms:logger';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const folders = await studioCMS_SDK_Cache.GET.folderList();
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:public:folders:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	const searchParams = context.url.searchParams;
+			const folders = yield* sdk.GET.folderList();
 
-	const folderNameFilter = searchParams.get('name');
-	const folderParentFilter = searchParams.get('parent');
+			const searchParams = context.url.searchParams;
 
-	let filteredFolders = folders.data;
+			const folderNameFilter = searchParams.get('name');
+			const folderParentFilter = searchParams.get('parent');
 
-	if (folderNameFilter) {
-		filteredFolders = filteredFolders.filter((folder) => folder.name.includes(folderNameFilter));
-	}
+			let filteredFolders = folders.data;
 
-	if (folderParentFilter) {
-		filteredFolders = filteredFolders.filter((folder) => folder.parent === folderParentFilter);
-	}
+			if (folderNameFilter) {
+				filteredFolders = filteredFolders.filter((folder) =>
+					folder.name.includes(folderNameFilter)
+				);
+			}
 
-	const finalFolders = {
-		data: filteredFolders,
-		lastCacheUpdate: folders.lastCacheUpdate,
-	};
+			if (folderParentFilter) {
+				filteredFolders = filteredFolders.filter((folder) => folder.parent === folderParentFilter);
+			}
 
-	return new Response(JSON.stringify(finalFolders), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			const finalFolders = {
+				data: filteredFolders,
+				lastCacheUpdate: folders.lastCacheUpdate,
+			};
+
+			return new Response(JSON.stringify(finalFolders), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((err) => {
+		return apiResponseLogger(500, 'Failed to fetch folder data', err);
 	});
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
