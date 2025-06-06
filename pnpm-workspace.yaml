@@ -1,5 +1,5 @@
 catalog:
-  '@astrojs/db': ^0.14.14
+  '@astrojs/db': ^0.15.0
   '@astrojs/rss': ^4.0.11
   '@astrojs/react': ^4.2.1
   '@astrojs/check': ^0.9.4
@@ -26,7 +26,7 @@ catalogs:
     '@effect/platform-browser': ^0.64.6
     '@effect/platform-node': ^0.85.2
     '@effect/platform-node-shared': ^0.39.2
-    '@effect/language-service': ^0.18.0
+    '@effect/language-service': ^0.19.0
     
 packages:
   - "packages/*"
