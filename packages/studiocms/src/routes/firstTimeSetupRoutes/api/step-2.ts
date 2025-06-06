@@ -7,7 +7,7 @@ import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studiocms:first-time-setup:step-1:POST')(function* () {
+		genLogger('studiocms:first-time-setup:step-2:POST')(function* () {
 			const sdk = yield* SDKCore;
 
 			const reqData = yield* Effect.tryPromise(() => context.request.json());
