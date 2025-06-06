@@ -92,8 +92,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			}
 
 			yield* Notifications.sendEditorNotification('folder_updated', folderName);
-
-			return new Response();
+			return apiResponseLogger(200, 'Folder updated successfully');
 		}).pipe(SDKCore.Provide, Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to update folder', error);
