@@ -4,7 +4,7 @@ import { ProcessChangelog } from './utils/changelog.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-        genLogger('routes/sdk/full-changelog/POST')(function* () {
+		genLogger('routes/sdk/full-changelog/POST')(function* () {
 			const changeLogger = yield* ProcessChangelog;
 
 			const rawChangelog = yield* changeLogger.getRawChangelog;
