@@ -1,312 +1,319 @@
-import { UserPermissionLevel, getUserPermissionLevel } from 'studiocms:auth/lib/user';
+import { User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendAdminNotification, sendUserNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyAuthToken } from '../../utils/auth-token.js';
+import { Effect, Schema } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 type PermissionRank = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export class JSONData extends Schema.Class<JSONData>('JSONData')({
+	rank: Schema.Union(
+		Schema.Literal('owner'),
+		Schema.Literal('admin'),
+		Schema.Literal('editor'),
+		Schema.Literal('visitor'),
+		Schema.Literal('unknown')
+	),
+}) {}
 
-	if (user instanceof Response) {
-		return user;
-	}
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:users:[id]:GET')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank } = user;
 
-	const { id } = context.params;
+			if (rank !== 'owner' && rank !== 'admin') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid form data, id is required');
-	}
+			const { id } = context.params;
 
-	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid form data, id is required');
+			}
 
-	if (!existingUser) {
-		return apiResponseLogger(400, 'User not found');
-	}
+			const existingUser = yield* sdk.GET.users.byId(id);
 
-	const { avatar, createdAt, email, name, permissionsData, updatedAt, url, username } =
-		existingUser;
+			if (!existingUser) {
+				return apiResponseLogger(400, 'User not found');
+			}
 
-	const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+			const { avatar, createdAt, email, name, permissionsData, updatedAt, url, username } =
+				existingUser;
 
-	const data = {
-		avatar,
-		createdAt,
-		email,
-		id,
-		name,
-		rank: existingUserRank,
-		updatedAt,
-		url,
-		username,
-	};
+			const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
 
-	const loggedInUser = (await studioCMS_SDK.GET.databaseTable.users()).find(
-		(user) => user.id === id
-	);
+			const data = {
+				avatar,
+				createdAt,
+				email,
+				id,
+				name,
+				rank: existingUserRank,
+				updatedAt,
+				url,
+				username,
+			};
 
-	if (!loggedInUser || loggedInUser === undefined) {
-		return apiResponseLogger(400, 'User Error');
-	}
+			const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
 
-	const permissionLevelInput = {
-		isLoggedIn: true,
-		user: loggedInUser,
-		permissionLevel: rank as PermissionRank,
-	};
+			if (!loggedInUser || loggedInUser === undefined) {
+				return apiResponseLogger(400, 'User Error');
+			}
 
-	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
+			const permissionLevelInput = {
+				isLoggedIn: true,
+				user: loggedInUser,
+				permissionLevel: rank as PermissionRank,
+			};
 
-	const requiredPerms = () => {
-		switch (existingUserRank) {
-			case 'owner':
-				return UserPermissionLevel.owner;
-			case 'admin':
-				return UserPermissionLevel.admin;
-			case 'editor':
-				return UserPermissionLevel.editor;
-			case 'visitor':
-				return UserPermissionLevel.visitor;
-			default:
-				return UserPermissionLevel.unknown;
-		}
-	};
+			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
 
-	const isAllowed = userPermissionLevel > requiredPerms();
+			const requiredPerms = () => {
+				switch (existingUserRank) {
+					case 'owner':
+						return User.UserPermissionLevel.owner;
+					case 'admin':
+						return User.UserPermissionLevel.admin;
+					case 'editor':
+						return User.UserPermissionLevel.editor;
+					case 'visitor':
+						return User.UserPermissionLevel.visitor;
+					default:
+						return User.UserPermissionLevel.unknown;
+				}
+			};
 
-	if (!isAllowed) {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const isAllowed = userPermissionLevel > requiredPerms();
 
-	return new Response(JSON.stringify(data), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
-};
+			if (!isAllowed) {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-export const PATCH: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
-
-	if (user instanceof Response) {
-		return user;
-	}
-
-	const { rank } = user;
-
-	if (rank !== 'owner' && rank !== 'admin') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
-
-	const { id } = context.params;
-
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid form data, id is required');
-	}
-
-	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
-
-	if (!existingUser) {
-		return apiResponseLogger(400, 'User not found');
-	}
-
-	const { permissionsData } = existingUser;
-
-	const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
-
-	const loggedInUser = (await studioCMS_SDK.GET.databaseTable.users()).find(
-		(user) => user.id === id
-	);
-
-	if (!loggedInUser || loggedInUser === undefined) {
-		return apiResponseLogger(400, 'User Error');
-	}
-
-	const permissionLevelInput = {
-		isLoggedIn: true,
-		user: loggedInUser,
-		permissionLevel: rank as PermissionRank,
-	};
-
-	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
-
-	const requiredPerms = () => {
-		switch (existingUserRank) {
-			case 'owner':
-				return UserPermissionLevel.owner;
-			case 'admin':
-				return UserPermissionLevel.admin;
-			case 'editor':
-				return UserPermissionLevel.editor;
-			case 'visitor':
-				return UserPermissionLevel.visitor;
-			default:
-				return UserPermissionLevel.unknown;
-		}
-	};
-
-	const isAllowed = userPermissionLevel > requiredPerms();
-
-	if (!isAllowed) {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
-
-	const jsonData = await context.request.json();
-
-	const { rank: newRank } = jsonData;
-
-	if (!newRank) {
-		return apiResponseLogger(400, 'Missing field: Rank is required');
-	}
-
-	const isRankValid = ['visitor', 'editor', 'admin', 'owner'].includes(newRank);
-
-	if (!isRankValid) {
-		return apiResponseLogger(400, 'Invalid rank');
-	}
-
-	const updateRank = await studioCMS_SDK.UPDATE.permissions({
-		user: id,
-		rank: rank,
+			return new Response(JSON.stringify(data), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide, User.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Failed to fetch user data', error);
 	});
 
-	if (!updateRank) {
-		return apiResponseLogger(400, 'Failed to update rank');
-	}
+export const PATCH: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:users:[id]:PATCH')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const updatedUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (!updatedUser) {
-		return apiResponseLogger(400, 'Failed to get updated user');
-	}
+			const { rank } = user;
 
-	const {
-		avatar,
-		createdAt,
-		email,
-		name,
-		permissionsData: newPermissionsData,
-		updatedAt,
-		url,
-		username,
-	} = updatedUser;
+			if (rank !== 'owner' && rank !== 'admin') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const updatedUserRank = (newPermissionsData?.rank ?? 'unknown') as PermissionRank;
+			const { id } = context.params;
 
-	const data = {
-		avatar,
-		createdAt,
-		email,
-		id,
-		name,
-		rank: updatedUserRank,
-		updatedAt,
-		url,
-		username,
-	};
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid form data, id is required');
+			}
 
-	await sendUserNotification('account_updated', id);
-	await sendAdminNotification('user_updated', username);
+			const existingUser = yield* sdk.GET.users.byId(id);
 
-	return new Response(JSON.stringify(data), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (!existingUser) {
+				return apiResponseLogger(400, 'User not found');
+			}
+
+			const { permissionsData } = existingUser;
+
+			const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+
+			const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
+
+			if (!loggedInUser || loggedInUser === undefined) {
+				return apiResponseLogger(400, 'User Error');
+			}
+
+			const permissionLevelInput = {
+				isLoggedIn: true,
+				user: loggedInUser,
+				permissionLevel: rank as PermissionRank,
+			};
+
+			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
+
+			const requiredPerms = () => {
+				switch (existingUserRank) {
+					case 'owner':
+						return User.UserPermissionLevel.owner;
+					case 'admin':
+						return User.UserPermissionLevel.admin;
+					case 'editor':
+						return User.UserPermissionLevel.editor;
+					case 'visitor':
+						return User.UserPermissionLevel.visitor;
+					default:
+						return User.UserPermissionLevel.unknown;
+				}
+			};
+
+			const isAllowed = userPermissionLevel > requiredPerms();
+
+			if (!isAllowed) {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
+
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+
+			const { rank: newRank } = yield* Schema.decodeUnknown(JSONData)(jsonData);
+
+			if (!newRank) {
+				return apiResponseLogger(400, 'Missing field: Rank is required');
+			}
+
+			const updateRank = yield* sdk.UPDATE.permissions({
+				user: id,
+				rank: newRank,
+			});
+			if (!updateRank) {
+				return apiResponseLogger(400, 'Failed to update rank');
+			}
+			const updatedUser = yield* sdk.GET.users.byId(id);
+			if (!updatedUser) {
+				return apiResponseLogger(400, 'Failed to get updated user');
+			}
+			const {
+				avatar,
+				createdAt,
+				email,
+				name,
+				permissionsData: newPermissionsData,
+				updatedAt,
+				url,
+				username,
+			} = updatedUser;
+			const updatedUserRank = (newPermissionsData?.rank ?? 'unknown') as PermissionRank;
+			const data = {
+				avatar,
+				createdAt,
+				email,
+				id,
+				name,
+				rank: updatedUserRank,
+				updatedAt,
+				url,
+				username,
+			};
+			yield* Notifications.sendUserNotification('account_updated', id);
+			yield* Notifications.sendAdminNotification('user_updated', username);
+
+			return new Response(JSON.stringify(data), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide, User.Provide, Notifications.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Failed to update user data', error);
 	});
-};
 
-export const DELETE: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const DELETE: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:users:[id]:DELETE')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	if (user instanceof Response) {
-		return user;
-	}
+			if (user instanceof Response) {
+				return user;
+			}
 
-	const { rank } = user;
+			const { rank } = user;
 
-	if (rank !== 'owner' && rank !== 'admin') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (rank !== 'owner' && rank !== 'admin') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const { id } = context.params;
+			const { id } = context.params;
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid form data, id is required');
-	}
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid form data, id is required');
+			}
 
-	const existingUser = await studioCMS_SDK.GET.databaseEntry.users.byId(id);
+			const existingUser = yield* sdk.GET.users.byId(id);
 
-	if (!existingUser) {
-		return apiResponseLogger(400, 'User not found');
-	}
+			if (!existingUser) {
+				return apiResponseLogger(400, 'User not found');
+			}
 
-	const { permissionsData } = existingUser;
+			const { permissionsData } = existingUser;
 
-	const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+			const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
 
-	const loggedInUser = (await studioCMS_SDK.GET.databaseTable.users()).find(
-		(user) => user.id === id
-	);
+			const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
 
-	if (!loggedInUser || loggedInUser === undefined) {
-		return apiResponseLogger(400, 'User Error');
-	}
+			if (!loggedInUser || loggedInUser === undefined) {
+				return apiResponseLogger(400, 'User Error');
+			}
 
-	const permissionLevelInput = {
-		isLoggedIn: true,
-		user: loggedInUser,
-		permissionLevel: rank as PermissionRank,
-	};
+			const permissionLevelInput = {
+				isLoggedIn: true,
+				user: loggedInUser,
+				permissionLevel: rank as PermissionRank,
+			};
 
-	const userPermissionLevel = getUserPermissionLevel(permissionLevelInput);
+			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
 
-	const requiredPerms = () => {
-		switch (existingUserRank) {
-			case 'owner':
-				return UserPermissionLevel.owner;
-			case 'admin':
-				return UserPermissionLevel.admin;
-			case 'editor':
-				return UserPermissionLevel.editor;
-			case 'visitor':
-				return UserPermissionLevel.visitor;
-			default:
-				return UserPermissionLevel.unknown;
-		}
-	};
+			const requiredPerms = () => {
+				switch (existingUserRank) {
+					case 'owner':
+						return User.UserPermissionLevel.owner;
+					case 'admin':
+						return User.UserPermissionLevel.admin;
+					case 'editor':
+						return User.UserPermissionLevel.editor;
+					case 'visitor':
+						return User.UserPermissionLevel.visitor;
+					default:
+						return User.UserPermissionLevel.unknown;
+				}
+			};
 
-	const isAllowed = userPermissionLevel > requiredPerms();
+			const isAllowed = userPermissionLevel > requiredPerms();
 
-	if (!isAllowed) {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (!isAllowed) {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	try {
-		const response = await studioCMS_SDK.DELETE.user(id);
+			const response = yield* sdk.DELETE.user(id);
 
-		if (!response) {
-			return apiResponseLogger(400, 'Failed to delete user');
-		}
+			if (!response) {
+				return apiResponseLogger(400, 'Failed to delete user');
+			}
 
-		if (response.status === 'error') {
-			return apiResponseLogger(400, response.message);
-		}
+			if (response.status === 'error') {
+				return apiResponseLogger(400, response.message);
+			}
 
-		await sendAdminNotification('user_deleted', existingUser.username);
+			yield* Notifications.sendAdminNotification('user_deleted', existingUser.username);
 
-		return apiResponseLogger(200, response.message);
-	} catch (error) {
-		return apiResponseLogger(400, `Failed to delete user: ${error}`);
-	}
-};
+			return apiResponseLogger(200, response.message);
+		}).pipe(SDKCore.Provide, User.Provide, Notifications.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, `Failed to delete user: ${error}`);
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

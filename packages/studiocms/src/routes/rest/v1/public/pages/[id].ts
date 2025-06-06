@@ -1,30 +1,38 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const { id } = context.params;
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid page ID');
-	}
+			const { id } = context.params;
 
-	const page = await studioCMS_SDK_Cache.GET.page.byId(id);
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid page ID');
+			}
 
-	if (!page) {
-		return apiResponseLogger(404, 'Page not found');
-	}
+			const page = yield* sdk.GET.page.byId(id);
 
-	if (page.data.draft) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			if (!page) {
+				return apiResponseLogger(404, 'Page not found');
+			}
 
-	return new Response(JSON.stringify(page), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (page.data.draft) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
+
+			return new Response(JSON.stringify(page), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((err) => {
+		return apiResponseLogger(500, 'Failed to fetch page data', err);
 	});
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

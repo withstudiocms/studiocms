@@ -1,48 +1,52 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendMail } from 'studiocms:mailer';
+import { Mailer } from 'studiocms:mailer';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Check if mailer is enabled
-	if (!context.locals.siteConfig.data.enableMailer) {
-		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
-	}
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('routes/mailer/test-email/POST')(function* () {
+			const mailer = yield* Mailer;
 
-	// Check if user is logged in
-	if (!context.locals.userSessionData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if mailer is enabled
+			if (!context.locals.siteConfig.data.enableMailer) {
+				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
+			}
 
-	// Check if user has permission
-	if (!context.locals.userPermissionLevel.isOwner) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!context.locals.userSessionData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Get Json Data
-	const { test_email } = await context.request.json();
+			// Check if user has permission
+			if (!context.locals.userPermissionLevel.isOwner) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Validate form data
-	if (!test_email && typeof test_email !== 'string') {
-		return apiResponseLogger(400, 'Invalid form data, test_email is required');
-	}
+			// Get Json data
+			const { test_email } = yield* Effect.tryPromise(() => context.request.json());
 
-	// Send Test Email
-	try {
-		const response = await sendMail({
-			to: test_email,
-			subject: 'StudioCMS Test Email',
-			text: 'This is a test email from StudioCMS.',
-		});
+			// Validate form data
+			if (!test_email || typeof test_email !== 'string') {
+				return apiResponseLogger(400, 'Invalid form data, test_email is required');
+			}
 
-		if ('error' in response) {
-			return apiResponseLogger(500, response.error);
-		}
+			// Send Test Email
+			const response = yield* mailer.sendMail({
+				to: test_email,
+				subject: 'StudioCMS Test Email',
+				text: 'This is a test email from StudioCMS.',
+			});
 
-		return apiResponseLogger(200, response.message);
-	} catch (error) {
-		return apiResponseLogger(500, 'Error sending test email');
-	}
-};
+			if ('error' in response) {
+				return apiResponseLogger(500, response.error);
+			}
+			return apiResponseLogger(200, response.message);
+		}).pipe(Mailer.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, `Error sending test email: ${error.message}`);
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

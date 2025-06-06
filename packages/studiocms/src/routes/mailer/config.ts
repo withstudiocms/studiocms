@@ -1,110 +1,116 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { createMailerConfigTable, updateMailerConfigTable } from 'studiocms:mailer';
+import { Mailer } from 'studiocms:mailer';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect, Schema } from 'effect';
+import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Check if user is logged in
-	if (!context.locals.userSessionData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+export class SmtpConfigSchema extends Schema.Class<SmtpConfigSchema>('SmtpConfigSchema')({
+	port: Schema.Number,
+	host: Schema.String,
+	secure: Schema.Boolean,
+	proxy: Schema.Union(Schema.String, Schema.Null),
+	auth_user: Schema.Union(Schema.String, Schema.Null),
+	auth_pass: Schema.Union(Schema.String, Schema.Null),
+	tls_rejectUnauthorized: Schema.Union(Schema.Boolean, Schema.Null),
+	tls_servername: Schema.Union(Schema.String, Schema.Null),
+	default_sender: Schema.String,
+}) {}
 
-	// Check if user has permission
-	if (!context.locals.userPermissionLevel.isOwner) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('routes/mailer/config/POST')(function* () {
+			const mailer = yield* Mailer;
 
-	// Get Json Data
-	const smtpConfig: {
-		port: number;
-		host: string;
-		secure: boolean;
-		proxy: string | null;
-		auth_user: string | null;
-		auth_pass: string | null;
-		tls_rejectUnauthorized: boolean | null;
-		tls_servername: string | null;
-		default_sender: string;
-	} = await context.request.json();
+			// Check if user is logged in
+			if (!context.locals.userSessionData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Validate form data
-	if (!smtpConfig.port) {
-		return apiResponseLogger(400, 'Invalid form data, port is required');
-	}
+			// Check if user has permission
+			if (!context.locals.userPermissionLevel.isOwner) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	if (!smtpConfig.host) {
-		return apiResponseLogger(400, 'Invalid form data, host is required');
-	}
+			// Get Json Data
+			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
+			);
 
-	if (!smtpConfig.secure) {
-		return apiResponseLogger(400, 'Invalid form data, secure is required');
-	}
+			// Validate form data
+			if (!smtpConfig.port) {
+				return apiResponseLogger(400, 'Invalid form data, port is required');
+			}
 
-	if (!smtpConfig.default_sender) {
-		return apiResponseLogger(400, 'Invalid form data, default_sender is required');
-	}
+			if (!smtpConfig.host) {
+				return apiResponseLogger(400, 'Invalid form data, host is required');
+			}
 
-	// Update Database
-	try {
-		await createMailerConfigTable(smtpConfig);
+			if (typeof smtpConfig.secure !== 'boolean') {
+				return apiResponseLogger(400, 'Invalid form data, secure must be a boolean');
+			}
 
-		return apiResponseLogger(200, 'Mailer config updated');
-	} catch (error) {
-		// Return Error Response
-		return apiResponseLogger(500, 'Error updating mailer config', error);
-	}
-};
+			if (!smtpConfig.default_sender) {
+				return apiResponseLogger(400, 'Invalid form data, default_sender is required');
+			}
 
-export const UPDATE: APIRoute = async (context: APIContext) => {
-	// Check if user is logged in
-	if (!context.locals.userSessionData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Update Database
+			const config = yield* mailer.createMailerConfigTable(smtpConfig);
 
-	// Check if user has permission
-	if (!context.locals.userPermissionLevel.isOwner) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			if (!config) {
+				return apiResponseLogger(500, 'Error creating mailer config table');
+			}
+			return apiResponseLogger(200, 'Mailer config updated');
+		}).pipe(Mailer.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, `Error updating mailer config: ${error.message}`);
+	});
 
-	// Get Json Data
-	const smtpConfig: {
-		port: number;
-		host: string;
-		secure: boolean;
-		proxy: string | null;
-		auth_user: string | null;
-		auth_pass: string | null;
-		tls_rejectUnauthorized: boolean | null;
-		tls_servername: string | null;
-		default_sender: string;
-	} = await context.request.json();
+export const UPDATE: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('routes/mailer/config/UPDATE')(function* () {
+			const mailer = yield* Mailer;
 
-	// Validate form data
-	if (!smtpConfig.port) {
-		return apiResponseLogger(400, 'Invalid form data, port is required');
-	}
+			// Check if user is logged in
+			if (!context.locals.userSessionData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
+			// Check if user has permission
+			if (!context.locals.userPermissionLevel.isOwner) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	if (!smtpConfig.host) {
-		return apiResponseLogger(400, 'Invalid form data, host is required');
-	}
+			// Get Json Data
+			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
+			);
 
-	if (!smtpConfig.secure) {
-		return apiResponseLogger(400, 'Invalid form data, secure is required');
-	}
+			// Validate form data
+			if (!smtpConfig.port) {
+				return apiResponseLogger(400, 'Invalid form data, port is required');
+			}
 
-	if (!smtpConfig.default_sender) {
-		return apiResponseLogger(400, 'Invalid form data, default_sender is required');
-	}
+			if (!smtpConfig.host) {
+				return apiResponseLogger(400, 'Invalid form data, host is required');
+			}
 
-	// Update Database
-	try {
-		await updateMailerConfigTable(smtpConfig);
+			if (!smtpConfig.secure) {
+				return apiResponseLogger(400, 'Invalid form data, secure is required');
+			}
 
-		return apiResponseLogger(200, 'Mailer config updated');
-	} catch (error) {
-		// Return Error Response
-		return apiResponseLogger(500, 'Error updating mailer config', error);
-	}
-};
+			if (!smtpConfig.default_sender) {
+				return apiResponseLogger(400, 'Invalid form data, default_sender is required');
+			}
+
+			// Update Database
+			const config = yield* mailer.updateMailerConfigTable(smtpConfig);
+			if (!config) {
+				return apiResponseLogger(500, 'Error updating mailer config table');
+			}
+			return apiResponseLogger(200, 'Mailer config updated');
+		}).pipe(Mailer.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, `Error updating mailer config: ${error.message}`);
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

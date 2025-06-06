@@ -1,50 +1,61 @@
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { apiResponseLogger } from 'studiocms:logger';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const pages = await studioCMS_SDK_Cache.GET.pages();
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:public:pages:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	const searchParams = context.url.searchParams;
+			const pages = yield* sdk.GET.pages();
 
-	const titleFilter = searchParams.get('title');
-	const slugFilter = searchParams.get('slug');
-	const authorFilter = searchParams.get('author');
-	const draftFilter = searchParams.get('draft') === 'true';
-	const publishedFilter = searchParams.get('published') === 'true';
-	const parentFolderFilter = searchParams.get('parentFolder');
+			const searchParams = context.url.searchParams;
 
-	let filteredPages = pages;
+			const titleFilter = searchParams.get('title');
+			const slugFilter = searchParams.get('slug');
+			const authorFilter = searchParams.get('author');
+			const draftFilter = searchParams.get('draft') === 'true';
+			const publishedFilter = searchParams.get('published') === 'true';
+			const parentFolderFilter = searchParams.get('parentFolder');
 
-	if (titleFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
-	}
+			let filteredPages = pages;
 
-	if (slugFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
-	}
+			if (titleFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
+			}
 
-	if (authorFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
-	}
+			if (slugFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
+			}
 
-	if (draftFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
-	}
+			if (authorFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
+			}
 
-	if (publishedFilter) {
-		filteredPages = filteredPages.filter((page) => !page.data.draft);
-	}
+			if (draftFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
+			}
 
-	if (parentFolderFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.parentFolder === parentFolderFilter);
-	}
+			if (publishedFilter) {
+				filteredPages = filteredPages.filter((page) => !page.data.draft);
+			}
 
-	return new Response(JSON.stringify(filteredPages), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (parentFolderFilter) {
+				filteredPages = filteredPages.filter(
+					(page) => page.data.parentFolder === parentFolderFilter
+				);
+			}
+
+			return new Response(JSON.stringify(filteredPages), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((err) => {
+		return apiResponseLogger(500, 'Failed to fetch pages data', err);
 	});
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

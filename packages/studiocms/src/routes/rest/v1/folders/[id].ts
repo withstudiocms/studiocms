@@ -1,127 +1,143 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendEditorNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyAuthToken } from '../../utils/auth-token.js';
+import { Effect, Schema } from 'effect';
+import { convertToVanilla } from '../../../../lib/effects/convertToVanilla.js';
+import { genLogger } from '../../../../lib/effects/logger.js';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-interface FolderBase {
-	folderName: string;
-	parentFolder: string | null;
-}
+export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
+	folderName: Schema.String,
+	parentFolder: Schema.Union(Schema.String, Schema.Null),
+}) {}
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:folders:[id]:GET')(function* () {
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	if (user instanceof Response) {
-		return user;
-	}
+			if (user instanceof Response) {
+				return user;
+			}
 
-	const { rank } = user;
+			const { rank } = user;
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const { id } = context.params;
+			const { id } = context.params;
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid folder ID');
-	}
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid folder ID');
+			}
 
-	const folder = await studioCMS_SDK_Cache.GET.folder(id);
+			const sdk = yield* SDKCore;
 
-	if (!folder) {
-		return apiResponseLogger(404, 'Folder not found');
-	}
+			const folder = yield* sdk.GET.folder(id);
 
-	return new Response(JSON.stringify(folder), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (!folder) {
+				return apiResponseLogger(404, 'Folder not found');
+			}
+
+			return new Response(JSON.stringify(folder), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Failed to fetch folder', error);
 	});
-};
 
-export const PATCH: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const PATCH: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:folders:[id]:PATCH')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (user instanceof Response) {
-		return user;
-	}
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank } = user;
 
-	const { id } = context.params;
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid folder ID');
-	}
+			const { id } = context.params;
 
-	const jsonData: FolderBase = await context.request.json();
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid folder ID');
+			}
 
-	const { folderName, parentFolder } = jsonData;
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const { folderName, parentFolder } = yield* Schema.decodeUnknown(FolderBase)(jsonData);
 
-	if (!folderName) {
-		return apiResponseLogger(400, 'Invalid form data, folderName is required');
-	}
+			if (!folderName) {
+				return apiResponseLogger(400, 'Invalid form data, folderName is required');
+			}
 
-	try {
-		await studioCMS_SDK_Cache.UPDATE.folder({
-			id,
-			name: folderName,
-			parent: parentFolder || null,
-		});
+			const folderData = yield* sdk.UPDATE.folder({
+				id,
+				name: folderName,
+				parent: parentFolder || null,
+			});
 
-		await sendEditorNotification('folder_updated', folderName);
+			if (!folderData) {
+				return apiResponseLogger(404, 'Folder not found');
+			}
 
-		return apiResponseLogger(200, 'Folder updated successfully');
-	} catch (error) {
+			yield* Notifications.sendEditorNotification('folder_updated', folderName);
+			return apiResponseLogger(200, 'Folder updated successfully');
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to update folder', error);
-	}
-};
+	});
 
-export const DELETE: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const DELETE: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:folders:[id]:DELETE')(function* () {
+			const sdk = yield* SDKCore;
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	if (user instanceof Response) {
-		return user;
-	}
+			if (user instanceof Response) {
+				return user;
+			}
 
-	const { rank } = user;
+			const { rank } = user;
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const { id } = context.params;
+			const { id } = context.params;
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid folder ID');
-	}
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid folder ID');
+			}
 
-	const folder = await studioCMS_SDK_Cache.GET.folder(id);
+			const folder = yield* sdk.GET.folder(id);
 
-	if (!folder) {
-		return apiResponseLogger(404, 'Folder not found');
-	}
+			if (!folder) {
+				return apiResponseLogger(404, 'Folder not found');
+			}
 
-	try {
-		await studioCMS_SDK.DELETE.folder(id);
+			yield* sdk.DELETE.folder(id);
 
-		await studioCMS_SDK_Cache.UPDATE.folderList();
-		await studioCMS_SDK_Cache.UPDATE.folderTree();
+			yield* sdk.UPDATE.folderList;
+			yield* sdk.UPDATE.folderTree;
 
-		await sendEditorNotification('folder_deleted', folder.name);
+			yield* Notifications.sendEditorNotification('folder_deleted', folder.name);
 
-		return apiResponseLogger(200, 'Folder deleted successfully');
-	} catch (error) {
+			return apiResponseLogger(200, 'Folder deleted successfully');
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to delete folder', error);
-	}
-};
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

@@ -1,43 +1,51 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyAuthToken } from '../../../../utils/auth-token.js';
+import { convertToVanilla, genLogger } from '../../../../../../lib/effects/index.js';
+import { verifyAuthTokenFromHeader } from '../../../../utils/auth-token.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:pages:[id]:history:[diffid]:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (user instanceof Response) {
-		return user;
-	}
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank } = user;
 
-	const { id, diffid } = context.params;
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid page ID');
-	}
+			const { id, diffid } = context.params;
 
-	if (!diffid) {
-		return apiResponseLogger(400, 'Invalid diff ID');
-	}
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid page ID');
+			}
 
-	const diff = await studioCMS_SDK.diffTracking.get.single(diffid);
+			if (!diffid) {
+				return apiResponseLogger(400, 'Invalid diff ID');
+			}
 
-	if (!diff) {
-		return apiResponseLogger(404, 'Diff not found');
-	}
+			const diff = yield* sdk.diffTracking.get.single(diffid);
 
-	return new Response(JSON.stringify(diff), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (!diff) {
+				return apiResponseLogger(404, 'Diff not found');
+			}
+
+			return new Response(JSON.stringify(diff), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
