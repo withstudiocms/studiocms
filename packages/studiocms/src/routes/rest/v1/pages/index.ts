@@ -1,10 +1,11 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendEditorNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { verifyAuthToken } from '../../utils/auth-token.js';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
@@ -14,116 +15,128 @@ interface CreatePageJson {
 	content?: UpdatePageContent;
 }
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:public:pages:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (user instanceof Response) {
-		return user;
-	}
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank } = user;
 
-	const pages = await studioCMS_SDK_Cache.GET.pages(true);
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const searchParams = context.url.searchParams;
+			const pages = yield* sdk.GET.pages(true);
 
-	const titleFilter = searchParams.get('title');
-	const slugFilter = searchParams.get('slug');
-	const authorFilter = searchParams.get('author');
-	const draftFilter = searchParams.get('draft') === 'true';
-	const publishedFilter = searchParams.get('published') === 'true';
-	const parentFolderFilter = searchParams.get('parentFolder');
+			const searchParams = context.url.searchParams;
 
-	let filteredPages = pages;
+			const titleFilter = searchParams.get('title');
+			const slugFilter = searchParams.get('slug');
+			const authorFilter = searchParams.get('author');
+			const draftFilter = searchParams.get('draft') === 'true';
+			const publishedFilter = searchParams.get('published') === 'true';
+			const parentFolderFilter = searchParams.get('parentFolder');
 
-	if (titleFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
-	}
+			let filteredPages = pages;
 
-	if (slugFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
-	}
+			if (titleFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
+			}
 
-	if (authorFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
-	}
+			if (slugFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
+			}
 
-	if (draftFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
-	}
+			if (authorFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
+			}
 
-	if (publishedFilter) {
-		filteredPages = filteredPages.filter((page) => !page.data.draft);
-	}
+			if (draftFilter) {
+				filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
+			}
 
-	if (parentFolderFilter) {
-		filteredPages = filteredPages.filter((page) => page.data.parentFolder === parentFolderFilter);
-	}
+			if (publishedFilter) {
+				filteredPages = filteredPages.filter((page) => !page.data.draft);
+			}
 
-	return new Response(JSON.stringify(filteredPages), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
+			if (parentFolderFilter) {
+				filteredPages = filteredPages.filter(
+					(page) => page.data.parentFolder === parentFolderFilter
+				);
+			}
+
+			return new Response(JSON.stringify(filteredPages), {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
-};
 
-export const POST: APIRoute = async (context: APIContext) => {
-	const user = await verifyAuthToken(context);
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studioCMS:rest:v1:public:pages:POST')(function* () {
+			const sdk = yield* SDKCore;
 
-	if (user instanceof Response) {
-		return user;
-	}
+			const user = yield* verifyAuthTokenFromHeader(context);
 
-	const { rank, userId } = user;
+			if (user instanceof Response) {
+				return user;
+			}
 
-	if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-		return apiResponseLogger(401, 'Unauthorized');
-	}
+			const { rank, userId } = user;
 
-	const jsonData: CreatePageJson = await context.request.json();
+			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+				return apiResponseLogger(401, 'Unauthorized');
+			}
 
-	const { data, content } = jsonData;
+			const jsonData: CreatePageJson = yield* Effect.tryPromise(() => context.request.json());
 
-	if (!data) {
-		return apiResponseLogger(400, 'Invalid form data, data is required');
-	}
+			const { data, content } = jsonData;
 
-	if (!content) {
-		return apiResponseLogger(400, 'Invalid form data, content is required');
-	}
+			if (!data) {
+				return apiResponseLogger(400, 'Invalid form data, data is required');
+			}
 
-	if (!data.title) {
-		return apiResponseLogger(400, 'Invalid form data, title is required');
-	}
+			if (!content) {
+				return apiResponseLogger(400, 'Invalid form data, content is required');
+			}
 
-	const dataId = crypto.randomUUID();
-	const contentId = crypto.randomUUID();
+			if (!data.title) {
+				return apiResponseLogger(400, 'Invalid form data, title is required');
+			}
 
-	try {
-		await studioCMS_SDK.POST.databaseEntry.pages(
-			{
-				id: dataId,
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
-				title: data.title!,
-				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
-				description: data.description || '',
-				authorId: userId || null,
-				...data,
-			},
-			{ id: contentId, ...content }
-		);
+			const dataId = crypto.randomUUID();
+			const contentId = crypto.randomUUID();
 
-		await sendEditorNotification('new_page', data.title);
+			yield* sdk.POST.databaseEntry.pages(
+				{
+					id: dataId,
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					title: data.title!,
+					slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
+					description: data.description || '',
+					authorId: userId || null,
+					...data,
+				},
+				{ id: contentId, ...content }
+			);
 
-		return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
-	} catch (error) {
-		return apiResponseLogger(500, 'Internal Server Error');
-	}
-};
+			yield* Notifications.sendEditorNotification('new_page', data.title);
+
+			return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	).catch((error) => {
+		return apiResponseLogger(500, 'Internal Server Error', error);
+	});
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
