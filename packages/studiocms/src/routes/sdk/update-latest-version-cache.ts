@@ -3,6 +3,15 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
+const createJsonResponse = (data: unknown, status = 200) =>
+	new Response(JSON.stringify(data), {
+		status,
+		headers: {
+			'Content-Type': 'application/json',
+			Date: new Date().toUTCString(),
+		},
+	});
+
 export const GET: APIRoute = async (): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('routes/sdk/update-latest-version-cache/GET')(function* () {
@@ -10,28 +19,16 @@ export const GET: APIRoute = async (): Promise<Response> =>
 			const sdk = yield* SDKCore;
 			const latestVersion = yield* sdk.UPDATE.latestVersion();
 			logger.info('Latest version cache updated');
-			return new Response(JSON.stringify({ success: true, latestVersion }), {
-				status: 200,
-				headers: {
-					'Content-Type': 'application/json',
-					Date: new Date().toUTCString(),
-				},
-			});
+			return createJsonResponse({ success: true, latestVersion });
 		}).pipe(SDKCore.Provide)
 	).catch((error) => {
 		logger.error(`Error updating latest version cache: ${error.message}`);
-		return new Response(
-			JSON.stringify({
+		return createJsonResponse(
+			{
 				success: false,
 				error: `Error updating latest version cache: ${error.message}`,
-			}),
-			{
-				status: 500,
-				headers: {
-					'Content-Type': 'application/json',
-					Date: new Date().toUTCString(),
-				},
-			}
+			},
+			500
 		);
 	});
 

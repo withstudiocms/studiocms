@@ -1,8 +1,20 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
+import { Effect, Schema } from 'effect';
 import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
+
+export class SmtpConfigSchema extends Schema.Class<SmtpConfigSchema>('SmtpConfigSchema')({
+	port: Schema.Number,
+	host: Schema.String,
+	secure: Schema.Boolean,
+	proxy: Schema.Union(Schema.String, Schema.Null),
+	auth_user: Schema.Union(Schema.String, Schema.Null),
+	auth_pass: Schema.Union(Schema.String, Schema.Null),
+	tls_rejectUnauthorized: Schema.Union(Schema.Boolean, Schema.Null),
+	tls_servername: Schema.Union(Schema.String, Schema.Null),
+	default_sender: Schema.String,
+}) {}
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
@@ -20,17 +32,9 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get Json Data
-			const smtpConfig: {
-				port: number;
-				host: string;
-				secure: boolean;
-				proxy: string | null;
-				auth_user: string | null;
-				auth_pass: string | null;
-				tls_rejectUnauthorized: boolean | null;
-				tls_servername: string | null;
-				default_sender: string;
-			} = yield* Effect.tryPromise(() => context.request.json());
+			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
+			);
 
 			// Validate form data
 			if (!smtpConfig.port) {
@@ -41,8 +45,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(400, 'Invalid form data, host is required');
 			}
 
-			if (!smtpConfig.secure) {
-				return apiResponseLogger(400, 'Invalid form data, secure is required');
+			if (typeof smtpConfig.secure !== 'boolean') {
+				return apiResponseLogger(400, 'Invalid form data, secure must be a boolean');
 			}
 
 			if (!smtpConfig.default_sender) {
@@ -76,17 +80,9 @@ export const UPDATE: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get Json Data
-			const smtpConfig: {
-				port: number;
-				host: string;
-				secure: boolean;
-				proxy: string | null;
-				auth_user: string | null;
-				auth_pass: string | null;
-				tls_rejectUnauthorized: boolean | null;
-				tls_servername: string | null;
-				default_sender: string;
-			} = yield* Effect.tryPromise(() => context.request.json());
+			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
+			);
 
 			// Validate form data
 			if (!smtpConfig.port) {

@@ -184,10 +184,6 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(400, 'Missing field: Rank is required');
 			}
 
-			const isRankValid = ['visitor', 'editor', 'admin', 'owner'].includes(newRank);
-			if (!isRankValid) {
-				return apiResponseLogger(400, 'Invalid rank');
-			}
 			const updateRank = yield* sdk.UPDATE.permissions({
 				user: id,
 				rank: newRank,

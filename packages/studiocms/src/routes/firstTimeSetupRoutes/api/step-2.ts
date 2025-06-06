@@ -14,59 +14,18 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			const { username, displayname, email, password, confirmPassword } = reqData;
 
-			if (!username) {
-				return new Response(
-					JSON.stringify({
-						error: 'Username is required',
-					}),
-					{
-						status: 400,
-					}
-				);
-			}
+			const requiredFields = [
+				{ field: username, name: 'Username' },
+				{ field: displayname, name: 'Display name' },
+				{ field: email, name: 'Email' },
+				{ field: password, name: 'Password' },
+				{ field: confirmPassword, name: 'Confirm password' },
+			];
 
-			if (!displayname) {
-				return new Response(
-					JSON.stringify({
-						error: 'Display name is required',
-					}),
-					{
-						status: 400,
-					}
-				);
-			}
-
-			if (!email) {
-				return new Response(
-					JSON.stringify({
-						error: 'Email is required',
-					}),
-					{
-						status: 400,
-					}
-				);
-			}
-
-			if (!password) {
-				return new Response(
-					JSON.stringify({
-						error: 'Password is required',
-					}),
-					{
-						status: 400,
-					}
-				);
-			}
-
-			if (!confirmPassword) {
-				return new Response(
-					JSON.stringify({
-						error: 'Confirm password is required',
-					}),
-					{
-						status: 400,
-					}
-				);
+			for (const { field, name } of requiredFields) {
+				if (!field) {
+					return new Response(JSON.stringify({ error: `${name} is required` }), { status: 400 });
+				}
 			}
 
 			if (password !== confirmPassword) {
@@ -109,10 +68,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// If the email is invalid, return an error
-			const checkEmail = z.coerce
-				.string()
-				.email({ message: 'Email address is invalid' })
-				.safeParse(email);
+			const checkEmail = z.string().email({ message: 'Email address is invalid' }).safeParse(email);
 
 			if (!checkEmail.success) {
 				return new Response(

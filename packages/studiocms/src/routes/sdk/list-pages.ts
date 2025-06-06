@@ -2,6 +2,20 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
+const commonHeaders = {
+	'Content-Type': 'application/json',
+	'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+};
+
+const createErrorResponse = (message: string, status = 500) =>
+	new Response(JSON.stringify({ success: false, error: message }), {
+		status,
+		headers: {
+			...commonHeaders,
+			Date: new Date().toUTCString(),
+		},
+	});
+
 export const GET: APIRoute = async (): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('routes/sdk/list-pages/GET')(function* () {
@@ -12,24 +26,13 @@ export const GET: APIRoute = async (): Promise<Response> =>
 
 			return new Response(JSON.stringify({ lastUpdated, pages }, null, 2), {
 				headers: {
-					'Content-Type': 'application/json',
-					'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+					...commonHeaders,
 					Date: lastUpdated,
 				},
 			});
 		}).pipe(SDKCore.Provide)
 	).catch((error) => {
-		return new Response(
-			JSON.stringify({ success: false, error: `Error fetching pages: ${error.message}` }),
-			{
-				status: 500,
-				headers: {
-					'Content-Type': 'application/json',
-					'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-					Date: new Date().toUTCString(),
-				},
-			}
-		);
+		return createErrorResponse(`Error fetching pages: ${error.message}`);
 	});
 
 export const OPTIONS: APIRoute = async () => {

@@ -56,7 +56,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(SDKCore.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch folders', error);
 	});
@@ -78,10 +78,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			const jsonData = yield* Effect.tryPromise(() => context.request.json());
 			const { folderName, parentFolder } = yield* Schema.decodeUnknown(FolderBase)(jsonData);
-
-			if (!folderName) {
-				return apiResponseLogger(400, 'Invalid form data, folderName is required');
-			}
 
 			const sdk = yield* SDKCore;
 			const newFolder = yield* sdk.POST.databaseEntry.folder({

@@ -122,7 +122,14 @@ export const POST: APIRoute = async (context: APIContext) =>
 					id: dataId,
 					// biome-ignore lint/style/noNonNullAssertion: <explanation>
 					title: data.title!,
-					slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
+					slug:
+						data.slug ||
+						data.title
+							.toLowerCase()
+							.replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+							.replace(/\s+/g, '-') // Replace spaces with hyphens
+							.replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+							.replace(/^-|-$/g, ''), // Remove leading/trailing hyphens '-'),
 					description: data.description || '',
 					authorId: userId || null,
 					...data,
