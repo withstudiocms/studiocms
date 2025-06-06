@@ -1,4 +1,4 @@
-import { FetchHttpClient, HttpBody, HttpClient, HttpClientRequest } from '@effect/platform';
+import { FetchHttpClient, HttpClient, HttpClientRequest } from '@effect/platform';
 import type { APIContext } from 'astro';
 import { Effect, Schedule } from 'effect';
 import type { List, Root } from 'mdast';
