@@ -6,7 +6,7 @@ import { verifyAuthTokenFromHeader } from '../../../../utils/auth-token.js';
 
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studioCMS:rest:v1:public:pages:[id]:history:[diffid]:GET')(function* () {
+		genLogger('studioCMS:rest:v1:pages:[id]:history:[diffid]:GET')(function* () {
 			const sdk = yield* SDKCore;
 
 			const user = yield* verifyAuthTokenFromHeader(context);
