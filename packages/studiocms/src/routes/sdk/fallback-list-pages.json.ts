@@ -16,7 +16,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 						'Content-Type': 'application/json',
 						'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
 						'Cache-Control': 'public, max-age=604800, immutable',
-						Date: lastUpdated,
+						Date: new Date(lastUpdated).toUTCString(),
 					},
 				}
 			);
