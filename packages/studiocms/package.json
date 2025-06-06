@@ -137,7 +137,7 @@
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
 		"@cloudinary/url-gen": "^1.21.0",
-		"@commander-js/extra-typings": "^13.0.0",
+		"@commander-js/extra-typings": "^14.0.0",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-browser": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
