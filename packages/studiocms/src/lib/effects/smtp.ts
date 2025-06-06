@@ -1,5 +1,4 @@
-import { eq } from 'astro:db';
-import { SDKCoreJs } from 'studiocms:sdk';
+import { db, eq } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { Data, Effect, pipe } from 'effect';
 import nodemailer from 'nodemailer';
@@ -51,17 +50,6 @@ export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
  */
 export class SMTPError extends Data.TaggedError('SMTPError')<{ error: Error | unknown }> {}
 
-/**
- * Gets the mailer configuration from the database.
- *
- * @returns A promise that resolves with the mailer configuration object.
- */
-const getMailerConfigTable = pipeLogger('studiocms/lib/effects/smtp/getMailerConfigTable')(
-	SDKCoreJs.dbService.execute((db) =>
-		db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
-	)
-);
-
 const convertTransporterConfig = (config: tsMailer) =>
 	pipeLogger('studiocms/lib/effects/smtp/convertTransporterConfig')(
 		Effect.try(() => {
@@ -107,15 +95,16 @@ const convertTransporterConfig = (config: tsMailer) =>
 
 const buildTransporterConfig = genLogger('studiocms/lib/effects/smtp/buildTransporterConfig')(
 	function* () {
-		const configTable = yield* getMailerConfigTable;
-		// If the mailer configuration is not found, throw an
-		// error indicating that the configuration is missing
+		const configTable = yield* Effect.tryPromise(() =>
+			db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
+		);
+
+		// If the mailer configuration is not found, return an Empty config
 		if (!configTable) {
-			return yield* Effect.fail(
-				new Error(
-					'Mailer configuration not found, please configure the mailer first using the StudioCMS dashboard'
-				)
-			);
+			const defaultMailerConfig: MailerConfig = {
+				transporter: {},
+			};
+			return defaultMailerConfig;
 		}
 
 		return yield* convertTransporterConfig(configTable);
