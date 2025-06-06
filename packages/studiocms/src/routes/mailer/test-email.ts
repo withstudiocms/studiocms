@@ -28,7 +28,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const { test_email } = yield* Effect.tryPromise(() => context.request.json());
 
 			// Validate form data
-			if (!test_email && typeof test_email !== 'string') {
+			if (!test_email || typeof test_email !== 'string') {
 				return apiResponseLogger(400, 'Invalid form data, test_email is required');
 			}
 
