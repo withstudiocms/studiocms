@@ -74,6 +74,7 @@ import type {
 	tsPermissionsSelect,
 	tsSessionTableInsert,
 	tsSiteConfigInsert,
+	tsSiteConfigSelect,
 	tsUserResetTokensSelect,
 	tsUsersInsert,
 	tsUsersSelect,
@@ -1280,7 +1281,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			 * @returns A promise that resolves to the inserted site configuration.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 			 */
-			siteConfig: (config: tsSiteConfigInsert) =>
+			siteConfig: (config: Omit<tsSiteConfigSelect, 'id'>) =>
 				dbService
 					.execute((db) =>
 						db
