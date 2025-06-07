@@ -58,10 +58,10 @@ export const cacheModule = {
 	},
 	POST: {
 		page: async (data: {
-			pageData: tsPageDataInsert;
+			pageData: tsPageDataSelect;
 			pageContent: CombinedInsertContent;
 		}) => await convertToVanilla(run.POST.page(data)),
-		folder: async (data: tsPageFolderInsert) => await convertToVanilla(run.POST.folder(data)),
+		folder: async (data: tsPageFolderSelect) => await convertToVanilla(run.POST.folder(data)),
 	},
 	CLEAR: {
 		page: {

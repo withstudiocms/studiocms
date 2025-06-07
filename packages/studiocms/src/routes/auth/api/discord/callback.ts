@@ -102,6 +102,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 
 		const newUser = await createOAuthUser(
 			{
+				// @ts-expect-error drizzle broke the id variable...
 				id: crypto.randomUUID(),
 				username: discordUsername,
 				name: discordUser.global_name ?? discordUsername,

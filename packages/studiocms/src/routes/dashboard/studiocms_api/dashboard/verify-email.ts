@@ -30,6 +30,7 @@ export const GET: APIRoute = async (context) => {
 
 	// Update the user's email verification status
 	await studioCMS_SDK.AUTH.user.update(userId, {
+		// @ts-expect-error drizzle broke the variable...
 		emailVerified: true,
 	});
 

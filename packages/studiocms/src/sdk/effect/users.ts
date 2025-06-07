@@ -117,6 +117,7 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 				yield* dbService.execute((db) =>
 					db
 						.update(tsPageData)
+						// @ts-expect-error: drizzle broke this
 						.set({ authorId: GhostUserDefaults.id })
 						.where(eq(tsPageData.authorId, userId))
 				);

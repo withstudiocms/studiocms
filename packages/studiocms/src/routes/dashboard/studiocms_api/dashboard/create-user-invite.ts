@@ -107,6 +107,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	const newUser = await studioCMS_SDK.AUTH.user.create(
 		{
 			username,
+			// @ts-expect-error drizzle broke the variable...
 			email: checkEmail.data,
 			name: displayname,
 			createdAt: new Date(),

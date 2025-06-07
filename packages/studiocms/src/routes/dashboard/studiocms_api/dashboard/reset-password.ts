@@ -58,6 +58,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 	}
 
 	try {
+		// @ts-expect-error drizzle broke the variable...
 		await studioCMS_SDK.AUTH.user.update(userid, userUpdate);
 
 		await studioCMS_SDK.resetTokenBucket.delete(userid);

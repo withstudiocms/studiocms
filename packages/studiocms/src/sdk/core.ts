@@ -34,6 +34,7 @@ import type {
 	tsPermissionsSelect,
 	tsSessionTableInsert,
 	tsSiteConfigInsert,
+	tsSiteConfigSelect,
 	tsUsersInsert,
 	tsUsersSelect,
 	tsUsersUpdate,
@@ -362,7 +363,7 @@ export async function studiocmsSDKCore() {
 		 * @returns A promise that resolves to the inserted site configuration.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 		 */
-		siteConfig: async (config: tsSiteConfigInsert) =>
+		siteConfig: async (config: Omit<tsSiteConfigSelect, 'id'>) =>
 			await convertToVanilla(run.INIT.siteConfig(config)),
 
 		/**
@@ -668,7 +669,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted page data and page content.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 			 */
-			pages: async (pageData: tsPageDataInsert, pageContent: CombinedInsertContent) =>
+			pages: async (pageData: tsPageDataSelect, pageContent: CombinedInsertContent) =>
 				await convertToVanilla(run.POST.databaseEntry.pages(pageData, pageContent)),
 
 			/**
@@ -678,7 +679,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted page content.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page content.
 			 */
-			pageContent: async (pageContent: tsPageContentInsert): Promise<PageContentReturnId[]> =>
+			pageContent: async (pageContent: tsPageContentSelect): Promise<PageContentReturnId[]> =>
 				await convertToVanilla(run.POST.databaseEntry.pageContent(pageContent)),
 
 			/**
@@ -688,7 +689,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted tag.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tag.
 			 */
-			tags: async (tag: tsPageDataTagsInsert): Promise<PageDataTagsInsertResponse[]> =>
+			tags: async (tag: tsPageDataTagsSelect): Promise<PageDataTagsInsertResponse[]> =>
 				await convertToVanilla(run.POST.databaseEntry.tags(tag)),
 
 			/**
@@ -698,7 +699,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted category.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the category.
 			 */
-			categories: async (category: tsPageDataCategoriesInsert) =>
+			categories: async (category: tsPageDataCategoriesSelect) =>
 				await convertToVanilla(run.POST.databaseEntry.categories(category)),
 
 			/**
@@ -719,7 +720,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted diff tracking entry.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the diff tracking entry.
 			 */
-			diffTracking: async (diff: tsDiffTrackingInsert): Promise<tsDiffTrackingSelect[]> =>
+			diffTracking: async (diff: tsDiffTrackingSelect): Promise<tsDiffTrackingSelect[]> =>
 				await convertToVanilla(run.POST.databaseEntry.diffTracking(diff)),
 
 			/**
@@ -729,7 +730,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted folder.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 			 */
-			folder: async (folder: tsPageFolderInsert): Promise<tsPageFolderSelect> =>
+			folder: async (folder: tsPageFolderSelect): Promise<tsPageFolderSelect> =>
 				await convertToVanilla(run.POST.databaseEntry.folder(folder)),
 		},
 
@@ -744,7 +745,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted tags.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tags.
 			 */
-			tags: async (data: tsPageDataTagsInsert[]): Promise<PageDataTagsInsertResponse[]> =>
+			tags: async (data: tsPageDataTagsSelect[]): Promise<PageDataTagsInsertResponse[]> =>
 				await convertToVanilla(run.POST.databaseEntries.tags(data)),
 
 			/**
@@ -755,7 +756,7 @@ export async function studiocmsSDKCore() {
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the categories.
 			 */
 			categories: async (
-				data: tsPageDataCategoriesInsert[]
+				data: tsPageDataCategoriesSelect[]
 			): Promise<PageDataCategoriesInsertResponse[]> =>
 				await convertToVanilla(run.POST.databaseEntries.categories(data)),
 
@@ -766,7 +767,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the inserted permissions.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permissions.
 			 */
-			permissions: async (data: tsPermissionsInsert[]): Promise<tsPermissionsSelect[]> =>
+			permissions: async (data: tsPermissionsSelect[]): Promise<tsPermissionsSelect[]> =>
 				await convertToVanilla(run.POST.databaseEntries.permissions(data)),
 
 			/**

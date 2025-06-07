@@ -80,12 +80,15 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* sdk.INIT.siteConfig({
 				title,
 				description,
-				defaultOgImage,
+				defaultOgImage: DefaultHeroOrUserSetOgImage,
 				diffPerPage,
 				enableDiffs,
 				loginPageBackground,
 				loginPageCustomImage,
 				siteIcon,
+				enableMailer: false,
+				gridItems: [],
+				hideDefaultIndex: false,
 			});
 
 			yield* sdk.INIT.ghostUser();
@@ -105,6 +108,12 @@ export const POST: APIRoute = async (context: APIContext) =>
 						showAuthor: false,
 						showContributors: false,
 						updatedAt: new Date(),
+						categories: [],
+						contributorIds: [],
+						draft: false,
+						tags: [],
+						parentFolder: null,
+						id: crypto.randomUUID(),
 					},
 					pageContent: {
 						content: LOREM_IPSUM,
