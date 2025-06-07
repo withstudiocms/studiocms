@@ -113,6 +113,7 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	try {
 		await studioCMS_SDK_Cache.POST.page({
+			// @ts-expect-error
 			pageData: {
 				id: dataId,
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
@@ -120,8 +121,10 @@ export const POST: APIRoute = async (context: APIContext) => {
 				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
 				description: data.description || '',
 				authorId: userData.user?.id || null,
+				updatedAt: new Date(),
 				...data,
 			},
+			// @ts-expect-error
 			pageContent: { id: contentId, ...content },
 		});
 
