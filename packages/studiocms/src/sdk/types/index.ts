@@ -310,7 +310,7 @@ export interface DeletionResponse {
  * Represents the data required to insert a new page.
  */
 export interface PageInsert {
-	pageData: tsPageDataInsert;
+	pageData: tsPageDataSelect;
 	pageContent: CombinedInsertContent;
 }
 

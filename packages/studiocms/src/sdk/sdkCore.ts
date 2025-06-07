@@ -57,6 +57,7 @@ import type {
 	VersionCacheObject,
 	addDatabaseEntryInsertPage,
 	tsDiffTrackingInsert,
+	tsDiffTrackingSelect,
 	tsNotificationSettingsInsert,
 	tsOAuthAccountsSelect,
 	tsPageContentInsert,
@@ -761,6 +762,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					return yield* dbService.execute((db) =>
 						db
 							.insert(tsUserResetTokens)
+							// @ts-expect-error Drizzle... removed this from the type?
 							.values({ id: crypto.randomUUID(), userId, token })
 							.returning()
 							.get()
@@ -888,6 +890,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 						db
 							.insert(tsDiffTracking)
 							.values({
+								// @ts-expect-error Drizzle... removed this from the type?
 								id: crypto.randomUUID(),
 								userId,
 								pageId,
@@ -1082,6 +1085,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 						yield* dbService.execute((db) =>
 							db
 								.update(tsPageContent)
+								// @ts-expect-error Drizzle... removed this from the type?
 								.set({ content: diffEntry.pageContentStart })
 								.where(eq(tsPageContent.contentId, diffEntry.pageId))
 						);
@@ -1281,6 +1285,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					.execute((db) =>
 						db
 							.insert(tsSiteConfig)
+							// @ts-expect-error Drizzle... removed this from the type?
 							.values({ ...config, id: CMSSiteConfigId })
 							.returning()
 							.get()
@@ -1359,6 +1364,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 							db
 								.insert(tsEmailVerificationTokens)
 								.values({
+									// @ts-expect-error Drizzle... removed this from the type?
 									id: crypto.randomUUID(),
 									userId,
 									token,
@@ -2118,6 +2124,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 							db
 								.insert(tsAPIKeys)
 								.values({
+									// @ts-expect-error Drizzle... removed this from the type?
 									id: crypto.randomUUID(),
 									creationDate: new Date(),
 									userId,
@@ -2645,7 +2652,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted page data and page content.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 				 */
-				pages: (pageData: tsPageDataInsert, pageContent: CombinedInsertContent) =>
+				pages: (pageData: tsPageDataSelect, pageContent: CombinedInsertContent) =>
 					Effect.gen(function* () {
 						const newContentID = pageData.id || crypto.randomUUID().toString();
 
@@ -2687,6 +2694,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 							db
 								.insert(tsPageData)
 								.values({
+									// @ts-expect-error Drizzle... removed this from the type?
 									id,
 									title,
 									slug,
@@ -2728,11 +2736,12 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted page content.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page content.
 				 */
-				pageContent: dbService.makeQuery((ex, pageContent: tsPageContentInsert) =>
+				pageContent: dbService.makeQuery((ex, pageContent: tsPageContentSelect) =>
 					ex((db) =>
 						db
 							.insert(tsPageContent)
 							.values({
+								// @ts-expect-error Drizzle... removed this from the type?
 								id: pageContent.id || crypto.randomUUID().toString(),
 								contentId: pageContent.contentId,
 								contentLang: pageContent.contentLang || 'default',
@@ -2753,7 +2762,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted tag.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tag.
 				 */
-				tags: (tag: tsPageDataTagsInsert) =>
+				tags: (tag: tsPageDataTagsSelect) =>
 					Effect.gen(function* () {
 						const id = tag.id || (yield* generateRandomIDNumber(9));
 
@@ -2761,11 +2770,12 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 							db
 								.insert(tsPageDataTags)
 								.values({
+									// @ts-expect-error Drizzle... removed this from the type?
+									id,
 									name: tag.name,
 									description: tag.description,
 									slug: tag.slug,
 									meta: JSON.stringify(tag.meta),
-									id,
 								})
 								.returning({ id: tsPageDataTags.id })
 						);
@@ -2782,7 +2792,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted category.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the category.
 				 */
-				categories: (category: tsPageDataCategoriesInsert) =>
+				categories: (category: tsPageDataCategoriesSelect) =>
 					Effect.gen(function* () {
 						const id = category.id || (yield* generateRandomIDNumber(9));
 
@@ -2790,11 +2800,12 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 							db
 								.insert(tsPageDataCategories)
 								.values({
+									// @ts-expect-error Drizzle... removed this from the type?
+									id,
 									name: category.name,
 									description: category.description,
 									slug: category.slug,
 									meta: JSON.stringify(category.meta),
-									id,
 								})
 								.returning({ id: tsPageDataCategories.id })
 						);
@@ -2849,11 +2860,12 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted diff tracking entry.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the diff tracking entry.
 				 */
-				diffTracking: dbService.makeQuery((ex, diff: tsDiffTrackingInsert) =>
+				diffTracking: dbService.makeQuery((ex, diff: tsDiffTrackingSelect) =>
 					ex((db) =>
 						db
 							.insert(tsDiffTracking)
 							.values({
+								// @ts-expect-error Drizzle... removed this from the type?
 								id: diff.id || crypto.randomUUID().toString(),
 								userId: diff.userId,
 								pageId: diff.pageId,
@@ -2877,11 +2889,12 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted folder.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 				 */
-				folder: dbService.makeQuery((ex, folder: tsPageFolderInsert) =>
+				folder: dbService.makeQuery((ex, folder: tsPageFolderSelect) =>
 					ex((db) =>
 						db
 							.insert(tsPageFolderStructure)
 							.values({
+								// @ts-expect-error Drizzle... removed this from the type?
 								id: folder.id || crypto.randomUUID().toString(),
 								name: folder.name,
 								parent: folder.parent || null,
@@ -2904,9 +2917,9 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted tags.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tags.
 				 */
-				tags: (data: tsPageDataTagsInsert[]) =>
+				tags: (data: tsPageDataTagsSelect[]) =>
 					Effect.gen(function* () {
-						const entries: tsPageDataTagsInsert[] = [];
+						const entries: tsPageDataTagsSelect[] = [];
 
 						for (const item of data) {
 							const id = item.id || (yield* generateRandomIDNumber(9));
@@ -2935,9 +2948,9 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 				 * @returns A promise that resolves to the inserted categories.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the categories.
 				 */
-				categories: (data: tsPageDataCategoriesInsert[]) =>
+				categories: (data: tsPageDataCategoriesSelect[]) =>
 					Effect.gen(function* () {
-						const entries: tsPageDataCategoriesInsert[] = [];
+						const entries: tsPageDataCategoriesSelect[] = [];
 
 						for (const item of data) {
 							const id = item.id || (yield* generateRandomIDNumber(9));
@@ -2947,6 +2960,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 								slug: item.slug,
 								description: item.description,
 								meta: JSON.stringify(item.meta),
+								parent: null,
 							});
 						}
 
@@ -3025,7 +3039,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 						}
 					}),
 			},
-			folder: (data: tsPageFolderInsert) =>
+			folder: (data: tsPageFolderSelect) =>
 				Effect.gen(function* () {
 					const newEntry = yield* POST.databaseEntry.folder(data);
 
@@ -3038,7 +3052,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					return newEntry;
 				}),
 			page: (data: {
-				pageData: tsPageDataInsert;
+				pageData: tsPageDataSelect;
 				pageContent: CombinedInsertContent;
 			}) =>
 				Effect.gen(function* () {

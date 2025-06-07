@@ -15,8 +15,8 @@ import type {
 	tsUsers,
 } from '../tables.js';
 
-export type tsEmailVerificationTokensInsert = typeof tsEmailVerificationTokens.$inferInsert;
 export type tsEmailVerificationTokensSelect = typeof tsEmailVerificationTokens.$inferSelect;
+export type tsEmailVerificationTokensInsert = typeof tsEmailVerificationTokens.$inferInsert;
 export type tsNotificationSettingsInsert = typeof tsNotificationSettings.$inferInsert;
 export type tsNotificationSettingsSelect = typeof tsNotificationSettings.$inferSelect;
 
@@ -182,7 +182,7 @@ export type tsPageContentInsert = typeof tsPageContent.$inferInsert;
  * the 'id' and 'contentId' fields, which might be auto-generated or
  * handled separately.
  */
-export type CombinedInsertContent = Omit<tsPageContentInsert, 'id' | 'contentId'>;
+export type CombinedInsertContent = Omit<tsPageContentSelect, 'id' | 'contentId'>;
 
 /**
  * Type alias for the inferred insert type of `tsPageDataTags`.
