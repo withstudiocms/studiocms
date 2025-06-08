@@ -7,8 +7,8 @@ import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-type UpdatePageData = Partial<tsPageDataSelect>;
-type UpdatePageContent = Partial<tsPageContentSelect>;
+type UpdatePageData = tsPageDataSelect;
+type UpdatePageContent = tsPageContentSelect;
 
 interface CreatePageJson {
 	data?: UpdatePageData;
@@ -117,24 +117,39 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const dataId = crypto.randomUUID();
 			const contentId = crypto.randomUUID();
 
+			const {
+				title,
+				slug,
+				description,
+				id: ___id,
+				authorId: __authorId,
+				updatedAt: __updatedAt,
+				publishedAt: __publishedAt,
+				...restPageData
+			} = data;
+
+			const { id, ...contentData } = content;
+
 			yield* sdk.POST.databaseEntry.pages(
 				{
 					id: dataId,
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
-					title: data.title!,
+					title,
 					slug:
-						data.slug ||
-						data.title
+						slug ||
+						title
 							.toLowerCase()
 							.replace(/[^a-z0-9\s-]/g, '') // Remove special characters
 							.replace(/\s+/g, '-') // Replace spaces with hyphens
 							.replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
 							.replace(/^-|-$/g, ''), // Remove leading/trailing hyphens '-'),
-					description: data.description || '',
+					description: description || '',
 					authorId: userId || null,
-					...data,
+					updatedAt: new Date(),
+					publishedAt: new Date(),
+					...restPageData,
 				},
-				{ id: contentId, ...content }
+				// @ts-expect-error drizzle broke the id variable
+				{ id: contentId, ...contentData }
 			);
 
 			yield* Notifications.sendEditorNotification('new_page', data.title);

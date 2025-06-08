@@ -1,7 +1,7 @@
 import { Effect } from 'effect';
 import { convertToVanilla } from '../lib/effects/index.js';
 import { studiocmsSDKCore } from './core.js';
-import { SDKCore as _SDKCore } from './sdkCore.js';
+import { SDKCore } from './sdkCore.js';
 
 /**
  * @deprecated
@@ -31,7 +31,7 @@ export default studioCMS_SDK;
  * }).pipe(Effect.provide(SDKCore.Default));
  * ```
  */
-export const SDKCore = _SDKCore;
+export { SDKCore };
 
 /**
  * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
