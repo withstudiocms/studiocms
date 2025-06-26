@@ -1,3 +1,5 @@
+@import './onest-font.css';
+
 :root {
 	--d2h-bg-color: hsl(var(--background-step-1));
 	--d2h-border-color: hsl(var(--border));

@@ -1,0 +1,13 @@
+/* System font stack that looks similar to Onest */
+:root {
+	--scms-font-onest: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* TODO: Add variable font when we find the correct source */
+/* @font-face {
+	font-family: 'Onest';
+	src: url('./Onest-VariableFont_wght.woff2') format('woff2-variations');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+} */ 
