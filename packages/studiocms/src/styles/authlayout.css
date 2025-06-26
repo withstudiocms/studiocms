@@ -1,9 +1,5 @@
 @import './onest-font.css';
 
-* {
-	font-family: var(--scms-font-onest);
-}
-
 html {
 	background: var(--background);
 	box-sizing: border-box;
