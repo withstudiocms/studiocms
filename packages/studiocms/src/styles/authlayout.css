@@ -1,6 +1,4 @@
-* {
-	font-family: var(--scms-font-onest);
-}
+@import './onest-font.css';
 
 html {
 	background: var(--background);

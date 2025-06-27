@@ -13,7 +13,7 @@ import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
-import { envField, fontProviders } from 'astro/config';
+import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
@@ -1511,16 +1511,6 @@ export const studiocms = defineIntegration({
 						'Updating Astro Config with StudioCMS Resources and settings...'
 					);
 					updateConfig({
-						experimental: {
-							fonts: [
-								{
-									provider: fontProviders.google(),
-									name: 'Onest',
-									cssVariable: '--scms-font-onest',
-									weights: ['100 900'],
-								},
-							],
-						},
 						image: {
 							remotePatterns: [
 								{
@@ -1530,7 +1520,7 @@ export const studiocms = defineIntegration({
 						},
 						vite: {
 							optimizeDeps: {
-								exclude: ['three', 'virtual:astro:assets/fonts/internal'],
+								exclude: ['three'],
 							},
 							plugins: [inlineModPlugin()],
 						},

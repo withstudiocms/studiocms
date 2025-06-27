@@ -3,7 +3,6 @@ import 'studiocms:ui/global-css';
 import '../../styles/dashboard-base.css';
 import '../../styles/dashboard-diff.css';
 import '../../styles/dashboard-code.css';
-import { Font } from 'astro:assets';
 import { Generator } from 'studiocms:components';
 import ThemeManager from './ThemeManager.astro';
 
@@ -34,7 +33,4 @@ const { title, description } = Astro.props;
 
   {/* Theme Manager */}
   <ThemeManager />
-
-  {/* Fonts */}
-  <Font cssVariable="--scms-font-onest" preload />
 </head>
