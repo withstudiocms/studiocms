@@ -1,5 +1,14 @@
 # @studiocms/blog
 
+## 0.1.0-beta.19
+
+### Patch Changes
+
+- [#602](https://github.com/withstudiocms/studiocms/pull/602) [`f8c70bc`](https://github.com/withstudiocms/studiocms/commit/f8c70bc4280c617929c4500002c5cbe5ef7c2837) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update page grabbing to utilize new data structure
+
+- Updated dependencies [[`d3f0228`](https://github.com/withstudiocms/studiocms/commit/d3f0228d2f20a346387fa1267db35fd5b2f0649a), [`198d14a`](https://github.com/withstudiocms/studiocms/commit/198d14ad038b208a73c10312b73dea253d21efb0), [`33266b4`](https://github.com/withstudiocms/studiocms/commit/33266b443e730db93f7a63cb3f9325d4cc0548db), [`231cf43`](https://github.com/withstudiocms/studiocms/commit/231cf438ae7465805ce456d198e170d17331e911), [`78f3cfc`](https://github.com/withstudiocms/studiocms/commit/78f3cfcc614bb9a74818f673c9d24c2020ed5a4a), [`f8c70bc`](https://github.com/withstudiocms/studiocms/commit/f8c70bc4280c617929c4500002c5cbe5ef7c2837), [`a3c2c53`](https://github.com/withstudiocms/studiocms/commit/a3c2c5376073e95a88d22dc290b56705be0907a3), [`688dd08`](https://github.com/withstudiocms/studiocms/commit/688dd08b1062b47132d90d39c6a5a946f40bb8b6), [`f13e396`](https://github.com/withstudiocms/studiocms/commit/f13e396308426df2b8f08f1502f3c43c20c7241e), [`c71b5fc`](https://github.com/withstudiocms/studiocms/commit/c71b5fcf98821a73333da21c7bfd92a244febb22), [`599aaf7`](https://github.com/withstudiocms/studiocms/commit/599aaf7d6760fa5c71913f541b11b67338354e0b)]:
+  - studiocms@0.1.0-beta.19
+
 ## 0.1.0-beta.18
 
 ### Patch Changes
