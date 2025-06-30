@@ -162,7 +162,7 @@
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.51",
 		"dompurify": "^3.2.3",
-		"dotenv": "^16.4.7",
+		"dotenv": "^17.0.0",
 		"drizzle-orm": "^0.42.0",
 		"effect": "catalog:effect",
 		"fuse.js": "^7.0.0",
