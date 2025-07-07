@@ -1,6 +1,6 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { AuthConfig } from 'studiocms:config';
+import config, { AuthConfig } from 'studiocms:config';
 import { SDKCore } from 'studiocms:sdk';
 import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
@@ -47,8 +47,143 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 				return context.redirect(url.toString());
 			});
 
+		const validateAuthCode = (code: string) =>
+			genLogger('studiocms/routes/auth/api/github/effect.validateAuthCode')(function* () {
+				const tokens = yield* Effect.tryPromise(() => github.validateAuthorizationCode(code));
+
+				const response = yield* Effect.tryPromise(() =>
+					fetch('https://api.github.com/user', {
+						headers: {
+							Authorization: `Bearer ${tokens.accessToken}`,
+						},
+					})
+				);
+
+				if (!response.ok) {
+					yield* Effect.fail(new Error('Failed Authorization Check'));
+				}
+
+				const resData: GitHubUser = yield* Effect.tryPromise(() => response.json());
+
+				return resData;
+			});
+
+		const initCallback = (context: APIContext) =>
+			genLogger('studiocms/routes/auth/api/github/effect.initCallback')(function* () {
+				const { url, cookies, redirect } = context;
+
+				const code = url.searchParams.get('code');
+				const state = url.searchParams.get('state');
+				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+
+				if (!code || !state || !storedState || state !== storedState) {
+					return redirect(context.locals.routeMap.authLinks.loginURL);
+				}
+
+				const githubUser = yield* validateAuthCode(code);
+
+				const { id: githubUserId, login: githubUsername } = githubUser;
+
+				const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
+					ProviderID,
+					`${githubUserId}`
+				);
+
+				if (existingOAuthAccount) {
+					const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
+
+					if (!user) {
+						return new Response('User not found', { status: 404 });
+					}
+
+					const existingUser = yield* sdk.GET.users.byId(user.id);
+
+					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+
+					// If Mailer is enabled, is the user verified?
+					if (!isEmailAccountVerified) {
+						return new Response('Email not verified, please verify your account first.', {
+							status: 400,
+						});
+					}
+
+					yield* sessionHelper.createUserSession(user.id, context);
+
+					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+				}
+
+				const loggedInUser = yield* userLib.getUserData(context);
+				const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+
+				if (loggedInUser.user && linkNewOAuth) {
+					const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
+
+					if (existingUser) {
+						yield* sdk.AUTH.oAuth.create({
+							userId: existingUser.id,
+							provider: ProviderID,
+							providerUserId: `${githubUserId}`,
+						});
+
+						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+
+						// If Mailer is enabled, is the user verified?
+						if (!isEmailAccountVerified) {
+							return new Response('Email not verified, please verify your account first.', {
+								status: 400,
+							});
+						}
+
+						yield* sessionHelper.createUserSession(existingUser.id, context);
+
+						return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+					}
+				}
+
+				const newUser = yield* userLib.createOAuthUser(
+					{
+						// @ts-expect-error drizzle broke the id variable...
+						id: crypto.randomUUID(),
+						username: githubUsername,
+						email: githubUser.email,
+						name: githubUser.name,
+						avatar: githubUser.avatar_url,
+						createdAt: new Date(),
+						url: githubUser.blog,
+					},
+					{ provider: ProviderID, providerUserId: `${githubUserId}` }
+				);
+
+				if ('error' in newUser) {
+					return new Response('Error creating user', { status: 500 });
+				}
+
+				// FIRST-TIME-SETUP
+				if (config.dbStartPage) {
+					return redirect('/done');
+				}
+
+				yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+
+				const existingUser = yield* sdk.GET.users.byId(newUser.id);
+
+				const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+
+				// If Mailer is enabled, is the user verified?
+				if (!isEmailAccountVerified) {
+					return new Response('Email not verified, please verify your account first.', {
+						status: 400,
+					});
+				}
+
+				yield* sessionHelper.createUserSession(newUser.id, context);
+
+				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+			});
+
 		return {
 			initSession,
+			initCallback
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],

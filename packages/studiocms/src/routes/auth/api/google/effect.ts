@@ -72,9 +72,9 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					yield* Effect.fail(new Error('Failed Authorization Check'));
 				}
 
-				const googleUser: GoogleUser = yield* Effect.tryPromise(() => response.json());
+				const resData: GoogleUser = yield* Effect.tryPromise(() => response.json());
 
-				return googleUser;
+				return resData;
 			});
 
 		const initCallback = (context: APIContext) =>
