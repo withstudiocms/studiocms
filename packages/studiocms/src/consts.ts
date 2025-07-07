@@ -63,7 +63,7 @@ const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
 export const routesDir = {
 	fts: (file: string) => _routes_dir(`firstTimeSetupRoutes/${file}`),
 	dashRoute: (file: string) => _routes_dir(`dashboard/${file}`),
-	dashApi: (file: string) => _routes_dir(`dashboard/studiocms_api/dashboard/${file}`),
+	dashApi: (file: string) => _routes_dir(`api/dashboard/${file}`),
 	errors: (file: string) => _routes_dir(`error-pages/${file}`),
 	v1Rest: (file: string) => _rest_dir('v1')(file),
 	sdk: (file: string) => _routes_dir(`sdk/${file}`),
