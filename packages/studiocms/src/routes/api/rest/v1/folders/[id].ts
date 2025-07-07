@@ -145,7 +145,7 @@ export const OPTIONS: APIRoute = async () => {
 		statusText: 'No Content',
 		headers: {
 			Allow: 'OPTIONS, GET, PATCH, DELETE',
-			'ALLOW-ACCESS-CONTROL-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 			'Cache-Control': 'public, max-age=604800, immutable',
 			Date: new Date().toUTCString(),
 		},
