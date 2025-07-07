@@ -35,7 +35,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 		const userLib = yield* User;
 
 		const initSession = (context: APIContext) =>
-			genLogger('studiocms/routes/auth/api/google/effect.initSession')(function* () {
+			genLogger('studiocms/routes/auth/api/github/effect.initSession')(function* () {
 				const state = generateState();
 
 				const scopes = ['user:email', 'repo'];
