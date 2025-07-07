@@ -1,23 +1,15 @@
-import { setOAuthSessionTokenCookie } from 'studiocms:auth/lib/session';
-import { generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { ProviderCodeVerifier, ProviderCookieName, auth0 } from './shared.js';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { Auth0OAuthAPI } from './effect.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	const state = generateState();
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/auth/api/auth0.GET')(function* () {
+			const provider = yield* Auth0OAuthAPI;
 
-	const codeVerifier = generateCodeVerifier();
-
-	const scopes = ['profile', 'email'];
-
-	const url = auth0.createAuthorizationURL(state, codeVerifier, scopes);
-
-	setOAuthSessionTokenCookie(context, ProviderCookieName, state);
-
-	setOAuthSessionTokenCookie(context, ProviderCodeVerifier, codeVerifier);
-
-	return context.redirect(url.toString());
-};
+			return yield* provider.initSession(context);
+		}).pipe(Auth0OAuthAPI.Provide)
+	);
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {

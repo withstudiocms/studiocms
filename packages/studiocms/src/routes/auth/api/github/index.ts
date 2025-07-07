@@ -1,24 +1,15 @@
-import { setOAuthSessionTokenCookie } from 'studiocms:auth/lib/session';
-import { generateState } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
-import { ProviderCookieName, github } from './shared.js';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { GitHubOAuthAPI } from './effect.js';
 
-export const GET: APIRoute = async (context: APIContext) => {
-	// generate a random state
-	const state = generateState();
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/auth/api/github.GET')(function* () {
+			const provider = yield* GitHubOAuthAPI;
 
-	// scopes for the GitHub OAuth2 request
-	const scopes = ['user:email', 'repo'];
-
-	// create the GitHub OAuth2 authorization URL
-	const url = github.createAuthorizationURL(state, scopes);
-
-	// set the state cookie
-	setOAuthSessionTokenCookie(context, ProviderCookieName, state);
-
-	// redirect the user to the GitHub OAuth2 authorization URL
-	return context.redirect(url.toString());
-};
+			return yield* provider.initSession(context);
+		}).pipe(GitHubOAuthAPI.Provide)
+	);
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
