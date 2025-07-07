@@ -49,29 +49,37 @@ export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 /**
  * Routes Directory Resolver
  */
-const _routes_dir = (path: string) => `studiocms/src/routes/${path}`;
+const baseDir = (path: string) => `studiocms/src/${path}`;
 
-/**
- * REST API Directory Resolver
- */
-const _rest_dir = (version: CurrentRESTAPIVersions) => (file: string) =>
-	_routes_dir(`rest/${version}/${file}`);
+const baseRoutesDir = (path: string) => baseDir(`routes/${path}`);
+const baseMiddlewareDir = (path: string) => baseDir(`middleware/${path}`);
+const baseAPIRoutesDir = (path: string) => baseRoutesDir(`api/${path}`);
+
+const baseRestDir = (version: CurrentRESTAPIVersions) => (path: string) =>
+	baseRoutesDir(`api/rest/${version}/${path}`);
 
 /**
  * REST API Directory
  */
 export const routesDir = {
-	fts: (file: string) => _routes_dir(`firstTimeSetupRoutes/${file}`),
-	dashRoute: (file: string) => _routes_dir(`dashboard/${file}`),
-	dashApi: (file: string) => _routes_dir(`api/dashboard/${file}`),
-	errors: (file: string) => _routes_dir(`error-pages/${file}`),
-	v1Rest: (file: string) => _rest_dir('v1')(file),
-	sdk: (file: string) => _routes_dir(`sdk/${file}`),
-	api: (file: string) => _routes_dir(`api/${file}`),
-	authPage: (file: string) => _routes_dir(`auth/${file}`),
-	authAPI: (file: string) => _routes_dir(`api/auth/${file}`),
-	mailer: (file: string) => _routes_dir(`mailer/${file}`),
-	middleware: (file: string) => `studiocms/src/middleware/${file}`,
+	// Main Routes
+	fts: (file: string) => baseRoutesDir(`firstTimeSetupRoutes/${file}`),
+	dashRoute: (file: string) => baseRoutesDir(`dashboard/${file}`),
+	errors: (file: string) => baseRoutesDir(`error-pages/${file}`),
+	authPage: (file: string) => baseRoutesDir(`auth/${file}`),
+
+	// API Routes
+	dashApi: (file: string) => baseAPIRoutesDir(`dashboard/${file}`),
+	authAPI: (file: string) => baseAPIRoutesDir(`auth/${file}`),
+	api: (file: string) => baseAPIRoutesDir(file),
+	sdk: (file: string) => baseAPIRoutesDir(`sdk/${file}`),
+	mailer: (file: string) => baseAPIRoutesDir(`mailer/${file}`),
+
+	// REST API Routes
+	v1Rest: (file: string) => baseRestDir('v1')(file),
+
+	// Middleware
+	middleware: (file: string) => baseMiddlewareDir(file),
 };
 
 /**
