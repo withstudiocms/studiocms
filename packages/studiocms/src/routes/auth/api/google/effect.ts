@@ -1,17 +1,30 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import config from 'studiocms:config';
+import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
+import config, { AuthConfig } from 'studiocms:config';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
+import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect } from 'effect';
 import { genLogger } from '../../../../lib/effects/index.js';
-import {
-	type GoogleUser,
-	ProviderCodeVerifier,
-	ProviderCookieName,
-	ProviderID,
-	google,
-} from './shared.js';
+
+export const {
+	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
+} = await authEnvCheck(AuthConfig.providers);
+
+export const ProviderID = 'google';
+export const ProviderCookieName = 'google_oauth_state';
+export const ProviderCodeVerifier = 'google_oauth_code_verifier';
+
+export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
+export interface GoogleUser {
+	sub: string;
+	picture: string;
+	name: string;
+	email: string;
+}
+
 
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/auth/api/google/effect')(function* () {
