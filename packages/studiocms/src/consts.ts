@@ -69,7 +69,7 @@ export const routesDir = {
 	sdk: (file: string) => _routes_dir(`sdk/${file}`),
 	api: (file: string) => _routes_dir(`api/${file}`),
 	authPage: (file: string) => _routes_dir(`auth/${file}`),
-	authAPI: (file: string) => _routes_dir(`auth/api/${file}`),
+	authAPI: (file: string) => _routes_dir(`api/auth/${file}`),
 	mailer: (file: string) => _routes_dir(`mailer/${file}`),
 	middleware: (file: string) => `studiocms/src/middleware/${file}`,
 };
