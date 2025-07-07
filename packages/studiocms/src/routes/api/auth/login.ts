@@ -15,15 +15,15 @@ const deps = Layer.mergeAll(
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/login/POST')(function* () {
+		genLogger('studiocms/routes/api/auth/login/POST')(function* () {
 			const sdk = yield* SDKCore;
 
-			const formData = yield* pipeLogger('studiocms/routes/auth/api/login/POST.formData')(
+			const formData = yield* pipeLogger('studiocms/routes/api/auth/login/POST.formData')(
 				Effect.tryPromise(() => context.request.formData())
 			);
 
 			const [username, password] = yield* pipeLogger(
-				'studiocms/routes/auth/api/login/POST.parseFormData'
+				'studiocms/routes/api/auth/login/POST.parseFormData'
 			)(
 				Effect.all([
 					AuthAPIUtils.parseFormDataEntryToString(formData, 'username'),
@@ -87,7 +87,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

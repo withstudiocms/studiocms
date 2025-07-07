@@ -4,7 +4,7 @@ import { DiscordOAuthAPI } from './effect.js';
 
 export const GET: APIRoute = async (context: APIContext): Promise<Response> => 
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/discord/callback.GET')(function* () {
+		genLogger('studiocms/routes/api/auth/discord/callback.GET')(function* () {
 			const provider = yield* DiscordOAuthAPI;
 
 			return yield* provider.initCallback(context);
@@ -29,7 +29,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

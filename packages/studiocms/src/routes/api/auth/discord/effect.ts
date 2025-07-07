@@ -27,19 +27,19 @@ export interface DiscordUser {
 }
 
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
-	effect: genLogger('studiocms/routes/auth/api/discord/effect')(function* () {
+	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const sessionHelper = yield* Session;
 		const sdk = yield* SDKCore;
 		const verifyEmail = yield* VerifyEmail;
 		const userLib = yield* User;
 
 		const initSession = (context: APIContext) =>
-			genLogger('studiocms/routes/auth/api/discord/effect.initSession')(function* () {
+			genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {
 				const state = generateState();
 
 				const codeVerifier = generateCodeVerifier();
 
-				const scopes = ['profile', 'email'];
+				const scopes = ['identify', 'email'];
 
 				const url = discord.createAuthorizationURL(state, codeVerifier, scopes);
 
@@ -55,7 +55,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			});
 
 		const validateAuthCode = (code: string, codeVerifier: string) =>
-			genLogger('studiocms/routes/auth/api/discord/effect.validateAuthCode')(function* () {
+			genLogger('studiocms/routes/api/auth/discord/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() =>
 					discord.validateAuthorizationCode(code, codeVerifier)
 				);
@@ -78,7 +78,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			});
 
 		const initCallback = (context: APIContext) =>
-			genLogger('studiocms/routes/auth/api/discord/effect.initCallback')(function* () {
+			genLogger('studiocms/routes/api/auth/discord/effect.initCallback')(function* () {
 				const { url, cookies, redirect } = context;
 
 				const code = url.searchParams.get('code');
@@ -106,9 +106,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 						return new Response('User not found', { status: 404 });
 					}
 
-					const existingUser = yield* sdk.GET.users.byId(user.id);
-
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
 
 					// If Mailer is enabled, is the user verified?
 					if (!isEmailAccountVerified) {

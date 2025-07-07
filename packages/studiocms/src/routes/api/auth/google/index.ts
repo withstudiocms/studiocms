@@ -4,7 +4,7 @@ import { GoogleOAuthAPI } from './effect.js';
 
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/google.GET')(function* () {
+		genLogger('studiocms/routes/api/auth/google.GET')(function* () {
 			const provider = yield* GoogleOAuthAPI;
 
 			return yield* provider.initSession(context);
@@ -29,7 +29,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

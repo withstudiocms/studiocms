@@ -4,7 +4,7 @@ import { Auth0OAuthAPI } from './effect.js';
 
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/auth0.GET')(function* () {
+		genLogger('studiocms/routes/api/auth/auth0.GET')(function* () {
 			const provider = yield* Auth0OAuthAPI;
 
 			return yield* provider.initSession(context);
@@ -29,7 +29,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

@@ -17,14 +17,14 @@ const deps = Layer.mergeAll(
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/register/POST')(function* () {
+		genLogger('studiocms/routes/api/auth/register/POST')(function* () {
 			const sdk = yield* SDKCore;
-			const formData = yield* pipeLogger('studiocms/routes/auth/api/register/POST.formData')(
+			const formData = yield* pipeLogger('studiocms/routes/api/auth/register/POST.formData')(
 				Effect.tryPromise(() => context.request.formData())
 			);
 
 			const [username, password, email, name] = yield* pipeLogger(
-				'studiocms/routes/auth/api/register/POST.parseFormData'
+				'studiocms/routes/api/auth/register/POST.parseFormData'
 			)(
 				Effect.all([
 					AuthAPIUtils.parseFormDataEntryToString(formData, 'username'),
@@ -54,7 +54,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 
 			const checkEmailSchema = z.coerce.string().email({ message: 'Email address is invalid' });
 
-			const checkEmail = yield* pipeLogger('studiocms/routes/auth/api/register/POST.checkEmail')(
+			const checkEmail = yield* pipeLogger('studiocms/routes/api/auth/register/POST.checkEmail')(
 				Effect.try(() => checkEmailSchema.safeParse(email))
 			);
 
@@ -108,7 +108,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

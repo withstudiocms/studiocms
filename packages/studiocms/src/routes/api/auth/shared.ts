@@ -7,11 +7,11 @@ export class FormDataEntryFields extends Schema.Class<FormDataEntryFields>('Form
 }) {}
 
 export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
-	'studiocms/routes/auth/api/shared/AuthAPIUtils',
+	'studiocms/routes/api/auth/shared/AuthAPIUtils',
 	{
-		effect: genLogger('studiocms/routes/auth/api/shared/AuthAPIUtils.effect')(function* () {
+		effect: genLogger('studiocms/routes/api/auth/shared/AuthAPIUtils.effect')(function* () {
 			const parseFormDataEntryToString = (formData: FormData, key: string) =>
-				pipeLogger('studiocms/routes/auth/api/shared/AuthAPIUtils.parseFormDataEntryToString')(
+				pipeLogger('studiocms/routes/api/auth/shared/AuthAPIUtils.parseFormDataEntryToString')(
 					Effect.try(() => {
 						const value = formData.get(key);
 						if (typeof value !== 'string') {
@@ -22,14 +22,14 @@ export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
 				);
 
 			const badFormDataEntry = (title: string, description: string) =>
-				genLogger('studiocms/routes/auth/api/shared/AuthAPIUtils.badFormDataEntry')(function* () {
+				genLogger('studiocms/routes/api/auth/shared/AuthAPIUtils.badFormDataEntry')(function* () {
 					const error = yield* Schema.decode(FormDataEntryFields)({ title, description });
 					return new Response(JSON.stringify({ error }), {
 						status: 400,
 						statusText: 'Bad Request',
 						headers: {
 							'Content-Type': 'application/json',
-							'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+							'Access-Control-Allow-Origin': '*',
 						},
 					});
 				});

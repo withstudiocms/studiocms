@@ -27,14 +27,14 @@ export interface GoogleUser {
 
 
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
-	effect: genLogger('studiocms/routes/auth/api/google/effect')(function* () {
+	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
 		const sessionHelper = yield* Session;
 		const sdk = yield* SDKCore;
 		const verifyEmail = yield* VerifyEmail;
 		const userLib = yield* User;
 
 		const initSession = (context: APIContext) =>
-			genLogger('studiocms/routes/auth/api/google/effect.initSession')(function* () {
+			genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {
 				const state = generateState();
 
 				const codeVerifier = generateCodeVerifier();
@@ -55,7 +55,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 			});
 
 		const validateAuthCode = (code: string, codeVerifier: string) =>
-			genLogger('studiocms/routes/auth/api/google/effect.validateAuthCode')(function* () {
+			genLogger('studiocms/routes/api/auth/google/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() =>
 					google.validateAuthorizationCode(code, codeVerifier)
 				);
@@ -78,7 +78,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 			});
 
 		const initCallback = (context: APIContext) =>
-			genLogger('studiocms/routes/auth/api/google/effect.initCallback')(function* () {
+			genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
 				const { url, cookies, redirect } = context;
 
 				const code = url.searchParams.get('code');
@@ -106,9 +106,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 						return new Response('User not found', { status: 404 });
 					}
 
-					const existingUser = yield* sdk.GET.users.byId(user.id);
-
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
 
 					// If Mailer is enabled, is the user verified?
 					if (!isEmailAccountVerified) {

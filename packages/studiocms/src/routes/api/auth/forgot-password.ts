@@ -59,7 +59,7 @@ const deps = Layer.mergeAll(SDKCore.Default, Mailer.Default, Notifications.Defau
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/auth/api/forgot-password/POST')(function* () {
+		genLogger('studiocms/routes/api/auth/forgot-password/POST')(function* () {
 			const sdk = yield* SDKCore;
 			const mailer = yield* Mailer;
 			const notifications = yield* Notifications;
@@ -177,7 +177,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };
