@@ -151,5 +151,8 @@
     "withstudiocms",
     "yocto",
     "yourname"
-  ]
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }
