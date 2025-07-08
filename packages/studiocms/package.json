@@ -141,6 +141,7 @@
 		"@effect/platform": "catalog:effect",
 		"@iconify-json/flat-color-icons": "^1.2.1",
 		"@iconify-json/simple-icons": "^1.2.23",
+		"@inox-tools/inline-mod": "^2.1.2",
 		"@inox-tools/runtime-logger": "0.4.2",
 		"@libsql/client": "^0.15.2",
 		"@nanostores/i18n": "^0.12.2",

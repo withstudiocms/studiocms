@@ -230,9 +230,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
 				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, ...safeData } = plugin;
-				// Check if the plugin has a minimum version requirement
-				const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
-
+				let comparison: number;
+				try {
+					comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
+				} catch (error) {
+					throw new StudioCMSError(
+						`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
+						'The minimum version requirement must be a valid semver string.'
+					);
+				}
 				if (comparison === 1) {
 					throw new StudioCMSError(
 						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,

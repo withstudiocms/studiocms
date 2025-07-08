@@ -4,7 +4,9 @@ import type { AstroGlobalPartial } from 'astro';
 import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
 import { StudioCMSCoreError } from '../errors.js';
-import type { HeadConfigSchema } from './head.js';
+import { HeadConfigSchema } from './head.js';
+
+const _schema = HeadConfigSchema;
 
 /**
  * A union type representing the possible file extensions for favicon images.
@@ -84,7 +86,7 @@ export const headDefaults = (
 	ogImage: string | undefined,
 	canonical: URL | undefined
 ) => {
-	const headDefaults: z.input<ReturnType<typeof HeadConfigSchema>> = [
+	const headDefaults: z.input<ReturnType<typeof _schema>> = [
 		{ tag: 'meta', attrs: { charset: 'utf-8' } },
 		{
 			tag: 'meta',

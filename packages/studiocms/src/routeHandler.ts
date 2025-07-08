@@ -314,7 +314,7 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		{
 			pattern: authAPIRoute('logout'),
 			entrypoint: routesDir.authAPI('logout.ts'),
-			enabled: dashboardEnabled && !options.dbStartPage,
+			enabled: dashboardEnabled && !dbStartPage,
 		},
 		{
 			pattern: authAPIRoute('register'),
@@ -369,12 +369,12 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		{
 			pattern: dashboardRoute('login/'),
 			entrypoint: routesDir.authPage('login.astro'),
-			enabled: dashboardEnabled && !options.dbStartPage,
+			enabled: dashboardEnabled && !dbStartPage,
 		},
 		{
 			pattern: dashboardRoute('logout/'),
 			entrypoint: routesDir.authPage('logout.astro'),
-			enabled: dashboardEnabled && !options.dbStartPage,
+			enabled: dashboardEnabled && !dbStartPage,
 		},
 		{
 			pattern: dashboardRoute('signup/'),

@@ -9,6 +9,7 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
+import inlineMod, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -227,28 +228,28 @@ export const studiocms = defineIntegration({
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
+					defineModule('studiocms:config', {
+						defaultExport: options,
+						constExports: {
+							dashboardConfig: options.features.dashboardConfig,
+							authConfig: options.features.authConfig,
+							AuthConfig: options.features.authConfig,
+							developerConfig: options.features.developerConfig,
+							sdk: options.features.sdk
+						}
+					});
+
+					defineModule('studiocms:plugins', {
+						defaultExport: safePluginList
+					});
+
+					defineModule('studiocms:version', {
+						defaultExport: pkgVersion
+					})
+
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'studiocms:config': `
-								export const config = ${JSON.stringify(options)};
-								export default config;
-
-								export const dashboardConfig = ${JSON.stringify(options.features.dashboardConfig)};
-								export const AuthConfig = ${JSON.stringify(options.features.authConfig)};
-								export const authConfig = ${JSON.stringify(options.features.authConfig)};
-								export const developerConfig = ${JSON.stringify(options.features.developerConfig)};
-								export const sdk = ${JSON.stringify(options.features.sdk)};
-							`,
-							'studiocms:plugins': `
-								const mod = ${JSON.stringify(safePluginList)};
-								export default mod;
-							`,
-							'studiocms:version': `
-								const mod = ${JSON.stringify(pkgVersion)};
-								export default mod;
-							`,
-
 							// Core Virtual Components
 							'studiocms:components': `
 								export { default as FormattedDate } from '${resolve(
@@ -421,6 +422,7 @@ export const studiocms = defineIntegration({
 							],
 						},
 						vite: {
+							plugins: [inlineMod()],
 							optimizeDeps: {
 								exclude: ['three'],
 							},

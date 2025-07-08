@@ -151,6 +151,9 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.2.23
         version: 1.2.23
+      '@inox-tools/inline-mod':
+        specifier: ^2.1.2
+        version: 2.1.2(vite@6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))
       '@inox-tools/runtime-logger':
         specifier: 0.4.2
         version: 0.4.2(astro@5.9.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.40.2)(typescript@5.8.3)(yaml@2.7.0))
@@ -1363,6 +1366,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@inox-tools/inline-mod@2.1.2':
+    resolution: {integrity: sha512-sovxsPHxzNsH/tJkX5JmOlDRqM/X1quVhzksRmWe7/CiocYQG5MohBabFwtozcB3xYVbnN4w1NMWxSQz0NBCRQ==}
+    peerDependencies:
+      vite: ^4 || ^5 || ^6
+    peerDependenciesMeta:
+      vite:
+        optional: true
+
   '@inox-tools/modular-station@0.4.2':
     resolution: {integrity: sha512-o9tt6BhPJ5Of+b/xKjMqfqMCETa6KAyxREcl9y45UmaALEU5xwV6ZwpuO4VDsRoKnG0HB6PgRSPnXU1IdwSIeQ==}
     peerDependencies:
@@ -1375,6 +1386,9 @@ packages:
 
   '@inox-tools/utils@0.3.1':
     resolution: {integrity: sha512-2ppd/FyGpkRrDpEriLupyBDbw4nYO/3peQlIR905i+cI0XeUQkJ9zgfYaVB/rE59d6yJ3dQbZe1B9sk23oHgpg==}
+
+  '@inox-tools/utils@0.5.0':
+    resolution: {integrity: sha512-woD4QD7czNxARXuHWomA5T9TcfeouYf0TEaTADH2HR36YsbwLn+ex27dW1udvYaAgDwSD5mrSqjOE8XhPZM55w==}
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -5904,6 +5918,16 @@ snapshots:
   '@img/sharp-win32-x64@0.34.0':
     optional: true
 
+  '@inox-tools/inline-mod@2.1.2(vite@6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))':
+    dependencies:
+      '@inox-tools/utils': 0.5.0
+      debug: 4.4.0
+      typescript: 5.8.3
+    optionalDependencies:
+      vite: 6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@inox-tools/modular-station@0.4.2(astro@5.9.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.40.2)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
       '@inox-tools/utils': 0.3.1
@@ -5923,6 +5947,8 @@ snapshots:
       - supports-color
 
   '@inox-tools/utils@0.3.1': {}
+
+  '@inox-tools/utils@0.5.0': {}
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
