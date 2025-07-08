@@ -636,7 +636,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			integrations,
 			extraRoutes,
 			safePluginList,
-			messages
+			messages,
 		};
 	}
 );

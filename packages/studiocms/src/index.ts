@@ -20,10 +20,7 @@ import { StudioCMSMarkdownDefaults, makeDashboardRoute, routesDir } from './cons
 import { shared } from './lib/renderer/shared.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
-import type {
-	StudioCMSConfig,
-	StudioCMSOptions,
-} from './schemas/index.js';
+import type { StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
 import { scriptHandler } from './scriptHandler.js';
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
@@ -180,7 +177,7 @@ export const studiocms = defineIntegration({
 						extraRoutes,
 						integrations: newIntegrations,
 						safePluginList,
-						messages: pluginMessages
+						messages: pluginMessages,
 					} = await pluginHandler(params, {
 						dashboardRoute,
 						dbStartPage,
@@ -190,7 +187,7 @@ export const studiocms = defineIntegration({
 						robotsTXTConfig,
 						verbose,
 						astroConfigResolve,
-						ComponentRegistry
+						ComponentRegistry,
 					});
 
 					// Setup Routes
@@ -211,7 +208,8 @@ export const studiocms = defineIntegration({
 						pageTypeOptions,
 					});
 
-					if (!dbStartPage) addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
+					if (!dbStartPage)
+						addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
@@ -516,7 +514,7 @@ export const studiocms = defineIntegration({
 					});
 
 					if (pluginMessages.length > 0) {
-						messages.push(...pluginMessages)
+						messages.push(...pluginMessages);
 					}
 
 					const codegenDir = createCodegenDir();
