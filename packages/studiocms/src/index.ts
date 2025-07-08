@@ -9,7 +9,6 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
-import inlineModPlugin, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -18,20 +17,14 @@ import { z } from 'astro/zod';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import {
-	StudioCMSMarkdownDefaults,
-	authAPIRoute,
-	dashboardAPIRoute,
-	makeDashboardRoute,
-	routesDir,
-} from './consts.js';
+import { StudioCMSMarkdownDefaults, makeDashboardRoute, routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import { shared } from './lib/renderer/shared.js';
 import robotsTXT from './lib/robots/index.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
+import { routeHandler } from './routeHandler.js';
 import type {
 	AvailableDashboardPages,
 	SafePluginListItemType,
@@ -40,10 +33,10 @@ import type {
 	StudioCMSOptions,
 	StudioCMSPlugin,
 } from './schemas/index.js';
-import type { Messages, Route, Script } from './types.js';
+import { scriptHandler } from './scriptHandler.js';
+import type { Messages, Route } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { checkAstroConfig } from './utils/astroConfigCheck.js';
-import { addAstroEnvConfig } from './utils/astroEnvConfig.js';
 import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
 import { exists, watchStudioCMSConfig } from './utils/configManager.js';
@@ -208,9 +201,6 @@ export const studiocms = defineIntegration({
 		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string | undefined;
 
-		// Define the Image Component Path
-		let imageComponentPath: string;
-
 		// Define the available Dashboard Grid Items
 		const availableDashboardGridItems: GridItemInput[] = [];
 
@@ -256,6 +246,8 @@ export const studiocms = defineIntegration({
 
 		let isDevMode = false;
 
+		const extraRoutes: Route[] = [];
+
 		// Return the Integration
 		return {
 			name,
@@ -274,7 +266,6 @@ export const studiocms = defineIntegration({
 						logger,
 						config,
 						updateConfig,
-						injectRoute,
 						injectScript,
 						createCodegenDir,
 						command,
@@ -299,22 +290,12 @@ export const studiocms = defineIntegration({
 						verbose,
 						componentRegistry,
 						features: {
-							developerConfig: { demoMode },
+							developerConfig,
 							pageTypeOptions,
 							robotsTXT: robotsTXTConfig,
 							injectQuickActionsMenu,
 							dashboardConfig: { dashboardEnabled, inject404Route, dashboardRouteOverride },
-							authConfig: {
-								enabled: authEnabled,
-								providers: {
-									github: githubAPI,
-									discord: discordAPI,
-									google: googleAPI,
-									auth0: auth0API,
-									usernameAndPassword: usernameAndPasswordAPI,
-									usernameAndPasswordConfig: { allowUserRegistration },
-								},
-							},
+							authConfig,
 						},
 					} = options;
 
@@ -340,487 +321,9 @@ export const studiocms = defineIntegration({
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
-					// Add Astro Environment Configuration
-					addAstroEnvConfig(params, {
-						validateSecrets: true,
-						schema: {
-							// Auth Encryption Key
-							CMS_ENCRYPTION_KEY: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: false,
-							}),
-							// GitHub Auth Provider Environment Variables
-							CMS_GITHUB_CLIENT_ID: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_GITHUB_CLIENT_SECRET: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_GITHUB_REDIRECT_URI: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							// Discord Auth Provider Environment Variables
-							CMS_DISCORD_CLIENT_ID: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_DISCORD_CLIENT_SECRET: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_DISCORD_REDIRECT_URI: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							// Google Auth Provider Environment Variables
-							CMS_GOOGLE_CLIENT_ID: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_GOOGLE_CLIENT_SECRET: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_GOOGLE_REDIRECT_URI: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							// Auth0 Auth Provider Environment Variables
-							CMS_AUTH0_CLIENT_ID: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_AUTH0_CLIENT_SECRET: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_AUTH0_DOMAIN: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							CMS_AUTH0_REDIRECT_URI: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-							// Cloudinary Environment Variables for Custom Image Component
-							CMS_CLOUDINARY_CLOUDNAME: envField.string({
-								context: 'server',
-								access: 'secret',
-								optional: true,
-							}),
-						},
-					});
 					checkEnvKeys(logger, options);
+
 					changelogHelper(params);
-					integrationLogger(logInfo, 'Configuring CustomImage Component...');
-
-					// Resolve the Custom Image Component Path
-					imageComponentPath = defaultCustomImageComponent;
-
-					const routes: Route[] = [
-						{
-							pattern: 'start',
-							entrypoint: routesDir.fts('1-start.astro'),
-							enabled: dbStartPage,
-						},
-						{
-							pattern: 'start/1',
-							entrypoint: routesDir.fts('1-start.astro'),
-							enabled: dbStartPage,
-						},
-						{
-							pattern: 'start/2',
-							entrypoint: routesDir.fts('2-next.astro'),
-							enabled: dbStartPage,
-						},
-						{
-							pattern: 'done',
-							entrypoint: routesDir.fts('3-done.astro'),
-							enabled: dbStartPage,
-						},
-						{
-							pattern: '404',
-							entrypoint: routesDir.errors('404.astro'),
-							enabled: shouldInject404Route && !dbStartPage,
-						},
-						{
-							pattern: sdkRouteResolver('list-pages'),
-							entrypoint: routesDir.sdk('list-pages.ts'),
-							enabled: !dbStartPage,
-						},
-						{
-							pattern: sdkRouteResolver('update-latest-version-cache'),
-							entrypoint: routesDir.sdk('update-latest-version-cache.ts'),
-							enabled: !dbStartPage,
-						},
-						{
-							pattern: sdkRouteResolver('fallback-list-pages.json'),
-							entrypoint: routesDir.sdk('fallback-list-pages.json.ts'),
-							enabled: !dbStartPage,
-						},
-						{
-							pattern: sdkRouteResolver('full-changelog.json'),
-							entrypoint: routesDir.sdk('full-changelog.json.ts'),
-							enabled: !dbStartPage,
-						},
-						{
-							pattern: apiRoute('render'),
-							entrypoint: routesDir.api('render.astro'),
-							enabled: !dbStartPage,
-						},
-						{
-							pattern: dashboardAPIRoute('live-render'),
-							entrypoint: routesDir.dashApi('partials/LiveRender.astro'),
-							enabled: dashboardEnabled && !dbStartPage,
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardAPIRoute('editor'),
-							entrypoint: routesDir.dashApi('partials/Editor.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardAPIRoute('search-list'),
-							entrypoint: routesDir.dashApi('search-list.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardAPIRoute('user-list-items'),
-							entrypoint: routesDir.dashApi('partials/UserListItems.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('config'),
-							entrypoint: routesDir.dashApi('config.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('profile'),
-							entrypoint: routesDir.dashApi('profile.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('users'),
-							entrypoint: routesDir.dashApi('users.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('content/page'),
-							entrypoint: routesDir.dashApi('content/page.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('content/folder'),
-							entrypoint: routesDir.dashApi('content/folder.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('content/diff'),
-							entrypoint: routesDir.dashApi('content/diff.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('create-reset-link'),
-							entrypoint: routesDir.dashApi('create-reset-link.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('reset-password'),
-							entrypoint: routesDir.dashApi('reset-password.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('plugins/[plugin]'),
-							entrypoint: routesDir.dashApi('plugins/[plugin].ts'),
-						},
-						{
-							enabled: dbStartPage,
-							pattern: dashboardAPIRoute('step-1'),
-							entrypoint: routesDir.fts('api/step-1.ts'),
-						},
-						{
-							enabled: dbStartPage,
-							pattern: dashboardAPIRoute('step-2'),
-							entrypoint: routesDir.fts('api/step-2.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('create-user'),
-							entrypoint: routesDir.dashApi('create-user.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('create-user-invite'),
-							entrypoint: routesDir.dashApi('create-user-invite.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('api-tokens'),
-							entrypoint: routesDir.dashApi('api-tokens.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('verify-session'),
-							entrypoint: routesDir.dashApi('verify-session.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('mailer/config'),
-							entrypoint: routesDir.mailer('config.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('mailer/test-email'),
-							entrypoint: routesDir.mailer('test-email.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('verify-email'),
-							entrypoint: routesDir.dashApi('verify-email.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('email-notification-settings-site'),
-							entrypoint: routesDir.dashApi('email-notification-settings-site.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('resend-verify-email'),
-							entrypoint: routesDir.dashApi('resend-verify-email.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardAPIRoute('update-user-notifications'),
-							entrypoint: routesDir.dashApi('update-user-notifications.ts'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('/'),
-							entrypoint: routesDir.dashRoute('index.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management'),
-							entrypoint: routesDir.dashRoute('content-management/index.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management/create'),
-							entrypoint: routesDir.dashRoute('content-management/createpage.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management/create-folder'),
-							entrypoint: routesDir.dashRoute('content-management/createfolder.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management/edit'),
-							entrypoint: routesDir.dashRoute('content-management/editpage.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management/edit-folder'),
-							entrypoint: routesDir.dashRoute('content-management/editfolder.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('content-management/diff'),
-							entrypoint: routesDir.dashRoute('content-management/diff.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('profile'),
-							entrypoint: routesDir.dashRoute('profile.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('configuration'),
-							entrypoint: routesDir.dashRoute('configuration.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('user-management'),
-							entrypoint: routesDir.dashRoute('user-management/index.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('user-management/edit'),
-							entrypoint: routesDir.dashRoute('user-management/edit.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage && authEnabled,
-							pattern: dashboardRoute('password-reset'),
-							entrypoint: routesDir.dashRoute('password-reset.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('plugins/[plugin]'),
-							entrypoint: routesDir.dashRoute('plugins/[plugin].astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('smtp-configuration'),
-							entrypoint: routesDir.dashRoute('smtp-configuration.astro'),
-						},
-						{
-							enabled: dashboardEnabled && !dbStartPage,
-							pattern: dashboardRoute('unverified-email'),
-							entrypoint: routesDir.dashRoute('unverified-email.astro'),
-						},
-						{
-							pattern: authAPIRoute('login'),
-							entrypoint: routesDir.authAPI('login.ts'),
-							enabled: usernameAndPasswordAPI,
-						},
-						{
-							pattern: authAPIRoute('logout'),
-							entrypoint: routesDir.authAPI('logout.ts'),
-							enabled: dashboardEnabled && !options.dbStartPage,
-						},
-						{
-							pattern: authAPIRoute('register'),
-							entrypoint: routesDir.authAPI('register.ts'),
-							enabled: usernameAndPasswordAPI && allowUserRegistration,
-						},
-						{
-							pattern: authAPIRoute('github'),
-							entrypoint: routesDir.authAPI('github/index.ts'),
-							enabled: githubAPI,
-						},
-						{
-							pattern: authAPIRoute('github/callback'),
-							entrypoint: routesDir.authAPI('github/callback.ts'),
-							enabled: githubAPI,
-						},
-						{
-							pattern: authAPIRoute('discord'),
-							entrypoint: routesDir.authAPI('discord/index.ts'),
-							enabled: discordAPI,
-						},
-						{
-							pattern: authAPIRoute('discord/callback'),
-							entrypoint: routesDir.authAPI('discord/callback.ts'),
-							enabled: discordAPI,
-						},
-						{
-							pattern: authAPIRoute('google'),
-							entrypoint: routesDir.authAPI('google/index.ts'),
-							enabled: googleAPI,
-						},
-						{
-							pattern: authAPIRoute('google/callback'),
-							entrypoint: routesDir.authAPI('google/callback.ts'),
-							enabled: googleAPI,
-						},
-						{
-							pattern: authAPIRoute('auth0'),
-							entrypoint: routesDir.authAPI('auth0/index.ts'),
-							enabled: auth0API,
-						},
-						{
-							pattern: authAPIRoute('auth0/callback'),
-							entrypoint: routesDir.authAPI('auth0/callback.ts'),
-							enabled: auth0API,
-						},
-						{
-							pattern: authAPIRoute('forgot-password'),
-							entrypoint: routesDir.authAPI('forgot-password.ts'),
-							enabled: usernameAndPasswordAPI,
-						},
-						{
-							pattern: dashboardRoute('login/'),
-							entrypoint: routesDir.authPage('login.astro'),
-							enabled: dashboardEnabled && !options.dbStartPage,
-						},
-						{
-							pattern: dashboardRoute('logout/'),
-							entrypoint: routesDir.authPage('logout.astro'),
-							enabled: dashboardEnabled && !options.dbStartPage,
-						},
-						{
-							pattern: dashboardRoute('signup/'),
-							entrypoint: routesDir.authPage('signup.astro'),
-							enabled: usernameAndPasswordAPI && allowUserRegistration,
-						},
-						{
-							pattern: v1RestRoute('folders'),
-							entrypoint: routesDir.v1Rest('folders/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('folders/[id]'),
-							entrypoint: routesDir.v1Rest('folders/[id].ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('pages'),
-							entrypoint: routesDir.v1Rest('pages/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('pages/[id]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('pages/[id]/history'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('pages/[id]/history/[diffid]'),
-							entrypoint: routesDir.v1Rest('pages/[id]/history/[diffid].ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('settings'),
-							entrypoint: routesDir.v1Rest('settings/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('users'),
-							entrypoint: routesDir.v1Rest('users/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('users/[id]'),
-							entrypoint: routesDir.v1Rest('users/[id].ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('public/pages'),
-							entrypoint: routesDir.v1Rest('public/pages/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('public/pages/[id]'),
-							entrypoint: routesDir.v1Rest('public/pages/[id].ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-						{
-							pattern: v1RestRoute('public/folders'),
-							entrypoint: routesDir.v1Rest('public/folders/index.ts'),
-							enabled: !dbStartPage && authEnabled && !demoMode,
-						},
-					];
 
 					// Resolve the callout theme based on the user's configuration
 					if (
@@ -831,19 +334,6 @@ export const studiocms = defineIntegration({
 							`./styles/md-remark-callouts/${pageTypeOptions.markdown.callouts || 'obsidian'}.css`
 						);
 					}
-
-					const scripts: Script[] = [
-						{
-							content: 'import "studiocms:renderer/markdown-remark/css";',
-							stage: 'page-ssr',
-							enabled: pageTypeOptions.markdown.flavor === 'studiocms',
-						},
-						{
-							content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
-							stage: 'page',
-							enabled: injectQuickActionsMenu && !dbStartPage,
-						},
-					];
 
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
@@ -1028,7 +518,7 @@ export const studiocms = defineIntegration({
 							(availableDashboardPages.user && availableDashboardPages.user.length > 0) ||
 							(availableDashboardPages.admin && availableDashboardPages.admin.length > 0)
 						) {
-							routes.push({
+							extraRoutes.push({
 								enabled: true,
 								pattern: dashboardRoute('[...pluginPage]'),
 								entrypoint: routesDir.dashRoute('[...pluginPage].astro'),
@@ -1036,45 +526,52 @@ export const studiocms = defineIntegration({
 						}
 					}
 
+					// Setup Routes
+					routeHandler(params, {
+						authConfig,
+						dashboardEnabled,
+						dashboardRoute,
+						dbStartPage,
+						developerConfig,
+						extraRoutes,
+						shouldInject404Route,
+					});
+
+					// Setup Scripts
+					scriptHandler(params, {
+						dbStartPage,
+						injectQuickActionsMenu,
+						pageTypeOptions,
+					});
+
 					// Setup Integrations
 					addIntegrationArray(params, integrations);
-
-					// Inject Routes
-					for (const { enabled, ...rest } of routes) {
-						if (enabled) injectRoute({ ...rest, prerender: false });
-					}
-
-					// Inject Scripts
-					for (const { enabled, stage, content } of scripts) {
-						if (enabled) injectScript(stage, content);
-					}
 
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
-					// Modules that don't rely on dbStartPage
-					defineModule('studiocms:config', {
-						defaultExport: options,
-						constExports: {
-							config: options,
-							dashboardConfig: options.features.dashboardConfig,
-							AuthConfig: options.features.authConfig,
-							developerConfig: options.features.developerConfig,
-							sdk: options.features.sdk,
-						},
-					});
-
-					defineModule('studiocms:plugins', {
-						defaultExport: safePluginList,
-					});
-
-					defineModule('studiocms:version', {
-						defaultExport: pkgVersion,
-					});
-
 					addVirtualImports(params, {
 						name,
 						imports: {
+							'studiocms:config': `
+								export const config = ${JSON.stringify(options)};
+								export default config;
+
+								export const dashboardConfig = ${JSON.stringify(options.features.dashboardConfig)};
+								export const AuthConfig = ${JSON.stringify(options.features.authConfig)};
+								export const authConfig = ${JSON.stringify(options.features.authConfig)};
+								export const developerConfig = ${JSON.stringify(options.features.developerConfig)};
+								export const sdk = ${JSON.stringify(options.features.sdk)};
+							`,
+							'studiocms:plugins': `
+								const mod = ${JSON.stringify(safePluginList)};
+								export default mod;
+							`,
+							'studiocms:version': `
+								const mod = ${JSON.stringify(pkgVersion)};
+								export default mod;
+							`,
+
 							// Core Virtual Components
 							'studiocms:components': `
 								export { default as FormattedDate } from '${resolve(
@@ -1188,7 +685,7 @@ export const studiocms = defineIntegration({
 
 							// Image Handler Virtual Imports
 							'studiocms:imageHandler/components': `
-								export { default as CustomImage } from '${imageComponentPath}';
+								export { default as CustomImage } from '${defaultCustomImageComponent}';
 							`,
 
 							// Auth Virtual Imports
@@ -1492,7 +989,92 @@ export const studiocms = defineIntegration({
 							optimizeDeps: {
 								exclude: ['three'],
 							},
-							plugins: [inlineModPlugin()],
+						},
+						env: {
+							validateSecrets: true,
+							schema: {
+								// Auth Encryption Key
+								CMS_ENCRYPTION_KEY: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: false,
+								}),
+								// GitHub Auth Provider Environment Variables
+								CMS_GITHUB_CLIENT_ID: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_GITHUB_CLIENT_SECRET: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_GITHUB_REDIRECT_URI: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								// Discord Auth Provider Environment Variables
+								CMS_DISCORD_CLIENT_ID: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_DISCORD_CLIENT_SECRET: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_DISCORD_REDIRECT_URI: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								// Google Auth Provider Environment Variables
+								CMS_GOOGLE_CLIENT_ID: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_GOOGLE_CLIENT_SECRET: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_GOOGLE_REDIRECT_URI: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								// Auth0 Auth Provider Environment Variables
+								CMS_AUTH0_CLIENT_ID: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_AUTH0_CLIENT_SECRET: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_AUTH0_DOMAIN: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								CMS_AUTH0_REDIRECT_URI: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+								// Cloudinary Environment Variables for Custom Image Component
+								CMS_CLOUDINARY_CLOUDNAME: envField.string({
+									context: 'server',
+									access: 'secret',
+									optional: true,
+								}),
+							},
 						},
 					});
 
