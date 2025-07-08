@@ -165,6 +165,7 @@
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.42.0",
 		"effect": "catalog:effect",
+		"esbuild": "^0.25.6",
 		"fuse.js": "^7.0.0",
 		"jose": "^6.0.11",
 		"katex": "^0.16.21",

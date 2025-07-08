@@ -5,15 +5,7 @@ export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
 	plugins: [blog()],
-	dashboardConfig: {
-		AuthConfig: {
-			providers: {
-				github: true,
-				google: true,
-				auth0: true,
-				discord: true,
-			},
-		},
+	features: {
 		developerConfig: {
 			demoMode: false,
 		},

@@ -294,19 +294,17 @@ export const studiocms = defineIntegration({
 					options = await configResolver(params, opts);
 
 					const {
-						verbose,
-						pageTypeOptions,
-						includedIntegrations,
-						imageService,
-						plugins,
-						componentRegistry,
-						overrides,
 						dbStartPage,
-						dashboardConfig: {
-							dashboardEnabled,
-							inject404Route,
-							dashboardRouteOverride,
-							AuthConfig: {
+						plugins,
+						verbose,
+						componentRegistry,
+						features: {
+							developerConfig: { demoMode },
+							pageTypeOptions,
+							robotsTXT: robotsTXTConfig,
+							injectQuickActionsMenu,
+							dashboardConfig: { dashboardEnabled, inject404Route, dashboardRouteOverride },
+							authConfig: {
 								enabled: authEnabled,
 								providers: {
 									github: githubAPI,
@@ -317,20 +315,8 @@ export const studiocms = defineIntegration({
 									usernameAndPasswordConfig: { allowUserRegistration },
 								},
 							},
-							developerConfig: { demoMode },
 						},
-						defaultFrontEndConfig,
 					} = options;
-
-					const frontendConfig =
-						typeof defaultFrontEndConfig === 'object'
-							? defaultFrontEndConfig
-							: {
-									htmlDefaultLanguage: 'en',
-									htmlDefaultHead: [],
-									favicon: '/favicon.svg',
-									injectQuickActionsMenu: true,
-								};
 
 					const shouldInject404Route = inject404Route && dashboardEnabled;
 
@@ -443,23 +429,10 @@ export const studiocms = defineIntegration({
 					});
 					checkEnvKeys(logger, options);
 					changelogHelper(params);
-
-					// Check for Cloudinary CDN Plugin
-					if (imageService.cdnPlugin === 'cloudinary-js') {
-						if (!env.CMS_CLOUDINARY_CLOUDNAME) {
-							integrationLogger(
-								{ logger, logLevel: 'warn', verbose: true },
-								'Using the Cloudinary CDN JS SDK Plugin requires the CMS_CLOUDINARY_CLOUDNAME environment variable to be set. Please add this to your .env file.'
-							);
-						}
-					}
-
 					integrationLogger(logInfo, 'Configuring CustomImage Component...');
 
 					// Resolve the Custom Image Component Path
-					imageComponentPath = overrides.CustomImageOverride
-						? astroConfigResolve(overrides.CustomImageOverride)
-						: defaultCustomImageComponent;
+					imageComponentPath = defaultCustomImageComponent;
 
 					const routes: Route[] = [
 						{
@@ -868,7 +841,7 @@ export const studiocms = defineIntegration({
 						{
 							content: fs.readFileSync(resolve('./components/user-quick-tools.js'), 'utf-8'),
 							stage: 'page',
-							enabled: frontendConfig.injectQuickActionsMenu && !dbStartPage,
+							enabled: injectQuickActionsMenu && !dbStartPage,
 						},
 					];
 
@@ -1033,12 +1006,12 @@ export const studiocms = defineIntegration({
 						}
 
 						// Robots.txt Integration (Default)
-						if (includedIntegrations.robotsTXT === true) {
+						if (robotsTXTConfig === true) {
 							integrations.push({ integration: robotsTXT({ sitemap: sitemapEnabled }) });
-						} else if (typeof includedIntegrations.robotsTXT === 'object') {
+						} else if (typeof robotsTXTConfig === 'object') {
 							integrations.push({
 								integration: robotsTXT({
-									...includedIntegrations.robotsTXT,
+									...robotsTXTConfig,
 									sitemap: sitemapEnabled,
 								}),
 							});
@@ -1084,11 +1057,10 @@ export const studiocms = defineIntegration({
 						defaultExport: options,
 						constExports: {
 							config: options,
-							dashboardConfig: options.dashboardConfig,
-							AuthConfig: options.dashboardConfig.AuthConfig,
-							developerConfig: options.dashboardConfig.developerConfig,
-							defaultFrontEndConfig: options.defaultFrontEndConfig,
-							sdk: options.sdk,
+							dashboardConfig: options.features.dashboardConfig,
+							AuthConfig: options.features.authConfig,
+							developerConfig: options.features.developerConfig,
+							sdk: options.features.sdk,
 						},
 					});
 
@@ -1105,11 +1077,9 @@ export const studiocms = defineIntegration({
 						imports: {
 							// Core Virtual Components
 							'studiocms:components': `
-								export { default as FormattedDate } from '${
-									options.overrides.FormattedDateOverride
-										? astroConfigResolve(options.overrides.FormattedDateOverride)
-										: resolve('./components/FormattedDate.astro')
-								}';
+								export { default as FormattedDate } from '${resolve(
+									'./components/FormattedDate.astro'
+								)}';
 								export { default as Generator } from '${resolve('./components/Generator.astro')}';
 							`,
 
@@ -1206,7 +1176,7 @@ export const studiocms = defineIntegration({
 
 							// Renderer Virtual Imports
 							'studiocms:renderer/config': `
-								export default ${JSON.stringify(options.pageTypeOptions.markdown)};
+								export default ${JSON.stringify(options.features.pageTypeOptions.markdown)};
 							`,
 							'studiocms:renderer': `
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
@@ -1554,13 +1524,13 @@ export const studiocms = defineIntegration({
 				'astro:config:done': ({ config }) => {
 					// Inject the Markdown configuration into the shared state
 					shared.astroMDRemark = config.markdown;
-					shared.studiocmsHTML = options.pageTypeOptions.html;
-					if (options.pageTypeOptions.markdown.flavor === 'studiocms') {
-						shared.studiocmsMarkdown = options.pageTypeOptions.markdown;
+					shared.studiocmsHTML = options.features.pageTypeOptions.html;
+					if (options.features.pageTypeOptions.markdown.flavor === 'studiocms') {
+						shared.studiocmsMarkdown = options.features.pageTypeOptions.markdown;
 					} else {
 						shared.studiocmsMarkdown = {
 							...StudioCMSMarkdownDefaults,
-							sanitize: options.pageTypeOptions.markdown.sanitize,
+							sanitize: options.features.pageTypeOptions.markdown.sanitize,
 						};
 					}
 
@@ -1625,7 +1595,7 @@ export const studiocms = defineIntegration({
 						);
 					}
 
-					if (options.dashboardConfig.developerConfig.demoMode !== false) {
+					if (options.features.developerConfig.demoMode !== false) {
 						integrationLogger(
 							{ logger, logLevel: 'info', verbose: true },
 							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'
@@ -1646,7 +1616,7 @@ export const studiocms = defineIntegration({
 						);
 					}
 
-					if (options.dashboardConfig.developerConfig.demoMode !== false) {
+					if (options.features.developerConfig.demoMode !== false) {
 						integrationLogger(
 							{ logger, logLevel: 'info', verbose: true },
 							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'

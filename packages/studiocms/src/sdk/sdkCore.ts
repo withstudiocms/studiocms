@@ -1022,7 +1022,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 
 							const split = items.slice(0, count);
 
-							return parseService.fixDiff(split);
+							return yield* parseService.fixDiff(split);
 						}).pipe(
 							Effect.catchTags({
 								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>

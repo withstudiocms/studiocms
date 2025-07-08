@@ -4,7 +4,7 @@ import type { AstroGlobalPartial } from 'astro';
 import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
 import { StudioCMSCoreError } from '../errors.js';
-import type { HeadConfigSchema } from '../schemas/config/defaultFrontend.js';
+import type { HeadConfigSchema } from './head.js';
 
 /**
  * A union type representing the possible file extensions for favicon images.

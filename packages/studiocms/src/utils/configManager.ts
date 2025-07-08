@@ -1,10 +1,11 @@
-import fs from 'node:fs';
+import fs, { existsSync } from 'node:fs';
+import { unlink, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { defineUtility } from 'astro-integration-kit';
+import { build as esbuild } from 'esbuild';
 import { StudioCMSCoreError } from '../errors.js';
 import type { StudioCMSOptions } from '../schemas/index.js';
-
-// This File was created based on Expressive Code's Astro Integration by Hippotastic on github
-// see: https://expressive-code.com/ & https://github.com/expressive-code/expressive-code
+import { tryCatch } from './tryCatch.js';
 
 /**
  * Paths to search for the StudioCMS config file,
@@ -22,11 +23,8 @@ const configPaths = Object.freeze([
 function findConfig(projectRootUrl: string) {
 	for (const path of configPaths) {
 		const configUrl = `${projectRootUrl}${path}`;
-		if (exists(configUrl)) {
-			return configUrl;
-		}
+		if (exists(configUrl)) return configUrl;
 	}
-
 	return undefined;
 }
 
@@ -45,9 +43,7 @@ export function exists(path: string | undefined) {
  */
 export function getStudioConfigFileUrl(projectRootUrl: string) {
 	const configPath = findConfig(projectRootUrl);
-	if (configPath) {
-		return configPath;
-	}
+	if (configPath) return configPath;
 	return undefined;
 }
 
@@ -68,88 +64,124 @@ export const watchStudioCMSConfig = defineUtility('astro:config:setup')(
 		},
 	}) => {
 		const configFileUrl = getStudioConfigFileUrl(pathname);
-		if (configFileUrl) {
-			addWatchFile(configFileUrl);
-		}
+		if (configFileUrl) addWatchFile(configFileUrl);
 		return;
 	}
 );
 
-/**
- * Attempts to import an StudioCMS  config file in the Astro project root and returns its default export.
- *
- * If no config file is found, an empty object is returned.
- */
-export async function loadStudioCMSConfigFile(projectRootUrl: URL): Promise<StudioCMSOptions> {
-	const pathsToTry = [
-		new URL(`./studiocms.config.js?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.cjs?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.mjs?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.ts?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.cts?t=${Date.now()}`, projectRootUrl).href,
-		new URL(`./studiocms.config.mts?t=${Date.now()}`, projectRootUrl).href,
+export async function loadStudioCMSConfigFile(root: URL): Promise<StudioCMSOptions> {
+	let configFileUrl: URL | undefined;
+
+	const STUDIOCMS_CONFIG_FILE_NAMES = [
+		'./studiocms.config.mjs',
+		'./studiocms.config.mts',
+		'./studiocms.config.js',
+		'./studiocms.config.ts',
+		'./studiocms.config.cjs',
+		'./studiocms.config.cts',
 	];
 
-	// // @ts-ignore
-	// if (import.meta.env?.BASE_URL?.length) {
-	// 	pathsToTry.push(
-	// 		`/studiocms.config.js?t=${Date.now()}`,
-	// 		`/studiocms.config.mjs?t=${Date.now()}`,
-	// 		`/studiocms.config.cjs?t=${Date.now()}`,
-	// 		`/studiocms.config.ts?t=${Date.now()}`,
-	// 		`/studiocms.config.mts?t=${Date.now()}`,
-	// 		`/studiocms.config.cts?t=${Date.now()}`
-	// 	);
-	// }
-
-	/**
-	 * Checks the error received on attempting to import StudioCMS config file.
-	 * Bun's choice to throw ResolveMessage for import resolver messages means
-	 * type comparison (error instanceof Error) isn't portable.
-	 * @param error Error object, which could be string, Error, or ResolveMessage.
-	 * @returns object containing message and, if present, error code.
-	 */
-	function coerceError(error: unknown): { message: string; code?: string | undefined } {
-		if (typeof error === 'object' && error !== null && 'message' in error) {
-			return error as { message: string; code?: string | undefined };
-		}
-		return { message: error as string };
-	}
-
-	for (const path of pathsToTry) {
-		try {
-			const module = (await import(/* @vite-ignore */ path)) as { default: StudioCMSOptions };
-			if (!module.default) {
-				throw new StudioCMSCoreError(
-					'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
-				);
-			}
-			return module.default;
-		} catch (error) {
-			const { message, code } = coerceError(error);
-
-			if (code === 'ERR_MODULE_NOT_FOUND' || code === 'ERR_LOAD_URL') {
-				const msgCheck = message.replace(/(imported )?from .*$/, '');
-				if (
-					msgCheck.includes('studiocms.config.js') ||
-					msgCheck.includes('studiocms.config.mjs') ||
-					msgCheck.includes('studiocms.config.cjs') ||
-					msgCheck.includes('studiocms.config.ts') ||
-					msgCheck.includes('studiocms.config.mts') ||
-					msgCheck.includes('studiocms.config.cts')
-				)
-					continue;
-			}
-
-			throw new StudioCMSCoreError(
-				`Your project includes an StudioCMS config file (${path}) that could not be loaded due to ${
-					code ? `the error ${code}` : 'the following error'
-				}: ${message}`.replace(/\s+/g, ' '),
-				error instanceof Error ? error.stack : ''
-			);
+	for (const fileName of STUDIOCMS_CONFIG_FILE_NAMES) {
+		const fileUrl = new URL(fileName, root);
+		if (existsSync(fileUrl)) {
+			configFileUrl = fileUrl;
 		}
 	}
 
-	// Return an empty object if no config file is found or if all attempts fail
-	return undefined;
+	const { mod: configMod } = await loadAndBundleStudioCMSConfigFile({
+		root,
+		fileUrl: configFileUrl,
+	});
+
+	if (!configMod) {
+		return undefined;
+	}
+
+	if (!configMod.default) {
+		throw new StudioCMSCoreError(
+			'Missing or invalid default export. Please export your StudioCMS config object as the default export.'
+		);
+	}
+
+	return configMod.default;
+}
+
+async function loadAndBundleStudioCMSConfigFile({
+	root,
+	fileUrl,
+}: {
+	root: URL;
+	fileUrl: URL | undefined;
+}): Promise<{
+	mod: { default?: unknown } | undefined;
+	dependencies: string[];
+}> {
+	if (!fileUrl) {
+		return { mod: undefined, dependencies: [] };
+	}
+	const { code, dependencies } = await bundleConfigFile({
+		fileUrl,
+	});
+	return {
+		mod: await importBundledFile({ code, root }),
+		dependencies,
+	};
+}
+
+/**
+ * Forked from Vite config loader, replacing CJS-based path concat with ESM only
+ *
+ * @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L1074
+ */
+async function importBundledFile({
+	code,
+	root,
+}: {
+	code: string;
+	root: URL;
+}): Promise<{ default?: unknown }> {
+	// Write it to disk, load it with native Node ESM, then delete the file.
+	const tmpFileUrl = new URL(`./db.timestamp-${Date.now()}.mjs`, root);
+	await writeFile(tmpFileUrl, code, { encoding: 'utf8' });
+	try {
+		return await import(/* @vite-ignore */ tmpFileUrl.toString());
+	} finally {
+		const [_data, _err] = await tryCatch(unlink(tmpFileUrl));
+	}
+}
+
+/**
+ * Bundle arbitrary `mjs` or `ts` file.
+ * Simplified fork from Vite's `bundleConfigFile` function.
+ *
+ * @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L961
+ */
+async function bundleConfigFile({
+	fileUrl,
+}: {
+	fileUrl: URL;
+}) {
+	const result = await esbuild({
+		absWorkingDir: process.cwd(),
+		entryPoints: [fileURLToPath(fileUrl)],
+		outfile: 'out.js',
+		packages: 'external',
+		write: false,
+		target: ['node16'],
+		platform: 'node',
+		bundle: true,
+		format: 'esm',
+		sourcemap: 'inline',
+		metafile: true,
+	});
+
+	const file = result.outputFiles[0];
+	if (!file) {
+		throw new Error('Unexpected: no output file');
+	}
+
+	return {
+		code: file.text,
+		dependencies: Object.keys(result.metafile.inputs),
+	};
 }
