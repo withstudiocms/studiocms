@@ -151,9 +151,6 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.2.23
         version: 1.2.23
-      '@inox-tools/inline-mod':
-        specifier: ^2.0.3
-        version: 2.0.3(vite@6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))
       '@inox-tools/runtime-logger':
         specifier: 0.4.2
         version: 0.4.2(astro@5.9.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.40.2)(typescript@5.8.3)(yaml@2.7.0))
@@ -1365,14 +1362,6 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
-
-  '@inox-tools/inline-mod@2.0.3':
-    resolution: {integrity: sha512-dDQvQychzaOSA9O/V38mdz5OXVt31DsXBIZSh8Dt5ASyKz6OzTrzSvxmUFFHKtgUmSbIUWLX4N9P9r+gH55oZw==}
-    peerDependencies:
-      vite: ^4 || ^5 || ^6
-    peerDependenciesMeta:
-      vite:
-        optional: true
 
   '@inox-tools/modular-station@0.4.2':
     resolution: {integrity: sha512-o9tt6BhPJ5Of+b/xKjMqfqMCETa6KAyxREcl9y45UmaALEU5xwV6ZwpuO4VDsRoKnG0HB6PgRSPnXU1IdwSIeQ==}
@@ -5914,16 +5903,6 @@ snapshots:
 
   '@img/sharp-win32-x64@0.34.0':
     optional: true
-
-  '@inox-tools/inline-mod@2.0.3(vite@6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0))':
-    dependencies:
-      '@inox-tools/utils': 0.3.1
-      debug: 4.4.0
-      typescript: 5.8.3
-    optionalDependencies:
-      vite: 6.3.5(@types/node@22.10.2)(jiti@2.4.2)(yaml@2.7.0)
-    transitivePeerDependencies:
-      - supports-color
 
   '@inox-tools/modular-station@0.4.2(astro@5.9.0(@types/node@22.10.2)(jiti@2.4.2)(rollup@4.40.2)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
