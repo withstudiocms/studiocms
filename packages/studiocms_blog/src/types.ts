@@ -1,6 +1,6 @@
 import { extname } from 'node:path';
-import { HeadConfigSchema } from 'studiocms:lib';
 import { z } from 'astro/zod';
+import { HeadConfigSchema } from 'studiocms/lib/head.js';
 
 export type HeadUserConfig = z.input<ReturnType<typeof HeadConfigSchema>>;
 export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
