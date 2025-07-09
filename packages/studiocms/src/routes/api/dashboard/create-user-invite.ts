@@ -33,13 +33,17 @@ const appendParams = dual<
 	return url;
 });
 
-const generateResetUrl = ({
+const generateResetUrl = (
+	{
 		locals: {
 			routeMap: {
 				mainLinks: { dashboardIndex },
 			},
 		},
-	}: APIContext, baseUrl: string, { id, userId, token }: Token) => {
+	}: APIContext,
+	baseUrl: string,
+	{ id, userId, token }: Token
+) => {
 	const resetURL = new URL(`${dashboardIndex}/password-reset`, baseUrl);
 	return pipe(
 		resetURL,
@@ -52,7 +56,7 @@ const generateResetUrl = ({
 const noMailerError = (message: string, resetLink: URL) =>
 	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
 
-export const POST: APIRoute = async (context: APIContext) => 
+export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/dashboard/create-user-invite.POST')(function* () {
 			const userHelper = yield* User;
@@ -157,11 +161,17 @@ export const POST: APIRoute = async (context: APIContext) =>
 				const checkMailConnection = yield* mailer.verifyMailConnection;
 
 				if (!checkMailConnection) {
-					return apiResponseLogger(500, noMailerError('Failed to connect to mail server', resetLink));
+					return apiResponseLogger(
+						500,
+						noMailerError('Failed to connect to mail server', resetLink)
+					);
 				}
 
 				if ('error' in checkMailConnection) {
-					return apiResponseLogger(500, noMailerError('Failed to connect to mail server', resetLink));
+					return apiResponseLogger(
+						500,
+						noMailerError('Failed to connect to mail server', resetLink)
+					);
 				}
 
 				const htmlTemplate = getTemplate('userInvite');

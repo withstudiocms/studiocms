@@ -1,6 +1,6 @@
 ---
 export const partial = true;
-import pluginsList from "studiocms:plugins";
+import pluginsList from 'studiocms:plugins';
 
 type RawJsonData = {
 	content: string | undefined;
@@ -9,7 +9,7 @@ type RawJsonData = {
 
 type EditorComponent = (_props?: {
 	content?: string | null | undefined;
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 }) => any;
 
 type EditorComponentItem = {
@@ -30,9 +30,7 @@ async function load() {
 
 			pageTypeComponents.push({
 				identifier,
-				Component: (
-					await import(/* @vite-ignore */ pageContentComponent)
-				).default,
+				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
 			});
 		}
 	}
@@ -47,9 +45,7 @@ async function load() {
 
 	if (!Editor) {
 		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		Editor = pageTypeComponents.find(
-			(editor) => editor.identifier === "studiocms/markdown",
-		)!;
+		Editor = pageTypeComponents.find((editor) => editor.identifier === 'studiocms/markdown')!;
 	}
 
 	if (jsonData?.content) {
@@ -60,7 +56,7 @@ async function load() {
 	}
 
 	return {
-		content: "No content to display",
+		content: 'No content to display',
 		ActiveEditor: Editor.Component,
 	};
 }

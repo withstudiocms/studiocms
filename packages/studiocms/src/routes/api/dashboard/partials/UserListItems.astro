@@ -1,6 +1,6 @@
 ---
 export const partial = true;
-import UserListItem from "../../../../components/dashboard/user-mgmt/UserListItem.astro";
+import UserListItem from '../../../../components/dashboard/user-mgmt/UserListItem.astro';
 
 type PermissionsData = {
 	user: string;
@@ -26,7 +26,7 @@ async function setData() {
 
 	if (jsonData) return jsonData;
 
-	return "No Users to display";
+	return 'No Users to display';
 }
 
 const usersData = await setData();

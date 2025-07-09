@@ -34,7 +34,7 @@ type AvatarProfileUpdate = {
 
 type UserProfileUpdate = BasicUserProfileUpdate | PasswordProfileUpdate | AvatarProfileUpdate;
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> => 
+export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/dashboard/profile.POST')(function* () {
 			const pass = yield* Password;

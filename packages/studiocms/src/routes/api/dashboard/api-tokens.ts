@@ -84,7 +84,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			// Get Json Data
 			const jsonData: { tokenID: string; userID: string } = yield* Effect.tryPromise({
 				try: () => context.request.json(),
-				catch: () => new Error('Invalid JSON in request body')
+				catch: () => new Error('Invalid JSON in request body'),
 			});
 
 			// Validate form data
