@@ -1,6 +1,6 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { AuthConfig } from 'studiocms:config';
+import config, { authConfig } from 'studiocms:config';
 import { SDKCore } from 'studiocms:sdk';
 import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
@@ -10,7 +10,7 @@ import { genLogger } from '../../../../lib/effects/index.js';
 
 const {
 	GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
-} = await authEnvCheck(AuthConfig.providers);
+} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'github';
 export const ProviderCookieName = 'github_oauth_state';

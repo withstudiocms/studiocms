@@ -1,8 +1,7 @@
 ---
-import { StudioCMSRoutes } from 'studiocms:lib';
 import './navigation.css';
 import { frontendNavigation } from 'studiocms:plugin-helpers';
-import studioCMS_SDK from 'studiocms:sdk/cache';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 
 type Props = {
 	topLevelLinkCount?: number;
@@ -10,12 +9,12 @@ type Props = {
 
 const { topLevelLinkCount = 3 } = Astro.props;
 
-const config = (await studioCMS_SDK.GET.siteConfig()).data;
+const config = (await runSDK(SDKCoreJs.GET.siteConfig())).data;
 
 const { title } = config || { title: 'StudioCMS' };
 const {
 	mainLinks: { baseSiteURL },
-} = StudioCMSRoutes;
+} = Astro.locals.routeMap;
 
 type LinkProps = {
 	text: string;
@@ -45,7 +44,7 @@ const links: LinkProps[] = await frontendNavigation();
             )) 
         }
 
-<a class="avatar" href={StudioCMSRoutes.authLinks.loginURL}>Dashboard</a>
+<a class="avatar" href={Astro.locals.routeMap.authLinks.loginURL}>Dashboard</a>
     </div> 
 ) }
 
@@ -78,6 +77,6 @@ const links: LinkProps[] = await frontendNavigation();
                 </div>
             </div>
 
-<a class="avatar" href={StudioCMSRoutes.authLinks.loginURL}>Dashboard</a>
+<a class="avatar" href={Astro.locals.routeMap.authLinks.loginURL}>Dashboard</a>
     </div>
 ) }

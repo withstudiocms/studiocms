@@ -1,6 +1,6 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { AuthConfig } from 'studiocms:config';
+import config, { authConfig } from 'studiocms:config';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
@@ -10,7 +10,7 @@ import { genLogger } from '../../../../lib/effects/index.js';
 
 export const {
 	AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN, REDIRECT_URI = '' },
-} = await authEnvCheck(AuthConfig.providers);
+} = await authEnvCheck(authConfig.providers);
 
 export const getClientDomain = () => {
 	const cleanDomainSlash = DOMAIN ? DOMAIN.replace(/^\//, '') : '';
