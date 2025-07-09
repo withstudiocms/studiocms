@@ -1,53 +1,39 @@
 ---
-import { useTranslations } from "studiocms:i18n";
-import { Mailer } from "studiocms:mailer";
-import { SDKCore } from "studiocms:sdk";
-import {
-  Button,
-  Card,
-  Icon,
-  Input,
-  Select,
-  Toggle,
-} from "studiocms:ui/components";
-import { Effect } from "effect";
-import PageHeader from "../../components/dashboard/PageHeader.astro";
-import Layout from "../../layouts/dashboard/Layout.astro";
-import { convertToVanilla, genLogger } from "../../lib/effects/index.js";
+import { useTranslations } from 'studiocms:i18n';
+import { Mailer } from 'studiocms:mailer';
+import { SDKCore } from 'studiocms:sdk';
+import { Button, Card, Icon, Input, Select, Toggle } from 'studiocms:ui/components';
+import { Effect } from 'effect';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
+import Layout from '../../layouts/dashboard/Layout.astro';
+import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
-const {
-  siteConfig: config,
-  userSessionData: currentUser,
-  defaultLang: lang,
-} = Astro.locals;
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const t = useTranslations(lang, "@studiocms/dashboard:smtp");
+const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
 const [mailerConfig, notificationSettings] = await convertToVanilla(
-  genLogger("studiocms/routes/dashboard/smtp-configuration")(function* () {
-    const mailer = yield* Mailer;
-    const sdk = yield* SDKCore;
+	genLogger('studiocms/routes/dashboard/smtp-configuration')(function* () {
+		const mailer = yield* Mailer;
+		const sdk = yield* SDKCore;
 
-    return yield* Effect.all([
-      mailer.getMailerConfigTable,
-      sdk.notificationSettings.site.get(),
-    ]);
-  }).pipe(Mailer.Provide, SDKCore.Provide),
+		return yield* Effect.all([mailer.getMailerConfigTable, sdk.notificationSettings.site.get()]);
+	}).pipe(Mailer.Provide, SDKCore.Provide)
 );
 
 const {
-  data: { enableMailer },
+	data: { enableMailer },
 } = config;
 
 let createConfig = false;
 
 if (!mailerConfig) {
-  createConfig = true;
+	createConfig = true;
 }
 
 const notificationSettingKeys = Object.keys(notificationSettings).filter(
-  (key) => key !== "id",
-) as Array<keyof Omit<typeof notificationSettings, "id">>;
+	(key) => key !== 'id'
+) as Array<keyof Omit<typeof notificationSettings, 'id'>>;
 ---
 
 <Layout

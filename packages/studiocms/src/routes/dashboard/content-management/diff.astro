@@ -1,63 +1,51 @@
 ---
-import { FormattedDate } from "studiocms:components";
-import { useTranslations } from "studiocms:i18n";
-import { SDKCore } from "studiocms:sdk";
-import { Button, Card, Group, Input } from "studiocms:ui/components";
-import { Effect } from "effect";
-import InnerSidebarElement from "../../../components/dashboard/content-mgmt/InnerSidebarElement.astro";
-import PageHeader from "../../../components/dashboard/content-mgmt/PageHeader.astro";
-import Layout from "../../../layouts/dashboard/Layout.astro";
-import { convertToVanilla, genLogger } from "../../../lib/effects/index.js";
+import { FormattedDate } from 'studiocms:components';
+import { useTranslations } from 'studiocms:i18n';
+import { SDKCore } from 'studiocms:sdk';
+import { Button, Card, Group, Input } from 'studiocms:ui/components';
+import { Effect } from 'effect';
+import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
+import Layout from '../../../layouts/dashboard/Layout.astro';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
-const {
-  siteConfig: config,
-  userSessionData: currentUser,
-  defaultLang: lang,
-} = Astro.locals;
+const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
 
-const t = useTranslations(lang, "@studiocms/dashboard:content-index");
-const td = useTranslations(lang, "@studiocms/dashboard:content-diff");
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
 const urlParams = Astro.url.searchParams;
-const diffId = urlParams.get("diff");
+const diffId = urlParams.get('diff');
 
-if (!diffId) return Astro.redirect("/404");
+if (!diffId) return Astro.redirect('/404');
 
 const { user, diff } = await convertToVanilla(
-  genLogger("studiocms/routes/dashboard/content-management/diff.users-diff")(
-    function* () {
-      const sdk = yield* SDKCore;
+	genLogger('studiocms/routes/dashboard/content-management/diff.users-diff')(function* () {
+		const sdk = yield* SDKCore;
 
-      const [users, diff] = yield* Effect.all([
-        sdk.GET.users.all(),
-        sdk.diffTracking.get.single(diffId),
-      ]);
+		const [users, diff] = yield* Effect.all([
+			sdk.GET.users.all(),
+			sdk.diffTracking.get.single(diffId),
+		]);
 
-      const user = (id: string) => users.find((u) => u.id === id)?.name;
+		const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-      return { user, diff };
-    },
-  ).pipe(SDKCore.Provide),
+		return { user, diff };
+	}).pipe(SDKCore.Provide)
 );
 
-if (!diff) return Astro.redirect("/404");
+if (!diff) return Astro.redirect('/404');
 
-const [{ data: page }, metaDataChanges, diffContentHTML] =
-  await convertToVanilla(
-    genLogger("studiocms/routes/dashboard/content-management/diff.page-meta")(
-      function* () {
-        const sdk = yield* SDKCore;
+const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanilla(
+	genLogger('studiocms/routes/dashboard/content-management/diff.page-meta')(function* () {
+		const sdk = yield* SDKCore;
 
-        return yield* Effect.all([
-          sdk.GET.page.byId(diff.pageId),
-          sdk.diffTracking.utils.getMetaDataDifferences(
-            diff.pageMetaData.start,
-            diff.pageMetaData.end,
-          ),
-          sdk.diffTracking.utils.getDiffHTML(diff.diff),
-        ]);
-      },
-    ).pipe(SDKCore.Provide),
-  );
+		return yield* Effect.all([
+			sdk.GET.page.byId(diff.pageId),
+			sdk.diffTracking.utils.getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end),
+			sdk.diffTracking.utils.getDiffHTML(diff.diff),
+		]);
+	}).pipe(SDKCore.Provide)
+);
 ---
 
 <Layout

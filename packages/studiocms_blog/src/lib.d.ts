@@ -46,16 +46,14 @@ declare module 'studiocms:config' {
 	export const config: import('studiocms/schemas').StudioCMSConfig;
 	export default config;
 
-	export const dashboardConfig: import('studiocms/schemas').StudioCMSConfig['features']['dashboardConfig'];
+	export const dashboardConfig: import(
+		'studiocms/schemas'
+	).StudioCMSConfig['features']['dashboardConfig'];
 	/**
 	 * @deprecated
 	 */
-	export const AuthConfig: import(
-		'studiocms/schemas'
-	).StudioCMSConfig['features']['authConfig'];
-	export const authConfig: import(
-		'studiocms/schemas'
-	).StudioCMSConfig['features']['authConfig'];
+	export const AuthConfig: import('studiocms/schemas').StudioCMSConfig['features']['authConfig'];
+	export const authConfig: import('studiocms/schemas').StudioCMSConfig['features']['authConfig'];
 	export const developerConfig: import(
 		'studiocms/schemas'
 	).StudioCMSConfig['features']['developerConfig'];

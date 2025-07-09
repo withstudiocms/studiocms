@@ -13,7 +13,7 @@ import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSi
 import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
 import Layout from '../../../layouts/dashboard/Layout.astro';
-import { convertToVanilla, genLogger } from "../../../lib/effects/index.js";
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 const {
 	siteConfig: config,
@@ -34,16 +34,16 @@ const allowedRanks = [
 ];
 
 const [user, diffs, pages, userTokens] = await convertToVanilla(
-  genLogger('studiocms/routes/dashboard/user-management/edit')(function* () {
-    const sdk = yield* SDKCore;
-    return yield* Effect.all([
-      sdk.GET.users.byId(userId),
-      sdk.diffTracking.get.byUserId.latest(userId, 5),
-      sdk.GET.pages(),
-      sdk.REST_API.tokens.get(userId),
-    ])
-  }).pipe(SDKCore.Provide)
-)
+	genLogger('studiocms/routes/dashboard/user-management/edit')(function* () {
+		const sdk = yield* SDKCore;
+		return yield* Effect.all([
+			sdk.GET.users.byId(userId),
+			sdk.diffTracking.get.byUserId.latest(userId, 5),
+			sdk.GET.pages(),
+			sdk.REST_API.tokens.get(userId),
+		]);
+	}).pipe(SDKCore.Provide)
+);
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 

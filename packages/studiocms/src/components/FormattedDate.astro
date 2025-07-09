@@ -1,5 +1,5 @@
 ---
-import config from "studiocms:config";
+import config from 'studiocms:config';
 
 interface Props {
 	date: Date;
@@ -8,7 +8,7 @@ interface Props {
 const datetime = Astro.props.date.toISOString();
 const formattedDate = Astro.props.date.toLocaleDateString(
 	config.locale.dateLocale,
-	config.locale.dateTimeFormat,
+	config.locale.dateTimeFormat
 );
 ---
 
