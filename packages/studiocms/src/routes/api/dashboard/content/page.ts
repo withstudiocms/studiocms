@@ -1,41 +1,42 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { Notifications, sendEditorNotification } from 'studiocms:notifier';
+import { Notifications } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
 import { SDKCore } from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses';
+import { tryCatch } from '../../../../utils/tryCatch.js';
+
+type ApiEndpoints = {
+	onCreate?: APIRoute | null;
+	onEdit?: APIRoute | null;
+	onDelete?: APIRoute | null;
+};
+
+type PageTypeOutput = {
+	identifier: string;
+	label: string;
+	description?: string | undefined;
+	pageContentComponent?: string | undefined;
+	apiEndpoint?: string;
+	apiEndpoints?: ApiEndpoints | undefined;
+};
+
+type UpdatePageData = Partial<tsPageDataSelect>;
+type UpdatePageContent = Partial<tsPageContentSelect>;
 
 const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
-	const pageTypeOutput: {
-		identifier: string;
-		label: string;
-		description?: string | undefined;
-		pageContentComponent?: string | undefined;
-		apiEndpoint?: string;
-		apiEndpoints?:
-			| {
-					onCreate?: APIRoute | null;
-					onEdit?: APIRoute | null;
-					onDelete?: APIRoute | null;
-			  }
-			| undefined;
-	}[] = [];
+	const pageTypeOutput: PageTypeOutput[] = [];
 
-	if (!pageTypes) {
-		return pageTypeOutput;
-	}
+	if (!pageTypes) return pageTypeOutput;
 
 	for (const pageType of pageTypes) {
 		pageTypeOutput.push({
 			...pageType,
-			apiEndpoints: {
-				...apiEndpoints.find((endpoint) => endpoint.identifier === pageType.identifier),
-			},
+			apiEndpoints: apiEndpoints.find((endpoint) => endpoint.identifier === pageType.identifier),
 		});
 	}
 
@@ -45,290 +46,294 @@ const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 function getPageTypeEndpoints(pkg: string, type: 'onCreate' | 'onEdit' | 'onDelete') {
 	const currentPageType = pageTypeOptions.find((pageType) => pageType.identifier === pkg);
 
-	if (!currentPageType) {
-		return undefined;
-	}
+	if (!currentPageType) return undefined;
 
 	return currentPageType.apiEndpoints?.[type];
 }
-
-type UpdatePageData = Partial<tsPageDataSelect>;
-type UpdatePageContent = Partial<tsPageContentSelect>;
 
 function getParentFolderValue(value?: string) {
 	if (value === 'null') return null;
 	return value;
 }
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/content/page.POST')(function* () {
+			const sdk = yield* SDKCore;
+			const notify = yield* Notifications;
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isEditor;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const formData = await context.request.formData();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const data: UpdatePageData = {
-		title: formData.get('page-title')?.toString(),
-		slug: formData.get('page-slug')?.toString(),
-		description: formData.get('page-description')?.toString(),
-		package: formData.get('page-type')?.toString(),
-		showOnNav: formData.get('show-in-nav')?.toString() === 'true',
-		heroImage: formData.get('page-hero-image')?.toString(),
-		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-		showAuthor: formData.get('show-author')?.toString() === 'true',
-		showContributors: formData.get('show-contributors')?.toString() === 'true',
-		draft: formData.get('draft')?.toString() === 'true',
-		categories: [],
-		tags: [],
-	};
+			const formData = yield* Effect.tryPromise(() => context.request.formData());
 
-	const content = {
-		id: crypto.randomUUID(),
-		content: formData.get('page-content')?.toString() ?? '',
-	} as UpdatePageContent;
+			const data: UpdatePageData = {
+				title: formData.get('page-title')?.toString(),
+				slug: formData.get('page-slug')?.toString(),
+				description: formData.get('page-description')?.toString(),
+				package: formData.get('page-type')?.toString(),
+				showOnNav: formData.get('show-in-nav')?.toString() === 'true',
+				heroImage: formData.get('page-hero-image')?.toString(),
+				parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+				showAuthor: formData.get('show-author')?.toString() === 'true',
+				showContributors: formData.get('show-contributors')?.toString() === 'true',
+				draft: formData.get('draft')?.toString() === 'true',
+				categories: [],
+				tags: [],
+			};
 
-	if (!data) {
-		return apiResponseLogger(400, 'Invalid form data, data is required');
-	}
+			const content = {
+				id: crypto.randomUUID(),
+				content: formData.get('page-content')?.toString() ?? '',
+			} as UpdatePageContent;
 
-	if (!content) {
-		return apiResponseLogger(400, 'Invalid form data, content is required');
-	}
+			if (!data) {
+				return apiResponseLogger(400, 'Invalid form data, data is required');
+			}
 
-	const dataId = crypto.randomUUID();
-	const contentId = crypto.randomUUID();
+			if (!content) {
+				return apiResponseLogger(400, 'Invalid form data, content is required');
+			}
 
-	if (!data.title) {
-		return apiResponseLogger(400, 'Invalid form data, title is required');
-	}
+			const dataId = crypto.randomUUID();
+			const contentId = crypto.randomUUID();
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
+			if (!data.title) {
+				return apiResponseLogger(400, 'Invalid form data, title is required');
+			}
 
-	try {
-		await studioCMS_SDK_Cache.POST.page({
-			// @ts-expect-error
-			pageData: {
-				id: dataId,
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
-				title: data.title!,
-				slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
-				description: data.description || '',
-				authorId: userData.user?.id || null,
-				updatedAt: new Date(),
-				...data,
-			},
-			// @ts-expect-error
-			pageContent: { id: contentId, ...content },
-		});
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
 
-		if (apiRoute) {
-			await apiRoute(context);
-		}
+			yield* sdk.POST.page({
+				// @ts-expect-error
+				pageData: {
+					id: dataId,
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					title: data.title!,
+					slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
+					description: data.description || '',
+					authorId: userData.user?.id || null,
+					updatedAt: new Date(),
+					...data,
+				},
+				// @ts-expect-error
+				pageContent: { id: contentId, ...content },
+			});
 
-		studioCMS_SDK_Cache.CLEAR.pages();
+			if (apiRoute) {
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+			}
 
-		await sendEditorNotification('new_page', data.title);
+			yield* sdk.CLEAR.pages();
 
-		return apiResponseLogger(200, 'Page created successfully');
-	} catch (error) {
-		return apiResponseLogger(500, 'Failed to create page');
-	}
-};
+			yield* notify.sendEditorNotification('new_page', data.title);
 
-export const PATCH: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
-
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
-
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isEditor;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
-
-	const formData = await context.request.formData();
-
-	const data: Partial<tsPageDataSelect> = {
-		title: formData.get('page-title')?.toString(),
-		slug: formData.get('page-slug')?.toString(),
-		description: formData.get('page-description')?.toString(),
-		package: formData.get('page-type')?.toString(),
-		showOnNav: formData.get('show-in-nav') === 'true',
-		heroImage: formData.get('page-hero-image')?.toString(),
-		parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-		showAuthor: formData.get('show-author') === 'true',
-		showContributors: formData.get('show-contributors')?.toString() === 'true',
-		categories: [],
-		tags: [],
-		id: formData.get('page-id')?.toString(),
-		draft: formData.get('draft')?.toString() === 'true',
-	};
-
-	const content = {
-		id: formData.get('page-content-id')?.toString(),
-		content: formData.get('page-content')?.toString(),
-	};
-
-	if (!data) {
-		return apiResponseLogger(400, 'Invalid form data, data is required');
-	}
-
-	if (!content) {
-		return apiResponseLogger(400, 'Invalid form data, content is required');
-	}
-
-	if (!data.id) {
-		return apiResponseLogger(400, 'Invalid form data, id is required');
-	}
-
-	if (!content.id) {
-		return apiResponseLogger(400, 'Invalid form data, id is required');
-	}
-
-	const currentPageData = await studioCMS_SDK_Cache.GET.page.byId(data.id);
-
-	if (!currentPageData.data) {
-		return apiResponseLogger(404, 'Page not found');
-	}
-
-	const { authorId, contributorIds } = currentPageData.data;
-
-	let AuthorId = authorId;
-
-	if (!authorId) {
-		AuthorId = userData.user?.id || null;
-	}
-
-	const ContributorIds = contributorIds || [];
-
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	if (!ContributorIds.includes(userData.user!.id)) {
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		ContributorIds.push(userData.user!.id);
-	}
-
-	data.authorId = AuthorId;
-	data.contributorIds = ContributorIds;
-	data.updatedAt = new Date();
-
-	const startMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
-		(metaData) => metaData.id === data.id
+			return apiResponseLogger(200, 'Page created successfully');
+		}).pipe(SDKCore.Provide, Notifications.Provide)
 	);
 
-	const {
-		data: { defaultContent },
-	} = await studioCMS_SDK_Cache.GET.page.byId(data.id);
+export const PATCH: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/content/page.PATCH')(function* () {
+			const sdk = yield* SDKCore;
+			const notify = yield* Notifications;
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	try {
-		await studioCMS_SDK_Cache.UPDATE.page.byId(data.id, {
-			pageData: data as tsPageDataSelect,
-			pageContent: content as tsPageContentSelect,
-		});
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-		const updatedMetaData = (await studioCMS_SDK_Cache.GET.databaseTable.pageData()).find(
-			(metaData) => metaData.id === data.id
-		);
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-		const { enableDiffs, diffPerPage } = context.locals.siteConfig.data;
+			const formData = yield* Effect.tryPromise(() => context.request.formData());
 
-		if (enableDiffs) {
-			await studioCMS_SDK_Cache.diffTracking.insert(
+			const data: Partial<tsPageDataSelect> = {
+				title: formData.get('page-title')?.toString(),
+				slug: formData.get('page-slug')?.toString(),
+				description: formData.get('page-description')?.toString(),
+				package: formData.get('page-type')?.toString(),
+				showOnNav: formData.get('show-in-nav') === 'true',
+				heroImage: formData.get('page-hero-image')?.toString(),
+				parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+				showAuthor: formData.get('show-author') === 'true',
+				showContributors: formData.get('show-contributors')?.toString() === 'true',
+				categories: [],
+				tags: [],
+				id: formData.get('page-id')?.toString(),
+				draft: formData.get('draft')?.toString() === 'true',
+			};
+
+			const content = {
+				id: formData.get('page-content-id')?.toString(),
+				content: formData.get('page-content')?.toString(),
+			};
+
+			if (!data) {
+				return apiResponseLogger(400, 'Invalid form data, data is required');
+			}
+
+			if (!content) {
+				return apiResponseLogger(400, 'Invalid form data, content is required');
+			}
+
+			if (!data.id) {
+				return apiResponseLogger(400, 'Invalid form data, id is required');
+			}
+
+			if (!content.id) {
+				return apiResponseLogger(400, 'Invalid form data, id is required');
+			}
+
+			const currentPageData = yield* sdk.GET.page.byId(data.id);
+
+			if (!currentPageData.data) {
+				return apiResponseLogger(404, 'Page not found');
+			}
+
+			const { authorId, contributorIds } = currentPageData.data;
+
+			let AuthorId = authorId;
+
+			if (!authorId) {
+				AuthorId = userData.user?.id || null;
+			}
+
+			const ContributorIds = contributorIds || [];
+
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			if (!ContributorIds.includes(userData.user!.id)) {
 				// biome-ignore lint/style/noNonNullAssertion: <explanation>
-				userData.user!.id,
-				data.id,
-				{
-					content: {
-						start: defaultContent?.content || '',
-						end: content.content || '',
-					},
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
-					metaData: { start: startMetaData!, end: updatedMetaData! },
-				},
-				diffPerPage
+				ContributorIds.push(userData.user!.id);
+			}
+
+			data.authorId = AuthorId;
+			data.contributorIds = ContributorIds;
+			data.updatedAt = new Date();
+
+			const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
+				(metaData) => metaData.id === data.id
 			);
-		}
 
-		if (apiRoute) {
-			await apiRoute(context);
-		}
+			const {
+				data: { defaultContent },
+			} = yield* sdk.GET.page.byId(data.id);
 
-		await sendEditorNotification('page_updated', data.title || startMetaData?.title || '');
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
 
-		return apiResponseLogger(200, 'Page updated successfully');
-	} catch (error) {
-		return apiResponseLogger(500, 'Failed to update page');
-	}
-};
+			yield* sdk.UPDATE.page.byId(data.id, {
+				pageData: data as tsPageDataSelect,
+				pageContent: content as tsPageContentSelect,
+			});
 
-export const DELETE: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
+			const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
+				(metaData) => metaData.id === data.id
+			);
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			const { enableDiffs, diffPerPage } = context.locals.siteConfig.data;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			if (enableDiffs) {
+				yield* sdk.diffTracking.insert(
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					userData.user!.id,
+					data.id,
+					{
+						content: {
+							start: defaultContent?.content || '',
+							end: content.content || '',
+						},
+						// biome-ignore lint/style/noNonNullAssertion: <explanation>
+						metaData: { start: startMetaData!, end: updatedMetaData! },
+					},
+					diffPerPage
+				);
+			}
 
-	const jsonData = await context.request.json();
+			if (apiRoute) {
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+			}
 
-	const { id, slug } = jsonData;
+			yield* notify.sendEditorNotification(
+				'page_updated',
+				data.title || startMetaData?.title || ''
+			);
 
-	if (!id) {
-		return apiResponseLogger(400, 'Invalid request');
-	}
+			return apiResponseLogger(200, 'Page updated successfully');
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	);
 
-	if (!slug) {
-		return apiResponseLogger(400, 'Invalid request');
-	}
+export const DELETE: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/content/page.DELETE')(function* () {
+			const sdk = yield* SDKCore;
+			const notify = yield* Notifications;
 
-	const isHomePage = await studioCMS_SDK_Cache.GET.page.bySlug('index');
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	if (isHomePage.data && isHomePage.data.id === id) {
-		return apiResponseLogger(400, 'Cannot delete home page');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const pageToDelete = await studioCMS_SDK_Cache.GET.page.byId(id);
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
 
-	try {
-		await studioCMS_SDK_Cache.DELETE.page(id);
+			const { id, slug } = jsonData;
 
-		if (apiRoute) {
-			await apiRoute(context);
-		}
+			if (!id) {
+				return apiResponseLogger(400, 'Invalid request');
+			}
 
-		await sendEditorNotification('page_deleted', pageToDelete.data.title);
+			if (!slug) {
+				return apiResponseLogger(400, 'Invalid request');
+			}
 
-		return apiResponseLogger(200, 'Page deleted successfully');
-	} catch (error) {
-		return apiResponseLogger(500, 'Failed to delete page');
-	}
-};
+			const isHomePage = yield* sdk.GET.page.bySlug('index');
+
+			if (isHomePage.data && isHomePage.data.id === id) {
+				return apiResponseLogger(400, 'Cannot delete home page');
+			}
+
+			const pageToDelete = yield* sdk.GET.page.byId(id);
+
+			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
+
+			yield* sdk.DELETE.page(id);
+
+			if (apiRoute) {
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+			}
+
+			yield* notify.sendEditorNotification('page_deleted', pageToDelete.data.title);
+
+			return apiResponseLogger(200, 'Page deleted successfully');
+		}).pipe(SDKCore.Provide, Notifications.Provide)
+	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);
 
