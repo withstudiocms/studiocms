@@ -9,7 +9,7 @@ import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studiocms/api/dashboard/reset-password.POST')(function* () {
+		genLogger('studiocms/routes/api/dashboard/reset-password.POST')(function* () {
 			const notify = yield* Notifications;
 			const sdk = yield* SDKCore;
 			const pass = yield* Password;
