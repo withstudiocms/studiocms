@@ -136,17 +136,20 @@ declare module 'studiocms:config' {
 	export const config: import('./schemas/index.js').StudioCMSConfig;
 	export default config;
 
-	export const dashboardConfig: import('./schemas/index.js').StudioCMSConfig['dashboardConfig'];
+	export const dashboardConfig: import('./schemas/index.js').StudioCMSConfig['features']['dashboardConfig'];
+	/**
+	 * @deprecated
+	 */
 	export const AuthConfig: import(
 		'./schemas/index.js'
-	).StudioCMSConfig['dashboardConfig']['AuthConfig'];
+	).StudioCMSConfig['features']['authConfig'];
+	export const authConfig: import(
+		'./schemas/index.js'
+	).StudioCMSConfig['features']['authConfig'];
 	export const developerConfig: import(
 		'./schemas/index.js'
-	).StudioCMSConfig['dashboardConfig']['developerConfig'];
-	export const defaultFrontEndConfig: import(
-		'./schemas/index.js'
-	).StudioCMSConfig['defaultFrontEndConfig'];
-	export const sdk: import('./schemas/index.js').StudioCMSConfig['sdk'];
+	).StudioCMSConfig['features']['developerConfig'];
+	export const sdk: import('./schemas/index.js').StudioCMSConfig['features']['sdk'];
 }
 
 declare module 'studiocms:version' {

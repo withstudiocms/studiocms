@@ -1,6 +1,5 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import {
 	Accordion,
 	AccordionItem,
@@ -30,7 +29,7 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
             <h2>Basic Site Information</h2>
         </div>
 
-        <form id="setup-step-one" action={StudioCMSRoutes.fts.step1}>
+        <form id="setup-step-one" action={Astro.locals.routeMap.fts.step1}>
             <div class="form-content">
 
                 <div class="form-row">

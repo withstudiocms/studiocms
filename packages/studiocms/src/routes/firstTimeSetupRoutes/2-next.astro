@@ -1,14 +1,13 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { AuthConfig } from 'studiocms:config';
-import { StudioCMSRoutes } from 'studiocms:lib';
+import { authConfig } from 'studiocms:config';
 import { Button, Card, Center, Input } from 'studiocms:ui/components';
 import Layout from './components/Layout.astro';
 import PageHeader from './components/PageHeader.astro';
 import TabItem from './components/TabItem.astro';
 import Tabs from './components/Tabs.astro';
 
-const { providers } = AuthConfig;
+const { providers } = authConfig;
 
 const { SHOW_OAUTH, AUTH0, DISCORD, GITHUB, GOOGLE } = await authEnvCheck(providers);
 
@@ -29,7 +28,7 @@ const auth0Enabled = AUTH0.ENABLED && providers.auth0;
 
         <Tabs variant='starlight'>
             <TabItem label='Username and Password'>
-                <form id="setup-step-two" action={StudioCMSRoutes.fts.step2}>
+                <form id="setup-step-two" action={Astro.locals.routeMap.fts.step2}>
                     <div class="form-content">
                         
                         <Input 
@@ -76,28 +75,28 @@ const auth0Enabled = AUTH0.ENABLED && providers.auth0;
             {
                 SHOW_OAUTH && githubEnabled && (
                     <TabItem label='GitHub' icon="simple-icons:github">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.githubIndex}>Connect to GitHub</Button></Center>
+                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.githubIndex}>Connect to GitHub</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && discordEnabled && (
                     <TabItem label='Discord' icon="simple-icons:discord">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.discordIndex}>Connect to Discord</Button></Center>
+                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.discordIndex}>Connect to Discord</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && googleEnabled && (
                     <TabItem label='Google' icon="flat-color-icons:google">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.googleIndex}>Connect to Google</Button></Center>
+                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.googleIndex}>Connect to Google</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && auth0Enabled && (
                     <TabItem label='Auth0' icon="simple-icons:auth0">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.auth0Index}>Connect to Auth0</Button></Center>
+                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.auth0Index}>Connect to Auth0</Button></Center>
                     </TabItem>
                 )
             }

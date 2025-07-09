@@ -1,8 +1,8 @@
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { AuthConfig } from 'studiocms:config';
+import { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 
-const authEnv = await authEnvCheck(AuthConfig.providers);
+const authEnv = await authEnvCheck(authConfig.providers);
 
 export const showOAuth = authEnv.SHOW_OAUTH;
 
