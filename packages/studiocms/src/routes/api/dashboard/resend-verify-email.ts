@@ -1,39 +1,47 @@
-import { sendVerificationEmail } from 'studiocms:auth/lib/verify-email';
+import { VerifyEmail } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
+import { SDKCore } from 'studiocms:sdk';
+import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
-export const POST: APIRoute = async (context) => {
-	// Check if mailer is enabled
-	if (!context.locals.siteConfig.data.enableMailer) {
-		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
-	}
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/resend-verify-email.POST')(function* () {
+			const sdk = yield* SDKCore;
+			const verifier = yield* VerifyEmail;
 
-	const jsonData = await context.request.json();
-	const { userId } = jsonData;
+			// Check if mailer is enabled
+			if (!context.locals.siteConfig.data.enableMailer) {
+				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
+			}
 
-	if (!userId) {
-		return apiResponseLogger(400, 'Invalid request');
-	}
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const { userId } = jsonData;
 
-	const newToken = await studioCMS_SDK.AUTH.verifyEmail.create(userId);
+			if (!userId) {
+				return apiResponseLogger(400, 'Invalid request');
+			}
 
-	if (!newToken) {
-		return apiResponseLogger(500, 'Failed to create verification token');
-	}
+			const newToken = yield* sdk.AUTH.verifyEmail.create(userId);
 
-	const response = await sendVerificationEmail(userId);
+			if (!newToken) {
+				return apiResponseLogger(500, 'Failed to create verification token');
+			}
 
-	if (!response) {
-		return apiResponseLogger(500, 'Failed to send verification email');
-	}
+			const response = yield* verifier.sendVerificationEmail(userId);
 
-	if ('error' in response) {
-		return apiResponseLogger(500, response.error);
-	}
+			if (!response) {
+				return apiResponseLogger(500, 'Failed to send verification email');
+			}
 
-	return apiResponseLogger(200, response.message);
-};
+			if ('error' in response) {
+				return apiResponseLogger(500, response.error);
+			}
+
+			return apiResponseLogger(200, response.message);
+		}).pipe(VerifyEmail.Provide, SDKCore.Provide)
+	);
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
