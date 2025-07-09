@@ -104,7 +104,9 @@ function matchAvailableProviders(providers: {
 export const checkEnvKeys = async (logger: AstroIntegrationLogger, options: StudioCMSConfig) => {
 	const {
 		verbose,
-		features: { authConfig: { providers } },
+		features: {
+			authConfig: { providers },
+		},
 	} = options;
 
 	const infoLogger = (message: string) => {

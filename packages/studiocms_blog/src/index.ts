@@ -40,7 +40,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	// Resolve the options and set defaults
 	const resolvedOptions = FrontEndConfigSchema.parse(options);
 
-	const { 
+	const {
 		blog: { title, enableRSS, route: orgRoute },
 		sitemap,
 		injectRoutes,
@@ -107,7 +107,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 									'studiocms:blog/frontend-config': `
 										const config = ${JSON.stringify(frontendConfig)};
 										export default config;
-									`
+									`,
 								},
 							});
 						},

@@ -235,17 +235,17 @@ export const studiocms = defineIntegration({
 							authConfig: options.features.authConfig,
 							AuthConfig: options.features.authConfig,
 							developerConfig: options.features.developerConfig,
-							sdk: options.features.sdk
-						}
+							sdk: options.features.sdk,
+						},
 					});
 
 					defineModule('studiocms:plugins', {
-						defaultExport: safePluginList
+						defaultExport: safePluginList,
 					});
 
 					defineModule('studiocms:version', {
-						defaultExport: pkgVersion
-					})
+						defaultExport: pkgVersion,
+					});
 
 					addVirtualImports(params, {
 						name,

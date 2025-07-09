@@ -10,9 +10,7 @@ import { SDKSchema } from './sdk.js';
 //
 // Exported Schemas for use in other internal packages
 //
-export {
-	dashboardConfigSchema,
-};
+export { dashboardConfigSchema };
 
 export const StudioCMSOptionsSchema = z
 	.object({
@@ -122,7 +120,7 @@ export const StudioCMSOptionsSchema = z
 				 * Auth Configuration - Allows customization of the Authentication Configuration
 				 */
 				authConfig: authConfigSchema,
-				
+
 				/**
 				 * Developer Options/Configuration
 				 */

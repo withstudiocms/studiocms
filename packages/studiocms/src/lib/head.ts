@@ -1,4 +1,3 @@
-
 import { z } from 'astro/zod';
 
 export const HeadConfigSchema = () =>

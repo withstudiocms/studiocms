@@ -7,7 +7,7 @@ import {
 import type { StudioCMSPlugin } from '../../plugins.js';
 import { integrationLogger } from '../../utils/integrationLogger.js';
 
-export const webVitalsNameList = ["@astrojs/web-vitals", "@studiocms/web-vitals"]
+export const webVitalsNameList = ['@astrojs/web-vitals', '@studiocms/web-vitals'];
 
 const { resolve } = createResolver(import.meta.url);
 
@@ -65,7 +65,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		//         - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
 			name: 'Web Vitals',
-			identifier: "@studiocms/web-vitals",
+			identifier: '@studiocms/web-vitals',
 			studiocmsMinimumVersion: opts.version,
 			hooks: {
 				'studiocms:config:setup': ({ setDashboard }) => {

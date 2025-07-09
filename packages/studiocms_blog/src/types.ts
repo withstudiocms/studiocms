@@ -63,31 +63,32 @@ export const FrontEndConfigSchema = z
 		/**
 		 * The configuration for the blog
 		 */
-		blog: z.object({
-			/**
-			 * The title of the blog
-			 */
-			title: z.string().optional().default('Blog'),
+		blog: z
+			.object({
+				/**
+				 * The title of the blog
+				 */
+				title: z.string().optional().default('Blog'),
 
-			/**
-			 * Enable RSS feed
-			 */
-			enableRSS: z.boolean().optional().default(true),
+				/**
+				 * Enable RSS feed
+				 */
+				enableRSS: z.boolean().optional().default(true),
 
-			/**
-			 * The route for the blog
-			 * @default '/blog'
-			 * @example '/news'
-			 */
-			route: z.string().optional().default('/blog')
-		}).optional().default({})
-
+				/**
+				 * The route for the blog
+				 * @default '/blog'
+				 * @example '/news'
+				 */
+				route: z.string().optional().default('/blog'),
+			})
+			.optional()
+			.default({}),
 	})
 	.optional()
 	.default({});
 
 export type StudioCMSBlogOptions = z.infer<typeof FrontEndConfigSchema>;
-
 
 // /**
 //  * Options for configuring the StudioCMS Blog.

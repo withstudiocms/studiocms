@@ -141,7 +141,10 @@ async function importBundledFile({
 	root: URL;
 }): Promise<{ default?: unknown }> {
 	// Write it to disk, load it with native Node ESM, then delete the file.
-	const tmpFileUrl = new URL(`./studiocms.config.timestamp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.mjs`, root);
+	const tmpFileUrl = new URL(
+		`./studiocms.config.timestamp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.mjs`,
+		root
+	);
 	await writeFile(tmpFileUrl, code, { encoding: 'utf8' });
 	try {
 		return await import(/* @vite-ignore */ tmpFileUrl.toString());

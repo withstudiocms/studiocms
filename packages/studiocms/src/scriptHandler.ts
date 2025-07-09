@@ -35,7 +35,7 @@ export const scriptHandler = defineUtility('astro:config:setup')((params, option
 	];
 
 	if (extraScripts && extraScripts.length > 0) {
-		scripts.push(...extraScripts)
+		scripts.push(...extraScripts);
 	}
 
 	// Inject Scripts
