@@ -7,7 +7,7 @@ import {
 import type { StudioCMSPlugin } from '../../plugins.js';
 import { integrationLogger } from '../../utils/integrationLogger.js';
 
-export const webVitalsName = '@astrojs/web-vitals';
+export const webVitalsNameList = ["@astrojs/web-vitals", "@studiocms/web-vitals"]
 
 const { resolve } = createResolver(import.meta.url);
 
@@ -33,24 +33,22 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 	) => {
 		integrationLogger(
 			{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-			`Checking for '${webVitalsName}' integration...`
+			'Checking for Web Vitals integration...'
 		);
 
-		const enabled = hasIntegration(params, { name: webVitalsName });
+		let exists = false;
 
-		// Check for Web Vitals
-		if (enabled) {
-			// Log that the Web Vitals Integration is Present
-			integrationLogger(
-				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-				'Web Vitals Integration Found!'
-			);
-		} else {
-			// Log that the Web Vitals Integration is Missing
-			integrationLogger(
-				{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
-				`Web Vitals integration not found. If you wish to use Web Vitals, please install the '${webVitalsName}' package.`
-			);
+		for (const item of webVitalsNameList) {
+			const isEnabled = hasIntegration(params, { name: item });
+
+			if (isEnabled) {
+				exists = true;
+				// Log that the Web Vitals Integration is Present
+				integrationLogger(
+					{ logger: params.logger, logLevel: 'info', verbose: opts.verbose },
+					'Web Vitals Integration Found!'
+				);
+			}
 		}
 
 		// Add the Web Vitals StudioCMS interface
@@ -66,8 +64,8 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		// TODO: Dashboard Grid Items
 		//         - Page Visits
 		const webVitalsPlugin: StudioCMSPlugin = {
-			name: 'Astro Web Vitals',
-			identifier: webVitalsName,
+			name: 'Web Vitals',
+			identifier: "@studiocms/web-vitals",
 			studiocmsMinimumVersion: opts.version,
 			hooks: {
 				'studiocms:config:setup': ({ setDashboard }) => {
@@ -112,7 +110,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			},
 		};
 
-		if (enabled) {
+		if (exists) {
 			return webVitalsPlugin;
 		}
 

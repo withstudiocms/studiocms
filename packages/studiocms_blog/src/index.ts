@@ -1,7 +1,7 @@
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
 import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
-import type { StudioCMSBlogOptions } from './types.js';
+import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
 
@@ -37,12 +37,17 @@ const packageIdentifier = '@studiocms/blog';
  * @param {boolean} [options.injectRoutes] - Whether to inject routes for the blog. Defaults to true.
  */
 export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
-	// Resolve the options and set defaults if not provided
-	const title = options?.blog?.title || 'Blog';
-	const enableRSS = options?.blog?.enableRSS ?? true;
-	const route = pathWithBase(options?.blog?.route || '/blog');
-	const sitemap = options?.sitemap ?? true;
-	const injectRoutes = options?.injectRoutes ?? true;
+	// Resolve the options and set defaults
+	const resolvedOptions = FrontEndConfigSchema.parse(options);
+
+	const { 
+		blog: { title, enableRSS, route: orgRoute },
+		sitemap,
+		injectRoutes,
+		...frontendConfig
+	} = resolvedOptions;
+
+	const route = pathWithBase(orgRoute);
 
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
@@ -92,13 +97,17 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 								name: packageIdentifier,
 								imports: {
 									'studiocms:blog/config': `
-									const config = {
-										title: ${JSON.stringify(title)},
-										enableRSS: ${enableRSS},
-										route: ${JSON.stringify(route)}
-									}
-									export default config;
-								`,
+										const config = {
+											title: ${JSON.stringify(title)},
+											enableRSS: ${enableRSS},
+											route: ${JSON.stringify(route)}
+										}
+										export default config;
+									`,
+									'studiocms:blog/frontend-config': `
+										const config = ${JSON.stringify(frontendConfig)};
+										export default config;
+									`
 								},
 							});
 						},

@@ -39,14 +39,6 @@ export const dashboardConfigSchema = z
 		 */
 		dashboardRouteOverride: z.string().optional(),
 		/**
-		 * Auth Configuration - Allows customization of the Authentication Configuration
-		 */
-		AuthConfig: authConfigSchema,
-		/**
-		 * Developer Options/Configuration
-		 */
-		developerConfig: developerConfigSchema,
-		/**
 		 * OPTIONAL - This allows the user to enable or disable the version check for the dashboard
 		 *
 		 * This will check for the latest version of StudioCMS and notify the user
