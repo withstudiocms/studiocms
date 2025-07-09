@@ -38,6 +38,7 @@ export const ConvertToPageData = async (page: unknown, endpoint: string): Promis
 	const titleImage = await downloadPostImage(titleImageJson.source_url, pagesImagesFolder);
 
 	const pageData: PageData = {
+		// @ts-expect-error - Drizzle broke this
 		id: crypto.randomUUID(),
 		title: data.title.rendered,
 		description: decode(stripHtml(data.excerpt.rendered)),
@@ -50,6 +51,7 @@ export const ConvertToPageData = async (page: unknown, endpoint: string): Promis
 	};
 
 	if (titleImage) {
+		// @ts-expect-error - Drizzle broke this
 		pageData.heroImage = titleImage;
 	}
 
@@ -70,6 +72,7 @@ export const ConvertToPageContent = async (
 ): Promise<PageContent> => {
 	const data = page as Page;
 
+	// @ts-expect-error - Drizzle broke this
 	if (pageData.id === undefined) {
 		throw new Error('pageData is missing id');
 	}
@@ -86,7 +89,9 @@ export const ConvertToPageContent = async (
 	const content = turndownService.turndown(htmlWithImages);
 
 	const pageContent: PageContent = {
+		// @ts-expect-error - Drizzle broke this
 		id: crypto.randomUUID(),
+		// @ts-expect-error - Drizzle broke this
 		contentId: pageData.id,
 		contentLang: 'default',
 		content: content,
@@ -135,6 +140,7 @@ export const generateCategories = async (categories: number[], endpoint: string)
 	if (newCategories.length > 0) {
 		const categoryData = newCategories.map((category) => {
 			const data: typeof tsPageDataCategories.$inferInsert = {
+				// @ts-expect-error - Drizzle broke this
 				id: category.id,
 				name: category.name,
 				slug: category.slug,
@@ -143,6 +149,7 @@ export const generateCategories = async (categories: number[], endpoint: string)
 			};
 
 			if (category.parent) {
+				// @ts-expect-error - Drizzle broke this
 				data.parent = category.parent;
 			}
 
@@ -150,6 +157,7 @@ export const generateCategories = async (categories: number[], endpoint: string)
 		});
 
 		for (const category of categoryData) {
+			// @ts-expect-error - Drizzle broke this
 			console.log(`Inserting category with id ${category.id} into the database`);
 			await db.insert(tsPageDataCategories).values(category);
 		}
@@ -198,6 +206,7 @@ export const generateTags = async (tags: number[], endpoint: string) => {
 	if (newTags.length > 0) {
 		const tagData = newTags.map((tag) => {
 			const data: typeof tsPageDataTags.$inferInsert = {
+				// @ts-expect-error - Drizzle broke this
 				id: tag.id,
 				name: tag.name,
 				slug: tag.slug,
@@ -209,6 +218,7 @@ export const generateTags = async (tags: number[], endpoint: string) => {
 		});
 
 		for (const tag of tagData) {
+			// @ts-expect-error - Drizzle broke this
 			console.log(`Inserting tag with id ${tag.id} into the database`);
 			await db.insert(tsPageDataTags).values(tag);
 		}
@@ -244,6 +254,7 @@ export const ConvertToPostData = async (
 	await generateTags(data.tags, endpoint);
 
 	const pageData: PageData = {
+		// @ts-expect-error - Drizzle broke this
 		id: crypto.randomUUID(),
 		title: data.title.rendered,
 		description: decode(stripHtml(data.excerpt.rendered)),
@@ -258,6 +269,7 @@ export const ConvertToPostData = async (
 	};
 
 	if (titleImage) {
+		// @ts-expect-error - Drizzle broke this
 		pageData.heroImage = titleImage;
 	}
 
@@ -278,6 +290,7 @@ export const ConvertToPostContent = async (
 ): Promise<PageContent> => {
 	const data = post as Post;
 
+	// @ts-expect-error - Drizzle broke this
 	if (pageData.id === undefined) {
 		throw new Error('pageData is missing id');
 	}
@@ -294,7 +307,9 @@ export const ConvertToPostContent = async (
 	const content = turndownService.turndown(htmlWithImages);
 
 	const pageContent: PageContent = {
+		// @ts-expect-error - Drizzle broke this
 		id: crypto.randomUUID(),
+		// @ts-expect-error - Drizzle broke this
 		contentId: pageData.id,
 		contentLang: 'default',
 		content: content,
