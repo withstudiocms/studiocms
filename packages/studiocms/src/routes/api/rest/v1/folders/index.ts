@@ -4,6 +4,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, Schema } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
@@ -94,25 +95,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to create folder', error);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, GET, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'POST']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

@@ -3,6 +3,7 @@ import { Mailer } from 'studiocms:mailer';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, Schema } from 'effect';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
 export class SmtpConfigSchema extends Schema.Class<SmtpConfigSchema>('SmtpConfigSchema')({
 	port: Schema.Number,
@@ -112,25 +113,6 @@ export const UPDATE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, `Error updating mailer config: ${error.message}`);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST, UPDATE',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'UPDATE']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

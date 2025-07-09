@@ -1,119 +1,107 @@
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Check if demo mode is enabled
-	if (developerConfig.demoMode !== false) {
-		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
-	}
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/api-tokens.POST')(function* () {
+			const sdk = yield* SDKCore;
 
-	// Get user data
-	const userData = context.locals.userSessionData;
+			// Check if demo mode is enabled
+			if (developerConfig.demoMode !== false) {
+				return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+			}
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isEditor;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Get Json Data
-	const jsonData: { description: string; user: string } = await context.request.json();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Validate form data
-	if (!jsonData.description) {
-		return apiResponseLogger(400, 'Invalid form data, description is required');
-	}
+			// Get Json Data
+			const jsonData: { description: string; user: string } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body'),
+			});
 
-	if (!jsonData.user) {
-		return apiResponseLogger(400, 'Invalid form data, user is required');
-	}
+			// Validate form data
+			if (!jsonData.description) {
+				return apiResponseLogger(400, 'Invalid form data, description is required');
+			}
 
-	// Update Database
-	try {
-		const newToken = await studioCMS_SDK.REST_API.tokens.new(jsonData.user, jsonData.description);
+			if (!jsonData.user) {
+				return apiResponseLogger(400, 'Invalid form data, user is required');
+			}
 
-		return new Response(JSON.stringify({ token: newToken.key }), {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-			},
-		});
-	} catch (error) {
-		// Return Error Response
-		return apiResponseLogger(500, 'Error creating new token');
-	}
-};
+			const newToken = yield* sdk.REST_API.tokens.new(jsonData.user, jsonData.description);
 
-export const DELETE: APIRoute = async (context: APIContext) => {
-	// Check if demo mode is enabled
-	if (developerConfig.demoMode !== false) {
-		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
-	}
+			return new Response(JSON.stringify({ token: newToken.key }), {
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
+			});
+		}).pipe(SDKCore.Provide)
+	);
 
-	// Get user data
-	const userData = context.locals.userSessionData;
+export const DELETE: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/api-tokens.DELETE')(function* () {
+			const sdk = yield* SDKCore;
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if demo mode is enabled
+			if (developerConfig.demoMode !== false) {
+				return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+			}
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isEditor;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Get Json Data
-	const jsonData: { tokenID: string; userID: string } = await context.request.json();
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	// Validate form data
-	if (!jsonData.tokenID) {
-		return apiResponseLogger(400, 'Invalid form data, tokenID is required');
-	}
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	if (!jsonData.userID) {
-		return apiResponseLogger(400, 'Invalid form data, userID is required');
-	}
+			// Get Json Data
+			const jsonData: { tokenID: string; userID: string } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body')
+			});
 
-	// Update Database
-	try {
-		await studioCMS_SDK.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
+			// Validate form data
+			if (!jsonData.tokenID) {
+				return apiResponseLogger(400, 'Invalid form data, tokenID is required');
+			}
 
-		return apiResponseLogger(200, 'Token deleted');
-	} catch (error) {
-		// Return Error Response
-		return apiResponseLogger(500, 'Error deleting token');
-	}
-};
+			if (!jsonData.userID) {
+				return apiResponseLogger(400, 'Invalid form data, userID is required');
+			}
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+			yield* sdk.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+			return apiResponseLogger(200, 'Token deleted');
+		}).pipe(SDKCore.Provide)
+	);
+
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'DELETE']);
+
+export const ALL: APIRoute = async () => AllResponse();

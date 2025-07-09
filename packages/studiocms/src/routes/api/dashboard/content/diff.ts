@@ -1,63 +1,52 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendEditorNotification } from 'studiocms:notifier';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.js';
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/content/diff.POST')(function* () {
+			const notify = yield* Notifications;
+			const sdk = yield* SDKCore;
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isEditor;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const jsonData: { id: string; type: 'data' | 'content' | 'both' } = await context.request.json();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const { id, type } = jsonData;
+			const jsonData: { id: string; type: 'data' | 'content' | 'both' } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body'),
+			});
 
-	if (!id || !type) {
-		return apiResponseLogger(400, 'Invalid ID or Type');
-	}
+			const { id, type } = jsonData;
 
-	try {
-		const data = await studioCMS_SDK_Cache.diffTracking.revertToDiff(id, type);
+			if (!id || !type) {
+				return apiResponseLogger(400, 'Invalid ID or Type');
+			}
 
-		studioCMS_SDK_Cache.CLEAR.pages();
+			const data = yield* sdk.diffTracking.revertToDiff(id, type);
 
-		await sendEditorNotification('page_updated', data.pageMetaData.end.title || '');
+			yield* sdk.CLEAR.pages();
 
-		return apiResponseLogger(200, 'Page Reverted successfully');
-	} catch (error) {
-		return apiResponseLogger(500, 'failed to revert page', error);
-	}
-};
+			yield* notify.sendEditorNotification('page_updated', data.pageMetaData.end.title || '');
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+			return apiResponseLogger(200, 'Page Reverted successfully');
+		}).pipe(Notifications.Provide, SDKCore.Provide)
+	);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+
+export const ALL: APIRoute = async () => AllResponse();

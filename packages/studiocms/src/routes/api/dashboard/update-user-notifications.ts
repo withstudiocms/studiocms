@@ -1,68 +1,60 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/update-user-notifications.POST')(function* () {
+			const sdk = yield* SDKCore;
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const jsonData = await context.request.json();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const userId = jsonData.id;
-	const notifications = jsonData.notifications;
+			const jsonData = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body'),
+			});
 
-	if (!userId) {
-		return apiResponseLogger(400, 'Invalid request');
-	}
+			const userId = jsonData.id;
+			const notifications = jsonData.notifications;
 
-	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
+			if (!userId) {
+				return apiResponseLogger(400, 'Invalid request');
+			}
 
-	if (!user) {
-		return apiResponseLogger(404, 'User not found');
-	}
+			const user = yield* sdk.GET.users.byId(userId);
 
-	const updatedData = await studioCMS_SDK.AUTH.user.update(userId, {
-		// @ts-expect-error drizzle broke the variable...
-		notifications,
-	});
+			if (!user) {
+				return apiResponseLogger(404, 'User not found');
+			}
 
-	if (!updatedData) {
-		return apiResponseLogger(400, 'Failed to update user notifications');
-	}
+			const updatedData = yield* sdk.AUTH.user.update(userId, {
+				// @ts-expect-error drizzle broke the variable...
+				notifications,
+			});
 
-	return apiResponseLogger(200, 'User notifications updated successfully');
-};
+			if (!updatedData) {
+				return apiResponseLogger(400, 'Failed to update user notifications');
+			}
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+			return apiResponseLogger(200, 'User notifications updated successfully');
+		}).pipe(SDKCore.Provide)
+	);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+
+export const ALL: APIRoute = async () => AllResponse();

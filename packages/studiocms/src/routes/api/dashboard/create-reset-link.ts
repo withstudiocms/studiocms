@@ -1,78 +1,68 @@
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendAdminNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> => {
-	// Check if demo mode is enabled
-	if (developerConfig.demoMode !== false) {
-		return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
-	}
+export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/create-reset-link.POST')(function* () {
+			const notify = yield* Notifications;
+			const sdk = yield* SDKCore;
 
-	// Get user data
-	const userData = context.locals.userSessionData;
+			// Check if demo mode is enabled
+			if (developerConfig.demoMode !== false) {
+				return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+			}
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const jsonData = await context.request.json();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const { userId } = jsonData;
+			const jsonData = yield* Effect.tryPromise(() => context.request.json());
 
-	if (!userId) {
-		return apiResponseLogger(400, 'Invalid form data, userId is required');
-	}
+			const { userId } = jsonData;
 
-	const token = await studioCMS_SDK.resetTokenBucket.new(userId);
+			if (!userId) {
+				return apiResponseLogger(400, 'Invalid form data, userId is required');
+			}
 
-	if (!token) {
-		return apiResponseLogger(500, 'Failed to create reset link');
-	}
+			const token = yield* sdk.resetTokenBucket.new(userId);
 
-	const user = await studioCMS_SDK.GET.databaseEntry.users.byId(userId);
+			if (!token) {
+				return apiResponseLogger(500, 'Failed to create reset link');
+			}
 
-	if (!user) {
-		return apiResponseLogger(404, 'User not found');
-	}
+			const user = yield* sdk.GET.users.byId(userId);
 
-	await sendAdminNotification('user_updated', user.username);
+			if (!user) {
+				return apiResponseLogger(404, 'User not found');
+			}
 
-	return new Response(JSON.stringify(token), {
-		headers: {
-			'content-type': 'application/json',
-		},
-		status: 200,
-	});
-};
+			yield* notify.sendAdminNotification('user_updated', user.username);
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+			return new Response(JSON.stringify(token), {
+				headers: {
+					'content-type': 'application/json',
+				},
+				status: 200,
+			});
+		}).pipe(Notifications.Provide, SDKCore.Provide)
+	);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+
+export const ALL: APIRoute = async () => AllResponse();

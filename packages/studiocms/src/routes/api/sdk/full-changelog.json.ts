@@ -1,5 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 import { ProcessChangelog } from './utils/changelog.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
@@ -31,21 +32,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		});
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();
