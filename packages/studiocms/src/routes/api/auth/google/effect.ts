@@ -25,7 +25,6 @@ export interface GoogleUser {
 	email: string;
 }
 
-
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
 		const sessionHelper = yield* Session;
@@ -170,25 +169,27 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					return redirect('/done');
 				}
 
-                yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+				yield* verifyEmail.sendVerificationEmail(newUser.id, true);
 
-                const existingUser = yield* sdk.GET.users.byId(newUser.id);
+				const existingUser = yield* sdk.GET.users.byId(newUser.id);
 
-                const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+				const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
 
-                // If Mailer is enabled, is the user verified?
-                if (!isEmailAccountVerified) {
-                    return new Response('Email not verified, please verify your account first.', { status: 400 });
-                }
+				// If Mailer is enabled, is the user verified?
+				if (!isEmailAccountVerified) {
+					return new Response('Email not verified, please verify your account first.', {
+						status: 400,
+					});
+				}
 
-                yield* sessionHelper.createUserSession(newUser.id, context);
+				yield* sessionHelper.createUserSession(newUser.id, context);
 
-		        return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
 			});
 
 		return {
 			initSession,
-            initCallback
+			initCallback,
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],

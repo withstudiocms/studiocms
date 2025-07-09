@@ -181,7 +181,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 
 		return {
 			initSession,
-			initCallback
+			initCallback,
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],

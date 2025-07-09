@@ -192,7 +192,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 		return {
 			initSession,
-			initCallback
+			initCallback,
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
