@@ -98,7 +98,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				content: formData.get('page-content')?.toString() ?? '',
 			} as UpdatePageContent;
 
-			if (!data) {
+			if (!data.title) {
 				return apiResponseLogger(400, 'Invalid form data, data is required');
 			}
 
