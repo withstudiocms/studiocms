@@ -3,6 +3,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export const GET: APIRoute = async (context: APIContext) =>
@@ -76,25 +77,6 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Error updating site config', error);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, GET, PATCH',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

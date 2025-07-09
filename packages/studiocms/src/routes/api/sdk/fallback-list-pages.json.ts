@@ -1,6 +1,7 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
 export const GET: APIRoute = async (): Promise<Response> =>
 	await convertToVanilla(
@@ -35,21 +36,6 @@ export const GET: APIRoute = async (): Promise<Response> =>
 		);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, GET',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

@@ -1,10 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendEditorNotification } from 'studiocms:notifier';
+import { Notifications, sendEditorNotification } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
+import { SDKCore } from 'studiocms:sdk';
 import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses';
 
 const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	const pageTypeOutput: {
@@ -326,25 +330,6 @@ export const DELETE: APIRoute = async (context: APIContext) => {
 	}
 };
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, POST, DELETE, PATCH',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

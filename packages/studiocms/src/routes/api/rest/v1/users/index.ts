@@ -6,6 +6,7 @@ import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { Effect, Schema } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export class JSONData extends Schema.Class<JSONData>('JSONData')({
@@ -189,25 +190,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to create user', error);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, GET, POST',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'POST']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();

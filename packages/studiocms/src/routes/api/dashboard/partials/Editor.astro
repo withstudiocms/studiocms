@@ -1,60 +1,71 @@
 ---
 export const partial = true;
-import pluginsList from 'studiocms:plugins';
+import pluginsList from "studiocms:plugins";
 
-const pageTypeComponents = async () => {
-	const pageTypeComponents: {
-		identifier: string;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		Component: (Props?: { content?: string | null | undefined }) => any;
-	}[] = [];
+type RawJsonData = {
+	content: string | undefined;
+	editor: string;
+};
+
+type EditorComponent = (_props?: {
+	content?: string | null | undefined;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+}) => any;
+
+type EditorComponentItem = {
+	identifier: string;
+	Component: EditorComponent;
+};
+
+async function load() {
+	const jsonData: RawJsonData | undefined = await Astro.request.json();
+
+	const pageTypeComponents: EditorComponentItem[] = [];
 
 	for (const { pageTypes } of pluginsList) {
-		if (!pageTypes) {
-			return pageTypeComponents;
-		}
+		if (!pageTypes) continue;
 
 		for (const { identifier, pageContentComponent } of pageTypes) {
-			if (!pageContentComponent) {
-				continue;
-			}
+			if (!pageContentComponent) continue;
 
 			pageTypeComponents.push({
 				identifier,
-				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
+				Component: (
+					await import(/* @vite-ignore */ pageContentComponent)
+				).default,
 			});
 		}
-
-		return pageTypeComponents;
 	}
 
-	return pageTypeComponents;
-};
+	let Editor: EditorComponentItem | undefined;
 
-async function setContent() {
-	const jsonData: { content: string | undefined; editor: string } | undefined =
-		await Astro.request.json();
-
-	const editors = await pageTypeComponents();
-
-	let currentEditor = editors.find((ed) => {
+	Editor = pageTypeComponents.find((ed) => {
 		if (ed.identifier === jsonData?.editor) {
 			return ed;
 		}
 	});
 
-	if (!currentEditor) {
+	if (!Editor) {
 		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		currentEditor = editors.find((editor) => editor.identifier === 'studiocms/markdown')!;
+		Editor = pageTypeComponents.find(
+			(editor) => editor.identifier === "studiocms/markdown",
+		)!;
 	}
 
 	if (jsonData?.content) {
-		return { content: jsonData.content, ActiveEditor: currentEditor.Component };
+		return {
+			content: jsonData.content,
+			ActiveEditor: Editor.Component,
+		};
 	}
 
-	return { content: 'No content to display', ActiveEditor: currentEditor.Component };
+	return {
+		content: "No content to display",
+		ActiveEditor: Editor.Component,
+	};
 }
 
-const { content, ActiveEditor } = await setContent();
+const { content, ActiveEditor } = await load();
 ---
+
 <ActiveEditor content={content} />

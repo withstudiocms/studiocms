@@ -1,38 +1,41 @@
 ---
 export const partial = true;
-import UserListItem from '../../../../components/dashboard/user-mgmt/UserListItem.astro';
+import UserListItem from "../../../../components/dashboard/user-mgmt/UserListItem.astro";
+
+type PermissionsData = {
+	user: string;
+	rank: string;
+};
+
+type Users = {
+	id: string;
+	name: string;
+	email: string | null;
+	avatar: string | null;
+	username: string;
+	permissionsData: PermissionsData | undefined;
+};
+
+type FullJsonData = {
+	users: Users[];
+	searchQuery?: string;
+};
 
 async function setData() {
-	const jsonData:
-		| {
-				users: {
-					id: string;
-					name: string;
-					email: string | null;
-					avatar: string | null;
-					username: string;
-					permissionsData:
-						| {
-								user: string;
-								rank: string;
-						  }
-						| undefined;
-				}[];
-				searchQuery?: string;
-		  }
-		| undefined = await Astro.request.json();
+	const jsonData: FullJsonData | undefined = await Astro.request.json();
 
-	if (jsonData) {
-		return jsonData;
-	}
+	if (jsonData) return jsonData;
 
-	return 'No Users to display';
+	return "No Users to display";
 }
 
-const Data = await setData();
+const usersData = await setData();
 ---
-{ 
-	typeof Data !== 'string' 
-	? Data.users.map((user) => <UserListItem user={user} searchQuery={Data.searchQuery} />) 
-	: Data 
+
+{
+	typeof usersData !== "string"
+		? usersData.users.map((user) => (
+				<UserListItem user={user} searchQuery={usersData.searchQuery} />
+			))
+		: usersData
 }

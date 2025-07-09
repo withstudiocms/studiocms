@@ -5,6 +5,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, Schema } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 type PermissionRank = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
@@ -315,25 +316,6 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, `Failed to delete user: ${error}`);
 	});
 
-export const OPTIONS: APIRoute = async () => {
-	return new Response(null, {
-		status: 204,
-		statusText: 'No Content',
-		headers: {
-			Allow: 'OPTIONS, GET, PATCH, DELETE',
-			'Access-Control-Allow-Origin': '*',
-			'Cache-Control': 'public, max-age=604800, immutable',
-			Date: new Date().toUTCString(),
-		},
-	});
-};
+export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH', 'DELETE']);
 
-export const ALL: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Allowed',
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	});
-};
+export const ALL: APIRoute = async () => AllResponse();
