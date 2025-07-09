@@ -1,10 +1,11 @@
-import { verifyPasswordStrength } from 'studiocms:auth/lib/password';
-import { createLocalUser, verifyUsernameInput } from 'studiocms:auth/lib/user';
+import { Password, User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
-import { sendAdminNotification } from 'studiocms:notifier';
-import studioCMS_SDK from 'studiocms:sdk';
+import { Notifications } from 'studiocms:notifier';
+import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
+import { Effect } from 'effect';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 type JSONData = {
 	username: string | undefined;
@@ -14,94 +15,104 @@ type JSONData = {
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
 };
 
-export const POST: APIRoute = async (context: APIContext) => {
-	// Get user data
-	const userData = context.locals.userSessionData;
+export const POST: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/create-user.POST')(function* () {
+			const pass = yield* Password;
+			const userHelper = yield* User;
+			const notify = yield* Notifications;
+			const sdk = yield* SDKCore;
 
-	// Check if user is logged in
-	if (!userData.isLoggedIn) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Get user data
+			const userData = context.locals.userSessionData;
 
-	// Check if user has permission
-	const isAuthorized = context.locals.userPermissionLevel.isAdmin;
-	if (!isAuthorized) {
-		return apiResponseLogger(403, 'Unauthorized');
-	}
+			// Check if user is logged in
+			if (!userData.isLoggedIn) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	const jsonData: JSONData = await context.request.json();
+			// Check if user has permission
+			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			if (!isAuthorized) {
+				return apiResponseLogger(403, 'Unauthorized');
+			}
 
-	let { username, password, email, displayname, rank } = jsonData;
+			const jsonData: JSONData = yield* Effect.tryPromise(() => context.request.json());
 
-	// If the username, password, email, or display name is missing, return an error
-	if (!username) {
-		return apiResponseLogger(400, 'Missing field: Username is required');
-	}
+			let { username, password, email, displayname, rank } = jsonData;
 
-	if (!password) {
-		password = await studioCMS_SDK.generateRandomPassword(12);
-	}
+			// If the username, password, email, or display name is missing, return an error
+			if (!username) {
+				return apiResponseLogger(400, 'Missing field: Username is required');
+			}
 
-	if (!email) {
-		return apiResponseLogger(400, 'Missing field: Email is required');
-	}
+			if (!password) {
+				password = yield* sdk.generateRandomPassword(12);
+			}
 
-	if (!displayname) {
-		return apiResponseLogger(400, 'Missing field: Display name is required');
-	}
+			if (!email) {
+				return apiResponseLogger(400, 'Missing field: Email is required');
+			}
 
-	if (!rank) {
-		return apiResponseLogger(400, 'Missing field: Rank is required');
-	}
+			if (!displayname) {
+				return apiResponseLogger(400, 'Missing field: Display name is required');
+			}
 
-	// If the username is invalid, return an error
-	const verifyUsernameResponse = verifyUsernameInput(username);
-	if (verifyUsernameResponse !== true) {
-		return apiResponseLogger(400, verifyUsernameResponse);
-	}
+			if (!rank) {
+				return apiResponseLogger(400, 'Missing field: Rank is required');
+			}
 
-	// If the password is invalid, return an error
-	const verifyPasswordResponse = await verifyPasswordStrength(password);
-	if (verifyPasswordResponse !== true) {
-		return apiResponseLogger(400, verifyPasswordResponse);
-	}
+			// If the username is invalid, return an error
+			const verifyUsernameResponse = yield* userHelper.verifyUsernameInput(username);
+			if (verifyUsernameResponse !== true) {
+				return apiResponseLogger(400, verifyUsernameResponse);
+			}
 
-	// If the email is invalid, return an error
-	const checkEmail = z.coerce
-		.string()
-		.email({ message: 'Email address is invalid' })
-		.safeParse(email);
+			// If the password is invalid, return an error
+			const verifyPasswordResponse = yield* pass.verifyPasswordStrength(password);
+			if (verifyPasswordResponse !== true) {
+				return apiResponseLogger(400, verifyPasswordResponse);
+			}
 
-	if (!checkEmail.success) {
-		return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
-	}
+			// If the email is invalid, return an error
+			const checkEmail = z.coerce
+				.string()
+				.email({ message: 'Email address is invalid' })
+				.safeParse(email);
 
-	const { usernameSearch, emailSearch } =
-		await studioCMS_SDK.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
+			if (!checkEmail.success) {
+				return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
+			}
 
-	if (usernameSearch.length > 0) {
-		return apiResponseLogger(400, 'Invalid username: Username is already in use');
-	}
+			const { usernameSearch, emailSearch } = yield* sdk.AUTH.user.searchUsersForUsernameOrEmail(
+				username,
+				checkEmail.data
+			);
 
-	if (emailSearch.length > 0) {
-		return apiResponseLogger(400, 'Invalid email: Email is already in use');
-	}
+			if (usernameSearch.length > 0) {
+				return apiResponseLogger(400, 'Invalid username: Username is already in use');
+			}
 
-	// Create a new user
-	const newUser = await createLocalUser(displayname, username, email, password);
+			if (emailSearch.length > 0) {
+				return apiResponseLogger(400, 'Invalid email: Email is already in use');
+			}
 
-	const updateRank = await studioCMS_SDK.UPDATE.permissions({
-		user: newUser.id,
-		rank: rank,
-	});
+			// Create a new user
+			const newUser = yield* userHelper.createLocalUser(displayname, username, email, password);
 
-	await sendAdminNotification('new_user', newUser.username);
+			const updateRank = yield* sdk.UPDATE.permissions({
+				user: newUser.id,
+				rank: rank,
+			});
 
-	return apiResponseLogger(
-		200,
-		JSON.stringify({ username, email, displayname, rank: updateRank.rank, password })
+			yield* notify.sendAdminNotification('new_user', newUser.username);
+
+			return apiResponseLogger(
+				200,
+				JSON.stringify({ username, email, displayname, rank: updateRank.rank, password })
+			);
+		}).pipe(Password.Provide, User.Provide, Notifications.Provide, SDKCore.Provide)
 	);
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
