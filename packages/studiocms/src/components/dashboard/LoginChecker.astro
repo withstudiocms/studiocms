@@ -1,7 +1,6 @@
 ---
 import { User, VerifyEmail } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { StudioCMSRoutes } from 'studiocms:lib';
 import { Effect } from 'effect';
 
 interface Props {
@@ -19,14 +18,14 @@ const emailVerified = await Effect.runPromise(
 	VerifyEmail.isEmailVerified(currentUser).pipe(VerifyEmail.Provide)
 );
 
-let redirectProfile = StudioCMSRoutes.mainLinks.userProfile;
+let redirectProfile = Astro.locals.routeMap.mainLinks.userProfile;
 
 if (Astro.locals.emailVerificationEnabled && emailVerified === false) {
 	isAuthorized = false;
-	redirectProfile = StudioCMSRoutes.mainLinks.unverifiedEmail;
+	redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
 }
 
-const redirectLogin = StudioCMSRoutes.authLinks.loginURL;
+const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;
 ---
 <login-check
     data-is_logged_in={`${currentUser.isLoggedIn}`}

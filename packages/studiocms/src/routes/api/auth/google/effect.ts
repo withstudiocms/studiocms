@@ -1,6 +1,6 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { AuthConfig } from 'studiocms:config';
+import config, { authConfig } from 'studiocms:config';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
@@ -10,7 +10,7 @@ import { genLogger } from '../../../../lib/effects/index.js';
 
 export const {
 	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-} = await authEnvCheck(AuthConfig.providers);
+} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'google';
 export const ProviderCookieName = 'google_oauth_state';

@@ -49,12 +49,14 @@ export const importSettingsFromWPAPI = async (endpoint: string) => {
 	}
 
 	const siteConfig: typeof tsSiteConfig.$inferInsert = {
+		// @ts-expect-error - Drizzle broke this
 		id: CMSSiteConfigId,
 		title: settings.name,
 		description: settings.description,
 	};
 
 	if (siteIcon) {
+		// @ts-expect-error - Drizzle broke this
 		siteConfig.siteIcon = siteIcon;
 	}
 

@@ -1,124 +1,163 @@
 ---
-import { FormattedDate } from 'studiocms:components';
-import { useTranslations } from 'studiocms:i18n';
-import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import { Button, Card, Group, Input } from 'studiocms:ui/components';
-import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
-import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
-import Layout from '../../../layouts/dashboard/Layout.astro';
+import { FormattedDate } from "studiocms:components";
+import { useTranslations } from "studiocms:i18n";
+import { SDKCore } from "studiocms:sdk";
+import { Button, Card, Group, Input } from "studiocms:ui/components";
+import { Effect } from "effect";
+import InnerSidebarElement from "../../../components/dashboard/content-mgmt/InnerSidebarElement.astro";
+import PageHeader from "../../../components/dashboard/content-mgmt/PageHeader.astro";
+import Layout from "../../../layouts/dashboard/Layout.astro";
+import { convertToVanilla, genLogger } from "../../../lib/effects/index.js";
 
-const { getDiffHTML, getMetaDataDifferences } = studioCMS_SDK.diffTracking.utils;
+const {
+  siteConfig: config,
+  userSessionData: currentUser,
+  defaultLang: lang,
+} = Astro.locals;
 
-const users = await studioCMS_SDK.GET.database.users();
-
-const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
-
-const user = (id: string) => users.find((u) => u.id === id)?.name;
-
-const t = useTranslations(lang, '@studiocms/dashboard:content-index');
-const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
+const t = useTranslations(lang, "@studiocms/dashboard:content-index");
+const td = useTranslations(lang, "@studiocms/dashboard:content-diff");
 const urlParams = Astro.url.searchParams;
-const diffId = urlParams.get('diff');
+const diffId = urlParams.get("diff");
 
-if (!diffId) return Astro.redirect('/404');
+if (!diffId) return Astro.redirect("/404");
 
-const diff = await studioCMS_SDK.diffTracking.get.single(diffId);
+const { user, diff } = await convertToVanilla(
+  genLogger("studiocms/routes/dashboard/content-management/diff.users-diff")(
+    function* () {
+      const sdk = yield* SDKCore;
 
-if (!diff) return Astro.redirect('/404');
+      const [users, diff] = yield* Effect.all([
+        sdk.GET.users.all(),
+        sdk.diffTracking.get.single(diffId),
+      ]);
 
-const { data: page } = await studioCMS_SDK_Cache.GET.page.byId(diff.pageId);
+      const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-const metaDataChanges = getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end);
+      return { user, diff };
+    },
+  ).pipe(SDKCore.Provide),
+);
 
-const diffContentHTML = getDiffHTML(diff.diff);
+if (!diff) return Astro.redirect("/404");
+
+const [{ data: page }, metaDataChanges, diffContentHTML] =
+  await convertToVanilla(
+    genLogger("studiocms/routes/dashboard/content-management/diff.page-meta")(
+      function* () {
+        const sdk = yield* SDKCore;
+
+        return yield* Effect.all([
+          sdk.GET.page.byId(diff.pageId),
+          sdk.diffTracking.utils.getMetaDataDifferences(
+            diff.pageMetaData.start,
+            diff.pageMetaData.end,
+          ),
+          sdk.diffTracking.utils.getDiffHTML(diff.diff),
+        ]);
+      },
+    ).pipe(SDKCore.Provide),
+  );
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
-  requiredPermission='editor'
-  sidebar='double'
+<Layout
+  title={t("title")}
+  description={t("description")}
+  requiredPermission="editor"
+  sidebar="double"
   {lang}
   {config}
   {currentUser}
-  >
-
-    <div slot="double-sidebar" class="inner-sidebar-container">
-        <div class="sidebar-links-container">
-        <InnerSidebarElement {lang} {config} />
-        </div>
+>
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement {lang} {config} />
     </div>
+  </div>
 
-    <div slot="header">
-        <PageHeader {lang} />
-        <span style="width: 100%; display: flex; padding: 1rem 0; gap: 1rem;">
-            <Button 
-              variant="outlined" 
-              color="info" 
-              size="sm"
-              href={`${Astro.locals.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
-              ><t-content-diff key="view-page">{td('view-page')}</t-content-diff>
-            </Button>
+  <div slot="header">
+    <PageHeader {lang} />
+    <span style="width: 100%; display: flex; padding: 1rem 0; gap: 1rem;">
+      <Button
+        variant="outlined"
+        color="info"
+        size="sm"
+        href={`${Astro.locals.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
+        ><t-content-diff key="view-page">{td("view-page")}</t-content-diff>
+      </Button>
 
-            <Group>
-              <Button 
-                id="revert-metadata" 
-                variant={'outlined'} 
-                color={'primary'} 
-                size="sm" 
-                disabled={metaDataChanges.length === 0} 
-                data-id={diff.id} 
-                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
-                data-type="data"
-                ><t-content-diff key="revert-metadata">{td('revert-metadata')}</t-content-diff>
-              </Button>
-              <Button 
-                id="revert-content" 
-                variant={'outlined'} 
-                color={'primary'} 
-                size="sm" 
-                data-id={diff.id} 
-                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
-                data-type="content"
-                ><t-content-diff key="revert-content">{td('revert-content')}</t-content-diff>
-              </Button>
-              <Button 
-                id="revert-all-changes" 
-                variant={'outlined'} 
-                color={'primary'} 
-                size="sm" 
-                data-id={diff.id} 
-                data-url={Astro.locals.routeMap.endpointLinks.content.diff}
-                data-type="both"
-                ><t-content-diff key="revert-all">{td('revert-all')}</t-content-diff>
-              </Button>
-            </Group>
-        </span>
-        <Card style="margin-left: 2rem;">
-          <table class="page-diff-info">
-            <tr>
-              <td><t-content-diff key="page-title">{td('page-title')}</t-content-diff></td>
-              <td>{page.title}</td>
-            </tr>
-            <tr>
-              <td><t-content-diff key="edited-by">{td('edited-by')}</t-content-diff></td>
-              <td>{user(diff.userId)}</td>
-            </tr>
-            <tr>
-              <td><t-content-diff key="edited-on">{td('edited-on')}</t-content-diff></td>
-              <td><FormattedDate date={diff.timestamp!} /></td>
-            </tr>
-          </table>
-        </Card>
-    </div>
+      <Group>
+        <Button
+          id="revert-metadata"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          disabled={metaDataChanges.length === 0}
+          data-id={diff.id}
+          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-type="data"
+          ><t-content-diff key="revert-metadata"
+            >{td("revert-metadata")}</t-content-diff
+          >
+        </Button>
+        <Button
+          id="revert-content"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          data-id={diff.id}
+          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-type="content"
+          ><t-content-diff key="revert-content"
+            >{td("revert-content")}</t-content-diff
+          >
+        </Button>
+        <Button
+          id="revert-all-changes"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          data-id={diff.id}
+          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-type="both"
+          ><t-content-diff key="revert-all">{td("revert-all")}</t-content-diff>
+        </Button>
+      </Group>
+    </span>
+    <Card style="margin-left: 2rem;">
+      <table class="page-diff-info">
+        <tr>
+          <td
+            ><t-content-diff key="page-title">{td("page-title")}</t-content-diff
+            ></td
+          >
+          <td>{page.title}</td>
+        </tr>
+        <tr>
+          <td
+            ><t-content-diff key="edited-by">{td("edited-by")}</t-content-diff
+            ></td
+          >
+          <td>{user(diff.userId)}</td>
+        </tr>
+        <tr>
+          <td
+            ><t-content-diff key="edited-on">{td("edited-on")}</t-content-diff
+            ></td
+          >
+          <td><FormattedDate date={diff.timestamp!} /></td>
+        </tr>
+      </table>
+    </Card>
+  </div>
 
-    <h4>
-      <t-content-diff key="page-metadata">{td('page-metadata')}</t-content-diff>
-    </h4>
+  <h4>
+    <t-content-diff key="page-metadata">{td("page-metadata")}</t-content-diff>
+  </h4>
 
-    {
-      metaDataChanges.length > 0 ? metaDataChanges.map(({ current, label, previous }) => (
+  {
+    metaDataChanges.length > 0 ? (
+      metaDataChanges.map(({ current, label, previous }) => (
         <div class="diff-screen metadata-diffs">
           <div>{label}</div>
           <div class="form-row">
@@ -126,27 +165,37 @@ const diffContentHTML = getDiffHTML(diff.diff);
             <Input label="Current" value={`${current}`} disabled />
           </div>
         </div>
-      )) : (
-        <div class="diff-screen metadata-diffs">
-          <div><t-content-diff key="no-metadata-changes">{td('no-metadata-changes')}</t-content-diff></div>
+      ))
+    ) : (
+      <div class="diff-screen metadata-diffs">
+        <div>
+          <t-content-diff key="no-metadata-changes">
+            {td("no-metadata-changes")}
+          </t-content-diff>
         </div>
-      )
-    }
+      </div>
+    )
+  }
 
-    <h4>
-      <t-content-diff key="page-content">{td('page-content')}</t-content-diff>
-    </h4>
+  <h4>
+    <t-content-diff key="page-content">{td("page-content")}</t-content-diff>
+  </h4>
 
-    <div set:html={diffContentHTML} class="diff-screen"></div>
-
+  <div set:html={diffContentHTML} class="diff-screen" />
 </Layout>
 
 <script>
-import { toast } from "studiocms:ui/components";
+  import { toast } from "studiocms:ui/components";
 
-  const revertMetaData = document.getElementById('revert-metadata') as HTMLButtonElement;
-  const revertContent = document.getElementById('revert-content') as HTMLButtonElement;
-  const revertAllChanges = document.getElementById('revert-all-changes') as HTMLButtonElement;
+  const revertMetaData = document.getElementById(
+    "revert-metadata",
+  ) as HTMLButtonElement;
+  const revertContent = document.getElementById(
+    "revert-content",
+  ) as HTMLButtonElement;
+  const revertAllChanges = document.getElementById(
+    "revert-all-changes",
+  ) as HTMLButtonElement;
 
   async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
     const { url, id, type } = dataset;
@@ -155,78 +204,91 @@ import { toast } from "studiocms:ui/components";
 
     if (!url || !id || !type) {
       toast({
-        title: 'Error',
-        description: 'Something went wrong, Please refresh the page and try again.',
-        type: 'danger'
-      })
+        title: "Error",
+        description:
+          "Something went wrong, Please refresh the page and try again.",
+        type: "danger",
+      });
       return;
     }
 
     const response = await fetch(url, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
-      body: JSON.stringify({ id, type })
+      method: "POST",
+      body: JSON.stringify({ id, type }),
     });
 
     const res = await response.json();
 
     if (response.status !== 200) {
-        toast({
-            title: 'Error',
-            description: res.error,
-            type: 'danger'
-        })
-        return;
+      toast({
+        title: "Error",
+        description: res.error,
+        type: "danger",
+      });
+      return;
     }
 
     if (response.status === 200) {
-        toast({
-            title: 'Success',
-            description: res.message,
-            type: 'success'
-        })
-        return;
+      toast({
+        title: "Success",
+        description: res.message,
+        type: "success",
+      });
+      return;
     }
   }
 
-  revertMetaData.addEventListener('click', async (e) => await runEvent(revertMetaData, e))
+  revertMetaData.addEventListener(
+    "click",
+    async (e) => await runEvent(revertMetaData, e),
+  );
 
-  revertContent.addEventListener('click', async (e) => await runEvent(revertContent, e))
+  revertContent.addEventListener(
+    "click",
+    async (e) => await runEvent(revertContent, e),
+  );
 
-  revertAllChanges.addEventListener('click', async (e) => await runEvent(revertAllChanges, e))
+  revertAllChanges.addEventListener(
+    "click",
+    async (e) => await runEvent(revertAllChanges, e),
+  );
 </script>
 
 <script>
-    import { 
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-        makeTranslation,
-    } from 'studiocms:i18n/client';
-  
-    let lang = defaultLang;
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+    makeTranslation,
+  } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:content-index';
-    const currentDiffPage = '@studiocms/dashboard:content-diff';
+  let lang = defaultLang;
 
-    $localeSettings.subscribe((locale) => {
-      lang = locale || defaultLang;
-    });
+  const currentPage = "@studiocms/dashboard:content-index";
+  const currentDiffPage = "@studiocms/dashboard:content-diff";
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-    const i18nDiff = $i18n(currentDiffPage, baseTranslation[currentDiffPage]);
-      
-    i18n.subscribe(comp => {
-      documentUpdater(comp, lang)
-    });
-    
-    if (!customElements.get('t-content-diff')) {
-        customElements.define('t-content-diff', makeTranslation(currentPage, i18nDiff));
-    }
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+  const i18nDiff = $i18n(currentDiffPage, baseTranslation[currentDiffPage]);
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+  });
+
+  if (!customElements.get("t-content-diff")) {
+    customElements.define(
+      "t-content-diff",
+      makeTranslation(currentPage, i18nDiff),
+    );
+  }
 </script>
 
 <style>
@@ -248,7 +310,6 @@ import { toast } from "studiocms:ui/components";
     height: 100%;
   }
 
-
   h4 {
     margin: 1rem auto;
     padding-left: 2rem;
@@ -262,26 +323,26 @@ import { toast } from "studiocms:ui/components";
 
   @media screen and (max-width: 1500px) {
     .diff-screen {
-        max-width: 800px;
+      max-width: 800px;
     }
   }
 
   @media screen and (max-width: 1380px) {
     .diff-screen {
-        max-width: 600px;
+      max-width: 600px;
     }
   }
 
   .form-row {
     display: flex;
-    gap: .5rem;
+    gap: 0.5rem;
   }
 
   .metadata-diffs {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
-    margin-top: .5rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   table {
@@ -300,12 +361,11 @@ import { toast } from "studiocms:ui/components";
     }
 
     td {
-      padding: .5rem;
+      padding: 0.5rem;
     }
 
     td:last-child {
       border-left: 2px solid hsl(var(--background-step-3));
     }
   }
-
 </style>

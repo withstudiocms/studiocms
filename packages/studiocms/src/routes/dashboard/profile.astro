@@ -1,5 +1,5 @@
 ---
-import { AuthConfig } from 'studiocms:config';
+import { authConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
@@ -16,7 +16,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 const {
 	providers: { usernameAndPassword },
-} = AuthConfig;
+} = authConfig;
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 

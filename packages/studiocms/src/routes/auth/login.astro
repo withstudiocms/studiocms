@@ -1,6 +1,6 @@
 ---
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { AuthConfig, developerConfig } from 'studiocms:config';
+import { authConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
@@ -30,7 +30,7 @@ const {
 		usernameAndPassword,
 		usernameAndPasswordConfig: { allowUserRegistration },
 	},
-} = AuthConfig;
+} = authConfig;
 
 const { SHOW_OAUTH } = await authEnvCheck(providers);
 
