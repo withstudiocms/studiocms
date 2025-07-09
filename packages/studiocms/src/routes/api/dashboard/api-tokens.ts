@@ -31,9 +31,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get Json Data
-			const jsonData: { description: string; user: string } = yield* Effect.tryPromise(() =>
-				context.request.json()
-			);
+			const jsonData: { description: string; user: string } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body'),
+			});
 
 			// Validate form data
 			if (!jsonData.description) {
@@ -81,9 +82,10 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get Json Data
-			const jsonData: { tokenID: string; userID: string } = yield* Effect.tryPromise(() =>
-				context.request.json()
-			);
+			const jsonData: { tokenID: string; userID: string } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body')
+			});
 
 			// Validate form data
 			if (!jsonData.tokenID) {

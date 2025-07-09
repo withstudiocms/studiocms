@@ -16,8 +16,9 @@ export const GET: APIRoute = async (context: APIContext) =>
 			if (!context.locals.siteConfig.data.enableMailer) {
 				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 			}
-
-			const params = new URLSearchParams(context.request.url);
+			
+            const url = new URL(context.request.url);
+            const params = url.searchParams;
 			const token = params.get('token');
 			const userId = params.get('userId');
 

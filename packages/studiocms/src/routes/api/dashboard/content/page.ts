@@ -321,7 +321,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 
 			const pageToDelete = yield* sdk.GET.page.byId(id);
 
-			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onCreate');
+			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
 
 			yield* sdk.DELETE.page(id);
 

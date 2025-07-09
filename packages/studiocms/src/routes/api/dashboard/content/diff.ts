@@ -26,9 +26,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: { id: string; type: 'data' | 'content' | 'both' } = yield* Effect.tryPromise(
-				() => context.request.json()
-			);
+			const jsonData: { id: string; type: 'data' | 'content' | 'both' } = yield* Effect.tryPromise({
+				try: () => context.request.json(),
+				catch: () => new Error('Invalid JSON in request body'),
+			});
 
 			const { id, type } = jsonData;
 
