@@ -4,6 +4,7 @@ import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
@@ -98,3 +99,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			statusText: 'Internal Server Error',
 		});
 	});
+
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+
+export const ALL: APIRoute = async () => AllResponse();

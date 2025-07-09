@@ -2,6 +2,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
+import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
 
 const HERO_IMAGE =
 	'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
@@ -132,3 +133,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			statusText: 'Internal Server Error',
 		});
 	});
+
+export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+
+export const ALL: APIRoute = async () => AllResponse();
