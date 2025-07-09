@@ -1,0 +1,38 @@
+---
+export const partial = true;
+import UserListItem from '../../../../components/dashboard/user-mgmt/UserListItem.astro';
+
+async function setData() {
+	const jsonData:
+		| {
+				users: {
+					id: string;
+					name: string;
+					email: string | null;
+					avatar: string | null;
+					username: string;
+					permissionsData:
+						| {
+								user: string;
+								rank: string;
+						  }
+						| undefined;
+				}[];
+				searchQuery?: string;
+		  }
+		| undefined = await Astro.request.json();
+
+	if (jsonData) {
+		return jsonData;
+	}
+
+	return 'No Users to display';
+}
+
+const Data = await setData();
+---
+{ 
+	typeof Data !== 'string' 
+	? Data.users.map((user) => <UserListItem user={user} searchQuery={Data.searchQuery} />) 
+	: Data 
+}
