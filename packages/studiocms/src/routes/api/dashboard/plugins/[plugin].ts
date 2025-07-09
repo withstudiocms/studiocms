@@ -40,3 +40,26 @@ export const POST: APIRoute = async (context: APIContext) => {
 
 	return settingsPage.onSave(context);
 };
+
+export const OPTIONS: APIRoute = async () => {
+	return new Response(null, {
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, POST',
+			'Access-Control-Allow-Origin': '*',
+			'Cache-Control': 'public, max-age=604800, immutable',
+			Date: new Date().toUTCString(),
+		},
+	});
+};
+
+export const ALL: APIRoute = async () => {
+	return new Response(null, {
+		status: 405,
+		statusText: 'Method Not Allowed',
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+	});
+};

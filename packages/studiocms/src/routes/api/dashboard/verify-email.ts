@@ -1,47 +1,52 @@
-import { getEmailVerificationRequest } from 'studiocms:auth/lib/verify-email';
+import { VerifyEmail } from 'studiocms:auth/lib';
 import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
-import studioCMS_SDK from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
+import { SDKCore } from 'studiocms:sdk';
+import type { APIContext, APIRoute } from 'astro';
+import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
-export const GET: APIRoute = async (context) => {
-	// Check if mailer is enabled
-	if (!context.locals.siteConfig.data.enableMailer) {
-		return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
-	}
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('studiocms/routes/api/dashboard/verify-email.GET')(function* () {
+			const verifyEmail = yield* VerifyEmail;
+			const sdk = yield* SDKCore;
 
-	const params = new URLSearchParams(context.request.url);
-	const token = params.get('token');
-	const userId = params.get('userId');
+			// Check if mailer is enabled
+			if (!context.locals.siteConfig.data.enableMailer) {
+				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
+			}
 
-	if (!token || !userId) {
-		return apiResponseLogger(400, 'Invalid request');
-	}
+			const params = new URLSearchParams(context.request.url);
+			const token = params.get('token');
+			const userId = params.get('userId');
 
-	const verificationToken = await getEmailVerificationRequest(userId);
+			if (!token || !userId) {
+				return apiResponseLogger(400, 'Invalid request');
+			}
 
-	if (!verificationToken) {
-		return apiResponseLogger(404, 'Verification token not found');
-	}
+			const verificationToken = yield* verifyEmail.getEmailVerificationRequest(userId);
 
-	if (verificationToken.token !== token) {
-		return apiResponseLogger(400, 'Invalid token');
-	}
+			if (!verificationToken) {
+				return apiResponseLogger(404, 'Verification token not found');
+			}
 
-	// Update the user's email verification status
-	await studioCMS_SDK.AUTH.user.update(userId, {
-		// @ts-expect-error drizzle broke the variable...
-		emailVerified: true,
-	});
+			if (verificationToken.token !== token) {
+				return apiResponseLogger(400, 'Invalid token');
+			}
 
-	// Delete the verification token
-	await studioCMS_SDK.AUTH.verifyEmail.delete(userId);
+			yield* sdk.AUTH.user.update(userId, {
+				// @ts-expect-error drizzle broke the variable...
+				emailVerified: true,
+			});
 
-	return context.redirect(
-		removeLeadingTrailingSlashes(context.site?.toString() as string) +
-			context.locals.routeMap.mainLinks.dashboardIndex
+			yield* sdk.AUTH.verifyEmail.delete(userId);
+
+			return context.redirect(
+				removeLeadingTrailingSlashes(context.site?.toString() as string) +
+					context.locals.routeMap.mainLinks.dashboardIndex
+			);
+		}).pipe(VerifyEmail.Provide, SDKCore.Provide)
 	);
-};
 
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
@@ -61,7 +66,7 @@ export const ALL: APIRoute = async () => {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+			'Access-Control-Allow-Origin': '*',
 		},
 	});
 };

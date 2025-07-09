@@ -14,7 +14,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 				{
 					headers: {
 						'Content-Type': 'application/json',
-						'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+						'Access-Control-Allow-Origin': '*',
 						'Cache-Control': 'public, max-age=604800, immutable',
 						Date: new Date(lastUpdated).toUTCString(),
 					},
@@ -28,7 +28,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 				status: 500,
 				headers: {
 					'Content-Type': 'application/json',
-					'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+					'Access-Control-Allow-Origin': '*',
 					Date: new Date().toUTCString(),
 				},
 			}

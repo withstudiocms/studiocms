@@ -4,7 +4,7 @@ import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 const commonHeaders = {
 	'Content-Type': 'application/json',
-	'ACCESS-CONTROL-ALLOW-ORIGIN': '*',
+	'Access-Control-Allow-Origin': '*',
 };
 
 const createErrorResponse = (message: string, status = 500) =>

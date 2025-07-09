@@ -1,12 +1,12 @@
 ---
 /// <reference types="astro/client" />
-import { Image } from 'astro:assets';
-import { getSecret } from 'astro:env/server';
-import Config from 'studiocms:config';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
+import { Image } from "astro:assets";
+import { getSecret } from "astro:env/server";
+// import Config from "studiocms:config";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { fill } from "@cloudinary/url-gen/actions/resize";
 
-const CMS_CLOUDINARY_CLOUDNAME = getSecret('CMS_CLOUDINARY_CLOUDNAME');
+const CMS_CLOUDINARY_CLOUDNAME = getSecret("CMS_CLOUDINARY_CLOUDNAME");
 
 interface Props {
 	src: string;
@@ -24,26 +24,26 @@ interface Props {
  * @param props the image props
  * @returns the Cloudinary image URL for the given source and props
  */
-export function cloudinaryPlugin(src: string, props: Omit<Props, 'src'>) {
+export function cloudinaryPlugin(src: string, props: Omit<Props, "src">) {
 	// Cloudinary Image Service (JavaScript SDK) - https://cloudinary.com/documentation/javascript_integration#landingpage
 
 	// Initialize Cloudinary
 	const cld = new Cloudinary({
 		cloud: {
-			cloudName: CMS_CLOUDINARY_CLOUDNAME || '',
+			cloudName: CMS_CLOUDINARY_CLOUDNAME || "",
 		},
 	});
 
 	// Configure the image
 	const cldSrc = cld
 		.image(src)
-		.format('auto')
-		.quality('auto')
-		.resize(fill('auto').width(props.width).height(props.height));
+		.format("auto")
+		.quality("auto")
+		.resize(fill("auto").width(props.width).height(props.height));
 
 	// Set the delivery type to 'fetch' if the image source is an external URL
-	if (src.startsWith('https://') || src.startsWith('http://')) {
-		cldSrc.setDeliveryType('fetch');
+	if (src.startsWith("https://") || src.startsWith("http://")) {
+		cldSrc.setDeliveryType("fetch");
 	}
 
 	// Return the Cloudinary image URL
@@ -53,25 +53,27 @@ export function cloudinaryPlugin(src: string, props: Omit<Props, 'src'>) {
 const { src, ...props } = Astro.props;
 
 // Get the current configured image service
-const {
-	imageService: { cdnPlugin },
-} = Config;
+// const {
+// 	imageService: { cdnPlugin },
+// } = Config;
 
 // Get the current configured image service
 async function getImageSrc() {
-	switch (cdnPlugin) {
-		case 'cloudinary-js':
-			// Return the Cloudinary image source
-			return cloudinaryPlugin(src, props);
-		default:
-			// Return the original image source if no External image service plugin is configured
-			return src;
-	}
+	// switch (cdnPlugin) {
+	// 	case 'cloudinary-js':
+	// 		// Return the Cloudinary image source
+	// 		return cloudinaryPlugin(src, props);
+	// 	default:
+	// 		// Return the original image source if no External image service plugin is configured
+	// 		return src;
+	// }
+	// Return the original image source if no External image service plugin is configured
+	return src;
 }
 
 // check if the image source is an external URL
 function inferSizeNeeded(url: string) {
-	if (url.startsWith('https://') || url.startsWith('http://')) {
+	if (url.startsWith("https://") || url.startsWith("http://")) {
 		return true;
 	}
 	return false;
@@ -87,4 +89,5 @@ const imageProps = {
 	...props,
 };
 ---
-<Image loading={"lazy"} {...imageProps}/>
+
+<Image loading={"lazy"} {...imageProps} />
