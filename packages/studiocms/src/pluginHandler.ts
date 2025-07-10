@@ -212,6 +212,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const messages: Messages = [];
 
+		// Define the Image Service Identifier Keys
+		const imageServiceKeys: {
+			identifier: string;
+			safe: string;
+		}[] = [];
+
+		// Define the Image Service Endpoints
+		const imageServiceEndpoints: string[] = [];
+
 		/////
 
 		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
@@ -308,8 +317,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 										identifier: safeData.identifier,
 										safeIdentifier: convertToSafeString(safeData.identifier),
 										apiEndpoint: `
-														export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from '${endpoint}';
-													`,
+											export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from '${endpoint}';
+										`,
 									});
 								}
 
@@ -338,10 +347,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 										identifier: identifier,
 										safeIdentifier: convertToSafeString(identifier),
 										apiEndpoint: `
-														export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
-														export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
-														export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
-													`,
+											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
+											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
+											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
+										`,
 									});
 								}
 
@@ -360,6 +369,19 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 
 							foundPageTypes = pageTypes;
+						},
+
+						setImageService({ imageService }) {
+							if (imageService) {
+								imageServiceKeys.push({
+									identifier: imageService.identifier,
+									safe: convertToSafeString(imageService.identifier),
+								});
+
+								imageServiceEndpoints.push(
+									`export { default as ${convertToSafeString(imageService.identifier)} } from '${imageService.servicePath}';`
+								);
+							}
 						},
 					});
 				}
@@ -616,6 +638,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
 					
 						export { preRender as mdPreRender } from '${resolve('./components/renderers/markdown-prerender.js')}';
+					`,
+					'studiocms:plugins/imageService': `
+						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};
+
+						${imageServiceEndpoints.join('\n')}
 					`,
 				},
 			});

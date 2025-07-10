@@ -130,7 +130,8 @@
 		"./effect": {
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
-		}
+		},
+		"./imageServices/*": "./dist/imageServices/*"
 	},
 	"type": "module",
 	"dependencies": {
