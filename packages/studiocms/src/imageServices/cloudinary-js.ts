@@ -10,8 +10,13 @@ const { version: studiocmsMinimumVersion } = readJson<{ name: string; version: s
 );
 
 const identifier = 'cloudinary-js';
-const servicePath = resolve('../imageServices-internal/cloudinary-js-service.js');
+const servicePath = resolve('./cloudinary-js-service.js');
 
+/**
+ * Cloudinary Image Service
+ *
+ * This plugin is used to generate Cloudinary URLs for images using `@cloudinary/url-gen` for StudioCMS.
+ */
 function cloudinaryImageService() {
 	return definePlugin({
 		name: `Cloudinary JS Image Service (${identifier})`,

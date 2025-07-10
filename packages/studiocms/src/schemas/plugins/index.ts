@@ -130,7 +130,15 @@ const RenderingConfigSchema = z.object({
 const ImageServiceConfigSchema = z.object({
 	imageService: z
 		.object({
+			/**
+			 * Identifier used for the `preferredImageService` setting on StudioCMS
+			 */
 			identifier: z.string(),
+			/**
+			 * The Service Path to the file that contains your service, the service must be exported as a default export. 
+			 * 
+			 * For an example of a service, checkout `/src/imageServices/cloudinary-js-service.ts` and its plugin `/src/imageServices/cloudinary-js.ts` within the StudioCMS package on GitHub.
+			 */
 			servicePath: z.string().or(z.instanceof(URL)),
 		})
 		.optional(),
@@ -240,7 +248,7 @@ export type ImageServiceExtraProps = {
 	alt: string;
 	width: number;
 	height: number;
-}
+};
 
 export type StudioCMSImageService = (
 	src: string,

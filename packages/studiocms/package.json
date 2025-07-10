@@ -131,7 +131,10 @@
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
 		},
-		"./imageServices/*": "./dist/imageServices/*"
+		"./imageServices/cloudinary-js": {
+			"types": "./dist/imageServices/cloudinary-js.d.ts",
+			"default": "./dist/imageServices/cloudinary-js.js"
+		}
 	},
 	"type": "module",
 	"dependencies": {
