@@ -28,7 +28,7 @@ async function getImageSrc() {
 	}
 
 	const preferredService = keys.find(({ identifier }) => {
-		identifier === preferredImageService;
+		return identifier === preferredImageService;
 	});
 
 	if (!preferredService) {
@@ -39,6 +39,13 @@ async function getImageSrc() {
 	const serviceFn = imageServices[
 		preferredService.safe
 	] as unknown as StudioCMSImageService;
+
+	if (typeof serviceFn !== "function") {
+		console.warn(
+			`Image service "${preferredImageService}" is not properly configured`,
+		);
+		return src;
+	}
 
 	return await serviceFn(src, props);
 }
