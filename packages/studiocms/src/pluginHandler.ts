@@ -642,7 +642,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					'studiocms:plugins/imageService': `
 						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};
 
-						${imageServiceEndpoints.join('\n')}
+						${imageServiceEndpoints.length > 0 ? imageServiceEndpoints.join('\n') : ''}
 					`,
 				},
 			});
