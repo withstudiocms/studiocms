@@ -23,7 +23,9 @@ function cloudinaryImageService() {
 		identifier,
 		studiocmsMinimumVersion,
 		hooks: {
-			'studiocms:config:setup': ({ setImageService }) => {
+			'studiocms:config:setup': ({ logger, setImageService }) => {
+				logger.info('Initializing Cloudinary Image Service');
+
 				setImageService({
 					imageService: {
 						identifier,
