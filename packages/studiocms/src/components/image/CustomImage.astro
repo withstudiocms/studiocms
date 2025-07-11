@@ -1,12 +1,14 @@
 ---
 /// <reference types="astro/client" />
 import { Image } from 'astro:assets';
-import { getSecret } from 'astro:env/server';
-// import Config from "studiocms:config";
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
+import config from 'studiocms:config';
+import * as imageServices from 'studiocms:plugins/imageService';
+import { imageServiceKeys } from 'studiocms:plugins/imageService';
+import type { StudioCMSImageService } from '../../schemas/index.js';
 
-const CMS_CLOUDINARY_CLOUDNAME = getSecret('CMS_CLOUDINARY_CLOUDNAME');
+const {
+	features: { preferredImageService },
+} = config;
 
 interface Props {
 	src: string;
@@ -15,60 +17,33 @@ interface Props {
 	height: number;
 }
 
-/**
- * Cloudinary Plugin
- *
- * This plugin is used to generate Cloudinary URLs for images using `@cloudinary/url-gen` for the StudioCMS `CustomImage` component.
- *
- * @param src the image name or URL
- * @param props the image props
- * @returns the Cloudinary image URL for the given source and props
- */
-export function cloudinaryPlugin(src: string, props: Omit<Props, 'src'>) {
-	// Cloudinary Image Service (JavaScript SDK) - https://cloudinary.com/documentation/javascript_integration#landingpage
-
-	// Initialize Cloudinary
-	const cld = new Cloudinary({
-		cloud: {
-			cloudName: CMS_CLOUDINARY_CLOUDNAME || '',
-		},
-	});
-
-	// Configure the image
-	const cldSrc = cld
-		.image(src)
-		.format('auto')
-		.quality('auto')
-		.resize(fill('auto').width(props.width).height(props.height));
-
-	// Set the delivery type to 'fetch' if the image source is an external URL
-	if (src.startsWith('https://') || src.startsWith('http://')) {
-		cldSrc.setDeliveryType('fetch');
-	}
-
-	// Return the Cloudinary image URL
-	return cldSrc.toURL();
-}
-
 const { src, ...props } = Astro.props;
 
 // Get the current configured image service
-// const {
-// 	imageService: { cdnPlugin },
-// } = Config;
-
-// Get the current configured image service
 async function getImageSrc() {
-	// switch (cdnPlugin) {
-	// 	case 'cloudinary-js':
-	// 		// Return the Cloudinary image source
-	// 		return cloudinaryPlugin(src, props);
-	// 	default:
-	// 		// Return the original image source if no External image service plugin is configured
-	// 		return src;
-	// }
-	// Return the original image source if no External image service plugin is configured
-	return src;
+	const keys = imageServiceKeys;
+
+	if (keys.length === 0 || !preferredImageService) {
+		return src;
+	}
+
+	const preferredService = keys.find(({ identifier }) => {
+		return identifier === preferredImageService;
+	});
+
+	if (!preferredService) {
+		return src;
+	}
+
+	// @ts-expect-error - This is a dynamic type... from a virtual module
+	const serviceFn = imageServices[preferredService.safe] as unknown as StudioCMSImageService;
+
+	if (typeof serviceFn !== 'function') {
+		console.warn(`Image service "${preferredImageService}" is not properly configured`);
+		return src;
+	}
+
+	return await serviceFn(src, props);
 }
 
 // check if the image source is an external URL

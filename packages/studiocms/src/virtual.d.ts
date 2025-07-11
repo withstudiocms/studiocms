@@ -897,6 +897,13 @@ declare module 'virtual:studiocms/sitemaps' {
 	export const sitemaps: string[];
 }
 
+declare module 'studiocms:plugins/imageService' {
+	export const imageServiceKeys: {
+		identifier: string;
+		safe: string;
+	}[];
+}
+
 declare namespace App {
 	interface Locals {
 		latestVersion: import('./sdk/types/index').VersionCacheObject;

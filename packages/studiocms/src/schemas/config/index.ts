@@ -125,6 +125,13 @@ export const StudioCMSOptionsSchema = z
 				 * Developer Options/Configuration
 				 */
 				developerConfig: developerConfigSchema,
+
+				/**
+				 * Set the identifier of the Preferred Image Service
+				 *
+				 * Requires an Image Service to be installed such as 'cloudinary-js'
+				 */
+				preferredImageService: z.string().optional(),
 			})
 			.optional()
 			.default({}),

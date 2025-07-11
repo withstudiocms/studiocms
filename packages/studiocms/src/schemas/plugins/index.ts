@@ -127,6 +127,23 @@ const RenderingConfigSchema = z.object({
 	pageTypes: PageTypesSchema,
 });
 
+const ImageServiceConfigSchema = z.object({
+	imageService: z
+		.object({
+			/**
+			 * Identifier used for the `preferredImageService` setting on StudioCMS
+			 */
+			identifier: z.string(),
+			/**
+			 * The Service Path to the file that contains your service, the service must be exported as a default export.
+			 *
+			 * For an example of a service, checkout `/src/imageServices/cloudinary-js-service.ts` and its plugin `/src/imageServices/cloudinary-js.ts` within the StudioCMS package on GitHub.
+			 */
+			servicePath: z.string().or(z.instanceof(URL)),
+		})
+		.optional(),
+});
+
 type BaseHookSchema = {
 	logger: typeof astroIntegrationLoggerSchema;
 };
@@ -146,12 +163,14 @@ const setSitemapFn = z.function(z.tuple([SitemapConfigSchema]), z.void());
 const setDashboardFn = z.function(z.tuple([DashboardConfigSchema]), z.void());
 const setFrontendFn = z.function(z.tuple([FrontendConfigSchema]), z.void());
 const setRenderingFn = z.function(z.tuple([RenderingConfigSchema]), z.void());
+const setImageServiceFn = z.function(z.tuple([ImageServiceConfigSchema]), z.void());
 
 type StudioCMSConfigHookSchema = BaseHookSchema & {
 	setSitemap: typeof setSitemapFn;
 	setDashboard: typeof setDashboardFn;
 	setFrontend: typeof setFrontendFn;
 	setRendering: typeof setRenderingFn;
+	setImageService: typeof setImageServiceFn;
 };
 
 const studiocmsConfigHookSchema: z.ZodObject<StudioCMSConfigHookSchema> = baseHookSchema.extend({
@@ -159,6 +178,7 @@ const studiocmsConfigHookSchema: z.ZodObject<StudioCMSConfigHookSchema> = baseHo
 	setDashboard: setDashboardFn,
 	setFrontend: setFrontendFn,
 	setRendering: setRenderingFn,
+	setImageService: setImageServiceFn,
 });
 
 type SCMSAstroConfigHook = z.infer<typeof astroConfigHookSchema>;
@@ -223,3 +243,14 @@ export type {
 export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
 	return options;
 }
+
+export type ImageServiceExtraProps = {
+	alt: string;
+	width: number;
+	height: number;
+};
+
+export type StudioCMSImageService = (
+	src: string,
+	props: ImageServiceExtraProps
+) => string | Promise<string>;
