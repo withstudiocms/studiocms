@@ -419,6 +419,9 @@ export const studiocms = defineIntegration({
 								{
 									protocol: 'https',
 								},
+								{
+									protocol: 'http',
+								},
 							],
 						},
 						vite: {
