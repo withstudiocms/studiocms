@@ -70,7 +70,15 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 * @param string - The input string containing HTML tags.
 		 * @returns The input string with all HTML tags removed.
 		 */
-		const stripHtml = (str: string) => Effect.try(() => str.replace(/<[^>]*>/g, ''));
+		const stripHtml = (str: string) => Effect.try(() => {
+			let sanitized = str;
+			let previous: string;
+			do {
+				previous = sanitized;
+				sanitized = sanitized.replace(/<[^>]*>/g, '');
+			} while (sanitized !== previous);
+			return sanitized;
+		});
 
 		/**
 		 * Effectful version of 'cheerio.load()`
