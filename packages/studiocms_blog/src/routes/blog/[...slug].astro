@@ -1,36 +1,45 @@
 ---
-import { StudioCMSRenderer } from 'studiocms:renderer';
-import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import PostHeader from '../../components/PostHeader.astro';
-import Layout from '../../layouts/Layout.astro';
-
-// This is here to refresh the cache when needed
-const allPages = await studioCMS_SDK_Cache.GET.pages();
+import { StudioCMSRenderer } from "studiocms:renderer";
+import { SDKCoreJs, runSDK } from "studiocms:sdk";
+import PostHeader from "../../components/PostHeader.astro";
+import Layout from "../../layouts/Layout.astro";
 
 // Get the slug from the URL
 const { slug } = Astro.params;
 
 // If no slug is provided, redirect to 404
 if (!slug) {
-	return new Response(null, { status: 404 });
+    return new Response(null, { status: 404 });
 }
 
 // Fetch the blog post content
 
-const { data: post } = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+const { data: post } = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
 // If no content is found, redirect to 404
 if (!post) {
-	return new Response(null, { status: 404 });
+    return new Response(null, { status: 404 });
 }
 
-const { title, description, heroImage, publishedAt, updatedAt, defaultContent } = post;
+const {
+    title,
+    description,
+    heroImage,
+    publishedAt,
+    updatedAt,
+} = post;
 ---
+
 <Layout {title} {description} {heroImage}>
     <main>
         <article>
-            <PostHeader {title} {description} {heroImage} {publishedAt} {updatedAt} />
+            <PostHeader
+                {title}
+                {description}
+                {heroImage}
+                {publishedAt}
+                {updatedAt}
+            />
             <StudioCMSRenderer data={post} />
         </article>
     </main>
