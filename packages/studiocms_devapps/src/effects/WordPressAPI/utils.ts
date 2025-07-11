@@ -57,7 +57,13 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 
 				const images = data('img');
 				for (const image of images) {
-					data(image).removeAttr('class width height data-recalc-dims sizes srcset');
+					data(image)
+						.removeAttr('class')
+						.removeAttr('width')
+						.removeAttr('height')
+						.removeAttr('data-recalc-dims')
+						.removeAttr('sizes')
+						.removeAttr('srcset');
 				}
 
 				data('.wp-polls').html(
