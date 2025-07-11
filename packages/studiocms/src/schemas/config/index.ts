@@ -128,10 +128,10 @@ export const StudioCMSOptionsSchema = z
 
 				/**
 				 * Set the identifier of the Preferred Image Service
-				 * 
+				 *
 				 * Requires an Image Service to be installed such as 'cloudinary-js'
 				 */
-				preferredImageService: z.string().optional()
+				preferredImageService: z.string().optional(),
 			})
 			.optional()
 			.default({}),

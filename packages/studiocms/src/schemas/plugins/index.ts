@@ -135,8 +135,8 @@ const ImageServiceConfigSchema = z.object({
 			 */
 			identifier: z.string(),
 			/**
-			 * The Service Path to the file that contains your service, the service must be exported as a default export. 
-			 * 
+			 * The Service Path to the file that contains your service, the service must be exported as a default export.
+			 *
 			 * For an example of a service, checkout `/src/imageServices/cloudinary-js-service.ts` and its plugin `/src/imageServices/cloudinary-js.ts` within the StudioCMS package on GitHub.
 			 */
 			servicePath: z.string().or(z.instanceof(URL)),

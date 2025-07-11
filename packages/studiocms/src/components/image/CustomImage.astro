@@ -1,10 +1,10 @@
 ---
 /// <reference types="astro/client" />
-import { Image } from "astro:assets";
-import config from "studiocms:config";
-import * as imageServices from "studiocms:plugins/imageService";
-import { imageServiceKeys } from "studiocms:plugins/imageService";
-import type { StudioCMSImageService } from "../../schemas/index.js";
+import { Image } from 'astro:assets';
+import config from 'studiocms:config';
+import * as imageServices from 'studiocms:plugins/imageService';
+import { imageServiceKeys } from 'studiocms:plugins/imageService';
+import type { StudioCMSImageService } from '../../schemas/index.js';
 
 const {
 	features: { preferredImageService },
@@ -36,14 +36,10 @@ async function getImageSrc() {
 	}
 
 	// @ts-expect-error - This is a dynamic type... from a virtual module
-	const serviceFn = imageServices[
-		preferredService.safe
-	] as unknown as StudioCMSImageService;
+	const serviceFn = imageServices[preferredService.safe] as unknown as StudioCMSImageService;
 
-	if (typeof serviceFn !== "function") {
-		console.warn(
-			`Image service "${preferredImageService}" is not properly configured`,
-		);
+	if (typeof serviceFn !== 'function') {
+		console.warn(`Image service "${preferredImageService}" is not properly configured`);
 		return src;
 	}
 
@@ -52,7 +48,7 @@ async function getImageSrc() {
 
 // check if the image source is an external URL
 function inferSizeNeeded(url: string) {
-	if (url.startsWith("https://") || url.startsWith("http://")) {
+	if (url.startsWith('https://') || url.startsWith('http://')) {
 		return true;
 	}
 	return false;
