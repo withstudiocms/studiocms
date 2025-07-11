@@ -248,28 +248,34 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * - If the image download fails, the source URL will be added to the `imagesNotDownloaded` array.
 		 */
 		const downloadPostImage = (src: string, pathToFolder: string) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadPostImage')(function* () {
-				if (!src || !pathToFolder) return;
+			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadPostImage')(
+				function* () {
+					if (!src || !pathToFolder) return;
 
-				if (!fs.existsSync(pathToFolder)) {
-					fs.mkdirSync(pathToFolder, { recursive: true });
+					if (!fs.existsSync(pathToFolder)) {
+						fs.mkdirSync(pathToFolder, { recursive: true });
+					}
+
+					const baseName = path.basename(src);
+					const fileName = baseName.split('?')[0];
+					if (!fileName) {
+						yield* Console.error('Invalid image URL:', src);
+						return undefined;
+					}
+					const destinationFile = path.resolve(pathToFolder, fileName);
+
+					if (fs.existsSync(destinationFile)) {
+						yield* Console.log(`Post/Page image "${destinationFile}" already exists, skipping...`);
+						return fileName;
+					}
+
+					const imageDownloaded = yield* downloadImage(src, destinationFile);
+
+					if (!imageDownloaded) failedDownloads.add(src);
+
+					return imageDownloaded ? fileName : undefined;
 				}
-
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
-				const fileName = path.basename(src).split('?')[0]!;
-				const destinationFile = path.resolve(pathToFolder, fileName);
-
-				if (fs.existsSync(destinationFile)) {
-					yield* Console.log(`Post/Page image "${destinationFile}" already exists, skipping...`);
-					return fileName;
-				}
-
-				const imageDownloaded = yield* downloadImage(src, destinationFile);
-
-				if (!imageDownloaded) failedDownloads.add(src);
-
-				return imageDownloaded ? fileName : undefined;
-			});
+			);
 
 		/**
 		 * Downloads and updates the image sources in the provided HTML string.
@@ -306,13 +312,13 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 			);
 
 		return {
-            turndown,
-            stripHtml,
-            cleanUpHtml,
-            fetchAll,
-            apiEndpoint,
-            downloadPostImage,
-            downloadAndUpdateImages
-        };
+			turndown,
+			stripHtml,
+			cleanUpHtml,
+			fetchAll,
+			apiEndpoint,
+			downloadPostImage,
+			downloadAndUpdateImages,
+		};
 	}),
 }) {}
