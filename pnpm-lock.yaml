@@ -354,9 +354,6 @@ importers:
       cheerio:
         specifier: ^1.0.0
         version: 1.0.0
-      html-entities:
-        specifier: ^2.5.2
-        version: 2.5.2
       sanitize-html:
         specifier: ^2.17.0
         version: 2.17.0
@@ -3421,9 +3418,6 @@ packages:
   hogan.js@3.0.2:
     resolution: {integrity: sha512-RqGs4wavGYJWE07t35JQccByczmNUXQT0E12ZYV1VKYu5UiAU9lsos/yBAcf840+zrUQQxgVduCR5/B8nNtibg==}
     hasBin: true
-
-  html-entities@2.5.2:
-    resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
 
   html-escaper@3.0.3:
     resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
@@ -8293,8 +8287,6 @@ snapshots:
     dependencies:
       mkdirp: 0.3.0
       nopt: 1.0.10
-
-  html-entities@2.5.2: {}
 
   html-escaper@3.0.3: {}
 

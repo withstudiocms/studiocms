@@ -1,10 +1,10 @@
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from 'studiocms/effect';
-import { WordPressAPI } from './WordPressAPI.js';
+import { Console, Effect, genLogger } from 'studiocms/effect';
+import { WordPressAPI } from './WordPressAPI/importers.js';
 
 export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	dependencies: [WordPressAPI.Default],
-	effect: genLogger('@studiocms/devapps/effects/wp-importer.effect')(function* () {
+	effect: genLogger('@studiocms/devapps/effects/wpImporter.effect')(function* () {
 		const WPAPI = yield* WordPressAPI;
 
 		/**
@@ -29,7 +29,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 		 * 5. Returns a response indicating success or failure.
 		 */
 		const runPostEvent = (context: APIContext) =>
-			genLogger('@studiocms/devapps/effects/wp-importer.effect.runPostEvent')(function* () {
+			genLogger('@studiocms/devapps/effects/wpImporter.effect.runPostEvent')(function* () {
 				const formData = yield* Effect.tryPromise(() => context.request.formData());
 
 				const url = formData.get('url')?.toString();
@@ -47,7 +47,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 					});
 				}
 
-				console.log('Starting Import:', url, '\n Type:', type, '\n useBlogPlugin:', useBlogPlugin);
+				yield* Console.log('Starting Import:', url, '\n Type:', type, '\n useBlogPlugin:', useBlogPlugin);
 
 				switch (type) {
 					case 'pages':

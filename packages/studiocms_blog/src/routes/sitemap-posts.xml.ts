@@ -10,7 +10,7 @@ const template = (entries: { location: string }[]) => `<?xml version="1.0" encod
 
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('@studiocms/blog/routes/sitemap-md.xml.ts:GET')(function* () {
+		genLogger('@studiocms/blog/routes/sitemap-posts.xml.ts:GET')(function* () {
 			const sdk = yield* SDKCore;
 
 			const posts = pipe(yield* sdk.GET.pages(), remapFilterSitemap('@studiocms/blog', context, true));

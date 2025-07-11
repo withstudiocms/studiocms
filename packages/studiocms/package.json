@@ -72,7 +72,6 @@
 			"default": "./dist/consts.js"
 		},
 		"./Renderer": "./dist/components/Renderer.astro",
-		"./renderers/*": "./dist/custom-renderers/*",
 		"./db/config": {
 			"types": "./dist/db/config.d.ts",
 			"default": "./dist/db/config.js"
@@ -119,7 +118,10 @@
 		},
 		"./components/*": "./dist/components/*",
 		"./layouts/*": "./dist/layouts/*",
-		"./lib/*": "./dist/lib/*",
+		"./lib/*": {
+			"types": "./dist/lib/*.d.ts",
+			"default": "./dist/lib/*"
+		},
 		"./types": {
 			"types": "./dist/types.d.ts",
 			"default": "./dist/types.js"
@@ -131,7 +133,10 @@
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
 		},
-		"./sdk/*": "./dist/sdk/*"
+		"./sdk/*": {
+			"types": "./dist/sdk/*.d.ts",
+			"default": "./dist/sdk/*"
+		}
 	},
 	"type": "module",
 	"dependencies": {

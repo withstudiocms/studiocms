@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from 'studiocms/effect';
-import { WPImporter } from '../effects/wp-importer.js';
+import { WPImporter } from '../effects/wpImporter.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
