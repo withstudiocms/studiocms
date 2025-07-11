@@ -7,6 +7,7 @@ import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { AstroError } from 'astro/errors';
 import * as cheerio from 'cheerio';
 import { decode } from 'html-entities';
+import sanitizeHtml from 'sanitize-html';
 import { Effect, genLogger } from 'studiocms/effect';
 import {
 	type tsPageContent,
@@ -70,15 +71,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 * @param string - The input string containing HTML tags.
 		 * @returns The input string with all HTML tags removed.
 		 */
-		const stripHtml = (str: string) => Effect.try(() => {
-			let sanitized = str;
-			let previous: string;
-			do {
-				previous = sanitized;
-				sanitized = sanitized.replace(/<[^>]*>/g, '');
-			} while (sanitized !== previous);
-			return sanitized;
-		});
+		const stripHtml = (str: string) => Effect.try(() => sanitizeHtml(str));
 
 		/**
 		 * Effectful version of 'cheerio.load()`
