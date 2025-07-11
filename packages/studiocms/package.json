@@ -130,6 +130,10 @@
 		"./effect": {
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
+		},
+		"./sdk/errors": {
+			"types": "./dist/sdk/errors.d.ts",
+			"default": "./dist/sdk/errors.js"
 		}
 	},
 	"type": "module",

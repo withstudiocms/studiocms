@@ -1,4 +1,5 @@
 /// <reference types="@astrojs/db" />
+/// <reference types="studiocms/v/types" />
 
 declare module 'virtual:studiocms-devapps/endpoints' {
 	export const wpAPIEndpoint: string;
