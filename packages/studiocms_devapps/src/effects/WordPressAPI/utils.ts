@@ -10,13 +10,10 @@ type loadHTMLContent = Parameters<(typeof cheerio)['load']>[0];
 
 type APISupportedTypes = 'posts' | 'pages' | 'media' | 'categories' | 'tags' | 'settings';
 
-/**
- * Images not downloaded during run
- */
-const imagesNotDownloaded = [];
-
 export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('WordPressAPIUtils', {
 	effect: genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect')(function* () {
+		const failedDownloads = new Set<string>();
+
 		const turndownService = new TurndownService({
 			bulletListMarker: '-',
 			codeBlockStyle: 'fenced',
@@ -189,7 +186,30 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 					return true;
 				}
 
+				// Validate destination file extension
+				const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+				const ext = path.extname(destination.toString()).toLowerCase();
+				if (!allowedExtensions.includes(ext)) {
+					yield* Console.error('Invalid file extension:', ext);
+					return false;
+				}
+
 				const response = yield* Effect.tryPromise(() => fetch(imageUrl));
+
+				// Validate content type
+				const contentType = response.headers.get('content-type');
+				if (!contentType?.startsWith('image/')) {
+					yield* Console.error('Invalid content type:', contentType);
+					return false;
+				}
+
+				// Check content length
+				const contentLength = response.headers.get('content-length');
+				const maxSize = 100 * 1024 * 1024; // 100MB limit
+				if (contentLength && Number.parseInt(contentLength) > maxSize) {
+					yield* Console.error('File too large:', contentLength);
+					return false;
+				}
 
 				if (response.ok && response.body) {
 					const reader = response.body.getReader();
@@ -246,7 +266,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 
 				const imageDownloaded = yield* downloadImage(src, destinationFile);
 
-				if (!imageDownloaded) imagesNotDownloaded.push(src);
+				if (!imageDownloaded) failedDownloads.add(src);
 
 				return imageDownloaded ? fileName : undefined;
 			});

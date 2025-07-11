@@ -2,6 +2,19 @@ import type { APIContext } from 'astro';
 import { Console, Effect, genLogger } from 'studiocms/effect';
 import { WordPressAPI } from './WordPressAPI/importers.js';
 
+const createResponse = (status: number, statusText: string) =>
+	new Response(null, {
+        status,
+        statusText,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': '*',
+        },
+    });
+
+const createErrorResponse = (statusText: string) => 
+    createResponse(400, statusText)
+
 export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	dependencies: [WordPressAPI.Default],
 	effect: genLogger('@studiocms/devapps/effects/wpImporter.effect')(function* () {
@@ -37,14 +50,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 				const useBlogPlugin = formData.get('useBlogPlugin') === 'true';
 
 				if (!url || !type) {
-					return new Response(null, {
-						status: 400,
-						statusText: 'Bad Request',
-						headers: {
-							'Content-Type': 'application/json',
-							'Access-Control-Allow-Headers': '*',
-						},
-					});
+					return createErrorResponse('Bad Request');
 				}
 
 				yield* Console.log('Starting Import:', url, '\n Type:', type, '\n useBlogPlugin:', useBlogPlugin);
@@ -60,24 +66,10 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 						yield* WPAPI.importSettingsFromWPAPI(url);
 						break;
 					default:
-						return new Response(null, {
-							status: 400,
-							statusText: 'Bad Request: Invalid import type',
-							headers: {
-								'Content-Type': 'application/json',
-								'Access-Control-Allow-Headers': '*',
-							},
-						});
+						return createErrorResponse('Bad Request: Invalid import type');
 				}
 
-				return new Response(null, {
-					status: 200,
-					statusText: 'success',
-					headers: {
-						'Content-Type': 'application/json',
-						'Access-Control-Allow-Headers': '*',
-					},
-				});
+				return createResponse(200, 'success')
 			});
 
 		return {
