@@ -1,5 +1,9 @@
-import type { APIContext } from 'astro';
 import { Console, Effect, genLogger } from 'studiocms/effect';
+import {
+	AstroAPIContextProvider,
+	ImportEndpointConfig,
+	ImportPostsEndpointConfig,
+} from './WordPressAPI/configs.js';
 import { WordPressAPI } from './WordPressAPI/importers.js';
 
 const createResponse = (status: number, statusText: string) =>
@@ -40,8 +44,10 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 		 *    - `importSettingsFromWPAPI` for importing settings.
 		 * 5. Returns a response indicating success or failure.
 		 */
-		const runPostEvent = (context: APIContext) =>
-			genLogger('@studiocms/devapps/effects/wpImporter.effect.runPostEvent')(function* () {
+		const runPostEvent = genLogger('@studiocms/devapps/effects/wpImporter.effect.runPostEvent')(
+			function* () {
+				const { context } = yield* AstroAPIContextProvider;
+
 				const formData = yield* Effect.tryPromise(() => context.request.formData());
 
 				const url = formData.get('url')?.toString();
@@ -63,20 +69,23 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 
 				switch (type) {
 					case 'pages':
-						yield* WPAPI.importPagesFromWPAPI(url);
+						yield* WPAPI.importPagesFromWPAPI.pipe(ImportEndpointConfig.makeProvide(url));
 						break;
 					case 'posts':
-						yield* WPAPI.importPostsFromWPAPI(url, useBlogPlugin);
+						yield* WPAPI.importPostsFromWPAPI.pipe(
+							ImportPostsEndpointConfig.makeProvide(url, useBlogPlugin)
+						);
 						break;
 					case 'settings':
-						yield* WPAPI.importSettingsFromWPAPI(url);
+						yield* WPAPI.importSettingsFromWPAPI.pipe(ImportEndpointConfig.makeProvide(url));
 						break;
 					default:
 						return createErrorResponse('Bad Request: Invalid import type');
 				}
 
 				return createResponse(200, 'success');
-			});
+			}
+		);
 
 		return {
 			runPostEvent,

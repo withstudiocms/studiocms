@@ -3,24 +3,37 @@ import path from 'node:path';
 import { AstroError } from 'astro/errors';
 import * as cheerio from 'cheerio';
 import sanitizeHtml from 'sanitize-html';
-import { Console, Effect, genLogger } from 'studiocms/effect';
+import { Console, Context, Effect, Layer, genLogger } from 'studiocms/effect';
 import TurndownService from 'turndown';
+import { APIEndpointConfig, DownloadImageConfig, DownloadPostImageConfig, StringConfig } from './configs.js';
 
-type loadHTMLContent = Parameters<(typeof cheerio)['load']>[0];
+type CheerioLoad = typeof cheerio.load;
 
-type APISupportedTypes = 'posts' | 'pages' | 'media' | 'categories' | 'tags' | 'settings';
+const _TurndownService = new TurndownService({
+	bulletListMarker: '-',
+	codeBlockStyle: 'fenced',
+	emDelimiter: '*',
+});
 
 export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('WordPressAPIUtils', {
 	effect: genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect')(function* () {
 		const failedDownloads = new Set<string>();
 
-		const turndownService = new TurndownService({
-			bulletListMarker: '-',
-			codeBlockStyle: 'fenced',
-			emDelimiter: '*',
-		});
+		const TDService = Effect.fn(<T>(fn: (turndown: TurndownService) => T) =>
+			Effect.try({
+				try: () => fn(_TurndownService),
+				catch: (cause) => new AstroError('Turndown Error', (cause as Error).message),
+			})
+		);
 
-		const turndown = (html: string) => Effect.try(() => turndownService.turndown(html));
+		const turndown = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.turndown')(
+			function* () {
+				const configHandler = yield* StringConfig;
+				const str = yield* configHandler.str;
+
+				return yield* TDService((TD) => TD.turndown(str));
+			}
+		);
 
 		/**
 		 * Removes all HTML tags from a given string.
@@ -28,21 +41,23 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * @param string - The input string containing HTML tags.
 		 * @returns The input string with all HTML tags removed.
 		 */
-		const stripHtml = (str: string) => Effect.try(() => sanitizeHtml(str));
+		const stripHtml = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.stripHtml')(
+			function* () {
+				const configHandler = yield* StringConfig;
+				const str = yield* configHandler.str;
+
+				return yield* Effect.try(() => sanitizeHtml(str));
+			}
+		);
 
 		/**
 		 * Effectful version of 'cheerio.load()`
 		 */
-		const loadHTML = (
-			content: loadHTMLContent,
-			options?: cheerio.CheerioOptions | null,
-			isDocument?: boolean
-		) =>
-			Effect.try({
-				try: () => cheerio.load(content, options, isDocument),
+		const loadHTML = Effect.fn(<T>(fn: (load: CheerioLoad) => T) => Effect.try({
+				try: () => fn(cheerio.load),
 				catch: (err) =>
 					new AstroError('Error loading content', err instanceof Error ? err.message : `${err}`),
-			});
+			}))
 
 		/**
 		 * Cleans up the provided HTML string by removing certain attributes from images
@@ -51,9 +66,10 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * @param html - The HTML string to be cleaned up.
 		 * @returns The cleaned-up HTML string.
 		 */
-		const cleanUpHtml = (html: string) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.cleanUpHtml')(function* () {
-				const data = yield* loadHTML(html);
+		const cleanUpHtml = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.cleanUpHtml')(function* () {
+				const configHandler = yield* StringConfig;
+				const str = yield* configHandler.str;
+				const data = yield* loadHTML((fn) => fn(str));
 
 				const images = data('img');
 				for (const image of images) {
@@ -150,12 +166,11 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * @returns The constructed URL object pointing to the desired API endpoint.
 		 * @throws {AstroError} If the `endpoint` argument is missing.
 		 */
-		const apiEndpoint = (
-			endpoint: string,
-			type: APISupportedTypes,
-			path?: string
-		): Effect.Effect<URL, AstroError, never> =>
+		const apiEndpoint = 
 			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.apiEndpoint')(function* () {
+				const configHandler = yield* APIEndpointConfig;
+				const { endpoint, type, path } = yield* configHandler.config;
+
 				if (!endpoint) {
 					return yield* Effect.fail(
 						new AstroError(
@@ -185,8 +200,10 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * @param {string | URL} imageUrl - The URL of the image to download.
 		 * @param {string | URL} destination - The file path where the image should be saved.
 		 */
-		const downloadImage = (imageUrl: string | URL, destination: string | URL) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadImage')(function* () {
+		const downloadImage = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadImage')(function* () {
+				const configHandler = yield* DownloadImageConfig;
+				const { destination, imageUrl } = yield* configHandler.config;
+
 				if (fs.existsSync(destination)) {
 					yield* Console.error('File already exists:', destination);
 					return true;
@@ -253,9 +270,12 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * - If the image already exists in the specified folder, the function will log a message and skip the download.
 		 * - If the image download fails, the source URL will be added to the `imagesNotDownloaded` array.
 		 */
-		const downloadPostImage = (src: string, pathToFolder: string) =>
+		const downloadPostImage =
 			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadPostImage')(
 				function* () {
+					const configHandler = yield* DownloadPostImageConfig;
+					const { str: src, pathToFolder } = yield* configHandler.config;
+
 					if (!src || !pathToFolder) return;
 
 					if (!fs.existsSync(pathToFolder)) {
@@ -275,7 +295,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 						return fileName;
 					}
 
-					const imageDownloaded = yield* downloadImage(src, destinationFile);
+					const imageDownloaded = yield* downloadImage.pipe(DownloadImageConfig.makeProvide(src, destinationFile));
 
 					if (!imageDownloaded) failedDownloads.add(src);
 
@@ -294,16 +314,18 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 * @param pathToFolder - The path to the folder where images should be downloaded.
 		 * @returns A promise that resolves to the updated HTML string with new image sources.
 		 */
-		const downloadAndUpdateImages = (html: string, pathToFolder: string) =>
+		const downloadAndUpdateImages = 
 			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadAndUpdateImages')(
 				function* () {
-					const data = yield* loadHTML(html);
+					const configHandler = yield* DownloadPostImageConfig;
+					const { str: html, pathToFolder } = yield* configHandler.config;
+					const data = yield* loadHTML((fn) => fn(html));
 					const images = data('img');
 
 					for (const image of images) {
 						const src = data(image).attr('src');
 						if (src) {
-							const newSrc = yield* downloadPostImage(src, pathToFolder);
+							const newSrc = yield* downloadPostImage.pipe(DownloadPostImageConfig.makeProvide(src, pathToFolder));
 							if (newSrc) {
 								data(image).attr('src', newSrc);
 							} else {

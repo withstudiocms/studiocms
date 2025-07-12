@@ -5,6 +5,15 @@ import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger } from 'studiocms/effect';
 import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import type { Page, SiteSettings } from '../../schema/wp-api.js';
+import {
+	APIEndpointConfig,
+	DownloadPostImageConfig,
+	FullPageData,
+	ImportEndpointConfig,
+	ImportPostsEndpointConfig,
+	RawPageData,
+	useBlogPkgConf,
+} from './configs.js';
 import { WordPressAPIConverters } from './converters.js';
 import { WordPressAPIUtils } from './utils.js';
 
@@ -41,51 +50,59 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 * 7. Updates the local database with the fetched settings.
 		 * 8. Logs the success or failure of the database update.
 		 */
-		const importSettingsFromWPAPI = (endpoint: string) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI.effect.importSettingsFromWPAPI')(
-				function* () {
-					const url = yield* apiEndpoint(endpoint, 'settings');
+		const importSettingsFromWPAPI = genLogger(
+			'@studiocms/devapps/effects/WordPressAPI.effect.importSettingsFromWPAPI'
+		)(function* () {
+			const configHandler = yield* ImportEndpointConfig;
+			const endpoint = yield* configHandler.endpoint;
 
-					yield* Console.log('Fetching site settings from: ', url.origin);
+			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'settings'));
 
-					const response = yield* Effect.tryPromise(() => fetch(url));
-					const settings: SiteSettings = yield* Effect.tryPromise(() => response.json());
+			yield* Console.log('Fetching site settings from: ', url.origin);
 
-					yield* Console.log('Importing site settings: ', settings);
+			const response = yield* Effect.tryPromise(() => fetch(url));
+			const settings: SiteSettings = yield* Effect.tryPromise(() => response.json());
 
-					let siteIcon: string | undefined = undefined;
+			yield* Console.log('Importing site settings: ', settings);
 
-					if (settings.site_icon_url) {
-						siteIcon = yield* downloadPostImage(settings.site_icon_url, ASTRO_PUBLIC_FOLDER);
-					}
+			let siteIcon: string | undefined = undefined;
 
-					if (!settings.site_icon_url && settings.site_logo) {
-						const siteLogoUrl = yield* apiEndpoint(endpoint, 'media', String(settings.site_logo));
-						const siteLogoResponse = yield* Effect.tryPromise(() => fetch(siteLogoUrl));
-						const siteLogoData = yield* Effect.tryPromise(() => siteLogoResponse.json());
+			if (settings.site_icon_url) {
+				siteIcon = yield* downloadPostImage.pipe(
+					DownloadPostImageConfig.makeProvide(settings.site_icon_url, ASTRO_PUBLIC_FOLDER)
+				);
+			}
 
-						siteIcon = yield* downloadPostImage(siteLogoData.source_url, ASTRO_PUBLIC_FOLDER);
-					}
+			if (!settings.site_icon_url && settings.site_logo) {
+				const siteLogoUrl = yield* apiEndpoint.pipe(
+					APIEndpointConfig.makeProvide(endpoint, 'media', String(settings.site_logo))
+				);
+				const siteLogoResponse = yield* Effect.tryPromise(() => fetch(siteLogoUrl));
+				const siteLogoData = yield* Effect.tryPromise(() => siteLogoResponse.json());
 
-					const siteConfig: Partial<SiteConfig> = {
-						title: settings.name,
-						description: settings.description,
-					};
+				siteIcon = yield* downloadPostImage.pipe(
+					DownloadPostImageConfig.makeProvide(siteLogoData.source_url, ASTRO_PUBLIC_FOLDER)
+				);
+			}
 
-					if (siteIcon) {
-						siteConfig.siteIcon = siteIcon;
-					}
+			const siteConfig: Partial<SiteConfig> = {
+				title: settings.name,
+				description: settings.description,
+			};
 
-					// @ts-expect-error - Drizzle broken types
-					const insert = yield* sdk.UPDATE.siteConfig(siteConfig);
+			if (siteIcon) {
+				siteConfig.siteIcon = siteIcon;
+			}
 
-					if (insert.lastCacheUpdate) {
-						yield* Console.log('Updated site settings');
-					} else {
-						yield* Console.error('Failed to update site settings');
-					}
-				}
-			);
+			// @ts-expect-error - Drizzle broken types
+			const insert = yield* sdk.UPDATE.siteConfig(siteConfig);
+
+			if (insert.lastCacheUpdate) {
+				yield* Console.log('Updated site settings');
+			} else {
+				yield* Console.error('Failed to update site settings');
+			}
+		});
 
 		/**
 		 * Imports pages from a WordPress API endpoint.
@@ -95,30 +112,37 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 *
 		 * @param endpoint - The WordPress API endpoint to fetch pages from.
 		 */
-		const importPagesFromWPAPI = (endpoint: string) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI')(
-				function* () {
-					const url = yield* apiEndpoint(endpoint, 'pages');
+		const importPagesFromWPAPI = genLogger(
+			'@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI'
+		)(function* () {
+			const configHandler = yield* ImportEndpointConfig;
+			const endpoint = yield* configHandler.endpoint;
+			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'pages'));
 
-					yield* Console.log('fetching pages from: ', url.origin);
+			yield* Console.log('fetching pages from: ', url.origin);
 
-					const pages: Page[] = yield* fetchAll(url);
+			const pages: Page[] = yield* fetchAll(url);
 
-					yield* Console.log('Total pages: ', pages.length);
+			yield* Console.log('Total pages: ', pages.length);
 
-					for (const page of pages) {
-						yield* Console.log('importing page:', page.title.rendered);
+			for (const page of pages) {
+				yield* Console.log('importing page:', page.title.rendered);
 
-						const pageData = yield* convertToPageData(page, endpoint);
-						const pageContent = yield* convertToPageContent(pageData, page);
+				const pageData = yield* convertToPageData.pipe(
+					ImportEndpointConfig.makeProvide(endpoint),
+					RawPageData.makeProvide(page)
+				);
+				const pageContent = yield* convertToPageContent.pipe(
+					RawPageData.makeProvide(page),
+					FullPageData.makeProvide(pageData)
+				);
 
-						// @ts-expect-error - Drizzle broken types
-						yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
+				// @ts-expect-error - Drizzle broken types
+				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
-						yield* Console.log('- Imported new page from WP-API: ', page.title.rendered);
-					}
-				}
-			);
+				yield* Console.log('- Imported new page from WP-API: ', page.title.rendered);
+			}
+		});
 
 		/**
 		 * Imports a post from the WordPress API and inserts the post data and content into the database.
@@ -127,30 +151,38 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 * @param useBlogPkg - A boolean flag indicating whether to use the blog package for generating the post data.
 		 * @param endpoint - The API endpoint to be used for generating the post data.
 		 */
-		const importPostsFromWPAPI = (endpoint: string, useBlogPkg: boolean) =>
-			genLogger('@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI')(
-				function* () {
-					const url = yield* apiEndpoint(endpoint, 'posts');
+		const importPostsFromWPAPI = genLogger(
+			'@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI'
+		)(function* () {
+			const configHandler = yield* ImportPostsEndpointConfig;
+			const { endpoint, useBlogPkg } = yield* configHandler.config;
+			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'posts'));
 
-					yield* Console.log('fetching posts from: ', url.origin);
+			yield* Console.log('fetching posts from: ', url.origin);
 
-					const pages: Page[] = yield* fetchAll(url);
+			const pages: Page[] = yield* fetchAll(url);
 
-					yield* Console.log('Total posts: ', pages.length);
+			yield* Console.log('Total posts: ', pages.length);
 
-					for (const page of pages) {
-						yield* Console.log('importing post:', page.title.rendered);
+			for (const page of pages) {
+				yield* Console.log('importing post:', page.title.rendered);
 
-						const pageData = yield* convertToPostData(page, useBlogPkg, endpoint);
-						const pageContent = yield* convertToPostContent(pageData, page);
+				const pageData = yield* convertToPostData.pipe(
+					ImportEndpointConfig.makeProvide(endpoint),
+					RawPageData.makeProvide(page),
+					useBlogPkgConf.makeProvide(useBlogPkg)
+				);
+				const pageContent = yield* convertToPostContent.pipe(
+					RawPageData.makeProvide(page),
+					FullPageData.makeProvide(pageData)
+				);
 
-						// @ts-expect-error - Drizzle broken types
-						yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
+				// @ts-expect-error - Drizzle broken types
+				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
-						yield* Console.log('- Imported new post from WP-API: ', page.title.rendered);
-					}
-				}
-			);
+				yield* Console.log('- Imported new post from WP-API: ', page.title.rendered);
+			}
+		});
 
 		return {
 			importSettingsFromWPAPI,
