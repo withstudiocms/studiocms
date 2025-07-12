@@ -141,8 +141,8 @@ export class FullPageData extends Context.Tag('FullPageData')<
 	static makeProvide = (pageData: PageData) => Effect.provide(this.makeLayer(pageData));
 }
 
-export class useBlogPkgConf extends Context.Tag('useBlogPkgConf')<
-	useBlogPkgConf,
+export class UseBlogPkgConfig extends Context.Tag('UseBlogPkgConfig')<
+	UseBlogPkgConfig,
 	{
 		readonly useBlogPkg: boolean;
 	}

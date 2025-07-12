@@ -11,7 +11,7 @@ import {
 	ImportEndpointConfig,
 	ImportPostsEndpointConfig,
 	RawPageData,
-	useBlogPkgConf,
+	UseBlogPkgConfig,
 } from './configs.js';
 import { WordPressAPIConverters } from './converters.js';
 import { PagesSchema, PostsSchema, SiteSettings } from './schema.js';
@@ -154,7 +154,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		 * @param endpoint - The API endpoint to be used for generating the post data.
 		 */
 		const importPostsFromWPAPI = genLogger(
-			'@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI'
+			'@studiocms/devapps/effects/WordPressAPI.effect.importPostsFromWPAPI'
 		)(function* () {
 			const { endpoint, useBlogPkg } = yield* ImportPostsEndpointConfig;
 			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'posts'));
@@ -173,7 +173,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				const pageData = yield* convertToPostData.pipe(
 					ImportEndpointConfig.makeProvide(endpoint),
 					RawPageData.makeProvide(page),
-					useBlogPkgConf.makeProvide(useBlogPkg)
+					UseBlogPkgConfig.makeProvide(useBlogPkg)
 				);
 				const pageContent = yield* convertToPostContent.pipe(
 					RawPageData.makeProvide(page),

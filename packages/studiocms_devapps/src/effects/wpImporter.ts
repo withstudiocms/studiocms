@@ -25,20 +25,22 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	effect: genLogger('@studiocms/devapps/effects/wpImporter.effect')(function* () {
 		const WPAPI = yield* WordPressAPI;
 
-		const parseFormData = <T extends 'string' | 'boolean'>(formData: FormData, name: string, type: T) => Effect.gen(function* () {
+		const parseFormData = <T extends 'string' | 'boolean'>(formData: FormData, name: string, type: T, optional = false) => Effect.gen(function* () {
 			const data = formData.get(name);
 
-			if (!data || data === null) {
-				throw yield* Effect.fail(new Error(`Failed to parse form data: ${name}`))
+			if (!optional && !data || data === null) {
+				throw yield* Effect.fail(new Error(`Missing required form field: ${name}`))
 			}
 
 			switch (type) {
 				case 'string':
 					return data.toString() as InferType<T>;
-				case 'boolean':
-					return data === 'true' as InferType<T>;
+				case 'boolean': {
+					const value = data.toString().toLowerCase();
+					return (value === 'true' || value === '1' || value === 'yes') as InferType<T>;
+				}
 				default:
-					throw yield* Effect.fail(new Error(`Failed to parse form data: ${name}`))
+					throw yield* Effect.fail(new Error(`Unsupported type '${type}' for form field: ${name}`))
 			}
 
 		}) as Effect.Effect<InferType<T>, Error, never>
@@ -72,7 +74,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 
 				const url = yield* parseFormData(formData, 'url', 'string');
 				const type = yield* parseFormData(formData, 'type', 'string');
-				const useBlogPlugin = yield* parseFormData(formData, 'useBlogPlugin', 'boolean');
+				const useBlogPlugin = yield* parseFormData(formData, 'useBlogPlugin', 'boolean', true);
 
 				if (!url || !type) {
 					return createErrorResponse('Bad Request');

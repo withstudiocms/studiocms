@@ -13,7 +13,7 @@ import {
 	ImportEndpointConfig,
 	RawPageData,
 	StringConfig,
-	useBlogPkgConf,
+	UseBlogPkgConfig,
 } from './configs.js';
 import type { PageContent, PageData } from './importers.js';
 import { type Category, Page, Post, type Tag } from './schema.js';
@@ -66,6 +66,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageData'
 			)(function* () {
 				const [{ endpoint }, { page }] = yield* Effect.all([ImportEndpointConfig, RawPageData]);
+
+				if (!endpoint) {
+					yield* Effect.fail(new Error('Missing endpoint configuration'));
+				}
+				if (!page) {
+					yield* Effect.fail(new Error('Missing page data'));
+				}
 
 				const data = yield* Schema.decodeUnknown(Page)(page);
 
@@ -326,7 +333,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				const [{ endpoint }, { page: post }, { useBlogPkg }] = yield* Effect.all([
 					ImportEndpointConfig,
 					RawPageData,
-					useBlogPkgConf,
+					UseBlogPkgConfig,
 				]);
 
 				const data = yield* Schema.decodeUnknown(Post)(post);
