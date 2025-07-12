@@ -1,4 +1,5 @@
-import fs from 'node:fs';
+import fs, { constants } from 'node:fs';
+import { access, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { AstroError } from 'astro/errors';
 import * as cheerio from 'cheerio';
@@ -27,7 +28,11 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const TDService = Effect.fn(<T>(fn: (turndown: TurndownService) => T) =>
 			Effect.try({
 				try: () => fn(_TurndownService),
-				catch: (cause) => new AstroError('Turndown Error', (cause as Error).message),
+				catch: (cause) =>
+					new AstroError(
+						'Turndown Error',
+						`Failed to convert HTML to Markdown: ${(cause as Error).message}`
+					),
 			})
 		);
 
@@ -211,7 +216,12 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		)(function* () {
 			const { destination, imageUrl } = yield* DownloadImageConfig;
 
-			if (fs.existsSync(destination)) {
+			const fileExists = yield* Effect.tryPromise({
+				try: () => access(destination, constants.F_OK).then(() => true),
+				catch: () => false,
+			});
+
+			if (fileExists) {
 				yield* Console.error('File already exists:', destination);
 				return true;
 			}
@@ -253,7 +263,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 				}
 
 				const fileBuffer = Buffer.concat(chunks);
-				fs.writeFileSync(destination, fileBuffer, { flag: 'wx' });
+				yield* Effect.tryPromise(() => writeFile(destination, fileBuffer, { flag: 'wx' }));
 
 				yield* Console.log('Downloaded image:', imageUrl);
 

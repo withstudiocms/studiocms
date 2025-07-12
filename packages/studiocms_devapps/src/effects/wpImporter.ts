@@ -25,25 +25,32 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	effect: genLogger('@studiocms/devapps/effects/wpImporter.effect')(function* () {
 		const WPAPI = yield* WordPressAPI;
 
-		const parseFormData = <T extends 'string' | 'boolean'>(formData: FormData, name: string, type: T, optional = false) => Effect.gen(function* () {
-			const data = formData.get(name);
+		const parseFormData = <T extends 'string' | 'boolean'>(
+			formData: FormData,
+			name: string,
+			type: T,
+			optional = false
+		) =>
+			Effect.gen(function* () {
+				const data = formData.get(name);
 
-			if (!optional && !data || data === null) {
-				throw yield* Effect.fail(new Error(`Missing required form field: ${name}`))
-			}
-
-			switch (type) {
-				case 'string':
-					return data.toString() as InferType<T>;
-				case 'boolean': {
-					const value = data.toString().toLowerCase();
-					return (value === 'true' || value === '1' || value === 'yes') as InferType<T>;
+				if ((!optional && !data) || data === null) {
+					throw yield* Effect.fail(new Error(`Missing required form field: ${name}`));
 				}
-				default:
-					throw yield* Effect.fail(new Error(`Unsupported type '${type}' for form field: ${name}`))
-			}
 
-		}) as Effect.Effect<InferType<T>, Error, never>
+				switch (type) {
+					case 'string':
+						return data.toString() as InferType<T>;
+					case 'boolean': {
+						const value = data.toString().toLowerCase();
+						return (value === 'true' || value === '1' || value === 'yes') as InferType<T>;
+					}
+					default:
+						throw yield* Effect.fail(
+							new Error(`Unsupported type '${type}' for form field: ${name}`)
+						);
+				}
+			}) as Effect.Effect<InferType<T>, Error, never>;
 
 		/**
 		 * Handles the POST request for importing data from a WordPress site.
@@ -74,7 +81,10 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 
 				const url = yield* parseFormData(formData, 'url', 'string');
 				const type = yield* parseFormData(formData, 'type', 'string');
-				const useBlogPlugin = yield* parseFormData(formData, 'useBlogPlugin', 'boolean', true);
+				const useBlogPlugin = yield* Effect.orElse(
+					parseFormData(formData, 'useBlogPlugin', 'boolean', true),
+					() => Effect.succeed(false)
+				);
 
 				if (!url || !type) {
 					return createErrorResponse('Bad Request');

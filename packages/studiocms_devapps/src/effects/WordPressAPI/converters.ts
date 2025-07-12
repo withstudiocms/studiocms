@@ -189,30 +189,37 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const newCategories: Category[] = [];
 
-				for (const categoryId of categories) {
-					const categoryExists = yield* sdk.dbService.execute((client) =>
-						client
-							.select()
-							.from(tsPageDataCategories)
-							.where(eq(tsPageDataCategories.id, categoryId))
-							.get()
-					);
+				const categoryChecks = yield* Effect.all(
+					categories.map((categoryId) =>
+						sdk.dbService
+							.execute((client) =>
+								client
+									.select()
+									.from(tsPageDataCategories)
+									.where(eq(tsPageDataCategories.id, categoryId))
+									.get()
+							)
+							.pipe(Effect.map((exists) => ({ categoryId, exists: !!exists })))
+					),
+					{ concurrency: 10 }
+				);
 
-					if (categoryExists) {
-						yield* Console.log(
-							`Category with id ${categoryId} already exists in the database. Skipping...`
-						);
-						continue;
-					}
+				const missingCategories = categoryChecks
+					.filter(({ exists }) => !exists)
+					.map(({ categoryId }) => categoryId);
 
-					const categoryURL = yield* apiEndpoint.pipe(
-						APIEndpointConfig.makeProvide(endpoint, 'categories', String(categoryId))
-					);
-					const response = yield* Effect.tryPromise(() => fetch(categoryURL));
-					const jsonData = yield* Effect.tryPromise(() => response.json());
+				const fetchedCategories = yield* Effect.all(
+					missingCategories.map((categoryId) =>
+						apiEndpoint.pipe(
+							APIEndpointConfig.makeProvide(endpoint, 'categories', String(categoryId)),
+							Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
+							Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
+						)
+					),
+					{ concurrency: 5 } // Limit concurrent API calls
+				);
 
-					newCategories.push(jsonData);
-				}
+				newCategories.push(...fetchedCategories);
 
 				if (newCategories.length > 0) {
 					const categoryData = newCategories.map((category) => {
@@ -274,24 +281,37 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const newTags: Tag[] = [];
 
-				for (const tagId of tags) {
-					const tagExists = yield* sdk.dbService.execute((client) =>
-						client.select().from(tsPageDataTags).where(eq(tsPageDataTags.id, tagId)).get()
-					);
+				const tagChecks = yield* Effect.all(
+					tags.map((tagId) =>
+						sdk.dbService
+							.execute((client) =>
+								client
+									.select()
+									.from(tsPageDataTags)
+									.where(eq(tsPageDataTags.id, tagId))
+									.get()
+							)
+							.pipe(Effect.map((exists) => ({ tagId, exists: !!exists })))
+					),
+					{ concurrency: 10 }
+				);
 
-					if (tagExists) {
-						yield* Console.log(`Tag with id ${tagId} already exists in the database. Skipping...`);
-						continue;
-					}
+				const missingTags = tagChecks
+					.filter(({ exists }) => !exists)
+					.map(({ tagId }) => tagId);
 
-					const tagURL = yield* apiEndpoint.pipe(
-						APIEndpointConfig.makeProvide(endpoint, 'tags', String(tagId))
-					);
-					const response = yield* Effect.tryPromise(() => fetch(tagURL));
-					const jsonData = yield* Effect.tryPromise(() => response.json());
+				const fetchedTags = yield* Effect.all(
+					missingTags.map((tagId) =>
+						apiEndpoint.pipe(
+							APIEndpointConfig.makeProvide(endpoint, 'tags', String(tagId)),
+							Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
+							Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
+						)
+					),
+					{ concurrency: 5 } // Limit concurrent API calls
+				);
 
-					newTags.push(jsonData);
-				}
+				newTags.push(...fetchedTags);
 
 				if (newTags.length > 0) {
 					const tagData = newTags.map((tag) => {

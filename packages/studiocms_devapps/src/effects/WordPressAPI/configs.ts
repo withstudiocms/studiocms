@@ -19,6 +19,7 @@ export class StringConfig extends Context.Tag('StringConfig')<
 	static makeProvide = (str: string) => Effect.provide(this.makeLayer(str));
 }
 
+const SUPPORTED_TYPES = ['posts', 'pages', 'media', 'categories', 'tags', 'settings'] as const;
 type APISupportedTypes = 'posts' | 'pages' | 'media' | 'categories' | 'tags' | 'settings';
 
 export class APIEndpointConfig extends Context.Tag('APIEndpointConfig')<
@@ -29,8 +30,11 @@ export class APIEndpointConfig extends Context.Tag('APIEndpointConfig')<
 		readonly path?: string | undefined;
 	}
 >() {
-	static makeLayer = (endpoint: string, type: APISupportedTypes, path?: string) =>
-		Layer.succeed(
+	static makeLayer = (endpoint: string, type: APISupportedTypes, path?: string) => {
+		if (!SUPPORTED_TYPES.includes(type as APISupportedTypes)) {
+			throw new Error(`Invalid API type: ${type}. Supported types: ${SUPPORTED_TYPES.join(', ')}`);
+		}
+		return Layer.succeed(
 			this,
 			this.of({
 				endpoint,
@@ -38,6 +42,7 @@ export class APIEndpointConfig extends Context.Tag('APIEndpointConfig')<
 				path,
 			})
 		);
+	};
 
 	static makeProvide = (endpoint: string, type: APISupportedTypes, path?: string) =>
 		Effect.provide(this.makeLayer(endpoint, type, path));
@@ -89,7 +94,7 @@ export class ImportEndpointConfig extends Context.Tag('ImportEndpointConfig')<
 		readonly endpoint: string;
 	}
 >() {
-	static makeLayer = (endpoint: string) => Layer.succeed(this, this.of({ endpoint: endpoint }));
+	static makeLayer = (endpoint: string) => Layer.succeed(this, this.of({ endpoint }));
 
 	static makeProvide = (endpoint: string) => Effect.provide(this.makeLayer(endpoint));
 }
@@ -125,7 +130,7 @@ export class RawPageData extends Context.Tag('RawPageData')<
 		readonly page: unknown;
 	}
 >() {
-	static makeLayer = (page: unknown) => Layer.succeed(this, this.of({ page: page }));
+	static makeLayer = (page: unknown) => Layer.succeed(this, this.of({ page }));
 
 	static makeProvide = (page: unknown) => Effect.provide(this.makeLayer(page));
 }
@@ -136,7 +141,7 @@ export class FullPageData extends Context.Tag('FullPageData')<
 		readonly pageData: PageData;
 	}
 >() {
-	static makeLayer = (pageData: PageData) => Layer.succeed(this, this.of({ pageData: pageData }));
+	static makeLayer = (pageData: PageData) => Layer.succeed(this, this.of({ pageData }));
 
 	static makeProvide = (pageData: PageData) => Effect.provide(this.makeLayer(pageData));
 }
@@ -147,8 +152,7 @@ export class UseBlogPkgConfig extends Context.Tag('UseBlogPkgConfig')<
 		readonly useBlogPkg: boolean;
 	}
 >() {
-	static makeLayer = (useBlogPkg: boolean) =>
-		Layer.succeed(this, this.of({ useBlogPkg: useBlogPkg }));
+	static makeLayer = (useBlogPkg: boolean) => Layer.succeed(this, this.of({ useBlogPkg }));
 
 	static makeProvide = (useBlogPkg: boolean) => Effect.provide(this.makeLayer(useBlogPkg));
 }
@@ -159,7 +163,7 @@ export class CategoryOrTagConfig extends Context.Tag('CategoryOrTagConfig')<
 		readonly value: readonly number[];
 	}
 >() {
-	static makeLayer = (value: readonly number[]) => Layer.succeed(this, this.of({ value: value }));
+	static makeLayer = (value: readonly number[]) => Layer.succeed(this, this.of({ value }));
 
 	static makeProvide = (value: readonly number[]) => Effect.provide(this.makeLayer(value));
 }
