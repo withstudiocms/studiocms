@@ -1,19 +1,15 @@
 ---
-import { StudioCMSRenderer } from 'studiocms:renderer';
-import studioCMS_SDK from 'studiocms:sdk';
-import studioCMS_SDK_Cache from 'studiocms:sdk/cache';
-import Layout from '../layouts/Layout.astro';
-
-// This is here to refresh the cache when needed
-const allPages = await studioCMS_SDK_Cache.GET.pages();
+import { StudioCMSRenderer } from "studiocms:renderer";
+import { SDKCoreJs, runSDK } from "studiocms:sdk";
+import Layout from "../layouts/Layout.astro";
 
 let { slug } = Astro.params;
 
 if (!slug) {
-	slug = 'index';
+	slug = "index";
 }
 
-const { data: page } = await studioCMS_SDK.GET.databaseEntry.pages.bySlug(slug);
+const { data: page } = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
 if (!page) {
 	return new Response(null, { status: 404 });

@@ -1,15 +1,10 @@
 ---
 import defaultFrontEndConfig from 'studiocms:blog/frontend-config';
-import studioCMS_SDK from 'studiocms:sdk/cache';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Navigation from '../components/Navigation.astro';
 
-const { title: SiteTitle, description: SiteDescription } = (await studioCMS_SDK.GET.siteConfig())
-	.data || {
-	title: 'StudioCMS - Database Unavailable',
-	description: 'StudioCMS - Database Unavailable',
-};
+const { title: SiteTitle, description: SiteDescription } = Astro.locals.siteConfig.data;
 
 let htmlDefaultLanguage = 'en';
 

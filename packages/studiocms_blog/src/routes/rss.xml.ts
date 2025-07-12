@@ -1,8 +1,9 @@
 import blogConfig from 'studiocms:blog/config';
 import { pathWithBase } from 'studiocms:lib';
-import studioCMS_SDK from 'studiocms:sdk/cache';
+import { SDKCore } from 'studiocms:sdk';
 import rss, { type RSSFeedItem } from '@astrojs/rss';
-import type { APIContext } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
+import { convertToVanilla, genLogger } from 'studiocms/effect';
 
 const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
 
@@ -13,32 +14,39 @@ function getBlogRoute(slug: string) {
 	return '#';
 }
 
-export async function GET(context: APIContext) {
-	// Get Config from Studio Database
-	const config = (await studioCMS_SDK.GET.siteConfig()).data || {
-		title: 'StudioCMS - Database Unavailable',
-		description: 'StudioCMS - Database Unavailable',
-	};
+export const GET: APIRoute = async (context: APIContext) =>
+	await convertToVanilla(
+		genLogger('@studiocms/blog/routes/rss.xml:GET')(function* () {
+			const sdk = yield* SDKCore;
 
-	// Set Title, Description, and Site
-	const title = `${config?.title} | ${blogConfig.title}`;
-	const description = config?.description ?? 'Blog';
-	const site = context.site ?? 'https://example.com';
+			const config = context.locals.siteConfig.data;
 
-	// Get all Posts from Studio Database
-	const orderedPosts = (await studioCMS_SDK.GET.pages())
-		.map(({ data }) => data)
-		.filter(({ package: pkg }) => pkg === '@studiocms/blog');
+			// Set Title, Description, and Site
+			const title = `${config?.title} | ${blogConfig.title}`;
+			const description = config?.description ?? 'Blog';
+			const site = context.site ?? 'https://example.com';
 
-	const items: RSSFeedItem[] = orderedPosts.map((post) => {
-		return {
-			title: post.title,
-			description: post.description,
-			pubDate: post.publishedAt,
-			link: pathWithBase(getBlogRoute(post.slug)),
-			categories: post.categories.map(({ name }) => name),
-		};
-	});
+			const posts = yield* sdk.GET.pages();
 
-	return rss({ title, description, site, items });
-}
+			const orderedPosts = posts
+				.map(({ data }) => data)
+				.filter(({ package: pkg }) => pkg === '@studiocms/blog');
+
+			const items: RSSFeedItem[] = orderedPosts.map(
+				({ title, description, publishedAt: pubDate, slug, categories: categoryData }) => {
+					const link = pathWithBase(getBlogRoute(slug));
+					const categories = categoryData.map(({ name }) => name);
+
+					return {
+						title,
+						description,
+						pubDate,
+						link,
+						categories,
+					};
+				}
+			);
+
+			return rss({ title, description, site, items });
+		}).pipe(SDKCore.Provide)
+	);
