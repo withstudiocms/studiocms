@@ -4,7 +4,6 @@ import type { SiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger } from 'studiocms/effect';
 import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
-import type { Page, SiteSettings } from '../../schema/wp-api.js';
 import {
 	APIEndpointConfig,
 	DownloadPostImageConfig,
@@ -15,6 +14,7 @@ import {
 	useBlogPkgConf,
 } from './configs.js';
 import { WordPressAPIConverters } from './converters.js';
+import { PagesSchema, SiteSettings } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
 export type PageData = typeof tsPageData.$inferInsert;
@@ -61,7 +61,9 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 			yield* Console.log('Fetching site settings from: ', url.origin);
 
 			const response = yield* Effect.tryPromise(() => fetch(url));
-			const settings: SiteSettings = yield* Effect.tryPromise(() => response.json());
+			const rawSettings = yield* Effect.tryPromise(() => response.json());
+
+			const settings = new SiteSettings(rawSettings);
 
 			yield* Console.log('Importing site settings: ', settings);
 
@@ -121,7 +123,9 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 
 			yield* Console.log('fetching pages from: ', url.origin);
 
-			const pages: Page[] = yield* fetchAll(url);
+			const rawPages = yield* fetchAll(url);
+
+			const { pages } = new PagesSchema({ pages: rawPages });
 
 			yield* Console.log('Total pages: ', pages.length);
 
@@ -160,7 +164,9 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 
 			yield* Console.log('fetching posts from: ', url.origin);
 
-			const pages: Page[] = yield* fetchAll(url);
+			const rawPages = yield* fetchAll(url);
+
+			const { pages } = new PagesSchema({ pages: rawPages });
 
 			yield* Console.log('Total posts: ', pages.length);
 

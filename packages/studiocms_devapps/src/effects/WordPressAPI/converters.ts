@@ -5,7 +5,6 @@ import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
-import type { Category, Page, Post, Tag } from '../../schema/wp-api.js';
 import {
 	APIEndpointConfig,
 	CategoryOrTagConfig,
@@ -17,6 +16,7 @@ import {
 	useBlogPkgConf,
 } from './configs.js';
 import type { PageContent, PageData } from './importers.js';
+import { type Category, Page, Post, type Tag } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
 /**
@@ -75,7 +75,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					pageConfigHandler.page,
 				]);
 
-				const data = page as Page;
+				const data = new Page(page as Page);
 
 				const cleanHTML = yield* stripHtml.pipe(StringConfig.makeProvide(data.excerpt.rendered));
 
@@ -359,7 +359,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					useBlogPkgConfHandler.useBlogPkg,
 				]);
 
-				const data = post as Post;
+				const data = new Post(post as Post);
 
 				const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms/markdown';
 

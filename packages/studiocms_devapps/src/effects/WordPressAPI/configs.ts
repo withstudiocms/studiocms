@@ -130,7 +130,8 @@ export class RawPageData extends Context.Tag('RawPageData')<
 		readonly page: Effect.Effect<unknown>;
 	}
 >() {
-	static makeLayer = (page: unknown) => Layer.succeed(this, this.of({ page: Effect.succeed(page) }));
+	static makeLayer = (page: unknown) =>
+		Layer.succeed(this, this.of({ page: Effect.succeed(page) }));
 
 	static makeProvide = (page: unknown) => Effect.provide(this.makeLayer(page));
 }
@@ -141,7 +142,8 @@ export class FullPageData extends Context.Tag('FullPageData')<
 		readonly pageData: Effect.Effect<PageData>;
 	}
 >() {
-	static makeLayer = (pageData: PageData) => Layer.succeed(this, this.of({ pageData: Effect.succeed(pageData) }));
+	static makeLayer = (pageData: PageData) =>
+		Layer.succeed(this, this.of({ pageData: Effect.succeed(pageData) }));
 
 	static makeProvide = (pageData: PageData) => Effect.provide(this.makeLayer(pageData));
 }
@@ -152,7 +154,8 @@ export class useBlogPkgConf extends Context.Tag('useBlogPkgConf')<
 		readonly useBlogPkg: Effect.Effect<boolean>;
 	}
 >() {
-	static makeLayer = (useBlogPkg: boolean) => Layer.succeed(this, this.of({ useBlogPkg: Effect.succeed(useBlogPkg) }));
+	static makeLayer = (useBlogPkg: boolean) =>
+		Layer.succeed(this, this.of({ useBlogPkg: Effect.succeed(useBlogPkg) }));
 
 	static makeProvide = (useBlogPkg: boolean) => Effect.provide(this.makeLayer(useBlogPkg));
 }
@@ -160,10 +163,11 @@ export class useBlogPkgConf extends Context.Tag('useBlogPkgConf')<
 export class CategoryOrTagConfig extends Context.Tag('CategoryOrTagConfig')<
 	CategoryOrTagConfig,
 	{
-		readonly value: Effect.Effect<number[]>;
+		readonly value: Effect.Effect<readonly number[]>;
 	}
 >() {
-	static makeLayer = (value: number[]) => Layer.succeed(this, this.of({ value: Effect.succeed(value) }));
+	static makeLayer = (value: readonly number[]) =>
+		Layer.succeed(this, this.of({ value: Effect.succeed(value) }));
 
-	static makeProvide = (value: number[]) => Effect.provide(this.makeLayer(value));
+	static makeProvide = (value: readonly number[]) => Effect.provide(this.makeLayer(value));
 }
