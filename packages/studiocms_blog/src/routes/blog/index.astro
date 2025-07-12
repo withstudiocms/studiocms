@@ -1,9 +1,9 @@
 ---
-import blogConfig from "studiocms:blog/config";
-import { SDKCoreJs, runSDK } from "studiocms:sdk";
-import PageList from "../../components/PageList.astro";
-import RSSIcon from "../../components/RSSIcon.astro";
-import Layout from "../../layouts/Layout.astro";
+import blogConfig from 'studiocms:blog/config';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import PageList from '../../components/PageList.astro';
+import RSSIcon from '../../components/RSSIcon.astro';
+import Layout from '../../layouts/Layout.astro';
 
 const config = Astro.locals.siteConfig.data;
 
@@ -11,16 +11,16 @@ const config = Astro.locals.siteConfig.data;
 const { description: configDescription } = config;
 
 const title: string = blogConfig.title;
-const description: string = configDescription || "Blog Index";
+const description: string = configDescription || 'Blog Index';
 const showRSSFeed: boolean = blogConfig.enableRSS;
 
 // Get all pages
 const blogPageList = (await runSDK(SDKCoreJs.GET.pages()))
-    .map(({ data }) => data)
-    .filter(({ package: pkg }) => pkg === "@studiocms/blog");
+	.map(({ data }) => data)
+	.filter(({ package: pkg }) => pkg === '@studiocms/blog');
 
 // Get the RSS feed URL
-const rssPath = "/rss.xml";
+const rssPath = '/rss.xml';
 ---
 
 <Layout {title} description={description}>

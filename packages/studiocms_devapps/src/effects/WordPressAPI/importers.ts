@@ -3,10 +3,7 @@ import { SDKCore } from 'studiocms:sdk';
 import type { SiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger } from 'studiocms/effect';
-import type {
-	tsPageContent,
-	tsPageData,
-} from 'studiocms/sdk/tables';
+import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import type { Page, SiteSettings } from '../../schema/wp-api.js';
 import { WordPressAPIConverters } from './converters.js';
 import { WordPressAPIUtils } from './utils.js';

@@ -353,7 +353,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 							package: pkg,
 							categories: JSON.stringify(data.categories),
 							tags: JSON.stringify(data.tags),
-							heroImage: titleImage
+							heroImage: titleImage,
 						};
 
 						return pageData;

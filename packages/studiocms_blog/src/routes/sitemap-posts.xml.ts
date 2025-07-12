@@ -13,7 +13,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 		genLogger('@studiocms/blog/routes/sitemap-posts.xml.ts:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const posts = pipe(yield* sdk.GET.pages(), remapFilterSitemap('@studiocms/blog', context, true));
+			const posts = pipe(
+				yield* sdk.GET.pages(),
+				remapFilterSitemap('@studiocms/blog', context, true)
+			);
 
 			const sitemap = template(posts);
 

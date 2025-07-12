@@ -4,16 +4,15 @@ import { WordPressAPI } from './WordPressAPI/importers.js';
 
 const createResponse = (status: number, statusText: string) =>
 	new Response(null, {
-        status,
-        statusText,
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Headers': '*',
-        },
-    });
+		status,
+		statusText,
+		headers: {
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Headers': '*',
+		},
+	});
 
-const createErrorResponse = (statusText: string) => 
-    createResponse(400, statusText)
+const createErrorResponse = (statusText: string) => createResponse(400, statusText);
 
 export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	dependencies: [WordPressAPI.Default],
@@ -53,7 +52,14 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 					return createErrorResponse('Bad Request');
 				}
 
-				yield* Console.log('Starting Import:', url, '\n Type:', type, '\n useBlogPlugin:', useBlogPlugin);
+				yield* Console.log(
+					'Starting Import:',
+					url,
+					'\n Type:',
+					type,
+					'\n useBlogPlugin:',
+					useBlogPlugin
+				);
 
 				switch (type) {
 					case 'pages':
@@ -69,7 +75,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 						return createErrorResponse('Bad Request: Invalid import type');
 				}
 
-				return createResponse(200, 'success')
+				return createResponse(200, 'success');
 			});
 
 		return {

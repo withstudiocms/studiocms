@@ -1,12 +1,12 @@
 ---
-import { StudioCMSRenderer } from "studiocms:renderer";
-import { SDKCoreJs, runSDK } from "studiocms:sdk";
-import Layout from "../layouts/Layout.astro";
+import { StudioCMSRenderer } from 'studiocms:renderer';
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import Layout from '../layouts/Layout.astro';
 
 let { slug } = Astro.params;
 
 if (!slug) {
-	slug = "index";
+	slug = 'index';
 }
 
 const { data: page } = await runSDK(SDKCoreJs.GET.page.bySlug(slug));

@@ -1,6 +1,6 @@
 // Re-export the Effect package
 export * from 'effect';
-export { dual } from 'effect/Function'
+export { dual } from 'effect/Function';
 
 // Export custom Effect utils
 export {
