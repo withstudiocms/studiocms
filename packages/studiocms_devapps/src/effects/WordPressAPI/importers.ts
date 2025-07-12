@@ -2,7 +2,7 @@ import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
 import type { SiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { Console, Effect, genLogger } from 'studiocms/effect';
+import { Console, Effect, Schema, genLogger } from 'studiocms/effect';
 import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import {
 	APIEndpointConfig,
@@ -14,7 +14,7 @@ import {
 	useBlogPkgConf,
 } from './configs.js';
 import { WordPressAPIConverters } from './converters.js';
-import { PagesSchema, SiteSettings } from './schema.js';
+import { PagesSchema, PostsSchema, SiteSettings } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
 export type PageData = typeof tsPageData.$inferInsert;
@@ -53,8 +53,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		const importSettingsFromWPAPI = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI.effect.importSettingsFromWPAPI'
 		)(function* () {
-			const configHandler = yield* ImportEndpointConfig;
-			const endpoint = yield* configHandler.endpoint;
+			const { endpoint } = yield* ImportEndpointConfig;
 
 			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'settings'));
 
@@ -63,7 +62,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 			const response = yield* Effect.tryPromise(() => fetch(url));
 			const rawSettings = yield* Effect.tryPromise(() => response.json());
 
-			const settings = new SiteSettings(rawSettings);
+			const settings = yield* Schema.decodeUnknown(SiteSettings)(rawSettings);
 
 			yield* Console.log('Importing site settings: ', settings);
 
@@ -117,15 +116,14 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		const importPagesFromWPAPI = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI'
 		)(function* () {
-			const configHandler = yield* ImportEndpointConfig;
-			const endpoint = yield* configHandler.endpoint;
+			const { endpoint } = yield* ImportEndpointConfig;
 			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'pages'));
 
 			yield* Console.log('fetching pages from: ', url.origin);
 
 			const rawPages = yield* fetchAll(url);
 
-			const { pages } = new PagesSchema({ pages: rawPages });
+			const { pages } = yield* Schema.decodeUnknown(PagesSchema)({ pages: rawPages });
 
 			yield* Console.log('Total pages: ', pages.length);
 
@@ -158,15 +156,14 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 		const importPostsFromWPAPI = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI.effect.importPagesFromWPAPI'
 		)(function* () {
-			const configHandler = yield* ImportPostsEndpointConfig;
-			const { endpoint, useBlogPkg } = yield* configHandler.config;
+			const { endpoint, useBlogPkg } = yield* ImportPostsEndpointConfig;
 			const url = yield* apiEndpoint.pipe(APIEndpointConfig.makeProvide(endpoint, 'posts'));
 
 			yield* Console.log('fetching posts from: ', url.origin);
 
 			const rawPages = yield* fetchAll(url);
 
-			const { pages } = new PagesSchema({ pages: rawPages });
+			const { posts: pages } = yield* Schema.decodeUnknown(PostsSchema)({ posts: rawPages });
 
 			yield* Console.log('Total posts: ', pages.length);
 

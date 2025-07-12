@@ -2,7 +2,7 @@ import path from 'node:path';
 import { eq } from 'astro:db';
 import { SDKCore } from 'studiocms:sdk';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { Console, Effect, genLogger } from 'studiocms/effect';
+import { Console, Effect, Schema, genLogger } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
 import {
@@ -65,17 +65,9 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPageData = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageData'
 			)(function* () {
-				const [endpointConfigHandler, pageConfigHandler] = yield* Effect.all([
-					ImportEndpointConfig,
-					RawPageData,
-				]);
+				const [{ endpoint }, { page }] = yield* Effect.all([ImportEndpointConfig, RawPageData]);
 
-				const [endpoint, page] = yield* Effect.all([
-					endpointConfigHandler.endpoint,
-					pageConfigHandler.page,
-				]);
-
-				const data = new Page(page as Page);
+				const data = yield* Schema.decodeUnknown(Page)(page);
 
 				const cleanHTML = yield* stripHtml.pipe(StringConfig.makeProvide(data.excerpt.rendered));
 
@@ -135,17 +127,9 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPageContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageContent'
 			)(function* () {
-				const [pageConfigHandler, pageDataConfigHandler] = yield* Effect.all([
-					RawPageData,
-					FullPageData,
-				]);
+				const [{ page }, { pageData }] = yield* Effect.all([RawPageData, FullPageData]);
 
-				const [page, pageData] = yield* Effect.all([
-					pageConfigHandler.page,
-					pageDataConfigHandler.pageData,
-				]);
-
-				const data = page as Page;
+				const data = yield* Schema.decodeUnknown(Page)(page);
 
 				// @ts-expect-error - Drizzle broke this
 				if (pageData.id === undefined) {
@@ -191,14 +175,9 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const generateCategories = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategories'
 			)(function* () {
-				const [endpointConfigHandler, categoriesTagConfig] = yield* Effect.all([
+				const [{ endpoint }, { value: categories }] = yield* Effect.all([
 					ImportEndpointConfig,
 					CategoryOrTagConfig,
-				]);
-
-				const [endpoint, categories] = yield* Effect.all([
-					endpointConfigHandler.endpoint,
-					categoriesTagConfig.value,
 				]);
 
 				const newCategories: Category[] = [];
@@ -281,14 +260,9 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const generateTags = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateTags'
 			)(function* () {
-				const [endpointConfigHandler, categoriesTagConfig] = yield* Effect.all([
+				const [{ endpoint }, { value: tags }] = yield* Effect.all([
 					ImportEndpointConfig,
 					CategoryOrTagConfig,
-				]);
-
-				const [endpoint, tags] = yield* Effect.all([
-					endpointConfigHandler.endpoint,
-					categoriesTagConfig.value,
 				]);
 
 				const newTags: Tag[] = [];
@@ -349,17 +323,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPostData = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostData'
 			)(function* () {
-				const [endpointConfigHandler, pageConfigHandler, useBlogPkgConfHandler] = yield* Effect.all(
-					[ImportEndpointConfig, RawPageData, useBlogPkgConf]
-				);
-
-				const [endpoint, post, useBlogPkg] = yield* Effect.all([
-					endpointConfigHandler.endpoint,
-					pageConfigHandler.page,
-					useBlogPkgConfHandler.useBlogPkg,
+				const [{ endpoint }, { page: post }, { useBlogPkg }] = yield* Effect.all([
+					ImportEndpointConfig,
+					RawPageData,
+					useBlogPkgConf,
 				]);
 
-				const data = new Post(post as Post);
+				const data = yield* Schema.decodeUnknown(Post)(post);
 
 				const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms/markdown';
 
@@ -433,17 +403,9 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPostContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostContent'
 			)(function* () {
-				const [pageDataConfigHandler, pageConfigHandler] = yield* Effect.all([
-					FullPageData,
-					RawPageData,
-				]);
+				const [{ pageData }, { page: post }] = yield* Effect.all([FullPageData, RawPageData]);
 
-				const [pageData, post] = yield* Effect.all([
-					pageDataConfigHandler.pageData,
-					pageConfigHandler.page,
-				]);
-
-				const data = post as Post;
+				const data = yield* Schema.decodeUnknown(Post)(post);
 
 				// @ts-expect-error - Drizzle broke this
 				if (pageData.id === undefined) {

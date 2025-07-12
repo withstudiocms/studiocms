@@ -33,8 +33,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 
 		const turndown = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.turndown')(
 			function* () {
-				const configHandler = yield* StringConfig;
-				const str = yield* configHandler.str;
+				const { str } = yield* StringConfig;
 
 				return yield* TDService((TD) => TD.turndown(str));
 			}
@@ -48,8 +47,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		 */
 		const stripHtml = genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.stripHtml')(
 			function* () {
-				const configHandler = yield* StringConfig;
-				const str = yield* configHandler.str;
+				const { str } = yield* StringConfig;
 
 				return yield* Effect.try(() => sanitizeHtml(str));
 			}
@@ -76,8 +74,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const cleanUpHtml = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI/utils.effect.cleanUpHtml'
 		)(function* () {
-			const configHandler = yield* StringConfig;
-			const str = yield* configHandler.str;
+			const { str } = yield* StringConfig;
 			const data = yield* loadHTML((fn) => fn(str));
 
 			const images = data('img');
@@ -178,8 +175,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const apiEndpoint = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI/utils.effect.apiEndpoint'
 		)(function* () {
-			const configHandler = yield* APIEndpointConfig;
-			const { endpoint, type, path } = yield* configHandler.config;
+			const { endpoint, type, path } = yield* APIEndpointConfig;
 
 			if (!endpoint) {
 				return yield* Effect.fail(
@@ -213,8 +209,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const downloadImage = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadImage'
 		)(function* () {
-			const configHandler = yield* DownloadImageConfig;
-			const { destination, imageUrl } = yield* configHandler.config;
+			const { destination, imageUrl } = yield* DownloadImageConfig;
 
 			if (fs.existsSync(destination)) {
 				yield* Console.error('File already exists:', destination);
@@ -285,8 +280,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const downloadPostImage = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadPostImage'
 		)(function* () {
-			const configHandler = yield* DownloadPostImageConfig;
-			const { str: src, pathToFolder } = yield* configHandler.config;
+			const { str: src, pathToFolder } = yield* DownloadPostImageConfig;
 
 			if (!src || !pathToFolder) return;
 
@@ -330,8 +324,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 		const downloadAndUpdateImages = genLogger(
 			'@studiocms/devapps/effects/WordPressAPI/utils.effect.downloadAndUpdateImages'
 		)(function* () {
-			const configHandler = yield* DownloadPostImageConfig;
-			const { str: html, pathToFolder } = yield* configHandler.config;
+			const { str: html, pathToFolder } = yield* DownloadPostImageConfig;
 			const data = yield* loadHTML((fn) => fn(html));
 			const images = data('img');
 
