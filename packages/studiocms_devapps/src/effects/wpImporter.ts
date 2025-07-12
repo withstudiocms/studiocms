@@ -1,5 +1,9 @@
-import type { APIContext } from 'astro';
 import { Console, Effect, genLogger } from 'studiocms/effect';
+import {
+	AstroAPIContextProvider,
+	ImportEndpointConfig,
+	ImportPostsEndpointConfig,
+} from './WordPressAPI/configs.js';
 import { WordPressAPI } from './WordPressAPI/importers.js';
 
 const createResponse = (status: number, statusText: string) =>
@@ -14,10 +18,39 @@ const createResponse = (status: number, statusText: string) =>
 
 const createErrorResponse = (statusText: string) => createResponse(400, statusText);
 
+type InferType<T> = T extends 'string' ? string : T extends 'boolean' ? boolean : never;
+
 export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 	dependencies: [WordPressAPI.Default],
 	effect: genLogger('@studiocms/devapps/effects/wpImporter.effect')(function* () {
 		const WPAPI = yield* WordPressAPI;
+
+		const parseFormData = <T extends 'string' | 'boolean'>(
+			formData: FormData,
+			name: string,
+			type: T,
+			optional = false
+		) =>
+			Effect.gen(function* () {
+				const data = formData.get(name);
+
+				if ((!optional && !data) || data === null) {
+					throw yield* Effect.fail(new Error(`Missing required form field: ${name}`));
+				}
+
+				switch (type) {
+					case 'string':
+						return data.toString() as InferType<T>;
+					case 'boolean': {
+						const value = data.toString().toLowerCase();
+						return (value === 'true' || value === '1' || value === 'yes') as InferType<T>;
+					}
+					default:
+						throw yield* Effect.fail(
+							new Error(`Unsupported type '${type}' for form field: ${name}`)
+						);
+				}
+			}) as Effect.Effect<InferType<T>, Error, never>;
 
 		/**
 		 * Handles the POST request for importing data from a WordPress site.
@@ -40,13 +73,18 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 		 *    - `importSettingsFromWPAPI` for importing settings.
 		 * 5. Returns a response indicating success or failure.
 		 */
-		const runPostEvent = (context: APIContext) =>
-			genLogger('@studiocms/devapps/effects/wpImporter.effect.runPostEvent')(function* () {
+		const runPostEvent = genLogger('@studiocms/devapps/effects/wpImporter.effect.runPostEvent')(
+			function* () {
+				const { context } = yield* AstroAPIContextProvider;
+
 				const formData = yield* Effect.tryPromise(() => context.request.formData());
 
-				const url = formData.get('url')?.toString();
-				const type = formData.get('type')?.toString();
-				const useBlogPlugin = formData.get('useBlogPlugin') === 'true';
+				const url = yield* parseFormData(formData, 'url', 'string');
+				const type = yield* parseFormData(formData, 'type', 'string');
+				const useBlogPlugin = yield* Effect.orElse(
+					parseFormData(formData, 'useBlogPlugin', 'boolean', true),
+					() => Effect.succeed(false)
+				);
 
 				if (!url || !type) {
 					return createErrorResponse('Bad Request');
@@ -63,20 +101,23 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 
 				switch (type) {
 					case 'pages':
-						yield* WPAPI.importPagesFromWPAPI(url);
+						yield* WPAPI.importPagesFromWPAPI.pipe(ImportEndpointConfig.makeProvide(url));
 						break;
 					case 'posts':
-						yield* WPAPI.importPostsFromWPAPI(url, useBlogPlugin);
+						yield* WPAPI.importPostsFromWPAPI.pipe(
+							ImportPostsEndpointConfig.makeProvide(url, useBlogPlugin)
+						);
 						break;
 					case 'settings':
-						yield* WPAPI.importSettingsFromWPAPI(url);
+						yield* WPAPI.importSettingsFromWPAPI.pipe(ImportEndpointConfig.makeProvide(url));
 						break;
 					default:
 						return createErrorResponse('Bad Request: Invalid import type');
 				}
 
 				return createResponse(200, 'success');
-			});
+			}
+		);
 
 		return {
 			runPostEvent,
