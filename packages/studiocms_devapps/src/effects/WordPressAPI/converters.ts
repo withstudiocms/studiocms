@@ -164,181 +164,116 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				return pageContent;
 			});
 
-			/**
-			 * Generates and inserts categories into the database if they do not already exist.
-			 *
-			 * @param categories - An array of category IDs to be processed.
-			 * @param endpoint - The API endpoint to fetch category data from.
-			 * @returns A promise that resolves when the categories have been processed and inserted into the database.
-			 *
-			 * This function performs the following steps:
-			 * 1. Iterates over the provided category IDs.
-			 * 2. Checks if each category already exists in the database.
-			 * 3. If a category does not exist, fetches the category data from the specified API endpoint.
-			 * 4. Collects the new category data.
-			 * 5. Maps the new category data to the database schema.
-			 * 6. Inserts the new categories into the database.
-			 */
-			const generateCategories = genLogger(
-				'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategories'
-			)(function* () {
-				const [{ endpoint }, { value: categories }] = yield* Effect.all([
-					ImportEndpointConfig,
-					CategoryOrTagConfig,
-				]);
+			const generateCategoriesOrTags = <T extends 'categories' | 'tags'>(
+				type: T
+			) =>
+				genLogger(
+					'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategoriesOrTags'
+				)(function* () {
+					const [{ endpoint }, { value }] = yield* Effect.all([
+						ImportEndpointConfig,
+						CategoryOrTagConfig,
+					]);
 
-				const newCategories: Category[] = [];
+					const TableMap = {
+						categories: tsPageDataCategories,
+						tags: tsPageDataTags
+					}
 
-				const categoryChecks = yield* Effect.all(
-					categories.map((categoryId) =>
-						sdk.dbService
-							.execute((client) =>
-								client
-									.select()
-									.from(tsPageDataCategories)
-									.where(eq(tsPageDataCategories.id, categoryId))
-									.get()
+					const table = TableMap[type]
+
+					const newItems = [];
+
+					const idChecks = yield* Effect.all(
+						value.map((val) =>
+							sdk.dbService
+								.execute((client) => client.select().from(table).where(eq(table.id, val)).get())
+								.pipe(Effect.map((exists) => ({ val, exists: !!exists })))
+						),
+						{ concurrency: 10 }
+					);
+
+					const missingIds = idChecks.filter(({ exists }) => !exists).map(({ val }) => val);
+
+					const fetchedIds = yield* Effect.all(
+						missingIds.map((id) =>
+							apiEndpoint.pipe(
+								APIEndpointConfig.makeProvide(endpoint, type, String(id)),
+								Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
+								Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
 							)
-							.pipe(Effect.map((exists) => ({ categoryId, exists: !!exists })))
-					),
-					{ concurrency: 10 }
-				);
+						),
+						{ concurrency: 5 } // Limit concurrent API calls
+					);
 
-				const missingCategories = categoryChecks
-					.filter(({ exists }) => !exists)
-					.map(({ categoryId }) => categoryId);
+					newItems.push(...fetchedIds);
 
-				const fetchedCategories = yield* Effect.all(
-					missingCategories.map((categoryId) =>
-						apiEndpoint.pipe(
-							APIEndpointConfig.makeProvide(endpoint, 'categories', String(categoryId)),
-							Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
-							Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
-						)
-					),
-					{ concurrency: 5 } // Limit concurrent API calls
-				);
+					if (newItems.length > 0) {
+						switch (type) {
+							case 'categories': {
+								const data = newItems.map((category) => {
+									const data: typeof tsPageDataCategories.$inferInsert = {
+										// @ts-expect-error - Drizzle broke this
+										id: category.id,
+										name: category.name,
+										slug: category.slug,
+										description: category.description,
+										meta: JSON.stringify(category.meta),
+									};
 
-				newCategories.push(...fetchedCategories);
+									if (category.parent) {
+										// @ts-expect-error - Drizzle broke this
+										data.parent = category.parent;
+									}
 
-				if (newCategories.length > 0) {
-					const categoryData = newCategories.map((category) => {
-						const data: typeof tsPageDataCategories.$inferInsert = {
-							// @ts-expect-error - Drizzle broke this
-							id: category.id,
-							name: category.name,
-							slug: category.slug,
-							description: category.description,
-							meta: JSON.stringify(category.meta),
-						};
+									return data;
+								});
 
-						if (category.parent) {
-							// @ts-expect-error - Drizzle broke this
-							data.parent = category.parent;
+								yield* Console.log(
+									'Inserting new Categories into the database:',
+									data
+										// @ts-expect-error - Drizzle broke this
+										.map((d) => `${d.id}: ${d.name}`)
+										.join(', ')
+								);
+								yield* sdk.dbService.execute((client) =>
+									client.insert(tsPageDataCategories).values(data)
+								);
+
+								yield* Console.log('Categories inserted!');
+								break;
+							}
+							case 'tags': {
+								const tagData = newItems.map((tag) => {
+									const data: typeof tsPageDataTags.$inferInsert = {
+										// @ts-expect-error - Drizzle broke this
+										id: tag.id,
+										name: tag.name,
+										slug: tag.slug,
+										description: tag.description,
+										meta: JSON.stringify(tag.meta),
+									};
+
+									return data;
+								});
+
+								yield* Console.log(
+									'Inserting new Tags into the database:',
+									tagData
+										// @ts-expect-error - Drizzle broke this
+										.map((data) => `${data.id}: ${data.name}`)
+										.join(', ')
+								);
+								yield* sdk.dbService.execute((client) =>
+									client.insert(tsPageDataTags).values(tagData)
+								);
+
+								yield* Console.log('Tags inserted!');
+								break;
+							}
 						}
-
-						return data;
-					});
-
-					yield* Console.log(
-						'Inserting new Categories into the database:',
-						categoryData
-							// @ts-expect-error - Drizzle broke this
-							.map((data) => `${data.id}: ${data.name}`)
-							.join(', ')
-					);
-					yield* sdk.dbService.execute((client) =>
-						client.insert(tsPageDataCategories).values(categoryData)
-					);
-
-					yield* Console.log('Categories inserted!');
-				}
-			});
-
-			/**
-			 * Generates and inserts tags into the database if they do not already exist.
-			 *
-			 * @param {number[]} tags - An array of tag IDs to be processed.
-			 * @param {string} endpoint - The API endpoint to fetch tag data from.
-			 *
-			 * @example
-			 * const tags = [1, 2, 3];
-			 * const endpoint = 'https://example.com/wp-json/wp/v2';
-			 * await generateTags(tags, endpoint);
-			 *
-			 * @remarks
-			 * This function checks if each tag ID already exists in the database. If a tag does not exist,
-			 * it fetches the tag data from the specified API endpoint and inserts it into the database.
-			 * The function logs messages to the console for each tag that is processed.
-			 */
-			const generateTags = genLogger(
-				'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateTags'
-			)(function* () {
-				const [{ endpoint }, { value: tags }] = yield* Effect.all([
-					ImportEndpointConfig,
-					CategoryOrTagConfig,
-				]);
-
-				const newTags: Tag[] = [];
-
-				const tagChecks = yield* Effect.all(
-					tags.map((tagId) =>
-						sdk.dbService
-							.execute((client) =>
-								client
-									.select()
-									.from(tsPageDataTags)
-									.where(eq(tsPageDataTags.id, tagId))
-									.get()
-							)
-							.pipe(Effect.map((exists) => ({ tagId, exists: !!exists })))
-					),
-					{ concurrency: 10 }
-				);
-
-				const missingTags = tagChecks
-					.filter(({ exists }) => !exists)
-					.map(({ tagId }) => tagId);
-
-				const fetchedTags = yield* Effect.all(
-					missingTags.map((tagId) =>
-						apiEndpoint.pipe(
-							APIEndpointConfig.makeProvide(endpoint, 'tags', String(tagId)),
-							Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
-							Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
-						)
-					),
-					{ concurrency: 5 } // Limit concurrent API calls
-				);
-
-				newTags.push(...fetchedTags);
-
-				if (newTags.length > 0) {
-					const tagData = newTags.map((tag) => {
-						const data: typeof tsPageDataTags.$inferInsert = {
-							// @ts-expect-error - Drizzle broke this
-							id: tag.id,
-							name: tag.name,
-							slug: tag.slug,
-							description: tag.description,
-							meta: JSON.stringify(tag.meta),
-						};
-
-						return data;
-					});
-
-					yield* Console.log(
-						'Inserting new Tags into the database:',
-						tagData
-							// @ts-expect-error - Drizzle broke this
-							.map((data) => `${data.id}: ${data.name}`)
-							.join(', ')
-					);
-					yield* sdk.dbService.execute((client) => client.insert(tsPageDataTags).values(tagData));
-
-					yield* Console.log('Tags inserted!');
-				}
-			});
+					}
+				});
 
 			/**
 			 * Converts a given post object to PageData format.
@@ -393,11 +328,11 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					DownloadPostImageConfig.makeProvide(titleImageJson.source_url, postsImagesFolder)
 				);
 
-				yield* generateCategories.pipe(
+				yield* generateCategoriesOrTags('categories').pipe(
 					ImportEndpointConfig.makeProvide(endpoint),
 					CategoryOrTagConfig.makeProvide(data.categories)
 				);
-				yield* generateTags.pipe(
+				yield* generateCategoriesOrTags('tags').pipe(
 					ImportEndpointConfig.makeProvide(endpoint),
 					CategoryOrTagConfig.makeProvide(data.tags)
 				);
