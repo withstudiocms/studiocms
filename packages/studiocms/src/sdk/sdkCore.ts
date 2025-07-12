@@ -1316,7 +1316,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					if (!ghostUser) return yield* AUTH.user.ghost.create();
 					const ghostUserRecord = yield* AUTH.user.ghost.get();
 					if (!ghostUserRecord) {
-						yield* Effect.fail(
+						return yield* Effect.fail(
 							new SDKCoreError({
 								type: 'LibSQLDatabaseError',
 								cause: new StudioCMS_SDK_Error(
@@ -1324,7 +1324,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 								),
 							})
 						);
-						return void 0;
 					}
 					return ghostUserRecord;
 				}),
@@ -1984,21 +1983,19 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			user: (id: string) =>
 				Effect.gen(function* () {
 					if (id === GhostUserDefaults.id) {
-						yield* _clearLibSQLError(
+						return yield* _clearLibSQLError(
 							'DELETE.user',
 							`User with ID ${id} is an internal user and cannot be deleted.`
 						);
-						return void 0;
 					}
 
 					const verifyNoReference = yield* clearUserReferences(id);
 
 					if (!verifyNoReference) {
-						yield* _clearLibSQLError(
+						return yield* _clearLibSQLError(
 							'DELETE.user',
 							`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
 						);
-						return void 0;
 					}
 
 					yield* dbService.execute((db) => db.delete(tsUsers).where(eq(tsUsers.id, id)));
