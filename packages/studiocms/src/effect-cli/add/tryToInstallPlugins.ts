@@ -3,7 +3,7 @@ import { exec } from '@withstudiocms/cli-kit/utils';
 import { detect, resolveCommand } from 'package-manager-detector';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
-import { effectBoxen } from './effectBoxen.js';
+import { effectBoxen } from '../utils/effectBoxen.js';
 import { type PluginInfo, UpdateResult } from './index.js';
 import { convertPluginsToInstallSpecifiers } from './npm-utils.js';
 

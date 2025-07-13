@@ -5,7 +5,7 @@ import { diffWords } from 'diff';
 import { type ProxifiedModule, generateCode } from 'magicast';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
-import { effectBoxen } from './effectBoxen.js';
+import { effectBoxen } from '../utils/effectBoxen.js';
 import { UpdateResult } from './index.js';
 
 export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>()(
