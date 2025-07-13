@@ -1,7 +1,7 @@
-import { Args, CliConfig, Command, Options } from '@effect/cli';
+import { Command } from '@effect/cli';
 import { NodeContext, NodeRuntime } from '@effect/platform-node';
 import { readJson } from '@withstudiocms/cli-kit/utils';
-import { Console, Effect, Layer } from '../effect.js';
+import { Effect, Layer } from '../effect.js';
 import { addPlugin } from './add/index.js';
 import { cryptoCMD } from './crypto/index.js';
 
