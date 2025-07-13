@@ -40,13 +40,11 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 					const installCommand = resolveCommand(agent, 'add', []);
 					if (!installCommand) return UpdateResult.none;
 
-					const installSpecifiers = yield* Effect.tryPromise(() =>
-						convertPluginsToInstallSpecifiers(plugins).then((specifiers) =>
+					const installSpecifiers = (yield* convertPluginsToInstallSpecifiers(plugins)).map((specifier) =>
 							installCommand.command === 'deno'
-								? specifiers.map((specifier) => `npm:${specifier}`) // Deno requires npm prefix to install packages
-								: specifiers
-						)
-					);
+								? `npm:${specifier}` // Deno requires npm prefix to install packages
+								: specifier
+						);
 
 					const coloredOutput = `${chalk.bold(installCommand.command)} ${installCommand.args.join(' ')} ${chalk.magenta(installSpecifiers.join(' '))}`;
 
