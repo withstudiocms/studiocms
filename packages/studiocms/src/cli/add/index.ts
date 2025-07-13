@@ -15,6 +15,7 @@ export const ALIASES = new Map([
 	['blog', '@studiocms/blog'],
 	['mdx', '@studiocms/mdx'],
 	['markdoc', '@studiocms/markdoc'],
+	['wysiwyg', '@studiocms/wysiwyg']
 ]);
 
 export const StudioCMSScopes = ['@studiocms', '@withstudiocms'];
