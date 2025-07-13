@@ -1,7 +1,7 @@
-import { Command } from '@effect/cli';
+import { CliConfig, Command } from '@effect/cli';
 import { NodeContext, NodeRuntime } from '@effect/platform-node';
 import { readJson } from '@withstudiocms/cli-kit/utils';
-import { Effect } from '../effect.js';
+import { Effect, Layer } from '../effect.js';
 import { addPlugin } from './add/index.js';
 import { cryptoCMD } from './crypto/index.js';
 import { getTurso } from './getTurso/index.js';
@@ -21,5 +21,11 @@ const cli = Command.run(command, {
 	version: `v${pkgJson.version}`,
 });
 
+const ConfigLive = CliConfig.layer({
+	showBuiltIns: true,
+});
+
+const MainLayer = Layer.mergeAll(ConfigLive, NodeContext.layer);
+
 // Prepare and run the CLI application
-cli(process.argv).pipe(Effect.provide(NodeContext.layer), NodeRuntime.runMain);
+Effect.suspend(() => cli(process.argv)).pipe(Effect.provide(MainLayer), NodeRuntime.runMain);
