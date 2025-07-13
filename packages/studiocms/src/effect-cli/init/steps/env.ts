@@ -17,9 +17,9 @@ import {
 } from '@withstudiocms/cli-kit/utils';
 import { logger } from '../../utils/logger.js';
 import { type EnvBuilderOptions, ExampleEnv, buildEnvFile } from '../../utils/studiocmsEnv.js';
-import type { StepFn } from '../types.js';
+import type { StepFn } from '../../utils/types.js';
 
-export const env: StepFn = async (context, debug, dryRun) => {
+export const env: StepFn = async (context, debug, dryRun = false) => {
 	const { prompts, chalk, cwd, pCancel, pOnCancel } = context;
 
 	debug && logger.debug('Running env...');

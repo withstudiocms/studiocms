@@ -5,9 +5,9 @@ import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
+import type { StepFn } from '../utils/types.js';
 import { env } from './steps/env.js';
 import { next } from './steps/next.js';
-import type { StepFn } from './types.js';
 
 export const debug = Options.boolean('debug').pipe(
 	Options.optional,

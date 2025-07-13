@@ -1,6 +1,4 @@
-import config from 'studiocms:config';
-import _logger from 'studiocms:logger';
-import type { AstroIntegrationLogger } from 'astro';
+import chalk from 'chalk';
 import { Effect, LogLevel, Logger } from 'effect';
 import type { Adapter } from 'effect/Effect';
 import { dual, pipe } from 'effect/Function';
@@ -16,7 +14,87 @@ function stripNameFromLabel(label: string): string {
  * A cache that stores instances of `AstroIntegrationLogger` associated with their string keys.
  * This is used to avoid creating multiple logger instances for the same key.
  */
-const loggerCache = new Map<string, AstroIntegrationLogger>();
+const loggerCache = new Map<string, S48Logger>();
+
+export type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent'; // same as Pino
+
+export const levels: Record<LoggerLevel, number> = {
+	debug: 20,
+	info: 30,
+	warn: 40,
+	error: 50,
+	silent: 90,
+};
+
+export interface LogOptions {
+	level: LoggerLevel;
+}
+
+const dateTimeFormat = new Intl.DateTimeFormat([], {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false
+});
+
+export const getEventPrefix = (level: LoggerLevel, label?: string) => {
+  const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
+	const prefix = [];
+	if (level === "error" || level === "warn" || level === 'debug') {
+	  prefix.push(chalk.bold(timestamp));
+	  prefix.push(`[${level.toUpperCase()}]`);
+	} else {
+	  prefix.push(timestamp);
+	}
+	if (label) {
+	  prefix.push(`[${label}]`);
+	}
+	if (level === "error") {
+	  return chalk.red(prefix.join(" "));
+	}
+	if (level === "warn") {
+	  return chalk.yellow(prefix.join(" "));
+	}
+	if (level === 'debug') {
+		return chalk.blue(prefix.join(" "));
+	}
+	if (prefix.length === 1) {
+	  return chalk.dim(prefix[0]);
+	}
+	return `${chalk.dim(prefix[0])} ${chalk.blue(prefix.splice(1).join(" "))}`;
+}
+
+export class S48Logger {
+	options: LogOptions;
+	label: string;
+
+	constructor(logging: LogOptions, label: string) {
+		this.options = logging;
+		this.label = label;
+	}
+
+	/**
+	 * Creates a new logger instance with a new label, but the same log options.
+	 */
+	fork(label: string): S48Logger {
+		return new S48Logger(this.options, label);
+	}
+
+	info(message: string) {
+		console.log(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+	}
+	warn(message: string) {
+		console.warn(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+	}
+	error(message: string) {
+		console.error(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+	}
+	debug(message: string) {
+		console.debug(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+	}
+}
+
+const _logger = new S48Logger({ level: 'info' }, 'studiocms:runtime')
 
 /**
  * Creates a logger instance with a specific label for categorizing log messages.
@@ -70,6 +148,8 @@ const makeLogger = (label: string) =>
 		}
 	});
 
+const sysLogLevel = process.env.STUDIOCMS_LOGLEVEL as "All" | "Fatal" | "Error" | "Warning" | "Info" | "Debug" | "Trace" | "None" | undefined
+
 /**
  * Sets the minimum log level for the logger based on the provided configuration.
  *
@@ -80,7 +160,7 @@ const makeLogger = (label: string) =>
  * @param config.logLevel - The log level specified in the configuration, which is converted to the appropriate format.
  * @internal
  */
-const level = LogLevel.fromLiteral(config.logLevel ?? 'info');
+const level = LogLevel.fromLiteral(sysLogLevel ?? 'Info');
 const setLoggerLevel = Logger.withMinimumLogLevel(level);
 
 /**
