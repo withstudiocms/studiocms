@@ -1,4 +1,4 @@
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 
 export type Interval = 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
 

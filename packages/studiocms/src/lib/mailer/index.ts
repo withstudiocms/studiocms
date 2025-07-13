@@ -5,7 +5,8 @@ import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { type Mail, SMTPMailer, genLogger, pipeLogger } from '../effects/index.js';
+import { genLogger, pipeLogger } from '../effects/index.js';
+import { type Mail, SMTPMailer } from '../effects/smtp.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations

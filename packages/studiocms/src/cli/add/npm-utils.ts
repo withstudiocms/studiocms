@@ -1,8 +1,7 @@
 import { exec } from '@withstudiocms/cli-kit/utils';
-import { Effect } from 'effect';
 import { detect as _detect } from 'package-manager-detector';
 import maxSatisfying from 'semver/ranges/max-satisfying.js';
-import { genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../effect.js';
 import type { PluginInfo } from './index.js';
 
 const eDetect = Effect.tryPromise(() => _detect());

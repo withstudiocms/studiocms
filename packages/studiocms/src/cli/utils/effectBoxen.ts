@@ -1,6 +1,6 @@
 import { AstroError } from 'astro/errors';
 import _boxen from 'boxen';
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 
 /**
 Creates a box in the terminal.
