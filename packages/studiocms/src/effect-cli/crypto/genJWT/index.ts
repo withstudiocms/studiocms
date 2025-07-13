@@ -48,9 +48,23 @@ const convertJwtToBase64Url = (jwtToken: string) =>
 export const genJWT = Command.make(
 	'gen-jwt',
 	{ keyFile, expire, debug },
-	({ expire, keyFile, debug }) =>
-		genLogger('studiocms/cli/crypto')(function* () {
-			const exp = Number(expire);
+	({ expire, keyFile, debug: _debug }) =>
+		genLogger('studiocms/cli/crypto/genJWT')(function* () {
+			let exp: number;
+
+			if (typeof expire !== 'number') {
+				exp = yield* expire;
+			} else {
+				exp = Number(expire);
+			}
+
+			let debug: boolean;
+
+			if (typeof _debug !== 'boolean') {
+				debug = yield* _debug;
+			} else {
+				debug = _debug;
+			}
 
 			if (Number.isNaN(exp)) {
 				yield* Console.error('Expiration must be a valid number, received: ', exp);

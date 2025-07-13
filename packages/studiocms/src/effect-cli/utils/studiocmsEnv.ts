@@ -1,6 +1,25 @@
-import type { EnvBuilderOptions } from '../envBuilder.js';
+export interface GenericOAuth {
+	clientId: string;
+	clientSecret: string;
+	redirectUri: string;
+}
 
-export const ExampleEnv: string = `# StudioCMS Environment Variables
+export interface Auth0OAuth extends GenericOAuth {
+	domain: string;
+}
+
+export interface EnvBuilderOptions {
+	astroDbRemoteUrl?: string;
+	astroDbToken?: string;
+	encryptionKey?: string;
+	oAuthOptions?: ('github' | 'discord' | 'google' | 'auth0')[];
+	githubOAuth?: GenericOAuth;
+	discordOAuth?: GenericOAuth;
+	googleOAuth?: GenericOAuth;
+	auth0OAuth?: Auth0OAuth;
+}
+
+export const ExampleEnv: string = `# StudioCMS Environment Variables (Example)
 
 # libSQL URL and Token for AstroDB
 ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io

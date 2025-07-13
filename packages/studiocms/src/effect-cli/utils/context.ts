@@ -4,7 +4,7 @@ import { cancelMessage, getName } from '@withstudiocms/cli-kit/messages';
 import chalk from 'chalk';
 import { Context, Effect, Layer, genLogger } from '../../effect.js';
 
-interface BaseContext {
+export interface BaseContext {
 	prompts: typeof prompts;
 	chalk: typeof chalk;
 	cwd: string;
