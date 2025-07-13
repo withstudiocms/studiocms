@@ -1,55 +1,56 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
-import dotenv from 'dotenv';
-import checkIfUnsafe from '../../../../../lib/auth/utils/unsafeCheck.js';
-import type { Context } from '../../../../lib/context.js';
-import { Permissions, Users, useLibSQLDb } from '../../../../lib/useLibSQLDb.js';
-import { createUserAvatar } from '../utils/avatar.js';
-import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
-import { hashPassword } from '../utils/password.js';
+import { Effect, convertToVanilla } from '../../../effect.js';
+import { CheckIfUnsafe } from '../../../lib/auth/utils/unsafeCheck.js';
+import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
+import { createUserAvatar } from '../../utils/createUserAvatar.js';
+import { logger } from '../../utils/logger.js';
+import type { StepFn } from '../../utils/types.js';
+import { Permissions, Users, useLibSQLDb } from '../../utils/useLibSQLDb.js';
+import { hashPassword } from '../../utils/user-utils.js';
 
-dotenv.config();
+export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) => {
+	const { chalk, prompts } = context;
 
-export async function libsqlCreateUsers(context: Context) {
-	context.debug && context.logger.debug('Running libsqlUsers...');
+	debug && logger.debug('Running libsqlUsers...');
 
-	context.debug && context.logger.debug('Checking for environment variables');
+	debug && logger.debug('Checking for environment variables');
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
 
-	checkRequiredEnvVars(context, [
-		'ASTRO_DB_REMOTE_URL',
-		'ASTRO_DB_APP_TOKEN',
-		'CMS_ENCRYPTION_KEY',
-	]);
+	checkRequiredEnvVars(['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
 	// Environment variables are already checked by checkRequiredEnvVars
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
 
 	const currentUsers = await db.select().from(Users);
 
-	const inputData = await context.p.group(
+	const inputData = await prompts.group(
 		{
 			username: () =>
-				context.p.text({
+				prompts.text({
 					message: 'Username',
 					placeholder: 'johndoe',
 					validate: (user) => {
 						const isUser = currentUsers.find(({ username }) => username === user);
 						if (isUser) return 'Username is already in use, please try another one';
-						if (checkIfUnsafe(user).username()) {
+						if (
+							Effect.runSync(
+								CheckIfUnsafe.username(user).pipe(Effect.provide(CheckIfUnsafe.Default))
+							)
+						) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
 						return undefined;
 					},
 				}),
 			name: () =>
-				context.p.text({
+				prompts.text({
 					message: 'Display Name',
 					placeholder: 'John Doe',
 				}),
 			email: () =>
-				context.p.text({
+				prompts.text({
 					message: 'E-Mail Address',
 					placeholder: 'john@doe.tld',
 					validate: (email) => {
@@ -63,14 +64,18 @@ export async function libsqlCreateUsers(context: Context) {
 					},
 				}),
 			newPassword: () =>
-				context.p.password({
+				prompts.password({
 					message: 'Password',
 					validate: (password) => {
 						if (password.length < 6 || password.length > 255) {
 							return 'Password must be between 6 and 255 characters';
 						}
 						// Check if password is known unsafe password
-						if (checkIfUnsafe(password).password()) {
+						if (
+							Effect.runSync(
+								CheckIfUnsafe.password(password).pipe(Effect.provide(CheckIfUnsafe.Default))
+							)
+						) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}
 
@@ -87,11 +92,11 @@ export async function libsqlCreateUsers(context: Context) {
 					},
 				}),
 			confirmPassword: () =>
-				context.p.password({
+				prompts.password({
 					message: 'Confirm Password',
 				}),
 			rank: () =>
-				context.p.select({
+				prompts.select({
 					message: 'What Role should this user have?',
 					options: [
 						{ value: 'visitor', label: 'Visitor' },
@@ -109,12 +114,12 @@ export async function libsqlCreateUsers(context: Context) {
 	const { confirmPassword, email, name, newPassword, rank, username } = inputData;
 
 	if (newPassword !== confirmPassword) {
-		context.p.log.error('Passwords do not match!');
+		prompts.log.error('Passwords do not match!');
 		context.exit(1);
 	}
 
 	// Environment variables are already checked by checkRequiredEnvVars
-	const password = await hashPassword(newPassword, CMS_ENCRYPTION_KEY as string);
+	const password = await convertToVanilla(hashPassword(newPassword, CMS_ENCRYPTION_KEY as string));
 
 	const newUserId = crypto.randomUUID();
 
@@ -134,16 +139,16 @@ export async function libsqlCreateUsers(context: Context) {
 		rank,
 	};
 
-	if (context.dryRun) {
+	if (dryRun) {
 		context.tasks.push({
-			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.c.dim('Skipping user creation')}`,
+			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${chalk.dim('Skipping user creation')}`,
 			task: async (message) => {
 				message('Creating user... (skipped)');
 			},
 		});
 	} else {
 		context.tasks.push({
-			title: context.c.dim('Creating user...'),
+			title: chalk.dim('Creating user...'),
 			task: async (message) => {
 				try {
 					const [insertedUser, insertedRank] = await db.batch([
@@ -153,7 +158,7 @@ export async function libsqlCreateUsers(context: Context) {
 
 					if (insertedUser.length === 0 || insertedRank.length === 0) {
 						message('Failed to create user or assign permissions');
-						context.logger.debug(
+						logger.debug(
 							`User insertion results: ${JSON.stringify({
 								userInserted: insertedUser.length > 0,
 								permissionsInserted: insertedRank.length > 0,
@@ -165,14 +170,14 @@ export async function libsqlCreateUsers(context: Context) {
 					message('User created Successfully');
 				} catch (e) {
 					if (e instanceof Error) {
-						context.p.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+						prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
 						context.exit(1);
 					} else {
-						context.p.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
+						prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
 						context.exit(1);
 					}
 				}
 			},
 		});
 	}
-}
+};

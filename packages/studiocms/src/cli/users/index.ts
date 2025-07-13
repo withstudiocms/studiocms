@@ -6,12 +6,20 @@ import { type BaseContext, CliContext, genContext } from '../utils/context.js';
 import { intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
 import type { StepFn } from '../utils/types.js';
+import { libsqlCreateUsers } from './steps/libsqlCreateUsers.js';
+import { libsqlModifyUsers } from './steps/libsqlModifyUsers.js';
 import { next } from './steps/next.js';
 
 export const debug = Options.boolean('debug').pipe(
 	Options.optional,
 	Options.withDefault(false),
 	Options.withDescription('Enable debug mode')
+);
+
+export const dryRun = Options.boolean('dry-run').pipe(
+	Options.optional,
+	Options.withAlias('d'),
+	Options.withDescription('Dry run mode')
 );
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -22,7 +30,7 @@ function exitIfEmpty(context: BaseContext, items: any[], itemType: string) {
 	}
 }
 
-export const usersCMD = Command.make('users', { debug }, ({ debug: _debug }) =>
+export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
 	genLogger('studiocms/cli/users')(function* () {
 		let debug: boolean;
 
@@ -31,6 +39,8 @@ export const usersCMD = Command.make('users', { debug }, ({ debug: _debug }) =>
 		} else {
 			debug = _debug;
 		}
+
+		const dry = yield* dryRun;
 
 		const context = yield* genContext;
 		const { chalk, prompts } = context;
@@ -54,10 +64,7 @@ export const usersCMD = Command.make('users', { debug }, ({ debug: _debug }) =>
 		const options = yield* Effect.tryPromise(() =>
 			prompts.select({
 				message: 'What kind of Database are you using?',
-				options: [
-					{ value: 'libsql', label: 'libSQL Remote' },
-					// TODO: Add support for other database types (e.g., PostgreSQL, MySQL)
-				],
+				options: [{ value: 'libsql', label: 'libSQL Remote' }],
 			})
 		);
 
@@ -78,17 +85,15 @@ export const usersCMD = Command.make('users', { debug }, ({ debug: _debug }) =>
 					context.exit(0);
 				}
 
-				switch (
-					libsqlAction
-					// case 'modify': {
-					//     steps.push(libsqlModifyUsers);
-					//     break;
-					// }
-					// case 'create': {
-					//     steps.push(libsqlCreateUsers);
-					//     break;
-					// }
-				) {
+				switch (libsqlAction) {
+					case 'create': {
+						steps.push(libsqlCreateUsers);
+						break;
+					}
+					case 'modify': {
+						steps.push(libsqlModifyUsers);
+						break;
+					}
 				}
 				break;
 			}
@@ -103,7 +108,7 @@ export const usersCMD = Command.make('users', { debug }, ({ debug: _debug }) =>
 
 		// Run steps
 		for (const step of steps) {
-			yield* Effect.tryPromise(() => step(context, debug));
+			yield* Effect.tryPromise(() => step(context, debug, dry));
 		}
 
 		// No tasks? Exit

@@ -1,38 +1,25 @@
-import { Command, Option } from '@withstudiocms/cli-kit/commander';
-import { CLITitle } from '@withstudiocms/cli-kit/messages';
-import { pathUtil, readJson } from '@withstudiocms/cli-kit/utils';
+import { Command } from '@effect/cli';
+import { NodeContext, NodeRuntime } from '@effect/platform-node';
+import { readJson } from '@withstudiocms/cli-kit/utils';
+import { Effect } from '../effect.js';
+import { addPlugin } from './add/index.js';
+import { cryptoCMD } from './crypto/index.js';
+import { getTurso } from './getTurso/index.js';
+import { initCMD } from './init/index.js';
+import { usersCMD } from './users/index.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../../package.json', import.meta.url));
 
-const { getRelPath } = pathUtil(import.meta.url);
+const command = Command.make('studiocms').pipe(
+	Command.withDescription('StudioCMS CLI Utility Toolkit'),
+	Command.withSubcommands([addPlugin, cryptoCMD, getTurso, initCMD, usersCMD])
+);
 
-await new Command('studiocms')
-	.description('StudioCMS CLI Utility Toolkit')
-	.version(pkgJson.version)
-	.addHelpText('beforeAll', CLITitle)
-	.showHelpAfterError('(add --help for additional information)')
-	.enablePositionalOptions(true)
-	.executableDir(getRelPath('cmds'))
-	.helpOption('-h, --help', 'Display help for command.')
-	.addOption(new Option('--color', 'Force color output')) // implemented by chalk
-	.addOption(new Option('--no-color', 'Disable color output')) // implemented by chalk
+// Set up the CLI application
+const cli = Command.run(command, {
+	name: 'StudioCMS CLI Utility Toolkit',
+	version: `v${pkgJson.version}`,
+});
 
-	// Commands
-	.command('add <plugins...>', 'Add StudioCMS plugin(s) to your project', {
-		executableFile: 'add.js',
-	})
-	.command('crypto', 'Crypto Utilities for Security', {
-		executableFile: 'crypto.js',
-	})
-	.command('get-turso', 'Install the Turso CLI', {
-		executableFile: 'get-turso.js',
-	})
-	.command('init', 'Initialize the StudioCMS project after new installation.', {
-		executableFile: 'init.js',
-	})
-	.command('users', 'Utilities for Tweaking Users in StudioCMS', {
-		executableFile: 'users.js',
-	})
-
-	// Parse the command line arguments
-	.parseAsync();
+// Prepare and run the CLI application
+cli(process.argv).pipe(Effect.provide(NodeContext.layer), NodeRuntime.runMain);
