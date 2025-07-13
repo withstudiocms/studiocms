@@ -273,4 +273,4 @@ export const addPlugin = Command.make(
 			Effect.provide(TryToInstallPlugins.Default),
 			Effect.provide(UpdateStudioCMSConfig.Default)
 		)
-);
+).pipe(Command.withDescription('Add StudioCMS plugin(s) to your project'));

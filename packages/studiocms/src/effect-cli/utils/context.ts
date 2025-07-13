@@ -16,9 +16,9 @@ interface BaseContext {
 	exit(code: number): never;
 }
 
-export class CliContext extends Context.Tag("CliContext")<CliContext, BaseContext>(){
-    static makeLayer = (context: BaseContext) => Layer.succeed(this, this.of(context));
-    static makeProvide = (context: BaseContext) => Effect.provide(this.makeLayer(context));
+export class CliContext extends Context.Tag('CliContext')<CliContext, BaseContext>() {
+	static makeLayer = (context: BaseContext) => Layer.succeed(this, this.of(context));
+	static makeProvide = (context: BaseContext) => Effect.provide(this.makeLayer(context));
 }
 
 export const genContext = genLogger('studiocms/cli/utils/context.genContext')(function* () {

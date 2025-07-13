@@ -42,12 +42,14 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 
 							if (!diff) return UpdateResult.none;
 
-							const boxenMessage = yield* effectBoxen((boxen) => boxen(diff, {
-								margin: 0.5,
-								padding: 0.5,
-								borderStyle: 'round',
-								title: configURL.pathname.split('/').pop(),
-							}))
+							const boxenMessage = yield* effectBoxen((boxen) =>
+								boxen(diff, {
+									margin: 0.5,
+									padding: 0.5,
+									borderStyle: 'round',
+									title: configURL.pathname.split('/').pop(),
+								})
+							);
 
 							const message = `\n${boxenMessage}\n`;
 

@@ -40,19 +40,22 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 					const installCommand = resolveCommand(agent, 'add', []);
 					if (!installCommand) return UpdateResult.none;
 
-					const installSpecifiers = (yield* convertPluginsToInstallSpecifiers(plugins)).map((specifier) =>
+					const installSpecifiers = (yield* convertPluginsToInstallSpecifiers(plugins)).map(
+						(specifier) =>
 							installCommand.command === 'deno'
 								? `npm:${specifier}` // Deno requires npm prefix to install packages
 								: specifier
-						);
+					);
 
 					const coloredOutput = `${chalk.bold(installCommand.command)} ${installCommand.args.join(' ')} ${chalk.magenta(installSpecifiers.join(' '))}`;
 
-					const boxenMessage = yield* effectBoxen((boxen) => boxen(coloredOutput, {
-						margin: 0.5,
-						padding: 0.5,
-						borderStyle: 'round',
-					}))
+					const boxenMessage = yield* effectBoxen((boxen) =>
+						boxen(coloredOutput, {
+							margin: 0.5,
+							padding: 0.5,
+							borderStyle: 'round',
+						})
+					);
 
 					const message = `\n${boxenMessage}\n`;
 
