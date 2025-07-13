@@ -3,7 +3,7 @@ import * as p from '@clack/prompts';
 import { cancelMessage, getName } from '@withstudiocms/cli-kit/messages';
 import { readJson } from '@withstudiocms/cli-kit/utils';
 import colors from 'chalk';
-import getSeasonalMessages from './seasonal.js';
+import getSeasonalMessages from '../../effect-cli/utils/seasonal.js';
 import { logger } from './utils.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../../../package.json', import.meta.url));
