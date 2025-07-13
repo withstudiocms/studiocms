@@ -174,7 +174,7 @@
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.51",
 		"dompurify": "^3.2.3",
-		"dotenv": "^16.4.7",
+		"dotenv": "^17.2.0",
 		"drizzle-orm": "^0.42.0",
 		"effect": "catalog:effect",
 		"esbuild": "^0.25.6",
@@ -213,11 +213,15 @@
 		"@astrojs/db": "catalog:min",
 		"@astrojs/markdown-remark": "catalog:min",
 		"@astrojs/web-vitals": "catalog:",
+		"@studiocms/web-vitals": "catalog:",
 		"astro": "catalog:min",
 		"vite": "catalog:min"
 	},
 	"peerDependenciesMeta": {
 		"@astrojs/web-vitals": {
+			"optional": true
+		},
+		"@studiocms/web-vitals": {
 			"optional": true
 		}
 	}

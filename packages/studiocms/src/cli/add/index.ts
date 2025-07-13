@@ -7,6 +7,7 @@ import { type ASTNode, type ProxifiedModule, builders, loadFile } from 'magicast
 import { getDefaultExportOptions } from 'magicast/helpers';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
+import { logger } from '../utils/logger.js';
 import { TryToInstallPlugins } from './tryToInstallPlugins.js';
 import { UpdateStudioCMSConfig } from './updateStudioCMSConfig.js';
 import { ValidatePlugins } from './validatePlugins.js';
@@ -15,7 +16,7 @@ export const ALIASES = new Map([
 	['blog', '@studiocms/blog'],
 	['mdx', '@studiocms/mdx'],
 	['markdoc', '@studiocms/markdoc'],
-	['wysiwyg', '@studiocms/wysiwyg']
+	['wysiwyg', '@studiocms/wysiwyg'],
 ]);
 
 export const StudioCMSScopes = ['@studiocms', '@withstudiocms'];
@@ -223,12 +224,13 @@ export const addPlugin = Command.make(
 			let configResult: UpdateResult | undefined;
 
 			if (mod) {
-				try {
-					configResult = yield* updater.run(configURL, mod).pipe(CliContext.makeProvide(context));
-				} catch (err) {
-					yield* Console.debug(`Error updating studiocms config ${err}`);
-					throw createPrettyError(err as Error);
-				}
+				configResult = yield* Effect.tryPromise({
+					try: () => Effect.runPromise(updater.run(configURL, mod).pipe(CliContext.makeProvide(context))),
+					catch: (err) => {
+						logger.debug(`Error updating studiocms config ${err}`);
+						return createPrettyError(err as Error);
+					},
+				});
 			}
 
 			switch (configResult) {

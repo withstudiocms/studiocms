@@ -1,5 +1,6 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
+import dotenv from 'dotenv';
 import { Effect, convertToVanilla } from '../../../effect.js';
 import { CheckIfUnsafe } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
@@ -8,6 +9,8 @@ import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';
 import { Permissions, Users, useLibSQLDb } from '../../utils/useLibSQLDb.js';
 import { hashPassword } from '../../utils/user-utils.js';
+
+dotenv.config();
 
 export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { chalk, prompts } = context;
