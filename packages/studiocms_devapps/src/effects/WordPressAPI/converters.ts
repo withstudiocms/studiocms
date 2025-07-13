@@ -2,11 +2,21 @@ import path from 'node:path';
 import { eq } from 'astro:db';
 import { SDKCore } from 'studiocms:sdk';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { Console, Effect, genLogger } from 'studiocms/effect';
+import { Console, Effect, Schema, genLogger } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
-import type { Category, Page, Post, Tag } from '../../schema/wp-api.js';
+import {
+	APIEndpointConfig,
+	CategoryOrTagConfig,
+	DownloadPostImageConfig,
+	FullPageData,
+	ImportEndpointConfig,
+	RawPageData,
+	StringConfig,
+	UseBlogPkgConfig,
+} from './configs.js';
 import type { PageContent, PageData } from './importers.js';
+import { type Category, Page, Post, type Tag } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
 /**
@@ -52,58 +62,67 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			 * @param endpoint - The API endpoint to fetch additional data, such as media.
 			 * @returns A promise that resolves to a PageData object containing the converted page data.
 			 */
-			const convertToPageData = (page: unknown, endpoint: string) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageData')(
-					function* () {
-						const data = page as Page;
+			const convertToPageData = genLogger(
+				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageData'
+			)(function* () {
+				const [{ endpoint }, { page }] = yield* Effect.all([ImportEndpointConfig, RawPageData]);
 
-						const cleanHTML = yield* stripHtml(data.excerpt.rendered);
+				if (!endpoint) {
+					yield* Effect.fail(new Error('Missing endpoint configuration'));
+				}
+				if (!page) {
+					yield* Effect.fail(new Error('Missing page data'));
+				}
 
-						const titleImageId = data.featured_media;
+				const data = yield* Schema.decodeUnknown(Page)(page);
 
-						if (!titleImageId || titleImageId === 0) {
-							yield* Console.log('No featured media for:', data.title.rendered);
+				const cleanHTML = yield* stripHtml.pipe(StringConfig.makeProvide(data.excerpt.rendered));
 
-							const pageData: PageData = {
-								// @ts-expect-error - Drizzle broke this
-								id: crypto.randomUUID(),
-								title: data.title.rendered,
-								description: decode(cleanHTML),
-								slug: data.slug,
-								publishedAt: new Date(data.date_gmt),
-								updatedAt: new Date(data.modified_gmt),
-								showOnNav: false,
-								contentLang: 'default',
-								package: 'studiocms',
-							};
-							return pageData;
-						}
+				const titleImageId = data.featured_media;
 
-						const titleImageURL = yield* apiEndpoint(endpoint, 'media', String(titleImageId));
-						const titleImageResponse = yield* Effect.tryPromise(() => fetch(titleImageURL));
-						const titleImageJson = yield* Effect.tryPromise(() => titleImageResponse.json());
-						const titleImage = yield* downloadPostImage(
-							titleImageJson.source_url,
-							pagesImagesFolder
-						);
+				if (!titleImageId || titleImageId === 0) {
+					yield* Console.log('No featured media for:', data.title.rendered);
 
-						const pageData: PageData = {
-							// @ts-expect-error - Drizzle broke this
-							id: crypto.randomUUID(),
-							title: data.title.rendered,
-							description: decode(cleanHTML),
-							slug: data.slug,
-							publishedAt: new Date(data.date_gmt),
-							updatedAt: new Date(data.modified_gmt),
-							showOnNav: false,
-							contentLang: 'default',
-							package: 'studiocms',
-							heroImage: titleImage,
-						};
+					const pageData: PageData = {
+						// @ts-expect-error - Drizzle broke this
+						id: crypto.randomUUID(),
+						title: data.title.rendered,
+						description: decode(cleanHTML),
+						slug: data.slug,
+						publishedAt: new Date(data.date_gmt),
+						updatedAt: new Date(data.modified_gmt),
+						showOnNav: false,
+						contentLang: 'default',
+						package: 'studiocms',
+					};
+					return pageData;
+				}
 
-						return pageData;
-					}
+				const titleImageURL = yield* apiEndpoint.pipe(
+					APIEndpointConfig.makeProvide(endpoint, 'media', String(titleImageId))
 				);
+				const titleImageResponse = yield* Effect.tryPromise(() => fetch(titleImageURL));
+				const titleImageJson = yield* Effect.tryPromise(() => titleImageResponse.json());
+				const titleImage = yield* downloadPostImage.pipe(
+					DownloadPostImageConfig.makeProvide(titleImageJson.source_url, pagesImagesFolder)
+				);
+
+				const pageData: PageData = {
+					// @ts-expect-error - Drizzle broke this
+					id: crypto.randomUUID(),
+					title: data.title.rendered,
+					description: decode(cleanHTML),
+					slug: data.slug,
+					publishedAt: new Date(data.date_gmt),
+					updatedAt: new Date(data.modified_gmt),
+					showOnNav: false,
+					contentLang: 'default',
+					package: 'studiocms',
+					heroImage: titleImage,
+				};
+
+				return pageData;
+			});
 
 			/**
 			 * Converts the provided page data and page content into a PageContent object.
@@ -112,184 +131,147 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			 * @param page - The raw page content to be converted.
 			 * @returns A promise that resolves to a PageContent object.
 			 */
-			const convertToPageContent = (pageData: PageData, page: unknown) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageContent')(
-					function* () {
-						const data = page as Page;
+			const convertToPageContent = genLogger(
+				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageContent'
+			)(function* () {
+				const [{ page }, { pageData }] = yield* Effect.all([RawPageData, FullPageData]);
 
-						// @ts-expect-error - Drizzle broke this
-						if (pageData.id === undefined) {
-							yield* Effect.fail(new Error('pageData is missing id'));
-						}
+				const data = yield* Schema.decodeUnknown(Page)(page);
 
-						const cleanUpContent = yield* cleanUpHtml(data.content.rendered);
-						const htmlWithImages = yield* downloadAndUpdateImages(
-							cleanUpContent,
-							pagesImagesFolder
-						);
+				// @ts-expect-error - Drizzle broke this
+				if (pageData.id === undefined) {
+					yield* Effect.fail(new Error('pageData is missing id'));
+				}
 
-						const content = yield* turndown(htmlWithImages);
-
-						const pageContent: PageContent = {
-							// @ts-expect-error - Drizzle broke this
-							id: crypto.randomUUID(),
-							// @ts-expect-error - Drizzle broke this
-							contentId: pageData.id,
-							contentLang: 'default',
-							content: content,
-						};
-
-						return pageContent;
-					}
+				const cleanUpContent = yield* cleanUpHtml.pipe(
+					StringConfig.makeProvide(data.content.rendered)
+				);
+				const htmlWithImages = yield* downloadAndUpdateImages.pipe(
+					DownloadPostImageConfig.makeProvide(cleanUpContent, pagesImagesFolder)
 				);
 
-			/**
-			 * Generates and inserts categories into the database if they do not already exist.
-			 *
-			 * @param categories - An array of category IDs to be processed.
-			 * @param endpoint - The API endpoint to fetch category data from.
-			 * @returns A promise that resolves when the categories have been processed and inserted into the database.
-			 *
-			 * This function performs the following steps:
-			 * 1. Iterates over the provided category IDs.
-			 * 2. Checks if each category already exists in the database.
-			 * 3. If a category does not exist, fetches the category data from the specified API endpoint.
-			 * 4. Collects the new category data.
-			 * 5. Maps the new category data to the database schema.
-			 * 6. Inserts the new categories into the database.
-			 */
-			const generateCategories = (categories: number[], endpoint: string) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategories')(
-					function* () {
-						const newCategories: Category[] = [];
+				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
 
-						for (const categoryId of categories) {
-							const categoryExists = yield* sdk.dbService.execute((client) =>
-								client
-									.select()
-									.from(tsPageDataCategories)
-									.where(eq(tsPageDataCategories.id, categoryId))
-									.get()
-							);
+				const pageContent: PageContent = {
+					// @ts-expect-error - Drizzle broke this
+					id: crypto.randomUUID(),
+					// @ts-expect-error - Drizzle broke this
+					contentId: pageData.id,
+					contentLang: 'default',
+					content: content,
+				};
 
-							if (categoryExists) {
+				return pageContent;
+			});
+
+			const generateCategoriesOrTags = <T extends 'categories' | 'tags'>(type: T) =>
+				genLogger(
+					'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategoriesOrTags'
+				)(function* () {
+					const [{ endpoint }, { value }] = yield* Effect.all([
+						ImportEndpointConfig,
+						CategoryOrTagConfig,
+					]);
+
+					const TableMap = {
+						categories: tsPageDataCategories,
+						tags: tsPageDataTags,
+					};
+
+					const table = TableMap[type];
+
+					const newItems = [];
+
+					const idChecks = yield* Effect.all(
+						value.map((val) =>
+							sdk.dbService
+								.execute((client) => client.select().from(table).where(eq(table.id, val)).get())
+								.pipe(Effect.map((exists) => ({ val, exists: !!exists })))
+						),
+						{ concurrency: 10 }
+					);
+
+					const missingIds = idChecks.filter(({ exists }) => !exists).map(({ val }) => val);
+
+					const fetchedIds = yield* Effect.all(
+						missingIds.map((id) =>
+							apiEndpoint.pipe(
+								APIEndpointConfig.makeProvide(endpoint, type, String(id)),
+								Effect.flatMap((url) => Effect.tryPromise(() => fetch(url))),
+								Effect.flatMap((response) => Effect.tryPromise(() => response.json()))
+							)
+						),
+						{ concurrency: 5 } // Limit concurrent API calls
+					);
+
+					newItems.push(...fetchedIds);
+
+					if (newItems.length > 0) {
+						switch (type) {
+							case 'categories': {
+								const data = newItems.map((category) => {
+									const data: typeof tsPageDataCategories.$inferInsert = {
+										// @ts-expect-error - Drizzle broke this
+										id: category.id,
+										name: category.name,
+										slug: category.slug,
+										description: category.description,
+										meta: JSON.stringify(category.meta),
+									};
+
+									if (category.parent) {
+										// @ts-expect-error - Drizzle broke this
+										data.parent = category.parent;
+									}
+
+									return data;
+								});
+
 								yield* Console.log(
-									`Category with id ${categoryId} already exists in the database. Skipping...`
+									'Inserting new Categories into the database:',
+									data
+										// @ts-expect-error - Drizzle broke this
+										.map((d) => `${d.id}: ${d.name}`)
+										.join(', ')
 								);
-								continue;
+								yield* sdk.dbService.execute((client) =>
+									client.insert(tsPageDataCategories).values(data)
+								);
+
+								yield* Console.log('Categories inserted!');
+								break;
 							}
+							case 'tags': {
+								const tagData = newItems.map((tag) => {
+									const data: typeof tsPageDataTags.$inferInsert = {
+										// @ts-expect-error - Drizzle broke this
+										id: tag.id,
+										name: tag.name,
+										slug: tag.slug,
+										description: tag.description,
+										meta: JSON.stringify(tag.meta),
+									};
 
-							const categoryURL = yield* apiEndpoint(endpoint, 'categories', String(categoryId));
-							const response = yield* Effect.tryPromise(() => fetch(categoryURL));
-							const jsonData = yield* Effect.tryPromise(() => response.json());
+									return data;
+								});
 
-							newCategories.push(jsonData);
-						}
-
-						if (newCategories.length > 0) {
-							const categoryData = newCategories.map((category) => {
-								const data: typeof tsPageDataCategories.$inferInsert = {
-									// @ts-expect-error - Drizzle broke this
-									id: category.id,
-									name: category.name,
-									slug: category.slug,
-									description: category.description,
-									meta: JSON.stringify(category.meta),
-								};
-
-								if (category.parent) {
-									// @ts-expect-error - Drizzle broke this
-									data.parent = category.parent;
-								}
-
-								return data;
-							});
-
-							yield* Console.log(
-								'Inserting new Categories into the database:',
-								categoryData
-									// @ts-expect-error - Drizzle broke this
-									.map((data) => `${data.id}: ${data.name}`)
-									.join(', ')
-							);
-							yield* sdk.dbService.execute((client) =>
-								client.insert(tsPageDataCategories).values(categoryData)
-							);
-
-							yield* Console.log('Categories inserted!');
-						}
-					}
-				);
-
-			/**
-			 * Generates and inserts tags into the database if they do not already exist.
-			 *
-			 * @param {number[]} tags - An array of tag IDs to be processed.
-			 * @param {string} endpoint - The API endpoint to fetch tag data from.
-			 *
-			 * @example
-			 * const tags = [1, 2, 3];
-			 * const endpoint = 'https://example.com/wp-json/wp/v2';
-			 * await generateTags(tags, endpoint);
-			 *
-			 * @remarks
-			 * This function checks if each tag ID already exists in the database. If a tag does not exist,
-			 * it fetches the tag data from the specified API endpoint and inserts it into the database.
-			 * The function logs messages to the console for each tag that is processed.
-			 */
-			const generateTags = (tags: number[], endpoint: string) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.generateTags')(
-					function* () {
-						const newTags: Tag[] = [];
-
-						for (const tagId of tags) {
-							const tagExists = yield* sdk.dbService.execute((client) =>
-								client.select().from(tsPageDataTags).where(eq(tsPageDataTags.id, tagId)).get()
-							);
-
-							if (tagExists) {
 								yield* Console.log(
-									`Tag with id ${tagId} already exists in the database. Skipping...`
+									'Inserting new Tags into the database:',
+									tagData
+										// @ts-expect-error - Drizzle broke this
+										.map((data) => `${data.id}: ${data.name}`)
+										.join(', ')
 								);
-								continue;
+								yield* sdk.dbService.execute((client) =>
+									client.insert(tsPageDataTags).values(tagData)
+								);
+
+								yield* Console.log('Tags inserted!');
+								break;
 							}
-
-							const tagURL = yield* apiEndpoint(endpoint, 'tags', String(tagId));
-							const response = yield* Effect.tryPromise(() => fetch(tagURL));
-							const jsonData = yield* Effect.tryPromise(() => response.json());
-
-							newTags.push(jsonData);
-						}
-
-						if (newTags.length > 0) {
-							const tagData = newTags.map((tag) => {
-								const data: typeof tsPageDataTags.$inferInsert = {
-									// @ts-expect-error - Drizzle broke this
-									id: tag.id,
-									name: tag.name,
-									slug: tag.slug,
-									description: tag.description,
-									meta: JSON.stringify(tag.meta),
-								};
-
-								return data;
-							});
-
-							yield* Console.log(
-								'Inserting new Tags into the database:',
-								tagData
-									// @ts-expect-error - Drizzle broke this
-									.map((data) => `${data.id}: ${data.name}`)
-									.join(', ')
-							);
-							yield* sdk.dbService.execute((client) =>
-								client.insert(tsPageDataTags).values(tagData)
-							);
-
-							yield* Console.log('Tags inserted!');
 						}
 					}
-				);
+				});
 
 			/**
 			 * Converts a given post object to PageData format.
@@ -298,67 +280,79 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			 * @param useBlogPkg - A boolean indicating whether to use the blog package.
 			 * @param endpoint - The API endpoint to fetch additional data.
 			 */
-			const convertToPostData = (post: unknown, useBlogPkg: boolean, endpoint: string) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostData')(
-					function* () {
-						const data = post as Post;
+			const convertToPostData = genLogger(
+				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostData'
+			)(function* () {
+				const [{ endpoint }, { page: post }, { useBlogPkg }] = yield* Effect.all([
+					ImportEndpointConfig,
+					RawPageData,
+					UseBlogPkgConfig,
+				]);
 
-						const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms/markdown';
+				const data = yield* Schema.decodeUnknown(Post)(post);
 
-						const cleanedHTML = yield* stripHtml(data.excerpt.rendered);
+				const pkg = useBlogPkg ? '@studiocms/blog' : 'studiocms/markdown';
 
-						const titleImageId = data.featured_media;
+				const cleanedHTML = yield* stripHtml.pipe(StringConfig.makeProvide(data.excerpt.rendered));
 
-						if (!titleImageId || titleImageId === 0) {
-							yield* Console.log('No featured media for:', data.title.rendered);
+				const titleImageId = data.featured_media;
 
-							const pageData: PageData = {
-								// @ts-expect-error - Drizzle broke this
-								id: crypto.randomUUID(),
-								title: data.title.rendered,
-								description: decode(cleanedHTML),
-								slug: data.slug,
-								publishedAt: new Date(data.date_gmt),
-								updatedAt: new Date(data.modified_gmt),
-								showOnNav: false,
-								contentLang: 'default',
-								package: pkg,
-								categories: JSON.stringify(data.categories),
-								tags: JSON.stringify(data.tags),
-							};
-							return pageData;
-						}
+				if (!titleImageId || titleImageId === 0) {
+					yield* Console.log('No featured media for:', data.title.rendered);
 
-						const titleImageURL = yield* apiEndpoint(endpoint, 'media', String(titleImageId));
-						const titleImageResponse = yield* Effect.tryPromise(() => fetch(titleImageURL));
-						const titleImageJson = yield* Effect.tryPromise(() => titleImageResponse.json());
-						const titleImage = yield* downloadPostImage(
-							titleImageJson.source_url,
-							postsImagesFolder
-						);
+					const pageData: PageData = {
+						// @ts-expect-error - Drizzle broke this
+						id: crypto.randomUUID(),
+						title: data.title.rendered,
+						description: decode(cleanedHTML),
+						slug: data.slug,
+						publishedAt: new Date(data.date_gmt),
+						updatedAt: new Date(data.modified_gmt),
+						showOnNav: false,
+						contentLang: 'default',
+						package: pkg,
+						categories: JSON.stringify(data.categories),
+						tags: JSON.stringify(data.tags),
+					};
+					return pageData;
+				}
 
-						yield* generateCategories(data.categories, endpoint);
-						yield* generateTags(data.tags, endpoint);
-
-						const pageData: PageData = {
-							// @ts-expect-error - Drizzle broke this
-							id: crypto.randomUUID(),
-							title: data.title.rendered,
-							description: decode(cleanedHTML),
-							slug: data.slug,
-							publishedAt: new Date(data.date_gmt),
-							updatedAt: new Date(data.modified_gmt),
-							showOnNav: false,
-							contentLang: 'default',
-							package: pkg,
-							categories: JSON.stringify(data.categories),
-							tags: JSON.stringify(data.tags),
-							heroImage: titleImage,
-						};
-
-						return pageData;
-					}
+				const titleImageURL = yield* apiEndpoint.pipe(
+					APIEndpointConfig.makeProvide(endpoint, 'media', String(titleImageId))
 				);
+				const titleImageResponse = yield* Effect.tryPromise(() => fetch(titleImageURL));
+				const titleImageJson = yield* Effect.tryPromise(() => titleImageResponse.json());
+				const titleImage = yield* downloadPostImage.pipe(
+					DownloadPostImageConfig.makeProvide(titleImageJson.source_url, postsImagesFolder)
+				);
+
+				yield* generateCategoriesOrTags('categories').pipe(
+					ImportEndpointConfig.makeProvide(endpoint),
+					CategoryOrTagConfig.makeProvide(data.categories)
+				);
+				yield* generateCategoriesOrTags('tags').pipe(
+					ImportEndpointConfig.makeProvide(endpoint),
+					CategoryOrTagConfig.makeProvide(data.tags)
+				);
+
+				const pageData: PageData = {
+					// @ts-expect-error - Drizzle broke this
+					id: crypto.randomUUID(),
+					title: data.title.rendered,
+					description: decode(cleanedHTML),
+					slug: data.slug,
+					publishedAt: new Date(data.date_gmt),
+					updatedAt: new Date(data.modified_gmt),
+					showOnNav: false,
+					contentLang: 'default',
+					package: pkg,
+					categories: JSON.stringify(data.categories),
+					tags: JSON.stringify(data.tags),
+					heroImage: titleImage,
+				};
+
+				return pageData;
+			});
 
 			/**
 			 * Converts the given post data to a PageContent object.
@@ -366,36 +360,38 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			 * @param pageData - The data of the page to which the post content belongs.
 			 * @param post - The post data to be converted.
 			 */
-			const convertToPostContent = (pageData: PageData, post: unknown) =>
-				genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostContent')(
-					function* () {
-						const data = post as Post;
+			const convertToPostContent = genLogger(
+				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostContent'
+			)(function* () {
+				const [{ pageData }, { page: post }] = yield* Effect.all([FullPageData, RawPageData]);
 
-						// @ts-expect-error - Drizzle broke this
-						if (pageData.id === undefined) {
-							yield* Effect.fail(new Error('pageData is missing id'));
-						}
+				const data = yield* Schema.decodeUnknown(Post)(post);
 
-						const cleanupContent = yield* cleanUpHtml(data.content.rendered);
-						const htmlWithImages = yield* downloadAndUpdateImages(
-							cleanupContent,
-							postsImagesFolder
-						);
+				// @ts-expect-error - Drizzle broke this
+				if (pageData.id === undefined) {
+					yield* Effect.fail(new Error('pageData is missing id'));
+				}
 
-						const content = yield* turndown(htmlWithImages);
-
-						const pageContent: PageContent = {
-							// @ts-expect-error - Drizzle broke this
-							id: crypto.randomUUID(),
-							// @ts-expect-error - Drizzle broke this
-							contentId: pageData.id,
-							contentLang: 'default',
-							content: content,
-						};
-
-						return pageContent;
-					}
+				const cleanupContent = yield* cleanUpHtml.pipe(
+					StringConfig.makeProvide(data.content.rendered)
 				);
+				const htmlWithImages = yield* downloadAndUpdateImages.pipe(
+					DownloadPostImageConfig.makeProvide(cleanupContent, postsImagesFolder)
+				);
+
+				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
+
+				const pageContent: PageContent = {
+					// @ts-expect-error - Drizzle broke this
+					id: crypto.randomUUID(),
+					// @ts-expect-error - Drizzle broke this
+					contentId: pageData.id,
+					contentLang: 'default',
+					content: content,
+				};
+
+				return pageContent;
+			});
 
 			return {
 				convertToPageData,
