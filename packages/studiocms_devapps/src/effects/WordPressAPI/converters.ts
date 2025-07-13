@@ -164,9 +164,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				return pageContent;
 			});
 
-			const generateCategoriesOrTags = <T extends 'categories' | 'tags'>(
-				type: T
-			) =>
+			const generateCategoriesOrTags = <T extends 'categories' | 'tags'>(type: T) =>
 				genLogger(
 					'@studiocms/devapps/effects/WordPressAPI/converters.effect.generateCategoriesOrTags'
 				)(function* () {
@@ -177,10 +175,10 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 					const TableMap = {
 						categories: tsPageDataCategories,
-						tags: tsPageDataTags
-					}
+						tags: tsPageDataTags,
+					};
 
-					const table = TableMap[type]
+					const table = TableMap[type];
 
 					const newItems = [];
 
