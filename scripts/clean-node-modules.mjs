@@ -104,7 +104,7 @@ class NodeModulesCleaner {
 						`powershell -Command "(Get-ChildItem -Path '${dir}' -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum"`,
 						{ encoding: 'utf8' }
 					);
-					const bytes = parseInt(sizeOutput.trim(), 10) || 0;
+					const bytes = Number.parseInt(sizeOutput.trim(), 10) || 0;
 					size = bytes > 0 ? `${(bytes / 1024 / 1024).toFixed(1)}M` : '0B';
 				} else {
 					// Use du command on Unix-like systems
@@ -158,6 +158,11 @@ Examples:
 
 	if (!fs.existsSync(targetPath)) {
 		console.error(`❌ Error: Directory '${targetPath}' does not exist.`);
+		process.exit(1);
+	}
+
+	if (!fs.lstatSync(targetPath).isDirectory()) {
+		console.error(`❌ Error: '${targetPath}' is not a directory.`);
 		process.exit(1);
 	}
 
