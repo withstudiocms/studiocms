@@ -6,7 +6,7 @@ export const getTurso = Command.make('get-turso', {}, () =>
 	genLogger('studiocms/cli/getTurso')(function* () {
 		yield* Effect.tryPromise({
 			try: () =>
-				runInteractiveCommand('').then(() => console.log('Turso CLI install command completed.')),
+				runInteractiveCommand('curl -sSfL https://get.tur.so/install.sh | bash').then(() => console.log('Turso CLI install command completed.')),
 			catch: (error) => console.error(`Failed to run Turso install: ${(error as Error).message}`),
 		});
 	})

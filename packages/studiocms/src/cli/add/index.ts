@@ -58,7 +58,7 @@ export const toIdent = (name: string) => {
 };
 
 export const createPrettyError = (err: Error) =>
-	Effect.try(() => {
+	Effect.sync(() => {
 		err.message = `StudioCMS could not update your studiocms.config.mjs file safely.
 	Reason: ${err.message}
 	
@@ -97,9 +97,72 @@ export function appendForwardSlash(path: string) {
 }
 
 export const plugin = Args.text({ name: 'plugin' }).pipe(
-	Args.withDescription('The name of the ship'),
+	Args.withDescription(' name of the plugin to add'),
 	Args.repeated
 );
+
+const resolveOrCreateConfig = (root: URL) =>
+	genLogger('studiocms/cli/add.resolveOrCreateConfig')(function* () {
+		const existingConfig = yield* resolveConfigPath(root);
+		if (existingConfig) return existingConfig;
+
+		yield* Console.debug('Unable to locate a config file, generating one for you.');
+		const newConfigURL = new URL('./studiocms.config.mjs', root);
+		yield* Effect.tryPromise(() =>
+			fs.writeFile(fileURLToPath(newConfigURL), STUBS.STUDIOCMS_CONFIG, {
+				encoding: 'utf-8',
+			})
+		);
+		return newConfigURL;
+	});
+
+const loadConfigModule = (configURL: URL, validatedPlugins: PluginInfo[]) =>
+	genLogger('studiocms/cli/add.loadConfigModule')(function* () {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		let mod: ProxifiedModule<any> | undefined;
+
+		mod = yield* Effect.tryPromise(() => loadFile(fileURLToPath(configURL)));
+		yield* Console.debug('Parsed StudioCMS Config');
+
+		if (mod.exports.default.$type !== 'function-call') {
+			// ensure config is wrapped with "defineStudioCMSConfig"
+			mod.imports.$prepend({ imported: 'defineStudioCMSConfig', from: 'studiocms/config' });
+			mod.exports.default = builders.functionCall('defineStudioCMSConfig', mod.exports.default);
+		} else if (mod.exports.default.$args[0] == null) {
+			// ensure first argument of "defineStudioCMSConfig" is not empty
+			mod.exports.default.$args[0] = { dbStartPage: false };
+		}
+
+		yield* Console.debug('StudioCMS config ensured `defineStudioCMSConfig`');
+
+		for (const plugin of validatedPlugins) {
+			const config = getDefaultExportOptions(mod);
+			const pluginId = toIdent(plugin.id);
+
+			if (!mod.imports.$items.some((imp) => imp.local === pluginId)) {
+				mod.imports.$append({
+					imported: 'default',
+					local: pluginId,
+					from: plugin.packageName,
+				});
+			}
+
+			config.plugins ??= [];
+			if (
+				!config.plugins.$ast.elements.some(
+					(el: ASTNode) =>
+						el.type === 'CallExpression' &&
+						el.callee.type === 'Identifier' &&
+						el.callee.name === pluginId
+				)
+			) {
+				config.plugins.push(builders.functionCall(pluginId));
+			}
+			yield* Console.debug(`StudioCMS config added plugin ${plugin.id}`);
+		}
+
+		return mod;
+	});
 
 export const addPlugin = Command.make(
 	'add',
@@ -157,80 +220,22 @@ export const addPlugin = Command.make(
 					break;
 			}
 
-			let configURL: URL | undefined;
-
-			const existingConfig = yield* resolveConfigPath(new URL(rootPath));
-
-			if (existingConfig) {
-				configURL = yield* resolveConfigPath(new URL(rootPath));
-			}
-
-			if (!configURL) {
-				yield* Console.debug('Unable to locate a config file, generating one for you.');
-				const newConfigURL = new URL('./studiocms.config.mjs', root);
-				yield* Effect.tryPromise(() =>
-					fs.writeFile(fileURLToPath(newConfigURL), STUBS.STUDIOCMS_CONFIG, {
-						encoding: 'utf-8',
-					})
-				);
-
-				configURL = newConfigURL;
-			}
+			const configURL = yield* resolveOrCreateConfig(new URL(rootPath));
 
 			yield* Console.debug(`found config at ${configURL}`);
 
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			let mod: ProxifiedModule<any> | undefined;
-
-			mod = yield* Effect.tryPromise(() => loadFile(fileURLToPath(configURL)));
-			yield* Console.debug('Parsed StudioCMS Config');
-
-			if (mod.exports.default.$type !== 'function-call') {
-				// ensure config is wrapped with "defineStudioCMSConfig"
-				mod.imports.$prepend({ imported: 'defineStudioCMSConfig', from: 'studiocms/config' });
-				mod.exports.default = builders.functionCall('defineStudioCMSConfig', mod.exports.default);
-			} else if (mod.exports.default.$args[0] == null) {
-				// ensure first argument of "defineStudioCMSConfig" is not empty
-				mod.exports.default.$args[0] = { dbStartPage: false };
-			}
-			yield* Console.debug('StudioCMS config ensured `defineStudioCMSConfig`');
-
-			for (const plugin of validatedPlugins) {
-				const config = getDefaultExportOptions(mod);
-				const pluginId = toIdent(plugin.id);
-
-				if (!mod.imports.$items.some((imp) => imp.local === pluginId)) {
-					mod.imports.$append({
-						imported: 'default',
-						local: pluginId,
-						from: plugin.packageName,
-					});
-				}
-
-				config.plugins ??= [];
-				if (
-					!config.plugins.$ast.elements.some(
-						(el: ASTNode) =>
-							el.type === 'CallExpression' &&
-							el.callee.type === 'Identifier' &&
-							el.callee.name === pluginId
-					)
-				) {
-					config.plugins.push(builders.functionCall(pluginId));
-				}
-				yield* Console.debug(`StudioCMS config added plugin ${plugin.id}`);
-			}
+			const mod = yield* loadConfigModule(configURL, validatedPlugins);
 
 			let configResult: UpdateResult | undefined;
 
 			if (mod) {
-				configResult = yield* Effect.tryPromise({
-					try: () => Effect.runPromise(updater.run(configURL, mod).pipe(CliContext.makeProvide(context))),
-					catch: (err) => {
+				configResult = yield* updater.run(configURL, mod).pipe(
+					CliContext.makeProvide(context),
+					Effect.catchAll((err) => {
 						logger.debug(`Error updating studiocms config ${err}`);
-						return createPrettyError(err as Error);
-					},
-				});
+						return Effect.fail(createPrettyError(err as Error));
+					})
+				);
 			}
 
 			switch (configResult) {

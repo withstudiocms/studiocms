@@ -8,7 +8,7 @@ import {
 import { boxen, label } from '@withstudiocms/cli-kit/messages';
 import { SignJWT } from 'jose';
 import { importPKCS8 } from 'jose/key/import';
-import { Console, Effect, genLogger } from '../../../effect.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { genContext } from '../../utils/context.js';
 import { dateAdd } from '../../utils/dateAdd.js';
 import { logger } from '../../utils/logger.js';
@@ -67,13 +67,11 @@ export const genJWT = Command.make(
 			}
 
 			if (Number.isNaN(exp)) {
-				yield* Console.error('Expiration must be a valid number, received: ', exp);
-				process.exit(1);
+				return yield* Effect.fail(new Error(`Expiration must be a valid number, received: ${exp}`));
 			}
 
 			if (exp < 0) {
-				yield* Console.error('Expiration must be greater than 0');
-				process.exit(1);
+				return yield* Effect.fail(new Error('Expiration must be greater than 0'));
 			}
 
 			if (debug) {
@@ -108,7 +106,7 @@ export const genJWT = Command.make(
 
 				if (!keyString) {
 					spinner.stop('Key not found, or invalid');
-					process.exit(1);
+					return yield* Effect.fail(new Error('Key not found, or invalid'));
 				}
 
 				const alg = 'EdDSA';
@@ -118,7 +116,7 @@ export const genJWT = Command.make(
 					privateKey = yield* Effect.tryPromise(() => importPKCS8(keyString, alg));
 				} catch (e) {
 					spinner.stop('Invalid or unsupported private key');
-					process.exit(1);
+					return yield* Effect.fail(new Error('Invalid or unsupported private key'));
 				}
 
 				const NOW = new Date();
@@ -160,7 +158,7 @@ export const genJWT = Command.make(
 				} else {
 					prompts.log.error(`Unexpected error generating JWT: ${err}`);
 				}
-				process.exit(1);
+				return yield* Effect.fail(new Error('JWT ERROR: Unknown'));
 			}
 		})
 ).pipe(Command.withDescription('Generate a JWT token from a keyfile'));

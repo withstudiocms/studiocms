@@ -108,7 +108,17 @@ export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debu
 
 		// Run steps
 		for (const step of steps) {
-			yield* Effect.tryPromise(() => step(context, debug, dry));
+			yield* Effect.tryPromise({
+				try: () => step(context, debug, dry),
+				catch: (error) => {
+					prompts.log.error(
+						`Step execution failed: ${error instanceof Error ? error.message : String(error)}`
+					);
+					return new Error(
+						`Step execution failed: ${error instanceof Error ? error.message : String(error)}`
+					);
+				},
+			});
 		}
 
 		// No tasks? Exit

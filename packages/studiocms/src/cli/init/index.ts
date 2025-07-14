@@ -42,7 +42,7 @@ export const initCMD = Command.make('init', { debug, dryRun }, ({ debug: _debug,
 
 		debug && logger.debug(`Context: ${JSON.stringify(context, null, 2)}`);
 
-		console.log(''); // Add a line break
+		yield* Console.log(''); // Add a line break
 
 		prompts.intro(
 			`${label('StudioCMS', StudioCMSColorwayBg, chalk.black)} Interactive CLI - initializing...`
@@ -72,14 +72,24 @@ export const initCMD = Command.make('init', { debug, dryRun }, ({ debug: _debug,
 		// No steps? Exit
 		if (steps.length === 0) {
 			prompts.log.error('No steps selected, exiting...');
-			context.exit(0);
+			context.exit(1);
 		}
 
 		debug && logger.debug('Running steps...');
 
 		// Run steps
 		for (const step of steps) {
-			yield* Effect.tryPromise(() => step(context, debug, dry));
+			yield* Effect.tryPromise({
+				try: () => step(context, debug, dry),
+				catch: (error) => {
+					prompts.log.error(
+						`Step execution failed: ${error instanceof Error ? error.message : String(error)}`
+					);
+					return new Error(
+						`Step execution failed: ${error instanceof Error ? error.message : String(error)}`
+					);
+				},
+			});
 		}
 
 		debug && logger.debug('Running tasks...');

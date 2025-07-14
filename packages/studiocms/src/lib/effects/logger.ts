@@ -81,16 +81,16 @@ export class S48Logger {
 	}
 
 	info(message: string) {
-		console.log(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+		console.log(`${getEventPrefix('info', this.label)} ${message}`);
 	}
 	warn(message: string) {
-		console.warn(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+		console.warn(`${getEventPrefix('warn', this.label)} ${message}`);
 	}
 	error(message: string) {
-		console.error(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+		console.error(`${getEventPrefix('error', this.label)} ${message}`);
 	}
 	debug(message: string) {
-		console.debug(`${getEventPrefix(this.options.level, this.label)} ${message}`);
+		console.debug(`${getEventPrefix('debug', this.label)} ${message}`);
 	}
 }
 

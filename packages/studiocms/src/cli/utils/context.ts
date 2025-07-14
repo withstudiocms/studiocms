@@ -43,9 +43,10 @@ export const genContext = genLogger('studiocms/cli/utils/context.genContext')(fu
 		username,
 		tasks: [],
 		pCancel(val: symbol) {
-			prompts.isCancel(val);
-			prompts.cancel(cancelMessage);
-			process.exit(0);
+			if (prompts.isCancel(val)) {
+				prompts.cancel(cancelMessage);
+				process.exit(0);
+			}
 		},
 		pOnCancel() {
 			prompts.cancel(cancelMessage);

@@ -78,20 +78,22 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 								spinner.stop('Dependencies installed.');
 								return UpdateResult.updated;
 							},
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-							catch: (err: any) => {
-								spinner.stop('Error installing dependencies');
-								console.debug(`[add]: Error installing dependencies ${err}`);
-								// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
-								console.error(`\n${err.stdout || err.message}\n`);
-								console.error(
-									`\n${chalk.yellow('You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`
-								);
-								return UpdateResult.failure;
-							},
+							catch: (err) => err,
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
-						return response;
+						if (response instanceof Error || (response && typeof response === 'object' && 'message' in response)) {
+							spinner.stop('Error installing dependencies');
+							yield* Console.debug(`[add]: Error installing dependencies ${response}`);
+							// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
+							// @ts-ignore
+							yield* Console.error(`\n${response.stdout || response.message}\n`);
+							yield* Console.error(
+								`\n${chalk.yellow('You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`
+							);
+							return UpdateResult.failure;
+						}
+
+						return response as UpdateResult;
 					}
 
 					return UpdateResult.cancelled;

@@ -73,7 +73,7 @@ export const resolveRangeToInstallSpecifier = (name: string, range: string) =>
 	genLogger('studiocms/cli/add/npm-utils.resolveRangeToInstallSpecifier')(function* () {
 		const versions = yield* fetchPackageVersions(name);
 
-		if (versions instanceof Error) return name;
+		if (versions instanceof Error || !Array.isArray(versions)) return name;
 
 		const stableVersions = versions.filter((v) => !v.includes('-'));
 
