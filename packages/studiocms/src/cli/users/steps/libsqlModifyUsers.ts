@@ -18,7 +18,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 
 	debug && logger.debug('Checking for environment variables');
 
-	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
+	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN } = process.env;
 
 	checkRequiredEnvVars(['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
@@ -223,9 +223,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 					task: async (message) => {
 						try {
 							// Environment variables are already checked by checkRequiredEnvVars
-							const hashedPassword = await convertToVanilla(
-								hashPassword(newPassword, CMS_ENCRYPTION_KEY as string)
-							);
+							const hashedPassword = await convertToVanilla(hashPassword(newPassword));
 
 							await db
 								.update(Users)

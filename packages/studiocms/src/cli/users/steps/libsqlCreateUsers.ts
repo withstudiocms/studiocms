@@ -19,7 +19,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 
 	debug && logger.debug('Checking for environment variables');
 
-	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN, CMS_ENCRYPTION_KEY } = process.env;
+	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN } = process.env;
 
 	checkRequiredEnvVars(['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
