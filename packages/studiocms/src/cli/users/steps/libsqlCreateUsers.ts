@@ -122,7 +122,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 	}
 
 	// Environment variables are already checked by checkRequiredEnvVars
-	const password = await convertToVanilla(hashPassword(newPassword, CMS_ENCRYPTION_KEY as string));
+	const password = await convertToVanilla(hashPassword(newPassword));
 
 	const newUserId = crypto.randomUUID();
 
