@@ -123,7 +123,7 @@ async function main() {
 Node Modules Cleaner
 ====================
 
-Usage: node clean-node-modules.js [options] [path]
+Usage: node clean-node-modules.mjs [options] [path]
 
 Options:
   --dry-run, -n    Show what would be deleted without actually deleting
@@ -131,10 +131,10 @@ Options:
   --help, -h       Show this help message
 
 Examples:
-  node clean-node-modules.js                    # Clean current directory
-  node clean-node-modules.js /path/to/monorepo  # Clean specific directory
-  node clean-node-modules.js --dry-run          # Preview what would be deleted
-  node clean-node-modules.js --sizes            # Show sizes before cleaning
+  node clean-node-modules.mjs                    # Clean current directory
+  node clean-node-modules.mjs /path/to/monorepo  # Clean specific directory
+  node clean-node-modules.mjs --dry-run          # Preview what would be deleted
+  node clean-node-modules.mjs --sizes            # Show sizes before cleaning
 `);
 		return;
 	}
