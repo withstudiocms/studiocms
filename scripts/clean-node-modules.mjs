@@ -93,14 +93,27 @@ class NodeModulesCleaner {
 
 	async getSizeInfo() {
 		const sizes = [];
+		const isWindows = process.platform === 'win32';
 
 		for (const dir of this.foundDirectories) {
 			try {
-				// Use du command on Unix-like systems
-				const sizeOutput = execSync(`du -sh "${dir}" 2>/dev/null || echo "0B"`, {
-					encoding: 'utf8',
-				});
-				const size = sizeOutput.trim().split('\t')[0];
+				let size;
+				if (isWindows) {
+					// Use PowerShell on Windows
+					const sizeOutput = execSync(
+						`powershell -Command "(Get-ChildItem -Path '${dir}' -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum"`,
+						{ encoding: 'utf8' }
+					);
+					const bytes = parseInt(sizeOutput.trim(), 10) || 0;
+					size = bytes > 0 ? `${(bytes / 1024 / 1024).toFixed(1)}M` : '0B';
+				} else {
+					// Use du command on Unix-like systems
+					const sizeOutput = execSync(
+						`du -sh "${dir}" 2>/dev/null || echo "0B"`,
+						{ encoding: 'utf8' }
+					);
+					size = sizeOutput.trim().split('\t')[0];
+				}
 				sizes.push({ path: dir, size });
 			} catch (error) {
 				sizes.push({ path: dir, size: 'Unknown' });
