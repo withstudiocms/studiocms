@@ -133,7 +133,7 @@ async function main() {
 
 	if (showHelp) {
 		console.log(`
-Node Modules Cleaner - Tool for wiping 'node_module' folders recursively from a mono-repo
+Node Modules Cleaner - Tool for wiping 'node_module' folders recursively from a monorepo
 ====================
 
 Usage: node clean-node-modules.mjs [options] [path]
