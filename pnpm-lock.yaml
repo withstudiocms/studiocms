@@ -176,11 +176,11 @@ importers:
         specifier: ^0.15.2
         version: 0.15.9
       '@nanostores/i18n':
-        specifier: ^0.12.2
-        version: 0.12.2(nanostores@0.11.4)
+        specifier: ^1.0.0
+        version: 1.0.1(nanostores@1.0.1)
       '@nanostores/persistent':
-        specifier: ^0.10.2
-        version: 0.10.2(nanostores@0.11.4)
+        specifier: ^1.0.0
+        version: 1.1.0(nanostores@1.0.1)
       '@oslojs/binary':
         specifier: ^1.0.0
         version: 1.0.0
@@ -275,8 +275,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.1
       nanostores:
-        specifier: ^0.11.4
-        version: 0.11.4
+        specifier: ^1.0.0
+        version: 1.0.1
       nodemailer:
         specifier: ^7.0.0
         version: 7.0.5
@@ -591,6 +591,7 @@ packages:
 
   '@astrojs/web-vitals@4.0.0':
     resolution: {integrity: sha512-dPtkOsnF3wKzAhAFTJRMLrkFpanhHfVF/EQMITUkTg95AmCyKES6D71Z7ZbG0mEmsoQ6XXiu0ZzLavzLTdRv1g==}
+    deprecated: This integration is no longer maintained by Astro. Please see https://github.com/withstudiocms/web-vitals which is now maintained by the StudioCMS organization.
     peerDependencies:
       '@astrojs/db': ^0.15.0
 
@@ -1488,17 +1489,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@nanostores/i18n@0.12.2':
-    resolution: {integrity: sha512-BZNDNB83qwfU8YGYEI5zwstBZGPRUfifhZcw0SqaiGLqUBe4onpQ/NCr4cRg0khlsvPtJ37MQ/XZaT7dN+/RvA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  '@nanostores/i18n@1.0.1':
+    resolution: {integrity: sha512-0GraBfB6DCMAkPiQvdQqQh4T3UfFRANMrX6+5cR2iYBqGHVMMova6C/Y0A10pxQs6ltHnoLU08GSW9DClUD7jw==}
+    engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
-      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
+      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
 
-  '@nanostores/persistent@0.10.2':
-    resolution: {integrity: sha512-BEndnLhRC+yP7gXTESepBbSj8XNl8OXK9hu4xAgKC7MWJHKXnEqJMqY47LUyHxK6vYgFnisyHmqq+vq8AUFyIg==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  '@nanostores/persistent@1.1.0':
+    resolution: {integrity: sha512-e6vfv7H99VkCfSoNTR/qNVMj6vXwWcsEL+LCQQamej5GK9iDefKxPCJjdOpBi1p4lNCFIQ+9VjYF1spvvc2p6A==}
+    engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
-      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
+      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
 
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
@@ -3989,9 +3990,9 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  nanostores@0.11.4:
-    resolution: {integrity: sha512-k1oiVNN4hDK8NcNERSZLQiMfRzEGtfnvZvdBvey3SQbgn8Dcrk0h1I6vpxApjb10PFUflZrgJ2WEZyJQ+5v7YQ==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  nanostores@1.0.1:
+    resolution: {integrity: sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==}
+    engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@0.6.18:
     resolution: {integrity: sha512-Z4SmBUweYa09+o6pG+eASabEpP6QkQ70yHj351pQoEXIs8uHbaU2DWVmzBANKgflPa47A50PtB2+NgRpQvr7vA==}
@@ -6230,13 +6231,13 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@nanostores/i18n@0.12.2(nanostores@0.11.4)':
+  '@nanostores/i18n@1.0.1(nanostores@1.0.1)':
     dependencies:
-      nanostores: 0.11.4
+      nanostores: 1.0.1
 
-  '@nanostores/persistent@0.10.2(nanostores@0.11.4)':
+  '@nanostores/persistent@1.1.0(nanostores@1.0.1)':
     dependencies:
-      nanostores: 0.11.4
+      nanostores: 1.0.1
 
   '@neon-rs/load@0.0.4': {}
 
@@ -9177,7 +9178,7 @@ snapshots:
 
   nanoid@5.1.5: {}
 
-  nanostores@0.11.4: {}
+  nanostores@1.0.1: {}
 
   neotraverse@0.6.18: {}
 
