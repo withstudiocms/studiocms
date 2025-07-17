@@ -1,18 +1,24 @@
 ---
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
-import { Card, Icon } from 'studiocms:ui/components';
-import { allowedIdentifiers } from './utils.js';
+import { SDKCoreJs, runSDK } from "studiocms:sdk";
+import { Card, Icon } from "studiocms:ui/components";
+import { Effect } from "effect";
+import { allowedIdentifiers } from "./utils.js";
 
-// Get all pages and users from the database
-const allPages = await runSDK(SDKCoreJs.GET.pages(true));
-const totalUsers = await runSDK(SDKCoreJs.GET.users.all());
+const [allPages, totalUsers] = await runSDK(
+    Effect.all([SDKCoreJs.GET.pages(true), SDKCoreJs.GET.users.all()]),
+);
 
 // Filter out the pages that are not allowed
-const totalPages = allPages.filter(({ data: page }) => allowedIdentifiers.includes(page.package));
+const totalPages = allPages.filter(({ data: page }) =>
+    allowedIdentifiers.includes(page.package),
+);
 
 // Filter out for draft pages
-const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === true);
+const totalDraftPages = totalPages.filter(
+    ({ data: page }) => page.draft === true,
+);
 ---
+
 <div class="totals-grid-item-container">
     <div class="totals-grid-item">
         <a href={Astro.locals.routeMap.mainLinks.contentManagement}>
@@ -65,7 +71,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         background-color: hsl(var(--background-step-2));
         width: 100%;
         height: 100%;
-        transition: all .15s ease;
+        transition: all 0.15s ease;
     }
 
     .totals-grid-item-card:hover {
@@ -75,7 +81,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
     .totals-grid-item-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: .5rem;
+        gap: 0.5rem;
     }
 
     .totals-grid-item {
@@ -96,7 +102,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         align-items: center;
         justify-content: space-between;
         margin-top: 1rem;
-        gap: .5rem;
+        gap: 0.5rem;
     }
 
     .totals-grid-item-label {

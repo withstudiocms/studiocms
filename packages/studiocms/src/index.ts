@@ -508,12 +508,6 @@ export const studiocms = defineIntegration({
 									access: 'secret',
 									optional: true,
 								}),
-								// Cloudinary Environment Variables for Custom Image Component
-								CMS_CLOUDINARY_CLOUDNAME: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
 							},
 						},
 					});

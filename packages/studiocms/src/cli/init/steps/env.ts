@@ -19,6 +19,12 @@ import { logger } from '../../utils/logger.js';
 import { type EnvBuilderOptions, ExampleEnv, buildEnvFile } from '../../utils/studiocmsEnv.js';
 import type { StepFn } from '../../utils/types.js';
 
+export enum EnvBuilderAction {
+	builder = 'builder',
+	example = 'example',
+	none = 'none'
+}
+
 export const env: StepFn = async (context, debug, dryRun = false) => {
 	const { prompts, chalk, cwd, pCancel, pOnCancel } = context;
 
@@ -53,9 +59,9 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 	const EnvPrompt = await prompts.select({
 		message: 'What kind of environment file would you like to create?',
 		options: [
-			{ value: 'builder', label: 'Use Interactive .env Builder' },
-			{ value: 'example', label: 'Use the Example .env file' },
-			{ value: 'none', label: 'Skip Environment File Creation', hint: 'Cancel' },
+			{ value: EnvBuilderAction.builder, label: 'Use Interactive .env Builder' },
+			{ value: EnvBuilderAction.example, label: 'Use the Example .env file' },
+			{ value: EnvBuilderAction.none, label: 'Skip Environment File Creation', hint: 'Cancel' },
 		],
 	});
 
@@ -67,9 +73,9 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		_env = EnvPrompt !== 'none';
 	}
 
-	if (EnvPrompt === 'example') {
+	if (EnvPrompt === EnvBuilderAction.example) {
 		envFileContent = ExampleEnv;
-	} else if (EnvPrompt === 'builder') {
+	} else if (EnvPrompt === EnvBuilderAction.builder) {
 		let envBuilderOpts: EnvBuilderOptions = {};
 
 		const isWindows = os.platform() === 'win32';

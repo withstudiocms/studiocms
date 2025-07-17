@@ -1,42 +1,41 @@
 ---
-import { User, VerifyEmail } from 'studiocms:auth/lib';
-import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { Effect } from 'effect';
+import { User, VerifyEmail } from "studiocms:auth/lib";
+import type { UserSessionData } from "studiocms:auth/lib/types";
+import { Effect } from "effect";
 
 interface Props {
-	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
-	currentUser: UserSessionData;
+    requiredPermission: "owner" | "admin" | "editor" | "visitor" | "unknown";
+    currentUser: UserSessionData;
 }
 
 const { requiredPermission, currentUser } = Astro.props;
 
-let isAuthorized = await Effect.runPromise(
-	User.isUserAllowed(currentUser, requiredPermission).pipe(User.Provide)
-);
-
-const emailVerified = await Effect.runPromise(
-	VerifyEmail.isEmailVerified(currentUser).pipe(VerifyEmail.Provide)
+let [isAuthorized, emailVerified] = await Effect.runPromise(
+    Effect.all([
+        User.isUserAllowed(currentUser, requiredPermission),
+        VerifyEmail.isEmailVerified(currentUser),
+    ]).pipe(User.Provide, VerifyEmail.Provide),
 );
 
 let redirectProfile = Astro.locals.routeMap.mainLinks.userProfile;
 
 if (Astro.locals.emailVerificationEnabled && emailVerified === false) {
-	isAuthorized = false;
-	redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
+    isAuthorized = false;
+    redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
 }
 
 const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;
 ---
+
 <login-check
     data-is_logged_in={`${currentUser.isLoggedIn}`}
     data-authorized={`${isAuthorized}`}
     data-redirect_profile={redirectProfile}
     data-redirect_login={redirectLogin}
-    style="display: hidden;" 
-></login-check>
+    style="display: hidden;"></login-check>
 
 <script>
-    if (!customElements.get('login-check')) {
+    if (!customElements.get("login-check")) {
         class LoginCheck extends HTMLElement {
             constructor() {
                 super();
@@ -45,7 +44,7 @@ const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;
                 const redirectProfile = this.dataset.redirect_profile;
                 const redirectLogin = this.dataset.redirect_login;
 
-                if (isLoggedIn === 'false') {
+                if (isLoggedIn === "false") {
                     window.location.href = redirectLogin!;
                 }
 
@@ -53,12 +52,12 @@ const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;
                     return;
                 }
 
-                if (authorized === 'false') {
+                if (authorized === "false") {
                     window.location.href = redirectProfile!;
                 }
             }
         }
 
-        customElements.define('login-check', LoginCheck);
+        customElements.define("login-check", LoginCheck);
     }
 </script>

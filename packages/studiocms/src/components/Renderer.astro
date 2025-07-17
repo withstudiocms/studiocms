@@ -13,8 +13,7 @@ const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
 if (!renderer) return;
 
-// @ts-ignore - This is a dynamic import
-const RendererModule = renderers[renderer.safePageType];
+const RendererModule = renderers[renderer.safePageType as keyof typeof renderers];
 
 if (!RendererModule) return;
 ---
