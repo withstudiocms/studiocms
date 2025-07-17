@@ -122,6 +122,8 @@ export const configResolver = defineUtility('astro:config:setup')(
 				studioCMSConfigFile
 			);
 
+			process.env.STUDIOCMS_LOGLEVEL = mergedOptions.logLevel;
+
 			return mergedOptions;
 		} catch (error) {
 			if (error instanceof Error) {

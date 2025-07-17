@@ -30,7 +30,8 @@
     "knip": "knip",
     "ci:vitest": "pnpm --filter @withstudiocms/* test",
     "ci:crowdin:bot": "tsm --require=./scripts/filter-warnings.cjs ./scripts/crowdin-report-bot.ts",
-    "ci:typecheck": "pnpm --filter studiocms typecheck"
+    "ci:typecheck": "pnpm --filter studiocms typecheck",
+    "clean:node": "node ./scripts/clean-node-modules.mjs"
   },
   "devDependencies": {
     "@actions/core": "1.11.1",
