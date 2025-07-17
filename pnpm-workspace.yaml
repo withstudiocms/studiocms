@@ -25,8 +25,8 @@ catalogs:
     effect: ^3.16.13
     '@effect/cli': ^0.67.0
     '@effect/platform': ^0.88.0
-    '@effect/platform-node': ^0.90.0
-    '@effect/language-service': ^0.25.0
+    '@effect/platform-node': ^0.91.0
+    '@effect/language-service': ^0.27.0
     
 packages:
   - "packages/*"
