@@ -38,6 +38,10 @@
     {
       "groupName": "Effect",
       "matchPackageNames": ["effect", "@effect/**"]
+    },
+    {
+      "groupName": "Nanostores",
+      "matchPackageNames": ["nanostores", "@nanostores/**"]
     }
   ]
 }
