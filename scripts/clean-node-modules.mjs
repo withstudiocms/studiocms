@@ -108,10 +108,9 @@ class NodeModulesCleaner {
 					size = bytes > 0 ? `${(bytes / 1024 / 1024).toFixed(1)}M` : '0B';
 				} else {
 					// Use du command on Unix-like systems
-					const sizeOutput = execSync(
-						`du -sh "${dir}" 2>/dev/null || echo "0B"`,
-						{ encoding: 'utf8' }
-					);
+					const sizeOutput = execSync(`du -sh "${dir}" 2>/dev/null || echo "0B"`, {
+						encoding: 'utf8',
+					});
 					size = sizeOutput.trim().split('\t')[0];
 				}
 				sizes.push({ path: dir, size });

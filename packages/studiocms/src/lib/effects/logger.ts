@@ -31,38 +31,38 @@ export interface LogOptions {
 }
 
 const dateTimeFormat = new Intl.DateTimeFormat([], {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  hour12: false
+	hour: '2-digit',
+	minute: '2-digit',
+	second: '2-digit',
+	hour12: false,
 });
 
 export const getEventPrefix = (level: LoggerLevel, label?: string) => {
-  const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
+	const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
 	const prefix = [];
-	if (level === "error" || level === "warn" || level === 'debug') {
-	  prefix.push(chalk.bold(timestamp));
-	  prefix.push(`[${level.toUpperCase()}]`);
+	if (level === 'error' || level === 'warn' || level === 'debug') {
+		prefix.push(chalk.bold(timestamp));
+		prefix.push(`[${level.toUpperCase()}]`);
 	} else {
-	  prefix.push(timestamp);
+		prefix.push(timestamp);
 	}
 	if (label) {
-	  prefix.push(`[${label}]`);
+		prefix.push(`[${label}]`);
 	}
-	if (level === "error") {
-	  return chalk.red(prefix.join(" "));
+	if (level === 'error') {
+		return chalk.red(prefix.join(' '));
 	}
-	if (level === "warn") {
-	  return chalk.yellow(prefix.join(" "));
+	if (level === 'warn') {
+		return chalk.yellow(prefix.join(' '));
 	}
 	if (level === 'debug') {
-		return chalk.blue(prefix.join(" "));
+		return chalk.blue(prefix.join(' '));
 	}
 	if (prefix.length === 1) {
-	  return chalk.dim(prefix[0]);
+		return chalk.dim(prefix[0]);
 	}
-	return `${chalk.dim(prefix[0])} ${chalk.blue(prefix.splice(1).join(" "))}`;
-}
+	return `${chalk.dim(prefix[0])} ${chalk.blue(prefix.splice(1).join(' '))}`;
+};
 
 export class S48Logger {
 	options: LogOptions;
@@ -94,7 +94,7 @@ export class S48Logger {
 	}
 }
 
-const _logger = new S48Logger({ level: 'info' }, 'studiocms:runtime')
+const _logger = new S48Logger({ level: 'info' }, 'studiocms:runtime');
 
 /**
  * Creates a logger instance with a specific label for categorizing log messages.
@@ -148,7 +148,16 @@ const makeLogger = (label: string) =>
 		}
 	});
 
-const sysLogLevel = process.env.STUDIOCMS_LOGLEVEL as "All" | "Fatal" | "Error" | "Warning" | "Info" | "Debug" | "Trace" | "None" | undefined
+const sysLogLevel = process.env.STUDIOCMS_LOGLEVEL as
+	| 'All'
+	| 'Fatal'
+	| 'Error'
+	| 'Warning'
+	| 'Info'
+	| 'Debug'
+	| 'Trace'
+	| 'None'
+	| undefined;
 
 /**
  * Sets the minimum log level for the logger based on the provided configuration.

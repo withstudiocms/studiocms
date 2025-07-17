@@ -37,10 +37,7 @@
     },
     {
       "groupName": "Effect",
-      "matchPackageNames": [
-        "effect",
-        "@effect/**"
-      ]
+      "matchPackageNames": ["effect", "@effect/**"]
     }
   ]
 }

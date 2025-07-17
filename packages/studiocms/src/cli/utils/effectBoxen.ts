@@ -43,6 +43,9 @@ export const effectBoxen = Effect.fn(<T>(fn: (boxen: typeof _boxen) => T) =>
 	Effect.try({
 		try: () => fn(_boxen),
 		catch: (cause) =>
-			new AstroError('Boxen Error', `Failed to run boxen: ${cause instanceof Error ? cause.message : String(cause)}`),
+			new AstroError(
+				'Boxen Error',
+				`Failed to run boxen: ${cause instanceof Error ? cause.message : String(cause)}`
+			),
 	})
 );

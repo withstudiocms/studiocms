@@ -14,28 +14,31 @@ export const random = (...arr: any[]) => {
 	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];
 };
 
-export const intro = (debug: boolean) => genLogger('studiocms/cli/utils/intro')(function* () {
-	const context = yield* CliContext;
-	const { chalk, username } = context;
+export const intro = (debug: boolean) =>
+	genLogger('studiocms/cli/utils/intro')(function* () {
+		const context = yield* CliContext;
+		const { chalk, username } = context;
 
-	const { messages } = getSeasonalMessages()
+		const { messages } = getSeasonalMessages();
 
-	const welcome = random(messages)
+		const welcome = random(messages);
 
-	debug && logger.debug('Printing welcome message...');
+		debug && logger.debug('Printing welcome message...');
 
-	yield* Effect.tryPromise(() => say(
-			[
+		yield* Effect.tryPromise(() =>
+			say(
 				[
-					'Welcome',
-					'to',
-					label('StudioCMS', StudioCMSColorwayBg, chalk.black),
-					StudioCMSColorway(`v${pkgJson.version}`),
-					username,
-				],
-				welcome,
-			] as string[],
-			{ clear: true }
-		))
-	debug && logger.debug('Welcome message printed');
-})
+					[
+						'Welcome',
+						'to',
+						label('StudioCMS', StudioCMSColorwayBg, chalk.black),
+						StudioCMSColorway(`v${pkgJson.version}`),
+						username,
+					],
+					welcome,
+				] as string[],
+				{ clear: true }
+			)
+		);
+		debug && logger.debug('Welcome message printed');
+	});

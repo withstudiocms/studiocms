@@ -81,7 +81,10 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 							catch: (err) => err,
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
-						if (response instanceof Error || (response && typeof response === 'object' && 'message' in response)) {
+						if (
+							response instanceof Error ||
+							(response && typeof response === 'object' && 'message' in response)
+						) {
 							spinner.stop('Error installing dependencies');
 							yield* Console.debug(`[add]: Error installing dependencies ${response}`);
 							// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log

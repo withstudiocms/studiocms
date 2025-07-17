@@ -1,6 +1,15 @@
 import crypto from 'node:crypto';
 import { type ScryptOptions, scrypt } from 'node:crypto';
-import { Brand, Context, Data, Effect, Layer, errorTap, genLogger, pipeLogger } from '../../effect.js';
+import {
+	Brand,
+	Context,
+	Data,
+	Effect,
+	Layer,
+	errorTap,
+	genLogger,
+	pipeLogger,
+} from '../../effect.js';
 
 const parsedN = Number.parseInt(process.env.SCRYPT_N ?? '', 10);
 const SCRYPT_N = Number.isFinite(parsedN) ? Math.max(16384, parsedN) : 16384;
@@ -81,7 +90,11 @@ export class ScryptConfig extends Context.Tag('studiocms/lib/auth/utils/scrypt/S
 		this,
 		this.of(
 			ScryptConfigOptions({
-				salt: process.env.CMS_ENCRYPTION_KEY || (() => { throw new Error('CMS_ENCRYPTION_KEY is required'); })(),
+				salt:
+					process.env.CMS_ENCRYPTION_KEY ||
+					(() => {
+						throw new Error('CMS_ENCRYPTION_KEY is required');
+					})(),
 				keylen: 64,
 				options: {
 					N: SCRYPT_N,
