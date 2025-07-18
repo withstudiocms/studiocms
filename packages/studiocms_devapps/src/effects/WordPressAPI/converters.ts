@@ -16,7 +16,7 @@ import {
 	UseBlogPkgConfig,
 } from './configs.js';
 import type { PageContent, PageData } from './importers.js';
-import { type Category, Page, Post, type Tag } from './schema.js';
+import { Page, Post } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
 /**
