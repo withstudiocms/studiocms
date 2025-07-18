@@ -90,11 +90,7 @@ export class ScryptConfig extends Context.Tag('studiocms/lib/auth/utils/scrypt/S
 		this,
 		this.of(
 			ScryptConfigOptions({
-				salt:
-					process.env.CMS_ENCRYPTION_KEY ||
-					(() => {
-						throw new Error('CMS_ENCRYPTION_KEY is required');
-					})(),
+				salt: process.env.CMS_ENCRYPTION_KEY || '',
 				keylen: 64,
 				options: {
 					N: SCRYPT_N,
