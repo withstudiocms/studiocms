@@ -10,7 +10,7 @@ const { requiredPermission } = Astro.props;
 
 const { userSessionData: user } = Astro.locals;
 
-const isAuthorized = Effect.runPromise(
+const isAuthorized = await Effect.runPromise(
 	User.isUserAllowed(
 		user,
 		(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'

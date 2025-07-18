@@ -30,6 +30,15 @@ function exitIfEmpty(context: BaseContext, items: any[], itemType: string) {
 	}
 }
 
+export enum DBOptionsType {
+	libsql = 'libsql'
+}
+
+export enum DBEditOptions {
+	create = 'create',
+	modify = 'modify'
+}
+
 export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
 	genLogger('studiocms/cli/users')(function* () {
 		let debug: boolean;
@@ -64,34 +73,34 @@ export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debu
 		const options = yield* Effect.tryPromise(() =>
 			prompts.select({
 				message: 'What kind of Database are you using?',
-				options: [{ value: 'libsql', label: 'libSQL Remote' }],
+				options: [{ value: DBOptionsType.libsql, label: 'libSQL Remote' }],
 			})
 		);
 
 		switch (options) {
-			case 'libsql': {
+			case DBOptionsType.libsql: {
 				const libsqlAction = yield* Effect.tryPromise(() =>
 					prompts.select({
 						message: 'What would you like to do?',
 						options: [
-							{ value: 'modify', label: 'Modify an existing user' },
-							{ value: 'create', label: 'Create new user' },
+							{ value: DBEditOptions.create, label: 'Create new user' },
+							{ value: DBEditOptions.modify, label: 'Modify an existing user' },
 						],
 					})
 				);
 
-				if (typeof libsqlAction === 'symbol') {
-					context.pCancel(libsqlAction);
-					context.exit(0);
-				}
-
 				switch (libsqlAction) {
-					case 'create': {
+					case DBEditOptions.create: {
 						steps.push(libsqlCreateUsers);
 						break;
 					}
-					case 'modify': {
+					case DBEditOptions.modify: {
 						steps.push(libsqlModifyUsers);
+						break;
+					}
+					default: {
+						context.pCancel(libsqlAction);
+						context.exit(0);
 						break;
 					}
 				}

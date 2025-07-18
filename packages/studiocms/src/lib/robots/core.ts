@@ -9,7 +9,7 @@ import type { RobotsConfig } from './types.js';
  * @param logger - The logger instance used to log error messages.
  * @throws Will throw an error if the host is not a string or if it does not match the required pattern.
  */
-function validateHost(host: string, logger: AstroIntegrationLogger) {
+function validateHost(host: string, logger: AstroIntegrationLogger): void {
 	const hostPattern = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$/;
 
 	if (typeof host !== 'string') {
@@ -34,7 +34,7 @@ function validateHost(host: string, logger: AstroIntegrationLogger) {
  * - If `config.host` is a number, it is validated and used.
  * - If `config.host` is a string and not 'localhost', it is validated and used.
  */
-function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogger) {
+function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogger): string {
 	let content = '';
 
 	if (config.host === true) {
@@ -70,7 +70,7 @@ function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogge
  * @param logger - The logger instance to use for logging error messages.
  * @throws Will throw an error if the URL is invalid or not a valid sitemap file.
  */
-function validateUrl(url: string, logger: AstroIntegrationLogger) {
+function validateUrl(url: string, logger: AstroIntegrationLogger): void {
 	// const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html)$/;
 	const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html|xml.gz|txt.gz|json|xhtml)$/i;
 	if (!urlPattern.test(url)) {
@@ -91,7 +91,7 @@ function generateSitemapContent(
 	config: RobotsConfig,
 	siteHref: string,
 	logger: AstroIntegrationLogger
-) {
+): string {
 	let content = '';
 
 	if (config.sitemap === true) {
@@ -126,7 +126,7 @@ function throwMsg(
 	msg: string,
 	type: boolean | 'warn' | 'error' | 'info',
 	logger: AstroIntegrationLogger
-) {
+): void {
 	const sentenceHead = '\x1b[1mRefer:\x1b[22m';
 
 	const failure = (message: string) => {
@@ -287,7 +287,7 @@ export function printInfo(
 	executionTime: number,
 	logger: AstroIntegrationLogger,
 	destDir: string
-) {
+): void {
 	if (fileSize > 10) {
 		console.log(`\n\x1b[42m\x1b[30m generating 'robots.txt' file \x1b[39m\x1b[0m`);
 		const warnMsg = [

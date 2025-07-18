@@ -136,17 +136,12 @@
 		"./sdk/*": {
 			"types": "./dist/sdk/*.d.ts",
 			"default": "./dist/sdk/*"
-    	},
-		"./imageServices/cloudinary-js": {
-			"types": "./dist/imageServices/cloudinary-js.d.ts",
-			"default": "./dist/imageServices/cloudinary-js.js"
-		}
+    	}
 	},
 	"type": "module",
 	"dependencies": {
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
-		"@cloudinary/url-gen": "^1.21.0",
 		"@commander-js/extra-typings": "^14.0.0",
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
@@ -156,8 +151,8 @@
 		"@inox-tools/inline-mod": "^2.1.2",
 		"@inox-tools/runtime-logger": "0.4.2",
 		"@libsql/client": "^0.15.2",
-		"@nanostores/i18n": "^0.12.2",
-		"@nanostores/persistent": "^0.10.2",
+		"@nanostores/i18n": "^1.0.1",
+		"@nanostores/persistent": "^1.1.0",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
@@ -187,7 +182,7 @@
 		"mdast-util-to-string": "^4.0.0",
 		"mrmime": "^2.0.0",
 		"micromatch": "^4.0.8",
-		"nanostores": "^0.11.4",
+		"nanostores": "^1.0.1",
 		"nodemailer": "^7.0.0",
 		"package-manager-detector": "^1.1.0",
 		"semver": "^7.7.1",

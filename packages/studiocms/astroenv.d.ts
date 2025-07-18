@@ -13,5 +13,4 @@ declare module 'astro:env/server' {
 	export const CMS_AUTH0_CLIENT_SECRET: string | undefined;
 	export const CMS_AUTH0_DOMAIN: string | undefined;
 	export const CMS_AUTH0_REDIRECT_URI: string | undefined;
-	export const CMS_CLOUDINARY_CLOUDNAME: string | undefined;
 }

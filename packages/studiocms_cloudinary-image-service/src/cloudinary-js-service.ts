@@ -1,8 +1,10 @@
+/// <reference path="../astroenv.d.ts" />
+
 import { getSecret } from 'astro:env/server';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 import { AstroError } from 'astro/errors';
-import type { StudioCMSImageService } from '../schemas/index.js';
+import type { StudioCMSImageService } from 'studiocms/schemas';
 
 /**
  * Cloudinary Image Service

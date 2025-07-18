@@ -11,6 +11,12 @@ import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config();
 
+export enum UserFieldOption {
+	password = 'password',
+	username = 'username',
+	name = 'name',
+}
+
 export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { prompts, chalk } = context;
 
@@ -63,19 +69,14 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 	const action = await prompts.select({
 		message: 'Which user field would you like to update?',
 		options: [
-			{ value: 'password', label: 'Password' },
-			{ value: 'username', label: 'Username' },
-			{ value: 'name', label: 'Display Name' },
+			{ value: UserFieldOption.password, label: 'Password' },
+			{ value: UserFieldOption.username, label: 'Username' },
+			{ value: UserFieldOption.name, label: 'Display Name' },
 		],
 	});
 
-	if (typeof action === 'symbol') {
-		context.pCancel(action);
-		context.exit(0);
-	}
-
 	switch (action) {
-		case 'name': {
+		case UserFieldOption.name: {
 			const newDisplayName = await prompts.text({
 				message: `Enter the user's new Display name`,
 				placeholder: 'John Doe',
@@ -119,7 +120,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 			}
 			break;
 		}
-		case 'username': {
+		case UserFieldOption.username: {
 			const newUserName = await prompts.text({
 				message: `Enter the user's new username`,
 				placeholder: 'johndoe',
@@ -173,7 +174,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 			}
 			break;
 		}
-		case 'password': {
+		case UserFieldOption.password: {
 			const newPassword = await prompts.password({
 				message: `Enter the user's new password`,
 				validate: (password) => {
@@ -243,6 +244,11 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 					},
 				});
 			}
+			break;
+		}
+		default: {
+			context.pCancel(action);
+			context.exit(0);
 			break;
 		}
 	}

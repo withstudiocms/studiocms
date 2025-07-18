@@ -18,10 +18,7 @@ const config: KnipConfig = {
 				'@clack/core',
 				'@commander-js/extra-typings',
 				'studiocms-dashboard',
-				'commander',
-				'@effect/platform-browser',
-				'@effect/platform-node',
-				'@effect/platform-node-shared',
+				'commander'
 			],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
@@ -31,6 +28,14 @@ const config: KnipConfig = {
 			},
 		},
 		'packages/studiocms_blog': {
+			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			astro: {
+				entry: ['src/**/*.astro'],
+				project: ['src/**/*.astro'],
+			},
+		},
+		'packages/studiocms_cloudinary-image-service': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
