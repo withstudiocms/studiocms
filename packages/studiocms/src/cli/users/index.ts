@@ -31,12 +31,12 @@ function exitIfEmpty(context: BaseContext, items: any[], itemType: string) {
 }
 
 export enum DBOptionsType {
-	libsql = 'libsql'
+	libsql = 'libsql',
 }
 
 export enum DBEditOptions {
 	create = 'create',
-	modify = 'modify'
+	modify = 'modify',
 }
 
 export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debug, dryRun }) =>

@@ -22,7 +22,7 @@ import type { StepFn } from '../../utils/types.js';
 export enum EnvBuilderAction {
 	builder = 'builder',
 	example = 'example',
-	none = 'none'
+	none = 'none',
 }
 
 export const env: StepFn = async (context, debug, dryRun = false) => {

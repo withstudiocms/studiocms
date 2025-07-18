@@ -18,7 +18,7 @@ const config: KnipConfig = {
 				'@clack/core',
 				'@commander-js/extra-typings',
 				'studiocms-dashboard',
-				'commander'
+				'commander',
 			],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],

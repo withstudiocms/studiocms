@@ -1,27 +1,27 @@
 ---
-import { User, VerifyEmail } from "studiocms:auth/lib";
-import type { UserSessionData } from "studiocms:auth/lib/types";
-import { Effect } from "effect";
+import { User, VerifyEmail } from 'studiocms:auth/lib';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { Effect } from 'effect';
 
 interface Props {
-    requiredPermission: "owner" | "admin" | "editor" | "visitor" | "unknown";
-    currentUser: UserSessionData;
+	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	currentUser: UserSessionData;
 }
 
 const { requiredPermission, currentUser } = Astro.props;
 
 let [isAuthorized, emailVerified] = await Effect.runPromise(
-    Effect.all([
-        User.isUserAllowed(currentUser, requiredPermission),
-        VerifyEmail.isEmailVerified(currentUser),
-    ]).pipe(User.Provide, VerifyEmail.Provide),
+	Effect.all([
+		User.isUserAllowed(currentUser, requiredPermission),
+		VerifyEmail.isEmailVerified(currentUser),
+	]).pipe(User.Provide, VerifyEmail.Provide)
 );
 
 let redirectProfile = Astro.locals.routeMap.mainLinks.userProfile;
 
 if (Astro.locals.emailVerificationEnabled && emailVerified === false) {
-    isAuthorized = false;
-    redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
+	isAuthorized = false;
+	redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
 }
 
 const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;

@@ -92,4 +92,3 @@ export const FrontEndConfigSchema = z
 	.default({});
 
 export type StudioCMSBlogOptions = z.infer<typeof FrontEndConfigSchema>;
-

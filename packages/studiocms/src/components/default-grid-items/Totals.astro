@@ -1,22 +1,18 @@
 ---
-import { SDKCoreJs, runSDK } from "studiocms:sdk";
-import { Card, Icon } from "studiocms:ui/components";
-import { Effect } from "effect";
-import { allowedIdentifiers } from "./utils.js";
+import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { Card, Icon } from 'studiocms:ui/components';
+import { Effect } from 'effect';
+import { allowedIdentifiers } from './utils.js';
 
 const [allPages, totalUsers] = await runSDK(
-    Effect.all([SDKCoreJs.GET.pages(true), SDKCoreJs.GET.users.all()]),
+	Effect.all([SDKCoreJs.GET.pages(true), SDKCoreJs.GET.users.all()])
 );
 
 // Filter out the pages that are not allowed
-const totalPages = allPages.filter(({ data: page }) =>
-    allowedIdentifiers.includes(page.package),
-);
+const totalPages = allPages.filter(({ data: page }) => allowedIdentifiers.includes(page.package));
 
 // Filter out for draft pages
-const totalDraftPages = totalPages.filter(
-    ({ data: page }) => page.draft === true,
-);
+const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === true);
 ---
 
 <div class="totals-grid-item-container">
