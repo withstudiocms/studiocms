@@ -1,4 +1,4 @@
-/// <reference types="../astroenv.d.ts" />
+/// <reference path="../astroenv.d.ts" />
 
 import { getSecret } from 'astro:env/server';
 import { Cloudinary } from '@cloudinary/url-gen';
