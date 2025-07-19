@@ -7,6 +7,7 @@ await setDiscordMessage();
 
 async function setDiscordMessage() {
 	if (!CROWDIN_PERSONAL_TOKEN || !CROWDIN_PROJECT_ID) {
+		/** @type {string[]} */
 		const missing = [];
 		if (!CROWDIN_PERSONAL_TOKEN) missing.push('CROWDIN_PERSONAL_TOKEN');
 		if (!CROWDIN_PROJECT_ID) missing.push('CROWDIN_PROJECT_ID');
@@ -22,8 +23,7 @@ async function setDiscordMessage() {
 	};
 
 	// initialization of crowdin client
-	// @ts-expect-error - Seems to me a module conversion issue? (using `tsm` to convert on-the-fly to JS)
-	const { translationStatusApi } = new crowdin.default(credentials);
+	const { translationStatusApi } = new crowdin(credentials);
 
 	/** @type {import('@crowdin/crowdin-api-client').ResponseList<import('@crowdin/crowdin-api-client').TranslationStatusModel.LanguageProgress>} */
 	let response;
