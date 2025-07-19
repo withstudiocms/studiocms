@@ -1,9 +1,5 @@
 import { setOutput } from '@actions/core';
-import crowdin, {
-	type ResponseList,
-	type TranslationStatusModel,
-	type Credentials,
-} from '@crowdin/crowdin-api-client';
+import crowdin from '@crowdin/crowdin-api-client';
 
 const { WORKFLOW_DISPATCH, CROWDIN_PROJECT_ID, CROWDIN_PERSONAL_TOKEN } = process.env;
 
@@ -11,7 +7,7 @@ await setDiscordMessage();
 
 async function setDiscordMessage() {
 	if (!CROWDIN_PERSONAL_TOKEN || !CROWDIN_PROJECT_ID) {
-		const missing: string[] = [];
+		const missing = [];
 		if (!CROWDIN_PERSONAL_TOKEN) missing.push('CROWDIN_PERSONAL_TOKEN');
 		if (!CROWDIN_PROJECT_ID) missing.push('CROWDIN_PROJECT_ID');
 		throw new Error(`Missing environment variables: ${missing.join(', ')}`);
@@ -20,20 +16,22 @@ async function setDiscordMessage() {
 	const PROJECT_ID = Number(CROWDIN_PROJECT_ID);
 
 	// credentials
-	const credentials: Credentials = {
+	/** @type {import('@crowdin/crowdin-api-client').Credentials} */
+	const credentials = {
 		token: CROWDIN_PERSONAL_TOKEN,
 	};
 
 	// initialization of crowdin client
 	// @ts-expect-error - Seems to me a module conversion issue? (using `tsm` to convert on-the-fly to JS)
-	const { translationStatusApi } = new crowdin.default(credentials) as crowdin;
+	const { translationStatusApi } = new crowdin.default(credentials);
 
-	let response: ResponseList<TranslationStatusModel.LanguageProgress>;
+	/** @type {import('@crowdin/crowdin-api-client').ResponseList<import('@crowdin/crowdin-api-client').TranslationStatusModel.LanguageProgress>} */
+	let response;
 
 	try {
 		response = await translationStatusApi.getProjectProgress(PROJECT_ID);
 	} catch (e) {
-		throw new Error(`Failed to fetch project progress from Crowdin: ${(e as Error).message}`);
+		throw new Error(`Failed to fetch project progress from Crowdin: ${e.message}`);
 	}
 
 	const remappedData = response.data.map(
