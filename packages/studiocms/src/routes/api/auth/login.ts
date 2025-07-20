@@ -27,7 +27,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			const formData = yield* pipeLogger('studiocms/routes/api/auth/login/POST.formData')(
 				Effect.tryPromise({
 					try: () => context.request.formData(),
-					catch: () => new AstroError('failed to parse formData')
+					catch: () => new AstroError('failed to parse formData'),
 				})
 			);
 
@@ -53,10 +53,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 
 			// Check if the user has a password or is using a oAuth login
 			if (!existingUser.password)
-				return yield* authUtils.badFormDataEntry(
-					'Incorrect method',
-					'User is using OAuth login'
-				);
+				return yield* authUtils.badFormDataEntry('Incorrect method', 'User is using OAuth login');
 
 			const validPassword = yield* passUtils.verifyPasswordHash(existingUser.password, password);
 

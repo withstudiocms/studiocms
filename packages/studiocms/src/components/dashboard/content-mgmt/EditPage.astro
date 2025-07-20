@@ -31,10 +31,7 @@ const { lang, config } = Astro.props as Props;
 const enableDiffs = config.data.enableDiffs;
 
 const [[{ data: pageData }, users], editors] = await Promise.all([
-	runSDK(Effect.all([
-    SDKCoreJs.GET.page.byId(editId),
-    SDKCoreJs.GET.users.all()
-  ])),
+	runSDK(Effect.all([SDKCoreJs.GET.page.byId(editId), SDKCoreJs.GET.users.all()])),
 	importEditorKeys(editorKeys),
 ]);
 

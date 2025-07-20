@@ -33,17 +33,18 @@ const router: Router = {};
 router['/**'] = async (context, next) =>
 	await convertToVanilla(
 		genLogger('studiocms/middleware/middlewareEffect')(function* () {
-			const { GET: { latestVersion, siteConfig } } = yield* SDKCore;
+			const {
+				GET: { latestVersion, siteConfig },
+			} = yield* SDKCore;
 			const { getUserData } = yield* User;
 			const { isEmailVerificationEnabled } = yield* VerifyEmail;
 
-			const [version, siteConf, userSessionData, emailVerificationEnabled] =
-				yield* Effect.all([
-					latestVersion(),
-					siteConfig(),
-					getUserData(context),
-					isEmailVerificationEnabled(),
-				]);
+			const [version, siteConf, userSessionData, emailVerificationEnabled] = yield* Effect.all([
+				latestVersion(),
+				siteConfig(),
+				getUserData(context),
+				isEmailVerificationEnabled(),
+			]);
 
 			const userPermissionLevel = yield* getUserPermissions(userSessionData);
 

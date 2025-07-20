@@ -15,7 +15,7 @@ dotenv.config();
 type Checker = Awaited<{
 	username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
 	password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
-}> | null
+}> | null;
 
 let checker: Checker = null;
 
@@ -58,9 +58,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 					validate: (user) => {
 						const isUser = currentUsers.find(({ username }) => username === user);
 						if (isUser) return 'Username is already in use, please try another one';
-						if (
-							Effect.runSync(checker.username(user))
-						) {
+						if (Effect.runSync(checker.username(user))) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
 						return undefined;
@@ -93,9 +91,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 							return 'Password must be between 6 and 255 characters';
 						}
 						// Check if password is known unsafe password
-						if (
-							Effect.runSync(checker.password(password))
-						) {
+						if (Effect.runSync(checker.password(password))) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}
 

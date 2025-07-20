@@ -1,9 +1,9 @@
 ---
-import { User } from "studiocms:auth/lib";
-import { Effect } from "effect";
+import { User } from 'studiocms:auth/lib';
+import { Effect } from 'effect';
 
 interface Props {
-    requiredPermission?: string;
+	requiredPermission?: string;
 }
 
 const { requiredPermission } = Astro.props;
@@ -11,22 +11,17 @@ const { requiredPermission } = Astro.props;
 const { userSessionData: user } = Astro.locals;
 
 const isAuthorized = await Effect.runPromise(
-    Effect.gen(function* () {
-        const { isUserAllowed } = yield* User;
-        return yield* isUserAllowed(
-            user,
-            (requiredPermission as
-                | "owner"
-                | "admin"
-                | "editor"
-                | "visitor"
-                | "unknown") ?? "unknown",
-        );
-    }).pipe(User.Provide),
+	Effect.gen(function* () {
+		const { isUserAllowed } = yield* User;
+		return yield* isUserAllowed(
+			user,
+			(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
+		);
+	}).pipe(User.Provide)
 );
 
 if (!isAuthorized) {
-    return Astro.redirect(Astro.locals.routeMap.mainLinks.userManagement);
+	return Astro.redirect(Astro.locals.routeMap.mainLinks.userManagement);
 }
 ---
 

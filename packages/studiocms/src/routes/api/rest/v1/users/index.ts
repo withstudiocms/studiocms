@@ -171,7 +171,12 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// Create a new user
-			const newUser = yield* userUtils.createLocalUser(displayname, username, checkEmail.data, password);
+			const newUser = yield* userUtils.createLocalUser(
+				displayname,
+				username,
+				checkEmail.data,
+				password
+			);
 			const updateRank = yield* sdk.UPDATE.permissions({
 				user: newUser.id,
 				rank: newUserRank,

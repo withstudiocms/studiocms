@@ -20,7 +20,8 @@ const currentLoginPageBg = validImages.find(
 	({ name }) => name === data.loginPageBackground && name !== 'custom'
 );
 
-const imageFilter = (filterName: string) => validImages.filter(({ name }) => name === filterName)[0]
+const imageFilter = (filterName: string) =>
+	validImages.filter(({ name }) => name === filterName)[0];
 
 const blobs = imageFilter('studiocms-blobs');
 const blocks = imageFilter('studiocms-blocks');

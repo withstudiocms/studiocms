@@ -12,9 +12,9 @@ import { hashPassword } from '../../utils/user-utils.js';
 dotenv.config();
 
 type Checker = Awaited<{
-    username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
-    password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
-}> | null
+	username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+	password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+}> | null;
 
 let checker: Checker = null;
 

@@ -1,12 +1,12 @@
 ---
-import { User } from "studiocms:auth/lib";
-import type { UserSessionData } from "studiocms:auth/lib/types";
-import dashboardGridItems from "studiocms:components/dashboard-grid-items";
-import type { UiLanguageKeys } from "studiocms:i18n";
-import type { SiteConfigCacheObject } from "studiocms:sdk/types";
-import { Center } from "studiocms:ui/components";
-import { Effect } from "effect";
-import DashboardGridItem from "./DashboardGridItem.astro";
+import { User } from 'studiocms:auth/lib';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import { Center } from 'studiocms:ui/components';
+import { Effect } from 'effect';
+import DashboardGridItem from './DashboardGridItem.astro';
 
 interface Props {
 	lang: UiLanguageKeys;
@@ -24,17 +24,14 @@ let gridItems = dashboardGridItems;
 
 if (((data.gridItems as string[]) ?? []).length > 0) {
 	gridItems = dashboardGridItems.filter((item) =>
-		((data.gridItems as string[]) ?? []).includes(item.name),
+		((data.gridItems as string[]) ?? []).includes(item.name)
 	);
 }
 
-const checkAllowed = (perm: "owner" | "admin" | "editor" | "visitor" | undefined) =>
+const checkAllowed = (perm: 'owner' | 'admin' | 'editor' | 'visitor' | undefined) =>
 	Effect.gen(function* () {
 		const user = yield* User;
-		return user.isUserAllowed(
-			currentUser,
-			perm ?? "unknown",
-		);
+		return user.isUserAllowed(currentUser, perm ?? 'unknown');
 	}).pipe(User.Provide);
 ---
 
