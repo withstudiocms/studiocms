@@ -230,7 +230,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 						}),
 					catch: (cause) =>
 						new SessionError({
-							message: `There was an error deleteing the session token cookie: ${cause}`,
+							message: `There was an error deleting the session token cookie: ${cause}`,
 						}),
 				})
 			);

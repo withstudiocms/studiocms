@@ -2,7 +2,7 @@ import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cl
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import { Effect, convertToVanilla } from '../../../effect.js';
-import { CheckIfUnsafe } from '../../../lib/auth/utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';
@@ -11,12 +11,24 @@ import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config();
 
-const checker = await Effect.runPromise(
-	Effect.gen(function* () {
-		const { _tag, ...mod } = yield* CheckIfUnsafe;
-		return mod;
-	}).pipe(Effect.provide(CheckIfUnsafe.Default))
-);
+type Checker = Awaited<{
+    username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+    password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+}> | null
+
+let checker: Checker = null;
+
+const getChecker = async () => {
+	if (!checker) {
+		checker = await Effect.runPromise(
+			Effect.gen(function* () {
+				const { _tag, ...mod } = yield* CheckIfUnsafe;
+				return mod;
+			}).pipe(Effect.provide(CheckIfUnsafe.Default))
+		);
+	}
+	return checker;
+};
 
 export enum UserFieldOption {
 	password = 'password',
@@ -26,6 +38,8 @@ export enum UserFieldOption {
 
 export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { prompts, chalk } = context;
+
+	const checker: Checker = await getChecker();
 
 	debug && logger.debug('Running libsqlUsers...');
 
