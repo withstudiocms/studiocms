@@ -2,8 +2,12 @@ import { createCipheriv, createDecipheriv } from 'node:crypto';
 import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { DynamicBuffer } from '@oslojs/binary';
 import { decodeBase64 } from '@oslojs/encoding';
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
+
+export class EncryptionError extends Data.TaggedError('EncryptionError')<{
+	message: string;
+}> {}
 
 /**
  * The `Encryption` class provides methods for encrypting and decrypting data using AES-128-GCM encryption.
@@ -36,7 +40,13 @@ export class Encryption extends Effect.Service<Encryption>()(
 	{
 		effect: genLogger('studiocms/lib/auth/encryption/Encryption.effect')(function* () {
 			const getKey = pipeLogger('studiocms/lib/auth/encryption/Encryption.getKey')(
-				Effect.try(() => decodeBase64(CMS_ENCRYPTION_KEY))
+				Effect.try({
+					try: () => decodeBase64(CMS_ENCRYPTION_KEY),
+					catch: (cause) =>
+						new EncryptionError({
+							message: `An Error occurred while getting the encryption key: ${cause}`,
+						}),
+				})
 			);
 			const _key = yield* getKey;
 
@@ -51,16 +61,20 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 */
 			const encrypt = (data: Uint8Array) =>
 				pipeLogger('studiocms/lib/auth/encryption/Encryption.encrypt')(
-					Effect.try(() => {
-						const iv = new Uint8Array(16);
-						crypto.getRandomValues(iv);
-						const cipher = createCipheriv(_algorithm, _key, iv);
-						const encrypted = new DynamicBuffer(0);
-						encrypted.write(iv);
-						encrypted.write(cipher.update(data));
-						encrypted.write(cipher.final());
-						encrypted.write(cipher.getAuthTag());
-						return encrypted.bytes();
+					Effect.try({
+						try: () => {
+							const iv = new Uint8Array(16);
+							crypto.getRandomValues(iv);
+							const cipher = createCipheriv(_algorithm, _key, iv);
+							const encrypted = new DynamicBuffer(0);
+							encrypted.write(iv);
+							encrypted.write(cipher.update(data));
+							encrypted.write(cipher.final());
+							encrypted.write(cipher.getAuthTag());
+							return encrypted.bytes();
+						},
+						catch: (cause) =>
+							new EncryptionError({ message: `An error occurred when encrypting data: ${cause}` }),
 					})
 				);
 
@@ -72,7 +86,11 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 */
 			const encryptToString = (data: string) =>
 				genLogger('studiocms/lib/auth/encryption/Encryption.encryptToString')(function* () {
-					const encodedData = yield* Effect.try(() => new TextEncoder().encode(data));
+					const encodedData = yield* Effect.try({
+						try: () => new TextEncoder().encode(data),
+						catch: (cause) =>
+							new EncryptionError({ message: `An error occurred when encrypting data: ${cause}` }),
+					});
 					return yield* encrypt(encodedData);
 				});
 
@@ -85,16 +103,20 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 */
 			const decrypt = (data: Uint8Array) =>
 				pipeLogger('studiocms/lib/auth/encryption/Encryption.decrypt')(
-					Effect.try(() => {
-						if (data.byteLength < 33) {
-							throw new Error('Invalid data');
-						}
-						const decipher = createDecipheriv(_algorithm, _key, data.slice(0, 16));
-						decipher.setAuthTag(data.slice(data.byteLength - 16));
-						const decrypted = new DynamicBuffer(0);
-						decrypted.write(decipher.update(data.slice(16, data.byteLength - 16)));
-						decrypted.write(decipher.final());
-						return decrypted.bytes();
+					Effect.try({
+						try: () => {
+							if (data.byteLength < 33) {
+								throw new Error('Invalid data');
+							}
+							const decipher = createDecipheriv(_algorithm, _key, data.slice(0, 16));
+							decipher.setAuthTag(data.slice(data.byteLength - 16));
+							const decrypted = new DynamicBuffer(0);
+							decrypted.write(decipher.update(data.slice(16, data.byteLength - 16)));
+							decrypted.write(decipher.final());
+							return decrypted.bytes();
+						},
+						catch: (cause) =>
+							new EncryptionError({ message: `An error occurred when decrypting data: ${cause}` }),
 					})
 				);
 
@@ -107,7 +129,11 @@ export class Encryption extends Effect.Service<Encryption>()(
 			const decryptToString = (data: Uint8Array) =>
 				genLogger('studiocms/lib/auth/encryption/Encryption.decryptToString')(function* () {
 					const decrypted = yield* decrypt(data);
-					return yield* Effect.try(() => new TextDecoder().decode(decrypted));
+					return yield* Effect.try({
+						try: () => new TextDecoder().decode(decrypted),
+						catch: (cause) =>
+							new EncryptionError({ message: `An error occurred when decrypting data: ${cause}` }),
+					});
 				});
 
 			return {
@@ -117,7 +143,6 @@ export class Encryption extends Effect.Service<Encryption>()(
 				decryptToString,
 			};
 		}),
-		accessors: true,
 	}
 ) {
 	static Provide = Effect.provide(this.Default);

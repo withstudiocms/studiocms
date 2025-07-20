@@ -44,8 +44,8 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
  */
 export const getUserPermissions = (userData: UserSessionData) =>
 	genLogger('studiocms/middleware/utils/getUserPermissions')(function* () {
-		const user = yield* User;
-		const userPermissionLevel = yield* user.getUserPermissionLevel(userData);
+		const { getUserPermissionLevel } = yield* User;
+		const userPermissionLevel = yield* getUserPermissionLevel(userData);
 
 		return {
 			isVisitor: userPermissionLevel >= User.UserPermissionLevel.visitor,

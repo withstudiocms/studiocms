@@ -39,7 +39,6 @@ export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
 				badFormDataEntry,
 			};
 		}),
-		accessors: true,
 	}
 ) {
 	static Provide = Effect.provide(this.Default);

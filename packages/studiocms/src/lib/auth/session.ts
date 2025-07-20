@@ -3,9 +3,11 @@ import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { APIContext, AstroGlobal } from 'astro';
-import { Effect, pipe } from 'effect';
+import { Data, Effect, pipe } from 'effect';
 import { genLogger, pipeLogger } from '../effects/logger.js';
 import type { SessionValidationResult, UserSession } from './types.js';
+
+export class SessionError extends Data.TaggedError('SessionError')<{ message: string }> {}
 
 /**
  * The session expiration time in milliseconds.
@@ -70,9 +72,18 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const generateSessionToken = () =>
 			pipeLogger('studiocms/lib/auth/session/Session.generateSessionToken')(
-				Effect.try(() =>
-					pipe(new Uint8Array(20), crypto.getRandomValues, encodeBase32LowerCaseNoPadding)
-				)
+				Effect.try({
+					try: () => {
+						const data = new Uint8Array(20);
+						const random = crypto.getRandomValues(data);
+						const returnable = encodeBase32LowerCaseNoPadding(random);
+						return returnable;
+					},
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error generating a session token: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -80,7 +91,14 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const makeExpirationDate = () =>
 			pipeLogger('studiocms/lib/auth/session/Session.makeExpirationDate')(
-				Effect.try(() => new Date(Date.now() + sessionExpTime))
+				Effect.try({
+					try: () => new Date(Date.now() + sessionExpTime),
+
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error generating a session token: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -88,7 +106,13 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const makeSessionId = (token: string) =>
 			pipeLogger('studiocms/lib/auth/session/Session.makeSessionId')(
-				Effect.try(() => pipe(new TextEncoder().encode(token), sha256, encodeHexLowerCase))
+				Effect.try({
+					try: () => pipe(new TextEncoder().encode(token), sha256, encodeHexLowerCase),
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error generating a session id: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -172,15 +196,20 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const setSessionTokenCookie = (context: APIContext, token: string, expiresAt: Date) =>
 			pipeLogger('studiocms/lib/auth/session/Session.setSessionTokenCookie')(
-				Effect.try(() =>
-					context.cookies.set(sessionCookieName, token, {
-						httpOnly: true,
-						sameSite: 'lax',
-						secure: import.meta.env.PROD,
-						expires: expiresAt,
-						path: '/',
-					})
-				)
+				Effect.try({
+					try: () =>
+						context.cookies.set(sessionCookieName, token, {
+							httpOnly: true,
+							sameSite: 'lax',
+							secure: import.meta.env.PROD,
+							expires: expiresAt,
+							path: '/',
+						}),
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error setting the session token cookie: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -190,15 +219,20 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const deleteSessionTokenCookie = (context: APIContext | AstroGlobal) =>
 			pipeLogger('studiocms/lib/auth/session/Session.deleteSessionTokenCookie')(
-				Effect.try(() =>
-					context.cookies.set(sessionCookieName, '', {
-						httpOnly: true,
-						sameSite: 'lax',
-						secure: import.meta.env.PROD,
-						maxAge: 0,
-						path: '/',
-					})
-				)
+				Effect.try({
+					try: () =>
+						context.cookies.set(sessionCookieName, '', {
+							httpOnly: true,
+							sameSite: 'lax',
+							secure: import.meta.env.PROD,
+							maxAge: 0,
+							path: '/',
+						}),
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error deleteing the session token cookie: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -210,15 +244,20 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 */
 		const setOAuthSessionTokenCookie = (context: APIContext, key: string, value: string) =>
 			pipeLogger('studiocms/lib/auth/session/Session.setOAuthSessionTokenCookie')(
-				Effect.try(() =>
-					context.cookies.set(key, value, {
-						path: '/',
-						secure: import.meta.env.PROD,
-						httpOnly: true,
-						maxAge: 60 * 10,
-						sameSite: 'lax',
-					})
-				)
+				Effect.try({
+					try: () =>
+						context.cookies.set(key, value, {
+							path: '/',
+							secure: import.meta.env.PROD,
+							httpOnly: true,
+							maxAge: 60 * 10,
+							sameSite: 'lax',
+						}),
+					catch: (cause) =>
+						new SessionError({
+							message: `There was an error setting the session token cookie: ${cause}`,
+						}),
+				})
 			);
 
 		/**
@@ -249,7 +288,6 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		};
 	}),
 	dependencies: [SDKCore.Default],
-	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
 	static sessionCookieName = sessionCookieName;

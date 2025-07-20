@@ -4,6 +4,7 @@ import { defineStudioCMSConfig } from 'studiocms/config';
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
+	logLevel: "All",
 	plugins: [blog()],
 	features: {
 		developerConfig: {

@@ -3400,7 +3400,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		SDKCore_Collectors.Default,
 		GetVersionFromNPM.Default,
 	],
-	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
 }
