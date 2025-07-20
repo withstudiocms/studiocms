@@ -12,6 +12,13 @@ import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config();
 
+const checker = await Effect.runPromise(
+	Effect.gen(function* () {
+		const { _tag, ...mod } = yield* CheckIfUnsafe;
+		return mod;
+	}).pipe(Effect.provide(CheckIfUnsafe.Default))
+);
+
 export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { chalk, prompts } = context;
 
@@ -38,9 +45,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 						const isUser = currentUsers.find(({ username }) => username === user);
 						if (isUser) return 'Username is already in use, please try another one';
 						if (
-							Effect.runSync(
-								CheckIfUnsafe.username(user).pipe(Effect.provide(CheckIfUnsafe.Default))
-							)
+							Effect.runSync(checker.username(user).pipe(Effect.provide(CheckIfUnsafe.Default)))
 						) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
@@ -75,9 +80,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 						}
 						// Check if password is known unsafe password
 						if (
-							Effect.runSync(
-								CheckIfUnsafe.password(password).pipe(Effect.provide(CheckIfUnsafe.Default))
-							)
+							Effect.runSync(checker.password(password).pipe(Effect.provide(CheckIfUnsafe.Default)))
 						) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}

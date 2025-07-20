@@ -95,6 +95,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 		genLogger('studioCMS:rest:v1:users:POST')(function* () {
 			const sdk = yield* SDKCore;
 			const user = yield* verifyAuthTokenFromHeader(context);
+			const userUtils = yield* User;
+			const passwordUtils = yield* Password;
 
 			if (user instanceof Response) {
 				return user;
@@ -136,13 +138,13 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// If the username is invalid, return an error
-			const verifyUsernameResponse = yield* User.verifyUsernameInput(username);
+			const verifyUsernameResponse = yield* userUtils.verifyUsernameInput(username);
 			if (verifyUsernameResponse !== true) {
 				return apiResponseLogger(400, verifyUsernameResponse);
 			}
 
 			// If the password is invalid, return an error
-			const verifyPasswordResponse = yield* Password.verifyPasswordStrength(password);
+			const verifyPasswordResponse = yield* passwordUtils.verifyPasswordStrength(password);
 			if (verifyPasswordResponse !== true) {
 				return apiResponseLogger(400, verifyPasswordResponse);
 			}
@@ -169,7 +171,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// Create a new user
-			const newUser = yield* User.createLocalUser(displayname, username, checkEmail.data, password);
+			const newUser = yield* userUtils.createLocalUser(displayname, username, checkEmail.data, password);
 			const updateRank = yield* sdk.UPDATE.permissions({
 				user: newUser.id,
 				rank: newUserRank,

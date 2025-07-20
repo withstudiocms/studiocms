@@ -10,6 +10,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
 		genLogger('studiocms:first-time-setup:step-2:POST')(function* () {
 			const sdk = yield* SDKCore;
+			const userUtils = yield* User;
+			const passwordUtils = yield* Password;
 
 			const reqData = yield* Effect.tryPromise(() => context.request.json());
 
@@ -41,7 +43,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// If the username is invalid, return an error
-			const usernameTest = yield* User.verifyUsernameInput(username);
+			const usernameTest = yield* userUtils.verifyUsernameInput(username);
 			if (usernameTest !== true) {
 				return new Response(
 					JSON.stringify({
@@ -55,7 +57,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// If the password is invalid, return an error
-			const passwordTest = yield* Password.verifyPasswordStrength(password);
+			const passwordTest = yield* passwordUtils.verifyPasswordStrength(password);
 			if (passwordTest !== true) {
 				return new Response(
 					JSON.stringify({
@@ -82,7 +84,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				);
 			}
 
-			const newUser = yield* User.createLocalUser(displayname, username, email, password);
+			const newUser = yield* userUtils.createLocalUser(displayname, username, email, password);
 
 			yield* sdk.UPDATE.permissions({
 				user: newUser.id,
