@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/cloudinary-image-service",
-  "version": "0.1.0-beta.18",
+  "version": "0.1.0-beta.19",
   "description": "Cloudinary Image Service For StudioCMS!",
   "author": {
     "name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
@@ -51,7 +51,7 @@
   },
   "type": "module",
   "dependencies": {
-		"@cloudinary/url-gen": "^1.21.0",
+    "@cloudinary/url-gen": "^1.21.0",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
