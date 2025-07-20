@@ -4,11 +4,13 @@ import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData, tsEmailVerificationTokensSelect } from 'studiocms:sdk/types';
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
 import { CMSNotificationSettingsId } from '../../consts.js';
 import { genLogger, pipeLogger } from '../effects/logger.js';
 import type { MailerResponse } from '../mailer/index.js';
 import type { UserSessionData } from './types.js';
+
+export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ message: string }> {}
 
 /**
  * The `VerifyEmail` service provides functionality for managing email verification
@@ -134,12 +136,15 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 */
 			const generateUrl = (base: string, path: string, params?: Record<string, string>) =>
 				pipeLogger('studiocms/lib/auth/verify-email/VerifyEmail.generateUrl')(
-					Effect.try(() => {
-						const url = new URL(path, base);
-						for (const [key, value] of Object.entries(params || {})) {
-							url.searchParams.append(key, value);
-						}
-						return url;
+					Effect.try({
+						try: () => {
+							const url = new URL(path, base);
+							for (const [key, value] of Object.entries(params || {})) {
+								url.searchParams.append(key, value);
+							}
+							return url;
+						},
+						catch: (cause) => new VerifyEmailError({ message: `URL generation error: ${cause}` }),
 					})
 				);
 
@@ -297,7 +302,6 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			};
 		}),
 		dependencies: [Mailer.Default, SDKCore.Default],
-		accessors: true,
 	}
 ) {
 	static Provide = Effect.provide(this.Default);

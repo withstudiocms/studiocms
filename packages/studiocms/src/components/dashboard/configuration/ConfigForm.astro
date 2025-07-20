@@ -20,9 +20,11 @@ const currentLoginPageBg = validImages.find(
 	({ name }) => name === data.loginPageBackground && name !== 'custom'
 );
 
-const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
-const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
-const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
+const imageFilter = (filterName: string) => validImages.filter(({ name }) => name === filterName)[0]
+
+const blobs = imageFilter('studiocms-blobs');
+const blocks = imageFilter('studiocms-blocks');
+const curves = imageFilter('studiocms-curves');
 
 const currentlyEnabledGridItems: string[] = (data.gridItems as string[]) ?? [];
 

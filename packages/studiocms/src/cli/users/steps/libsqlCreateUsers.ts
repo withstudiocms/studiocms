@@ -2,7 +2,7 @@ import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cl
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, convertToVanilla } from '../../../effect.js';
-import { CheckIfUnsafe } from '../../../lib/auth/utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { createUserAvatar } from '../../utils/createUserAvatar.js';
 import { logger } from '../../utils/logger.js';
@@ -12,8 +12,29 @@ import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config();
 
+type Checker = Awaited<{
+	username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+	password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+}> | null
+
+let checker: Checker = null;
+
+const getChecker = async () => {
+	if (!checker) {
+		checker = await Effect.runPromise(
+			Effect.gen(function* () {
+				const { _tag, ...mod } = yield* CheckIfUnsafe;
+				return mod;
+			}).pipe(Effect.provide(CheckIfUnsafe.Default))
+		);
+	}
+	return checker;
+};
+
 export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { chalk, prompts } = context;
+
+	const checker: Checker = await getChecker();
 
 	debug && logger.debug('Running libsqlUsers...');
 
@@ -38,9 +59,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 						const isUser = currentUsers.find(({ username }) => username === user);
 						if (isUser) return 'Username is already in use, please try another one';
 						if (
-							Effect.runSync(
-								CheckIfUnsafe.username(user).pipe(Effect.provide(CheckIfUnsafe.Default))
-							)
+							Effect.runSync(checker.username(user))
 						) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
@@ -75,9 +94,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 						}
 						// Check if password is known unsafe password
 						if (
-							Effect.runSync(
-								CheckIfUnsafe.password(password).pipe(Effect.provide(CheckIfUnsafe.Default))
-							)
+							Effect.runSync(checker.password(password))
 						) {
 							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 						}

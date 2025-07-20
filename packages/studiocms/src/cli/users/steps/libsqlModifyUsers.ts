@@ -2,7 +2,7 @@ import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cl
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import { Effect, convertToVanilla } from '../../../effect.js';
-import { CheckIfUnsafe } from '../../../lib/auth/utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';
@@ -10,6 +10,25 @@ import { Permissions, Users, useLibSQLDb } from '../../utils/useLibSQLDb.js';
 import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config();
+
+type Checker = Awaited<{
+    username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+    password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+}> | null
+
+let checker: Checker = null;
+
+const getChecker = async () => {
+	if (!checker) {
+		checker = await Effect.runPromise(
+			Effect.gen(function* () {
+				const { _tag, ...mod } = yield* CheckIfUnsafe;
+				return mod;
+			}).pipe(Effect.provide(CheckIfUnsafe.Default))
+		);
+	}
+	return checker;
+};
 
 export enum UserFieldOption {
 	password = 'password',
@@ -19,6 +38,8 @@ export enum UserFieldOption {
 
 export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) => {
 	const { prompts, chalk } = context;
+
+	const checker: Checker = await getChecker();
 
 	debug && logger.debug('Running libsqlUsers...');
 
@@ -127,9 +148,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 				validate: (user) => {
 					const isUser = currentUsers.find(({ username }) => username === user);
 					if (isUser) return 'Username is already in use, please try another one';
-					if (
-						Effect.runSync(CheckIfUnsafe.username(user).pipe(Effect.provide(CheckIfUnsafe.Default)))
-					) {
+					if (Effect.runSync(checker.username(user))) {
 						return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 					}
 					return undefined;
@@ -183,11 +202,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 					}
 
 					// Check if password is known unsafe password
-					if (
-						Effect.runSync(
-							CheckIfUnsafe.password(password).pipe(Effect.provide(CheckIfUnsafe.Default))
-						)
-					) {
+					if (Effect.runSync(checker.password(password))) {
 						return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 					}
 

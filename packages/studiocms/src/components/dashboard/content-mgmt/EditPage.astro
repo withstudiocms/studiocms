@@ -7,6 +7,7 @@ import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
+import { Effect } from 'effect';
 import PluginFields from './PluginFields.astro';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
@@ -29,9 +30,11 @@ const { lang, config } = Astro.props as Props;
 
 const enableDiffs = config.data.enableDiffs;
 
-const [{ data: pageData }, users, editors] = await Promise.all([
-	runSDK(SDKCoreJs.GET.page.byId(editId)),
-	runSDK(SDKCoreJs.GET.users.all()),
+const [[{ data: pageData }, users], editors] = await Promise.all([
+	runSDK(Effect.all([
+    SDKCoreJs.GET.page.byId(editId),
+    SDKCoreJs.GET.users.all()
+  ])),
 	importEditorKeys(editorKeys),
 ]);
 

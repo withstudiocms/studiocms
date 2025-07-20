@@ -25,6 +25,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 		genLogger('studioCMS:rest:v1:users:[id]:GET')(function* () {
 			const sdk = yield* SDKCore;
 			const user = yield* verifyAuthTokenFromHeader(context);
+			const userUtils = yield* User;
 
 			if (user instanceof Response) {
 				return user;
@@ -77,7 +78,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				permissionLevel: rank as PermissionRank,
 			};
 
-			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
+			const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);
 
 			const requiredPerms = () => {
 				switch (existingUserRank) {
@@ -115,6 +116,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		genLogger('studioCMS:rest:v1:users:[id]:PATCH')(function* () {
 			const sdk = yield* SDKCore;
 			const user = yield* verifyAuthTokenFromHeader(context);
+			const userUtils = yield* User;
 
 			if (user instanceof Response) {
 				return user;
@@ -154,7 +156,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				permissionLevel: rank as PermissionRank,
 			};
 
-			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
+			const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);
 
 			const requiredPerms = () => {
 				switch (existingUserRank) {
@@ -236,6 +238,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		genLogger('studioCMS:rest:v1:users:[id]:DELETE')(function* () {
 			const sdk = yield* SDKCore;
 			const user = yield* verifyAuthTokenFromHeader(context);
+			const userUtils = yield* User;
 
 			if (user instanceof Response) {
 				return user;
@@ -275,7 +278,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				permissionLevel: rank as PermissionRank,
 			};
 
-			const userPermissionLevel = yield* User.getUserPermissionLevel(permissionLevelInput);
+			const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);
 
 			const requiredPerms = () => {
 				switch (existingUserRank) {

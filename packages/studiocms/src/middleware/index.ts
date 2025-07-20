@@ -33,24 +33,24 @@ const router: Router = {};
 router['/**'] = async (context, next) =>
 	await convertToVanilla(
 		genLogger('studiocms/middleware/middlewareEffect')(function* () {
-			const sdk = yield* SDKCore;
-			const user = yield* User;
-			const email = yield* VerifyEmail;
+			const { GET: { latestVersion, siteConfig } } = yield* SDKCore;
+			const { getUserData } = yield* User;
+			const { isEmailVerificationEnabled } = yield* VerifyEmail;
 
-			const [latestVersion, siteConfig, userSessionData, emailVerificationEnabled] =
+			const [version, siteConf, userSessionData, emailVerificationEnabled] =
 				yield* Effect.all([
-					sdk.GET.latestVersion(),
-					sdk.GET.siteConfig(),
-					user.getUserData(context),
-					email.isEmailVerificationEnabled(),
+					latestVersion(),
+					siteConfig(),
+					getUserData(context),
+					isEmailVerificationEnabled(),
 				]);
 
 			const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-			context.locals.latestVersion = latestVersion;
-			context.locals.siteConfig = siteConfig;
+			context.locals.latestVersion = version;
+			context.locals.siteConfig = siteConf;
 			context.locals.defaultLang = defaultLang;
 			context.locals.routeMap = StudioCMSRoutes;
 			context.locals.userSessionData = userSessionData;
@@ -77,9 +77,9 @@ router['/**'] = async (context, next) =>
 router[`/${dashboardRoute}/!(login|signup|logout|forgot-password)**`] = async (context, next) =>
 	await convertToVanilla(
 		genLogger('studiocms/middleware/middlewareEffect')(function* () {
-			const user = yield* User;
+			const { getUserData } = yield* User;
 
-			const userSessionData = yield* user.getUserData(context);
+			const userSessionData = yield* getUserData(context);
 
 			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
 

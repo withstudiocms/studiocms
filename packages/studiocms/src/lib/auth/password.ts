@@ -2,10 +2,12 @@ import crypto from 'node:crypto';
 import { FetchHttpClient, HttpClient } from '@effect/platform';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
 import { Scrypt } from './utils/scrypt.js';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+
+export class PasswordError extends Data.TaggedError('PasswordError')<{ message: string }> {}
 
 /**
  * The `Password` class provides methods for hashing passwords, verifying password hashes,
@@ -43,7 +45,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const legacy0HashPassword = (password: string) =>
 			genLogger('studiocms/lib/auth/password/Password.legacy0HashPassword')(function* () {
-				const hashed = yield* scrypt(password);
+				const hashed = yield* scrypt.run(password);
 				return hashed.toString();
 			});
 
@@ -77,7 +79,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		const hashPassword = (password: string, _salt?: string) =>
 			genLogger('studiocms/lib/auth/password/Password.hashPassword')(function* () {
 				const salt = _salt || crypto.randomBytes(16).toString('hex');
-				const hashed = yield* scrypt(password + salt);
+				const hashed = yield* scrypt.run(password + salt);
 				return `gen1.0:${salt}:${hashed.toString('hex')}`;
 			});
 
@@ -114,11 +116,17 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const verifySafe = (pass: string) =>
 			pipeLogger('studiocms/lib/auth/password/Password.verifySafe')(
-				Effect.try(() => {
-					if (check.password(pass)) {
-						return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
-					}
-					return;
+				Effect.try({
+					try: () => {
+						if (check.password(pass)) {
+							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+						}
+						return;
+					},
+					catch: (cause) =>
+						new PasswordError({
+							message: `There was an error verifying password safety: ${cause}`,
+						}),
 				})
 			);
 
@@ -198,7 +206,6 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		};
 	}),
 	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, FetchHttpClient.layer],
-	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
 }

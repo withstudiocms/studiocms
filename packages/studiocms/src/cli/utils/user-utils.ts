@@ -127,7 +127,8 @@ export class ScryptConfig extends Context.Tag('studiocms/lib/auth/utils/scrypt/S
 export class Scrypt extends Effect.Service<Scrypt>()('studiocms/cli/utils/user-utils.Scrypt', {
 	effect: genLogger('studiocms/cli/utils/user-utils.Scrypt.effect')(function* () {
 		const { salt, keylen, options } = yield* ScryptConfig;
-		return (password: string) =>
+
+		const run = (password: string) =>
 			pipeLogger('studiocms/cli/utils/user-utils.Scrypt.Default')(
 				Effect.async<Buffer, ScryptError>((resume) => {
 					const req = scrypt(password, salt, keylen, options, (error, derivedKey) => {
@@ -142,6 +143,8 @@ export class Scrypt extends Effect.Service<Scrypt>()('studiocms/cli/utils/user-u
 					return req;
 				})
 			);
+
+		return { run };
 	}),
 	dependencies: [ScryptConfig.Layer],
 }) {}
@@ -156,6 +159,6 @@ export const hashPassword = (password: string, _salt?: string) =>
 	genLogger('studiocms/cli/utils/user-utils.hashPassword')(function* () {
 		const scrypt = yield* Scrypt;
 		const salt = _salt || crypto.randomBytes(16).toString('hex');
-		const hashed = yield* scrypt(password + salt);
+		const hashed = yield* scrypt.run(password + salt);
 		return `gen1.0:${salt}:${hashed.toString('hex')}`;
 	}).pipe(Effect.provide(Scrypt.Default));

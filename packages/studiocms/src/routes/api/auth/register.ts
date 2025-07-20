@@ -20,6 +20,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/register/POST')(function* () {
 			const sdk = yield* SDKCore;
+			const authAPIUtils = yield* AuthAPIUtils;
+			const userUtils = yield* User;
+			const verifier = yield* VerifyEmail;
+			const passwordUtils = yield* Password;
+			const sessionUtils = yield* Session;
+
 			const formData = yield* pipeLogger('studiocms/routes/api/auth/register/POST.formData')(
 				Effect.tryPromise(() => context.request.formData())
 			);
@@ -28,29 +34,29 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 				'studiocms/routes/api/auth/register/POST.parseFormData'
 			)(
 				Effect.all([
-					AuthAPIUtils.parseFormDataEntryToString(formData, 'username'),
-					AuthAPIUtils.parseFormDataEntryToString(formData, 'password'),
-					AuthAPIUtils.parseFormDataEntryToString(formData, 'email'),
-					AuthAPIUtils.parseFormDataEntryToString(formData, 'displayname'),
+					authAPIUtils.parseFormDataEntryToString(formData, 'username'),
+					authAPIUtils.parseFormDataEntryToString(formData, 'password'),
+					authAPIUtils.parseFormDataEntryToString(formData, 'email'),
+					authAPIUtils.parseFormDataEntryToString(formData, 'displayname'),
 				])
 			);
 
 			if (!username)
-				return yield* AuthAPIUtils.badFormDataEntry('Missing field', 'Username is required');
+				return yield* authAPIUtils.badFormDataEntry('Missing field', 'Username is required');
 			if (!password)
-				return yield* AuthAPIUtils.badFormDataEntry('Missing field', 'Password is required');
-			if (!email) return yield* AuthAPIUtils.badFormDataEntry('Missing entry', 'Email is required');
+				return yield* authAPIUtils.badFormDataEntry('Missing field', 'Password is required');
+			if (!email) return yield* authAPIUtils.badFormDataEntry('Missing entry', 'Email is required');
 			if (!name)
-				return yield* AuthAPIUtils.badFormDataEntry('Missing entry', 'Display name is required');
+				return yield* authAPIUtils.badFormDataEntry('Missing entry', 'Display name is required');
 
-			const verifyUsernameResponse = yield* User.verifyUsernameInput(username);
+			const verifyUsernameResponse = yield* userUtils.verifyUsernameInput(username);
 			if (verifyUsernameResponse !== true)
-				return yield* AuthAPIUtils.badFormDataEntry('Invalid username', verifyUsernameResponse);
+				return yield* authAPIUtils.badFormDataEntry('Invalid username', verifyUsernameResponse);
 
 			// If the password is invalid, return an error
-			const verifyPasswordResponse = yield* Password.verifyPasswordStrength(password);
+			const verifyPasswordResponse = yield* passwordUtils.verifyPasswordStrength(password);
 			if (verifyPasswordResponse !== true) {
-				return yield* AuthAPIUtils.badFormDataEntry('Invalid password', verifyPasswordResponse);
+				return yield* authAPIUtils.badFormDataEntry('Invalid password', verifyPasswordResponse);
 			}
 
 			const checkEmailSchema = z.coerce.string().email({ message: 'Email address is invalid' });
@@ -60,12 +66,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			);
 
 			if (!checkEmail.success)
-				return yield* AuthAPIUtils.badFormDataEntry('Invalid email', checkEmail.error.message);
+				return yield* authAPIUtils.badFormDataEntry('Invalid email', checkEmail.error.message);
 
 			const invalidEmailDomains: string[] = ['example.com', 'text.com', 'testing.com'];
 
 			if (invalidEmailDomains.includes(checkEmail.data.split('@')[1])) {
-				return yield* AuthAPIUtils.badFormDataEntry('Invalid Email', 'Must be from a valid domain');
+				return yield* authAPIUtils.badFormDataEntry('Invalid Email', 'Must be from a valid domain');
 			}
 
 			const { usernameSearch, emailSearch } = yield* sdk.AUTH.user.searchUsersForUsernameOrEmail(
@@ -74,18 +80,18 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			);
 
 			if (usernameSearch.length > 0)
-				return yield* AuthAPIUtils.badFormDataEntry(
+				return yield* authAPIUtils.badFormDataEntry(
 					'Invalid username',
 					'Username is already in use'
 				);
 			if (emailSearch.length > 0)
-				return yield* AuthAPIUtils.badFormDataEntry('Invalid email', 'Email is already in use');
+				return yield* authAPIUtils.badFormDataEntry('Invalid email', 'Email is already in use');
 
-			const newUser = yield* User.createLocalUser(name, username, email, password);
+			const newUser = yield* userUtils.createLocalUser(name, username, email, password);
 
-			yield* VerifyEmail.sendVerificationEmail(newUser.id);
+			yield* verifier.sendVerificationEmail(newUser.id);
 
-			yield* Session.createUserSession(newUser.id, context);
+			yield* sessionUtils.createUserSession(newUser.id, context);
 
 			return new Response();
 		}).pipe(Effect.provide(deps))

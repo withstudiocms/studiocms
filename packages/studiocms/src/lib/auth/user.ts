@@ -2,12 +2,14 @@ import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import type { APIContext, AstroGlobal } from 'astro';
-import { Effect, pipe } from 'effect';
+import { Data, Effect, pipe } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
 import { Password } from './password.js';
 import { Session } from './session.js';
 import type { UserSessionData } from './types.js';
 import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+
+export class UserError extends Data.TaggedError('UserError')<{ message: string }> {}
 
 /**
  * The name of the cookie used for linking a new OAuth account.
@@ -150,11 +152,14 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameSafe = (username: string) =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(
-				Effect.try(() => {
-					if (check.username(username)) {
-						return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-					}
-					return;
+				Effect.try({
+					try: () => {
+						if (check.username(username)) {
+							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+						}
+						return;
+					},
+					catch: (cause) => new UserError({ message: `Error verifying username safety: ${cause}` }),
 				})
 			);
 
@@ -204,7 +209,12 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 
 				const hashBuffer = yield* pipeLogger(
 					'studiocms/lib/auth/user/User.createUserAvatar.hashBuffer'
-				)(Effect.tryPromise(() => crypto.subtle.digest('SHA-256', msgUint8)));
+				)(
+					Effect.tryPromise({
+						try: () => crypto.subtle.digest('SHA-256', msgUint8),
+						catch: (cause) => new UserError({ message: `Hash error: ${cause}` }),
+					})
+				);
 
 				const hashHex = pipe(new Uint8Array(hashBuffer), Array.from, (h: number[]) =>
 					h.map((b) => b.toString(16).padStart(2, '0')).join('')
@@ -350,9 +360,10 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const getUserData = (context: AstroGlobal | APIContext) =>
 			genLogger('studiocms/lib/auth/user/User.getUserData')(function* () {
-				const sessionToken = yield* Effect.try(
-					() => context.cookies.get(Session.sessionCookieName)?.value ?? null
-				);
+				const sessionToken = yield* Effect.try({
+					try: () => context.cookies.get(Session.sessionCookieName)?.value ?? null,
+					catch: (cause) => new UserError({ message: `user error: ${cause}` }),
+				});
 
 				if (!sessionToken) {
 					return yield* getDefaultUserSession();
@@ -393,17 +404,20 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const getLevel = (userData: UserSessionData | CombinedUserData) =>
 			pipeLogger('studiocms/lib/auth/user/User.getLevel')(
-				Effect.try(() => {
-					let userPermissionLevel: AvailablePermissionRanks = 'unknown';
-					if ('permissionLevel' in userData) {
-						userPermissionLevel = userData.permissionLevel;
-					}
-					if ('permissionsData' in userData) {
-						userPermissionLevel = userData.permissionsData?.rank
-							? (userData.permissionsData.rank as AvailablePermissionRanks)
-							: 'unknown';
-					}
-					return userPermissionLevel;
+				Effect.try({
+					try: () => {
+						let userPermissionLevel: AvailablePermissionRanks = 'unknown';
+						if ('permissionLevel' in userData) {
+							userPermissionLevel = userData.permissionLevel;
+						}
+						if ('permissionsData' in userData) {
+							userPermissionLevel = userData.permissionsData?.rank
+								? (userData.permissionsData.rank as AvailablePermissionRanks)
+								: 'unknown';
+						}
+						return userPermissionLevel;
+					},
+					catch: (cause) => new UserError({ message: `Parse level error: ${cause}` }),
 				})
 			);
 
@@ -477,7 +491,6 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		Password.Default,
 		Notifications.Default,
 	],
-	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);
 	static LinkNewOAuthCookieName = LinkNewOAuthCookieName;
