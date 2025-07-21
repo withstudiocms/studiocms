@@ -189,6 +189,7 @@
 		"socks": "^2.8.4",
 		"suneditor": "^2.47.5",
 		"three": "0.170.0",
+		"ts-morph": "^26.0.0",
 		"ultrahtml": "^1.5.3",
 		"unist-util-visit": "^5.0.0"
 	},
