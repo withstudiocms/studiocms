@@ -261,7 +261,25 @@ declare module 'studiocms:plugin-helpers' {
 }
 
 declare module 'studiocms:component-proxy' {
+	/**
+	 * @deprecated use 'studiocms:component-registry' instead
+	 */
 	export const componentKeys: string[];
+}
+
+declare module 'studiocms:component-registry' {
+	/**
+	 * List of component keys that are registered in the component registry.
+	 */
+	export const componentKeys: string[];
+
+	/**
+	 * List of component properties that are registered in the component registry.
+	 *
+	 * Each entry in the array is an object with a `name` and `props` property.
+	 * The `props` property is an array of objects representing the properties of the component.
+	 */
+	export const componentProps: import('./componentRegistry/types.js').AstroComponentProps[];
 }
 
 declare module 'studiocms:sdk' {

@@ -95,8 +95,6 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 			})
 		);
 
-		console.log('Extracted component props:', JSON.stringify(componentProps, null, 2));
-
 		integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
 
 		integrationLogger(logInfo, 'Component registry setup complete.');
