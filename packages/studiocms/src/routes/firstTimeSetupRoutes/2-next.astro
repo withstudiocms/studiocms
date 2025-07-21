@@ -76,28 +76,28 @@ const auth0Enabled = AUTH0.ENABLED && providers.auth0;
             {
                 SHOW_OAUTH && githubEnabled && (
                     <TabItem label='GitHub' icon="simple-icons:github">
-                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.githubIndex}>Connect to GitHub</Button></Center>
+                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.githubIndex}>Connect to GitHub</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && discordEnabled && (
                     <TabItem label='Discord' icon="simple-icons:discord">
-                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.discordIndex}>Connect to Discord</Button></Center>
+                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.discordIndex}>Connect to Discord</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && googleEnabled && (
                     <TabItem label='Google' icon="flat-color-icons:google">
-                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.googleIndex}>Connect to Google</Button></Center>
+                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.googleIndex}>Connect to Google</Button></Center>
                     </TabItem>
                 )
             }
             {
                 SHOW_OAUTH && auth0Enabled && (
                     <TabItem label='Auth0' icon="simple-icons:auth0">
-                        <Center><Button color="primary" as="a" href={Astro.locals.routeMap.authLinks.auth0Index}>Connect to Auth0</Button></Center>
+                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.auth0Index}>Connect to Auth0</Button></Center>
                     </TabItem>
                 )
             }
