@@ -1,8 +1,8 @@
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import { Effect, convertToVanilla, genLogger } from '../effect.js';
-import { convertHyphensToUnderscores } from '../utils/convert-hyphens.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import { ComponentRegistry } from './Registry.js';
+import { convertHyphensToUnderscores } from './convert-hyphens.js';
 import type { AstroComponentProps, ComponentRegistryEntry } from './types.js';
 
 type Options = {
@@ -90,13 +90,6 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				addVirtualImports(params, {
 					name,
 					imports: {
-						// Deprecated, to be moved to the new component registry handler
-						'studiocms:component-proxy': `
-							export const componentKeys = ${JSON.stringify(componentKeys || [])};
-							${components.join('\n')}
-						`,
-
-						// New component registry handler
 						'studiocms:component-registry': `
 							export const componentKeys = ${JSON.stringify(componentKeys || [])};
 							export const componentProps = ${JSON.stringify(componentProps) || []};

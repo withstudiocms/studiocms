@@ -1,8 +1,8 @@
-import { componentKeys } from 'studiocms:component-proxy';
-import * as mod from 'studiocms:component-proxy';
+import { componentKeys } from 'studiocms:component-registry';
+import * as registry from 'studiocms:component-registry';
 import logger from 'studiocms:logger';
-import { convertUnderscoresToHyphens } from '../../utils/convert-hyphens.js';
-import { StudioCMSRendererError, prefixError } from './errors.js';
+import { StudioCMSRendererError, prefixError } from '../lib/renderer/errors.js';
+import { convertUnderscoresToHyphens } from './convert-hyphens.js';
 
 /**
  * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
@@ -17,20 +17,19 @@ export async function importComponentsKeys() {
 
 	for (const key of componentKeys) {
 		try {
-			// @ts-ignore
-			predefinedComponents[convertUnderscoresToHyphens(key.toLowerCase())] = mod[key.toLowerCase()];
+			predefinedComponents[convertUnderscoresToHyphens(key)] = registry[key as keyof typeof registry];
 		} catch (e) {
 			if (e instanceof Error) {
 				const newErr = prefixError(
 					e,
-					`Failed to import component "${key}" from Virtual Module "studiocms:component-proxy"`
+					`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
 				);
 				logger.error(newErr);
 				throw new StudioCMSRendererError(newErr.message, newErr.stack);
 			}
 			const newErr = prefixError(
 				new Error('Unknown error'),
-				`Failed to import component "${key}" from Virtual Module "studiocms:component-proxy"`
+				`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
 			);
 			logger.error(newErr);
 			throw new StudioCMSRendererError(newErr.message, newErr.stack);

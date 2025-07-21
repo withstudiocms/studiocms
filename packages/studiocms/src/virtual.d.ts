@@ -260,13 +260,6 @@ declare module 'studiocms:plugin-helpers' {
 	export const frontendNavigation: typeof import('./lib/plugins/index.js').frontendNavigation;
 }
 
-declare module 'studiocms:component-proxy' {
-	/**
-	 * @deprecated use 'studiocms:component-registry' instead
-	 */
-	export const componentKeys: string[];
-}
-
 declare module 'studiocms:component-registry' {
 	/**
 	 * List of component keys that are registered in the component registry.
