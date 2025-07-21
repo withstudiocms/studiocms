@@ -1,4 +1,4 @@
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import { Effect, convertToVanilla, genLogger } from '../effect.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import { ComponentRegistry } from './Registry.js';
@@ -11,6 +11,8 @@ type Options = {
 	componentRegistry: Record<string, string>;
 	astroConfigResolve: (...path: Array<string>) => string;
 };
+
+const { resolve } = createResolver(import.meta.url);
 
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
 	async (params, { componentRegistry, astroConfigResolve, verbose, name }: Options) =>
@@ -95,6 +97,9 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 							export const componentProps = ${JSON.stringify(componentProps) || []};
 							${components.join('\n')}
 						`,
+						'studiocms:component-registry/runtime': `
+							export * from '${resolve('./runtime.js')}';
+						`
 					},
 				});
 			}).pipe(Effect.provide(ComponentRegistry.Default))

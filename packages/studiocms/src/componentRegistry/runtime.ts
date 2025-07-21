@@ -1,8 +1,13 @@
-import { componentKeys } from 'studiocms:component-registry';
+import { componentKeys, componentProps } from 'studiocms:component-registry';
 import * as registry from 'studiocms:component-registry';
 import logger from 'studiocms:logger';
 import { StudioCMSRendererError, prefixError } from '../lib/renderer/errors.js';
 import { convertUnderscoresToHyphens } from './convert-hyphens.js';
+
+export * from './convert-hyphens.js';
+export type { ComponentRegistryEntry } from './types.js';
+
+export { componentProps };
 
 /**
  * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
