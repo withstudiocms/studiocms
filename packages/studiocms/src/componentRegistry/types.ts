@@ -1,4 +1,10 @@
 
+/**
+ * Represents a JSDoc tag with its name and optional text content.
+ *
+ * @property tagName - The name of the JSDoc tag (e.g., 'param', 'returns').
+ * @property text - Optional text associated with the tag, such as a description or type.
+ */
 export interface JSDocTag {
 	tagName: string;
 	text?: string;
