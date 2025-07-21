@@ -279,7 +279,7 @@ declare module 'studiocms:component-registry' {
 	 * Each entry in the array is an object with a `name` and `props` property.
 	 * The `props` property is an array of objects representing the properties of the component.
 	 */
-	export const componentProps: import('./componentRegistry/types.js').AstroComponentProps[];
+	export const componentProps: import('./componentRegistry/types.js').ComponentRegistryEntry[];
 }
 
 declare module 'studiocms:sdk' {

@@ -3,7 +3,7 @@ import { Effect, convertToVanilla, genLogger } from '../effect.js';
 import { convertHyphensToUnderscores } from '../utils/convert-hyphens.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import { ComponentRegistry } from './Registry.js';
-import type { AstroComponentProps } from './types.js';
+import type { AstroComponentProps, ComponentRegistryEntry } from './types.js';
 
 type Options = {
 	verbose: boolean;
@@ -64,14 +64,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 					integrationLogger(logInfo, `Component "${key}" is valid and will be included.`);
 
+					const keyName = key.toLowerCase();
+					const safeKeyName = convertHyphensToUnderscores(keyName);
+
 					// Add the component key and import statement
-					componentKeys.push(convertHyphensToUnderscores(key.toLowerCase()));
-					components.push(
-						`export { default as ${convertHyphensToUnderscores(key)} } from '${resolvedPath}';`
-					);
+					componentKeys.push(safeKeyName);
+					components.push(`export { default as ${safeKeyName} } from '${resolvedPath}';`);
 
 					// Register the component in the registry
-					yield* registry.registerComponentFromFile(resolvedPath, key.toLowerCase());
+					yield* registry.registerComponentFromFile(resolvedPath, keyName);
 				}
 
 				integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
@@ -82,14 +83,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const componentPropsMap: Map<string, AstroComponentProps> =
 					yield* registry.getAllComponents();
 
-				const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
-					([key, value]) => ({
-						name: key,
-						props: value.props.map((prop) => ({
-							...prop,
-						})),
-					})
-				);
+				const componentProps: ComponentRegistryEntry[] = Array.from(
+					componentPropsMap.entries()
+				).map(([key, value]) => ({
+					name: key,
+					safeName: convertHyphensToUnderscores(key),
+					props: value.props.map((prop) => ({
+						...prop,
+					})),
+				}));
 
 				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
 
@@ -100,16 +102,16 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 					imports: {
 						// Deprecated, to be moved to the new component registry handler
 						'studiocms:component-proxy': `
-								export const componentKeys = ${JSON.stringify(componentKeys || [])};
-								${components.join('\n')}
-							`,
+							export const componentKeys = ${JSON.stringify(componentKeys || [])};
+							${components.join('\n')}
+						`,
 
 						// New component registry handler
 						'studiocms:component-registry': `
-								export const componentKeys = ${JSON.stringify(componentKeys || [])};
-								export const componentProps = ${JSON.stringify(componentProps) || []};
-								${components.join('\n')}
-							`,
+							export const componentKeys = ${JSON.stringify(componentKeys || [])};
+							export const componentProps = ${JSON.stringify(componentProps) || []};
+							${components.join('\n')}
+						`,
 					},
 				});
 			}).pipe(Effect.provide(ComponentRegistry.Default))

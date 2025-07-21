@@ -27,6 +27,17 @@ export interface AstroComponentProps {
 }
 
 /**
+ * Represents an entry in the component registry.
+ * 
+ * Extends the `AstroComponentProps` interface to include additional metadata.
+ *
+ * @property safeName - A readonly string representing a safe, unique identifier for the component.
+ */
+export interface ComponentRegistryEntry extends AstroComponentProps {
+	readonly safeName: string;
+}
+
+/**
  * Represents the result of validating a set of properties.
  *
  * @property valid - Indicates whether the validation was successful.
