@@ -5,12 +5,38 @@ import { ComponentRegistry } from './Registry.js';
 import { convertHyphensToUnderscores } from './convert-hyphens.js';
 import type { AstroComponentProps, ComponentRegistryEntry } from './types.js';
 
+/**
+ * Options for the component registry handler.
+ *
+ * @property verbose - Enables verbose logging when set to true.
+ * @property name - The name associated with the registry handler.
+ * @property componentRegistry - An optional record mapping component names to their string identifiers.
+ */
 type componentRegistryHandlerOptions = {
 	verbose: boolean;
 	name: string;
 	componentRegistry: Record<string, string> | undefined;
 };
 
+/**
+ * Handles the setup and registration of components in the StudioCMS component registry during the Astro config setup phase.
+ *
+ * This utility:
+ * - Logs the start and progress of the registry setup.
+ * - Iterates over the provided component registry, validating and resolving component paths.
+ * - Registers valid `.astro` components in the registry.
+ * - Extracts and maps component props for all registered components.
+ * - Adds virtual imports for component keys, props, and runtime exports.
+ *
+ * @param params - The Astro integration setup parameters, including logger and config.
+ * @param options - Options for the handler, including the component registry, verbosity, and registry name.
+ * @returns An asynchronous effect that sets up the component registry and provides virtual imports for use in the project.
+ *
+ * @remarks
+ * - Only components with string values ending in `.astro` are registered.
+ * - Component keys are normalized to lowercase and hyphens are converted to underscores for safe usage.
+ * - Virtual imports are added for both the registry and its runtime.
+ */
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
 	async (params, { componentRegistry, verbose, name }: componentRegistryHandlerOptions) =>
 		await convertToVanilla(
