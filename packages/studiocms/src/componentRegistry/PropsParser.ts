@@ -40,6 +40,17 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 
 											// Handle different tag types
 											switch (tagName) {
+												case 'param': {
+													// @param {type} name description
+													const paramInfo = tag.getStructure();
+													jsDocTags.push({
+														tagName,
+														text: commentText,
+														name: paramInfo.tagName,
+														type: typeof paramInfo.text === 'string' ? paramInfo.text : undefined,
+													});
+													break;
+												}
 												case 'default': {
 													defaultValue = commentText;
 													jsDocTags.push({

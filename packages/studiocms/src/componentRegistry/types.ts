@@ -8,6 +8,8 @@
 export interface JSDocTag {
 	tagName: string;
 	text?: string;
+	name?: string; // For 'param' tags, this is the parameter name
+	type?: string; // For 'param' tags, this is the type of the parameter
 }
 
 /**
