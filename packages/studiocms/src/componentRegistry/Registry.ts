@@ -3,7 +3,7 @@ import * as FileSystem from '@effect/platform/FileSystem';
 import * as Path from '@effect/platform/Path';
 import { Context, Data, Effect, Layer } from 'effect';
 import { PropsParser } from './PropsParser.js';
-import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from './errors.js';
+import { ComponentRegistryError, FileParseError } from './errors.js';
 import type { AstroComponentProps } from './types.js';
 
 /**
@@ -72,46 +72,47 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 					);
 				}),
 
-			getComponentProps: (componentName: string) =>
-				Effect.gen(function* () {
-					const component = components.get(componentName);
-					if (!component) {
-						yield* Effect.fail(new ComponentNotFoundError({ componentName }));
-					}
-					return component;
-				}),
-
 			getAllComponents: () => Effect.succeed(new Map(components)),
 
-			validateProps: (componentName: string, props: Record<string, unknown>) =>
-				Effect.gen(function* () {
-					const component = components.get(componentName);
-					if (!component) {
-						yield* Effect.fail(new ComponentNotFoundError({ componentName }));
-					}
+			// To do: decide how and if to implement this
+			// getComponentProps: (componentName: string) =>
+			// 	Effect.gen(function* () {
+			// 		const component = components.get(componentName);
+			// 		if (!component) {
+			// 			yield* Effect.fail(new ComponentNotFoundError({ componentName }));
+			// 		}
+			// 		return component;
+			// 	}),
 
-					const errors: string[] = [];
-					const providedProps = new Set(Object.keys(props));
+			// validateProps: (componentName: string, props: Record<string, unknown>) =>
+			// 	Effect.gen(function* () {
+			// 		const component = components.get(componentName);
+			// 		if (!component) {
+			// 			yield* Effect.fail(new ComponentNotFoundError({ componentName }));
+			// 		}
 
-					if (component) {
-						// Check required props
-						for (const prop of component.props) {
-							if (!prop.optional && !providedProps.has(prop.name)) {
-								errors.push(`Required prop "${prop.name}" is missing`);
-							}
-						}
+			// 		const errors: string[] = [];
+			// 		const providedProps = new Set(Object.keys(props));
 
-						// Check for unknown props
-						const validPropNames = new Set(component.props.map((p) => p.name));
-						for (const propName of providedProps) {
-							if (!validPropNames.has(propName)) {
-								errors.push(`Unknown prop "${propName}"`);
-							}
-						}
-					}
+			// 		if (component) {
+			// 			// Check required props
+			// 			for (const prop of component.props) {
+			// 				if (!prop.optional && !providedProps.has(prop.name)) {
+			// 					errors.push(`Required prop "${prop.name}" is missing`);
+			// 				}
+			// 			}
 
-					return { valid: errors.length === 0, errors };
-				}),
+			// 			// Check for unknown props
+			// 			const validPropNames = new Set(component.props.map((p) => p.name));
+			// 			for (const propName of providedProps) {
+			// 				if (!validPropNames.has(propName)) {
+			// 					errors.push(`Unknown prop "${propName}"`);
+			// 				}
+			// 			}
+			// 		}
+
+			// 		return { valid: errors.length === 0, errors };
+			// 	}),
 		};
 	}).pipe(
 		Effect.provide(PropsParser.Default),
