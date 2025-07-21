@@ -93,6 +93,12 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 			})
 		);
 
+		integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+
+		console.log('Component Props:', componentProps);
+
+		integrationLogger(logInfo, 'Component registry setup complete.');
+
 		addVirtualImports(params, {
 			name,
 			imports: {
