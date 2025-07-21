@@ -91,6 +91,8 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 				integrationLogger(logInfo, 'Component registry setup complete.');
 
+				integrationLogger(logInfo, `Registered components:\n${JSON.stringify(componentProps, null, 2)}`);
+
 				addVirtualImports(params, {
 					name,
 					imports: {

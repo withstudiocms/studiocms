@@ -28,7 +28,7 @@ export interface ComponentRegistryEntry extends _ComponentRegistryEntry {
 export async function getRegistryComponents(): Promise<Record<string, ComponentRegistryEntry>> {
 	try {
 		const components = componentProps.map((entry) => {
-			const component = registry[entry.name as keyof typeof registry] as unknown as (
+			const component = registry[entry.safeName as keyof typeof registry] as unknown as (
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 				_props: any
 				// biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -95,24 +95,24 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 
 							// Parse interfaces
 							const interfaces = sourceFile.getInterfaces();
-							console.log(`Found ${interfaces.length} interfaces`);
+							// console.log(`Found ${interfaces.length} interfaces`);
 
 							for (const interfaceDecl of interfaces) {
 								const interfaceName = interfaceDecl.getName();
-								console.log(`Processing interface: ${interfaceName}`);
+								// console.log(`Processing interface: ${interfaceName}`);
 								const props: AstroComponentProp[] = [];
 
 								const properties = interfaceDecl.getProperties();
-								console.log(`Interface ${interfaceName} has ${properties.length} properties`);
+								// console.log(`Interface ${interfaceName} has ${properties.length} properties`);
 
 								for (const property of properties) {
 									const propName = property.getName();
 									const propType = property.getTypeNode()?.getText() || 'unknown';
 									const isOptional = property.hasQuestionToken();
 
-									console.log(
-										`Processing property: ${propName}, type: ${propType}, optional: ${isOptional}`
-									);
+									// console.log(
+									// 	`Processing property: ${propName}, type: ${propType}, optional: ${isOptional}`
+									// );
 
 									const { description, defaultValue, jsDocTags } = extractJSDocInfo(property);
 
@@ -131,22 +131,22 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 
 							// Parse type aliases
 							const typeAliases = sourceFile.getTypeAliases();
-							console.log(`Found ${typeAliases.length} type aliases`);
+							// console.log(`Found ${typeAliases.length} type aliases`);
 
 							for (const typeAlias of typeAliases) {
 								const typeName = typeAlias.getName();
 								const typeNode = typeAlias.getTypeNode();
-								console.log(`Processing type alias: ${typeName}`);
+								// console.log(`Processing type alias: ${typeName}`);
 
 								if (typeNode && typeNode.getKind() === SyntaxKind.TypeLiteral) {
 									const props: AstroComponentProp[] = [];
 									const typeLiteral = typeNode.asKindOrThrow(SyntaxKind.TypeLiteral);
 
 									const members = typeLiteral.getMembers();
-									console.log(`Type literal ${typeName} has ${members.length} members`);
+									// console.log(`Type literal ${typeName} has ${members.length} members`);
 
 									for (const member of members) {
-										console.log(`Member kind: ${member.getKindName()}`);
+										// console.log(`Member kind: ${member.getKindName()}`);
 
 										if (member.getKind() === SyntaxKind.PropertySignature) {
 											const propSig = member.asKindOrThrow(SyntaxKind.PropertySignature);
@@ -155,9 +155,9 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 											const propType = propSig.getTypeNode()?.getText() || 'unknown';
 											const isOptional = propSig.hasQuestionToken();
 
-											console.log(
-												`Processing type property: ${propName}, type: ${propType}, optional: ${isOptional}`
-											);
+											// console.log(
+											// 	`Processing type property: ${propName}, type: ${propType}, optional: ${isOptional}`
+											// );
 
 											const { description, defaultValue, jsDocTags } = extractJSDocInfo(propSig);
 
@@ -172,7 +172,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 										}
 									}
 
-									console.log(`Type alias ${typeName} final props:`, props);
+									// console.log(`Type alias ${typeName} final props:`, props);
 									results.push({ name: typeName, props });
 								} else {
 									console.log(

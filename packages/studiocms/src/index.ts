@@ -87,7 +87,7 @@ export const studiocms = defineIntegration({
 		const messages: Messages = [];
 
 		// Component Registry for Custom user Components
-		let ComponentRegistry: Record<string, string>;
+		let componentRegistry: Record<string, string>;
 
 		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string | undefined;
@@ -128,7 +128,7 @@ export const studiocms = defineIntegration({
 						dbStartPage,
 						plugins,
 						verbose,
-						componentRegistry,
+						componentRegistry: _compRegistry,
 						features: {
 							developerConfig,
 							pageTypeOptions,
@@ -145,7 +145,7 @@ export const studiocms = defineIntegration({
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
 
 					// Check for Component Registry
-					if (componentRegistry) ComponentRegistry = componentRegistry;
+					if (_compRegistry) componentRegistry = _compRegistry;
 
 					const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
 					// Setup Logger
@@ -195,7 +195,7 @@ export const studiocms = defineIntegration({
 						name,
 						verbose,
 						astroConfigResolve,
-						componentRegistry: ComponentRegistry,
+						componentRegistry,
 					});
 
 					// Setup Routes
