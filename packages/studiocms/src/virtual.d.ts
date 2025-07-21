@@ -293,10 +293,34 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @param keys - An array of strings representing the keys of the components to import.
 	 * @returns A promise that resolves to an object containing the imported components.
 	 * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
+	 * @deprecated This function is deprecated and will be removed in future versions.
+	 * Use `getRegistryComponents` instead for importing components from the component registry.
 	 */
 	export const importComponentsKeys: typeof import(
 		'./componentRegistry/runtime.js'
 	).importComponentsKeys;
+
+	/**
+	 * @returns A promise that resolves to an object containing the imported components.
+	 */
+	export const getRendererComponents: typeof import(
+		'./componentRegistry/runtime.js'
+	).getRendererComponents;
+
+	/**
+	 * Asynchronously retrieves and constructs a registry of components.
+	 *
+	 * This function maps over the `componentProps` array, retrieves the corresponding component
+	 * from the `registry` object by name, and throws an error if the component is not found.
+	 * It then returns an object mapping each component's `safeName` (converted from underscores
+	 * to hyphens) to its corresponding `ComponentRegistryEntry`.
+	 *
+	 * @throws {StudioCMSRendererError} If a component specified in `componentProps` is not found in the registry.
+	 * @returns {Promise<Record<string, ComponentRegistryEntry>>} An object mapping safe component names to their registry entries.
+	 */
+	export const getRegistryComponents: typeof import(
+		'./componentRegistry/runtime.js'
+	).getRegistryComponents;
 
 	/**
 	 * List of component properties that are registered in the component registry.
