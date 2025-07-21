@@ -74,7 +74,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 			);
 
 			// Register the component in the registry
-			await Effect.runPromise(registry.registerComponentFromFile(resolvedPath, key.toLowerCase()));
+			await Effect.runPromise(registry.registerComponentFromFile(resolvedPath, key.toLowerCase())).catch(console.error);
 		}
 
 		integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
@@ -89,13 +89,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 		const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
 			([key, value]) => ({
 				name: key,
-				props: value.props,
+				props: value.props.map((prop) => ({
+					...prop
+				})),
 			})
 		);
 
-		integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+		console.log('Extracted component props:', JSON.stringify(componentProps, null, 2));
 
-		console.log('Component Props:', JSON.stringify(componentProps) || []);
+		integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
 
 		integrationLogger(logInfo, 'Component registry setup complete.');
 
