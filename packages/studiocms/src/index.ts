@@ -86,8 +86,8 @@ export const studiocms = defineIntegration({
 		// Messages Array for Logging
 		const messages: Messages = [];
 
-		// Component Registry for Custom user Components
-		let componentRegistry: Record<string, string>;
+		// // Component Registry for Custom user Components
+		// let componentRegistry: Record<string, string>;
 
 		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string | undefined;
@@ -110,9 +110,7 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, createCodegenDir, command, addMiddleware } = params;
-
-					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
+					const { logger, updateConfig, createCodegenDir, command, addMiddleware } = params;
 
 					logger.info('Checking configuration...');
 
@@ -128,7 +126,7 @@ export const studiocms = defineIntegration({
 						dbStartPage,
 						plugins,
 						verbose,
-						componentRegistry: _compRegistry,
+						componentRegistry,
 						features: {
 							developerConfig,
 							pageTypeOptions,
@@ -145,7 +143,7 @@ export const studiocms = defineIntegration({
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
 
 					// Check for Component Registry
-					if (_compRegistry) componentRegistry = _compRegistry;
+					// if (_compRegistry) componentRegistry = _compRegistry;
 
 					const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
 					// Setup Logger
@@ -194,7 +192,6 @@ export const studiocms = defineIntegration({
 					await componentRegistryHandler(params, {
 						name,
 						verbose,
-						astroConfigResolve,
 						componentRegistry,
 					});
 

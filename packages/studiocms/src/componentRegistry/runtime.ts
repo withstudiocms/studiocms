@@ -3,15 +3,46 @@ import * as registry from 'studiocms:component-registry';
 import logger from 'studiocms:logger';
 import { StudioCMSRendererError, prefixError } from '../lib/renderer/errors.js';
 import { convertUnderscoresToHyphens } from './convert-hyphens.js';
-import type { ComponentRegistryEntry as _ComponentRegistryEntry } from './types.js';
+import type { ComponentRegistryEntry as RegistryEntry } from './types.js';
 
 export * from './convert-hyphens.js';
 
 export { componentProps };
 
-export interface ComponentRegistryEntry extends _ComponentRegistryEntry {
+/**
+ * Represents the props passed to an Astro component.
+ * 
+ * This interface allows any number of properties with arbitrary keys and values.
+ * The value type is `any`, so it can accommodate any prop type.
+ *
+ * @remarks
+ * The use of `any` is intentional to provide maximum flexibility for component props.
+ *
+ * @property [key: string] - Any property name with a value of any type.
+ */
+interface MockAstroComponentProps {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	Component: (_props: any) => any;
+	[key: string]: any;
+}
+
+/**
+ * Represents a component in Astro.
+ * 
+ * @param _props - The properties passed to the Astro component.
+ * @returns The rendered output of the component.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type AstroComponent = (_props: MockAstroComponentProps) => any;
+
+/**
+ * Represents an entry in the component registry, extending the base `RegistryEntry`.
+ * Each entry includes a reference to an Astro component.
+ *
+ * @extends RegistryEntry
+ * @property {AstroComponent} Component - The Astro component associated with this registry entry.
+ */
+export interface ComponentRegistryEntry extends RegistryEntry {
+	Component: AstroComponent;
 }
 
 /**
@@ -28,17 +59,13 @@ export interface ComponentRegistryEntry extends _ComponentRegistryEntry {
 export async function getRegistryComponents(): Promise<Record<string, ComponentRegistryEntry>> {
 	try {
 		const components = componentProps.map((entry) => {
-			const component = registry[entry.safeName as keyof typeof registry] as unknown as (
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				_props: any
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			) => any;
-			if (!component) {
+			const Component = registry[entry.safeName as keyof typeof registry] as unknown as AstroComponent;
+			if (!Component) {
 				throw new StudioCMSRendererError(`Component "${entry.name}" not found in registry.`);
 			}
 			return {
 				...entry,
-				Component: component,
+				Component,
 			} as ComponentRegistryEntry;
 		});
 
