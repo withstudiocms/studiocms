@@ -17,6 +17,7 @@ import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
+import { componentRegistryHandler } from './componentRegistry/handler.js';
 import { StudioCMSMarkdownDefaults, makeDashboardRoute, routesDir } from './consts.js';
 import { shared } from './lib/renderer/shared.js';
 import { pluginHandler } from './pluginHandler.js';
@@ -187,9 +188,15 @@ export const studiocms = defineIntegration({
 						plugins,
 						robotsTXTConfig,
 						verbose,
+					});
+
+					// Setup Component Registry
+					await componentRegistryHandler(params, {
+						name,
+						verbose,
 						astroConfigResolve,
 						ComponentRegistry,
-					});
+					})
 
 					// Setup Routes
 					routeHandler(params, {
