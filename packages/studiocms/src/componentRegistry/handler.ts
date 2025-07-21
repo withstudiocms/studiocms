@@ -77,8 +77,6 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 				integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
 
-				// DO more logic here for the new component registry handler
-
 				integrationLogger(logInfo, 'Extracting component props...');
 				const componentPropsMap: Map<string, AstroComponentProps> =
 					yield* registry.getAllComponents();
@@ -86,11 +84,9 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const componentProps: ComponentRegistryEntry[] = Array.from(
 					componentPropsMap.entries()
 				).map(([key, value]) => ({
+					...value,
 					name: key,
 					safeName: convertHyphensToUnderscores(key),
-					props: value.props.map((prop) => ({
-						...prop,
-					})),
 				}));
 
 				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
