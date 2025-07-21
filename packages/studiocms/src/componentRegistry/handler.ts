@@ -1,5 +1,5 @@
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
-import { Effect } from 'effect';
+import { Effect, convertToVanilla, genLogger } from '../effect.js';
 import { convertHyphensToUnderscores } from '../utils/convert-hyphens.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import { ComponentRegistry } from './Registry.js';
@@ -13,108 +13,105 @@ type Options = {
 };
 
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
-	async (params, options: Options) => {
-		const { logger } = params;
+	async (params, options: Options) =>
+		await convertToVanilla(
+			genLogger('studiocms/componentRegistry/handler')(function* () {
+				const { logger } = params;
 
-		const { componentRegistry, astroConfigResolve, verbose, name } = options;
+				const { componentRegistry, astroConfigResolve, verbose, name } = options;
 
-		const logInfo = { logger, logLevel: 'info' as const, verbose };
+				const logInfo = { logger, logLevel: 'info' as const, verbose };
 
-		integrationLogger(logInfo, 'Setting up component registry...');
+				integrationLogger(logInfo, 'Setting up component registry...');
 
-		const componentKeys: string[] = [];
-		const components: string[] = [];
+				const registry = yield* ComponentRegistry;
 
-		const registry = await Effect.runPromise(
-			Effect.gen(function* () {
-				const { _tag, ...rest } = yield* ComponentRegistry;
-				return rest;
+				const componentKeys: string[] = [];
+				const components: string[] = [];
+
+				for (const [key, value] of Object.entries(componentRegistry)) {
+					// Log the component key and value
+					integrationLogger(logInfo, `Component "${key}" resolved to "${value}"`);
+
+					// Check if the value is defined and is a string ending with .astro
+					if (!value) {
+						integrationLogger(logInfo, `Component "${key}" is not defined, skipping...`);
+						continue;
+					}
+
+					if (typeof value !== 'string') {
+						integrationLogger(logInfo, `Component "${key}" is not a string, skipping...`);
+						continue;
+					}
+
+					if (!value.endsWith('.astro')) {
+						integrationLogger(logInfo, `Component "${key}" does not end with .astro, skipping...`);
+						continue;
+					}
+
+					// Resolve the path using astroConfigResolve
+					integrationLogger(logInfo, `Resolving path for component "${key}"...`);
+
+					const resolvedPath = astroConfigResolve(value);
+
+					integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
+
+					// Check if the resolved path is empty
+					if (!resolvedPath) {
+						integrationLogger(logInfo, `Component "${key}" resolved path is empty, skipping...`);
+						continue;
+					}
+
+					integrationLogger(logInfo, `Component "${key}" is valid and will be included.`);
+
+					// Add the component key and import statement
+					componentKeys.push(convertHyphensToUnderscores(key.toLowerCase()));
+					components.push(
+						`export { default as ${convertHyphensToUnderscores(key)} } from '${resolvedPath}';`
+					);
+
+					// Register the component in the registry
+					yield* registry.registerComponentFromFile(resolvedPath, key.toLowerCase());
+
+					integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
+
+					// DO more logic for the new component registry handler
+
+					integrationLogger(logInfo, 'Extracting component props...');
+					const componentPropsMap: Map<string, AstroComponentProps> =
+						yield* registry.getAllComponents();
+
+					const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
+						([key, value]) => ({
+							name: key,
+							props: value.props.map((prop) => ({
+								...prop,
+							})),
+						})
+					);
+
+					integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+
+					integrationLogger(logInfo, 'Component registry setup complete.');
+
+					addVirtualImports(params, {
+						name,
+						imports: {
+							// Deprecated, to be moved to the new component registry handler
+							'studiocms:component-proxy': `
+								export const componentKeys = ${JSON.stringify(componentKeys || [])};
+								${components.join('\n')}
+							`,
+
+							// New component registry handler
+							'studiocms:component-registry': `
+								export const componentKeys = ${JSON.stringify(componentKeys || [])};
+								export const componentProps = ${JSON.stringify(componentProps) || []};
+								${components.join('\n')}
+							`,
+						},
+					});
+				}
 			}).pipe(Effect.provide(ComponentRegistry.Default))
-		);
-
-		for (const [key, value] of Object.entries(componentRegistry)) {
-			// Log the component key and value
-			integrationLogger(logInfo, `Component "${key}" resolved to "${value}"`);
-
-			// Check if the value is defined and is a string ending with .astro
-			if (!value) {
-				integrationLogger(logInfo, `Component "${key}" is not defined, skipping...`);
-				continue;
-			}
-
-			if (typeof value !== 'string') {
-				integrationLogger(logInfo, `Component "${key}" is not a string, skipping...`);
-				continue;
-			}
-
-			if (!value.endsWith('.astro')) {
-				integrationLogger(logInfo, `Component "${key}" does not end with .astro, skipping...`);
-				continue;
-			}
-
-			// Resolve the path using astroConfigResolve
-			integrationLogger(logInfo, `Resolving path for component "${key}"...`);
-
-			const resolvedPath = astroConfigResolve(value);
-
-			integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
-
-			// Check if the resolved path is empty
-			if (!resolvedPath) {
-				integrationLogger(logInfo, `Component "${key}" resolved path is empty, skipping...`);
-				continue;
-			}
-
-			integrationLogger(logInfo, `Component "${key}" is valid and will be included.`);
-
-			// Add the component key and import statement
-			componentKeys.push(convertHyphensToUnderscores(key.toLowerCase()));
-			components.push(
-				`export { default as ${convertHyphensToUnderscores(key)} } from '${resolvedPath}';`
-			);
-
-			// Register the component in the registry
-			await Effect.runPromise(registry.registerComponentFromFile(resolvedPath, key.toLowerCase())).catch(console.error);
-		}
-
-		integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
-
-		// DO more logic for the new component registry handler
-
-		integrationLogger(logInfo, 'Extracting component props...');
-		const componentPropsMap: Map<string, AstroComponentProps> = await Effect.runPromise(
-			registry.getAllComponents()
-		);
-
-		const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
-			([key, value]) => ({
-				name: key,
-				props: value.props.map((prop) => ({
-					...prop
-				})),
-			})
-		);
-
-		integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
-
-		integrationLogger(logInfo, 'Component registry setup complete.');
-
-		addVirtualImports(params, {
-			name,
-			imports: {
-				// Deprecated, to be moved to the new component registry handler
-				'studiocms:component-proxy': `
-					export const componentKeys = ${JSON.stringify(componentKeys || [])};
-					${components.join('\n')}
-				`,
-
-				// New component registry handler
-				'studiocms:component-registry': `
-                    export const componentKeys = ${JSON.stringify(componentKeys || [])};
-                    export const componentProps = ${JSON.stringify(componentProps) || []};
-					${components.join('\n')}
-                `,
-			},
-		});
-	}
+		)
 );

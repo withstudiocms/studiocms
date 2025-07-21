@@ -1,4 +1,4 @@
-import { Data } from 'effect';
+import { Data } from '../effect.js';
 
 /**
  * Error class representing issues related to the component registry.
