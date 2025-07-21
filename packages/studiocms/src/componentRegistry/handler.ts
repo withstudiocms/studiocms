@@ -13,17 +13,11 @@ type Options = {
 };
 
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
-	async (params, options: Options) =>
+	async (params, { componentRegistry, astroConfigResolve, verbose, name }: Options) =>
 		await convertToVanilla(
 			genLogger('studiocms/componentRegistry/handler')(function* () {
-				const { logger } = params;
-
-				const { componentRegistry, astroConfigResolve, verbose, name } = options;
-
-				const logInfo = { logger, logLevel: 'info' as const, verbose };
-
+				const logInfo = { logger: params.logger, logLevel: 'info' as const, verbose };
 				integrationLogger(logInfo, 'Setting up component registry...');
-
 				const registry = yield* ComponentRegistry;
 
 				const componentKeys: string[] = [];

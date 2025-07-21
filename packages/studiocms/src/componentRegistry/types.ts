@@ -1,3 +1,9 @@
+
+export interface JSDocTag {
+	tagName: string;
+	text?: string;
+}
+
 /**
  * Represents a property of an Astro component.
  *
@@ -13,6 +19,7 @@ export interface AstroComponentProp {
 	readonly optional: boolean;
 	readonly description?: string;
 	readonly defaultValue?: string;
+	readonly jsDocTags?: JSDocTag[];
 }
 
 /**

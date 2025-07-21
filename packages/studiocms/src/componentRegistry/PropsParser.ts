@@ -1,7 +1,7 @@
-import { Project, SyntaxKind } from 'ts-morph';
+import { Project, type PropertySignature, SyntaxKind } from 'ts-morph';
 import { Effect, genLogger, pipeLogger } from '../effect.js';
 import { ComponentRegistryError, FileParseError } from './errors.js';
-import type { AstroComponentProp, AstroComponentProps } from './types.js';
+import type { AstroComponentProp, AstroComponentProps, JSDocTag } from './types.js';
 
 /**
  * Service for parsing component props from TypeScript source code and extracting prop definitions from Astro files.
@@ -16,6 +16,71 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 							const project = new Project();
 							const sourceFile = project.createSourceFile('temp.ts', sourceCode);
 							const results: AstroComponentProps[] = [];
+
+							/**
+							 * Helper function to extract all JSDoc information from a node
+							 */
+							const extractJSDocInfo = (node: PropertySignature) => {
+								const jsDocComments = node.getJsDocs();
+								let description: string | undefined;
+								let defaultValue: string | undefined;
+								const jsDocTags: JSDocTag[] = [];
+
+								if (jsDocComments.length > 0) {
+									// Get description from the first JSDoc comment
+									description = jsDocComments[0].getDescription().trim();
+
+									// Extract all tags from all JSDoc comments
+									for (const jsDoc of jsDocComments) {
+										const tags = jsDoc.getTags();
+
+										for (const tag of tags) {
+											const tagName = tag.getTagName();
+											const commentText = tag.getCommentText();
+
+											// Handle different tag types
+											switch (tagName) {
+												case 'default': {
+													defaultValue = commentText;
+													jsDocTags.push({
+														tagName,
+														text: commentText,
+													});
+													break;
+												}
+												case 'example':
+												case 'since':
+												case 'deprecated':
+												case 'see':
+												case 'author':
+												case 'version':
+												case 'throws':
+												case 'returns':
+												case 'readonly':
+												case 'internal':
+												case 'beta':
+												case 'alpha':
+												case 'experimental': {
+													jsDocTags.push({
+														tagName,
+														text: commentText,
+													});
+													break;
+												}
+												default: {
+													// Handle any other custom tags
+													jsDocTags.push({
+														tagName,
+														text: commentText,
+													});
+												}
+											}
+										}
+									}
+								}
+
+								return { description, defaultValue, jsDocTags };
+							};
 
 							// Parse interfaces
 							const interfaces = sourceFile.getInterfaces();
@@ -38,18 +103,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 										`Processing property: ${propName}, type: ${propType}, optional: ${isOptional}`
 									);
 
-									const jsDocComment = property.getJsDocs()[0];
-									let description: string | undefined;
-									let defaultValue: string | undefined;
-
-									if (jsDocComment) {
-										description = jsDocComment.getDescription().trim();
-										const jsDocTags = property.getJsDocs().flatMap((doc) => doc.getTags());
-										const defaultTag = jsDocTags.find((tag) => tag.getTagName() === 'default');
-										if (defaultTag) {
-											defaultValue = defaultTag.getCommentText();
-										}
-									}
+									const { description, defaultValue, jsDocTags } = extractJSDocInfo(property);
 
 									props.push({
 										name: propName,
@@ -57,6 +111,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 										optional: isOptional,
 										description,
 										defaultValue,
+										jsDocTags: jsDocTags.length > 0 ? jsDocTags : undefined,
 									});
 								}
 
@@ -93,18 +148,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 												`Processing type property: ${propName}, type: ${propType}, optional: ${isOptional}`
 											);
 
-											const jsDocComment = propSig.getJsDocs()[0];
-											let description: string | undefined;
-											let defaultValue: string | undefined;
-
-											if (jsDocComment) {
-												description = jsDocComment.getDescription().trim();
-												const jsDocTags = propSig.getJsDocs().flatMap((doc) => doc.getTags());
-												const defaultTag = jsDocTags.find((tag) => tag.getTagName() === 'default');
-												if (defaultTag) {
-													defaultValue = defaultTag.getCommentText();
-												}
-											}
+											const { description, defaultValue, jsDocTags } = extractJSDocInfo(propSig);
 
 											props.push({
 												name: propName,
@@ -112,6 +156,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 												optional: isOptional,
 												description,
 												defaultValue,
+												jsDocTags: jsDocTags.length > 0 ? jsDocTags : undefined,
 											});
 										}
 									}
