@@ -72,46 +72,46 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 					// Register the component in the registry
 					yield* registry.registerComponentFromFile(resolvedPath, key.toLowerCase());
+				}
 
-					integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
+				integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
 
-					// DO more logic for the new component registry handler
+				// DO more logic here for the new component registry handler
 
-					integrationLogger(logInfo, 'Extracting component props...');
-					const componentPropsMap: Map<string, AstroComponentProps> =
-						yield* registry.getAllComponents();
+				integrationLogger(logInfo, 'Extracting component props...');
+				const componentPropsMap: Map<string, AstroComponentProps> =
+					yield* registry.getAllComponents();
 
-					const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
-						([key, value]) => ({
-							name: key,
-							props: value.props.map((prop) => ({
-								...prop,
-							})),
-						})
-					);
+				const componentProps: AstroComponentProps[] = Array.from(componentPropsMap.entries()).map(
+					([key, value]) => ({
+						name: key,
+						props: value.props.map((prop) => ({
+							...prop,
+						})),
+					})
+				);
 
-					integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
 
-					integrationLogger(logInfo, 'Component registry setup complete.');
+				integrationLogger(logInfo, 'Component registry setup complete.');
 
-					addVirtualImports(params, {
-						name,
-						imports: {
-							// Deprecated, to be moved to the new component registry handler
-							'studiocms:component-proxy': `
+				addVirtualImports(params, {
+					name,
+					imports: {
+						// Deprecated, to be moved to the new component registry handler
+						'studiocms:component-proxy': `
 								export const componentKeys = ${JSON.stringify(componentKeys || [])};
 								${components.join('\n')}
 							`,
 
-							// New component registry handler
-							'studiocms:component-registry': `
+						// New component registry handler
+						'studiocms:component-registry': `
 								export const componentKeys = ${JSON.stringify(componentKeys || [])};
 								export const componentProps = ${JSON.stringify(componentProps) || []};
 								${components.join('\n')}
 							`,
-						},
-					});
-				}
+					},
+				});
 			}).pipe(Effect.provide(ComponentRegistry.Default))
 		)
 );
