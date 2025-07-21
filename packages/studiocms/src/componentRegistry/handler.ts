@@ -1,7 +1,7 @@
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import { Effect } from 'effect';
-import { convertHyphensToUnderscores } from '../utils/convert-hyphens';
-import { integrationLogger } from '../utils/integrationLogger';
+import { convertHyphensToUnderscores } from '../utils/convert-hyphens.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
 import { ComponentRegistry } from './Registry.js';
 import type { AstroComponentProps } from './types.js';
 
