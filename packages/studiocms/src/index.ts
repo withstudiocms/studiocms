@@ -195,7 +195,7 @@ export const studiocms = defineIntegration({
 						name,
 						verbose,
 						astroConfigResolve,
-						ComponentRegistry,
+						componentRegistry: ComponentRegistry,
 					});
 
 					// Setup Routes
