@@ -77,13 +77,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const componentPropsMap: Map<string, AstroComponentProps> =
 					yield* registry.getAllComponents();
 
-				const componentProps: ComponentRegistryEntry[] = Array.from(
-					componentPropsMap.entries()
-				).map(([key, value]) => ({
-					...value,
-					name: key,
-					safeName: convertHyphensToUnderscores(key),
-				}));
+				const componentPropsEntries = Array.from(componentPropsMap.entries());
+
+				const componentProps: ComponentRegistryEntry[] = componentPropsEntries.map(
+					([name, value]) => ({
+						...value,
+						name,
+						safeName: convertHyphensToUnderscores(name),
+					})
+				);
 
 				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
 
@@ -99,7 +101,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 						`,
 						'studiocms:component-registry/runtime': `
 							export * from '${resolve('./runtime.js')}';
-						`
+						`,
 					},
 				});
 			}).pipe(Effect.provide(ComponentRegistry.Default))
