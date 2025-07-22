@@ -2,12 +2,11 @@ import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
-	ignoreBinaries: ['db:push', 'preview', 'typecheck'],
 	workspaces: {
 		'.': {
 			ignoreDependencies: ['@changesets/config'],
-			entry: ['.github/workflows/*.yml', 'scripts/*.{cjs,ts}'],
-			project: ['.github/workflows/*.yml', 'scripts/*.{cjs,ts}'],
+			entry: ['.github/workflows/*.yml', 'scripts/*.mjs'],
+			project: ['scripts/*.mjs'],
 		},
 		'build-scripts': {
 			entry: '{index,cli}.js',
