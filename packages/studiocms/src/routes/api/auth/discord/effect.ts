@@ -1,6 +1,7 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
@@ -87,7 +88,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 				if (!code || !storedState || !codeVerifier || state !== storedState) {
-					return redirect(context.locals.routeMap.authLinks.loginURL);
+					return redirect(StudioCMSRoutes.authLinks.loginURL);
 				}
 
 				const discordUser = yield* validateAuthCode(code, codeVerifier);
@@ -117,7 +118,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 					yield* sessionHelper.createUserSession(user.id, context);
 
-					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}
 
 				const loggedInUser = yield* userLib.getUserData(context);
@@ -144,7 +145,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 						yield* sessionHelper.createUserSession(existingUser.id, context);
 
-						return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 				}
 
@@ -187,7 +188,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 				yield* sessionHelper.createUserSession(newUser.id, context);
 
-				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+				return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 			});
 
 		return {

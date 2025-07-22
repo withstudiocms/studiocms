@@ -1,6 +1,7 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
@@ -97,7 +98,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 				if (!code || !storedState || !codeVerifier || state !== storedState) {
-					return redirect(context.locals.routeMap.authLinks.loginURL);
+					return redirect(StudioCMSRoutes.authLinks.loginURL);
 				}
 
 				const auth0User = yield* validateAuthCode(code, codeVerifier);
@@ -127,7 +128,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 					yield* sessionHelper.createUserSession(user.id, context);
 
-					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}
 
 				const loggedInUser = yield* userLib.getUserData(context);
@@ -154,7 +155,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 						yield* sessionHelper.createUserSession(existingUser.id, context);
 
-						return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 				}
 
@@ -195,7 +196,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 				yield* sessionHelper.createUserSession(newUser.id, context);
 
-				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+				return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 			});
 
 		return {

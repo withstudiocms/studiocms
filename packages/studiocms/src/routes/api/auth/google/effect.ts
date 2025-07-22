@@ -1,6 +1,7 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
@@ -86,7 +87,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
 
 				if (!code || !storedState || !codeVerifier || state !== storedState) {
-					return redirect(context.locals.routeMap.authLinks.loginURL);
+					return redirect(StudioCMSRoutes.authLinks.loginURL);
 				}
 
 				const googleUser = yield* validateAuthCode(code, codeVerifier);
@@ -116,7 +117,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 					yield* sessionHelper.createUserSession(user.id, context);
 
-					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}
 
 				const loggedInUser = yield* userLib.getUserData(context);
@@ -143,7 +144,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 						yield* sessionHelper.createUserSession(existingUser.id, context);
 
-						return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 				}
 
