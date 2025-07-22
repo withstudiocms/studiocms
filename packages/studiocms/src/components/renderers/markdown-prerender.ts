@@ -16,7 +16,7 @@ function parseCallouts(opt: false | "obsidian" | "github" | "vitepress" | undefi
 	};
 }
 
-const CreateStudioCMSOpts: StudioCMSMarkdownProcessorOptions = {
+const createStudioCMSMDOpts: StudioCMSMarkdownProcessorOptions = {
 	...shared.astroMDRemark,
 	studiocms: {
 		autolink: shared.studiocmsMarkdown?.autoLinkHeadings,
@@ -29,7 +29,7 @@ const [astroMD, studioCMSMD] = await Promise.all([
 	// Initialize markdown processor (Astro)
 	createAstroMD(shared.astroMDRemark),
 	// Initialize markdown processor (StudioCMS)
-	createStudioCMSMD(CreateStudioCMSOpts),
+	createStudioCMSMD(createStudioCMSMDOpts),
 ]);
 
 /**
