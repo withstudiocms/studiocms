@@ -96,8 +96,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 			});
 		}).pipe(SDKCore.Provide, User.Provide, Password.Provide)
 	).catch((error) => {
-		console.error('Error in first time setup step 1:', error);
 		if (error instanceof Error) {
+			console.error('Error in first time setup step 1:', error);
 			return new Response(JSON.stringify({ error: error.message }), {
 				status: 500,
 				statusText: 'Internal Server Error',
