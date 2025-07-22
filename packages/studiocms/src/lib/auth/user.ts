@@ -7,7 +7,7 @@ import { genLogger, pipeLogger } from '../effects/index.js';
 import { Password } from './password.js';
 import { Session } from './session.js';
 import type { UserSessionData } from './types.js';
-import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
 export class UserError extends Data.TaggedError('UserError')<{ message: string }> {}
 
@@ -164,18 +164,14 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameSafe = (
 			username: string
-		): Effect.Effect<string | undefined, UserError, never> =>
-			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(
-				Effect.try({
-					try: () => {
-						if (check.username(username)) {
-							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-						}
-						return;
-					},
-					catch: (cause) => new UserError({ message: `Error verifying username safety: ${cause}` }),
-				})
-			);
+		): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
+			genLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(function* () {
+				const isUnsafe = yield* check.username(username);
+				if (isUnsafe) {
+					return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+				}
+				return undefined;
+			})
 
 		/**
 		 * Verifies if the provided username meets the required criteria.
@@ -190,7 +186,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameInput = (
 			username: string
-		): Effect.Effect<string | true, UserError, never> =>
+		): Effect.Effect<string | true, UserError | CheckIfUnsafeError, never> =>
 			genLogger('studiocms/lib/auth/user/User.verifyUsernameInput')(function* () {
 				const testLength = yield* verifyUsernameLength(username);
 				if (testLength) {
