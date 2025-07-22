@@ -7,7 +7,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect } from 'effect';
-import { genLogger } from '../../../../lib/effects/index.js';
+import { genLogger } from '../../../../../lib/effects/index.js';
 
 export const {
 	DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },

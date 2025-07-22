@@ -322,44 +322,9 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 			enabled: usernameAndPasswordAPI && allowUserRegistration,
 		},
 		{
-			pattern: authAPIRoute('github'),
-			entrypoint: routesDir.authAPI('github/index.ts'),
-			enabled: githubAPI,
-		},
-		{
-			pattern: authAPIRoute('github/callback'),
-			entrypoint: routesDir.authAPI('github/callback.ts'),
-			enabled: githubAPI,
-		},
-		{
-			pattern: authAPIRoute('discord'),
-			entrypoint: routesDir.authAPI('discord/index.ts'),
-			enabled: discordAPI,
-		},
-		{
-			pattern: authAPIRoute('discord/callback'),
-			entrypoint: routesDir.authAPI('discord/callback.ts'),
-			enabled: discordAPI,
-		},
-		{
-			pattern: authAPIRoute('google'),
-			entrypoint: routesDir.authAPI('google/index.ts'),
-			enabled: googleAPI,
-		},
-		{
-			pattern: authAPIRoute('google/callback'),
-			entrypoint: routesDir.authAPI('google/callback.ts'),
-			enabled: googleAPI,
-		},
-		{
-			pattern: authAPIRoute('auth0'),
-			entrypoint: routesDir.authAPI('auth0/index.ts'),
-			enabled: auth0API,
-		},
-		{
-			pattern: authAPIRoute('auth0/callback'),
-			entrypoint: routesDir.authAPI('auth0/callback.ts'),
-			enabled: auth0API,
+			pattern: authAPIRoute('[provider]/[...fn]'),
+			entrypoint: routesDir.authAPI('[provider]/[...fn].ts'),
+			enabled: authEnabled && (githubAPI || discordAPI || googleAPI || auth0API),
 		},
 		{
 			pattern: authAPIRoute('forgot-password'),

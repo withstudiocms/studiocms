@@ -7,7 +7,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect } from 'effect';
-import { genLogger } from '../../../../lib/effects/index.js';
+import { genLogger } from '../../../../../lib/effects/index.js';
 
 export const {
 	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
