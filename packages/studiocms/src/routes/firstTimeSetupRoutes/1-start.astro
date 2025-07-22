@@ -1,5 +1,6 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import {
 	Accordion,
 	AccordionItem,
@@ -15,9 +16,12 @@ import PageHeader from './components/PageHeader.astro';
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
 
-const blobs = validImages.filter(({ name }) => name === 'studiocms-blobs')[0];
-const blocks = validImages.filter(({ name }) => name === 'studiocms-blocks')[0];
-const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
+const imageFilter = (filterName: string) =>
+	validImages.filter(({ name }) => name === filterName)[0];
+
+const blobs = imageFilter('studiocms-blobs');
+const blocks = imageFilter('studiocms-blocks');
+const curves = imageFilter('studiocms-curves');
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -29,7 +33,7 @@ const curves = validImages.filter(({ name }) => name === 'studiocms-curves')[0];
             <h2>Basic Site Information</h2>
         </div>
 
-        <form id="setup-step-one" action={Astro.locals.routeMap.fts.step1}>
+        <form id="setup-step-one" action={StudioCMSRoutes.fts.step1}>
             <div class="form-content">
 
                 <div class="form-row">
