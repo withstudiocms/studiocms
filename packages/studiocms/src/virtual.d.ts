@@ -308,15 +308,9 @@ declare module 'studiocms:component-registry/runtime' {
 	).getRendererComponents;
 
 	/**
-	 * Asynchronously retrieves and constructs a registry of components.
+	 * Returns the component registry entries.
 	 *
-	 * This function maps over the `componentProps` array, retrieves the corresponding component
-	 * from the `registry` object by name, and throws an error if the component is not found.
-	 * It then returns an object mapping each component's `safeName` (converted from underscores
-	 * to hyphens) to its corresponding `ComponentRegistryEntry`.
-	 *
-	 * @throws {StudioCMSRendererError} If a component specified in `componentProps` is not found in the registry.
-	 * @returns {Promise<Record<string, ComponentRegistryEntry>>} An object mapping safe component names to their registry entries.
+	 * @returns {ComponentRegistryEntry[]} An object mapping safe component names to their registry entries.
 	 */
 	export const getRegistryComponents: typeof import(
 		'./componentRegistry/runtime.js'

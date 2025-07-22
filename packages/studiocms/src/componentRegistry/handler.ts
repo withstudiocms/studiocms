@@ -57,7 +57,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const components: string[] = [];
 
 				// Get the component registry from the params or use an empty object
-				const componentRegistryToCheck = componentRegistry || {};
+				const componentRegistryToCheck = componentRegistry !== undefined ? componentRegistry : {};
 				const componentRegistryEntries = Object.entries(componentRegistryToCheck);
 
 				if (Object.keys(componentRegistryToCheck).length === 0) {

@@ -3,95 +3,20 @@ import * as registry from 'studiocms:component-registry';
 import logger from 'studiocms:logger';
 import { StudioCMSRendererError, prefixError } from '../lib/renderer/errors.js';
 import { convertUnderscoresToHyphens } from './convert-hyphens.js';
-import type { ComponentRegistryEntry as RegistryEntry } from './types.js';
+import type { ComponentRegistryEntry } from './types.js';
 
 export * from './convert-hyphens.js';
 
 export { componentProps };
+export type { ComponentRegistryEntry } from './types.js';
 
 /**
- * Represents the props passed to an Astro component.
- * 
- * This interface allows any number of properties with arbitrary keys and values.
- * The value type is `any`, so it can accommodate any prop type.
+ * Returns the component registry entries.
  *
- * @remarks
- * The use of `any` is intentional to provide maximum flexibility for component props.
- *
- * @property [key: string] - Any property name with a value of any type.
+ * @returns {ComponentRegistryEntry[]} An object mapping safe component names to their registry entries.
  */
-interface MockAstroComponentProps {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	[key: string]: any;
-}
-
-/**
- * Represents a component in Astro.
- * 
- * @param _props - The properties passed to the Astro component.
- * @returns The rendered output of the component.
- */
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type AstroComponent = (_props: MockAstroComponentProps) => any;
-
-/**
- * Represents an entry in the component registry, extending the base `RegistryEntry`.
- * Each entry includes a reference to an Astro component.
- *
- * @extends RegistryEntry
- * @property {AstroComponent} Component - The Astro component associated with this registry entry.
- */
-export interface ComponentRegistryEntry extends RegistryEntry {
-	Component: AstroComponent;
-}
-
-/**
- * Asynchronously retrieves and constructs a registry of components.
- *
- * This function maps over the `componentProps` array, retrieves the corresponding component
- * from the `registry` object by name, and throws an error if the component is not found.
- * It then returns an object mapping each component's `safeName` (converted from underscores
- * to hyphens) to its corresponding `ComponentRegistryEntry`.
- *
- * @throws {StudioCMSRendererError} If a component specified in `componentProps` is not found in the registry.
- * @returns {Promise<Record<string, ComponentRegistryEntry>>} An object mapping safe component names to their registry entries.
- */
-export async function getRegistryComponents(): Promise<Record<string, ComponentRegistryEntry>> {
-	try {
-		const components = componentProps.map((entry) => {
-			const Component = registry[entry.safeName as keyof typeof registry] as unknown as AstroComponent;
-			if (!Component) {
-				throw new StudioCMSRendererError(`Component "${entry.name}" not found in registry.`);
-			}
-			return {
-				...entry,
-				Component,
-			} as ComponentRegistryEntry;
-		});
-
-		const toReturn: Record<string, ComponentRegistryEntry> = {};
-
-		for (const component of components) {
-			toReturn[convertUnderscoresToHyphens(component.safeName)] = component;
-		}
-
-		return toReturn;
-	} catch (e) {
-		if (e instanceof Error) {
-			const newErr = prefixError(
-				e,
-				`Failed to import component from Virtual Module "studiocms:component-registry"`
-			);
-			logger.error(newErr);
-			throw new StudioCMSRendererError(newErr.message, newErr.stack);
-		}
-		const newErr = prefixError(
-			new Error('Unknown error'),
-			`Failed to import component from Virtual Module "studiocms:component-registry"`
-		);
-		logger.error(newErr);
-		throw new StudioCMSRendererError(newErr.message, newErr.stack);
-	}
+export function getRegistryComponents(): ComponentRegistryEntry[] {
+	return componentProps;
 }
 
 /**
