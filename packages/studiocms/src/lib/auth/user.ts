@@ -126,13 +126,14 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		/**
 		 * @private
 		 */
-		const verifyUsernameLength = (
-			username: string
-		): Effect.Effect<string | undefined, never, never> =>
+		const verifyUsernameLength = (username: string) =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameLength')(
-				username.length > 3 && username.length < 32
-					? Effect.succeed(undefined)
-					: Effect.succeed('Username must be between 3 and 32 characters')
+				Effect.try(() => {
+					if (username.length < 3 || username.length > 32) {
+						return 'Username must be between 3 and 32 characters long';
+					}
+					return undefined;
+				})
 			);
 
 		/**
@@ -140,11 +141,14 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameCharacters = (
 			username: string
-		): Effect.Effect<string | undefined, never, never> =>
+		) =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameCharacters')(
-				/^[a-z0-9_-]+$/.test(username)
-					? Effect.succeed(undefined)
-					: Effect.succeed('Username may only contain lowercase letters, numbers, - and _')
+				Effect.try(() => {
+					if (!/^[a-z0-9_-]+$/.test(username)) {
+						return 'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)';
+					}
+					return undefined;
+				})
 			);
 
 		/**
