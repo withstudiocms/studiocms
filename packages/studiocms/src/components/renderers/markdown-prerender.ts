@@ -1,21 +1,35 @@
 import rendererConfig from 'studiocms:renderer/config';
 import { createMarkdownProcessor as createAstroMD } from '@astrojs/markdown-remark';
 import {
-	type StudioCMSConfigOptions,
+	type StudioCMSMarkdownProcessorOptions,
 	createMarkdownProcessor as createStudioCMSMD,
 } from '@studiocms/markdown-remark-processor';
 import { shared } from '../../lib/renderer/shared.js';
+
+function parseCallouts(opt: false | "obsidian" | "github" | "vitepress" | undefined) {
+	if (opt === false)
+		return false;
+	if (!opt)
+		return undefined;
+	return {
+		theme: opt,
+	};
+}
+
+const CreateStudioCMSOpts: StudioCMSMarkdownProcessorOptions = {
+	...shared.astroMDRemark,
+	studiocms: {
+		autolink: shared.studiocmsMarkdown?.autoLinkHeadings,
+		discordSubtext: shared.studiocmsMarkdown?.discordSubtext,
+		callouts: parseCallouts(shared.studiocmsMarkdown?.callouts),
+	},
+};
 
 const [astroMD, studioCMSMD] = await Promise.all([
 	// Initialize markdown processor (Astro)
 	createAstroMD(shared.astroMDRemark),
 	// Initialize markdown processor (StudioCMS)
-	createStudioCMSMD({
-		...shared.astroMDRemark,
-		studiocms: shared.studiocmsMarkdown
-			? (shared.studiocmsMarkdown as StudioCMSConfigOptions)
-			: undefined,
-	}),
+	createStudioCMSMD(CreateStudioCMSOpts),
 ]);
 
 /**
