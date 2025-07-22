@@ -2431,19 +2431,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 					const status = yield* isCacheEnabled;
 
 					if (config.dbStartPage) {
-						return siteConfigReturn({
-							defaultOgImage: null,
-							description: 'A StudioCMS Project',
-							diffPerPage: 10,
-							enableDiffs: false,
-							enableMailer: false,
-							gridItems: [],
-							hideDefaultIndex: false,
-							loginPageBackground: 'studiocms-curves',
-							loginPageCustomImage: null,
-							siteIcon: null,
-							title: 'StudioCMS',
-						});
+						return undefined;
 					}
 
 					if (!status) {
