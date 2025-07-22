@@ -34,20 +34,20 @@
     "clean:node": "node ./scripts/clean-node-modules.mjs"
   },
   "devDependencies": {
-    "@actions/core": "1.11.1",
+    "@actions/core": "^1.11.1",
     "@biomejs/biome": "1.9.4",
-    "@changesets/changelog-github": "0.5.1",
-    "@changesets/cli": "2.28.1",
-    "@changesets/config": "3.1.1",
-    "@changesets/write": "0.4.0",
-    "@crowdin/crowdin-api-client": "1.41.4",
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.5",
+    "@changesets/config": "^3.1.1",
+    "@changesets/write": "^0.4.0",
+    "@crowdin/crowdin-api-client": "^1.46.0",
     "@types/node": "catalog:",
     "@withstudiocms/buildkit": "workspace:*",
-    "execa": "9.5.2",
-    "knip": "5.46.0",
-    "pkg-pr-new": "0.0.41",
+    "execa": "^9.6.0",
+    "knip": "^5.62.0",
+    "pkg-pr-new": "^0.0.54",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-    "tinyglobby": "0.2.12"
+    "tinyglobby": "^0.2.14"
   }
 }
