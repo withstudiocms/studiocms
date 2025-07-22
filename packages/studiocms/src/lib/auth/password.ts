@@ -5,7 +5,7 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Data, Effect } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
 import { Scrypt } from './utils/scrypt.js';
-import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
 export class PasswordError extends Data.TaggedError('PasswordError')<{ message: string }> {}
 
@@ -104,31 +104,33 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
-		const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, never, never> =>
+		const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, PasswordError, never> =>
 			pipeLogger('studiocms/lib/auth/password/Password.verifyPasswordLength')(
-				pass.length >= 8 && pass.length < 255
-					? Effect.succeed(undefined)
-					: Effect.succeed('Password must be between 8 and 255 characters')
+				Effect.try({
+					try: () => {
+						if (pass.length < 6 || pass.length > 255) {
+							return 'Password must be between 6 and 255 characters long.';
+						}
+						return undefined;
+					},
+					catch: (cause) =>
+						new PasswordError({
+							message: `An unknown Error occurred when checking the password length: ${cause}`,
+						}),
+				})
 			);
 
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
-		const verifySafe = (pass: string) =>
-			pipeLogger('studiocms/lib/auth/password/Password.verifySafe')(
-				Effect.try({
-					try: () => {
-						if (check.password(pass)) {
-							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
-						}
-						return;
-					},
-					catch: (cause) =>
-						new PasswordError({
-							message: `There was an error verifying password safety: ${cause}`,
-						}),
-				})
-			);
+		const verifySafe = (pass: string): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
+			genLogger('studiocms/lib/auth/password/Password.verifySafe')(function* () {
+				const isUnsafe = yield* check.password(pass);
+				if (isUnsafe) {
+					return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+				}
+				return undefined;
+			})
 
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
