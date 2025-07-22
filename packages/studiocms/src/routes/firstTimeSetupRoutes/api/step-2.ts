@@ -47,8 +47,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			if (usernameTest !== true) {
 				return new Response(
 					JSON.stringify({
-						error:
-							'Invalid username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)',
+						error: usernameTest,
 					}),
 					{
 						status: 400,
@@ -61,8 +60,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			if (passwordTest !== true) {
 				return new Response(
 					JSON.stringify({
-						error:
-							'Invalid password: Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.',
+						error: passwordTest,
 					}),
 					{
 						status: 400,
