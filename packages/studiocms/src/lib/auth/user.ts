@@ -126,13 +126,18 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		/**
 		 * @private
 		 */
-		const verifyUsernameLength = (username: string) =>
+		const verifyUsernameLength = (
+			username: string
+		): Effect.Effect<string | undefined, UserError, never> =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameLength')(
-				Effect.try(() => {
-					if (username.length < 3 || username.length > 32) {
-						return 'Username must be between 3 and 32 characters long';
-					}
-					return undefined;
+				Effect.try({
+					try: () => {
+						if (username.length < 3 || username.length > 32) {
+							return 'Username must be between 3 and 32 characters long';
+						}
+						return undefined;
+					},
+					catch: (cause) => new UserError({ message: `Length error: ${cause}` }),
 				})
 			);
 
@@ -141,20 +146,25 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameCharacters = (
 			username: string
-		) =>
+		): Effect.Effect<string | undefined, UserError, never> =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameCharacters')(
-				Effect.try(() => {
-					if (!/^[a-z0-9_-]+$/.test(username)) {
-						return 'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)';
-					}
-					return undefined;
+				Effect.try({
+					try: () => {
+						if (!/^[a-z0-9_-]+$/.test(username)) {
+							return 'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)';
+						}
+						return undefined;
+					},
+					catch: (cause) => new UserError({ message: `Character error: ${cause}` }),
 				})
 			);
 
 		/**
 		 * @private
 		 */
-		const verifyUsernameSafe = (username: string) =>
+		const verifyUsernameSafe = (
+			username: string
+		): Effect.Effect<string | undefined, UserError, never> =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(
 				Effect.try({
 					try: () => {
@@ -178,7 +188,9 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @param username - The username to verify.
 		 * @returns `true` if the username is valid, `false` otherwise.
 		 */
-		const verifyUsernameInput = (username: string) =>
+		const verifyUsernameInput = (
+			username: string
+		): Effect.Effect<string | true, UserError, never> =>
 			genLogger('studiocms/lib/auth/user/User.verifyUsernameInput')(function* () {
 				const testLength = yield* verifyUsernameLength(username);
 				if (testLength) {
