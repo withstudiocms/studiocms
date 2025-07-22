@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.1.0-beta.20
+
+### Patch Changes
+
+- [#631](https://github.com/withstudiocms/studiocms/pull/631) [`ca4a3eb`](https://github.com/withstudiocms/studiocms/commit/ca4a3eb4bb4c810551385471cf071bc0f9cd80eb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Remove need for unavailable middleware for first time setup pages
+
 ## 0.1.0-beta.19
 
 ### Patch Changes
