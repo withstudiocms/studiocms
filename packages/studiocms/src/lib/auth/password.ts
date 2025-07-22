@@ -137,8 +137,10 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const checkPwnedDB = (pass: string) =>
 			genLogger('studiocms/lib/auth/password/Password.checkPwnedDB')(function* () {
-				const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(pass)));
-				const hashPrefix = hash.slice(0, 5);
+				const encodedData = new TextEncoder().encode(pass);
+				const sha1Hash = sha1(encodedData);
+				const hashHex = encodeHexLowerCase(sha1Hash);
+				const hashPrefix = hashHex.slice(0, 5);
 
 				const response = yield* client
 					.get(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
@@ -159,7 +161,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 
 				for (const line of lines) {
 					const hashSuffix = line.slice(0, 35).toLowerCase();
-					if (hash === hashPrefix + hashSuffix) {
+					if (hashHex === hashPrefix + hashSuffix) {
 						return 'Password must not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.';
 					}
 				}

@@ -217,7 +217,8 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const createUserAvatar = (email: string) =>
 			genLogger('studiocms/lib/auth/user/User.createUserAvatar')(function* () {
-				const msgUint8 = pipe(email.trim().toLowerCase(), new TextEncoder().encode);
+				const clean = email.trim().toLowerCase();
+				const msgUint8 = new TextEncoder().encode(clean);
 
 				const hashBuffer = yield* pipeLogger(
 					'studiocms/lib/auth/user/User.createUserAvatar.hashBuffer'
