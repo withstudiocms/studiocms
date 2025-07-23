@@ -1,14 +1,14 @@
 import type { APIContext, APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../../../effect.js';
 import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.js';
-import { OAuthAPIEffect, authEnvChecker } from './_shared.js';
+import { OAuthAPIEffect } from './_effects/index.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
-	const authEnv = await convertToVanilla(authEnvChecker());
+	const authEnv = await OAuthAPIEffect.envChecker();
 	return await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/[provider]/callback.GET')(function* () {
-			const { initCallback } = yield* OAuthAPIEffect;
-			return yield* initCallback(context);
+			const oAuth = yield* OAuthAPIEffect;
+			return yield* oAuth.initCallback(context);
 		}).pipe(OAuthAPIEffect.A, OAuthAPIEffect.B(authEnv))
 	);
 };

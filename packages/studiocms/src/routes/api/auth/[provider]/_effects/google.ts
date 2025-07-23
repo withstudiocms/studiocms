@@ -7,7 +7,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
 import { GoogleUser } from './_shared.js';
 
 /**
@@ -103,7 +103,11 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 					const url = google.createAuthorizationURL(state, codeVerifier, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(context, GoogleOAuthAPI.ProviderCookieName, state);
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						GoogleOAuthAPI.ProviderCookieName,
+						state
+					);
 
 					yield* sessionHelper.setOAuthSessionTokenCookie(
 						context,
@@ -233,7 +237,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 		FetchHttpClient.layer,
 	],
 }) {
-	static ProviderID = 'google';
+	static ProviderID = Provider.GOOGLE;
 	static ProviderCookieName = 'google_oauth_state';
 	static ProviderCodeVerifier = 'google_oauth_code_verifier';
 }

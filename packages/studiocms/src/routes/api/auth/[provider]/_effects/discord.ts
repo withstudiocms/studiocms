@@ -7,7 +7,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
 import { DiscordUser } from './_shared.js';
 
 /**
@@ -231,7 +231,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 		FetchHttpClient.layer,
 	],
 }) {
-	static ProviderID = 'discord';
+	static ProviderID = Provider.DISCORD;
 	static ProviderCookieName = 'discord_oauth_state';
 	static ProviderCodeVerifier = 'discord_oauth_code_verifier';
 }

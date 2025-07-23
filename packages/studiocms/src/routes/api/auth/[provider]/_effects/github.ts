@@ -7,7 +7,7 @@ import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
 import { GitHubUser } from './_shared.js';
 
 /**
@@ -92,7 +92,11 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 
 					const url = github.createAuthorizationURL(state, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(context, GitHubOAuthAPI.ProviderCookieName, state);
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						GitHubOAuthAPI.ProviderCookieName,
+						state
+					);
 
 					return context.redirect(url.toString());
 				}),
@@ -216,6 +220,6 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 		FetchHttpClient.layer,
 	],
 }) {
-	static ProviderID = 'github';
+	static ProviderID = Provider.GITHUB;
 	static ProviderCookieName = 'github_oauth_state';
 }

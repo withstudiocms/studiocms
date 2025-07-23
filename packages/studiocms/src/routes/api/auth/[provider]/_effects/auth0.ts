@@ -7,7 +7,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
 import { Auth0User, cleanDomain } from './_shared.js';
 
 /**
@@ -100,7 +100,11 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 					const url = auth0.createAuthorizationURL(state, codeVerifier, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(context, Auth0OAuthAPI.ProviderCookieName, state);
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						Auth0OAuthAPI.ProviderCookieName,
+						state
+					);
 
 					yield* sessionHelper.setOAuthSessionTokenCookie(
 						context,
@@ -230,7 +234,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 		FetchHttpClient.layer,
 	],
 }) {
-	static ProviderID = 'auth0';
+	static ProviderID = Provider.AUTH0;
 	static ProviderCookieName = 'auth0_oauth_state';
 	static ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 }

@@ -1,4 +1,77 @@
-import { Schema, pipe } from '../../../../../effect.js';
+import { type AuthEnvCheckResponse, authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
+import { authConfig } from 'studiocms:config';
+import { Context, Data, Effect, Layer, Schema, pipe } from '../../../../../effect.js';
+
+/**
+ * Enum representing supported authentication providers.
+ *
+ * @remarks
+ * Used to specify the provider for authentication flows.
+ *
+ * @enum {string}
+ * @property {Provider.GOOGLE}  Google authentication provider.
+ * @property {Provider.GITHUB}  GitHub authentication provider.
+ * @property {Provider.DISCORD} Discord authentication provider.
+ * @property {Provider.AUTH0}   Auth0 authentication provider.
+ */
+export enum Provider {
+	GOOGLE = 'google',
+	GITHUB = 'github',
+	DISCORD = 'discord',
+	AUTH0 = 'auth0',
+}
+
+/**
+ * Creates a standardized HTTP response for authentication provider errors.
+ *
+ * @param error - The error message to include in the response body.
+ * @param status - The HTTP status code for the response.
+ * @returns A `Response` object with a JSON body containing the error message and the specified status code.
+ */
+export const ProviderResponse = (
+	error: string,
+	status: number
+): Effect.Effect<Response, never, never> =>
+	Effect.succeed(new Response(JSON.stringify({ error }), { status }));
+
+/**
+ * Represents an error related to authentication environment configuration.
+ *
+ * This error is tagged as 'AuthEnvError' and includes a message describing the issue.
+ *
+ * @extends Data.TaggedError
+ * @template { message: string } - The payload containing the error message.
+ */
+export class AuthEnvError extends Data.TaggedError('AuthEnvError')<{ message: string }> {}
+
+/**
+ * Checks the authentication environment configuration for all providers.
+ *
+ * This function wraps the `authEnvCheck` call in an `Effect.tryPromise`, handling any errors
+ * by returning an `AuthEnvError` with a descriptive message.
+ *
+ * @returns {Effect<unknown, AuthEnvError, void>} An effect that resolves if the environment is valid,
+ * or fails with an `AuthEnvError` if the check fails.
+ */
+export const authEnvChecker = (): Effect.Effect<AuthEnvCheckResponse, AuthEnvError, never> =>
+	Effect.tryPromise({
+		try: () => authEnvCheck(authConfig.providers),
+		catch: (cause) =>
+			new AuthEnvError({ message: `Authentication environment check failed: ${cause}` }),
+	});
+
+export class AuthEnvCheck extends Context.Tag('AuthEnvCheck')<
+	AuthEnvCheck,
+	AuthEnvCheckResponse
+>() {
+	static make = (response: AuthEnvCheckResponse) => Layer.succeed(this, this.of(response));
+	static Provide = (response: AuthEnvCheckResponse) => Effect.provide(this.make(response));
+}
+
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
+	message: string;
+	provider: string;
+}> {}
 
 /**
  * Represents a user authenticated via Auth0.
