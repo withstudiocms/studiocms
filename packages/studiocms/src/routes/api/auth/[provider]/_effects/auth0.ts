@@ -19,7 +19,9 @@ export const ProviderID = 'auth0';
 export const ProviderCookieName = 'auth0_oauth_state';
 export const ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 
-export const auth0 = new Auth0(cleanDomain(DOMAIN), CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+export const CLIENT_DOMAIN = cleanDomain(DOMAIN);
+
+export const auth0 = new Auth0(CLIENT_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides Auth0 OAuth authentication effects for the StudioCMS API.
@@ -89,8 +91,6 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 				const tokens = yield* Effect.tryPromise(() =>
 					auth0.validateAuthorizationCode(code, codeVerifier)
 				);
-
-				const CLIENT_DOMAIN = cleanDomain(DOMAIN);
 
 				return yield* fetchClient
 					.get(`${CLIENT_DOMAIN}/userinfo`, {
