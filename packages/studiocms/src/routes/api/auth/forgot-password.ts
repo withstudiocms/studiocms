@@ -11,6 +11,7 @@ import { Effect, Layer } from 'effect';
 import { dual, pipe } from 'effect/Function';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AuthAPIUtils } from './shared.js';
 
 /**
  * Utility function to append search parameters to a URL.
@@ -56,14 +57,17 @@ function generateResetLink(
 	);
 }
 
-const deps = Layer.mergeAll(SDKCore.Default, Mailer.Default, Notifications.Default);
+const deps = Layer.mergeAll(SDKCore.Default, Mailer.Default, Notifications.Default, AuthAPIUtils.Default);
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/forgot-password/POST')(function* () {
-			const sdk = yield* SDKCore;
-			const mailer = yield* Mailer;
-			const notifications = yield* Notifications;
+			const [sdk, mailer, notifications, { readJson }] = yield* Effect.all([
+				SDKCore,
+				Mailer,
+				Notifications,
+				AuthAPIUtils
+			]);
 
 			// Check if demo mode is enabled
 			if (developerConfig.demoMode !== false) {
@@ -79,7 +83,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Parse the request body as JSON
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* readJson(context);
 
 			// Get the email from the JSON data
 			const { email } = jsonData;
