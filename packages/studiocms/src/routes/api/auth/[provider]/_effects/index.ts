@@ -102,8 +102,24 @@ export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEf
 		};
 	}),
 }) {
+    // Export Dependency Providers
+    /**
+     * Main Dependencies Provider
+     */
 	static A = Effect.provide(OAuthAPIEffect.Default);
+    /**
+     * AuthEnvCheck Dependency Provider
+     * 
+     * @param response authEnvCheck function response from `envChecker` Utility
+     * @returns Effect layer for OAuthAPIEffect
+     */
 	static B = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
 
+    // Export Utils
+    /**
+     * EnvChecker - Check for required ENV Variables and if a provider should be enabled.
+     * 
+     * @returns AuthEnvCheckResponse for usage with Dependency Provider "B"
+     */
     static envChecker = async () => Effect.runPromise(authEnvChecker());
 }
