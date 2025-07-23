@@ -128,7 +128,19 @@ export const POST: APIRoute = async (context: APIContext) =>
 			});
 		}).pipe(SDKCore.Provide)
 	).catch((error) => {
-		return new Response(JSON.stringify({ message: 'Internal Server Error', error }), {
+		if (error instanceof Error) {
+			console.error('Error in first time setup step 1:', error);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				statusText: 'Internal Server Error',
+			});
+		}
+		// Fallback for non-Error exceptions
+		console.error('Non-Error exception:', error);
+		// Return a generic error response
+		// This could happen if the error is not an instance of Error
+		// or if the error handling is not as expected.
+		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
 			status: 500,
 			statusText: 'Internal Server Error',
 		});

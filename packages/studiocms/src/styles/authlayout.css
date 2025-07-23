@@ -10,6 +10,7 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+	font-family: var(--scms-font-onest);
 }
 
 main {

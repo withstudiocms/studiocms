@@ -5,7 +5,7 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Data, Effect } from 'effect';
 import { genLogger, pipeLogger } from '../effects/index.js';
 import { Scrypt } from './utils/scrypt.js';
-import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
 export class PasswordError extends Data.TaggedError('PasswordError')<{ message: string }> {}
 
@@ -104,28 +104,18 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
-		const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, never, never> =>
+		const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, PasswordError, never> =>
 			pipeLogger('studiocms/lib/auth/password/Password.verifyPasswordLength')(
-				pass.length >= 8 && pass.length < 255
-					? Effect.succeed(undefined)
-					: Effect.succeed('Password must be between 8 and 255 characters')
-			);
-
-		/**
-		 * @private Internal function for the `verifyPasswordStrength` function
-		 */
-		const verifySafe = (pass: string) =>
-			pipeLogger('studiocms/lib/auth/password/Password.verifySafe')(
 				Effect.try({
 					try: () => {
-						if (check.password(pass)) {
-							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+						if (pass.length < 6 || pass.length > 255) {
+							return 'Password must be between 6 and 255 characters long.';
 						}
-						return;
+						return undefined;
 					},
 					catch: (cause) =>
 						new PasswordError({
-							message: `There was an error verifying password safety: ${cause}`,
+							message: `An unknown Error occurred when checking the password length: ${cause}`,
 						}),
 				})
 			);
@@ -133,10 +123,24 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
+		const verifySafe = (pass: string): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
+			genLogger('studiocms/lib/auth/password/Password.verifySafe')(function* () {
+				const isUnsafe = yield* check.password(pass);
+				if (isUnsafe) {
+					return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+				}
+				return undefined;
+			})
+
+		/**
+		 * @private Internal function for the `verifyPasswordStrength` function
+		 */
 		const checkPwnedDB = (pass: string) =>
 			genLogger('studiocms/lib/auth/password/Password.checkPwnedDB')(function* () {
-				const hash = encodeHexLowerCase(sha1(new TextEncoder().encode(pass)));
-				const hashPrefix = hash.slice(0, 5);
+				const encodedData = new TextEncoder().encode(pass);
+				const sha1Hash = sha1(encodedData);
+				const hashHex = encodeHexLowerCase(sha1Hash);
+				const hashPrefix = hashHex.slice(0, 5);
 
 				const response = yield* client
 					.get(`https://api.pwnedpasswords.com/range/${hashPrefix}`)
@@ -157,7 +161,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 
 				for (const line of lines) {
 					const hashSuffix = line.slice(0, 35).toLowerCase();
-					if (hash === hashPrefix + hashSuffix) {
+					if (hashHex === hashPrefix + hashSuffix) {
 						return 'Password must not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.';
 					}
 				}

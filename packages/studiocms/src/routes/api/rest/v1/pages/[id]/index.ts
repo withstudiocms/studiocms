@@ -140,7 +140,13 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				(metaData) => metaData.id === data.id
 			);
 
-			const { enableDiffs, diffPerPage } = (yield* sdk.GET.siteConfig()).data;
+			const siteConfig = yield* sdk.GET.siteConfig();
+
+			if (!siteConfig) {
+				return apiResponseLogger(500, 'Site configuration not found');
+			}
+
+			const { enableDiffs, diffPerPage } = siteConfig.data;
 
 			if (enableDiffs) {
 				yield* sdk.diffTracking.insert(

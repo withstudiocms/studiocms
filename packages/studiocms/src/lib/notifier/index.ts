@@ -130,14 +130,14 @@ export class Notifications extends Effect.Service<Notifications>()(
 			 * and mailer functionality disabled.
 			 */
 			const getConfig = genLogger('studiocms/lib/notifier/Notifications.getConfig')(function* () {
-				const { data } = yield* sdk.GET.siteConfig();
+				const data = yield* sdk.GET.siteConfig();
 				if (!data) {
 					return {
 						title: 'StudioCMS',
 						enableMailer: false,
 					};
 				}
-				return data;
+				return data.data;
 			});
 
 			/**

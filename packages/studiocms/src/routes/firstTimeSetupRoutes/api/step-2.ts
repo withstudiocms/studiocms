@@ -47,8 +47,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			if (usernameTest !== true) {
 				return new Response(
 					JSON.stringify({
-						error:
-							'Invalid username: Username must be between 3 and 20 characters, only contain lowercase letters, numbers, -, and _ as well as not be a commonly used username (admin, root, etc.)',
+						error: usernameTest,
 					}),
 					{
 						status: 400,
@@ -61,8 +60,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			if (passwordTest !== true) {
 				return new Response(
 					JSON.stringify({
-						error:
-							'Invalid password: Password must be between 6 and 255 characters, and not be in the <a href="https://haveibeenpwned.com/Passwords" target="_blank">pwned password database</a>.',
+						error: passwordTest,
 					}),
 					{
 						status: 400,
@@ -96,7 +94,19 @@ export const POST: APIRoute = async (context: APIContext) =>
 			});
 		}).pipe(SDKCore.Provide, User.Provide, Password.Provide)
 	).catch((error) => {
-		return new Response(JSON.stringify({ message: 'Internal Server Error', error }), {
+		if (error instanceof Error) {
+			console.error('Error in first time setup step 2:', error);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				statusText: 'Internal Server Error',
+			});
+		}
+		// Fallback for non-Error exceptions
+		console.error('Non-Error exception:', error);
+		// Return a generic error response
+		// This could happen if the error is not an instance of Error
+		// or if the error handling is not as expected.
+		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
 			status: 500,
 			statusText: 'Internal Server Error',
 		});

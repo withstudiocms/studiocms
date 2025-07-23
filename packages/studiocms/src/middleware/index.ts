@@ -11,6 +11,23 @@ import { type Router, defineMiddlewareRouter, getUserPermissions } from './utils
 
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
+const fallbackSiteConfig = {
+	lastCacheUpdate: new Date(),
+	data: {
+		defaultOgImage: null,
+		description: 'A StudioCMS Project',
+		diffPerPage: 10,
+		enableDiffs: false,
+		enableMailer: false,
+		gridItems: [],
+		hideDefaultIndex: false,
+		loginPageBackground: 'studiocms-curves',
+		loginPageCustomImage: null,
+		siteIcon: null,
+		title: 'StudioCMS-Setup',
+	},
+};
+
 // Define a middleware router that routes requests to different handlers based on the request path.
 const router: Router = {};
 
@@ -51,7 +68,7 @@ router['/**'] = async (context, next) =>
 			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
 			context.locals.latestVersion = version;
-			context.locals.siteConfig = siteConf;
+			context.locals.siteConfig = siteConf || fallbackSiteConfig;
 			context.locals.defaultLang = defaultLang;
 			context.locals.routeMap = StudioCMSRoutes;
 			context.locals.userSessionData = userSessionData;
