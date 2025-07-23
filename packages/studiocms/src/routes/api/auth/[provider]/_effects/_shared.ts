@@ -1,5 +1,7 @@
 import { type AuthEnvCheckResponse, authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { authConfig } from 'studiocms:config';
+import type { AstroCookies } from 'astro';
+import { AstroError } from 'astro/errors';
 import { Context, Data, Effect, Layer, Schema, pipe } from '../../../../../effect.js';
 
 /**
@@ -160,3 +162,15 @@ export const cleanDomain = (domain: string): string =>
 		(domain) => domain.replace(/(?:http|https):\/\//, ''),
 		(domain) => `https://${domain}`
 	);
+
+export const getUrlParam = (url: URL, name: string) =>
+	Effect.try({
+		try: () => url.searchParams.get(name),
+		catch: () => new AstroError('Failed to parse URL from context'),
+	});
+
+export const getCookie = (cookies: AstroCookies, key: string) =>
+	Effect.try({
+		try: () => cookies.get(key)?.value ?? null,
+		catch: () => new AstroError('Failed to parse get Cookies from context'),
+	});

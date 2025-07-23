@@ -7,7 +7,13 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
+import {
+	AuthEnvCheck,
+	Provider,
+	ValidateAuthCodeError,
+	getCookie,
+	getUrlParam,
+} from './_shared.js';
 import { GoogleUser } from './_shared.js';
 
 /**
@@ -128,10 +134,12 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 				genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
 					const { url, cookies, redirect } = context;
 
-					const code = url.searchParams.get('code');
-					const state = url.searchParams.get('state');
-					const codeVerifier = cookies.get(GoogleOAuthAPI.ProviderCodeVerifier)?.value ?? null;
-					const storedState = cookies.get(GoogleOAuthAPI.ProviderCookieName)?.value ?? null;
+					const [code, state, storedState, codeVerifier] = yield* Effect.all([
+						getUrlParam(url, 'code'),
+						getUrlParam(url, 'state'),
+						getCookie(cookies, GoogleOAuthAPI.ProviderCookieName),
+						getCookie(cookies, GoogleOAuthAPI.ProviderCodeVerifier),
+					]);
 
 					if (!code || !storedState || !codeVerifier || state !== storedState) {
 						return redirect(StudioCMSRoutes.authLinks.loginURL);

@@ -7,7 +7,13 @@ import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
+import {
+	AuthEnvCheck,
+	Provider,
+	ValidateAuthCodeError,
+	getCookie,
+	getUrlParam,
+} from './_shared.js';
 import { GitHubUser } from './_shared.js';
 
 /**
@@ -111,9 +117,11 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 				genLogger('studiocms/routes/api/auth/github/effect.initCallback')(function* () {
 					const { url, cookies, redirect } = context;
 
-					const code = url.searchParams.get('code');
-					const state = url.searchParams.get('state');
-					const storedState = cookies.get(GitHubOAuthAPI.ProviderCookieName)?.value ?? null;
+					const [code, state, storedState] = yield* Effect.all([
+						getUrlParam(url, 'code'),
+						getUrlParam(url, 'state'),
+						getCookie(cookies, GitHubOAuthAPI.ProviderCookieName),
+					]);
 
 					if (!code || !state || !storedState || state !== storedState) {
 						return redirect(StudioCMSRoutes.authLinks.loginURL);

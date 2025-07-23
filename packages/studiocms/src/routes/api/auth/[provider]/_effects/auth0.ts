@@ -7,7 +7,13 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, Provider, ValidateAuthCodeError } from './_shared.js';
+import {
+	AuthEnvCheck,
+	Provider,
+	ValidateAuthCodeError,
+	getCookie,
+	getUrlParam,
+} from './_shared.js';
 import { Auth0User, cleanDomain } from './_shared.js';
 
 /**
@@ -125,10 +131,12 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 				genLogger('studiocms/routes/api/auth/auth0/effect.initCallback')(function* () {
 					const { url, cookies, redirect } = context;
 
-					const code = url.searchParams.get('code');
-					const state = url.searchParams.get('state');
-					const codeVerifier = cookies.get(Auth0OAuthAPI.ProviderCodeVerifier)?.value ?? null;
-					const storedState = cookies.get(Auth0OAuthAPI.ProviderCookieName)?.value ?? null;
+					const [code, state, storedState, codeVerifier] = yield* Effect.all([
+						getUrlParam(url, 'code'),
+						getUrlParam(url, 'state'),
+						getCookie(cookies, Auth0OAuthAPI.ProviderCookieName),
+						getCookie(cookies, Auth0OAuthAPI.ProviderCodeVerifier),
+					]);
 
 					if (!code || !storedState || !codeVerifier || state !== storedState) {
 						return redirect(StudioCMSRoutes.authLinks.loginURL);
