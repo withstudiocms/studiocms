@@ -173,6 +173,6 @@ export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEf
 		};
 	}),
 }) {
-	static Deps = Effect.provide(OAuthAPIEffect.Default);
-	static AuthEnv = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
+	static A = Effect.provide(OAuthAPIEffect.Default);
+	static B = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
 }

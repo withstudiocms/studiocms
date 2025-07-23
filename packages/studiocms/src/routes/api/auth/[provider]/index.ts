@@ -3,15 +3,15 @@ import { convertToVanilla, genLogger } from '../../../../effect.js';
 import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.js';
 import { OAuthAPIEffect, authEnvChecker } from './_shared.js';
 
-export const AuthEnv = async () => await convertToVanilla(authEnvChecker());
-
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (context: APIContext) => {
+	const authEnv = await convertToVanilla(authEnvChecker());
+	return await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/[provider]/index.GET')(function* () {
 			const { initSession } = yield* OAuthAPIEffect;
 			return yield* initSession(context);
-		}).pipe(OAuthAPIEffect.Deps, OAuthAPIEffect.AuthEnv(await AuthEnv()))
+		}).pipe(OAuthAPIEffect.A, OAuthAPIEffect.B(authEnv))
 	);
+};
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
 
