@@ -322,8 +322,13 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 			enabled: usernameAndPasswordAPI && allowUserRegistration,
 		},
 		{
-			pattern: authAPIRoute('[provider]/[...fn]'),
-			entrypoint: routesDir.authAPI('[provider]/[...fn].ts'),
+			pattern: authAPIRoute('[provider]'),
+			entrypoint: routesDir.authAPI('[provider]/index.ts'),
+			enabled: authEnabled && (githubAPI || discordAPI || googleAPI || auth0API),
+		},
+		{
+			pattern: authAPIRoute('[provider]/callback'),
+			entrypoint: routesDir.authAPI('[provider]/callback.ts'),
 			enabled: authEnabled && (githubAPI || discordAPI || googleAPI || auth0API),
 		},
 		{

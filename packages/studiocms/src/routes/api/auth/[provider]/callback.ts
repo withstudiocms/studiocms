@@ -7,6 +7,7 @@ import { Auth0OAuthAPI } from './_effects/auth0.js';
 import { DiscordOAuthAPI } from './_effects/discord.js';
 import { GitHubOAuthAPI } from './_effects/github.js';
 import { GoogleOAuthAPI } from './_effects/google.js';
+import { Provider } from './_types.js';
 
 const deps = Layer.mergeAll(
 	GoogleOAuthAPI.Default,
@@ -15,41 +16,17 @@ const deps = Layer.mergeAll(
 	Auth0OAuthAPI.Default
 );
 
-const supportedProviders = ['google', 'github', 'discord', 'auth0'];
-
-enum Provider {
-	GOOGLE = 'google',
-	GITHUB = 'github',
-	DISCORD = 'discord',
-	AUTH0 = 'auth0',
-}
-
-enum ProviderFunction {
-	INIT_SESSION = 'initSession',
-	INIT_CALLBACK = 'initCallback',
-}
-
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
-		genLogger('studiocms/routes/api/auth/[provider]/[...fn].GET')(function* () {
+		genLogger('studiocms/routes/api/auth/[provider]/callback.GET')(function* () {
 			const authEnv = yield* Effect.tryPromise(() => authEnvCheck(authConfig.providers));
 
 			// Get the provider and function from the context params
-			const { provider, fn } = context.params;
+			const { provider } = context.params;
 
 			// Check if the provider is valid
-			if (!provider || !supportedProviders.includes(provider)) {
+			if (!provider) {
 				return new Response(JSON.stringify({ error: 'Invalid provider' }), { status: 400 });
-			}
-
-			let action: ProviderFunction;
-
-			if (fn === undefined || fn === 'index') {
-				action = ProviderFunction.INIT_SESSION;
-			} else if (fn === 'callback') {
-				action = ProviderFunction.INIT_CALLBACK;
-			} else {
-				return new Response(JSON.stringify({ error: 'Invalid endpoint' }), { status: 400 });
 			}
 
 			// Call the appropriate provider function based on the provider and function
@@ -63,19 +40,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					}
 
 					const google = yield* GoogleOAuthAPI;
-					switch (action) {
-						case ProviderFunction.INIT_SESSION: {
-							return yield* google.initSession(context);
-						}
-						case ProviderFunction.INIT_CALLBACK: {
-							return yield* google.initCallback(context);
-						}
-						default: {
-							return new Response(JSON.stringify({ error: 'Invalid action for Google provider' }), {
-								status: 400,
-							});
-						}
-					}
+					return yield* google.initCallback(context);
 				}
 				case Provider.GITHUB: {
 					if (!authEnv.GITHUB.ENABLED) {
@@ -85,19 +50,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					}
 
 					const github = yield* GitHubOAuthAPI;
-					switch (action) {
-						case ProviderFunction.INIT_SESSION: {
-							return yield* github.initSession(context);
-						}
-						case ProviderFunction.INIT_CALLBACK: {
-							return yield* github.initCallback(context);
-						}
-						default: {
-							return new Response(JSON.stringify({ error: 'Invalid action for GitHub provider' }), {
-								status: 400,
-							});
-						}
-					}
+					return yield* github.initCallback(context);
 				}
 				case Provider.DISCORD: {
 					if (!authEnv.DISCORD.ENABLED) {
@@ -107,20 +60,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					}
 
 					const discord = yield* DiscordOAuthAPI;
-					switch (action) {
-						case ProviderFunction.INIT_SESSION: {
-							return yield* discord.initSession(context);
-						}
-						case ProviderFunction.INIT_CALLBACK: {
-							return yield* discord.initCallback(context);
-						}
-						default: {
-							return new Response(
-								JSON.stringify({ error: 'Invalid action for Discord provider' }),
-								{ status: 400 }
-							);
-						}
-					}
+					return yield* discord.initCallback(context);
 				}
 				case Provider.AUTH0: {
 					if (!authEnv.AUTH0.ENABLED) {
@@ -130,19 +70,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					}
 
 					const auth0 = yield* Auth0OAuthAPI;
-					switch (action) {
-						case ProviderFunction.INIT_SESSION: {
-							return yield* auth0.initSession(context);
-						}
-						case ProviderFunction.INIT_CALLBACK: {
-							return yield* auth0.initCallback(context);
-						}
-						default: {
-							return new Response(JSON.stringify({ error: 'Invalid action for Auth0 provider' }), {
-								status: 400,
-							});
-						}
-					}
+					return yield* auth0.initCallback(context);
 				}
 				default: {
 					return new Response(JSON.stringify({ error: 'Provider not implemented' }), {
