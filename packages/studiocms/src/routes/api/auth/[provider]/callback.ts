@@ -5,7 +5,15 @@ import { Auth0OAuthAPI } from './_effects/auth0.js';
 import { DiscordOAuthAPI } from './_effects/discord.js';
 import { GitHubOAuthAPI } from './_effects/github.js';
 import { GoogleOAuthAPI } from './_effects/google.js';
-import { AuthAPIEffectDeps, Provider, ProviderResponse, authEnvChecker } from './_shared.js';
+import {
+	AuthAPIEffectDeps,
+	AuthEnvCheck,
+	Provider,
+	ProviderResponse,
+	authEnvChecker,
+} from './_shared.js';
+
+export const AuthEnv = async () => await convertToVanilla(authEnvChecker());
 
 /**
  * Handles OAuth callback requests for various authentication providers.
@@ -21,44 +29,55 @@ import { AuthAPIEffectDeps, Provider, ProviderResponse, authEnvChecker } from '.
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/[provider]/callback.GET')(function* () {
-			const [authEnv, google, github, discord, auth0] = yield* Effect.all([
-				authEnvChecker(),
-				GoogleOAuthAPI,
-				GitHubOAuthAPI,
-				DiscordOAuthAPI,
+			const [
+				{ initCallback: auth0InitCallback },
+				{ initCallback: discordInitCallback },
+				{ initCallback: githubInitCallback },
+				{ initCallback: googleInitCallback },
+				{
+					AUTH0: { ENABLED: auth0Enabled },
+					DISCORD: { ENABLED: discordEnabled },
+					GITHUB: { ENABLED: githubEnabled },
+					GOOGLE: { ENABLED: googleEnabled },
+				},
+			] = yield* Effect.all([
 				Auth0OAuthAPI,
+				DiscordOAuthAPI,
+				GitHubOAuthAPI,
+				GoogleOAuthAPI,
+				AuthEnvCheck,
 			]);
 
 			// Call the appropriate provider function based on the provider and function
 			switch (context.params.provider) {
-				case Provider.GOOGLE: {
-					if (!authEnv.GOOGLE.ENABLED)
-						return ProviderResponse('Google provider is not configured', 501);
+				case Provider.AUTH0: {
+					if (!auth0Enabled)
+						return yield* ProviderResponse('Auth0 provider is not configured', 501);
 
-					return yield* google.initCallback(context);
-				}
-				case Provider.GITHUB: {
-					if (!authEnv.GITHUB.ENABLED)
-						return ProviderResponse('GitHub provider is not configured', 501);
-
-					return yield* github.initCallback(context);
+					return yield* auth0InitCallback(context);
 				}
 				case Provider.DISCORD: {
-					if (!authEnv.DISCORD.ENABLED)
-						return ProviderResponse('Discord provider is not configured', 501);
+					if (!discordEnabled)
+						return yield* ProviderResponse('Discord provider is not configured', 501);
 
-					return yield* discord.initCallback(context);
+					return yield* discordInitCallback(context);
 				}
-				case Provider.AUTH0: {
-					if (!authEnv.AUTH0.ENABLED)
-						return ProviderResponse('Auth0 provider is not configured', 501);
+				case Provider.GITHUB: {
+					if (!githubEnabled)
+						return yield* ProviderResponse('GitHub provider is not configured', 501);
 
-					return yield* auth0.initCallback(context);
+					return yield* githubInitCallback(context);
+				}
+				case Provider.GOOGLE: {
+					if (!googleEnabled)
+						return yield* ProviderResponse('Google provider is not configured', 501);
+
+					return yield* googleInitCallback(context);
 				}
 				default:
-					return ProviderResponse('Provider not implemented', 501);
+					return yield* ProviderResponse('Provider not implemented', 501);
 			}
-		}).pipe(AuthAPIEffectDeps)
+		}).pipe(AuthAPIEffectDeps, AuthEnvCheck.Provide(await AuthEnv()))
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);

@@ -1,6 +1,5 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { authConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
@@ -8,17 +7,11 @@ import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { GitHubUser } from './_types.js';
-
-const {
-	GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
-} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'github';
 export const ProviderCookieName = 'github_oauth_state';
-
-export const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.
@@ -50,13 +43,25 @@ export const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
  */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
+		const [
+			sessionHelper,
+			sdk,
+			verifyEmail,
+			userLib,
+			fetchClient,
+			{
+				GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
+			},
+		] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
 			HttpClient.HttpClient,
+			AuthEnvCheck,
 		]);
+
+		const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/github/effect.initSession')(function* () {

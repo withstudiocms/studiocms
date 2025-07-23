@@ -1,6 +1,5 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { authConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
@@ -8,21 +7,13 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { Auth0User } from './_types.js';
 import { cleanDomain } from './_utils.js';
-
-export const {
-	AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN = '', REDIRECT_URI = '' },
-} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'auth0';
 export const ProviderCookieName = 'auth0_oauth_state';
 export const ProviderCodeVerifier = 'auth0_oauth_code_verifier';
-
-export const CLIENT_DOMAIN = cleanDomain(DOMAIN);
-
-export const auth0 = new Auth0(CLIENT_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides Auth0 OAuth authentication effects for the StudioCMS API.
@@ -58,13 +49,27 @@ export const auth0 = new Auth0(CLIENT_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
+		const [
+			sessionHelper,
+			sdk,
+			verifyEmail,
+			userLib,
+			fetchClient,
+			{
+				AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN = '', REDIRECT_URI = '' },
+			},
+		] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
 			HttpClient.HttpClient,
+			AuthEnvCheck,
 		]);
+
+		const CLIENT_DOMAIN = cleanDomain(DOMAIN);
+
+		const auth0 = new Auth0(CLIENT_DOMAIN, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/auth0/effect.initSession')(function* () {

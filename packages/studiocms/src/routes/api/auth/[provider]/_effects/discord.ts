@@ -1,6 +1,5 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { authConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
@@ -8,18 +7,12 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { DiscordUser } from './_types.js';
-
-export const {
-	DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'discord';
 export const ProviderCookieName = 'discord_oauth_state';
 export const ProviderCodeVerifier = 'discord_oauth_code_verifier';
-
-export const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.
@@ -50,13 +43,25 @@ export const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
+		const [
+			sessionHelper,
+			sdk,
+			verifyEmail,
+			userLib,
+			fetchClient,
+			{
+				DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
+			},
+		] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
 			HttpClient.HttpClient,
+			AuthEnvCheck,
 		]);
+
+		const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {

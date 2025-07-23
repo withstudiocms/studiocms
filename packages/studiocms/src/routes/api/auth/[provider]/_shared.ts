@@ -1,6 +1,6 @@
 import { type AuthEnvCheckResponse, authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { authConfig } from 'studiocms:config';
-import { Data, Effect, Layer } from '../../../../effect.js';
+import { Context, Data, Effect, Layer } from '../../../../effect.js';
 import { Auth0OAuthAPI } from './_effects/auth0.js';
 import { DiscordOAuthAPI } from './_effects/discord.js';
 import { GitHubOAuthAPI } from './_effects/github.js';
@@ -32,8 +32,11 @@ export enum Provider {
  * @param status - The HTTP status code for the response.
  * @returns A `Response` object with a JSON body containing the error message and the specified status code.
  */
-export const ProviderResponse = (error: string, status: number): Response =>
-	new Response(JSON.stringify({ error }), { status });
+export const ProviderResponse = (
+	error: string,
+	status: number
+): Effect.Effect<Response, never, never> =>
+	Effect.succeed(new Response(JSON.stringify({ error }), { status }));
 
 /**
  * Represents an error related to authentication environment configuration.
@@ -61,6 +64,14 @@ export const authEnvChecker = (): Effect.Effect<AuthEnvCheckResponse, AuthEnvErr
 			new AuthEnvError({ message: `Authentication environment check failed: ${cause}` }),
 	});
 
+export class AuthEnvCheck extends Context.Tag('AuthEnvCheck')<
+	AuthEnvCheck,
+	AuthEnvCheckResponse
+>() {
+	static make = (response: AuthEnvCheckResponse) => Layer.succeed(this, this.of(response));
+	static Provide = (response: AuthEnvCheckResponse) => Effect.provide(this.make(response));
+}
+
 /**
  * Provides the dependencies required for authentication API effects by merging
  * the default layers for multiple OAuth providers: Google, GitHub, Discord, and Auth0.
@@ -76,4 +87,7 @@ export const AuthAPIEffectDeps = Effect.provide(
 	)
 );
 
-export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{ message: string, provider: string }> {}
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
+	message: string;
+	provider: string;
+}> {}

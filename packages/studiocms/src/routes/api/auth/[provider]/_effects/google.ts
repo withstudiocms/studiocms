@@ -8,18 +8,12 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { ValidateAuthCodeError } from '../_shared.js';
+import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { GoogleUser } from './_types.js';
-
-export const {
-	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-} = await authEnvCheck(authConfig.providers);
 
 export const ProviderID = 'google';
 export const ProviderCookieName = 'google_oauth_state';
 export const ProviderCodeVerifier = 'google_oauth_code_verifier';
-
-export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides Google OAuth authentication effects for the StudioCMS API.
@@ -58,13 +52,25 @@ export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
  */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
+		const [
+			sessionHelper,
+			sdk,
+			verifyEmail,
+			userLib,
+			fetchClient,
+			{
+				GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
+			},
+		] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
 			HttpClient.HttpClient,
+			AuthEnvCheck,
 		]);
+
+		const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {

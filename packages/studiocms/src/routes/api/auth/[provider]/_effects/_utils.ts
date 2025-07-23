@@ -13,7 +13,7 @@ import { pipe } from '../../../../../effect.js';
 export const cleanDomain = (domain: string): string =>
 	pipe(
 		domain,
-		(domain) => domain.replace(/^\//, ''), // Remove leading slash
-		(domain) => domain.replace(/http:\/\//, '').replace(/https:\/\//, ''), // Remove http/https
-		(domain) => `https://${domain}` // Prepend https://
+		(domain) => domain.replace(/^\//, ''),
+		(domain) => domain.replace(/(?:http|https):\/\//, ''),
+		(domain) => `https://${domain}`
 	);

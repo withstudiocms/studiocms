@@ -1,4 +1,4 @@
-import { Schema } from "../../../../../effect.js";
+import { Schema } from '../../../../../effect.js';
 
 /**
  * Represents a user authenticated via Auth0.
@@ -9,13 +9,13 @@ import { Schema } from "../../../../../effect.js";
  * @property {string} picture - The URL to the user's profile picture.
  * @property {string} nickname - The user's nickname.
  */
-export class Auth0User extends Schema.Class<Auth0User>("Auth0User")({
-    sub: Schema.String,
-    name: Schema.String,
-    email: Schema.String,
-    picture: Schema.String,
-    nickname: Schema.String
-}) { }
+export class Auth0User extends Schema.Class<Auth0User>('Auth0User')({
+	sub: Schema.String,
+	name: Schema.String,
+	email: Schema.String,
+	picture: Schema.String,
+	nickname: Schema.String,
+}) {}
 
 /**
  * Represents a Discord user's profile information.
@@ -26,13 +26,13 @@ export class Auth0User extends Schema.Class<Auth0User>("Auth0User")({
  * @property global_name - The user's global display name.
  * @property email - The user's email address.
  */
-export class DiscordUser extends Schema.Class<DiscordUser>("DiscordUser")({
-    id: Schema.String,
-    avatar: Schema.String,
-    username: Schema.String,
-    global_name: Schema.String,
-    email: Schema.String
-}) { }
+export class DiscordUser extends Schema.Class<DiscordUser>('DiscordUser')({
+	id: Schema.String,
+	avatar: Schema.String,
+	username: Schema.String,
+	global_name: Schema.String,
+	email: Schema.String,
+}) {}
 
 /**
  * Represents a GitHub user profile as returned by the GitHub API.
@@ -45,15 +45,15 @@ export class DiscordUser extends Schema.Class<DiscordUser>("DiscordUser")({
  * @property blog - The user's blog URL.
  * @property email - The user's public email address.
  */
-export class GitHubUser extends Schema.Class<GitHubUser>("GitHubUser")({
-    id: Schema.Number,
-    html_url: Schema.String,
-    login: Schema.String,
-    avatar_url: Schema.String,
-    name: Schema.String,
-    blog: Schema.String,
-    email: Schema.String
-}) { }
+export class GitHubUser extends Schema.Class<GitHubUser>('GitHubUser')({
+	id: Schema.Number,
+	html_url: Schema.String,
+	login: Schema.String,
+	avatar_url: Schema.String,
+	name: Schema.String,
+	blog: Schema.String,
+	email: Schema.String,
+}) {}
 
 /**
  * Represents a user authenticated via Google OAuth.
@@ -63,9 +63,9 @@ export class GitHubUser extends Schema.Class<GitHubUser>("GitHubUser")({
  * @property name - The full name of the user.
  * @property email - The user's email address.
  */
-export class GoogleUser extends Schema.Class<GoogleUser>("GoogleUser")({
-    sub: Schema.String,
-    picture: Schema.String,
-    name: Schema.String,
-    email: Schema.String
-}) { }
+export class GoogleUser extends Schema.Class<GoogleUser>('GoogleUser')({
+	sub: Schema.String,
+	picture: Schema.String,
+	name: Schema.String,
+	email: Schema.String,
+}) {}
