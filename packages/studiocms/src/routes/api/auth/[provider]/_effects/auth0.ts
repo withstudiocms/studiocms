@@ -86,10 +86,12 @@ export interface Auth0User {
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
-		const sessionHelper = yield* Session;
-		const sdk = yield* SDKCore;
-		const verifyEmail = yield* VerifyEmail;
-		const userLib = yield* User;
+		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+			Session,
+			SDKCore,
+			VerifyEmail,
+			User,
+		]);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/auth0/effect.initSession')(function* () {

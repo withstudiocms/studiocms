@@ -64,10 +64,12 @@ export interface DiscordUser {
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
-		const sessionHelper = yield* Session;
-		const sdk = yield* SDKCore;
-		const verifyEmail = yield* VerifyEmail;
-		const userLib = yield* User;
+		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+			Session,
+			SDKCore,
+			VerifyEmail,
+			User,
+		]);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {

@@ -70,10 +70,12 @@ export interface GoogleUser {
  */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
-		const sessionHelper = yield* Session;
-		const sdk = yield* SDKCore;
-		const verifyEmail = yield* VerifyEmail;
-		const userLib = yield* User;
+		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+			Session,
+			SDKCore,
+			VerifyEmail,
+			User,
+		]);
 
 		const initSession = (context: APIContext) =>
 			genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {
