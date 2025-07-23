@@ -1,6 +1,7 @@
 import { type AuthEnvCheckResponse, authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { authConfig } from 'studiocms:config';
-import { Context, Data, Effect, Layer } from '../../../../effect.js';
+import type { APIContext } from 'astro';
+import { Context, Data, Effect, Layer, genLogger } from '../../../../effect.js';
 import { Auth0OAuthAPI } from './_effects/auth0.js';
 import { DiscordOAuthAPI } from './_effects/discord.js';
 import { GitHubOAuthAPI } from './_effects/github.js';
@@ -72,22 +73,115 @@ export class AuthEnvCheck extends Context.Tag('AuthEnvCheck')<
 	static Provide = (response: AuthEnvCheckResponse) => Effect.provide(this.make(response));
 }
 
-/**
- * Provides the dependencies required for authentication API effects by merging
- * the default layers for multiple OAuth providers: Google, GitHub, Discord, and Auth0.
- *
- * This allows authentication-related effects to access the necessary APIs for each provider.
- */
-export const AuthAPIEffectDeps = Effect.provide(
-	Layer.mergeAll(
-		GoogleOAuthAPI.Default,
-		GitHubOAuthAPI.Default,
-		DiscordOAuthAPI.Default,
-		Auth0OAuthAPI.Default
-	)
-);
-
 export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
 	message: string;
 	provider: string;
 }> {}
+
+export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEffect', {
+	dependencies: [
+		Auth0OAuthAPI.Default,
+		DiscordOAuthAPI.Default,
+		GitHubOAuthAPI.Default,
+		GoogleOAuthAPI.Default,
+	],
+	effect: genLogger('studiocms/routes/api/auth/[provider]/_shared')(function* () {
+		const [
+			{ initCallback: auth0InitCallback, initSession: auth0InitSession },
+			{ initCallback: discordInitCallback, initSession: discordInitSession },
+			{ initCallback: githubInitCallback, initSession: githubInitSession },
+			{ initCallback: googleInitCallback, initSession: googleInitSession },
+			{
+				AUTH0: { ENABLED: auth0Enabled },
+				DISCORD: { ENABLED: discordEnabled },
+				GITHUB: { ENABLED: githubEnabled },
+				GOOGLE: { ENABLED: googleEnabled },
+			},
+		] = yield* Effect.all([
+			Auth0OAuthAPI,
+			DiscordOAuthAPI,
+			GitHubOAuthAPI,
+			GoogleOAuthAPI,
+			AuthEnvCheck,
+		]);
+
+		return {
+			initSession: (context: APIContext) =>
+				genLogger('OAuthAPIEffect.initSession')(function* () {
+					// Call the appropriate provider function based on the provider and function
+					switch (context.params.provider) {
+						case Provider.AUTH0: {
+							if (!auth0Enabled)
+								return yield* ProviderResponse('Auth0 provider is not configured', 501);
+
+							return yield* auth0InitSession(context);
+						}
+						case Provider.DISCORD: {
+							if (!discordEnabled)
+								return yield* ProviderResponse('Discord provider is not configured', 501);
+
+							return yield* discordInitSession(context);
+						}
+						case Provider.GITHUB: {
+							if (!githubEnabled)
+								return yield* ProviderResponse('GitHub provider is not configured', 501);
+
+							return yield* githubInitSession(context);
+						}
+						case Provider.GOOGLE: {
+							if (!googleEnabled)
+								return yield* ProviderResponse('Google provider is not configured', 501);
+
+							return yield* googleInitSession(context);
+						}
+						default:
+							return yield* ProviderResponse('Provider not implemented', 501);
+					}
+				}),
+			initCallback: (context: APIContext) =>
+				genLogger('OAuthAPIEffect.initCallback')(function* () {
+					// Call the appropriate provider function based on the provider and function
+					switch (context.params.provider) {
+						case Provider.AUTH0: {
+							if (!auth0Enabled)
+								return yield* ProviderResponse('Auth0 provider is not configured', 501);
+
+							return yield* auth0InitCallback(context);
+						}
+						case Provider.DISCORD: {
+							if (!discordEnabled)
+								return yield* ProviderResponse('Discord provider is not configured', 501);
+
+							return yield* discordInitCallback(context);
+						}
+						case Provider.GITHUB: {
+							if (!githubEnabled)
+								return yield* ProviderResponse('GitHub provider is not configured', 501);
+
+							return yield* githubInitCallback(context);
+						}
+						case Provider.GOOGLE: {
+							if (!googleEnabled)
+								return yield* ProviderResponse('Google provider is not configured', 501);
+
+							return yield* googleInitCallback(context);
+						}
+						default:
+							return yield* ProviderResponse('Provider not implemented', 501);
+					}
+				}),
+		};
+	}),
+}) {
+	static Deps = Effect.provide(
+		Layer.mergeAll(
+			GoogleOAuthAPI.Default,
+			GitHubOAuthAPI.Default,
+			DiscordOAuthAPI.Default,
+			Auth0OAuthAPI.Default,
+			OAuthAPIEffect.Default
+		)
+	);
+
+	static AuthEnv = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
+}

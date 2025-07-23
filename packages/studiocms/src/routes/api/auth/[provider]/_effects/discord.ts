@@ -10,10 +10,6 @@ import { Effect, genLogger } from '../../../../../effect.js';
 import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { DiscordUser } from './_shared.js';
 
-export const ProviderID = 'discord';
-export const ProviderCookieName = 'discord_oauth_state';
-export const ProviderCodeVerifier = 'discord_oauth_code_verifier';
-
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.
  *
@@ -63,27 +59,6 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 		const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
-		const initSession = (context: APIContext) =>
-			genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {
-				const state = generateState();
-
-				const codeVerifier = generateCodeVerifier();
-
-				const scopes = ['identify', 'email'];
-
-				const url = discord.createAuthorizationURL(state, codeVerifier, scopes);
-
-				yield* sessionHelper.setOAuthSessionTokenCookie(context, ProviderCookieName, state);
-
-				yield* sessionHelper.setOAuthSessionTokenCookie(
-					context,
-					ProviderCodeVerifier,
-					codeVerifier
-				);
-
-				return context.redirect(url.toString());
-			});
-
 		const validateAuthCode = (code: string, codeVerifier: string) =>
 			genLogger('studiocms/routes/api/auth/discord/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() =>
@@ -101,7 +76,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 						Effect.catchAll((error) =>
 							Effect.fail(
 								new ValidateAuthCodeError({
-									provider: ProviderID,
+									provider: DiscordOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
 							)
@@ -109,63 +84,61 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 					);
 			});
 
-		const initCallback = (context: APIContext) =>
-			genLogger('studiocms/routes/api/auth/discord/effect.initCallback')(function* () {
-				const { url, cookies, redirect } = context;
+		return {
+			initSession: (context: APIContext) =>
+				genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {
+					const state = generateState();
 
-				const code = url.searchParams.get('code');
-				const state = url.searchParams.get('state');
-				const codeVerifier = cookies.get(ProviderCodeVerifier)?.value ?? null;
-				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+					const codeVerifier = generateCodeVerifier();
 
-				if (!code || !storedState || !codeVerifier || state !== storedState) {
-					return redirect(StudioCMSRoutes.authLinks.loginURL);
-				}
+					const scopes = ['identify', 'email'];
 
-				const discordUser = yield* validateAuthCode(code, codeVerifier);
+					const url = discord.createAuthorizationURL(state, codeVerifier, scopes);
 
-				const { id: discordUserId, username: discordUsername } = discordUser;
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						DiscordOAuthAPI.ProviderCookieName,
+						state
+					);
 
-				const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-					ProviderID,
-					discordUserId
-				);
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						DiscordOAuthAPI.ProviderCodeVerifier,
+						codeVerifier
+					);
 
-				if (existingOAuthAccount) {
-					const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
+					return context.redirect(url.toString());
+				}),
+			initCallback: (context: APIContext) =>
+				genLogger('studiocms/routes/api/auth/discord/effect.initCallback')(function* () {
+					const { url, cookies, redirect } = context;
 
-					if (!user) {
-						return new Response('User not found', { status: 404 });
+					const code = url.searchParams.get('code');
+					const state = url.searchParams.get('state');
+					const codeVerifier = cookies.get(DiscordOAuthAPI.ProviderCodeVerifier)?.value ?? null;
+					const storedState = cookies.get(DiscordOAuthAPI.ProviderCookieName)?.value ?? null;
+
+					if (!code || !storedState || !codeVerifier || state !== storedState) {
+						return redirect(StudioCMSRoutes.authLinks.loginURL);
 					}
 
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
+					const discordUser = yield* validateAuthCode(code, codeVerifier);
 
-					// If Mailer is enabled, is the user verified?
-					if (!isEmailAccountVerified) {
-						return new Response('Email not verified, please verify your account first.', {
-							status: 400,
-						});
-					}
+					const { id: discordUserId, username: discordUsername } = discordUser;
 
-					yield* sessionHelper.createUserSession(user.id, context);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
+						DiscordOAuthAPI.ProviderID,
+						discordUserId
+					);
 
-					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
-				}
+					if (existingOAuthAccount) {
+						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
 
-				const loggedInUser = yield* userLib.getUserData(context);
-				const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+						if (!user) {
+							return new Response('User not found', { status: 404 });
+						}
 
-				if (loggedInUser.user && linkNewOAuth) {
-					const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
-
-					if (existingUser) {
-						yield* sdk.AUTH.oAuth.create({
-							userId: existingUser.id,
-							provider: ProviderID,
-							providerUserId: discordUserId,
-						});
-
-						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
 
 						// If Mailer is enabled, is the user verified?
 						if (!isEmailAccountVerified) {
@@ -174,57 +147,80 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 							});
 						}
 
-						yield* sessionHelper.createUserSession(existingUser.id, context);
+						yield* sessionHelper.createUserSession(user.id, context);
 
 						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
-				}
 
-				const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
+					const loggedInUser = yield* userLib.getUserData(context);
+					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
 
-				const newUser = yield* userLib.createOAuthUser(
-					{
-						// @ts-expect-error drizzle broke the id variable...
-						id: crypto.randomUUID(),
-						username: discordUsername,
-						name: discordUser.global_name ?? discordUsername,
-						email: discordUser.email,
-						avatar: avatar_url,
-						createdAt: new Date(),
-					},
-					{ provider: ProviderID, providerUserId: discordUserId }
-				);
+					if (loggedInUser.user && linkNewOAuth) {
+						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
 
-				if ('error' in newUser) {
-					return new Response('Error creating user', { status: 500 });
-				}
+						if (existingUser) {
+							yield* sdk.AUTH.oAuth.create({
+								userId: existingUser.id,
+								provider: DiscordOAuthAPI.ProviderID,
+								providerUserId: discordUserId,
+							});
 
-				// FIRST-TIME-SETUP
-				if (config.dbStartPage) {
-					return redirect('/done');
-				}
+							const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
 
-				yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+							// If Mailer is enabled, is the user verified?
+							if (!isEmailAccountVerified) {
+								return new Response('Email not verified, please verify your account first.', {
+									status: 400,
+								});
+							}
 
-				const existingUser = yield* sdk.GET.users.byId(newUser.id);
+							yield* sessionHelper.createUserSession(existingUser.id, context);
 
-				const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+						}
+					}
 
-				// If Mailer is enabled, is the user verified?
-				if (!isEmailAccountVerified) {
-					return new Response('Email not verified, please verify your account first.', {
-						status: 400,
-					});
-				}
+					const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
 
-				yield* sessionHelper.createUserSession(newUser.id, context);
+					const newUser = yield* userLib.createOAuthUser(
+						{
+							// @ts-expect-error drizzle broke the id variable...
+							id: crypto.randomUUID(),
+							username: discordUsername,
+							name: discordUser.global_name ?? discordUsername,
+							email: discordUser.email,
+							avatar: avatar_url,
+							createdAt: new Date(),
+						},
+						{ provider: DiscordOAuthAPI.ProviderID, providerUserId: discordUserId }
+					);
 
-				return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
-			});
+					if ('error' in newUser) {
+						return new Response('Error creating user', { status: 500 });
+					}
 
-		return {
-			initSession,
-			initCallback,
+					// FIRST-TIME-SETUP
+					if (config.dbStartPage) {
+						return redirect('/done');
+					}
+
+					yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+
+					const existingUser = yield* sdk.GET.users.byId(newUser.id);
+
+					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+
+					// If Mailer is enabled, is the user verified?
+					if (!isEmailAccountVerified) {
+						return new Response('Email not verified, please verify your account first.', {
+							status: 400,
+						});
+					}
+
+					yield* sessionHelper.createUserSession(newUser.id, context);
+
+					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+				}),
 		};
 	}),
 	dependencies: [
@@ -234,4 +230,8 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 		User.Default,
 		FetchHttpClient.layer,
 	],
-}) {}
+}) {
+	static ProviderID = 'discord';
+	static ProviderCookieName = 'discord_oauth_state';
+	static ProviderCodeVerifier = 'discord_oauth_code_verifier';
+}

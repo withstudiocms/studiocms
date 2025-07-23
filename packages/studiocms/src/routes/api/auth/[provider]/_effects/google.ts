@@ -1,6 +1,5 @@
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import config, { authConfig } from 'studiocms:config';
+import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
@@ -10,10 +9,6 @@ import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
 import { GoogleUser } from './_shared.js';
-
-export const ProviderID = 'google';
-export const ProviderCookieName = 'google_oauth_state';
-export const ProviderCodeVerifier = 'google_oauth_code_verifier';
 
 /**
  * Provides Google OAuth authentication effects for the StudioCMS API.
@@ -72,27 +67,6 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 		const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
-		const initSession = (context: APIContext) =>
-			genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {
-				const state = generateState();
-
-				const codeVerifier = generateCodeVerifier();
-
-				const scopes = ['profile', 'email'];
-
-				const url = google.createAuthorizationURL(state, codeVerifier, scopes);
-
-				yield* sessionHelper.setOAuthSessionTokenCookie(context, ProviderCookieName, state);
-
-				yield* sessionHelper.setOAuthSessionTokenCookie(
-					context,
-					ProviderCodeVerifier,
-					codeVerifier
-				);
-
-				return context.redirect(url.toString());
-			});
-
 		const validateAuthCode = (code: string, codeVerifier: string) =>
 			genLogger('studiocms/routes/api/auth/google/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() =>
@@ -110,7 +84,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 						Effect.catchAll((error) =>
 							Effect.fail(
 								new ValidateAuthCodeError({
-									provider: ProviderID,
+									provider: GoogleOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
 							)
@@ -118,63 +92,57 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					);
 			});
 
-		const initCallback = (context: APIContext) =>
-			genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
-				const { url, cookies, redirect } = context;
+		return {
+			initSession: (context: APIContext) =>
+				genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {
+					const state = generateState();
 
-				const code = url.searchParams.get('code');
-				const state = url.searchParams.get('state');
-				const codeVerifier = cookies.get(ProviderCodeVerifier)?.value ?? null;
-				const storedState = cookies.get(ProviderCookieName)?.value ?? null;
+					const codeVerifier = generateCodeVerifier();
 
-				if (!code || !storedState || !codeVerifier || state !== storedState) {
-					return redirect(StudioCMSRoutes.authLinks.loginURL);
-				}
+					const scopes = ['profile', 'email'];
 
-				const googleUser = yield* validateAuthCode(code, codeVerifier);
+					const url = google.createAuthorizationURL(state, codeVerifier, scopes);
 
-				const { sub: googleUserId, name: googleUsername } = googleUser;
+					yield* sessionHelper.setOAuthSessionTokenCookie(context, GoogleOAuthAPI.ProviderCookieName, state);
 
-				const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-					ProviderID,
-					googleUserId
-				);
+					yield* sessionHelper.setOAuthSessionTokenCookie(
+						context,
+						GoogleOAuthAPI.ProviderCodeVerifier,
+						codeVerifier
+					);
 
-				if (existingOAuthAccount) {
-					const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
+					return context.redirect(url.toString());
+				}),
+			initCallback: (context: APIContext) =>
+				genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
+					const { url, cookies, redirect } = context;
 
-					if (!user) {
-						return new Response('User not found', { status: 404 });
+					const code = url.searchParams.get('code');
+					const state = url.searchParams.get('state');
+					const codeVerifier = cookies.get(GoogleOAuthAPI.ProviderCodeVerifier)?.value ?? null;
+					const storedState = cookies.get(GoogleOAuthAPI.ProviderCookieName)?.value ?? null;
+
+					if (!code || !storedState || !codeVerifier || state !== storedState) {
+						return redirect(StudioCMSRoutes.authLinks.loginURL);
 					}
 
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
+					const googleUser = yield* validateAuthCode(code, codeVerifier);
 
-					// If Mailer is enabled, is the user verified?
-					if (!isEmailAccountVerified) {
-						return new Response('Email not verified, please verify your account first.', {
-							status: 400,
-						});
-					}
+					const { sub: googleUserId, name: googleUsername } = googleUser;
 
-					yield* sessionHelper.createUserSession(user.id, context);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
+						GoogleOAuthAPI.ProviderID,
+						googleUserId
+					);
 
-					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
-				}
+					if (existingOAuthAccount) {
+						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
 
-				const loggedInUser = yield* userLib.getUserData(context);
-				const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+						if (!user) {
+							return new Response('User not found', { status: 404 });
+						}
 
-				if (loggedInUser.user && linkNewOAuth) {
-					const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
-
-					if (existingUser) {
-						yield* sdk.AUTH.oAuth.create({
-							userId: existingUser.id,
-							provider: ProviderID,
-							providerUserId: googleUserId,
-						});
-
-						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
 
 						// If Mailer is enabled, is the user verified?
 						if (!isEmailAccountVerified) {
@@ -183,55 +151,78 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 							});
 						}
 
-						yield* sessionHelper.createUserSession(existingUser.id, context);
+						yield* sessionHelper.createUserSession(user.id, context);
 
 						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
-				}
 
-				const newUser = yield* userLib.createOAuthUser(
-					{
-						// @ts-expect-error drizzle broke the id variable...
-						id: crypto.randomUUID(),
-						username: googleUsername,
-						email: googleUser.email,
-						name: googleUser.name,
-						avatar: googleUser.picture,
-						createdAt: new Date(),
-					},
-					{ provider: ProviderID, providerUserId: googleUserId }
-				);
+					const loggedInUser = yield* userLib.getUserData(context);
+					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
 
-				if ('error' in newUser) {
-					return new Response('Error creating user', { status: 500 });
-				}
+					if (loggedInUser.user && linkNewOAuth) {
+						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
 
-				// FIRST-TIME-SETUP
-				if (config.dbStartPage) {
-					return redirect('/done');
-				}
+						if (existingUser) {
+							yield* sdk.AUTH.oAuth.create({
+								userId: existingUser.id,
+								provider: GoogleOAuthAPI.ProviderID,
+								providerUserId: googleUserId,
+							});
 
-				yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+							const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
 
-				const existingUser = yield* sdk.GET.users.byId(newUser.id);
+							// If Mailer is enabled, is the user verified?
+							if (!isEmailAccountVerified) {
+								return new Response('Email not verified, please verify your account first.', {
+									status: 400,
+								});
+							}
 
-				const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+							yield* sessionHelper.createUserSession(existingUser.id, context);
 
-				// If Mailer is enabled, is the user verified?
-				if (!isEmailAccountVerified) {
-					return new Response('Email not verified, please verify your account first.', {
-						status: 400,
-					});
-				}
+							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+						}
+					}
 
-				yield* sessionHelper.createUserSession(newUser.id, context);
+					const newUser = yield* userLib.createOAuthUser(
+						{
+							// @ts-expect-error drizzle broke the id variable...
+							id: crypto.randomUUID(),
+							username: googleUsername,
+							email: googleUser.email,
+							name: googleUser.name,
+							avatar: googleUser.picture,
+							createdAt: new Date(),
+						},
+						{ provider: GoogleOAuthAPI.ProviderID, providerUserId: googleUserId }
+					);
 
-				return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
-			});
+					if ('error' in newUser) {
+						return new Response('Error creating user', { status: 500 });
+					}
 
-		return {
-			initSession,
-			initCallback,
+					// FIRST-TIME-SETUP
+					if (config.dbStartPage) {
+						return redirect('/done');
+					}
+
+					yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+
+					const existingUser = yield* sdk.GET.users.byId(newUser.id);
+
+					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+
+					// If Mailer is enabled, is the user verified?
+					if (!isEmailAccountVerified) {
+						return new Response('Email not verified, please verify your account first.', {
+							status: 400,
+						});
+					}
+
+					yield* sessionHelper.createUserSession(newUser.id, context);
+
+					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+				}),
 		};
 	}),
 	dependencies: [
@@ -241,4 +232,8 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 		User.Default,
 		FetchHttpClient.layer,
 	],
-}) {}
+}) {
+	static ProviderID = 'google';
+	static ProviderCookieName = 'google_oauth_state';
+	static ProviderCodeVerifier = 'google_oauth_code_verifier';
+}
