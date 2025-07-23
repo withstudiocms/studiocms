@@ -1,5 +1,5 @@
 import { and, asc, desc, eq } from 'astro:db';
-import { sdk as sdkConfig } from 'studiocms:config';
+import { config, sdk as sdkConfig } from 'studiocms:config';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import { Effect } from 'effect';
@@ -2429,6 +2429,10 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			siteConfig: () =>
 				Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
+
+					if (config.dbStartPage) {
+						return undefined;
+					}
 
 					if (!status) {
 						const newConfig = yield* dbService.execute((db) =>

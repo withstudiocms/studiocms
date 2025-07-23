@@ -417,7 +417,7 @@ export async function studiocmsSDKCore() {
 			 * @returns A promise that resolves to the site configuration.
 			 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the site configuration.
 			 */
-			config: async () => (await convertToVanilla(run.GET.siteConfig())).data,
+			config: async () => (await convertToVanilla(run.GET.siteConfig()))?.data,
 
 			folders: async (): Promise<tsPageFolderSelect[]> =>
 				await convertToVanilla(run.GET.databaseTable.pageFolderStructure()),

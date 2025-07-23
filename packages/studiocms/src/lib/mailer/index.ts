@@ -229,8 +229,8 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * is not available, it defaults to `false`.
 		 */
 		const isEnabled = genLogger('studiocms/lib/mailer/Mailer.isEnabled')(function* () {
-			const { data } = yield* sdk.GET.siteConfig();
-			const status = data?.enableMailer || false;
+			const config = yield* sdk.GET.siteConfig();
+			const status = config?.data?.enableMailer || false;
 
 			return status;
 		});

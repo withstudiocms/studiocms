@@ -165,7 +165,13 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 						const settings = yield* getSettings();
 
 						const user = yield* sdk.GET.users.byId(userId);
-						const { data: config } = yield* sdk.GET.siteConfig();
+						const siteConfig = yield* sdk.GET.siteConfig();
+
+						if (!siteConfig) {
+							return yield* Effect.fail(new Error('Site configuration not found'));
+						}
+
+						const { data: config } = siteConfig;
 
 						if (!mailer || (isOAuth && settings.oAuthBypassVerification)) {
 							return;

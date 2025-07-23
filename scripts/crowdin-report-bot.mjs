@@ -23,7 +23,7 @@ async function setDiscordMessage() {
 	};
 
 	// initialization of crowdin client
-	const { translationStatusApi } = new crowdin(credentials);
+	const { translationStatusApi } = new crowdin.default(credentials);
 
 	/** @type {import('@crowdin/crowdin-api-client').ResponseList<import('@crowdin/crowdin-api-client').TranslationStatusModel.LanguageProgress>} */
 	let response;
