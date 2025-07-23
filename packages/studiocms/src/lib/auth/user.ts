@@ -7,7 +7,7 @@ import { genLogger, pipeLogger } from '../effects/index.js';
 import { Password } from './password.js';
 import { Session } from './session.js';
 import type { UserSessionData } from './types.js';
-import { CheckIfUnsafe } from './utils/unsafeCheck.js';
+import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
 export class UserError extends Data.TaggedError('UserError')<{ message: string }> {}
 
@@ -128,11 +128,17 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameLength = (
 			username: string
-		): Effect.Effect<string | undefined, never, never> =>
+		): Effect.Effect<string | undefined, UserError, never> =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameLength')(
-				username.length > 3 && username.length < 32
-					? Effect.succeed(undefined)
-					: Effect.succeed('Username must be between 3 and 32 characters')
+				Effect.try({
+					try: () => {
+						if (username.length < 3 || username.length > 32) {
+							return 'Username must be between 3 and 32 characters long';
+						}
+						return undefined;
+					},
+					catch: (cause) => new UserError({ message: `Length error: ${cause}` }),
+				})
 			);
 
 		/**
@@ -140,28 +146,32 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const verifyUsernameCharacters = (
 			username: string
-		): Effect.Effect<string | undefined, never, never> =>
+		): Effect.Effect<string | undefined, UserError, never> =>
 			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameCharacters')(
-				/^[a-z0-9_-]+$/.test(username)
-					? Effect.succeed(undefined)
-					: Effect.succeed('Username may only contain lowercase letters, numbers, - and _')
+				Effect.try({
+					try: () => {
+						if (!/^[a-z0-9_-]+$/.test(username)) {
+							return 'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)';
+						}
+						return undefined;
+					},
+					catch: (cause) => new UserError({ message: `Character error: ${cause}` }),
+				})
 			);
 
 		/**
 		 * @private
 		 */
-		const verifyUsernameSafe = (username: string) =>
-			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(
-				Effect.try({
-					try: () => {
-						if (check.username(username)) {
-							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-						}
-						return;
-					},
-					catch: (cause) => new UserError({ message: `Error verifying username safety: ${cause}` }),
-				})
-			);
+		const verifyUsernameSafe = (
+			username: string
+		): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
+			genLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(function* () {
+				const isUnsafe = yield* check.username(username);
+				if (isUnsafe) {
+					return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+				}
+				return undefined;
+			});
 
 		/**
 		 * Verifies if the provided username meets the required criteria.
@@ -174,7 +184,9 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @param username - The username to verify.
 		 * @returns `true` if the username is valid, `false` otherwise.
 		 */
-		const verifyUsernameInput = (username: string) =>
+		const verifyUsernameInput = (
+			username: string
+		): Effect.Effect<string | true, UserError | CheckIfUnsafeError, never> =>
 			genLogger('studiocms/lib/auth/user/User.verifyUsernameInput')(function* () {
 				const testLength = yield* verifyUsernameLength(username);
 				if (testLength) {
@@ -205,7 +217,8 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 */
 		const createUserAvatar = (email: string) =>
 			genLogger('studiocms/lib/auth/user/User.createUserAvatar')(function* () {
-				const msgUint8 = pipe(email.trim().toLowerCase(), new TextEncoder().encode);
+				const clean = email.trim().toLowerCase();
+				const msgUint8 = new TextEncoder().encode(clean);
 
 				const hashBuffer = yield* pipeLogger(
 					'studiocms/lib/auth/user/User.createUserAvatar.hashBuffer'

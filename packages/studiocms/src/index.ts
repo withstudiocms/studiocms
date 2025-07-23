@@ -235,6 +235,7 @@ export const studiocms = defineIntegration({
 					defineModule('studiocms:config', {
 						defaultExport: options,
 						constExports: {
+							config: options,
 							dashboardConfig: options.features.dashboardConfig,
 							authConfig: options.features.authConfig,
 							AuthConfig: options.features.authConfig,

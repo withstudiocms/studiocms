@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.1.0-beta.21
+
+### Patch Changes
+
+- [#634](https://github.com/withstudiocms/studiocms/pull/634) [`d1fa826`](https://github.com/withstudiocms/studiocms/commit/d1fa8267eb7ae3336adffa35c7a5688a29986818) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix: Implement fixes for First-time-setup, auth API routes and css for font, and markdown pageType config
+
 ## 0.1.0-beta.20
 
 ### Patch Changes
