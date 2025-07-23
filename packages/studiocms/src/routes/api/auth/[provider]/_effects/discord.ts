@@ -8,6 +8,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { ValidateAuthCodeError } from '../_shared.js';
 import { DiscordUser } from './_types.js';
 
 export const {
@@ -93,7 +94,12 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 					.pipe(
 						Effect.flatMap(HttpClientResponse.schemaBodyJson(DiscordUser)),
 						Effect.catchAll((error) =>
-							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+							Effect.fail(
+								new ValidateAuthCodeError({
+									provider: ProviderID,
+									message: `Failed to fetch user info: ${error.message}`,
+								})
+							)
 						)
 					);
 			});

@@ -8,6 +8,7 @@ import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { ValidateAuthCodeError } from '../_shared.js';
 import { GitHubUser } from './_types.js';
 
 const {
@@ -83,7 +84,12 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 					.pipe(
 						Effect.flatMap(HttpClientResponse.schemaBodyJson(GitHubUser)),
 						Effect.catchAll((error) =>
-							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+							Effect.fail(
+								new ValidateAuthCodeError({
+									provider: ProviderID,
+									message: `Failed to fetch user info: ${error.message}`,
+								})
+							)
 						)
 					);
 			});

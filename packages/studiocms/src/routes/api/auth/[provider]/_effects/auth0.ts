@@ -8,6 +8,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { ValidateAuthCodeError } from '../_shared.js';
 import { Auth0User } from './_types.js';
 import { cleanDomain } from './_utils.js';
 
@@ -99,7 +100,12 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 					.pipe(
 						Effect.flatMap(HttpClientResponse.schemaBodyJson(Auth0User)),
 						Effect.catchAll((error) =>
-							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+							Effect.fail(
+								new ValidateAuthCodeError({
+									provider: ProviderID,
+									message: `Failed to fetch user info: ${error.message}`,
+								})
+							)
 						)
 					);
 			});

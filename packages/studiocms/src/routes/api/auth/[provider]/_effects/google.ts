@@ -8,6 +8,7 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { ValidateAuthCodeError } from '../_shared.js';
 import { GoogleUser } from './_types.js';
 
 export const {
@@ -101,7 +102,12 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					.pipe(
 						Effect.flatMap(HttpClientResponse.schemaBodyJson(GoogleUser)),
 						Effect.catchAll((error) =>
-							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+							Effect.fail(
+								new ValidateAuthCodeError({
+									provider: ProviderID,
+									message: `Failed to fetch user info: ${error.message}`,
+								})
+							)
 						)
 					);
 			});

@@ -75,3 +75,5 @@ export const AuthAPIEffectDeps = Effect.provide(
 		Auth0OAuthAPI.Default
 	)
 );
+
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{ message: string, provider: string }> {}
