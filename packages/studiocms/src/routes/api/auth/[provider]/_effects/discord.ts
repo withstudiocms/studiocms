@@ -8,7 +8,7 @@ import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
-import { DiscordUser } from './_types.js';
+import { DiscordUser } from './_shared.js';
 
 export const ProviderID = 'discord';
 export const ProviderCookieName = 'discord_oauth_state';

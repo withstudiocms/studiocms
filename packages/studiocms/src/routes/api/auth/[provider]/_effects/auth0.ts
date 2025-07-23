@@ -8,8 +8,7 @@ import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
-import { Auth0User } from './_types.js';
-import { cleanDomain } from './_utils.js';
+import { Auth0User, cleanDomain } from './_shared.js';
 
 export const ProviderID = 'auth0';
 export const ProviderCookieName = 'auth0_oauth_state';

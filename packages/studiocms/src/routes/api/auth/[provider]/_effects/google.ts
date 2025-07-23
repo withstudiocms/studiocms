@@ -9,7 +9,7 @@ import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import { AuthEnvCheck, ValidateAuthCodeError } from '../_shared.js';
-import { GoogleUser } from './_types.js';
+import { GoogleUser } from './_shared.js';
 
 export const ProviderID = 'google';
 export const ProviderCookieName = 'google_oauth_state';
