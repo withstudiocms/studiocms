@@ -30,7 +30,6 @@ export const GET: APIRoute = async (context: APIContext) =>
 			}
 
 			// Call the appropriate provider function based on the provider and function
-
 			switch (provider) {
 				case Provider.GOOGLE: {
 					if (!authEnv.GOOGLE.ENABLED) {
