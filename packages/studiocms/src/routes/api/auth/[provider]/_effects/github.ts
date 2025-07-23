@@ -3,10 +3,12 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { GitHubUser } from './_types.js';
 
 const {
 	GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
@@ -16,27 +18,6 @@ export const ProviderID = 'github';
 export const ProviderCookieName = 'github_oauth_state';
 
 export const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-
-/**
- * Represents a GitHub user profile as returned by the GitHub API.
- *
- * @property id - The unique identifier for the user.
- * @property html_url - The URL to the user's GitHub profile.
- * @property login - The user's GitHub username.
- * @property avatar_url - The URL to the user's avatar image.
- * @property name - The user's display name.
- * @property blog - The user's blog URL.
- * @property email - The user's public email address.
- */
-export interface GitHubUser {
-	id: number;
-	html_url: string;
-	login: string;
-	avatar_url: string;
-	name: string;
-	blog: string;
-	email: string;
-}
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.
@@ -68,11 +49,12 @@ export interface GitHubUser {
  */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
+			HttpClient.HttpClient,
 		]);
 
 		const initSession = (context: APIContext) =>
@@ -92,21 +74,18 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			genLogger('studiocms/routes/api/auth/github/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() => github.validateAuthorizationCode(code));
 
-				const response = yield* Effect.tryPromise(() =>
-					fetch('https://api.github.com/user', {
+				return yield* fetchClient
+					.get('https://api.github.com/user', {
 						headers: {
 							Authorization: `Bearer ${tokens.accessToken}`,
 						},
 					})
-				);
-
-				if (!response.ok) {
-					yield* Effect.fail(new Error('Failed Authorization Check'));
-				}
-
-				const resData: GitHubUser = yield* Effect.tryPromise(() => response.json());
-
-				return resData;
+					.pipe(
+						Effect.flatMap(HttpClientResponse.schemaBodyJson(GitHubUser)),
+						Effect.catchAll((error) =>
+							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+						)
+					);
 			});
 
 		const initCallback = (context: APIContext) =>
@@ -225,5 +204,11 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			initCallback,
 		};
 	}),
-	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 }) {}

@@ -3,10 +3,12 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { DiscordUser } from './_types.js';
 
 export const {
 	DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
@@ -17,23 +19,6 @@ export const ProviderCookieName = 'discord_oauth_state';
 export const ProviderCodeVerifier = 'discord_oauth_code_verifier';
 
 export const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-
-/**
- * Represents a Discord user's profile information.
- *
- * @property id - The unique identifier for the Discord user.
- * @property avatar - The user's avatar hash.
- * @property username - The user's Discord username.
- * @property global_name - The user's global display name.
- * @property email - The user's email address.
- */
-export interface DiscordUser {
-	id: string;
-	avatar: string;
-	username: string;
-	global_name: string;
-	email: string;
-}
 
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.
@@ -64,11 +49,12 @@ export interface DiscordUser {
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
+			HttpClient.HttpClient,
 		]);
 
 		const initSession = (context: APIContext) =>
@@ -98,21 +84,18 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 					discord.validateAuthorizationCode(code, codeVerifier)
 				);
 
-				const response = yield* Effect.tryPromise(() =>
-					fetch('https://discord.com/api/users/@me', {
+				return yield* fetchClient
+					.get('https://discord.com/api/users/@me', {
 						headers: {
 							Authorization: `Bearer ${tokens.accessToken}`,
 						},
 					})
-				);
-
-				if (!response.ok) {
-					yield* Effect.fail(new Error('Failed Authorization Check'));
-				}
-
-				const resData: DiscordUser = yield* Effect.tryPromise(() => response.json());
-
-				return resData;
+					.pipe(
+						Effect.flatMap(HttpClientResponse.schemaBodyJson(DiscordUser)),
+						Effect.catchAll((error) =>
+							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+						)
+					);
 			});
 
 		const initCallback = (context: APIContext) =>
@@ -233,5 +216,11 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			initCallback,
 		};
 	}),
-	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 }) {}

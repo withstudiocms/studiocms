@@ -3,10 +3,12 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { GoogleUser } from './_types.js';
 
 export const {
 	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
@@ -17,21 +19,6 @@ export const ProviderCookieName = 'google_oauth_state';
 export const ProviderCodeVerifier = 'google_oauth_code_verifier';
 
 export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-
-/**
- * Represents a user authenticated via Google OAuth.
- *
- * @property sub - The unique identifier for the user (subject).
- * @property picture - The URL of the user's profile picture.
- * @property name - The full name of the user.
- * @property email - The user's email address.
- */
-export interface GoogleUser {
-	sub: string;
-	picture: string;
-	name: string;
-	email: string;
-}
 
 /**
  * Provides Google OAuth authentication effects for the StudioCMS API.
@@ -70,11 +57,12 @@ export interface GoogleUser {
  */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
+			HttpClient.HttpClient,
 		]);
 
 		const initSession = (context: APIContext) =>
@@ -104,21 +92,18 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					google.validateAuthorizationCode(code, codeVerifier)
 				);
 
-				const response = yield* Effect.tryPromise(() =>
-					fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+				return yield* fetchClient
+					.get('https://openidconnect.googleapis.com/v1/userinfo', {
 						headers: {
 							Authorization: `Bearer ${tokens.accessToken}`,
 						},
 					})
-				);
-
-				if (!response.ok) {
-					yield* Effect.fail(new Error('Failed Authorization Check'));
-				}
-
-				const resData: GoogleUser = yield* Effect.tryPromise(() => response.json());
-
-				return resData;
+					.pipe(
+						Effect.flatMap(HttpClientResponse.schemaBodyJson(GoogleUser)),
+						Effect.catchAll((error) =>
+							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+						)
+					);
 			});
 
 		const initCallback = (context: APIContext) =>
@@ -237,5 +222,11 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 			initCallback,
 		};
 	}),
-	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 }) {}

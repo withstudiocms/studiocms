@@ -3,54 +3,23 @@ import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import config, { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
+import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
+import { Auth0User } from './_types.js';
+import { cleanDomain } from './_utils.js';
 
 export const {
-	AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN, REDIRECT_URI = '' },
+	AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN = '', REDIRECT_URI = '' },
 } = await authEnvCheck(authConfig.providers);
-
-/**
- * Returns the client domain as a secure HTTPS URL.
- *
- * This function removes any leading slashes from the `DOMAIN` variable,
- * strips any existing `http://` or `https://` prefixes, and then prepends
- * `https://` to ensure the returned domain uses HTTPS.
- *
- * @returns {string} The sanitized client domain URL with HTTPS protocol.
- */
-export const getClientDomain = (): string => {
-	const cleanDomainSlash = DOMAIN ? DOMAIN.replace(/^\//, '') : '';
-
-	const NoHttpDomain = cleanDomainSlash.replace(/http:\/\//, '').replace(/https:\/\//, '');
-
-	return `https://${NoHttpDomain}`;
-};
 
 export const ProviderID = 'auth0';
 export const ProviderCookieName = 'auth0_oauth_state';
 export const ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 
-export const auth0 = new Auth0(getClientDomain(), CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-
-/**
- * Represents a user authenticated via Auth0.
- *
- * @property {string} sub - The unique identifier for the user (subject).
- * @property {string} name - The full name of the user.
- * @property {string} email - The email address of the user.
- * @property {string} picture - The URL to the user's profile picture.
- * @property {string} nickname - The user's nickname.
- */
-export interface Auth0User {
-	sub: string;
-	name: string;
-	email: string;
-	picture: string;
-	nickname: string;
-}
+export const auth0 = new Auth0(cleanDomain(DOMAIN), CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
  * Provides Auth0 OAuth authentication effects for the StudioCMS API.
@@ -86,11 +55,12 @@ export interface Auth0User {
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
-		const [sessionHelper, sdk, verifyEmail, userLib] = yield* Effect.all([
+		const [sessionHelper, sdk, verifyEmail, userLib, fetchClient] = yield* Effect.all([
 			Session,
 			SDKCore,
 			VerifyEmail,
 			User,
+			HttpClient.HttpClient,
 		]);
 
 		const initSession = (context: APIContext) =>
@@ -120,23 +90,18 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 					auth0.validateAuthorizationCode(code, codeVerifier)
 				);
 
-				const CLIENT_DOMAIN = getClientDomain();
+				const CLIENT_DOMAIN = cleanDomain(DOMAIN);
 
-				const response = yield* Effect.tryPromise(() =>
-					fetch(`${CLIENT_DOMAIN}/userinfo`, {
-						headers: {
-							Authorization: `Bearer ${tokens.accessToken}`,
-						},
+				return yield* fetchClient
+					.get(`${CLIENT_DOMAIN}/userinfo`, {
+						headers: { Authorization: `Bearer ${tokens.accessToken()}` },
 					})
-				);
-
-				if (!response.ok) {
-					yield* Effect.fail(new Error('Failed Authorization Check'));
-				}
-
-				const resData: Auth0User = yield* Effect.tryPromise(() => response.json());
-
-				return resData;
+					.pipe(
+						Effect.flatMap(HttpClientResponse.schemaBodyJson(Auth0User)),
+						Effect.catchAll((error) =>
+							Effect.fail(new Error(`Failed to fetch user info: ${error.message}`))
+						)
+					);
 			});
 
 		const initCallback = (context: APIContext) =>
@@ -255,5 +220,11 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 			initCallback,
 		};
 	}),
-	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 }) {}
