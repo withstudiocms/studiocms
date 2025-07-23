@@ -1,7 +1,6 @@
 import { Password, Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { z } from 'astro/zod';
 import { Effect, Layer } from 'effect';
 import { convertToVanilla, genLogger, pipeLogger } from '../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
@@ -21,11 +20,11 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 		genLogger('studiocms/routes/api/auth/register/POST')(function* () {
 			const [
 				sdk,
-				{ badFormDataEntry, parseFormDataEntryToString, readFormData },
-				userUtils,
-				verifier,
-				passwordUtils,
-				sessionUtils,
+				{ badFormDataEntry, parseFormDataEntryToString, readFormData, validateEmail },
+				{ verifyUsernameInput, createLocalUser },
+				{ sendVerificationEmail },
+				{ verifyPasswordStrength },
+				{ createUserSession },
 			] = yield* Effect.all([SDKCore, AuthAPIUtils, User, VerifyEmail, Password, Session]);
 
 			const formData = yield* readFormData(context);
@@ -46,21 +45,17 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			if (!email) return yield* badFormDataEntry('Missing entry', 'Email is required');
 			if (!name) return yield* badFormDataEntry('Missing entry', 'Display name is required');
 
-			const verifyUsernameResponse = yield* userUtils.verifyUsernameInput(username);
+			const verifyUsernameResponse = yield* verifyUsernameInput(username);
 			if (verifyUsernameResponse !== true)
 				return yield* badFormDataEntry('Invalid username', verifyUsernameResponse);
 
 			// If the password is invalid, return an error
-			const verifyPasswordResponse = yield* passwordUtils.verifyPasswordStrength(password);
+			const verifyPasswordResponse = yield* verifyPasswordStrength(password);
 			if (verifyPasswordResponse !== true) {
 				return yield* badFormDataEntry('Invalid password', verifyPasswordResponse);
 			}
 
-			const checkEmailSchema = z.coerce.string().email({ message: 'Email address is invalid' });
-
-			const checkEmail = yield* pipeLogger('studiocms/routes/api/auth/register/POST.checkEmail')(
-				Effect.try(() => checkEmailSchema.safeParse(email))
-			);
+			const checkEmail = yield* validateEmail(email);
 
 			if (!checkEmail.success)
 				return yield* badFormDataEntry('Invalid email', checkEmail.error.message);
@@ -81,11 +76,11 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			if (emailSearch.length > 0)
 				return yield* badFormDataEntry('Invalid email', 'Email is already in use');
 
-			const newUser = yield* userUtils.createLocalUser(name, username, email, password);
+			const newUser = yield* createLocalUser(name, username, email, password);
 
-			yield* verifier.sendVerificationEmail(newUser.id);
+			yield* sendVerificationEmail(newUser.id);
 
-			yield* sessionUtils.createUserSession(newUser.id, context);
+			yield* createUserSession(newUser.id, context);
 
 			return new Response();
 		}).pipe(Effect.provide(deps))

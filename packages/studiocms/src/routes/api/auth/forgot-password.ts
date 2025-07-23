@@ -6,7 +6,6 @@ import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { z } from 'astro/zod';
 import { Effect, Layer } from 'effect';
 import { dual, pipe } from 'effect/Function';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
@@ -57,17 +56,18 @@ function generateResetLink(
 	);
 }
 
-const deps = Layer.mergeAll(SDKCore.Default, Mailer.Default, Notifications.Default, AuthAPIUtils.Default);
+const deps = Layer.mergeAll(
+	SDKCore.Default,
+	Mailer.Default,
+	Notifications.Default,
+	AuthAPIUtils.Default
+);
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/forgot-password/POST')(function* () {
-			const [sdk, mailer, notifications, { readJson }] = yield* Effect.all([
-				SDKCore,
-				Mailer,
-				Notifications,
-				AuthAPIUtils
-			]);
+			const [sdk, { sendMail }, { sendAdminNotification }, { readJson, validateEmail }] =
+				yield* Effect.all([SDKCore, Mailer, Notifications, AuthAPIUtils]);
 
 			// Check if demo mode is enabled
 			if (developerConfig.demoMode !== false) {
@@ -94,10 +94,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// If the email is invalid, return an error
-			const checkEmail = z.coerce
-				.string()
-				.email({ message: 'Email address is invalid' })
-				.safeParse(email);
+			const checkEmail = yield* validateEmail(email);
+
 			if (!checkEmail.success) {
 				return apiResponseLogger(400, checkEmail.error.message);
 			}
@@ -125,7 +123,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Send an admin notification that the user has been updated
-			yield* notifications.sendAdminNotification('user_updated', user.username);
+			yield* sendAdminNotification('user_updated', user.username);
 
 			// Generate the reset link using the token and context
 			const resetLink = generateResetLink(token, context);
@@ -143,7 +141,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			const htmlTemplate = getTemplate('passwordReset');
 
 			// Send the password reset email to the user
-			const mailRes = yield* mailer.sendMail({
+			const mailRes = yield* sendMail({
 				to: user.email,
 				subject: 'Password Reset',
 				html: htmlTemplate(resetLink),

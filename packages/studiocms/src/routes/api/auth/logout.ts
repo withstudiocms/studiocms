@@ -10,7 +10,7 @@ export const GET: APIRoute = async (context: APIContext): Promise<Response> => {
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/logout/POST')(function* () {
-			const s = yield* Session;
+			const { validateSessionToken, deleteSessionTokenCookie, invalidateSession } = yield* Session;
 
 			const { cookies, redirect } = context;
 
@@ -18,11 +18,11 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 
 			if (!sessionToken) return redirect(context.locals.routeMap.authLinks.loginURL);
 
-			const { session, user } = yield* s.validateSessionToken(sessionToken);
+			const { session, user } = yield* validateSessionToken(sessionToken);
 
 			// If there is no session, redirect to the login page
 			if (session === null) {
-				yield* s.deleteSessionTokenCookie(context);
+				yield* deleteSessionTokenCookie(context);
 				return redirect(context.locals.routeMap.authLinks.loginURL);
 			}
 
@@ -32,8 +32,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Invalidate the session and delete the session token cookie
-			yield* s.invalidateSession(user.id);
-			yield* s.deleteSessionTokenCookie(context);
+			yield* invalidateSession(user.id);
+			yield* deleteSessionTokenCookie(context);
 
 			return redirect(context.locals.routeMap.mainLinks.baseSiteURL);
 		}).pipe(Session.Provide)

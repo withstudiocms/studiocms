@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { AstroError } from 'astro/errors';
+import { z } from 'astro/zod';
 import { Effect, Schema } from 'effect';
 import { genLogger, pipeLogger } from '../../../lib/effects/index.js';
 
@@ -45,6 +46,13 @@ export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
 						try: () => request.formData(),
 						catch: () => new AstroError('Failed to parse formData from Request'),
 					}),
+				validateEmail: (email: string) => Effect.try({
+					try: () => {
+						const emailSchema = z.coerce.string().email({ message: 'Email address is invalid' });
+						return emailSchema.safeParse(email);
+					},
+					catch: () => new AstroError('Failed to parse email with zod.')
+				})
 			};
 		}),
 	}

@@ -20,9 +20,9 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			const [
 				sdk,
 				{ badFormDataEntry, parseFormDataEntryToString, readFormData },
-				passUtils,
-				sessionUtils,
-				emailUtils,
+				{ verifyPasswordHash },
+				{ createUserSession },
+				{ isEmailVerified },
 			] = yield* Effect.all([SDKCore, AuthAPIUtils, Password, Session, VerifyEmail]);
 
 			const formData = yield* readFormData(context);
@@ -49,12 +49,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			if (!existingUser.password)
 				return yield* badFormDataEntry('Incorrect method', 'User is using OAuth login');
 
-			const validPassword = yield* passUtils.verifyPasswordHash(existingUser.password, password);
+			const validPassword = yield* verifyPasswordHash(existingUser.password, password);
 
 			if (!validPassword)
 				return yield* badFormDataEntry('Invalid credentials', 'Password is invalid');
 
-			const isEmailAccountVerified = yield* emailUtils.isEmailVerified(existingUser);
+			const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 			// If the email is not verified, return an error
 			if (!isEmailAccountVerified)
@@ -63,7 +63,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					'Please verify your email before logging in'
 				);
 
-			yield* sessionUtils.createUserSession(existingUser.id, context);
+			yield* createUserSession(existingUser.id, context);
 
 			return new Response();
 		}).pipe(Effect.provide(deps))
