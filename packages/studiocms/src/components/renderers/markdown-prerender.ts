@@ -6,11 +6,9 @@ import {
 } from '@studiocms/markdown-remark-processor';
 import { shared } from '../../lib/renderer/shared.js';
 
-function parseCallouts(opt: false | "obsidian" | "github" | "vitepress" | undefined) {
-	if (opt === false)
-		return false;
-	if (!opt)
-		return undefined;
+function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefined) {
+	if (opt === false) return false;
+	if (!opt) return undefined;
 	return {
 		theme: opt,
 	};

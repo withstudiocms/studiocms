@@ -171,7 +171,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 					return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 				}
 				return undefined;
-			})
+			});
 
 		/**
 		 * Verifies if the provided username meets the required criteria.

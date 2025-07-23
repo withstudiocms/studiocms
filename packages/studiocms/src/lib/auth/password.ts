@@ -104,7 +104,9 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
-		const verifyPasswordLength = (pass: string): Effect.Effect<string | undefined, PasswordError, never> =>
+		const verifyPasswordLength = (
+			pass: string
+		): Effect.Effect<string | undefined, PasswordError, never> =>
 			pipeLogger('studiocms/lib/auth/password/Password.verifyPasswordLength')(
 				Effect.try({
 					try: () => {
@@ -123,14 +125,16 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
 		 */
-		const verifySafe = (pass: string): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
+		const verifySafe = (
+			pass: string
+		): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
 			genLogger('studiocms/lib/auth/password/Password.verifySafe')(function* () {
 				const isUnsafe = yield* check.password(pass);
 				if (isUnsafe) {
 					return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
 				}
 				return undefined;
-			})
+			});
 
 		/**
 		 * @private Internal function for the `verifyPasswordStrength` function
