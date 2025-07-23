@@ -1,5 +1,12 @@
 # @studiocms/mdx
 
+## 0.1.0-beta.20
+
+### Patch Changes
+
+- Updated dependencies [[`ca4a3eb`](https://github.com/withstudiocms/studiocms/commit/ca4a3eb4bb4c810551385471cf071bc0f9cd80eb)]:
+  - studiocms@0.1.0-beta.20
+
 ## 0.1.0-beta.19
 
 ### Patch Changes
