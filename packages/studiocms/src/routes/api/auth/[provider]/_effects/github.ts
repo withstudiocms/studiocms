@@ -54,20 +54,20 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 	],
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
 		const [
-			sessionHelper,
 			sdk,
-			verifyEmail,
-			userLib,
 			fetchClient,
+			{ setOAuthSessionTokenCookie, createUserSession },
+			{ isEmailVerified, sendVerificationEmail },
+			{ getUserData, createOAuthUser },
 			{
 				GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
 			},
 		] = yield* Effect.all([
-			Session,
 			SDKCore,
+			HttpClient.HttpClient,
+			Session,
 			VerifyEmail,
 			User,
-			HttpClient.HttpClient,
 			AuthEnvCheck,
 		]);
 
@@ -100,27 +100,22 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			initSession: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/github/effect.initSession')(function* () {
 					const state = generateState();
-
 					const scopes = ['user:email', 'repo'];
 
 					const url = github.createAuthorizationURL(state, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(
-						context,
-						GitHubOAuthAPI.ProviderCookieName,
-						state
-					);
+					yield* setOAuthSessionTokenCookie(context, GitHubOAuthAPI.ProviderCookieName, state);
 
 					return context.redirect(url.toString());
 				}),
 			initCallback: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/github/effect.initCallback')(function* () {
-					const { url, cookies, redirect } = context;
+					const { cookies, redirect } = context;
 
 					const [code, state, storedState] = yield* Effect.all([
-						getUrlParam(url, 'code'),
-						getUrlParam(url, 'state'),
-						getCookie(cookies, GitHubOAuthAPI.ProviderCookieName),
+						getUrlParam(context, 'code'),
+						getUrlParam(context, 'state'),
+						getCookie(context, GitHubOAuthAPI.ProviderCookieName),
 					]);
 
 					if (!code || !state || !storedState || state !== storedState) {
@@ -143,7 +138,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 							return new Response('User not found', { status: 404 });
 						}
 
-						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
+						const isEmailAccountVerified = yield* isEmailVerified(user);
 
 						// If Mailer is enabled, is the user verified?
 						if (!isEmailAccountVerified) {
@@ -152,12 +147,12 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 							});
 						}
 
-						yield* sessionHelper.createUserSession(user.id, context);
+						yield* createUserSession(user.id, context);
 
 						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 
-					const loggedInUser = yield* userLib.getUserData(context);
+					const loggedInUser = yield* getUserData(context);
 					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
@@ -170,7 +165,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 								providerUserId: `${githubUserId}`,
 							});
 
-							const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+							const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 							// If Mailer is enabled, is the user verified?
 							if (!isEmailAccountVerified) {
@@ -179,13 +174,13 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 								});
 							}
 
-							yield* sessionHelper.createUserSession(existingUser.id, context);
+							yield* createUserSession(existingUser.id, context);
 
 							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 						}
 					}
 
-					const newUser = yield* userLib.createOAuthUser(
+					const newUser = yield* createOAuthUser(
 						{
 							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
@@ -208,11 +203,11 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 						return redirect('/done');
 					}
 
-					yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+					yield* sendVerificationEmail(newUser.id, true);
 
 					const existingUser = yield* sdk.GET.users.byId(newUser.id);
 
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+					const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 					// If Mailer is enabled, is the user verified?
 					if (!isEmailAccountVerified) {
@@ -221,7 +216,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 						});
 					}
 
-					yield* sessionHelper.createUserSession(newUser.id, context);
+					yield* createUserSession(newUser.id, context);
 
 					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}),

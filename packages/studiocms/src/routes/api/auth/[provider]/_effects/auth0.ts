@@ -58,20 +58,20 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 	],
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
 		const [
-			sessionHelper,
 			sdk,
-			verifyEmail,
-			userLib,
 			fetchClient,
+			{ setOAuthSessionTokenCookie, createUserSession },
+			{ isEmailVerified, sendVerificationEmail },
+			{ getUserData, createOAuthUser },
 			{
 				AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN = '', REDIRECT_URI = '' },
 			},
 		] = yield* Effect.all([
-			Session,
 			SDKCore,
+			HttpClient.HttpClient,
+			Session,
 			VerifyEmail,
 			User,
-			HttpClient.HttpClient,
 			AuthEnvCheck,
 		]);
 
@@ -106,20 +106,14 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 			initSession: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/auth0/effect.initSession')(function* () {
 					const state = generateState();
-
 					const codeVerifier = generateCodeVerifier();
-
 					const scopes = ['openid', 'profile', 'email'];
 
 					const url = auth0.createAuthorizationURL(state, codeVerifier, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(
-						context,
-						Auth0OAuthAPI.ProviderCookieName,
-						state
-					);
+					yield* setOAuthSessionTokenCookie(context, Auth0OAuthAPI.ProviderCookieName, state);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(
+					yield* setOAuthSessionTokenCookie(
 						context,
 						Auth0OAuthAPI.ProviderCodeVerifier,
 						codeVerifier
@@ -129,13 +123,13 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 				}),
 			initCallback: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/auth0/effect.initCallback')(function* () {
-					const { url, cookies, redirect } = context;
+					const { cookies, redirect } = context;
 
 					const [code, state, storedState, codeVerifier] = yield* Effect.all([
-						getUrlParam(url, 'code'),
-						getUrlParam(url, 'state'),
-						getCookie(cookies, Auth0OAuthAPI.ProviderCookieName),
-						getCookie(cookies, Auth0OAuthAPI.ProviderCodeVerifier),
+						getUrlParam(context, 'code'),
+						getUrlParam(context, 'state'),
+						getCookie(context, Auth0OAuthAPI.ProviderCookieName),
+						getCookie(context, Auth0OAuthAPI.ProviderCodeVerifier),
 					]);
 
 					if (!code || !storedState || !codeVerifier || state !== storedState) {
@@ -158,7 +152,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 							return new Response('User not found', { status: 404 });
 						}
 
-						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
+						const isEmailAccountVerified = yield* isEmailVerified(user);
 
 						// If Mailer is enabled, is the user verified?
 						if (!isEmailAccountVerified) {
@@ -167,12 +161,12 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 							});
 						}
 
-						yield* sessionHelper.createUserSession(user.id, context);
+						yield* createUserSession(user.id, context);
 
 						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 
-					const loggedInUser = yield* userLib.getUserData(context);
+					const loggedInUser = yield* getUserData(context);
 					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
@@ -185,7 +179,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 								providerUserId: auth0UserId,
 							});
 
-							const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+							const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 							// If Mailer is enabled, is the user verified?
 							if (!isEmailAccountVerified) {
@@ -194,13 +188,13 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 								});
 							}
 
-							yield* sessionHelper.createUserSession(existingUser.id, context);
+							yield* createUserSession(existingUser.id, context);
 
 							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 						}
 					}
 
-					const newUser = yield* userLib.createOAuthUser(
+					const newUser = yield* createOAuthUser(
 						{
 							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
@@ -222,11 +216,11 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 						return redirect('/done');
 					}
 
-					yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+					yield* sendVerificationEmail(newUser.id, true);
 
 					const existingUser = yield* sdk.GET.users.byId(newUser.id);
 
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+					const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 					// If Mailer is enabled, is the user verified?
 					if (!isEmailAccountVerified) {
@@ -235,7 +229,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 						});
 					}
 
-					yield* sessionHelper.createUserSession(newUser.id, context);
+					yield* createUserSession(newUser.id, context);
 
 					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}),

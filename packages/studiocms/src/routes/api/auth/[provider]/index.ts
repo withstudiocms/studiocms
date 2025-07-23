@@ -7,8 +7,8 @@ export const GET: APIRoute = async (context: APIContext) => {
 	const authEnv = await OAuthAPIEffect.envChecker();
 	return await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/[provider]/index.GET')(function* () {
-			const oAuth = yield* OAuthAPIEffect;
-			return yield* oAuth.initSession(context);
+			const { initSession } = yield* OAuthAPIEffect;
+			return yield* initSession(context);
 		}).pipe(OAuthAPIEffect.A, OAuthAPIEffect.B(authEnv))
 	);
 };

@@ -53,20 +53,20 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 	],
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const [
-			sessionHelper,
 			sdk,
-			verifyEmail,
-			userLib,
 			fetchClient,
+			{ setOAuthSessionTokenCookie, createUserSession },
+			{ isEmailVerified, sendVerificationEmail },
+			{ getUserData, createOAuthUser },
 			{
 				DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
 			},
 		] = yield* Effect.all([
-			Session,
 			SDKCore,
+			HttpClient.HttpClient,
+			Session,
 			VerifyEmail,
 			User,
-			HttpClient.HttpClient,
 			AuthEnvCheck,
 		]);
 
@@ -101,20 +101,14 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			initSession: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {
 					const state = generateState();
-
 					const codeVerifier = generateCodeVerifier();
-
 					const scopes = ['identify', 'email'];
 
 					const url = discord.createAuthorizationURL(state, codeVerifier, scopes);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(
-						context,
-						DiscordOAuthAPI.ProviderCookieName,
-						state
-					);
+					yield* setOAuthSessionTokenCookie(context, DiscordOAuthAPI.ProviderCookieName, state);
 
-					yield* sessionHelper.setOAuthSessionTokenCookie(
+					yield* setOAuthSessionTokenCookie(
 						context,
 						DiscordOAuthAPI.ProviderCodeVerifier,
 						codeVerifier
@@ -124,13 +118,13 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 				}),
 			initCallback: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/discord/effect.initCallback')(function* () {
-					const { url, cookies, redirect } = context;
+					const { cookies, redirect } = context;
 
 					const [code, state, storedState, codeVerifier] = yield* Effect.all([
-						getUrlParam(url, 'code'),
-						getUrlParam(url, 'state'),
-						getCookie(cookies, DiscordOAuthAPI.ProviderCookieName),
-						getCookie(cookies, DiscordOAuthAPI.ProviderCodeVerifier),
+						getUrlParam(context, 'code'),
+						getUrlParam(context, 'state'),
+						getCookie(context, DiscordOAuthAPI.ProviderCookieName),
+						getCookie(context, DiscordOAuthAPI.ProviderCodeVerifier),
 					]);
 
 					if (!code || !storedState || !codeVerifier || state !== storedState) {
@@ -153,7 +147,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 							return new Response('User not found', { status: 404 });
 						}
 
-						const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(user);
+						const isEmailAccountVerified = yield* isEmailVerified(user);
 
 						// If Mailer is enabled, is the user verified?
 						if (!isEmailAccountVerified) {
@@ -162,12 +156,12 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 							});
 						}
 
-						yield* sessionHelper.createUserSession(user.id, context);
+						yield* createUserSession(user.id, context);
 
 						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 					}
 
-					const loggedInUser = yield* userLib.getUserData(context);
+					const loggedInUser = yield* getUserData(context);
 					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
@@ -180,7 +174,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 								providerUserId: discordUserId,
 							});
 
-							const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+							const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 							// If Mailer is enabled, is the user verified?
 							if (!isEmailAccountVerified) {
@@ -189,7 +183,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 								});
 							}
 
-							yield* sessionHelper.createUserSession(existingUser.id, context);
+							yield* createUserSession(existingUser.id, context);
 
 							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 						}
@@ -197,7 +191,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 					const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
 
-					const newUser = yield* userLib.createOAuthUser(
+					const newUser = yield* createOAuthUser(
 						{
 							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
@@ -219,11 +213,11 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 						return redirect('/done');
 					}
 
-					yield* verifyEmail.sendVerificationEmail(newUser.id, true);
+					yield* sendVerificationEmail(newUser.id, true);
 
 					const existingUser = yield* sdk.GET.users.byId(newUser.id);
 
-					const isEmailAccountVerified = yield* verifyEmail.isEmailVerified(existingUser);
+					const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 
 					// If Mailer is enabled, is the user verified?
 					if (!isEmailAccountVerified) {
@@ -232,7 +226,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 						});
 					}
 
-					yield* sessionHelper.createUserSession(newUser.id, context);
+					yield* createUserSession(newUser.id, context);
 
 					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}),
