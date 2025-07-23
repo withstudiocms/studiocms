@@ -6,8 +6,7 @@ import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Google } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../../../lib/effects/index.js';
+import { Effect, genLogger } from '../../../../../effect.js';
 
 export const {
 	GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
@@ -19,6 +18,14 @@ export const ProviderCodeVerifier = 'google_oauth_code_verifier';
 
 export const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
+/**
+ * Represents a user authenticated via Google OAuth.
+ *
+ * @property sub - The unique identifier for the user (subject).
+ * @property picture - The URL of the user's profile picture.
+ * @property name - The full name of the user.
+ * @property email - The user's email address.
+ */
 export interface GoogleUser {
 	sub: string;
 	picture: string;
@@ -26,6 +33,41 @@ export interface GoogleUser {
 	email: string;
 }
 
+/**
+ * Provides Google OAuth authentication effects for the StudioCMS API.
+ *
+ * @remarks
+ * This service handles the OAuth flow for Google authentication, including session initialization,
+ * authorization code validation, user account linking, and user creation. It integrates with
+ * session management, user data libraries, and email verification.
+ *
+ * @example
+ * ```typescript
+ * const googleOAuth = new GoogleOAuthAPI();
+ * yield* googleOAuth.initSession(context);
+ * yield* googleOAuth.initCallback(context);
+ * ```
+ *
+ * @method initSession
+ * Initializes the OAuth session by generating a state and code verifier, setting cookies,
+ * and redirecting the user to Google's authorization URL.
+ *
+ * @param context - The API context containing request and response information.
+ * @returns Redirects the user to the Google OAuth authorization URL.
+ *
+ * @method initCallback
+ * Handles the OAuth callback from Google. Validates the authorization code and state,
+ * fetches user information, links or creates user accounts, verifies email, and creates a user session.
+ *
+ * @param context - The API context containing request and response information.
+ * @returns Redirects the user to the appropriate page based on authentication and verification status.
+ *
+ * @dependencies
+ * - Session.Default: Session management utilities.
+ * - SDKCore.Default: Core SDK for user and OAuth provider operations.
+ * - VerifyEmail.Default: Email verification utilities.
+ * - User.Default: User data management utilities.
+ */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
 		const sessionHelper = yield* Session;
@@ -194,6 +236,4 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
-}) {
-	static Provide = Effect.provide(this.Default);
-}
+}) {}

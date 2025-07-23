@@ -32,7 +32,7 @@ const AUTH_KEYS = {
 	},
 };
 
-type AuthEnvCheckResponse = {
+export type AuthEnvCheckResponse = {
 	GITHUB: {
 		ENABLED: boolean;
 		CLIENT_ID: string | undefined;

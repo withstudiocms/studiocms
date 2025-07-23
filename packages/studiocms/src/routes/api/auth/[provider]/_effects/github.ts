@@ -6,8 +6,7 @@ import { SDKCore } from 'studiocms:sdk';
 import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../../../lib/effects/index.js';
+import { Effect, genLogger } from '../../../../../effect.js';
 
 const {
 	GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
@@ -18,6 +17,17 @@ export const ProviderCookieName = 'github_oauth_state';
 
 export const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
+/**
+ * Represents a GitHub user profile as returned by the GitHub API.
+ *
+ * @property id - The unique identifier for the user.
+ * @property html_url - The URL to the user's GitHub profile.
+ * @property login - The user's GitHub username.
+ * @property avatar_url - The URL to the user's avatar image.
+ * @property name - The user's display name.
+ * @property blog - The user's blog URL.
+ * @property email - The user's public email address.
+ */
 export interface GitHubUser {
 	id: number;
 	html_url: string;
@@ -28,6 +38,34 @@ export interface GitHubUser {
 	email: string;
 }
 
+/**
+ * Provides GitHub OAuth authentication effects for the StudioCMS API.
+ *
+ * This service handles the OAuth flow with GitHub, including:
+ * - Initializing the OAuth session and redirecting users to GitHub for authorization.
+ * - Validating the authorization code returned by GitHub and fetching user data.
+ * - Handling the callback from GitHub, including:
+ *   - Linking OAuth accounts to existing users.
+ *   - Creating new users from GitHub profile data.
+ *   - Verifying user email addresses.
+ *   - Creating user sessions and redirecting to appropriate pages.
+ *
+ * @remarks
+ * - Depends on session management, user library, email verification, and SDK core services.
+ * - Handles both first-time setup and linking additional OAuth providers to existing accounts.
+ *
+ * @example
+ * ```typescript
+ * const githubOAuth = new GitHubOAuthAPI();
+ * yield* githubOAuth.initSession(context);
+ * yield* githubOAuth.initCallback(context);
+ * ```
+ *
+ * @see {@link Session}
+ * @see {@link SDKCore}
+ * @see {@link VerifyEmail}
+ * @see {@link User}
+ */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
 		const sessionHelper = yield* Session;
@@ -186,6 +224,4 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
-}) {
-	static Provide = Effect.provide(this.Default);
-}
+}) {}

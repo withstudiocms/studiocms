@@ -6,8 +6,7 @@ import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Discord } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../../../lib/effects/index.js';
+import { Effect, genLogger } from '../../../../../effect.js';
 
 export const {
 	DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
@@ -19,6 +18,15 @@ export const ProviderCodeVerifier = 'discord_oauth_code_verifier';
 
 export const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
+/**
+ * Represents a Discord user's profile information.
+ *
+ * @property id - The unique identifier for the Discord user.
+ * @property avatar - The user's avatar hash.
+ * @property username - The user's Discord username.
+ * @property global_name - The user's global display name.
+ * @property email - The user's email address.
+ */
 export interface DiscordUser {
 	id: string;
 	avatar: string;
@@ -27,6 +35,33 @@ export interface DiscordUser {
 	email: string;
 }
 
+/**
+ * Provides Discord OAuth authentication effects for the StudioCMS API.
+ *
+ * This service handles the OAuth flow for Discord, including:
+ * - Initializing the OAuth session and redirecting to Discord's authorization URL.
+ * - Validating the authorization code returned by Discord.
+ * - Handling the callback to link or create users based on Discord account information.
+ * - Verifying user email status and creating user sessions.
+ *
+ * @remarks
+ * - Integrates with session management, user library, and email verification services.
+ * - Supports linking Discord accounts to existing users and creating new users via OAuth.
+ * - Ensures email verification before allowing access to the dashboard.
+ *
+ * @example
+ * ```typescript
+ * const discordAuth = yield* DiscordOAuthAPI;
+ * yield* discordAuth.initSession(context);
+ * yield* discordAuth.initCallback(context);
+ * ```
+ *
+ * @dependencies
+ * - Session.Default
+ * - SDKCore.Default
+ * - VerifyEmail.Default
+ * - User.Default
+ */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const sessionHelper = yield* Session;
@@ -197,6 +232,4 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
-}) {
-	static Provide = Effect.provide(this.Default);
-}
+}) {}

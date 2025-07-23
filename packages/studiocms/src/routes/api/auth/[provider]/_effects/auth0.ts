@@ -6,14 +6,22 @@ import { SDKCore } from 'studiocms:sdk';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { Auth0 } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../../../lib/effects/index.js';
+import { Effect, genLogger } from '../../../../../effect.js';
 
 export const {
 	AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN, REDIRECT_URI = '' },
 } = await authEnvCheck(authConfig.providers);
 
-export const getClientDomain = () => {
+/**
+ * Returns the client domain as a secure HTTPS URL.
+ *
+ * This function removes any leading slashes from the `DOMAIN` variable,
+ * strips any existing `http://` or `https://` prefixes, and then prepends
+ * `https://` to ensure the returned domain uses HTTPS.
+ *
+ * @returns {string} The sanitized client domain URL with HTTPS protocol.
+ */
+export const getClientDomain = (): string => {
 	const cleanDomainSlash = DOMAIN ? DOMAIN.replace(/^\//, '') : '';
 
 	const NoHttpDomain = cleanDomainSlash.replace(/http:\/\//, '').replace(/https:\/\//, '');
@@ -27,6 +35,15 @@ export const ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 
 export const auth0 = new Auth0(getClientDomain(), CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
+/**
+ * Represents a user authenticated via Auth0.
+ *
+ * @property {string} sub - The unique identifier for the user (subject).
+ * @property {string} name - The full name of the user.
+ * @property {string} email - The email address of the user.
+ * @property {string} picture - The URL to the user's profile picture.
+ * @property {string} nickname - The user's nickname.
+ */
 export interface Auth0User {
 	sub: string;
 	name: string;
@@ -35,6 +52,38 @@ export interface Auth0User {
 	nickname: string;
 }
 
+/**
+ * Provides Auth0 OAuth authentication effects for the StudioCMS API.
+ *
+ * This service handles the OAuth flow with Auth0, including session initialization,
+ * authorization code validation, user account linking, and user creation.
+ *
+ * @remarks
+ * - Uses generator-based effects for async operations.
+ * - Integrates with session management, user library, and email verification.
+ * - Handles first-time setup and redirects based on authentication state.
+ *
+ * @example
+ * ```typescript
+ * const auth0Api = yield* Auth0OAuthAPI;
+ * yield* auth0Api.initSession(context);
+ * yield* auth0Api.initCallback(context);
+ * ```
+ *
+ * @dependencies
+ * - Session.Default
+ * - SDKCore.Default
+ * - VerifyEmail.Default
+ * - User.Default
+ *
+ * @method initSession
+ * Initializes the OAuth session by generating state and code verifier, setting cookies,
+ * and redirecting to the Auth0 authorization URL.
+ *
+ * @method initCallback
+ * Handles the OAuth callback, validates the authorization code, manages user linking,
+ * creates new users if necessary, verifies email, and creates user sessions.
+ */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
 		const sessionHelper = yield* Session;
@@ -205,6 +254,4 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 		};
 	}),
 	dependencies: [Session.Default, SDKCore.Default, VerifyEmail.Default, User.Default],
-}) {
-	static Provide = Effect.provide(this.Default);
-}
+}) {}
