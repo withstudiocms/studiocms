@@ -46,6 +46,13 @@ import { GoogleUser } from './_shared.js';
  * - User.Default: User data management utilities.
  */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
 		const [
 			sessionHelper,
@@ -229,13 +236,6 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 				}),
 		};
 	}),
-	dependencies: [
-		Session.Default,
-		SDKCore.Default,
-		VerifyEmail.Default,
-		User.Default,
-		FetchHttpClient.layer,
-	],
 }) {
 	static ProviderID = Provider.GOOGLE;
 	static ProviderCookieName = 'google_oauth_state';

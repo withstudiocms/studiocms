@@ -39,6 +39,13 @@ import { GitHubUser } from './_shared.js';
  * @see {@link User}
  */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
 		const [
 			sessionHelper,
@@ -212,13 +219,6 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 				}),
 		};
 	}),
-	dependencies: [
-		Session.Default,
-		SDKCore.Default,
-		VerifyEmail.Default,
-		User.Default,
-		FetchHttpClient.layer,
-	],
 }) {
 	static ProviderID = Provider.GITHUB;
 	static ProviderCookieName = 'github_oauth_state';

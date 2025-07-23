@@ -38,6 +38,13 @@ import { DiscordUser } from './_shared.js';
  * - User.Default
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
+	dependencies: [
+		Session.Default,
+		SDKCore.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const [
 			sessionHelper,
@@ -223,13 +230,6 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 				}),
 		};
 	}),
-	dependencies: [
-		Session.Default,
-		SDKCore.Default,
-		VerifyEmail.Default,
-		User.Default,
-		FetchHttpClient.layer,
-	],
 }) {
 	static ProviderID = Provider.DISCORD;
 	static ProviderCookieName = 'discord_oauth_state';
