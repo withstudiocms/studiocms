@@ -86,9 +86,6 @@ export const studiocms = defineIntegration({
 		// Messages Array for Logging
 		const messages: Messages = [];
 
-		// // Component Registry for Custom user Components
-		// let componentRegistry: Record<string, string>;
-
 		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string | undefined;
 
@@ -141,9 +138,6 @@ export const studiocms = defineIntegration({
 
 					// Create logInfo object
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
-
-					// Check for Component Registry
-					// if (_compRegistry) componentRegistry = _compRegistry;
 
 					const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
 					// Setup Logger
