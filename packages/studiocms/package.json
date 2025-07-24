@@ -120,6 +120,10 @@
 			"types": "./dist/componentRegistry/index.d.ts",
 			"default": "./dist/componentRegistry/index.js"
 		},
+		"./componentRegistry/runtime": {
+			"types": "./dist/componentRegistry/runtime.d.ts",
+			"default": "./dist/componentRegistry/runtime.js"
+		},
 		"./components/*": "./dist/components/*",
 		"./layouts/*": "./dist/layouts/*",
 		"./lib/*": {
