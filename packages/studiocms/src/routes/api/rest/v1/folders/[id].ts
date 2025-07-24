@@ -47,7 +47,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch folder', error);
 	});
@@ -94,7 +94,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 
 			yield* Notifications.sendEditorNotification('folder_updated', folderName);
 			return apiResponseLogger(200, 'Folder updated successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to update folder', error);
 	});
@@ -135,7 +135,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* Notifications.sendEditorNotification('folder_deleted', folder.name);
 
 			return apiResponseLogger(200, 'Folder deleted successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to delete folder', error);
 	});

@@ -57,7 +57,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch folders', error);
 	});
@@ -90,7 +90,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* sdk.UPDATE.folderTree;
 			yield* Notifications.sendEditorNotification('new_folder', folderName);
 			return apiResponseLogger(200, `Folder created successfully with id: ${newFolder.id}`);
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to create folder', error);
 	});

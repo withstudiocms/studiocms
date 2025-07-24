@@ -75,7 +75,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* notify.sendAdminNotification('user_updated', userData.username);
 
 			return apiResponseLogger(200, 'User password updated successfully');
-		}).pipe(Notifications.Provide, SDKCore.Provide, Password.Provide)
+		}).pipe(Notifications.Provide, Password.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

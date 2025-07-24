@@ -46,7 +46,7 @@ export const GET: APIRoute = async () =>
 					'content-type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);

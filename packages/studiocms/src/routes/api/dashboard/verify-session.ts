@@ -81,7 +81,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 					},
 				}
 			);
-		}).pipe(Session.Provide, SDKCore.Provide)
+		}).pipe(Session.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

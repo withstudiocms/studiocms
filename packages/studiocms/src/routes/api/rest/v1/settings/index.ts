@@ -29,7 +29,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Error fetching site config', error);
 	});
@@ -72,7 +72,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			yield* sdk.UPDATE.siteConfig(siteConfig);
 
 			return apiResponseLogger(200, 'Site config updated');
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Error updating site config', error);
 	});

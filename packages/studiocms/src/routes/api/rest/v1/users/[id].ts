@@ -106,7 +106,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide, User.Provide)
+		}).pipe(User.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch user data', error);
 	});
@@ -228,7 +228,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide, User.Provide, Notifications.Provide)
+		}).pipe(User.Provide, Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to update user data', error);
 	});
@@ -314,7 +314,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* Notifications.sendAdminNotification('user_deleted', existingUser.username);
 
 			return apiResponseLogger(200, response.message);
-		}).pipe(SDKCore.Provide, User.Provide, Notifications.Provide)
+		}).pipe(User.Provide, Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, `Failed to delete user: ${error}`);
 	});

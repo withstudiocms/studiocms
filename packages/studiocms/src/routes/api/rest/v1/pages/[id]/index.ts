@@ -51,7 +51,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
@@ -170,7 +170,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			yield* Notifications.sendEditorNotification('page_updated', updatedMetaData!.title);
 
 			return apiResponseLogger(200, 'Page updated successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
@@ -224,7 +224,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* Notifications.sendEditorNotification('page_deleted', page.data.title);
 
 			return apiResponseLogger(200, 'Page deleted successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});

@@ -50,7 +50,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			yield* sdk.UPDATE.siteConfig(siteConfig);
 
 			return apiResponseLogger(200, 'Site config updated');
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

@@ -95,7 +95,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* notifications.sendAdminNotification('user_updated', user.username);
 
 			return apiResponseLogger(200, 'User rank updated successfully');
-		}).pipe(User.Provide, Notifications.Provide, SDKCore.Provide)
+		}).pipe(User.Provide, Notifications.Provide)
 	);
 
 export const DELETE: APIRoute = async (context: APIContext) =>
@@ -148,7 +148,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* notifications.sendAdminNotification('user_deleted', username);
 
 			return apiResponseLogger(200, response.message);
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'DELETE']);

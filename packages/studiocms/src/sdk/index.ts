@@ -1,6 +1,6 @@
 import { Effect } from 'effect';
 import { convertToVanilla } from '../lib/effects/index.js';
-import { SDKCore } from './sdkCore.js';
+import { SDKCore as _SDKCore } from './sdkCore.js';
 
 /**
  * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
@@ -18,7 +18,12 @@ import { SDKCore } from './sdkCore.js';
  * }).pipe(Effect.provide(SDKCore.Default));
  * ```
  */
-export { SDKCore };
+export const SDKCore = Effect.gen(function* () {
+	const core = yield* _SDKCore;
+	return core;
+}).pipe(_SDKCore.Provide, _SDKCore.Cache);
+
+// const testP2 = await convertToVanilla(test);
 
 /**
  * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
@@ -32,9 +37,9 @@ export { SDKCore };
  */
 export const SDKCoreJs = await convertToVanilla(
 	Effect.gen(function* () {
-		const { _tag, ...core } = yield* SDKCore;
+		const { _tag, ...core } = yield* _SDKCore;
 		return core;
-	}).pipe(SDKCore.Provide, SDKCore.Cache)
+	}).pipe(_SDKCore.Provide, _SDKCore.Cache)
 );
 
 /**

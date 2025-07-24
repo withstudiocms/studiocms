@@ -47,7 +47,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				removeLeadingTrailingSlashes(context.site?.toString() as string) +
 					context.locals.routeMap.mainLinks.dashboardIndex
 			);
-		}).pipe(VerifyEmail.Provide, SDKCore.Provide)
+		}).pipe(VerifyEmail.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);

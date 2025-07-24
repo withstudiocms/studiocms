@@ -60,7 +60,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 				},
 				status: 200,
 			});
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

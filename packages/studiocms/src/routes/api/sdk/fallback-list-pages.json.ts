@@ -21,7 +21,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 					},
 				}
 			);
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return new Response(
 			JSON.stringify({ success: false, error: `Error fetching pages: ${error.message}` }),
