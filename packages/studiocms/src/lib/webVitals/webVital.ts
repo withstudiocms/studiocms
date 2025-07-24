@@ -1,4 +1,4 @@
-import studioCMS_SDK from 'studiocms:sdk';
+import { SDKCoreJs } from 'studiocms:sdk';
 import { EmptyReturn, WEB_VITALS_METRIC_TABLE, tsMetric } from './consts.js';
 import type {
 	GetWebVitalsData,
@@ -46,7 +46,7 @@ export async function getWebVitals(): Promise<GetWebVitalsData> {
 
 		if (WEB_VITALS_METRIC_TABLE in AstroDB) {
 			if (AstroDB.AstrojsWebVitals_Metric) {
-				const raw = (await studioCMS_SDK.db.select().from(tsMetric)) as WebVitalsResponseItem[];
+				const raw = (await SDKCoreJs.db.select().from(tsMetric)) as WebVitalsResponseItem[];
 
 				const last24HoursData = raw.filter((item) => checkDate(item.timestamp).isInLast24Hours());
 				const last7DaysData = raw.filter((item) => checkDate(item.timestamp).isInLast7Days());
