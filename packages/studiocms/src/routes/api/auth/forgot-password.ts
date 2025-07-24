@@ -1,16 +1,17 @@
 import { site } from 'astro:config/server';
 import { developerConfig } from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { z } from 'astro/zod';
 import { Effect, Layer } from 'effect';
 import { dual, pipe } from 'effect/Function';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AuthAPIUtils } from './shared.js';
 
 /**
  * Utility function to append search parameters to a URL.
@@ -45,25 +46,28 @@ function generateResetLink(
 		id: string;
 		userId: string;
 		token: string;
-	},
-	context: APIContext
+	}
 ) {
 	return pipe(
-		new URL(context.locals.routeMap.mainLinks.passwordReset, site),
+		new URL(StudioCMSRoutes.mainLinks.passwordReset, site),
 		appendSearchParams('userid', token.userId),
 		appendSearchParams('token', token.token),
 		appendSearchParams('id', token.id)
 	);
 }
 
-const deps = Layer.mergeAll(SDKCore.Default, Mailer.Default, Notifications.Default);
+const deps = Layer.mergeAll(
+	SDKCore.Default,
+	Mailer.Default,
+	Notifications.Default,
+	AuthAPIUtils.Default
+);
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/forgot-password/POST')(function* () {
-			const sdk = yield* SDKCore;
-			const mailer = yield* Mailer;
-			const notifications = yield* Notifications;
+			const [sdk, { sendMail }, { sendAdminNotification }, { readJson, validateEmail }] =
+				yield* Effect.all([SDKCore, Mailer, Notifications, AuthAPIUtils]);
 
 			// Check if demo mode is enabled
 			if (developerConfig.demoMode !== false) {
@@ -79,7 +83,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Parse the request body as JSON
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* readJson(context);
 
 			// Get the email from the JSON data
 			const { email } = jsonData;
@@ -90,10 +94,8 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// If the email is invalid, return an error
-			const checkEmail = z.coerce
-				.string()
-				.email({ message: 'Email address is invalid' })
-				.safeParse(email);
+			const checkEmail = yield* validateEmail(email);
+
 			if (!checkEmail.success) {
 				return apiResponseLogger(400, checkEmail.error.message);
 			}
@@ -121,10 +123,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Send an admin notification that the user has been updated
-			yield* notifications.sendAdminNotification('user_updated', user.username);
+			yield* sendAdminNotification('user_updated', user.username);
 
 			// Generate the reset link using the token and context
-			const resetLink = generateResetLink(token, context);
+			const resetLink = generateResetLink(token);
 
 			// If the user does not have an email address, return an error
 			// This should not happen, but we check it just in case
@@ -139,7 +141,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			const htmlTemplate = getTemplate('passwordReset');
 
 			// Send the password reset email to the user
-			const mailRes = yield* mailer.sendMail({
+			const mailRes = yield* sendMail({
 				to: user.email,
 				subject: 'Password Reset',
 				html: htmlTemplate(resetLink),
