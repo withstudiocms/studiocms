@@ -3,7 +3,6 @@ import type {
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../schemas/config/sdk.js';
-import type { cacheModule } from '../cache-core.js';
 import type {
 	AvailableLists,
 	CombinedRank,
@@ -95,6 +94,8 @@ export type {
 	tsUserResetTokensSelect,
 };
 
+export type CacheMap<K, V> = ReadonlyMap<K, V> & Map<K, V>;
+
 export type PaginateInput = {
 	limit: number;
 	offset: number;
@@ -147,11 +148,6 @@ export type AstroDBVirtualModule = typeof import('astro:db');
 
 // ../../schemas/config/sdk.ts
 export type { CacheConfig, ProcessedCacheConfig, ProcessedSDKConfig };
-
-/**
- * Type representing the return type of the `STUDIOCMS_SDK_CACHEModule` function.
- */
-export type STUDIOCMS_SDK_CACHE = typeof cacheModule;
 
 /**
  * Represents a base cache object with a timestamp of the last cache update.

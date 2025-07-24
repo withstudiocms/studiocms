@@ -1,19 +1,6 @@
 import { Effect } from 'effect';
 import { convertToVanilla } from '../lib/effects/index.js';
-import { studiocmsSDKCore } from './core.js';
 import { SDKCore } from './sdkCore.js';
-
-/**
- * @deprecated
- */
-const sdkCore = await studiocmsSDKCore();
-
-/**
- * @deprecated
- */
-export const studioCMS_SDK = sdkCore;
-
-export default studioCMS_SDK;
 
 /**
  * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
@@ -47,7 +34,7 @@ export const SDKCoreJs = await convertToVanilla(
 	Effect.gen(function* () {
 		const { _tag, ...core } = yield* SDKCore;
 		return core;
-	}).pipe(Effect.provide(SDKCore.Default))
+	}).pipe(SDKCore.Provide, SDKCore.Cache)
 );
 
 /**

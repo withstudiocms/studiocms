@@ -295,13 +295,6 @@ export const studiocms = defineIntegration({
 
 							'studiocms:sdk': `
 							    export * from '${resolve('./sdk/index.js')}';
-								import studioCMS_SDK from '${resolve('./sdk/index.js')}';
-								export default studioCMS_SDK;
-							`,
-							'studiocms:sdk/cache': `
-								export * from '${resolve('./sdk/cache.js')}';
-								import studioCMS_SDK_Cache from '${resolve('./sdk/cache.js')}';
-								export default studioCMS_SDK_Cache;
 							`,
 							'studiocms:sdk/types': `
 								export * from '${resolve('./sdk/types.js')}';
