@@ -294,7 +294,7 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @returns A promise that resolves to an object containing the imported components.
 	 * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
 	 * @deprecated This function is deprecated and will be removed in future versions.
-	 * Use `getRegistryComponents` instead for importing components from the component registry.
+	 * Use `getRendererComponents` instead for importing components from the component registry.
 	 */
 	export const importComponentsKeys: typeof import(
 		'./componentRegistry/runtime.js'
@@ -342,6 +342,12 @@ declare module 'studiocms:component-registry/runtime' {
 	export const convertHyphensToUnderscores: typeof import(
 		'./componentRegistry/runtime.js'
 	).convertHyphensToUnderscores;
+
+	export const setupRendererComponentProxy: typeof import(
+		'./componentRegistry/runtime.js'
+	).setupRendererComponentProxy;
+
+	export const createRenderer: typeof import('./componentRegistry/runtime.js').createRenderer;
 }
 
 declare module 'studiocms:sdk' {

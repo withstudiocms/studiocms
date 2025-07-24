@@ -8,24 +8,24 @@ import type { AstroComponentProps } from './types.js';
 
 /**
  * A service class for registering, retrieving, and validating Astro component props.
- * 
+ *
  * The `ComponentRegistry` provides methods to:
  * - Register a component and its props from an Astro file.
  * - Retrieve the props definition for a registered component.
  * - List all registered components and their props.
  * - Validate a set of props against a registered component's prop definition.
- * 
+ *
  * Dependencies:
  * - `PropsParser.Default`: Used to extract and parse props from Astro files.
  * - `Path.layer`: Used for file path operations.
  * - `NodeFileSystem.layer`: Used for reading files from the filesystem.
- * 
+ *
  * Methods:
  * - `registerComponentFromFile(filePath: string, componentName?: string)`: Registers a component by reading and parsing its props from the specified Astro file.
  * - `getComponentProps(componentName: string)`: Retrieves the props definition for the specified component.
  * - `getAllComponents()`: Returns a map of all registered components and their props.
  * - `validateProps(componentName: string, props: Record<string, unknown>)`: Validates the provided props against the registered component's prop definition, checking for missing required props and unknown props.
- * 
+ *
  * Errors:
  * - Throws `FileParseError` if the Astro file cannot be parsed.
  * - Throws `ComponentRegistryError` if registration fails.
@@ -55,21 +55,19 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 					);
 
 					const name = componentName || path.basename(filePath, path.extname(filePath));
-					yield* Effect.sync(() => {
-						const parsed = Effect.runSync(parser.parseComponentProps(propsDefinition));
-						if (parsed.length > 0) {
-							components.set(name, parsed[0]);
-						}
-					}).pipe(
-						Effect.catchAll((error) =>
-							Effect.fail(
+					const parsed = yield* parser.parseComponentProps(propsDefinition).pipe(
+						Effect.mapError(
+							(error) =>
 								new ComponentRegistryError({
 									message: `Failed to register component ${name}`,
 									cause: error,
 								})
-							)
 						)
 					);
+
+					if (parsed.length > 0) {
+						components.set(name, parsed[0]);
+					}
 				}),
 
 			getAllComponents: () => Effect.succeed(new Map(components)),
@@ -119,32 +117,3 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 		Effect.provide(NodeFileSystem.layer)
 	),
 }) {}
-
-// // Example usage with Effect
-// const program = Effect.gen(function* () {
-// 	const registry = yield* ComponentRegistry;
-
-// 	// Register component from file
-// 	yield* registry.registerComponentFromFile('/path/to/components/Card.astro');
-
-// 	// Get component props
-// 	const buttonProps = yield* registry.getComponentProps('Button');
-// 	console.log('Button props:', buttonProps);
-
-// 	// Validate props
-// 	const validation = yield* registry.validateProps('Button', {
-// 		children: 'Click me',
-// 		variant: 'primary',
-// 		unknownProp: 'invalid',
-// 	});
-// 	console.log('Validation result:', validation);
-
-// 	// Get all components
-// 	const allComponents = yield* registry.getAllComponents();
-// 	console.log('All registered components:', [...allComponents.keys()]);
-// });
-
-// // Run the program with proper layers
-// const main = program.pipe(
-// 	Effect.provide(ComponentRegistry.Default),
-// );

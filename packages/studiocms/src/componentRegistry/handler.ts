@@ -97,7 +97,13 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 						// Resolve the path using astroConfigResolve
 						integrationLogger(logInfo, `Resolving path for component "${key}"...`);
 
-						const resolvedPath = astroConfigResolve(value);
+						let resolvedPath: string;
+						try {
+							resolvedPath = astroConfigResolve(value);
+						} catch (error) {
+							integrationLogger(logInfo, `Failed to resolve path for component "${key}": ${error}`);
+							continue;
+						}
 
 						integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
 
@@ -141,10 +147,17 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 				integrationLogger(logInfo, 'Component registry setup complete.');
 
-				integrationLogger(
-					logInfo,
-					`Registered components:\n${JSON.stringify(componentProps, null, 2)}`
-				);
+				if (verbose && componentProps.length <= 10) {
+					integrationLogger(
+						logInfo,
+						`Registered components:\n${JSON.stringify(componentProps, null, 2)}`
+					);
+				} else {
+					integrationLogger(
+						logInfo,
+						`Registered ${componentProps.length} components. Use verbose mode with fewer components to see details.`
+					);
+				}
 
 				addVirtualImports(params, {
 					name,
