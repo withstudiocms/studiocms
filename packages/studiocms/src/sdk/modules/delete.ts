@@ -1,6 +1,6 @@
 import { and, eq } from 'astro:db';
 import { GhostUserDefaults } from '../../consts.js';
-import { Context, Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../effect.js';
 import { AstroDB, SDKCore_Users } from '../effect/index.js';
 import {
 	tsDiffTracking,

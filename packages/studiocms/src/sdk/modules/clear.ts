@@ -1,4 +1,4 @@
-import { Context, Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, _ClearUnknownError, isCacheEnabled } from '../utils.js';
 
 export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(

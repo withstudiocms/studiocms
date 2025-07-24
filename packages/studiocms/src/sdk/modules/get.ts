@@ -6,7 +6,7 @@ import {
 	GhostUserDefaults,
 	versionCacheLifetime,
 } from '../../consts.js';
-import { Context, Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../effect.js';
 import {
 	FolderListMapID,
 	FolderTreeMapID,
@@ -70,7 +70,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 			SDKCore_FolderTree.Default,
 			GetVersionFromNPM.Default,
 			SDKCore_Users.Default,
-			SDKCore_Collectors.Default
+			SDKCore_Collectors.Default,
 		],
 		effect: genLogger('studiocms/sdk/SDKCore/modules/get/effect')(function* () {
 			const [
