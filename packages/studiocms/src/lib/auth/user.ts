@@ -91,7 +91,6 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  *
  * ### Dependencies
  * This class relies on the following services:
- * - `SDKCore`: Core SDK for interacting with the backend.
  * - `CheckIfUnsafe`: Utility for checking unsafe usernames.
  * - `Session`: Session management service.
  * - `Password`: Password hashing and validation service.

@@ -149,8 +149,10 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const data = yield* collectPageData(page, folders, metaOnly);
 						pages.push(data);
 					}
-
-					return pages as MetaOnlyPageData[] | CombinedPageData[];
+					if (metaOnly) {
+						return pages as MetaOnlyPageData[];
+					}
+					return pages as CombinedPageData[];
 				}).pipe(
 					Effect.catchTags({
 						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
@@ -179,6 +181,14 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						return yield* collectPageData(page, folders);
 					});
 
+				const handlePageNotFound = () =>
+					Effect.fail(
+						new SDKCoreError({
+							type: 'UNKNOWN',
+							cause: new StudioCMS_SDK_Error('Page not found in Database'),
+						})
+					);
+
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
@@ -186,12 +196,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return yield* handlePageNotFound();
 						}
 
 						const pageData = pageDataReturn(page);
@@ -207,12 +212,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id, tree);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return yield* handlePageNotFound();
 						}
 
 						const returnPage = pageDataReturn(page);
@@ -293,6 +293,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						}
 
 						const pageData = pageDataReturn(page);
+						pages.set(page.id, pageData);
 
 						return metaOnly ? convertCombinedPageDataToMetaOnly(pageData) : pageData;
 					}
@@ -382,6 +383,24 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						return pages;
 					});
 
+				const validatePagination = (paginate?: PaginateInput) => {
+					if (!paginate) return Effect.succeed(paginate);
+					if (paginate.limit < 0 || paginate.offset < 0) {
+						return Effect.fail(
+							new SDKCoreError({
+								type: 'UNKNOWN',
+								cause: new StudioCMS_SDK_Error(
+									'Pagination limit and offset must be non-negative values'
+								),
+							})
+						);
+					}
+					if (paginate.limit === 0) {
+						paginate.limit = 10;
+					}
+					return Effect.succeed(paginate);
+				};
+
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
@@ -422,9 +441,11 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const data = newData.map((data) => pageDataReturn(data));
 
 						if (paginate) {
-							const paginatedData = data
-								.sort((a, b) => a.data.title.localeCompare(b.data.title))
-								.slice(paginate.offset, paginate.offset + paginate.limit);
+							const sortedData = data.sort((a, b) => a.data.title.localeCompare(b.data.title));
+							const paginatedData = sortedData.slice(
+								paginate.offset,
+								paginate.offset + paginate.limit
+							);
 							return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 						}
 
@@ -445,9 +466,11 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					const data = Array.from(pages.values());
 
 					if (paginate) {
-						const paginatedData = data
-							.sort((a, b) => a.data.title.localeCompare(b.data.title))
-							.slice(paginate.offset, paginate.offset + paginate.limit);
+						const sortedData = data.sort((a, b) => a.data.title.localeCompare(b.data.title));
+						const paginatedData = sortedData.slice(
+							paginate.offset,
+							paginate.offset + paginate.limit
+						);
 						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 					}
 
@@ -649,6 +672,21 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				);
 			}
 
+			const getPermissionsByRank = (rank: 'owner' | 'admin' | 'editor' | 'visitor') =>
+				Effect.gen(function* () {
+					const currentPermittedUsers = yield* dbService.execute((db) =>
+						db.select().from(tsPermissions)
+					);
+					const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
+
+					return yield* verifyRank(existingUsers, currentPermittedUsers, rank);
+				}).pipe(
+					Effect.catchTags({
+						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							_clearLibSQLError(`GET.permissionsLists.${rank}s`, cause),
+					})
+				);
+
 			const GET = {
 				databaseTable: {
 					users: () => dbService.execute((db) => db.select().from(tsUsers)),
@@ -718,80 +756,28 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					 * @returns A promise that resolves to an array of combined rank data.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the owners.
 					 */
-					owners: () =>
-						Effect.gen(function* () {
-							const currentPermittedUsers = yield* dbService.execute((db) =>
-								db.select().from(tsPermissions)
-							);
-							const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
-
-							return yield* verifyRank(existingUsers, currentPermittedUsers, 'owner');
-						}).pipe(
-							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.permissionsLists.owners', cause),
-							})
-						),
+					owners: () => getPermissionsByRank('owner'),
 					/**
 					 * Retrieves all admins in the database.
 					 *
 					 * @returns A promise that resolves to an array of combined rank data.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the admins.
 					 */
-					admins: () =>
-						Effect.gen(function* () {
-							const currentPermittedUsers = yield* dbService.execute((db) =>
-								db.select().from(tsPermissions)
-							);
-							const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
-
-							return yield* verifyRank(existingUsers, currentPermittedUsers, 'admin');
-						}).pipe(
-							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.permissionsLists.admins', cause),
-							})
-						),
+					admins: () => getPermissionsByRank('admin'),
 					/**
 					 * Retrieves all editors in the database.
 					 *
 					 * @returns A promise that resolves to an array of combined rank data.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the editors.
 					 */
-					editors: () =>
-						Effect.gen(function* () {
-							const currentPermittedUsers = yield* dbService.execute((db) =>
-								db.select().from(tsPermissions)
-							);
-							const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
-
-							return yield* verifyRank(existingUsers, currentPermittedUsers, 'editor');
-						}).pipe(
-							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.permissionsLists.editors', cause),
-							})
-						),
+					editors: () => getPermissionsByRank('editor'),
 					/**
 					 * Retrieves all visitors in the database.
 					 *
 					 * @returns A promise that resolves to an array of combined rank data.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the visitors.
 					 */
-					visitors: () =>
-						Effect.gen(function* () {
-							const currentPermittedUsers = yield* dbService.execute((db) =>
-								db.select().from(tsPermissions)
-							);
-							const existingUsers = yield* dbService.execute((db) => db.select().from(tsUsers));
-
-							return yield* verifyRank(existingUsers, currentPermittedUsers, 'visitor');
-						}).pipe(
-							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.permissionsLists.visitors', cause),
-							})
-						),
+					visitors: () => getPermissionsByRank('visitor'),
 				},
 				users: {
 					/**

@@ -71,17 +71,17 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			if (session === null) {
 				yield* ses.deleteSessionTokenCookie(context);
-				return apiResponseLogger(400, 'Invalid session token, User is not logged in');
+				return apiResponseLogger(400, `Invalid session token, User is not logged in. (originUrl: ${originPathname})`);
 			}
 
 			if (!user || user === null) {
-				return apiResponseLogger(400, 'Invalid user, User is not logged in');
+				return apiResponseLogger(400, `Invalid user, User is not logged in. (originUrl: ${originPathname})`);
 			}
 
 			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
 			if (!result) {
-				return apiResponseLogger(400, 'Failed to get user permission level from SDKCore');
+				return apiResponseLogger(400, `Failed to get user permission level from SDKCore. (originUrl: ${originPathname})`);
 			}
 
 			let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';

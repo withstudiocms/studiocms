@@ -306,15 +306,11 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the session.
 					 */
 					delete: dbService.makeQuery((ex, sessionId: string) =>
-						ex((db) =>
-							db
-								.delete(tsSessionTable)
-								.where(eq(tsSessionTable.id, sessionId))
-								.then(() => ({
-									status: 'success',
-									message: 'Session deleted',
-								}))
-						).pipe(
+						ex((db) => db.delete(tsSessionTable).where(eq(tsSessionTable.id, sessionId))).pipe(
+							Effect.map(() => ({
+								status: 'success',
+								message: 'Session deleted',
+							})),
 							Effect.catchTags({
 								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
 									Effect.fail(

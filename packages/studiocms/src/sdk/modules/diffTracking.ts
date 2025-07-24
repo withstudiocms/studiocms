@@ -398,8 +398,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								];
 								if (blackListedLabels.includes(label)) continue;
 
-								// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
-								if (obj1.hasOwnProperty(label) && obj2.hasOwnProperty(label)) {
+								if (Object.hasOwn(obj1, label) && Object.hasOwn(obj2, label)) {
 									if (obj1[label] !== obj2[label]) {
 										if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
 											if (obj1[label].length === obj2[label].length) continue;

@@ -51,8 +51,6 @@ export const sessionCookieName = 'auth_session';
  * - `createUserSession`: Creates a new user session, including generating a token, storing
  *   it in the database, and setting a cookie.
  *
- * ### Dependencies:
- * - `SDKCore`: Provides access to the database operations for session management.
  *
  * ### Usage:
  * This class is designed to be used in the context of a web application where user

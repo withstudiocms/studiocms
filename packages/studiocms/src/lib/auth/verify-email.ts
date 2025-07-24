@@ -21,7 +21,6 @@ export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ mes
  *
  * ### Dependencies:
  * - `Mailer`: Handles email sending operations.
- * - `SDKCore`: Provides access to the StudioCMS SDK for database and authentication operations.
  *
  * ### Methods:
  * - `isEmailVerificationEnabled`: Checks if email verification is enabled in the StudioCMS configuration.

@@ -72,18 +72,9 @@ export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 				 */
 				ghostUser: () =>
 					Effect.gen(function* () {
-						const ghostUser = yield* AUTH.user.ghost.verifyExists();
-						if (!ghostUser) return yield* AUTH.user.ghost.create();
 						const ghostUserRecord = yield* AUTH.user.ghost.get();
 						if (!ghostUserRecord) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'LibSQLDatabaseError',
-									cause: new StudioCMS_SDK_Error(
-										'INIT.ghostUser Error: Error getting ghost user from database: The ghost user may not exist yet.'
-									),
-								})
-							);
+							return yield* AUTH.user.ghost.create();
 						}
 						return ghostUserRecord;
 					}),
