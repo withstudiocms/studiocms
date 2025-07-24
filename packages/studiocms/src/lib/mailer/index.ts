@@ -1,6 +1,6 @@
 import { eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
-import { SDKCore } from 'studiocms:sdk';
+import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { Effect, Layer } from 'effect';
 import { CMSMailerConfigId } from '../../consts.js';
@@ -81,7 +81,6 @@ export class Logger extends Effect.Tag('studiocms/lib/mailer/Logger')<
 export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Mailer', {
 	effect: genLogger('studiocms/lib/mailer/Mailer.effect')(function* () {
 		const logger = yield* Logger;
-		const sdk = yield* SDKCore;
 		const SMTP = yield* SMTPMailer;
 
 		/**
@@ -244,7 +243,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			isEnabled,
 		};
 	}),
-	dependencies: [SDKCore.Default, Logger.Layer, SMTPMailer.Default],
+	dependencies: [Logger.Layer, SMTPMailer.Default],
 	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);

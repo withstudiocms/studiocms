@@ -1,7 +1,7 @@
 import _logger from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
-import { SDKCore } from 'studiocms:sdk';
+import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Effect } from 'effect';
 import { genLogger } from '../effects/index.js';
@@ -120,7 +120,6 @@ export class Notifications extends Effect.Service<Notifications>()(
 		effect: genLogger('studiocms/lib/notifier/Notifications.effect')(function* () {
 			const MailService = yield* Mailer;
 			const logger = yield* makeLogger;
-			const sdk = yield* SDKCore;
 
 			/**
 			 * Retrieves the configuration settings for StudioCMS.
@@ -326,7 +325,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 				sendAdminNotification,
 			};
 		}),
-		dependencies: [SDKCore.Default, Mailer.Default],
+		dependencies: [Mailer.Default],
 		accessors: true,
 	}
 ) {

@@ -1,4 +1,4 @@
-import { SDKCore } from 'studiocms:sdk';
+import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
@@ -61,7 +61,6 @@ export const sessionCookieName = 'auth_session';
  */
 export class Session extends Effect.Service<Session>()('studiocms/lib/auth/session/Session', {
 	effect: genLogger('studiocms/lib/auth/session/Session.effect')(function* () {
-		const sdk = yield* SDKCore;
 
 		/**
 		 * Generates a session token.
@@ -287,7 +286,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 			createUserSession,
 		};
 	}),
-	dependencies: [SDKCore.Default],
+	dependencies: [],
 }) {
 	static Provide = Effect.provide(this.Default);
 	static sessionCookieName = sessionCookieName;
