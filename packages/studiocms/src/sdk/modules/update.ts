@@ -42,6 +42,36 @@ import {
 import { SDKCore_CLEAR } from './clear.js';
 import { SDKCore_GET } from './get.js';
 
+/**
+ * Provides update operations for StudioCMS entities such as pages, tags, categories, permissions, folders, versions, and site configuration.
+ * 
+ * @remarks
+ * This service is part of the StudioCMS SDK core and is responsible for updating various resources in the database and cache.
+ * It handles error catching for database operations and ensures cache consistency after updates.
+ * 
+ * @example
+ * ```typescript
+ * const updateService = yield* SDKCore_UPDATE;
+ * yield* updateService.pageContent({ id: '...', ... });
+ * ```
+ * 
+ * @class SDKCore_UPDATE
+ * @extends Effect.Service
+ * 
+ * @property pageContent - Updates a page's content in the database.
+ * @property tags - Updates a tag in the database.
+ * @property categories - Updates a category in the database.
+ * @property permissions - Updates a permission in the database.
+ * @property folderTree - Updates the folder tree structure and cache.
+ * @property folderList - Updates the folder list and cache.
+ * @property folder - Updates a folder and refreshes related caches.
+ * @property latestVersion - Updates and caches the latest StudioCMS version.
+ * @property siteConfig - Updates the site configuration and cache.
+ * @property page.byId - Updates a page by its ID, including content and data, and refreshes caches.
+ * @property page.bySlug - Updates a page by its slug, including content and data, and refreshes caches.
+ * 
+ * @throws StudioCMS_SDK_Error - If an error occurs during any update operation.
+ */
 export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 	'studiocms/sdk/SDKCore/modules/update',
 	{

@@ -7,6 +7,31 @@ import { tsNotificationSettings } from '../tables.js';
 import type { tsNotificationSettingsInsert } from '../types/index.js';
 import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
+/**
+ * Service class for managing notification settings in the StudioCMS SDK.
+ *
+ * @remarks
+ * This class provides methods to retrieve and update site-wide notification settings
+ * from the database. If settings do not exist, default values are inserted.
+ * All database operations are wrapped with error handling for `LibSQLDatabaseError`.
+ *
+ * @example
+ * ```typescript
+ * const settings = await SDKCore_NotificationSettings.site.get();
+ * await SDKCore_NotificationSettings.site.update({ ...newSettings });
+ * ```
+ *
+ * @service
+ * @module studiocms/sdk/SDKCore/modules/notificationSettings
+ *
+ * @dependencies
+ * - AstroDB.Default
+ *
+ * @effect
+ * - genLogger for logging effect operations
+ *
+ * @throws SDKCoreError when a database error occurs
+ */
 export class SDKCore_NotificationSettings extends Effect.Service<SDKCore_NotificationSettings>()(
 	'studiocms/sdk/SDKCore/modules/notificationSettings',
 	{

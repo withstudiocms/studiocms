@@ -18,6 +18,35 @@ import type {
 } from '../types/index.js';
 import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
+/**
+ * Provides authentication-related operations for the StudioCMS SDK.
+ *
+ * This service includes methods for managing email verification tokens, OAuth accounts,
+ * user permissions, sessions, and users (including ghost users).
+ *
+ * @remarks
+ * All database operations are wrapped with error handling for `LibSQLDatabaseError`,
+ * returning a custom `SDKCoreError` with contextual information.
+ *
+ * @example
+ * ```typescript
+ * const auth = Effect.runPromise(SDKCore_AUTH.effect);
+ * const user = await auth.user.create({ username: 'adam', email: 'adam@example.com' });
+ * ```
+ *
+ * @service
+ * @module studiocms/sdk/SDKCore/modules/auth
+ *
+ * @dependencies
+ * - AstroDB.Default
+ * - SDKCore_Generators.Default
+ *
+ * @effect
+ * - genLogger('studiocms/sdk/SDKCore/modules/auth/effect')
+ *
+ * @see SDKCoreError
+ * @see StudioCMS_SDK_Error
+ */
 export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 	'studiocms/sdk/SDKCore/modules/auth',
 	{

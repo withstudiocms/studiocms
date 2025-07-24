@@ -34,6 +34,39 @@ import { SDKCore_CLEAR } from './clear.js';
 import { SDKCore_GET } from './get.js';
 import { SDKCore_UPDATE } from './update.js';
 
+/**
+ * SDKCore_POST provides a set of database insertion operations for StudioCMS entities,
+ * including pages, page content, tags, categories, permissions, diff tracking, and folders.
+ * 
+ * @remarks
+ * This service is designed to be used within the StudioCMS SDK core, leveraging effectful
+ * operations and dependency injection for database access and cache management.
+ * 
+ * @example
+ * ```typescript
+ * const sdkPost = new SDKCore_POST();
+ * sdkPost.databaseEntry.pages(pageData, pageContent);
+ * ```
+ * 
+ * @module studiocms/sdk/SDKCore/modules/post
+ * 
+ * @dependencies
+ * - AstroDB.Default
+ * - SDKCore_CLEAR.Default
+ * - SDKCore_Users.Default
+ * - SDKCore_UPDATE.Default
+ * - SDKCore_Generators.Default
+ * - SDKCore_GET.Default
+ * 
+ * @effect
+ * Provides effectful methods for:
+ * - Inserting single and multiple pages, tags, categories, permissions, folders, and diff tracking entries.
+ * - Handling errors from the database layer and providing clear error messages.
+ * - Managing cache and updating folder structures after insertions.
+ * 
+ * @throws {StudioCMS_SDK_Error}
+ * Throws when database operations fail or when attempting to insert duplicate permissions.
+ */
 export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 	'studiocms/sdk/SDKCore/modules/post',
 	{

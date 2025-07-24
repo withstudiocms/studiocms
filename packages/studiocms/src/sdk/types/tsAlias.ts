@@ -15,12 +15,42 @@ import type {
 	tsUsers,
 } from '../tables.js';
 
+/**
+ * Represents the selected fields from the `tsEmailVerificationTokens` table.
+ * This type is inferred from the select query on the `tsEmailVerificationTokens` model.
+ */
 export type tsEmailVerificationTokensSelect = typeof tsEmailVerificationTokens.$inferSelect;
+
+/**
+ * Represents the type used for inserting new email verification tokens into the database.
+ * This type is inferred from the structure of the `tsEmailVerificationTokens` table.
+ */
 export type tsEmailVerificationTokensInsert = typeof tsEmailVerificationTokens.$inferInsert;
+
+/**
+ * Represents the type used for inserting new notification settings into the database.
+ * Derived from the insert-able fields of the `tsNotificationSettings` table schema.
+ */
 export type tsNotificationSettingsInsert = typeof tsNotificationSettings.$inferInsert;
+
+/**
+ * Represents the selected fields of the `tsNotificationSettings` table.
+ * This type is inferred from the select query on the `tsNotificationSettings` table.
+ */
 export type tsNotificationSettingsSelect = typeof tsNotificationSettings.$inferSelect;
 
+/**
+ * Represents the type used for inserting new records into the `tsUserResetTokens` table.
+ * This type is inferred from the structure of the table and includes all required fields for insertion.
+ */
 export type tsUserResetTokensInsert = typeof tsUserResetTokens.$inferInsert;
+
+/**
+ * Represents the selected fields from the `tsUserResetTokens` table.
+ * 
+ * This type is inferred from the select query on the `tsUserResetTokens` table,
+ * and includes only the fields that are selected.
+ */
 export type tsUserResetTokensSelect = typeof tsUserResetTokens.$inferSelect;
 
 /**

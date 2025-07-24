@@ -6,6 +6,26 @@ import type { tsSiteConfigSelect } from '../types/index.js';
 import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 import { SDKCore_AUTH } from './auth.js';
 
+/**
+ * Effectful service for initializing core StudioCMS modules.
+ *
+ * @remarks
+ * This service provides initialization routines for the StudioCMS system,
+ * including setting up the site configuration and ensuring the existence of the ghost user.
+ *
+ * @example
+ * ```typescript
+ * const init = yield* SDKCore_INIT;
+ * yield* init.siteConfig({ ... });
+ * yield* init.ghostUser();
+ * ```
+ *
+ * @service
+ * - Depends on AstroDB and SDKCore_AUTH services.
+ *
+ * @throws {StudioCMS_SDK_Error}
+ * Throws if database errors occur during initialization.
+ */
 export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 	'studiocms/sdk/SDKCore/modules/init',
 	{

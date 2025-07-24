@@ -1,6 +1,31 @@
 import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, _ClearUnknownError, isCacheEnabled } from '../utils.js';
 
+/**
+ * Provides cache clearing operations for various entities in the SDKCore module.
+ *
+ * @remarks
+ * This service exposes methods to clear cached data for pages, folders, folder trees, and version information.
+ * Each method checks if the cache is enabled before performing the clear operation.
+ * Errors are caught and handled using custom error handlers for unknown exceptions.
+ *
+ * @example
+ * ```typescript
+ * const clearService = new SDKCore_CLEAR();
+ * await clearService.page.byId('pageId');
+ * await clearService.pages();
+ * ```
+ *
+ * @class SDKCore_CLEAR
+ * @extends Effect.Service
+ *
+ * @method page.byId - Clears a cached page by its ID.
+ * @method page.bySlug - Clears cached pages by their slug.
+ * @method pages - Clears all cached pages, folder trees, and folder lists.
+ * @method latestVersion - Clears the cached latest version information.
+ * @method folderTree - Clears cached folder trees and page folder trees.
+ * @method folderList - Clears the cached folder list.
+ */
 export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 	'studiocms/sdk/SDKCore/modules/clear',
 	{

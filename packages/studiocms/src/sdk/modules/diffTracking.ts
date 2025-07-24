@@ -8,6 +8,43 @@ import { tsDiffTracking, tsPageContent, tsPageData } from '../tables.js';
 import type { tsPageDataSelect } from '../types/index.js';
 import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
+/**
+ * Provides diff tracking functionality for StudioCMS SDKCore.
+ * 
+ * This service enables tracking, storing, retrieving, and reverting changes (diffs) made to page content and metadata.
+ * It integrates with AstroDB and SDKCore_Parsers, and handles database operations with error management.
+ * 
+ * ## Features
+ * - Insert new diffs for page content and metadata.
+ * - Limit the number of stored diffs per page, removing the oldest when exceeding the limit.
+ * - Clear all diffs for a given page.
+ * - Retrieve all or latest diffs by page ID or user ID.
+ * - Retrieve a single diff by its ID.
+ * - Revert page content and/or metadata to a specific diff, purging newer diffs.
+ * - Utility methods for comparing metadata and rendering diffs as HTML.
+ * 
+ * ## Error Handling
+ * All database operations are wrapped with error handling, returning `SDKCoreError` on failure.
+ * 
+ * ## Dependencies
+ * - AstroDB.Default
+ * - SDKCore_Parsers.Default
+ * 
+ * ## Methods
+ * - `insert(userId, pageId, data, diffLength)`: Inserts a new diff entry.
+ * - `clear(pageId)`: Removes all diffs for a page.
+ * - `get.byPageId.all(pageId)`: Gets all diffs for a page.
+ * - `get.byPageId.latest(pageId, count)`: Gets the latest N diffs for a page.
+ * - `get.byUserId.all(userId)`: Gets all diffs created by a user.
+ * - `get.byUserId.latest(userId, count)`: Gets the latest N diffs by a user.
+ * - `get.single(id)`: Gets a single diff by ID.
+ * - `revertToDiff(id, type)`: Reverts page content and/or metadata to a specific diff and purges newer diffs.
+ * - `utils.getMetaDataDifferences(obj1, obj2)`: Compares two metadata objects and returns their differences.
+ * - `utils.getDiffHTML(diff, options)`: Renders a diff string as HTML.
+ * 
+ * @remarks
+ * This service is intended for internal use within the StudioCMS SDKCore and relies on Drizzle ORM for database operations.
+ */
 export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()(
 	'studiocms/sdk/SDKCore/modules/diffTracking',
 	{

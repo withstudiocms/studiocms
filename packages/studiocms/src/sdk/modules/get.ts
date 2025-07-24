@@ -62,6 +62,42 @@ import {
 	versionReturn,
 } from '../utils.js';
 
+/**
+ * The `SDKCore_GET` service provides a comprehensive set of data retrieval methods for the StudioCMS SDK.
+ * It encapsulates database queries, caching logic, and transformation utilities for core CMS entities such as pages, users, folders, permissions, and site configuration.
+ *
+ * @remarks
+ * - All methods are wrapped in `Effect` for composable error handling and dependency injection.
+ * - Caching is used for performance optimization, with cache invalidation and fallback to database queries.
+ * - Pagination, filtering, and meta-only retrieval are supported for page queries.
+ *
+ * @example
+ * ```typescript
+ * const pages = yield* GET.pages();
+ * const user = yield* GET.users.byId("user-id");
+ * const folderTree = yield* GET.folderTree();
+ * ```
+ *
+ * @service studiocms/sdk/SDKCore/modules/get
+ * @dependencies
+ * - AstroDB.Default
+ * - SDKCore_FolderTree.Default
+ * - GetVersionFromNPM.Default
+ * - SDKCore_Users.Default
+ * - SDKCore_Collectors.Default
+ *
+ * @effect
+ * Provides the following main query groups:
+ * - `databaseTable`: Direct access to raw database tables.
+ * - `permissionsLists`: Retrieve users by permission rank.
+ * - `users`: Retrieve user data by various identifiers.
+ * - `folder`, `folderTree`, `folderList`, `pageFolderTree`: Folder and tree structure queries.
+ * - `siteConfig`, `latestVersion`: Site configuration and version info.
+ * - `page`: Retrieve page data by ID or slug.
+ * - `folderPages`, `packagePages`, `pages`: Retrieve pages by folder, package, or all pages.
+ *
+ * @throws {SDKCoreError} If a database or unknown error occurs during retrieval.
+ */
 export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 	'studiocms/sdk/SDKCore/modules/get',
 	{

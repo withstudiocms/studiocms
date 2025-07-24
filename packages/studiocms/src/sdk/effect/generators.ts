@@ -3,6 +3,19 @@ import { Effect } from 'effect';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { type JwtVerificationResult, generateJwt, verifyJwt } from './lib/jwt-generator.js';
 
+/**
+ * Provides generator utilities for the StudioCMS SDK core, including random ID and password generation,
+ * JWT token creation, and token verification. All generator functions are wrapped in Effect for error handling.
+ *
+ * @remarks
+ * - `generateRandomIDNumber`: Generates a random numeric ID of specified length.
+ * - `generateRandomPassword`: Generates a secure random password containing uppercase, lowercase letters, and digits.
+ * - `generateToken`: Creates a signed JWT for a given user ID, with optional expiration.
+ * - `testToken`: Verifies a JWT token and returns the decoded result.
+ *
+ * @service studiocms/sdk/SDKCore_Generators
+ * @accessors true
+ */
 export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 	'studiocms/sdk/SDKCore_Generators',
 	{

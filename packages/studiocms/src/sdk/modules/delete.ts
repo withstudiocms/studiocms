@@ -16,6 +16,24 @@ import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 import { SDKCore_CLEAR } from './clear.js';
 import { SDKCore_UPDATE } from './update.js';
 
+/**
+ * Provides deletion operations for various StudioCMS entities such as pages, page content, tags, categories,
+ * permissions, diff tracking, folders, and users. Each deletion method interacts with the database and handles
+ * errors specific to LibSQLDatabase.
+ *
+ * @remarks
+ * This service is part of the StudioCMS SDK core and depends on AstroDB, SDKCore_CLEAR, SDKCore_Users, and SDKCore_UPDATE.
+ *
+ * @example
+ * ```typescript
+ * const deleteService = new SDKCore_DELETE();
+ * await Effect.runPromise(deleteService.page('page-id'));
+ * ```
+ *
+ * @see SDKCore_CLEAR
+ * @see SDKCore_Users
+ * @see SDKCore_UPDATE
+ */
 export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 	'studiocms/sdk/SDKCore/modules/delete',
 	{

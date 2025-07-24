@@ -3,6 +3,24 @@ import { jsonParse } from '../../utils/jsonParse.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import type { DiffReturnType, diffItem, diffReturn, tsPageDataSelect } from '../types/index.js';
 
+/**
+ * Provides parsing utilities for SDK core operations.
+ *
+ * @remarks
+ * This service includes methods for parsing arrays of numbers and strings,
+ * as well as for transforming diff items with parsed metadata.
+ *
+ * @example
+ * ```typescript
+ * const parsers = SDKCore_Parsers;
+ * const numbers = await parsers.parseIdNumberArray([1, 2, 3]);
+ * const strings = await parsers.parseIdStringArray(['a', 'b', 'c']);
+ * const fixedDiff = await parsers.fixDiff(diffItems);
+ * ```
+ *
+ * @service
+ * @module studiocms/sdk/SDKCore_Parsers
+ */
 export class SDKCore_Parsers extends Effect.Service<SDKCore_Parsers>()(
 	'studiocms/sdk/SDKCore_Parsers',
 	{

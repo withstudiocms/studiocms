@@ -94,23 +94,70 @@ export type {
 	tsUserResetTokensSelect,
 };
 
+/**
+ * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.
+ * 
+ * @template K - The type of keys in the map.
+ * @template V - The type of values in the map.
+ * 
+ * @remarks
+ * This type allows both read-only and mutable operations on the map, which can be useful for scenarios
+ * where you need to enforce read-only access in some contexts while allowing mutation in others.
+ */
 export type CacheMap<K, V> = ReadonlyMap<K, V> & Map<K, V>;
 
+/**
+ * Input parameters for paginated queries.
+ *
+ * @property limit - The maximum number of items to return.
+ * @property offset - The number of items to skip before starting to collect the result set.
+ */
 export type PaginateInput = {
 	limit: number;
 	offset: number;
 };
 
+/**
+ * Represents page data containing only metadata fields, excluding multilingual and default content.
+ * 
+ * This type omits the `multiLangContent` and `defaultContent` properties from `CombinedPageData`.
+ */
 export type MetaOnlyPageData = Omit<CombinedPageData, 'multiLangContent' | 'defaultContent'>;
 
+/**
+ * Conditional type that returns either `MetaOnlyPageData` or an array of `MetaOnlyPageData`
+ * based on whether the generic type `T` extends `CombinedPageData`.
+ *
+ * @template T - The type to check against `CombinedPageData`.
+ * @returns If `T` extends `CombinedPageData`, returns `MetaOnlyPageData`; otherwise, returns `MetaOnlyPageData[]`.
+ */
 export type PageDataReturnType<T> = T extends CombinedPageData
 	? MetaOnlyPageData
 	: MetaOnlyPageData[];
 
+/**
+ * Determines the return type for page data cache operations based on the input type.
+ *
+ * If the generic type `T` extends `PageDataCacheObject`, the return type is `MetaOnlyPageDataCacheObject`.
+ * Otherwise, the return type is an array of `MetaOnlyPageDataCacheObject`.
+ *
+ * @template T - The type to check against `PageDataCacheObject`.
+ */
 export type PageDataCacheReturnType<T> = T extends PageDataCacheObject
 	? MetaOnlyPageDataCacheObject
 	: MetaOnlyPageDataCacheObject[];
 
+/**
+ * Represents a single difference item for a page, including metadata and content changes.
+ *
+ * @property id - Unique identifier for the diff item.
+ * @property userId - Identifier of the user who made the change.
+ * @property pageId - Identifier of the page associated with the diff.
+ * @property timestamp - The date and time when the diff was created, or null if not set.
+ * @property pageMetaData - Metadata associated with the page; type is unknown.
+ * @property pageContentStart - The initial content of the page before the diff.
+ * @property diff - The difference content as a string, or null if not available.
+ */
 export interface diffItem {
 	id: string;
 	userId: string;
@@ -121,6 +168,16 @@ export interface diffItem {
 	diff: string | null;
 }
 
+/**
+ * Represents the result of a diff operation, extending {@link diffItem} but replacing the `pageMetaData` property.
+ *
+ * @remarks
+ * The `pageMetaData` property contains the starting and ending states of page metadata,
+ * each represented as a partial selection of {@link tsPageDataSelect}.
+ *
+ * @see diffItem
+ * @see tsPageDataSelect
+ */
 export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
 	pageMetaData: {
 		start: Partial<tsPageDataSelect>;
@@ -128,8 +185,24 @@ export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
 	};
 }
 
+/**
+ * Determines the return type based on whether the generic type `T` extends `diffItem`.
+ * If `T` extends `diffItem`, returns `diffReturn`; otherwise, returns an array of `diffReturn`.
+ *
+ * @template T - The type to check against `diffItem`.
+ * @returns `diffReturn` if `T` extends `diffItem`, otherwise `diffReturn[]`.
+ */
 export type DiffReturnType<T> = T extends diffItem ? diffReturn : diffReturn[];
 
+/**
+ * Represents a node in a folder structure, which may contain child nodes and page data.
+ *
+ * @property id - Unique identifier for the folder node.
+ * @property name - Name of the folder node.
+ * @property page - Indicates whether this node represents a page.
+ * @property pageData - Data associated with the page, or `null` if not applicable.
+ * @property children - Array of child folder nodes.
+ */
 export interface FolderNode {
 	id: string;
 	name: string;
@@ -138,12 +211,24 @@ export interface FolderNode {
 	children: FolderNode[];
 }
 
+/**
+ * Represents a folder item in a list, including its unique identifier, name, and optional parent folder.
+ *
+ * @property id - The unique identifier for the folder.
+ * @property name - The display name of the folder.
+ * @property parent - The identifier of the parent folder, or `null` if the folder is at the root level.
+ */
 export interface FolderListItem {
 	id: string;
 	name: string;
 	parent?: string | null;
 }
 
+/**
+ * Represents the type of the virtual module imported from 'astro:db'.
+ * This type can be used to reference the shape and exports of the Astro DB virtual module
+ * within TypeScript code, enabling type-safe interactions with its API.
+ */
 export type AstroDBVirtualModule = typeof import('astro:db');
 
 // ../../schemas/config/sdk.ts

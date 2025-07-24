@@ -1,4 +1,4 @@
-import { Effect } from 'effect';
+import { Effect } from '../effect.js';
 import {
 	AstroDB,
 	SDKCore_Collectors,
@@ -36,25 +36,114 @@ import type {
 } from './types/index.js';
 import { CacheContext, _ClearUnknownError, _clearLibSQLError } from './utils.js';
 
+/**
+ * A cache map that stores page data objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `PageDataCacheObject` instances,
+ * allowing quick access to cached page data throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each page.
+ * @typeParam PageDataCacheObject - The cached data object associated with each page.
+ */
 const pages: CacheMap<string, PageDataCacheObject> = new Map<string, PageDataCacheObject>();
+
+/**
+ * A cache map that stores site configuration objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `SiteConfigCacheObject` instances,
+ * allowing quick access to cached site configurations throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each site configuration.
+ * @typeParam SiteConfigCacheObject - The cached data object associated with each site configuration.
+ */
 const siteConfig: CacheMap<string, SiteConfigCacheObject> = new Map<
 	string,
 	SiteConfigCacheObject
 >();
+
+/**
+ * A cache map that stores version objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `VersionCacheObject` instances,
+ * allowing quick access to cached version data throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each version.
+ * @typeParam VersionCacheObject - The cached data object associated with each version.
+ */
 const version: CacheMap<string, VersionCacheObject> = new Map<string, VersionCacheObject>();
+
+/**
+ * A cache map that stores folder tree objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `FolderTreeCacheObject` instances,
+ * allowing quick access to cached folder tree structures throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each folder tree.
+ * @typeParam FolderTreeCacheObject - The cached data object associated with each folder tree.
+ */
 const folderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
 	string,
 	FolderTreeCacheObject
 >();
+
+/**
+ * A cache map that stores page folder tree objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `FolderTreeCacheObject` instances
+ * specifically for page folder structures, allowing quick access to cached page folder trees
+ * throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each page folder tree.
+ * @typeParam FolderTreeCacheObject - The cached data object associated with each page folder tree.
+ */
 const pageFolderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
 	string,
 	FolderTreeCacheObject
 >();
+
+/**
+ * A cache map that stores folder list objects, indexed by their string keys.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `FolderListCacheObject` instances,
+ * allowing quick access to cached folder lists throughout the SDK.
+ *
+ * @typeParam string - The key representing the unique identifier for each folder list.
+ * @typeParam FolderListCacheObject - The cached data object associated with each folder list.
+ */
 const FolderList: CacheMap<string, FolderListCacheObject> = new Map<
 	string,
 	FolderListCacheObject
 >();
 
+/**
+ * The `SDKCore` class serves as the central service aggregator for the StudioCMS SDK.
+ * It extends `Effect.Service` and provides a unified interface to various sub-services
+ * such as folder tree management, generators, parsers, user management, collectors,
+ * database operations, REST API handlers, authentication, notification settings, and more.
+ *
+ * @remarks
+ * - All dependencies are injected and made available through the service.
+ * - The returned object from the effect contains all core SDK functions and sub-services.
+ * - Static members `Provide` and `Cache` are available for effect provisioning and caching context.
+ *
+ * @example
+ * ```typescript
+ * const sdk = yield* Effect.service(SDKCore);
+ * const pageData = yield* sdk.collectPageData(...);
+ * ```
+ *
+ * @property {Function} Provide - Static method to provide the default SDKCore service.
+ * @property {CacheContext} Cache - Static cache context for SDKCore-related data.
+ *
+ * @see Effect.Service
+ * @see CacheContext
+ */
 export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', {
 	dependencies: [
 		SDKCore_FolderTree.Default,
@@ -165,7 +254,35 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		};
 	}),
 }) {
+	/**
+	 * Provides the default dependencies to an Effect.
+	 *
+	 * This static property uses `Effect.provide` with the default configuration (`this.Default`),
+	 * allowing consumers to inject the standard dependencies required by the SDK core.
+	 *
+	 * @remarks
+	 * Typically used to wrap effects that require the default environment or services.
+	 *
+	 * @see {@link Effect.provide}
+	 * @see {@link Default}
+	 */
 	static Provide = Effect.provide(this.Default);
+	/**
+	 * Provides a static cache context containing various site-related data.
+	 *
+	 * @remarks
+	 * The cache includes pages, folder lists, folder trees, page-folder trees,
+	 * site configuration, and version information. It is created using
+	 * `CacheContext.makeProvide` for efficient access throughout the SDK.
+	 *
+	 * @see CacheContext
+	 * @see pages
+	 * @see FolderList
+	 * @see folderTree
+	 * @see pageFolderTree
+	 * @see siteConfig
+	 * @see version
+	 */
 	static Cache = CacheContext.makeProvide({
 		pages,
 		FolderList,

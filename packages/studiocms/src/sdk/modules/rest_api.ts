@@ -4,6 +4,32 @@ import { AstroDB, SDKCore_Generators } from '../effect/index.js';
 import { tsAPIKeys, tsPermissions } from '../tables.js';
 import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
+/**
+ * Provides REST API token management functionality for the StudioCMS SDK.
+ *
+ * This service exposes methods for creating, retrieving, deleting, and verifying API tokens
+ * associated with users. It integrates with the database and token generator services.
+ *
+ * @remarks
+ * - Handles database errors gracefully using custom error handlers.
+ * - Uses Drizzle ORM for database operations.
+ * - Token verification also retrieves user rank from permissions table.
+ *
+ * @example
+ * ```typescript
+ * const api = yield* Effect.service(SDKCore_REST_API);
+ * const tokens = yield* api.tokens.get(userId);
+ * ```
+ *
+ * @dependencies
+ * - AstroDB.Default: Database service for executing queries.
+ * - SDKCore_Generators.Default: Token generation utilities.
+ *
+ * @effect
+ * - All methods return Effect-wrapped results for composability and error handling.
+ *
+ * @module studiocms/sdk/SDKCore/modules/rest_api
+ */
 export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 	'studiocms/sdk/SDKCore/modules/rest_api',
 	{
