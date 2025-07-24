@@ -17,7 +17,7 @@ import { SDKCore as _SDKCore } from './sdkCore.js';
  * const db = Effect.gen(function* () {
  *   const sdk = yield* SDKCore;
  *   return sdk.db;
- * }).pipe(Effect.provide(SDKCore.Default));
+ * });
  * ```
  */
 export const SDKCore = Effect.gen(function* () {
