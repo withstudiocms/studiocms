@@ -77,7 +77,7 @@ export async function createRenderer(
 	sanitizeOpts?: SanitizeOptions,
 	preRenderer?: (content: string) => Promise<string>
 ) {
-	const components = setupRendererComponentProxy(result);
+	const components = await setupRendererComponentProxy(result);
 	return async (content: string) => {
 		let html: string;
 		if (preRenderer && typeof preRenderer === 'function') {
