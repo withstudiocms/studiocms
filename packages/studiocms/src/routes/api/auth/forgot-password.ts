@@ -41,13 +41,11 @@ const appendSearchParams = dual<
  * @param context - The API context containing the route map for generating the link.
  * @returns A URL object representing the password reset link.
  */
-function generateResetLink(
-	token: {
-		id: string;
-		userId: string;
-		token: string;
-	}
-) {
+function generateResetLink(token: {
+	id: string;
+	userId: string;
+	token: string;
+}) {
 	return pipe(
 		new URL(StudioCMSRoutes.mainLinks.passwordReset, site),
 		appendSearchParams('userid', token.userId),
