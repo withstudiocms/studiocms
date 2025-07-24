@@ -9,7 +9,7 @@ export const GET: APIRoute = async (context: APIContext) => {
 		genLogger('studiocms/routes/api/auth/[provider]/index.GET')(function* () {
 			const { initSession } = yield* OAuthAPIEffect;
 			return yield* initSession(context);
-		}).pipe(OAuthAPIEffect.A, OAuthAPIEffect.B(authEnv))
+		}).pipe(OAuthAPIEffect.Provide, OAuthAPIEffect.AuthEnvResponse(authEnv))
 	);
 };
 

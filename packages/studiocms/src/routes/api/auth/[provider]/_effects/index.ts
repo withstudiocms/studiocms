@@ -100,14 +100,14 @@ export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEf
 	/**
 	 * Main Dependencies Provider
 	 */
-	static A = Effect.provide(OAuthAPIEffect.Default);
+	static Provide = Effect.provide(OAuthAPIEffect.Default);
 	/**
 	 * AuthEnvCheck Dependency Provider
 	 *
 	 * @param response authEnvCheck function response from `envChecker` Utility
 	 * @returns Effect layer for OAuthAPIEffect
 	 */
-	static B = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
+	static AuthEnvResponse = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
 
 	// Export Utils
 	/**
