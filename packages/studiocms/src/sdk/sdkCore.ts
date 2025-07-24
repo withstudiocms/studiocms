@@ -1,7 +1,7 @@
 import { and, asc, desc, eq } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
-import { Effect, Layer } from 'effect';
+import { Effect } from 'effect';
 import {
 	CMSNotificationSettingsId,
 	CMSSiteConfigId,
