@@ -24,15 +24,3 @@ export class SDKCoreError extends Data.TaggedError('studiocms/sdk/errors/SDKCore
 		return this.cause.message;
 	}
 }
-
-/**
- * Represents an error specific to the StudioCMS cache operations.
- * This class extends the `StudioCMS_SDK_Error` to provide more context
- * about errors that occur within the caching mechanism of the StudioCMS.
- *
- * @extends StudioCMS_SDK_Error
- * @deprecated
- */
-export class StudioCMSCacheError extends StudioCMS_SDK_Error {
-	override name = 'StudioCMS Cache Error';
-}

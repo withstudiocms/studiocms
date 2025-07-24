@@ -23,8 +23,6 @@ export const SDKCore = Effect.gen(function* () {
 	return core;
 }).pipe(_SDKCore.Provide, _SDKCore.Cache);
 
-// const testP2 = await convertToVanilla(test);
-
 /**
  * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
  *
@@ -37,9 +35,9 @@ export const SDKCore = Effect.gen(function* () {
  */
 export const SDKCoreJs = await convertToVanilla(
 	Effect.gen(function* () {
-		const { _tag, ...core } = yield* _SDKCore;
+		const { _tag, ...core } = yield* SDKCore;
 		return core;
-	}).pipe(_SDKCore.Provide, _SDKCore.Cache)
+	})
 );
 
 /**

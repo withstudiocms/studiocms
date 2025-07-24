@@ -55,7 +55,6 @@ function generateResetLink(token: {
 }
 
 const deps = Layer.mergeAll(
-	SDKCore.Default,
 	Mailer.Default,
 	Notifications.Default,
 	AuthAPIUtils.Default

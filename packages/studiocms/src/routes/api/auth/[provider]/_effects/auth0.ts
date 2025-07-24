@@ -51,7 +51,6 @@ import { Auth0User, cleanDomain } from './_shared.js';
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
 	dependencies: [
 		Session.Default,
-		SDKCore.Default,
 		VerifyEmail.Default,
 		User.Default,
 		FetchHttpClient.layer,
