@@ -385,6 +385,7 @@ declare module 'studiocms-dashboard:web-vitals' {
 
 declare module 'studiocms:auth/utils/authEnvCheck' {
 	export const authEnvCheck: typeof import('./utils/authEnvCheck.js').authEnvCheck;
+	export type AuthEnvCheckResponse = import('./utils/authEnvCheck.js').AuthEnvCheckResponse;
 }
 
 declare module 'studiocms:auth/utils/validImages' {
