@@ -92,7 +92,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			return new Response(JSON.stringify({ message: 'Success' }), {
 				status: 200,
 			});
-		}).pipe(SDKCore.Provide, User.Provide, Password.Provide)
+		}).pipe(User.Provide, Password.Provide)
 	).catch((error) => {
 		if (error instanceof Error) {
 			console.error('Error in first time setup step 2:', error);
