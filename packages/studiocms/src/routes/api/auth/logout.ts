@@ -1,4 +1,5 @@
 import { Session } from 'studiocms:auth/lib';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import type { APIContext, APIRoute } from 'astro';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
@@ -16,26 +17,26 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 
 			const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
 
-			if (!sessionToken) return redirect(context.locals.routeMap.authLinks.loginURL);
+			if (!sessionToken) return redirect(StudioCMSRoutes.authLinks.loginURL);
 
 			const { session, user } = yield* validateSessionToken(sessionToken);
 
 			// If there is no session, redirect to the login page
 			if (session === null) {
 				yield* deleteSessionTokenCookie(context);
-				return redirect(context.locals.routeMap.authLinks.loginURL);
+				return redirect(StudioCMSRoutes.authLinks.loginURL);
 			}
 
 			// If there is no user, redirect to the login page
 			if (!user || user === null) {
-				return redirect(context.locals.routeMap.authLinks.loginURL);
+				return redirect(StudioCMSRoutes.authLinks.loginURL);
 			}
 
 			// Invalidate the session and delete the session token cookie
 			yield* invalidateSession(user.id);
 			yield* deleteSessionTokenCookie(context);
 
-			return redirect(context.locals.routeMap.mainLinks.baseSiteURL);
+			return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
 		}).pipe(Session.Provide)
 	);
 

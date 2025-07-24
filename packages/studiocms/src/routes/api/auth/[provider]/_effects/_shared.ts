@@ -137,9 +137,9 @@ export class GitHubUser extends Schema.Class<GitHubUser>('GitHubUser')({
 	html_url: Schema.String,
 	login: Schema.String,
 	avatar_url: Schema.String,
-	name: Schema.String,
-	blog: Schema.String,
-	email: Schema.String,
+	name: Schema.optional(Schema.String),
+	blog: Schema.optional(Schema.String),
+	email: Schema.optional(Schema.String),
 }) {}
 
 /**

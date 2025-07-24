@@ -34,92 +34,86 @@ export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEf
 			AuthEnvCheck,
 		]);
 
+		const dispatchToProvider = <A, E, R>(
+			context: APIContext,
+			providers: {
+				auth0: {
+					enabled: boolean;
+					handler: (context: APIContext) => Effect.Effect<A, E, R>;
+				};
+				discord: {
+					enabled: boolean;
+					handler: (context: APIContext) => Effect.Effect<A, E, R>;
+				};
+				github: {
+					enabled: boolean;
+					handler: (context: APIContext) => Effect.Effect<A, E, R>;
+				};
+				google: {
+					enabled: boolean;
+					handler: (context: APIContext) => Effect.Effect<A, E, R>;
+				};
+			}
+		) =>
+			genLogger('OAuthAPIEffect.dispatch')(function* () {
+				switch (context.params.provider) {
+					case Provider.AUTH0:
+						if (!providers.auth0.enabled)
+							return yield* ProviderResponse('Auth0 provider is not configured', 501);
+						return yield* providers.auth0.handler(context);
+					case Provider.DISCORD:
+						if (!providers.discord.enabled)
+							return yield* ProviderResponse('Discord provider is not configured', 501);
+						return yield* providers.discord.handler(context);
+					case Provider.GITHUB:
+						if (!providers.github.enabled)
+							return yield* ProviderResponse('GitHub provider is not configured', 501);
+						return yield* providers.github.handler(context);
+					case Provider.GOOGLE:
+						if (!providers.google.enabled)
+							return yield* ProviderResponse('Google provider is not configured', 501);
+						return yield* providers.google.handler(context);
+					default:
+						return yield* ProviderResponse('Provider not implemented', 501);
+				}
+			});
+
 		return {
 			initSession: (context: APIContext) =>
-				genLogger('OAuthAPIEffect.initSession')(function* () {
-					// Call the appropriate provider function based on the provider and function
-					switch (context.params.provider) {
-						case Provider.AUTH0: {
-							if (!auth0Enabled)
-								return yield* ProviderResponse('Auth0 provider is not configured', 501);
-
-							return yield* auth0InitSession(context);
-						}
-						case Provider.DISCORD: {
-							if (!discordEnabled)
-								return yield* ProviderResponse('Discord provider is not configured', 501);
-
-							return yield* discordInitSession(context);
-						}
-						case Provider.GITHUB: {
-							if (!githubEnabled)
-								return yield* ProviderResponse('GitHub provider is not configured', 501);
-
-							return yield* githubInitSession(context);
-						}
-						case Provider.GOOGLE: {
-							if (!googleEnabled)
-								return yield* ProviderResponse('Google provider is not configured', 501);
-
-							return yield* googleInitSession(context);
-						}
-						default:
-							return yield* ProviderResponse('Provider not implemented', 501);
-					}
+				dispatchToProvider(context, {
+					auth0: { enabled: auth0Enabled, handler: auth0InitSession },
+					discord: { enabled: discordEnabled, handler: discordInitSession },
+					github: { enabled: githubEnabled, handler: githubInitSession },
+					google: { enabled: googleEnabled, handler: googleInitSession },
 				}),
 			initCallback: (context: APIContext) =>
-				genLogger('OAuthAPIEffect.initCallback')(function* () {
-					// Call the appropriate provider function based on the provider and function
-					switch (context.params.provider) {
-						case Provider.AUTH0: {
-							if (!auth0Enabled)
-								return yield* ProviderResponse('Auth0 provider is not configured', 501);
-
-							return yield* auth0InitCallback(context);
-						}
-						case Provider.DISCORD: {
-							if (!discordEnabled)
-								return yield* ProviderResponse('Discord provider is not configured', 501);
-
-							return yield* discordInitCallback(context);
-						}
-						case Provider.GITHUB: {
-							if (!githubEnabled)
-								return yield* ProviderResponse('GitHub provider is not configured', 501);
-
-							return yield* githubInitCallback(context);
-						}
-						case Provider.GOOGLE: {
-							if (!googleEnabled)
-								return yield* ProviderResponse('Google provider is not configured', 501);
-
-							return yield* googleInitCallback(context);
-						}
-						default:
-							return yield* ProviderResponse('Provider not implemented', 501);
-					}
+				dispatchToProvider(context, {
+					auth0: { enabled: auth0Enabled, handler: auth0InitCallback },
+					discord: { enabled: discordEnabled, handler: discordInitCallback },
+					github: { enabled: githubEnabled, handler: githubInitCallback },
+					google: { enabled: googleEnabled, handler: googleInitCallback },
 				}),
 		};
 	}),
 }) {
-    // Export Dependency Providers
-    /**
-     * Main Dependencies Provider
-     */
+	// Export Dependency Providers
+	/**
+	 * Main Dependencies Provider
+	 */
 	static A = Effect.provide(OAuthAPIEffect.Default);
-    /**
-     * AuthEnvCheck Dependency Provider
-     * 
-     * @param response authEnvCheck function response from `envChecker` Utility
-     * @returns Effect layer for OAuthAPIEffect
-     */
+	/**
+	 * AuthEnvCheck Dependency Provider
+	 *
+	 * @param response authEnvCheck function response from `envChecker` Utility
+	 * @returns Effect layer for OAuthAPIEffect
+	 */
 	static B = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
 
-    // Export Utils
-    /**
-     * EnvChecker - Check for required ENV Variables and if a provider should be enabled.
-     * 
-     * @returns AuthEnvCheckResponse for usage with Dependency Provider "B"
-     */
-    static envChecker = async () => Effect.runPromise(authEnvChecker());
+	// Export Utils
+	/**
+	 * EnvChecker - Check for required ENV Variables and if a provider should be enabled.
+	 *
+	 * @returns AuthEnvCheckResponse for usage with Dependency Provider "B"
+	 */
+	static envChecker = async () => Effect.runPromise(authEnvChecker());
 }

@@ -1,5 +1,6 @@
 import { site } from 'astro:config/server';
 import { developerConfig } from 'studiocms:config';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
@@ -45,11 +46,10 @@ function generateResetLink(
 		id: string;
 		userId: string;
 		token: string;
-	},
-	context: APIContext
+	}
 ) {
 	return pipe(
-		new URL(context.locals.routeMap.mainLinks.passwordReset, site),
+		new URL(StudioCMSRoutes.mainLinks.passwordReset, site),
 		appendSearchParams('userid', token.userId),
 		appendSearchParams('token', token.token),
 		appendSearchParams('id', token.id)
@@ -126,7 +126,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			yield* sendAdminNotification('user_updated', user.username);
 
 			// Generate the reset link using the token and context
-			const resetLink = generateResetLink(token, context);
+			const resetLink = generateResetLink(token);
 
 			// If the user does not have an email address, return an error
 			// This should not happen, but we check it just in case

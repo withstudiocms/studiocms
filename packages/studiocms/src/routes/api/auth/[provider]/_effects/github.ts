@@ -186,7 +186,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 							id: crypto.randomUUID(),
 							username: githubUsername,
 							email: githubUser.email,
-							name: githubUser.name,
+							name: githubUser.name || githubUsername,
 							avatar: githubUser.avatar_url,
 							createdAt: new Date(),
 							url: githubUser.blog,

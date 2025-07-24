@@ -40,10 +40,10 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 				])
 			);
 
-			if (!username) return yield* badFormDataEntry('Missing field', 'Username is required');
-			if (!password) return yield* badFormDataEntry('Missing field', 'Password is required');
-			if (!email) return yield* badFormDataEntry('Missing entry', 'Email is required');
-			if (!name) return yield* badFormDataEntry('Missing entry', 'Display name is required');
+			if (!username) return yield* badFormDataEntry('MISSING_USERNAME', 'Username is required');
+			if (!password) return yield* badFormDataEntry('MISSING_PASSWORD', 'Password is required');
+			if (!email) return yield* badFormDataEntry('MISSING_EMAIL', 'Email is required');
+			if (!name) return yield* badFormDataEntry('MISSING_DISPLAY_NAME', 'Display name is required');
 
 			const verifyUsernameResponse = yield* verifyUsernameInput(username);
 			if (verifyUsernameResponse !== true)

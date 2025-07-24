@@ -234,7 +234,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 					yield* createUserSession(newUser.id, context);
 
-					return redirect(context.locals.routeMap.mainLinks.dashboardIndex);
+					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
 				}),
 		};
 	}),
