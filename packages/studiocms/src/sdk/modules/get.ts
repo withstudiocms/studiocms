@@ -125,6 +125,23 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				SDKCore_Collectors,
 			]);
 
+			const validatePagination = Effect.fn(function* <P extends PaginateInput>(paginate: P) {
+				if (paginate.limit < 0 || paginate.offset < 0) {
+					return yield* Effect.fail(
+						new SDKCoreError({
+							type: 'UNKNOWN',
+							cause: new StudioCMS_SDK_Error(
+								'Pagination limit and offset must be non-negative values'
+							),
+						})
+					);
+				}
+				if (paginate.limit === 0) {
+					paginate.limit = 10; // Default value
+				}
+				return paginate;
+			});
+
 			function _getPackagesPages(
 				packageName: string,
 				tree?: FolderNode[]
@@ -335,35 +352,23 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					paginate?: PaginateInput
 				) =>
 					Effect.gen(function* () {
-						if (paginate) {
-							if (paginate.limit < 0 || paginate.offset < 0) {
-								return yield* Effect.fail(
-									new SDKCoreError({
-										type: 'UNKNOWN',
-										cause: new StudioCMS_SDK_Error(
-											'Pagination limit and offset must be non-negative values'
-										),
-									})
-								);
-							}
-							if (paginate.limit === 0) {
-								// Either throw an error or set a default value
-								paginate.limit = 10; // Default value
-							}
-						}
+						let pagesRaw: (typeof tsPageData.$inferSelect)[] = [];
 
-						const pagesRaw = paginate
-							? yield* dbService.execute((db) =>
-									db
-										.select()
-										.from(tsPageData)
-										.orderBy(asc(tsPageData.title))
-										.limit(paginate.limit)
-										.offset(paginate.offset)
-								)
-							: yield* dbService.execute((db) =>
-									db.select().from(tsPageData).orderBy(asc(tsPageData.title))
-								);
+						if (paginate) {
+							const paginateData = yield* validatePagination(paginate);
+							pagesRaw = yield* dbService.execute((db) =>
+								db
+									.select()
+									.from(tsPageData)
+									.orderBy(asc(tsPageData.title))
+									.limit(paginateData.limit)
+									.offset(paginateData.offset)
+							);
+						} else {
+							pagesRaw = yield* dbService.execute((db) =>
+								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
+							);
+						}
 
 						const pagesFiltered = filterPagesByDraftAndIndex(
 							pagesRaw,
@@ -382,44 +387,8 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 
 						return pages;
 					});
-
-				const validatePagination = (paginate?: PaginateInput) => {
-					if (!paginate) return Effect.succeed(paginate);
-					if (paginate.limit < 0 || paginate.offset < 0) {
-						return Effect.fail(
-							new SDKCoreError({
-								type: 'UNKNOWN',
-								cause: new StudioCMS_SDK_Error(
-									'Pagination limit and offset must be non-negative values'
-								),
-							})
-						);
-					}
-					if (paginate.limit === 0) {
-						paginate.limit = 10;
-					}
-					return Effect.succeed(paginate);
-				};
-
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
-
-					if (paginate) {
-						if (paginate.limit < 0 || paginate.offset < 0) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error(
-										'Pagination limit and offset must be non-negative values'
-									),
-								})
-							);
-						}
-						if (paginate.limit === 0) {
-							// Either throw an error or set a default value
-							paginate.limit = 10; // Default value
-						}
-					}
 
 					if (!status) {
 						const dbPages = yield* getPages(includeDrafts, hideDefaultIndex, undefined, paginate);
@@ -513,35 +482,23 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					paginate?: PaginateInput
 				) =>
 					Effect.gen(function* () {
-						if (paginate) {
-							if (paginate.limit < 0 || paginate.offset < 0) {
-								return yield* Effect.fail(
-									new SDKCoreError({
-										type: 'UNKNOWN',
-										cause: new StudioCMS_SDK_Error(
-											'Pagination limit and offset must be non-negative values'
-										),
-									})
-								);
-							}
-							if (paginate.limit === 0) {
-								// Either throw an error or set a default value
-								paginate.limit = 10; // Default value
-							}
-						}
+						let pagesRaw: (typeof tsPageData.$inferSelect)[] = [];
 
-						const pagesRaw = paginate
-							? yield* dbService.execute((db) =>
-									db
-										.select()
-										.from(tsPageData)
-										.orderBy(asc(tsPageData.title))
-										.limit(paginate.limit)
-										.offset(paginate.offset)
-								)
-							: yield* dbService.execute((db) =>
-									db.select().from(tsPageData).orderBy(asc(tsPageData.title))
-								);
+						if (paginate) {
+							const paginateData = yield* validatePagination(paginate);
+							pagesRaw = yield* dbService.execute((db) =>
+								db
+									.select()
+									.from(tsPageData)
+									.orderBy(asc(tsPageData.title))
+									.limit(paginateData.limit)
+									.offset(paginateData.offset)
+							);
+						} else {
+							pagesRaw = yield* dbService.execute((db) =>
+								db.select().from(tsPageData).orderBy(asc(tsPageData.title))
+							);
+						}
 
 						const pagesFiltered = filterPagesByDraftAndIndex(
 							pagesRaw,
@@ -595,23 +552,6 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
-					if (paginate) {
-						if (paginate.limit < 0 || paginate.offset < 0) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error(
-										'Pagination limit and offset must be non-negative values'
-									),
-								})
-							);
-						}
-						if (paginate.limit === 0) {
-							// Either throw an error or set a default value
-							paginate.limit = 10; // Default value
-						}
-					}
-
 					if (!status) {
 						const dbPages = yield* getPages(id, includeDrafts, hideDefaultIndex);
 						const data = dbPages.map((page) => pageDataReturn(page));
@@ -632,9 +572,11 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							.map((data) => pageDataReturn(data));
 
 						if (paginate) {
-							const paginatedData = data
-								.sort((a, b) => a.data.title.localeCompare(b.data.title))
-								.slice(paginate.offset, paginate.offset + paginate.limit);
+							const sortedData = data.sort((a, b) => a.data.title.localeCompare(b.data.title));
+							const paginatedData = sortedData.slice(
+								paginate.offset,
+								paginate.offset + paginate.limit
+							);
 							return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 						}
 
@@ -657,9 +599,11 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					);
 
 					if (paginate) {
-						const paginatedData = data
-							.sort((a, b) => a.data.title.localeCompare(b.data.title))
-							.slice(paginate.offset, paginate.offset + paginate.limit);
+						const sortedData = data.sort((a, b) => a.data.title.localeCompare(b.data.title));
+						const paginatedData = sortedData.slice(
+							paginate.offset,
+							paginate.offset + paginate.limit
+						);
 						return metaOnly ? convertCombinedPageDataToMetaOnly(paginatedData) : paginatedData;
 					}
 					return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
