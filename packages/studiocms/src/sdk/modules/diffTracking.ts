@@ -10,10 +10,10 @@ import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
 /**
  * Provides diff tracking functionality for StudioCMS SDKCore.
- * 
+ *
  * This service enables tracking, storing, retrieving, and reverting changes (diffs) made to page content and metadata.
  * It integrates with AstroDB and SDKCore_Parsers, and handles database operations with error management.
- * 
+ *
  * ## Features
  * - Insert new diffs for page content and metadata.
  * - Limit the number of stored diffs per page, removing the oldest when exceeding the limit.
@@ -22,14 +22,14 @@ import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
  * - Retrieve a single diff by its ID.
  * - Revert page content and/or metadata to a specific diff, purging newer diffs.
  * - Utility methods for comparing metadata and rendering diffs as HTML.
- * 
+ *
  * ## Error Handling
  * All database operations are wrapped with error handling, returning `SDKCoreError` on failure.
- * 
+ *
  * ## Dependencies
  * - AstroDB.Default
  * - SDKCore_Parsers.Default
- * 
+ *
  * ## Methods
  * - `insert(userId, pageId, data, diffLength)`: Inserts a new diff entry.
  * - `clear(pageId)`: Removes all diffs for a page.
@@ -41,7 +41,7 @@ import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
  * - `revertToDiff(id, type)`: Reverts page content and/or metadata to a specific diff and purges newer diffs.
  * - `utils.getMetaDataDifferences(obj1, obj2)`: Compares two metadata objects and returns their differences.
  * - `utils.getDiffHTML(diff, options)`: Renders a diff string as HTML.
- * 
+ *
  * @remarks
  * This service is intended for internal use within the StudioCMS SDKCore and relies on Drizzle ORM for database operations.
  */
@@ -305,9 +305,14 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 						const shouldRevertContent = type === 'content' || type === 'both';
 
 						if (shouldRevertData) {
-							const pageData = yield* Effect.try(() =>
-								JSON.parse(diffEntry.pageMetaData as string)
-							);
+							const pageData = yield* Effect.try({
+								try: () => JSON.parse(diffEntry.pageMetaData as string),
+								catch: (error) =>
+									new SDKCoreError({
+										type: 'UNKNOWN',
+										cause: new StudioCMS_SDK_Error(`Invalid JSON in pageMetaData: ${error}`),
+									}),
+							});
 
 							yield* dbService.execute((db) =>
 								db.update(tsPageData).set(pageData.start).where(eq(tsPageData.id, pageData.end.id))
@@ -353,22 +358,13 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 										type: 'LibSQLDatabaseError',
 										cause: new StudioCMS_SDK_Error(`diffTracking.revertToDiff Error: ${cause}`),
 									})
-								),
-							UnknownException: (cause) =>
-								Effect.fail(
-									new SDKCoreError({
-										type: 'UNKNOWN',
-										cause: new StudioCMS_SDK_Error(`diffTracking.revertToDiff Error: ${cause}`),
-									})
-								),
+								)
 						})
 					),
 				utils: {
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-					getMetaDataDifferences: <T extends Record<string, any>>(obj1: T, obj2: T) =>
+					getMetaDataDifferences: <T extends Record<string, unknown>>(obj1: T, obj2: T) =>
 						Effect.gen(function* () {
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-							const differences: { label: string; previous: any; current: any }[] = [];
+							const differences: { label: string; previous: unknown; current: unknown }[] = [];
 
 							const Labels: Record<string, string> = {
 								package: 'Page Type',
@@ -401,7 +397,8 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								if (Object.hasOwn(obj1, label) && Object.hasOwn(obj2, label)) {
 									if (obj1[label] !== obj2[label]) {
 										if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
-											if (obj1[label].length === obj2[label].length) continue;
+											// Deep comparison for arrays
+											if (JSON.stringify(obj1[label]) === JSON.stringify(obj2[label])) continue;
 										}
 										differences.push({
 											label: yield* processLabel(label),
