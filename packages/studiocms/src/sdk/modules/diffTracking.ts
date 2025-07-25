@@ -1,4 +1,4 @@
-import { asc, desc, eq } from 'astro:db';
+import { asc, desc, eq, inArray } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
 import { Effect, genLogger } from '../../effect.js';
@@ -314,6 +314,16 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 									}),
 							});
 
+							// Validate required fields exist
+							if (!pageData.end?.id || !pageData.start) {
+								return yield* Effect.fail(
+									new SDKCoreError({
+										type: 'UNKNOWN',
+										cause: new StudioCMS_SDK_Error('Invalid pageData structure in diff entry'),
+									})
+								);
+							}
+
 							yield* dbService.execute((db) =>
 								db.update(tsPageData).set(pageData.start).where(eq(tsPageData.id, pageData.end.id))
 							);
@@ -341,12 +351,17 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 
 						const diffsToPurge = allDiffs.slice(diffIndex + 1);
 
-						const purgeDiff = dbService.makeQuery((ex, id: string) =>
-							ex((db) => db.delete(tsDiffTracking).where(eq(tsDiffTracking.id, id)))
-						);
-
-						for (const { id } of diffsToPurge) {
-							yield* purgeDiff(id);
+						if (diffsToPurge.length > 0) {
+							const idsToDelete = diffsToPurge.map((diff) => diff.id);
+							yield* dbService.execute((db) =>
+								db
+									.delete(tsDiffTracking)
+									.where(
+										idsToDelete.length === 1
+											? eq(tsDiffTracking.id, idsToDelete[0])
+											: inArray(tsDiffTracking.id, idsToDelete)
+									)
+							);
 						}
 
 						return yield* fixDiff(diffEntry);
@@ -358,7 +373,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 										type: 'LibSQLDatabaseError',
 										cause: new StudioCMS_SDK_Error(`diffTracking.revertToDiff Error: ${cause}`),
 									})
-								)
+								),
 						})
 					),
 				utils: {
@@ -398,7 +413,13 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 									if (obj1[label] !== obj2[label]) {
 										if (Array.isArray(obj1[label]) && Array.isArray(obj2[label])) {
 											// Deep comparison for arrays
-											if (JSON.stringify(obj1[label]) === JSON.stringify(obj2[label])) continue;
+											const arr1 = obj1[label] as unknown[];
+											const arr2 = obj2[label] as unknown[];
+											if (
+												arr1.length === arr2.length &&
+												arr1.every((val, index) => val === arr2[index])
+											)
+												continue;
 										}
 										differences.push({
 											label: yield* processLabel(label),
