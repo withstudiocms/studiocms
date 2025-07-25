@@ -260,20 +260,14 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 							);
 						}
 
-						const referencesCleared = yield* clearUserReferences(id).pipe(
+						yield* clearUserReferences(id).pipe(
 							Effect.catchAll(() =>
-							  _clearLibSQLError(
+								_clearLibSQLError(
 									'DELETE.user',
 									`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
-							  ))
+								)
+							)
 						);
-
-						if (!referencesCleared) {
-							return yield* _clearLibSQLError(
-								'DELETE.user',
-								`There was an issue deleting User with ID ${id}. Please manually remove all references before deleting the user. Or try again.`
-							);
-						}
 
 						yield* dbService.execute((db) => db.delete(tsUsers).where(eq(tsUsers.id, id)));
 

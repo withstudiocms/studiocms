@@ -52,7 +52,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 		effect: genLogger('studiocms/sdk/SDKCore/modules/diffTracking/effect')(function* () {
 			const [dbService, { fixDiff }] = yield* Effect.all([AstroDB, SDKCore_Parsers]);
 
-			const checkDiffsLengthAndRemoveOldestIfToLong = (
+			const checkDiffsLengthAndRemoveOldestIfTooLong = (
 				pageId: string,
 				length: number
 			): Effect.Effect<void, SDKCoreError, never> =>
@@ -79,7 +79,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								new SDKCoreError({
 									type: 'LibSQLDatabaseError',
 									cause: new StudioCMS_SDK_Error(
-										`checkDiffsLengthAndRemoveOldestIfToLong Error: ${cause}`
+										`checkDiffsLengthAndRemoveOldestIfTooLong Error: ${cause}`
 									),
 								})
 							),
@@ -115,7 +115,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								}),
 						});
 
-						yield* checkDiffsLengthAndRemoveOldestIfToLong(pageId, diffLength);
+						yield* checkDiffsLengthAndRemoveOldestIfTooLong(pageId, diffLength);
 
 						const inputted = yield* dbService.execute((db) =>
 							db

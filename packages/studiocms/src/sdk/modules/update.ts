@@ -305,9 +305,9 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 								return returnData;
 							}
 
-							pages.set(id, returnData);
 							yield* CLEAR.folderList();
 							yield* CLEAR.folderTree();
+							yield* CLEAR.pages();
 
 							return returnData;
 						}).pipe(
@@ -346,10 +346,12 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
 
 							if (!cachedPage) {
-								return yield* new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in cache'),
-								});
+								return yield* Effect.fail(
+									new SDKCoreError({
+										type: 'UNKNOWN',
+										cause: new StudioCMS_SDK_Error('Page not found in cache'),
+									})
+								);
 							}
 
 							yield* updatePage(data.pageData);
@@ -359,10 +361,9 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 
 							const returnData = pageDataReturn(updatedData);
 
-							pages.set(updatedData.id, returnData);
-
 							yield* CLEAR.folderList();
 							yield* CLEAR.folderTree();
+							yield* CLEAR.pages();
 
 							return returnData;
 						}).pipe(
