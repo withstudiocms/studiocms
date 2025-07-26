@@ -1,5 +1,23 @@
 # studiocms
 
+## 0.1.0-beta.22
+
+### Patch Changes
+
+- [#629](https://github.com/withstudiocms/studiocms/pull/629) [`356791d`](https://github.com/withstudiocms/studiocms/commit/356791d80aa8a33cbb77e2c83ca8fc70eaf3b5dd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor component registry into new custom handler for reading component props during initialization for usage within StudioCMS Dashboard editors
+
+  #### Breaking Changes
+
+  - `studiocms:component-proxy` has been replaced by `studiocms:component-registry`
+  - Added `studiocms:component-registry/runtime` virtual module which exports types, and the following helpers, `getRegistryComponents` and `getRendererComponents` used for getting Components with props, and the renderer components respectively.
+  - `importComponentKeys` has been carried over but deprecated in favor for the new `getRendererComponents` function.
+
+- [#637](https://github.com/withstudiocms/studiocms/pull/637) [`7511f47`](https://github.com/withstudiocms/studiocms/commit/7511f47042104bed83f985c336c7d62cc1fd3b2f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove Deprecated SDK functions and refactor SDK to make it easier to modify/read
+
+- [#640](https://github.com/withstudiocms/studiocms/pull/640) [`fe3fa26`](https://github.com/withstudiocms/studiocms/commit/fe3fa262b80a17ea2d89d8f09e4c3ac97f64ca5f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove previously deprected functions and old hashing system
+
+- [#635](https://github.com/withstudiocms/studiocms/pull/635) [`54da8e7`](https://github.com/withstudiocms/studiocms/commit/54da8e7ff080f44a02ca8139c8ddade37f1d32f4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor oAuth endpoints into two dynamic endpoints with a provider param in the route and cleanup all auth endpoints code.
+
 ## 0.1.0-beta.21
 
 ### Patch Changes
