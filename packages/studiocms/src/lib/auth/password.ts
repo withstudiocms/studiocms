@@ -28,8 +28,6 @@ export class PasswordError extends Data.TaggedError('PasswordError')<{ message: 
  *   pwned password database API.
  *
  * ### Notes:
- * - The `legacy0HashPassword` function is marked as deprecated and should not be used in
- *   new implementations.
  * - The `constantTimeEqual` function ensures secure string comparison to prevent timing
  *   attacks.
  */
@@ -84,7 +82,12 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			genLogger('studiocms/lib/auth/password/Password.verifyPasswordHash')(function* () {
 				if (!hash.startsWith('gen1.0:')) {
 					// If the hash does not start with 'gen1.0:', it is considered legacy and should not be used.
-					return false;
+					yield* Effect.fail(
+						new PasswordError({
+							message:
+								'Legacy password hashes are not supported. Please reset any legacy passwords.',
+						})
+					);
 				}
 				const [_prefix, salt] = hash.split(':', 3);
 				const newHash = yield* hashPassword(password, salt);
