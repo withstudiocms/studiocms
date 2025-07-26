@@ -3,11 +3,10 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
-import type { CombinedUserData, tsEmailVerificationTokensSelect } from 'studiocms:sdk/types';
+import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Data, Effect } from 'effect';
 import { CMSNotificationSettingsId } from '../../consts.js';
 import { genLogger, pipeLogger } from '../effects/logger.js';
-import type { MailerResponse } from '../mailer/index.js';
 import type { UserSessionData } from './types.js';
 
 export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ message: string }> {}
@@ -309,132 +308,4 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 	}
 ) {
 	static Provide = Effect.provide(this.Default);
-}
-
-/**
- * Checks if email verification is enabled in the StudioCMS configuration.
- *
- * This function retrieves the notification settings from the database and
- * returns the value of the `emailVerification` property. If the settings
- * are not available, it defaults to `false`.
- *
- * @returns {Promise<boolean>} A promise that resolves to `true` if email
- * verification is enabled, otherwise `false`.
- * @deprecated use the Effect instead
- */
-export async function isEmailVerificationEnabled(): Promise<boolean> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.isEmailVerificationEnabled();
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Retrieves an email verification request by its ID.
- *
- * @param id - The unique identifier of the email verification request.
- * @returns A promise that resolves to the email verification request.
- * @deprecated use the Effect instead
- */
-export async function getEmailVerificationRequest(
-	id: string
-): Promise<tsEmailVerificationTokensSelect | undefined> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.getEmailVerificationRequest(id);
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Deletes an email verification request by its ID.
- *
- * @param id - The unique identifier of the email verification request to be deleted.
- * @returns A promise that resolves when the email verification request is successfully deleted.
- * @deprecated use the Effect instead
- */
-export async function deleteEmailVerificationRequest(id: string): Promise<void> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.deleteEmailVerificationRequest(id);
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	await Effect.runPromise(program);
-	return;
-}
-
-/**
- * Creates an email verification request for a given user.
- *
- * This function first deletes any existing email verification requests for the user,
- * and then creates a new email verification request using the studioCMS SDK.
- *
- * @param userId - The unique identifier of the user for whom the email verification request is being created.
- * @returns A promise that resolves to the result of the email verification request creation.
- * @deprecated use the Effect instead
- */
-export async function createEmailVerificationRequest(
-	userId: string
-): Promise<tsEmailVerificationTokensSelect> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.createEmailVerificationRequest(userId);
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Sends a verification email to the user with the given userId.
- *
- * @param userId - The ID of the user to send the verification email to.
- * @param isOAuth - Optional. Indicates if the user is authenticated via OAuth. Defaults to false.
- *
- * @returns A promise that resolves to the response of the mail sending operation.
- *
- * @throws Will throw an error if the user is not found, if the verification token creation fails, or if the user does not have an email.
- * @deprecated use the Effect instead
- */
-export async function sendVerificationEmail(
-	userId: string,
-	isOAuth = false
-): Promise<MailerResponse | undefined> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.sendVerificationEmail(userId, isOAuth);
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Checks if the user's email is verified based on various conditions.
- *
- * @param user - The user data which includes email verification status and permissions.
- * @returns A promise that resolves to a boolean indicating whether the user's email is verified.
- *
- * The function performs the following checks:
- * 1. If the user is undefined, returns false.
- * 2. If the mailer is not enabled, returns true.
- * 3. If email verification is not required in settings, returns true.
- * 4. If OAuth bypass verification is enabled and the user has OAuth data, returns true.
- * 5. Based on the user's rank:
- *    - 'owner': Always returns true.
- *    - 'admin': Returns the user's email verification status if admin verification is required, otherwise returns true.
- *    - 'editor': Returns the user's email verification status if editor verification is required, otherwise returns true.
- *    - Default: Returns the user's email verification status.
- * @deprecated use the Effect instead
- */
-export async function isEmailVerified(
-	user: CombinedUserData | UserSessionData | undefined
-): Promise<boolean> {
-	const program = Effect.gen(function* () {
-		const verify = yield* VerifyEmail;
-		return yield* verify.isEmailVerified(user);
-	}).pipe(Effect.provide(VerifyEmail.Default));
-
-	return await Effect.runPromise(program);
 }

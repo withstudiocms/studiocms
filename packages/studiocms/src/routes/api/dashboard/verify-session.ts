@@ -9,10 +9,10 @@ import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js'
 
 /**
  * Represents the JSON data structure for verifying a session in the dashboard API.
- *
+ * 
  * @remarks
  * This class extends a schema definition for type-safe validation.
- *
+ * 
  * @property originPathname - The original pathname as a string.
  */
 export class JsonData extends Schema.Class<JsonData>('JsonData')({
@@ -71,26 +71,17 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			if (session === null) {
 				yield* ses.deleteSessionTokenCookie(context);
-				return apiResponseLogger(
-					400,
-					`Invalid session token, User is not logged in. (originUrl: ${originPathname})`
-				);
+				return apiResponseLogger(400, `Invalid session token, User is not logged in. (originUrl: ${originPathname})`);
 			}
 
 			if (!user || user === null) {
-				return apiResponseLogger(
-					400,
-					`Invalid user, User is not logged in. (originUrl: ${originPathname})`
-				);
+				return apiResponseLogger(400, `Invalid user, User is not logged in. (originUrl: ${originPathname})`);
 			}
 
 			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
 			if (!result) {
-				return apiResponseLogger(
-					400,
-					`Failed to get user permission level from SDKCore. (originUrl: ${originPathname})`
-				);
+				return apiResponseLogger(400, `Failed to get user permission level from SDKCore. (originUrl: ${originPathname})`);
 			}
 
 			let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';

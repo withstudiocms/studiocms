@@ -49,7 +49,12 @@ import { Auth0User, cleanDomain } from './_shared.js';
  * creates new users if necessary, verifies email, and creates user sessions.
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
-	dependencies: [Session.Default, VerifyEmail.Default, User.Default, FetchHttpClient.layer],
+	dependencies: [
+		Session.Default,
+		VerifyEmail.Default,
+		User.Default,
+		FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
 		const [
 			sdk,

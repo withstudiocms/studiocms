@@ -14,7 +14,7 @@ export class StudioCMS_SDK_Error extends StudioCMSError {
 
 /**
  * Represents a core error in the StudioCMS SDK.
- *
+ * 
  * This error class is tagged with `'studiocms/sdk/errors/SDKCoreError'` and contains
  * additional metadata about the error type and its cause.
  *

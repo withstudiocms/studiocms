@@ -28,8 +28,6 @@ export class PasswordError extends Data.TaggedError('PasswordError')<{ message: 
  *   pwned password database API.
  *
  * ### Notes:
- * - The `legacy0HashPassword` function is marked as deprecated and should not be used in
- *   new implementations.
  * - The `constantTimeEqual` function ensures secure string comparison to prevent timing
  *   attacks.
  */
@@ -38,16 +36,6 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		const scrypt = yield* Scrypt;
 		const check = yield* CheckIfUnsafe;
 		const client = yield* HttpClient.HttpClient;
-		/**
-		 * Old Hash Password function
-		 *
-		 * @deprecated
-		 */
-		const legacy0HashPassword = (password: string) =>
-			genLogger('studiocms/lib/auth/password/Password.legacy0HashPassword')(function* () {
-				const hashed = yield* scrypt.run(password);
-				return hashed.toString();
-			});
 
 		/**
 		 * Compares two strings in constant time to prevent timing attacks.
@@ -93,8 +81,13 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		const verifyPasswordHash = (hash: string, password: string) =>
 			genLogger('studiocms/lib/auth/password/Password.verifyPasswordHash')(function* () {
 				if (!hash.startsWith('gen1.0:')) {
-					const newHash = yield* legacy0HashPassword(password);
-					return constantTimeEqual(hash, newHash);
+					// If the hash does not start with 'gen1.0:', it is considered legacy and should not be used.
+					yield* Effect.fail(
+						new PasswordError({
+							message:
+								'Legacy password hashes are not supported. Please reset any legacy passwords.',
+						})
+					);
 				}
 				const [_prefix, salt] = hash.split(':', 3);
 				const newHash = yield* hashPassword(password, salt);
@@ -216,58 +209,4 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, FetchHttpClient.layer],
 }) {
 	static Provide = Effect.provide(this.Default);
-}
-
-/**
- * Hashes a plain text password using scrypt.
- *
- * @param password - The plain text password to hash.
- * @returns A promise that resolves to the hashed password.
- * @deprecated use the Effect instead
- */
-export async function hashPassword(password: string, _salt?: string): Promise<string> {
-	const program = Effect.gen(function* () {
-		const pass = yield* Password;
-		return yield* pass.hashPassword(password, _salt);
-	}).pipe(Effect.provide(Password.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Verifies if the provided password matches the hashed password.
- *
- * @param hash - The hashed password to compare against.
- * @param password - The plain text password to verify.
- * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
- * @deprecated use the Effect instead
- */
-export async function verifyPasswordHash(hash: string, password: string): Promise<boolean> {
-	const program = Effect.gen(function* () {
-		const pass = yield* Password;
-		return yield* pass.verifyPasswordHash(hash, password);
-	}).pipe(Effect.provide(Password.Default));
-
-	return await Effect.runPromise(program);
-}
-
-/**
- * Verifies the strength of a given password.
- *
- * The password must meet the following criteria:
- * - Be between 6 and 255 characters in length.
- * - Not be a known unsafe password.
- * - Not be found in the pwned password database.
- *
- * @param password - The password to verify.
- * @returns A promise that resolves to `true` if the password is strong/secure enough, otherwise `false`.
- * @deprecated use the Effect instead
- */
-export async function verifyPasswordStrength(password: string): Promise<true | string> {
-	const program = Effect.gen(function* () {
-		const pass = yield* Password;
-		return yield* pass.verifyPasswordStrength(password);
-	}).pipe(Effect.provide(Password.Default));
-
-	return await Effect.runPromise(program);
 }

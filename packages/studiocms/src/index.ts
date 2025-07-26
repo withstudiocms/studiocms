@@ -232,6 +232,7 @@ export const studiocms = defineIntegration({
 							config: options,
 							dashboardConfig: options.features.dashboardConfig,
 							authConfig: options.features.authConfig,
+							/** This property is deprecated, and the virtual type has been removed, remove this in the future */
 							AuthConfig: options.features.authConfig,
 							developerConfig: options.features.developerConfig,
 							sdk: options.features.sdk,
@@ -367,23 +368,8 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/lib': `
 								export * from '${resolve('./lib/auth/index.js')}';
 							`,
-							'studiocms:auth/lib/encryption': `
-								export * from '${resolve('./lib/auth/encryption.js')}'
-							`,
-							'studiocms:auth/lib/password': `
-								export * from '${resolve('./lib/auth/password.js')}'
-							`,
-							'studiocms:auth/lib/session': `
-								export * from '${resolve('./lib/auth/session.js')}'
-							`,
 							'studiocms:auth/lib/types': `
 								export * from '${resolve('./lib/auth/types.js')}'
-							`,
-							'studiocms:auth/lib/user': `
-								export * from '${resolve('./lib/auth/user.js')}'
-							`,
-							'studiocms:auth/lib/verify-email': `
-								export * from '${resolve('./lib/auth/verify-email.js')}';
 							`,
 							'studiocms:auth/utils/authEnvCheck': `
 								export * from '${resolve('./utils/authEnvCheck.js')}'
