@@ -47,7 +47,6 @@ import { GitHubUser } from './_shared.js';
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
 	dependencies: [
 		Session.Default,
-		SDKCore.Default,
 		VerifyEmail.Default,
 		User.Default,
 		FetchHttpClient.layer,

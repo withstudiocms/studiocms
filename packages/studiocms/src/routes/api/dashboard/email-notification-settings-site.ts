@@ -32,7 +32,7 @@ export const POST: APIRoute = async (context) =>
 			yield* sdk.notificationSettings.site.update(jsonData);
 
 			return apiResponseLogger(200, 'Notification settings updated');
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

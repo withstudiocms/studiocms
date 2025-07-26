@@ -54,7 +54,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 					'Access-Control-Allow-Origin': '*',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const DELETE: APIRoute = async (context: APIContext) =>
@@ -99,7 +99,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* sdk.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
 
 			return apiResponseLogger(200, 'Token deleted');
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'DELETE']);

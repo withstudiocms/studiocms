@@ -25,7 +25,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((err) => {
 		return apiResponseLogger(500, 'Failed to fetch folder data', err);
 	});

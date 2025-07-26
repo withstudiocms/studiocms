@@ -48,5 +48,5 @@ export const GET: APIRoute = async (context: APIContext) =>
 			);
 
 			return rss({ title, description, site, items });
-		}).pipe(SDKCore.Provide)
+		})
 	);

@@ -41,7 +41,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			return apiResponseLogger(200, response.message);
-		}).pipe(VerifyEmail.Provide, SDKCore.Provide)
+		}).pipe(VerifyEmail.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

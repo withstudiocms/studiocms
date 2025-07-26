@@ -44,7 +44,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('page_updated', data.pageMetaData.end.title || '');
 
 			return apiResponseLogger(200, 'Page Reverted successfully');
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

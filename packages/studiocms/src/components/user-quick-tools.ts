@@ -37,7 +37,7 @@ interface GetSessionResponse {
 	routes: Routes;
 }
 
-const knownAPIRoutes = ['/studiocms_api/', '/_studiocms-devapps/'];
+const knownAPIRoutes = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
 
 /**
  * Verifies if the user's permission level meets the required permission rank.
@@ -60,6 +60,11 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	async connectedCallback() {
+		// If the user is on any of the known StudioCMS API routes, don't render the quick tools
+		if (knownAPIRoutes.some((route) => window.location.pathname.includes(route))) {
+			return;
+		}
+
 		const data = await this.getSession();
 
 		if (!data || !data.isLoggedIn) {
@@ -68,11 +73,6 @@ class UserQuickTools extends HTMLElement {
 
 		// If the user is on the dashboard, don't render the quick tools
 		if (window.location.pathname.includes(data.routes.dashboardIndex)) {
-			return;
-		}
-
-		// If the user is on any of the known StudioCMS API routes, don't render the quick tools
-		if (knownAPIRoutes.some((route) => window.location.pathname.includes(route))) {
 			return;
 		}
 
@@ -378,6 +378,9 @@ class UserQuickTools extends HTMLElement {
 	async getSession(): Promise<GetSessionResponse | null> {
 		const userResponse = await fetch('/studiocms_api/dashboard/verify-session', {
 			method: 'POST',
+			body: JSON.stringify({
+				originPathname: window.location.toString(),
+			}),
 		})
 			.catch((error) => null)
 			.then((response) => response);

@@ -112,7 +112,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				200,
 				JSON.stringify({ username, email, displayname, rank: updateRank.rank, password })
 			);
-		}).pipe(Password.Provide, User.Provide, Notifications.Provide, SDKCore.Provide)
+		}).pipe(Password.Provide, User.Provide, Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

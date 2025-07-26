@@ -2,7 +2,7 @@ import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
-import { SDKCore } from 'studiocms:sdk';
+import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData, tsEmailVerificationTokensSelect } from 'studiocms:sdk/types';
 import { Data, Effect } from 'effect';
 import { CMSNotificationSettingsId } from '../../consts.js';
@@ -21,7 +21,6 @@ export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ mes
  *
  * ### Dependencies:
  * - `Mailer`: Handles email sending operations.
- * - `SDKCore`: Provides access to the StudioCMS SDK for database and authentication operations.
  *
  * ### Methods:
  * - `isEmailVerificationEnabled`: Checks if email verification is enabled in the StudioCMS configuration.
@@ -41,7 +40,6 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 	{
 		effect: genLogger('studiocms/lib/auth/verify-email/VerifyEmail.effect')(function* () {
 			const MailService = yield* Mailer;
-			const sdk = yield* SDKCore;
 
 			/**
 			 * @private
@@ -307,7 +305,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 				isEmailVerified,
 			};
 		}),
-		dependencies: [Mailer.Default, SDKCore.Default],
+		dependencies: [Mailer.Default],
 	}
 ) {
 	static Provide = Effect.provide(this.Default);

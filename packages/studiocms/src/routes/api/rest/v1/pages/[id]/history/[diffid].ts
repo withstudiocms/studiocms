@@ -43,7 +43,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});

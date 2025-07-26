@@ -31,7 +31,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 					Date: lastUpdated,
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return createErrorResponse(`Error fetching pages: ${error.message}`);
 	});

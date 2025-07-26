@@ -54,7 +54,6 @@ import { GoogleUser } from './_shared.js';
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	dependencies: [
 		Session.Default,
-		SDKCore.Default,
 		VerifyEmail.Default,
 		User.Default,
 		FetchHttpClient.layer,

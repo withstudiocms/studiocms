@@ -12,6 +12,20 @@ export class StudioCMS_SDK_Error extends StudioCMSError {
 	override name = 'StudioCMS SDK Error';
 }
 
+/**
+ * Represents a core error in the StudioCMS SDK.
+ * 
+ * This error class is tagged with `'studiocms/sdk/errors/SDKCoreError'` and contains
+ * additional metadata about the error type and its cause.
+ *
+ * @template T - The error metadata, including:
+ *   - `type`: The type of error, either `'UNKNOWN'` or `'LibSQLDatabaseError'`.
+ *   - `cause`: The underlying {@link StudioCMS_SDK_Error} that triggered this error.
+ *
+ * @remarks
+ * - The `toString()` method returns a string representation of the error, including the cause's message.
+ * - The `message` getter exposes the message from the underlying cause.
+ */
 export class SDKCoreError extends Data.TaggedError('studiocms/sdk/errors/SDKCoreError')<{
 	readonly type: 'UNKNOWN' | 'LibSQLDatabaseError';
 	readonly cause: StudioCMS_SDK_Error;
@@ -23,16 +37,4 @@ export class SDKCoreError extends Data.TaggedError('studiocms/sdk/errors/SDKCore
 	public get message() {
 		return this.cause.message;
 	}
-}
-
-/**
- * Represents an error specific to the StudioCMS cache operations.
- * This class extends the `StudioCMS_SDK_Error` to provide more context
- * about errors that occur within the caching mechanism of the StudioCMS.
- *
- * @extends StudioCMS_SDK_Error
- * @deprecated
- */
-export class StudioCMSCacheError extends StudioCMS_SDK_Error {
-	override name = 'StudioCMS Cache Error';
 }

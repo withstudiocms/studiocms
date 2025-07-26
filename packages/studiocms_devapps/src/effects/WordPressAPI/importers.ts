@@ -26,7 +26,7 @@ export type PageContent = typeof tsPageContent.$inferInsert;
 const ASTRO_PUBLIC_FOLDER = path.resolve(userProjectRoot, 'public');
 
 export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI', {
-	dependencies: [SDKCore.Default, WordPressAPIUtils.Default, WordPressAPIConverters.Default],
+	dependencies: [WordPressAPIUtils.Default, WordPressAPIConverters.Default],
 	effect: genLogger('@studiocms/devapps/effects/WordPressAPI.effect')(function* () {
 		const sdk = yield* SDKCore;
 

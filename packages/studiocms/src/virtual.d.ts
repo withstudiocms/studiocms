@@ -394,12 +394,6 @@ declare module 'studiocms:sdk' {
 	 * ```
 	 */
 	export const runSDK: Mod['runSDK'];
-
-	/**
-	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
-	 */
-	const mod: typeof import('./sdk/index.js').studioCMS_SDK;
-	export default mod;
 }
 
 declare module 'studiocms:sdk/types' {
@@ -468,19 +462,6 @@ declare module 'studiocms:sdk/types' {
 	export type PageDataCacheObject = import('./sdk/types/index.js').PageDataCacheObject;
 	export type SiteConfigCacheObject = import('./sdk/types/index.js').SiteConfigCacheObject;
 	export type VersionCacheObject = import('./sdk/types/index.js').VersionCacheObject;
-}
-
-declare module 'studiocms:sdk/cache' {
-	/**
-	 * @deprecated use `SDKCore` Effect from 'studiocms:sdk'
-	 */
-	const studioCMS_SDK_Cache: import('./sdk/types/index.js').STUDIOCMS_SDK_CACHE;
-	export default studioCMS_SDK_Cache;
-
-	export type STUDIOCMS_SDK_CACHE = import('./sdk/cache.js').STUDIOCMS_SDK_CACHE;
-	export type PageDataCacheObject = import('./sdk/cache.js').PageDataCacheObject;
-	export type SiteConfigCacheObject = import('./sdk/cache.js').SiteConfigCacheObject;
-	export type VersionCacheObject = import('./sdk/cache.js').VersionCacheObject;
 }
 
 declare module 'studiocms-dashboard:web-vitals' {

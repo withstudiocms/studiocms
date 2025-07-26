@@ -23,6 +23,49 @@ import { AstroDB } from './db.js';
 import { SDKCore_FolderTree } from './foldertree.js';
 import { SDKCore_Parsers } from './parsers.js';
 
+/**
+ * Effect service providing core data collectors for StudioCMS SDK.
+ *
+ * @remarks
+ * This service includes methods for collecting categories, tags, page data, and user data,
+ * aggregating information from the database and related services. All methods return
+ * `Effect.Effect` instances for composable error handling and async operations.
+ *
+ * @example
+ * ```typescript
+ * const collectors = yield* SDKCore_Collectors;
+ * const categories = yield* collectors.collectCategories([1, 2, 3]);
+ * ```
+ *
+ * @service SDKCore_Collectors
+ * @dependencies AstroDB, SDKCore_FolderTree, SDKCore_Parsers
+ *
+ * @method collectCategories
+ *   Collects categories by their IDs.
+ *   @param categoryIds - Array of category IDs.
+ *   @returns Effect resolving to array of categories.
+ *   @throws SDKCoreError if database error occurs.
+ *
+ * @method collectTags
+ *   Collects tags by their IDs.
+ *   @param tagIds - Array of tag IDs.
+ *   @returns Effect resolving to array of tags.
+ *   @throws SDKCoreError if database error occurs.
+ *
+ * @method collectPageData
+ *   Collects and combines all data related to a page, including categories, tags, contributors, author, and content.
+ *   @param page - Page data object.
+ *   @param tree - FolderNode tree.
+ *   @param metaOnly - If true, returns only metadata.
+ *   @returns Effect resolving to combined page data or meta-only data.
+ *   @throws SDKCoreError if database or unknown error occurs.
+ *
+ * @method collectUserData
+ *   Collects user data including OAuth and permissions.
+ *   @param user - User data object.
+ *   @returns Effect resolving to combined user data.
+ *   @throws SDKCoreError if database error occurs.
+ */
 export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SDKCore_Collectors', {
 	effect: Effect.gen(function* () {
 		const dbService = yield* AstroDB;

@@ -26,5 +26,5 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/xml',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	);

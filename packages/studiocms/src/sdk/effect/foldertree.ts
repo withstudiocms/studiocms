@@ -4,6 +4,28 @@ import { tsPageFolderStructure } from '../tables.js';
 import type { FolderListItem, FolderNode, tsPageFolderSelect } from '../types/index.js';
 import { AstroDB, type LibSQLDatabaseError } from './db.js';
 
+/**
+ * Service class for managing and manipulating folder trees in the StudioCMS SDK.
+ *
+ * Provides methods to:
+ * - Build a folder tree structure from raw folder data.
+ * - Find nodes and paths within the folder tree by name or ID.
+ * - Add new pages to the folder tree.
+ * - Retrieve folder structures and lists from the database.
+ *
+ * @remarks
+ * All methods are effectful and return `Effect.Effect` instances for error handling and composability.
+ *
+ * @example
+ * ```typescript
+ * const folderTreeService = SDKCore_FolderTree;
+ * const tree = yield* folderTreeService.buildFolderTree;
+ * ```
+ *
+ * @see FolderNode
+ * @see SDKCoreError
+ * @see Effect
+ */
 export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 	'studiocms/sdk/SDKCore_FolderTree',
 	{

@@ -141,7 +141,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('new_page', data.title);
 
 			return apiResponseLogger(200, 'Page created successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const PATCH: APIRoute = async (context: APIContext) =>
@@ -278,7 +278,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			);
 
 			return apiResponseLogger(200, 'Page updated successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const DELETE: APIRoute = async (context: APIContext) =>
@@ -332,7 +332,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('page_deleted', pageToDelete.data.title);
 
 			return apiResponseLogger(200, 'Page deleted successfully');
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);

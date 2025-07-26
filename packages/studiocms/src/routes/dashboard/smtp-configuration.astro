@@ -18,7 +18,7 @@ const [mailerConfig, notificationSettings] = await convertToVanilla(
 		const sdk = yield* SDKCore;
 
 		return yield* Effect.all([mailer.getMailerConfigTable, sdk.notificationSettings.site.get()]);
-	}).pipe(Mailer.Provide, SDKCore.Provide)
+	}).pipe(Mailer.Provide)
 );
 
 const {

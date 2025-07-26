@@ -77,7 +77,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
@@ -156,7 +156,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* Notifications.sendEditorNotification('new_page', data.title);
 
 			return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});

@@ -92,10 +92,6 @@
 			"types": "./dist/sdk/index.d.ts",
 			"default": "./dist/sdk/index.js"
 		},
-		"./sdk/cache": {
-			"types": "./dist/sdk/cache.d.ts",
-			"default": "./dist/sdk/cache.js"
-		},
 		"./sdk/tables": {
 			"types": "./dist/sdk/tables.d.ts",
 			"default": "./dist/sdk/tables.js"

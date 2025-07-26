@@ -21,7 +21,7 @@ export const GET: APIRoute = async (): Promise<Response> =>
 			const latestVersion = yield* sdk.UPDATE.latestVersion();
 			logger.info('Latest version cache updated');
 			return createJsonResponse({ success: true, latestVersion });
-		}).pipe(SDKCore.Provide)
+		})
 	).catch((error) => {
 		logger.error(`Error updating latest version cache: ${error.message}`);
 		return createJsonResponse(

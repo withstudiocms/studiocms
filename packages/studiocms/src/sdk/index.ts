@@ -1,23 +1,13 @@
 import { Effect } from 'effect';
 import { convertToVanilla } from '../lib/effects/index.js';
-import { studiocmsSDKCore } from './core.js';
-import { SDKCore } from './sdkCore.js';
+import { SDKCore as _SDKCore } from './sdkCore.js';
 
 /**
- * @deprecated
- */
-const sdkCore = await studiocmsSDKCore();
-
-/**
- * @deprecated
- */
-export const studioCMS_SDK = sdkCore;
-
-export default studioCMS_SDK;
-
-/**
- * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
- * This unified SDK merges the normal and cached SDK functionalities.
+ * The main Effect-TS based SDK implementation.
+ * This unified SDK merges normal and cached SDK functionalities.
+ *
+ * @remarks
+ * Use this as the entry point for all SDK operations. Provides access to all core features.
  *
  * @example
  * ```ts
@@ -26,38 +16,35 @@ export default studioCMS_SDK;
  *
  * const db = Effect.gen(function* () {
  *   const sdk = yield* SDKCore;
- *
  *   return sdk.db;
- * }).pipe(Effect.provide(SDKCore.Default));
+ * });
  * ```
  */
-export { SDKCore };
+export const SDKCore = Effect.gen(function* () {
+	const core = yield* _SDKCore;
+	return core;
+}).pipe(_SDKCore.Provide, _SDKCore.Cache);
 
 /**
- * VanillaJS Version of the SDKCore. Most internal functions will still contain Effects, you can use `runSDK` from the 'studiocms:sdk` to run these as normal async functions
+ * Converts the `SDKCore` effect to a vanilla JavaScript object by removing the `_tag` property.
  *
- * @example
- * ```ts
- * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+ * @remarks
+ * This function uses `Effect.gen` to yield the `SDKCore` effect, destructures the result to exclude the `_tag` property,
+ * and then passes the remaining core properties to `convertToVanilla`.
  *
- * const pages = await runSDK(SDKCoreJs.GET.pages());
- * ```
+ * @returns A promise that resolves to the core properties of `SDKCore` as a plain JavaScript object.
  */
 export const SDKCoreJs = await convertToVanilla(
 	Effect.gen(function* () {
 		const { _tag, ...core } = yield* SDKCore;
 		return core;
-	}).pipe(Effect.provide(SDKCore.Default))
+	})
 );
 
 /**
- * Utility function for running components of the SDKCoreJs
+ * Alias for `convertToVanilla`, used to run SDK effects and convert them to plain JavaScript objects.
  *
- * @example
- * ```ts
- * import { SDKCoreJs, runSDK } from 'studiocms:sdk';
- *
- * const pages = await runSDK(SDKCoreJs.GET.pages());
- * ```
+ * @param effect - The Effect to be converted.
+ * @returns A promise that resolves to the plain JavaScript object representation of the effect's result.
  */
 export const runSDK = convertToVanilla;

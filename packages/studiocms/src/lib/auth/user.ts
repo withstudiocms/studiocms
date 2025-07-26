@@ -1,5 +1,5 @@
 import { Notifications } from 'studiocms:notifier';
-import { SDKCore } from 'studiocms:sdk';
+import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert, tsUsersSelect } from 'studiocms:sdk/types';
 import type { APIContext, AstroGlobal } from 'astro';
 import { Data, Effect, pipe } from 'effect';
@@ -91,7 +91,6 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  *
  * ### Dependencies
  * This class relies on the following services:
- * - `SDKCore`: Core SDK for interacting with the backend.
  * - `CheckIfUnsafe`: Utility for checking unsafe usernames.
  * - `Session`: Session management service.
  * - `Password`: Password hashing and validation service.
@@ -117,7 +116,6 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  */
 export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User', {
 	effect: genLogger('studiocms/lib/auth/user/User.effect')(function* () {
-		const sdk = yield* SDKCore;
 		const check = yield* CheckIfUnsafe;
 		const sessionInst = yield* Session;
 		const pass = yield* Password;
@@ -498,7 +496,6 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		};
 	}),
 	dependencies: [
-		SDKCore.Default,
 		CheckIfUnsafe.Default,
 		Session.Default,
 		Password.Default,

@@ -52,7 +52,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			return apiResponseLogger(200, 'User notifications updated successfully');
-		}).pipe(SDKCore.Provide)
+		})
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

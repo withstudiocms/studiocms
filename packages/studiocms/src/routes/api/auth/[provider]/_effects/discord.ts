@@ -46,7 +46,6 @@ import { DiscordUser } from './_shared.js';
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	dependencies: [
 		Session.Default,
-		SDKCore.Default,
 		VerifyEmail.Default,
 		User.Default,
 		FetchHttpClient.layer,

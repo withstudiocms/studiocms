@@ -42,7 +42,7 @@ const postsImagesFolder = path.resolve(WPImportFolder, 'posts');
 export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverters>()(
 	'WordPressAPIConverters',
 	{
-		dependencies: [SDKCore.Default, WordPressAPIUtils.Default],
+		dependencies: [WordPressAPIUtils.Default],
 		effect: genLogger('@studiocms/devapps/effects/WordPressAPI/converters.effect')(function* () {
 			const sdk = yield* SDKCore;
 

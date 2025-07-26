@@ -185,7 +185,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 				default:
 					return apiResponseLogger(400, 'Invalid form data, mode is required or unsupported');
 			}
-		}).pipe(Password.Provide, User.Provide, Notifications.Provide, SDKCore.Provide)
+		}).pipe(Password.Provide, User.Provide, Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

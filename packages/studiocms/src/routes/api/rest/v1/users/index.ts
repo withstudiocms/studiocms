@@ -85,7 +85,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(SDKCore.Provide, Notifications.Provide)
+		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch users', error);
 	});
@@ -192,7 +192,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 					password,
 				})
 			);
-		}).pipe(SDKCore.Provide, Notifications.Provide, User.Provide, Password.Provide)
+		}).pipe(Notifications.Provide, User.Provide, Password.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to create user', error);
 	});

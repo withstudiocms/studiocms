@@ -4,7 +4,7 @@ import path from 'node:path';
 import { AstroError } from 'astro/errors';
 import * as cheerio from 'cheerio';
 import sanitizeHtml from 'sanitize-html';
-import { Console, Context, Effect, Layer, genLogger } from 'studiocms/effect';
+import { Console, Effect, genLogger } from 'studiocms/effect';
 import TurndownService from 'turndown';
 import {
 	APIEndpointConfig,

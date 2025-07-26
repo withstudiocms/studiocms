@@ -194,7 +194,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			return apiResponseLogger(200, resetLink.toString());
-		}).pipe(User.Provide, Mailer.Provide, Notifications.Provide, SDKCore.Provide)
+		}).pipe(User.Provide, Mailer.Provide, Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);

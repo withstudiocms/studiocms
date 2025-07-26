@@ -77,7 +77,6 @@ router['/**'] = async (context, next) =>
 
 			return next();
 		}).pipe(
-			Effect.provide(SDKCore.Default),
 			Effect.provide(User.Default),
 			Effect.provide(VerifyEmail.Default)
 		)

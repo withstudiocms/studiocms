@@ -54,7 +54,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('new_folder', folderName);
 
 			return apiResponseLogger(200, 'Folder created successfully');
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const PATCH: APIRoute = async (context: APIContext) =>
@@ -98,7 +98,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('folder_updated', folderName);
 
 			return apiResponseLogger(200, 'Folder updated successfully');
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const DELETE: APIRoute = async (context: APIContext) =>
@@ -140,7 +140,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* notify.sendEditorNotification('folder_deleted', folderName);
 
 			return apiResponseLogger(200, 'Folder deleted successfully');
-		}).pipe(Notifications.Provide, SDKCore.Provide)
+		}).pipe(Notifications.Provide)
 	);
 
 export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);

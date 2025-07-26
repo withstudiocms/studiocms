@@ -18,6 +18,31 @@ import type {
 } from '../types/index.js';
 import { AstroDB } from './db.js';
 
+/**
+ * SDKCore_Users provides core user-related effects for the StudioCMS SDK.
+ *
+ * @remarks
+ * This service includes utilities for verifying user ranks, combining rank data,
+ * and clearing all references to a user from the database. It leverages the Effect system
+ * for composable error handling and dependency injection.
+ *
+ * @example
+ * ```typescript
+ * const usersService = SDKCore_Users;
+ * const result = usersService.verifyRank(users, permissions, 'admin');
+ * ```
+ *
+ * @effect
+ * - `verifyRank`: Filters users by rank based on permissions.
+ * - `combineRanks`: Combines a given rank with user data.
+ * - `clearUserReferences`: Removes all references to a user from related tables.
+ *
+ * @dependencies
+ * - Depends on AstroDB for database operations.
+ *
+ * @accessors
+ * - Provides accessors for each effect.
+ */
 export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sdk/SDKCore_Users', {
 	effect: Effect.gen(function* () {
 		const dbService = yield* AstroDB;

@@ -57,4 +57,4 @@ export const verifyAuthTokenFromHeader = (context: APIContext) =>
 			return apiResponseLogger(401, 'Unauthorized');
 		}
 		return user;
-	}).pipe(SDKCore.Provide);
+	});

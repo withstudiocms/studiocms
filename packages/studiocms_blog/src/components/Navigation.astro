@@ -1,7 +1,6 @@
 ---
 import './navigation.css';
 import { frontendNavigation } from 'studiocms:plugin-helpers';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
 
 type Props = {
 	topLevelLinkCount?: number;
@@ -9,7 +8,7 @@ type Props = {
 
 const { topLevelLinkCount = 3 } = Astro.props;
 
-const config = (await runSDK(SDKCoreJs.GET.siteConfig())).data;
+const config = Astro.locals.siteConfig.data;
 
 const { title } = config || { title: 'StudioCMS' };
 const {

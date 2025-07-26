@@ -7,7 +7,6 @@ import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js'
 import { AuthAPIUtils } from './shared.js';
 
 const deps = Layer.mergeAll(
-	SDKCore.Default,
 	AuthAPIUtils.Default,
 	User.Default,
 	VerifyEmail.Default,
