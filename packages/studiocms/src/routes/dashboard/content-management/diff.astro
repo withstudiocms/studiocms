@@ -30,7 +30,7 @@ const { user, diff } = await convertToVanilla(
 		const user = (id: string) => users.find((u) => u.id === id)?.name;
 
 		return { user, diff };
-	}).pipe(SDKCore.Provide)
+	})
 );
 
 if (!diff) return Astro.redirect('/404');
@@ -44,7 +44,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanill
 			sdk.diffTracking.utils.getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end),
 			sdk.diffTracking.utils.getDiffHTML(diff.diff),
 		]);
-	}).pipe(SDKCore.Provide)
+	})
 );
 ---
 

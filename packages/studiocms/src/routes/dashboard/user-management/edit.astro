@@ -42,7 +42,7 @@ const [user, diffs, pages, userTokens] = await convertToVanilla(
 			sdk.GET.pages(),
 			sdk.REST_API.tokens.get(userId),
 		]);
-	}).pipe(SDKCore.Provide)
+	})
 );
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
