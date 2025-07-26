@@ -96,10 +96,10 @@ export type {
 
 /**
  * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.
- * 
+ *
  * @template K - The type of keys in the map.
  * @template V - The type of values in the map.
- * 
+ *
  * @remarks
  * This type allows both read-only and mutable operations on the map, which can be useful for scenarios
  * where you need to enforce read-only access in some contexts while allowing mutation in others.
@@ -119,7 +119,7 @@ export type PaginateInput = {
 
 /**
  * Represents page data containing only metadata fields, excluding multilingual and default content.
- * 
+ *
  * This type omits the `multiLangContent` and `defaultContent` properties from `CombinedPageData`.
  */
 export type MetaOnlyPageData = Omit<CombinedPageData, 'multiLangContent' | 'defaultContent'>;

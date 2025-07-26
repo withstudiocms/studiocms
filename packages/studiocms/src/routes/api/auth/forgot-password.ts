@@ -54,11 +54,7 @@ function generateResetLink(token: {
 	);
 }
 
-const deps = Layer.mergeAll(
-	Mailer.Default,
-	Notifications.Default,
-	AuthAPIUtils.Default
-);
+const deps = Layer.mergeAll(Mailer.Default, Notifications.Default, AuthAPIUtils.Default);
 
 export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 	await convertToVanilla(

@@ -76,10 +76,7 @@ router['/**'] = async (context, next) =>
 			context.locals.userPermissionLevel = userPermissionLevel;
 
 			return next();
-		}).pipe(
-			Effect.provide(User.Default),
-			Effect.provide(VerifyEmail.Default)
-		)
+		}).pipe(Effect.provide(User.Default), Effect.provide(VerifyEmail.Default))
 	);
 
 /**
