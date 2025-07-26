@@ -45,12 +45,7 @@ import { GitHubUser } from './_shared.js';
  * @see {@link User}
  */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
-	dependencies: [
-		Session.Default,
-		VerifyEmail.Default,
-		User.Default,
-		FetchHttpClient.layer,
-	],
+	dependencies: [Session.Default, VerifyEmail.Default, User.Default, FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
 		const [
 			sdk,

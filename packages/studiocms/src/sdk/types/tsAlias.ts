@@ -47,7 +47,7 @@ export type tsUserResetTokensInsert = typeof tsUserResetTokens.$inferInsert;
 
 /**
  * Represents the selected fields from the `tsUserResetTokens` table.
- * 
+ *
  * This type is inferred from the select query on the `tsUserResetTokens` table,
  * and includes only the fields that are selected.
  */

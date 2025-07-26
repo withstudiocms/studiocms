@@ -59,7 +59,6 @@ export const sessionCookieName = 'auth_session';
  */
 export class Session extends Effect.Service<Session>()('studiocms/lib/auth/session/Session', {
 	effect: genLogger('studiocms/lib/auth/session/Session.effect')(function* () {
-
 		/**
 		 * Generates a session token.
 		 *

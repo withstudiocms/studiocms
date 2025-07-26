@@ -38,25 +38,25 @@ export interface CachedContext {
 
 /**
  * Represents a context for caching within the application.
- * 
+ *
  * @remarks
  * This class extends a tagged context using `Context.Tag`, allowing for type-safe context management.
- * 
+ *
  * @example
  * ```typescript
  * const cacheLayer = CacheContext.makeLayer(myCachedContext);
  * const providedEffect = CacheContext.makeProvide(myCachedContext);
  * ```
- * 
+ *
  * @method makeLayer
  * Creates a `Layer` that provides the given cached context.
- * 
+ *
  * @param context - The cached context to be provided.
  * @returns A `Layer` that provides the cached context.
- * 
+ *
  * @method makeProvide
  * Creates an `Effect` that provides the cached context using a layer.
- * 
+ *
  * @param context - The cached context to be provided.
  * @returns An `Effect` that provides the cached context.
  */
@@ -75,7 +75,7 @@ export const cacheConfig = sdkConfig.cacheConfig;
 
 /**
  * Determines if caching is enabled based on the current cache configuration.
- * 
+ *
  * This function attempts to access the `enabled` property of `cacheConfig` within an `Effect.try` block,
  * which safely handles any errors that may occur during the retrieval.
  *

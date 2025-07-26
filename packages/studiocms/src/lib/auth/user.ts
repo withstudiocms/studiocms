@@ -495,12 +495,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 			isUserAllowed,
 		};
 	}),
-	dependencies: [
-		CheckIfUnsafe.Default,
-		Session.Default,
-		Password.Default,
-		Notifications.Default,
-	],
+	dependencies: [CheckIfUnsafe.Default, Session.Default, Password.Default, Notifications.Default],
 }) {
 	static Provide = Effect.provide(this.Default);
 	static LinkNewOAuthCookieName = LinkNewOAuthCookieName;

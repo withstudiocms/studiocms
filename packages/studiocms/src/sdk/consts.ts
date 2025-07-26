@@ -1,6 +1,6 @@
 /**
  * Unique identifier used to reference the site configuration map within StudioCMS.
- * 
+ *
  * This constant is typically used as a key for storing or retrieving site configuration data.
  */
 export const SiteConfigMapID: string = '__StudioCMS_Site_Config';
@@ -31,7 +31,7 @@ export const FolderListMapID: string = '__StudioCMS_Folder_List';
 
 /**
  * The unique package identifier for the StudioCMS package.
- * 
+ *
  * @remarks
  * This constant is used to reference the StudioCMS package throughout the SDK.
  */
