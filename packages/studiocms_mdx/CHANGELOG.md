@@ -1,5 +1,12 @@
 # @studiocms/mdx
 
+## 0.1.0-beta.22
+
+### Patch Changes
+
+- Updated dependencies [[`356791d`](https://github.com/withstudiocms/studiocms/commit/356791d80aa8a33cbb77e2c83ca8fc70eaf3b5dd), [`7511f47`](https://github.com/withstudiocms/studiocms/commit/7511f47042104bed83f985c336c7d62cc1fd3b2f), [`fe3fa26`](https://github.com/withstudiocms/studiocms/commit/fe3fa262b80a17ea2d89d8f09e4c3ac97f64ca5f), [`54da8e7`](https://github.com/withstudiocms/studiocms/commit/54da8e7ff080f44a02ca8139c8ddade37f1d32f4)]:
+  - studiocms@0.1.0-beta.22
+
 ## 0.1.0-beta.21
 
 ### Patch Changes
