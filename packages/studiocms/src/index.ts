@@ -17,6 +17,7 @@ import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
+import { componentRegistryHandler } from './componentRegistry/handler.js';
 import { StudioCMSMarkdownDefaults, makeDashboardRoute, routesDir } from './consts.js';
 import { shared } from './lib/renderer/shared.js';
 import { pluginHandler } from './pluginHandler.js';
@@ -85,9 +86,6 @@ export const studiocms = defineIntegration({
 		// Messages Array for Logging
 		const messages: Messages = [];
 
-		// Component Registry for Custom user Components
-		let ComponentRegistry: Record<string, string>;
-
 		// Define the resolved Callout Theme
 		let resolvedCalloutTheme: string | undefined;
 
@@ -109,9 +107,7 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, config, updateConfig, createCodegenDir, command, addMiddleware } = params;
-
-					const { resolve: astroConfigResolve } = createResolver(config.root.pathname);
+					const { logger, updateConfig, createCodegenDir, command, addMiddleware } = params;
 
 					logger.info('Checking configuration...');
 
@@ -142,9 +138,6 @@ export const studiocms = defineIntegration({
 
 					// Create logInfo object
 					const logInfo = { logger, logLevel: 'info' as const, verbose };
-
-					// Check for Component Registry
-					if (componentRegistry) ComponentRegistry = componentRegistry;
 
 					const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
 					// Setup Logger
@@ -187,8 +180,13 @@ export const studiocms = defineIntegration({
 						plugins,
 						robotsTXTConfig,
 						verbose,
-						astroConfigResolve,
-						ComponentRegistry,
+					});
+
+					// Setup Component Registry
+					await componentRegistryHandler(params, {
+						name,
+						verbose,
+						componentRegistry,
 					});
 
 					// Setup Routes

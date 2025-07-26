@@ -17,7 +17,6 @@ import type {
 	StudioCMSPlugin,
 } from './schemas/index.js';
 import type { Messages, Route } from './types.js';
-import { convertHyphensToUnderscores } from './utils/convert-hyphens.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
 import { pluginLogger } from './utils/pluginLogger.js';
@@ -138,9 +137,7 @@ type Options = {
 	pkgVersion: string;
 	plugins: StudioCMSPlugin[] | undefined;
 	robotsTXTConfig: boolean | RobotsConfig;
-	ComponentRegistry: Record<string, string>;
 	dashboardRoute: (path: string) => string;
-	astroConfigResolve: (...path: Array<string>) => string;
 };
 
 export const pluginHandler = defineUtility('astro:config:setup')(
@@ -155,8 +152,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			plugins,
 			robotsTXTConfig,
 			dashboardRoute,
-			astroConfigResolve,
-			ComponentRegistry,
 		} = options;
 
 		const logInfo = { logger, logLevel: 'info' as const, verbose };
@@ -440,21 +435,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				})
 				.join('\n');
 
-			const componentKeys = ComponentRegistry
-				? Object.keys(ComponentRegistry).map((key) =>
-						convertHyphensToUnderscores(key.toLowerCase())
-					)
-				: [];
-
-			const components = ComponentRegistry
-				? Object.entries(ComponentRegistry)
-						.map(
-							([key, value]) =>
-								`export { default as ${convertHyphensToUnderscores(key)} } from '${astroConfigResolve(value)}';`
-						)
-						.join('\n')
-				: '';
-
 			const dashboardGridComponents = availableDashboardGridItems
 				.map((item) => {
 					const components: Record<string, string> = item.body?.components || {};
@@ -521,10 +501,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					'virtual:studiocms/components/Editors': `
 						export const editorKeys = ${JSON.stringify([...editorKeys])};
 						${editorComponents}
-					`,
-					'studiocms:component-proxy': `
-						export const componentKeys = ${JSON.stringify(componentKeys || [])};
-						${components}
 					`,
 					'studiocms:components/dashboard-grid-components': `
 						${dashboardGridComponents}
