@@ -144,15 +144,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 	async (params, options: Options) => {
 		const { logger } = params;
 
-		const {
-			dbStartPage,
-			verbose,
-			name,
-			pkgVersion,
-			plugins,
-			robotsTXTConfig,
-			dashboardRoute,
-		} = options;
+		const { dbStartPage, verbose, name, pkgVersion, plugins, robotsTXTConfig, dashboardRoute } =
+			options;
 
 		const logInfo = { logger, logLevel: 'info' as const, verbose };
 

@@ -136,7 +136,6 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 									const members = typeLiteral.getMembers();
 
 									for (const member of members) {
-
 										if (member.getKind() === SyntaxKind.PropertySignature) {
 											const propSig = member.asKindOrThrow(SyntaxKind.PropertySignature);
 

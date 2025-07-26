@@ -1,4 +1,3 @@
-
 /**
  * Represents a JSDoc tag with its name and optional text content.
  *
@@ -43,7 +42,7 @@ export interface AstroComponentProps {
 
 /**
  * Represents an entry in the component registry.
- * 
+ *
  * Extends the `AstroComponentProps` interface to include additional metadata.
  *
  * @property safeName - A readonly string representing a safe, unique identifier for the component.

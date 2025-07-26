@@ -1,8 +1,8 @@
 ---
-import { createRenderer } from "studiocms:component-registry/runtime";
-import type { SSRResult } from "astro";
-import { shared } from "../../lib/renderer/shared.js";
-import type { PluginPageTypeRendererProps } from "../../types.js";
+import { createRenderer } from 'studiocms:component-registry/runtime';
+import type { SSRResult } from 'astro';
+import { shared } from '../../lib/renderer/shared.js';
+import type { PluginPageTypeRendererProps } from '../../types.js';
 
 // @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
 const ssrResult: SSRResult = $$result;
@@ -16,8 +16,7 @@ interface Props extends PluginPageTypeRendererProps {}
 const { defaultContent } = Astro.props.data;
 
 // Get content to render
-const contentToRender =
-	defaultContent?.content || "<h1>Error: No content found</h1>";
+const contentToRender = defaultContent?.content || '<h1>Error: No content found</h1>';
 
 // Render content
 const renderedContent = await render(contentToRender);

@@ -1,8 +1,8 @@
 ---
-import { createRenderer } from "studiocms:component-registry/runtime";
-import { mdPreRender } from "studiocms:plugins/renderers";
-import { shared } from "../../lib/renderer/shared.js";
-import type { PluginPageTypeRendererProps } from "../../types.js";
+import { createRenderer } from 'studiocms:component-registry/runtime';
+import { mdPreRender } from 'studiocms:plugins/renderers';
+import { shared } from '../../lib/renderer/shared.js';
+import type { PluginPageTypeRendererProps } from '../../types.js';
 
 // Get the pre-renderer for Markdown Content
 const preRenderer = mdPreRender();
@@ -11,11 +11,7 @@ const preRenderer = mdPreRender();
 const ssrResult: SSRResult = $$result;
 
 // Define render function
-const render = await createRenderer(
-	ssrResult,
-	shared.studiocmsMarkdown?.sanitize,
-	preRenderer,
-);
+const render = await createRenderer(ssrResult, shared.studiocmsMarkdown?.sanitize, preRenderer);
 
 interface Props extends PluginPageTypeRendererProps {}
 
@@ -23,7 +19,7 @@ interface Props extends PluginPageTypeRendererProps {}
 const { defaultContent } = Astro.props.data;
 
 // Get content to render
-const contentToRender = defaultContent?.content || "# Error: No content found";
+const contentToRender = defaultContent?.content || '# Error: No content found';
 
 // Render content
 const renderedContent = await render(contentToRender);
