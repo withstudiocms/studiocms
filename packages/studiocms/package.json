@@ -112,6 +112,14 @@
 			"types": "./dist/runtime/index.d.ts",
 			"default": "./dist/runtime/index.js"
 		},
+		"./componentRegistry": {
+			"types": "./dist/componentRegistry/index.d.ts",
+			"default": "./dist/componentRegistry/index.js"
+		},
+		"./componentRegistry/runtime": {
+			"types": "./dist/componentRegistry/runtime.d.ts",
+			"default": "./dist/componentRegistry/runtime.js"
+		},
 		"./components/*": "./dist/components/*",
 		"./layouts/*": "./dist/layouts/*",
 		"./lib/*": {
@@ -185,6 +193,7 @@
 		"socks": "^2.8.4",
 		"suneditor": "^2.47.5",
 		"three": "0.170.0",
+		"ts-morph": "^26.0.0",
 		"ultrahtml": "^1.5.3",
 		"unist-util-visit": "^5.0.0"
 	},

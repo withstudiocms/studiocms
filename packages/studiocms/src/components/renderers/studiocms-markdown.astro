@@ -1,25 +1,17 @@
 ---
+import { createRenderer } from 'studiocms:component-registry/runtime';
 import { mdPreRender } from 'studiocms:plugins/renderers';
-import { importComponentsKeys } from '../../lib/renderer/runtime.js';
 import { shared } from '../../lib/renderer/shared.js';
-import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
 import type { PluginPageTypeRendererProps } from '../../types.js';
 
 // Get the pre-renderer for Markdown Content
-const preRender = mdPreRender();
+const preRenderer = mdPreRender();
 
-// Import components
-const _components = await importComponentsKeys();
-
-// Create component proxy
 // @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
-const components = createComponentProxy($$result, _components);
+const ssrResult: SSRResult = $$result;
 
 // Define render function
-const render = async (content: string): Promise<string> => {
-	const html = await preRender(content);
-	return await transformHTML(html, components, shared.studiocmsMarkdown?.sanitize);
-};
+const render = await createRenderer(ssrResult, shared.studiocmsMarkdown?.sanitize, preRenderer);
 
 interface Props extends PluginPageTypeRendererProps {}
 
@@ -32,4 +24,5 @@ const contentToRender = defaultContent?.content || '# Error: No content found';
 // Render content
 const renderedContent = await render(contentToRender);
 ---
+
 <Fragment set:html={renderedContent} />

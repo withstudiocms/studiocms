@@ -1,20 +1,14 @@
 ---
-import { importComponentsKeys } from '../../lib/renderer/runtime.js';
+import { createRenderer } from 'studiocms:component-registry/runtime';
+import type { SSRResult } from 'astro';
 import { shared } from '../../lib/renderer/shared.js';
-import { createComponentProxy, transformHTML } from '../../runtime/AstroComponentProxy.js';
 import type { PluginPageTypeRendererProps } from '../../types.js';
 
-// Import components
-const _components = await importComponentsKeys();
-
-// Create component proxy
 // @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
-const components = createComponentProxy($$result, _components);
+const ssrResult: SSRResult = $$result;
 
 // Define render function
-const render = async (content: string): Promise<string> => {
-	return await transformHTML(content, components, shared.studiocmsHTML?.sanitize);
-};
+const render = await createRenderer(ssrResult, shared.studiocmsHTML?.sanitize);
 
 interface Props extends PluginPageTypeRendererProps {}
 
@@ -27,4 +21,5 @@ const contentToRender = defaultContent?.content || '<h1>Error: No content found<
 // Render content
 const renderedContent = await render(contentToRender);
 ---
+
 <Fragment set:html={renderedContent} />
