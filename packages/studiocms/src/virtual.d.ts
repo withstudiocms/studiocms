@@ -46,8 +46,6 @@ declare module 'studiocms:plugins/renderers' {
 		pageType: string;
 		safePageType: string;
 	}[];
-
-	export const mdPreRender: typeof import('./components/renderers/markdown-prerender').preRender;
 }
 
 declare module 'studiocms:mailer' {

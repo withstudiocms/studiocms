@@ -67,6 +67,22 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
+		'packages/studiocms_md': {
+			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			astro: {
+				entry: ['src/**/*.astro'],
+				project: ['src/**/*.astro'],
+			},
+		},
+		'packages/studiocms_html': {
+			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+			astro: {
+				entry: ['src/**/*.astro'],
+				project: ['src/**/*.astro'],
+			},
+		},
 		playground: {
 			ignoreDependencies: ['sharp'],
 			astro: {
