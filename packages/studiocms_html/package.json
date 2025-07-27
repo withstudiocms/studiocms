@@ -57,7 +57,9 @@
     "./v/types": {
       "types": "./dist/virtual.d.ts",
       "default": "./dist/virtual.d.js"
-    }
+    },
+    "./editor": "./dist/components/editor.astro",
+    "./renderer": "./dist/components/renderer.astro"
   },
   "type": "module",
   "dependencies": {
