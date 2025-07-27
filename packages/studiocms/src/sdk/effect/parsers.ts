@@ -65,6 +65,10 @@ export class SDKCore_Parsers extends Effect.Service<SDKCore_Parsers>()(
 						}),
 				});
 
+			/**
+			 * Fixes the diff items by parsing the `pageMetaData` field.
+			 * @param items - The diff items to be fixed, can be a single item or an array.
+			 */
 			const fixDiff = <T extends diffItem | diffItem[]>(
 				items: T
 			): Effect.Effect<DiffReturnType<T>, SDKCoreError, never> =>

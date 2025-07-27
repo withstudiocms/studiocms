@@ -143,6 +143,13 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				})
 			);
 
+		/**
+		 * Transforms the collected page data to include only metadata.
+		 *
+		 * @param data - The page data to transform.
+		 * @returns A promise that resolves to the transformed page data.
+		 * @throws {UnknownException} If an error occurs during transformation.
+		 */
 		const transformPageDataToMetaOnly = <T extends CombinedPageData[] | CombinedPageData>(
 			data: T
 		): Effect.Effect<PageDataReturnType<T>, UnknownException, never> =>
