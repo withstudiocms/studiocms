@@ -50,7 +50,12 @@ const env = loadEnv('', process.cwd(), '');
 const RendererComponent = resolve('./components/Renderer.astro');
 
 // Default Custom Image Component Resolver
-const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
+const customImage = resolve('./components/image/CustomImage.astro');
+
+// Built-in Components for the Component Registry
+const builtInComponents = {
+	'cms-img': customImage,
+};
 
 /**
  * **StudioCMS Integration**
@@ -158,9 +163,7 @@ export const studiocms = defineIntegration({
 						name,
 						verbose,
 						componentRegistry,
-						builtInComponents: {
-							'cms-img': defaultCustomImageComponent,
-						},
+						builtInComponents,
 					});
 
 					// Setup Routes
@@ -327,7 +330,7 @@ export const studiocms = defineIntegration({
 
 							// Image Handler Virtual Imports
 							'studiocms:imageHandler/components': `
-								export { default as CustomImage } from '${defaultCustomImageComponent}';
+								export { default as CustomImage } from '${customImage}';
 							`,
 
 							// Auth Virtual Imports
