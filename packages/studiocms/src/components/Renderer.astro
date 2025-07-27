@@ -1,7 +1,7 @@
 ---
-import { pluginRenderers } from "studiocms:plugins/renderers";
-import * as renderers from "virtual:studiocms/plugins/renderers";
-import type { PluginPageTypeRendererProps } from "../types.js";
+import { pluginRenderers } from 'studiocms:plugins/renderers';
+import * as renderers from 'virtual:studiocms/plugins/renderers';
+import type { PluginPageTypeRendererProps } from '../types.js';
 
 interface Props extends PluginPageTypeRendererProps {}
 
@@ -15,20 +15,17 @@ if (!data) return;
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
 if (!renderer) {
-    console.warn(
-        `Renderer for page type "${data.package}" not found. Ensure the plugin is correctly registered and the renderer exists.`,
-    );
-    return;
-};
+	console.warn(
+		`Renderer for page type "${data.package}" not found. Ensure the plugin is correctly registered and the renderer exists.`
+	);
+	return;
+}
 
-const RendererModule: AstroComponent =
-    renderers[renderer.safePageType as keyof typeof renderers];
+const RendererModule: AstroComponent = renderers[renderer.safePageType as keyof typeof renderers];
 
 if (!RendererModule) {
-    console.error(
-        `Renderer module for page type "${data.package}" not found in renderers.`,
-    );
-    return;
+	console.error(`Renderer module for page type "${data.package}" not found in renderers.`);
+	return;
 }
 ---
 

@@ -1,5 +1,11 @@
 // Only allow the following identifiers for pages
-export const allowedIdentifiers = ['studiocms/markdown', 'studiocms/html', 'studiocms/mdx', 'studiocms/markdoc', 'studiocms/wysiwyg'];
+export const allowedIdentifiers = [
+	'studiocms/markdown',
+	'studiocms/html',
+	'studiocms/mdx',
+	'studiocms/markdoc',
+	'studiocms/wysiwyg',
+];
 
 /**
  * Checks if a given date is within the last 30 days from the current date.

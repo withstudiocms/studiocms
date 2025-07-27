@@ -525,8 +525,7 @@ declare module 'studiocms:auth/lib/types' {
 	export type ThrottlingCounter = import('./lib/auth/types.js').ThrottlingCounter;
 }
 
-declare module 'virtual:studiocms/plugins/renderers' {
-}
+declare module 'virtual:studiocms/plugins/renderers' {}
 
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;

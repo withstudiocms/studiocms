@@ -20,15 +20,15 @@ const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] 
 			autolink: shared.mdConfig?.autoLinkHeadings,
 			discordSubtext: shared.mdConfig?.discordSubtext,
 			callouts: parseCallouts(shared.mdConfig?.callouts),
-		}
+		};
 	}
 
 	return {
 		autolink: false,
 		discordSubtext: false,
 		callouts: undefined,
-	}
-}
+	};
+};
 
 const createStudioCMSMDOpts: StudioCMSMarkdownProcessorOptions = {
 	...shared.astroMDRemark,
