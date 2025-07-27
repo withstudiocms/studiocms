@@ -51,10 +51,24 @@ export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
  */
 const baseDir = (path: string) => `studiocms/src/${path}`;
 
+/**
+ * Base Directory Functions
+ */
 const baseRoutesDir = (path: string) => baseDir(`routes/${path}`);
+
+/**
+ * Base Directory Functions for Middleware
+ */
 const baseMiddlewareDir = (path: string) => baseDir(`middleware/${path}`);
+
+/**
+ * Base Directory Functions for API Routes
+ */
 const baseAPIRoutesDir = (path: string) => baseRoutesDir(`api/${path}`);
 
+/**
+ * Base Directory Functions for REST API Routes
+ */
 const baseRestDir = (version: CurrentRESTAPIVersions) => (path: string) =>
 	baseRoutesDir(`api/rest/${version}/${path}`);
 
@@ -124,10 +138,26 @@ export const NotificationSettingsDefaults = {
 	requireAdminVerification: false,
 };
 
+/**
+ * Creates a standardized API route path for the dashboard.
+ *
+ * @param route - Optional additional path to append to the base dashboard API route.
+ * @returns A function that constructs the full API route path.
+ */
 export const dashboardAPIRoute = makeAPIRoute('dashboard');
 
+/**
+ * Creates a standardized API route path for authentication-related endpoints.
+ *
+ * @returns A function that constructs the full API route path for authentication.
+ */
 export const authAPIRoute = makeAPIRoute('auth');
 
+/**
+ * Creates a standardized API route path for the SDK.
+ *
+ * @returns A function that constructs the full API route path for the SDK.
+ */
 export const makeDashboardRoute = (route?: string | undefined) => {
 	let defaultRoute = 'dashboard';
 
@@ -138,6 +168,10 @@ export const makeDashboardRoute = (route?: string | undefined) => {
 	return (path: string) => `${defaultRoute}/${path}`;
 };
 
+/**
+ * Default values for the StudioCMS Markdown configuration.
+ * This configuration is used to set up the default behavior of Markdown rendering in StudioCMS.
+ */
 export const StudioCMSMarkdownDefaults = {
 	flavor: 'studiocms' as const,
 	autoLinkHeadings: false,

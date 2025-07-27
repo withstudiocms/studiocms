@@ -3,6 +3,26 @@ import { authAPIRoute, dashboardAPIRoute, routesDir } from './consts.js';
 import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import type { Route } from './types.js';
 
+/**
+ * Configuration options for the route handler.
+ *
+ * @property dbStartPage - Determines if the start page should be loaded from the database.
+ * @property shouldInject404Route - If true, injects a 404 route into the routing table.
+ * @property dashboardEnabled - Enables or disables the dashboard feature.
+ * @property dashboardRoute - Function to generate the dashboard route path.
+ * @property developerConfig - Developer-specific configuration.
+ * @property developerConfig.demoMode - Enables demo mode with optional credentials.
+ * @property extraRoutes - Additional custom routes to be included.
+ * @property authConfig - Authentication configuration.
+ * @property authConfig.enabled - Enables or disables authentication.
+ * @property authConfig.providers - Specifies which authentication providers are enabled.
+ * @property authConfig.providers.github - Enables GitHub authentication.
+ * @property authConfig.providers.discord - Enables Discord authentication.
+ * @property authConfig.providers.google - Enables Google authentication.
+ * @property authConfig.providers.auth0 - Enables Auth0 authentication.
+ * @property authConfig.providers.usernameAndPassword - Enables username and password authentication.
+ * @property authConfig.providers.usernameAndPasswordConfig.allowUserRegistration - Allows user registration via username and password.
+ */
 type Options = {
 	dbStartPage: boolean;
 	shouldInject404Route: boolean;
@@ -31,6 +51,27 @@ type Options = {
 	};
 };
 
+/**
+ * Handles the dynamic injection of routes based on configuration options.
+ *
+ * This utility is registered under the 'astro:config:setup' hook and is responsible for
+ * setting up all necessary routes for the application, including dashboard, authentication,
+ * API, and REST endpoints. Routes are conditionally enabled based on the provided options,
+ * such as dashboard status, authentication providers, demo mode, and extra custom routes.
+ *
+ * @param params - Contains route injection utilities, such as `injectRoute`.
+ * @param options - Configuration options for route setup, including:
+ *   - `dbStartPage`: Whether the database start page is enabled.
+ *   - `shouldInject404Route`: Whether to inject a 404 route.
+ *   - `dashboardEnabled`: Whether the dashboard is enabled.
+ *   - `dashboardRoute`: Function to resolve dashboard route patterns.
+ *   - `developerConfig.demoMode`: Whether the application is in demo mode.
+ *   - `extraRoutes`: Additional custom routes to inject.
+ *   - `authConfig`: Authentication configuration, including enabled providers and registration settings.
+ *
+ * The function builds a list of route definitions, conditionally enables them,
+ * and injects each enabled route using the provided `injectRoute` function.
+ */
 export const routeHandler = defineUtility('astro:config:setup')((params, options: Options) => {
 	const { injectRoute } = params;
 
