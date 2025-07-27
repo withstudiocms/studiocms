@@ -10,7 +10,6 @@ export default defineStudioCMSConfig({
 		developerConfig: {
 			demoMode: false,
 		},
-		pageTypeOptions: {}
 	},
 	componentRegistry: {
 		'test-comp': './src/components/test-comp.astro',

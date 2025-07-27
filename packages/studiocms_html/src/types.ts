@@ -1,5 +1,22 @@
 import { z } from 'astro/zod';
 
+/**
+ * Schema for options used to sanitize HTML content in StudioCMS.
+ *
+ * @remarks
+ * This schema defines the configuration for controlling which elements and attributes
+ * are allowed, blocked, or dropped during the sanitization process. It also provides
+ * options for handling components, custom elements, and comments.
+ *
+ * @property allowElements - An array of strings specifying elements that should not be removed. All other elements will be dropped.
+ * @property blockElements - An array of strings specifying elements that should be removed, but their children will be kept.
+ * @property dropElements - An array of strings specifying elements (including nested elements) that should be removed entirely.
+ * @property allowAttributes - An object mapping attribute names to arrays of allowed tag names. Only matching attributes will be retained.
+ * @property dropAttributes - An object mapping attribute names to arrays of tag names for which the attribute should be dropped.
+ * @property allowComponents - If true, components will be checked against built-in and custom configuration to determine retention. Default is false.
+ * @property allowCustomElements - If true, custom elements will be checked against built-in and custom configuration to determine retention. Default is false.
+ * @property allowComments - If true, HTML comments will be retained. Default is false.
+ */
 export const StudioCMSSanitizeOptionsSchema = z
 	.object({
 		/** An Array of strings indicating elements that the sanitizer should not remove. All elements not in the array will be dropped. */
@@ -21,8 +38,32 @@ export const StudioCMSSanitizeOptionsSchema = z
 	})
 	.optional();
 
+/**
+ * Defines the schema for HTML configuration options.
+ *
+ * The schema includes an optional `sanitize` property, which is validated
+ * using the `StudioCMSSanitizeOptionsSchema`. If no value is provided,
+ * the default is an empty object.
+ */
 export const HTMLSchema = z
 	.object({
+		/**
+		 * Schema for options used to sanitize HTML content in StudioCMS.
+		 *
+		 * @remarks
+		 * This schema defines the configuration for controlling which elements and attributes
+		 * are allowed, blocked, or dropped during the sanitization process. It also provides
+		 * options for handling components, custom elements, and comments.
+		 *
+		 * @property allowElements - An array of strings specifying elements that should not be removed. All other elements will be dropped.
+		 * @property blockElements - An array of strings specifying elements that should be removed, but their children will be kept.
+		 * @property dropElements - An array of strings specifying elements (including nested elements) that should be removed entirely.
+		 * @property allowAttributes - An object mapping attribute names to arrays of allowed tag names. Only matching attributes will be retained.
+		 * @property dropAttributes - An object mapping attribute names to arrays of tag names for which the attribute should be dropped.
+		 * @property allowComponents - If true, components will be checked against built-in and custom configuration to determine retention. Default is false.
+		 * @property allowCustomElements - If true, custom elements will be checked against built-in and custom configuration to determine retention. Default is false.
+		 * @property allowComments - If true, HTML comments will be retained. Default is false.
+		 */
 		sanitize: StudioCMSSanitizeOptionsSchema,
 	})
 	.optional()

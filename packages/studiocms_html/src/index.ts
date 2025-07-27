@@ -27,10 +27,6 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/html';
 
-	// Resolve the path to the MDX renderer component
-	const renderer = resolve('./components/renderer.astro');
-	const editor = resolve('./components/editor.astro');
-
 	// Resolve the options and set defaults if not provided
 	const resolvedOptions = HTMLSchema.safeParse(options).data;
 
@@ -58,8 +54,8 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 						{
 							identifier: 'studiocms/html',
 							label: 'HTML',
-							pageContentComponent: editor,
-							rendererComponent: renderer,
+							pageContentComponent: resolve('./components/editor.astro'),
+							rendererComponent: resolve('./components/renderer.astro'),
 						},
 					],
 				});
