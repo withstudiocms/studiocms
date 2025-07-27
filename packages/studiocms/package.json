@@ -51,8 +51,8 @@
 		"ui.d.ts"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,woff2}'",
+		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,woff2}'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"bin": {
