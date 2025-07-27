@@ -313,7 +313,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setRendering({ pageTypes }) {
-							for (const { apiEndpoint, identifier, rendererComponent, pageContentComponent } of pageTypes || []) {
+							for (const {
+								apiEndpoint,
+								identifier,
+								rendererComponent,
+							} of pageTypes || []) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
 										identifier: identifier,
@@ -337,9 +341,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 										content: builtIns,
 									});
 
-									if (pageContentComponent) {
-										renderingPluginCount++;
-									}
+									renderingPluginCount++;
 								}
 							}
 
@@ -372,7 +374,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			}
 
 			if (renderingPluginCount === 0) {
-				throw new AstroError("No rendering plugins found, StudioCMS requires at least one rendering plugin. Please install one, such as '@studiocms/blog' or '@studiocms/html'.");
+				throw new AstroError(
+					"No rendering plugins found, StudioCMS requires at least one rendering plugin. Please install one, such as '@studiocms/md' or '@studiocms/html'."
+				);
 			}
 
 			// Robots.txt Integration (Default)
@@ -411,10 +415,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const editorComponents = allPageTypes
 				.map(({ identifier, pageContentComponent }) => {
-					return pageContentComponentFilter(
-						pageContentComponent,
-						convertToSafeString(identifier)
-					);
+					return pageContentComponentFilter(pageContentComponent, convertToSafeString(identifier));
 				})
 				.join('\n');
 
