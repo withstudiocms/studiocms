@@ -1,7 +1,6 @@
 ---
 import { pluginRenderers } from "studiocms:plugins/renderers";
 import * as renderers from "virtual:studiocms/plugins/renderers";
-import { AstroError } from "astro/errors";
 import type { PluginPageTypeRendererProps } from "../types.js";
 
 interface Props extends PluginPageTypeRendererProps {}
@@ -15,17 +14,22 @@ if (!data) return;
 
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
-if (!renderer)
-    throw new AstroError(`No renderer found for page type: ${data.package}`);
+if (!renderer) {
+    console.warn(
+        `Renderer for page type "${data.package}" not found. Ensure the plugin is correctly registered and the renderer exists.`,
+    );
+    return;
+};
 
 const RendererModule: AstroComponent =
     renderers[renderer.safePageType as keyof typeof renderers];
 
-if (!RendererModule)
-    throw new AstroError(
-        "Renderer not found",
-        `No renderer found for page type "${data.package}". Please ensure the plugin is correctly registered and the renderer exists. If you are using a custom renderer, ensure it is properly defined in your plugin's configuration. If you have not installed any renderer plugins, please install one such as "@studiocms/md" or "@studiocms/html".`,
+if (!RendererModule) {
+    console.error(
+        `Renderer module for page type "${data.package}" not found in renderers.`,
     );
+    return;
+}
 ---
 
 <RendererModule {data} />

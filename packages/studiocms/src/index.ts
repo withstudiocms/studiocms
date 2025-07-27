@@ -158,6 +158,9 @@ export const studiocms = defineIntegration({
 						name,
 						verbose,
 						componentRegistry,
+						builtInComponents: {
+							'cms-img': defaultCustomImageComponent,
+						},
 					});
 
 					// Setup Routes
