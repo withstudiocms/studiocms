@@ -58,7 +58,11 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 	const internalRenderer = resolve('./lib/markdown-prerender.js');
 
 	// Resolve the options and set defaults if not provided
-	const resolvedOptions = MarkdownSchema.safeParse(options).data;
+	const parseResult = MarkdownSchema.safeParse(options);
+	if (!parseResult.success) {
+		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
+	}
+	const resolvedOptions = parseResult.data;
 
 	// Define the resolved Callout Theme
 	let resolvedCalloutTheme: string | undefined;

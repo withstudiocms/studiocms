@@ -28,7 +28,11 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 	const packageIdentifier = '@studiocms/html';
 
 	// Resolve the options and set defaults if not provided
-	const resolvedOptions = HTMLSchema.safeParse(options).data;
+	const parseResult = HTMLSchema.safeParse(options);
+	if (!parseResult.success) {
+		throw new Error(`Invalid HTML options: ${parseResult.error.message}`);
+	}
+	const resolvedOptions = parseResult.data;
 
 	// Return the plugin configuration
 	return definePlugin({
