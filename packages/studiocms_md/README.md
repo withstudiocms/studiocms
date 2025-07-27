@@ -1,4 +1,4 @@
-# @StudioCMS/MD Plugin
+# @studiocms/md Plugin
 
 Add Markdown support to StudioCMS
 

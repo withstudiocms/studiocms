@@ -1,4 +1,4 @@
-# @StudioCMS/HTML Plugin
+# @studiocms/html Plugin
 
 Add HTML support to StudioCMS
 
