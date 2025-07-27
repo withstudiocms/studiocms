@@ -112,6 +112,40 @@ export const defaultPlugin: StudioCMSPlugin = {
 	},
 };
 
+type PluginRequire = {
+	source: string;
+	requires: string[];
+};
+
+function verifyPluginRequires(sourceList: string[], requires: PluginRequire[]) {
+	const missingRequirements: { source: string; missing: string[] }[] = [];
+
+	for (const req of requires) {
+		const { source, requires } = req;
+
+		const missing = requires.filter((r) => !sourceList.includes(r));
+		if (missing.length > 0) {
+			missingRequirements.push({ source, missing });
+		}
+	}
+
+	if (missingRequirements.length > 0) {
+		const errorMessage = missingRequirements
+			.map(
+				({ source, missing }) =>
+					`Plugin ${source} requires the following plugins that are not installed: ${missing.join(
+						', '
+					)}`
+			)
+			.join('\n');
+
+		throw new StudioCMSError(
+			`Plugins missing requirements: ${errorMessage}`,
+			'Some plugins require other plugins to be installed. Please install the required plugins.'
+		);
+	}
+}
+
 type Options = {
 	dbStartPage: boolean;
 	verbose: boolean;
@@ -182,6 +216,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const messages: Messages = [];
 
+		let renderingPluginCount = 0;
+
+		const sourcePluginsList: string[] = [];
+
+		const pluginRequires: PluginRequire[] = [];
+
 		// Define the Image Service Identifier Keys
 		const imageServiceKeys: {
 			identifier: string;
@@ -206,11 +246,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			if (plugins) pluginsToProcess.push(...plugins);
 
-			let renderingPluginCount = 0;
-
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
-				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, ...safeData } = plugin;
+				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
 				let comparison: number;
 				try {
 					comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
@@ -313,11 +351,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setRendering({ pageTypes }) {
-							for (const {
-								apiEndpoint,
-								identifier,
-								rendererComponent,
-							} of pageTypes || []) {
+							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
 										identifier: identifier,
@@ -363,6 +397,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					});
 				}
 
+				if (requires) {
+					pluginRequires.push({
+						source: safeData.identifier,
+						requires,
+					});
+				}
+
+				sourcePluginsList.push(safeData.identifier);
+
 				const safePlugin: SafePluginListItemType = {
 					...safeData,
 					settingsPage: foundSettingsPage,
@@ -378,6 +421,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					"No rendering plugins found, StudioCMS requires at least one rendering plugin. Please install one, such as '@studiocms/md' or '@studiocms/html'."
 				);
 			}
+
+			// Verify Plugin Requirements
+			verifyPluginRequires(sourcePluginsList, pluginRequires);
 
 			// Robots.txt Integration (Default)
 			if (robotsTXTConfig === true) {

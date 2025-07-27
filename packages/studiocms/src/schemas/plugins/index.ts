@@ -209,9 +209,31 @@ export interface BasePluginHooks {
 }
 
 export interface StudioCMSPlugin {
+	/**
+	 * The identifier of the plugin, usually the package name.
+	 */
 	identifier: string;
+	/**
+	 * The name of the plugin, displayed in the StudioCMS Dashboard.
+	 */
 	name: string;
+	/**
+	 * The minimum version of StudioCMS required for this plugin to function correctly.
+	 * This is used to ensure compatibility between the plugin and the StudioCMS core.
+	 * It should be a semantic version string (e.g., "1.0.0").
+	 * If the plugin is not compatible with the current version of StudioCMS, it should not be loaded.
+	 * This is a required field.
+	 * @example "1.0.0"
+	 */
 	studiocmsMinimumVersion: string;
+	/**
+	 * List of plugins that this plugin requires to function correctly.
+	 * This is used to ensure that all required plugins are loaded before this plugin.
+	 * If any required plugin is not found, this plugin will not be loaded.
+	 * This is an optional field.
+	 * @example ["@studiocms/plugin-example", "@studiocms/plugin-another-example"]
+	 */
+	requires?: string[];
 	hooks: {
 		[K in keyof StudioCMS.PluginHooks]?: StudioCMS.PluginHooks[K];
 	} & Partial<Record<string, unknown>>;

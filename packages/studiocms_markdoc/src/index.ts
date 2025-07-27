@@ -38,6 +38,7 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 		identifier: packageIdentifier,
 		name: 'StudioCMS MarkDoc',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
+		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({

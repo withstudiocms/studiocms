@@ -57,6 +57,7 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 		identifier: packageIdentifier,
 		name: 'StudioCMS MDX',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
+		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({

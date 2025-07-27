@@ -59,7 +59,8 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		studiocmsMinimumVersion: '0.1.0-beta.17',
+		studiocmsMinimumVersion: '0.1.0-beta.21',
+		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
