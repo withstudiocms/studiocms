@@ -120,8 +120,6 @@
 			"types": "./dist/componentRegistry/runtime.d.ts",
 			"default": "./dist/componentRegistry/runtime.js"
 		},
-		"./components/*": "./dist/components/*",
-		"./layouts/*": "./dist/layouts/*",
 		"./lib/*": {
 			"types": "./dist/lib/*.d.ts",
 			"default": "./dist/lib/*"
@@ -131,6 +129,9 @@
 			"default": "./dist/types.js"
 		},
 		"./v/types": "./dist/virtual.d.ts",
+		"./components/*": "./src/components/*",
+		"./layouts/*": "./src/layouts/*",
+		"./styles/*": "./src/styles/*",
 		"./src/middleware/*": "./src/middleware/*",
 		"./src/routes/*": "./src/routes/*",
 		"./effect": {
@@ -139,7 +140,7 @@
 		},
 		"./sdk/*": {
 			"types": "./dist/sdk/*.d.ts",
-			"default": "./dist/sdk/*"
+			"default": "./dist/sdk/*.js"
 		}
 	},
 	"type": "module",
