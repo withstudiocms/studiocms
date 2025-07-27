@@ -1,11 +1,11 @@
 import blog from '@studiocms/blog';
-import mdPlugin from '@studiocms/md';
+import md from '@studiocms/md';
 import { defineStudioCMSConfig } from 'studiocms/config';
 
 export default defineStudioCMSConfig({
 	dbStartPage: false,
 	verbose: true,
-	plugins: [blog(), mdPlugin()],
+	plugins: [md(), blog()],
 	features: {
 		developerConfig: {
 			demoMode: false,
