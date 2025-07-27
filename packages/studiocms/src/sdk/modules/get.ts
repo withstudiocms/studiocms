@@ -1,4 +1,4 @@
-import { asc, eq } from 'astro:db';
+import { asc, eq, or } from 'astro:db';
 import config from 'studiocms:config';
 import {
 	CMSNotificationSettingsId,
@@ -140,6 +140,27 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					paginate.limit = 10; // Default value
 				}
 				return paginate;
+			});
+
+			const getFolderByNameOrId = Effect.fn(function* (idOrName: string) {
+				const data = yield* dbService.execute((db) =>
+					db
+						.select()
+						.from(tsPageFolderStructure)
+						.where(
+							or(eq(tsPageFolderStructure.id, idOrName), eq(tsPageFolderStructure.name, idOrName))
+						)
+						.get()
+				);
+				if (!data) {
+					return yield* Effect.fail(
+						new SDKCoreError({
+							type: 'LibSQLDatabaseError',
+							cause: new StudioCMS_SDK_Error(`Folder not found in Database: ${idOrName}`),
+						})
+					);
+				}
+				return data;
 			});
 
 			function _getPackagesPages(
@@ -454,14 +475,14 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 			}
 
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts?: boolean,
 				hideDefaultIndex?: boolean,
 				metaOnly?: false,
 				paginate?: PaginateInput
 			): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts?: boolean,
 				hideDefaultIndex?: boolean,
 				metaOnly?: true,
@@ -469,7 +490,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 			): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
 
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts = false,
 				hideDefaultIndex = false,
 				metaOnly = false,
@@ -552,8 +573,10 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
+					const folderData = yield* getFolderByNameOrId(idOrName);
+
 					if (!status) {
-						const dbPages = yield* getPages(id, includeDrafts, hideDefaultIndex);
+						const dbPages = yield* getPages(folderData.id, includeDrafts, hideDefaultIndex);
 						const data = dbPages.map((page) => pageDataReturn(page));
 						return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 					}
@@ -568,7 +591,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						}
 
 						const data = updatedData
-							.filter(({ parentFolder }) => parentFolder === id)
+							.filter(({ parentFolder }) => parentFolder === folderData.id)
 							.map((data) => pageDataReturn(data));
 
 						if (paginate) {
@@ -595,7 +618,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}
 
 					const data = Array.from(pages.values()).filter(
-						({ data: { parentFolder } }) => parentFolder === id
+						({ data: { parentFolder } }) => parentFolder === folderData.id
 					);
 
 					if (paginate) {
