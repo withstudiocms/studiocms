@@ -1,9 +1,9 @@
 export function rendererComponentFilter(
-	comp: string,
+	comp: string | undefined,
 	safePageType: string,
 ) {
 	if (!comp) {
-		throw new Error(`Component path is required for page type: ${safePageType}`);
+		throw new Error(`Renderer Component path is required for page type: ${safePageType}`);
 	}
 	return `export { default as ${safePageType} } from '${comp}';`;
 }
@@ -13,7 +13,7 @@ export function pageContentComponentFilter(
 	safePageType: string,
 ) {
 	if (!comp) {
-		throw new Error(`Component path is required for page type: ${safePageType}`);
+		throw new Error(`Page Content Component path is required for page type: ${safePageType}`);
 	}
 	return `export { default as ${safePageType} } from '${comp}';`;
 }
