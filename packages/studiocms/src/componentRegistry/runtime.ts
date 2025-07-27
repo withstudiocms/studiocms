@@ -67,11 +67,26 @@ export async function importComponentsKeys() {
 	return getRendererComponents();
 }
 
+/**
+ * Sets up a component proxy for the renderer.
+ *
+ * @param result - The SSRResult object from Astro.
+ * @returns A promise that resolves to a component proxy containing the components.
+ * @throws {StudioCMSRendererError} If there is an error during setup, it will be prefixed and logged.
+ */
 export async function setupRendererComponentProxy(result: SSRResult) {
 	const components = await getRendererComponents();
 	return createComponentProxy(result, components);
 }
 
+/**
+ * Creates a renderer function that transforms HTML content using the provided components and sanitization options.
+ *
+ * @param result - The SSRResult object from Astro.
+ * @param sanitizeOpts - Optional sanitization options for the HTML content.
+ * @param preRenderer - An optional function to preprocess the HTML content before rendering.
+ * @returns A function that takes HTML content as input and returns the transformed HTML.
+ */
 export async function createRenderer(
 	result: SSRResult,
 	sanitizeOpts?: SanitizeOptions,
