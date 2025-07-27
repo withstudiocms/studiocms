@@ -4,7 +4,6 @@ import type { StudioCMSPlugin } from '../plugins/index.js';
 import { authConfigSchema } from './auth.js';
 import { dashboardConfigSchema } from './dashboard.js';
 import { developerConfigSchema } from './developer.js';
-import { BuiltInPageTypeOptionsSchema } from './pageTypeOptions.js';
 import { SDKSchema } from './sdk.js';
 
 //
@@ -105,11 +104,6 @@ export const StudioCMSOptionsSchema = z
 				 * validated by the `SDKCacheSchema`.
 				 */
 				sdk: SDKSchema,
-
-				/**
-				 * Page Type Options
-				 */
-				pageTypeOptions: BuiltInPageTypeOptionsSchema,
 
 				/**
 				 * Allows customization of the Dashboard Configuration

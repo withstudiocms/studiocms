@@ -1,10 +1,10 @@
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
+import { AstroError } from 'astro/errors';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
-import { DefaultPageTypeComponents } from './index.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import robotsTXT from './lib/robots/index.js';
@@ -45,7 +45,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:config:setup': ({ setDashboard, setRendering }) => {
+		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
 				dashboardGridItems: [
 					{
@@ -108,27 +108,43 @@ export const defaultPlugin: StudioCMSPlugin = {
 					},
 				],
 			});
-
-			setRendering({
-				pageTypes: [
-					{
-						label: 'Markdown (Built-in)',
-						identifier: 'studiocms/markdown',
-						pageContentComponent:
-							DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
-						rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
-					},
-					{
-						label: 'HTML (Built-in)',
-						identifier: 'studiocms/html',
-						pageContentComponent: DefaultPageTypeComponents['studiocms/html'].pageContentComponent,
-						rendererComponent: DefaultPageTypeComponents['studiocms/html'].rendererComponent,
-					},
-				],
-			});
 		},
 	},
 };
+
+type PluginRequire = {
+	source: string;
+	requires: string[];
+};
+
+function verifyPluginRequires(sourceList: string[], requires: PluginRequire[]) {
+	const missingRequirements: { source: string; missing: string[] }[] = [];
+
+	for (const req of requires) {
+		const { source, requires } = req;
+
+		const missing = requires.filter((r) => !sourceList.includes(r));
+		if (missing.length > 0) {
+			missingRequirements.push({ source, missing });
+		}
+	}
+
+	if (missingRequirements.length > 0) {
+		const errorMessage = missingRequirements
+			.map(
+				({ source, missing }) =>
+					`Plugin ${source} requires the following plugins that are not installed: ${missing.join(
+						', '
+					)}`
+			)
+			.join('\n');
+
+		throw new StudioCMSError(
+			`Plugins missing requirements: ${errorMessage}`,
+			'Some plugins require other plugins to be installed. Please install the required plugins.'
+		);
+	}
+}
 
 type Options = {
 	dbStartPage: boolean;
@@ -200,6 +216,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const messages: Messages = [];
 
+		let renderingPluginCount = 0;
+
+		const sourcePluginsList: string[] = [];
+
+		const pluginRequires: PluginRequire[] = [];
+
 		// Define the Image Service Identifier Keys
 		const imageServiceKeys: {
 			identifier: string;
@@ -226,7 +248,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
-				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, ...safeData } = plugin;
+				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
 				let comparison: number;
 				try {
 					comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
@@ -345,14 +367,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								if (rendererComponent) {
 									const builtIns = rendererComponentFilter(
 										rendererComponent,
-										convertToSafeString(identifier),
-										DefaultPageTypeComponents
+										convertToSafeString(identifier)
 									);
 									pluginRenderers.push({
 										pageType: identifier,
 										safePageType: convertToSafeString(identifier),
 										content: builtIns,
 									});
+
+									renderingPluginCount++;
 								}
 							}
 
@@ -374,6 +397,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					});
 				}
 
+				if (requires) {
+					pluginRequires.push({
+						source: safeData.identifier,
+						requires,
+					});
+				}
+
+				sourcePluginsList.push(safeData.identifier);
+
 				const safePlugin: SafePluginListItemType = {
 					...safeData,
 					settingsPage: foundSettingsPage,
@@ -383,6 +415,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 				safePluginList.push(safePlugin);
 			}
+
+			if (renderingPluginCount === 0) {
+				throw new AstroError(
+					"No rendering plugins found, StudioCMS requires at least one rendering plugin. Please install one, such as '@studiocms/md' or '@studiocms/html'."
+				);
+			}
+
+			// Verify Plugin Requirements
+			verifyPluginRequires(sourcePluginsList, pluginRequires);
 
 			// Robots.txt Integration (Default)
 			if (robotsTXTConfig === true) {
@@ -420,11 +461,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const editorComponents = allPageTypes
 				.map(({ identifier, pageContentComponent }) => {
-					return pageContentComponentFilter(
-						pageContentComponent,
-						convertToSafeString(identifier),
-						DefaultPageTypeComponents
-					);
+					return pageContentComponentFilter(pageContentComponent, convertToSafeString(identifier));
 				})
 				.join('\n');
 
@@ -605,8 +642,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						import * as renderers from 'virtual:studiocms/plugins/renderers';
 						
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
-					
-						export { preRender as mdPreRender } from '${resolve('./components/renderers/markdown-prerender.js')}';
 					`,
 					'studiocms:plugins/imageService': `
 						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};

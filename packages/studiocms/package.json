@@ -3,7 +3,7 @@
 	"version": "0.1.0-beta.21",
 	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
 	"author": {
-		"name": "Adam Matthiesen | Jacob Jenkins | Paul Valladares",
+		"name": "withstudiocms",
 		"url": "https://studiocms.dev"
 	},
 	"repository": {
@@ -51,8 +51,8 @@
 		"ui.d.ts"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,woff2}'",
+		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,woff2}'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"bin": {
@@ -161,14 +161,12 @@
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"@studiocms/markdown-remark-processor": "^1.2.0",
 		"@studiocms/ui": "catalog:",
 		"@withstudiocms/cli-kit": "0.1.0",
 		"arctic": "^3.5.0",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
-		"codemirror": "^5.49.0",
 		"commander": "^14.0.0",
 		"deepmerge-ts": "^7.1.5",
 		"diff": "^8.0.2",
@@ -180,7 +178,7 @@
 		"esbuild": "^0.25.6",
 		"fuse.js": "^7.0.0",
 		"jose": "^6.0.11",
-		"katex": "^0.16.21",
+		"markdown-it": "^14.1.0",
 		"magicast": "^0.3.5",
 		"mdast-util-from-markdown": "^2.0.2",
 		"mdast-util-to-markdown": "^2.1.1",
@@ -192,7 +190,6 @@
 		"package-manager-detector": "^1.1.0",
 		"semver": "^7.7.1",
 		"socks": "^2.8.4",
-		"suneditor": "^2.47.5",
 		"three": "0.170.0",
 		"ts-morph": "^26.0.0",
 		"ultrahtml": "^1.5.3",
@@ -200,9 +197,9 @@
 	},
 	"devDependencies": {
 		"@effect/language-service": "catalog:effect",
-		"@types/codemirror": "5.60.10",
 		"@types/mdast": "^4.0.4",
 		"@types/micromatch": "^4.0.9",
+		"@types/markdown-it": "^14.1.2",
 		"@types/node": "catalog:",
 		"@types/nodemailer": "^6.4.17",
 		"@types/semver": "^7.5.8",
@@ -212,7 +209,6 @@
 	},
 	"peerDependencies": {
 		"@astrojs/db": "catalog:min",
-		"@astrojs/markdown-remark": "catalog:min",
 		"@astrojs/web-vitals": "catalog:",
 		"@studiocms/web-vitals": "catalog:",
 		"astro": "catalog:min",

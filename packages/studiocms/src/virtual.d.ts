@@ -46,8 +46,6 @@ declare module 'studiocms:plugins/renderers' {
 		pageType: string;
 		safePageType: string;
 	}[];
-
-	export const mdPreRender: typeof import('./components/renderers/markdown-prerender').preRender;
 }
 
 declare module 'studiocms:mailer' {
@@ -528,19 +526,10 @@ declare module 'studiocms:auth/lib/types' {
 }
 
 declare module 'virtual:studiocms/plugins/renderers' {
-	export const studiocms_markdown: typeof import(
-		'./components/renderers/studiocms-markdown.astro'
-	).default;
-	export const studiocms_html: typeof import('./components/renderers/studiocms-html.astro').default;
 }
 
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
-}
-
-declare module 'studiocms:renderer/config' {
-	const config: import('./schemas/config/pageTypeOptions').MarkdownSchemaOptions;
-	export default config;
 }
 
 declare module 'virtual:studiocms/sdk/env' {

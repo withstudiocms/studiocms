@@ -25,6 +25,11 @@ const defaultConfig = {
 		'.webp': 'copy',
 		'.avif': 'copy',
 		'.svg': 'copy',
+		'.woff2': 'copy',
+		'.woff': 'copy',
+		'.ttf': 'copy',
+		'.eot': 'copy',
+		'.otf': 'copy',
 	},
 };
 

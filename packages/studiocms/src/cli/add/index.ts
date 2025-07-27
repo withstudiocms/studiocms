@@ -14,8 +14,11 @@ import { ValidatePlugins } from './validatePlugins.js';
 
 export const ALIASES = new Map([
 	['blog', '@studiocms/blog'],
-	['mdx', '@studiocms/mdx'],
+	['cloudinary', '@studiocms/cloudinary-image-service'],
+	['html', '@studiocms/html'],
 	['markdoc', '@studiocms/markdoc'],
+	['md', '@studiocms/md'],
+	['mdx', '@studiocms/mdx'],
 	['wysiwyg', '@studiocms/wysiwyg'],
 ]);
 

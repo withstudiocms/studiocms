@@ -21,6 +21,8 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	// Resolve the path to the MDX renderer component
 	const renderer = resolve('./components/MarkDocRenderer.astro');
 
+	const editor = resolve('./components/editor.astro');
+
 	// Resolve the path to the internal renderer
 	const internalRenderer = resolve('./lib/render.js');
 
@@ -35,7 +37,8 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MarkDoc',
-		studiocmsMinimumVersion: '0.1.0-beta.17',
+		studiocmsMinimumVersion: '0.1.0-beta.21',
+		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
@@ -68,7 +71,7 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 						{
 							identifier: 'studiocms/markdoc',
 							label: 'MarkDoc',
-							pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MarkDoc editor in the future
+							pageContentComponent: editor,
 							rendererComponent: renderer,
 						},
 					],

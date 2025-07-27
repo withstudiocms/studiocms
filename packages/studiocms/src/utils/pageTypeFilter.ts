@@ -1,45 +1,19 @@
-type DefaultPageTypeComponents = {
-	[x: string]: {
-		pageContentComponent: string;
-		rendererComponent: string;
-	};
-};
-
 export function rendererComponentFilter(
-	comp: string,
+	comp: string | undefined,
 	safePageType: string,
-	defaultPageTypeComponents: DefaultPageTypeComponents
 ) {
-	let safeComp = comp;
-
-	if (!safeComp) {
-		safeComp = `export { default as ${safePageType} } from '${defaultPageTypeComponents['studiocms/markdown'].rendererComponent}';`;
-		return safeComp;
+	if (!comp) {
+		throw new Error(`Renderer Component path is required for page type: ${safePageType}`);
 	}
-
-	if (safeComp in defaultPageTypeComponents) {
-		return `export { default as ${safePageType} } from '${defaultPageTypeComponents[comp].rendererComponent}';`;
-	}
-
-	return `export { default as ${safePageType} } from '${safeComp}';`;
+	return `export { default as ${safePageType} } from '${comp}';`;
 }
 
 export function pageContentComponentFilter(
 	comp: string | undefined,
 	safePageType: string,
-	defaultPageTypeComponents: DefaultPageTypeComponents
 ) {
-	let safeComp = comp;
-
-	if (!safeComp) {
-		safeComp = `export { default as ${safePageType} } from '${defaultPageTypeComponents['studiocms/markdown'].pageContentComponent}';`;
-
-		return safeComp;
+	if (!comp) {
+		throw new Error(`Page Content Component path is required for page type: ${safePageType}`);
 	}
-
-	if (safeComp in defaultPageTypeComponents) {
-		return `export { default as ${safePageType} } from '${defaultPageTypeComponents[safeComp].pageContentComponent}';`;
-	}
-
-	return `export { default as ${safePageType} } from '${safeComp}';`;
+	return `export { default as ${safePageType} } from '${comp}';`;
 }

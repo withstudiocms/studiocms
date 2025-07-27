@@ -18,8 +18,7 @@ import { z } from 'astro/zod';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { componentRegistryHandler } from './componentRegistry/handler.js';
-import { StudioCMSMarkdownDefaults, makeDashboardRoute, routesDir } from './consts.js';
-import { shared } from './lib/renderer/shared.js';
+import { makeDashboardRoute, routesDir } from './consts.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
 import type { StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
@@ -51,20 +50,11 @@ const env = loadEnv('', process.cwd(), '');
 const RendererComponent = resolve('./components/Renderer.astro');
 
 // Default Custom Image Component Resolver
-const defaultCustomImageComponent = resolve('./components/image/CustomImage.astro');
+const customImage = resolve('./components/image/CustomImage.astro');
 
-/**
- * Default PageType components for the default StudioCMS Plugin
- */
-export const DefaultPageTypeComponents = {
-	'studiocms/markdown': {
-		pageContentComponent: resolve('./components/editors/markdown.astro'),
-		rendererComponent: resolve('./components/renderers/studiocms-markdown.astro'),
-	},
-	'studiocms/html': {
-		pageContentComponent: resolve('./components/editors/html.astro'),
-		rendererComponent: resolve('./components/renderers/studiocms-html.astro'),
-	},
+// Built-in Components for the Component Registry
+const builtInComponents = {
+	'cms-img': customImage,
 };
 
 /**
@@ -85,9 +75,6 @@ export const studiocms = defineIntegration({
 
 		// Messages Array for Logging
 		const messages: Messages = [];
-
-		// Define the resolved Callout Theme
-		let resolvedCalloutTheme: string | undefined;
 
 		let cacheJsonFile: URL | undefined = undefined;
 
@@ -126,7 +113,6 @@ export const studiocms = defineIntegration({
 						componentRegistry,
 						features: {
 							developerConfig,
-							pageTypeOptions,
 							robotsTXT: robotsTXTConfig,
 							injectQuickActionsMenu,
 							dashboardConfig: { dashboardEnabled, inject404Route, dashboardRouteOverride },
@@ -157,16 +143,6 @@ export const studiocms = defineIntegration({
 
 					changelogHelper(params);
 
-					// Resolve the callout theme based on the user's configuration
-					if (
-						pageTypeOptions.markdown.flavor === 'studiocms' &&
-						pageTypeOptions.markdown.callouts !== false
-					) {
-						resolvedCalloutTheme = resolve(
-							`./styles/md-remark-callouts/${pageTypeOptions.markdown.callouts || 'obsidian'}.css`
-						);
-					}
-
 					const {
 						extraRoutes,
 						integrations: newIntegrations,
@@ -187,6 +163,7 @@ export const studiocms = defineIntegration({
 						name,
 						verbose,
 						componentRegistry,
+						builtInComponents,
 					});
 
 					// Setup Routes
@@ -204,7 +181,6 @@ export const studiocms = defineIntegration({
 					scriptHandler(params, {
 						dbStartPage,
 						injectQuickActionsMenu,
-						pageTypeOptions,
 					});
 
 					if (!dbStartPage)
@@ -348,20 +324,13 @@ export const studiocms = defineIntegration({
 							`,
 
 							// Renderer Virtual Imports
-							'studiocms:renderer/config': `
-								export default ${JSON.stringify(options.features.pageTypeOptions.markdown)};
-							`,
 							'studiocms:renderer': `
 								export { default as StudioCMSRenderer } from '${RendererComponent}';
-							`,
-							'studiocms:renderer/markdown-remark/css': `
-								import '${resolve('./styles/md-remark-headings.css')}';
-								${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
 							`,
 
 							// Image Handler Virtual Imports
 							'studiocms:imageHandler/components': `
-								export { default as CustomImage } from '${defaultCustomImageComponent}';
+								export { default as CustomImage } from '${customImage}';
 							`,
 
 							// Auth Virtual Imports
@@ -502,19 +471,7 @@ export const studiocms = defineIntegration({
 					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state
-				'astro:config:done': ({ config }) => {
-					// Inject the Markdown configuration into the shared state
-					shared.astroMDRemark = config.markdown;
-					shared.studiocmsHTML = options.features.pageTypeOptions.html;
-					if (options.features.pageTypeOptions.markdown.flavor === 'studiocms') {
-						shared.studiocmsMarkdown = options.features.pageTypeOptions.markdown;
-					} else {
-						shared.studiocmsMarkdown = {
-							...StudioCMSMarkdownDefaults,
-							sanitize: options.features.pageTypeOptions.markdown.sanitize,
-						};
-					}
-
+				'astro:config:done': () => {
 					// Log Setup Complete
 					messages.push({
 						label: 'studiocms:setup',

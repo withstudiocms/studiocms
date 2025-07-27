@@ -6,8 +6,6 @@ import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js'
 
 const HERO_IMAGE =
 	'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-const LOREM_IPSUM =
-	'## Hello World \nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
@@ -93,35 +91,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 			});
 
 			yield* sdk.INIT.ghostUser();
-
-			yield* sdk.POST.databaseEntries.pages([
-				{
-					pageData: {
-						title: 'Home',
-						slug: 'index',
-						showOnNav: true,
-						contentLang: 'default',
-						description: 'Index page',
-						heroImage: DefaultHeroOrUserSetOgImage,
-						authorId: null,
-						package: 'studiocms/markdown',
-						publishedAt: new Date(),
-						showAuthor: false,
-						showContributors: false,
-						updatedAt: new Date(),
-						categories: [],
-						contributorIds: [],
-						draft: false,
-						tags: [],
-						parentFolder: null,
-						id: crypto.randomUUID(),
-					},
-					pageContent: {
-						content: LOREM_IPSUM,
-						contentLang: 'default',
-					},
-				},
-			]);
 
 			return new Response(JSON.stringify({ message: 'Success' }), {
 				status: 200,

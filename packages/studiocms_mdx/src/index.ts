@@ -39,6 +39,8 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	// Resolve the path to the MDX renderer component
 	const renderer = resolve('./components/MDXRenderer.astro');
 
+	const editor = resolve('./components/editor.astro');
+
 	// Resolve the path to the internal renderer
 	const internalRenderer = resolve('./lib/render.js');
 
@@ -54,7 +56,8 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MDX',
-		studiocmsMinimumVersion: '0.1.0-beta.17',
+		studiocmsMinimumVersion: '0.1.0-beta.21',
+		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
@@ -88,7 +91,7 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 						{
 							identifier: 'studiocms/mdx',
 							label: 'MDX',
-							pageContentComponent: 'studiocms/markdown', // Fallback to the default content editor for now, might build a custom MDX editor in the future
+							pageContentComponent: editor,
 							rendererComponent: renderer,
 						},
 					],

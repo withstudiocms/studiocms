@@ -16,6 +16,7 @@ type componentRegistryHandlerOptions = {
 	verbose: boolean;
 	name: string;
 	componentRegistry: Record<string, string> | undefined;
+	builtInComponents?: Record<string, string>;
 };
 
 /**
@@ -38,7 +39,7 @@ type componentRegistryHandlerOptions = {
  * - Virtual imports are added for both the registry and its runtime.
  */
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
-	async (params, { componentRegistry, verbose, name }: componentRegistryHandlerOptions) =>
+	async (params, { componentRegistry, builtInComponents, verbose, name }: componentRegistryHandlerOptions) =>
 		await convertToVanilla(
 			genLogger('studiocms/componentRegistry/handler')(function* () {
 				// Setup helpers
@@ -56,8 +57,12 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const componentKeys: string[] = [];
 				const components: string[] = [];
 
-				// Get the component registry from the params or use an empty object
-				const componentRegistryToCheck = componentRegistry !== undefined ? componentRegistry : {};
+				// merge built-in components with the provided user component registry
+				const componentRegistryToCheck: Record<string, string> = {
+					...builtInComponents,
+					...componentRegistry,
+				};
+				
 				const componentRegistryEntries = Object.entries(componentRegistryToCheck);
 
 				if (Object.keys(componentRegistryToCheck).length === 0) {

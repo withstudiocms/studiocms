@@ -1,0 +1,78 @@
+{
+  "name": "@studiocms/md",
+  "version": "0.1.0-beta.21",
+  "description": "Add Markdown Support to your StudioCMS project with ease!",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/studiocms_md"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-integration",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "withastro",
+    "plugin",
+    "studiocms-plugin"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./v/types": {
+      "types": "./dist/virtual.d.ts",
+      "default": "./dist/virtual.d.js"
+    },
+    "./editor": "./dist/components/markdown-editor.astro",
+    "./renderer": "./dist/components/markdown-render.astro"
+  },
+  "type": "module",
+  "dependencies": {
+		"@studiocms/markdown-remark-processor": "^1.2.0",
+    "astro-integration-kit": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+		"@astrojs/markdown-remark": "catalog:min",
+    "astro": "catalog:min",
+    "studiocms": "workspace:*",
+    "vite": "catalog:min"
+  }
+}
