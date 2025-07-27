@@ -65,6 +65,7 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
+    "@studiocms/md": "workspace:*",
     "astro": "catalog:min",
     "studiocms": "workspace:*",
     "vite": "catalog:min"

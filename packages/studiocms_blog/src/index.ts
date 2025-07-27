@@ -52,6 +52,9 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
+	const editor = resolve('./components/editor.astro');
+	const renderer = resolve('./components/renderer.astro');
+
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
@@ -120,7 +123,14 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 				});
 
 				setRendering({
-					pageTypes: [{ identifier: packageIdentifier, label: 'Blog Post (StudioCMS Blog)' }],
+					pageTypes: [
+						{
+							identifier: packageIdentifier,
+							label: 'Blog Post (StudioCMS Blog)',
+							pageContentComponent: editor,
+							rendererComponent: renderer,
+						},
+					],
 				});
 
 				setSitemap({

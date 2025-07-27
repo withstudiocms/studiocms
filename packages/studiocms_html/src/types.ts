@@ -21,26 +21,6 @@ export const StudioCMSSanitizeOptionsSchema = z
 	})
 	.optional();
 
-export const AstroMarkdownSchema = z.object({
-	flavor: z.literal('astro'),
-	sanitize: StudioCMSSanitizeOptionsSchema,
-});
-
-export const StudioCMSMarkdownSchema = AstroMarkdownSchema.extend({
-	flavor: z.literal('studiocms'),
-	callouts: z
-		.union([z.literal('github'), z.literal('obsidian'), z.literal('vitepress'), z.literal(false)])
-		.optional()
-		.default('obsidian'),
-	autoLinkHeadings: z.boolean().optional().default(true),
-	discordSubtext: z.boolean().optional().default(true),
-});
-
-export const MarkdownSchema = z
-	.union([AstroMarkdownSchema, StudioCMSMarkdownSchema])
-	.optional()
-	.default({ flavor: 'studiocms' });
-
 export const HTMLSchema = z
 	.object({
 		sanitize: StudioCMSSanitizeOptionsSchema,
@@ -48,15 +28,4 @@ export const HTMLSchema = z
 	.optional()
 	.default({});
 
-export const BuiltInPageTypeOptionsSchema = z
-	.object({
-		/** Options for the `studiocms/markdown` pageType */
-		markdown: MarkdownSchema,
-		html: HTMLSchema,
-	})
-	.optional()
-	.default({});
-
-export type StudioCMSMarkdownOptions = z.infer<typeof StudioCMSMarkdownSchema>;
-export type MarkdownSchemaOptions = z.infer<typeof MarkdownSchema>;
 export type HTMLSchemaOptions = z.infer<typeof HTMLSchema>;

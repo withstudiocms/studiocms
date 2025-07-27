@@ -1,7 +1,7 @@
 ---
 export const partial = true;
-import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
 import { pipe } from 'effect';
+import { parseMarkdown } from '../../utils/tinyMDParser.js';
 
 const astroJsonData = await Astro.request.json();
 const queryParam = Astro.url.searchParams.get('content');
@@ -20,12 +20,7 @@ const data = pipe(
 
 		return 'No content to display';
 	},
-	(content) => ({
-		content: content(),
-		contentId: '',
-		contentLang: 'default',
-		id: '',
-	})
+	(content) => parseMarkdown(content())
 );
 ---
-<MarkdownRenderer {data} />
+<Fragment set:html={data} />

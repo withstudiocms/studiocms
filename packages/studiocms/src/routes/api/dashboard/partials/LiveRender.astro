@@ -1,35 +1,33 @@
 ---
 export const partial = true;
-import { studiocms_markdown as MarkdownRenderer } from 'virtual:studiocms/plugins/renderers';
+import { pipe } from 'effect';
+import { parseMarkdown } from '../../../../utils/tinyMDParser.js';
 
-type Content = string;
 type FullJsonData = { content: string | undefined };
 
 const queryParam = Astro.url.searchParams.get('content');
 const preQuery = Astro.url.searchParams.get('preload-content');
+const astroJsonData = await Astro.request.json();
 
-async function setContent() {
-	const jsonData: FullJsonData | undefined = await Astro.request.json();
+const renderedMarkdown = pipe(
+	() => {
+		const jsonData: FullJsonData | undefined = astroJsonData;
 
-	if (jsonData?.content) return jsonData.content;
+		if (jsonData?.content) {
+			return jsonData.content;
+		}
 
-	if (queryParam && queryParam !== 'null') return queryParam;
+		if (queryParam && queryParam !== 'null') {
+			return queryParam;
+		}
 
-	if (preQuery && preQuery !== 'null') return preQuery;
+		if (preQuery && preQuery !== 'null') {
+			return preQuery;
+		}
 
-	return 'No content to display';
-}
-
-const content: Content = await setContent();
-
-const data = {
-	defaultContent: {
-		content,
-		contentId: '',
-		contentLang: 'default',
-		id: '',
+		return 'No content to display';
 	},
-};
+	(content) => parseMarkdown(content())
+);
 ---
-
-<MarkdownRenderer {data} />
+<Fragment set:html={renderedMarkdown} />

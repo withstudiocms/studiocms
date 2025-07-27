@@ -6,59 +6,47 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
+import { createResolver } from 'astro-integration-kit';
 import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
-import type { MarkDocPluginOptions } from './types.js';
+import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
 
-export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugin {
+/**
+ * Creates the StudioCMS HTML plugin.
+ *
+ * This plugin integrates HTML page type support into StudioCMS, providing editor and renderer components.
+ * It resolves configuration options, sets up Astro integrations, and registers the HTML page type for rendering.
+ *
+ * @param options - Optional configuration for the HTML schema.
+ * @returns The StudioCMS plugin configuration object.
+ */
+export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
 	// Define the package identifier
-	const packageIdentifier = '@studiocms/markdoc';
+	const packageIdentifier = '@studiocms/html';
 
 	// Resolve the path to the MDX renderer component
-	const renderer = resolve('./components/MarkDocRenderer.astro');
-
+	const renderer = resolve('./components/renderer.astro');
 	const editor = resolve('./components/editor.astro');
 
-	// Resolve the path to the internal renderer
-	const internalRenderer = resolve('./lib/render.js');
-
 	// Resolve the options and set defaults if not provided
-	const resolvedOptions: MarkDocPluginOptions = {
-		type: options?.type || 'html',
-		argParse: options?.argParse,
-		transformConfig: options?.transformConfig,
-	};
+	const resolvedOptions = HTMLSchema.safeParse(options).data;
 
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
-		name: 'StudioCMS MarkDoc',
+		name: 'StudioCMS HTML',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
 				addIntegrations({
 					name: packageIdentifier,
 					hooks: {
-						'astro:config:setup': (params) => {
-							// Add the virtual imports for the MarkDoc renderer
-							addVirtualImports(params, {
-								name: packageIdentifier,
-								imports: {
-									'studiocms:markdoc/renderer': `
-										import { renderMarkDoc as _render } from '${internalRenderer}';
-										export const renderMarkDoc = _render;
-										export default renderMarkDoc;
-									`,
-								},
-							});
-						},
 						'astro:config:done': () => {
 							// Store the resolved options in the shared context for the renderer
-							shared.markDocConfig = resolvedOptions;
+							shared.htmlConfig = resolvedOptions;
 						},
 					},
 				});
@@ -66,10 +54,10 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 			'studiocms:config:setup': ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
-						// Define the MarkDoc page type
+						// Define the HTML page type
 						{
-							identifier: 'studiocms/markdoc',
-							label: 'MarkDoc',
+							identifier: 'studiocms/html',
+							label: 'HTML',
 							pageContentComponent: editor,
 							rendererComponent: renderer,
 						},
@@ -80,4 +68,4 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	});
 }
 
-export default studiocmsMarkDoc;
+export default studiocmsHTML;

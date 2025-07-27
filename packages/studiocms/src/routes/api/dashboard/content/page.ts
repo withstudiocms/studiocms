@@ -313,12 +313,6 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(400, 'Invalid request');
 			}
 
-			const isHomePage = yield* sdk.GET.page.bySlug('index');
-
-			if (isHomePage.data && isHomePage.data.id === id) {
-				return apiResponseLogger(400, 'Cannot delete home page');
-			}
-
 			const pageToDelete = yield* sdk.GET.page.byId(id);
 
 			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');

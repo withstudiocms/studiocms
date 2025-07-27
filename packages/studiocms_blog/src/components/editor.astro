@@ -1,0 +1,8 @@
+---
+import MDEditor from '@studiocms/md/editor'
+import type { PluginPageTypeEditorProps } from 'studiocms/types';
+
+interface Props extends PluginPageTypeEditorProps {}
+const { content } = Astro.props;
+---
+<MDEditor {content} />

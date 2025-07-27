@@ -1,10 +1,10 @@
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
+import { AstroError } from 'astro/errors';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
-import { DefaultPageTypeComponents } from './index.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import robotsTXT from './lib/robots/index.js';
@@ -45,7 +45,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:config:setup': ({ setDashboard, setRendering }) => {
+		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
 				dashboardGridItems: [
 					{
@@ -105,24 +105,6 @@ export const defaultPlugin: StudioCMSPlugin = {
 								),
 							},
 						},
-					},
-				],
-			});
-
-			setRendering({
-				pageTypes: [
-					{
-						label: 'Markdown (Built-in)',
-						identifier: 'studiocms/markdown',
-						pageContentComponent:
-							DefaultPageTypeComponents['studiocms/markdown'].pageContentComponent,
-						rendererComponent: DefaultPageTypeComponents['studiocms/markdown'].rendererComponent,
-					},
-					{
-						label: 'HTML (Built-in)',
-						identifier: 'studiocms/html',
-						pageContentComponent: DefaultPageTypeComponents['studiocms/html'].pageContentComponent,
-						rendererComponent: DefaultPageTypeComponents['studiocms/html'].rendererComponent,
 					},
 				],
 			});
@@ -223,6 +205,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			if (wvPlugin) pluginsToProcess.push(wvPlugin);
 
 			if (plugins) pluginsToProcess.push(...plugins);
+
+			let renderingPluginCount = 0;
 
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
@@ -329,7 +313,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setRendering({ pageTypes }) {
-							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
+							for (const { apiEndpoint, identifier, rendererComponent, pageContentComponent } of pageTypes || []) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
 										identifier: identifier,
@@ -345,14 +329,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								if (rendererComponent) {
 									const builtIns = rendererComponentFilter(
 										rendererComponent,
-										convertToSafeString(identifier),
-										DefaultPageTypeComponents
+										convertToSafeString(identifier)
 									);
 									pluginRenderers.push({
 										pageType: identifier,
 										safePageType: convertToSafeString(identifier),
 										content: builtIns,
 									});
+
+									if (pageContentComponent) {
+										renderingPluginCount++;
+									}
 								}
 							}
 
@@ -382,6 +369,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				};
 
 				safePluginList.push(safePlugin);
+			}
+
+			if (renderingPluginCount === 0) {
+				throw new AstroError("No rendering plugins found, StudioCMS requires at least one rendering plugin. Please install one, such as '@studiocms/blog' or '@studiocms/html'.");
 			}
 
 			// Robots.txt Integration (Default)
@@ -422,8 +413,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				.map(({ identifier, pageContentComponent }) => {
 					return pageContentComponentFilter(
 						pageContentComponent,
-						convertToSafeString(identifier),
-						DefaultPageTypeComponents
+						convertToSafeString(identifier)
 					);
 				})
 				.join('\n');
@@ -605,8 +595,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						import * as renderers from 'virtual:studiocms/plugins/renderers';
 						
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
-					
-						export { preRender as mdPreRender } from '${resolve('./components/renderers/markdown-prerender.js')}';
 					`,
 					'studiocms:plugins/imageService': `
 						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};

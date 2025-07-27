@@ -26,6 +26,7 @@
     "sharp": "catalog:",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
-    "@sentry/astro": "catalog:"
+    "@sentry/astro": "catalog:",
+    "@studiocms/md": "workspace:*"
   }
 }
