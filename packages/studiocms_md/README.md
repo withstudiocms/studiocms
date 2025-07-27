@@ -16,9 +16,6 @@ export default defineStudioCMSConfig({
 });
 ```
 
-## Options
-
-
 ## License
 
 [MIT Licensed](./LICENSE).
