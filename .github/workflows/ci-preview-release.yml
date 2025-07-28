@@ -1,6 +1,6 @@
 name: CI - Snapshot Release on PRs and Main
 
-on: 
+on:
   workflow_dispatch:
   push:
     branches:
@@ -31,7 +31,7 @@ jobs:
       issues: write
       pull-requests: write
     name: Pkg-main-new Snapshot Preview
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Disable git crlf
         run: git config --global core.autocrlf false
@@ -77,7 +77,7 @@ jobs:
       - name: Publish packages
         env:
           PACKAGES_PATHS: ${{ steps.compute-packages-paths.outputs.packages-paths }}
-        run: pnpm dlx pkg-pr-new publish --pnpm --no-template $PACKAGES_PATHS
+        run: pnpm dlx pkg-pr-new publish --pnpm --no-template "$PACKAGES_PATHS"
 
   preview-pr:
     if: github.event_name == 'pull_request' 
@@ -88,7 +88,7 @@ jobs:
       issues: write
       pull-requests: write
     name: Pkg-pr-new Snapshot Preview
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Disable git crlf
         run: git config --global core.autocrlf false
@@ -146,7 +146,7 @@ jobs:
         run: |
           packages=$(echo "$AFFECTED_PACKAGES" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
           if [ -n "$packages" ]; then
-            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
+            pnpm dlx pkg-pr-new publish --pnpm --no-template "$packages"
           else
             echo "No affected packages to publish"
           fi
