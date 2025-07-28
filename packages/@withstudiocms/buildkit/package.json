@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/withstudiocms_buildkit"
+    "directory": "packages/@withstudiocms/buildkit"
   },
   "license": "MIT",
   "files": [

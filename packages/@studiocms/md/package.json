@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/studiocms_md"
+    "directory": "packages/@studiocms/md"
   },
   "contributors": [
     "Adammatthiesen",
