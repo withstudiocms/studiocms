@@ -43,6 +43,9 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
 
+      - name: Build package
+        run: pnpm build:studiocms
+
       - name: Run TypeCheck
         run: pnpm --filter studiocms typecheck
 
@@ -57,6 +60,9 @@ jobs:
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
+
+      - name: Build package
+        run: pnpm build:studiocms
 
       - name: Run TypeCheck for Plugins & Packages
         run: pnpm --filter @studiocms/* typecheck
