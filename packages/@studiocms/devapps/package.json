@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/studiocms_devapps"
+    "directory": "packages/@studiocms/devapps"
   },
   "contributors": [
     "Adammatthiesen",
@@ -54,7 +54,8 @@
   },
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"typecheck": "tspc -p tsconfig.tspc.json"
   },
   "type": "module",
   "dependencies": {
@@ -72,6 +73,7 @@
     "studiocms": "workspace:*",
     "@astrojs/db": "catalog:min",
     "astro": "catalog:min",
+    "effect": "catalog:effect",
     "vite": "catalog:min"
   },
   "peerDependenciesMeta": {

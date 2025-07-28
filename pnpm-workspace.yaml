@@ -29,5 +29,7 @@ catalogs:
     '@effect/language-service': ^0.27.2
     
 packages:
+  - "packages/@studiocms/*"
+  - "packages/@withstudiocms/*"
   - "packages/*"
   - "playground"

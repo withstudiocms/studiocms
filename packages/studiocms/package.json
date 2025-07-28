@@ -147,7 +147,6 @@
 	"dependencies": {
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
-		"@commander-js/extra-typings": "^14.0.0",
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
@@ -167,7 +166,6 @@
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
-		"commander": "^14.0.0",
 		"deepmerge-ts": "^7.1.5",
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.51",
@@ -196,7 +194,6 @@
 		"unist-util-visit": "^5.0.0"
 	},
 	"devDependencies": {
-		"@effect/language-service": "catalog:effect",
 		"@types/mdast": "^4.0.4",
 		"@types/micromatch": "^4.0.9",
 		"@types/markdown-it": "^14.1.2",
@@ -204,8 +201,7 @@
 		"@types/nodemailer": "^6.4.17",
 		"@types/semver": "^7.5.8",
 		"@types/three": "0.169.0",
-		"typescript": "catalog:",
-		"ts-patch": "3.3.0"
+		"typescript": "catalog:"
 	},
 	"peerDependencies": {
 		"@astrojs/db": "catalog:min",

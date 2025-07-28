@@ -1,7 +1,7 @@
 {
-  "name": "@studiocms/cloudinary-image-service",
+  "name": "@studiocms/blog",
   "version": "0.1.0-beta.21",
-  "description": "Cloudinary Image Service For StudioCMS!",
+  "description": "Add a blog to your StudioCMS project with ease!",
   "author": {
     "name": "withstudiocms",
     "url": "https://studiocms.dev"
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git",
-    "directory": "packages/studiocms_cloudinary-image-service"
+    "directory": "packages/@studiocms/blog"
   },
   "contributors": [
     "Adammatthiesen",
@@ -22,11 +22,18 @@
     "astro",
     "astrocms",
     "astrodb",
+    "astrostudio",
     "astro-integration",
+    "astro-studio",
     "astro-studiocms",
     "cms",
     "studiocms",
     "withastro",
+    "blog",
+    "studio-blog",
+    "astro-blog",
+    "astro-studio-blog",
+    "studiocms-blog",
     "plugin",
     "studiocms-plugin"
   ],
@@ -41,7 +48,8 @@
   ],
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'"
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
     ".": {
@@ -51,14 +59,16 @@
   },
   "type": "module",
   "dependencies": {
-    "@cloudinary/url-gen": "^1.21.0",
+    "@astrojs/rss": "catalog:",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:"
   },
   "peerDependencies": {
+    "@studiocms/md": "workspace:*",
     "astro": "catalog:min",
+    "effect": "catalog:effect",
     "studiocms": "workspace:*",
     "vite": "catalog:min"
   }

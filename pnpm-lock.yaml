@@ -100,12 +100,15 @@ importers:
       '@crowdin/crowdin-api-client':
         specifier: ^1.46.0
         version: 1.46.0
+      '@effect/language-service':
+        specifier: catalog:effect
+        version: 0.27.2
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
       '@withstudiocms/buildkit':
         specifier: workspace:*
-        version: link:packages/withstudiocms_buildkit
+        version: link:packages/@withstudiocms/buildkit
       execa:
         specifier: ^9.6.0
         version: 9.6.0
@@ -121,9 +124,278 @@ importers:
       tinyglobby:
         specifier: ^0.2.14
         version: 0.2.14
+      ts-patch:
+        specifier: 3.3.0
+        version: 3.3.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
+
+  packages/@studiocms/blog:
+    dependencies:
+      '@astrojs/rss':
+        specifier: 'catalog:'
+        version: 4.0.12
+      '@studiocms/md':
+        specifier: workspace:*
+        version: link:../md
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+
+  packages/@studiocms/cloudinary-image-service:
+    dependencies:
+      '@cloudinary/url-gen':
+        specifier: ^1.21.0
+        version: 1.21.0
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+
+  packages/@studiocms/devapps:
+    dependencies:
+      '@astrojs/db':
+        specifier: catalog:min
+        version: 0.15.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      cheerio:
+        specifier: ^1.0.0
+        version: 1.1.0
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      sanitize-html:
+        specifier: ^2.17.0
+        version: 2.17.0
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      turndown:
+        specifier: ^7.2.0
+        version: 7.2.0
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/sanitize-html':
+        specifier: ^2.16.0
+        version: 2.16.0
+      '@types/turndown':
+        specifier: ^5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+
+  packages/@studiocms/html:
+    dependencies:
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      codemirror:
+        specifier: ^5.49.0
+        version: 5.65.19
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      katex:
+        specifier: ^0.16.21
+        version: 0.16.22
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      suneditor:
+        specifier: ^2.47.5
+        version: 2.47.6
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/codemirror':
+        specifier: 5.60.10
+        version: 5.60.10
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+
+  packages/@studiocms/markdoc:
+    dependencies:
+      '@astrojs/react':
+        specifier: 'catalog:'
+        version: 4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(jiti@2.4.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tsx@4.20.3)(yaml@2.8.0)
+      '@markdoc/markdoc':
+        specifier: ^0.5.1
+        version: 0.5.2(@types/react@19.1.8)(react@19.1.0)
+      '@studiocms/md':
+        specifier: workspace:*
+        version: link:../md
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+      '@types/react':
+        specifier: ^19.0.12
+        version: 19.1.8
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.1.6(@types/react@19.1.8)
+
+  packages/@studiocms/md:
+    dependencies:
+      '@astrojs/markdown-remark':
+        specifier: catalog:min
+        version: 6.3.2
+      '@studiocms/markdown-remark-processor':
+        specifier: ^1.2.0
+        version: 1.2.0
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+
+  packages/@studiocms/mdx:
+    dependencies:
+      '@mdx-js/mdx':
+        specifier: ^3.1.0
+        version: 3.1.0(acorn@8.15.0)
+      '@studiocms/md':
+        specifier: workspace:*
+        version: link:../md
+      astro:
+        specifier: catalog:min
+        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
+      rehype-highlight:
+        specifier: ^7.0.2
+        version: 7.0.2
+      remark-gfm:
+        specifier: ^4.0.1
+        version: 4.0.1
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
+      unified:
+        specifier: ^11.0.5
+        version: 11.0.5
+      vite:
+        specifier: catalog:min
+        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+      '@types/react':
+        specifier: ^19.0.12
+        version: 19.1.8
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.1.6(@types/react@19.1.8)
+
+  packages/@withstudiocms/buildkit:
+    dependencies:
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.6
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      kleur:
+        specifier: ^4.1.5
+        version: 4.1.5
+    devDependencies:
+      strip-ansi:
+        specifier: ^7.1.0
+        version: 7.1.0
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
 
   packages/studiocms:
     dependencies:
@@ -139,9 +411,6 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
-      '@commander-js/extra-typings':
-        specifier: ^14.0.0
-        version: 14.0.0(commander@14.0.0)
       '@effect/cli':
         specifier: catalog:effect
         version: 0.67.0(@effect/platform@0.88.0(effect@3.16.13))(@effect/printer-ansi@0.44.13(@effect/typeclass@0.35.13(effect@3.16.13))(effect@3.16.13))(@effect/printer@0.44.13(@effect/typeclass@0.35.13(effect@3.16.13))(effect@3.16.13))(effect@3.16.13)
@@ -205,9 +474,6 @@ importers:
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
       deepmerge-ts:
         specifier: ^7.1.5
         version: 7.1.5
@@ -290,9 +556,6 @@ importers:
         specifier: catalog:min
         version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
     devDependencies:
-      '@effect/language-service':
-        specifier: catalog:effect
-        version: 0.27.2
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
@@ -314,257 +577,9 @@ importers:
       '@types/three':
         specifier: 0.169.0
         version: 0.169.0
-      ts-patch:
-        specifier: 3.3.0
-        version: 3.3.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
-
-  packages/studiocms_blog:
-    dependencies:
-      '@astrojs/rss':
-        specifier: 'catalog:'
-        version: 4.0.12
-      '@studiocms/md':
-        specifier: workspace:*
-        version: link:../studiocms_md
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-
-  packages/studiocms_cloudinary-image-service:
-    dependencies:
-      '@cloudinary/url-gen':
-        specifier: ^1.21.0
-        version: 1.21.0
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-
-  packages/studiocms_devapps:
-    dependencies:
-      '@astrojs/db':
-        specifier: catalog:min
-        version: 0.15.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      cheerio:
-        specifier: ^1.0.0
-        version: 1.1.0
-      sanitize-html:
-        specifier: ^2.17.0
-        version: 2.17.0
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      turndown:
-        specifier: ^7.2.0
-        version: 7.2.0
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/sanitize-html':
-        specifier: ^2.16.0
-        version: 2.16.0
-      '@types/turndown':
-        specifier: ^5.0.5
-        version: 5.0.5
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-
-  packages/studiocms_html:
-    dependencies:
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      codemirror:
-        specifier: ^5.49.0
-        version: 5.65.19
-      katex:
-        specifier: ^0.16.21
-        version: 0.16.22
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      suneditor:
-        specifier: ^2.47.5
-        version: 2.47.6
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/codemirror':
-        specifier: 5.60.10
-        version: 5.60.10
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-
-  packages/studiocms_markdoc:
-    dependencies:
-      '@astrojs/react':
-        specifier: 'catalog:'
-        version: 4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(jiti@2.4.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tsx@4.20.3)(yaml@2.8.0)
-      '@markdoc/markdoc':
-        specifier: ^0.5.1
-        version: 0.5.2(@types/react@19.1.8)(react@19.1.0)
-      '@studiocms/md':
-        specifier: workspace:*
-        version: link:../studiocms_md
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-      '@types/react':
-        specifier: ^19.0.12
-        version: 19.1.8
-      '@types/react-dom':
-        specifier: ^19.0.4
-        version: 19.1.6(@types/react@19.1.8)
-
-  packages/studiocms_md:
-    dependencies:
-      '@astrojs/markdown-remark':
-        specifier: catalog:min
-        version: 6.3.2
-      '@studiocms/markdown-remark-processor':
-        specifier: ^1.2.0
-        version: 1.2.0
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-
-  packages/studiocms_mdx:
-    dependencies:
-      '@mdx-js/mdx':
-        specifier: ^3.1.0
-        version: 3.1.0(acorn@8.15.0)
-      '@studiocms/md':
-        specifier: workspace:*
-        version: link:../studiocms_md
-      astro:
-        specifier: catalog:min
-        version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
-      rehype-highlight:
-        specifier: ^7.0.2
-        version: 7.0.2
-      remark-gfm:
-        specifier: ^4.0.1
-        version: 4.0.1
-      studiocms:
-        specifier: workspace:*
-        version: link:../studiocms
-      unified:
-        specifier: ^11.0.5
-        version: 11.0.5
-      vite:
-        specifier: catalog:min
-        version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.16.3
-      '@types/react':
-        specifier: ^19.0.12
-        version: 19.1.8
-      '@types/react-dom':
-        specifier: ^19.0.4
-        version: 19.1.6(@types/react@19.1.8)
-
-  packages/withstudiocms_buildkit:
-    dependencies:
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.6
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
-      kleur:
-        specifier: ^4.1.5
-        version: 4.1.5
-    devDependencies:
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-      vitest:
-        specifier: ^3.1.1
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
 
   playground:
     dependencies:
@@ -582,13 +597,13 @@ importers:
         version: 9.38.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
       '@studiocms/blog':
         specifier: workspace:*
-        version: link:../packages/studiocms_blog
+        version: link:../packages/@studiocms/blog
       '@studiocms/devapps':
         specifier: workspace:*
-        version: link:../packages/studiocms_devapps
+        version: link:../packages/@studiocms/devapps
       '@studiocms/md':
         specifier: workspace:*
-        version: link:../packages/studiocms_md
+        version: link:../packages/@studiocms/md
       astro:
         specifier: 'catalog:'
         version: 5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -889,11 +904,6 @@ packages:
     resolution: {integrity: sha512-q5P52BYb1hwVWE6dtID7VvuJWrlfbCv4klj7BjUUOqMz4jbSZD4C9fJ9lRjL2jnBGTg+gDDlaXN51rkWcLk4fg==}
     peerDependencies:
       commander: ~13.1.0
-
-  '@commander-js/extra-typings@14.0.0':
-    resolution: {integrity: sha512-hIn0ncNaJRLkZrxBIp5AsW/eXEHNKYQBh0aPdoUqNgD+Io3NIykQqpKFyKcuasZhicGaEZJX/JBSIkZ4e5x8Dg==}
-    peerDependencies:
-      commander: ~14.0.0
 
   '@crowdin/crowdin-api-client@1.46.0':
     resolution: {integrity: sha512-aCAKlr1Aw4T1Fss16lDNw/HRpU7HTrgQqTHUxTBBAYjx7KK6ghPYX89X4LU8DeLyXijrZN6ph9zF/gWAWBNtUA==}
@@ -2804,10 +2814,6 @@ packages:
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
-
-  commander@14.0.0:
-    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
-    engines: {node: '>=20'}
 
   commander@8.3.0:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
@@ -5725,10 +5731,6 @@ snapshots:
     dependencies:
       commander: 13.1.0
 
-  '@commander-js/extra-typings@14.0.0(commander@14.0.0)':
-    dependencies:
-      commander: 14.0.0
-
   '@crowdin/crowdin-api-client@1.46.0':
     dependencies:
       axios: 1.10.0
@@ -7189,7 +7191,7 @@ snapshots:
 
   '@types/markdown-it@12.2.3':
     dependencies:
-      '@types/linkify-it': 3.0.5
+      '@types/linkify-it': 5.0.0
       '@types/mdurl': 2.0.0
     optional: true
 
@@ -7745,8 +7747,6 @@ snapshots:
   comma-separated-tokens@2.0.3: {}
 
   commander@13.1.0: {}
-
-  commander@14.0.0: {}
 
   commander@8.3.0: {}
 

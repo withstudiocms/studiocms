@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.tspc.json",
+  "extends": "../../../tsconfig.tspc.json",
   "include": ["src"],
   "exclude": ["dist"],
   "compilerOptions": {

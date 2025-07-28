@@ -6,6 +6,7 @@
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
 [![Crowdin](https://badges.crowdin.net/studiocms/localized.svg)](https://crowdin.com/project/studiocms)
+[![pkg.pr.new](https://pkg.pr.new/badge/withstudiocms/studiocms?style=flat&color=000&logoSize=auto)](https://pkg.pr.new/~/withstudiocms/studiocms)
 
 This is an SSR CMS built with AstroDB for the Astro Ecosystem.
 
