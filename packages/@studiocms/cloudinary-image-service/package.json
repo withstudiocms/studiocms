@@ -60,6 +60,7 @@
   },
   "peerDependencies": {
     "astro": "catalog:min",
+    "effect": "catalog:effect",
     "studiocms": "workspace:*",
     "vite": "catalog:min"
   }

@@ -68,6 +68,7 @@
   "peerDependencies": {
     "@studiocms/md": "workspace:*",
     "astro": "catalog:min",
+    "effect": "catalog:effect",
     "studiocms": "workspace:*",
     "vite": "catalog:min"
   }
