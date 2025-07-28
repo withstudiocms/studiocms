@@ -484,6 +484,13 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							}
 						}),
 				},
+
+				/**
+				 * Inserts a new folder into the database and updates the cache.
+				 * @param data - The data to insert into the page folder structure table.
+				 * @returns A promise that resolves to the inserted folder.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
+				 */
 				folder: (data: tsPageFolderSelect) =>
 					Effect.gen(function* () {
 						const newEntry = yield* POST.databaseEntry.folder(data);
@@ -496,6 +503,13 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 
 						return newEntry;
 					}),
+
+				/**
+				 * Inserts a new page into the database and updates the cache.
+				 * @param data - The data to insert into the page data and page content tables.
+				 * @returns A promise that resolves to the inserted page data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
+				 */
 				page: (data: {
 					pageData: tsPageDataSelect;
 					pageContent: CombinedInsertContent;

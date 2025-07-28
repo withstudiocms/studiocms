@@ -188,6 +188,11 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 						})
 					)
 				),
+				/**
+				 * Updates the folder tree structure and cache.
+				 * @returns An Effect that resolves when the folder tree is updated.
+				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+				 */
 				folderTree: Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 					yield* CLEAR.folderTree();
@@ -201,6 +206,11 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							_clearLibSQLError('UPDATE.folderTree', cause),
 					})
 				),
+				/**
+				 * Updates the folder list and cache.
+				 * @returns An Effect that resolves when the folder list is updated.
+				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+				 */
 				folderList: Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 					yield* CLEAR.folderList();
@@ -214,6 +224,12 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							_clearLibSQLError('UPDATE.folderList', cause),
 					})
 				),
+				/**
+				 * Updates a folder in the database and refreshes related caches.
+				 * @param data - The folder data to update.
+				 * @returns An Effect that resolves to the updated folder data.
+				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+				 */
 				folder: (data: tsPageFolderSelect) =>
 					Effect.gen(function* () {
 						const updated = yield* dbService.execute((db) =>
@@ -235,6 +251,11 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 								_clearLibSQLError('UPDATE.folder', cause),
 						})
 					),
+				/**
+				 * Updates the latest StudioCMS version in the cache.
+				 * @returns An Effect that resolves to the latest version.
+				 * @throws {UnknownException} If an error occurs while fetching the latest version.
+				 */
 				latestVersion: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -252,6 +273,13 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							UnknownException: (cause) => _ClearUnknownError('UPDATE.latestVersion', cause),
 						})
 					),
+				/**
+				 * Updates the site configuration in the database and cache.
+				 * @param data - The new site configuration data.
+				 * @returns An Effect that resolves to the updated site configuration.
+				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+				 * @throws {UnknownException} If an unknown error occurs during the update.
+				 */
 				siteConfig: (data: SiteConfig) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -279,6 +307,14 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 						})
 					),
 				page: {
+					/**
+					 * Updates a page by its ID, including content and data, and refreshes caches.
+					 * @param id - The ID of the page to update.
+					 * @param data - The new page data and content to update.
+					 * @returns An Effect that resolves to the updated page data.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+					 * @throws {UnknownException} If an unknown error occurs during the update.
+					 */
 					byId: (
 						id: string,
 						data: {
@@ -318,6 +354,14 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							})
 						);
 					},
+					/**
+					 * Updates a page by its slug, including content and data, and refreshes caches.
+					 * @param slug - The slug of the page to update.
+					 * @param data - The new page data and content to update.
+					 * @returns An Effect that resolves to the updated page data.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
+					 * @throws {UnknownException} If an unknown error occurs during the update.
+					 */
 					bySlug: (
 						slug: string,
 						data: {

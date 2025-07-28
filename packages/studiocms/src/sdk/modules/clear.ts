@@ -35,6 +35,13 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 
 			const CLEAR = {
 				page: {
+
+					/**
+					 * Clears a cached page by its ID.
+					 * @param id - The ID of the page to clear from the cache.
+					 * @returns An Effect that resolves when the operation is complete.
+					 * @throws {UnknownException} If an error occurs during the clearing process.
+					 */
 					byId: (id: string) =>
 						Effect.gen(function* () {
 							const status = yield* isCacheEnabled;
@@ -47,6 +54,13 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 								UnknownException: (cause) => _ClearUnknownError('CLEAR.page.byId', cause),
 							})
 						),
+
+					/**
+					 * Clears cached pages by their slug.
+					 * @param slug - The slug of the page to clear from the cache.
+					 * @returns An Effect that resolves when the operation is complete.
+					 * @throws {UnknownException} If an error occurs during the clearing process.
+					 */
 					bySlug: (slug: string) =>
 						Effect.gen(function* () {
 							const status = yield* isCacheEnabled;
@@ -71,6 +85,15 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							})
 						),
 				},
+
+				/**
+				 * Clears all cached pages, folder trees, and folder lists.
+				 * @remarks
+				 * This method checks if the cache is enabled before clearing the pages, folder tree, and folder list.
+				 * If the cache is not enabled, it simply returns without performing any action.
+				 * @returns An Effect that resolves when the operation is complete.
+				 * @throws {UnknownException} If an error occurs during the clearing process.
+				 */
 				pages: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -86,6 +109,15 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							UnknownException: (cause) => _ClearUnknownError('CLEAR.pages', cause),
 						})
 					),
+				
+				/**
+				 * Clears the cached latest version information.
+				 * @remarks
+				 * This method checks if the cache is enabled before clearing the latest version.
+				 * If the cache is not enabled, it simply returns without performing any action.
+				 * @returns An Effect that resolves when the operation is complete.
+				 * @throws {UnknownException} If an error occurs during the clearing process.
+				 */
 				latestVersion: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -98,6 +130,14 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							UnknownException: (cause) => _ClearUnknownError('CLEAR.latestVersion', cause),
 						})
 					),
+				/**
+				 * Clears the cached folder tree and page folder tree.
+				 * @remarks
+				 * This method checks if the cache is enabled before clearing the folder tree and page folder tree.
+				 * If the cache is not enabled, it simply returns without performing any action.
+				 * @returns An Effect that resolves when the operation is complete.
+				 * @throws {UnknownException} If an error occurs during the clearing process.
+				 */
 				folderTree: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -111,6 +151,15 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							UnknownException: (cause) => _ClearUnknownError('CLEAR.folderTree', cause),
 						})
 					),
+				
+				/**
+				 * Clears the cached folder list.
+				 * @remarks
+				 * This method checks if the cache is enabled before clearing the folder list.
+				 * If the cache is not enabled, it simply returns without performing any action.
+				 * @returns An Effect that resolves when the operation is complete.
+				 * @throws {UnknownException} If an error occurs during the clearing process.
+				 */
 				folderList: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;

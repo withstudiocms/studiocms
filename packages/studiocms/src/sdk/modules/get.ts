@@ -1,4 +1,4 @@
-import { asc, eq } from 'astro:db';
+import { asc, eq, or } from 'astro:db';
 import config from 'studiocms:config';
 import {
 	CMSNotificationSettingsId,
@@ -125,6 +125,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				SDKCore_Collectors,
 			]);
 
+			/**
+			 * Validates the pagination input by ensuring that `limit` and `offset` are non-negative values.
+			 * If `limit` is zero, it sets a default value of 10.
+			 * Returns the validated (and possibly modified) pagination input.
+			 * If validation fails, yields an `SDKCoreError` with a descriptive message.
+			 *
+			 * @template P - Type extending `PaginateInput`.
+			 * @param paginate - The pagination input to validate.
+			 * @returns The validated pagination input or fails with an error if validation fails.
+			 */
 			const validatePagination = Effect.fn(function* <P extends PaginateInput>(paginate: P) {
 				if (paginate.limit < 0 || paginate.offset < 0) {
 					return yield* Effect.fail(
@@ -142,6 +152,38 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				return paginate;
 			});
 
+			/**
+			 * Retrieves a folder from the database by its ID or name.
+			 *
+			 * This function queries the `tsPageFolderStructure` table for a folder whose `id` or `name`
+			 * matches the provided `idOrName` parameter. If no matching folder is found, it fails with a
+			 * `LibSQLDatabaseError`.
+			 *
+			 * @param idOrName - The ID or name of the folder to retrieve.
+			 * @returns The folder data if found.
+			 * @throws {SDKCoreError} If the folder is not found in the database.
+			 */
+			const getFolderByNameOrId = Effect.fn(function* (idOrName: string) {
+				const data = yield* dbService.execute((db) =>
+					db
+						.select()
+						.from(tsPageFolderStructure)
+						.where(
+							or(eq(tsPageFolderStructure.id, idOrName), eq(tsPageFolderStructure.name, idOrName))
+						)
+						.get()
+				);
+				if (!data) {
+					return yield* Effect.fail(
+						new SDKCoreError({
+							type: 'LibSQLDatabaseError',
+							cause: new StudioCMS_SDK_Error(`Folder not found in Database: ${idOrName}`),
+						})
+					);
+				}
+				return data;
+			});
+
 			function _getPackagesPages(
 				packageName: string,
 				tree?: FolderNode[]
@@ -152,6 +194,14 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				metaOnly?: boolean
 			): Effect.Effect<MetaOnlyPageData[], SDKCoreError, never>;
 
+			/**
+			 * Retrieves all pages associated with a given package name, optionally using a provided folder tree and returning only metadata if specified.
+			 *
+			 * @param packageName - The name of the package to fetch pages for.
+			 * @param tree - Optional. A pre-built folder tree to use for organizing pages. If not provided, the folder tree will be built automatically.
+			 * @param metaOnly - Optional. If true, returns only metadata for each page; otherwise, returns combined page data. Defaults to false.
+			 * @returns An Effect that resolves to an array of page data, either as `MetaOnlyPageData[]` or `CombinedPageData[]` depending on `metaOnly`.
+			 */
 			function _getPackagesPages(packageName: string, tree?: FolderNode[], metaOnly = false) {
 				return Effect.gen(function* () {
 					const pagesRaw = yield* dbService.execute((db) =>
@@ -184,6 +234,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				metaOnly?: boolean
 			): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
 
+			/**
+			 * Retrieves a page by its ID, with an option to return only metadata.
+			 *
+			 * @param id - The ID of the page to retrieve.
+			 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
+			 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+			 *
+			 * @throws UnknownException - If an unknown error occurs during retrieval.
+			 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+			 */
 			function _getPageById(id: string, metaOnly = false) {
 				const getPage = (id: string, tree?: FolderNode[]) =>
 					Effect.gen(function* () {
@@ -258,6 +318,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				metaOnly?: boolean
 			): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
 
+			/**
+			 * Retrieves a page by its slug, with an option to return only metadata.
+			 *
+			 * @param slug - The slug of the page to retrieve.
+			 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
+			 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+			 *
+			 * @throws UnknownException - If an unknown error occurs during retrieval.
+			 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+			 */
 			function _getPageBySlug(slug: string, metaOnly = false) {
 				const getPage = (iSlug: string, tree?: FolderNode[]) =>
 					Effect.gen(function* () {
@@ -339,6 +409,22 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				paginate?: PaginateInput
 			): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
 
+			/**
+			 * Retrieves all pages from the database or cache, with options for including drafts,
+			 * hiding the default index page, returning only metadata, and paginating results.
+			 *
+			 * - If caching is enabled, attempts to return cached pages and updates expired cache entries.
+			 * - If caching is disabled, fetches pages directly from the database.
+			 * - Supports filtering by draft status and default index visibility.
+			 * - Can return either full page data or metadata only.
+			 * - Supports pagination via the `paginate` parameter.
+			 *
+			 * @param includeDrafts - Whether to include draft pages in the results. Defaults to `false`.
+			 * @param hideDefaultIndex - Whether to exclude the default index page from the results. Defaults to `false`.
+			 * @param metaOnly - Whether to return only metadata for each page. Defaults to `false`.
+			 * @param paginate - Optional pagination input specifying `limit` and `offset`.
+			 * @returns An `Effect` that yields an array of page data or metadata, depending on `metaOnly`.
+			 */
 			function _getAllPages(
 				includeDrafts = false,
 				hideDefaultIndex = false,
@@ -454,22 +540,38 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 			}
 
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts?: boolean,
 				hideDefaultIndex?: boolean,
 				metaOnly?: false,
 				paginate?: PaginateInput
 			): Effect.Effect<PageDataCacheObject[], SDKCoreError, never>;
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts?: boolean,
 				hideDefaultIndex?: boolean,
 				metaOnly?: true,
 				paginate?: PaginateInput
 			): Effect.Effect<MetaOnlyPageDataCacheObject[], SDKCoreError, never>;
 
+			/**
+			 * Retrieves pages within a specified folder by its ID or name, supporting various filtering and pagination options.
+			 *
+			 * This function handles both cached and non-cached scenarios, fetching pages from the database or cache as appropriate.
+			 * It supports filtering drafts, hiding default index pages, returning only metadata, and paginating results.
+			 *
+			 * @param idOrName - The ID or name of the folder to retrieve pages from.
+			 * @param includeDrafts - Whether to include draft pages in the results. Defaults to `false`.
+			 * @param hideDefaultIndex - Whether to exclude default index pages from the results. Defaults to `false`.
+			 * @param metaOnly - If `true`, returns only metadata for each page. Defaults to `false`.
+			 * @param paginate - Optional pagination input specifying `limit` and `offset`.
+			 * @returns An `Effect` that yields an array of page data or metadata, depending on `metaOnly`.
+			 *
+			 * @throws UnknownException - If an unknown error occurs during retrieval.
+			 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+			 */
 			function _folderPages(
-				id: string,
+				idOrName: string,
 				includeDrafts = false,
 				hideDefaultIndex = false,
 				metaOnly = false,
@@ -552,8 +654,10 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
+					const folderData = yield* getFolderByNameOrId(idOrName);
+
 					if (!status) {
-						const dbPages = yield* getPages(id, includeDrafts, hideDefaultIndex);
+						const dbPages = yield* getPages(folderData.id, includeDrafts, hideDefaultIndex);
 						const data = dbPages.map((page) => pageDataReturn(page));
 						return metaOnly ? convertCombinedPageDataToMetaOnly(data) : data;
 					}
@@ -568,7 +672,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						}
 
 						const data = updatedData
-							.filter(({ parentFolder }) => parentFolder === id)
+							.filter(({ parentFolder }) => parentFolder === folderData.id)
 							.map((data) => pageDataReturn(data));
 
 						if (paginate) {
@@ -595,7 +699,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}
 
 					const data = Array.from(pages.values()).filter(
-						({ data: { parentFolder } }) => parentFolder === id
+						({ data: { parentFolder } }) => parentFolder === folderData.id
 					);
 
 					if (paginate) {
@@ -616,6 +720,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				);
 			}
 
+			/**
+			 * Retrieves the list of permissions for users with the specified rank.
+			 *
+			 * This function queries the database for all permitted users and existing users,
+			 * then verifies and returns the permissions associated with the given rank.
+			 * Handles database errors by invoking a custom error handler.
+			 *
+			 * @param rank - The rank of users to retrieve permissions for. Must be one of 'owner', 'admin', 'editor', or 'visitor'.
+			 * @returns An Effect that resolves to the verified permissions for the specified rank, or handles database errors.
+			 */
 			const getPermissionsByRank = (rank: 'owner' | 'admin' | 'editor' | 'visitor') =>
 				Effect.gen(function* () {
 					const currentPermittedUsers = yield* dbService.execute((db) =>
@@ -817,6 +931,14 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							})
 						),
 				},
+
+				/**
+				 * Retrieves a folder by ID.
+				 *
+				 * @param id - The ID of the folder to retrieve.
+				 * @returns A promise that resolves to the folder data.
+				 * @throws {StudioCMS_SDK_Error} If an error occurs while getting the folder.
+				 */
 				folder: dbService.makeQuery((ex, id: string) =>
 					ex((db) =>
 						db.select().from(tsPageFolderStructure).where(eq(tsPageFolderStructure.id, id)).get()
@@ -827,6 +949,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						})
 					)
 				),
+
+				/**
+				 * Retrieves the site configuration, with caching support.
+				 * If caching is enabled, it checks the cache for an existing site config.
+				 * If the cache is expired or not available, it fetches the site config from the database
+				 * and updates the cache.
+				 * @returns An `Effect` that yields the site config.
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+				 */
 				siteConfig: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -883,6 +1015,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								_clearLibSQLError('GET.siteConfig', cause),
 						})
 					),
+
+				/**
+				 * Retrieves the folder tree structure, with caching support.
+				 * If caching is enabled, it checks the cache for an existing folder tree.
+				 * If the cache is expired or not available, it fetches the folder tree from the database
+				 * and updates the cache.
+				 * @returns An `Effect` that yields the folder tree.
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+				 */
 				folderTree: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -911,6 +1053,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								_clearLibSQLError('GET.folderTree', cause),
 						})
 					),
+
+				/**
+				 * Retrieves the folder tree structure, with caching support.
+				 * If caching is enabled, it checks the cache for an existing folder tree.
+				 * If the cache is expired or not available, it fetches the folder tree from the database
+				 * and updates the cache.
+				 * @returns An `Effect` that yields the folder tree.
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+				 */
 				pageFolderTree: (hideDefaultIndex = false) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -981,6 +1133,16 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								_clearLibSQLError('GET.pageFolderTree', cause),
 						})
 					),
+
+				/**
+				 * Retrieves a list of available folders, with caching support.
+				 * If caching is enabled, it checks the cache for an existing folder list.
+				 * If the cache is expired or not available, it fetches the folder list from the database
+				 * and updates the cache.
+				 * @returns An `Effect` that yields the folder list.
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+				 */
 				folderList: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -1009,6 +1171,11 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								_clearLibSQLError('GET.folderList', cause),
 						})
 					),
+				/**
+				 * Retrieves the latest version of StudioCMS from NPM, with caching support.
+				 * @returns An `Effect` that yields the latest version of StudioCMS.
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 */
 				latestVersion: () =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
@@ -1037,11 +1204,71 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						})
 					),
 				page: {
+					/**
+					 * Retrieves a page by its ID, with an option to return only metadata.
+					 *
+					 * @param id - The ID of the page to retrieve.
+					 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
+					 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+					 *
+					 * @throws UnknownException - If an unknown error occurs during retrieval.
+					 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+					 */
 					byId: _getPageById,
+					/**
+					 * Retrieves a page by its slug, with an option to return only metadata.
+					 *
+					 * @param slug - The slug of the page to retrieve.
+					 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
+					 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+					 *
+					 * @throws UnknownException - If an unknown error occurs during retrieval.
+					 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+					 */
 					bySlug: _getPageBySlug,
 				},
+				/**
+				 * Retrieves pages within a specified folder by its ID or name, supporting various filtering and pagination options.
+				 *
+				 * This function handles both cached and non-cached scenarios, fetching pages from the database or cache as appropriate.
+				 * It supports filtering drafts, hiding default index pages, returning only metadata, and paginating results.
+				 *
+				 * @param idOrName - The ID or name of the folder to retrieve pages from.
+				 * @param includeDrafts - Whether to include draft pages in the results. Defaults to `false`.
+				 * @param hideDefaultIndex - Whether to exclude default index pages from the results. Defaults to `false`.
+				 * @param metaOnly - If `true`, returns only metadata for each page. Defaults to `false`.
+				 * @param paginate - Optional pagination input specifying `limit` and `offset`.
+				 * @returns An `Effect` that yields an array of page data or metadata, depending on `metaOnly`.
+				 *
+				 * @throws UnknownException - If an unknown error occurs during retrieval.
+				 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
+				 */
 				folderPages: _folderPages,
+				/**
+				 * Retrieves all pages associated with a given package name, optionally using a provided folder tree and returning only metadata if specified.
+				 *
+				 * @param packageName - The name of the package to fetch pages for.
+				 * @param tree - Optional. A pre-built folder tree to use for organizing pages. If not provided, the folder tree will be built automatically.
+				 * @param metaOnly - Optional. If true, returns only metadata for each page; otherwise, returns combined page data. Defaults to false.
+				 * @returns An Effect that resolves to an array of page data, either as `MetaOnlyPageData[]` or `CombinedPageData[]` depending on `metaOnly`.
+				 */
 				packagePages: _getPackagesPages,
+				/**
+				 * Retrieves all pages from the database or cache, with options for including drafts,
+				 * hiding the default index page, returning only metadata, and paginating results.
+				 *
+				 * - If caching is enabled, attempts to return cached pages and updates expired cache entries.
+				 * - If caching is disabled, fetches pages directly from the database.
+				 * - Supports filtering by draft status and default index visibility.
+				 * - Can return either full page data or metadata only.
+				 * - Supports pagination via the `paginate` parameter.
+				 *
+				 * @param includeDrafts - Whether to include draft pages in the results. Defaults to `false`.
+				 * @param hideDefaultIndex - Whether to exclude the default index page from the results. Defaults to `false`.
+				 * @param metaOnly - Whether to return only metadata for each page. Defaults to `false`.
+				 * @param paginate - Optional pagination input specifying `limit` and `offset`.
+				 * @returns An `Effect` that yields an array of page data or metadata, depending on `metaOnly`.
+				 */
 				pages: _getAllPages,
 			};
 

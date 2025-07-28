@@ -56,6 +56,12 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 			]);
 
 			const resetTokenBucket = {
+
+				/**
+				 * Creates a new reset token for the specified user and stores it in the database.
+				 * @param userId - The ID of the user for whom to create the reset token.
+				 * @returns An effect yielding the created reset token record.
+				 */
 				new: (userId: string): Effect.Effect<tsUserResetTokensSelect, SDKCoreError, never> =>
 					Effect.gen(function* () {
 						const token = yield* generateToken(userId);
@@ -79,6 +85,12 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 								),
 						})
 					),
+
+				/**
+				 * Deletes all reset tokens associated with the specified user.
+				 * @param userId - The ID of the user whose reset tokens should be deleted.
+				 * @returns An effect yielding void.
+				 */
 				delete: (userId: string): Effect.Effect<void, SDKCoreError, never> =>
 					dbService
 						.execute((db) =>
@@ -95,6 +107,12 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 									),
 							})
 						),
+
+				/**
+				 * Validates whether a given token is valid and exists for a user.
+				 * @param token - The reset token to validate.
+				 * @returns An effect yielding a boolean indicating token validity.
+				 */
 				check: (token: string): Effect.Effect<boolean, SDKCoreError, never> =>
 					Effect.gen(function* () {
 						const { isValid, userId } = yield* testToken(token);
