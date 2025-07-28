@@ -3,8 +3,6 @@ name: CI - PR Tests
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - 'packages/**'
     types:
       - opened
       - reopened
