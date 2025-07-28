@@ -6,6 +6,6 @@
     "jsx": "react",
     "emitDeclarationOnly": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./src"
   }
 }

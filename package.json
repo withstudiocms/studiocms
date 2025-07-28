@@ -30,7 +30,8 @@
     "ci:vitest": "pnpm --filter @withstudiocms/* test",
     "ci:crowdin:bot": "node ./scripts/crowdin-report-bot.mjs",
     "ci:translations:changeset": "node ./scripts/translation-changeset.mjs",
-    "clean:node": "node ./scripts/clean-node-modules.mjs"
+    "clean:node": "node ./scripts/clean-node-modules.mjs",
+    "postinstall": "ts-patch install"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",

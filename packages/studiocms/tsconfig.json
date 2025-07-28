@@ -7,6 +7,6 @@
     "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "removeComments": false,
+    "removeComments": false
   }
 }
