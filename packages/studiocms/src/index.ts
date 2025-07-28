@@ -178,7 +178,7 @@ export const studiocms = defineIntegration({
 					});
 
 					// Setup Scripts
-					scriptHandler(params, {
+					await scriptHandler(params, {
 						dbStartPage,
 						injectQuickActionsMenu,
 					});

@@ -138,9 +138,9 @@ function verifyPluginRequires(sourceList: string[], requires: PluginRequire[]) {
 	const missingRequirements: { source: string; missing: string[] }[] = [];
 
 	for (const req of requires) {
-		const { source, requires } = req;
+		const { source, requires: requiredDeps } = req;
 
-		const missing = requires.filter((r) => !sourceList.includes(r));
+		const missing = requiredDeps.filter((r) => !sourceList.includes(r));
 		if (missing.length > 0) {
 			missingRequirements.push({ source, missing });
 		}

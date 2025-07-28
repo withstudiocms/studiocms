@@ -81,7 +81,7 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		dashboardEnabled,
 		dashboardRoute,
 		developerConfig: { demoMode },
-		extraRoutes,
+		extraRoutes = [],
 
 		authConfig: {
 			enabled: authEnabled,
@@ -96,6 +96,25 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		},
 	} = options;
 
+
+	/**
+	 * Defines the list of route configurations for the application.
+	 *
+	 * Each route object specifies:
+	 * - `pattern`: The URL pattern or API endpoint for the route.
+	 * - `entrypoint`: The file path to the handler or page for the route.
+	 * - `enabled`: A boolean or expression indicating if the route should be active, based on feature flags or runtime conditions.
+	 *
+	 * The routes array includes:
+	 * - Frontend page routes (e.g., start, done, 404)
+	 * - SDK and API endpoints for internal and external integrations
+	 * - Dashboard routes for content management, user management, configuration, and plugins
+	 * - Authentication API and pages (login, logout, register, provider callbacks)
+	 * - REST API endpoints for folders, pages, users, and settings
+	 * - Conditional routes based on dashboard, authentication, and demo mode flags
+	 *
+	 * This configuration enables dynamic route activation and modular handling of application features.
+	 */
 	const routes: Route[] = [
 		{
 			pattern: 'start',
@@ -454,11 +473,28 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		},
 	];
 
+	// If extraRoutes are provided, append them to the routes array
+	// This allows for additional custom routes to be injected without modifying the core route handler logic.
+	// Each route in extraRoutes should conform to the Route type.
+	// The extraRoutes array is optional and can be empty.
+	// If it is provided, it will be merged with the existing routes array.
+	// This is useful for plugins or extensions that need to add their own routes dynamically.
+	// The extraRoutes array is expected to contain Route objects with the same structure as defined above.
+	// Each route should have a `pattern`, `entrypoint`, and an `enabled`
+	// flag to determine if it should be active.
+	// This allows for flexible route management and extensibility.
 	if (extraRoutes.length > 0) {
 		routes.push(...extraRoutes);
 	}
 
-	// Inject Routes
+	// Inject Routes into Astro
+	// Iterate over each route in the routes array and inject it if it is enabled.
+	// The injectRoute function is called with the route's properties, excluding the `enabled`
+	// flag, which is used to determine if the route should be active.
+	// This allows for dynamic route injection based on the configuration options provided.
+	// Each route is injected with its pattern, entrypoint, and any other necessary properties.
+	// This enables the application to have a flexible routing system that can adapt to different configurations and
+	// feature flags.
 	for (const { enabled, ...rest } of routes) {
 		if (enabled) injectRoute({ ...rest, prerender: false });
 	}
