@@ -32,7 +32,7 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    name: Pkg-main-new Snapshot Preview
+    name: Pkg-pr-new Main Snapshot Preview
     timeout-minutes: 15
     steps:
       - name: Disable git crlf
@@ -94,7 +94,7 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    name: Pkg-pr-new Snapshot Preview
+    name: Pkg-pr-new PR Snapshot Preview
     timeout-minutes: 15
     steps:
       - name: Disable git crlf
