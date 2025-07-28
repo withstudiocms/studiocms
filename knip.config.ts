@@ -26,7 +26,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_blog': {
+		'packages/@studiocms/blog': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -34,7 +34,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_cloudinary-image-service': {
+		'packages/@studiocms/cloudinary-image-service': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -42,7 +42,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_devapps': {
+		'packages/@studiocms/devapps': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -50,7 +50,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_markdoc': {
+		'packages/@studiocms/markdoc': {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
@@ -59,7 +59,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_mdx': {
+		'packages/@studiocms/mdx': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -67,7 +67,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_md': {
+		'packages/@studiocms/md': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
@@ -75,7 +75,7 @@ const config: KnipConfig = {
 				project: ['src/**/*.astro'],
 			},
 		},
-		'packages/studiocms_html': {
+		'packages/@studiocms/html': {
 			entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 			astro: {
