@@ -143,7 +143,13 @@ jobs:
               const changes = JSON.parse(process.env.CHANGES);
               const packages = JSON.parse(process.env.PACKAGES);
               const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
-              const affectedPackages = [...new Set(changes.changesets.map(c => c.releases.map(r=> packagesMap[r.name])).flat())]
+              const affectedPackages = [
+                ...new Set(
+                  changes.changesets
+                    .flatMap(c => c.releases.map(r => packagesMap[r.name]))
+                    .filter(Boolean) // drop undefined
+                ),
+              ];
               core.setOutput('affected-packages', JSON.stringify(affectedPackages));
 
       - name: Publish packages
