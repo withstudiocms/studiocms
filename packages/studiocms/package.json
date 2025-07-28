@@ -147,7 +147,6 @@
 	"dependencies": {
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
-		"@commander-js/extra-typings": "^14.0.0",
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
@@ -167,7 +166,6 @@
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
-		"commander": "^14.0.0",
 		"deepmerge-ts": "^7.1.5",
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.51",

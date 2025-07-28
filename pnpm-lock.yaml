@@ -411,9 +411,6 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
-      '@commander-js/extra-typings':
-        specifier: ^14.0.0
-        version: 14.0.0(commander@14.0.0)
       '@effect/cli':
         specifier: catalog:effect
         version: 0.67.0(@effect/platform@0.88.0(effect@3.16.13))(@effect/printer-ansi@0.44.13(@effect/typeclass@0.35.13(effect@3.16.13))(effect@3.16.13))(@effect/printer@0.44.13(@effect/typeclass@0.35.13(effect@3.16.13))(effect@3.16.13))(effect@3.16.13)
@@ -477,9 +474,6 @@ importers:
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
       deepmerge-ts:
         specifier: ^7.1.5
         version: 7.1.5
@@ -910,11 +904,6 @@ packages:
     resolution: {integrity: sha512-q5P52BYb1hwVWE6dtID7VvuJWrlfbCv4klj7BjUUOqMz4jbSZD4C9fJ9lRjL2jnBGTg+gDDlaXN51rkWcLk4fg==}
     peerDependencies:
       commander: ~13.1.0
-
-  '@commander-js/extra-typings@14.0.0':
-    resolution: {integrity: sha512-hIn0ncNaJRLkZrxBIp5AsW/eXEHNKYQBh0aPdoUqNgD+Io3NIykQqpKFyKcuasZhicGaEZJX/JBSIkZ4e5x8Dg==}
-    peerDependencies:
-      commander: ~14.0.0
 
   '@crowdin/crowdin-api-client@1.46.0':
     resolution: {integrity: sha512-aCAKlr1Aw4T1Fss16lDNw/HRpU7HTrgQqTHUxTBBAYjx7KK6ghPYX89X4LU8DeLyXijrZN6ph9zF/gWAWBNtUA==}
@@ -2825,10 +2814,6 @@ packages:
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
-
-  commander@14.0.0:
-    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
-    engines: {node: '>=20'}
 
   commander@8.3.0:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
@@ -5746,10 +5731,6 @@ snapshots:
     dependencies:
       commander: 13.1.0
 
-  '@commander-js/extra-typings@14.0.0(commander@14.0.0)':
-    dependencies:
-      commander: 14.0.0
-
   '@crowdin/crowdin-api-client@1.46.0':
     dependencies:
       axios: 1.10.0
@@ -7766,8 +7747,6 @@ snapshots:
   comma-separated-tokens@2.0.3: {}
 
   commander@13.1.0: {}
-
-  commander@14.0.0: {}
 
   commander@8.3.0: {}
 
