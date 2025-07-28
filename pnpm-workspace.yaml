@@ -30,4 +30,6 @@ catalogs:
     
 packages:
   - "packages/*"
+  - "packages/@studiocms/*"
+  - "packages/@withstudiocms/*"
   - "playground"

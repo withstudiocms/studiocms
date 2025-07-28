@@ -1,13 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../../tsconfig.base.json",
   "include": ["src"],
   "exclude": ["dist"],
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "jsx": "react",
     "outDir": "./dist",
     "emitDeclarationOnly": true,
-    "resolveJsonModule": true,
     "rootDir": "./src"
   }
 }
