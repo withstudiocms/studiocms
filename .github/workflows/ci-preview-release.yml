@@ -77,7 +77,13 @@ jobs:
       - name: Publish packages
         env:
           PACKAGES_PATHS: ${{ steps.compute-packages-paths.outputs.packages-paths }}
-        run: pnpm dlx pkg-pr-new publish --pnpm --no-template "$PACKAGES_PATHS"
+        run: |
+          packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
+          if [ -n "$packages" ]; then
+            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
+          else
+            echo "No affected packages to publish"
+          fi
 
   preview-pr:
     if: github.event_name == 'pull_request' 
@@ -146,7 +152,7 @@ jobs:
         run: |
           packages=$(echo "$AFFECTED_PACKAGES" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
           if [ -n "$packages" ]; then
-            pnpm dlx pkg-pr-new publish --pnpm --no-template "$packages"
+            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
           else
             echo "No affected packages to publish"
           fi
