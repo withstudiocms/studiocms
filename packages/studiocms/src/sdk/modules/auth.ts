@@ -56,6 +56,13 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 
 			const AUTH = {
 				verifyEmail: {
+					/**
+					 * Retrieves an email verification token by its ID.
+					 *
+					 * @param id - The ID of the email verification token to retrieve.
+					 * @returns A promise that resolves to the email verification token if found, otherwise undefined.
+					 * @throws {StudioCMS_SDK_Error} If an error occurs while retrieving the token.
+					 */
 					get: dbService.makeQuery((ex, id: string) =>
 						ex((db) =>
 							db
@@ -75,6 +82,13 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							})
 						)
 					),
+					/**
+					 * Creates a new email verification token in the database.
+					 *
+					 * @param userId - The ID of the user to create the token for.
+					 * @returns A promise that resolves to the created email verification token.
+					 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the token.
+					 */
 					create: (userId: string) =>
 						Effect.gen(function* () {
 							yield* dbService.execute((db) =>
@@ -109,6 +123,13 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 									),
 							})
 						),
+					/**
+					 * Deletes an email verification token from the database.
+					 *
+					 * @param userId - The ID of the user associated with the token.
+					 * @returns A promise that resolves to the deletion response.
+					 * @throws {StudioCMS_SDK_Error} If an error occurs while deleting the token.
+					 */
 					delete: dbService.makeQuery((ex, userId: string) =>
 						ex((db) =>
 							db

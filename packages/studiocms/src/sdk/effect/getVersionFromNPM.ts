@@ -42,6 +42,13 @@ export class GetVersionFromNPM extends Effect.Service<GetVersionFromNPM>()(
 				})
 			);
 
+			/**
+			 * Retrieves the version of an NPM package.
+			 *
+			 * @param pkg - The name of the NPM package.
+			 * @param ver - The version tag or number (defaults to 'latest').
+			 * @returns An Effect that resolves to the version string of the specified package.
+			 */
 			const get = (pkg: string, ver = 'latest') =>
 				Effect.gen(function* () {
 					const response = yield* httpClient

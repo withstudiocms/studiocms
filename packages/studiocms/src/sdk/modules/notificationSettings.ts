@@ -41,6 +41,11 @@ export class SDKCore_NotificationSettings extends Effect.Service<SDKCore_Notific
 
 			const notificationSettings = {
 				site: {
+					/**
+					 * Retrieves the site-wide notification settings.
+					 * @returns An Effect that resolves to the current notification settings.
+					 * @throws SDKCoreError when a database error occurs.
+					 */
 					get: () =>
 						Effect.gen(function* () {
 							const data = yield* dbService.execute((db) =>
@@ -75,6 +80,13 @@ export class SDKCore_NotificationSettings extends Effect.Service<SDKCore_Notific
 									),
 							})
 						),
+
+					/**
+					 * Updates the site-wide notification settings.
+					 * @param settings - The new notification settings to be updated.
+					 * @returns An Effect that resolves to the updated settings.
+					 * @throws SDKCoreError when a database error occurs.
+					 */
 					update: dbService.makeQuery((ex, settings: tsNotificationSettingsInsert) =>
 						ex((db) =>
 							db

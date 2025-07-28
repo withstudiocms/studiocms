@@ -52,6 +52,15 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 		effect: genLogger('studiocms/sdk/SDKCore/modules/diffTracking/effect')(function* () {
 			const [dbService, { fixDiff }] = yield* Effect.all([AstroDB, SDKCore_Parsers]);
 
+			/**
+			 * Checks the number of diff records for a given page and removes the oldest one if the count exceeds the specified length.
+			 *
+			 * @param pageId - The unique identifier of the page whose diffs are being checked.
+			 * @param length - The maximum allowed number of diff records for the page.
+			 * @returns An Effect that completes when the operation is done, or fails with an SDKCoreError if a database error occurs.
+			 *
+			 * @throws SDKCoreError - If a LibSQL database error occurs during the operation.
+			 */
 			const checkDiffsLengthAndRemoveOldestIfTooLong = (
 				pageId: string,
 				length: number
@@ -87,6 +96,16 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 				);
 
 			const diffTracking = {
+				/**
+				 * Inserts a new diff entry for a page.
+				 * @param userId - The ID of the user who made the changes.
+				 * @param pageId - The ID of the page being modified.
+				 * @param data - The content and metadata before and after the change.
+				 * @param diffLength - The maximum number of diffs to keep for the page.
+				 * @returns An Effect that resolves to the fixed diff entry.
+				 * @throws {SDKCoreError} If an error occurs during the database operations.
+				 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+				 */
 				insert: (
 					userId: string,
 					pageId: string,
@@ -146,24 +165,37 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								),
 						})
 					),
+
+				/**
+				 * Clears all diffs for a page.
+				 * @param pageId - The ID of the page to clear diffs for.
+				 * @returns An Effect that resolves to void.
+				 * @throws {SDKCoreError} If an error occurs during the database operations.
+				 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+				 */
 				clear: (pageId: string) =>
-					Effect.gen(function* () {
-						yield* dbService.execute((db) =>
-							db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, pageId))
-						);
-					}).pipe(
-						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								Effect.fail(
-									new SDKCoreError({
-										type: 'LibSQLDatabaseError',
-										cause: new StudioCMS_SDK_Error(`diffTracking.clear Error: ${cause}`),
-									})
-								),
-						})
-					),
+					dbService
+						.execute((db) => db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, pageId)))
+						.pipe(
+							Effect.catchTags({
+								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									Effect.fail(
+										new SDKCoreError({
+											type: 'LibSQLDatabaseError',
+											cause: new StudioCMS_SDK_Error(`diffTracking.clear Error: ${cause}`),
+										})
+									),
+							})
+						),
 				get: {
 					byPageId: {
+						/**
+						 * Retrieves all diffs for a page.
+						 * @param pageId - The ID of the page to retrieve diffs for.
+						 * @returns An Effect that resolves to the fixed diff entries.
+						 * @throws {SDKCoreError} If an error occurs during the database operations.
+						 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+						 */
 						all: (pageId: string) =>
 							Effect.gen(function* () {
 								const items = yield* dbService.execute((db) =>
@@ -188,6 +220,15 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 										),
 								})
 							),
+
+						/**
+						 * Retrieves the latest N diffs for a page.
+						 * @param pageId - The ID of the page to retrieve diffs for.
+						 * @param count - The number of latest diffs to retrieve.
+						 * @returns An Effect that resolves to the fixed diff entries.
+						 * @throws {SDKCoreError} If an error occurs during the database operations.
+						 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+						 */
 						latest: (pageId: string, count: number) =>
 							Effect.gen(function* () {
 								const items = yield* dbService.execute((db) =>
@@ -216,6 +257,13 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 							),
 					},
 					byUserId: {
+						/**
+						 * Retrieves all diffs created by a user.
+						 * @param userId - The ID of the user whose diffs to retrieve.
+						 * @returns An Effect that resolves to the fixed diff entries.
+						 * @throws {SDKCoreError} If an error occurs during the database operations.
+						 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+						 */
 						all: (userId: string) =>
 							Effect.gen(function* () {
 								const items = yield* dbService.execute((db) =>
@@ -240,6 +288,15 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 										),
 								})
 							),
+
+						/**
+						 * Retrieves the latest N diffs created by a user.
+						 * @param userId - The ID of the user whose diffs to retrieve.
+						 * @param count - The number of latest diffs to retrieve.
+						 * @returns An Effect that resolves to the fixed diff entries.
+						 * @throws {SDKCoreError} If an error occurs during the database operations.
+						 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+						 */
 						latest: (userId: string, count: number) =>
 							Effect.gen(function* () {
 								const items = yield* dbService.execute((db) =>
@@ -267,6 +324,14 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								})
 							),
 					},
+
+					/**
+					 * Retrieves a single diff entry by its ID.
+					 * @param id - The ID of the diff entry to retrieve.
+					 * @returns An Effect that resolves to the fixed diff entry.
+					 * @throws {SDKCoreError} If the diff entry is not found.
+					 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+					 */
 					single: (id: string) =>
 						Effect.gen(function* () {
 							const data = yield* dbService.execute((db) =>
@@ -286,6 +351,15 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 							})
 						),
 				},
+
+				/**
+				 * Reverts page content and/or metadata to a specific diff and purges newer diffs.
+				 * @param id - The ID of the diff to revert to.
+				 * @param type - The type of data to revert: 'content', 'data', or 'both'.
+				 * @returns An Effect that resolves to the fixed diff entry after the revert.
+				 * @throws {SDKCoreError} If the diff entry is not found or if the JSON in `pageMetaData` is invalid.
+				 * @throws {LibSQLDatabaseError} If an error occurs during the database operations.
+				 */
 				revertToDiff: (id: string, type: 'content' | 'data' | 'both') =>
 					Effect.gen(function* () {
 						const diffEntry = yield* dbService.execute((db) =>
@@ -377,6 +451,13 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 						})
 					),
 				utils: {
+					/**
+					 * Compares two metadata objects and returns their differences.
+					 * @param obj1 - The first metadata object to compare.
+					 * @param obj2 - The second metadata object to compare.
+					 * @returns An Effect that resolves to an array of differences.
+					 * @throws {UnknownException} If an error occurs during the comparison process.
+					 */
 					getMetaDataDifferences: <T extends Record<string, unknown>>(obj1: T, obj2: T) =>
 						Effect.gen(function* () {
 							const differences: { label: string; previous: unknown; current: unknown }[] = [];
@@ -444,6 +525,14 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 									),
 							})
 						),
+
+					/**
+					 * Converts a diff string into HTML format.
+					 * @param diff - The diff string to convert.
+					 * @param options - Optional configuration for the HTML output.
+					 * @returns An Effect that resolves to the HTML representation of the diff.
+					 * @throws {UnknownException} If an error occurs during the conversion process.
+					 */
 					getDiffHTML: (diff: string | null, options?: Diff2HtmlConfig) =>
 						Effect.try({
 							try: () =>

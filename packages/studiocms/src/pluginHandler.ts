@@ -112,18 +112,35 @@ export const defaultPlugin: StudioCMSPlugin = {
 	},
 };
 
+/**
+ * Represents a plugin requirement, specifying the source of the plugin and its dependencies.
+ *
+ * @property source - The identifier or path to the plugin source.
+ * @property requires - An array of strings listing the required dependencies for the plugin.
+ */
 type PluginRequire = {
 	source: string;
 	requires: string[];
 };
 
+/**
+ * Verifies that all required plugins are present in the source list.
+ *
+ * Iterates through the provided `requires` array, checking if each plugin's required dependencies
+ * are included in the `sourceList`. If any required plugins are missing, an error is thrown
+ * detailing which plugins are missing their dependencies.
+ *
+ * @param sourceList - An array of plugin names that are currently installed or available.
+ * @param requires - An array of objects describing each plugin and its required dependencies.
+ * @throws {StudioCMSError} If any plugin is missing required dependencies.
+ */
 function verifyPluginRequires(sourceList: string[], requires: PluginRequire[]) {
 	const missingRequirements: { source: string; missing: string[] }[] = [];
 
 	for (const req of requires) {
-		const { source, requires } = req;
+		const { source, requires: requiredDeps } = req;
 
-		const missing = requires.filter((r) => !sourceList.includes(r));
+		const missing = requiredDeps.filter((r) => !sourceList.includes(r));
 		if (missing.length > 0) {
 			missingRequirements.push({ source, missing });
 		}
@@ -146,6 +163,17 @@ function verifyPluginRequires(sourceList: string[], requires: PluginRequire[]) {
 	}
 }
 
+/**
+ * Configuration options for the StudioCMS plugin handler.
+ *
+ * @property dbStartPage - Indicates whether to use the database for the start page.
+ * @property verbose - Enables verbose logging output.
+ * @property name - The name of the plugin or application.
+ * @property pkgVersion - The version of the package.
+ * @property plugins - An array of StudioCMSPlugin instances, or undefined if no plugins are provided.
+ * @property robotsTXTConfig - Configuration for robots.txt, either a boolean or a RobotsConfig object.
+ * @property dashboardRoute - A function that returns the dashboard route for a given path.
+ */
 type Options = {
 	dbStartPage: boolean;
 	verbose: boolean;
@@ -156,6 +184,29 @@ type Options = {
 	dashboardRoute: (path: string) => string;
 };
 
+/**
+ * Handles the setup and configuration of StudioCMS plugins during the Astro build process.
+ *
+ * This utility function is registered for the `astro:config:setup` hook and is responsible for:
+ * - Initializing and validating StudioCMS plugins, including checking minimum version requirements.
+ * - Collecting integrations, dashboard grid items, dashboard pages, plugin endpoints, renderers, image services, and other plugin-related data.
+ * - Invoking plugin hooks (`studiocms:astro:config`, `studiocms:config:setup`) to allow plugins to register their features and integrations.
+ * - Setting up virtual imports for plugin components, endpoints, renderers, and image services for use in the StudioCMS dashboard and editor.
+ * - Managing sitemap and robots.txt integrations based on plugin and configuration options.
+ * - Verifying plugin dependencies and requirements.
+ * - Logging information about installed plugins and their configuration.
+ *
+ * @param params - Parameters provided by Astro during the config setup phase, including the logger.
+ * @param options - StudioCMS configuration options, including plugins, dashboard route, robots.txt config, and other settings.
+ * @returns An object containing:
+ *   - `integrations`: Array of Astro integrations to be registered.
+ *   - `extraRoutes`: Additional routes to be injected into the Astro app (e.g., dashboard plugin pages).
+ *   - `safePluginList`: List of validated and processed plugins with their safe configuration data.
+ *   - `messages`: Informational messages about the plugin setup process.
+ *
+ * @throws {StudioCMSError} If a plugin specifies an invalid minimum version requirement or if no rendering plugins are found.
+ * @throws {AstroError} If no rendering plugins are installed.
+ */
 export const pluginHandler = defineUtility('astro:config:setup')(
 	async (params, options: Options) => {
 		const { logger } = params;

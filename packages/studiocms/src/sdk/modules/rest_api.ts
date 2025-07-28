@@ -39,6 +39,12 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 
 			const REST_API = {
 				tokens: {
+					/**
+					 * Retrieves all API tokens for a specific user.
+					 * @param userId - The ID of the user whose tokens are to be retrieved.
+					 * @returns An Effect that resolves to an array of API keys for the user.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the operation.
+					 */
 					get: dbService.makeQuery((ex, userId: string) =>
 						ex((db) => db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId))).pipe(
 							Effect.catchTags({
@@ -47,6 +53,14 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 							})
 						)
 					),
+
+					/**
+					 * Creates a new API token for a user with the specified description.
+					 * @param userId - The ID of the user for whom to create the token.
+					 * @param description - A description for the API key.
+					 * @returns An Effect that resolves to the created API key record.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the operation.
+					 */
 					new: (userId: string, description: string) =>
 						Effect.gen(function* () {
 							const key = yield* generateToken(userId, true);
@@ -71,6 +85,14 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 									_clearLibSQLError('REST_API.tokens.new', cause),
 							})
 						),
+
+					/**
+					 * Deletes an API token for a user by its ID.
+					 * @param userId - The ID of the user whose token is to be deleted.
+					 * @param tokenId - The ID of the API token to delete.
+					 * @returns An Effect that resolves when the token is successfully deleted.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the operation.
+					 */
 					delete: (userId: string, tokenId: string) =>
 						dbService
 							.execute((db) =>
@@ -84,6 +106,13 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 										_clearLibSQLError('REST_API.tokens.delete', cause),
 								})
 							),
+
+					/**
+					 * Verifies an API key and retrieves the associated user ID and rank.
+					 * @param key - The API key to verify.
+					 * @returns An Effect that resolves to an object containing userId, key, and rank if valid, or false if invalid.
+					 * @throws {LibSQLDatabaseError} If a database error occurs during the verification.
+					 */
 					verify: (key: string) =>
 						Effect.gen(function* () {
 							const apiKey = yield* dbService.execute((db) =>
