@@ -43,8 +43,23 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
 
-      - name: Build packages and playground
-        run: pnpm ci:typecheck
+      - name: Run TypeCheck
+        run: pnpm --filter studiocms typecheck
+
+  test-studiocms-plugin-types:
+    name: Run StudioCMS Plugin & Packages TypeCheck
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@main
+
+      - name: Run TypeCheck for Plugins & Packages
+        run: pnpm --filter @studiocms/* typecheck
 
   vitest:
     name: Run Vitest Tests

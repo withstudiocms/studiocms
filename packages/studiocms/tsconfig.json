@@ -8,11 +8,5 @@
     "resolveJsonModule": true,
     "rootDir": "./src",
     "removeComments": false,
-    "pretty": true,
-    "plugins": [
-      {
-        "name": "@effect/language-service"
-      }
-    ]
   }
 }

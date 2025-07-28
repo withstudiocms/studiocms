@@ -100,6 +100,9 @@ importers:
       '@crowdin/crowdin-api-client':
         specifier: ^1.46.0
         version: 1.46.0
+      '@effect/language-service':
+        specifier: catalog:effect
+        version: 0.27.2
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
@@ -121,6 +124,9 @@ importers:
       tinyglobby:
         specifier: ^0.2.14
         version: 0.2.14
+      ts-patch:
+        specifier: 3.3.0
+        version: 3.3.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -535,9 +541,6 @@ importers:
         specifier: catalog:min
         version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
     devDependencies:
-      '@effect/language-service':
-        specifier: catalog:effect
-        version: 0.27.2
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
@@ -559,9 +562,6 @@ importers:
       '@types/three':
         specifier: 0.169.0
         version: 0.169.0
-      ts-patch:
-        specifier: 3.3.0
-        version: 3.3.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.3

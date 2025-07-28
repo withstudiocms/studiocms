@@ -1,11 +1,11 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "../../../tsconfig.tspc.json",
   "include": ["src"],
   "exclude": ["dist"],
   "compilerOptions": {
     "jsx": "react",
     "emitDeclarationOnly": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
   }
 }
