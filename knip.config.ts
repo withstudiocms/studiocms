@@ -20,7 +20,7 @@ const baseAstroWorkspaceConfig = {
 
 /**
  * An array of package names used within the StudioCMS project.
- * 
+ *
  * @remarks
  * This constant is defined as a readonly tuple using `as const` to ensure
  * that the package names are immutable and their types are preserved.
@@ -71,10 +71,7 @@ const config: KnipConfig = {
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: [
-				'@clack/core',
-				'studiocms-dashboard',
-			],
+			ignoreDependencies: ['@clack/core', 'studiocms-dashboard'],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {
