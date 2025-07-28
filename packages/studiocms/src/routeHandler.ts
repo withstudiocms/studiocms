@@ -96,7 +96,6 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		},
 	} = options;
 
-
 	/**
 	 * Defines the list of route configurations for the application.
 	 *

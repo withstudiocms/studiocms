@@ -56,7 +56,6 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 			]);
 
 			const resetTokenBucket = {
-
 				/**
 				 * Creates a new reset token for the specified user and stores it in the database.
 				 * @param userId - The ID of the user for whom to create the reset token.

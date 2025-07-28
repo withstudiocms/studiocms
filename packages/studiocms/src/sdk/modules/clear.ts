@@ -35,7 +35,6 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 
 			const CLEAR = {
 				page: {
-
 					/**
 					 * Clears a cached page by its ID.
 					 * @param id - The ID of the page to clear from the cache.
@@ -109,7 +108,7 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							UnknownException: (cause) => _ClearUnknownError('CLEAR.pages', cause),
 						})
 					),
-				
+
 				/**
 				 * Clears the cached latest version information.
 				 * @remarks
@@ -151,7 +150,7 @@ export class SDKCore_CLEAR extends Effect.Service<SDKCore_CLEAR>()(
 							UnknownException: (cause) => _ClearUnknownError('CLEAR.folderTree', cause),
 						})
 					),
-				
+
 				/**
 				 * Clears the cached folder list.
 				 * @remarks

@@ -41,7 +41,6 @@ export class SDKCore_NotificationSettings extends Effect.Service<SDKCore_Notific
 
 			const notificationSettings = {
 				site: {
-
 					/**
 					 * Retrieves the site-wide notification settings.
 					 * @returns An Effect that resolves to the current notification settings.

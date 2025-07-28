@@ -39,7 +39,6 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 
 			const REST_API = {
 				tokens: {
-
 					/**
 					 * Retrieves all API tokens for a specific user.
 					 * @param userId - The ID of the user whose tokens are to be retrieved.
