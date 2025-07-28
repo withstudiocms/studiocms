@@ -8,7 +8,9 @@ on:
   pull_request:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.number || github.sha }}
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || github.sha }}
   cancel-in-progress: true
 
 permissions:
@@ -59,8 +61,7 @@ jobs:
       - name: Get pnpm packages
         id: pnpm-packages
         run: |
-          pnpm list --recursive --depth -1 --json > pnpm.json
-          echo "packages-output=$(cat pnpm.json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
+          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
 
       - name: Compute packages paths
         id: compute-packages-paths
@@ -86,7 +87,7 @@ jobs:
           fi
 
   preview-pr:
-    if: github.event_name == 'pull_request' 
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -128,8 +129,7 @@ jobs:
       - name: Get pnpm packages
         id: pnpm-packages
         run: |
-          pnpm list --recursive --depth -1 --json > pnpm.json
-          echo "packages-output=$(cat pnpm.json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
+          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
 
       - name: Compute affected packages
         id: compute-affected-packages
