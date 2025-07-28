@@ -145,6 +145,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -167,6 +170,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -229,6 +235,9 @@ importers:
       codemirror:
         specifier: ^5.49.0
         version: 5.65.19
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
       katex:
         specifier: ^0.16.21
         version: 0.16.22
@@ -266,6 +275,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.11.0(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      effect:
+        specifier: catalog:effect
+        version: 3.16.13
       react:
         specifier: ^19.0.0
         version: 19.1.0
