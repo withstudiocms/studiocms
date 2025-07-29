@@ -2,11 +2,10 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "schedule:earlyMondays",
-    ":preserveSemverRanges",
+    "schedule:weekly",
     "group:allNonMajor",
     ":disablePeerDependencies",
-    "customManagers:biomeVersions"
+    "regexManagers:biomeVersions"
   ],
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
@@ -24,16 +23,18 @@
       "enabled": false
     },
     {
-      "matchFileNames": [".node-version"],
-      "enabled": false
-    },
-    {
       "matchDepTypes": ["pnpm.catalog.min"],
       "enabled": false
     },
     {
-      "matchPackageNames": ["drizzle-orm", "codemirror"],
+      "matchFileNames": [".node-version"],
       "enabled": false
+    },
+    {
+      "groupName": "github-actions",
+      "matchManagers": [
+        "github-actions"
+      ]
     },
     {
       "groupName": "Effect",
@@ -43,5 +44,17 @@
       "groupName": "Nanostores",
       "matchPackageNames": ["nanostores", "@nanostores/**"]
     }
+  ],
+  "ignoreDeps": [
+    "@biomejs/biome",
+    "knip",
+    "@types/node",
+    "drizzle-orm",
+    "sharp",
+    "node",
+    "npm",
+    "pnpm",
+    "esbuild",
+    "codemirror"
   ]
 }

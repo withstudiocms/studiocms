@@ -205,15 +205,11 @@
 	},
 	"peerDependencies": {
 		"@astrojs/db": "catalog:min",
-		"@astrojs/web-vitals": "catalog:",
 		"@studiocms/web-vitals": "catalog:",
 		"astro": "catalog:min",
 		"vite": "catalog:min"
 	},
 	"peerDependenciesMeta": {
-		"@astrojs/web-vitals": {
-			"optional": true
-		},
 		"@studiocms/web-vitals": {
 			"optional": true
 		}

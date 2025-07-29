@@ -7,8 +7,7 @@ import {
 import type { StudioCMSPlugin } from '../../plugins.js';
 import { integrationLogger } from '../../utils/integrationLogger.js';
 
-// TODO: Remove support for `@astrojs/web-vitals` in the future now that it has been officially deprecated.
-export const webVitalsNameList = ['@astrojs/web-vitals', '@studiocms/web-vitals'];
+export const webVitalsNameList = ['@studiocms/web-vitals'];
 
 const { resolve } = createResolver(import.meta.url);
 

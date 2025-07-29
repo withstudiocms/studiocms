@@ -1,7 +1,7 @@
 import db from '@astrojs/db';
 import node from '@astrojs/node';
-import webVitals from '@astrojs/web-vitals';
 import devApps from '@studiocms/devapps';
+import webVitals from '@studiocms/web-vitals';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
 import { getCoolifyURL } from './hostUtils';
