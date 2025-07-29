@@ -49,37 +49,39 @@ const router: Router = {};
  * @returns A generator function that yields effects for SDK, user, and email operations,
  *          and then proceeds to the next middleware.
  */
-router['/**'] = async (context, next) =>
-	await convertToVanilla(
-		genLogger('studiocms/middleware/middlewareEffect')(function* () {
-			const {
-				GET: { latestVersion, siteConfig },
-			} = yield* SDKCore;
-			const { getUserData } = yield* User;
-			const { isEmailVerificationEnabled } = yield* VerifyEmail;
+router['/**'] = {
+	handler: async (context, next) =>
+		await convertToVanilla(
+			genLogger('studiocms/middleware/middlewareEffect')(function* () {
+				const {
+					GET: { latestVersion, siteConfig },
+				} = yield* SDKCore;
+				const { getUserData } = yield* User;
+				const { isEmailVerificationEnabled } = yield* VerifyEmail;
 
-			const [version, siteConf, userSessionData, emailVerificationEnabled] = yield* Effect.all([
-				latestVersion(),
-				siteConfig(),
-				getUserData(context),
-				isEmailVerificationEnabled(),
-			]);
+				const [version, siteConf, userSessionData, emailVerificationEnabled] = yield* Effect.all([
+					latestVersion(),
+					siteConfig(),
+					getUserData(context),
+					isEmailVerificationEnabled(),
+				]);
 
-			const userPermissionLevel = yield* getUserPermissions(userSessionData);
+				const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
-			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
-			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-			context.locals.latestVersion = version;
-			context.locals.siteConfig = siteConf || fallbackSiteConfig;
-			context.locals.defaultLang = defaultLang;
-			context.locals.routeMap = StudioCMSRoutes;
-			context.locals.userSessionData = userSessionData;
-			context.locals.emailVerificationEnabled = emailVerificationEnabled;
-			context.locals.userPermissionLevel = userPermissionLevel;
+				context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
+				context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
+				context.locals.latestVersion = version;
+				context.locals.siteConfig = siteConf || fallbackSiteConfig;
+				context.locals.defaultLang = defaultLang;
+				context.locals.routeMap = StudioCMSRoutes;
+				context.locals.userSessionData = userSessionData;
+				context.locals.emailVerificationEnabled = emailVerificationEnabled;
+				context.locals.userPermissionLevel = userPermissionLevel;
 
-			return next();
-		}).pipe(Effect.provide(mainRouteEffectDeps))
-	);
+				return next();
+			}).pipe(Effect.provide(mainRouteEffectDeps))
+		),
+};
 
 /**
  * Middleware function to ensure that the user is logged in before accessing any dashboard routes.
@@ -90,17 +92,26 @@ router['/**'] = async (context, next) =>
  *
  * @returns A generator function that checks the user's session data and redirects if necessary.
  */
-router[`/${dashboardRoute}/**`] = async (context, next) =>
-	await convertToVanilla(
-		genLogger('studiocms/middleware/middlewareEffect')(function* () {
-			const { getUserData } = yield* User;
+router[`/${dashboardRoute}/**`] = {
+	excludePaths: [
+		`/${dashboardRoute}/login**`,
+		`/${dashboardRoute}/signup**`,
+		`/${dashboardRoute}/logout**`,
+		`/${dashboardRoute}/forgot-password**`,
+	],
+	handler: async (context, next) =>
+		await convertToVanilla(
+			genLogger('studiocms/middleware/middlewareEffect')(function* () {
+				const { getUserData } = yield* User;
 
-			const userSessionData = yield* getUserData(context);
+				const userSessionData = yield* getUserData(context);
 
-			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+				if (!userSessionData.isLoggedIn)
+					return context.redirect(StudioCMSRoutes.authLinks.loginURL);
 
-			return next();
-		}).pipe(Effect.provide(User.Default))
-	);
+				return next();
+			}).pipe(Effect.provide(User.Default))
+		),
+};
 
-export const onRequest = defineMiddlewareRouter(router, dashboardRoute);
+export const onRequest = defineMiddlewareRouter(router);
