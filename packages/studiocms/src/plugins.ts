@@ -4,11 +4,11 @@
 import {
 	type AvailableDashboardPages,
 	type DashboardPage,
+	definePlugin,
 	type FinalDashboardPage,
 	type SafePluginListType,
 	type SettingsField,
 	type StudioCMSPlugin,
-	definePlugin,
 } from './schemas/index.js';
 
 export {

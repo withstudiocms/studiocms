@@ -1,6 +1,4 @@
 import { z } from 'astro/zod';
-import { authConfigSchema } from './auth.js';
-import { developerConfigSchema } from './developer.js';
 
 export const dashboardConfigSchema = z
 	.object({
@@ -10,14 +8,6 @@ export const dashboardConfigSchema = z
 		 * @default true
 		 */
 		dashboardEnabled: z.boolean().optional().default(true),
-		// /**
-		//  * This allows the user when in `output: "server"` mode with Astro to enable or disable the prerendering of the dashboard
-		//  *
-		//  * **Note: This is only applicable when using Astro in server mode in static(hybrid) mode, this will be `true`**
-		//  *
-		//  * @default true
-		//  */
-		// prerender: z.boolean().optional().default(true),
 		/**
 		 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
 		 *

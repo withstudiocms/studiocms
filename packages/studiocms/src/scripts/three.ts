@@ -306,7 +306,7 @@ class StudioCMS3DLogo {
 		}
 
 		loader.loadAsync(bgUrl).then((texture) => {
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 			const planeHeight = this.frustumHeight!;
 			const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
 
@@ -395,7 +395,7 @@ class StudioCMS3DLogo {
 	};
 }
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
+// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 const logoContainer = document.querySelector<HTMLDivElement>('#canvas-container')!;
 const usingReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
 const smallScreen = window.matchMedia('(max-width: 850px)').matches === true;

@@ -65,7 +65,7 @@ export function processWebVitalsRouteSummary(
 	const summaries: Record<string, IntermediateWebVitalsRouteSummary> = {};
 	for (const item of results) {
 		const { route, name, rating, value } = item;
-		// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case for assignment in expressions.
 		const routeSummary = (summaries[route] ||= {
 			route,
 			passingCoreWebVitals: true,

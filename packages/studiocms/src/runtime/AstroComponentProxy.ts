@@ -6,6 +6,13 @@ import sanitize, { type SanitizeOptions } from 'ultrahtml/transformers/sanitize'
 import swap from 'ultrahtml/transformers/swap';
 import { decode } from './decoder/index.js';
 
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
+type ComponentType = Record<string, any>;
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
+type AstroProps = Record<string, any>;
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+type AstroComponentChildren = { value: any };
+
 /**
  * Creates a proxy for components that can either be strings or functions.
  * If the component is a string, it is directly assigned to the proxy.
@@ -16,22 +23,15 @@ import { decode } from './decoder/index.js';
  * @param _components - An optional record of components to be proxied. Defaults to an empty object.
  * @returns A record of proxied components.
  */
-export function createComponentProxy(
-	result: SSRResult,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	_components: Record<string, any> = {}
-) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const components: Record<string, any> = {};
+export function createComponentProxy(result: SSRResult, _components: ComponentType = {}) {
+	const components: ComponentType = {};
 	for (const [key, value] of Object.entries(_components)) {
 		if (typeof value === 'string') {
 			components[key.toLowerCase()] = value;
 		} else {
 			components[key.toLowerCase()] = async (
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				props: Record<string, any>,
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				children: { value: any }
+				props: AstroProps,
+				children: AstroComponentChildren
 			) => {
 				if (key === 'codeblock' || key === 'codespan') {
 					props.code = decode(JSON.parse(`"${props.code}"`));
@@ -62,14 +62,14 @@ function getIndent(ln: string): string {
  * Removes leading indentation from a multi-line string.
  *
  * @param str - The string from which to remove leading indentation.
- * @returns The dedented string.
+ * @returns The dedent string output.
  */
 export function dedent(str: string): string {
 	const lns = str.replace(/^[\r\n]+/, '').split('\n');
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 	let indent = getIndent(lns[0]!);
 	if (indent.length === 0 && lns.length > 1) {
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 		indent = getIndent(lns[1]!);
 	}
 	if (indent.length === 0) return lns.join('\n');
@@ -86,8 +86,7 @@ export function dedent(str: string): string {
  */
 export async function transformHTML(
 	html: string,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	components: Record<string, any>,
+	components: ComponentType,
 	sanitizeOpts?: SanitizeOptions
 ): Promise<string> {
 	return await transform(dedent(html), [sanitize(sanitizeOpts), swap(components)]);

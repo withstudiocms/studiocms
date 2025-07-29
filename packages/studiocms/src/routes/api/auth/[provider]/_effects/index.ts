@@ -1,7 +1,7 @@
 import type { AuthEnvCheckResponse } from 'studiocms:auth/utils/authEnvCheck';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, Provider, ProviderResponse, authEnvChecker } from './_shared.js';
+import { AuthEnvCheck, authEnvChecker, Provider, ProviderResponse } from './_shared.js';
 import { Auth0OAuthAPI } from './auth0.js';
 import { DiscordOAuthAPI } from './discord.js';
 import { GitHubOAuthAPI } from './github.js';

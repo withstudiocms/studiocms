@@ -129,7 +129,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				...restPageData
 			} = data;
 
-			const { id, ...contentData } = content;
+			const { id: ____id, ...contentData } = content;
 
 			yield* sdk.POST.databaseEntry.pages(
 				{

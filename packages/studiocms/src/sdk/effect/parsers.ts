@@ -109,6 +109,5 @@ export class SDKCore_Parsers extends Effect.Service<SDKCore_Parsers>()(
 				fixDiff,
 			};
 		}),
-		accessors: true,
 	}
 ) {}

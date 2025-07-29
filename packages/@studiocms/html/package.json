@@ -65,9 +65,9 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-		"codemirror": "^5.49.0",
-		"katex": "^0.16.21",
-		"suneditor": "^2.47.5"
+		"codemirror": "5.49.0",
+		"katex": "^0.16.22",
+		"suneditor": "^2.47.6"
   },
   "devDependencies": {
 		"@types/codemirror": "5.60.10",

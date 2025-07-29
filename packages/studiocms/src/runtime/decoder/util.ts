@@ -87,6 +87,7 @@ export interface EntityErrorProducer {
 export class EntityDecoder {
 	constructor(
 		/** The tree used to decode entities. */
+		// biome-ignore lint/correctness/noUnusedPrivateClassMembers: this was not my code to start with... so its okay
 		private readonly decodeTree: Uint16Array,
 		/**
 		 * The function that is called when a codepoint is decoded.
@@ -441,14 +442,14 @@ export class EntityDecoder {
  */
 function getDecoder(decodeTree: Uint16Array) {
 	let returnValue = '';
-	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+	// biome-ignore lint/suspicious/noAssignInExpressions: this is a valid use case for assignment in expressions.
 	const decoder = new EntityDecoder(decodeTree, (data) => (returnValue += fromCodePoint(data)));
 
 	return function decodeWithTrie(input: string, decodeMode: DecodingMode): string {
 		let lastIndex = 0;
 		let offset = 0;
 
-		// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+		// biome-ignore lint/suspicious/noAssignInExpressions: this is a valid use case for assignment in expressions.
 		while ((offset = input.indexOf('&', offset)) >= 0) {
 			returnValue += input.slice(lastIndex, offset);
 
@@ -576,12 +577,11 @@ export function decodeXML(xmlString: string): string {
 	return xmlDecoder(xmlString, DecodingMode.Strict);
 }
 
+export {
+	decodeCodePoint,
+	fromCodePoint,
+	replaceCodePoint,
+} from './decode-codepoint.js';
 // Re-export for use by eg. htmlparser2
 export { htmlDecodeTree } from './decode-data-html.js';
 export { xmlDecodeTree } from './decode-data-xml.js';
-
-export {
-	decodeCodePoint,
-	replaceCodePoint,
-	fromCodePoint,
-} from './decode-codepoint.js';

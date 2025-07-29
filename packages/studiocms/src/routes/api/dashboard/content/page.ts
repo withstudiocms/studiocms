@@ -113,14 +113,14 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(400, 'Invalid form data, title is required');
 			}
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 			const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
 
 			yield* sdk.POST.page({
 				// @ts-expect-error
 				pageData: {
 					id: dataId,
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 					title: data.title!,
 					slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
 					description: data.description || '',
@@ -219,9 +219,9 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 
 			const ContributorIds = contributorIds || [];
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 			if (!ContributorIds.includes(userData.user!.id)) {
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 				ContributorIds.push(userData.user!.id);
 			}
 
@@ -237,7 +237,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				data: { defaultContent },
 			} = yield* sdk.GET.page.byId(data.id);
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 			const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
 
 			yield* sdk.UPDATE.page.byId(data.id, {
@@ -253,7 +253,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 
 			if (enableDiffs) {
 				yield* sdk.diffTracking.insert(
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 					userData.user!.id,
 					data.id,
 					{
@@ -261,7 +261,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 							start: defaultContent?.content || '',
 							end: content.content || '',
 						},
-						// biome-ignore lint/style/noNonNullAssertion: <explanation>
+						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 						metaData: { start: startMetaData!, end: updatedMetaData! },
 					},
 					diffPerPage

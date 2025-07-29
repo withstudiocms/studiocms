@@ -337,6 +337,5 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 			};
 		}),
 		dependencies: [AstroDB.Default],
-		accessors: true,
 	}
 ) {}

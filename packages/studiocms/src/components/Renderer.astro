@@ -5,7 +5,7 @@ import type { PluginPageTypeRendererProps } from '../types.js';
 
 interface Props extends PluginPageTypeRendererProps {}
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 type AstroComponent = (props: Props) => any;
 
 const { data } = Astro.props;

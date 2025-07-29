@@ -159,7 +159,11 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 						({ defaultContent, multiLangContent, ...rest }) => rest
 					) as PageDataReturnType<T>;
 				}
-				const { defaultContent, multiLangContent, ...rest } = data as CombinedPageData;
+				const {
+					defaultContent: _dump1,
+					multiLangContent: _dump2,
+					...rest
+				} = data as CombinedPageData;
 				return rest as PageDataReturnType<T>;
 			});
 
@@ -215,7 +219,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 							contentId: string;
 							content: string | null;
 					  }[]
-					| undefined = undefined;
+					| undefined;
 
 				if (!metaOnly) {
 					multiLanguageContentData = yield* dbService.execute((db) =>
@@ -311,5 +315,4 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		return { collectCategories, collectTags, collectPageData, collectUserData };
 	}),
 	dependencies: [AstroDB.Default, SDKCore_FolderTree.Default, SDKCore_Parsers.Default],
-	accessors: true,
 }) {}

@@ -16,7 +16,6 @@ import type {
 	tsUsersInsert,
 	tsUsersUpdate,
 } from '../types/index.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
 /**
  * Provides authentication-related operations for the StudioCMS SDK.

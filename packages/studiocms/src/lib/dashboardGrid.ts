@@ -120,7 +120,7 @@ export interface GridItemUsable {
 		 * Optional. The components of the body.
 		 *
 		 */
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 		components?: Record<string, any>;
 
 		/**

@@ -131,7 +131,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				data: { defaultContent },
 			} = yield* sdk.GET.page.byId(data.id);
 
-			const updated = yield* sdk.UPDATE.page.byId(data.id, {
+			const _updated = yield* sdk.UPDATE.page.byId(data.id, {
 				pageData: data as tsPageDataSelect,
 				pageContent: content as tsPageContentSelect,
 			});
@@ -157,7 +157,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 							start: defaultContent?.content || '',
 							end: content.content || '',
 						},
-						// biome-ignore lint/style/noNonNullAssertion: <explanation>
+						// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 						metaData: { start: startMetaData!, end: updatedMetaData! },
 					},
 					diffPerPage
@@ -166,7 +166,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 
 			yield* sdk.CLEAR.page.byId(id);
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 			yield* Notifications.sendEditorNotification('page_updated', updatedMetaData!.title);
 
 			return apiResponseLogger(200, 'Page updated successfully');

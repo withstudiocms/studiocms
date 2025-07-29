@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.1.2",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.5",
     "@changesets/config": "^3.1.1",
@@ -50,7 +50,7 @@
     "studiocms": "workspace:*",
     "typescript": "catalog:",
     "tinyglobby": "^0.2.14",
-		"ts-patch": "3.3.0"
+		"ts-patch": "^3.3.0"
   },
   "pnpm": {
     "overrides": {

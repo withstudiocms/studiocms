@@ -5,9 +5,9 @@ import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
 import Notifications from '../../components/dashboard/profile/Notifications.astro';
+import { providerData, showOAuth } from '../../components/dashboard/profile/oAuthButtonProviders';
 import SocialSignin from '../../components/dashboard/profile/SocialSignin.astro';
 import UpdatePassword from '../../components/dashboard/profile/UpdatePassword.astro';
-import { providerData, showOAuth } from '../../components/dashboard/profile/oAuthButtonProviders';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
 const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;

@@ -3,18 +3,18 @@ import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
-import { generateCodeVerifier, generateState } from 'arctic';
-import { Auth0 } from 'arctic';
+import { Auth0, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import {
+	Auth0User,
 	AuthEnvCheck,
-	Provider,
-	ValidateAuthCodeError,
+	cleanDomain,
 	getCookie,
 	getUrlParam,
+	Provider,
+	ValidateAuthCodeError,
 } from './_shared.js';
-import { Auth0User, cleanDomain } from './_shared.js';
 
 /**
  * Provides Auth0 OAuth authentication effects for the StudioCMS API.

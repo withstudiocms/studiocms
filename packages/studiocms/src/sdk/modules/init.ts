@@ -3,7 +3,6 @@ import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsSiteConfig } from '../tables.js';
 import type { tsSiteConfigSelect } from '../types/index.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 import { SDKCore_AUTH } from './auth.js';
 
 /**

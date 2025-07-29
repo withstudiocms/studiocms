@@ -1,7 +1,7 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
-import { Effect, convertToVanilla } from '../../../effect.js';
+import { convertToVanilla, Effect } from '../../../effect.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { createUserAvatar } from '../../utils/createUserAvatar.js';

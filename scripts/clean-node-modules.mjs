@@ -114,7 +114,7 @@ class NodeModulesCleaner {
 					size = sizeOutput.trim().split('\t')[0];
 				}
 				sizes.push({ path: dir, size });
-			} catch (error) {
+			} catch (_error) {
 				sizes.push({ path: dir, size: 'Unknown' });
 			}
 		}

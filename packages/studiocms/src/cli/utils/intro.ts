@@ -8,7 +8,7 @@ import getSeasonalMessages from './seasonal.js';
 
 const pkgJson = readJson<{ version: string }>(new URL('../../../package.json', import.meta.url));
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 export const random = (...arr: any[]) => {
 	const flattenedArray = arr.flat(1);
 	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];

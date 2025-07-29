@@ -84,7 +84,6 @@ export function loadChangelog(path: string): Changelog {
 				const lastChild = listItem.children[listItem.children.length - 1];
 				if (lastChild?.type === 'list') {
 					const packageRefs: string[] = [];
-					// biome-ignore lint/complexity/noForEach: <explanation>
 					lastChild.children.forEach((subListItem) => {
 						const text = ToString(subListItem);
 						if (parsePackageReference(text)) packageRefs.push(text);
@@ -124,7 +123,6 @@ export function loadChangelog(path: string): Changelog {
 		throw new Error(`Unexpected node: ${JSON.stringify(node)}`);
 	}
 
-	// biome-ignore lint/complexity/noForEach: <explanation>
 	ast.children.forEach((node) => {
 		handleNode(node);
 	});

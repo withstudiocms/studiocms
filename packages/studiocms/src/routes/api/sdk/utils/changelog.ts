@@ -118,12 +118,11 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 									const listItem = node.children[listItemIdx];
 									if (!listItem) continue;
 
-									// Check if the current list item ends with a nested sublist that consists
+									// Check if the current list item ends with a nested sub-list that consists
 									// of items matching the pattern `<some-package-name>@<version>`
 									const lastChild = listItem.children[listItem.children.length - 1];
 									if (lastChild?.type === 'list') {
 										const packageRefs: string[] = [];
-										// biome-ignore lint/complexity/noForEach: <explanation>
 										lastChild.children.forEach((subListItem) => {
 											const text = ToString(subListItem);
 											if (parsePackageReference(text)) packageRefs.push(text);

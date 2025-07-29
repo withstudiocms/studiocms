@@ -13,14 +13,13 @@ export { convertToSafeString };
  * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
  */
 export async function importEditorKeys(keys: string[]) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 	const predefinedComponents: Record<string, any> = {};
 
 	for (const key of keys) {
 		try {
 			predefinedComponents[convertToSafeString(key)] =
-				// @ts-ignore
-				mod[convertToSafeString(key)];
+				mod[convertToSafeString(key) as keyof typeof mod];
 		} catch (e) {
 			if (e instanceof Error) {
 				const newErr = prefixError(

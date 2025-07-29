@@ -1,5 +1,5 @@
-import { defineUtility } from 'astro-integration-kit';
 import { z } from 'astro/zod';
+import { defineUtility } from 'astro-integration-kit';
 import { deepmerge } from 'deepmerge-ts';
 import { StudioCMSCoreError } from '../errors.js';
 import {
@@ -26,12 +26,12 @@ export function parseConfig(opts: StudioCMSOptions): StudioCMSConfig {
 	}
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 function deepRemoveDefaults(schema: z.ZodTypeAny): any {
 	if (schema instanceof z.ZodDefault) return deepRemoveDefaults(schema.removeDefault());
 
 	if (schema instanceof z.ZodObject) {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 		const newShape: any = {};
 
 		for (const key in schema.shape) {
@@ -41,7 +41,7 @@ function deepRemoveDefaults(schema: z.ZodTypeAny): any {
 		return new z.ZodObject({
 			...schema._def,
 			shape: () => newShape,
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 		}) as any;
 	}
 
@@ -54,7 +54,7 @@ function deepRemoveDefaults(schema: z.ZodTypeAny): any {
 		return z.ZodNullable.create(deepRemoveDefaults(schema.unwrap()));
 
 	if (schema instanceof z.ZodTuple)
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 		return z.ZodTuple.create(schema.items.map((item: any) => deepRemoveDefaults(item)));
 
 	return schema;

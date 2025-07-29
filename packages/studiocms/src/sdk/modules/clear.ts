@@ -1,5 +1,5 @@
 import { Effect, genLogger } from '../../effect.js';
-import { CacheContext, _ClearUnknownError, isCacheEnabled } from '../utils.js';
+import { _ClearUnknownError, CacheContext, isCacheEnabled } from '../utils.js';
 
 /**
  * Provides cache clearing operations for various entities in the SDKCore module.

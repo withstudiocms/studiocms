@@ -66,15 +66,15 @@
   },
   "type": "module",
   "dependencies": {
-    "@markdoc/markdoc": "^0.5.1",
+    "@markdoc/markdoc": "^0.5.2",
     "astro-integration-kit": "catalog:",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4"
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6"
   },
   "peerDependencies": {
     "@astrojs/react": "catalog:",

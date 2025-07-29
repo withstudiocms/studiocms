@@ -7,7 +7,7 @@ declare module 'studiocms:logger' {
 	export const apiResponseLogger: (
 		status: number,
 		message: string,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any
 		error?: Error | any
 	) => Response;
 }
@@ -76,32 +76,22 @@ declare module 'studiocms:notifier' {
 	export type EditorNotification = import('./lib/notifier/index').EditorNotification;
 	export type AdminNotification = import('./lib/notifier/index').AdminNotification;
 	export const notificationTypes: typeof import('./lib/notifier/index').notificationTypes;
-	export const notificationTitleStrings: typeof import(
-		'./lib/notifier/index'
-	).notificationTitleStrings;
+	export const notificationTitleStrings: typeof import('./lib/notifier/index').notificationTitleStrings;
 }
 
 declare module 'studiocms:notifier/client' {
 	export type UserNotificationOptions = import('./lib/notifier/client').UserNotificationOptions;
-	export const getEnabledNotificationCheckboxes: typeof import(
-		'./lib/notifier/client'
-	).getEnabledNotificationCheckboxes;
-	export const formatNotificationOptions: typeof import(
-		'./lib/notifier/client'
-	).formatNotificationOptions;
+	export const getEnabledNotificationCheckboxes: typeof import('./lib/notifier/client').getEnabledNotificationCheckboxes;
+	export const formatNotificationOptions: typeof import('./lib/notifier/client').formatNotificationOptions;
 }
 
 declare module 'studiocms:config' {
 	export const config: import('./schemas/index.js').StudioCMSConfig;
 	export default config;
 
-	export const dashboardConfig: import(
-		'./schemas/index.js'
-	).StudioCMSConfig['features']['dashboardConfig'];
+	export const dashboardConfig: import('./schemas/index.js').StudioCMSConfig['features']['dashboardConfig'];
 	export const authConfig: import('./schemas/index.js').StudioCMSConfig['features']['authConfig'];
-	export const developerConfig: import(
-		'./schemas/index.js'
-	).StudioCMSConfig['features']['developerConfig'];
+	export const developerConfig: import('./schemas/index.js').StudioCMSConfig['features']['developerConfig'];
 	export const sdk: import('./schemas/index.js').StudioCMSConfig['features']['sdk'];
 }
 
@@ -134,9 +124,7 @@ declare module 'studiocms:i18n' {
 	export const getLangFromUrl: typeof import('./lib/i18n/index.js').getLangFromUrl;
 	export const useTranslations: typeof import('./lib/i18n/index.js').useTranslations;
 	export const useTranslatedPath: typeof import('./lib/i18n/index.js').useTranslatedPath;
-	export const languageSelectorOptions: typeof import(
-		'./lib/i18n/index.js'
-	).languageSelectorOptions;
+	export const languageSelectorOptions: typeof import('./lib/i18n/index.js').languageSelectorOptions;
 	export const getCurrentURLPath: typeof import('./lib/i18n/index.js').getCurrentURLPath;
 	export const switchLanguage: typeof import('./lib/i18n/index.js').switchLanguage;
 	export type UiLanguageKeys = import('./lib/i18n/index.js').UiLanguageKeys;
@@ -180,9 +168,7 @@ declare module 'studiocms:lib' {
 	export const stripTrailingSlash: typeof import('./lib/pathGenerators.js').stripTrailingSlash;
 	export const stripHtmlExtension: typeof import('./lib/pathGenerators.js').stripHtmlExtension;
 	export const ensureHtmlExtension: typeof import('./lib/pathGenerators.js').ensureHtmlExtension;
-	export const removeLeadingTrailingSlashes: typeof import(
-		'./lib/removeLeadingTrailingSlashes.js'
-	).removeLeadingTrailingSlashes;
+	export const removeLeadingTrailingSlashes: typeof import('./lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
 	export const getSluggedRoute: typeof import('./lib/routeMap.js').getSluggedRoute;
 	export const getEditRoute: typeof import('./lib/routeMap.js').getEditRoute;
 	export const getDeleteRoute: typeof import('./lib/routeMap.js').getDeleteRoute;
@@ -209,9 +195,7 @@ declare module 'studiocms:plugin-helpers' {
 	export type FinalDashboardPage = import('./plugins.ts').FinalDashboardPage;
 	export type DashboardPage = import('./plugins.js').DashboardPage;
 
-	export const getPluginDashboardPages: typeof import(
-		'./lib/plugins/index.js'
-	).getPluginDashboardPages;
+	export const getPluginDashboardPages: typeof import('./lib/plugins/index.js').getPluginDashboardPages;
 	export const frontendNavigation: typeof import('./lib/plugins/index.js').frontendNavigation;
 }
 
@@ -238,9 +222,8 @@ declare module 'studiocms:component-registry/runtime' {
 	 *
 	 * @property safeName - A readonly string representing a safe, unique identifier for the component.
 	 */
-	export type ComponentRegistryEntry = import(
-		'./componentRegistry/runtime.js'
-	).ComponentRegistryEntry;
+	export type ComponentRegistryEntry =
+		import('./componentRegistry/runtime.js').ComponentRegistryEntry;
 
 	/**
 	 * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
@@ -251,25 +234,19 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @deprecated This function is deprecated and will be removed in future versions.
 	 * Use `getRendererComponents` instead for importing components from the component registry.
 	 */
-	export const importComponentsKeys: typeof import(
-		'./componentRegistry/runtime.js'
-	).importComponentsKeys;
+	export const importComponentsKeys: typeof import('./componentRegistry/runtime.js').importComponentsKeys;
 
 	/**
 	 * @returns A promise that resolves to an object containing the imported components.
 	 */
-	export const getRendererComponents: typeof import(
-		'./componentRegistry/runtime.js'
-	).getRendererComponents;
+	export const getRendererComponents: typeof import('./componentRegistry/runtime.js').getRendererComponents;
 
 	/**
 	 * Returns the component registry entries.
 	 *
 	 * @returns {ComponentRegistryEntry[]} An object mapping safe component names to their registry entries.
 	 */
-	export const getRegistryComponents: typeof import(
-		'./componentRegistry/runtime.js'
-	).getRegistryComponents;
+	export const getRegistryComponents: typeof import('./componentRegistry/runtime.js').getRegistryComponents;
 
 	/**
 	 * List of component properties that are registered in the component registry.
@@ -285,22 +262,16 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @param str - The input string containing underscores to be converted.
 	 * @returns A new string with all underscores replaced by hyphens.
 	 */
-	export const convertUnderscoresToHyphens: typeof import(
-		'./componentRegistry/runtime.js'
-	).convertUnderscoresToHyphens;
+	export const convertUnderscoresToHyphens: typeof import('./componentRegistry/runtime.js').convertUnderscoresToHyphens;
 	/**
 	 * Converts all hyphens in a given string to underscores.
 	 *
 	 * @param str - The input string containing hyphens to be converted.
 	 * @returns A new string with all hyphens replaced by underscores.
 	 */
-	export const convertHyphensToUnderscores: typeof import(
-		'./componentRegistry/runtime.js'
-	).convertHyphensToUnderscores;
+	export const convertHyphensToUnderscores: typeof import('./componentRegistry/runtime.js').convertHyphensToUnderscores;
 
-	export const setupRendererComponentProxy: typeof import(
-		'./componentRegistry/runtime.js'
-	).setupRendererComponentProxy;
+	export const setupRendererComponentProxy: typeof import('./componentRegistry/runtime.js').setupRendererComponentProxy;
 
 	export const createRenderer: typeof import('./componentRegistry/runtime.js').createRenderer;
 }
@@ -356,14 +327,12 @@ declare module 'studiocms:sdk/types' {
 	export type CombinedRank = import('./sdk/types/index.js').CombinedRank;
 	export type DatabaseTables = import('./sdk/types/index.js').DatabaseTables;
 	export type PageContentReturnId = import('./sdk/types/index.js').PageContentReturnId;
-	export type PageDataCategoriesInsertResponse = import(
-		'./sdk/types/index.js'
-	).PageDataCategoriesInsertResponse;
+	export type PageDataCategoriesInsertResponse =
+		import('./sdk/types/index.js').PageDataCategoriesInsertResponse;
 	export type PageDataReturnId = import('./sdk/types/index.js').PageDataReturnId;
 	export type PageDataStripped = import('./sdk/types/index.js').PageDataStripped;
-	export type PageDataTagsInsertResponse = import(
-		'./sdk/types/index.js'
-	).PageDataTagsInsertResponse;
+	export type PageDataTagsInsertResponse =
+		import('./sdk/types/index.js').PageDataTagsInsertResponse;
 	export type SingleRank = import('./sdk/types/index.js').SingleRank;
 	export type SiteConfig = import('./sdk/types/index.js').SiteConfig;
 
@@ -373,12 +342,10 @@ declare module 'studiocms:sdk/types' {
 	export type tsOAuthAccountsSelect = import('./sdk/types/index.js').tsOAuthAccountsSelect;
 	export type tsPageContentInsert = import('./sdk/types/index.js').tsPageContentInsert;
 	export type tsPageContentSelect = import('./sdk/types/index.js').tsPageContentSelect;
-	export type tsPageDataCategoriesInsert = import(
-		'./sdk/types/index.js'
-	).tsPageDataCategoriesInsert;
-	export type tsPageDataCategoriesSelect = import(
-		'./sdk/types/index.js'
-	).tsPageDataCategoriesSelect;
+	export type tsPageDataCategoriesInsert =
+		import('./sdk/types/index.js').tsPageDataCategoriesInsert;
+	export type tsPageDataCategoriesSelect =
+		import('./sdk/types/index.js').tsPageDataCategoriesSelect;
 	export type tsPageDataInsert = import('./sdk/types/index.js').tsPageDataInsert;
 	export type tsPageDataSelect = import('./sdk/types/index.js').tsPageDataSelect;
 	export type tsPageDataTagsInsert = import('./sdk/types/index.js').tsPageDataTagsInsert;
@@ -393,24 +360,19 @@ declare module 'studiocms:sdk/types' {
 	export type tsSessionTableInsert = import('./sdk/types/index.js').tsSessionTableInsert;
 	export type tsSessionTableSelect = import('./sdk/types/index.js').tsSessionTableSelect;
 
-	export type addDatabaseEntryInsertPage = import(
-		'./sdk/types/index.js'
-	).addDatabaseEntryInsertPage;
+	export type addDatabaseEntryInsertPage =
+		import('./sdk/types/index.js').addDatabaseEntryInsertPage;
 	export type CombinedUserData = import('./sdk/types/index.js').CombinedUserData;
 	export type CombinedPageData = import('./sdk/types/index.js').CombinedPageData;
 	export type DeletionResponse = import('./sdk/types/index.js').DeletionResponse;
-	export type tsEmailVerificationTokensInsert = import(
-		'./sdk/types/index.js'
-	).tsEmailVerificationTokensInsert;
-	export type tsEmailVerificationTokensSelect = import(
-		'./sdk/types/index.js'
-	).tsEmailVerificationTokensSelect;
-	export type tsNotificationSettingsInsert = import(
-		'./sdk/types/index.js'
-	).tsNotificationSettingsInsert;
-	export type tsNotificationSettingsSelect = import(
-		'./sdk/types/index.js'
-	).tsNotificationSettingsSelect;
+	export type tsEmailVerificationTokensInsert =
+		import('./sdk/types/index.js').tsEmailVerificationTokensInsert;
+	export type tsEmailVerificationTokensSelect =
+		import('./sdk/types/index.js').tsEmailVerificationTokensSelect;
+	export type tsNotificationSettingsInsert =
+		import('./sdk/types/index.js').tsNotificationSettingsInsert;
+	export type tsNotificationSettingsSelect =
+		import('./sdk/types/index.js').tsNotificationSettingsSelect;
 	export type FolderNode = import('./sdk/types/index.js').FolderNode;
 
 	export type STUDIOCMS_SDK_CACHE = import('./sdk/types/index.js').STUDIOCMS_SDK_CACHE;
@@ -434,9 +396,7 @@ declare module 'studiocms:auth/utils/validImages' {
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
-	export const getLabelForPermissionLevel: typeof import(
-		'./utils/getLabelForPermissionLevel.js'
-	).getLabelForPermissionLevel;
+	export const getLabelForPermissionLevel: typeof import('./utils/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
 }
 
 declare module 'studiocms:auth/scripts/three' {
@@ -445,7 +405,7 @@ declare module 'studiocms:auth/scripts/three' {
 	 * @example <script>import "studiocms:auth/scripts/three";</script>
 	 */
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any
 	const defaultExport: any;
 	export default defaultExport;
 }

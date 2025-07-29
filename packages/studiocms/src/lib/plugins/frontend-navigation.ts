@@ -1,6 +1,6 @@
-import { StudioCMSRoutes, pathWithBase } from 'studiocms:lib';
+import { pathWithBase, StudioCMSRoutes } from 'studiocms:lib';
 import plugins from 'studiocms:plugins';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
 // Define the link props for the navigation
 type LinkProps = {

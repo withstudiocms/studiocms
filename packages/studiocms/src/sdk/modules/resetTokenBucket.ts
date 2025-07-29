@@ -4,7 +4,6 @@ import { AstroDB, SDKCore_Generators, SDKCore_Users } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsUserResetTokens } from '../tables.js';
 import type { tsUserResetTokensSelect } from '../types/index.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 import { SDKCore_UPDATE } from './update.js';
 
 /**

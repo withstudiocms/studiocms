@@ -1,7 +1,7 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
-import { Effect, convertToVanilla } from '../../../effect.js';
+import { convertToVanilla, Effect } from '../../../effect.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';

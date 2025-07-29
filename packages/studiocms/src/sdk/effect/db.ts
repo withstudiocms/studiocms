@@ -237,7 +237,7 @@ export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/
 					Effect.flatMap((runPromiseExit) =>
 						Effect.async<T, LibSQLDatabaseError | E, R>((resume) => {
 							db.transaction(async (tx: TransactionClient) => {
-								// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+								// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 								const txWrapper = (fn: (client: TransactionClient) => Promise<any>) =>
 									Effect.tryPromise({
 										try: () => fn(tx),
@@ -279,5 +279,4 @@ export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/
 			transaction,
 		};
 	}),
-	accessors: true,
 }) {}

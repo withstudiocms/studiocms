@@ -1,5 +1,5 @@
 import type { UiLanguageKeys } from 'studiocms:i18n';
-import { StudioCMSRoutes, makeDashboardRoute } from 'studiocms:lib';
+import { makeDashboardRoute, StudioCMSRoutes } from 'studiocms:lib';
 import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';

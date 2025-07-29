@@ -41,8 +41,6 @@
 .d2h-file-header {
 	background-color: var(--d2h-file-header-bg-color);
 	border-bottom: 1px solid var(--d2h-file-header-border-color);
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	font-family: var(--scms-font-onest);
 	height: 35px;
@@ -54,8 +52,6 @@
 	z-index: 1;
 }
 .d2h-file-stats {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	font-size: 14px;
 	margin-left: auto;
@@ -78,8 +74,6 @@
 	vertical-align: middle;
 }
 .d2h-file-name-wrapper {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-align: center;
 	-ms-flex-align: center;
@@ -120,14 +114,13 @@
 }
 .d2h-diff-table {
 	border-collapse: collapse;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-		"Courier New", monospace;
+	font-family:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+		monospace;
 	font-size: 13px;
 	width: 100%;
 }
 .d2h-files-diff {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	width: 100%;
 }
@@ -198,7 +191,7 @@
 .d2h-code-line ins,
 .d2h-code-side-line del,
 .d2h-code-side-line ins {
-	border-radius: .2em;
+	border-radius: 0.2em;
 	display: inline-block;
 	margin-top: -1px;
 	-webkit-text-decoration: none;
@@ -225,7 +218,7 @@
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	overflow: hidden;
-	padding: 0 .5em;
+	padding: 0 0.5em;
 	text-overflow: ellipsis;
 	width: 3.5em;
 }
@@ -258,7 +251,7 @@
 	cursor: pointer;
 	display: inline-block;
 	overflow: hidden;
-	padding: 0 .5em;
+	padding: 0 0.5em;
 	position: absolute;
 	text-align: right;
 	text-overflow: ellipsis;
@@ -322,8 +315,6 @@
 	font-weight: 700;
 }
 .d2h-file-list-line {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	text-align: left;
 }
@@ -365,8 +356,6 @@
 }
 .d2h-tag {
 	background-color: var(--d2h-bg-color);
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
 	font-size: 10px;
 	margin-left: 5px;

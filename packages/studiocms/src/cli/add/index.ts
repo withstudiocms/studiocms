@@ -1,11 +1,11 @@
-import { promises as fs, existsSync } from 'node:fs';
+import { existsSync, promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Args, Command } from '@effect/cli';
 import { cancelled, success } from '@withstudiocms/cli-kit/messages';
 import { exists, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils';
-import { type ASTNode, type ProxifiedModule, builders, loadFile } from 'magicast';
+import { type ASTNode, builders, loadFile, type ProxifiedModule } from 'magicast';
 import { getDefaultExportOptions } from 'magicast/helpers';
-import { Console, Effect, genLogger } from '../../effect.js';
+import { Console, Effect, genLogger, Layer } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { logger } from '../utils/logger.js';
 import { TryToInstallPlugins } from './tryToInstallPlugins.js';
@@ -121,7 +121,7 @@ const resolveOrCreateConfig = (root: URL) =>
 
 const loadConfigModule = (configURL: URL, validatedPlugins: PluginInfo[]) =>
 	genLogger('studiocms/cli/add.loadConfigModule')(function* () {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 		let mod: ProxifiedModule<any> | undefined;
 
 		mod = yield* Effect.tryPromise(() => loadFile(fileURLToPath(configURL)));
@@ -166,6 +166,12 @@ const loadConfigModule = (configURL: URL, validatedPlugins: PluginInfo[]) =>
 
 		return mod;
 	});
+
+const addPluginDeps = Layer.mergeAll(
+	ValidatePlugins.Default,
+	TryToInstallPlugins.Default,
+	UpdateStudioCMSConfig.Default
+);
 
 export const addPlugin = Command.make(
 	'add',
@@ -279,9 +285,5 @@ export const addPlugin = Command.make(
 					);
 				}
 			}
-		}).pipe(
-			Effect.provide(ValidatePlugins.Default),
-			Effect.provide(TryToInstallPlugins.Default),
-			Effect.provide(UpdateStudioCMSConfig.Default)
-		)
+		}).pipe(Effect.provide(addPluginDeps))
 ).pipe(Command.withDescription('Add StudioCMS plugin(s) to your project'));

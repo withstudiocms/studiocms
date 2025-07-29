@@ -15,7 +15,7 @@ import {
 
 const editors = await importEditorKeys(editorKeys);
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
 let editor: any = editors[convertToSafeString('studiocms/markdown')];
 
 const CurrentEditorComponent = editor;

@@ -12,9 +12,9 @@ import {
 	tsPermissions,
 } from '../tables.js';
 import type {
+	addDatabaseEntryInsertPage,
 	CombinedInsertContent,
 	MultiPageInsert,
-	addDatabaseEntryInsertPage,
 	tsDiffTrackingSelect,
 	tsPageContentSelect,
 	tsPageDataCategoriesSelect,
@@ -24,9 +24,9 @@ import type {
 	tsPermissionsInsert,
 } from '../types/index.js';
 import {
-	CacheContext,
 	_ClearUnknownError,
 	_clearLibSQLError,
+	CacheContext,
 	isCacheEnabled,
 	pageDataReturn,
 } from '../utils.js';
@@ -510,10 +510,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 				 * @returns A promise that resolves to the inserted page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 				 */
-				page: (data: {
-					pageData: tsPageDataSelect;
-					pageContent: CombinedInsertContent;
-				}) =>
+				page: (data: { pageData: tsPageDataSelect; pageContent: CombinedInsertContent }) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
 

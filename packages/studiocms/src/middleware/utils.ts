@@ -8,7 +8,7 @@ import { genLogger } from '../lib/effects/index.js';
 /**
  * Middleware Router Type.
  */
-export type Router = Record<string, MiddlewareHandler>;
+export type Router = Record<string, { handler: MiddlewareHandler, excludePaths?: string[] }>;
 
 /**
  * Define a middleware router that routes requests to different handlers based on the request path.
@@ -26,8 +26,8 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 	return defineMiddleware((context, next) => {
 		return sequence(
 			...entries
-				.filter(([path]) => micromatch.isMatch(context.url.pathname, path))
-				.map(([_, handler]) => handler)
+				.filter(([path, { excludePaths }]) => (micromatch.isMatch(context.url.pathname, path)) && !micromatch.isMatch(context.url.pathname, excludePaths || []))
+				.map(([_, { handler }]) => handler)
 		)(context, next);
 	});
 }

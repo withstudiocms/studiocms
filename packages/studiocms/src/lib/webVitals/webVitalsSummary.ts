@@ -76,7 +76,7 @@ export function processWebVitalsSummary(data: WebVitalsResponseItem[]): WebVital
 
 		// Step 9: Filter the final results based on SQL conditions
 		const finalMetrics = metrics.filter(
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 			(metric) => metric.rating_end || metric.quartile! * 25 === 75
 		);
 

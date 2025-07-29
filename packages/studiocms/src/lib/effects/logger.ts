@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Effect, LogLevel, Logger } from 'effect';
+import { Effect, Logger, LogLevel } from 'effect';
 import type { Adapter } from 'effect/Effect';
 import { dual, pipe } from 'effect/Function';
 import { toArray } from 'effect/List';
@@ -230,7 +230,7 @@ export const pipeLogger = dual<
  * - `R`: The environment type inferred from the yielded effects, or `never` if no effects are yielded.
  */
 export function genLogger(label: string) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny:  this is a valid use case for explicit any.
 	return <Eff extends YieldWrap<Effect.Effect<any, any, any>>, AEff>(
 		f: (resume: Adapter) => Generator<Eff, AEff, never>
 	): Effect.Effect<
@@ -266,12 +266,12 @@ export function genLogger(label: string) {
  */
 export const errorTap = dual<
 	(
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
 		message: any | ReadonlyArray<any>
 	) => <A, E, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>,
 	<A, E, R>(
 		self: Effect.Effect<A, E, R>,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
 		message: any | ReadonlyArray<any>
 	) => Effect.Effect<A, E, R>
 >(2, (self, message) =>

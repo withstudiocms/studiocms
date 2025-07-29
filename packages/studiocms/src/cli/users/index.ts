@@ -22,7 +22,7 @@ export const dryRun = Options.boolean('dry-run').pipe(
 	Options.withDescription('Dry run mode')
 );
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 function exitIfEmpty(context: BaseContext, items: any[], itemType: string) {
 	if (items.length === 0) {
 		context.prompts.log.error(`No ${itemType} selected, exiting...`);

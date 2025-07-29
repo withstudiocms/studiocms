@@ -7,7 +7,7 @@
 /// <reference types="studiocms/v/types" />
 
 import { createResolver } from 'astro-integration-kit';
-import { type StudioCMSPlugin, definePlugin } from 'studiocms/plugins';
+import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
 import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
 

@@ -1,9 +1,9 @@
-import { componentKeys, componentProps } from 'studiocms:component-registry';
 import * as registry from 'studiocms:component-registry';
+import { componentKeys, componentProps } from 'studiocms:component-registry';
 import logger from 'studiocms:logger';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
-import { StudioCMSRendererError, prefixError } from '../lib/renderer/errors.js';
+import { prefixError, StudioCMSRendererError } from '../lib/renderer/errors.js';
 import { createComponentProxy, transformHTML } from '../runtime/AstroComponentProxy.js';
 import { convertUnderscoresToHyphens } from './convert-hyphens.js';
 import type { ComponentRegistryEntry } from './types.js';
@@ -26,7 +26,7 @@ export function getRegistryComponents(): ComponentRegistryEntry[] {
  * @returns A promise that resolves to an object containing the imported components.
  */
 export async function getRendererComponents() {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
 	const predefinedComponents: Record<string, any> = {};
 
 	for (const key of componentKeys) {

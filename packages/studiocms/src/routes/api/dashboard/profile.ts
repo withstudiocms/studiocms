@@ -112,7 +112,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 						if (emailSearch.length > 0)
 							return apiResponseLogger(400, 'Invalid email: Email is already in use');
 					}
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* sdk.AUTH.user.update(userData.user!.id!, data);
 
 					return apiResponseLogger(200, 'User profile updated successfully');
@@ -156,12 +156,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					};
 
 					// @ts-expect-error drizzle broke the variable...
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* sdk.AUTH.user.update(userData.user!.id, userUpdate);
 
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* notify.sendUserNotification('account_updated', userData.user!.id);
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* notify.sendAdminNotification('user_updated', userData.user!.username);
 
 					return apiResponseLogger(200, 'User password updated successfully');
@@ -175,9 +175,9 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					// @ts-expect-error drizzle broke the variable...
 					yield* sdk.AUTH.user.update(userData.user.id, { avatar: newAvatar });
 
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* notify.sendUserNotification('account_updated', userData.user!.id);
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* notify.sendAdminNotification('user_updated', userData.user!.username);
 
 					return apiResponseLogger(200, 'User Avatar updated successfully');
