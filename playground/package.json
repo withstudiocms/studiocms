@@ -20,13 +20,12 @@
   "dependencies": {
     "@astrojs/db": "catalog:",
     "@astrojs/node": "catalog:",
-    "@astrojs/web-vitals": "catalog:",
-    "astro": "catalog:",
-    "studiocms": "workspace:*",
-    "sharp": "catalog:",
+    "@studiocms/web-vitals": "catalog:",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
-    "@sentry/astro": "catalog:",
-    "@studiocms/md": "workspace:*"
+    "@studiocms/md": "workspace:*",
+    "astro": "catalog:",
+    "studiocms": "workspace:*",
+    "sharp": "catalog:"
   }
 }
