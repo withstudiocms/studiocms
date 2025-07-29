@@ -10,6 +10,14 @@ import { genLogger } from '../lib/effects/index.js';
  */
 export type Router = Record<string, MiddlewareHandler>;
 
+const excludePaths = (dashboardRoute: string): string[] => [
+  '/_web-vitals**',
+  `/${dashboardRoute}/login**`,
+  `/${dashboardRoute}/signup**`,
+  `/${dashboardRoute}/logout**`,
+  `/${dashboardRoute}/forgot-password**`
+];
+
 /**
  * Define a middleware router that routes requests to different handlers based on the request path.
  *
@@ -21,12 +29,12 @@ export type Router = Record<string, MiddlewareHandler>;
  * export const onRequest = defineMiddlewareRouter(router);
  * ```
  */
-export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
+export function defineMiddlewareRouter(router: Router, dashboardRoute: string): MiddlewareHandler {
 	const entries = Object.entries(router);
 	return defineMiddleware((context, next) => {
 		return sequence(
 			...entries
-				.filter(([path]) => micromatch.isMatch(context.url.pathname, path))
+				.filter(([path]) => (micromatch.isMatch(context.url.pathname, path)) && !micromatch.isMatch(context.url.pathname, excludePaths(dashboardRoute)))
 				.map(([_, handler]) => handler)
 		)(context, next);
 	});

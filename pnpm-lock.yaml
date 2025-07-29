@@ -22,8 +22,8 @@ catalogs:
       specifier: ^0.4.17
       version: 0.4.17
     '@studiocms/web-vitals':
-      specifier: ^4.1.1
-      version: 4.1.1
+      specifier: ^4.2.0
+      version: 4.2.0
     '@types/node':
       specifier: ^22.0.0
       version: 22.16.3
@@ -449,7 +449,7 @@ importers:
         version: 0.4.17(astro@5.12.4(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
       '@studiocms/web-vitals':
         specifier: 'catalog:'
-        version: 4.1.1(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.2.0(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@withstudiocms/cli-kit':
         specifier: 0.1.0
         version: 0.1.0
@@ -594,7 +594,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: 'catalog:'
-        version: 4.1.1(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.2.0(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       astro:
         specifier: 'catalog:'
         version: 5.12.4(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -2002,10 +2002,10 @@ packages:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
 
-  '@studiocms/web-vitals@4.1.1':
-    resolution: {integrity: sha512-fWD0xPGfeY9msUfd4xqaaymUUuEcvv9Fvz41WqtQyPcCMNg1A3aTlisgnymi8Rz2LRx0fArIlV3bt05Aywe5Gw==}
+  '@studiocms/web-vitals@4.2.0':
+    resolution: {integrity: sha512-P/48ciPa/XiMjvCuMEwjtFpgxqnrVVhGbHC4Tq9jnOwx9Jn8Je84o5pGwNQNFQSHQ7sjil1SDXet/h8XujvucQ==}
     peerDependencies:
-      '@astrojs/db': ^0.15.0
+      '@astrojs/db': ^0.15.1
 
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
@@ -6261,7 +6261,7 @@ snapshots:
       pathe: 1.1.2
       vite: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
 
-  '@studiocms/web-vitals@4.1.1(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+  '@studiocms/web-vitals@4.2.0(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.0.3

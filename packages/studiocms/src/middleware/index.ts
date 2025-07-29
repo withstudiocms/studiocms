@@ -90,7 +90,7 @@ router['/**'] = async (context, next) =>
  *
  * @returns A generator function that checks the user's session data and redirects if necessary.
  */
-router[`/${dashboardRoute}/!(login|signup|logout|forgot-password)**`] = async (context, next) =>
+router[`/${dashboardRoute}/**`] = async (context, next) =>
 	await convertToVanilla(
 		genLogger('studiocms/middleware/middlewareEffect')(function* () {
 			const { getUserData } = yield* User;
@@ -103,4 +103,4 @@ router[`/${dashboardRoute}/!(login|signup|logout|forgot-password)**`] = async (c
 		}).pipe(Effect.provide(User.Default))
 	);
 
-export const onRequest = defineMiddlewareRouter(router);
+export const onRequest = defineMiddlewareRouter(router, dashboardRoute);
