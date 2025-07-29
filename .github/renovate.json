@@ -32,9 +32,7 @@
     },
     {
       "groupName": "github-actions",
-      "matchManagers": [
-        "github-actions"
-      ]
+      "matchManagers": ["github-actions"]
     },
     {
       "groupName": "Effect",
