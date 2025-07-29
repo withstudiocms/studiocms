@@ -10,6 +10,10 @@ on:
 
 concurrency: testing-${{ github.ref }}
 
+permissions:
+  contents: read
+  actions: write
+  
 jobs:
   test-build:
     name: Run Test Build
