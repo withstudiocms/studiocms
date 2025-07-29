@@ -5,42 +5,68 @@
     "schedule:weekly",
     "group:allNonMajor",
     ":disablePeerDependencies",
-    "regexManagers:biomeVersions"
+    "customManagers:biomeVersions"
   ],
   "dependencyDashboard": true,
-  "postUpdateOptions": ["pnpmDedupe"],
-  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
-  "labels": ["dependencies"],
+  "postUpdateOptions": [
+    "pnpmDedupe"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "additionalBranchPrefix": "{{parentDir}}-",
-  "gitIgnoredAuthors": ["no-reply@studiocms.dev"],
+  "gitIgnoredAuthors": [
+    "no-reply@studiocms.dev"
+  ],
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "updatePinnedDependencies": false,
-  "dependencyDashboardLabels": ["TRACKER"],
+  "dependencyDashboardLabels": [
+    "TRACKER"
+  ],
   "packageRules": [
     {
-      "matchDepTypes": ["packageManager", "engines"],
+      "matchDepTypes": [
+        "packageManager",
+        "engines"
+      ],
       "enabled": false
     },
     {
-      "matchDepTypes": ["pnpm.catalog.min"],
+      "matchDepTypes": [
+        "pnpm.catalog.min"
+      ],
       "enabled": false
     },
     {
-      "matchFileNames": [".node-version"],
+      "matchFileNames": [
+        ".node-version"
+      ],
       "enabled": false
     },
     {
       "groupName": "github-actions",
-      "matchManagers": ["github-actions"]
+      "matchManagers": [
+        "github-actions"
+      ]
     },
     {
       "groupName": "Effect",
-      "matchPackageNames": ["effect", "@effect/**"]
+      "matchPackageNames": [
+        "effect",
+        "@effect/**"
+      ]
     },
     {
       "groupName": "Nanostores",
-      "matchPackageNames": ["nanostores", "@nanostores/**"]
+      "matchPackageNames": [
+        "nanostores",
+        "@nanostores/**"
+      ]
     }
   ],
   "ignoreDeps": [
