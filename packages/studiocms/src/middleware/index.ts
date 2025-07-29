@@ -5,7 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
-import { Effect } from 'effect';
+import { Effect, Layer } from 'effect';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
 import { defineMiddlewareRouter, getUserPermissions, type Router } from './utils.js';
 
@@ -27,6 +27,8 @@ const fallbackSiteConfig = {
 		title: 'StudioCMS-Setup',
 	},
 };
+
+const mainRouteEffectDeps = Layer.merge(User.Default, VerifyEmail.Default);
 
 // Define a middleware router that routes requests to different handlers based on the request path.
 const router: Router = {};
@@ -76,7 +78,7 @@ router['/**'] = async (context, next) =>
 			context.locals.userPermissionLevel = userPermissionLevel;
 
 			return next();
-		}).pipe(Effect.provide(User.Default), Effect.provide(VerifyEmail.Default))
+		}).pipe(Effect.provide(mainRouteEffectDeps))
 	);
 
 /**
