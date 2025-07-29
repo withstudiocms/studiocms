@@ -1,6 +1,6 @@
 ---
 import { FormattedDate } from 'studiocms:components';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Badge, Card, Center } from 'studiocms:ui/components';
 import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
 
@@ -13,9 +13,8 @@ const totalPages = allPages
 	.filter((page) => allowedIdentifiers.includes(page.package));
 
 const recentlyUpdatedPages = totalPages
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
-	.filter((page) => withinLast30Days(page.updatedAt!))
-	.sort((a, b) => sortByDate(a.updatedAt, b.updatedAt))
+	.filter((page) => withinLast30Days(page.updatedAt || page.publishedAt))
+	.sort((a, b) => sortByDate(a.updatedAt || a.publishedAt, b.updatedAt || b.publishedAt))
 	.slice(0, 3);
 ---
 <div class="recently-updated-page-container">

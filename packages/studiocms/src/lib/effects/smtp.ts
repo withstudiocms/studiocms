@@ -267,7 +267,7 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 			): Effect.Effect<SMTPTransport.SentMessageInfo, SMTPError, never> =>
 				pipeLogger('studiocms/lib/effects/smtp/SMTPMailer.sendMail')(
 					Effect.async<SMTPTransport.SentMessageInfo, SMTPError>((resume) => {
-						const send = _sendMail(mailOptions, (error, info) => {
+						_sendMail(mailOptions, (error, info) => {
 							if (error) {
 								const toFail = new SMTPError({ error });
 								resume(errorTap(Effect.fail(toFail), toFail));
@@ -275,11 +275,6 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 								resume(Effect.succeed(info));
 							}
 						});
-						() => {
-							try {
-								send;
-							} catch {}
-						};
 					})
 				);
 

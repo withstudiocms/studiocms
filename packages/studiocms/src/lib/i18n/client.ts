@@ -1,14 +1,14 @@
 import {
-	type ComponentsJSON,
-	type Messages,
-	type Translations,
 	browser,
+	type ComponentsJSON,
 	createI18n,
 	formatter,
 	localeFrom,
+	type Messages,
+	type Translations,
 } from '@nanostores/i18n';
 import { persistentAtom } from '@nanostores/persistent';
-import { type UiTranslationKey, defaultLang, uiTranslationsAvailable } from './config.js';
+import { defaultLang, type UiTranslationKey, uiTranslationsAvailable } from './config.js';
 
 export const baseTranslation = (await import('./translations/en.json')).translations;
 
@@ -43,7 +43,7 @@ export const $i18n = createI18n($locale, {
 	},
 });
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 export const documentUpdater = (comp: any, lang: string) => {
 	document.title = comp.title;
 	document.querySelector('meta[name="description"]')?.setAttribute('content', comp.description);
@@ -51,17 +51,23 @@ export const documentUpdater = (comp: any, lang: string) => {
 	document.documentElement.lang = lang;
 };
 
+type BaseTranslation = typeof baseTranslation;
+type BaseTranslationKeys = keyof BaseTranslation;
+
 /**
  * Create a custom element that will update its text content
  * when the translation changes.
  */
 export const makeTranslation = <Body extends Translations>(
-	currentPage: keyof typeof baseTranslation,
+	currentPage: BaseTranslationKeys,
 	i18n: Messages<Body>
 ) => {
+	const currentTranslations = currentPage;
+	type CurrentTranslations = typeof currentTranslations;
+
 	return class Translation extends HTMLElement {
 		connectedCallback() {
-			const key = this.getAttribute('key') as keyof (typeof baseTranslation)[typeof currentPage];
+			const key = this.getAttribute('key') as keyof BaseTranslation[CurrentTranslations];
 			if (key) {
 				i18n.subscribe((comp) => {
 					this.innerText = comp[key] as string;

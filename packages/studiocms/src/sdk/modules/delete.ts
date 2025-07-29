@@ -12,7 +12,7 @@ import {
 	tsPermissions,
 	tsUsers,
 } from '../tables.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
+import { _clearLibSQLError } from '../utils.js';
 import { SDKCore_CLEAR } from './clear.js';
 import { SDKCore_UPDATE } from './update.js';
 

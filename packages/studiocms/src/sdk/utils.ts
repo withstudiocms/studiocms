@@ -13,8 +13,8 @@ import type {
 	PageDataCacheReturnType,
 	SiteConfig,
 	SiteConfigCacheObject,
-	VersionCacheObject,
 	tsPageDataSelect,
+	VersionCacheObject,
 } from './types/index.js';
 
 /**
@@ -198,7 +198,7 @@ export function convertCombinedPageDataToMetaOnly<
 	}
 	const {
 		lastCacheUpdate,
-		data: { defaultContent, multiLangContent, ...metaOnlyData },
+		data: { defaultContent: _dump1, multiLangContent: _dump2, ...metaOnlyData },
 	} = data;
 	return {
 		lastCacheUpdate,
@@ -214,7 +214,7 @@ export function convertCombinedPageDataToMetaOnly<
  * @returns `true` if the cache entry has expired; otherwise, `false`.
  */
 export function isCacheExpired(entry: BaseCacheObject, lifetime = cacheConfig.lifetime): boolean {
-	return new Date().getTime() - entry.lastCacheUpdate.getTime() > lifetime;
+	return Date.now() - entry.lastCacheUpdate.getTime() > lifetime;
 }
 
 /**

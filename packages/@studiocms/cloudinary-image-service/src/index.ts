@@ -1,6 +1,6 @@
 import type { AstroIntegration } from 'astro';
-import { createResolver } from 'astro-integration-kit';
 import { envField } from 'astro/config';
+import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import { readJson } from './utils/readJson.js';
 

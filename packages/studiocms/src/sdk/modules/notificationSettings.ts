@@ -5,7 +5,6 @@ import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsNotificationSettings } from '../tables.js';
 import type { tsNotificationSettingsInsert } from '../types/index.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
 /**
  * Service class for managing notification settings in the StudioCMS SDK.

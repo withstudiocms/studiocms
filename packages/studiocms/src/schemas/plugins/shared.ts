@@ -306,7 +306,7 @@ const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
 /**
  * Schema for a custom Astro component.
  */
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 const AstroComponentSchema = z.custom<(_props: any) => any>();
 
 /**

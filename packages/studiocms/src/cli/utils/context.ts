@@ -2,7 +2,7 @@ import * as prompts from '@clack/prompts';
 import { detectPackageManager } from '@withstudiocms/cli-kit/context';
 import { cancelMessage, getName } from '@withstudiocms/cli-kit/messages';
 import chalk from 'chalk';
-import { Context, Effect, Layer, genLogger } from '../../effect.js';
+import { Context, Effect, genLogger, Layer } from '../../effect.js';
 
 export interface BaseContext {
 	prompts: typeof prompts;

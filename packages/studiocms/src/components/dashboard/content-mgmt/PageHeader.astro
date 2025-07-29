@@ -1,6 +1,6 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Button, Center, Group, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
@@ -19,7 +19,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-header');
 const title = t('title');
 
 let pageTitle = title;
-let pageSlug: string | undefined = undefined;
+let pageSlug: string | undefined;
 let currentId = '';
 let folderName = '';
 

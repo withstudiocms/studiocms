@@ -3,18 +3,17 @@ import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
-import { generateState } from 'arctic';
-import { GitHub } from 'arctic';
+import { GitHub, generateState } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import {
 	AuthEnvCheck,
-	Provider,
-	ValidateAuthCodeError,
+	GitHubUser,
 	getCookie,
 	getUrlParam,
+	Provider,
+	ValidateAuthCodeError,
 } from './_shared.js';
-import { GitHubUser } from './_shared.js';
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.

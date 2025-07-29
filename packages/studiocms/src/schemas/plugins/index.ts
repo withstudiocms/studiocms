@@ -2,11 +2,11 @@ import type { AstroIntegrationLogger } from 'astro';
 import { z } from 'astro/zod';
 import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import {
+	astroIntegrationSchema,
 	DashboardPageSchema,
 	FrontendNavigationLinksSchema,
 	PageTypesSchema,
 	SettingsPageSchema,
-	astroIntegrationSchema,
 } from './shared.js';
 
 /**
@@ -280,17 +280,17 @@ export interface StudioCMSPlugin {
 export type HookParameters<
 	Hook extends keyof StudioCMSPlugin['hooks'],
 	Fn = StudioCMSPlugin['hooks'][Hook],
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
 export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
 export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
 
 export type {
-	SettingsField,
-	DashboardPage,
 	AvailableDashboardPages,
+	DashboardPage,
 	FinalDashboardPage,
+	SettingsField,
 	StudioCMSColorway,
 } from './shared.js';
 

@@ -6,7 +6,6 @@ import { AstroDB, SDKCore_Parsers } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsDiffTracking, tsPageContent, tsPageData } from '../tables.js';
 import type { tsPageDataSelect } from '../types/index.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
 
 /**
  * Provides diff tracking functionality for StudioCMS SDKCore.

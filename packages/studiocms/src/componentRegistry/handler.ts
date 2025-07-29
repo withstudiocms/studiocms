@@ -1,8 +1,8 @@
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
-import { Effect, convertToVanilla, genLogger } from '../effect.js';
+import { convertToVanilla, Effect, genLogger } from '../effect.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
-import { ComponentRegistry } from './Registry.js';
 import { convertHyphensToUnderscores } from './convert-hyphens.js';
+import { ComponentRegistry } from './Registry.js';
 import type { AstroComponentProps, ComponentRegistryEntry } from './types.js';
 
 /**

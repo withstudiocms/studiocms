@@ -16,7 +16,7 @@ import {
 	runShellCommand,
 } from '@withstudiocms/cli-kit/utils';
 import { logger } from '../../utils/logger.js';
-import { type EnvBuilderOptions, ExampleEnv, buildEnvFile } from '../../utils/studiocmsEnv.js';
+import { buildEnvFile, type EnvBuilderOptions, ExampleEnv } from '../../utils/studiocmsEnv.js';
 import type { StepFn } from '../../utils/types.js';
 
 export enum EnvBuilderAction {

@@ -7,7 +7,7 @@ import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
-import { type Router, defineMiddlewareRouter, getUserPermissions } from './utils.js';
+import { defineMiddlewareRouter, getUserPermissions, type Router } from './utils.js';
 
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 

@@ -2,7 +2,7 @@ import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
 import type { SiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { Console, Effect, Schema, genLogger } from 'studiocms/effect';
+import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import {
 	APIEndpointConfig,
@@ -66,7 +66,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 
 			yield* Console.log('Importing site settings: ', settings);
 
-			let siteIcon: string | undefined = undefined;
+			let siteIcon: string | undefined;
 
 			if (settings.site_icon_url) {
 				siteIcon = yield* downloadPostImage.pipe(

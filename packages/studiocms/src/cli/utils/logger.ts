@@ -1,4 +1,3 @@
-import type { outro as _outro } from '@clack/prompts';
 import { supportsColor } from '@withstudiocms/cli-kit/colors';
 import { date } from '@withstudiocms/cli-kit/messages';
 import chalk from 'chalk';

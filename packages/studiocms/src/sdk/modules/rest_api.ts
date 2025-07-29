@@ -2,7 +2,7 @@ import { and, eq } from 'astro:db';
 import { Effect, genLogger } from '../../effect.js';
 import { AstroDB, SDKCore_Generators } from '../effect/index.js';
 import { tsAPIKeys, tsPermissions } from '../tables.js';
-import { _ClearUnknownError, _clearLibSQLError } from '../utils.js';
+import { _clearLibSQLError } from '../utils.js';
 
 /**
  * Provides REST API token management functionality for the StudioCMS SDK.

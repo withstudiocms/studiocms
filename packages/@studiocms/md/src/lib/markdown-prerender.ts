@@ -1,8 +1,8 @@
 import rendererConfig from 'studiocms:md/config';
 import { createMarkdownProcessor as createAstroMD } from '@astrojs/markdown-remark';
 import {
-	type StudioCMSMarkdownProcessorOptions,
 	createMarkdownProcessor as createStudioCMSMD,
+	type StudioCMSMarkdownProcessorOptions,
 } from '@studiocms/markdown-remark-processor';
 import { shared } from './shared.js';
 

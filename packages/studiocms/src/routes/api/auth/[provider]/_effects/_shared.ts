@@ -2,7 +2,7 @@ import { type AuthEnvCheckResponse, authEnvCheck } from 'studiocms:auth/utils/au
 import { authConfig } from 'studiocms:config';
 import type { APIContext } from 'astro';
 import { AstroError } from 'astro/errors';
-import { Context, Data, Effect, Layer, Schema, pipe } from '../../../../../effect.js';
+import { Context, Data, Effect, Layer, pipe, Schema } from '../../../../../effect.js';
 
 /**
  * Enum representing supported authentication providers.

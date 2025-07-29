@@ -4,7 +4,7 @@ export class StudioCMSRendererError extends StudioCMSCoreError {
 	name = 'StudioCMS Renderer Error';
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 export function prefixError(err: any, prefix: string): any {
 	// If the error is an object with a `message` property, attempt to prefix the message
 	if (err?.message) {

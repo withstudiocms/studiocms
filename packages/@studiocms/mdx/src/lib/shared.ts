@@ -15,7 +15,7 @@ export const shared: { mdxConfig: MDXPluginOptions } =
 	// @ts-ignore
 	globalThis[symbol] ||
 	// @ts-ignore
-	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+	// biome-ignore lint/suspicious/noAssignInExpressions: this is a valid use case for assignment in expressions.
 	(globalThis[symbol] = {
 		mdxConfig: {},
 	});

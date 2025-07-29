@@ -1,6 +1,6 @@
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import { AstroError } from 'astro/errors';
+import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { routesDir } from './consts.js';
@@ -303,7 +303,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				let comparison: number;
 				try {
 					comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
-				} catch (error) {
+				} catch (_error) {
 					throw new StudioCMSError(
 						`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
 						'The minimum version requirement must be a valid semver string.'
@@ -316,10 +316,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					);
 				}
 
-				let foundSettingsPage: SafePluginListItemType['settingsPage'] = undefined;
-				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'] =
-					undefined;
-				let foundPageTypes: SafePluginListItemType['pageTypes'] = undefined;
+				let foundSettingsPage: SafePluginListItemType['settingsPage'];
+				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'];
+				let foundPageTypes: SafePluginListItemType['pageTypes'];
 
 				if (typeof hooks['studiocms:astro:config'] === 'function') {
 					await hooks['studiocms:astro:config']({

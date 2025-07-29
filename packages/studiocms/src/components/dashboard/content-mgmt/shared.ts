@@ -1,5 +1,5 @@
 import pluginsList from 'studiocms:plugins';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
 interface PluginListItem {
 	label: string;

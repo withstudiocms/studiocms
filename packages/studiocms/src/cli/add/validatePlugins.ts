@@ -23,7 +23,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 
 					const { scope, name, tag } = parsed;
 
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 					let pkgJson: any = {};
 					let pkgType: 'first-party' | 'third-party';
 
@@ -47,7 +47,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 							pkgType = 'third-party';
 						} else {
 							pkgType = 'first-party';
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+							// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 							pkgJson = firstPartyPkgCheck as any;
 						}
 					}
@@ -60,7 +60,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 							}
 							throw new Error(`Unable to fetch ${chalk.bold(plugin)}. Does the package exist?`);
 						}
-						// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+						// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 						pkgJson = thirdPartyPkgCheck as any;
 					}
 

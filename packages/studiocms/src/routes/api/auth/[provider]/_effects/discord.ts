@@ -3,18 +3,17 @@ import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
-import { generateCodeVerifier, generateState } from 'arctic';
-import { Discord } from 'arctic';
+import { Discord, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 import {
 	AuthEnvCheck,
-	Provider,
-	ValidateAuthCodeError,
+	DiscordUser,
 	getCookie,
 	getUrlParam,
+	Provider,
+	ValidateAuthCodeError,
 } from './_shared.js';
-import { DiscordUser } from './_shared.js';
 
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.

@@ -1,5 +1,5 @@
 import { SDKCoreJs } from 'studiocms:sdk';
-import { EmptyReturn, WEB_VITALS_METRIC_TABLE, tsMetric } from './consts.js';
+import { EmptyReturn, tsMetric, WEB_VITALS_METRIC_TABLE } from './consts.js';
 import type {
 	GetWebVitalsData,
 	IntermediateWebVitalsRouteSummary,
@@ -77,7 +77,7 @@ export async function getWebVitals(): Promise<GetWebVitalsData> {
 		}
 
 		return EmptyReturn;
-	} catch (error) {
+	} catch (_error) {
 		return EmptyReturn;
 	}
 }

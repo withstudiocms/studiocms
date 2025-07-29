@@ -12,9 +12,9 @@ import fs from 'node:fs';
 import inlineMod, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
-import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
+import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { componentRegistryHandler } from './componentRegistry/handler.js';
@@ -76,7 +76,7 @@ export const studiocms = defineIntegration({
 		// Messages Array for Logging
 		const messages: Messages = [];
 
-		let cacheJsonFile: URL | undefined = undefined;
+		let cacheJsonFile: URL | undefined;
 
 		let isDevMode = false;
 

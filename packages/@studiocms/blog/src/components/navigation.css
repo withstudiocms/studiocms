@@ -124,6 +124,7 @@
 	top: 10px;
 }
 
+/* biome-ignore lint/style/noDescendingSpecificity: ignored for now */
 .navigation a {
 	font-size: larger;
 	font-weight: 500;

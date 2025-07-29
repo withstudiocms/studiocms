@@ -382,7 +382,7 @@ class UserQuickTools extends HTMLElement {
 				originPathname: window.location.toString(),
 			}),
 		})
-			.catch((error) => null)
+			.catch((_error) => null)
 			.then((response) => response);
 
 		if (!userResponse || !userResponse.ok) {

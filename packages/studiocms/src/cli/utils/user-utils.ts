@@ -1,13 +1,12 @@
-import crypto from 'node:crypto';
-import { type ScryptOptions, scrypt } from 'node:crypto';
+import crypto, { type ScryptOptions, scrypt } from 'node:crypto';
 import {
 	Brand,
 	Context,
 	Data,
 	Effect,
-	Layer,
 	errorTap,
 	genLogger,
+	Layer,
 	pipeLogger,
 } from '../../effect.js';
 

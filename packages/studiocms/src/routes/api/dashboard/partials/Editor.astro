@@ -1,6 +1,8 @@
 ---
 export const partial = true;
+
 import pluginsList from 'studiocms:plugins';
+import { AstroError } from 'astro/errors';
 
 type RawJsonData = {
 	content: string | undefined;
@@ -9,7 +11,7 @@ type RawJsonData = {
 
 type EditorComponent = (_props?: {
 	content?: string | null | undefined;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 }) => any;
 
 type EditorComponentItem = {
@@ -44,8 +46,17 @@ async function load() {
 	});
 
 	if (!Editor) {
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		Editor = pageTypeComponents.find((editor) => editor.identifier === 'studiocms/markdown')!;
+		const MarkdownEditor = pageTypeComponents.find(
+			(editor) => editor.identifier === 'studiocms/markdown'
+		);
+		if (MarkdownEditor) {
+			Editor = MarkdownEditor;
+		} else {
+			throw new AstroError(
+				`No editor found for identifier: ${jsonData?.editor}`,
+				'StudioCMSDashboardPartialEditorError - No editor found'
+			);
+		}
 	}
 
 	if (jsonData?.content) {

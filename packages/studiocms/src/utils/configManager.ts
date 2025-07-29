@@ -159,11 +159,7 @@ async function importBundledFile({
  *
  * @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L961
  */
-async function bundleConfigFile({
-	fileUrl,
-}: {
-	fileUrl: URL;
-}) {
+async function bundleConfigFile({ fileUrl }: { fileUrl: URL }) {
 	const result = await esbuild({
 		absWorkingDir: process.cwd(),
 		entryPoints: [fileURLToPath(fileUrl)],

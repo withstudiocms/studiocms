@@ -7,7 +7,6 @@ import {
 	SDKCore_Parsers,
 	SDKCore_Users,
 } from './effect/index.js';
-import { SDKCoreError } from './errors.js';
 import { SDKCore_AUTH } from './modules/auth.js';
 import { SDKCore_CLEAR } from './modules/clear.js';
 import { SDKCore_DELETE } from './modules/delete.js';
@@ -21,20 +20,13 @@ import { SDKCore_REST_API } from './modules/rest_api.js';
 import { SDKCore_UPDATE } from './modules/update.js';
 import type {
 	CacheMap,
-	CombinedPageData,
-	CombinedUserData,
 	FolderListCacheObject,
-	FolderNode,
 	FolderTreeCacheObject,
-	MetaOnlyPageData,
 	PageDataCacheObject,
 	SiteConfigCacheObject,
 	VersionCacheObject,
-	tsPageDataSelect,
-	tsPermissionsSelect,
-	tsUsersSelect,
 } from './types/index.js';
-import { CacheContext, _ClearUnknownError, _clearLibSQLError } from './utils.js';
+import { CacheContext } from './utils.js';
 
 /**
  * A cache map that stores page data objects, indexed by their string keys.

@@ -18,38 +18,24 @@ declare module 'studiocms:ui/components' {
 	export const Textarea: typeof import('@studiocms/ui/components/Textarea/Textarea.astro').default;
 	export const Checkbox: typeof import('@studiocms/ui/components/Checkbox/Checkbox.astro').default;
 	export const Toggle: typeof import('@studiocms/ui/components/Toggle/Toggle.astro').default;
-	export const RadioGroup: typeof import(
-		'@studiocms/ui/components/RadioGroup/RadioGroup.astro'
-	).default;
+	export const RadioGroup: typeof import('@studiocms/ui/components/RadioGroup/RadioGroup.astro').default;
 	export const Toaster: typeof import('@studiocms/ui/components/Toast/Toaster.astro').default;
 	export const Card: typeof import('@studiocms/ui/components/Card/Card.astro').default;
 	export const Modal: typeof import('@studiocms/ui/components/Modal/Modal.astro').default;
 	export const Select: typeof import('@studiocms/ui/components/Select/Select.astro').default;
-	export const SearchSelect: typeof import(
-		'@studiocms/ui/components/SearchSelect/SearchSelect.astro'
-	).default;
+	export const SearchSelect: typeof import('@studiocms/ui/components/SearchSelect/SearchSelect.astro').default;
 	export const Dropdown: typeof import('@studiocms/ui/components/Dropdown/Dropdown.astro').default;
 	export const User: typeof import('@studiocms/ui/components/User/User.astro').default;
-	export const ThemeToggle: typeof import(
-		'@studiocms/ui/components/ThemeToggle/ThemeToggle.astro'
-	).default;
+	export const ThemeToggle: typeof import('@studiocms/ui/components/ThemeToggle/ThemeToggle.astro').default;
 	export const Tabs: typeof import('@studiocms/ui/components/Tabs/Tabs.astro').default;
 	export const TabItem: typeof import('@studiocms/ui/components/Tabs/TabItem.astro').default;
-	export const Accordion: typeof import(
-		'@studiocms/ui/components/Accordion/Accordion.astro'
-	).default;
-	export const AccordionItem: typeof import(
-		'@studiocms/ui/components/Accordion/Item.astro'
-	).default;
+	export const Accordion: typeof import('@studiocms/ui/components/Accordion/Accordion.astro').default;
+	export const AccordionItem: typeof import('@studiocms/ui/components/Accordion/Item.astro').default;
 	export const Footer: typeof import('@studiocms/ui/components/Footer/Footer.astro').default;
 	export const Progress: typeof import('@studiocms/ui/components/Progress/Progress.astro').default;
 	export const Sidebar: typeof import('@studiocms/ui/components/Sidebar/Single.astro').default;
-	export const DoubleSidebar: typeof import(
-		'@studiocms/ui/components/Sidebar/Double.astro'
-	).default;
-	export const Breadcrumbs: typeof import(
-		'@studiocms/ui/components/Breadcrumbs/Breadcrumbs.astro'
-	).default;
+	export const DoubleSidebar: typeof import('@studiocms/ui/components/Sidebar/Double.astro').default;
+	export const Breadcrumbs: typeof import('@studiocms/ui/components/Breadcrumbs/Breadcrumbs.astro').default;
 	export const Group: typeof import('@studiocms/ui/components/Group/Group.astro').default;
 	export const Badge: typeof import('@studiocms/ui/components/Badge/Badge.astro').default;
 	export const Icon: typeof import('@studiocms/ui/components/Icon/Icon.astro').default;
@@ -72,7 +58,7 @@ declare module 'studiocms:ui/components' {
 		/**
 		 * A helper function which adds event listeners to the modal buttons to close the modal when clicked.
 		 * @param id The ID of the modal.
-		 * @param dismissable Whether the modal is dismissable.
+		 * @param dismissible Whether the modal is dismissible.
 		 */
 		private addButtonListeners;
 		/**

@@ -1,4 +1,4 @@
-import { NOW, column, defineTable } from 'astro:db';
+import { column, defineTable, NOW } from 'astro:db';
 
 /** StudioCMS - Users Table for Astro DB */
 export const StudioCMSUsers = defineTable({

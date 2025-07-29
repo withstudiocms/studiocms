@@ -9,7 +9,7 @@ interface Props {
 
 const { currentUser } = Astro.props as Props;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 
 type UserProps = PropsOf<typeof User>;

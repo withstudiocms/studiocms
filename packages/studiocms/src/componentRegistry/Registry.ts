@@ -1,9 +1,9 @@
-import * as NodeFileSystem from '@effect/platform-node/NodeFileSystem';
 import * as FileSystem from '@effect/platform/FileSystem';
 import * as Path from '@effect/platform/Path';
+import * as NodeFileSystem from '@effect/platform-node/NodeFileSystem';
 import { Effect, genLogger } from '../effect.js';
-import { PropsParser } from './PropsParser.js';
 import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from './errors.js';
+import { PropsParser } from './PropsParser.js';
 import type { AstroComponentProps } from './types.js';
 
 /**

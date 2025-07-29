@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { askToContinue } from '@withstudiocms/cli-kit/messages';
 import { diffWords } from 'diff';
-import { type ProxifiedModule, generateCode } from 'magicast';
+import { generateCode, type ProxifiedModule } from 'magicast';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
 import { effectBoxen } from '../utils/effectBoxen.js';
@@ -13,7 +13,7 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 	{
 		effect: genLogger('studiocms/cli/add/updateStudioCMSConfig/UpdateStudioCMSConfig.effect')(
 			function* () {
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
 				const run = (configURL: URL, mod: ProxifiedModule<any>) =>
 					genLogger('studiocms/cli/add/updateStudioCMSConfig/UpdateStudioCMSConfig.effect.run')(
 						function* () {

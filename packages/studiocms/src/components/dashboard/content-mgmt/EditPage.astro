@@ -3,7 +3,7 @@ import { FormattedDate } from 'studiocms:components';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import type { SettingsField } from 'studiocms:plugin-helpers';
 import pluginList from 'studiocms:plugins';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
@@ -45,7 +45,7 @@ const diffs = await runSDK(SDKCoreJs.diffTracking.get.byPageId.latest(pageData.i
 
 const user = (id: string) => users.find((u) => u.id === id)?.name;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 let editor: any = editors[convertToSafeString(pageData.package)];
 
 const CurrentEditorComponent = editor;

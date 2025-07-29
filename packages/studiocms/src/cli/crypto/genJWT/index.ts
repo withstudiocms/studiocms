@@ -114,7 +114,7 @@ export const genJWT = Command.make(
 
 				try {
 					privateKey = yield* Effect.tryPromise(() => importPKCS8(keyString, alg));
-				} catch (e) {
+				} catch (_e) {
 					spinner.stop('Invalid or unsupported private key');
 					return yield* Effect.fail(new Error('Invalid or unsupported private key'));
 				}

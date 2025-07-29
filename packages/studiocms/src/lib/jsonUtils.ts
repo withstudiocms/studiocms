@@ -1,10 +1,11 @@
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function stringify(options: any) {
+export function stringify(options: unknown) {
 	return JSON.stringify(options);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: used to build a map for virtual modules
-export function stringifyMap(options: any) {
+export function stringifyMap(options: unknown) {
+	if (!Array.isArray(options)) {
+		throw new Error('Expected options to be an array');
+	}
 	const map = Array.from(options.entries());
 	return JSON.stringify(map);
 }

@@ -1,7 +1,7 @@
 import { evaluate } from '@mdx-js/mdx';
 import { createElement } from 'react';
-import { renderToString } from 'react-dom/server';
 import * as runtime from 'react/jsx-runtime';
+import { renderToString } from 'react-dom/server';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import type { PluggableList } from 'unified';
@@ -26,7 +26,7 @@ const makeList = (included: PluggableList, userDefinedPlugins?: PluggableList): 
 
 export async function renderMDX(content: string): Promise<string> {
 	const { default: MDXContent } = await evaluate(content, {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 		...(runtime as any),
 		remarkPlugins: makeList(baseRemarkPlugins, remarkPlugins),
 		rehypePlugins: makeList(baseRehypePlugins, rehypePlugins),
