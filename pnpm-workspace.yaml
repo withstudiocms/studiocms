@@ -7,7 +7,7 @@ catalog:
   '@types/node': ^22.0.0
   "@studiocms/ui": ^0.4.17
   "@sentry/astro": ^9.2.0
-  '@studiocms/web-vitals': ^4.2.0
+  '@studiocms/web-vitals': ^4.2.1
   astro: ^5.12.4
   astro-integration-kit: ^0.18
   sharp: ^0.34.3
