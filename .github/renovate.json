@@ -39,7 +39,7 @@
       "matchPackageNames": ["effect", "@effect/**"]
     },
     {
-      "groupName": "Studiocms Dependencies",
+      "groupName": "studiocms Dependencies",
       "matchManagers": [
         "npm"
       ],
