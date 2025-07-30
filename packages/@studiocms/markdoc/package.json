@@ -68,16 +68,16 @@
   "dependencies": {
     "@markdoc/markdoc": "^0.5.2",
     "astro-integration-kit": "catalog:",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react"
   },
   "peerDependencies": {
-    "@astrojs/react": "catalog:",
+    "@astrojs/react": "catalog:react",
     "@studiocms/md": "workspace:*",
     "astro": "catalog:min",
     "effect": "catalog:effect",

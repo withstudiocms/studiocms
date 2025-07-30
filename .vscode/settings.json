@@ -141,6 +141,7 @@
     "TTFB",
     "turso",
     "twoslash",
+    "typeclass",
     "usernamepassword",
     "usernamepasswordoauth",
     "userpartial",
@@ -166,5 +167,8 @@
   },
   "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }

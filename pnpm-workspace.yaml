@@ -1,32 +1,49 @@
 catalog:
-  '@astrojs/db': ^0.15.1
-  '@astrojs/rss': ^4.0.12
-  '@astrojs/react': ^4.3.0
-  '@astrojs/check': ^0.9.4
-  '@astrojs/node': ^9.3.0
-  '@types/node': ^22.0.0
-  "@studiocms/ui": ^0.4.17
-  "@sentry/astro": ^9.2.0
-  '@studiocms/web-vitals': ^4.2.1
-  astro: ^5.12.4
+  "@types/node": ^22.0.0
   astro-integration-kit: ^0.18
   sharp: ^0.34.3
   typescript: ^5.8.3
-  vite: ^6.3.4
 
 catalogs:
-  min:
-    astro: ^5.12.4
-    '@astrojs/db': ^0.15.1
-    '@astrojs/markdown-remark': ^6.3.1
+  astrojs:
+    "@astrojs/db": ^0.15.1
+    "@astrojs/rss": ^4.0.12
+    "@astrojs/check": ^0.9.4
+    "@astrojs/node": ^9.3.0
+    astro: ^5.12.5
     vite: ^6.3.4
   effect:
+    "@effect/cli": ^0.69.0
+    "@effect/cluster": ^0.46.2
+    "@effect/experimental": ^0.54.0
+    "@effect/language-service": ^0.31.2
+    "@effect/platform": ^0.90.0
+    "@effect/platform-node": ^0.94.0
+    "@effect/printer": ^0.45.0
+    "@effect/printer-ansi": ^0.45.0
+    "@effect/rpc": ^0.68.0
+    "@effect/sql": ^0.44.0
+    "@effect/typeclass": ^0.36.0
+    "@effect/workflow": ^0.8.1
     effect: ^3.17.3
-    '@effect/cli': ^0.69.0
-    '@effect/platform': ^0.90.0
-    '@effect/platform-node': ^0.94.0
-    '@effect/language-service': ^0.31.2
-    
+  min:
+    "@astrojs/db": ^0.15.1
+    "@astrojs/markdown-remark": ^6.3.3
+    "@studiocms/web-vitals": ^4.2.1
+    astro: ^5.12.5
+    vite: ^6.3.4
+  react:
+    "@astrojs/react": ^4.3.0
+    "@types/react": ^19.1.9
+    "@types/react-dom": ^19.1.7
+    react: ^19.1.1
+    "react-dom": ^19.1.1
+  studiocms:
+    "@studiocms/markdown-remark-processor": ^1.2.0
+    "@studiocms/ui": ^0.4.17
+    "@studiocms/web-vitals": ^4.2.1
+    "@withstudiocms/cli-kit": ^0.1.0
+
 packages:
   - "packages/@studiocms/*"
   - "packages/@withstudiocms/*"

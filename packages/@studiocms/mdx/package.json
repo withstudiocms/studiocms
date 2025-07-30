@@ -64,16 +64,16 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
     "astro-integration-kit": "catalog:",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "unified": "^11.0.5"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react"
   },
   "peerDependencies": {
     "@studiocms/md": "workspace:*",
