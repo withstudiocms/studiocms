@@ -10,7 +10,7 @@ catalogs:
     "@astrojs/db": ^0.15.1
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.3.0
+    "@astrojs/node": ^9.3.1
     astro: ^5.12.5
     vite: ^6.3.4
   effect:
