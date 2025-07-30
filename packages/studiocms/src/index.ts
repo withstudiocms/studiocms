@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import inlineMod, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
+import { configResolverBuilder, exists, watchConfigFile } from '@withstudiocms/config-utils';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -21,15 +22,17 @@ import { componentRegistryHandler } from './componentRegistry/handler.js';
 import { makeDashboardRoute, routesDir } from './consts.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
-import type { StudioCMSConfig, StudioCMSOptions } from './schemas/index.js';
+import {
+	type StudioCMSConfig,
+	type StudioCMSOptions,
+	StudioCMSOptionsSchema,
+} from './schemas/index.js';
 import { scriptHandler } from './scriptHandler.js';
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { changelogHelper } from './utils/changelog.js';
 import { checkEnvKeys } from './utils/checkENV.js';
-import { exists, watchStudioCMSConfig } from './utils/configManager.js';
-import { configResolver } from './utils/configResolver.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
@@ -58,6 +61,19 @@ const builtInComponents = {
 };
 
 /**
+ * Paths to search for the StudioCMS config file,
+ * sorted by how likely they're to appear.
+ */
+const configPaths = [
+	'studiocms.config.js',
+	'studiocms.config.mjs',
+	'studiocms.config.cjs',
+	'studiocms.config.ts',
+	'studiocms.config.mts',
+	'studiocms.config.cts',
+];
+
+/**
  * **StudioCMS Integration**
  *
  * A CMS built for Astro by the Astro Community for the Astro Community.
@@ -73,11 +89,20 @@ export const studiocms = defineIntegration({
 		// Resolved Options for StudioCMS
 		let options: StudioCMSConfig;
 
+		// Config Resolver
+		const configResolver = configResolverBuilder({
+			configPaths,
+			label: name,
+			zodSchema: StudioCMSOptionsSchema,
+		});
+
 		// Messages Array for Logging
 		const messages: Messages = [];
 
+		// Cache JSON file for storing the latest version check
 		let cacheJsonFile: URL | undefined;
 
+		// Is the integration running in development mode?
 		let isDevMode = false;
 
 		// Return the Integration
@@ -101,9 +126,10 @@ export const studiocms = defineIntegration({
 					isDevMode = command === 'dev';
 
 					// Watch the StudioCMS Config File
-					watchStudioCMSConfig(params);
+					watchConfigFile(params, {
+						configPaths,
+					});
 
-					// Resolve the StudioCMS Configuration
 					options = await configResolver(params, opts);
 
 					const {

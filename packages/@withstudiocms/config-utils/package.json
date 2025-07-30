@@ -1,0 +1,62 @@
+{
+  "name": "@withstudiocms/config-utils",
+  "version": "0.1.0-beta.0",
+  "description": "Utilities for managing configuration files",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/config-utils"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro-studiocms",
+    "cms",
+    "studiocms"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "deepmerge-ts": "^7.1.5",
+    "esbuild": "^0.25.8"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min"
+  }
+}
