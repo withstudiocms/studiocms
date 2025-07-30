@@ -1,5 +1,5 @@
-import { existsSync } from 'node:fs';
-import { unlink, writeFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { access, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'astro/zod';
 import { defineUtility } from 'astro-integration-kit';
@@ -149,9 +149,12 @@ export async function loadConfigFile<R>(
 	// If a file exists, set configFileUrl to that URL
 	for (const path of configPaths) {
 		const fileUrl = new URL(path, root);
-		if (existsSync(fileUrl)) {
+		try {
+			await access(fileUrl, constants.F_OK);
 			configFileUrl = fileUrl;
 			break;
+		} catch {
+			// File does not exist, continue to the next path
 		}
 	}
 
@@ -244,7 +247,7 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 
 			// If no config file was found, return the inline config if it exists
 			if (!loadedConfigFile) {
-				logger.warn('No config file found. Using inline config only.');
+				logger.info('No config file found. Using inline config only.');
 				return inlineConfig;
 			}
 
