@@ -1,3 +1,10 @@
+/**
+ * Arguments for importing a bundled file.
+ *
+ * @property code - The source code of the bundled file as a string.
+ * @property root - The root URL used as the base for resolving file paths.
+ * @property label - (Optional) A label for the temporary file, useful for identification or debugging.
+ */
 export interface ImportBundledFileArgs {
 	code: string;
 	root: URL;
