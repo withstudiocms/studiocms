@@ -2,12 +2,13 @@ import { z } from 'astro/zod';
 import { deepmerge } from 'deepmerge-ts';
 
 /**
- * Parses and validates configuration options using a provided Zod schema.
+ * Parses and validates the provided configuration options using the given Zod schema.
  *
  * @template T - A Zod schema type extending `z.ZodTypeAny`.
- * @param opts - The Zod schema to use for parsing and validation.
- * @returns The parsed and validated configuration object of type `T['_output']`.
- * @throws {Error} Throws an error if the configuration options are invalid or if an unknown error occurs during parsing.
+ * @param schema - The Zod schema to validate the configuration options against.
+ * @param opts - The configuration options to be validated.
+ * @returns The validated and parsed configuration options as the schema's output type.
+ * @throws {Error} If the configuration options are invalid or if an unknown error occurs during parsing.
  */
 export function parseConfig<T extends z.ZodTypeAny>(schema: T, opts: unknown): T['_output'] {
 	try {
@@ -88,16 +89,16 @@ export function parseAndMerge<T extends z.ZodTypeAny>(
 	try {
 		const ZeroDefaultsSchema = deepRemoveDefaults(schema);
 		if (!configFile) {
-			return inlineConfig ?? {};
+			return inlineConfig ?? schema.parse({});
 		}
 		const parsedConfigFile = ZeroDefaultsSchema.parse(configFile);
 		return deepmerge(inlineConfig ?? {}, parsedConfigFile);
 	} catch (error) {
 		if (error instanceof Error) {
-			throw new Error(`Invalid StudioCMS Config Options: ${error.message}`);
+			throw new Error(`Invalid Config Options: ${error.message}`);
 		}
 		throw new Error(
-			'Invalid StudioCMS Options: An unknown error occurred while parsing the StudioCMS options.'
+			'Invalid Config Options: An unknown error occurred while parsing the Config options.'
 		);
 	}
 }

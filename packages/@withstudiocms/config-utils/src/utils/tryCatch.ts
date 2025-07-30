@@ -8,10 +8,14 @@ import type { Result } from './dynamicResult.js';
  * @param fn - The function to execute, which can be a promise or a synchronous function.
  * @returns A promise that resolves to a tuple containing the result and error.
  */
-export async function tryCatch<T, E = Error>(fn: Promise<T> | T): Promise<Result<T, E>> {
+export async function tryCatch<T, E = Error>(fn: () => T | Promise<T>): Promise<Result<T, E>>;
+export async function tryCatch<T, E = Error>(value: Promise<T>): Promise<Result<T, E>>;
+
+export async function tryCatch<T, E = Error>(
+	fnOrValue: (() => T | Promise<T>) | Promise<T>
+): Promise<Result<T, E>> {
 	try {
-		// Check if the input is a function
-		const result = typeof fn === 'function' ? (fn as () => T)() : fn;
+		const result = typeof fnOrValue === 'function' ? fnOrValue() : fnOrValue;
 
 		// If the result is a promise, wait for it to resolve
 		if (result instanceof Promise) {

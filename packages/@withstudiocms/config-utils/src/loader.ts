@@ -20,7 +20,7 @@ export async function bundleConfigFile({ fileUrl }: { fileUrl: URL }) {
 		outfile: 'out.js',
 		packages: 'external',
 		write: false,
-		target: ['node16'],
+		target: ['node18'],
 		platform: 'node',
 		bundle: true,
 		format: 'esm',
@@ -64,7 +64,7 @@ export async function importBundledFile({
 	try {
 		return await import(/* @vite-ignore */ tmpFileUrl.toString());
 	} finally {
-		const [_data, _err] = await tryCatch(unlink(tmpFileUrl));
+		await tryCatch(unlink(tmpFileUrl));
 	}
 }
 
@@ -234,34 +234,40 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 			// Check if inline options were provided
 			const inlineConfigExists = options !== undefined;
 
-            // If inline options are provided, parse them using the Zod schema
+			// If inline options are provided, parse them using the Zod schema
 			if (zodSchema) {
 				inlineConfig = parseConfig(zodSchema, options);
 			}
 
-            // Load the config file
+			// Load the config file
 			const loadedConfigFile = await loadConfigFile<S['_input']>(astroRoot, configPaths, label);
 
-            // If no config file was found, return the inline config if it exists
+			// If no config file was found, return the inline config if it exists
 			if (!loadedConfigFile) {
 				logger.warn('No config file found. Using inline config only.');
 				return inlineConfig;
 			}
 
 			// If inline config exists, log a warning
-			if (loadedConfigFile && inlineConfigExists) {
+			if (inlineConfigExists) {
 				logger.warn(
 					'Both an inline config and a config file were found. The config file will override the inline config during merging.'
 				);
 			}
 
-            // Parse and merge the inline config with the loaded config file
+			// Parse and merge the inline config with the loaded config file
 			const mergedConfig = parseAndMerge(zodSchema, inlineConfig, loadedConfigFile);
 
-			logger.info('Config file loaded and merged successfully.');
+			let logMessage = 'Config file loaded and merged successfully.';
 
-            // Return the merged configuration object
-            // This object will contain the final configuration, validated and merged from both sources
+			if (inlineConfigExists) {
+				logMessage += ` Warning: Inline config will be overridden by the config file, if you face any issues, try migrating your config to only use the ${label} config file.`;
+			}
+
+			logger.info(logMessage);
+
+			// Return the merged configuration object
+			// This object will contain the final configuration, validated and merged from both sources
 			return mergedConfig;
 		}
 	);

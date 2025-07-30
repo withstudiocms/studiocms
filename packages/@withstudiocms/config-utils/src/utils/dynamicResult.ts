@@ -5,8 +5,8 @@
 export type Success<T> = [T, null];
 
 /**
- * The Success type represents a successful result with a value of type T.
- * It is used to indicate that an operation was successful and contains the result.
+ * The Failure type represents a failure with an error of type E.
+ * It is used to indicate that an operation failed and contains the error.
  */
 export type Failure<E> = [null, E];
 
