@@ -35,12 +35,49 @@
       "matchManagers": ["github-actions"]
     },
     {
-      "groupName": "Effect",
+      "groupName": "Effect Dependencies",
       "matchPackageNames": ["effect", "@effect/**"]
     },
     {
-      "groupName": "Nanostores",
-      "matchPackageNames": ["nanostores", "@nanostores/**"]
+      "groupName": "studiocms Dependencies",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchFileNames": [
+        "packages/studiocms/**"
+      ]
+    },
+    {
+      "groupName": "@studiocms Plugin Dependencies",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchFileNames": [
+        "packages/@studiocms/blog/**",
+        "packages/@studiocms/cloudinary-image-service/**",
+        "packages/@studiocms/html/**",
+        "packages/@studiocms/markdoc/**",
+        "packages/@studiocms/md/**",
+        "packages/@studiocms/mdx/**"
+      ]
+    },
+    {
+      "groupName": "@studiocms Integration Dependencies",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchFileNames": [
+        "packages/@studiocms/devapps/**"
+      ]
+    },
+    {
+      "groupName": "@withstudiocms Dependencies",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchFileNames": [
+        "packages/@withstudiocms/**"
+      ]
     }
   ],
   "ignoreDeps": [
@@ -53,6 +90,7 @@
     "npm",
     "pnpm",
     "esbuild",
-    "codemirror"
+    "codemirror",
+    "vite"
   ]
 }

@@ -59,7 +59,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/rss": "catalog:",
+    "@astrojs/rss": "catalog:astrojs",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {

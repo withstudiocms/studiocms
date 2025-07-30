@@ -18,13 +18,13 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@astrojs/db": "catalog:",
-    "@astrojs/node": "catalog:",
-    "@studiocms/web-vitals": "catalog:",
+    "@astrojs/db": "catalog:astrojs",
+    "@astrojs/node": "catalog:astrojs",
+    "@studiocms/web-vitals": "catalog:studiocms",
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
     "@studiocms/md": "workspace:*",
-    "astro": "catalog:",
+    "astro": "catalog:astrojs",
     "studiocms": "workspace:*",
     "sharp": "catalog:"
   }

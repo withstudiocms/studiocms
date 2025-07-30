@@ -64,7 +64,7 @@
   },
   "type": "module",
   "dependencies": {
-		"@studiocms/markdown-remark-processor": "^1.2.0",
+		"@studiocms/markdown-remark-processor": "catalog:studiocms",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
