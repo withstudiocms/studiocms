@@ -5,7 +5,7 @@
     "schedule:weekly",
     "group:allNonMajor",
     ":disablePeerDependencies",
-    "regexManagers:biomeVersions"
+    "customManagers:biomeVersions"
   ],
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
