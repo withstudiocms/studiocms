@@ -3,7 +3,16 @@
   "changelog": ["@changesets/changelog-github", { "repo": "withstudiocms/studiocms" }],
   "commit": false,
   "fixed": [
-    ["studiocms", "@studiocms/blog", "@studiocms/devapps", "@studiocms/mdx", "@studiocms/markdoc"]
+    [
+      "studiocms", 
+      "@studiocms/blog", 
+      "@studiocms/cloudinary-image-service",
+      "@studiocms/devapps", 
+      "@studiocms/html",
+      "@studiocms/markdoc",
+      "@studiocms/md",
+      "@studiocms/mdx"
+    ]
   ],
   "linked": [],
   "access": "public",
