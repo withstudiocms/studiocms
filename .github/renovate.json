@@ -40,18 +40,12 @@
     },
     {
       "groupName": "studiocms Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/studiocms/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/studiocms/**"]
     },
     {
       "groupName": "@studiocms Plugin Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
+      "matchManagers": ["npm"],
       "matchFileNames": [
         "packages/@studiocms/blog/**",
         "packages/@studiocms/cloudinary-image-service/**",
@@ -63,21 +57,13 @@
     },
     {
       "groupName": "@studiocms Integration Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/@studiocms/devapps/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@studiocms/devapps/**"]
     },
     {
       "groupName": "@withstudiocms Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/@withstudiocms/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@withstudiocms/**"]
     }
   ],
   "ignoreDeps": [
