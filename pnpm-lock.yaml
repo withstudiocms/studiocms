@@ -25,6 +25,9 @@ catalogs:
     astro-integration-kit:
       specifier: ^0.18
       version: 0.18.0
+    esbuild:
+      specifier: ^0.25.8
+      version: 0.25.8
     sharp:
       specifier: ^0.34.3
       version: 0.34.3
@@ -426,8 +429,8 @@ importers:
   packages/@withstudiocms/buildkit:
     dependencies:
       esbuild:
-        specifier: ^0.25.0
-        version: 0.25.6
+        specifier: 'catalog:'
+        version: 0.25.8
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
@@ -454,7 +457,7 @@ importers:
         specifier: ^7.1.5
         version: 7.1.5
       esbuild:
-        specifier: ^0.25.8
+        specifier: 'catalog:'
         version: 0.25.8
     devDependencies:
       '@types/node':

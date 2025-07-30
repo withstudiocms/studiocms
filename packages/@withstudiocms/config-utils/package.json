@@ -51,7 +51,7 @@
   "dependencies": {
     "astro-integration-kit": "catalog:",
     "deepmerge-ts": "^7.1.5",
-    "esbuild": "^0.25.8"
+    "esbuild": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:"
