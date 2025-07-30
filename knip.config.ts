@@ -40,6 +40,10 @@ const atStudioCMSPackages = [
 	'html',
 ] as const;
 
+const atWithStudioCMSPackages = [
+	'config-utils',
+] as const;
+
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
  *
@@ -65,10 +69,6 @@ const config: KnipConfig = {
 			entry: ['.github/workflows/*.yml', 'scripts/*.mjs'],
 			project: ['scripts/*.mjs'],
 		},
-		'build-scripts': {
-			entry: '{index,cli}.js',
-			project: '**/*.js',
-		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
 			ignoreDependencies: [
@@ -84,6 +84,19 @@ const config: KnipConfig = {
 				acc[`packages/@studiocms/${pkg}`] = {
 					...baseAstroWorkspaceConfig,
 					...extras(pkg),
+				};
+				return acc;
+			},
+			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic object construction
+			{} as Record<string, any>
+		),
+		'packages/@withstudiocms/buildkit': {
+			project: '**/*.js',
+		},
+		...atWithStudioCMSPackages.reduce(
+			(acc, pkg) => {
+				acc[`packages/@withstudiocms/${pkg}`] = {
+					...baseAstroWorkspaceConfig,
 				};
 				return acc;
 			},
