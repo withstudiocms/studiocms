@@ -151,7 +151,7 @@
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@iconify-json/flat-color-icons": "^1.2.1",
-		"@iconify-json/simple-icons": "^1.2.44",
+		"@iconify-json/simple-icons": "^1.2.45",
 		"@inox-tools/inline-mod": "^2.2.0",
 		"@inox-tools/runtime-logger": "^0.6.0",
 		"@libsql/client": "^0.15.10",
@@ -199,7 +199,7 @@
 		"@types/markdown-it": "^14.1.2",
 		"@types/node": "catalog:",
 		"@types/nodemailer": "^6.4.17",
-		"@types/semver": "^7.5.8",
+		"@types/semver": "^7.7.0",
 		"@types/three": "0.169.0",
 		"typescript": "catalog:"
 	},

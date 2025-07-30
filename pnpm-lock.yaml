@@ -418,8 +418,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       '@iconify-json/simple-icons':
-        specifier: ^1.2.44
-        version: 1.2.44
+        specifier: ^1.2.45
+        version: 1.2.45
       '@inox-tools/inline-mod':
         specifier: ^2.2.0
         version: 2.2.0(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
@@ -566,7 +566,7 @@ importers:
         specifier: ^6.4.17
         version: 6.4.17
       '@types/semver':
-        specifier: ^7.5.8
+        specifier: ^7.7.0
         version: 7.7.0
       '@types/three':
         specifier: 0.169.0
@@ -1167,8 +1167,8 @@ packages:
   '@iconify-json/heroicons@1.2.2':
     resolution: {integrity: sha512-qoW4pXr5kTTL6juEjgTs83OJIwpePu7q1tdtKVEdj+i0zyyVHgg/dd9grsXJQnpTpBt6/VwNjrXBvFjRsKPENg==}
 
-  '@iconify-json/simple-icons@1.2.44':
-    resolution: {integrity: sha512-CdWgSPygwDlDbKtDWjvi3NtUefnkoepXv90n3dQxJerqzD9kI+nEJOiWUBM+eOyMYQKtxBpLWFBrgeotF0IZKw==}
+  '@iconify-json/simple-icons@1.2.45':
+    resolution: {integrity: sha512-POOz+NjYQDy2fy1u+sIZi05N6r6oSooIGBaBcZLh7w8QOmLgJAZ6mBt+7Messp7ku9ucRua61if33BPoOZCwRQ==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -3335,6 +3335,7 @@ packages:
 
   libsql@0.5.17:
     resolution: {integrity: sha512-RRlj5XQI9+Wq+/5UY8EnugSWfRmHEw4hn3DKlPrkUgZONsge1PwTtHcpStP6MSNi8ohcbsRgEHJaymA33a8cBw==}
+    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   linkify-it@5.0.0:
@@ -4384,10 +4385,6 @@ packages:
     resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
 
-  undici@7.11.0:
-    resolution: {integrity: sha512-heTSIac3iLhsmZhUCjyS3JQEkZELateufzZuBaVM5RHXdSBMb1LPMQf5x+FH7qjsZYDP0ttAc3nnVpUB+wYbOg==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.12.0:
     resolution: {integrity: sha512-GrKEsc3ughskmGA9jevVlIOPMiiAHJ4OFUtaAH+NhfTUSiZ1wMPIQqQvAJUrJspFXJt3EBWgpAeoHEDVT1IBug==}
     engines: {node: '>=20.18.1'}
@@ -5356,7 +5353,7 @@ snapshots:
       '@effect/sql': 0.41.0(@effect/experimental@0.52.0(@effect/platform@0.90.0(effect@3.17.3))(effect@3.17.3))(@effect/platform@0.90.0(effect@3.17.3))(effect@3.17.3)
       effect: 3.17.3
       mime: 3.0.0
-      undici: 7.11.0
+      undici: 7.12.0
       ws: 8.18.3
     transitivePeerDependencies:
       - bufferutil
@@ -5508,7 +5505,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.44':
+  '@iconify-json/simple-icons@1.2.45':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -9147,8 +9144,6 @@ snapshots:
       '@fastify/busboy': 2.1.1
 
   undici@6.21.3: {}
-
-  undici@7.11.0: {}
 
   undici@7.12.0: {}
 
