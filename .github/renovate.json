@@ -90,6 +90,7 @@
     "npm",
     "pnpm",
     "esbuild",
-    "codemirror"
+    "codemirror",
+    "vite"
   ]
 }
