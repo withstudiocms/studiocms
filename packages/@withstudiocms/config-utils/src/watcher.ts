@@ -1,5 +1,4 @@
 import { statSync } from 'node:fs';
-import { defineUtility } from 'astro-integration-kit';
 
 /**
  * Checks whether the specified file or directory exists.
@@ -38,48 +37,3 @@ export function findConfig(projectRootUrl: string, configPaths: string[]) {
     // If no configuration file is found, return undefined
 	return undefined;
 }
-
-/**
- * Options for watching configuration files.
- *
- * @property configPaths - An array of file paths to configuration files that should be watched.
- */
-export interface WatchConfigFileOptions {
-	configPaths: string[];
-}
-
-/**
- * Watches a configuration file for changes and adds it to the watch list.
- *
- * This utility is defined for the 'astro:config:setup' hook. It locates the configuration
- * file based on the provided root pathname and a list of possible config paths, then
- * registers the found config file with the `addWatchFile` function to enable hot-reloading
- * or rebuilds when the config changes.
- *
- * @param context - An object containing:
- *   - `addWatchFile`: A function to register files to be watched.
- *   - `config.root.pathname`: The root directory pathname to search for config files.
- * @param options - An object containing:
- *   - `configPaths`: An array of possible configuration file paths to search for.
- *
- * @returns void
- */
-export const watchConfigFile = defineUtility('astro:config:setup')(
-	(
-		{
-			addWatchFile,
-			config: {
-				root: { pathname },
-			},
-		},
-		{ configPaths }: WatchConfigFileOptions
-	) => {
-        // Find the first existing configuration file from the provided paths
-        // If a configuration file is found, register it for watching
-		const configFileUrl = findConfig(pathname, configPaths);
-		if (configFileUrl) {
-			addWatchFile(configFileUrl);
-		}
-		return;
-	}
-);
