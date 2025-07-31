@@ -1,6 +1,6 @@
 import { Session } from 'studiocms:auth/lib';
-import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { apiResponseLogger } from 'studiocms:logger';
+import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/lib/types';
+import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, Schema } from '../../../effect.js';
@@ -36,6 +36,83 @@ export const getParsedData = (context: APIContext) =>
 	});
 
 /**
+ * Represents the response data for verifying a user session on the dashboard API.
+ *
+ * @property isLoggedIn - Indicates whether the user is currently logged in.
+ * @property user - The authenticated user's information, or `null` if not logged in.
+ * @property user.id - The unique identifier of the user.
+ * @property user.name - The display name of the user.
+ * @property user.email - The user's email address, or `null` if not available.
+ * @property user.avatar - The URL to the user's avatar image, or `null` if not set.
+ * @property user.username - The user's unique username.
+ * @property permissionLevel - The user's permission level, as defined in `UserSessionData`.
+ * @property routes - An object containing route paths relevant to the dashboard.
+ * @property routes.logout - The route for logging out.
+ * @property routes.userProfile - The route to the user's profile page.
+ * @property routes.contentManagement - The route for content management.
+ * @property routes.dashboardIndex - The route to the dashboard index page.
+ */
+type ResponseData = {
+	isLoggedIn: boolean;
+	user: {
+		id: string;
+		name: string;
+		email: string | null;
+		avatar: string | null;
+		username: string;
+	} | null;
+	permissionLevel: UserSessionData['permissionLevel'];
+	routes: {
+		logout: string;
+		userProfile: string;
+		contentManagement: string;
+		dashboardIndex: string;
+	};
+};
+
+/**
+ * Builds a JSON HTTP response containing session verification data for the dashboard API.
+ *
+ * @param context - The API context containing local route mappings and other request-specific data.
+ * @param isLoggedIn - Indicates whether the user is currently logged in.
+ * @param user - The validated user object from the session, or `null` if not logged in.
+ * @param permissionLevel - The user's permission level within the session.
+ * @returns A `Response` object with a JSON body containing login status, user info, permission level, and relevant route URLs.
+ */
+const responseBuilder = (
+	context: APIContext,
+	isLoggedIn: boolean,
+	user: SessionValidationResult['user'],
+	permissionLevel: UserSessionData['permissionLevel']
+) => {
+	const data: ResponseData = {
+		isLoggedIn,
+		user: user
+			? {
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					avatar: user.avatar,
+					username: user.username,
+				}
+			: null,
+		permissionLevel: permissionLevel,
+		routes: {
+			logout: context.locals.routeMap.authLinks.logoutURL,
+			userProfile: context.locals.routeMap.mainLinks.userProfile,
+			contentManagement: context.locals.routeMap.mainLinks.contentManagement,
+			dashboardIndex: context.locals.routeMap.mainLinks.dashboardIndex,
+		},
+	};
+
+	return new Response(JSON.stringify(data), {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+};
+
+/**
  * Handles POST requests to verify the user's session and return session details.
  *
  * This API route performs the following steps:
@@ -54,6 +131,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const ses = yield* Session;
 			const sdk = yield* SDKCore;
 
+			const logger = _logger.fork('studiocms:runtime:api:verify-session');
+
 			const { cookies } = context;
 
 			const { originPathname } = yield* getParsedData(context);
@@ -61,9 +140,14 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
 
 			if (!sessionToken) {
-				return apiResponseLogger(
-					400,
-					`No session token found, User is not logged in. (originUrl: ${originPathname})`
+				logger.info(
+					`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
+				);
+				return responseBuilder(
+					context,
+					false,
+					null,
+					'unknown'
 				);
 			}
 
@@ -71,25 +155,40 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			if (session === null) {
 				yield* ses.deleteSessionTokenCookie(context);
-				return apiResponseLogger(
-					400,
-					`Invalid session token, User is not logged in. (originUrl: ${originPathname})`
+				logger.info(
+					`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
+				);
+				return responseBuilder(
+					context,
+					false,
+					null,
+					'unknown'
 				);
 			}
 
 			if (!user || user === null) {
-				return apiResponseLogger(
-					400,
-					`Invalid user, User is not logged in. (originUrl: ${originPathname})`
+				logger.info(
+					`No user found for session token, returning unknown session status. Origin: ${originPathname}`
+				);
+				return responseBuilder(
+					context,
+					false,
+					null,
+					'unknown'
 				);
 			}
 
 			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
 			if (!result) {
-				return apiResponseLogger(
-					400,
-					`Failed to get user permission level from SDKCore. (originUrl: ${originPathname})`
+				logger.error(
+					`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
+				);
+				return responseBuilder(
+					context,
+					false,
+					null,
+					'unknown'
 				);
 			}
 
@@ -113,29 +212,11 @@ export const POST: APIRoute = async (context: APIContext) =>
 					break;
 			}
 
-			return new Response(
-				JSON.stringify({
-					isLoggedIn: true,
-					user: {
-						id: user.id,
-						username: user.username,
-						email: user.email,
-						avatar: user.avatar,
-						name: user.name,
-					},
-					permissionLevel,
-					routes: {
-						logout: context.locals.routeMap.authLinks.logoutURL,
-						userProfile: context.locals.routeMap.mainLinks.userProfile,
-						contentManagement: context.locals.routeMap.mainLinks.contentManagement,
-						dashboardIndex: context.locals.routeMap.mainLinks.dashboardIndex,
-					},
-				}),
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				}
+			return responseBuilder(
+				context,
+				true,
+				user,
+				permissionLevel
 			);
 		}).pipe(Session.Provide)
 	);
