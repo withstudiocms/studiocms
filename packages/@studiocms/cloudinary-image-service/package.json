@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/cloudinary-image-service",
-  "version": "0.1.0-beta.21",
+  "version": "0.1.0-beta.22",
   "description": "Cloudinary Image Service For StudioCMS!",
   "author": {
     "name": "withstudiocms",
@@ -42,7 +42,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
     ".": {

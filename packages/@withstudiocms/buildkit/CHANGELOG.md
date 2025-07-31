@@ -1,5 +1,17 @@
 # @withstudiocms/buildkit
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [#643](https://github.com/withstudiocms/studiocms/pull/643) [`9cfba9a`](https://github.com/withstudiocms/studiocms/commit/9cfba9ad57f8fb1b2a10081fbe5f9dfc26bed57d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add font file copy support to build-kit
+
+- [#650](https://github.com/withstudiocms/studiocms/pull/650) [`3e7f7ca`](https://github.com/withstudiocms/studiocms/commit/3e7f7ca6ea2a304fe66eac95496542cc50169eb2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update various deps and lint repo with updated biome version
+
+- [#657](https://github.com/withstudiocms/studiocms/pull/657) [`a05bb16`](https://github.com/withstudiocms/studiocms/commit/a05bb16d3dd0d1a429558b4dce316ad7fb80b049) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update esbuild
+
+- [#648](https://github.com/withstudiocms/studiocms/pull/648) [`e490385`](https://github.com/withstudiocms/studiocms/commit/e490385dbdad5392f23c46a832c8a555dbf48a9a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update package.json to conform to new repository structure
+
 ## 0.1.0-beta.1
 
 ### Patch Changes
