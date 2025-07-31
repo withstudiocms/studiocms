@@ -145,7 +145,7 @@ jobs:
               const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
 
               const changesets = changes.changesets || [];
-              const changesetReleases = changesets.releases || [];
+              const changesetReleases = changes.releases || [];
 
               const actualReleases = changesetReleases.reduce((acc, release) => {
                 if (release.type === 'none') {
