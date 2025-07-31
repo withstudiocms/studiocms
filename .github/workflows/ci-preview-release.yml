@@ -149,7 +149,7 @@ jobs:
               const affectedPackages = [
                 ...new Set(
                   actualReleases
-                    .flatMap(c => c.releases.map(r => packagesMap[r.name]))
+                    .flatMap(r => packagesMap[r.name])
                     .filter(Boolean) // drop undefined
                 ),
               ];
