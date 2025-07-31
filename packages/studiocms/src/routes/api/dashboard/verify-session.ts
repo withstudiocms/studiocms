@@ -143,12 +143,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				logger.info(
 					`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(
-					context,
-					false,
-					null,
-					'unknown'
-				);
+				return responseBuilder(context, false, null, 'unknown');
 			}
 
 			const { session, user } = yield* ses.validateSessionToken(sessionToken);
@@ -158,24 +153,14 @@ export const POST: APIRoute = async (context: APIContext) =>
 				logger.info(
 					`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
 				);
-				return responseBuilder(
-					context,
-					false,
-					null,
-					'unknown'
-				);
+				return responseBuilder(context, false, null, 'unknown');
 			}
 
 			if (!user || user === null) {
 				logger.info(
 					`No user found for session token, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(
-					context,
-					false,
-					null,
-					'unknown'
-				);
+				return responseBuilder(context, false, null, 'unknown');
 			}
 
 			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
@@ -184,12 +169,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				logger.error(
 					`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(
-					context,
-					false,
-					null,
-					'unknown'
-				);
+				return responseBuilder(context, false, null, 'unknown');
 			}
 
 			let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
@@ -212,12 +192,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 					break;
 			}
 
-			return responseBuilder(
-				context,
-				true,
-				user,
-				permissionLevel
-			);
+			return responseBuilder(context, true, user, permissionLevel);
 		}).pipe(Session.Provide)
 	);
 
