@@ -144,48 +144,11 @@ jobs:
               const packages = JSON.parse(process.env.PACKAGES);
               const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
 
-              const changesets = changes.changesets || [];
-              const changesetReleases = changes.releases || [];
-
-              const actualReleases = changesetReleases.reduce((acc, release) => {
-                if (release.type === 'none') {
-                  return acc;
-                }
-                if (release.oldVersion !== release.newVersion) {
-                  acc.push(release);
-                }
-                return acc;
-              }, []);
-
-              const mergedChangesets = [];
-
-              for (const item of changesets.releases) {
-                const existing = mergedChangesets.find(c => c.name === item.name)
-                if (existing) {
-                  existing.releases.push(item);
-                } else {
-                  mergedChangesets.push({
-                    name: item.name,
-                    releases: [item],
-                  });
-                }  
-              }
-
-              for (const item of actualReleases) {
-                const existing = mergedChangesets.find(c => c.name === item.name)
-                if (existing) {
-                  continue; // already added
-                } else {
-                  mergedChangesets.push({
-                    name: item.name,
-                    releases: [item],
-                  });
-                }
-              }
+              const actualReleases = changes.releases.filter(r => r.type !== 'none' && r.oldVersion !== r.newVersion);
 
               const affectedPackages = [
                 ...new Set(
-                  mergedChangesets
+                  actualReleases
                     .flatMap(c => c.releases.map(r => packagesMap[r.name]))
                     .filter(Boolean) // drop undefined
                 ),
