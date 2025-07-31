@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/md",
-  "version": "0.1.0-beta.21",
+  "version": "0.1.0-beta.22",
   "description": "Add Markdown Support to your StudioCMS project with ease!",
   "author": {
     "name": "withstudiocms",
@@ -44,7 +44,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
     ".": {
@@ -64,14 +64,14 @@
   },
   "type": "module",
   "dependencies": {
-		"@studiocms/markdown-remark-processor": "catalog:studiocms",
+    "@studiocms/markdown-remark-processor": "catalog:studiocms",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-		"@astrojs/markdown-remark": "catalog:min",
+    "@astrojs/markdown-remark": "catalog:min",
     "astro": "catalog:min",
     "effect": "catalog:effect",
     "studiocms": "workspace:*",

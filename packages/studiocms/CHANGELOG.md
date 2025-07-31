@@ -1,5 +1,42 @@
 # studiocms
 
+## 0.1.0-beta.22
+
+### Patch Changes
+
+- [#649](https://github.com/withstudiocms/studiocms/pull/649) [`336397f`](https://github.com/withstudiocms/studiocms/commit/336397f31a63bdb05a17a6a7e9a0ab22601bbb61) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove deprecated `@astrojs/web-vitals` support in favor of new `@studiocms/web-vitals` package
+
+- [#644](https://github.com/withstudiocms/studiocms/pull/644) [`83a47ff`](https://github.com/withstudiocms/studiocms/commit/83a47ff1912f30bae20461b2bfd994efe3f35749) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add support for the SDK folder getter to get by name or ID instead of just ID, and add jsdoc comments to missing functions for the SDK
+
+- [#629](https://github.com/withstudiocms/studiocms/pull/629) [`356791d`](https://github.com/withstudiocms/studiocms/commit/356791d80aa8a33cbb77e2c83ca8fc70eaf3b5dd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor component registry into new custom handler for reading component props during initialization for usage within StudioCMS Dashboard editors
+
+  #### Breaking Changes
+
+  - `studiocms:component-proxy` has been replaced by `studiocms:component-registry`
+  - Added `studiocms:component-registry/runtime` virtual module which exports types, and the following helpers, `getRegistryComponents` and `getRendererComponents` used for getting Components with props, and the renderer components respectively.
+  - `importComponentKeys` has been carried over but deprecated in favor for the new `getRendererComponents` function.
+
+- [#642](https://github.com/withstudiocms/studiocms/pull/642) [`e9be97d`](https://github.com/withstudiocms/studiocms/commit/e9be97dabcd8e479f929a43919332e5deb187900) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Correct exports for components, layouts, and add export for styles
+
+- [#650](https://github.com/withstudiocms/studiocms/pull/650) [`3e7f7ca`](https://github.com/withstudiocms/studiocms/commit/3e7f7ca6ea2a304fe66eac95496542cc50169eb2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update various deps and lint repo with updated biome version
+
+- [#643](https://github.com/withstudiocms/studiocms/pull/643) [`9cfba9a`](https://github.com/withstudiocms/studiocms/commit/9cfba9ad57f8fb1b2a10081fbe5f9dfc26bed57d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moved MD and HTML pagetypes into their own plugins
+
+- [#656](https://github.com/withstudiocms/studiocms/pull/656) [`3233abe`](https://github.com/withstudiocms/studiocms/commit/3233abe727ac9ba6f1886ef5a931db81f0da4326) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update dependencies
+
+- [#637](https://github.com/withstudiocms/studiocms/pull/637) [`7511f47`](https://github.com/withstudiocms/studiocms/commit/7511f47042104bed83f985c336c7d62cc1fd3b2f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove Deprecated SDK functions and refactor SDK to make it easier to modify/read
+
+- [#643](https://github.com/withstudiocms/studiocms/pull/643) [`9cfba9a`](https://github.com/withstudiocms/studiocms/commit/9cfba9ad57f8fb1b2a10081fbe5f9dfc26bed57d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - All internal base included pagetypes have been removed, allowing even more flexibility when it comes to how studiocms works for the user. This change also means that you will be required to install at least one rendering plugin for studiocms
+
+- [#640](https://github.com/withstudiocms/studiocms/pull/640) [`fe3fa26`](https://github.com/withstudiocms/studiocms/commit/fe3fa262b80a17ea2d89d8f09e4c3ac97f64ca5f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove previously deprected functions and old hashing system
+
+- [#635](https://github.com/withstudiocms/studiocms/pull/635) [`54da8e7`](https://github.com/withstudiocms/studiocms/commit/54da8e7ff080f44a02ca8139c8ddade37f1d32f4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor oAuth endpoints into two dynamic endpoints with a provider param in the route and cleanup all auth endpoints code.
+
+- [#657](https://github.com/withstudiocms/studiocms/pull/657) [`a05bb16`](https://github.com/withstudiocms/studiocms/commit/a05bb16d3dd0d1a429558b4dce316ad7fb80b049) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate to using new config utils package that contains generic config helpers instead of relying on specific ones built-in to studiocms
+
+- Updated dependencies [[`a05bb16`](https://github.com/withstudiocms/studiocms/commit/a05bb16d3dd0d1a429558b4dce316ad7fb80b049)]:
+  - @withstudiocms/config-utils@0.1.0-beta.1
+
 ## 0.1.0-beta.21
 
 ### Patch Changes

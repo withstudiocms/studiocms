@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/html",
-  "version": "0.1.0-beta.21",
+  "version": "0.1.0-beta.22",
   "description": "Add HTML Support to your StudioCMS project with ease!",
   "author": {
     "name": "withstudiocms",
@@ -44,7 +44,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
     ".": {
@@ -65,12 +65,12 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-		"codemirror": "5.65.19",
-		"katex": "^0.16.22",
-		"suneditor": "^2.47.6"
+    "codemirror": "5.65.19",
+    "katex": "^0.16.22",
+    "suneditor": "^2.47.6"
   },
   "devDependencies": {
-		"@types/codemirror": "5.60.16",
+    "@types/codemirror": "5.60.16",
     "@types/node": "catalog:"
   },
   "peerDependencies": {

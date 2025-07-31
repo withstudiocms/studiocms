@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/devapps",
-  "version": "0.1.0-beta.21",
+  "version": "0.1.0-beta.22",
   "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "withstudiocms",
@@ -55,7 +55,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "type": "module",
   "dependencies": {
