@@ -144,11 +144,10 @@ jobs:
               const packages = JSON.parse(process.env.PACKAGES);
               const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
 
-              const actualReleases = changes.releases.filter(r => r.type !== 'none' && r.oldVersion !== r.newVersion);
-
               const affectedPackages = [
                 ...new Set(
-                  actualReleases
+                  changes.releases
+                    .filter(r => r.type !== 'none' && r.oldVersion !== r.newVersion)
                     .flatMap(r => packagesMap[r.name])
                     .filter(Boolean) // drop undefined
                 ),
