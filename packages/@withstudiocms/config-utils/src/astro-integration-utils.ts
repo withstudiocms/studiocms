@@ -1,9 +1,9 @@
-import type { z } from "astro/zod";
-import { defineUtility } from "astro-integration-kit";
-import { loadConfigFile } from "./loader.js";
-import type { ConfigResolverBuilderOpts, WatchConfigFileOptions } from "./types.js";
-import { findConfig } from "./watcher.js";
-import { parseAndMerge, parseConfig } from "./zod-utils.js";
+import type { z } from 'astro/zod';
+import { defineUtility } from 'astro-integration-kit';
+import { loadConfigFile } from './loader.js';
+import type { ConfigResolverBuilderOpts, WatchConfigFileOptions } from './types.js';
+import { findConfig } from './watcher.js';
+import { parseAndMerge, parseConfig } from './zod-utils.js';
 
 /**
  * Builds a config resolver utility for Astro integrations.
@@ -99,8 +99,8 @@ export const watchConfigFile = defineUtility('astro:config:setup')(
 		},
 		{ configPaths }: WatchConfigFileOptions
 	) => {
-        // Find the first existing configuration file from the provided paths
-        // If a configuration file is found, register it for watching
+		// Find the first existing configuration file from the provided paths
+		// If a configuration file is found, register it for watching
 		const configFileUrl = findConfig(pathname, configPaths);
 		if (configFileUrl) {
 			addWatchFile(configFileUrl);

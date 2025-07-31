@@ -40,9 +40,7 @@ const atStudioCMSPackages = [
 	'html',
 ] as const;
 
-const atWithStudioCMSPackages = [
-	'config-utils',
-] as const;
+const atWithStudioCMSPackages = ['config-utils'] as const;
 
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.

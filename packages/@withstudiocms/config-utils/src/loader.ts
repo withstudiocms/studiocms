@@ -2,7 +2,11 @@ import { constants } from 'node:fs';
 import { access, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { build as esbuild } from 'esbuild';
-import type { ImportBundledFileArgs, LoadAndBundleConfigFileArgs, LoadAndBundleConfigFileResult } from './types.js';
+import type {
+	ImportBundledFileArgs,
+	LoadAndBundleConfigFileArgs,
+	LoadAndBundleConfigFileResult,
+} from './types.js';
 import { tryCatch } from './utils/tryCatch.js';
 
 /**
