@@ -1,5 +1,5 @@
 import { Session } from 'studiocms:auth/lib';
-import type { UserSessionData } from 'studiocms:auth/lib/types';
+import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/lib/types';
 import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
@@ -35,6 +35,23 @@ export const getParsedData = (context: APIContext) =>
 		return yield* Schema.decodeUnknown(JsonData)(jsonData);
 	});
 
+/**
+ * Represents the response data for verifying a user session on the dashboard API.
+ *
+ * @property isLoggedIn - Indicates whether the user is currently logged in.
+ * @property user - The authenticated user's information, or `null` if not logged in.
+ * @property user.id - The unique identifier of the user.
+ * @property user.name - The display name of the user.
+ * @property user.email - The user's email address, or `null` if not available.
+ * @property user.avatar - The URL to the user's avatar image, or `null` if not set.
+ * @property user.username - The user's unique username.
+ * @property permissionLevel - The user's permission level, as defined in `UserSessionData`.
+ * @property routes - An object containing route paths relevant to the dashboard.
+ * @property routes.logout - The route for logging out.
+ * @property routes.userProfile - The route to the user's profile page.
+ * @property routes.contentManagement - The route for content management.
+ * @property routes.dashboardIndex - The route to the dashboard index page.
+ */
 type ResponseData = {
 	isLoggedIn: boolean;
 	user: {
@@ -53,11 +70,20 @@ type ResponseData = {
 	};
 };
 
+/**
+ * Builds a JSON HTTP response containing session verification data for the dashboard API.
+ *
+ * @param context - The API context containing local route mappings and other request-specific data.
+ * @param isLoggedIn - Indicates whether the user is currently logged in.
+ * @param user - The validated user object from the session, or `null` if not logged in.
+ * @param permissionLevel - The user's permission level within the session.
+ * @returns A `Response` object with a JSON body containing login status, user info, permission level, and relevant route URLs.
+ */
 const responseBuilder = (
 	context: APIContext,
 	isLoggedIn: boolean,
-	user: UserData | null,
-	permissionLevel: PermissionLevel
+	user: SessionValidationResult['user'],
+	permissionLevel: UserSessionData['permissionLevel']
 ) => {
 	const data: ResponseData = {
 		isLoggedIn,
