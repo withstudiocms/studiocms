@@ -27,9 +27,9 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 		return sequence(
 			...entries
 				.filter(
-					([path, { excludePaths }]) =>
+					([path, { excludePaths = [] }]) =>
 						micromatch.isMatch(context.url.pathname, path) &&
-						!micromatch.isMatch(context.url.pathname, excludePaths || [])
+						!micromatch.isMatch(context.url.pathname, excludePaths)
 				)
 				.map(([_, { handler }]) => handler)
 		)(context, next);
