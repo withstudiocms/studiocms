@@ -13,7 +13,11 @@
     "@studiocms/cloudinary-image-service": "0.1.0-beta.18",
     "@studiocms/html": "0.1.0-beta.21",
     "@studiocms/md": "0.1.0-beta.21",
-    "@withstudiocms/config-utils": "0.1.0-beta.0"
+    "@withstudiocms/config-utils": "0.1.0-beta.0",
+    "@studiocms/auth0": "0.1.0-beta.22",
+    "@studiocms/discord": "0.1.0-beta.22",
+    "@studiocms/github": "0.1.0-beta.22",
+    "@studiocms/google": "0.1.0-beta.22"
   },
   "changesets": [
     "afraid-candles-raise",
@@ -35,6 +39,7 @@
     "clear-files-kick",
     "clever-books-fold",
     "clever-yaks-push",
+    "common-tables-clap",
     "cool-worlds-think",
     "crazy-buckets-kiss",
     "crazy-lamps-fly",
@@ -74,6 +79,7 @@
     "flat-wings-cry",
     "floppy-ducks-type",
     "forty-shrimps-try",
+    "four-experts-talk",
     "fruity-lines-end",
     "funny-comics-rest",
     "gentle-mugs-divide",
@@ -201,6 +207,7 @@
     "tasty-dancers-crash",
     "ten-rats-stare",
     "tender-ants-explain",
+    "tender-geckos-wink",
     "tender-hornets-love",
     "thin-hounds-happen",
     "thin-panthers-check",
