@@ -596,7 +596,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 			}
 
-			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({ ...button, enabled, safeName }));
+			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({
+				...button,
+				enabled,
+				safeName,
+			}));
 
 			const oAuthEndpoints = oAuthProvidersToInject.map(({ endpoints, enabled, safeName }) => ({
 				content: endpoints,
@@ -838,7 +842,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			extraRoutes,
 			safePluginList,
 			messages,
-			oAuthProvidersConfigured
+			oAuthProvidersConfigured,
 		};
 	}
 );

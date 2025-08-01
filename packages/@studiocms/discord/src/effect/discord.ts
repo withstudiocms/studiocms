@@ -30,7 +30,7 @@ const DISCORD = {
 	CLIENT_ID: getSecret('DISCORD_CLIENT_ID') ?? '',
 	CLIENT_SECRET: getSecret('DISCORD_CLIENT_SECRET') ?? '',
 	REDIRECT_URI: getSecret('DISCORD_REDIRECT_URI') ?? '',
-}
+};
 
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.
@@ -68,13 +68,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([
-			SDKCore,
-			HttpClient.HttpClient,
-			Session,
-			VerifyEmail,
-			User,
-		]);
+		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = DISCORD;
 

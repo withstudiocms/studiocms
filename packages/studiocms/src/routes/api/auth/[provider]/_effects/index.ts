@@ -83,7 +83,6 @@ const dispatchToAuthProvider = (
 
 export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEffect', {
 	effect: genLogger('studiocms/routes/api/auth/[provider]/_shared')(function* () {
-
 		return {
 			initSession: (context: APIContext) =>
 				dispatchToAuthProvider(context, 'initSession', oAuthProviders),

@@ -212,7 +212,7 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
 
 /**
  * Partial Vite configuration settings for Astro projects.
- * 
+ *
  * This constant customizes the Vite settings used by Astro, specifically
  * excluding the 'three' package from dependency optimization. This can be
  * useful if 'three' causes issues during Vite's dependency pre-bundling.

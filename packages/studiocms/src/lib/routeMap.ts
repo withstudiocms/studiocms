@@ -210,7 +210,7 @@ export const StudioCMSRoutes = {
 		 * @returns The complete API route for the specified OAuth provider.
 		 */
 		oAuthIndex: (provider: string) => authAPIRoute(provider),
-		
+
 		/**
 		 * API route for OAuth callback.
 		 */

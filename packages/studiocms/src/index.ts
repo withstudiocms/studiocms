@@ -19,7 +19,12 @@ import { addVirtualImports, createResolver, defineIntegration } from 'astro-inte
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { componentRegistryHandler } from './componentRegistry/handler.js';
-import { AstroConfigImageSettings, AstroConfigViteSettings, makeDashboardRoute, routesDir } from './consts.js';
+import {
+	AstroConfigImageSettings,
+	AstroConfigViteSettings,
+	makeDashboardRoute,
+	routesDir,
+} from './consts.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
 import {

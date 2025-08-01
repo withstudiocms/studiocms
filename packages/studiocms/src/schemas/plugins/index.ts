@@ -197,9 +197,9 @@ const AuthServiceConfigSchema = z.object({
 		/**
 		 * The inline SVG image for the OAuth provider button.
 		 * This should be a string containing the SVG markup.
-		 * 
+		 *
 		 * Note: Please ensure the class `oauth-logo` is included in the SVG for styling purposes.
-		 * 
+		 *
 		 * @example
 		 * `<svg width="24px" height="24px" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="oauth-logo">...</svg>`,
 		 */
@@ -208,11 +208,11 @@ const AuthServiceConfigSchema = z.object({
 		/**
 		 * The path to the endpoint file that handles the OAuth authentication for this provider.
 		 * This should be a string or URL pointing to the endpoint ts file.
-		 * 
+		 *
 		 * Note: The endpoint should export two functions:
 		 * - `initSession`: Initializes the session for the OAuth provider.
 		 * - `initCallback`: Handles the callback from the OAuth provider after authentication.
-		 * 
+		 *
 		 * @example
 		 * `/src/auth/providers/google.ts`
 		 */
@@ -224,8 +224,8 @@ const AuthServiceConfigSchema = z.object({
 		 * If specified, these variables must be set in the environment for the OAuth provider to work.
 		 */
 		requiredEnvVariables: z.array(z.string()).optional(),
-	})
-})
+	}),
+});
 
 type BaseHookSchema = {
 	logger: typeof astroIntegrationLoggerSchema;

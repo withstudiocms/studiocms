@@ -34,7 +34,7 @@ const GITHUB = {
 	CLIENT_ID: getSecret('GITHUB_CLIENT_ID') ?? '',
 	CLIENT_SECRET: getSecret('GITHUB_CLIENT_SECRET') ?? '',
 	REDIRECT_URI: getSecret('GITHUB_REDIRECT_URI') ?? null,
-}
+};
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.
@@ -73,13 +73,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([
-			SDKCore,
-			HttpClient.HttpClient,
-			Session,
-			VerifyEmail,
-			User,
-		]);
+		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GITHUB;
 

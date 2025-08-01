@@ -89,7 +89,7 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 			},
 		},
 
-		oAuthProvidersConfigured
+		oAuthProvidersConfigured,
 	} = options;
 
 	/**

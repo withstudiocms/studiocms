@@ -28,7 +28,7 @@ const GOOGLE = {
 	CLIENT_ID: getSecret('GOOGLE_CLIENT_ID') ?? '',
 	CLIENT_SECRET: getSecret('GOOGLE_CLIENT_SECRET') ?? '',
 	REDIRECT_URI: getSecret('GOOGLE_REDIRECT_URI') ?? '',
-}
+};
 
 /**
  * Provides Google OAuth authentication effects for the StudioCMS API.
@@ -74,13 +74,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([
-			SDKCore,
-			HttpClient.HttpClient,
-			Session,
-			VerifyEmail,
-			User,
-		]);
+		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GOOGLE;
 
