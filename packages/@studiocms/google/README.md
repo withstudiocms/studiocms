@@ -1,6 +1,6 @@
 # @studiocms/google Plugin
 
-This plugin integrates Google OAuth authentication into StudioCMS. It defines the necessary configuration, including the required environment variables, OAuth provider details, and the endpoint path for authentication.
+This plugin integrates Google OAuth authentication into StudioCMS. It defines the necessary configuration, including the required environment variables, OAuth provider details, and the endpoint paths for authentication.
 
 ## Usage
 

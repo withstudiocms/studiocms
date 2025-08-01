@@ -1,6 +1,6 @@
 # @studiocms/auth0 Plugin
 
-This plugin integrates Auth0 as an OAuth provider for StudioCMS, enabling authentication via Auth0. It sets up the necessary configuration, including required environment variables and endpoint path.
+This plugin integrates Auth0 as an OAuth provider for StudioCMS, enabling authentication via Auth0. It sets up the necessary configuration, including required environment variables and endpoint paths.
 
 ## Usage
 

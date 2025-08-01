@@ -1,6 +1,6 @@
 # @studiocms/discord Plugin
 
-This plugin integrates Discord as an OAuth authentication provider for StudioCMS. It sets up the necessary configuration, including the required environment variables, OAuth endpoint, and SVG logo for Discord.
+This plugin integrates Discord as an OAuth authentication provider for StudioCMS. It sets up the necessary configuration, including the required environment variables and OAuth endpoints.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 # @studiocms/github Plugin
 
-This plugin integrates GitHub as an OAuth authentication provider for StudioCMS. It sets up the necessary authentication service, including the provider's name, endpoint path, required environment variables, and SVG logo.
+This plugin integrates GitHub as an OAuth authentication provider for StudioCMS. It sets up the necessary authentication service, including the provider's name, endpoint paths and required environment variables.
 
 ## Usage
 
