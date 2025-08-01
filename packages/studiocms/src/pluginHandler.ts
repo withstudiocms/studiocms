@@ -311,6 +311,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			enabled: boolean;
 		}[] = [];
 
+		// Define if the OAuth providers are configured
 		let oAuthProvidersConfigured = false;
 
 		/////
@@ -799,9 +800,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					`,
 					'studiocms:plugins/auth/providers': `
 						import * as providers from 'virtual:studiocms:plugins/auth/providers';
-
-						export const oAuthEndpoints = ${JSON.stringify(oAuthEndpoints.map(({ safeName, enabled }) => ({ safeName, enabled })))};
-
+						
 						export const oAuthButtons = ${JSON.stringify(oAuthButtons)};
 
 						export const oAuthProviders = oAuthEndpoints.map(({ safeName, enabled }) => ({

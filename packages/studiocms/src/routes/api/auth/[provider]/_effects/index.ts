@@ -1,4 +1,4 @@
-import { oAuthProviders } from 'studiocms:plugins/auth/providers';
+import { type OAuthProviders, oAuthProviders } from 'studiocms:plugins/auth/providers';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
 
@@ -60,12 +60,7 @@ const promisify = Effect.fn(function* (fn: APIRoute, context: APIContext) {
 const dispatchToAuthProvider = (
 	context: APIContext,
 	handler: 'initSession' | 'initCallback',
-	providers: {
-		safeName: string;
-		enabled: boolean;
-		initSession: APIRoute | null;
-		initCallback: APIRoute | null;
-	}[]
+	providers: OAuthProviders
 ) =>
 	genLogger('OAuthAPIEffect.dispatchToAuthProvider')(function* () {
 		const provider = context.params.provider;

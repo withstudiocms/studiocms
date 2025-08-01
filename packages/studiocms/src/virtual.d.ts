@@ -511,16 +511,11 @@ declare module 'studiocms:plugins/imageService' {
 }
 
 declare module 'studiocms:plugins/auth/providers' {
-	/**
-	 * An array of OAuth endpoint configurations.
-	 *
-	 * Each object in the array represents an OAuth endpoint with the following properties:
-	 * - `safeName`: A string identifier for the OAuth endpoint, typically used for internal reference.
-	 * - `enabled`: A boolean indicating whether the OAuth endpoint is enabled.
-	 */
-	export const oAuthEndpoints: {
-		safeName: string;
+	export type OAuthButtons = {
 		enabled: boolean;
+		safeName: string;
+		label: string;
+		image: string;
 	}[];
 
 	/**
@@ -532,11 +527,13 @@ declare module 'studiocms:plugins/auth/providers' {
 	 * - `label`: The display label for the OAuth button.
 	 * - `image`: The URL or path to the provider's logo image.
 	 */
-	export const oAuthButtons: {
-		enabled: boolean;
+	export const oAuthButtons: OAuthButtons;
+
+	export type OAuthProviders = {
 		safeName: string;
-		label: string;
-		image: string;
+		enabled: boolean;
+		initSession: import('astro').APIRoute | null;
+		initCallback: import('astro').APIRoute | null;
 	}[];
 
 	/**
@@ -548,12 +545,7 @@ declare module 'studiocms:plugins/auth/providers' {
 	 * - `initSession`: An Astro API route handler for initiating the OAuth session.
 	 * - `initCallback`: An Astro API route handler for handling the OAuth callback.
 	 */
-	export const oAuthProviders: {
-		safeName: string;
-		enabled: boolean;
-		initSession: import('astro').APIRoute | null;
-		initCallback: import('astro').APIRoute | null;
-	}[];
+	export const oAuthProviders: OAuthProviders;
 }
 
 declare namespace App {
