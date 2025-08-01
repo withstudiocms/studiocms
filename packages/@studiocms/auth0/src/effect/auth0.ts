@@ -1,3 +1,4 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -5,16 +6,58 @@ import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { Auth0, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	Auth0User,
-	AuthEnvCheck,
-	cleanDomain,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { Effect, genLogger, pipe, Schema } from 'studiocms/effect';
+import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
+
+/**
+ * Represents a user authenticated via Auth0.
+ *
+ * @property {string} sub - The unique identifier for the user (subject).
+ * @property {string} name - The full name of the user.
+ * @property {string} email - The email address of the user.
+ * @property {string} picture - The URL to the user's profile picture.
+ * @property {string} nickname - The user's nickname.
+ */
+export class Auth0User extends Schema.Class<Auth0User>('Auth0User')({
+	sub: Schema.String,
+	name: Schema.String,
+	email: Schema.String,
+	picture: Schema.String,
+	nickname: Schema.String,
+}) {}
+
+/**
+ * Returns the normalized domain string for Auth0 authentication.
+ *
+ * This function performs the following transformations:
+ * - Removes any leading slash from the domain.
+ * - Strips out the "http://" or "https://" protocol from the domain.
+ * - Prepends "https://" to the resulting domain.
+ *
+ * @returns {string} The normalized domain string with "https://" prepended.
+ */
+export const cleanDomain = (domain: string): string =>
+	pipe(
+		domain,
+		(domain) => domain.replace(/^\//, ''),
+		(domain) => domain.replace(/(?:http|https):\/\//, ''),
+		(domain) => `https://${domain}`
+	);
+
+/**
+ * An object containing Auth0 configuration values retrieved from environment secrets.
+ *
+ * @property {string} CLIENT_ID - The Auth0 client identifier, used to identify the application.
+ * @property {string} CLIENT_SECRET - The Auth0 client secret, used for authenticating the application.
+ * @property {string} DOMAIN - The Auth0 domain, representing the Auth0 tenant.
+ * @property {string} REDIRECT_URI - The URI to which Auth0 will redirect after authentication.
+ */
+const AUTH0 = {
+	CLIENT_ID: getSecret('CMS_AUTH0_CLIENT_ID') || '',
+	CLIENT_SECRET: getSecret('CMS_AUTH0_CLIENT_SECRET') || '',
+	DOMAIN: getSecret('CMS_AUTH0_DOMAIN') || '',
+	REDIRECT_URI: getSecret('CMS_AUTH0_REDIRECT_URI') || '',
+};
 
 /**
  * Provides Auth0 OAuth authentication effects for the StudioCMS API.
@@ -57,17 +100,9 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				AUTH0: { CLIENT_ID = '', CLIENT_SECRET = '', DOMAIN = '', REDIRECT_URI = '' },
-			},
-		] = yield* Effect.all([
-			SDKCore,
-			HttpClient.HttpClient,
-			Session,
-			VerifyEmail,
-			User,
-			AuthEnvCheck,
-		]);
+		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
+
+		const { CLIENT_ID, CLIENT_SECRET, DOMAIN, REDIRECT_URI } = AUTH0;
 
 		const CLIENT_DOMAIN = cleanDomain(DOMAIN);
 
@@ -230,7 +265,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 		};
 	}),
 }) {
-	static ProviderID = Provider.AUTH0;
+	static ProviderID = 'auth0';
 	static ProviderCookieName = 'auth0_oauth_state';
 	static ProviderCodeVerifier = 'auth0_oauth_code_verifier';
 }

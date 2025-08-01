@@ -141,6 +141,10 @@
 		"./sdk/*": {
 			"types": "./dist/sdk/*.d.ts",
 			"default": "./dist/sdk/*.js"
+		},
+		"./oAuthUtils": {
+			"types": "./dist/oAuthUtils.d.ts",
+			"default": "./dist/oAuthUtils.js"
 		}
 	},
 	"type": "module",
@@ -160,7 +164,6 @@
 		"@effect/workflow": "catalog:effect",
 		"@iconify-json/flat-color-icons": "^1.2.1",
 		"@iconify-json/simple-icons": "^1.2.44",
-		"@inox-tools/inline-mod": "^2.2.0",
 		"@inox-tools/runtime-logger": "^0.6.0",
 		"@libsql/client": "^0.15.10",
 		"@nanostores/i18n": "^1.2.2",
@@ -171,7 +174,6 @@
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/cli-kit": "catalog:studiocms",
 		"@withstudiocms/config-utils": "workspace:*",
-		"arctic": "^3.7.0",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",

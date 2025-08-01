@@ -1,3 +1,4 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -5,15 +6,35 @@ import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { GitHub, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	AuthEnvCheck,
-	GitHubUser,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { Effect, genLogger, Schema } from 'studiocms/effect';
+import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
+
+/**
+ * Represents a GitHub user profile as returned by the GitHub API.
+ *
+ * @property id - The unique identifier for the user.
+ * @property html_url - The URL to the user's GitHub profile.
+ * @property login - The user's GitHub username.
+ * @property avatar_url - The URL to the user's avatar image.
+ * @property name - The user's display name.
+ * @property blog - The user's blog URL.
+ * @property email - The user's public email address.
+ */
+export class GitHubUser extends Schema.Class<GitHubUser>('GitHubUser')({
+	id: Schema.Number,
+	html_url: Schema.String,
+	login: Schema.String,
+	avatar_url: Schema.String,
+	name: Schema.optional(Schema.String),
+	blog: Schema.optional(Schema.String),
+	email: Schema.optional(Schema.String),
+}) {}
+
+const GITHUB = {
+	CLIENT_ID: getSecret('GITHUB_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('GITHUB_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('GITHUB_REDIRECT_URI') ?? null,
+}
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.
@@ -52,17 +73,15 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
-			},
 		] = yield* Effect.all([
 			SDKCore,
 			HttpClient.HttpClient,
 			Session,
 			VerifyEmail,
 			User,
-			AuthEnvCheck,
 		]);
+
+		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GITHUB;
 
 		const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
@@ -216,6 +235,6 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 		};
 	}),
 }) {
-	static ProviderID = Provider.GITHUB;
+	static ProviderID = 'github';
 	static ProviderCookieName = 'github_oauth_state';
 }

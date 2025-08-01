@@ -1,96 +1,103 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
-import { Google, generateCodeVerifier, generateState } from 'arctic';
+import { Discord, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	AuthEnvCheck,
-	GoogleUser,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { Effect, genLogger, Schema } from 'studiocms/effect';
+import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
 /**
- * Provides Google OAuth authentication effects for the StudioCMS API.
+ * Represents a Discord user's profile information.
+ *
+ * @property id - The unique identifier for the Discord user.
+ * @property avatar - The user's avatar hash.
+ * @property username - The user's Discord username.
+ * @property global_name - The user's global display name.
+ * @property email - The user's email address.
+ */
+export class DiscordUser extends Schema.Class<DiscordUser>('DiscordUser')({
+	id: Schema.String,
+	avatar: Schema.String,
+	username: Schema.String,
+	global_name: Schema.String,
+	email: Schema.String,
+}) {}
+
+const DISCORD = {
+	CLIENT_ID: getSecret('DISCORD_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('DISCORD_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('DISCORD_REDIRECT_URI') ?? '',
+}
+
+/**
+ * Provides Discord OAuth authentication effects for the StudioCMS API.
+ *
+ * This service handles the OAuth flow for Discord, including:
+ * - Initializing the OAuth session and redirecting to Discord's authorization URL.
+ * - Validating the authorization code returned by Discord.
+ * - Handling the callback to link or create users based on Discord account information.
+ * - Verifying user email status and creating user sessions.
  *
  * @remarks
- * This service handles the OAuth flow for Google authentication, including session initialization,
- * authorization code validation, user account linking, and user creation. It integrates with
- * session management, user data libraries, and email verification.
+ * - Integrates with session management, user library, and email verification services.
+ * - Supports linking Discord accounts to existing users and creating new users via OAuth.
+ * - Ensures email verification before allowing access to the dashboard.
  *
  * @example
  * ```typescript
- * const googleOAuth = new GoogleOAuthAPI();
- * yield* googleOAuth.initSession(context);
- * yield* googleOAuth.initCallback(context);
+ * const discordAuth = yield* DiscordOAuthAPI;
+ * yield* discordAuth.initSession(context);
+ * yield* discordAuth.initCallback(context);
  * ```
  *
- * @method initSession
- * Initializes the OAuth session by generating a state and code verifier, setting cookies,
- * and redirecting the user to Google's authorization URL.
- *
- * @param context - The API context containing request and response information.
- * @returns Redirects the user to the Google OAuth authorization URL.
- *
- * @method initCallback
- * Handles the OAuth callback from Google. Validates the authorization code and state,
- * fetches user information, links or creates user accounts, verifies email, and creates a user session.
- *
- * @param context - The API context containing request and response information.
- * @returns Redirects the user to the appropriate page based on authentication and verification status.
- *
  * @dependencies
- * - Session.Default: Session management utilities.
- * - SDKCore.Default: Core SDK for user and OAuth provider operations.
- * - VerifyEmail.Default: Email verification utilities.
- * - User.Default: User data management utilities.
+ * - Session.Default
+ * - SDKCore.Default
+ * - VerifyEmail.Default
+ * - User.Default
  */
-export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
+export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
 	dependencies: [Session.Default, VerifyEmail.Default, User.Default, FetchHttpClient.layer],
-	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
+	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const [
 			sdk,
 			fetchClient,
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-			},
 		] = yield* Effect.all([
 			SDKCore,
 			HttpClient.HttpClient,
 			Session,
 			VerifyEmail,
 			User,
-			AuthEnvCheck,
 		]);
 
-		const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = DISCORD;
+
+		const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 		const validateAuthCode = (code: string, codeVerifier: string) =>
-			genLogger('studiocms/routes/api/auth/google/effect.validateAuthCode')(function* () {
+			genLogger('studiocms/routes/api/auth/discord/effect.validateAuthCode')(function* () {
 				const tokens = yield* Effect.tryPromise(() =>
-					google.validateAuthorizationCode(code, codeVerifier)
+					discord.validateAuthorizationCode(code, codeVerifier)
 				);
 
 				return yield* fetchClient
-					.get('https://openidconnect.googleapis.com/v1/userinfo', {
+					.get('https://discord.com/api/users/@me', {
 						headers: {
 							Authorization: `Bearer ${tokens.accessToken}`,
 						},
 					})
 					.pipe(
-						Effect.flatMap(HttpClientResponse.schemaBodyJson(GoogleUser)),
+						Effect.flatMap(HttpClientResponse.schemaBodyJson(DiscordUser)),
 						Effect.catchAll((error) =>
 							Effect.fail(
 								new ValidateAuthCodeError({
-									provider: GoogleOAuthAPI.ProviderID,
+									provider: DiscordOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
 							)
@@ -100,45 +107,45 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 		return {
 			initSession: (context: APIContext) =>
-				genLogger('studiocms/routes/api/auth/google/effect.initSession')(function* () {
+				genLogger('studiocms/routes/api/auth/discord/effect.initSession')(function* () {
 					const state = generateState();
 					const codeVerifier = generateCodeVerifier();
-					const scopes = ['profile', 'email'];
+					const scopes = ['identify', 'email'];
 
-					const url = google.createAuthorizationURL(state, codeVerifier, scopes);
+					const url = discord.createAuthorizationURL(state, codeVerifier, scopes);
 
-					yield* setOAuthSessionTokenCookie(context, GoogleOAuthAPI.ProviderCookieName, state);
+					yield* setOAuthSessionTokenCookie(context, DiscordOAuthAPI.ProviderCookieName, state);
 
 					yield* setOAuthSessionTokenCookie(
 						context,
-						GoogleOAuthAPI.ProviderCodeVerifier,
+						DiscordOAuthAPI.ProviderCodeVerifier,
 						codeVerifier
 					);
 
 					return context.redirect(url.toString());
 				}),
 			initCallback: (context: APIContext) =>
-				genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
+				genLogger('studiocms/routes/api/auth/discord/effect.initCallback')(function* () {
 					const { cookies, redirect } = context;
 
 					const [code, state, storedState, codeVerifier] = yield* Effect.all([
 						getUrlParam(context, 'code'),
 						getUrlParam(context, 'state'),
-						getCookie(context, GoogleOAuthAPI.ProviderCookieName),
-						getCookie(context, GoogleOAuthAPI.ProviderCodeVerifier),
+						getCookie(context, DiscordOAuthAPI.ProviderCookieName),
+						getCookie(context, DiscordOAuthAPI.ProviderCodeVerifier),
 					]);
 
 					if (!code || !storedState || !codeVerifier || state !== storedState) {
 						return redirect(StudioCMSRoutes.authLinks.loginURL);
 					}
 
-					const googleUser = yield* validateAuthCode(code, codeVerifier);
+					const discordUser = yield* validateAuthCode(code, codeVerifier);
 
-					const { sub: googleUserId, name: googleUsername } = googleUser;
+					const { id: discordUserId, username: discordUsername } = discordUser;
 
 					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-						GoogleOAuthAPI.ProviderID,
-						googleUserId
+						DiscordOAuthAPI.ProviderID,
+						discordUserId
 					);
 
 					if (existingOAuthAccount) {
@@ -171,8 +178,8 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 						if (existingUser) {
 							yield* sdk.AUTH.oAuth.create({
 								userId: existingUser.id,
-								provider: GoogleOAuthAPI.ProviderID,
-								providerUserId: googleUserId,
+								provider: DiscordOAuthAPI.ProviderID,
+								providerUserId: discordUserId,
 							});
 
 							const isEmailAccountVerified = yield* isEmailVerified(existingUser);
@@ -190,17 +197,19 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 						}
 					}
 
+					const avatar_url = `https://cdn.discordapp.com/avatars/${discordUserId}/${discordUser.avatar}.png`;
+
 					const newUser = yield* createOAuthUser(
 						{
 							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
-							username: googleUsername,
-							email: googleUser.email,
-							name: googleUser.name,
-							avatar: googleUser.picture,
+							username: discordUsername,
+							name: discordUser.global_name ?? discordUsername,
+							email: discordUser.email,
+							avatar: avatar_url,
 							createdAt: new Date(),
 						},
-						{ provider: GoogleOAuthAPI.ProviderID, providerUserId: googleUserId }
+						{ provider: DiscordOAuthAPI.ProviderID, providerUserId: discordUserId }
 					);
 
 					if ('error' in newUser) {
@@ -232,7 +241,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 		};
 	}),
 }) {
-	static ProviderID = Provider.GOOGLE;
-	static ProviderCookieName = 'google_oauth_state';
-	static ProviderCodeVerifier = 'google_oauth_code_verifier';
+	static ProviderID = 'discord';
+	static ProviderCookieName = 'discord_oauth_state';
+	static ProviderCodeVerifier = 'discord_oauth_code_verifier';
 }

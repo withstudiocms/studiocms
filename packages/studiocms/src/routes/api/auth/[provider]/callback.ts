@@ -4,12 +4,11 @@ import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.
 import { OAuthAPIEffect } from './_effects/index.js';
 
 export const GET: APIRoute = async (context: APIContext) => {
-	const authEnv = await OAuthAPIEffect.envChecker();
 	return await convertToVanilla(
 		genLogger('studiocms/routes/api/auth/[provider]/callback.GET')(function* () {
 			const { initCallback } = yield* OAuthAPIEffect;
 			return yield* initCallback(context);
-		}).pipe(OAuthAPIEffect.Provide, OAuthAPIEffect.AuthEnvResponse(authEnv))
+		}).pipe(OAuthAPIEffect.Provide)
 	);
 };
 

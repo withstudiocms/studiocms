@@ -41,14 +41,12 @@ type Options = {
 	authConfig: {
 		enabled: boolean;
 		providers: {
-			github: boolean;
-			discord: boolean;
-			google: boolean;
-			auth0: boolean;
 			usernameAndPassword: boolean;
 			usernameAndPasswordConfig: { allowUserRegistration: boolean };
 		};
 	};
+
+	oAuthProvidersConfigured: boolean;
 };
 
 /**
@@ -86,14 +84,12 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		authConfig: {
 			enabled: authEnabled,
 			providers: {
-				github: githubAPI,
-				discord: discordAPI,
-				google: googleAPI,
-				auth0: auth0API,
 				usernameAndPassword: usernameAndPasswordAPI,
 				usernameAndPasswordConfig: { allowUserRegistration },
 			},
 		},
+
+		oAuthProvidersConfigured
 	} = options;
 
 	/**
@@ -383,12 +379,12 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		{
 			pattern: authAPIRoute('[provider]'),
 			entrypoint: routesDir.authAPI('[provider]/index.ts'),
-			enabled: authEnabled && (githubAPI || discordAPI || googleAPI || auth0API),
+			enabled: authEnabled && oAuthProvidersConfigured,
 		},
 		{
 			pattern: authAPIRoute('[provider]/callback'),
 			entrypoint: routesDir.authAPI('[provider]/callback.ts'),
-			enabled: authEnabled && (githubAPI || discordAPI || googleAPI || auth0API),
+			enabled: authEnabled && oAuthProvidersConfigured,
 		},
 		{
 			pattern: authAPIRoute('forgot-password'),

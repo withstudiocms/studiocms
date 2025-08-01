@@ -1,3 +1,4 @@
+import type { AstroConfig } from 'astro';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
@@ -177,4 +178,53 @@ export const StudioCMSMarkdownDefaults = {
 	autoLinkHeadings: false,
 	callouts: false as const,
 	discordSubtext: false,
+};
+
+/**
+ * Partial configuration object for Astro's image settings.
+ *
+ * This constant defines allowed remote image patterns for Astro,
+ * specifying that images can be loaded from both 'https' and 'http' protocols.
+ *
+ * @remarks
+ * This is a partial type of `AstroConfig['image']`, so it can be merged with other image settings.
+ *
+ * @example
+ * // Usage in Astro config
+ * import { AstroConfigImageSettings } from './consts';
+ * export default {
+ *   image: {
+ *     ...AstroConfigImageSettings,
+ *     // other image settings
+ *   }
+ * }
+ */
+export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
+	remotePatterns: [
+		{
+			protocol: 'https',
+		},
+		{
+			protocol: 'http',
+		},
+	],
+};
+
+/**
+ * Partial Vite configuration settings for Astro projects.
+ * 
+ * This constant customizes the Vite settings used by Astro, specifically
+ * excluding the 'three' package from dependency optimization. This can be
+ * useful if 'three' causes issues during Vite's dependency pre-bundling.
+ *
+ * @remarks
+ * The type is a partial of the 'vite' property from the Astro configuration,
+ * allowing you to override or extend only the necessary Vite options.
+ *
+ * @see https://docs.astro.build/en/reference/configuration-reference/#vite
+ */
+export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
+	optimizeDeps: {
+		exclude: ['three'],
+	},
 };
