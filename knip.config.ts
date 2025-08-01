@@ -31,9 +31,13 @@ const baseAstroWorkspaceConfig = {
  * ```
  */
 const atStudioCMSPackages = [
+	'auth0',
 	'blog',
 	'cloudinary-image-service',
 	'devapps',
+	'discord',
+	'github',
+	'google',
 	'markdoc',
 	'mdx',
 	'md',
