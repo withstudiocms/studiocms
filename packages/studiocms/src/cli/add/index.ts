@@ -13,8 +13,12 @@ import { UpdateStudioCMSConfig } from './updateStudioCMSConfig.js';
 import { ValidatePlugins } from './validatePlugins.js';
 
 export const ALIASES = new Map([
+	['auth0', '@studiocms/auth0'],
 	['blog', '@studiocms/blog'],
 	['cloudinary', '@studiocms/cloudinary-image-service'],
+	['discord', '@studiocms/discord'],
+	['github', '@studiocms/github'],
+	['google', '@studiocms/google'],
 	['html', '@studiocms/html'],
 	['markdoc', '@studiocms/markdoc'],
 	['md', '@studiocms/md'],
