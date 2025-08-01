@@ -32,7 +32,6 @@ import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { changelogHelper } from './utils/changelog.js';
-import { checkEnvKeys } from './utils/checkENV.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
@@ -164,8 +163,6 @@ export const studiocms = defineIntegration({
 
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
-
-					checkEnvKeys(logger, options);
 
 					changelogHelper(params);
 
@@ -412,75 +409,75 @@ export const studiocms = defineIntegration({
 									access: 'secret',
 									optional: false,
 								}),
-								// GitHub Auth Provider Environment Variables
-								CMS_GITHUB_CLIENT_ID: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_GITHUB_CLIENT_SECRET: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_GITHUB_REDIRECT_URI: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								// Discord Auth Provider Environment Variables
-								CMS_DISCORD_CLIENT_ID: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_DISCORD_CLIENT_SECRET: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_DISCORD_REDIRECT_URI: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								// Google Auth Provider Environment Variables
-								CMS_GOOGLE_CLIENT_ID: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_GOOGLE_CLIENT_SECRET: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_GOOGLE_REDIRECT_URI: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								// Auth0 Auth Provider Environment Variables
-								CMS_AUTH0_CLIENT_ID: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_AUTH0_CLIENT_SECRET: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_AUTH0_DOMAIN: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
-								CMS_AUTH0_REDIRECT_URI: envField.string({
-									context: 'server',
-									access: 'secret',
-									optional: true,
-								}),
+								// // GitHub Auth Provider Environment Variables
+								// CMS_GITHUB_CLIENT_ID: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_GITHUB_CLIENT_SECRET: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_GITHUB_REDIRECT_URI: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// // Discord Auth Provider Environment Variables
+								// CMS_DISCORD_CLIENT_ID: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_DISCORD_CLIENT_SECRET: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_DISCORD_REDIRECT_URI: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// // Google Auth Provider Environment Variables
+								// CMS_GOOGLE_CLIENT_ID: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_GOOGLE_CLIENT_SECRET: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_GOOGLE_REDIRECT_URI: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// // Auth0 Auth Provider Environment Variables
+								// CMS_AUTH0_CLIENT_ID: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_AUTH0_CLIENT_SECRET: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_AUTH0_DOMAIN: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
+								// CMS_AUTH0_REDIRECT_URI: envField.string({
+								// 	context: 'server',
+								// 	access: 'secret',
+								// 	optional: true,
+								// }),
 							},
 						},
 					});
