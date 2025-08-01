@@ -216,46 +216,6 @@ export const StudioCMSRoutes = {
 		 */
 		oAuthCallback: (provider: string) => authAPIRoute(`${provider}/callback`),
 
-		/**
-		 * API route for GitHub authentication index.
-		 */
-		githubIndex: authAPIRoute('github'),
-
-		/**
-		 * API route for GitHub authentication callback.
-		 */
-		githubCallback: authAPIRoute('github/callback'),
-
-		/**
-		 * API route for Discord authentication index.
-		 */
-		discordIndex: authAPIRoute('discord'),
-
-		/**
-		 * API route for Discord authentication callback.
-		 */
-		discordCallback: authAPIRoute('discord/callback'),
-
-		/**
-		 * API route for Google authentication index.
-		 */
-		googleIndex: authAPIRoute('google'),
-
-		/**
-		 * API route for Google authentication callback.
-		 */
-		googleCallback: authAPIRoute('google/callback'),
-
-		/**
-		 * API route for Auth0 authentication index.
-		 */
-		auth0Index: authAPIRoute('auth0'),
-
-		/**
-		 * API route for Auth0 authentication callback.
-		 */
-		auth0Callback: authAPIRoute('auth0/callback'),
-
 		forgotPasswordAPI: authAPIRoute('forgot-password'),
 	},
 	endpointLinks: {
