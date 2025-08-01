@@ -141,6 +141,10 @@
 		"./sdk/*": {
 			"types": "./dist/sdk/*.d.ts",
 			"default": "./dist/sdk/*.js"
+		},
+		"./oAuthUtils": {
+			"types": "./dist/oAuthUtils.d.ts",
+			"default": "./dist/oAuthUtils.js"
 		}
 	},
 	"type": "module",
