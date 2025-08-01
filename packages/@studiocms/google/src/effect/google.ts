@@ -1,3 +1,4 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -5,15 +6,70 @@ import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { Google, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	AuthEnvCheck,
-	GoogleUser,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { AstroError } from 'astro/errors';
+import { Data, Effect, genLogger, Schema } from 'studiocms/effect';
+
+/**
+ * Represents a user authenticated via Google OAuth.
+ *
+ * @property sub - The unique identifier for the user (subject).
+ * @property picture - The URL of the user's profile picture.
+ * @property name - The full name of the user.
+ * @property email - The user's email address.
+ */
+export class GoogleUser extends Schema.Class<GoogleUser>('GoogleUser')({
+	sub: Schema.String,
+	picture: Schema.String,
+	name: Schema.String,
+	email: Schema.String,
+}) {}
+
+/**
+ * Error class representing a failure during the validation of an authentication code.
+ *
+ * @extends Data.TaggedError
+ * @property message - A descriptive error message explaining the cause of the failure.
+ * @property provider - The authentication provider associated with the error (e.g., "auth0").
+ */
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
+	message: string;
+	provider: string;
+}> {}
+
+/**
+ * Retrieves the value of a specified query parameter from the given API context's URL.
+ *
+ * @param context - The API context containing the URL to extract the parameter from.
+ * @param name - The name of the query parameter to retrieve.
+ * @returns An Effect that resolves to the value of the query parameter, or throws an AstroError if parsing fails.
+ */
+export const getUrlParam = ({ url }: APIContext, name: string) =>
+	Effect.try({
+		try: () => url.searchParams.get(name),
+		catch: () => new AstroError('Failed to parse URL from Astro context'),
+	});
+
+/**
+ * Retrieves the value of a cookie from the provided API context using the specified key.
+ *
+ * Wraps the retrieval in an Effect, returning the cookie value if found, or `null` if not present.
+ * Throws an `AstroError` if there is a failure during the cookie retrieval process.
+ *
+ * @param context - The API context containing the cookies object.
+ * @param key - The name of the cookie to retrieve.
+ * @returns An Effect that resolves to the cookie value as a string, or `null` if not found.
+ */
+export const getCookie = ({ cookies }: APIContext, key: string) =>
+	Effect.try({
+		try: () => cookies.get(key)?.value ?? null,
+		catch: () => new AstroError('Failed to parse get Cookies from Astro context'),
+	});
+
+const GOOGLE = {
+	CLIENT_ID: getSecret('GOOGLE_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('GOOGLE_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('GOOGLE_REDIRECT_URI') ?? '',
+}
 
 /**
  * Provides Google OAuth authentication effects for the StudioCMS API.
@@ -59,17 +115,15 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				GOOGLE: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-			},
 		] = yield* Effect.all([
 			SDKCore,
 			HttpClient.HttpClient,
 			Session,
 			VerifyEmail,
 			User,
-			AuthEnvCheck,
 		]);
+
+		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GOOGLE;
 
 		const google = new Google(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
@@ -232,7 +286,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 		};
 	}),
 }) {
-	static ProviderID = Provider.GOOGLE;
+	static ProviderID = 'google';
 	static ProviderCookieName = 'google_oauth_state';
 	static ProviderCodeVerifier = 'google_oauth_code_verifier';
 }

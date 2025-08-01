@@ -1,3 +1,4 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -5,15 +6,73 @@ import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { Discord, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	AuthEnvCheck,
-	DiscordUser,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { AstroError } from 'astro/errors';
+import { Data, Effect, genLogger, Schema } from 'studiocms/effect';
+
+/**
+ * Represents a Discord user's profile information.
+ *
+ * @property id - The unique identifier for the Discord user.
+ * @property avatar - The user's avatar hash.
+ * @property username - The user's Discord username.
+ * @property global_name - The user's global display name.
+ * @property email - The user's email address.
+ */
+export class DiscordUser extends Schema.Class<DiscordUser>('DiscordUser')({
+	id: Schema.String,
+	avatar: Schema.String,
+	username: Schema.String,
+	global_name: Schema.String,
+	email: Schema.String,
+}) {}
+
+/**
+ * Error class representing a failure during the validation of an authentication code.
+ *
+ * @extends Data.TaggedError
+ * @property message - A descriptive error message explaining the cause of the failure.
+ * @property provider - The authentication provider associated with the error (e.g., "auth0").
+ */
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
+	message: string;
+	provider: string;
+}> {}
+
+
+/**
+ * Retrieves the value of a specified query parameter from the given API context's URL.
+ *
+ * @param context - The API context containing the URL to extract the parameter from.
+ * @param name - The name of the query parameter to retrieve.
+ * @returns An Effect that resolves to the value of the query parameter, or throws an AstroError if parsing fails.
+ */
+export const getUrlParam = ({ url }: APIContext, name: string) =>
+	Effect.try({
+		try: () => url.searchParams.get(name),
+		catch: () => new AstroError('Failed to parse URL from Astro context'),
+	});
+
+/**
+ * Retrieves the value of a cookie from the provided API context using the specified key.
+ *
+ * Wraps the retrieval in an Effect, returning the cookie value if found, or `null` if not present.
+ * Throws an `AstroError` if there is a failure during the cookie retrieval process.
+ *
+ * @param context - The API context containing the cookies object.
+ * @param key - The name of the cookie to retrieve.
+ * @returns An Effect that resolves to the cookie value as a string, or `null` if not found.
+ */
+export const getCookie = ({ cookies }: APIContext, key: string) =>
+	Effect.try({
+		try: () => cookies.get(key)?.value ?? null,
+		catch: () => new AstroError('Failed to parse get Cookies from Astro context'),
+	});
+
+const DISCORD = {
+	CLIENT_ID: getSecret('DISCORD_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('DISCORD_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('DISCORD_REDIRECT_URI') ?? '',
+}
 
 /**
  * Provides Discord OAuth authentication effects for the StudioCMS API.
@@ -51,17 +110,15 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				DISCORD: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = '' },
-			},
 		] = yield* Effect.all([
 			SDKCore,
 			HttpClient.HttpClient,
 			Session,
 			VerifyEmail,
 			User,
-			AuthEnvCheck,
 		]);
+
+		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = DISCORD;
 
 		const discord = new Discord(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
@@ -226,7 +283,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 		};
 	}),
 }) {
-	static ProviderID = Provider.DISCORD;
+	static ProviderID = 'discord';
 	static ProviderCookieName = 'discord_oauth_state';
 	static ProviderCodeVerifier = 'discord_oauth_code_verifier';
 }

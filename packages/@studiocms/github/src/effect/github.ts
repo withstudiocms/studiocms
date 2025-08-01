@@ -1,3 +1,4 @@
+import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -5,15 +6,76 @@ import { SDKCore } from 'studiocms:sdk';
 import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { GitHub, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger } from '../../../../../effect.js';
-import {
-	AuthEnvCheck,
-	GitHubUser,
-	getCookie,
-	getUrlParam,
-	Provider,
-	ValidateAuthCodeError,
-} from './_shared.js';
+import { AstroError } from 'astro/errors';
+import { Data, Effect, genLogger, Schema } from 'studiocms/effect';
+
+/**
+ * Represents a GitHub user profile as returned by the GitHub API.
+ *
+ * @property id - The unique identifier for the user.
+ * @property html_url - The URL to the user's GitHub profile.
+ * @property login - The user's GitHub username.
+ * @property avatar_url - The URL to the user's avatar image.
+ * @property name - The user's display name.
+ * @property blog - The user's blog URL.
+ * @property email - The user's public email address.
+ */
+export class GitHubUser extends Schema.Class<GitHubUser>('GitHubUser')({
+	id: Schema.Number,
+	html_url: Schema.String,
+	login: Schema.String,
+	avatar_url: Schema.String,
+	name: Schema.optional(Schema.String),
+	blog: Schema.optional(Schema.String),
+	email: Schema.optional(Schema.String),
+}) {}
+
+/**
+ * Error class representing a failure during the validation of an authentication code.
+ *
+ * @extends Data.TaggedError
+ * @property message - A descriptive error message explaining the cause of the failure.
+ * @property provider - The authentication provider associated with the error (e.g., "auth0").
+ */
+export class ValidateAuthCodeError extends Data.TaggedError('ValidateAuthCodeError')<{
+	message: string;
+	provider: string;
+}> {}
+
+/**
+ * Retrieves the value of a specified query parameter from the given API context's URL.
+ *
+ * @param context - The API context containing the URL to extract the parameter from.
+ * @param name - The name of the query parameter to retrieve.
+ * @returns An Effect that resolves to the value of the query parameter, or throws an AstroError if parsing fails.
+ */
+export const getUrlParam = ({ url }: APIContext, name: string) =>
+	Effect.try({
+		try: () => url.searchParams.get(name),
+		catch: () => new AstroError('Failed to parse URL from Astro context'),
+	});
+
+/**
+ * Retrieves the value of a cookie from the provided API context using the specified key.
+ *
+ * Wraps the retrieval in an Effect, returning the cookie value if found, or `null` if not present.
+ * Throws an `AstroError` if there is a failure during the cookie retrieval process.
+ *
+ * @param context - The API context containing the cookies object.
+ * @param key - The name of the cookie to retrieve.
+ * @returns An Effect that resolves to the cookie value as a string, or `null` if not found.
+ */
+export const getCookie = ({ cookies }: APIContext, key: string) =>
+	Effect.try({
+		try: () => cookies.get(key)?.value ?? null,
+		catch: () => new AstroError('Failed to parse get Cookies from Astro context'),
+	});
+
+const GITHUB = {
+	CLIENT_ID: getSecret('GITHUB_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('GITHUB_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('GITHUB_REDIRECT_URI') ?? null,
+}
 
 /**
  * Provides GitHub OAuth authentication effects for the StudioCMS API.
@@ -52,17 +114,15 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-			{
-				GITHUB: { CLIENT_ID = '', CLIENT_SECRET = '', REDIRECT_URI = null },
-			},
 		] = yield* Effect.all([
 			SDKCore,
 			HttpClient.HttpClient,
 			Session,
 			VerifyEmail,
 			User,
-			AuthEnvCheck,
 		]);
+
+		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GITHUB;
 
 		const github = new GitHub(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
@@ -216,6 +276,6 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 		};
 	}),
 }) {
-	static ProviderID = Provider.GITHUB;
+	static ProviderID = 'github';
 	static ProviderCookieName = 'github_oauth_state';
 }

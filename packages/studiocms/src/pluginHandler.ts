@@ -311,6 +311,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			enabled: boolean;
 		}[] = [];
 
+		let oAuthProvidersConfigured = false;
+
 		/////
 
 		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
@@ -601,6 +603,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				safeName,
 			}));
 
+			if (oAuthEndpoints.length > 0) {
+				oAuthProvidersConfigured = true;
+			}
+
 			addVirtualImports(params, {
 				name,
 				imports: {
@@ -831,6 +837,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			extraRoutes,
 			safePluginList,
 			messages,
+			oAuthProvidersConfigured
 		};
 	}
 );

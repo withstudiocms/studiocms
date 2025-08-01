@@ -1,7 +1,19 @@
 import { oAuthProviders } from 'studiocms:plugins/auth/providers';
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { ProviderResponse } from './_shared.js';
+
+/**
+ * Creates a standardized HTTP response for authentication provider errors.
+ *
+ * @param error - The error message to include in the response body.
+ * @param status - The HTTP status code for the response.
+ * @returns A `Response` object with a JSON body containing the error message and the specified status code.
+ */
+export const ProviderResponse = (
+	error: string,
+	status: number
+): Effect.Effect<Response, never, never> =>
+	Effect.succeed(new Response(JSON.stringify({ error }), { status }));
 
 /**
  * Executes the provided API route handler function with the given context and returns its resulting Promise.
