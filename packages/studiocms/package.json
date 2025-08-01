@@ -160,7 +160,6 @@
 		"@effect/workflow": "catalog:effect",
 		"@iconify-json/flat-color-icons": "^1.2.1",
 		"@iconify-json/simple-icons": "^1.2.44",
-		"@inox-tools/inline-mod": "^2.2.0",
 		"@inox-tools/runtime-logger": "^0.6.0",
 		"@libsql/client": "^0.15.10",
 		"@nanostores/i18n": "^1.2.2",

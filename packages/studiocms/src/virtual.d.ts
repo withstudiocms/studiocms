@@ -387,7 +387,9 @@ declare module 'studiocms-dashboard:web-vitals' {
 }
 
 declare module 'studiocms:auth/utils/authEnvCheck' {
+	/** @deprecated */
 	export const authEnvCheck: typeof import('./utils/authEnvCheck.js').authEnvCheck;
+	/** @deprecated */
 	export type AuthEnvCheckResponse = import('./utils/authEnvCheck.js').AuthEnvCheckResponse;
 }
 
