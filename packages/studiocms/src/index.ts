@@ -11,7 +11,8 @@
 import fs from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
-import { configResolverBuilder, exists, type WatchConfigFileOptions, watchConfigFile } from '@withstudiocms/config-utils';
+import { configResolverBuilder, exists, watchConfigFile } from '@withstudiocms/config-utils';
+import type { WatchConfigFileOptions } from '@withstudiocms/config-utils/types';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
