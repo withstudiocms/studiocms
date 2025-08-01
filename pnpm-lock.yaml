@@ -662,9 +662,6 @@ importers:
       '@withstudiocms/config-utils':
         specifier: workspace:*
         version: link:../@withstudiocms/config-utils
-      arctic:
-        specifier: 'catalog:'
-        version: 3.7.0
       astro:
         specifier: catalog:min
         version: 5.12.6(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)

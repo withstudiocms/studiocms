@@ -170,7 +170,6 @@
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/cli-kit": "catalog:studiocms",
 		"@withstudiocms/config-utils": "workspace:*",
-		"arctic": "catalog:",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "^5.4.1",
