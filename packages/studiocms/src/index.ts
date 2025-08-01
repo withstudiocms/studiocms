@@ -9,17 +9,16 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
-import inlineMod, { defineModule } from '@inox-tools/inline-mod/vite';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
-import { configResolverBuilder, exists, watchConfigFile } from '@withstudiocms/config-utils';
+import { configResolverBuilder, exists, type WatchConfigFileOptions, watchConfigFile } from '@withstudiocms/config-utils';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { componentRegistryHandler } from './componentRegistry/handler.js';
-import { makeDashboardRoute, routesDir } from './consts.js';
+import { AstroConfigImageSettings, AstroConfigViteSettings, makeDashboardRoute, routesDir } from './consts.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
 import {
@@ -95,6 +94,10 @@ export const studiocms = defineIntegration({
 			zodSchema: StudioCMSOptionsSchema,
 		});
 
+		const watchOpts: WatchConfigFileOptions = {
+			configPaths,
+		};
+
 		// Messages Array for Logging
 		const messages: Messages = [];
 
@@ -125,9 +128,7 @@ export const studiocms = defineIntegration({
 					isDevMode = command === 'dev';
 
 					// Watch the StudioCMS Config File
-					watchConfigFile(params, {
-						configPaths,
-					});
+					watchConfigFile(params, watchOpts);
 
 					options = await configResolver(params, opts);
 
@@ -225,30 +226,24 @@ export const studiocms = defineIntegration({
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
-					defineModule('studiocms:config', {
-						defaultExport: options,
-						constExports: {
-							config: options,
-							dashboardConfig: options.features.dashboardConfig,
-							authConfig: options.features.authConfig,
-							/** This property is deprecated, and the virtual type has been removed, remove this in the future */
-							AuthConfig: options.features.authConfig,
-							developerConfig: options.features.developerConfig,
-							sdk: options.features.sdk,
-						},
-					});
-
-					defineModule('studiocms:plugins', {
-						defaultExport: safePluginList,
-					});
-
-					defineModule('studiocms:version', {
-						defaultExport: pkgVersion,
-					});
-
 					addVirtualImports(params, {
 						name,
 						imports: {
+							'studiocms:config': `
+								export default ${JSON.stringify(options)};
+								export const config = ${JSON.stringify(options)};
+								export const dashboardConfig = ${JSON.stringify(options.features.dashboardConfig)};
+								export const authConfig = ${JSON.stringify(options.features.authConfig)};
+								export const AuthConfig = authConfig;
+								export const developerConfig = ${JSON.stringify(options.features.developerConfig)};
+								export const sdk = ${JSON.stringify(options.features.sdk)};
+							`,
+							'studiocms:plugins': `
+								export default ${JSON.stringify(safePluginList)};
+							`,
+							'studiocms:version': `
+								export default ${JSON.stringify(pkgVersion)};
+							`,
 							// Core Virtual Components
 							'studiocms:components': `
 								export { default as FormattedDate } from '${resolve(
@@ -384,22 +379,8 @@ export const studiocms = defineIntegration({
 						'Updating Astro Config with StudioCMS Resources and settings...'
 					);
 					updateConfig({
-						image: {
-							remotePatterns: [
-								{
-									protocol: 'https',
-								},
-								{
-									protocol: 'http',
-								},
-							],
-						},
-						vite: {
-							plugins: [inlineMod()],
-							optimizeDeps: {
-								exclude: ['three'],
-							},
-						},
+						image: AstroConfigImageSettings,
+						vite: AstroConfigViteSettings,
 						env: {
 							validateSecrets: true,
 							schema: {

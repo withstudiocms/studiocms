@@ -1,3 +1,4 @@
+import type { AstroConfig } from 'astro';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
@@ -177,4 +178,21 @@ export const StudioCMSMarkdownDefaults = {
 	autoLinkHeadings: false,
 	callouts: false as const,
 	discordSubtext: false,
+};
+
+export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
+	remotePatterns: [
+		{
+			protocol: 'https',
+		},
+		{
+			protocol: 'http',
+		},
+	],
+};
+
+export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
+	optimizeDeps: {
+		exclude: ['three'],
+	},
 };
