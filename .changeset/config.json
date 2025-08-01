@@ -5,9 +5,13 @@
   "fixed": [
     [
       "studiocms",
+      "@studiocms/auth0",
       "@studiocms/blog",
       "@studiocms/cloudinary-image-service",
       "@studiocms/devapps",
+      "@studiocms/discord",
+      "@studiocms/github",
+      "@studiocms/google",
       "@studiocms/html",
       "@studiocms/markdoc",
       "@studiocms/md",
