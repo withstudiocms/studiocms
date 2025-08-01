@@ -508,6 +508,52 @@ declare module 'studiocms:plugins/imageService' {
 	}[];
 }
 
+declare module 'studiocms:plugins/auth/providers' {
+	/**
+	 * An array of OAuth endpoint configurations.
+	 *
+	 * Each object in the array represents an OAuth endpoint with the following properties:
+	 * - `safeName`: A string identifier for the OAuth endpoint, typically used for internal reference.
+	 * - `enabled`: A boolean indicating whether the OAuth endpoint is enabled.
+	 */
+	export const oAuthEndpoints: {
+		safeName: string;
+		enabled: boolean;
+	}[];
+
+	/**
+	 * An array of objects representing OAuth provider buttons.
+	 *
+	 * Each object in the array contains:
+	 * - `enabled`: Indicates if the OAuth button is active.
+	 * - `safeName`: A safe, unique identifier for the OAuth provider.
+	 * - `label`: The display label for the OAuth button.
+	 * - `image`: The URL or path to the provider's logo image.
+	 */
+	export const oAuthButtons: {
+		enabled: boolean;
+		safeName: string;
+		label: string;
+		image: string;
+	}[];
+
+	/**
+	 * An array of OAuth provider configurations.
+	 *
+	 * Each object in the array represents a single OAuth provider and contains:
+	 * - `safeName`: A string representing a safe, unique identifier for the provider.
+	 * - `enabled`: A boolean indicating whether the provider is enabled.
+	 * - `initSession`: An Astro API route handler for initiating the OAuth session.
+	 * - `initCallback`: An Astro API route handler for handling the OAuth callback.
+	 */
+	export const oAuthProviders: {
+		safeName: string;
+		enabled: boolean;
+		initSession: import('astro').APIRoute | null;
+		initCallback: import('astro').APIRoute | null;
+	}[];
+}
+
 declare namespace App {
 	interface Locals {
 		latestVersion: import('./sdk/types/index').VersionCacheObject;

@@ -182,6 +182,51 @@ const ImageServiceConfigSchema = z.object({
 		.optional(),
 });
 
+const AuthServiceConfigSchema = z.object({
+	oAuthProvider: z.object({
+		/**
+		 * The name of the OAuth provider, e.g., 'google', 'github', etc.
+		 */
+		name: z.string(),
+
+		/**
+		 * The formatted name of the OAuth provider, e.g., 'Google', 'GitHub', etc.
+		 */
+		formattedName: z.string(),
+
+		/**
+		 * The inline SVG image for the OAuth provider button.
+		 * This should be a string containing the SVG markup.
+		 * 
+		 * Note: Please ensure the class `oauth-logo` is included in the SVG for styling purposes.
+		 * 
+		 * @example
+		 * `<svg width="24px" height="24px" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="oauth-logo">...</svg>`,
+		 */
+		svg: z.string(),
+
+		/**
+		 * The path to the endpoint file that handles the OAuth authentication for this provider.
+		 * This should be a string or URL pointing to the endpoint ts file.
+		 * 
+		 * Note: The endpoint should export two functions:
+		 * - `initSession`: Initializes the session for the OAuth provider.
+		 * - `initCallback`: Handles the callback from the OAuth provider after authentication.
+		 * 
+		 * @example
+		 * `/src/auth/providers/google.ts`
+		 */
+		endpointPath: z.string(),
+
+		/**
+		 * Required environment variables for the OAuth provider.
+		 * This is an optional array of strings that specifies which environment variables are required for the OAuth provider to function correctly.
+		 * If specified, these variables must be set in the environment for the OAuth provider to work.
+		 */
+		requiredEnvVariables: z.array(z.string()).optional(),
+	})
+})
+
 type BaseHookSchema = {
 	logger: typeof astroIntegrationLoggerSchema;
 };
@@ -202,6 +247,7 @@ const setDashboardFn = z.function(z.tuple([DashboardConfigSchema]), z.void());
 const setFrontendFn = z.function(z.tuple([FrontendConfigSchema]), z.void());
 const setRenderingFn = z.function(z.tuple([RenderingConfigSchema]), z.void());
 const setImageServiceFn = z.function(z.tuple([ImageServiceConfigSchema]), z.void());
+const setAuthServiceFn = z.function(z.tuple([AuthServiceConfigSchema]), z.void());
 
 type StudioCMSConfigHookSchema = BaseHookSchema & {
 	setSitemap: typeof setSitemapFn;
@@ -209,6 +255,7 @@ type StudioCMSConfigHookSchema = BaseHookSchema & {
 	setFrontend: typeof setFrontendFn;
 	setRendering: typeof setRenderingFn;
 	setImageService: typeof setImageServiceFn;
+	setAuthService: typeof setAuthServiceFn;
 };
 
 const studiocmsConfigHookSchema: z.ZodObject<StudioCMSConfigHookSchema> = baseHookSchema.extend({
@@ -217,6 +264,7 @@ const studiocmsConfigHookSchema: z.ZodObject<StudioCMSConfigHookSchema> = baseHo
 	setFrontend: setFrontendFn,
 	setRendering: setRenderingFn,
 	setImageService: setImageServiceFn,
+	setAuthService: setAuthServiceFn,
 });
 
 type SCMSAstroConfigHook = z.infer<typeof astroConfigHookSchema>;

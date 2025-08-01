@@ -1,98 +1,87 @@
-import type { AuthEnvCheckResponse } from 'studiocms:auth/utils/authEnvCheck';
-import type { APIContext } from 'astro';
+import { oAuthProviders } from 'studiocms:plugins/auth/providers';
+import type { APIContext, APIRoute } from 'astro';
 import { Effect, genLogger } from '../../../../../effect.js';
-import { AuthEnvCheck, authEnvChecker, Provider, ProviderResponse } from './_shared.js';
-import { Auth0OAuthAPI } from './auth0.js';
-import { DiscordOAuthAPI } from './discord.js';
-import { GitHubOAuthAPI } from './github.js';
-import { GoogleOAuthAPI } from './google.js';
+import { ProviderResponse } from './_shared.js';
+
+/**
+ * Executes the provided API route handler function with the given context and returns its resulting Promise.
+ *
+ * @param fn - The API route handler function to execute.
+ * @param context - The context object to pass to the handler function.
+ * @returns A Promise that resolves to a Response object returned by the handler.
+ */
+async function promisifyFn(fn: APIRoute, context: APIContext): Promise<Response> {
+	return await fn(context);
+}
+
+/**
+ * Wraps an API route handler function in an Effect, converting it into a promise-based effectful computation.
+ *
+ * @param fn - The API route handler function to be executed.
+ * @param context - The API context to be passed to the handler.
+ * @returns An Effect that resolves with the result of the handler or rejects with an error if execution fails.
+ *
+ * @remarks
+ * If the handler throws an error, it is caught and wrapped in a new `Error` with a descriptive message.
+ */
+const promisify = Effect.fn(function* (fn: APIRoute, context: APIContext) {
+	return yield* Effect.tryPromise({
+		try: () => promisifyFn(fn, context),
+		catch: (error) => new Error(`Failed to execute API route: ${error}`),
+	});
+});
+
+/**
+ * Dispatches an authentication request to the appropriate OAuth provider handler.
+ *
+ * This generator function locates the specified provider by its `safeName` from the provided list,
+ * checks if the provider is enabled, and then invokes the appropriate handler (`initSession` or `initCallback`)
+ * for the authentication flow. If the provider or handler is not found, or if the provider is not enabled,
+ * it yields an appropriate error response.
+ *
+ * @param context - The API context containing request parameters and other relevant data.
+ * @param handler - The handler to invoke, either `'initSession'` or `'initCallback'`.
+ * @param providers - An array of provider configurations, each containing a `safeName`, `enabled` flag,
+ *                    and optional `initSession` and `initCallback` route handlers.
+ * @returns A generator yielding the result of the provider handler or an error response.
+ */
+const dispatchToAuthProvider = (
+	context: APIContext,
+	handler: 'initSession' | 'initCallback',
+	providers: {
+		safeName: string;
+		enabled: boolean;
+		initSession: APIRoute | null;
+		initCallback: APIRoute | null;
+	}[]
+) =>
+	genLogger('OAuthAPIEffect.dispatchToAuthProvider')(function* () {
+		const provider = context.params.provider;
+		const matchedProvider = providers.find((p) => p.safeName === provider);
+		if (!matchedProvider) {
+			return yield* ProviderResponse('Provider not found', 404);
+		}
+		if (!matchedProvider.enabled) {
+			return yield* ProviderResponse('Provider is not configured', 403);
+		}
+
+		const handlerFn = matchedProvider[handler];
+
+		if (!handlerFn) {
+			return yield* ProviderResponse('Provider handler not found', 501);
+		}
+
+		return yield* promisify(handlerFn, context);
+	});
 
 export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEffect', {
-	dependencies: [
-		Auth0OAuthAPI.Default,
-		DiscordOAuthAPI.Default,
-		GitHubOAuthAPI.Default,
-		GoogleOAuthAPI.Default,
-	],
 	effect: genLogger('studiocms/routes/api/auth/[provider]/_shared')(function* () {
-		const [
-			{ initCallback: auth0InitCallback, initSession: auth0InitSession },
-			{ initCallback: discordInitCallback, initSession: discordInitSession },
-			{ initCallback: githubInitCallback, initSession: githubInitSession },
-			{ initCallback: googleInitCallback, initSession: googleInitSession },
-			{
-				AUTH0: { ENABLED: auth0Enabled },
-				DISCORD: { ENABLED: discordEnabled },
-				GITHUB: { ENABLED: githubEnabled },
-				GOOGLE: { ENABLED: googleEnabled },
-			},
-		] = yield* Effect.all([
-			Auth0OAuthAPI,
-			DiscordOAuthAPI,
-			GitHubOAuthAPI,
-			GoogleOAuthAPI,
-			AuthEnvCheck,
-		]);
-
-		const dispatchToProvider = <A, E, R>(
-			context: APIContext,
-			providers: {
-				auth0: {
-					enabled: boolean;
-					handler: (context: APIContext) => Effect.Effect<A, E, R>;
-				};
-				discord: {
-					enabled: boolean;
-					handler: (context: APIContext) => Effect.Effect<A, E, R>;
-				};
-				github: {
-					enabled: boolean;
-					handler: (context: APIContext) => Effect.Effect<A, E, R>;
-				};
-				google: {
-					enabled: boolean;
-					handler: (context: APIContext) => Effect.Effect<A, E, R>;
-				};
-			}
-		) =>
-			genLogger('OAuthAPIEffect.dispatch')(function* () {
-				switch (context.params.provider) {
-					case Provider.AUTH0:
-						if (!providers.auth0.enabled)
-							return yield* ProviderResponse('Auth0 provider is not configured', 501);
-						return yield* providers.auth0.handler(context);
-					case Provider.DISCORD:
-						if (!providers.discord.enabled)
-							return yield* ProviderResponse('Discord provider is not configured', 501);
-						return yield* providers.discord.handler(context);
-					case Provider.GITHUB:
-						if (!providers.github.enabled)
-							return yield* ProviderResponse('GitHub provider is not configured', 501);
-						return yield* providers.github.handler(context);
-					case Provider.GOOGLE:
-						if (!providers.google.enabled)
-							return yield* ProviderResponse('Google provider is not configured', 501);
-						return yield* providers.google.handler(context);
-					default:
-						return yield* ProviderResponse('Provider not implemented', 501);
-				}
-			});
 
 		return {
 			initSession: (context: APIContext) =>
-				dispatchToProvider(context, {
-					auth0: { enabled: auth0Enabled, handler: auth0InitSession },
-					discord: { enabled: discordEnabled, handler: discordInitSession },
-					github: { enabled: githubEnabled, handler: githubInitSession },
-					google: { enabled: googleEnabled, handler: googleInitSession },
-				}),
+				dispatchToAuthProvider(context, 'initSession', oAuthProviders),
 			initCallback: (context: APIContext) =>
-				dispatchToProvider(context, {
-					auth0: { enabled: auth0Enabled, handler: auth0InitCallback },
-					discord: { enabled: discordEnabled, handler: discordInitCallback },
-					github: { enabled: githubEnabled, handler: githubInitCallback },
-					google: { enabled: googleEnabled, handler: googleInitCallback },
-				}),
+				dispatchToAuthProvider(context, 'initCallback', oAuthProviders),
 		};
 	}),
 }) {
@@ -101,19 +90,4 @@ export class OAuthAPIEffect extends Effect.Service<OAuthAPIEffect>()('OAuthAPIEf
 	 * Main Dependencies Provider
 	 */
 	static Provide = Effect.provide(OAuthAPIEffect.Default);
-	/**
-	 * AuthEnvCheck Dependency Provider
-	 *
-	 * @param response authEnvCheck function response from `envChecker` Utility
-	 * @returns Effect layer for OAuthAPIEffect
-	 */
-	static AuthEnvResponse = (response: AuthEnvCheckResponse) => AuthEnvCheck.Provide(response);
-
-	// Export Utils
-	/**
-	 * EnvChecker - Check for required ENV Variables and if a provider should be enabled.
-	 *
-	 * @returns AuthEnvCheckResponse for usage with Dependency Provider "B"
-	 */
-	static envChecker = async () => Effect.runPromise(authEnvChecker());
 }

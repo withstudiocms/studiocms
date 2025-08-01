@@ -3,6 +3,7 @@ import { AstroError } from 'astro/errors';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
+import { loadEnv } from 'vite';
 import { routesDir } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
@@ -218,6 +219,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		/////
 
+		// List of Astro integrations
 		const integrations: {
 			integration: AstroIntegration;
 		}[] = [];
@@ -254,6 +256,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			safeIdentifier: string;
 		}[] = [];
 
+		// Define the plugin renderers
 		const pluginRenderers: {
 			pageType: string;
 			safePageType: string;
@@ -263,14 +266,19 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		// Define the Safe Plugin List
 		const safePluginList: SafePluginListType = [];
 
+		// List of extra routes
 		const extraRoutes: Route[] = [];
 
+		// List of messages
 		const messages: Messages = [];
 
+		// Count of rendering plugins
 		let renderingPluginCount = 0;
 
+		// source plugins installed
 		const sourcePluginsList: string[] = [];
 
+		// Define the list of requirements
 		const pluginRequires: PluginRequire[] = [];
 
 		// Define the Image Service Identifier Keys
@@ -281,6 +289,27 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		// Define the Image Service Endpoints
 		const imageServiceEndpoints: string[] = [];
+
+		// Define the Auth Service Endpoints
+		const unInjectedAuthProviders: {
+			name: string;
+			safeName: string;
+			formattedName: string;
+			svg: string;
+			endpoints: string;
+			enabled: boolean;
+		}[] = [];
+
+		// Define the Auth Service Endpoints to inject
+		const oAuthProvidersToInject: {
+			safeName: string;
+			button: {
+				label: string;
+				image: string;
+			};
+			endpoints: string;
+			enabled: boolean;
+		}[] = [];
 
 		/////
 
@@ -444,6 +473,51 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								);
 							}
 						},
+
+						setAuthService({ oAuthProvider }) {
+							if (oAuthProvider) {
+								const { endpointPath, formattedName, name, svg, requiredEnvVariables } =
+									oAuthProvider;
+
+								const safeName = convertToSafeString(name);
+
+								let enabled = true;
+
+								const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
+
+								const env = loadEnv('', process.cwd(), '');
+
+								if (requiredEnvVariables) {
+									const missingKeys = requiredEnvVariables.filter(
+										(key) => !env[key] || env[key] === ''
+									);
+
+									if (missingKeys.length > 0) {
+										messages.push({
+											label: `studiocms:plugins:${safeName}:missing-env-keys`,
+											logLevel: 'error',
+											message: boxen(
+												`The following environment variables are required for ${name} to work: ${missingKeys.join(
+													', '
+												)}. Please set them in your environment.`,
+												{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
+											),
+										});
+
+										enabled = false;
+									}
+								}
+
+								unInjectedAuthProviders.push({
+									name,
+									safeName,
+									formattedName,
+									svg,
+									endpoints,
+									enabled,
+								});
+							}
+						},
 					});
 				}
 
@@ -507,83 +581,53 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
-			const editorKeys = allPageTypes.map(({ identifier }) => convertToSafeString(identifier));
+			for (const item of unInjectedAuthProviders) {
+				oAuthProvidersToInject.push({
+					safeName: item.safeName,
+					button: {
+						label: item.formattedName,
+						image: item.svg,
+					},
+					endpoints: item.endpoints,
+					enabled: item.enabled,
+				});
+			}
 
-			const editorComponents = allPageTypes
-				.map(({ identifier, pageContentComponent }) => {
-					return pageContentComponentFilter(pageContentComponent, convertToSafeString(identifier));
-				})
-				.join('\n');
+			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({ ...button, enabled, safeName }));
 
-			const dashboardGridComponents = availableDashboardGridItems
-				.map((item) => {
-					const components: Record<string, string> = item.body?.components || {};
-
-					const remappedComps = Object.entries(components).map(
-						([key, value]) => `export { default as ${key} } from '${value}';`
-					);
-
-					return remappedComps.join('\n');
-				})
-				.join('\n');
-
-			const dashboardPagesComponentsUser =
-				availableDashboardPages.user
-					?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-						const components: Record<string, string> = {
-							pageBodyComponent,
-						};
-
-						if (item.sidebar === 'double') {
-							components.innerSidebarComponent = item.innerSidebarComponent;
-						}
-
-						if (pageActionsComponent) {
-							components.pageActionsComponent = pageActionsComponent;
-						}
-
-						const remappedComps = Object.entries(components).map(
-							([key, value]) =>
-								`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-						);
-
-						return remappedComps.join('\n');
-					})
-					.join('\n') || '';
-
-			const dashboardPagesComponentsAdmin =
-				availableDashboardPages.admin
-					?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-						const components: Record<string, string> = {
-							pageBodyComponent,
-						};
-
-						if (item.sidebar === 'double') {
-							components.innerSidebarComponent = item.innerSidebarComponent;
-						}
-
-						if (pageActionsComponent) {
-							components.pageActionsComponent = pageActionsComponent;
-						}
-
-						const remappedComps = Object.entries(components).map(
-							([key, value]) =>
-								`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-						);
-
-						return remappedComps.join('\n');
-					})
-					.join('\n') || '';
+			const oAuthEndpoints = oAuthProvidersToInject.map(({ endpoints, enabled, safeName }) => ({
+				content: endpoints,
+				enabled,
+				safeName,
+			}));
 
 			addVirtualImports(params, {
 				name,
 				imports: {
 					'virtual:studiocms/components/Editors': `
-						export const editorKeys = ${JSON.stringify([...editorKeys])};
-						${editorComponents}
+						export const editorKeys = ${JSON.stringify([...allPageTypes.map(({ identifier }) => convertToSafeString(identifier))])};
+
+						${allPageTypes
+							.map(({ identifier, pageContentComponent }) => {
+								return pageContentComponentFilter(
+									pageContentComponent,
+									convertToSafeString(identifier)
+								);
+							})
+							.join('\n')}
 					`,
 					'studiocms:components/dashboard-grid-components': `
-						${dashboardGridComponents}
+						${availableDashboardGridItems
+							.map((item) => {
+								const components: Record<string, string> = item.body?.components || {};
+
+								const remappedComps = Object.entries(components).map(
+									([key, value]) => `export { default as ${key} } from '${value}';`
+								);
+
+								return remappedComps.join('\n');
+							})
+							.join('\n')}
 					`,
 					'studiocms:components/dashboard-grid-items': `
 						import * as components from 'studiocms:components/dashboard-grid-components';
@@ -609,7 +653,56 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						export default dashboardGridItems;
 					`,
 					'studiocms:plugins/dashboard-pages/components/user': `
-						${dashboardPagesComponentsUser}
+						${
+							availableDashboardPages.user
+								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+									const components: Record<string, string> = {
+										pageBodyComponent,
+									};
+
+									if (item.sidebar === 'double') {
+										components.innerSidebarComponent = item.innerSidebarComponent;
+									}
+
+									if (pageActionsComponent) {
+										components.pageActionsComponent = pageActionsComponent;
+									}
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								})
+								.join('\n') || ''
+						}
+					`,
+					'studiocms:plugins/dashboard-pages/components/admin': `
+						${
+							availableDashboardPages.admin
+								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+									const components: Record<string, string> = {
+										pageBodyComponent,
+									};
+
+									if (item.sidebar === 'double') {
+										components.innerSidebarComponent = item.innerSidebarComponent;
+									}
+
+									if (pageActionsComponent) {
+										components.pageActionsComponent = pageActionsComponent;
+									}
+
+									const remappedComps = Object.entries(components).map(
+										([key, value]) =>
+											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									);
+
+									return remappedComps.join('\n');
+								})
+								.join('\n') || ''
+						}
 					`,
 					'studiocms:plugins/dashboard-pages/user': `
 						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
@@ -631,9 +724,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						});
 						
 						export default dashboardPages;
-					`,
-					'studiocms:plugins/dashboard-pages/components/admin': `
-						${dashboardPagesComponentsAdmin}
 					`,
 					'studiocms:plugins/dashboard-pages/admin': `
 						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
@@ -697,6 +787,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};
 
 						${imageServiceEndpoints.length > 0 ? imageServiceEndpoints.join('\n') : ''}
+					`,
+					'virtual:studiocms:plugins/auth/providers': `
+						${oAuthEndpoints.map(({ content }) => content).join('\n')}
+					`,
+					'studiocms:plugins/auth/providers': `
+						import * as providers from 'virtual:studiocms:plugins/auth/providers';
+
+						export const oAuthEndpoints = ${JSON.stringify(oAuthEndpoints.map(({ safeName, enabled }) => ({ safeName, enabled })))};
+
+						export const oAuthButtons = ${JSON.stringify(oAuthButtons)};
+
+						export const oAuthProviders = oAuthEndpoints.map(({ safeName, enabled }) => ({
+							safeName,
+							enabled,
+							initSession: providers[safeName + '_initSession'] || null,
+							initCallback: providers[safeName + '_initCallback'] || null,
+						}));
 					`,
 				},
 			});

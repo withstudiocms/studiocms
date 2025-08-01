@@ -204,6 +204,19 @@ export const StudioCMSRoutes = {
 		registerAPI: authAPIRoute('register'),
 
 		/**
+		 * API route for OAuth authentication.
+		 *
+		 * @param provider - The name of the OAuth provider (e.g., 'github', 'google').
+		 * @returns The complete API route for the specified OAuth provider.
+		 */
+		oAuthIndex: (provider: string) => authAPIRoute(provider),
+		
+		/**
+		 * API route for OAuth callback.
+		 */
+		oAuthCallback: (provider: string) => authAPIRoute(`${provider}/callback`),
+
+		/**
 		 * API route for GitHub authentication index.
 		 */
 		githubIndex: authAPIRoute('github'),
