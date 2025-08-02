@@ -15,7 +15,7 @@ type PropData = {
 
 const data: PropData = await Astro.request.json();
 
-if (!data || typeof data.componentKey !== 'string') {
+if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim()) {
 	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
 		status: 400,
 		headers: { 'Content-Type': 'application/json' },
