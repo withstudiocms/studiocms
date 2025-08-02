@@ -167,13 +167,15 @@ export const partialRequestBuilder = (model: Component): RequestInit => {
 };
 
 /**
- * Retrieves and parses editor-related data elements from the DOM.
+ * Retrieves and parses essential editor elements and data from the DOM.
  *
- * @param document - The DOM Document object to query for elements.
+ * @param document - The `Document` object to query for elements.
  * @param selectors - An object containing CSS selectors for the container and page content elements.
  * @param selectors.container - CSS selector for the GrapesJS container element.
  * @param selectors.pageContent - CSS selector for the page content textarea element.
- * @returns An object containing references to the page content element, the parsed component registry, and the parsed project data.
+ * @returns An object containing:
+ *   - `astroComponentsOpts`: Options including the parsed component registry.
+ *   - `inlineStorageOpts`: Options including the page content element and parsed project data.
  * @throws Will throw an error if the container or page content elements are not found in the DOM.
  */
 export function getEditorElmData(
@@ -212,6 +214,6 @@ export function getEditorElmData(
 		inlineStorageOpts: {
 			pageContent,
 			projectData,
-		}
+		},
 	};
 }
