@@ -52,8 +52,8 @@
       "default": "./dist/index.js"
     },
     "./types": {
-      "types": "./dist/common/types.d.ts",
-      "default": "./dist/common/types.js"
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
     },
     "./components/*": "./dist/components/*"
   },

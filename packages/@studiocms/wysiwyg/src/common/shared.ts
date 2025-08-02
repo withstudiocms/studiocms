@@ -1,4 +1,4 @@
-import type { WYSIWYGSchemaOptions } from './types.js';
+import type { WYSIWYGSchemaOptions } from '../types.js';
 
 declare global {
 	var studiocmsWYSIWYG: WYSIWYGSchemaOptions;

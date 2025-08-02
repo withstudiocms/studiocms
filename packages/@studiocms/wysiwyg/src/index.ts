@@ -10,7 +10,7 @@ import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { GRAPES_CSS_PATH, PARTIAL_PATH } from './common/consts.js';
 import { shared } from './common/shared.js';
-import type { WYSIWYGSchemaOptions } from './common/types.js';
+import type { WYSIWYGSchemaOptions } from './types.js';
 
 /**
  * Creates and configures the StudioCMS WYSIWYG Editor plugin.
@@ -63,10 +63,10 @@ function wysiwyg(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 				addIntegrations({
 					name: packageIdentifier,
 					hooks: {
-						'astro:config:setup': (params) => {
+						'astro:config:setup': ({ injectRoute }) => {
 							// Register the routes for the plugin
 							for (const route of routes) {
-								params.injectRoute({
+								injectRoute({
 									...route,
 									prerender: false,
 								});
@@ -74,7 +74,7 @@ function wysiwyg(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 						},
 						'astro:config:done': () => {
 							// Set shared options for the plugin
-							shared.sanitize = options?.sanitize || {};
+							shared.sanitize = options?.sanitize;
 						},
 					},
 				});
