@@ -1,0 +1,28 @@
+---
+export const partial = true;
+
+import { getRendererComponents } from 'studiocms:component-registry/runtime';
+
+// Import components
+const components = await getRendererComponents();
+
+const data = await Astro.request.json();
+if (!data || typeof data.componentKey !== 'string') {
+	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+const { componentKey } = data;
+
+const Component = components[componentKey];
+
+// Handle case where component doesn't exist
+if (!Component) {
+	return new Response(JSON.stringify({ error: `Component "${componentKey}" not found` }), {
+		status: 404,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+---
+<Component />

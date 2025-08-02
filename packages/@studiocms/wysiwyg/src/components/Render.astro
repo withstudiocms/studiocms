@@ -1,0 +1,24 @@
+---
+import { createRenderer } from 'studiocms:component-registry/runtime';
+import type { PluginPageTypeRendererProps } from 'studiocms/types';
+import { preRenderer } from '../common/prerender.js';
+import { shared } from '../common/shared.js';
+
+// @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
+const ssrResult: SSRResult = $$result;
+
+// Define render function
+const render = await createRenderer(ssrResult, shared?.sanitize, preRenderer);
+
+interface Props extends PluginPageTypeRendererProps {}
+
+// Get default content
+const { defaultContent } = Astro.props.data;
+
+// Get content to render
+const contentToRender = defaultContent?.content || '<h1>Error: No content found</h1>';
+
+// Render content
+const renderedContent = await render(contentToRender);
+---
+<Fragment set:html={renderedContent} />

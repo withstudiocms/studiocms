@@ -1,0 +1,23 @@
+import { parse } from "./utils.js";
+
+export const preRenderer = async (content: string) => {
+	let parsedContent = '<h1>Error: No content found</h1>';
+
+	if (!content) {
+		return parsedContent;
+	}
+
+	try {
+		const parsed = parse<{ __STUDIOCMS_HTML: string }>(content);
+		if (parsed?.__STUDIOCMS_HTML) {
+			parsedContent = parsed.__STUDIOCMS_HTML;
+		} else {
+			parsedContent = '<h1>Error: Content found but invalid format</h1>';
+		}
+	} catch (error) {
+		console.error('Error parsing content:', error);
+		parsedContent = `<h1>Error parsing content: ${error instanceof Error ? error.message : 'Unknown error'}</h1>`;
+	}
+
+	return parsedContent;
+};

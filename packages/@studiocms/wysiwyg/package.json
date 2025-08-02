@@ -1,0 +1,75 @@
+{
+  "name": "@studiocms/wysiwyg",
+  "version": "0.1.0-beta.22",
+  "description": "Add A WYSIWYG Editor to your StudioCMS project with ease!",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/wysiwyg"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-integration",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "withastro",
+    "plugin",
+    "studiocms-plugin"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,js}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,js}'",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/common/types.d.ts",
+      "default": "./dist/common/types.js"
+    },
+    "./components/*": "./dist/components/*"
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "grapesjs": "^0.22.12",
+    "tui-image-editor": "^3.15.3"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+		"@studiocms/ui": "catalog:studiocms",
+    "astro": "catalog:min",
+    "studiocms": "workspace:*",
+    "vite": "catalog:min"
+  }
+}
