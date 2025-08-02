@@ -40,7 +40,7 @@ interface Props extends PluginPageTypeEditorProps {}
 
 <script>
   import { toast } from "@studiocms/ui/components/Toast/toast.js";
-  import grapesjs, { type Editor, usePlugin } from "grapesjs";
+  import grapesjs, { type BlockProperties, type Editor, usePlugin } from "grapesjs";
   import { parse } from "../common/utils.js";
   import { 
     blocks, 
@@ -68,18 +68,6 @@ interface Props extends PluginPageTypeEditorProps {}
   }[];
 
   /**
-   * Represents an array of editor blocks used in the Astro component editor.
-   * Each block contains metadata and a function to generate its content.
-   */
-  type AstroComponentEditorBlocks = {
-    id: string;
-    label: string;
-    category: string;
-    media: string;
-    content: () => string;
-  }[];
-
-  /**
    * Converts an array of `AstroComponentBlocks` into an array of `AstroComponentEditorBlocks`.
    *
    * Each block in the input array is transformed by extracting its `key` property
@@ -92,7 +80,7 @@ interface Props extends PluginPageTypeEditorProps {}
    */
   function convertComponentBlocks(
     blocks: AstroComponentBlocks,
-  ): AstroComponentEditorBlocks {
+  ): BlockProperties[] {
     return blocks.map(({ key, ...block }) => ({
       ...block,
       content: () => `<${key}></${key}>`,

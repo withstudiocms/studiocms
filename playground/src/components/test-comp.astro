@@ -3,15 +3,29 @@
 interface Props {
 	/**
 	 * A string property.
+	 * 
+	 * @default Hello World
 	 */
 	foo: string;
 	/**
 	 * A number property.
+	 * 
+	 * @default 42
 	 */
 	bar: number;
 	/**
 	 * Example Template literal
+	 * 
+	 * @default foo-bar-baz.42
 	 */
 	tempLit: `${string}-${string}-${string}.${number}`;
 }
 ---
+
+<div>
+	<p>Foo: {Astro.props.foo}</p>
+	<p>Bar: {Astro.props.bar}</p>
+	<p>Template Literal: {Astro.props.tempLit}</p>
+	<p>Test Comp</p>
+	<slot />
+</div>

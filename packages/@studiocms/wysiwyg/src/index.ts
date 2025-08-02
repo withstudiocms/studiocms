@@ -4,6 +4,7 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="studiocms/v/types" />
+/// <reference types="astro/client" />
 
 import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
@@ -36,6 +37,11 @@ function studiocmsWYSIWYG(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 								pattern: '/studiocms_api/wysiwyg_editor/partial',
 								prerender: false,
 							});
+							params.injectRoute({
+								entrypoint: resolve('./routes/grapes.css.js'),
+								pattern: '/studiocms_api/wysiwyg_editor/grapes.css',
+								prerender: true,
+							});
 						},
 						'astro:config:done': () => {
 							shared.sanitize = options?.sanitize || {};
@@ -50,7 +56,7 @@ function studiocmsWYSIWYG(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 							identifier: 'studiocms/wysiwyg',
 							label: 'WYSIWYG',
 							rendererComponent: resolve('./components/Render.astro'),
-							pageContentComponent: resolve('./components/Editor.astro'),
+							pageContentComponent: resolve('./components/NewEditor.astro'),
 						},
 					],
 				});
