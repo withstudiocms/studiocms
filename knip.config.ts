@@ -42,6 +42,7 @@ const atStudioCMSPackages = [
 	'mdx',
 	'md',
 	'html',
+	'wysiwyg',
 ] as const;
 
 const atWithStudioCMSPackages = ['config-utils'] as const;

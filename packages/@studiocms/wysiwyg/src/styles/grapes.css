@@ -1,0 +1,87 @@
+:root {
+    --gjs-color-blue: hsl(259 73% 67%);
+
+	body {
+		background-color: hsl(0, 0%, 97%);
+	}
+
+	* ::-webkit-scrollbar-track {
+		background: rgba(0, 0, 0, 0.1);
+	}
+	* ::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.2);
+	}
+	* ::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	[data-gjs-type="wrapper"] {
+		min-height: 100vh;
+		padding-top: 0.001em;
+	}
+
+	.gjs-dashed *[data-gjs-highlightable] {
+		outline: 1px dashed rgba(170, 170, 170, 0.7);
+		outline-offset: -2px;
+	}
+
+	.gjs-selected {
+		outline: 2px solid hsl(259 73% 67%) !important;
+		outline-offset: -2px;
+	}
+
+	.gjs-selected-parent {
+		outline: 2px solid hsl(48 100% 61%) !important;
+	}
+
+	.gjs-no-select {
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+
+	.gjs-freezed {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
+	.gjs-no-pointer {
+		pointer-events: none;
+	}
+
+	.gjs-pointer-init {
+		pointer-events: initial;
+	}
+
+	.gjs-plh-image {
+		background: #f5f5f5;
+		border: none;
+		height: 100px;
+		width: 100px;
+		display: block;
+		outline: 3px solid hsl(48 100% 61%);
+		cursor: pointer;
+		outline-offset: -2px;
+	}
+
+	.gjs-grabbing {
+		cursor: grabbing;
+	}
+
+	.gjs-is__grabbing {
+		overflow-x: hidden;
+	}
+
+	.gjs-is__grabbing,
+	.gjs-is__grabbing * {
+		cursor: grabbing !important;
+	}
+
+	/* biome-ignore lint/style/noDescendingSpecificity: Copied from GrapesJS Official CSS */
+	*  {
+		box-sizing: border-box;
+	}
+	body {
+		margin: 0;
+	}
+}
