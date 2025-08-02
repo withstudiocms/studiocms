@@ -4,18 +4,27 @@ export const partial = true;
 import { getRendererComponents } from 'studiocms:component-registry/runtime';
 
 // Import components
-const components = await getRendererComponents();
+const componentRegistry = await getRendererComponents();
 
-const data = await Astro.request.json();
+type PropData = {
+	componentKey: string;
+	// biome-ignore lint/suspicious/noExplicitAny: this is a dynamic prop type
+	props?: Record<string, any>;
+	slot?: string | null;
+};
+
+const data: PropData = await Astro.request.json();
+
 if (!data || typeof data.componentKey !== 'string') {
 	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
 		status: 400,
 		headers: { 'Content-Type': 'application/json' },
 	});
 }
-const { componentKey, props, slot } = data;
 
-const Component = components[componentKey];
+const { componentKey, props = {}, slot = null } = data;
+
+const Component = componentRegistry[componentKey];
 
 // Handle case where component doesn't exist
 if (!Component) {
