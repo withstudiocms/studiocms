@@ -84,8 +84,7 @@ export function traitReducer(acc: Record<string, any>, trait: TraitProperties) {
  */
 export const getTraitData = (model: Component) => {
 	const traitData: TraitProperties[] = model.traits.toJSON();
-	// biome-ignore lint/suspicious/noExplicitAny: this is the expected type for the accumulator
-	const propsData = traitData.reduce(traitReducer, {} as Record<string, any>);
+	const propsData = traitData.reduce(traitReducer, {});
 	return propsData;
 };
 

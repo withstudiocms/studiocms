@@ -40,6 +40,7 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 	for (const component of componentRegistry) {
 		const { name: tagName, props } = component;
 
+		// Add the component type to the GrapesJS DomComponents manager
 		editor.DomComponents.addType(tagName, {
 			isComponent: (el) => componentKeys.includes(el.tagName?.toLowerCase()),
 			model: {
@@ -54,6 +55,8 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 			},
 		});
 
+		// Register a block for the component in the GrapesJS BlockManager
+		// This allows users to drag and drop the component into the editor
 		editor.BlockManager.add(tagName, buildBlockProps(tagName));
 	}
 };

@@ -10,7 +10,7 @@ import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { GRAPES_CSS_PATH, PARTIAL_PATH } from './common/consts.js';
 import { shared } from './common/shared.js';
-import type { WYSIWYGSchemaOptions } from './types.js';
+import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
 
 /**
  * Creates and configures the StudioCMS WYSIWYG Editor plugin.
@@ -32,9 +32,12 @@ import type { WYSIWYGSchemaOptions } from './types.js';
  * ]
  * ```
  */
-function wysiwyg(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
+function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
+
+	// Validate and parse the provided options using the WYSIWYG schema
+	const options = WYSIWYGSchema.parse(opts);
 
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/wysiwyg';
@@ -48,8 +51,8 @@ function wysiwyg(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 		{
 			entrypoint: resolve('./routes/grapes.css.js'),
 			pattern: GRAPES_CSS_PATH,
-		}
-	]
+		},
+	];
 
 	// Return the plugin configuration
 	return definePlugin({

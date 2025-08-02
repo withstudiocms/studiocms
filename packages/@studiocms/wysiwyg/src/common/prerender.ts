@@ -17,9 +17,9 @@ export const preRenderer = async (content: string) => {
 	}
 
 	try {
-		const parsed = parse<{ __STUDIOCMS_HTML: string }>(content);
-		if (parsed?.__STUDIOCMS_HTML) {
-			parsedContent = parsed.__STUDIOCMS_HTML;
+		const { __STUDIOCMS_HTML } = parse<{ __STUDIOCMS_HTML: string }>(content);
+		if (__STUDIOCMS_HTML) {
+			parsedContent = __STUDIOCMS_HTML;
 		} else {
 			parsedContent = '<h1>Error: Content found but invalid format</h1>';
 		}
