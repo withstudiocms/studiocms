@@ -1,4 +1,6 @@
 ---
+import { Debug } from 'astro:components';
+
 
 interface Props {
 	/**
@@ -24,12 +26,7 @@ interface Props {
 
 <div>
 	<h1>Test Component</h1>
-	<p>This is a test component for the WYSIWYG editor.</p>
-	<hr />
-	<p>Props:</p>
-	<p>Foo: {Astro.props.foo}</p>
-	<p>Bar: {Astro.props.bar}</p>
-	<p>Template Literal: {Astro.props.tempLit}</p>
-	<hr />
+	<p>This is a test Astro component for the WYSIWYG editor.</p>
+	<Debug props={Astro.props} />
 	<slot />
 </div>
