@@ -13,7 +13,7 @@ if (!data || typeof data.componentKey !== 'string') {
 		headers: { 'Content-Type': 'application/json' },
 	});
 }
-const { componentKey } = data;
+const { componentKey, props } = data;
 
 const Component = components[componentKey];
 
@@ -25,4 +25,4 @@ if (!Component) {
 	});
 }
 ---
-<Component />
+<Component {...props} />

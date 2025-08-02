@@ -3,22 +3,20 @@ import "@studiocms/ui/css/colors.css";
 import "grapesjs/dist/css/grapes.min.css";
 import "../editorPlugins/rte/styles.css";
 import "../styles/editor.css";
-import { getRendererComponents } from "studiocms:component-registry/runtime";
+import { getRegistryComponents } from "studiocms:component-registry/runtime";
 import type { PluginPageTypeEditorProps } from "studiocms/types";
-import { firstUpperCase } from "../common/utils.js";
 
-const AstroSVG: string =
-    '<svg xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px" viewBox="0 0 24 24"><path fill="currentColor" d="M9.24 19.035c-.901-.826-1.164-2.561-.789-3.819c.65.793 1.552 1.044 2.486 1.186c1.44.218 2.856.137 4.195-.524c.153-.076.295-.177.462-.278c.126.365.159.734.115 1.11c-.107.915-.56 1.622-1.283 2.158c-.289.215-.594.406-.892.608c-.916.622-1.164 1.35-.82 2.41l.034.114a2.4 2.4 0 0 1-1.07-.918a2.6 2.6 0 0 1-.412-1.401c-.003-.248-.003-.497-.036-.74c-.081-.595-.36-.86-.883-.876a1.034 1.034 0 0 0-1.075.843q-.013.058-.033.126M4.1 15.007s2.666-1.303 5.34-1.303l2.016-6.26c.075-.304.296-.51.544-.51c.25 0 .47.206.545.51l2.016 6.26c3.167 0 5.34 1.303 5.34 1.303L15.363 2.602c-.13-.366-.35-.602-.645-.602H9.283c-.296 0-.506.236-.645.602c-.01.024-4.538 12.405-4.538 12.405"/></svg>';
+// const componentKeys = Object.keys(await getRendererComponents());
 
-const componentKeys = Object.keys(await getRendererComponents());
+// const AstroComponentBlocks = componentKeys.map((key) => ({
+//     id: `astro-component-${key}`,
+//     label: firstUpperCase(key),
+//     category: "Astro Components",
+//     media: AstroSVG,
+//     key,
+// }));
 
-const AstroComponentBlocks = componentKeys.map((key) => ({
-    id: `astro-component-${key}`,
-    label: firstUpperCase(key),
-    category: "Astro Components",
-    media: AstroSVG,
-    key,
-}));
+const componentRegistry = getRegistryComponents();
 
 interface Props extends PluginPageTypeEditorProps {}
 
@@ -29,14 +27,24 @@ const { content } = Astro.props as Props;
     >{content}</textarea
 >
 
-<div class="scms-grapesjs-container">
+<div
+    class="scms-grapesjs-container"
+    data-component-registry={JSON.stringify(componentRegistry)}
+>
     <div class="editor">
         <div id="gjs"></div>
     </div>
 </div>
 
 <script>
-    import grapesjs, { type Editor, usePlugin } from "grapesjs";
+    import grapesjs, {
+        type AddComponentTypeOptions,
+        type BlockProperties,
+        type Editor,
+        type ProjectData,
+        type TraitProperties,
+        usePlugin,
+    } from "grapesjs";
     import {
         blocks,
         customCode,
@@ -49,8 +57,20 @@ const { content } = Astro.props as Props;
         typed,
         studioCMSGjsPlugin,
     } from "../editorPlugins/index.js";
+    import { styleManagerSettings } from "../editor-settings.js";
+    import { firstUpperCase, parse } from "../common/utils.js";
+    import { componentBuilder } from "../common/editor-utils.js";
     // @ts-expect-error - this is a virtual module
     import { toast } from "studiocms:ui/components";
+    import type { ComponentRegistryEntry } from "studiocms/componentRegistry/types";
+
+    const grapesJsContainer = document.querySelector<HTMLDivElement>(
+        ".scms-grapesjs-container",
+    ) as HTMLDivElement;
+
+    const componentRegistry = parse<ComponentRegistryEntry[]>(
+        grapesJsContainer.dataset.componentRegistry || "{}",
+    );
 
     const pageContent = document.querySelector<HTMLTextAreaElement>(
         "#page-content",
@@ -60,7 +80,7 @@ const { content } = Astro.props as Props;
         pages: [{ name: "page" }],
     };
 
-    const projectData = JSON.parse(
+    const projectData = parse<ProjectData>(
         pageContent.innerText || JSON.stringify(fallbackPages),
     );
 
@@ -76,7 +96,7 @@ const { content } = Astro.props as Props;
     // Inline storage
     const inlineStorage = (editor: Editor) => {
         editor.Storage.add("inline", {
-            load() {
+            async load() {
                 return projectData;
             },
             async store(data) {
@@ -127,350 +147,136 @@ const { content } = Astro.props as Props;
             usePlugin(rte),
             usePlugin(studioCMSGjsPlugin),
         ],
-        styleManager: {
-            sectors: [
-                {
-                    name: "General",
-                    properties: [
-                        {
-                            extend: "float",
-                            type: "radio",
-                            default: "none",
-                            options: [
-                                {
-                                    value: "none",
-                                    className: "fa fa-times",
-                                    id: "",
-                                },
-                                {
-                                    value: "left",
-                                    className: "fa fa-align-left",
-                                    id: "",
-                                },
-                                {
-                                    value: "right",
-                                    className: "fa fa-align-right",
-                                    id: "",
-                                },
-                            ],
-                        },
-                        "display",
-                        { extend: "position", type: "select" },
-                        "top",
-                        "right",
-                        "left",
-                        "bottom",
-                    ],
-                },
-                {
-                    name: "Dimension",
-                    open: false,
-                    properties: [
-                        "width",
-                        {
-                            id: "flex-width",
-                            type: "integer",
-                            name: "Width",
-                            units: ["px", "%"],
-                            property: "flex-basis",
-                            toRequire: true,
-                        },
-                        "height",
-                        "max-width",
-                        "min-height",
-                        "margin",
-                        "padding",
-                    ],
-                },
-                {
-                    name: "Typography",
-                    open: false,
-                    properties: [
-                        "font-family",
-                        "font-size",
-                        "font-weight",
-                        "letter-spacing",
-                        "color",
-                        "line-height",
-                        {
-                            extend: "text-align",
-                            options: [
-                                {
-                                    id: "left",
-                                    label: "Left",
-                                    className: "fa fa-align-left",
-                                },
-                                {
-                                    id: "center",
-                                    label: "Center",
-                                    className: "fa fa-align-center",
-                                },
-                                {
-                                    id: "right",
-                                    label: "Right",
-                                    className: "fa fa-align-right",
-                                },
-                                {
-                                    id: "justify",
-                                    label: "Justify",
-                                    className: "fa fa-align-justify",
-                                },
-                            ],
-                        },
-                        {
-                            property: "text-decoration",
-                            type: "radio",
-                            default: "none",
-                            options: [
-                                {
-                                    id: "none",
-                                    label: "None",
-                                    className: "fa fa-times",
-                                },
-                                {
-                                    id: "underline",
-                                    label: "underline",
-                                    className: "fa fa-underline",
-                                },
-                                {
-                                    id: "line-through",
-                                    label: "Line-through",
-                                    className: "fa fa-strikethrough",
-                                },
-                            ],
-                        },
-                        "text-shadow",
-                    ],
-                },
-                {
-                    name: "Decorations",
-                    open: false,
-                    properties: [
-                        "opacity",
-                        "border-radius",
-                        "border",
-                        "box-shadow",
-                        "background", // { id: 'background-bg', property: 'background', type: 'bg' }
-                    ],
-                },
-                {
-                    name: "Extra",
-                    open: false,
-                    buildProps: ["transition", "perspective", "transform"],
-                },
-                {
-                    name: "Flex",
-                    open: false,
-                    properties: [
-                        {
-                            name: "Flex Container",
-                            property: "display",
-                            type: "select",
-                            defaults: "block",
-                            list: [
-                                { value: "block", name: "Disable", id: "" },
-                                { value: "flex", name: "Enable", id: "" },
-                            ],
-                        },
-                        {
-                            name: "Flex Parent",
-                            property: "label-parent-flex",
-                            type: "integer",
-                        },
-                        {
-                            name: "Direction",
-                            property: "flex-direction",
-                            type: "radio",
-                            defaults: "row",
-                            list: [
-                                {
-                                    value: "row",
-                                    name: "Row",
-                                    className: "icons-flex icon-dir-row",
-                                    title: "Row",
-                                    id: "",
-                                },
-                                {
-                                    value: "row-reverse",
-                                    name: "Row reverse",
-                                    className: "icons-flex icon-dir-row-rev",
-                                    title: "Row reverse",
-                                    id: "",
-                                },
-                                {
-                                    value: "column",
-                                    name: "Column",
-                                    title: "Column",
-                                    className: "icons-flex icon-dir-col",
-                                    id: "",
-                                },
-                                {
-                                    value: "column-reverse",
-                                    name: "Column reverse",
-                                    title: "Column reverse",
-                                    className: "icons-flex icon-dir-col-rev",
-                                    id: "",
-                                },
-                            ],
-                        },
-                        {
-                            name: "Justify",
-                            property: "justify-content",
-                            type: "radio",
-                            defaults: "flex-start",
-                            list: [
-                                {
-                                    value: "flex-start",
-                                    className: "icons-flex icon-just-start",
-                                    title: "Start",
-                                    id: "",
-                                },
-                                {
-                                    value: "flex-end",
-                                    title: "End",
-                                    className: "icons-flex icon-just-end",
-                                    id: "",
-                                },
-                                {
-                                    value: "space-between",
-                                    title: "Space between",
-                                    className: "icons-flex icon-just-sp-bet",
-                                    id: "",
-                                },
-                                {
-                                    value: "space-around",
-                                    title: "Space around",
-                                    className: "icons-flex icon-just-sp-ar",
-                                    id: "",
-                                },
-                                {
-                                    value: "center",
-                                    title: "Center",
-                                    className: "icons-flex icon-just-sp-cent",
-                                    id: "",
-                                },
-                            ],
-                        },
-                        {
-                            name: "Align",
-                            property: "align-items",
-                            type: "radio",
-                            defaults: "center",
-                            list: [
-                                {
-                                    value: "flex-start",
-                                    title: "Start",
-                                    className: "icons-flex icon-al-start",
-                                    id: "",
-                                },
-                                {
-                                    value: "flex-end",
-                                    title: "End",
-                                    className: "icons-flex icon-al-end",
-                                    id: "",
-                                },
-                                {
-                                    value: "stretch",
-                                    title: "Stretch",
-                                    className: "icons-flex icon-al-str",
-                                    id: "",
-                                },
-                                {
-                                    value: "center",
-                                    title: "Center",
-                                    className: "icons-flex icon-al-center",
-                                    id: "",
-                                },
-                            ],
-                        },
-                        {
-                            name: "Flex Children",
-                            property: "label-parent-flex",
-                            type: "integer",
-                        },
-                        {
-                            name: "Order",
-                            property: "order",
-                            type: "integer",
-                            // @ts-ignore
-                            defaults: 0,
-                            min: 0,
-                        },
-                        {
-                            name: "Flex",
-                            property: "flex",
-                            type: "composite",
-                            properties: [
-                                {
-                                    name: "Grow",
-                                    property: "flex-grow",
-                                    type: "integer",
-                                    // @ts-ignore
-                                    defaults: 0,
-                                    min: 0,
-                                },
-                                {
-                                    name: "Shrink",
-                                    property: "flex-shrink",
-                                    type: "integer",
-                                    // @ts-ignore
-                                    defaults: 0,
-                                    min: 0,
-                                },
-                                {
-                                    name: "Basis",
-                                    property: "flex-basis",
-                                    type: "integer",
-                                    units: ["px", "%", ""],
-                                    unit: "",
-                                    defaults: "auto",
-                                },
-                            ],
-                        },
-                        {
-                            name: "Align",
-                            property: "align-self",
-                            type: "radio",
-                            defaults: "auto",
-                            list: [
-                                {
-                                    value: "auto",
-                                    name: "Auto",
-                                    id: "",
-                                },
-                                {
-                                    value: "flex-start",
-                                    title: "Start",
-                                    className: "icons-flex icon-al-start",
-                                    id: "",
-                                },
-                                {
-                                    value: "flex-end",
-                                    title: "End",
-                                    className: "icons-flex icon-al-end",
-                                    id: "",
-                                },
-                                {
-                                    value: "stretch",
-                                    title: "Stretch",
-                                    className: "icons-flex icon-al-str",
-                                    id: "",
-                                },
-                                {
-                                    value: "center",
-                                    title: "Center",
-                                    className: "icons-flex icon-al-center",
-                                    id: "",
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
+        styleManager: styleManagerSettings,
     });
 
-    editor.I18n.addMessages({
+    const pn = editor.Panels;
+    const modal = editor.Modal;
+    const commands = editor.Commands;
+    const i18n = editor.I18n;
+    const comp = editor.Components;
+    const bm = editor.BlockManager;
+
+    // const builder = componentBuilder(comp, bm);
+
+    const osm = "open-sm";
+    const otm = "open-tm";
+    const ola = "open-layers";
+    const obl = "open-blocks";
+    const iconStyle = 'style="display: block; max-width:22px"';
+    const AstroSVG: string =
+        '<svg xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px" viewBox="0 0 24 24"><path fill="currentColor" d="M9.24 19.035c-.901-.826-1.164-2.561-.789-3.819c.65.793 1.552 1.044 2.486 1.186c1.44.218 2.856.137 4.195-.524c.153-.076.295-.177.462-.278c.126.365.159.734.115 1.11c-.107.915-.56 1.622-1.283 2.158c-.289.215-.594.406-.892.608c-.916.622-1.164 1.35-.82 2.41l.034.114a2.4 2.4 0 0 1-1.07-.918a2.6 2.6 0 0 1-.412-1.401c-.003-.248-.003-.497-.036-.74c-.081-.595-.36-.86-.883-.876a1.034 1.034 0 0 0-1.075.843q-.013.058-.033.126M4.1 15.007s2.666-1.303 5.34-1.303l2.016-6.26c.075-.304.296-.51.544-.51c.25 0 .47.206.545.51l2.016 6.26c3.167 0 5.34 1.303 5.34 1.303L15.363 2.602c-.13-.366-.35-.602-.645-.602H9.283c-.296 0-.506.236-.645.602c-.01.024-4.538 12.405-4.538 12.405"/></svg>';
+
+    const componentKeys = componentRegistry.map(({ name }) => name);
+
+    const traitTypeFilter = (type: string) => {
+        switch (type) {
+            case "number":
+                return "number";
+            default:
+                return "text";
+        }
+    };
+
+    function isNumberOrString(input: string): 'number' | 'string' {
+        return !isNaN(Number(input)) ? 'number' : 'string';
+    }
+
+    // Add custom components from the registry
+    for (const component of componentRegistry) {
+        const { name, props } = component;
+
+        // convert props to a format compatible with grapesjs
+        // grapesJS expects a key pair object such as { key: value, key1: value1 }
+        const traits = props.map((prop) => ({
+            type: traitTypeFilter(prop.type),
+            name: prop.name,
+            default: `${prop.defaultValue}`,
+        }));
+
+        editor.DomComponents.addType(`astro-component-${name}`, {
+            isComponent: (el) =>
+                componentKeys.includes(el.tagName?.toLowerCase()),
+            model: {
+                defaults: {
+                    tagName: name,
+                    traits,
+                },
+            },
+            view: {
+                tagName: () => "div",
+                onRender: async ({ el, model }) => {
+                    const traitData: TraitProperties[] = model.traits.toJSON();
+                    const propsData = traitData.reduce(
+                        (acc, trait) => {
+                            if (!trait.name) return acc;
+
+                            let value: string | number = trait.default;
+
+                            if (trait.type === "number") {
+                                value = Number(trait.value !== ""
+                                        ? trait.value
+                                        : trait.default);
+                            } else {
+                                value =
+                                    trait.value !== ""
+                                        ? trait.value
+                                        : trait.default;
+                            }
+
+                            acc[trait.name] = value;
+                            return acc;
+                        },
+                        {} as Record<string, any>,
+                    );
+
+                    const componentKey = model.tagName;
+
+                    const jsonBody = {
+                        componentKey,
+                        props: propsData,
+                    };
+
+                    // Fetch from API endpoint that uses Astro Container API to render Component to html
+                    const getCompResponse = await fetch(
+                        "/studiocms_api/wysiwyg_editor/partial",
+                        {
+                            method: "POST",
+                            body: JSON.stringify(jsonBody),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        },
+                    );
+
+                    // If response is not valid, log error.
+                    if (!getCompResponse.ok)
+                        console.log(
+                        "[Error]: Could not fetch component HTML, please try again.",
+                        );
+
+                    // Get HTML from JSON response
+                    const html = await getCompResponse.text();
+
+                    el.innerHTML = html;
+                },
+            },
+        });
+
+        bm.add(`astro-component-${name}`, {
+            id: `astro-component-${name}`,
+            label: `${firstUpperCase(name)}`,
+            category: "Astro Components",
+            media: AstroSVG,
+            attributes: { class: "gjs-fonts gjs-f-b1" },
+            content: {
+                type: `astro-component-${name}`,
+                tagName: name,
+            },
+        });
+    }
+
+    i18n.addMessages({
         en: {
             styleManager: {
                 properties: {
@@ -482,16 +288,6 @@ const { content } = Astro.props as Props;
             },
         },
     });
-
-    const pn = editor.Panels;
-    const modal = editor.Modal;
-    const commands = editor.Commands;
-
-    const osm = "open-sm";
-    const otm = "open-tm";
-    const ola = "open-layers";
-    const obl = "open-blocks";
-    const iconStyle = 'style="display: block; max-width:22px"';
 
     pn.getPanels().reset([
         {
