@@ -47,10 +47,12 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 		{
 			entrypoint: resolve('./routes/partial.astro'),
 			pattern: PARTIAL_PATH,
+			prerender: false,
 		},
 		{
 			entrypoint: resolve('./routes/grapes.css.js'),
 			pattern: GRAPES_CSS_PATH,
+			prerender: false,
 		},
 	];
 
@@ -69,10 +71,7 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 						'astro:config:setup': ({ injectRoute }) => {
 							// Register the routes for the plugin
 							for (const route of routes) {
-								injectRoute({
-									...route,
-									prerender: false,
-								});
+								injectRoute(route);
 							}
 						},
 						'astro:config:done': () => {
