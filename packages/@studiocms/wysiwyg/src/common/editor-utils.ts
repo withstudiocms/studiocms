@@ -1,5 +1,6 @@
 import type { Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
-import type { AstroComponentProp } from 'studiocms/componentRegistry/types';
+import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
+import { parse } from './utils.js';
 
 /**
  * Generates an HTML string representation of the main component within the editor,
@@ -130,9 +131,87 @@ export const traitTypeFilter = (type: string) => {
 	}
 };
 
-
+/**
+ * Maps an `AstroComponentProp` to a new object with filtered type, name, and default value.
+ *
+ * @param prop - The Astro component property to map.
+ * @returns An object containing:
+ *  - `type`: The filtered type of the property.
+ *  - `name`: The name of the property.
+ *  - `default`: The default value of the property.
+ */
 export const traitMapFn = (prop: AstroComponentProp) => ({
 	type: traitTypeFilter(prop.type),
 	name: prop.name,
 	default: prop.defaultValue,
 });
+
+/**
+ * Builds a partial request configuration for a given component model.
+ *
+ * @param model - The component model to build the request from.
+ * @returns A `RequestInit` object configured for a POST request with the component's data as JSON.
+ */
+export const partialRequestBuilder = (model: Component): RequestInit => {
+	return {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			componentKey: model.tagName,
+			props: getTraitData(model),
+			slot: getSlotData(model),
+		}),
+	};
+};
+
+/**
+ * Retrieves and parses editor-related data elements from the DOM.
+ *
+ * @param document - The DOM Document object to query for elements.
+ * @param selectors - An object containing CSS selectors for the container and page content elements.
+ * @param selectors.container - CSS selector for the GrapesJS container element.
+ * @param selectors.pageContent - CSS selector for the page content textarea element.
+ * @returns An object containing references to the page content element, the parsed component registry, and the parsed project data.
+ * @throws Will throw an error if the container or page content elements are not found in the DOM.
+ */
+export function getEditorElmData(
+	document: Document,
+	selectors: {
+		container: string;
+		pageContent: string;
+	}
+) {
+	const container = document.querySelector<HTMLDivElement>(selectors.container) as HTMLDivElement;
+
+	if (!container) {
+		throw new Error('GrapesJS container not found. Ensure the HTML structure is correct.');
+	}
+
+	const pageContent = document.querySelector<HTMLTextAreaElement>(
+		selectors.pageContent
+	) as HTMLTextAreaElement;
+
+	if (!pageContent) {
+		throw new Error('Page content textarea not found. Ensure the HTML structure is correct.');
+	}
+
+	const componentRegistry = parse<ComponentRegistryEntry[]>(
+		container.dataset.componentRegistry || '{}'
+	);
+
+	const fallbackPages = {
+		pages: [{ name: 'page' }],
+	};
+
+	const projectData = parse<ProjectData>(pageContent.innerText || JSON.stringify(fallbackPages));
+
+	return {
+		astroComponentsOpts: { componentRegistry },
+		inlineStorageOpts: {
+			pageContent,
+			projectData,
+		}
+	};
+}

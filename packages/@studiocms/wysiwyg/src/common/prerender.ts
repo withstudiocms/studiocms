@@ -1,5 +1,14 @@
 import { parse } from "./utils.js";
 
+/**
+ * Asynchronously pre-renders HTML content from a serialized string.
+ *
+ * Attempts to parse the provided content string and extract the `__STUDIOCMS_HTML` property.
+ * If the content is missing, invalid, or parsing fails, returns an appropriate error message as HTML.
+ *
+ * @param content - The serialized content string to be parsed and rendered.
+ * @returns A promise that resolves to the rendered HTML string or an error message in HTML format.
+ */
 export const preRenderer = async (content: string) => {
 	let parsedContent = '<h1>Error: No content found</h1>';
 

@@ -13,8 +13,10 @@ type PropData = {
 	slot?: string | null;
 };
 
+// Parse the request body as JSON
 const data: PropData = await Astro.request.json();
 
+// Validate the data
 if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim()) {
 	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
 		status: 400,
@@ -22,8 +24,10 @@ if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim())
 	});
 }
 
+// Destructure the componentKey, props, and slot from the data
 const { componentKey, props = {}, slot = null } = data;
 
+// Check if the component exists in the registry
 const Component = componentRegistry[componentKey];
 
 // Handle case where component doesn't exist

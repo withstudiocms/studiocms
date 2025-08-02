@@ -1,5 +1,6 @@
 import type { ClbObj } from "grapesjs";
-import { getSlotData, getTraitData } from "./editor-utils.js";
+import { PARTIAL_PATH } from "./consts.js";
+import { partialRequestBuilder } from "./editor-utils.js";
 
 /**
  * Renders a preview of a component by fetching its HTML from an API endpoint and injecting it into the specified DOM element.
@@ -12,20 +13,9 @@ import { getSlotData, getTraitData } from "./editor-utils.js";
  * with the returned HTML. If the fetch fails, it displays an error message in the element.
  */
 export async function renderComponentPreview({ el, model }: ClbObj) {
-    const jsonBody = {
-        componentKey: model.tagName,
-        props: getTraitData(model),
-        slot: getSlotData(model),
-    };
 
     // Fetch from API endpoint that uses Astro Container API to render Component to html
-    const getCompResponse = await fetch('/studiocms_api/wysiwyg_editor/partial', {
-        method: 'POST',
-        body: JSON.stringify(jsonBody),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const getCompResponse = await fetch(PARTIAL_PATH, partialRequestBuilder(model));
 
     let html = '';
 

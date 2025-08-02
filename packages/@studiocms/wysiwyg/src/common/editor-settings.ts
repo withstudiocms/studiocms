@@ -1,5 +1,27 @@
 import type { EditorConfig } from 'grapesjs';
+import { GRAPES_CSS_PATH } from './consts.js';
 
+/**
+ * The base configuration object for the WYSIWYG editor.
+ *
+ * This partial configuration of `EditorConfig` defines the default settings for the editor container,
+ * dimensions, storage management, panels, canvas styles, and the style manager sectors.
+ *
+ * @remarks
+ * - The `container` property specifies the DOM selector for the editor.
+ * - The `height` and `width` properties define the editor's dimensions.
+ * - `storageManager` is set to use inline storage.
+ * - `panels` are initialized as empty.
+ * - The `canvas` property includes an array of stylesheets to be loaded.
+ * - The `styleManager` property organizes style controls into sectors such as General, Dimension, Typography, Decorations, Extra, and Flex.
+ *   Each sector contains properties or buildProps for customizing the appearance and layout of elements within the editor.
+ *
+ * @example
+ * ```typescript
+ * import { baseConfig } from './editor-settings';
+ * // Use baseConfig to initialize the editor
+ * ```
+ */
 export const baseConfig: Partial<EditorConfig> = {
 	container: '#gjs',
 	height: '100%',
@@ -8,7 +30,7 @@ export const baseConfig: Partial<EditorConfig> = {
 	storageManager: { type: 'inline' },
 	panels: { defaults: [] },
 	canvas: {
-		styles: ['/studiocms_api/wysiwyg_editor/grapes.css'],
+		styles: [GRAPES_CSS_PATH],
 	},
 	styleManager: {
 		sectors: [

@@ -96,7 +96,7 @@ export type PluginOptions = {
 const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 	const config: Required<PluginOptions> = {
 		blocks: ['column1', 'column2', 'column3', 'column3-7', 'text', 'link', 'image', 'video', 'map'],
-		flexGrid: false,
+		flexGrid: true,
 		stylePrefix: 'gjs-',
 		addBasicStyle: true,
 		category: 'Basic',

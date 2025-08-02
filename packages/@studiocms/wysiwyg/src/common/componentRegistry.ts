@@ -1,8 +1,8 @@
 import type { Plugin } from 'grapesjs';
 import type { ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
-import { buildBlockProps } from '../common/build-block-props.js';
-import { renderComponentPreview } from '../common/component-preview.js';
-import { traitMapFn } from '../common/editor-utils.js';
+import { buildBlockProps } from './build-block-props.js';
+import { renderComponentPreview } from './component-preview.js';
+import { traitMapFn } from './editor-utils.js';
 
 /**
  * Represents a collection of registered components for use within the Astro environment.
