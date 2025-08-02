@@ -26,7 +26,7 @@ export const astroComponents: Plugin<{ componentRegistry: ComponentRegistryEntry
 			default: `${prop.defaultValue}`,
 		}));
 
-		editor.DomComponents.addType(`astro-component-${name}`, {
+		editor.DomComponents.addType(name, {
 			isComponent: (el) => componentKeys.includes(el.tagName?.toLowerCase()),
 			model: {
 				defaults: {
@@ -69,14 +69,14 @@ export const astroComponents: Plugin<{ componentRegistry: ComponentRegistryEntry
 			},
 		});
 
-		editor.BlockManager.add(`astro-component-${name}`, {
-			id: `astro-component-${name}`,
+		editor.BlockManager.add(name, {
+			id: name,
 			label: `${firstUpperCase(name)}`,
 			category: 'Astro Components',
 			media: AstroSVG,
 			attributes: { class: 'gjs-fonts gjs-f-b1' },
 			content: {
-				type: `astro-component-${name}`,
+				type: `${name}`,
 				tagName: name,
 			},
 		});
