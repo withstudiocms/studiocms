@@ -24,6 +24,7 @@
     "@studiocms/blog": "workspace:*",
     "@studiocms/devapps": "workspace:*",
     "@studiocms/md": "workspace:*",
+    "@studiocms/wysiwyg": "workspace:*",
     "astro": "catalog:astrojs",
     "studiocms": "workspace:*",
     "sharp": "catalog:"

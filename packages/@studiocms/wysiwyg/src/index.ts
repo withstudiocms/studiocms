@@ -49,7 +49,7 @@ function studiocmsWYSIWYG(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 						{
 							identifier: 'studiocms/wysiwyg',
 							label: 'WYSIWYG',
-							rendererComponent: resolve('../components/Render.astro'),
+							rendererComponent: resolve('./components/Render.astro'),
 							pageContentComponent: resolve('./components/Editor.astro'),
 						},
 					],

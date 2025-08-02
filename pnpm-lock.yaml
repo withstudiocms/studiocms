@@ -823,6 +823,9 @@ importers:
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
         version: 4.2.1(@astrojs/db@0.15.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+      '@studiocms/wysiwyg':
+        specifier: workspace:*
+        version: link:../packages/@studiocms/wysiwyg
       astro:
         specifier: catalog:astrojs
         version: 5.12.6(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
