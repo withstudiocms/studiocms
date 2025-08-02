@@ -13,10 +13,6 @@ interface Props extends PluginPageTypeEditorProps {}
 const { content } = Astro.props as Props;
 ---
 
-<textarea id="page-content" name="page-content" style="display: none;"
-    >{content}</textarea
->
-
 <div
     class="scms-grapesjs-container"
     data-component-registry={JSON.stringify(componentRegistry)}
@@ -25,6 +21,10 @@ const { content } = Astro.props as Props;
         <div id="gjs"></div>
     </div>
 </div>
+
+<textarea id="page-content" name="page-content" style="display: none;"
+    >{content}</textarea
+>
 
 <script>
     import grapesjs, { type ProjectData, usePlugin } from "grapesjs";
@@ -45,8 +45,7 @@ const { content } = Astro.props as Props;
     import { parse } from "../common/utils.js";
     import { inlineStorage } from "../common/editor-utils.js";
     import type { ComponentRegistryEntry } from "studiocms/componentRegistry/types";
-    // @ts-expect-error - this is a virtual module
-    import { toast } from "studiocms:ui/components";
+    import { toast } from "@studiocms/ui/components/Toast/toast.js";
 
     const grapesJsContainer = document.querySelector<HTMLDivElement>(
         ".scms-grapesjs-container",
@@ -219,6 +218,12 @@ const { content } = Astro.props as Props;
     commands.add("canvas-clear", function () {
         if (confirm("Are you sure to clean the canvas?")) {
             editor.runCommand("core:canvas-clear");
+            toast({
+                title: "Canvas Cleared",
+                type: "success",
+                description: "The canvas has been cleared successfully.",
+                duration: 5000,
+            });
         }
     });
 

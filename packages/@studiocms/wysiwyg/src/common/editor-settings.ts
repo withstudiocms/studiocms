@@ -2,7 +2,7 @@ import type { EditorConfig } from 'grapesjs';
 
 export const baseConfig: Partial<EditorConfig> = {
 	container: '#gjs',
-	height: '80vh',
+	height: '100%',
 	width: 'auto',
 	fromElement: false,
 	storageManager: { type: 'inline' },
