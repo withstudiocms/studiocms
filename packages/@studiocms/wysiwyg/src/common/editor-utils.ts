@@ -1,4 +1,5 @@
 import type { Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
+import type { AstroComponentProp } from 'studiocms/componentRegistry/types';
 
 /**
  * Generates an HTML string representation of the main component within the editor,
@@ -128,3 +129,10 @@ export const traitTypeFilter = (type: string) => {
 			return 'text';
 	}
 };
+
+
+export const traitMapFn = (prop: AstroComponentProp) => ({
+	type: traitTypeFilter(prop.type),
+	name: prop.name,
+	default: prop.defaultValue,
+});
