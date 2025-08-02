@@ -16,7 +16,7 @@ export default function loadBlocks(
       `,
 			label: 'Tabs',
 			content: { type: typeTabs },
-			...tabsBlock,
+			category: 'Extra',
 		};
 
 		Blocks.add(typeTabs, blockConfig);

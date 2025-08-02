@@ -1,5 +1,6 @@
 export { default as blocks } from './blocks/index.js';
 export { default as customCode } from './code/index.js';
+export { astroComponents } from './componentRegistry.js';
 export { default as countdown } from './countdown.js';
 export { default as forms } from './forms/index.js';
 export { default as rte } from './rte/index.js';
