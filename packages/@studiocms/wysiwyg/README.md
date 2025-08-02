@@ -20,24 +20,6 @@ export default defineStudioCMSConfig({
 });
 ```
 
-## GrapesJS StudioSDK
-
-Get started with the [GrapesJS StudioSDK](https://grapesjs.com)
-
-### Usage
-
-Add this plugin in your StudioCMS config. (`studiocms.config.mjs`)
-
-```ts
-import { defineStudioCMSConfig } from 'studiocms/config';
-import wysiwygStudioPlugin from '@studiocms/wysiwyg/studio';
-
-export default defineStudioCMSConfig({
-    // other options here
-    plugins: [wysiwygStudioPlugin({ license: 'Your_license_here' })]
-});
-```
-
 ## License
 
 [MIT Licensed](./LICENSE).
