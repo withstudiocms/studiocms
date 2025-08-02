@@ -40,7 +40,7 @@ function studiocmsWYSIWYG(options?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 							params.injectRoute({
 								entrypoint: resolve('./routes/grapes.css.js'),
 								pattern: '/studiocms_api/wysiwyg_editor/grapes.css',
-								prerender: true,
+								prerender: false,
 							});
 						},
 						'astro:config:done': () => {
