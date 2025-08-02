@@ -6,16 +6,6 @@ import "../styles/editor.css";
 import { getRegistryComponents } from "studiocms:component-registry/runtime";
 import type { PluginPageTypeEditorProps } from "studiocms/types";
 
-// const componentKeys = Object.keys(await getRendererComponents());
-
-// const AstroComponentBlocks = componentKeys.map((key) => ({
-//     id: `astro-component-${key}`,
-//     label: firstUpperCase(key),
-//     category: "Astro Components",
-//     media: AstroSVG,
-//     key,
-// }));
-
 const componentRegistry = getRegistryComponents();
 
 interface Props extends PluginPageTypeEditorProps {}
@@ -37,14 +27,7 @@ const { content } = Astro.props as Props;
 </div>
 
 <script>
-    import grapesjs, {
-        type AddComponentTypeOptions,
-        type BlockProperties,
-        type Editor,
-        type ProjectData,
-        type TraitProperties,
-        usePlugin,
-    } from "grapesjs";
+    import grapesjs, { type ProjectData, usePlugin } from "grapesjs";
     import {
         blocks,
         customCode,
@@ -59,10 +42,15 @@ const { content } = Astro.props as Props;
     } from "../editorPlugins/index.js";
     import { styleManagerSettings } from "../editor-settings.js";
     import { firstUpperCase, parse } from "../common/utils.js";
-    import { componentBuilder } from "../common/editor-utils.js";
+    import {
+        getSlotData,
+        getTraitData,
+        inlineStorage,
+        traitTypeFilter,
+    } from "../common/editor-utils.js";
+    import type { ComponentRegistryEntry } from "studiocms/componentRegistry/types";
     // @ts-expect-error - this is a virtual module
     import { toast } from "studiocms:ui/components";
-    import type { ComponentRegistryEntry } from "studiocms/componentRegistry/types";
 
     const grapesJsContainer = document.querySelector<HTMLDivElement>(
         ".scms-grapesjs-container",
@@ -84,30 +72,6 @@ const { content } = Astro.props as Props;
         pageContent.innerText || JSON.stringify(fallbackPages),
     );
 
-    const generateHTML = async (editor: Editor): Promise<string> => {
-        const page = editor.Pages.getMain();
-        const component = page.getMainComponent();
-        const htmlData = component.toHTML({ tag: "div" });
-        const styles = editor.getCss({ component })?.replaceAll("body", "div");
-        const html = `${htmlData}${styles ? `<style>${styles}</style>` : ""}`;
-        return html;
-    };
-
-    // Inline storage
-    const inlineStorage = (editor: Editor) => {
-        editor.Storage.add("inline", {
-            async load() {
-                return projectData;
-            },
-            async store(data) {
-                pageContent.innerText = JSON.stringify({
-                    ...data,
-                    __STUDIOCMS_HTML: await generateHTML(editor),
-                });
-            },
-        });
-    };
-
     const editor = grapesjs.init({
         container: "#gjs",
         height: "80vh",
@@ -119,7 +83,10 @@ const { content } = Astro.props as Props;
             styles: ["./studiocms_api/wysiwyg_editor/grapes.css"],
         },
         plugins: [
-            usePlugin(inlineStorage),
+            usePlugin(inlineStorage, {
+                pageContent,
+                projectData,
+            }),
             usePlugin(blocks, {
                 flexGrid: true,
             }),
@@ -169,19 +136,6 @@ const { content } = Astro.props as Props;
 
     const componentKeys = componentRegistry.map(({ name }) => name);
 
-    const traitTypeFilter = (type: string) => {
-        switch (type) {
-            case "number":
-                return "number";
-            default:
-                return "text";
-        }
-    };
-
-    function isNumberOrString(input: string): 'number' | 'string' {
-        return !isNaN(Number(input)) ? 'number' : 'string';
-    }
-
     // Add custom components from the registry
     for (const component of componentRegistry) {
         const { name, props } = component;
@@ -206,35 +160,10 @@ const { content } = Astro.props as Props;
             view: {
                 tagName: () => "div",
                 onRender: async ({ el, model }) => {
-                    const traitData: TraitProperties[] = model.traits.toJSON();
-                    const propsData = traitData.reduce(
-                        (acc, trait) => {
-                            if (!trait.name) return acc;
-
-                            let value: string | number = trait.default;
-
-                            if (trait.type === "number") {
-                                value = Number(trait.value !== ""
-                                        ? trait.value
-                                        : trait.default);
-                            } else {
-                                value =
-                                    trait.value !== ""
-                                        ? trait.value
-                                        : trait.default;
-                            }
-
-                            acc[trait.name] = value;
-                            return acc;
-                        },
-                        {} as Record<string, any>,
-                    );
-
-                    const componentKey = model.tagName;
-
                     const jsonBody = {
-                        componentKey,
-                        props: propsData,
+                        componentKey: model.tagName,
+                        props: getTraitData(model),
+                        slot: getSlotData(model),
                     };
 
                     // Fetch from API endpoint that uses Astro Container API to render Component to html
@@ -249,15 +178,20 @@ const { content } = Astro.props as Props;
                         },
                     );
 
+                    let html: string = "";
+
                     // If response is not valid, log error.
-                    if (!getCompResponse.ok)
+                    if (!getCompResponse.ok) {
                         console.log(
-                        "[Error]: Could not fetch component HTML, please try again.",
+                            "[Error]: Could not fetch component HTML, please try again.",
                         );
+                        html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
+                        el.innerHTML = html;
+                        return;
+                    }
 
                     // Get HTML from JSON response
-                    const html = await getCompResponse.text();
-
+                    html = await getCompResponse.text();
                     el.innerHTML = html;
                 },
             },

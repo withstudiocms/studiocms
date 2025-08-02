@@ -13,7 +13,7 @@ if (!data || typeof data.componentKey !== 'string') {
 		headers: { 'Content-Type': 'application/json' },
 	});
 }
-const { componentKey, props } = data;
+const { componentKey, props, slot } = data;
 
 const Component = components[componentKey];
 
@@ -25,4 +25,6 @@ if (!Component) {
 	});
 }
 ---
-<Component {...props} />
+<Component {...props}>
+	{slot && <Fragment set:html={slot} />}
+</Component>
