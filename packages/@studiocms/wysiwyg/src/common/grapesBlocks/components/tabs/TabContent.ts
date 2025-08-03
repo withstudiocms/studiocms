@@ -1,5 +1,5 @@
 import type { Editor } from 'grapesjs';
-import type { TabContentConfig } from '../types.js';
+import type { TabContentConfig } from '../../types.js';
 
 export const role = 'tabpanel';
 

@@ -1,5 +1,5 @@
 import type { Editor } from 'grapesjs';
-import type { TabContentsConfig } from '../types.js';
+import type { TabContentsConfig } from '../../types.js';
 
 export default (editor: Editor, config: TabContentsConfig): void => {
 	const { Components } = editor;

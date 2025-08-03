@@ -1,5 +1,5 @@
 import type { Editor } from 'grapesjs';
-import type { TabContainerConfig } from '../types.js';
+import type { TabContainerConfig } from '../../types.js';
 
 export const role = 'tablist';
 

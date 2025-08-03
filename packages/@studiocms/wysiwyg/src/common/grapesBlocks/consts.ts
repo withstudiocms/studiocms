@@ -1,4 +1,9 @@
-import type { RequiredGrapesBlocksOptions } from './types.js';
+import type {
+	RequiredGrapesBlocksOptions,
+	TabsOptions,
+	TabTemplate,
+	TabTemplateProps,
+} from './types.js';
 
 export const cmdImport = 'gjs-open-import-webpage';
 export const cmdDeviceDesktop = 'set-device-desktop';
@@ -21,6 +26,60 @@ export const typeRadio = 'radio';
 export const typeButton = 'button';
 export const typeLabel = 'label';
 export const typeOption = 'option';
+
+export const resolveTemplate = (
+	template: TabTemplate | undefined,
+	props: TabTemplateProps
+): string | undefined => {
+	if (!template) {
+		return undefined;
+	}
+
+	if (typeof template === 'function') {
+		return template(props);
+	}
+	return template;
+};
+
+export const mergeStyles = (userStyle?: (config: TabsOptions) => string) => {
+	return userStyle || defaultStyle;
+};
+
+const defaultStyle = (config: TabsOptions): string => `
+  .${config.classTab} {
+	padding: 7px 14px;
+	display: inline-block;
+	border-radius: 3px;
+	margin-right: 10px;
+  }
+
+  .${config.classTab}:focus {
+	outline: none;
+  }
+
+  .${config.classTab}.${config.classTabActive} {
+	background-color: #0d94e6;
+	color: white;
+  }
+
+  .${config.classTabContainer} {
+	display: inline-block;
+  }
+
+  .${config.classTabContent} {
+	animation: fadeEffect 1s;
+  }
+
+  .${config.classTabContents} {
+	min-height: 100px;
+	padding: 10px;
+  }
+
+  @keyframes fadeEffect {
+	from {opacity: 0;}
+	to {opacity: 1;}
+  }
+`;
 
 export const defaultGrapesBlocksOptions: RequiredGrapesBlocksOptions = {
 	blocks: [
@@ -48,6 +107,7 @@ export const defaultGrapesBlocksOptions: RequiredGrapesBlocksOptions = {
 		'label',
 		'checkbox',
 		'radio',
+		'tabs',
 	],
 	block: () => ({}),
 	modalImportTitle: 'Import',
@@ -143,5 +203,36 @@ export const defaultGrapesBlocksOptions: RequiredGrapesBlocksOptions = {
 		codeViewOptions: {},
 		buttonLabel: 'Save',
 		commandCustomCode: {},
+	},
+	tabOptions: {
+		// Block settings
+		tabsBlock: {},
+		tabsProps: {},
+		tabContainerProps: {},
+		tabProps: {},
+		tabContentProps: {},
+		tabContentsProps: {},
+
+		// Class names
+		classTab: 'tab',
+		classTabContainer: 'tab-container',
+		classTabActive: 'tab-active',
+		classTabContent: 'tab-content',
+		classTabContents: 'tab-contents',
+
+		// Selectors and types
+		selectorTab: 'aria-controls',
+		typeTabs: 'tabs',
+		typeTabContainer: 'tab-container',
+		typeTab: 'tab',
+		typeTabContent: 'tab-content',
+		typeTabContents: 'tab-contents',
+
+		// Templates
+		templateTab: ({ index }) => `<span data-gjs-highlightable="false">Tab ${index}</span>`,
+		templateTabContent: ({ index }) => `<div>Tab Content ${index}</div>`,
+
+		// Style
+		style: defaultStyle,
 	},
 };
