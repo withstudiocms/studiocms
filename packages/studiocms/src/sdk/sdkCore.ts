@@ -13,6 +13,7 @@ import { SDKCore_DELETE } from './modules/delete.js';
 import { SDKCore_DiffTracking } from './modules/diffTracking.js';
 import { SDKCore_GET } from './modules/get.js';
 import { SDKCore_INIT } from './modules/init.js';
+import { SDKCore_MIDDLEWARES } from './modules/middlewares.js';
 import { SDKCore_NotificationSettings } from './modules/notificationSettings.js';
 import { SDKCore_POST } from './modules/post.js';
 import { SDKCore_ResetTokenBucket } from './modules/resetTokenBucket.js';
@@ -155,6 +156,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		SDKCore_AUTH.Default,
 		SDKCore_INIT.Default,
 		AstroDB.Default,
+		SDKCore_MIDDLEWARES.Default,
 	],
 	effect: Effect.gen(function* () {
 		// Get Services
@@ -185,6 +187,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			notificationSettings,
 			AUTH,
 			INIT,
+			MIDDLEWARES
 		] = yield* Effect.all([
 			SDKCore_FolderTree,
 			SDKCore_Generators,
@@ -203,6 +206,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			SDKCore_NotificationSettings,
 			SDKCore_AUTH,
 			SDKCore_INIT,
+			SDKCore_MIDDLEWARES,
 		]);
 
 		// Breakout service functions that need to be returned in this.
@@ -243,6 +247,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			GET,
 			AUTH,
 			INIT,
+			MIDDLEWARES
 		};
 	}),
 }) {
