@@ -35,7 +35,7 @@ interface ActionOptions {
 	delete?: boolean;
 }
 
-interface RichTextEditorOptions {
+export interface RichTextEditorOptions {
 	base?: BaseOptions | boolean;
 	fonts?: FontOptions;
 	format?: FormatOptions | boolean;

@@ -1,4 +1,5 @@
-import type { BlockProperties, ComponentDefinition, Editor } from "grapesjs";
+import type { BlockProperties, ComponentDefinition, Editor } from 'grapesjs';
+import type { RichTextEditorOptions } from './rte/index.js';
 
 type TraitsProperty = ComponentDefinition['traits'];
 
@@ -183,8 +184,13 @@ export interface GrapesBlocksOptions {
 	 * @default {}
 	 */
 	typed?: TypedOptions;
-}
 
+	/**
+	 * Options for the Rich Text Editor component.
+	 * @default {}
+	 */
+	rteOpts?: RichTextEditorOptions;
+}
 
 export type RequiredTooltipOptions = Required<TooltipOptions>;
 export type RequiredTypedOptions = Required<TypedOptions>;

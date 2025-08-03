@@ -40,7 +40,6 @@ const { content } = Astro.props as Props;
         countdown,
         forms,
         tabs,
-        tuiImageEditor,
     } from "../editorPlugins/index.js";
 
     // Get the editor options for Astro components and inline storage
@@ -68,7 +67,6 @@ const { content } = Astro.props as Props;
             usePlugin(tabs),
             usePlugin(countdown),
             usePlugin(customCode),
-            usePlugin(tuiImageEditor),
             usePlugin(forms),
         ],
     });

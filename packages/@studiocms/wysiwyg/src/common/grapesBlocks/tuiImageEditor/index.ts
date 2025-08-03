@@ -29,7 +29,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import type { Component, Plugin } from 'grapesjs';
+import type { Component, Editor, Plugin } from 'grapesjs';
 import type tuiImageEditor from 'tui-image-editor';
 
 type ImageEditor = tuiImageEditor.ImageEditor;
@@ -134,7 +134,7 @@ export type PluginOptions = {
 	style?: string[];
 };
 
-const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
+const plugin = (editor: Editor) => {
 	const opts: Required<PluginOptions> = {
 		config: {},
 		constructor: '',
@@ -161,7 +161,6 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 			'https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.min.css',
 			'https://uicdn.toast.com/tui-image-editor/v3.15.2/tui-image-editor.min.css',
 		],
-		...options,
 	};
 
 	const { script, style, height, width, hideHeader, onApply, upload, addToAssets, commandId } =
