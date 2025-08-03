@@ -13,7 +13,7 @@ import type { GrapesBlocksOptions, RequiredGrapesBlocksOptions } from './types.j
 const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) => {
 	// Ensure the options are complete
 	const options: RequiredGrapesBlocksOptions = {
-		blocks: ['link-block', 'quote', 'text-basic', 'tooltip', 'typed'],
+		blocks: ['link-block', 'quote', 'text-basic', 'tooltip', 'typed', 'column1', 'column2', 'column3', 'column3-7', 'text', 'link', 'image', 'video', 'map'],
 		block: () => ({}),
 		modalImportTitle: 'Import',
 		modalImportButton: 'Import',
@@ -22,6 +22,19 @@ const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) =
 		importViewerOptions: {},
 		textCleanCanvas: 'Are you sure you want to clear the canvas?',
 		showStylesOnChange: true,
+		flexGrid: true,
+		stylePrefix: 'gjs-',
+		addBasicStyle: true,
+		labelColumn1: '1 Column',
+		labelColumn2: '2 Columns',
+		labelColumn3: '3 Columns',
+		labelColumn37: '2 Columns 3/7',
+		labelText: 'Text',
+		labelLink: 'Link',
+		labelImage: 'Image',
+		labelVideo: 'Video',
+		labelMap: 'Map',
+		rowHeight: 75,
 		tooltip: {
 			id: 'tooltip',
 			labelTooltip: 'Tooltip',

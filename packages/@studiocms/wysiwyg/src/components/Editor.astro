@@ -35,7 +35,6 @@ const { content } = Astro.props as Props;
     import { astroComponents } from "../common/componentRegistry.js";
     import grapesBlocks from "../common/grapesBlocks/index.js";
     import {
-        blocks,
         customCode,
         countdown,
         forms,
@@ -63,7 +62,6 @@ const { content } = Astro.props as Props;
             usePlugin(astroComponents, astroComponentsOpts),
             usePlugin(inlineStorage, inlineStorageOpts),
             usePlugin(grapesBlocks),
-            usePlugin(blocks),
             usePlugin(tabs),
             usePlugin(countdown),
             usePlugin(customCode),

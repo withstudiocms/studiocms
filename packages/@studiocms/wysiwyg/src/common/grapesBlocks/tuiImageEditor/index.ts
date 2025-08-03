@@ -29,7 +29,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import type { Component, Editor, Plugin } from 'grapesjs';
+import type { Component, Editor } from 'grapesjs';
 import type tuiImageEditor from 'tui-image-editor';
 
 type ImageEditor = tuiImageEditor.ImageEditor;
