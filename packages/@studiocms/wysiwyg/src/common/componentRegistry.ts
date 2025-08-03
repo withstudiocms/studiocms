@@ -35,12 +35,14 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 	// Get the keys of the component registry for quick lookup
 	const componentKeys = componentRegistry.map(({ name }) => name);
 
-	// Setup custom code block
-	let timedInterval: NodeJS.Timeout;
-
 	// Add custom components from the registry
 	for (const component of componentRegistry) {
 		const { name, props } = component;
+
+		// Define a timed interval to fetch component HTML
+		// This will be used to update the component's preview in the editor
+		// The interval is cleared and reset on each change to avoid multiple fetches
+		let timedInterval: NodeJS.Timeout;
 
 		// Add the component type to the GrapesJS DomComponents manager
 		editor.DomComponents.addType(name, {
@@ -58,31 +60,36 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 					this.listenTo(this.model, 'change', this.onChange);
 					this.onChange();
 				},
-				async onChange() {
+				onChange() {
 					timedInterval && clearInterval(timedInterval);
-					timedInterval = setTimeout(async () => {
-						const { model, el } = this;
-						
-						// Fetch from API endpoint that uses Astro Container API to render Component to html
-						const getCompResponse = await fetch(PARTIAL_PATH, partialRequestBuilder(model));
+					timedInterval = setTimeout(
+						() =>
+							fetch(PARTIAL_PATH, partialRequestBuilder(this.model))
+								.then((getCompResponse) => {
+									// If response is not valid, log error.
+									if (!getCompResponse.ok) {
+										console.log('[Error]: Could not fetch component HTML, please try again.');
+										const html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
+										this.el.innerHTML = html;
+										return;
+									}
 
-						let html = '';
-
-						// If response is not valid, log error.
-						if (!getCompResponse.ok) {
-							console.log('[Error]: Could not fetch component HTML, please try again.');
-							html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
-							el.innerHTML = html;
-							return;
-						}
-
-						// Get HTML from JSON response
-						html = await getCompResponse.text();
-
-						// Update the element's innerHTML with the new HTML
-						el.innerHTML = html;
-					}, 1000);
-				}
+									// Get HTML from response and update element
+									return getCompResponse.text();
+								})
+								.then((html) => {
+									if (html !== undefined) {
+										// Only update if we got HTML (not from error case)
+										this.el.innerHTML = html;
+									}
+								})
+								.catch((error) => {
+									console.log('[Error]: Network or parsing error:', error);
+									this.el.innerHTML = `<div class="error">Network Error</div>`;
+								}),
+						100
+					);
+				},
 			},
 		});
 
