@@ -35,6 +35,9 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 	// Get the keys of the component registry for quick lookup
 	const componentKeys = componentRegistry.map(({ name }) => name);
 
+	// Setup custom code block
+	let timedInterval: NodeJS.Timeout;
+
 	// Add custom components from the registry
 	for (const component of componentRegistry) {
 		const { name, props } = component;
@@ -50,25 +53,36 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 			},
 			view: {
 				tagName: () => 'div',
-				onRender: async ({ el, model }) => {
-				
-					// Fetch from API endpoint that uses Astro Container API to render Component to html
-					const getCompResponse = await fetch(PARTIAL_PATH, partialRequestBuilder(model));
-				
-					let html = '';
-				
-					// If response is not valid, log error.
-					if (!getCompResponse.ok) {
-						console.log('[Error]: Could not fetch component HTML, please try again.');
-						html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
-						el.innerHTML = html;
-						return;
-					}
-				
-					// Get HTML from JSON response
-					html = await getCompResponse.text();
-					el.innerHTML = html;
+				init() {
+					this.listenTo(this.model.components(), 'add remove reset', this.onChange);
+					this.listenTo(this.model, 'change', this.onChange);
+					this.onChange();
 				},
+				async onChange() {
+					timedInterval && clearInterval(timedInterval);
+					timedInterval = setTimeout(async () => {
+						const { model, el } = this;
+						
+						// Fetch from API endpoint that uses Astro Container API to render Component to html
+						const getCompResponse = await fetch(PARTIAL_PATH, partialRequestBuilder(model));
+
+						let html = '';
+
+						// If response is not valid, log error.
+						if (!getCompResponse.ok) {
+							console.log('[Error]: Could not fetch component HTML, please try again.');
+							html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
+							el.innerHTML = html;
+							return;
+						}
+
+						// Get HTML from JSON response
+						html = await getCompResponse.text();
+
+						// Update the element's innerHTML with the new HTML
+						el.innerHTML = html;
+					}, 1000);
+				}
 			},
 		});
 
