@@ -1,13 +1,18 @@
-import type { Editor } from 'grapesjs';
-import type { PluginOptions } from './index.js';
-import { commandNameCustomCode, keyCustomCode, typeCustomCode } from './utils.js';
+import type { AddComponentTypeOptions, Editor } from 'grapesjs';
+import { commandNameCustomCode, keyCustomCode, typeCustomCode } from '../consts.js';
+import type { RequiredCustomCodeOptions } from '../types.js';
 
-export default (editor: Editor, opts: PluginOptions = {}) => {
-	const { Components } = editor;
-	const { toolbarBtnCustomCode } = opts;
+export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
+	const addComponent = (id: string, def: AddComponentTypeOptions) => {
+		editor.Components.addType(id, def);
+	};
+	// Setup custom code block
 	let timedInterval: NodeJS.Timeout;
 
-	Components.addType('script', {
+	const { propsCustomCode, toolbarBtnCustomCode, placeholderScript } =
+		opts as RequiredCustomCodeOptions;
+
+	addComponent('script', {
 		view: {
 			onRender() {
 				const { model, el } = this;
@@ -18,7 +23,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 		},
 	});
 
-	Components.addType(typeCustomCode, {
+	addComponent(typeCustomCode, {
 		model: {
 			defaults: {
 				name: 'Custom Code',
@@ -28,7 +33,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 					components: { type: 'textnode', content: 'Insert here your custom code' },
 					// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 				} as any,
-				...opts.propsCustomCode,
+				...propsCustomCode,
 			},
 
 			/**
@@ -48,8 +53,8 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 						id,
 						command: commandNameCustomCode,
 						label: `<svg viewBox="0 0 24 24">
-              <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
-            </svg>`,
+                  <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
+                </svg>`,
 						...toolbarBtnCustomCode,
 					});
 				}
@@ -85,8 +90,8 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 					let droppable = true;
 
 					// Avoid rendering codes with scripts
-					if (content.indexOf('<script') >= 0 && opts.placeholderScript) {
-						el.innerHTML = opts.placeholderScript;
+					if (content.indexOf('<script') >= 0 && placeholderScript) {
+						el.innerHTML = placeholderScript;
 						droppable = false;
 					}
 

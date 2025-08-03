@@ -1,18 +1,22 @@
-import type { Editor } from 'grapesjs';
+import type { AddComponentTypeOptions, Editor } from "grapesjs";
+import {
+	typeButton,
+	typeCheckbox,
+	typeForm,
+	typeInput,
+	typeLabel,
+	typeOption,
+	typeRadio,
+	typeSelect,
+	typeTextarea,
+} from '../consts.js';
 
-export const typeForm = 'form';
-export const typeInput = 'input';
-export const typeTextarea = 'textarea';
-export const typeSelect = 'select';
-export const typeCheckbox = 'checkbox';
-export const typeRadio = 'radio';
-export const typeButton = 'button';
-export const typeLabel = 'label';
-export const typeOption = 'option';
+export default (editor: Editor) => {
+    const addComponent = (id: string, def: AddComponentTypeOptions) => {
+        editor.Components.addType(id, def);
+    };
 
-export default function (editor: Editor) {
-	const { Components } = editor;
-
+	// Setup form components
 	const idTrait = {
 		name: 'id',
 	};
@@ -53,7 +57,7 @@ export default function (editor: Editor) {
 		}
 	};
 
-	Components.addType(typeForm, {
+	addComponent(typeForm, {
 		isComponent: (el) => el.tagName === 'FORM',
 
 		model: {
@@ -96,8 +100,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// INPUT
-	Components.addType(typeInput, {
+	addComponent(typeInput, {
 		isComponent: (el) => el.tagName === 'INPUT',
 
 		model: {
@@ -144,8 +147,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// TEXTAREA
-	Components.addType(typeTextarea, {
+	addComponent(typeTextarea, {
 		extend: typeInput,
 		isComponent: (el) => el.tagName === 'TEXTAREA',
 
@@ -158,8 +160,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// OPTION
-	Components.addType(typeOption, {
+	addComponent(typeOption, {
 		isComponent: (el) => el.tagName === 'OPTION',
 
 		model: {
@@ -173,8 +174,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// SELECT
-	Components.addType(typeSelect, {
+	addComponent(typeSelect, {
 		isComponent: (el) => el.tagName === 'SELECT',
 
 		model: {
@@ -202,8 +202,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// CHECKBOX
-	Components.addType(typeCheckbox, {
+	addComponent(typeCheckbox, {
 		extend: typeInput,
 		isComponent: (el) => el.tagName === 'INPUT' && (el as HTMLInputElement).type === 'checkbox',
 
@@ -232,8 +231,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// RADIO
-	Components.addType(typeRadio, {
+	addComponent(typeRadio, {
 		extend: typeCheckbox,
 		isComponent: (el) => el.tagName === 'INPUT' && (el as HTMLInputElement).type === 'radio',
 
@@ -244,7 +242,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	Components.addType(typeButton, {
+	addComponent(typeButton, {
 		extend: typeInput,
 		isComponent: (el) => el.tagName === 'BUTTON',
 
@@ -303,8 +301,7 @@ export default function (editor: Editor) {
 		},
 	});
 
-	// LABEL
-	Components.addType(typeLabel, {
+	addComponent(typeLabel, {
 		extend: 'text',
 		isComponent: (el) => el.tagName === 'LABEL',
 

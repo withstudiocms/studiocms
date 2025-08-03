@@ -205,6 +205,64 @@ export type CountdownOptions = {
 	classPrefix?: string;
 };
 
+export type CustomCodeOptions = {
+	/**
+	 * Object to extend the default custom code block. Pass a falsy value to avoid adding the block
+	 * @example
+	 * { label: 'Custom Code', category: 'Extra', ... }
+	 */
+	blockCustomCode?: Partial<BlockProperties>;
+
+	/**
+	 * Object to extend the default custom code properties.
+	 * @example
+	 * { name: 'Custom Code', droppable: false, ... }
+	 */
+	propsCustomCode?: ComponentDefinition;
+
+	/**
+	 * Object to extend the default component's toolbar button for the code. Pass a falsy value to avoid adding the button
+	 * @example
+	 * { label: '</>', attributes: { title: 'Open custom code' } }
+	 */
+
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
+	toolbarBtnCustomCode?: Record<string, any>;
+
+	/**
+	 * Content to show when the custom code contains `<script>`
+	 */
+	placeholderScript?: string;
+
+	/**
+	 * Title for the custom code modal
+	 * @default 'Insert your code'
+	 */
+	modalTitle?: string;
+
+	/**
+	 * Additional options for the code viewer.
+	 * @example
+	 * { theme: 'hopscotch', readOnly: 0 }
+	 */
+
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
+	codeViewOptions?: Record<string, any>;
+
+	/**
+	 * Label for the default save button
+	 * @default 'Save'
+	 */
+	buttonLabel?: string;
+
+	/**
+	 * Object to extend the default custom code command.
+	 */
+
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
+	commandCustomCode?: Record<string, any>;
+}
+
 export interface GrapesBlocksOptions {
 	blocks: BlockList;
 
@@ -360,9 +418,12 @@ export interface GrapesBlocksOptions {
 	rteOpts?: RichTextEditorOptions;
 
 	countdown?: CountdownOptions;
+
+	customCode?: CustomCodeOptions;
 }
 
 export type RequiredTooltipOptions = Required<TooltipOptions>;
 export type RequiredTypedOptions = Required<TypedOptions>;
 export type RequiredCountdownOptions = Required<CountdownOptions>;
+export type RequiredCustomCodeOptions = Required<CustomCodeOptions>;
 export type RequiredGrapesBlocksOptions = Required<GrapesBlocksOptions>;
