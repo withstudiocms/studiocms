@@ -1,10 +1,9 @@
-import type { CustomTrait, Editor } from 'grapesjs';
-import { typeOption } from '../consts';
+import type { Editor } from 'grapesjs';
+import { typeOption } from '../consts.js';
+import { AddTrait } from './index.js';
 
 export default (editor: Editor) => {
-	const addTrait = <T>(id: string, def: CustomTrait<T>) => {
-		editor.TraitManager.addType(id, def);
-	};
+	const addTrait = AddTrait(editor);
 
 	addTrait('select-options', {
 		events: {

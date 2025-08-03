@@ -1,5 +1,6 @@
-import type { AddComponentTypeOptions, Editor } from 'grapesjs';
+import type { Editor } from 'grapesjs';
 import type { RequiredCountdownOptions } from '../types.js';
+import { AddComponent } from './index.js';
 
 type TElement = HTMLElement & { __gjsCountdownInterval: ReturnType<typeof setTimeout | typeof setInterval> };
 
@@ -10,9 +11,7 @@ declare global {
 }
 
 export default (editor: Editor, opts: RequiredCountdownOptions) => {
-	const addComponent = (id: string, def: AddComponentTypeOptions) => {
-		editor.Components.addType(id, def);
-	};
+	const addComponent = AddComponent(editor);
 
 	// Setup countdown block
 	const {

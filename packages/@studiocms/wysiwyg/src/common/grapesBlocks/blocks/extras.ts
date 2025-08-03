@@ -6,16 +6,10 @@ import type {
 	RequiredGrapesBlocksOptions,
 	RequiredTooltipOptions,
 } from '../types.js';
+import { AddBlocks } from './index.js';
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-	const addBlock = (id: string, def: BlockProperties) => {
-		opts.blocks.indexOf(id) >= 0 &&
-			editor.Blocks.add(id, {
-				select: true,
-				...def,
-				...opts.block(id),
-			});
-	};
+	const addBlock = AddBlocks(editor, opts);
 
 	const extrasCategory = 'Extra';
 

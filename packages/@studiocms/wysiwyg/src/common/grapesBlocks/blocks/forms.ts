@@ -1,16 +1,10 @@
-import type { BlockProperties, Editor } from "grapesjs";
+import type { Editor } from "grapesjs";
 import { typeButton, typeCheckbox, typeForm, typeInput, typeLabel, typeRadio, typeSelect, typeTextarea } from "../consts.js";
 import type { RequiredGrapesBlocksOptions } from "../types.js";
+import { AddBlocks } from "./index.js";
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-	const addBlock = (id: string, def: BlockProperties) => {
-		opts.blocks.indexOf(id) >= 0 &&
-			editor.Blocks.add(id, {
-				select: true,
-				...def,
-				...opts.block(id),
-			});
-	};
+	const addBlock = AddBlocks(editor, opts);
 
 	// Setup forms blocks
 	const formsCategory = 'Forms';

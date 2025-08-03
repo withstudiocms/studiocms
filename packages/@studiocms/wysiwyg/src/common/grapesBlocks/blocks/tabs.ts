@@ -1,15 +1,9 @@
-import type { BlockProperties, Editor } from 'grapesjs';
+import type { Editor } from 'grapesjs';
 import type { RequiredGrapesBlocksOptions, RequiredTabsOptions } from '../types.js';
+import { AddBlocks } from './index.js';
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-	const addBlock = (id: string, def: BlockProperties) => {
-		opts.blocks.indexOf(id) >= 0 &&
-			editor.Blocks.add(id, {
-				select: true,
-				...def,
-				...opts.block(id),
-			});
-	};
+	const addBlock = AddBlocks(editor, opts);
 
 	const { tabsBlock, typeTabs } = opts.tabOptions as RequiredTabsOptions;
 

@@ -1,11 +1,10 @@
-import type { AddComponentTypeOptions, Editor } from 'grapesjs';
+import type { Editor } from 'grapesjs';
 import { commandNameCustomCode, keyCustomCode, typeCustomCode } from '../consts.js';
 import type { RequiredCustomCodeOptions } from '../types.js';
+import { AddComponent } from './index.js';
 
 export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
-	const addComponent = (id: string, def: AddComponentTypeOptions) => {
-		editor.Components.addType(id, def);
-	};
+	const addComponent = AddComponent(editor);
 	// Setup custom code block
 	let timedInterval: ReturnType<typeof setTimeout | typeof setInterval>;
 

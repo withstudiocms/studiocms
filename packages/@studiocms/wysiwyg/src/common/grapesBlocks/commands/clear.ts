@@ -1,18 +1,11 @@
 import { toast } from '@studiocms/ui/components/Toast/toast.js';
-import type { CommandFunction, CommandObject, Editor, ObjectAny } from 'grapesjs';
+import type { Editor } from 'grapesjs';
 import { cmdClear } from '../consts.js';
 import type { RequiredGrapesBlocksOptions } from '../types.js';
+import { AddCmd } from './index.js';
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-	const { Commands } = editor;
-
-	const addCmd = <T extends ObjectAny>(
-		id: string,
-		// biome-ignore lint/suspicious/noExplicitAny: this is the source type used by grapesjs
-		command: CommandFunction | CommandObject<any, T>
-	) => {
-		Commands.add(id, command);
-	};
+	const addCmd = AddCmd(editor);
 
 	const txtConfirm = opts.textCleanCanvas;
 

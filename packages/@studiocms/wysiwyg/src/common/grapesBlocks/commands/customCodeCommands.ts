@@ -1,19 +1,12 @@
-import type { CommandFunction, CommandObject, Component, Editor, ObjectAny } from 'grapesjs';
+import type { Component, Editor } from 'grapesjs';
 import { commandNameCustomCode, keyCustomCode } from '../consts';
 import type { RequiredCustomCodeOptions } from '../types';
+import { AddCmd } from './index.js';
 
 type ContentTypes = HTMLElement | string | undefined;
 
 export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
-	const { Commands } = editor;
-
-	const addCmd = <T extends ObjectAny>(
-		id: string,
-		// biome-ignore lint/suspicious/noExplicitAny: this is the source type used by grapesjs
-		command: CommandFunction | CommandObject<any, T>
-	) => {
-		Commands.add(id, command);
-	};
+	const addCmd = AddCmd(editor);
 
 	// Add the custom code commands
 	const { modalTitle, codeViewOptions, commandCustomCode, buttonLabel } = opts;

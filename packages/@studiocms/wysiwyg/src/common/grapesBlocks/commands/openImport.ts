@@ -1,13 +1,15 @@
 import type { Editor } from 'grapesjs';
 import { cmdImport } from '../consts.js';
 import type { RequiredGrapesBlocksOptions } from '../types.js';
+import { AddCmd } from './index.js';
 
 export default (editor: Editor, config: RequiredGrapesBlocksOptions) => {
+	const addCmd = AddCmd(editor);
 	const pfx = editor.getConfig('stylePrefix');
 	const importLabel = config.modalImportLabel;
 	const importCnt = config.modalImportContent;
 
-	editor.Commands.add(cmdImport, {
+	addCmd(cmdImport, {
 		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		codeViewer: null as any,
 		container: null as HTMLElement | null,
