@@ -1,6 +1,10 @@
 import type { BlockProperties, Editor } from 'grapesjs';
 import { typedId } from '../consts.js';
-import type { RequiredGrapesBlocksOptions, RequiredTooltipOptions } from '../types.js';
+import type {
+	RequiredCountdownOptions,
+	RequiredGrapesBlocksOptions,
+	RequiredTooltipOptions,
+} from '../types.js';
 import { linkBlock, quoteBlock, textBasicBlock } from './basicBlocks.js';
 import { tooltipComponent, typedComponent } from './extraBlocks.js';
 
@@ -14,6 +18,7 @@ export function loadBlocks(editor: Editor, opts: RequiredGrapesBlocksOptions) {
 				...opts.block(id),
 			});
 	};
+
 	const { stylePrefix, flexGrid, rowHeight, addBasicStyle } = opts;
 	const clsRow = `${stylePrefix}row`;
 	const clsCell = `${stylePrefix}cell`;
@@ -306,6 +311,26 @@ export function loadBlocks(editor: Editor, opts: RequiredGrapesBlocksOptions) {
 		...typedComponent,
 		...opts.typed.block,
 	});
+
+	// Setup countdown block
+	const {
+		block: countdownBlock,
+		id: countdownId,
+		label: countdownLabel,
+	} = opts.countdown as RequiredCountdownOptions;
+
+	if (countdownBlock) {
+		addBlock(countdownId, {
+			media: `<svg viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 20C16.4 20 20 16.4 20 12S16.4 4 12 4 4 7.6 4 12 7.6 20 12 20M12 2C17.5 2 22 6.5 22 12S17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M17 11.5V13H11V7H12.5V11.5H17Z" />
+      </svg>`,
+			label: countdownLabel,
+			category: 'Extra',
+			select: true,
+			content: { type: countdownId },
+			...countdownBlock,
+		});
+	}
 }
 
 export default loadBlocks;

@@ -4,16 +4,32 @@ import loadCommands from './commands/index.js';
 import loadComponents from './components/index.js';
 import { loadI18n } from './i18n/index.js';
 import loadPanels from './panels/index.js';
-import richTextEditor from './rte/index.js';
+import loadRichTextEditor from './rte/index.js';
 import loadSelectors from './selectors/index.js';
 import loadTraits from './traits/index.js';
-import tuiImageEditor from './tuiImageEditor/index.js';
+import loadTuiImageEditor from './tuiImageEditor/index.js';
 import type { GrapesBlocksOptions, RequiredGrapesBlocksOptions } from './types.js';
 
 const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) => {
 	// Ensure the options are complete
 	const options: RequiredGrapesBlocksOptions = {
-		blocks: ['link-block', 'quote', 'text-basic', 'tooltip', 'typed', 'column1', 'column2', 'column3', 'column3-7', 'text', 'link', 'image', 'video', 'map'],
+		blocks: [
+			'link-block',
+			'quote',
+			'text-basic',
+			'tooltip',
+			'typed',
+			'column1',
+			'column2',
+			'column3',
+			'column3-7',
+			'text',
+			'link',
+			'image',
+			'video',
+			'map',
+			'countdown',
+		],
 		block: () => ({}),
 		modalImportTitle: 'Import',
 		modalImportButton: 'Import',
@@ -78,6 +94,22 @@ const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) =
 			props: (p) => p,
 		},
 		rteOpts: {},
+		countdown: {
+			id: 'countdown',
+			label: 'Countdown',
+			block: {},
+			props: {},
+			style: '',
+			styleAdditional: '',
+			startTime: '',
+			endText: 'EXPIRED',
+			dateInputType: 'date',
+			labelDays: 'days',
+			labelHours: 'hours',
+			labelMinutes: 'minutes',
+			labelSeconds: 'seconds',
+			classPrefix: 'countdown',
+		},
 		...opts,
 	};
 
@@ -91,10 +123,10 @@ const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) =
 	loadI18n(editor);
 
 	// Load the rich text editor plugin
-	richTextEditor(editor, options.rteOpts);
+	loadRichTextEditor(editor, options.rteOpts);
 
 	// Load TUI Image Editor
-	tuiImageEditor(editor);
+	loadTuiImageEditor(editor);
 };
 
 export default grapesBlocks;
