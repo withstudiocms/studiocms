@@ -127,8 +127,13 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
         </select>`;
 
 	editor.onReady(() => {
-		// @ts-ignore
-		if (options.maxWidth) rte.getToolbarEl().firstChild.style.maxWidth = options.maxWidth;
+		if (options.maxWidth) {
+			const toolbar = rte.getToolbarEl();
+			const firstChild = toolbar.firstChild as HTMLElement | null;
+			if (firstChild) {
+				firstChild.style.maxWidth = options.maxWidth;
+			}
+		}
 
 		//remove defaults if not required
 		if (!options.base || typeof options.base === 'object') {
@@ -411,7 +416,7 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 			});
 		options.align &&
 			rte.add('justifyCenter', {
-				icon: icons?.justifyRight || '<i class="fa fa-align-center"></i>',
+				icon: icons?.justifyCenter || '<i class="fa fa-align-center"></i>',
 				attributes: {
 					title: 'Align Center',
 				},

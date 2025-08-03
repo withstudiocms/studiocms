@@ -106,8 +106,9 @@ export const getSlotData = (model: Component) => {
 	if (children.length > 0) {
 		slotData = children
 			.map((child) => {
+				const tagName = child.tagName || 'div';
 				const childHtml = child.toHTML({ tag: 'div' });
-				return `<${child.tagName}>${childHtml}</${child.tagName}>`;
+				return `<${tagName}>${childHtml}</${tagName}>`;
 			})
 			.join('');
 	}

@@ -14,7 +14,15 @@ type PropData = {
 };
 
 // Parse the request body as JSON
-const data: PropData = await Astro.request.json();
+let data: PropData;
+try {
+	data = await Astro.request.json();
+} catch (error) {
+	return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
 
 // Validate the data
 if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim()) {

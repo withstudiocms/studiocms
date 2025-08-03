@@ -297,8 +297,7 @@ export const baseConfig: Partial<EditorConfig> = {
 						name: 'Order',
 						property: 'order',
 						type: 'integer',
-						// @ts-ignore
-						defaults: 0,
+						defaults: '0',
 						min: 0,
 					},
 					{
@@ -310,16 +309,14 @@ export const baseConfig: Partial<EditorConfig> = {
 								name: 'Grow',
 								property: 'flex-grow',
 								type: 'integer',
-								// @ts-ignore
-								defaults: 0,
+								defaults: '0',
 								min: 0,
 							},
 							{
 								name: 'Shrink',
 								property: 'flex-shrink',
 								type: 'integer',
-								// @ts-ignore
-								defaults: 0,
+								defaults: '0',
 								min: 0,
 							},
 							{

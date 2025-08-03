@@ -1,12 +1,12 @@
 import type { AddComponentTypeOptions, Editor } from 'grapesjs';
 import type { RequiredCountdownOptions } from '../types.js';
 
-type TElement = HTMLElement & { __gjsCountdownInterval: NodeJS.Timer };
+type TElement = HTMLElement & { __gjsCountdownInterval: ReturnType<typeof setTimeout | typeof setInterval> };
 
 declare global {
-    interface Window {
-        __gjsCountdownIntervals: TElement[];
-    }
+	interface Window {
+		__gjsCountdownIntervals: TElement[];
+	}
 }
 
 export default (editor: Editor, opts: RequiredCountdownOptions) => {
@@ -30,77 +30,6 @@ export default (editor: Editor, opts: RequiredCountdownOptions) => {
 		styleAdditional: countdownStyleAdditional,
 	} = opts;
 
-	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
-	const countdownScript = function (props: Record<string, any>) {
-		const startfrom: string = props.startfrom;
-		const endTxt: string = props.endText;
-		// @ts-ignore
-		// biome-ignore lint/complexity/noUselessThisAlias: This is the type that was already used in the original code
-		const el: TElement = this;
-		const countDownDate = new Date(startfrom).getTime();
-		const countdownEl = el.querySelector('[data-js=countdown]') as HTMLElement;
-		const endTextEl = el.querySelector('[data-js=countdown-endtext]') as HTMLElement;
-		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
-		const dayEl = el.querySelector('[data-js=countdown-day]')!;
-		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
-		const hourEl = el.querySelector('[data-js=countdown-hour]')!;
-		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
-		const minuteEl = el.querySelector('[data-js=countdown-minute]')!;
-		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
-		const secondEl = el.querySelector('[data-js=countdown-second]')!;
-		const oldInterval = el.__gjsCountdownInterval;
-		// @ts-ignore
-		oldInterval && clearInterval(oldInterval);
-
-		const connected: TElement[] = window.__gjsCountdownIntervals || [];
-		const toClean: TElement[] = [];
-		connected.forEach((item: TElement) => {
-			if (!item.isConnected) {
-				// @ts-ignore
-				clearInterval(item.__gjsCountdownInterval);
-				toClean.push(item);
-			}
-		});
-		connected.indexOf(el) < 0 && connected.push(el);
-		window.__gjsCountdownIntervals = connected.filter((item) => toClean.indexOf(item) < 0);
-
-		const setTimer = (days: number, hours: number, minutes: number, seconds: number) => {
-			dayEl.innerHTML = `${days < 10 ? `0${days}` : days}`;
-			hourEl.innerHTML = `${hours < 10 ? `0${hours}` : hours}`;
-			minuteEl.innerHTML = `${minutes < 10 ? `0${minutes}` : minutes}`;
-			secondEl.innerHTML = `${seconds < 10 ? `0${seconds}` : seconds}`;
-		};
-
-		const moveTimer = () => {
-			// biome-ignore lint/complexity/useDateNow: This is the type that was already used in the original code
-			const now = new Date().getTime();
-			const distance = countDownDate - now;
-			const days = Math.floor(distance / 86400000);
-			const hours = Math.floor((distance % 86400000) / 3600000);
-			const minutes = Math.floor((distance % 3600000) / 60000);
-			const seconds = Math.floor((distance % 60000) / 1000);
-
-			setTimer(days, hours, minutes, seconds);
-
-			if (distance < 0) {
-				// @ts-ignore
-				clearInterval(el.__gjsCountdownInterval);
-				endTextEl.innerHTML = endTxt;
-				countdownEl.style.display = 'none';
-				endTextEl.style.display = '';
-			}
-		};
-
-		if (countDownDate) {
-			el.__gjsCountdownInterval = setInterval(moveTimer, 1000);
-			endTextEl.style.display = 'none';
-			countdownEl.style.display = '';
-			moveTimer();
-		} else {
-			setTimer(0, 0, 0, 0);
-		}
-	};
-
 	addComponent(countdownId, {
 		model: {
 			defaults: {
@@ -108,7 +37,76 @@ export default (editor: Editor, opts: RequiredCountdownOptions) => {
 				classes: [countdownPfx],
 				endText: countdownEndText,
 				droppable: false,
-				script: countdownScript,
+				// biome-ignore lint/suspicious/noExplicitAny: grapesjs types
+				script(props: Record<string, any>) {
+					const startfrom: string = props.startfrom;
+					const endTxt: string = props.endText;
+					const countDownDate = new Date(startfrom).getTime();
+					const countdownEl = this.querySelector('[data-js=countdown]') as HTMLElement;
+					const endTextEl = this.querySelector('[data-js=countdown-endtext]') as HTMLElement;
+					// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
+					const dayEl = this.querySelector('[data-js=countdown-day]')!;
+					// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
+					const hourEl = this.querySelector('[data-js=countdown-hour]')!;
+					// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
+					const minuteEl = this.querySelector('[data-js=countdown-minute]')!;
+					// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
+					const secondEl = this.querySelector('[data-js=countdown-second]')!;
+					const oldInterval = (this as unknown as TElement).__gjsCountdownInterval;
+					if (oldInterval) clearInterval(oldInterval);
+
+					const connected: TElement[] = window.__gjsCountdownIntervals || [];
+					const toClean: TElement[] = [];
+					connected.forEach((item: TElement) => {
+						if (!item.isConnected) {
+							clearInterval(item.__gjsCountdownInterval);
+							toClean.push(item);
+						}
+					});
+					// biome-ignore lint/suspicious/noExplicitAny: types are stupid anyway
+					connected.indexOf(this as any) < 0 && connected.push(this as any);
+					window.__gjsCountdownIntervals = connected.filter((item) => toClean.indexOf(item) < 0);
+
+					const setTimer = (days: number, hours: number, minutes: number, seconds: number) => {
+						dayEl.innerHTML = `${days < 10 ? `0${days}` : days}`;
+						hourEl.innerHTML = `${hours < 10 ? `0${hours}` : hours}`;
+						minuteEl.innerHTML = `${minutes < 10 ? `0${minutes}` : minutes}`;
+						secondEl.innerHTML = `${seconds < 10 ? `0${seconds}` : seconds}`;
+					};
+
+					const MS_PER_DAY = 86400000;
+					const MS_PER_HOUR = 3600000;
+					const MS_PER_MINUTE = 60000;
+					const MS_PER_SECOND = 1000;
+
+					const moveTimer = () => {
+						// biome-ignore lint/complexity/useDateNow: This is the type that was already used in the original code
+						const now = new Date().getTime();
+						const distance = countDownDate - now;
+						const days = Math.floor(distance / MS_PER_DAY);
+						const hours = Math.floor((distance % MS_PER_DAY) / MS_PER_HOUR);
+						const minutes = Math.floor((distance % MS_PER_HOUR) / MS_PER_MINUTE);
+						const seconds = Math.floor((distance % MS_PER_MINUTE) / MS_PER_SECOND);
+
+						setTimer(days, hours, minutes, seconds);
+
+						if (distance < 0) {
+							clearInterval((this as unknown as TElement).__gjsCountdownInterval);
+							endTextEl.innerHTML = endTxt;
+							countdownEl.style.display = 'none';
+							endTextEl.style.display = '';
+						}
+					};
+
+					if (countDownDate) {
+						(this as unknown as TElement).__gjsCountdownInterval = setInterval(moveTimer, 1000);
+						endTextEl.style.display = 'none';
+						countdownEl.style.display = '';
+						moveTimer();
+					} else {
+						setTimer(0, 0, 0, 0);
+					}
+				},
 				'script-props': ['startfrom', 'endText'],
 				traits: [
 					{

@@ -23,6 +23,7 @@ export default class ColorPicker {
 	private isOpen: boolean;
 	private colors: string[];
 	private options: ColorPickerOptions;
+	private windowClickHandler?: (ev: MouseEvent) => void;
 
 	/**
 	 * ColorPicker
@@ -116,13 +117,27 @@ export default class ColorPicker {
 		});
 
 		if (this.options.closeOnBlur) {
-			window.addEventListener('click', (ev: MouseEvent) => {
+			this.windowClickHandler = (ev: MouseEvent) => {
 				const target = ev.target as HTMLElement;
 				// check if we didn't click 'open' and 'color pallete' elements
 				if (target !== this.options.open && target !== this.elm && this.isOpen) {
 					this.close();
 				}
-			});
+			};
+			window.addEventListener('click', this.windowClickHandler);
+		}
+	}
+
+	/**
+	 * destroy
+	 * Cleans up event listeners and resources.
+	 *
+	 * @name destroy
+	 * @function
+	 */
+	destroy(): void {
+		if (this.windowClickHandler) {
+			window.removeEventListener('click', this.windowClickHandler);
 		}
 
 		if (this.options.autoclose !== false) {

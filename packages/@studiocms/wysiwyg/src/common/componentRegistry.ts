@@ -43,6 +43,7 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 		// This will be used to update the component's preview in the editor
 		// The interval is cleared and reset on each change to avoid multiple fetches
 		let timedInterval: NodeJS.Timeout;
+		let abortController: AbortController | null;
 
 		// Add the component type to the GrapesJS DomComponents manager
 		editor.DomComponents.addType(name, {
@@ -61,32 +62,40 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 					this.onChange();
 				},
 				onChange() {
-					timedInterval && clearInterval(timedInterval);
+					timedInterval && clearTimeout(timedInterval);
+					abortController?.abort();
 					timedInterval = setTimeout(
-						() =>
-							fetch(PARTIAL_PATH, partialRequestBuilder(this.model))
-								.then((getCompResponse) => {
-									// If response is not valid, log error.
-									if (!getCompResponse.ok) {
-										console.log('[Error]: Could not fetch component HTML, please try again.');
-										const html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
-										this.el.innerHTML = html;
-										return;
-									}
+						() => {
+							abortController = new AbortController();
+							fetch(PARTIAL_PATH, {
+								...partialRequestBuilder(this.model),
+								signal: abortController.signal
+							})
+							.then((getCompResponse) => {
+								// If response is not valid, log error.
+								if (!getCompResponse.ok) {
+									console.log('[Error]: Could not fetch component HTML, please try again.');
+									const html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
+									this.el.innerHTML = html;
+									return;
+								}
 
-									// Get HTML from response and update element
-									return getCompResponse.text();
-								})
-								.then((html) => {
-									if (html !== undefined) {
-										// Only update if we got HTML (not from error case)
-										this.el.innerHTML = html;
-									}
-								})
-								.catch((error) => {
+								// Get HTML from response and update element
+								return getCompResponse.text();
+							})
+							.then((html) => {
+								if (html !== undefined) {
+									// Only update if we got HTML (not from error case)
+									this.el.innerHTML = html;
+								}
+							})
+							.catch((error) => {
+								if (error.name !== 'AbortError') {
 									console.log('[Error]: Network or parsing error:', error);
 									this.el.innerHTML = `<div class="error">Network Error</div>`;
-								}),
+								}
+							});
+						},
 						100
 					);
 				},

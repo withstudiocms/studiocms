@@ -97,7 +97,7 @@ const { content } = Astro.props as Props;
         $(".gjs-sm-sectors").before(traitsSector);
         traitsSector.find(".gjs-sm-sector-title").on("click", function () {
             var traitStyle = traitsProps.get(0).style;
-            var hidden = traitStyle.display == "none";
+            var hidden = traitStyle.display === "none";
             if (hidden) {
                 traitStyle.display = "block";
             } else {

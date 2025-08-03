@@ -226,7 +226,6 @@ export const tooltipComponent = (editor: Editor, opts: RequiredTooltipOptions) =
 								const selected = editor.getSelected();
 								if (selected?.is(tooltipId)) {
 									selected.addAttributes({ [attrTooltipVis]: 'true' });
-									// @ts-ignore
 									editor.once('style:target', () => {
 										selected.addAttributes({ [attrTooltipVis]: 'false' });
 									});

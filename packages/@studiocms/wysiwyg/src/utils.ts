@@ -5,12 +5,7 @@
  * @returns A new string with the first character converted to uppercase. If the input string has a length of 1 or less, it is returned unchanged.
  */
 export function firstUpperCase(text: string): string {
-	if (text.length > 1) {
-		const p1 = text.slice(0, 1);
-		const p2 = text.slice(1);
-		return `${p1.toUpperCase()}${p2}`;
-	}
-	return text;
+	return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 /**

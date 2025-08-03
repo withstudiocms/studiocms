@@ -3,8 +3,7 @@ import type { RequiredGrapesBlocksOptions } from '../types.js';
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 	const addBlock = (id: string, def: BlockProperties) => {
-		// biome-ignore lint/style/noNonNullAssertion: this is a required option
-		opts.blocks.indexOf(id)! >= 0 &&
+		opts.blocks.indexOf(id) >= 0 &&
 			editor.Blocks.add(id, {
 				select: true,
 				...def,
@@ -128,7 +127,7 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 			let value = attrs[key];
 			const toParse = Array.isArray(value) || value instanceof Object;
 			value = toParse ? JSON.stringify(value) : value;
-			result.push(`${key}=${toParse ? `'${value}'` : `'${value}'`}`);
+			result.push(`${key}=${toParse ? `'${value}'` : `"${value}"`}`);
 		}
 
 		return result.length ? ` ${result.join(' ')}` : '';

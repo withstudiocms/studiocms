@@ -7,7 +7,7 @@ export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
 		editor.Components.addType(id, def);
 	};
 	// Setup custom code block
-	let timedInterval: NodeJS.Timeout;
+	let timedInterval: ReturnType<typeof setTimeout | typeof setInterval>;
 
 	const { propsCustomCode, toolbarBtnCustomCode, placeholderScript } =
 		opts as RequiredCustomCodeOptions;
@@ -83,7 +83,7 @@ export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
 			 * Things to do once inner components of custom code are changed
 			 */
 			onComponentsChange() {
-				timedInterval && clearInterval(timedInterval);
+				timedInterval && clearTimeout(timedInterval);
 				timedInterval = setTimeout(() => {
 					const { model, el } = this;
 					const content = model.get(keyCustomCode) || '';

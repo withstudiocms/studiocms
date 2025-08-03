@@ -9,8 +9,7 @@ import type {
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 	const addBlock = (id: string, def: BlockProperties) => {
-		// biome-ignore lint/style/noNonNullAssertion: this is a required option
-		opts.blocks.indexOf(id)! >= 0 &&
+		opts.blocks.indexOf(id) >= 0 &&
 			editor.Blocks.add(id, {
 				select: true,
 				...def,

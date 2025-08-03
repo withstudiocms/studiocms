@@ -3,15 +3,14 @@ import { typeButton, typeCheckbox, typeForm, typeInput, typeLabel, typeRadio, ty
 import type { RequiredGrapesBlocksOptions } from "../types.js";
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-    const addBlock = (id: string, def: BlockProperties) => {
-        // biome-ignore lint/style/noNonNullAssertion: this is a required option
-        opts.blocks.indexOf(id)! >= 0 &&
-            editor.Blocks.add(id, {
-                select: true,
-                ...def,
-                ...opts.block(id),
-            });
-    };
+	const addBlock = (id: string, def: BlockProperties) => {
+		opts.blocks.indexOf(id) >= 0 &&
+			editor.Blocks.add(id, {
+				select: true,
+				...def,
+				...opts.block(id),
+			});
+	};
 
 	// Setup forms blocks
 	const formsCategory = 'Forms';
