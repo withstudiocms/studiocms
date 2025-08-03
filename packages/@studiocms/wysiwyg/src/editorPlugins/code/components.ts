@@ -12,7 +12,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 			onRender() {
 				const { model, el } = this;
 				const isCC = model.closestType(typeCustomCode);
-				// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+				// biome-ignore lint/suspicious/noAssignInExpressions: This is the type that was already used in the original code
 				isCC && (el.innerHTML = '');
 			},
 		},
@@ -26,7 +26,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 				components: {
 					tagName: 'span',
 					components: { type: 'textnode', content: 'Insert here your custom code' },
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 				} as any,
 				...opts.propsCustomCode,
 			},
@@ -38,7 +38,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 				this.on(`change:${keyCustomCode}`, this.onCustomCodeChange);
 				const initialCode = this.get(keyCustomCode);
 				!this.components().length && this.components(initialCode);
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 				const toolbar = this.get('toolbar')!;
 				const id = 'custom-code';
 
@@ -66,7 +66,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 		view: {
 			events: {
 				dblclick: 'onActive',
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			} as any,
 
 			init() {

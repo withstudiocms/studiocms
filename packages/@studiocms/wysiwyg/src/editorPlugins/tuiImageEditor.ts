@@ -34,7 +34,7 @@ import type tuiImageEditor from 'tui-image-editor';
 
 type ImageEditor = tuiImageEditor.ImageEditor;
 type IOptions = tuiImageEditor.IOptions;
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 type Constructor<K> = { new (...any: any): K };
 
 export type PluginOptions = {
@@ -48,7 +48,7 @@ export type PluginOptions = {
 	 * Pass the editor constructor.
 	 * By default, the `tui.ImageEditor` will be used.
 	 */
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 	constructor?: any;
 
 	/**
@@ -169,7 +169,7 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 	const hasWindow = typeof window !== 'undefined';
 
 	const getConstructor = (): Constructor<ImageEditor> => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		return opts.constructor || (hasWindow && (window as any).tui?.ImageEditor);
 	};
 
@@ -183,7 +183,7 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 		const appendStyle = (styles: string[]) => {
 			if (styles.length) {
 				const link = document.createElement('link');
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 				link.href = styles.shift()!;
 				link.rel = 'stylesheet';
 				head.appendChild(link);
@@ -193,7 +193,7 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 		const appendScript = (scripts: string[]) => {
 			if (scripts.length) {
 				const scr = document.createElement('script');
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 				scr.src = scripts.shift()!;
 				scr.onerror = scr.onload = appendScript.bind(null, scripts);
 				head.appendChild(scr);
@@ -231,7 +231,7 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 	editor.Commands.add(commandId, {
 		imageEditor: null as tuiImageEditor | null,
 
-		run(ed, s, options = {}) {
+		run(ed, _s, options = {}) {
 			if (!constr) {
 				ed.log('TOAST UI Image editor not found', errorOpts);
 				return ed.stopCommand(commandId);
@@ -333,7 +333,7 @@ const plugin: Plugin<PluginOptions> = (editor, options = {}) => {
 							files: [file],
 						},
 					},
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 					(res: any) => {
 						const obj = res?.data?.[0];
 						const src = obj && (typeof obj === 'string' ? obj : obj.src);

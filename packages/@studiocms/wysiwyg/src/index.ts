@@ -8,8 +8,8 @@
 
 import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
-import { GRAPES_CSS_PATH, PARTIAL_PATH } from './common/consts.js';
 import { shared } from './common/shared.js';
+import { GRAPES_CSS_PATH, PARTIAL_PATH } from './consts.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
 
 /**

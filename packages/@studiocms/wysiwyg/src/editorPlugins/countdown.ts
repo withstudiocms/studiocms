@@ -148,11 +148,11 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 	};
 
 	const { block, props, style } = options;
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const id = options.id!;
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const label = options.label!;
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const pfx = options.classPrefix!;
 
 	// Create block
@@ -169,23 +169,23 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 		});
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 	const countdownScript = function (props: Record<string, any>) {
 		const startfrom: string = props.startfrom;
 		const endTxt: string = props.endText;
 		// @ts-ignore
-		// biome-ignore lint/complexity/noUselessThisAlias: <explanation>
+		// biome-ignore lint/complexity/noUselessThisAlias: This is the type that was already used in the original code
 		const el: TElement = this;
 		const countDownDate = new Date(startfrom).getTime();
 		const countdownEl = el.querySelector('[data-js=countdown]') as HTMLElement;
 		const endTextEl = el.querySelector('[data-js=countdown-endtext]') as HTMLElement;
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		const dayEl = el.querySelector('[data-js=countdown-day]')!;
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		const hourEl = el.querySelector('[data-js=countdown-hour]')!;
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		const minuteEl = el.querySelector('[data-js=countdown-minute]')!;
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		const secondEl = el.querySelector('[data-js=countdown-second]')!;
 		const oldInterval = el.__gjsCountdownInterval;
 		// @ts-ignore
@@ -193,7 +193,6 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 
 		const connected: TElement[] = window.__gjsCountdownIntervals || [];
 		const toClean: TElement[] = [];
-		// biome-ignore lint/complexity/noForEach: <explanation>
 		connected.forEach((item: TElement) => {
 			if (!item.isConnected) {
 				// @ts-ignore
@@ -212,6 +211,7 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 		};
 
 		const moveTimer = () => {
+			// biome-ignore lint/complexity/useDateNow: This is the type that was already used in the original code
 			const now = new Date().getTime();
 			const distance = countDownDate - now;
 			const days = Math.floor(distance / 86400000);

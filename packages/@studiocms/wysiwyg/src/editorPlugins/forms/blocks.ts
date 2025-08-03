@@ -15,7 +15,7 @@ export default function (editor: Editor, opt: Required<PluginOptions>) {
 	const opts = opt;
 	const bm = editor.BlockManager;
 	const addBlock = (id: string, def: BlockProperties) => {
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		opts.blocks?.indexOf(id)! >= 0 &&
 			bm.add(id, {
 				...def,

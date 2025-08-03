@@ -3,7 +3,7 @@ import type { RequiredPluginOptions } from '.';
 
 export default (editor: Editor, opts: RequiredPluginOptions) => {
 	const addBlock = (id: string, def: BlockProperties) => {
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 		opts.blocks.indexOf(id)! >= 0 &&
 			editor.Blocks.add(id, {
 				select: true,

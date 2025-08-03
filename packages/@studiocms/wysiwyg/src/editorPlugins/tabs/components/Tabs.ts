@@ -1,6 +1,6 @@
 import type { Component, Editor } from 'grapesjs';
 import { resolveTemplate } from '../options.js';
-import type { CustomWindow, TabComponentProps, TabTemplate, TabsOptions } from '../types.js';
+import type { CustomWindow, TabComponentProps, TabsOptions, TabTemplate } from '../types.js';
 import type { TabComponent } from './Tab.js';
 
 interface TabsComponent extends Component {
@@ -15,7 +15,7 @@ export default (editor: Editor, config: TabsOptions): void => {
 	const { Components } = editor;
 
 	const script = function (this: HTMLElement, props: TabComponentProps): void {
-		// biome-ignore lint/complexity/noUselessThisAlias: <explanation>
+		// biome-ignore lint/complexity/noUselessThisAlias: This is the type that was already used in the original code
 		const el = this;
 		const classTabActive = props.classactive;
 		const selectorTab = props.selectortab;
@@ -28,11 +28,11 @@ export default (editor: Editor, config: TabsOptions): void => {
 
 		const matches =
 			(body as HTMLElement).matches ||
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			(body as any).webkitMatchesSelector ||
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			(body as any).mozMatchesSelector ||
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			(body as any).msMatchesSelector;
 
 		const each = (
@@ -157,13 +157,13 @@ export default (editor: Editor, config: TabsOptions): void => {
 				...config.tabsProps,
 			},
 
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			isTabsComponent(comp: any): comp is TabsComponent {
 				return comp.findTabs !== undefined;
 			},
 
 			init() {
-				// biome-ignore lint/complexity/noUselessThisAlias: <explanation>
+				// biome-ignore lint/complexity/noUselessThisAlias: This is the type that was already used in the original code
 				const component = this;
 
 				component.findTabs().forEach((tab: TabComponent, index: number) => {
@@ -179,8 +179,8 @@ export default (editor: Editor, config: TabsOptions): void => {
 				});
 			},
 
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			__onTab(tab: TabComponent, index: number, v: any, opts: any = {}) {
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
+			__onTab(tab: TabComponent, index: number, _v: any, opts: any = {}) {
 				if (!opts.avoidStore && !opts.temporary) {
 					tab.__initTab(index);
 				}

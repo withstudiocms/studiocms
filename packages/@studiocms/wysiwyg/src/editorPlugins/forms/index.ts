@@ -22,7 +22,7 @@ export type PluginOptions = {
 	 * @example (blockId) => blockId === 'input' ? { attributes: {...} } : {};
 	 */
 
-	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	// biome-ignore lint/complexity/noBannedTypes: This is the type that was already used in the original code
 	block?: (blockId: string) => {};
 };
 

@@ -8,7 +8,7 @@ export default (editor: Editor, config: RequiredPluginOptions) => {
 	const importCnt = config.modalImportContent;
 
 	editor.Commands.add(cmdImport, {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		codeViewer: null as any,
 		container: null as HTMLElement | null,
 

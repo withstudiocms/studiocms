@@ -51,6 +51,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./consts": {
+      "types": "./dist/consts.d.ts",
+      "default": "./dist/consts.js"
+    },
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"

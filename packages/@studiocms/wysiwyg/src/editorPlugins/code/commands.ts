@@ -19,10 +19,10 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 	editor.Commands.add(commandNameCustomCode, {
 		keyCustomCode,
 		target: null as null | Component,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		codeViewer: null as any,
 
-		run(editor, s, opts = {}) {
+		run(editor, _s, opts = {}) {
 			const target = opts.target || editor.getSelected();
 			this.target = target;
 
@@ -40,7 +40,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 		 * @param  {Component} target
 		 */
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		showCustomCode(target: Component, options: any) {
 			const title = options.title || modalTitle;
 			const code = target.get(keyCustomCode) || '';
@@ -88,7 +88,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 			const btn = document.createElement('button');
 			btn.setAttribute('type', 'button');
 			const pfx = editor.getConfig('stylePrefix');
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 			btn.innerHTML = opts.buttonLabel!;
 			btn.className = `${pfx}btn-prim ${pfx}btn-import__custom-code`;
 			btn.onclick = () => this.handleSave();

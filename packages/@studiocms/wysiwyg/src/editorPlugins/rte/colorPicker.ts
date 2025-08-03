@@ -160,7 +160,6 @@ export default class ColorPicker {
 	render(): void {
 		let html = '';
 
-		// biome-ignore lint/complexity/noForEach: <explanation>
 		this.colors.forEach((color) => {
 			html += this.options.template?.replace(/\{color\}/g, color) || '';
 		});
@@ -220,7 +219,6 @@ export default class ColorPicker {
 			return;
 		}
 
-		// biome-ignore lint/complexity/noForEach: <explanation>
 		this.cbs.forEach((cb) => {
 			cb?.(c);
 		});

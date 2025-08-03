@@ -91,7 +91,7 @@ export default function (editor: Editor) {
 				// The submit of the form might redirect the user from the editor so
 				// we should always prevent the default here.
 				submit: (e: Event) => e.preventDefault(),
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			} as any,
 		},
 	});
@@ -197,7 +197,7 @@ export default function (editor: Editor) {
 		view: {
 			events: {
 				mousedown: checkIfInPreview,
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			} as any,
 		},
 	});
@@ -218,7 +218,7 @@ export default function (editor: Editor) {
 		view: {
 			events: {
 				click: checkIfInPreview,
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			} as any,
 
 			init() {
@@ -226,7 +226,7 @@ export default function (editor: Editor) {
 			},
 
 			handleChecked() {
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 				(this.el as any).checked = !!this.model.get('attributes')?.checked;
 			},
 		},
@@ -282,7 +282,7 @@ export default function (editor: Editor) {
 			init() {
 				const comps = this.components();
 				const tChild = comps.length === 1 && comps.models[0];
-				// biome-ignore lint/complexity/useOptionalChain: <explanation>
+				// biome-ignore lint/complexity/useOptionalChain: This is the type that was already used in the original code
 				const chCnt = (tChild && tChild.is('textnode') && tChild.get('content')) || '';
 				const text = chCnt || this.get('text');
 				this.set('text', text);
@@ -298,7 +298,7 @@ export default function (editor: Editor) {
 		view: {
 			events: {
 				click: checkIfInPreview,
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			} as any,
 		},
 	});
@@ -311,7 +311,7 @@ export default function (editor: Editor) {
 		model: {
 			defaults: {
 				tagName: 'label',
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 				components: 'Label' as any,
 				traits: [forTrait],
 			},

@@ -186,11 +186,11 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 		extendTraits,
 	} = options;
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const id = options.id!;
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const labelTooltip = options.labelTooltip!;
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 	const attrTooltip = options.attrTooltip!;
 
 	// Create block
@@ -339,7 +339,7 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
             overflow: visible;
           }
         `) + styleAdditional,
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: This is the type that was already used in the original code
 				traits: extendTraits!([
 					{
 						name: attrTooltip,
@@ -435,7 +435,7 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
 						},
 					},
 				]),
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 				...(propsTooltip as any),
 			},
 

@@ -16,7 +16,7 @@ export type PluginOptions = {
 	 * @example (blockId) => blockId === 'quote' ? { attributes: {...} } : {};
 	 */
 
-	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	// biome-ignore lint/complexity/noBannedTypes: This is the type that was already used in the original code
 	block?: (blockId: string) => {};
 
 	/**
@@ -50,7 +50,7 @@ export type PluginOptions = {
 	 * @default {}
 	 */
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 	importViewerOptions?: Record<string, any>;
 
 	/**

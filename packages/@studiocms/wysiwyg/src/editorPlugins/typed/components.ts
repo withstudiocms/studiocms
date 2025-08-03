@@ -4,12 +4,12 @@ import { cmpId, traitStringId } from './utils.js';
 
 declare global {
 	interface Window {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 		Typed: any;
 	}
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 const getTraitType = (value: any): string => {
 	if (typeof value === 'number') return 'number';
 	if (typeof value === 'boolean') return 'checkbox';
@@ -48,7 +48,7 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
 		.filter((item) => ['strings'].indexOf(item) < 0)
 		.map((name) => ({
 			changeProp: true,
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			type: getTraitType((typedProps as any)[name]),
 			min: 0,
 			name,
@@ -79,9 +79,9 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
 						return [];
 					};
 					const strings = getStrings(props.strings);
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 					const int = (num: any) => Number.parseInt(num, 10) || 0;
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 					const bool = (val: any) => !!val;
 					const init = () => {
 						const el = this as unknown as HTMLElement;
@@ -109,7 +109,7 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
 						};
 
 						if (strings?.length) {
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+							// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 							(config as any).strings = strings;
 						}
 
@@ -125,7 +125,7 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
 						init();
 					}
 				},
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
 			}) as any,
 		},
 	});

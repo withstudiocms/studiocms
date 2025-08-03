@@ -21,6 +21,6 @@ export function firstUpperCase(text: string): string {
  * @returns The parsed object of type `T`.
  * @throws {SyntaxError} If the input string is not valid JSON.
  */
-export function parse<T extends object>(data: string): T {
+export function parse<T>(data: string): T {
 	return JSON.parse(data) as T;
 }

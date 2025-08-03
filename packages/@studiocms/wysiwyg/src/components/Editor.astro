@@ -47,6 +47,8 @@ const { content } = Astro.props as Props;
         studioCMSGjsPlugin,
     } from "../editorPlugins/index.js";
 
+    // Get the editor options for Astro components and inline storage
+    // This will be used to initialize the plugins with the correct settings
     const { astroComponentsOpts, inlineStorageOpts } = getEditorElmData(
         document,
         {
@@ -55,6 +57,11 @@ const { content } = Astro.props as Props;
         },
     );
 
+    // Initialize the GrapesJS editor with the base configuration and plugins
+    // The plugins include custom components, inline storage, and various editor features
+    // such as blocks, tabs, countdown, custom code, tooltips, image editor,
+    // typed text, forms, rich text editor, and the StudioCMS GrapesJS plugin
+    // This setup allows for a rich editing experience with various functionalities
     const editor = grapesjs.init({
         ...baseConfig,
         plugins: [
@@ -73,10 +80,12 @@ const { content } = Astro.props as Props;
         ],
     });
 
+    // Get the editor's panels, commands, and internationalization (i18n) objects
     const pn = editor.Panels;
     const commands = editor.Commands;
     const i18n = editor.I18n;
 
+    // Define constants for panel IDs and icons
     const osm = "open-sm";
     const otm = "open-tm";
     const ola = "open-layers";
@@ -85,6 +94,7 @@ const { content } = Astro.props as Props;
     const exportTemplate = "export-template";
     const cmdImport = "gjs-open-import-webpage";
 
+    // Add custom i18n messages for the style manager properties
     i18n.addMessages({
         en: {
             styleManager: {
@@ -98,6 +108,8 @@ const { content } = Astro.props as Props;
         },
     });
 
+    // Reset the panels to an empty state then add custom configuration
+    // This includes panels for commands, devices, options, and views
     pn.getPanels().reset([
         {
             id: "commands",

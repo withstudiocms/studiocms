@@ -1,8 +1,7 @@
 import type { Plugin } from 'grapesjs';
 import type { ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
-import { buildBlockProps } from './build-block-props.js';
-import { renderComponentPreview } from './component-preview.js';
-import { traitMapFn } from './editor-utils.js';
+import { PARTIAL_PATH } from '../consts.js';
+import { buildBlockProps, partialRequestBuilder, traitMapFn } from './editor-utils.js';
 
 /**
  * Represents a collection of registered components for use within the Astro environment.
@@ -38,25 +37,43 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 
 	// Add custom components from the registry
 	for (const component of componentRegistry) {
-		const { name: tagName, props } = component;
+		const { name, props } = component;
 
 		// Add the component type to the GrapesJS DomComponents manager
-		editor.DomComponents.addType(tagName, {
+		editor.DomComponents.addType(name, {
 			isComponent: (el) => componentKeys.includes(el.tagName?.toLowerCase()),
 			model: {
 				defaults: {
-					tagName,
+					tagName: name,
 					traits: props.map(traitMapFn),
 				},
 			},
 			view: {
 				tagName: () => 'div',
-				onRender: renderComponentPreview,
+				onRender: async ({ el, model }) => {
+				
+					// Fetch from API endpoint that uses Astro Container API to render Component to html
+					const getCompResponse = await fetch(PARTIAL_PATH, partialRequestBuilder(model));
+				
+					let html = '';
+				
+					// If response is not valid, log error.
+					if (!getCompResponse.ok) {
+						console.log('[Error]: Could not fetch component HTML, please try again.');
+						html = `<div class="error">Error: ${getCompResponse.statusText}</div>`;
+						el.innerHTML = html;
+						return;
+					}
+				
+					// Get HTML from JSON response
+					html = await getCompResponse.text();
+					el.innerHTML = html;
+				},
 			},
 		});
 
 		// Register a block for the component in the GrapesJS BlockManager
 		// This allows users to drag and drop the component into the editor
-		editor.BlockManager.add(tagName, buildBlockProps(tagName));
+		editor.BlockManager.add(name, buildBlockProps(name));
 	}
 };

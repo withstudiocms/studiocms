@@ -1,4 +1,4 @@
-import type { Editor, Plugin } from 'grapesjs';
+import type { Plugin } from 'grapesjs';
 import loadBlocks from './blocks.js';
 import loadComponents from './components/index.js';
 import defaultOptions from './options.js';

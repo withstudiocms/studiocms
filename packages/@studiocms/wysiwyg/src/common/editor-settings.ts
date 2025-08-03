@@ -1,5 +1,5 @@
 import type { EditorConfig } from 'grapesjs';
-import { GRAPES_CSS_PATH } from './consts.js';
+import { GRAPES_CSS_PATH } from '../consts.js';
 
 /**
  * The base configuration object for the WYSIWYG editor.
