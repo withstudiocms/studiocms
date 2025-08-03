@@ -105,11 +105,7 @@ export const getSlotData = (model: Component) => {
 
 	if (children.length > 0) {
 		slotData = children
-			.map((child) => {
-				const tagName = child.tagName || 'div';
-				const childHtml = child.toHTML({ tag: 'div' });
-				return `<${tagName}>${childHtml}</${tagName}>`;
-			})
+			.map((child) => child.toHTML())
 			.join('');
 	}
 
@@ -206,7 +202,7 @@ export function getEditorElmData(
 	// Parse the component registry from the container's dataset
 	// or use an empty object if not available
 	const componentRegistry = parse<ComponentRegistryEntry[]>(
-		container.dataset.componentRegistry || '{}'
+		container.dataset.componentRegistry || '[]'
 	);
 
 	// Provide fallback data for project pages if the page content is empty
