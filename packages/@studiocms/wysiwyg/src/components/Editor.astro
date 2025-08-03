@@ -1,7 +1,6 @@
 ---
 import "@studiocms/ui/css/colors.css";
 import "grapesjs/dist/css/grapes.min.css";
-import "../editorPlugins/rte/styles.css";
 import "../styles/editor.css";
 import { getRegistryComponents } from "studiocms:component-registry/runtime";
 import type { PluginPageTypeEditorProps } from "studiocms/types";
@@ -40,10 +39,8 @@ const { content } = Astro.props as Props;
         customCode,
         countdown,
         forms,
-        rte,
         tabs,
         tuiImageEditor,
-        typed,
     } from "../editorPlugins/index.js";
 
     // Get the editor options for Astro components and inline storage
@@ -72,9 +69,7 @@ const { content } = Astro.props as Props;
             usePlugin(countdown),
             usePlugin(customCode),
             usePlugin(tuiImageEditor),
-            usePlugin(typed),
             usePlugin(forms),
-            usePlugin(rte),
         ],
     });
 

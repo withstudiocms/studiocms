@@ -51,7 +51,7 @@ interface RichTextEditorOptions {
 	maxWidth?: string;
 }
 
-const plugin: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
+const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 	const options: RichTextEditorOptions = {
 		...{
 			// default options
@@ -507,4 +507,4 @@ const plugin: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 	});
 };
 
-export default plugin;
+export default richTextEditor;

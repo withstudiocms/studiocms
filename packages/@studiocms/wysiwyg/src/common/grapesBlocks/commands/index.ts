@@ -1,5 +1,5 @@
 import { toast } from '@studiocms/ui/components/Toast/toast.js';
-import type { Editor } from 'grapesjs';
+import type { CommandFunction, CommandObject, Editor, ObjectAny } from 'grapesjs';
 import { cmdClear, cmdDeviceDesktop, cmdDeviceMobile, cmdDeviceTablet } from '../consts.js';
 import type { RequiredGrapesBlocksOptions } from '../types.js';
 import openImport from './openImport.js';
@@ -8,26 +8,28 @@ export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) 
 	const { Commands } = editor;
 	const txtConfirm = opts.textCleanCanvas;
 
+	// biome-ignore lint/suspicious/noExplicitAny: this is the source type used by grapesjs
+	const addCmd = <T extends ObjectAny>(id: string, command: CommandFunction | CommandObject<any, T>) => {
+		Commands.add(id, command);
+	};
+
 	openImport(editor, opts);
 
-	Commands.add(cmdDeviceDesktop, {
+	addCmd(cmdDeviceDesktop, {
 		run: (ed) => ed.setDevice('Desktop'),
 		stop: () => {},
 	});
-	Commands.add(cmdDeviceTablet, {
+	addCmd(cmdDeviceTablet, {
 		run: (ed) => ed.setDevice('Tablet'),
 		stop: () => {},
 	});
-	Commands.add(cmdDeviceMobile, {
+	addCmd(cmdDeviceMobile, {
 		run: (ed) => ed.setDevice('Mobile portrait'),
 		stop: () => {},
 	});
-	Commands.add(cmdClear, (e: Editor) => confirm(txtConfirm) && e.runCommand('core:canvas-clear'));
-
-    // Update canvas-clear command
-    Commands.add(cmdClear, () => {
-        if (confirm("Are you sure to clean the canvas?")) {
-            editor.runCommand("core:canvas-clear");
+    addCmd(cmdClear, (e: Editor) => {
+        if (confirm(txtConfirm)) {
+            e.runCommand("core:canvas-clear");
             toast({
                 title: "Canvas Cleared",
                 type: "success",

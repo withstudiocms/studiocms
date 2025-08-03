@@ -251,3 +251,5 @@ export const tooltipComponent = (editor: Editor, opts: RequiredTooltipOptions) =
 		},
 	});
 };
+
+export default tooltipComponent;

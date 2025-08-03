@@ -4,6 +4,7 @@ import loadCommands from './commands/index.js';
 import loadComponents from './components/index.js';
 import { loadI18n } from './i18n/index.js';
 import loadPanels from './panels/index.js';
+import richTextEditor from './rte/index.js';
 import loadSelectors from './selectors/index.js';
 import loadTraits from './traits/index.js';
 import type { GrapesBlocksOptions, RequiredGrapesBlocksOptions } from './types.js';
@@ -57,17 +58,24 @@ const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) =
 			],
 			showTooltipOnStyle: true,
 		},
+		typed: {
+			script: 'https://cdn.jsdelivr.net/npm/typed.js@2.0.11',
+			block: {},
+			props: (p) => p,
+		},
 		...opts,
 	};
 
 	// Load the various components of the plugin
-	loadBlocks(editor, options);
 	loadComponents(editor, options);
+	loadBlocks(editor, options);
 	loadCommands(editor, options);
 	loadPanels(editor, options);
 	loadSelectors(editor, options);
-	loadTraits(editor, options);
+	loadTraits(editor);
 	loadI18n(editor);
+
+	richTextEditor(editor, {});
 };
 
 export default grapesBlocks;

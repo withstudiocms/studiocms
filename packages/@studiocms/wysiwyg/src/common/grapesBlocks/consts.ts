@@ -5,3 +5,5 @@ export const cmdDeviceMobile = 'set-device-mobile';
 export const exportTemplate = "export-template";
 export const cmdClear = 'canvas-clear';
 export const cmdSave = 'store-data';
+export const typedId = 'typed';
+export const typedTraitStringId = 'typed-strings';
