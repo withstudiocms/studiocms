@@ -1,4 +1,4 @@
-import type { AddComponentTypeOptions, Editor } from 'grapesjs';
+import type { Editor } from 'grapesjs';
 import type {
 	RequiredCountdownOptions,
 	RequiredCustomCodeOptions,
@@ -13,10 +13,6 @@ import tooltipComponent from './tooltip.js';
 import typedComponent from './typed.js';
 
 export const loadComponents = (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
-	const _addComponent = (id: string, def: AddComponentTypeOptions) => {
-		editor.Components.addType(id, def);
-	};
-
 	tooltipComponent(editor, opts.tooltip as RequiredTooltipOptions);
 	typedComponent(editor, opts.typed as RequiredTypedOptions);
 	countdownComponent(editor, opts.countdown as RequiredCountdownOptions);

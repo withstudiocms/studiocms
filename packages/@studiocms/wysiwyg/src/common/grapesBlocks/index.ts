@@ -3,7 +3,7 @@ import loadBlocks from './blocks/index.js';
 import loadCommands from './commands/index.js';
 import loadComponents from './components/index.js';
 import { defaultGrapesBlocksOptions } from './consts.js';
-import { loadI18n } from './i18n/index.js';
+import loadI18n from './i18n/index.js';
 import loadPanels from './panels/index.js';
 import loadRichTextEditor from './rte/index.js';
 import loadSelectors from './selectors/index.js';

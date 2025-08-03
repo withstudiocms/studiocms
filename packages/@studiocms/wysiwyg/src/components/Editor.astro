@@ -34,9 +34,7 @@ const { content } = Astro.props as Props;
     import { getEditorElmData, inlineStorage } from "../common/editor-utils.js";
     import { astroComponents } from "../common/componentRegistry.js";
     import grapesBlocks from "../common/grapesBlocks/index.js";
-    import {
-        tabs,
-    } from "../editorPlugins/index.js";
+    import { tabs } from "../editorPlugins/index.js";
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings

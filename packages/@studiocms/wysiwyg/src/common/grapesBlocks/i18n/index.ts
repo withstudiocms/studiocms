@@ -14,3 +14,5 @@ export const loadI18n = (editor: Editor) => {
 		},
 	});
 };
+
+export default loadI18n;
