@@ -1,3 +1,4 @@
+import { deepmerge } from 'deepmerge-ts';
 import type { Plugin } from 'grapesjs';
 import loadBlocks from './blocks/index.js';
 import loadCommands from './commands/index.js';
@@ -13,10 +14,7 @@ import type { GrapesBlocksOptions, RequiredGrapesBlocksOptions } from './types.j
 
 const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) => {
 	// Ensure the options are complete
-	const options: RequiredGrapesBlocksOptions = {
-		...defaultGrapesBlocksOptions,
-		...opts,
-	};
+	const options: RequiredGrapesBlocksOptions = deepmerge(defaultGrapesBlocksOptions, opts);
 
 	// Load the various components of the plugin
 	loadComponents(editor, options);

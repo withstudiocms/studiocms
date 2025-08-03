@@ -28,6 +28,9 @@ catalogs:
     astro-integration-kit:
       specifier: ^0.18
       version: 0.18.0
+    deepmerge-ts:
+      specifier: ^7.1.5
+      version: 7.1.5
     esbuild:
       specifier: ^0.25.8
       version: 0.25.8
@@ -552,6 +555,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.18.0(astro@5.12.6(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0))
+      deepmerge-ts:
+        specifier: 'catalog:'
+        version: 7.1.5
       grapesjs:
         specifier: ^0.22.12
         version: 0.22.12
