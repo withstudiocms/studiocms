@@ -1,8 +1,8 @@
 import type { Editor } from 'grapesjs';
-import type { RequiredPluginOptions } from '..';
-import { cmdImport } from '../consts';
+import { cmdImport } from '../consts.js';
+import type { RequiredGrapesBlocksOptions } from '../types.js';
 
-export default (editor: Editor, config: RequiredPluginOptions) => {
+export default (editor: Editor, config: RequiredGrapesBlocksOptions) => {
 	const pfx = editor.getConfig('stylePrefix');
 	const importLabel = config.modalImportLabel;
 	const importCnt = config.modalImportContent;
