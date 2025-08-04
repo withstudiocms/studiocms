@@ -25,7 +25,7 @@ export const StudioCMSAPIKeys = defineTable({
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 		key: column.text(),
-		creationDate: column.date({ default: NOW }),
+		creationDate: column.date({ default: NOW, optional: true }),
 		description: column.text({ optional: true }),
 	},
 });
@@ -77,17 +77,18 @@ export const StudioCMSPageFolderStructure = defineTable({
 export const StudioCMSPageData = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
-		package: column.text({ default: 'studiocms' }),
+		package: column.text({ default: 'studiocms', optional: true }),
 		title: column.text(),
 		description: column.text(),
-		showOnNav: column.boolean({ default: false }),
-		publishedAt: column.date({ default: NOW }),
+		showOnNav: column.boolean({ default: false, optional: true }),
+		publishedAt: column.date({ default: NOW, optional: true }),
 		updatedAt: column.date({ optional: true }),
 		slug: column.text(),
-		contentLang: column.text({ default: 'default' }),
+		contentLang: column.text({ default: 'default', optional: true }),
 		heroImage: column.text({
 			default:
 				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+			optional: true,
 		}),
 		categories: column.json({ default: [], optional: true }),
 		tags: column.json({ default: [], optional: true }),
@@ -141,7 +142,7 @@ export const StudioCMSPageContent = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		contentId: column.text({ references: () => StudioCMSPageData.columns.id }),
-		contentLang: column.text({ default: 'default' }),
+		contentLang: column.text({ default: 'default', optional: true }),
 		content: column.text({ multiline: true, optional: true }),
 	},
 });
@@ -154,13 +155,13 @@ export const StudioCMSSiteConfig = defineTable({
 		description: column.text(),
 		defaultOgImage: column.text({ optional: true }),
 		siteIcon: column.text({ optional: true }),
-		loginPageBackground: column.text({ default: 'studiocms-curves' }),
+		loginPageBackground: column.text({ default: 'studiocms-curves', optional: true }),
 		loginPageCustomImage: column.text({ optional: true }),
-		enableDiffs: column.boolean({ default: false }),
-		diffPerPage: column.number({ default: 10 }),
-		gridItems: column.json({ default: [] }),
-		enableMailer: column.boolean({ default: false }),
-		hideDefaultIndex: column.boolean({ default: false }),
+		enableDiffs: column.boolean({ default: false, optional: true }),
+		diffPerPage: column.number({ default: 10, optional: true }),
+		gridItems: column.json({ default: [], optional: true }),
+		enableMailer: column.boolean({ default: false, optional: true }),
+		hideDefaultIndex: column.boolean({ default: false, optional: true }),
 	},
 });
 
@@ -182,10 +183,10 @@ export const StudioCMSMailerConfig = defineTable({
 export const StudioCMSNotificationSettings = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
-		emailVerification: column.boolean({ default: false }),
-		requireAdminVerification: column.boolean({ default: false }),
-		requireEditorVerification: column.boolean({ default: false }),
-		oAuthBypassVerification: column.boolean({ default: false }),
+		emailVerification: column.boolean({ default: false, optional: true }),
+		requireAdminVerification: column.boolean({ default: false, optional: true }),
+		requireEditorVerification: column.boolean({ default: false, optional: true }),
+		oAuthBypassVerification: column.boolean({ default: false, optional: true }),
 	},
 });
 
