@@ -212,7 +212,7 @@ export const parseData = Effect.fn(function* <T extends object>(
 
 		// If validation passes, return the parsed input
 		// This will be of type T, as ensured by the validator
-		return parsedInput as T;
+		return parsedInput;
 	}
 
 	if ('effectSchema' in validator) {
@@ -236,7 +236,7 @@ export const parseData = Effect.fn(function* <T extends object>(
 		}
 
 		// If it passes, return the parsed input as type T
-		return result.data as T;
+		return result.data;
 	}
 
 	return yield* Effect.fail(
