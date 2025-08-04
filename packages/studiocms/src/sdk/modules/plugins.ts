@@ -118,10 +118,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const dbService = yield* AstroDB;
 
 			/**
-			 * Creates a function to check for the existence of a plugin by its ID in the database.
+			 * Creates a function to check for the existence of a plugin entry by its ID in the database.
 			 *
-			 * @param toCheck - The ID of the plugin to check for.
-			 * @returns The plugin data if found, otherwise undefined.
+			 * @param toCheck - The ID of the plugin entry to check for.
+			 * @returns The plugin entry data if found, otherwise undefined.
 			 *
 			 * @example
 			 * const plugin = await checkForId('plugin-id');
