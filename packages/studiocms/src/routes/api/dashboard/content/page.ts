@@ -264,7 +264,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 						metaData: { start: startMetaData!, end: updatedMetaData! },
 					},
-					diffPerPage
+					diffPerPage || 10
 				);
 			}
 
@@ -315,7 +315,8 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 
 			const pageToDelete = yield* sdk.GET.page.byId(id);
 
-			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
+			// biome-ignore lint/style/noNonNullAssertion: package is always defined for pages
+			const apiRoute = getPageTypeEndpoints(pageToDelete.data.package!, 'onDelete');
 
 			yield* sdk.DELETE.page(id);
 

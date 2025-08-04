@@ -32,7 +32,8 @@ export async function frontendNavigation(basePackage?: string): Promise<LinkProp
 	// Get the pages that are set to show on the navigation
 	const navPagesList = pageListData
 		.filter((page) => page.showOnNav === true && page.package === searchPackage)
-		.sort((a, b) => Date.parse(b.publishedAt.toString()) - Date.parse(a.publishedAt.toString()));
+		// biome-ignore lint/style/noNonNullAssertion: We know that `publishedAt` is always defined for published pages
+		.sort((a, b) => Date.parse(b.publishedAt!.toString()) - Date.parse(a.publishedAt!.toString()));
 
 	// Get the index page
 	const indexPage = navPagesList.find((page) => page.slug === 'index');

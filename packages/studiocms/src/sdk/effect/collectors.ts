@@ -215,7 +215,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				let multiLanguageContentData:
 					| {
 							id: string;
-							contentLang: string;
+							contentLang: string | null;
 							contentId: string;
 							content: string | null;
 					  }[]

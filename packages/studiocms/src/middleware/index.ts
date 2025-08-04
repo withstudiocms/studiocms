@@ -75,7 +75,7 @@ router['/**'] = {
 				context.locals.defaultLang = defaultLang;
 				context.locals.routeMap = StudioCMSRoutes;
 				context.locals.userSessionData = userSessionData;
-				context.locals.emailVerificationEnabled = emailVerificationEnabled;
+				context.locals.emailVerificationEnabled = emailVerificationEnabled || false;
 				context.locals.userPermissionLevel = userPermissionLevel;
 
 				return next();

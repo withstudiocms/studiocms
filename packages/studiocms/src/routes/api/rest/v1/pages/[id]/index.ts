@@ -160,7 +160,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 						// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 						metaData: { start: startMetaData!, end: updatedMetaData! },
 					},
-					diffPerPage
+					diffPerPage || 10
 				);
 			}
 
