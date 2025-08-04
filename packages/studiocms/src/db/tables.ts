@@ -201,7 +201,7 @@ export const StudioCMSEmailVerificationTokens = defineTable({
 export const StudioCMSPluginData = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
-		rawData: column.json()
+		data: column.json()
 	}
 });
 
