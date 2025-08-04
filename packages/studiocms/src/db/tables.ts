@@ -1,5 +1,4 @@
 import { column, defineTable, NOW } from 'astro:db';
-import { asDrizzleTable } from '@astrojs/db/utils';
 
 /** StudioCMS - Users Table for Astro DB */
 export const StudioCMSUsers = defineTable({
