@@ -199,7 +199,7 @@ export const parseData = Effect.fn(function* <T extends object>(
 		return yield* Effect.fail(new Error(`Invalid plugin data format: ${typeof rawData}`));
 	}
 
-	if (!validator) {
+	if (!validator || validator === undefined) {
 		// If no options are provided, return the parsed input as is
 		return parsedInput as T;
 	}
