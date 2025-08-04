@@ -314,31 +314,17 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				// Generate a unique ID for the plugin data entry
 				// This ID is a combination of the pluginId and entryId
 				// to ensure uniqueness across different plugins and entries
-				const id = `${pluginId}_${entryId}`;
-
+				const id: `${string}_${string}` = `${pluginId}_${entryId}`;
+				
 				/**
-				 * Selects and parses data associated with a given `id` using a provided type guard validator.
+				 * Returns an Effect that succeeds with the provided `id`.
 				 *
-				 * This generator function checks for the existence of data by `id`, validates and parses it,
-				 * and returns a parsed data response if successful. If no data exists for the given `id`, it returns `undefined`.
+				 * @remarks
+				 * This function wraps the given `id` in an Effect, allowing it to be used in effectful computations.
 				 *
-				 * @typeParam T - The expected shape of the parsed data.
-				 * @param validator - A type guard function that asserts whether the provided data is of type `T`.
-				 * @returns A generator yielding either a parsed data response of type `T` or `undefined` if no data exists.
+				 * @returns An Effect that yields the specified `id` when executed.
 				 */
-				const select = Effect.fn(
-					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select'
-				)(function* <T extends object>(validator?: ValidatorOptions<T>) {
-					// Check if the plugin data with the given ID exists
-					const existing = yield* checkForId(id);
-
-					// If no data exists for the given ID, return undefined
-					if (!existing) return undefined;
-
-					const data = yield* parseData<T>(existing.data, validator);
-
-					return yield* parsedDataResponse<T>(id, data);
-				});
+				const generatedId = () => Effect.succeed(id);
 
 				/**
 				 * Inserts new plugin data into the database if an entry with the given ID does not already exist.
@@ -382,6 +368,30 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				});
 
 				/**
+				 * Selects and parses data associated with a given `id` using a provided type guard validator.
+				 *
+				 * This generator function checks for the existence of data by `id`, validates and parses it,
+				 * and returns a parsed data response if successful. If no data exists for the given `id`, it returns `undefined`.
+				 *
+				 * @typeParam T - The expected shape of the parsed data.
+				 * @param validator - A type guard function that asserts whether the provided data is of type `T`.
+				 * @returns A generator yielding either a parsed data response of type `T` or `undefined` if no data exists.
+				 */
+				const select = Effect.fn(
+					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select'
+				)(function* <T extends object>(validator?: ValidatorOptions<T>) {
+					// Check if the plugin data with the given ID exists
+					const existing = yield* checkForId(id);
+
+					// If no data exists for the given ID, return undefined
+					if (!existing) return undefined;
+
+					const data = yield* parseData<T>(existing.data, validator);
+
+					return yield* parsedDataResponse<T>(id, data);
+				});
+
+				/**
 				 * Updates a plugin data record in the database with the provided data.
 				 *
 				 * @template T - The type of the data to update.
@@ -421,8 +431,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				});
 
 				return {
-					select,
+					generatedId,
 					insert,
+					select,
 					update,
 				};
 			};
