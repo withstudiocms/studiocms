@@ -177,10 +177,9 @@ export type ValidatorOptions<T> = JSONValidatorFn<T> | EffectSchemaValidator<T> 
  *
  * @throws {Error} If the input is neither a string nor an object, or if parsing/validation fails.
  */
-export const parseData = Effect.fn(function* <T extends object>(
-	rawData: unknown,
-	validator?: ValidatorOptions<T>
-) {
+export const parseData = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/parseData')(function* <
+	T extends object,
+>(rawData: unknown, validator?: ValidatorOptions<T>) {
 	let parsedInput: unknown;
 
 	// Check if rawData is a string or an object
@@ -315,7 +314,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				// This ID is a combination of the pluginId and entryId
 				// to ensure uniqueness across different plugins and entries
 				const id: `${string}_${string}` = `${pluginId}_${entryId}`;
-				
+
 				/**
 				 * Returns an Effect that succeeds with the provided `id`.
 				 *
