@@ -1,4 +1,5 @@
 import { column, defineTable, NOW } from 'astro:db';
+import { asDrizzleTable } from '@astrojs/db/utils';
 
 /** StudioCMS - Users Table for Astro DB */
 export const StudioCMSUsers = defineTable({
@@ -198,6 +199,13 @@ export const StudioCMSEmailVerificationTokens = defineTable({
 	},
 });
 
+export const StudioCMSPluginData = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		rawData: column.json()
+	}
+});
+
 export const tables = {
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -215,4 +223,5 @@ export const tables = {
 	StudioCMSMailerConfig,
 	StudioCMSNotificationSettings,
 	StudioCMSEmailVerificationTokens,
+	StudioCMSPluginData,
 };
