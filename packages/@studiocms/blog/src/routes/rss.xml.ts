@@ -40,7 +40,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 					return {
 						title,
 						description,
-						pubDate,
+						...(pubDate ? { pubDate } : {}),
 						link,
 						categories,
 					};
