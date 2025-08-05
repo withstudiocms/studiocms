@@ -2,6 +2,7 @@ import { eq, like } from 'astro:db';
 import { Effect, genLogger, pipe } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
+	noUndefinedEntries,
 	parseData,
 	parsedDataResponse,
 	SelectPluginDataRespondOrFail,
@@ -383,7 +384,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						const data = yield* pipe(
 							pluginData.entries(),
 							Effect.forEach((entry) => _processEntryFromCache<T>(entry, pluginId, validator)),
-							Effect.map((entries) => entries.filter((entry) => entry !== undefined))
+							Effect.map(noUndefinedEntries)
 						);
 
 						// If we have valid data from the cache, return it

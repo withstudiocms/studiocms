@@ -1,5 +1,5 @@
-import { Effect, type ParseResult, pipe, Schema } from "../../effect.js";
-import type { PluginDataEntry, ValidatorOptions } from "../types/index.js";
+import { Effect, type ParseResult, pipe, Schema } from '../../effect.js';
+import type { PluginDataEntry, ValidatorOptions } from '../types/index.js';
 
 /**
  * Enum representing the possible responses when selecting plugin data,
@@ -14,7 +14,6 @@ export enum SelectPluginDataRespondOrFail {
 	ExistsShouldFail = 'existsShouldFail',
 }
 
-
 /**
  * Wraps the provided `id` and `data` into a `PluginDataEntry<T>` object and returns it as an Effect.
  *
@@ -24,13 +23,24 @@ export enum SelectPluginDataRespondOrFail {
  * @returns An Effect that, when executed, yields a `PluginDataEntry<T>` containing the provided id and data.
  */
 export const parsedDataResponse = <T extends object>(
-    id: string,
-    data: T
+	id: string,
+	data: T
 ): Effect.Effect<PluginDataEntry<T>, never, never> =>
-    Effect.succeed({
-        id,
-        data,
-    });
+	Effect.succeed({
+		id,
+		data,
+	});
+
+/**
+ * Filters out `undefined` and `null` values from an array of entries.
+ *
+ * @typeParam T - The type of the array elements.
+ * @param entries - An array containing elements of type `T` or `undefined`.
+ * @returns A new array containing only the defined (non-`undefined`, non-`null`) entries of type `T`.
+ */
+export function noUndefinedEntries<T>(entries: (T | undefined)[]) {
+	return entries.filter((entry) => entry !== undefined && entry !== null) as T[];
+}
 
 /**
  * Returns a function that validates a boolean condition and either returns the provided value
@@ -48,11 +58,11 @@ export const parsedDataResponse = <T extends object>(
  * ```
  */
 export const isJsonValid =
-    <T extends object>(data: unknown) =>
-    (isValid: boolean) => {
-        if (isValid) return data as T;
-        throw new Error(`Validation failed for data: ${JSON.stringify(data)}`);
-    };
+	<T extends object>(data: unknown) =>
+	(isValid: boolean) => {
+		if (isValid) return data as T;
+		throw new Error(`Validation failed for data: ${JSON.stringify(data)}`);
+	};
 
 /**
  * Returns a validator function based on the provided validator options.
@@ -71,50 +81,52 @@ export const isJsonValid =
  * @returns A function that takes unknown data and returns an Effect that resolves to type `T` if validation succeeds, or fails with an error if validation fails.
  * @throws Error if none of the expected validator options are provided.
  */
-export const getValidatorFn = Effect.fn(
-    'studiocms/sdk/effect/pluginUtils/getValidatorFn'
-)(function* <T extends object>(validator: ValidatorOptions<T>) {
-    if ('jsonFn' in validator) {
-        // Return the JSON validator function
-        return (data: unknown) =>
-            Effect.try({
-                try: () => pipe(validator.jsonFn(data), isJsonValid<T>(data)),
-                catch: (error) => new Error(`JSON validation failed: ${(error as Error).message}`),
-            });
-    }
-    if ('effectSchema' in validator) {
-        // Return the Effect schema validator function
-        return (data: unknown) =>
-            Schema.decodeUnknown(validator.effectSchema)(data).pipe(
-                Effect.mapError(
-                    (error) =>
-                        new Error(`Schema validation failed: ${(error as ParseResult.ParseError).message}`)
-                )
-            );
-    }
-    if ('zodSchema' in validator) {
-        // Return the Zod schema validator function
-        return (data: unknown) =>
-            Effect.try({
-                try: () => {
-                    const result = validator.zodSchema.safeParse(data);
-                    if (result.success) {
-                        return result.data as T;
-                    }
-                    throw new Error(`Zod validation failed: ${result.error.message}`);
-                },
-                catch: (error) => new Error(`Zod validation failed: ${(error as Error).message}`),
-            });
-    }
-    // If something else is provided, throw an error
-    // This ensures that the validator options are strictly typed and cannot
-    // be accidentally misconfigured or used incorrectly.
-    return yield* Effect.fail(
-        new Error(
-            'Invalid validator options provided, expected one of: jsonFn, effectSchema, or zodSchema'
-        )
-    );
-});
+export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getValidatorFn')(
+	function* <T extends object>(validator: ValidatorOptions<T>) {
+		if ('jsonFn' in validator) {
+			// Return the JSON validator function
+			return (data: unknown) =>
+				Effect.try({
+					try: () => pipe(validator.jsonFn(data), isJsonValid<T>(data)),
+					catch: (error) => new Error(`JSON validation failed: ${(error as Error).message}`),
+				});
+		}
+		if ('effectSchema' in validator) {
+			// Return the Effect schema validator function
+			return (data: unknown) =>
+				Schema.decodeUnknown(validator.effectSchema)(data).pipe(
+					Effect.mapError(
+						(error) =>
+							new Error(`Schema validation failed: ${(error as ParseResult.ParseError).message}`)
+					)
+				);
+		}
+		if ('zodSchema' in validator) {
+			// Return the Zod schema validator function
+			return (data: unknown) =>
+				Effect.try({
+					try: () => {
+						const result = validator.zodSchema.safeParse(data);
+						if (result.success) {
+							return result.data as T;
+						}
+						throw new Error(`Zod validation failed: ${result.error.message}`, {
+							cause: result.error.cause,
+						});
+					},
+					catch: (error) => new Error((error as Error).message, { cause: (error as Error).cause }),
+				});
+		}
+		// If something else is provided, throw an error
+		// This ensures that the validator options are strictly typed and cannot
+		// be accidentally misconfigured or used incorrectly.
+		return yield* Effect.fail(
+			new Error(
+				'Invalid validator options provided, expected one of: jsonFn, effectSchema, or zodSchema'
+			)
+		);
+	}
+);
 
 /**
  * Parses and validates plugin data from a raw input, supporting multiple validation strategies.
@@ -136,36 +148,36 @@ export const getValidatorFn = Effect.fn(
  * @throws {Error} If the input is neither a string nor an object, or if parsing/validation fails.
  */
 export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')(function* <
-    T extends object,
+	T extends object,
 >(rawData: unknown, validator?: ValidatorOptions<T>) {
-    let parsedInput: unknown;
+	let parsedInput: unknown;
 
-    // Check if rawData is a string or an object
-    // Data from the db should already be a object, but we handle strings for flexibility
-    if (typeof rawData === 'string') {
-        parsedInput = yield* Effect.try({
-            try: () => JSON.parse(rawData),
-            catch: (error) => new Error(`JSON parsing failed: ${error}`),
-        });
-        // Ensure parsedInput is an object
-        // If rawData is not a string, we assume it's already an object
-    } else if (rawData !== null && typeof rawData === 'object') {
-        parsedInput = rawData;
-    } else {
-        // If rawData is neither a string nor a valid object, throw an error
-        return yield* Effect.fail(new Error(`Invalid plugin data format: ${typeof rawData}`));
-    }
+	// Check if rawData is a string or an object
+	// Data from the db should already be a object, but we handle strings for flexibility
+	if (typeof rawData === 'string') {
+		parsedInput = yield* Effect.try({
+			try: () => JSON.parse(rawData),
+			catch: (error) => new Error(`JSON parsing failed: ${error}`),
+		});
+		// Ensure parsedInput is an object
+		// If rawData is not a string, we assume it's already an object
+	} else if (rawData !== null && typeof rawData === 'object') {
+		parsedInput = rawData;
+	} else {
+		// If rawData is neither a string nor a valid object, throw an error
+		return yield* Effect.fail(new Error(`Invalid plugin data format: ${typeof rawData}`));
+	}
 
-    if (!validator || validator === undefined) {
-        // If no options are provided, return the parsed input as is
-        return parsedInput as T;
-    }
+	if (!validator || validator === undefined) {
+		// If no options are provided, return the parsed input as is
+		return parsedInput as T;
+	}
 
-    // If a validator is provided, get the validation function
-    const validatorFn = yield* getValidatorFn<T>(validator);
+	// If a validator is provided, get the validation function
+	const validatorFn = yield* getValidatorFn<T>(validator);
 
-    // Validate the parsed input using the validator function
-    // If validation fails, it will throw an error which will be caught by the Effect framework
-    // If validation succeeds, it will return the parsed data as type T
-    return yield* validatorFn(parsedInput);
+	// Validate the parsed input using the validator function
+	// If validation fails, it will throw an error which will be caught by the Effect framework
+	// If validation succeeds, it will return the parsed data as type T
+	return yield* validatorFn(parsedInput);
 });
