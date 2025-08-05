@@ -1,0 +1,51 @@
+---
+export const partial = true;
+
+import { getRendererComponents } from 'studiocms:component-registry/runtime';
+
+// Import components
+const componentRegistry = await getRendererComponents();
+
+type PropData = {
+	componentKey: string;
+	// biome-ignore lint/suspicious/noExplicitAny: this is a dynamic prop type
+	props?: Record<string, any>;
+	slot?: string | null;
+};
+
+// Parse the request body as JSON
+let data: PropData;
+try {
+	data = await Astro.request.json();
+} catch (error) {
+	return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+
+// Validate the data
+if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim()) {
+	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+
+// Destructure the componentKey, props, and slot from the data
+const { componentKey, props = {}, slot = null } = data;
+
+// Check if the component exists in the registry
+const Component = componentRegistry[componentKey];
+
+// Handle case where component doesn't exist
+if (!Component) {
+	return new Response(JSON.stringify({ error: `Component "${componentKey}" not found` }), {
+		status: 404,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+---
+<Component {...props}>
+	{slot && <Fragment set:html={slot} />}
+</Component>

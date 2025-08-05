@@ -15,7 +15,8 @@
       "@studiocms/html",
       "@studiocms/markdoc",
       "@studiocms/md",
-      "@studiocms/mdx"
+      "@studiocms/mdx",
+      "@studiocms/wysiwyg"
     ]
   ],
   "linked": [],
