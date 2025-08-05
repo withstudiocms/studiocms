@@ -1,21 +1,24 @@
 import { eq } from 'astro:db';
 import type { z } from 'astro/zod';
+import type { UnknownException } from 'effect/Cause';
 import type { ParseError } from 'effect/ParseResult';
 import { Effect, genLogger, Schema } from '../../effect.js';
 import { AstroDB } from '../effect/db.js';
 import { tsPluginData } from '../tables.js';
 
+export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
+export type tsPluginDataSelect = typeof tsPluginData.$inferSelect;
+
 /**
- * Represents a single plugin data entry.
+ * Represents a plugin data entry with a strongly-typed `data` property.
  *
- * @template T - The type of the data stored in the plugin entry.
- * @property id - The unique identifier for the plugin data entry.
- * @property data - The data associated with the plugin, of type T.
+ * @template T - The type of the `data` property.
+ * @extends Omit<tsPluginDataSelect, 'data'>
+ * @property {T} data - The plugin-specific data payload.
  */
-export type PluginDataEntry<T extends object> = {
-	id: string;
+export interface PluginDataEntry<T extends object> extends Omit<tsPluginDataSelect, 'data'> {
 	data: T;
-};
+}
 
 /**
  * Wraps the provided `id` and `data` into a `PluginDataEntry<T>` object and returns it as an Effect.
@@ -25,80 +28,26 @@ export type PluginDataEntry<T extends object> = {
  * @param data - The data to be associated with the given id.
  * @returns An Effect that, when executed, yields a `PluginDataEntry<T>` containing the provided id and data.
  */
-export const parsedDataResponse = <T extends object>(id: string, data: T) =>
-	Effect.try(
-		() =>
-			({
-				id,
-				data,
-			}) as PluginDataEntry<T>
-	);
+export const parsedDataResponse = <T extends object>(
+	id: string,
+	data: T
+): Effect.Effect<PluginDataEntry<T>, UnknownException, never> =>
+	Effect.try(() => ({
+		id,
+		data,
+	}));
 
-/**
- * Represents a JSON validator function for a specific type.
- *
- * @template T - The type that the validator function checks for.
- * @property jsonFn - A type guard function that determines if the provided data is of type T.
- *
- * @example
- * ```typescript
- * interface User {
- *   id: number;
- *   name: string;
- *   email: string;
- * }
- * const isUser = (data: unknown): data is User => {
- *   return (
- *     typeof data === 'object' &&
- *     data !== null &&
- *     'id' in data &&
- *     'name' in data &&
- *     'email' in data &&
- *     typeof (data as any).id === 'number' &&
- *     typeof (data as any).name === 'string' &&
- *     typeof (data as any).email === 'string'
- *   );
- * };
- * ```
- *
- */
-export type JSONValidatorFn<T> = { jsonFn: (data: unknown) => data is T };
+export interface JSONValidatorFn<T> {
+	jsonFn: (data: unknown) => data is T;
+}
 
-/**
- * Represents a validator for an effect schema.
- *
- * @template T - The type of the value that the schema validates.
- * @property effectSchema - The schema used to validate the effect, parameterized with type `T`.
- *
- * @example
- * ```typescript
- * import { Schema } from 'studiocms/effect';
- * const UserSchema = Schema.Struct({
- *   id: Schema.Number,
- *   name: Schema.String,
- *   email: Schema.String
- * });
- * ```
- */
-export type EffectSchemaValidator<T> = { effectSchema: Schema.Schema<T, ParseError, never> };
+export interface EffectSchemaValidator<T> {
+	effectSchema: Schema.Schema<T, ParseError, never>;
+}
 
-/**
- * Represents a validator that uses a Zod schema to validate data of type `T`.
- *
- * @template T - The type of data to be validated by the Zod schema.
- * @property zodSchema - The Zod schema instance used for validation.
- *
- * @example
- * ```typescript
- * import { z } from 'astro/zod';
- * const UserZodSchema = z.object({
- *   id: z.number(),
- *   name: z.string(),
- *   email: z.string()
- * });
- * ```
- */
-export type ZodValidator<T> = { zodSchema: z.ZodSchema<T> };
+export interface ZodValidator<T> {
+	zodSchema: z.ZodSchema<T>;
+}
 
 /**
  * Represents the available validator options for a given type `T`.
@@ -112,13 +61,15 @@ export type ZodValidator<T> = { zodSchema: z.ZodSchema<T> };
  *
  * @example
  * ```typescript
- * // Example of defining a JSON validator Fn for a User type
+ * // The Interface for a User type
  * interface User {
  *   id: number;
  *   name: string;
  *   email: string;
  * }
- * const userValidator = {
+ *
+ * // Example of defining a JSON validator Fn for a User type
+ * const userValidator: ValidatorOptions<User> = {
  *   jsonFn: (data: unknown): data is User => {
  *     return (
  *       typeof data === 'object' &&
@@ -135,24 +86,24 @@ export type ZodValidator<T> = { zodSchema: z.ZodSchema<T> };
  *
  * // Example of defining an Effect schema validator for a User type
  * import { Schema } from 'studiocms/effect';
- * const UserEffectSchema = Schema.Struct({
- *   id: Schema.Number,
- *   name: Schema.String,
- *   email: Schema.String
- * });
- * const userEffectValidator = {
- *   effectSchema: UserEffectSchema
+ *
+ * const userEffectValidator: ValidatorOptions<User> = {
+ *   effectSchema: Schema.Struct({
+ *     id: Schema.Number,
+ *     name: Schema.String,
+ *     email: Schema.String
+ *   })
  * };
  *
  * // Example of defining a Zod validator for a User type
  * import { z } from 'astro/zod';
- * const UserZodSchema = z.object({
- *   id: z.number(),
- *   name: z.string(),
- *   email: z.string()
- * });
- * const userZodValidator = {
- *   zodSchema: UserZodSchema
+ *
+ * const userZodValidator: ValidatorOptions<User> = {
+ *   zodSchema: z.object({
+ *     id: z.number(),
+ *     name: z.string(),
+ *     email: z.string()
+ *   })
  * };
  * ```
  */
@@ -288,6 +239,100 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			);
 
 			/**
+			 * Inserts a new plugin data entry into the database.
+			 *
+			 * @param query - The database query executor function.
+			 * @param data - The plugin data to insert, conforming to the `tsPluginDataInsert` type.
+			 * @returns The inserted plugin data entry as returned by the database.
+			 *
+			 * @private
+			 * @remarks
+			 * This function is used internally to insert new plugin data entries.
+			 * It returns the inserted entry's `id` as part of the result.
+			 */
+			const _insertPluginDataEntry = dbService.makeQuery((query, data: tsPluginDataInsert) =>
+				query((db) => db.insert(tsPluginData).values(data).returning({ id: tsPluginData.id }).get())
+			);
+
+			/**
+			 * Updates an existing plugin data entry in the database.
+			 *
+			 * @param query - The database query executor function.
+			 * @param data - The plugin data object containing updated fields, including the `id` of the entry to update.
+			 * @returns A promise that resolves to the updated entry's `id`.
+			 *
+			 * @private
+			 * @remarks
+			 * This function is used internally to update plugin data entries.
+			 * It returns the updated entry's `id` as part of the result.
+			 */
+			const _updatePluginDataEntry = dbService.makeQuery((query, data: tsPluginDataSelect) =>
+				query((db) =>
+					db
+						.update(tsPluginData)
+						.set(data)
+						.where(eq(tsPluginData.id, data.id))
+						.returning({ id: tsPluginData.id })
+						.get()
+				)
+			);
+
+			/**
+			 * Checks if plugin data with the specified ID exists and responds or fails based on the `shouldFail` flag.
+			 *
+			 * @param id - The unique identifier of the plugin data to check.
+			 * @param shouldFail - Determines the behavior when plugin data with the given ID exists:
+			 *   - If `true` and the data exists, the effect fails with an error.
+			 *   - If `false` and the data does not exist, returns `false`.
+			 *   - Otherwise, returns `true`.
+			 * @returns
+			 *   - Fails with an error if the data exists and `shouldFail` is `true`.
+			 *   - Returns `false` if the data does not exist and `shouldFail` is `false`.
+			 *   - Returns `true` otherwise.
+			 */
+			const checkExistingRespondOrFail = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.checkExistingRespondOrFail'
+			)(function* (
+				id: string,
+				{ mode, shouldFail }: { mode: 'exists' | 'doesNotExist'; shouldFail: boolean }
+			) {
+				// Check if the plugin data with the given ID exists
+				const existing = yield* checkForId(id);
+
+				switch (mode) {
+					case 'exists': {
+						// If it exists and shouldFail is false, return true
+						if (existing && !shouldFail) {
+							return existing;
+						}
+
+						// If it does not exist and shouldFail is true, fail with an error
+						if (!existing && shouldFail) {
+							return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
+						}
+						break;
+					}
+					case 'doesNotExist': {
+						// If it does not exist and shouldFail is true, fail with an error
+						if (!existing && shouldFail) {
+							return yield* Effect.fail(new Error(`Plugin data with ID ${id} already exists.`));
+						}
+
+						// If it exists and shouldFail is false, return true
+						if (existing && !shouldFail) {
+							return existing;
+						}
+						break;
+					}
+					default:
+						return yield* Effect.fail(new Error(`Invalid mode: ${mode}`));
+				}
+
+				// If we reach here, it means the data does not exist and shouldFail is false
+				return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
+			});
+
+			/**
 			 * Provides a set of effectful operations for managing plugin-specific data entries,
 			 * uniquely identified by a combination of `pluginId` and `entryId`.
 			 *
@@ -326,23 +371,27 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				const generatedId = () => Effect.succeed(id);
 
 				/**
-				 * Inserts new plugin data into the database if an entry with the given ID does not already exist.
+				 * Inserts new plugin data into the database after validating and checking for duplicate IDs.
 				 *
-				 * @template T - The type of the data to insert.
-				 * @param data - The plugin data to be inserted.
-				 * @yields Fails with an error if plugin data with the specified ID already exists.
+				 * @template T - The type of the plugin data object.
+				 * @param data - The plugin data to insert.
+				 * @param validator - Optional validator options for validating the plugin data.
+				 * @yields Throws an error if plugin data with the given ID already exists.
+				 * @yields Throws an error if validation fails.
 				 * @returns The parsed data response for the newly inserted entry.
 				 */
 				const insert = Effect.fn(
 					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.insert'
 				)(function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
 					// Check if the plugin data with the given ID already exists
-					const checkExistingId = yield* checkForId(id);
-
 					// If it exists, fail with an error
-					if (checkExistingId) {
-						return yield* Effect.fail(new Error(`Plugin data with ID ${id} already exists.`));
-					}
+					// This ensures that we do not accidentally insert duplicate entries
+					// and maintain the uniqueness of the plugin data entries
+					// If it does not exist, proceed to insert the new data
+					yield* checkExistingRespondOrFail(id, {
+						mode: 'exists',
+						shouldFail: true,
+					});
 
 					// Validate the data before inserting
 					const parsedData = yield* parseData<T>(data, validator);
@@ -350,83 +399,92 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					// Insert the new plugin data into the database
 					// Note: The 'id' field is expected to be unique, so we use
 					// it as the primary key in the table definition.
-					const insertedEntry = yield* dbService.execute((db) =>
-						db
-							.insert(tsPluginData)
-							.values({
-								// @ts-expect-error - drizzle broke the 'id' type
-								id,
-								data: parsedData,
-							})
-							.returning({ id: tsPluginData.id })
-							.get()
-					);
+					const inserted = yield* _insertPluginDataEntry({
+						// @ts-expect-error - drizzle broke the 'id' type
+						id,
+						data: parsedData,
+					});
 
 					// Return the parsed data response for the newly inserted entry
-					return yield* parsedDataResponse<T>(insertedEntry.id, data);
+					return yield* parsedDataResponse<T>(inserted.id, data);
 				});
 
 				/**
-				 * Selects and parses data associated with a given `id` using a provided type guard validator.
+				 * Selects and validates plugin data by ID.
 				 *
-				 * This generator function checks for the existence of data by `id`, validates and parses it,
-				 * and returns a parsed data response if successful. If no data exists for the given `id`, it returns `undefined`.
+				 * This generator function checks if plugin data exists for the given ID,
+				 * validates and parses the data using the provided validator, and returns
+				 * a parsed data response. If no data exists for the given ID, it returns `undefined`.
 				 *
-				 * @typeParam T - The expected shape of the parsed data.
-				 * @param validator - A type guard function that asserts whether the provided data is of type `T`.
-				 * @returns A generator yielding either a parsed data response of type `T` or `undefined` if no data exists.
+				 * @template T - The expected shape of the plugin data.
+				 * @param validator - Optional validation options for parsing the plugin data.
+				 * @returns The parsed data response for the existing entry, or `undefined` if not found.
 				 */
 				const select = Effect.fn(
 					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select'
 				)(function* <T extends object>(validator?: ValidatorOptions<T>) {
 					// Check if the plugin data with the given ID exists
-					const existing = yield* checkForId(id);
+					// If it exists, proceed to validate and parse the data
+					// If it does not exist, return undefined
+					// This ensures that we only attempt to parse existing data
+					// and do not throw an error when the data is not found
+					// This is useful for cases where the plugin data is optional
+					// or may not exist for every plugin entry
+					const existing = yield* checkExistingRespondOrFail(id, {
+						mode: 'exists',
+						shouldFail: false,
+					});
 
-					// If no data exists for the given ID, return undefined
+					// If it does not exist, return undefined
 					if (!existing) return undefined;
 
+					// Validate and parse the existing data
 					const data = yield* parseData<T>(existing.data, validator);
 
+					// Return the parsed data response for the existing entry
 					return yield* parsedDataResponse<T>(id, data);
 				});
 
 				/**
-				 * Updates a plugin data record in the database with the provided data.
+				 * Updates the plugin data for a given ID after validating the input.
 				 *
-				 * @template T - The type of the data to update.
-				 * @param data - The data object to be serialized and stored.
-				 * @returns A generator yielding the parsed data response for the updated record.
+				 * This function performs the following steps:
+				 * 1. Checks if the plugin data with the specified ID exists.
+				 * 2. If not found, fails with an error.
+				 * 3. Validates the provided data using the optional validator.
+				 * 4. Updates the database record with the validated data.
+				 * 5. Returns the parsed data response for the updated record.
 				 *
-				 * @remarks
-				 * - Serializes the input data to JSON and updates the corresponding database record.
-				 * - Returns the parsed data response for the updated record.
+				 * @template T - The shape of the plugin data object.
+				 * @param data - The new data to update for the plugin.
+				 * @param validator - (Optional) Validation options for the data.
+				 * @yields Throws an error if the plugin data with the given ID does not exist or if validation fails.
+				 * @returns The parsed data response for the updated plugin record.
 				 */
 				const update = Effect.fn(
 					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.update'
 				)(function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
 					// Check if the plugin data with the given ID exists
-					const checkExistingId = yield* checkForId(id);
-
 					// If it does not exist, fail with an error
-					if (!checkExistingId) {
-						return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
-					}
+					// This ensures that we only update existing records
+					// and prevents accidental creation of new records
+					// when trying to update non-existing data
+					yield* checkExistingRespondOrFail(id, {
+						mode: 'doesNotExist',
+						shouldFail: true,
+					});
 
 					// Validate the data before updating
 					const parsedData = yield* parseData<T>(data, validator);
 
 					// Update the database record
-					const updatedData = yield* dbService.execute((db) =>
-						db
-							.update(tsPluginData)
-							.set({ data: parsedData })
-							.where(eq(tsPluginData.id, id))
-							.returning({ id: tsPluginData.id })
-							.get()
-					);
+					const updated = yield* _updatePluginDataEntry({
+						id,
+						data: parsedData,
+					});
 
 					// Return the parsed data response for the updated record
-					return yield* parsedDataResponse<T>(updatedData.id, data);
+					return yield* parsedDataResponse<T>(updated.id, data);
 				});
 
 				return {
