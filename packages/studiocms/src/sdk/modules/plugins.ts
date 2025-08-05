@@ -13,6 +13,9 @@ import type {
 	PluginDataEntry,
 	tsPluginDataInsert,
 	tsPluginDataSelect,
+	UsePluginDataOpts,
+	UsePluginDataOptsBase,
+	UserPluginDataOptsImplementation,
 	ValidatorOptions,
 } from '../types/index.js';
 import { CacheContext, isCacheEnabled, isCacheExpired } from '../utils.js';
@@ -45,83 +48,49 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 		effect: genLogger('studiocms/sdk/SDKCore/modules/plugins/effect')(function* () {
 			const [dbService, { pluginData }] = yield* Effect.all([AstroDB, CacheContext]);
 
-			/**
-			 * Creates a batch request function for querying plugin data from the database.
-			 *
-			 * The returned function accepts an object with `batchSize` and `offset` properties,
-			 * and performs a database query to select a batch of plugin data records with the specified
-			 * limit and offset.
-			 *
-			 * @param query - The query builder function provided by the database service.
-			 * @param o - An object containing batch parameters.
-			 * @param o.batchSize - The maximum number of records to retrieve in a single batch.
-			 * @param o.offset - The number of records to skip before starting to collect the batch.
-			 * @returns A function that executes the batch query and returns the selected plugin data.
-			 */
-			const _dbBatchRequest = dbService.makeQuery(
-				(query, o: { batchSize: number; offset: number }) =>
+			const _db = {
+				/**
+				 * Creates a batch request function for querying plugin data from the database.
+				 *
+				 * The returned function accepts an object with `batchSize` and `offset` properties,
+				 * and performs a database query to select a batch of plugin data records with the specified
+				 * limit and offset.
+				 */
+				batchRequest: dbService.makeQuery((query, o: { batchSize: number; offset: number }) =>
 					query((db) => db.select().from(tsPluginData).limit(o.batchSize).offset(o.offset))
-			);
-
-			/**
-			 * Executes a database query to select a single plugin data entry by its ID.
-			 *
-			 * @param query - The database query function.
-			 * @param id - The unique identifier of the plugin data entry to retrieve.
-			 * @returns The plugin data entry matching the provided ID, or undefined if not found.
-			 */
-			const _dbSelectPluginDataEntry = dbService.makeQuery((query, id: string) =>
-				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
-			);
-
-			/**
-			 * Inserts a new plugin data entry into the database and returns the inserted record.
-			 *
-			 * @param data - The plugin data to be inserted, conforming to the `tsPluginDataInsert` type.
-			 * @returns A promise that resolves to the inserted plugin data record.
-			 *
-			 * @example
-			 * ```typescript
-			 * const newPlugin = await _dbInsertPluginDataEntry({ name: "MyPlugin", version: "1.0.0" });
-			 * ```
-			 */
-			const _dbInsertPluginDataEntry = dbService.makeQuery((query, data: tsPluginDataInsert) =>
-				query((db) => db.insert(tsPluginData).values(data).returning().get())
-			);
-
-			/**
-			 * Updates an existing plugin data entry in the database.
-			 *
-			 * @param query - The database query executor function.
-			 * @param data - The plugin data object containing updated fields, including the `id` of the entry to update.
-			 * @returns A promise that resolves to the updated entry's `id`.
-			 *
-			 * @private
-			 * @remarks
-			 * This function is used internally to update plugin data entries.
-			 * It returns the updated entry's `id` as part of the result.
-			 */
-			const _dbUpdatePluginDataEntry = dbService.makeQuery((query, data: tsPluginDataSelect) =>
-				query((db) =>
-					db.update(tsPluginData).set(data).where(eq(tsPluginData.id, data.id)).returning().get()
-				)
-			);
-
-			/**
-			 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
-			 *
-			 * @param query - The database query function.
-			 * @param pluginId - The unique identifier of the plugin. Used as a prefix to filter entries.
-			 * @returns A promise resolving to an array of plugin data entries whose IDs start with the given pluginId followed by a hyphen.
-			 */
-			const _dbGetEntriesPluginData = dbService.makeQuery((query, pluginId: string) =>
-				query((db) =>
-					db
-						.select()
-						.from(tsPluginData)
-						.where(like(tsPluginData.id, `${pluginId}-%`))
-				)
-			);
+				),
+				/**
+				 * Executes a database query to select a single plugin data entry by its ID.
+				 */
+				selectPluginDataEntry: dbService.makeQuery((query, id: string) =>
+					query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
+				),
+				/**
+				 * Inserts a new plugin data entry into the database and returns the inserted record.
+				 */
+				insertPluginDataEntry: dbService.makeQuery((query, data: tsPluginDataInsert) =>
+					query((db) => db.insert(tsPluginData).values(data).returning().get())
+				),
+				/**
+				 * Updates an existing plugin data entry in the database.
+				 */
+				updatePluginDataEntry: dbService.makeQuery((query, data: tsPluginDataSelect) =>
+					query((db) =>
+						db.update(tsPluginData).set(data).where(eq(tsPluginData.id, data.id)).returning().get()
+					)
+				),
+				/**
+				 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
+				 */
+				getEntriesPluginData: dbService.makeQuery((query, pluginId: string) =>
+					query((db) =>
+						db
+							.select()
+							.from(tsPluginData)
+							.where(like(tsPluginData.id, `${pluginId}-%`))
+					)
+				),
+			};
 
 			/**
 			 * Initializes the plugin data cache by loading entries from the database in batches.
@@ -149,7 +118,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				const sharedTimestamp = new Date(); // Single timestamp for all entries
 
 				while (true) {
-					const entries = yield* _dbBatchRequest({ batchSize, offset });
+					const entries = yield* _db.batchRequest({ batchSize, offset });
 
 					if (entries.length === 0) break;
 
@@ -206,7 +175,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 					// If the entry is not found in the cache or is expired, query the database
 					// and update the cache with the new data
-					const fresh = yield* _dbSelectPluginDataEntry(id);
+					const fresh = yield* _db.selectPluginDataEntry(id);
 					if (fresh) {
 						pluginData.set(id, {
 							data: fresh,
@@ -218,7 +187,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 				// If caching is not enabled, directly query the database
 				// This ensures that we always get the latest data from the database
-				return yield* _dbSelectPluginDataEntry(id);
+				return yield* _db.selectPluginDataEntry(id);
 			});
 
 			/**
@@ -235,7 +204,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				'studiocms/sdk/SDKCore/modules/plugins/effect/_insertPluginDataEntry'
 			)(function* (data: tsPluginDataInsert) {
 				// Insert the plugin data entry into the database
-				const newData = yield* _dbInsertPluginDataEntry(data);
+				const newData = yield* _db.insertPluginDataEntry(data);
 
 				// If caching is enabled, update the cache with the new data
 				// This ensures that the cache is always in sync with the database
@@ -264,7 +233,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				'studiocms/sdk/SDKCore/modules/plugins/effect/_updatePluginDataEntry'
 			)(function* (data: tsPluginDataSelect) {
 				// Update the plugin data entry in the database
-				const updatedData = yield* _dbUpdatePluginDataEntry(data);
+				const updatedData = yield* _db.updatePluginDataEntry(data);
 
 				// If caching is enabled, update the cache with the new data
 				if (yield* isCacheEnabled) {
@@ -305,7 +274,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 				if ((yield* isCacheEnabled) && isCacheExpired({ lastCacheUpdate })) {
 					// If the cache is expired, we need to fetch the latest data from the database
-					const freshEntry = yield* _dbSelectPluginDataEntry(entry.id);
+					const freshEntry = yield* _db.selectPluginDataEntry(entry.id);
 
 					// If the entry is not found in the database, we can skip it
 					if (!freshEntry) {
@@ -395,7 +364,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					// we need to fetch the latest data from the database
 					// This ensures that we always have the most up-to-date entries for the plugin
 					return yield* pipe(
-						_dbGetEntriesPluginData(pluginId),
+						_db.getEntriesPluginData(pluginId),
 						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator)))
 					);
 				}
@@ -451,10 +420,11 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			/**
 			 * Retrieves all plugin data entries for a given plugin ID.
 			 */
-			function usePluginData(pluginId: string): {
-				getEntries: <T extends object>(
-					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T>[], LibSQLDatabaseError | Error, never>;
+			function usePluginData<T extends object>(
+				pluginId: string,
+				opts?: UsePluginDataOptsBase<T>
+			): {
+				getEntries: () => Effect.Effect<PluginDataEntry<T>[], LibSQLDatabaseError | Error, never>;
 			};
 
 			/**
@@ -464,28 +434,27 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param entryId - (Optional) The unique identifier for the plugin data entry.
 			 * @returns An object with methods to manage plugin data entries.
 			 */
-			function usePluginData(
+			function usePluginData<T extends object>(
 				pluginId: string,
-				entryId: string
+				opts?: UsePluginDataOpts<T>
 			): {
 				generatedId: () => Effect.Effect<string, never, never>;
-				insert: <T extends object>(
-					data: T,
-					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
-				select: <T extends object>(
-					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T> | undefined, LibSQLDatabaseError | Error, never>;
-				update: <T extends object>(
-					data: T,
-					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
+				select: () => Effect.Effect<
+					PluginDataEntry<T> | undefined,
+					LibSQLDatabaseError | Error,
+					never
+				>;
+				insert: (data: T) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
+				update: (data: T) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
 			};
 
 			/**
 			 * Implementation of the `usePluginData` function that provides access to plugin data entries.
 			 */
-			function usePluginData(pluginId: string, entryId?: string) {
+			function usePluginData<T extends object>(
+				pluginId: string,
+				{ entryId, validator }: UserPluginDataOptsImplementation<T> = {}
+			) {
 				if (!entryId) {
 					return {
 						/**
@@ -495,8 +464,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						 * @param validator - Optional validator options for validating the plugin data.
 						 * @returns An Effect that yields an array of `PluginDataEntry<T>` objects.
 						 */
-						getEntries: <T extends object>(validator?: ValidatorOptions<T>) =>
-							_getEntries(pluginId, validator),
+						getEntries: () => _getEntries<T>(pluginId, validator),
 					};
 				}
 
@@ -517,6 +485,41 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					generatedId: () => Effect.succeed(generatedEntryId),
 
 					/**
+					 * Selects and validates plugin data by ID.
+					 *
+					 * This generator function checks if plugin data exists for the given ID,
+					 * validates and parses the data using the provided validator, and returns
+					 * a parsed data response. If no data exists for the given ID, it returns `undefined`.
+					 *
+					 * @template T - The expected shape of the plugin data.
+					 * @param validator - Optional validation options for parsing the plugin data.
+					 * @returns The parsed data response for the existing entry, or `undefined` if not found.
+					 */
+					select: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select')(
+						function* () {
+							// Check if the plugin data with the given ID exists
+							// If it exists, proceed to validate and parse the data
+							// If it does not exist, return undefined
+							// This ensures that we only attempt to parse existing data
+							// and do not throw an error when the data is not found
+							// This is useful for cases where the plugin data is optional
+							const existing = yield* _selectPluginDataEntryRespondOrFail(
+								generatedEntryId,
+								SelectPluginDataRespondOrFail.ExistsNoFail
+							);
+
+							// If it does not exist, return undefined
+							if (!existing) return undefined;
+
+							// Validate and parse the existing data
+							const data = yield* parseData<T>(existing.data, validator);
+
+							// Return the parsed data response for the existing entry
+							return yield* parsedDataResponse<T>(generatedEntryId, data);
+						}
+					),
+
+					/**
 					 * Inserts new plugin data into the database after validating and checking for duplicate IDs.
 					 *
 					 * @template T - The type of the plugin data object.
@@ -527,7 +530,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					 * @returns The parsed data response for the newly inserted entry.
 					 */
 					insert: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.insert')(
-						function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
+						function* (data: T) {
 							// Check if the plugin data with the given ID already exists
 							// If it exists, fail with an error
 							// This ensures that we do not accidentally insert duplicate entries
@@ -556,41 +559,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					),
 
 					/**
-					 * Selects and validates plugin data by ID.
-					 *
-					 * This generator function checks if plugin data exists for the given ID,
-					 * validates and parses the data using the provided validator, and returns
-					 * a parsed data response. If no data exists for the given ID, it returns `undefined`.
-					 *
-					 * @template T - The expected shape of the plugin data.
-					 * @param validator - Optional validation options for parsing the plugin data.
-					 * @returns The parsed data response for the existing entry, or `undefined` if not found.
-					 */
-					select: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select')(
-						function* <T extends object>(validator?: ValidatorOptions<T>) {
-							// Check if the plugin data with the given ID exists
-							// If it exists, proceed to validate and parse the data
-							// If it does not exist, return undefined
-							// This ensures that we only attempt to parse existing data
-							// and do not throw an error when the data is not found
-							// This is useful for cases where the plugin data is optional
-							const existing = yield* _selectPluginDataEntryRespondOrFail(
-								generatedEntryId,
-								SelectPluginDataRespondOrFail.ExistsNoFail
-							);
-
-							// If it does not exist, return undefined
-							if (!existing) return undefined;
-
-							// Validate and parse the existing data
-							const data = yield* parseData<T>(existing.data, validator);
-
-							// Return the parsed data response for the existing entry
-							return yield* parsedDataResponse<T>(generatedEntryId, data);
-						}
-					),
-
-					/**
 					 * Updates the plugin data for a given ID after validating the input.
 					 *
 					 * This function performs the following steps:
@@ -607,7 +575,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					 * @returns The parsed data response for the updated plugin record.
 					 */
 					update: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.update')(
-						function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
+						function* (data: T) {
 							// Check if the plugin data with the given ID exists
 							// If it does not exist, fail with an error
 							// This ensures that we only update existing records

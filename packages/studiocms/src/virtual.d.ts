@@ -324,6 +324,9 @@ declare module 'studiocms:sdk' {
 
 declare module 'studiocms:sdk/types' {
 	// src/sdk/types/index
+	export type UsePluginDataOptsBase<T> = import('./sdk/types/index').UsePluginDataOptsBase<T>;
+	export type UsePluginDataOpts<T> = import('./sdk/types/index').UsePluginDataOpts<T>;
+	export type UserPluginDataOptsImplementation<T> = import('./sdk/types/index').UserPluginDataOptsImplementation<T>;
 	export type PluginDataEntry<T> = import('./sdk/types/index').PluginDataEntry<T>;
 	export type JSONValidatorFn<T> = import('./sdk/types/index').JSONValidatorFn<T>;
 	export type EffectSchemaValidator<T> = import('./sdk/types/index').EffectSchemaValidator<T>;

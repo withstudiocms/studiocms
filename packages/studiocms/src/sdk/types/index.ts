@@ -27,6 +27,39 @@ export type * from './tableDefs.js';
 export type * from './tsAlias.js';
 
 /**
+ * Base options for using plugin data.
+ *
+ * @template T - The type of the data object.
+ * @property [Type] - An optional type definition for the data.
+ * @property [validator] - Optional validator options for the data type.
+ */
+export interface UsePluginDataOptsBase<T extends object> {
+	Type?: T;
+	validator?: ValidatorOptions<T>;
+}
+
+/**
+ * Options for using plugin data, extending the base options with an entry identifier.
+ *
+ * @template T - The type of the plugin data object.
+ * @extends UsePluginDataOptsBase<T>
+ * 
+ * @property entryId - The unique identifier for the entry associated with the plugin data.
+ */
+export interface UsePluginDataOpts<T extends object> extends UsePluginDataOptsBase<T> {
+	entryId: string;
+}
+
+/**
+ * Represents a partial implementation of the `UsePluginDataOpts` type for a given object type `T`.
+ * 
+ * This type is useful when you want to provide only a subset of the properties defined in `UsePluginDataOpts<T>`.
+ *
+ * @typeParam T - The object type for which the plugin data options are defined.
+ */
+export type UserPluginDataOptsImplementation<T extends object> = Partial<UsePluginDataOpts<T>>;
+
+/**
  * Represents a plugin data entry with a strongly-typed `data` property.
  *
  * @template T - The type of the `data` property.
