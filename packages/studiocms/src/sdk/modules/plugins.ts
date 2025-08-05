@@ -6,7 +6,14 @@ import { Effect, genLogger, Schema } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import { tsPluginData } from '../tables.js';
 
+/**
+ * Type representing the structure of plugin data in the database when inserting new data.
+ */
 export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
+
+/**
+ * Type representing the structure of plugin data in the database when selecting existing data.
+ */
 export type tsPluginDataSelect = typeof tsPluginData.$inferSelect;
 
 /**
@@ -50,14 +57,33 @@ export const parsedDataResponse = <T extends object>(
 		data,
 	}));
 
+/**
+ * Represents a JSON validator function for a specific type.
+ *
+ * @template T - The type that the validator function checks for.
+ * @property jsonFn - A type guard function that determines if the provided data is of type T.
+ */
 export interface JSONValidatorFn<T> {
 	jsonFn: (data: unknown) => data is T;
 }
 
+/**
+ * Interface representing a validator for an effect schema.
+ *
+ * @typeParam T - The type of the value that the schema validates.
+ *
+ * @property effectSchema - The schema used for validation, which takes a value of type `T` and returns either a `ParseError` or `never`.
+ */
 export interface EffectSchemaValidator<T> {
 	effectSchema: Schema.Schema<T, ParseError, never>;
 }
 
+/**
+ * Interface representing a validator that uses a Zod schema to validate data of type `T`.
+ *
+ * @template T - The type of data to be validated.
+ * @property zodSchema - The Zod schema instance used for validation.
+ */
 export interface ZodValidator<T> {
 	zodSchema: z.ZodSchema<T>;
 }
