@@ -1,4 +1,4 @@
-import type { Editor } from "grapesjs";
+import type { Editor } from 'grapesjs';
 import {
 	typeButton,
 	typeCheckbox,
@@ -10,7 +10,7 @@ import {
 	typeSelect,
 	typeTextarea,
 } from '../consts.js';
-import { AddComponent } from "./index.js";
+import { AddComponent } from './index.js';
 
 export default (editor: Editor) => {
 	const addComponent = AddComponent(editor);
@@ -313,4 +313,4 @@ export default (editor: Editor) => {
 			},
 		},
 	});
-}
+};

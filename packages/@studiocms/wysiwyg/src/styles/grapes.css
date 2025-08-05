@@ -1,5 +1,5 @@
 :root {
-    --gjs-color-blue: hsl(259 73% 67%);
+	--gjs-color-blue: hsl(259 73% 67%);
 
 	body {
 		background-color: hsl(0, 0%, 97%);
@@ -78,7 +78,7 @@
 	}
 
 	/* biome-ignore lint/style/noDescendingSpecificity: Copied from GrapesJS Official CSS */
-	*  {
+	* {
 		box-sizing: border-box;
 	}
 	body {

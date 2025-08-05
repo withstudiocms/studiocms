@@ -64,13 +64,12 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 				onChange() {
 					timedInterval && clearTimeout(timedInterval);
 					abortController?.abort();
-					timedInterval = setTimeout(
-						() => {
-							abortController = new AbortController();
-							fetch(PARTIAL_PATH, {
-								...partialRequestBuilder(this.model),
-								signal: abortController.signal
-							})
+					timedInterval = setTimeout(() => {
+						abortController = new AbortController();
+						fetch(PARTIAL_PATH, {
+							...partialRequestBuilder(this.model),
+							signal: abortController.signal,
+						})
 							.then((getCompResponse) => {
 								// If response is not valid, log error.
 								if (!getCompResponse.ok) {
@@ -95,9 +94,7 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 									this.el.innerHTML = `<div class="error">Network Error</div>`;
 								}
 							});
-						},
-						100
-					);
+					}, 100);
 				},
 			},
 		});

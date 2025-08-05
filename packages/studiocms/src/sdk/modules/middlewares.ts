@@ -2,25 +2,24 @@ import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
 
-
 /**
  * SDKCore_MIDDLEWARES provides middleware initialization logic for the StudioCMS SDK core.
- * 
+ *
  * @remarks
  * This service is responsible for ensuring that various cache layers (pages, folder list, folder tree,
  * page-folder tree, and site configuration) are properly initialized before use. It leverages effectful
  * operations and logging to manage and trace the initialization process.
- * 
+ *
  * @extends Effect.Service
- * 
+ *
  * @example
  * ```typescript
  * const middlewares = yield* Effect.service(SDKCore_MIDDLEWARES);
  * yield* middlewares.initPages();
  * ```
- * 
+ *
  * @module studiocms/sdk/SDKCore/modules/middlewares
- * 
+ *
  * @property {Function} initPages - Initializes all relevant caches if they are not already populated.
  */
 export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(

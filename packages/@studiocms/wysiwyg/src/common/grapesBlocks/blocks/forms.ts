@@ -1,7 +1,16 @@
-import type { Editor } from "grapesjs";
-import { typeButton, typeCheckbox, typeForm, typeInput, typeLabel, typeRadio, typeSelect, typeTextarea } from "../consts.js";
-import type { RequiredGrapesBlocksOptions } from "../types.js";
-import { AddBlocks } from "./index.js";
+import type { Editor } from 'grapesjs';
+import {
+	typeButton,
+	typeCheckbox,
+	typeForm,
+	typeInput,
+	typeLabel,
+	typeRadio,
+	typeSelect,
+	typeTextarea,
+} from '../consts.js';
+import type { RequiredGrapesBlocksOptions } from '../types.js';
+import { AddBlocks } from './index.js';
 
 export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 	const addBlock = AddBlocks(editor, opts);
@@ -100,4 +109,4 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 			'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8m0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 5c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"></path></svg>',
 		content: { type: typeRadio },
 	});
-}
+};

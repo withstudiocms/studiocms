@@ -5,8 +5,8 @@ import extras from './extras.js';
 import forms from './forms.js';
 import tabs from './tabs.js';
 
-export const AddBlocks = (editor: Editor, opts: RequiredGrapesBlocksOptions) => 
-	(id: string, def: BlockProperties) => {
+export const AddBlocks =
+	(editor: Editor, opts: RequiredGrapesBlocksOptions) => (id: string, def: BlockProperties) => {
 		opts.blocks.indexOf(id) >= 0 &&
 			editor.Blocks.add(id, {
 				select: true,

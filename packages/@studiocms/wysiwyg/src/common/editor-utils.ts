@@ -104,9 +104,7 @@ export const getSlotData = (model: Component) => {
 	let slotData = '';
 
 	if (children.length > 0) {
-		slotData = children
-			.map((child) => child.toHTML())
-			.join('');
+		slotData = children.map((child) => child.toHTML()).join('');
 	}
 
 	return slotData;
@@ -287,4 +285,3 @@ export function buildBlockProps(name: string) {
 		}
 	}
 }
-

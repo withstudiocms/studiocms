@@ -187,7 +187,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			notificationSettings,
 			AUTH,
 			INIT,
-			MIDDLEWARES
+			MIDDLEWARES,
 		] = yield* Effect.all([
 			SDKCore_FolderTree,
 			SDKCore_Generators,
@@ -247,7 +247,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			GET,
 			AUTH,
 			INIT,
-			MIDDLEWARES
+			MIDDLEWARES,
 		};
 	}),
 }) {

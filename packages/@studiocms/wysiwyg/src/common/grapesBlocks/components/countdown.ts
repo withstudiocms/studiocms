@@ -2,7 +2,9 @@ import type { Editor } from 'grapesjs';
 import type { RequiredCountdownOptions } from '../types.js';
 import { AddComponent } from './index.js';
 
-type TElement = HTMLElement & { __gjsCountdownInterval: ReturnType<typeof setTimeout | typeof setInterval> };
+type TElement = HTMLElement & {
+	__gjsCountdownInterval: ReturnType<typeof setTimeout | typeof setInterval>;
+};
 
 declare global {
 	interface Window {

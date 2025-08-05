@@ -1,9 +1,9 @@
-import type { Editor } from "grapesjs";
-import { cmdDeviceDesktop, cmdDeviceMobile, cmdDeviceTablet } from "../consts";
-import { AddCmd } from "./index.js";
+import type { Editor } from 'grapesjs';
+import { cmdDeviceDesktop, cmdDeviceMobile, cmdDeviceTablet } from '../consts';
+import { AddCmd } from './index.js';
 
 export default (editor: Editor) => {
-    const addCmd = AddCmd(editor);
+	const addCmd = AddCmd(editor);
 
 	addCmd(cmdDeviceDesktop, {
 		run: (ed) => ed.setDevice('Desktop'),
@@ -17,4 +17,4 @@ export default (editor: Editor) => {
 		run: (ed) => ed.setDevice('Mobile portrait'),
 		stop: () => {},
 	});
-}
+};
