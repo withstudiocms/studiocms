@@ -44,20 +44,46 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const [dbService, { pluginData }] = yield* Effect.all([AstroDB, CacheContext]);
 
 			/**
-			 * Initializes the plugin data cache by fetching all existing plugin data entries from the database.
-			 * Populates the in-memory cache with these entries, associating each entry's ID with its data and the current timestamp.
+			 * Initializes the plugin data cache by loading entries from the database in batches.
 			 *
-			 * @returns {Effect<void>} An effect that, when executed, initializes the plugin data cache.
+			 * This generator function retrieves plugin data from the database using a fixed batch size,
+			 * and populates the `pluginData` cache with each entry. All cached entries share a single
+			 * timestamp indicating when the cache was last updated. The function continues fetching and
+			 * caching entries until no more entries are returned from the database.
+			 *
+			 * @remarks
+			 * - Uses a batch size of 1000 entries per database query to efficiently handle large datasets.
+			 * - Each cache entry is stored as a tuple containing the entry data and the shared timestamp.
+			 * - Intended to be used as an effect within an effectful programming model.
+			 *
+			 * @yields {void} Yields control to the effect system for each database operation.
 			 */
-			const initPluginDataCache = Effect.fn(function* () {
-				// Initialize the plugin data cache by fetching all existing entries from the database
-				const entries = yield* dbService.execute((db) => db.select().from(tsPluginData));
-				// Populate the in-memory cache with these entries
-				for (const entry of entries) {
-					pluginData.set(entry.id, {
-						data: entry,
-						lastCacheUpdate: new Date(),
-					});
+			const initPluginDataCache = Effect.fn(function* (BATCH_SIZE: number) {
+				let batchSize = BATCH_SIZE || 1000; // Default batch size if not provided
+				if (batchSize <= 0) {
+					batchSize = 1000; // Ensure a positive batch size
+				}
+				let offset = 0;
+				const sharedTimestamp = new Date(); // Single timestamp for all entries
+
+				while (true) {
+					const entries = yield* dbService.execute((db) =>
+						db.select().from(tsPluginData).limit(batchSize).offset(offset)
+					);
+
+					if (entries.length === 0) break;
+
+					// Batch insert into cache
+					const cacheEntries = entries.map(
+						(entry) => [entry.id, { data: entry, lastCacheUpdate: sharedTimestamp }] as const
+					);
+
+					// Use Map constructor or batch set operations
+					for (const [id, cacheData] of cacheEntries) {
+						pluginData.set(id, cacheData);
+					}
+
+					offset += batchSize;
 				}
 			});
 
