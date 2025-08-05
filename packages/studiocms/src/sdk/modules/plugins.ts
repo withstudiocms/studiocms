@@ -44,6 +44,24 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const [dbService, { pluginData }] = yield* Effect.all([AstroDB, CacheContext]);
 
 			/**
+			 * Initializes the plugin data cache by fetching all existing plugin data entries from the database.
+			 * Populates the in-memory cache with these entries, associating each entry's ID with its data and the current timestamp.
+			 *
+			 * @returns {Effect<void>} An effect that, when executed, initializes the plugin data cache.
+			 */
+			const initPluginDataCache = Effect.fn(function* () {
+				// Initialize the plugin data cache by fetching all existing entries from the database
+				const entries = yield* dbService.execute((db) => db.select().from(tsPluginData));
+				// Populate the in-memory cache with these entries
+				for (const entry of entries) {
+					pluginData.set(entry.id, {
+						data: entry,
+						lastCacheUpdate: new Date(),
+					});
+				}
+			});
+
+			/**
 			 * Executes a database query to select a single plugin data entry by its ID.
 			 *
 			 * @param query - The database query function.
@@ -523,6 +541,12 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				 * @returns An object with effectful methods for plugin data management, varying by presence of `entryId`.
 				 */
 				usePluginData,
+
+				/**
+				 * Initializes the plugin data cache by fetching all existing entries from the database
+				 * and populating the in-memory cache with these entries.
+				 */
+				initPluginDataCache,
 			};
 		}),
 	}
