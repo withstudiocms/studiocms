@@ -9,11 +9,22 @@ import type {
 	tsPageDataTags,
 	tsPageFolderStructure,
 	tsPermissions,
+	tsPluginData,
 	tsSessionTable,
 	tsSiteConfig,
 	tsUserResetTokens,
 	tsUsers,
 } from '../tables.js';
+
+/**
+ * Type representing the structure of plugin data in the database when inserting new data.
+ */
+export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
+
+/**
+ * Type representing the structure of plugin data in the database when selecting existing data.
+ */
+export type tsPluginDataSelect = typeof tsPluginData.$inferSelect;
 
 /**
  * Represents the selected fields from the `tsEmailVerificationTokens` table.
