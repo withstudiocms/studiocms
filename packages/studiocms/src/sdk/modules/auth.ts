@@ -11,7 +11,7 @@ import {
 	tsUsers,
 } from '../tables.js';
 import type {
-	tsOAuthAccountsSelect,
+	tsOAuthAccountsInsert,
 	tsSessionTableInsert,
 	tsUsersInsert,
 	tsUsersUpdate,
@@ -102,7 +102,6 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								db
 									.insert(tsEmailVerificationTokens)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id: crypto.randomUUID(),
 										userId,
 										token,
@@ -155,7 +154,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @returns A promise that resolves to the inserted OAuth account.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the OAuth account.
 					 */
-					create: dbService.makeQuery((ex, data: tsOAuthAccountsSelect) =>
+					create: dbService.makeQuery((ex, data: tsOAuthAccountsInsert) =>
 						ex((db) => db.insert(tsOAuthAccounts).values(data).returning().get()).pipe(
 							Effect.catchTags({
 								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
@@ -431,16 +430,43 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @returns A promise that resolves to an object containing the search results for the username and email.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the username or email.
 					 */
-					searchUsersForUsernameOrEmail: (username = '', email = '') =>
+					searchUsersForUsernameOrEmail: (username?: string, email?: string) =>
 						Effect.gen(function* () {
-							const usernameSearch = yield* dbService.execute((db) =>
-								db.select().from(tsUsers).where(eq(tsUsers.username, username))
-							);
-							const emailSearch = yield* dbService.execute((db) =>
-								db.select().from(tsUsers).where(eq(tsUsers.email, email))
-							);
+							// If both username and email are not provided, return early with no results.
+							if (!username && !email) {
+								return { usernameSearch: [], emailSearch: [] };
+							}
 
-							return { usernameSearch, emailSearch };
+							// If only username is provided, search for users by username.
+							if (username && !email) {
+								const usernameSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.username, username))
+								);
+								return { usernameSearch, emailSearch: [] };
+							}
+
+							// If only email is provided, search for users by email.
+							if (!username && email) {
+								const emailSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.email, email))
+								);
+								return { usernameSearch: [], emailSearch };
+							}
+
+							// If both username and email are provided, search for both.
+							// This will return an object with both results.
+							if (username && email) {
+								const usernameSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.username, username))
+								);
+								const emailSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.email, email))
+								);
+								return { usernameSearch, emailSearch };
+							}
+
+							// Fallback return in case of unexpected conditions.
+							return { usernameSearch: [], emailSearch: [] };
 						}).pipe(
 							Effect.catchTags({
 								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>

@@ -7,6 +7,7 @@ import type {
 	tsPageDataTagsSelect,
 	tsPermissionsSelect,
 	tsSessionTableSelect,
+	tsSiteConfigInsert,
 	tsSiteConfigSelect,
 	tsUsersSelect,
 } from './tsAlias.js';
@@ -15,7 +16,7 @@ import type {
  * Represents a stripped-down version of the `tsSiteConfigSelect` type,
  * excluding the property 'id'.
  */
-export type SiteConfig = Omit<tsSiteConfigSelect, 'id'>;
+export type SiteConfig = Omit<tsSiteConfigInsert, 'id'>;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,

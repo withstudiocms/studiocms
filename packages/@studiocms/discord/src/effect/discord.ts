@@ -195,7 +195,6 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 					const newUser = yield* createOAuthUser(
 						{
-							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
 							username: discordUsername,
 							name: discordUser.global_name ?? discordUsername,

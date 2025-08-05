@@ -138,7 +138,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const newUser = yield* sdk.AUTH.user.create(
 				{
 					username,
-					// @ts-expect-error drizzle broke the variable...
 					email: checkEmail.data,
 					name: displayname,
 					createdAt: new Date(),

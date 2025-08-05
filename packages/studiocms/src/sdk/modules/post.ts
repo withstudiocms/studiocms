@@ -15,12 +15,12 @@ import type {
 	addDatabaseEntryInsertPage,
 	CombinedInsertContent,
 	MultiPageInsert,
-	tsDiffTrackingSelect,
-	tsPageContentSelect,
-	tsPageDataCategoriesSelect,
-	tsPageDataSelect,
-	tsPageDataTagsSelect,
-	tsPageFolderSelect,
+	tsDiffTrackingInsert,
+	tsPageContentInsert,
+	tsPageDataCategoriesInsert,
+	tsPageDataInsert,
+	tsPageDataTagsInsert,
+	tsPageFolderInsert,
 	tsPermissionsInsert,
 } from '../types/index.js';
 import {
@@ -99,7 +99,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted page data and page content.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 					 */
-					pages: (pageData: tsPageDataSelect, pageContent: CombinedInsertContent) =>
+					pages: (pageData: tsPageDataInsert, pageContent: CombinedInsertContent) =>
 						Effect.gen(function* () {
 							const newContentID = pageData.id || crypto.randomUUID().toString();
 
@@ -141,7 +141,6 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								db
 									.insert(tsPageData)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id,
 										title,
 										slug,
@@ -183,12 +182,11 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted page content.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page content.
 					 */
-					pageContent: dbService.makeQuery((ex, pageContent: tsPageContentSelect) =>
+					pageContent: dbService.makeQuery((ex, pageContent: tsPageContentInsert) =>
 						ex((db) =>
 							db
 								.insert(tsPageContent)
 								.values({
-									// @ts-expect-error Drizzle... removed this from the type?
 									id: pageContent.id || crypto.randomUUID().toString(),
 									contentId: pageContent.contentId,
 									contentLang: pageContent.contentLang || 'default',
@@ -209,7 +207,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted tag.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tag.
 					 */
-					tags: (tag: tsPageDataTagsSelect) =>
+					tags: (tag: tsPageDataTagsInsert) =>
 						Effect.gen(function* () {
 							const id = tag.id || (yield* generateRandomIDNumber(9));
 
@@ -217,7 +215,6 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								db
 									.insert(tsPageDataTags)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id,
 										name: tag.name,
 										description: tag.description,
@@ -239,7 +236,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted category.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the category.
 					 */
-					categories: (category: tsPageDataCategoriesSelect) =>
+					categories: (category: tsPageDataCategoriesInsert) =>
 						Effect.gen(function* () {
 							const id = category.id || (yield* generateRandomIDNumber(9));
 
@@ -247,7 +244,6 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								db
 									.insert(tsPageDataCategories)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id,
 										name: category.name,
 										description: category.description,
@@ -305,12 +301,11 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted diff tracking entry.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the diff tracking entry.
 					 */
-					diffTracking: dbService.makeQuery((ex, diff: tsDiffTrackingSelect) =>
+					diffTracking: dbService.makeQuery((ex, diff: tsDiffTrackingInsert) =>
 						ex((db) =>
 							db
 								.insert(tsDiffTracking)
 								.values({
-									// @ts-expect-error Drizzle... removed this from the type?
 									id: diff.id || crypto.randomUUID().toString(),
 									userId: diff.userId,
 									pageId: diff.pageId,
@@ -334,12 +329,11 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted folder.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 					 */
-					folder: dbService.makeQuery((ex, folder: tsPageFolderSelect) =>
+					folder: dbService.makeQuery((ex, folder: tsPageFolderInsert) =>
 						ex((db) =>
 							db
 								.insert(tsPageFolderStructure)
 								.values({
-									// @ts-expect-error Drizzle... removed this from the type?
 									id: folder.id || crypto.randomUUID().toString(),
 									name: folder.name,
 									parent: folder.parent || null,
@@ -362,9 +356,9 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted tags.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the tags.
 					 */
-					tags: (data: tsPageDataTagsSelect[]) =>
+					tags: (data: tsPageDataTagsInsert[]) =>
 						Effect.gen(function* () {
-							const entries: tsPageDataTagsSelect[] = [];
+							const entries: tsPageDataTagsInsert[] = [];
 
 							for (const item of data) {
 								const id = item.id || (yield* generateRandomIDNumber(9));
@@ -393,9 +387,9 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted categories.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the categories.
 					 */
-					categories: (data: tsPageDataCategoriesSelect[]) =>
+					categories: (data: tsPageDataCategoriesInsert[]) =>
 						Effect.gen(function* () {
-							const entries: tsPageDataCategoriesSelect[] = [];
+							const entries: tsPageDataCategoriesInsert[] = [];
 
 							for (const item of data) {
 								const id = item.id || (yield* generateRandomIDNumber(9));
@@ -491,7 +485,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 				 * @returns A promise that resolves to the inserted folder.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the folder.
 				 */
-				folder: (data: tsPageFolderSelect) =>
+				folder: (data: tsPageFolderInsert) =>
 					Effect.gen(function* () {
 						const newEntry = yield* POST.databaseEntry.folder(data);
 
@@ -510,7 +504,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 				 * @returns A promise that resolves to the inserted page data.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the page.
 				 */
-				page: (data: { pageData: tsPageDataSelect; pageContent: CombinedInsertContent }) =>
+				page: (data: { pageData: tsPageDataInsert; pageContent: CombinedInsertContent }) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
 

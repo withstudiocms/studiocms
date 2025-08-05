@@ -9,11 +9,11 @@ catalog:
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.15.1
+    "@astrojs/db": ^0.16.1
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.3.1
-    astro: ^5.12.6
+    "@astrojs/node": ^9.3.3
+    astro: ^5.12.8
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.0
@@ -30,10 +30,10 @@ catalogs:
     "@effect/workflow": ^0.8.1
     effect: ^3.17.3
   min:
-    "@astrojs/db": ^0.15.1
+    "@astrojs/db": ^0.16.1
     "@astrojs/markdown-remark": ^6.3.3
     "@studiocms/web-vitals": ^4.2.1
-    astro: ^5.12.6
+    astro: ^5.12.8
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.3.0

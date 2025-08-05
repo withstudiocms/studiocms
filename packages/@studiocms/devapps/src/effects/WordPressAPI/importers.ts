@@ -86,7 +86,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				);
 			}
 
-			const siteConfig: Partial<SiteConfig> = {
+			const siteConfig: SiteConfig = {
 				title: settings.name,
 				description: settings.description,
 			};
@@ -95,7 +95,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				siteConfig.siteIcon = siteIcon;
 			}
 
-			// @ts-expect-error - Drizzle broken types
 			const insert = yield* sdk.UPDATE.siteConfig(siteConfig);
 
 			if (insert.lastCacheUpdate) {

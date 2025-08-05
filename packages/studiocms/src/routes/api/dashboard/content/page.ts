@@ -8,6 +8,7 @@ import type { APIContext, APIRoute } from 'astro';
 import { Effect } from 'effect';
 import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
 import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses';
+import type { CombinedInsertContent } from '../../../../sdk/types/index.js';
 import { tryCatch } from '../../../../utils/tryCatch.js';
 
 type ApiEndpoints = {
@@ -107,7 +108,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			const dataId = crypto.randomUUID();
-			const contentId = crypto.randomUUID();
 
 			if (!data.title) {
 				return apiResponseLogger(400, 'Invalid form data, title is required');
@@ -116,8 +116,12 @@ export const POST: APIRoute = async (context: APIContext) =>
 			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 			const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
 
+			const pageContent: CombinedInsertContent = {
+				contentLang: 'default',
+				content: content.content || '',
+			}
+
 			yield* sdk.POST.page({
-				// @ts-expect-error
 				pageData: {
 					id: dataId,
 					// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
@@ -128,8 +132,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 					updatedAt: new Date(),
 					...data,
 				},
-				// @ts-expect-error
-				pageContent: { id: contentId, ...content },
+				pageContent: pageContent,
 			});
 
 			if (apiRoute) {
@@ -249,7 +252,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				(metaData) => metaData.id === data.id
 			);
 
-			const { enableDiffs, diffPerPage } = context.locals.siteConfig.data;
+			const { enableDiffs, diffPerPage = 10 } = context.locals.siteConfig.data;
 
 			if (enableDiffs) {
 				yield* sdk.diffTracking.insert(

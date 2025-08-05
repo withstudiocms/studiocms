@@ -66,7 +66,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(404, 'User not found');
 			}
 
-			// @ts-expect-error drizzle broke the variable...
 			yield* sdk.AUTH.user.update(userid, userUpdate);
 
 			yield* sdk.resetTokenBucket.delete(userid);

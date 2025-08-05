@@ -188,7 +188,6 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 
 					const newUser = yield* createOAuthUser(
 						{
-							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
 							username: githubUsername,
 							email: githubUser.email,

@@ -199,7 +199,6 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 					const newUser = yield* createOAuthUser(
 						{
-							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
 							username: googleUsername,
 							email: googleUser.email,

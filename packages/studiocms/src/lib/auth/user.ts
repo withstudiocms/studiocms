@@ -249,7 +249,6 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 				const avatar = yield* createUserAvatar(email);
 
 				const newUser = yield* sdk.AUTH.user.create({
-					// @ts-expect-error drizzle broke the id variable...
 					id: crypto.randomUUID(),
 					name,
 					username,
@@ -302,8 +301,6 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		const updateUserPassword = (userId: string, password: string) =>
 			genLogger('studiocms/lib/auth/user/User.updateUserPassword')(function* () {
 				const passwordHash = yield* pass.hashPassword(password);
-
-				// @ts-expect-error drizzle broke some of the insert variables...
 				yield* sdk.AUTH.user.update(userId, { password: passwordHash });
 			});
 

@@ -225,7 +225,6 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 					const newUser = yield* createOAuthUser(
 						{
-							// @ts-expect-error drizzle broke the id variable...
 							id: crypto.randomUUID(),
 							username: auth0Username,
 							name: auth0User.name,

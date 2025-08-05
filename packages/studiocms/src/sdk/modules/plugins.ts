@@ -551,7 +551,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// Note: The 'id' field is expected to be unique, so we use
 							// it as the primary key in the table definition.
 							const inserted = yield* _insertPluginDataEntry({
-								// @ts-expect-error - drizzle broke the 'id' type
 								id: generatedEntryId,
 								data: parsedData,
 							});

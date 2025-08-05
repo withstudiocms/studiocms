@@ -1,6 +1,7 @@
 import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
+import { SDKCore_PLUGINS } from './plugins.js';
 
 /**
  * SDKCore_MIDDLEWARES provides middleware initialization logic for the StudioCMS SDK core.
@@ -25,10 +26,10 @@ import { SDKCore_GET } from './get.js';
 export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 	'studiocms/sdk/SDKCore/modules/middlewares',
 	{
-		dependencies: [SDKCore_GET.Default],
+		dependencies: [SDKCore_GET.Default, SDKCore_PLUGINS.Default],
 		effect: genLogger('studiocms/sdk/SDKCore/modules/middlewares/effect')(function* () {
 			const [
-				{ FolderList, pages, folderTree, siteConfig, pageFolderTree },
+				{ FolderList, pages, folderTree, siteConfig, pageFolderTree, pluginData },
 				{
 					pages: updatePages,
 					folderTree: updateFolderTree,
@@ -36,7 +37,8 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 					folderList: updateFolderList,
 					siteConfig: updateSiteConfig,
 				},
-			] = yield* Effect.all([CacheContext, SDKCore_GET]);
+				{ initPluginDataCache },
+			] = yield* Effect.all([CacheContext, SDKCore_GET, SDKCore_PLUGINS]);
 
 			const middlewares = {
 				verifyCache: () =>
@@ -64,6 +66,11 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						// Ensure the siteConfig is initialized
 						if ((yield* isCacheEnabled) && siteConfig.size === 0) {
 							yield* updateSiteConfig();
+						}
+
+						// Ensure the plugin data cache is initialized
+						if ((yield* isCacheEnabled) && pluginData.size === 0) {
+							yield* initPluginDataCache();
 						}
 					}),
 			};

@@ -3,7 +3,7 @@ import { Effect, genLogger } from '../../effect.js';
 import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsSiteConfig } from '../tables.js';
-import type { tsSiteConfigSelect } from '../types/index.js';
+import type { SiteConfig } from '../types/index.js';
 import { SDKCore_AUTH } from './auth.js';
 
 /**
@@ -41,12 +41,11 @@ export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 				 * @returns A promise that resolves to the inserted site configuration.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 				 */
-				siteConfig: (config: Omit<tsSiteConfigSelect, 'id'>) =>
+				siteConfig: (config: SiteConfig) =>
 					dbService
 						.execute((db) =>
 							db
 								.insert(tsSiteConfig)
-								// @ts-expect-error Drizzle... removed this from the type?
 								.values({ ...config, id: CMSSiteConfigId })
 								.returning()
 								.get()

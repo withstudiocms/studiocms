@@ -69,7 +69,6 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 								db
 									.insert(tsAPIKeys)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id: crypto.randomUUID(),
 										creationDate: new Date(),
 										userId,

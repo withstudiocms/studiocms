@@ -43,7 +43,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			const updatedData = yield* sdk.AUTH.user.update(userId, {
-				// @ts-expect-error drizzle broke the variable...
 				notifications,
 			});
 

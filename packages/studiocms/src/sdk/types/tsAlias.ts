@@ -110,6 +110,8 @@ export type tsUsersUpdate = Partial<tsUsersInsert>;
  */
 export type tsOAuthAccountsSelect = typeof tsOAuthAccounts.$inferSelect;
 
+export type tsOAuthAccountsInsert = typeof tsOAuthAccounts.$inferInsert;
+
 /**
  * Type alias for the inferred select type of the `tsSessionTable`.
  *

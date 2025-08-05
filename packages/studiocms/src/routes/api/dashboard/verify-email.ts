@@ -37,7 +37,6 @@ export const GET: APIRoute = async (context: APIContext) =>
 			}
 
 			yield* sdk.AUTH.user.update(userId, {
-				// @ts-expect-error drizzle broke the variable...
 				emailVerified: true,
 			});
 

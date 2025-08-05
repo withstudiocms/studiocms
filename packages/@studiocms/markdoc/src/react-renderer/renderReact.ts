@@ -3,7 +3,6 @@ import Markdoc from '@markdoc/markdoc';
 import { experimental_AstroContainer } from 'astro/container';
 import * as React from 'react';
 import type { MarkDocRenderer } from '../types.js';
-// @ts-ignore - typegen does not understand .astro files
 import ReactWrapper from './ReactWrapper.astro';
 
 /**
