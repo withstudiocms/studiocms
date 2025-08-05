@@ -58,7 +58,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *
 			 * @yields {void} Yields control to the effect system for each database operation.
 			 */
-			const initPluginDataCache = Effect.fn(function* (BATCH_SIZE?: number) {
+			const initPluginDataCache = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/initPluginDataCache')(function* (BATCH_SIZE?: number) {
 				let batchSize = BATCH_SIZE || 1000; // Default batch size if not provided
 				if (batchSize <= 0) {
 					batchSize = 1000; // Ensure a positive batch size
@@ -125,7 +125,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param id - The unique identifier of the plugin data entry to retrieve.
 			 * @returns An object containing the plugin data entry, or `undefined` if not found.
 			 */
-			const _selectPluginDataEntry = Effect.fn(function* (id: string) {
+			const _selectPluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_selectPluginDataEntry')(function* (id: string) {
 				if (yield* isCacheEnabled) {
 					// Check the cache for the plugin data entry
 					const cached = pluginData.get(id);
@@ -174,7 +174,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * If caching is enabled, this function will update the in-memory cache with the new data,
 			 * ensuring cache consistency with the database.
 			 */
-			const _insertPluginDataEntry = Effect.fn(function* (data: tsPluginDataInsert) {
+			const _insertPluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_insertPluginDataEntry')(function* (data: tsPluginDataInsert) {
 				// Insert the plugin data entry into the database
 				const newData = yield* _rawInsertPluginDataEntry(data);
 
@@ -216,7 +216,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * This function performs the update operation using `_rawUpdatePluginDataEntry`. If caching is enabled,
 			 * it also updates the in-memory cache with the new data and the current timestamp.
 			 */
-			const _updatePluginDataEntry = Effect.fn(function* (data: tsPluginDataSelect) {
+			const _updatePluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_updatePluginDataEntry')(function* (data: tsPluginDataSelect) {
 				// Update the plugin data entry in the database
 				const updatedData = yield* _rawUpdatePluginDataEntry(data);
 
@@ -260,7 +260,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param validator - (Optional) Validation options to apply to each entry's data.
 			 * @returns An Effect yielding an array of validated and parsed plugin data responses.
 			 */
-			const _getEntries = Effect.fn(function* <T extends object>(
+			const _getEntries = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries'
+			)(function* <T extends object>(
 				pluginId: string,
 				validator?: ValidatorOptions<T>
 			) {
@@ -347,7 +349,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *   - Returns `true` otherwise.
 			 */
 			const _selectPluginDataEntryRespondOrFail = Effect.fn(
-				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData._selectPluginDataEntryRespondOrFail'
+				'studiocms/sdk/SDKCore/modules/plugins/effect/_selectPluginDataEntryRespondOrFail'
 			)(function* (id: string, mode: SelectPluginDataRespondOrFail) {
 				// Check if the plugin data with the given ID exists
 				const existing = yield* _selectPluginDataEntry(id);
