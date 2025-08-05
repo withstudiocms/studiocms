@@ -2,7 +2,7 @@ import { eq, like } from 'astro:db';
 import type { z } from 'astro/zod';
 import type { UnknownException } from 'effect/Cause';
 import type { ParseError } from 'effect/ParseResult';
-import { Effect, genLogger, Schema } from '../../effect.js';
+import { Effect, genLogger, pipe, Schema } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import { tsPluginData } from '../tables.js';
 
@@ -17,19 +17,6 @@ export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
 export type tsPluginDataSelect = typeof tsPluginData.$inferSelect;
 
 /**
- * Enum representing the possible responses when selecting plugin data,
- * indicating whether the existence of the data should cause a failure or not.
- *
- * @enum {string}
- * @property {string} ExistsNoFail - The plugin data exists and should not cause a failure.
- * @property {string} ExistsShouldFail - The plugin data exists and should cause a failure.
- */
-export enum SelectPluginDataRespondOrFail {
-	ExistsNoFail = 'existsNoFail',
-	ExistsShouldFail = 'existsShouldFail',
-}
-
-/**
  * Represents a plugin data entry with a strongly-typed `data` property.
  *
  * @template T - The type of the `data` property.
@@ -39,23 +26,6 @@ export enum SelectPluginDataRespondOrFail {
 export interface PluginDataEntry<T extends object> extends Omit<tsPluginDataSelect, 'data'> {
 	data: T;
 }
-
-/**
- * Wraps the provided `id` and `data` into a `PluginDataEntry<T>` object and returns it as an Effect.
- *
- * @template T - The type of the data to be wrapped.
- * @param id - The unique identifier for the plugin data entry.
- * @param data - The data to be associated with the given id.
- * @returns An Effect that, when executed, yields a `PluginDataEntry<T>` containing the provided id and data.
- */
-export const parsedDataResponse = <T extends object>(
-	id: string,
-	data: T
-): Effect.Effect<PluginDataEntry<T>, UnknownException, never> =>
-	Effect.try(() => ({
-		id,
-		data,
-	}));
 
 /**
  * Represents a JSON validator function for a specific type.
@@ -149,6 +119,58 @@ export interface ZodValidator<T> {
 export type ValidatorOptions<T> = JSONValidatorFn<T> | EffectSchemaValidator<T> | ZodValidator<T>;
 
 /**
+ * Enum representing the possible responses when selecting plugin data,
+ * indicating whether the existence of the data should cause a failure or not.
+ *
+ * @enum {string}
+ * @property {string} ExistsNoFail - The plugin data exists and should not cause a failure.
+ * @property {string} ExistsShouldFail - The plugin data exists and should cause a failure.
+ */
+export enum SelectPluginDataRespondOrFail {
+	ExistsNoFail = 'existsNoFail',
+	ExistsShouldFail = 'existsShouldFail',
+}
+
+/**
+ * Wraps the provided `id` and `data` into a `PluginDataEntry<T>` object and returns it as an Effect.
+ *
+ * @template T - The type of the data to be wrapped.
+ * @param id - The unique identifier for the plugin data entry.
+ * @param data - The data to be associated with the given id.
+ * @returns An Effect that, when executed, yields a `PluginDataEntry<T>` containing the provided id and data.
+ */
+export const parsedDataResponse = <T extends object>(
+	id: string,
+	data: T
+): Effect.Effect<PluginDataEntry<T>, UnknownException, never> =>
+	Effect.try(() => ({
+		id,
+		data,
+	}));
+
+/**
+ * Returns a function that validates a boolean condition and either returns the provided value
+ * cast to type `T` if the condition is true, or throws an error if the condition is false.
+ *
+ * @typeParam T - The expected type of the validated object.
+ * @param data - The value to be validated and potentially returned as type `T`.
+ * @returns A function that takes a boolean indicating validation success.
+ * @throws {Error} If the boolean argument is false, throws an error with the serialized value.
+ *
+ * @example
+ * ```typescript
+ * const validateUser = isJsonValid<User>(userData);
+ * const user = validateUser(isUserValid); // Returns userData as User if valid, otherwise throws.
+ * ```
+ */
+const isJsonValid =
+	<T extends object>(data: unknown) =>
+	(isValid: boolean) => {
+		if (isValid) return data as T;
+		throw new Error(`Validation failed for data: ${JSON.stringify(data)}`);
+	};
+
+/**
  * Returns a validator function based on the provided validator options.
  *
  * This function supports three types of validators:
@@ -171,12 +193,7 @@ const getValidatorFn = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/g
 			// Return the JSON validator function
 			return (data: unknown) =>
 				Effect.try({
-					try: () => {
-						if (validator.jsonFn(data)) {
-							return data as T;
-						}
-						throw new Error('Invalid JSON');
-					},
+					try: () => pipe(validator.jsonFn(data), isJsonValid<T>(data)),
 					catch: (error) => new Error(`JSON validation failed: ${(error as Error).message}`),
 				});
 		}
