@@ -113,9 +113,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const initPluginDataCache = Effect.fn(
 				'studiocms/sdk/SDKCore/modules/plugins/effect/initPluginDataCache'
 			)(function* (BATCH_SIZE?: number) {
-				let batchSize = BATCH_SIZE || 1000; // Default batch size if not provided
+				let batchSize = BATCH_SIZE || 100; // Default batch size if not provided
 				if (batchSize <= 0) {
-					batchSize = 1000; // Ensure a positive batch size
+					batchSize = 100; // Ensure a positive batch size
 				}
 				let offset = 0;
 				const sharedTimestamp = new Date(); // Single timestamp for all entries
