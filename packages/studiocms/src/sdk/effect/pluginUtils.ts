@@ -72,7 +72,7 @@ export const isJsonValid =
  * @throws Error if none of the expected validator options are provided.
  */
 export const getValidatorFn = Effect.fn(
-    'studiocms/sdk/SDKCore/modules/plugins/effect/getValidatorFn'
+    'studiocms/sdk/effect/pluginUtils/getValidatorFn'
 )(function* <T extends object>(validator: ValidatorOptions<T>) {
     if ('jsonFn' in validator) {
         // Return the JSON validator function
@@ -135,7 +135,7 @@ export const getValidatorFn = Effect.fn(
  *
  * @throws {Error} If the input is neither a string nor an object, or if parsing/validation fails.
  */
-export const parseData = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/parseData')(function* <
+export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')(function* <
     T extends object,
 >(rawData: unknown, validator?: ValidatorOptions<T>) {
     let parsedInput: unknown;
