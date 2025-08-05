@@ -88,6 +88,22 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			});
 
 			/**
+			 * Attempts to clear the plugin data cache using the `pluginData.clear()` method.
+			 * If an error occurs during the cache clearing process, it logs the error to the console
+			 * and returns a new `Error` instance with a descriptive message.
+			 *
+			 * @returns {Effect<unknown, Error, void>} An Effect that represents the attempt to clear the plugin data cache,
+			 * resolving to `void` on success or an `Error` on failure.
+			 */
+			const clearPluginDataCache = (): Effect.Effect<void, Error, never> => Effect.try({
+				try: () => pluginData.clear(),
+				catch: (error) => {
+					console.error('Failed to clear plugin data cache:', error);
+					return new Error('Failed to clear plugin data cache')
+				}
+			});
+
+			/**
 			 * Executes a database query to select a single plugin data entry by its ID.
 			 *
 			 * @param query - The database query function.
@@ -573,6 +589,13 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				 * and populating the in-memory cache with these entries.
 				 */
 				initPluginDataCache,
+
+				/**
+				 * Clears the plugin data cache, removing all cached entries.
+				 *
+				 * @returns An Effect that resolves to `void` on success or an `Error` on failure.
+				 */
+				clearPluginDataCache,
 			};
 		}),
 	}
