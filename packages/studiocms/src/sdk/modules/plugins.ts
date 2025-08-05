@@ -483,7 +483,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					/**
 					 * Generates a unique ID for the plugin data entry.
 					 *
-					 * @returns An Effect that yields the generated ID.
+					 * @returns An Effect that yields the generated ID. In the format `${pluginId}-${entryId}`
 					 */
 					generatedId: () => Effect.succeed(generatedEntryId),
 
