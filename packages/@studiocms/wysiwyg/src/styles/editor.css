@@ -1,0 +1,166 @@
+:root {
+	--gjs-color-blue: hsl(259, 55%, 60%);
+}
+
+.scms-grapesjs-container {
+	width: 100%;
+	height: 100%;
+	min-height: 80vh;
+	overflow: hidden;
+	border: 2px solid hsl(var(--border));
+	border-radius: var(--radius-md);
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	.editor {
+		width: 100%;
+		height: 100%;
+
+		#gjs {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+	}
+}
+
+/* Primary color for the background */
+.gjs-one-bg {
+	background-color: hsl(var(--background-step-3));
+}
+
+/* Secondary color for the text color */
+.gjs-two-color {
+	color: hsl(var(--text-normal));
+}
+
+/* Tertiary color for the background */
+.gjs-three-bg {
+	background-color: hsl(var(--background-base));
+	color: hsl(var(--text-muted));
+}
+
+/* Quaternary color for the text color */
+.gjs-four-color,
+.gjs-four-color-h:hover {
+	color: hsl(var(--primary-base));
+}
+
+[data-tooltip]::after {
+	background: rgba(51, 51, 51, 0.9);
+}
+
+.gjs-pn-commands {
+	min-height: 40px;
+}
+
+#gjs-sm-float {
+	display: none;
+}
+
+.gjs-logo-version {
+	background-color: #756467;
+}
+
+.gjs-pn-btn.gjs-pn-active {
+	box-shadow: none;
+}
+
+.CodeMirror {
+	min-height: 450px;
+	margin-bottom: 8px;
+}
+.grp-handler-close {
+	background-color: transparent;
+	color: #ddd;
+}
+
+.grp-handler-cp-wrap {
+	border-color: transparent;
+}
+
+.gjs-rte-toolbar {
+	box-shadow:
+		0 1px 3px rgba(0, 0, 0, 0.3),
+		0 1px 2px rgba(0, 0, 0, 0.44);
+	border-radius: 3px;
+}
+
+.gjs-rte-action {
+	font-size: 1rem;
+	border-right: none;
+	padding: 10px;
+	min-width: 35px;
+}
+
+.gjs-rte-actionbar {
+	max-width: 600px;
+	flex-wrap: wrap;
+}
+
+.rte-hilite-btn {
+	padding: 3px 6px;
+	border-radius: 3px;
+	background: rgba(210, 120, 201, 0.3);
+}
+
+.rte-color-picker {
+	display: none;
+	padding: 10px;
+	box-shadow:
+		0 2px 6px rgba(0, 0, 0, 0.2),
+		0 2px 5px rgba(0, 0, 0, 0.34);
+	border-radius: 5px;
+	position: absolute;
+	top: 55px;
+	width: 250px;
+	transition: all 2s ease;
+}
+
+.rte-color-picker:before {
+	content: "";
+	position: absolute;
+	top: -20px;
+	left: 46%;
+	border-width: 10px;
+	border-style: solid;
+}
+
+.rte-color-picker.dark {
+	background: rgba(0, 0, 0, 0.8);
+}
+
+.rte-color-picker.dark:before {
+	border-color: transparent transparent rgba(0, 0, 0, 0.75) transparent;
+}
+
+.rte-color-picker.light {
+	background: rgba(255, 255, 255, 0.75);
+}
+
+.rte-color-picker.light:before {
+	border-color: transparent transparent rgba(255, 255, 255, 0.75) transparent;
+}
+
+.rte-color-picker > div {
+	width: 30px;
+	display: inline-block;
+	height: 30px;
+	margin: 5px;
+	border-radius: 100%;
+	opacity: 0.7;
+}
+
+.rte-color-picker > div:hover {
+	opacity: 1;
+}
+
+.picker-wrapper {
+	padding: 20px;
+}

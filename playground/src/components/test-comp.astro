@@ -1,17 +1,32 @@
 ---
+import { Debug } from 'astro:components';
+
 
 interface Props {
 	/**
 	 * A string property.
+	 * 
+	 * @default Hello World
 	 */
 	foo: string;
 	/**
 	 * A number property.
+	 * 
+	 * @default 42
 	 */
 	bar: number;
 	/**
 	 * Example Template literal
+	 * 
+	 * @default foo-bar-baz.42
 	 */
-	tempLit: `${string}-${string}-${string}.${number}`;
+	baz: `${string}-${string}-${string}.${number}`;
 }
 ---
+
+<div>
+	<h1>Test Component</h1>
+	<p>This is a test Astro component for the WYSIWYG editor.</p>
+	<Debug props={Astro.props} />
+	<slot />
+</div>

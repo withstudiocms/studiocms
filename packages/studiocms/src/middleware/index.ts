@@ -53,11 +53,17 @@ router['/**'] = {
 	handler: async (context, next) =>
 		await convertToVanilla(
 			genLogger('studiocms/middleware/middlewareEffect')(function* () {
-				const {
-					GET: { latestVersion, siteConfig },
-				} = yield* SDKCore;
-				const { getUserData } = yield* User;
-				const { isEmailVerificationEnabled } = yield* VerifyEmail;
+				const [
+					{
+						GET: { latestVersion, siteConfig },
+						MIDDLEWARES: { verifyCache },
+					},
+					{ getUserData },
+					{ isEmailVerificationEnabled },
+				] = yield* Effect.all([SDKCore, User, VerifyEmail]);
+
+				// Ensure all necessary caches are initialized
+				yield* verifyCache();
 
 				const [version, siteConf, userSessionData, emailVerificationEnabled] = yield* Effect.all([
 					latestVersion(),

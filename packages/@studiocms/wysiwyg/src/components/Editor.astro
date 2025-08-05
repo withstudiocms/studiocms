@@ -1,0 +1,112 @@
+---
+import "@studiocms/ui/css/colors.css";
+import "grapesjs/dist/css/grapes.min.css";
+import "../styles/editor.css";
+import { getRegistryComponents } from "studiocms:component-registry/runtime";
+import type { PluginPageTypeEditorProps } from "studiocms/types";
+
+// Get the component registry for the editor
+const componentRegistry = getRegistryComponents();
+
+interface Props extends PluginPageTypeEditorProps {}
+
+// Extract the content from Astro props
+const { content } = Astro.props as Props;
+---
+
+<div
+    class="scms-grapesjs-container"
+    data-component-registry={JSON.stringify(componentRegistry)}
+>
+    <div class="editor">
+        <div id="gjs"></div>
+    </div>
+</div>
+
+<textarea id="page-content" name="page-content" style="display: none;"
+    >{content}</textarea
+>
+
+<script>
+    import { toast } from "@studiocms/ui/components/Toast/toast.js";
+    import grapesjs, { usePlugin } from "grapesjs";
+    import { baseConfig } from "../common/editor-settings.js";
+    import { getEditorElmData, inlineStorage } from "../common/editor-utils.js";
+    import { astroComponents } from "../common/componentRegistry.js";
+    import grapesBlocks from "../common/grapesBlocks/index.js";
+
+    // Get the editor options for Astro components and inline storage
+    // This will be used to initialize the plugins with the correct settings
+    const { astroComponentsOpts, inlineStorageOpts } = getEditorElmData(
+        document,
+        {
+            container: ".scms-grapesjs-container",
+            pageContent: "#page-content",
+        },
+    );
+
+    // Initialize the GrapesJS editor with the base configuration and plugins
+    // The plugins include custom components, inline storage, and various editor features
+    // such as blocks, tabs, countdown, custom code, tooltips, image editor,
+    // typed text, forms, rich text editor, and the StudioCMS GrapesJS plugin
+    // This setup allows for a rich editing experience with various functionalities
+    const editor = grapesjs.init({
+        ...baseConfig,
+        plugins: [
+            usePlugin(astroComponents, astroComponentsOpts),
+            usePlugin(inlineStorage, inlineStorageOpts),
+            usePlugin(grapesBlocks),
+        ],
+    });
+
+    // Simple warn notifier
+    const origWarn = console.warn;
+    console.warn = function (msg) {
+        if (msg.indexOf("[undefined]") == -1) {
+            toast({
+                title: "Warning",
+                type: "warning",
+                description: msg,
+                duration: 10000,
+            });
+        }
+        origWarn(msg);
+    };
+
+    // Do stuff on load
+    editor.on("load", function () {
+        var $ = grapesjs.$;
+
+        // Load and show settings and style manager
+        var openTmBtn = editor.Panels.getButton("views", "open-tm");
+        openTmBtn && openTmBtn.set("active", 1);
+        var openSm = editor.Panels.getButton("views", "open-sm");
+        openSm && openSm.set("active", 1);
+
+        // Remove trait view
+        editor.Panels.removeButton("views", "open-tm");
+
+        // Add Settings Sector
+        var traitsSector = $(
+            '<div class="gjs-sm-sector no-select">' +
+                '<div class="gjs-sm-sector-title"><span class="icon-settings fa fa-cog"></span> <span class="gjs-sm-sector-label">Settings</span></div>' +
+                '<div class="gjs-sm-properties" style="display: none;"></div></div>',
+        );
+        var traitsProps = traitsSector.find(".gjs-sm-properties");
+        traitsProps.append($(".gjs-traits-cs"));
+        $(".gjs-sm-sectors").before(traitsSector);
+        traitsSector.find(".gjs-sm-sector-title").on("click", function () {
+            var traitStyle = traitsProps.get(0).style;
+            var hidden = traitStyle.display === "none";
+            if (hidden) {
+                traitStyle.display = "block";
+            } else {
+                traitStyle.display = "none";
+            }
+        });
+
+        // Open block manager
+        var openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
+        openBlocksBtn && openBlocksBtn.set("active", 1);
+    });
+</script>
