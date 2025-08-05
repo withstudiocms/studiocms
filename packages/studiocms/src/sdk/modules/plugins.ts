@@ -163,7 +163,7 @@ export const parsedDataResponse = <T extends object>(
  * const user = validateUser(isUserValid); // Returns userData as User if valid, otherwise throws.
  * ```
  */
-const isJsonValid =
+export const isJsonValid =
 	<T extends object>(data: unknown) =>
 	(isValid: boolean) => {
 		if (isValid) return data as T;
@@ -187,7 +187,7 @@ const isJsonValid =
  * @returns A function that takes unknown data and returns an Effect that resolves to type `T` if validation succeeds, or fails with an error if validation fails.
  * @throws Error if none of the expected validator options are provided.
  */
-const getValidatorFn = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/getValidatorFn')(
+export const getValidatorFn = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/getValidatorFn')(
 	function* <T extends object>(validator: ValidatorOptions<T>) {
 		if ('jsonFn' in validator) {
 			// Return the JSON validator function
