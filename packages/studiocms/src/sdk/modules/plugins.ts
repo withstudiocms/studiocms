@@ -386,10 +386,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							Effect.map((entries) => entries.filter((entry) => entry !== undefined))
 						);
 
-						if (data.length > 0) {
-							// If we have valid data from the cache, return it
-							return data;
-						}
+						// If we have valid data from the cache, return it
+						if (data.length > 0) return data;
 					}
 
 					// If caching is not enabled or no valid data was found in the cache,
