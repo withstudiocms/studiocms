@@ -389,15 +389,23 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						getEntries: <T extends object>(validator?: ValidatorOptions<T>) =>
 							dbService
 								.execute((db) =>
+									// Select all entries for the given plugin ID
+									// The `like` function is used to match entries that start with the pluginId
+									// This allows us to retrieve all entries associated with the plugin
+									// The `tsPluginData.id` is expected to be in the format of `pluginId-entryId`
+									// where `entryId` is the actual id of the entry with the `pluginId` as a prefix
 									db
 										.select()
 										.from(tsPluginData)
 										.where(like(tsPluginData.id, `${pluginId}-%`))
 								)
 								.pipe(
+									// Map the results to PluginDataEntry<T> format
 									Effect.flatMap((entries) =>
 										Effect.forEach(entries, (entry) =>
 											Effect.gen(function* () {
+												// Validate and parse each entry's data using the provided validator
+												// If no validator is provided, we assume the data is already in the correct format
 												const data = yield* parseData<T>(entry.data, validator);
 												return yield* parsedDataResponse<T>(entry.id, data);
 											})
