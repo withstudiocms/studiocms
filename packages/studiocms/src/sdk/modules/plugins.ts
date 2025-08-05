@@ -549,12 +549,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				};
 			}
 
-			/**
-			 * An object containing utility functions related to plugins.
-			 *
-			 * @property usePluginData - A function to access or manipulate plugin data.
-			 */
-			const PLUGINS = {
+			return {
 				/**
 				 * Provides a set of effectful operations for managing plugin data entries by plugin ID and optional entry ID.
 				 *
@@ -572,8 +567,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				 */
 				usePluginData,
 			};
-
-			return PLUGINS;
 		}),
 	}
 ) {}
