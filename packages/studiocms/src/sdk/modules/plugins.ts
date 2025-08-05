@@ -48,6 +48,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 		effect: genLogger('studiocms/sdk/SDKCore/modules/plugins/effect')(function* () {
 			const [dbService, { pluginData }] = yield* Effect.all([AstroDB, CacheContext]);
 
+			/**
+			 * Provides a set of database operations for managing plugin data entries.
+			 */
 			const _db = {
 				/**
 				 * Creates a batch request function for querying plugin data from the database.
