@@ -63,6 +63,17 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					query((db) => db.select().from(tsPluginData).limit(o.batchSize).offset(o.offset))
 				),
 				/**
+				 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
+				 */
+				getEntriesPluginData: dbService.makeQuery((query, pluginId: string) =>
+					query((db) =>
+						db
+							.select()
+							.from(tsPluginData)
+							.where(like(tsPluginData.id, `${pluginId}-%`))
+					)
+				),
+				/**
 				 * Executes a database query to select a single plugin data entry by its ID.
 				 */
 				selectPluginDataEntry: dbService.makeQuery((query, id: string) =>
@@ -80,17 +91,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				updatePluginDataEntry: dbService.makeQuery((query, data: tsPluginDataSelect) =>
 					query((db) =>
 						db.update(tsPluginData).set(data).where(eq(tsPluginData.id, data.id)).returning().get()
-					)
-				),
-				/**
-				 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
-				 */
-				getEntriesPluginData: dbService.makeQuery((query, pluginId: string) =>
-					query((db) =>
-						db
-							.select()
-							.from(tsPluginData)
-							.where(like(tsPluginData.id, `${pluginId}-%`))
 					)
 				),
 			};
