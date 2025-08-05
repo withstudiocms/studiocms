@@ -58,7 +58,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *
 			 * @yields {void} Yields control to the effect system for each database operation.
 			 */
-			const initPluginDataCache = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/initPluginDataCache')(function* (BATCH_SIZE?: number) {
+			const initPluginDataCache = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/initPluginDataCache'
+			)(function* (BATCH_SIZE?: number) {
 				let batchSize = BATCH_SIZE || 1000; // Default batch size if not provided
 				if (batchSize <= 0) {
 					batchSize = 1000; // Ensure a positive batch size
@@ -95,13 +97,14 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @returns {Effect<unknown, Error, void>} An Effect that represents the attempt to clear the plugin data cache,
 			 * resolving to `void` on success or an `Error` on failure.
 			 */
-			const clearPluginDataCache = (): Effect.Effect<void, Error, never> => Effect.try({
-				try: () => pluginData.clear(),
-				catch: (error) => {
-					console.error('Failed to clear plugin data cache:', error);
-					return new Error('Failed to clear plugin data cache')
-				}
-			});
+			const clearPluginDataCache = (): Effect.Effect<void, Error, never> =>
+				Effect.try({
+					try: () => pluginData.clear(),
+					catch: (error) => {
+						console.error('Failed to clear plugin data cache:', error);
+						return new Error('Failed to clear plugin data cache');
+					},
+				});
 
 			/**
 			 * Executes a database query to select a single plugin data entry by its ID.
@@ -125,7 +128,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param id - The unique identifier of the plugin data entry to retrieve.
 			 * @returns An object containing the plugin data entry, or `undefined` if not found.
 			 */
-			const _selectPluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_selectPluginDataEntry')(function* (id: string) {
+			const _selectPluginDataEntry = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/_selectPluginDataEntry'
+			)(function* (id: string) {
 				if (yield* isCacheEnabled) {
 					// Check the cache for the plugin data entry
 					const cached = pluginData.get(id);
@@ -174,7 +179,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * If caching is enabled, this function will update the in-memory cache with the new data,
 			 * ensuring cache consistency with the database.
 			 */
-			const _insertPluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_insertPluginDataEntry')(function* (data: tsPluginDataInsert) {
+			const _insertPluginDataEntry = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/_insertPluginDataEntry'
+			)(function* (data: tsPluginDataInsert) {
 				// Insert the plugin data entry into the database
 				const newData = yield* _rawInsertPluginDataEntry(data);
 
@@ -216,7 +223,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * This function performs the update operation using `_rawUpdatePluginDataEntry`. If caching is enabled,
 			 * it also updates the in-memory cache with the new data and the current timestamp.
 			 */
-			const _updatePluginDataEntry = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_updatePluginDataEntry')(function* (data: tsPluginDataSelect) {
+			const _updatePluginDataEntry = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/_updatePluginDataEntry'
+			)(function* (data: tsPluginDataSelect) {
 				// Update the plugin data entry in the database
 				const updatedData = yield* _rawUpdatePluginDataEntry(data);
 
@@ -260,80 +269,77 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param validator - (Optional) Validation options to apply to each entry's data.
 			 * @returns An Effect yielding an array of validated and parsed plugin data responses.
 			 */
-			const _getEntries = Effect.fn(
-				'studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries'
-			)(function* <T extends object>(
-				pluginId: string,
-				validator?: ValidatorOptions<T>
-			) {
-				if (yield* isCacheEnabled) {
-					const mappableEntries = Array.from(pluginData.entries()).filter(([key]) =>
-						key.startsWith(pluginId)
-					);
+			const _getEntries = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries')(
+				function* <T extends object>(pluginId: string, validator?: ValidatorOptions<T>) {
+					if (yield* isCacheEnabled) {
+						const mappableEntries = Array.from(pluginData.entries()).filter(([key]) =>
+							key.startsWith(pluginId)
+						);
 
-					const data = yield* pipe(mappableEntries, (entries) =>
-						Effect.forEach(entries, ([_, { data: entry, lastCacheUpdate }]) =>
-							Effect.gen(function* () {
-								if ((yield* isCacheEnabled) && isCacheExpired({ lastCacheUpdate })) {
-									// If the cache is expired, we need to fetch the latest data from the database
-									const freshEntry = yield* _rawSelectPluginDataEntry(entry.id);
+						const data = yield* pipe(mappableEntries, (entries) =>
+							Effect.forEach(entries, ([_, { data: entry, lastCacheUpdate }]) =>
+								Effect.gen(function* () {
+									if ((yield* isCacheEnabled) && isCacheExpired({ lastCacheUpdate })) {
+										// If the cache is expired, we need to fetch the latest data from the database
+										const freshEntry = yield* _rawSelectPluginDataEntry(entry.id);
 
-									if (freshEntry) {
-										// If the entry is found in the database, update the cache
-										pluginData.set(entry.id, {
-											data: freshEntry,
-											lastCacheUpdate: new Date(),
-										});
-										const validated = yield* parseData<T>(freshEntry.data, validator);
-										return yield* parsedDataResponse<T>(entry.id, validated);
+										if (freshEntry) {
+											// If the entry is found in the database, update the cache
+											pluginData.set(entry.id, {
+												data: freshEntry,
+												lastCacheUpdate: new Date(),
+											});
+											const validated = yield* parseData<T>(freshEntry.data, validator);
+											return yield* parsedDataResponse<T>(entry.id, validated);
+										}
 									}
-								}
 
-								// If the entry is not expired or not found in the database, return the cached data
-								const validated = yield* parseData<T>(entry.data, validator);
-								return yield* parsedDataResponse<T>(entry.id, validated);
-							})
-						)
-					);
-
-					// If no entries are found in the cache, attempt to fetch from the database
-					// This is useful for cases where the cache might be empty or expired
-					// and we want to ensure we have the latest data available
-					if (data.length === 0) {
-						return yield* pipe(
-							_getEntriesPluginData(pluginId),
-							Effect.flatMap((entries) =>
-								Effect.forEach(entries, (entry) =>
-									Effect.gen(function* () {
-										const validated = yield* parseData<T>(entry.data, validator);
-
-										pluginData.set(entry.id, {
-											data: entry,
-											lastCacheUpdate: new Date(),
-										});
-										return yield* parsedDataResponse<T>(entry.id, validated);
-									})
-								)
+									// If the entry is not expired or not found in the database, return the cached data
+									const validated = yield* parseData<T>(entry.data, validator);
+									return yield* parsedDataResponse<T>(entry.id, validated);
+								})
 							)
 						);
+
+						// If no entries are found in the cache, attempt to fetch from the database
+						// This is useful for cases where the cache might be empty or expired
+						// and we want to ensure we have the latest data available
+						if (data.length === 0) {
+							return yield* pipe(
+								_getEntriesPluginData(pluginId),
+								Effect.flatMap((entries) =>
+									Effect.forEach(entries, (entry) =>
+										Effect.gen(function* () {
+											const validated = yield* parseData<T>(entry.data, validator);
+
+											pluginData.set(entry.id, {
+												data: entry,
+												lastCacheUpdate: new Date(),
+											});
+											return yield* parsedDataResponse<T>(entry.id, validated);
+										})
+									)
+								)
+							);
+						}
+
+						return data;
 					}
 
-					return data;
-				}
-
-				// If caching is not enabled, directly query the database
-				return yield* pipe(
-					_getEntriesPluginData(pluginId),
-					Effect.flatMap((entries) =>
-						Effect.forEach(entries, (entry) =>
-							Effect.gen(function* () {
-								const validated = yield* parseData<T>(entry.data, validator);
-								return yield* parsedDataResponse<T>(entry.id, validated);
-							})
+					// If caching is not enabled, directly query the database
+					return yield* pipe(
+						_getEntriesPluginData(pluginId),
+						Effect.flatMap((entries) =>
+							Effect.forEach(entries, (entry) =>
+								Effect.gen(function* () {
+									const validated = yield* parseData<T>(entry.data, validator);
+									return yield* parsedDataResponse<T>(entry.id, validated);
+								})
+							)
 						)
-					)
-				);
-			});
+					);
+				}
+			);
 
 			/**
 			 * Checks if plugin data with the specified ID exists and responds or fails based on the `shouldFail` flag.
