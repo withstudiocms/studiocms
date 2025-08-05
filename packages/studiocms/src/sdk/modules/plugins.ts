@@ -10,6 +10,19 @@ export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
 export type tsPluginDataSelect = typeof tsPluginData.$inferSelect;
 
 /**
+ * Enum representing the possible responses when selecting plugin data,
+ * indicating whether the existence of the data should cause a failure or not.
+ *
+ * @enum {string}
+ * @property {string} ExistsNoFail - The plugin data exists and should not cause a failure.
+ * @property {string} ExistsShouldFail - The plugin data exists and should cause a failure.
+ */
+export enum SelectPluginDataRespondOrFail {
+	ExistsNoFail = 'existsNoFail',
+	ExistsShouldFail = 'existsShouldFail',
+}
+
+/**
  * Represents a plugin data entry with a strongly-typed `data` property.
  *
  * @template T - The type of the `data` property.
@@ -110,6 +123,72 @@ export interface ZodValidator<T> {
 export type ValidatorOptions<T> = JSONValidatorFn<T> | EffectSchemaValidator<T> | ZodValidator<T>;
 
 /**
+ * Returns a validator function based on the provided validator options.
+ *
+ * This function supports three types of validators:
+ * - `jsonFn`: A custom JSON validation function.
+ * - `effectSchema`: An Effect schema for validation.
+ * - `zodSchema`: A Zod schema for validation.
+ *
+ * The returned validator function takes unknown data and attempts to validate it
+ * according to the specified validator. If validation succeeds, the data is returned
+ * as type `T`. If validation fails, an error is thrown or returned as an Effect error.
+ *
+ * @typeParam T - The expected type of the validated data.
+ * @param validator - The validator options, which must include one of: `jsonFn`, `effectSchema`, or `zodSchema`.
+ * @returns A function that takes unknown data and returns an Effect that resolves to type `T` if validation succeeds, or fails with an error if validation fails.
+ * @throws Error if none of the expected validator options are provided.
+ */
+const getValidatorFn = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/getValidatorFn')(
+	function* <T extends object>(validator: ValidatorOptions<T>) {
+		if ('jsonFn' in validator) {
+			// Return the JSON validator function
+			return (data: unknown) =>
+				Effect.try({
+					try: () => {
+						if (validator.jsonFn(data)) {
+							return data as T;
+						}
+						throw new Error('Invalid JSON');
+					},
+					catch: (error) => new Error(`JSON validation failed: ${(error as Error).message}`),
+				});
+		}
+		if ('effectSchema' in validator) {
+			// Return the Effect schema validator function
+			return (data: unknown) =>
+				Schema.decodeUnknown(validator.effectSchema)(data).pipe(
+					Effect.mapError(
+						(error) => new Error(`Schema validation failed: ${(error as ParseError).message}`)
+					)
+				);
+		}
+		if ('zodSchema' in validator) {
+			// Return the Zod schema validator function
+			return (data: unknown) =>
+				Effect.try({
+					try: () => {
+						const result = validator.zodSchema.safeParse(data);
+						if (result.success) {
+							return result.data as T;
+						}
+						throw new Error(`Zod validation failed: ${result.error.message}`);
+					},
+					catch: (error) => new Error(`Zod validation failed: ${(error as Error).message}`),
+				});
+		}
+		// If something else is provided, throw an error
+		// This ensures that the validator options are strictly typed and cannot
+		// be accidentally misconfigured or used incorrectly.
+		return yield* Effect.fail(
+			new Error(
+				'Invalid validator options provided, expected one of: jsonFn, effectSchema, or zodSchema'
+			)
+		);
+	}
+);
+
+/**
  * Parses and validates plugin data from a raw input, supporting multiple validation strategies.
  *
  * This function attempts to parse the provided `rawData`, which can be either a JSON string or an object.
@@ -154,44 +233,13 @@ export const parseData = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/parseD
 		return parsedInput as T;
 	}
 
-	if ('jsonFn' in validator) {
-		// Validate using JSON validator
-		if (!validator.jsonFn(parsedInput)) {
-			return yield* Effect.fail(new Error('Data validation failed'));
-		}
+	// If a validator is provided, get the validation function
+	const validatorFn = yield* getValidatorFn<T>(validator);
 
-		// If validation passes, return the parsed input
-		// This will be of type T, as ensured by the validator
-		return parsedInput;
-	}
-
-	if ('effectSchema' in validator) {
-		// Use the Schema to validate the parsed input
-		// If validation fails, it will throw an error
-		// If it passes, it will return the parsed input as type T
-		// We use `decodeUnknown` to handle unknown input types
-		// and ensure it matches the schema
-		return yield* Schema.decodeUnknown(validator.effectSchema)(parsedInput).pipe(
-			Effect.mapError((error) => new Error(`Schema validation failed: ${error}`))
-		);
-	}
-
-	if ('zodSchema' in validator) {
-		// Validate using Zod
-		const result = validator.zodSchema.safeParse(parsedInput);
-
-		// If validation fails, return an error
-		if (!result.success) {
-			return yield* Effect.fail(new Error(`Zod validation failed: ${result.error.message}`));
-		}
-
-		// If it passes, return the parsed input as type T
-		return result.data;
-	}
-
-	return yield* Effect.fail(
-		new Error('Invalid validator options provided, expected one of: json, effectSchema, or zod')
-	);
+	// Validate the parsed input using the validator function
+	// If validation fails, it will throw an error which will be caught by the Effect framework
+	// If validation succeeds, it will return the parsed data as type T
+	return yield* validatorFn(parsedInput);
 });
 
 /**
@@ -234,7 +282,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *   // Plugin exists
 			 * }
 			 */
-			const _selectPageDataEntry = dbService.makeQuery((query, id: string) =>
+			const _selectPluginDataEntry = dbService.makeQuery((query, id: string) =>
 				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
 			);
 
@@ -290,46 +338,31 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *   - Returns `false` if the data does not exist and `shouldFail` is `false`.
 			 *   - Returns `true` otherwise.
 			 */
-			const _selectPageDataEntryRespondOrFail = Effect.fn(
-				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData._selectPageDataEntryRespondOrFail'
-			)(function* (
-				id: string,
-				{ mode, shouldFail }: { mode: 'exists' | 'doesNotExist'; shouldFail: boolean }
-			) {
+			const _selectPluginDataEntryRespondOrFail = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData._selectPluginDataEntryRespondOrFail'
+			)(function* (id: string, mode: SelectPluginDataRespondOrFail) {
 				// Check if the plugin data with the given ID exists
-				const existing = yield* _selectPageDataEntry(id);
+				const existing = yield* _selectPluginDataEntry(id);
 
+				// If the plugin data exists, we handle it based on the mode and shouldFail flag
+				// If it does not exist, we handle it based on the mode and shouldFail
 				switch (mode) {
-					case 'exists': {
-						// If it exists and shouldFail is false, return true
-						if (existing && !shouldFail) {
-							return existing;
-						}
-
-						// If it does not exist and shouldFail is true, fail with an error
-						if (!existing && shouldFail) {
-							return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
-						}
-						break;
+					case SelectPluginDataRespondOrFail.ExistsNoFail: {
+						// If it exists, return the existing data
+						if (existing) return existing;
+						// If it does not exist, return undefined
+						return undefined;
 					}
-					case 'doesNotExist': {
-						// If it does not exist and shouldFail is true, fail with an error
-						if (!existing && shouldFail) {
+					case SelectPluginDataRespondOrFail.ExistsShouldFail: {
+						// If it exists, fail with an error
+						if (existing)
 							return yield* Effect.fail(new Error(`Plugin data with ID ${id} already exists.`));
-						}
-
-						// If it exists and shouldFail is false, return true
-						if (existing && !shouldFail) {
-							return existing;
-						}
-						break;
+						// If it does not exist, return undefined
+						return undefined;
 					}
 					default:
 						return yield* Effect.fail(new Error(`Invalid mode: ${mode}`));
 				}
-
-				// If we reach here, it means the data does not exist and shouldFail is false
-				return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
 			});
 
 			// Function overloads for `usePluginData` to handle different cases:
@@ -448,10 +481,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we do not accidentally insert duplicate entries
 							// and maintain the uniqueness of the plugin data entries
 							// If it does not exist, proceed to insert the new data
-							yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
-								mode: 'exists',
-								shouldFail: true,
-							});
+							yield* _selectPluginDataEntryRespondOrFail(
+								generatedEntryId,
+								SelectPluginDataRespondOrFail.ExistsShouldFail
+							);
 
 							// Validate the data before inserting
 							const parsedData = yield* parseData<T>(data, validator);
@@ -489,10 +522,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we only attempt to parse existing data
 							// and do not throw an error when the data is not found
 							// This is useful for cases where the plugin data is optional
-							const existing = yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
-								mode: 'exists',
-								shouldFail: false,
-							});
+							const existing = yield* _selectPluginDataEntryRespondOrFail(
+								generatedEntryId,
+								SelectPluginDataRespondOrFail.ExistsNoFail
+							);
 
 							// If it does not exist, return undefined
 							if (!existing) return undefined;
@@ -528,10 +561,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we only update existing records
 							// and prevents accidental creation of new records
 							// when trying to update non-existing data
-							yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
-								mode: 'doesNotExist',
-								shouldFail: true,
-							});
+							yield* _selectPluginDataEntryRespondOrFail(
+								generatedEntryId,
+								SelectPluginDataRespondOrFail.ExistsShouldFail
+							);
 
 							// Validate the data before updating
 							const parsedData = yield* parseData<T>(data, validator);
