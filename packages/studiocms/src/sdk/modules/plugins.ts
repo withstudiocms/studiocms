@@ -373,7 +373,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				) => Effect.Effect<PluginDataEntry<T>, UnknownException, never>;
 			};
 
-			// Implementation of the usePluginData function
+			/**
+			 * Implementation of the `usePluginData` function that provides access to plugin data entries.
+			 */
 			function usePluginData(pluginId: string, entryId?: string) {
 				if (!entryId) {
 					return {
@@ -411,7 +413,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				// The ID is used to perform CRUD operations on the plugin data entry
 				// This is useful for cases where a plugin needs to store multiple entries
 				// or manage specific data associated with a plugin instance
-				const id = `${pluginId}-${entryId}`;
+				const generatedEntryId = `${pluginId}-${entryId}`;
 
 				return {
 					/**
@@ -419,7 +421,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					 *
 					 * @returns An Effect that yields the generated ID.
 					 */
-					generatedId: () => Effect.succeed(id),
+					generatedId: () => Effect.succeed(generatedEntryId),
 
 					/**
 					 * Inserts new plugin data into the database after validating and checking for duplicate IDs.
@@ -438,7 +440,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we do not accidentally insert duplicate entries
 							// and maintain the uniqueness of the plugin data entries
 							// If it does not exist, proceed to insert the new data
-							yield* _selectPageDataEntryRespondOrFail(id, {
+							yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
 								mode: 'exists',
 								shouldFail: true,
 							});
@@ -451,7 +453,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// it as the primary key in the table definition.
 							const inserted = yield* _insertPluginDataEntry({
 								// @ts-expect-error - drizzle broke the 'id' type
-								id,
+								id: generatedEntryId,
 								data: parsedData,
 							});
 
@@ -479,7 +481,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we only attempt to parse existing data
 							// and do not throw an error when the data is not found
 							// This is useful for cases where the plugin data is optional
-							const existing = yield* _selectPageDataEntryRespondOrFail(id, {
+							const existing = yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
 								mode: 'exists',
 								shouldFail: false,
 							});
@@ -491,7 +493,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							const data = yield* parseData<T>(existing.data, validator);
 
 							// Return the parsed data response for the existing entry
-							return yield* parsedDataResponse<T>(id, data);
+							return yield* parsedDataResponse<T>(generatedEntryId, data);
 						}
 					),
 
@@ -518,7 +520,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// This ensures that we only update existing records
 							// and prevents accidental creation of new records
 							// when trying to update non-existing data
-							yield* _selectPageDataEntryRespondOrFail(id, {
+							yield* _selectPageDataEntryRespondOrFail(generatedEntryId, {
 								mode: 'doesNotExist',
 								shouldFail: true,
 							});
@@ -528,7 +530,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 							// Update the existing plugin data in the database
 							const updated = yield* _updatePluginDataEntry({
-								id,
+								id: generatedEntryId,
 								data: parsedData,
 							});
 
