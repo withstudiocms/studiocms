@@ -390,7 +390,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 									db
 										.select()
 										.from(tsPluginData)
-										.where(like(tsPluginData.id, `${pluginId}%`))
+										.where(like(tsPluginData.id, `${pluginId}-%`))
 								)
 								.pipe(
 									Effect.flatMap((entries) =>
@@ -411,7 +411,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				// The ID is used to perform CRUD operations on the plugin data entry
 				// This is useful for cases where a plugin needs to store multiple entries
 				// or manage specific data associated with a plugin instance
-				const id = `${pluginId}_${entryId}`;
+				const id = `${pluginId}-${entryId}`;
 
 				return {
 					/**
