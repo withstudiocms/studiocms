@@ -18,17 +18,17 @@ catalogs:
   effect:
     "@effect/cli": ^0.69.0
     "@effect/cluster": ^0.46.2
-    "@effect/experimental": ^0.54.0
+    "@effect/experimental": ^0.54.3
     "@effect/language-service": ^0.31.2
     "@effect/platform": ^0.90.0
-    "@effect/platform-node": ^0.94.0
+    "@effect/platform-node": ^0.94.1
     "@effect/printer": ^0.45.0
     "@effect/printer-ansi": ^0.45.0
-    "@effect/rpc": ^0.68.0
+    "@effect/rpc": ^0.68.2
     "@effect/sql": ^0.44.0
     "@effect/typeclass": ^0.36.0
     "@effect/workflow": ^0.8.1
-    effect: ^3.17.3
+    effect: ^3.17.6
   min:
     "@astrojs/db": ^0.16.1
     "@astrojs/markdown-remark": ^6.3.3
