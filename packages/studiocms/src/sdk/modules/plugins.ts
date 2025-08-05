@@ -58,7 +58,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *
 			 * @yields {void} Yields control to the effect system for each database operation.
 			 */
-			const initPluginDataCache = Effect.fn(function* (BATCH_SIZE: number) {
+			const initPluginDataCache = Effect.fn(function* (BATCH_SIZE?: number) {
 				let batchSize = BATCH_SIZE || 1000; // Default batch size if not provided
 				if (batchSize <= 0) {
 					batchSize = 1000; // Ensure a positive batch size
