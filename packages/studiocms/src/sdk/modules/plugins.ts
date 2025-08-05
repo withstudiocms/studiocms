@@ -1,9 +1,9 @@
-import { eq } from 'astro:db';
+import { eq, like } from 'astro:db';
 import type { z } from 'astro/zod';
 import type { UnknownException } from 'effect/Cause';
 import type { ParseError } from 'effect/ParseResult';
 import { Effect, genLogger, Schema } from '../../effect.js';
-import { AstroDB } from '../effect/db.js';
+import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import { tsPluginData } from '../tables.js';
 
 export type tsPluginDataInsert = typeof tsPluginData.$inferInsert;
@@ -234,8 +234,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *   // Plugin exists
 			 * }
 			 */
-			const checkForId = dbService.makeQuery((query, toCheck: string) =>
-				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, toCheck)).get())
+			const _selectPageDataEntry = dbService.makeQuery((query, id: string) =>
+				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
 			);
 
 			/**
@@ -290,14 +290,14 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 *   - Returns `false` if the data does not exist and `shouldFail` is `false`.
 			 *   - Returns `true` otherwise.
 			 */
-			const checkExistingRespondOrFail = Effect.fn(
-				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.checkExistingRespondOrFail'
+			const _selectPageDataEntryRespondOrFail = Effect.fn(
+				'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData._selectPageDataEntryRespondOrFail'
 			)(function* (
 				id: string,
 				{ mode, shouldFail }: { mode: 'exists' | 'doesNotExist'; shouldFail: boolean }
 			) {
 				// Check if the plugin data with the given ID exists
-				const existing = yield* checkForId(id);
+				const existing = yield* _selectPageDataEntry(id);
 
 				switch (mode) {
 					case 'exists': {
@@ -332,168 +332,212 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
 			});
 
+			// Function overloads for `usePluginData` to handle different cases:
+			// This function provides a set of effectful operations for managing plugin data entries.
+			// It can be called with just a pluginId to retrieve all entries,
+			// or with both pluginId and entryId to perform CRUD operations on a specific entry.
+			// This allows for flexible usage depending on whether the user wants to
+			// manage all entries for a plugin or a specific entry.
+
 			/**
-			 * Provides a set of effectful operations for managing plugin-specific data entries,
-			 * uniquely identified by a combination of `pluginId` and `entryId`.
-			 *
-			 * This hook returns an object with methods to select, insert, and update plugin data
-			 * in a type-safe manner, supporting runtime validation via optional type guard validators.
+			 * Retrieves all plugin data entries for a given plugin ID.
+			 */
+			function usePluginData(pluginId: string): {
+				getEntries: <T extends object>(
+					validator?: ValidatorOptions<T>
+				) => Effect.Effect<PluginDataEntry<T>[], LibSQLDatabaseError | Error, never>;
+			};
+
+			/**
+			 * Retrieves or manipulates plugin data entries for a specific plugin ID and entry ID.
 			 *
 			 * @param pluginId - The unique identifier for the plugin.
-			 * @param entryId - The unique identifier for the data entry within the plugin.
-			 * @returns An object containing the following effectful methods:
-			 * - `select<T>(validator?)`: Retrieves and parses plugin data of type `T` for the given IDs, or `undefined` if not found.
-			 * - `insert<T>(data, validator?)`: Inserts new plugin data of type `T` if it does not already exist, validating before insertion.
-			 * - `update<T>(data, validator?)`: Updates existing plugin data of type `T`, validating before updating.
-			 *
-			 * @typeParam T - The expected shape of the plugin data for select, insert, and update operations.
-			 *
-			 * @example
-			 * ```typescript
-			 * const { select, insert, update } = usePluginData('myPlugin', 'entry123');
-			 * const result = yield* select<MyType>(myTypeValidator);
-			 * ```
+			 * @param entryId - (Optional) The unique identifier for the plugin data entry.
+			 * @returns An object with methods to manage plugin data entries.
 			 */
-			const usePluginData = (pluginId: string, entryId: string) => {
-				// Generate a unique ID for the plugin data entry
-				// This ID is a combination of the pluginId and entryId
-				// to ensure uniqueness across different plugins and entries
-				const id: `${string}_${string}` = `${pluginId}_${entryId}`;
+			function usePluginData(
+				pluginId: string,
+				entryId: string
+			): {
+				generatedId: () => Effect.Effect<string, never, never>;
+				insert: <T extends object>(
+					data: T,
+					validator?: ValidatorOptions<T>
+				) => Effect.Effect<PluginDataEntry<T>, UnknownException, never>;
+				select: <T extends object>(
+					validator?: ValidatorOptions<T>
+				) => Effect.Effect<PluginDataEntry<T> | undefined, UnknownException, never>;
+				update: <T extends object>(
+					data: T,
+					validator?: ValidatorOptions<T>
+				) => Effect.Effect<PluginDataEntry<T>, UnknownException, never>;
+			};
 
-				/**
-				 * Returns an Effect that succeeds with the provided `id`.
-				 *
-				 * @remarks
-				 * This function wraps the given `id` in an Effect, allowing it to be used in effectful computations.
-				 *
-				 * @returns An Effect that yields the specified `id` when executed.
-				 */
-				const generatedId = () => Effect.succeed(id);
+			// Implementation of the usePluginData function
+			function usePluginData(pluginId: string, entryId?: string) {
+				if (!entryId) {
+					return {
+						/**
+						 * Retrieves all plugin data entries for the specified plugin ID.
+						 *
+						 * @template T - The type of the plugin data object.
+						 * @param validator - Optional validator options for validating the plugin data.
+						 * @returns An Effect that yields an array of `PluginDataEntry<T>` objects.
+						 */
+						getEntries: <T extends object>(validator?: ValidatorOptions<T>) =>
+							dbService
+								.execute((db) =>
+									db
+										.select()
+										.from(tsPluginData)
+										.where(like(tsPluginData.id, `${pluginId}%`))
+								)
+								.pipe(
+									Effect.flatMap((entries) =>
+										Effect.forEach(entries, (entry) =>
+											Effect.gen(function* () {
+												const data = yield* parseData<T>(entry.data, validator);
+												return yield* parsedDataResponse<T>(entry.id, data);
+											})
+										)
+									)
+								),
+					};
+				}
 
-				/**
-				 * Inserts new plugin data into the database after validating and checking for duplicate IDs.
-				 *
-				 * @template T - The type of the plugin data object.
-				 * @param data - The plugin data to insert.
-				 * @param validator - Optional validator options for validating the plugin data.
-				 * @yields Throws an error if plugin data with the given ID already exists.
-				 * @yields Throws an error if validation fails.
-				 * @returns The parsed data response for the newly inserted entry.
-				 */
-				const insert = Effect.fn(
-					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.insert'
-				)(function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
-					// Check if the plugin data with the given ID already exists
-					// If it exists, fail with an error
-					// This ensures that we do not accidentally insert duplicate entries
-					// and maintain the uniqueness of the plugin data entries
-					// If it does not exist, proceed to insert the new data
-					yield* checkExistingRespondOrFail(id, {
-						mode: 'exists',
-						shouldFail: true,
-					});
-
-					// Validate the data before inserting
-					const parsedData = yield* parseData<T>(data, validator);
-
-					// Insert the new plugin data into the database
-					// Note: The 'id' field is expected to be unique, so we use
-					// it as the primary key in the table definition.
-					const inserted = yield* _insertPluginDataEntry({
-						// @ts-expect-error - drizzle broke the 'id' type
-						id,
-						data: parsedData,
-					});
-
-					// Return the parsed data response for the newly inserted entry
-					return yield* parsedDataResponse<T>(inserted.id, data);
-				});
-
-				/**
-				 * Selects and validates plugin data by ID.
-				 *
-				 * This generator function checks if plugin data exists for the given ID,
-				 * validates and parses the data using the provided validator, and returns
-				 * a parsed data response. If no data exists for the given ID, it returns `undefined`.
-				 *
-				 * @template T - The expected shape of the plugin data.
-				 * @param validator - Optional validation options for parsing the plugin data.
-				 * @returns The parsed data response for the existing entry, or `undefined` if not found.
-				 */
-				const select = Effect.fn(
-					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select'
-				)(function* <T extends object>(validator?: ValidatorOptions<T>) {
-					// Check if the plugin data with the given ID exists
-					// If it exists, proceed to validate and parse the data
-					// If it does not exist, return undefined
-					// This ensures that we only attempt to parse existing data
-					// and do not throw an error when the data is not found
-					// This is useful for cases where the plugin data is optional
-					// or may not exist for every plugin entry
-					const existing = yield* checkExistingRespondOrFail(id, {
-						mode: 'exists',
-						shouldFail: false,
-					});
-
-					// If it does not exist, return undefined
-					if (!existing) return undefined;
-
-					// Validate and parse the existing data
-					const data = yield* parseData<T>(existing.data, validator);
-
-					// Return the parsed data response for the existing entry
-					return yield* parsedDataResponse<T>(id, data);
-				});
-
-				/**
-				 * Updates the plugin data for a given ID after validating the input.
-				 *
-				 * This function performs the following steps:
-				 * 1. Checks if the plugin data with the specified ID exists.
-				 * 2. If not found, fails with an error.
-				 * 3. Validates the provided data using the optional validator.
-				 * 4. Updates the database record with the validated data.
-				 * 5. Returns the parsed data response for the updated record.
-				 *
-				 * @template T - The shape of the plugin data object.
-				 * @param data - The new data to update for the plugin.
-				 * @param validator - (Optional) Validation options for the data.
-				 * @yields Throws an error if the plugin data with the given ID does not exist or if validation fails.
-				 * @returns The parsed data response for the updated plugin record.
-				 */
-				const update = Effect.fn(
-					'studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.update'
-				)(function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
-					// Check if the plugin data with the given ID exists
-					// If it does not exist, fail with an error
-					// This ensures that we only update existing records
-					// and prevents accidental creation of new records
-					// when trying to update non-existing data
-					yield* checkExistingRespondOrFail(id, {
-						mode: 'doesNotExist',
-						shouldFail: true,
-					});
-
-					// Validate the data before updating
-					const parsedData = yield* parseData<T>(data, validator);
-
-					// Update the database record
-					const updated = yield* _updatePluginDataEntry({
-						id,
-						data: parsedData,
-					});
-
-					// Return the parsed data response for the updated record
-					return yield* parsedDataResponse<T>(updated.id, data);
-				});
+				// If entryId is provided, we create a unique ID for the plugin data entry
+				// This ID is a combination of the pluginId and entryId to ensure uniqueness
+				// This allows us to manage specific entries for a plugin
+				// The ID is used to perform CRUD operations on the plugin data entry
+				// This is useful for cases where a plugin needs to store multiple entries
+				// or manage specific data associated with a plugin instance
+				const id = `${pluginId}_${entryId}`;
 
 				return {
-					generatedId,
-					insert,
-					select,
-					update,
+					/**
+					 * Generates a unique ID for the plugin data entry.
+					 *
+					 * @returns An Effect that yields the generated ID.
+					 */
+					generatedId: () => Effect.succeed(id),
+
+					/**
+					 * Inserts new plugin data into the database after validating and checking for duplicate IDs.
+					 *
+					 * @template T - The type of the plugin data object.
+					 * @param data - The plugin data to insert.
+					 * @param validator - Optional validator options for validating the plugin data.
+					 * @yields Throws an error if plugin data with the given ID already exists.
+					 * @yields Throws an error if validation fails.
+					 * @returns The parsed data response for the newly inserted entry.
+					 */
+					insert: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.insert')(
+						function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
+							// Check if the plugin data with the given ID already exists
+							// If it exists, fail with an error
+							// This ensures that we do not accidentally insert duplicate entries
+							// and maintain the uniqueness of the plugin data entries
+							// If it does not exist, proceed to insert the new data
+							yield* _selectPageDataEntryRespondOrFail(id, {
+								mode: 'exists',
+								shouldFail: true,
+							});
+
+							// Validate the data before inserting
+							const parsedData = yield* parseData<T>(data, validator);
+
+							// Insert the new plugin data into the database
+							// Note: The 'id' field is expected to be unique, so we use
+							// it as the primary key in the table definition.
+							const inserted = yield* _insertPluginDataEntry({
+								// @ts-expect-error - drizzle broke the 'id' type
+								id,
+								data: parsedData,
+							});
+
+							// Return the inserted data
+							return inserted;
+						}
+					),
+
+					/**
+					 * Selects and validates plugin data by ID.
+					 *
+					 * This generator function checks if plugin data exists for the given ID,
+					 * validates and parses the data using the provided validator, and returns
+					 * a parsed data response. If no data exists for the given ID, it returns `undefined`.
+					 *
+					 * @template T - The expected shape of the plugin data.
+					 * @param validator - Optional validation options for parsing the plugin data.
+					 * @returns The parsed data response for the existing entry, or `undefined` if not found.
+					 */
+					select: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.select')(
+						function* <T extends object>(validator?: ValidatorOptions<T>) {
+							// Check if the plugin data with the given ID exists
+							// If it exists, proceed to validate and parse the data
+							// If it does not exist, return undefined
+							// This ensures that we only attempt to parse existing data
+							// and do not throw an error when the data is not found
+							// This is useful for cases where the plugin data is optional
+							const existing = yield* _selectPageDataEntryRespondOrFail(id, {
+								mode: 'exists',
+								shouldFail: false,
+							});
+
+							// If it does not exist, return undefined
+							if (!existing) return undefined;
+
+							// Validate and parse the existing data
+							const data = yield* parseData<T>(existing.data, validator);
+
+							// Return the parsed data response for the existing entry
+							return yield* parsedDataResponse<T>(id, data);
+						}
+					),
+
+					/**
+					 * Updates the plugin data for a given ID after validating the input.
+					 *
+					 * This function performs the following steps:
+					 * 1. Checks if the plugin data with the specified ID exists.
+					 * 2. If not found, fails with an error.
+					 * 3. Validates the provided data using the optional validator.
+					 * 4. Updates the database record with the validated data.
+					 * 5. Returns the parsed data response for the updated record.
+					 *
+					 * @template T - The shape of the plugin data object.
+					 * @param data - The new data to update for the plugin.
+					 * @param validator - (Optional) Validation options for the data.
+					 * @yields Throws an error if the plugin data with the given ID does not exist or if validation fails.
+					 * @returns The parsed data response for the updated plugin record.
+					 */
+					update: Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/usePluginData.update')(
+						function* <T extends object>(data: T, validator?: ValidatorOptions<T>) {
+							// Check if the plugin data with the given ID exists
+							// If it does not exist, fail with an error
+							// This ensures that we only update existing records
+							// and prevents accidental creation of new records
+							// when trying to update non-existing data
+							yield* _selectPageDataEntryRespondOrFail(id, {
+								mode: 'doesNotExist',
+								shouldFail: true,
+							});
+
+							// Validate the data before updating
+							const parsedData = yield* parseData<T>(data, validator);
+
+							// Update the existing plugin data in the database
+							const updated = yield* _updatePluginDataEntry({
+								id,
+								data: parsedData,
+							});
+
+							// Return the parsed data response for the updated record
+							return yield* parsedDataResponse<T>(updated.id, data);
+						}
+					),
 				};
-			};
+			}
 
 			/**
 			 * An object containing utility functions related to plugins.
@@ -501,6 +545,21 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @property usePluginData - A function to access or manipulate plugin data.
 			 */
 			const PLUGINS = {
+				/**
+				 * Provides a set of effectful operations for managing plugin data entries by plugin ID and optional entry ID.
+				 *
+				 * When an `entryId` is provided, returns an object with methods to:
+				 * - Generate a unique plugin data entry ID.
+				 * - Insert new plugin data after validation and duplicate checks.
+				 * - Select and validate existing plugin data by ID.
+				 * - Update existing plugin data after validation.
+				 *
+				 * When no `entryId` is provided, returns an object with a method to retrieve all entries for the given plugin.
+				 *
+				 * @param pluginId - The unique identifier for the plugin.
+				 * @param entryId - (Optional) The unique identifier for the plugin data entry.
+				 * @returns An object with effectful methods for plugin data management, varying by presence of `entryId`.
+				 */
 				usePluginData,
 			};
 
