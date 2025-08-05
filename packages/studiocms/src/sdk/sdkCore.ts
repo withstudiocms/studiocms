@@ -23,6 +23,7 @@ import type {
 	FolderListCacheObject,
 	FolderTreeCacheObject,
 	PageDataCacheObject,
+	PluginDataCacheObject,
 	SiteConfigCacheObject,
 	VersionCacheObject,
 } from './types/index.js';
@@ -111,6 +112,11 @@ const pageFolderTree: CacheMap<string, FolderTreeCacheObject> = new Map<
 const FolderList: CacheMap<string, FolderListCacheObject> = new Map<
 	string,
 	FolderListCacheObject
+>();
+
+const pluginData: CacheMap<string, PluginDataCacheObject> = new Map<
+	string,
+	PluginDataCacheObject
 >();
 
 /**
@@ -282,5 +288,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		pageFolderTree,
 		siteConfig,
 		version,
+		pluginData
 	});
 }

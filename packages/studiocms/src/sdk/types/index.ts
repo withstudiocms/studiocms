@@ -351,6 +351,10 @@ export interface FolderListCacheObject extends BaseCacheObject {
 	data: FolderListItem[];
 }
 
+export interface PluginDataCacheObject extends BaseCacheObject {
+	data: tsPluginDataSelect;
+}
+
 /**
  * Represents the structure for adding a database entry for a page.
  *
