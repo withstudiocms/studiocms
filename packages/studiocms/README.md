@@ -8,6 +8,7 @@ StudioCMS is a dedicated Astro native content management system (CMS) built on t
 ## Sponsor
 
 <a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" /></a>
+<a href="https://www.skip2.net/?utm_source=studiocms" rel="sponsored" target="_blank"><img src="https://www.skip2.net/images/logo.svg" width="400px" /></a>
 
 ## Get Started
 
