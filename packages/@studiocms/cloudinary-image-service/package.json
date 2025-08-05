@@ -22,11 +22,9 @@
     "astro",
     "astrocms",
     "astrodb",
-    "astro-integration",
     "astro-studiocms",
     "cms",
     "studiocms",
-    "withastro",
     "plugin",
     "studiocms-plugin"
   ],
