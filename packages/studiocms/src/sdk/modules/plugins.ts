@@ -1,5 +1,5 @@
 import { eq, like } from 'astro:db';
-import { type Cause, Effect, genLogger, pipe } from '../../effect.js';
+import { Effect, genLogger, pipe } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
 	parseData,
@@ -8,6 +8,7 @@ import {
 } from '../effect/pluginUtils.js';
 import { tsPluginData } from '../tables.js';
 import type {
+	PluginDataCacheObject,
 	PluginDataEntry,
 	tsPluginDataInsert,
 	tsPluginDataSelect,
@@ -44,6 +45,84 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const [dbService, { pluginData }] = yield* Effect.all([AstroDB, CacheContext]);
 
 			/**
+			 * Creates a batch request function for querying plugin data from the database.
+			 *
+			 * The returned function accepts an object with `batchSize` and `offset` properties,
+			 * and performs a database query to select a batch of plugin data records with the specified
+			 * limit and offset.
+			 *
+			 * @param query - The query builder function provided by the database service.
+			 * @param o - An object containing batch parameters.
+			 * @param o.batchSize - The maximum number of records to retrieve in a single batch.
+			 * @param o.offset - The number of records to skip before starting to collect the batch.
+			 * @returns A function that executes the batch query and returns the selected plugin data.
+			 */
+			const _dbBatchRequest = dbService.makeQuery(
+				(query, o: { batchSize: number; offset: number }) =>
+					query((db) => db.select().from(tsPluginData).limit(o.batchSize).offset(o.offset))
+			);
+
+			/**
+			 * Executes a database query to select a single plugin data entry by its ID.
+			 *
+			 * @param query - The database query function.
+			 * @param id - The unique identifier of the plugin data entry to retrieve.
+			 * @returns The plugin data entry matching the provided ID, or undefined if not found.
+			 */
+			const _dbSelectPluginDataEntry = dbService.makeQuery((query, id: string) =>
+				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
+			);
+
+			/**
+			 * Inserts a new plugin data entry into the database and returns the inserted record.
+			 *
+			 * @param data - The plugin data to be inserted, conforming to the `tsPluginDataInsert` type.
+			 * @returns A promise that resolves to the inserted plugin data record.
+			 *
+			 * @example
+			 * ```typescript
+			 * const newPlugin = await _dbInsertPluginDataEntry({ name: "MyPlugin", version: "1.0.0" });
+			 * ```
+			 */
+			const _dbInsertPluginDataEntry = dbService.makeQuery((query, data: tsPluginDataInsert) =>
+				query((db) => db.insert(tsPluginData).values(data).returning().get())
+			);
+
+			/**
+			 * Updates an existing plugin data entry in the database.
+			 *
+			 * @param query - The database query executor function.
+			 * @param data - The plugin data object containing updated fields, including the `id` of the entry to update.
+			 * @returns A promise that resolves to the updated entry's `id`.
+			 *
+			 * @private
+			 * @remarks
+			 * This function is used internally to update plugin data entries.
+			 * It returns the updated entry's `id` as part of the result.
+			 */
+			const _dbUpdatePluginDataEntry = dbService.makeQuery((query, data: tsPluginDataSelect) =>
+				query((db) =>
+					db.update(tsPluginData).set(data).where(eq(tsPluginData.id, data.id)).returning().get()
+				)
+			);
+
+			/**
+			 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
+			 *
+			 * @param query - The database query function.
+			 * @param pluginId - The unique identifier of the plugin. Used as a prefix to filter entries.
+			 * @returns A promise resolving to an array of plugin data entries whose IDs start with the given pluginId followed by a hyphen.
+			 */
+			const _dbGetEntriesPluginData = dbService.makeQuery((query, pluginId: string) =>
+				query((db) =>
+					db
+						.select()
+						.from(tsPluginData)
+						.where(like(tsPluginData.id, `${pluginId}-%`))
+				)
+			);
+
+			/**
 			 * Initializes the plugin data cache by loading entries from the database in batches.
 			 *
 			 * This generator function retrieves plugin data from the database using a fixed batch size,
@@ -69,9 +148,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				const sharedTimestamp = new Date(); // Single timestamp for all entries
 
 				while (true) {
-					const entries = yield* dbService.execute((db) =>
-						db.select().from(tsPluginData).limit(batchSize).offset(offset)
-					);
+					const entries = yield* _dbBatchRequest({ batchSize, offset });
 
 					if (entries.length === 0) break;
 
@@ -100,22 +177,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const clearPluginDataCache = (): Effect.Effect<void, Error, never> =>
 				Effect.try({
 					try: () => pluginData.clear(),
-					catch: (error) => {
-						console.error('Failed to clear plugin data cache:', error);
-						return new Error('Failed to clear plugin data cache');
-					},
+					catch: () => new Error('Failed to clear plugin data cache'),
 				});
-
-			/**
-			 * Executes a database query to select a single plugin data entry by its ID.
-			 *
-			 * @param query - The database query function.
-			 * @param id - The unique identifier of the plugin data entry to retrieve.
-			 * @returns The plugin data entry matching the provided ID, or undefined if not found.
-			 */
-			const _rawSelectPluginDataEntry = dbService.makeQuery((query, id: string) =>
-				query((db) => db.select().from(tsPluginData).where(eq(tsPluginData.id, id)).get())
-			);
 
 			/**
 			 * Retrieves a plugin data entry by its ID, utilizing a cache if enabled.
@@ -142,32 +205,20 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 					// If the entry is not found in the cache or is expired, query the database
 					// and update the cache with the new data
-					const fresh = yield* _rawSelectPluginDataEntry(id);
+					const fresh = yield* _dbSelectPluginDataEntry(id);
 					if (fresh) {
-						pluginData.set(id, { data: fresh, lastCacheUpdate: new Date() });
+						pluginData.set(id, {
+							data: fresh,
+							lastCacheUpdate: new Date(),
+						});
 					}
 					return fresh;
 				}
 
 				// If caching is not enabled, directly query the database
 				// This ensures that we always get the latest data from the database
-				return yield* _rawSelectPluginDataEntry(id);
+				return yield* _dbSelectPluginDataEntry(id);
 			});
-
-			/**
-			 * Inserts a new plugin data entry into the database and returns the inserted record.
-			 *
-			 * @param data - The plugin data to be inserted, conforming to the `tsPluginDataInsert` type.
-			 * @returns A promise that resolves to the inserted plugin data record.
-			 *
-			 * @example
-			 * ```typescript
-			 * const newPlugin = await _rawInsertPluginDataEntry({ name: "MyPlugin", version: "1.0.0" });
-			 * ```
-			 */
-			const _rawInsertPluginDataEntry = dbService.makeQuery((query, data: tsPluginDataInsert) =>
-				query((db) => db.insert(tsPluginData).values(data).returning().get())
-			);
 
 			/**
 			 * Inserts a new plugin data entry into the database and updates the cache if enabled.
@@ -183,35 +234,20 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				'studiocms/sdk/SDKCore/modules/plugins/effect/_insertPluginDataEntry'
 			)(function* (data: tsPluginDataInsert) {
 				// Insert the plugin data entry into the database
-				const newData = yield* _rawInsertPluginDataEntry(data);
+				const newData = yield* _dbInsertPluginDataEntry(data);
 
 				// If caching is enabled, update the cache with the new data
 				// This ensures that the cache is always in sync with the database
 				if (yield* isCacheEnabled) {
-					pluginData.set(newData.id, { data: newData, lastCacheUpdate: new Date() });
+					pluginData.set(newData.id, {
+						data: newData,
+						lastCacheUpdate: new Date(),
+					});
 				}
 
 				// Return the newly inserted data
 				return newData;
 			});
-
-			/**
-			 * Updates an existing plugin data entry in the database.
-			 *
-			 * @param query - The database query executor function.
-			 * @param data - The plugin data object containing updated fields, including the `id` of the entry to update.
-			 * @returns A promise that resolves to the updated entry's `id`.
-			 *
-			 * @private
-			 * @remarks
-			 * This function is used internally to update plugin data entries.
-			 * It returns the updated entry's `id` as part of the result.
-			 */
-			const _rawUpdatePluginDataEntry = dbService.makeQuery((query, data: tsPluginDataSelect) =>
-				query((db) =>
-					db.update(tsPluginData).set(data).where(eq(tsPluginData.id, data.id)).returning().get()
-				)
-			);
 
 			/**
 			 * Updates a plugin data entry in the database and, if caching is enabled, updates the cache with the new data.
@@ -220,18 +256,21 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @returns The updated plugin data entry.
 			 *
 			 * @remarks
-			 * This function performs the update operation using `_rawUpdatePluginDataEntry`. If caching is enabled,
+			 * This function performs the update operation using `_dbUpdatePluginDataEntry`. If caching is enabled,
 			 * it also updates the in-memory cache with the new data and the current timestamp.
 			 */
 			const _updatePluginDataEntry = Effect.fn(
 				'studiocms/sdk/SDKCore/modules/plugins/effect/_updatePluginDataEntry'
 			)(function* (data: tsPluginDataSelect) {
 				// Update the plugin data entry in the database
-				const updatedData = yield* _rawUpdatePluginDataEntry(data);
+				const updatedData = yield* _dbUpdatePluginDataEntry(data);
 
 				// If caching is enabled, update the cache with the new data
 				if (yield* isCacheEnabled) {
-					pluginData.set(updatedData.id, { data: updatedData, lastCacheUpdate: new Date() });
+					pluginData.set(updatedData.id, {
+						data: updatedData,
+						lastCacheUpdate: new Date(),
+					});
 				}
 
 				// Return the updated data
@@ -239,20 +278,89 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			});
 
 			/**
-			 * Retrieves plugin data entries from the database whose IDs match the specified plugin ID prefix.
+			 * Processes a plugin data cache entry, validating and updating it as necessary.
 			 *
-			 * @param query - The database query function.
-			 * @param pluginId - The unique identifier of the plugin. Used as a prefix to filter entries.
-			 * @returns A promise resolving to an array of plugin data entries whose IDs start with the given pluginId followed by a hyphen.
+			 * This generator function checks if the cache entry is associated with the specified plugin,
+			 * determines if the cache is expired, and if so, fetches the latest data from the database.
+			 * It validates the data using the provided validator, updates the cache if needed, and returns
+			 * a parsed data response. If the cache is not expired, it returns the validated cached data.
+			 *
+			 * @template T - The type of the data object to validate and return.
+			 * @param {[string, PluginDataCacheObject]} param0 - A tuple containing the cache key and the cache object.
+			 * @param {string} pluginId - The ID of the plugin to filter cache entries.
+			 * @param {ValidatorOptions<T>} [validator] - Optional validator options for data validation.
+			 * @returns {Effect<unknown, unknown, (ParsedDataResponse<T> | undefined)>} The parsed data response for the entry, or undefined if not applicable.
 			 */
-			const _getEntriesPluginData = dbService.makeQuery((query, pluginId: string) =>
-				query((db) =>
-					db
-						.select()
-						.from(tsPluginData)
-						.where(like(tsPluginData.id, `${pluginId}-%`))
-				)
-			);
+			const _processEntryFromCache = Effect.fn(function* <T extends object>(
+				[key, { data: entry, lastCacheUpdate }]: [string, PluginDataCacheObject],
+				pluginId: string,
+				validator?: ValidatorOptions<T>
+			) {
+				// If the key does not start with the pluginId, skip it
+				// This ensures that we only process entries related to the specified plugin
+				if (!key.startsWith(pluginId)) {
+					return undefined;
+				}
+
+				if ((yield* isCacheEnabled) && isCacheExpired({ lastCacheUpdate })) {
+					// If the cache is expired, we need to fetch the latest data from the database
+					const freshEntry = yield* _dbSelectPluginDataEntry(entry.id);
+
+					// If the entry is not found in the database, we can skip it
+					if (!freshEntry) {
+						pluginData.delete(entry.id);
+						return undefined;
+					}
+
+					// Validate the fresh entry data
+					// This ensures that we always return valid data
+					const validated = yield* parseData<T>(freshEntry.data, validator);
+
+					// If the entry is found in the database, update the cache
+					pluginData.set(entry.id, {
+						data: freshEntry,
+						lastCacheUpdate: new Date(),
+					});
+
+					// Return the parsed data response for the entry
+					// This ensures that we always return the most up-to-date data
+					return yield* parsedDataResponse<T>(entry.id, validated);
+				}
+
+				// If the entry is not expired or not found in the database, return the cached data
+				const validated = yield* parseData<T>(entry.data, validator);
+				return yield* parsedDataResponse<T>(entry.id, validated);
+			});
+
+			/**
+			 * Processes a plugin data entry retrieved from the database.
+			 *
+			 * @template T - The expected shape of the validated data object.
+			 * @param entry - The plugin data entry to process.
+			 * @param validator - Optional validator options to validate the entry's data.
+			 * @yields The validated data after parsing.
+			 * @yields Updates the cache with the entry if caching is enabled.
+			 * @returns The parsed data response for the entry.
+			 */
+			const _processEntryFromDB = Effect.fn(function* <T extends object>(
+				entry: tsPluginDataSelect,
+				validator?: ValidatorOptions<T>
+			) {
+				// Validate the data for each entry
+				const validated = yield* parseData<T>(entry.data, validator);
+
+				// If caching is not enabled, we do not update the cache
+				if (yield* isCacheEnabled) {
+					// If caching is enabled, update the cache with the new data
+					pluginData.set(entry.id, {
+						data: entry,
+						lastCacheUpdate: new Date(),
+					});
+				}
+
+				// Return the parsed data response for the entry
+				return yield* parsedDataResponse<T>(entry.id, validated);
+			});
 
 			/**
 			 * Retrieves plugin data entries for a given plugin ID, with optional validation.
@@ -273,41 +381,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				function* <T extends object>(pluginId: string, validator?: ValidatorOptions<T>) {
 					if (yield* isCacheEnabled) {
 						const data = yield* pipe(
-							Array.from(pluginData.entries()).filter(([key]) => key.startsWith(pluginId)),
-							(entries) =>
-								Effect.forEach(entries, ([_, { data: entry, lastCacheUpdate }]) =>
-									Effect.gen(function* () {
-										if ((yield* isCacheEnabled) && isCacheExpired({ lastCacheUpdate })) {
-											// If the cache is expired, we need to fetch the latest data from the database
-											const freshEntry = yield* _rawSelectPluginDataEntry(entry.id);
-											
-											// If the entry is not found in the database, we can skip it
-											if (!freshEntry) {
-												pluginData.delete(entry.id);
-												return undefined;
-											}
-
-											// Validate the fresh entry data
-											// This ensures that we always return valid data
-											const validated = yield* parseData<T>(freshEntry.data, validator);
-
-											// If the entry is found in the database, update the cache
-											pluginData.set(entry.id, {
-												data: freshEntry,
-												lastCacheUpdate: new Date(),
-											});
-
-											// Return the parsed data response for the entry
-											// This ensures that we always return the most up-to-date data
-											return yield* parsedDataResponse<T>(entry.id, validated);
-										}
-
-										// If the entry is not expired or not found in the database, return the cached data
-										const validated = yield* parseData<T>(entry.data, validator);
-										return yield* parsedDataResponse<T>(entry.id, validated);
-									})
-								),
-							Effect.map((results) => results.filter((result) => result !== undefined))
+							pluginData.entries(),
+							Effect.forEach((entry) => _processEntryFromCache<T>(entry, pluginId, validator)),
+							Effect.map((entries) => entries.filter((entry) => entry !== undefined))
 						);
 
 						if (data.length > 0) {
@@ -320,27 +396,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					// we need to fetch the latest data from the database
 					// This ensures that we always have the most up-to-date entries for the plugin
 					return yield* pipe(
-						_getEntriesPluginData(pluginId),
-						Effect.flatMap((entries) =>
-							Effect.forEach(entries, (entry) =>
-								Effect.gen(function* () {
-									// Validate the data for each entry
-									const validated = yield* parseData<T>(entry.data, validator);
-
-									// If caching is not enabled, we do not update the cache
-									if (yield* isCacheEnabled) {
-										// If caching is enabled, update the cache with the new data
-										pluginData.set(entry.id, {
-											data: entry,
-											lastCacheUpdate: new Date(),
-										});
-									}
-
-									// Return the parsed data response for the entry
-									return yield* parsedDataResponse<T>(entry.id, validated);
-								})
-							)
-						)
+						_dbGetEntriesPluginData(pluginId),
+						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator)))
 					);
 				}
 			);
@@ -416,14 +473,14 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				insert: <T extends object>(
 					data: T,
 					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T>, Cause.UnknownException, never>;
+				) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
 				select: <T extends object>(
 					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T> | undefined, Cause.UnknownException, never>;
+				) => Effect.Effect<PluginDataEntry<T> | undefined, LibSQLDatabaseError | Error, never>;
 				update: <T extends object>(
 					data: T,
 					validator?: ValidatorOptions<T>
-				) => Effect.Effect<PluginDataEntry<T>, Cause.UnknownException, never>;
+				) => Effect.Effect<PluginDataEntry<T>, LibSQLDatabaseError | Error, never>;
 			};
 
 			/**

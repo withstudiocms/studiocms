@@ -1,4 +1,4 @@
-import { type Cause, Effect, type ParseResult, pipe, Schema } from "../../effect.js";
+import { Effect, type ParseResult, pipe, Schema } from "../../effect.js";
 import type { PluginDataEntry, ValidatorOptions } from "../types/index.js";
 
 /**
@@ -26,11 +26,11 @@ export enum SelectPluginDataRespondOrFail {
 export const parsedDataResponse = <T extends object>(
     id: string,
     data: T
-): Effect.Effect<PluginDataEntry<T>, Cause.UnknownException, never> =>
-    Effect.try(() => ({
+): Effect.Effect<PluginDataEntry<T>, never, never> =>
+    Effect.succeed({
         id,
         data,
-    }));
+    });
 
 /**
  * Returns a function that validates a boolean condition and either returns the provided value
