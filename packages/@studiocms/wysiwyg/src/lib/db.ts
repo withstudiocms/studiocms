@@ -2,6 +2,8 @@ import { SDKCore } from 'studiocms:sdk';
 import type { ProjectData } from 'grapesjs';
 import { Effect, Schema } from 'studiocms/effect';
 
+// this is used for testing, and is planned to be used in the future
+
 export interface StudioCMSProjectData extends ProjectData {
 	__STUDIOCMS_HTML?: string;
 }
