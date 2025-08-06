@@ -33,7 +33,7 @@ catalogs:
     "@astrojs/db": ^0.16.1
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
-    "@studiocms/web-vitals": ^4.2.1
+    "@studiocms/web-vitals": ^4.3.0
     astro: ^5.12.8
     drizzle-orm: ^0.42.0
     vite: ^6.3.4
@@ -46,7 +46,7 @@ catalogs:
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.2.1
+    "@studiocms/web-vitals": ^4.3.0
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
