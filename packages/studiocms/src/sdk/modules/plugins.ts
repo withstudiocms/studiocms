@@ -264,7 +264,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param {ValidatorOptions<T>} [validator] - Optional validator options for data validation.
 			 * @returns {Effect<unknown, unknown, (ParsedDataResponse<T> | undefined)>} The parsed data response for the entry, or undefined if not applicable.
 			 */
-			const _processEntryFromCache = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields>(
+			const _processEntryFromCache = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields = never>(
 				[key, { data: entry, lastCacheUpdate }]: [string, PluginDataCacheObject],
 				pluginId: string,
 				validator?: ValidatorOptions<T, E>
@@ -316,7 +316,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @yields Updates the cache with the entry if caching is enabled.
 			 * @returns The parsed data response for the entry.
 			 */
-			const _processEntryFromDB = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields>(
+			const _processEntryFromDB = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields = never>(
 				entry: tsPluginDataSelect,
 				validator?: ValidatorOptions<T, E>
 			) {
@@ -352,7 +352,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @returns An Effect yielding an array of validated and parsed plugin data responses.
 			 */
 			const _getEntries = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries')(
-				function* <T extends object, E extends Schema.Struct.Fields>(pluginId: string, validator?: ValidatorOptions<T, E>) {
+				function* <T extends object, E extends Schema.Struct.Fields = never>(pluginId: string, validator?: ValidatorOptions<T, E>) {
 					if (yield* isCacheEnabled) {
 						const data = yield* pipe(
 							pluginData.entries(),
@@ -431,7 +431,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			/**
 			 * Retrieves all plugin data entries for a given plugin ID.
 			 */
-			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields = never>(
 				pluginId: string,
 				opts?: UsePluginDataOptsBase<T, E>
 			): {
@@ -445,7 +445,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param entryId - (Optional) The unique identifier for the plugin data entry.
 			 * @returns An object with methods to manage plugin data entries.
 			 */
-			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields = never>(
 				pluginId: string,
 				opts?: UsePluginDataOpts<T, E>
 			): {
@@ -462,7 +462,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			/**
 			 * Implementation of the `usePluginData` function that provides access to plugin data entries.
 			 */
-			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields = never>(
 				pluginId: string,
 				{ entryId, validator }: UserPluginDataOptsImplementation<T, E> = {}
 			) {

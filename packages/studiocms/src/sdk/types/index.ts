@@ -138,13 +138,18 @@ export interface ZodValidator<T> {
  *
  * // Example of defining an Effect schema validator for a User type
  * import { Schema } from 'studiocms/effect';
+ * 
+ * const userEffectSchema = Schema.Struct({
+ *  id: Schema.Number,
+ *  name: Schema.String,
+ *  email: Schema.String
+ * });
+ * 
+ * type UserEffectSchema = (typeof userEffectSchema)['Type'];
+ * type UserEffectSchemaFields = (typeof userEffectSchema)['fields'];
  *
- * const userEffectValidator: ValidatorOptions<User> = {
- *   effectSchema: Schema.Struct({
- *     id: Schema.Number,
- *     name: Schema.String,
- *     email: Schema.String
- *   })
+ * const userEffectValidator: ValidatorOptions<UserEffectSchema, UserEffectSchemaFields> = {
+ *   effectSchema: userEffectSchema
  * };
  *
  * // Example of defining a Zod validator for a User type
@@ -159,7 +164,7 @@ export interface ZodValidator<T> {
  * };
  * ```
  */
-export type ValidatorOptions<T, E extends Schema.Struct.Fields> = JSONValidatorFn<T> | EffectSchemaValidator<E> | ZodValidator<T>;
+export type ValidatorOptions<T, E extends Schema.Struct.Fields = never> = JSONValidatorFn<T> | EffectSchemaValidator<E> | ZodValidator<T>;
 
 /**
  * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.
