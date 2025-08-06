@@ -83,7 +83,7 @@ export const isJsonValid =
  * @throws Error if none of the expected validator options are provided.
  */
 export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getValidatorFn')(
-	function* <T extends object>(validator: ValidatorOptions<T>) {
+	function* <T extends object, E extends Schema.Struct.Fields>(validator: ValidatorOptions<T, E>) {
 		if ('jsonFn' in validator) {
 			// Return the JSON validator function
 			return (data: unknown) =>
@@ -100,7 +100,7 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
 						(error) =>
 							new Error(`Schema validation failed: ${(error as ParseResult.ParseError).message}`)
 					)
-				);
+				) as Effect.Effect<T, Error, never>;
 		}
 		if ('zodSchema' in validator) {
 			// Return the Zod schema validator function
@@ -149,8 +149,8 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
  * @throws {Error} If the input is neither a string nor an object, or if parsing/validation fails.
  */
 export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')(function* <
-	T extends object,
->(rawData: unknown, validator?: ValidatorOptions<T>) {
+	T extends object, E extends Schema.Struct.Fields
+>(rawData: unknown, validator?: ValidatorOptions<T, E>) {
 	let parsedInput: unknown;
 
 	// Check if rawData is a string or an object
@@ -175,7 +175,7 @@ export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')
 	}
 
 	// If a validator is provided, get the validation function
-	const validatorFn = yield* getValidatorFn<T>(validator);
+	const validatorFn = yield* getValidatorFn<T, E>(validator);
 
 	// Validate the parsed input using the validator function
 	// If validation fails, it will throw an error which will be caught by the Effect framework

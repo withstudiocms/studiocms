@@ -1,5 +1,5 @@
 import { eq, like } from 'astro:db';
-import { Effect, genLogger, pipe } from '../../effect.js';
+import { Effect, genLogger, pipe, type Schema } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
 	noUndefinedEntries,
@@ -264,10 +264,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param {ValidatorOptions<T>} [validator] - Optional validator options for data validation.
 			 * @returns {Effect<unknown, unknown, (ParsedDataResponse<T> | undefined)>} The parsed data response for the entry, or undefined if not applicable.
 			 */
-			const _processEntryFromCache = Effect.fn(function* <T extends object>(
+			const _processEntryFromCache = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields>(
 				[key, { data: entry, lastCacheUpdate }]: [string, PluginDataCacheObject],
 				pluginId: string,
-				validator?: ValidatorOptions<T>
+				validator?: ValidatorOptions<T, E>
 			) {
 				// If the key does not start with the pluginId, skip it
 				// This ensures that we only process entries related to the specified plugin
@@ -288,7 +288,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 					// Validate the fresh entry data
 					// This ensures that we always return valid data
-					const validated = yield* parseData<T>(freshEntry.data, validator);
+					const validated = yield* parseData<T, E>(freshEntry.data, validator);
 
 					// If the entry is found in the database, update the cache
 					pluginData.set(entry.id, {
@@ -302,7 +302,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				}
 
 				// If the entry is not expired or not found in the database, return the cached data
-				const validated = yield* parseData<T>(entry.data, validator);
+				const validated = yield* parseData<T, E>(entry.data, validator);
 				return yield* parsedDataResponse<T>(entry.id, validated);
 			});
 
@@ -316,12 +316,12 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @yields Updates the cache with the entry if caching is enabled.
 			 * @returns The parsed data response for the entry.
 			 */
-			const _processEntryFromDB = Effect.fn(function* <T extends object>(
+			const _processEntryFromDB = Effect.fn(function* <T extends object, E extends Schema.Struct.Fields>(
 				entry: tsPluginDataSelect,
-				validator?: ValidatorOptions<T>
+				validator?: ValidatorOptions<T, E>
 			) {
 				// Validate the data for each entry
-				const validated = yield* parseData<T>(entry.data, validator);
+				const validated = yield* parseData<T, E>(entry.data, validator);
 
 				// If caching is not enabled, we do not update the cache
 				if (yield* isCacheEnabled) {
@@ -352,11 +352,11 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @returns An Effect yielding an array of validated and parsed plugin data responses.
 			 */
 			const _getEntries = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries')(
-				function* <T extends object>(pluginId: string, validator?: ValidatorOptions<T>) {
+				function* <T extends object, E extends Schema.Struct.Fields>(pluginId: string, validator?: ValidatorOptions<T, E>) {
 					if (yield* isCacheEnabled) {
 						const data = yield* pipe(
 							pluginData.entries(),
-							Effect.forEach((entry) => _processEntryFromCache<T>(entry, pluginId, validator)),
+							Effect.forEach((entry) => _processEntryFromCache<T, E>(entry, pluginId, validator)),
 							Effect.map(noUndefinedEntries)
 						);
 
@@ -369,7 +369,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					// This ensures that we always have the most up-to-date entries for the plugin
 					return yield* pipe(
 						_db.getEntriesPluginData(pluginId),
-						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator)))
+						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T, E>(entry, validator)))
 					);
 				}
 			);
@@ -431,9 +431,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			/**
 			 * Retrieves all plugin data entries for a given plugin ID.
 			 */
-			function usePluginData<T extends object>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
 				pluginId: string,
-				opts?: UsePluginDataOptsBase<T>
+				opts?: UsePluginDataOptsBase<T, E>
 			): {
 				getEntries: () => Effect.Effect<PluginDataEntry<T>[], LibSQLDatabaseError | Error, never>;
 			};
@@ -445,9 +445,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @param entryId - (Optional) The unique identifier for the plugin data entry.
 			 * @returns An object with methods to manage plugin data entries.
 			 */
-			function usePluginData<T extends object>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
 				pluginId: string,
-				opts?: UsePluginDataOpts<T>
+				opts?: UsePluginDataOpts<T, E>
 			): {
 				generatedId: () => Effect.Effect<string, never, never>;
 				select: () => Effect.Effect<
@@ -462,9 +462,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			/**
 			 * Implementation of the `usePluginData` function that provides access to plugin data entries.
 			 */
-			function usePluginData<T extends object>(
+			function usePluginData<T extends object, E extends Schema.Struct.Fields>(
 				pluginId: string,
-				{ entryId, validator }: UserPluginDataOptsImplementation<T> = {}
+				{ entryId, validator }: UserPluginDataOptsImplementation<T, E> = {}
 			) {
 				if (!entryId) {
 					return {
@@ -475,7 +475,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						 * @param validator - Optional validator options for validating the plugin data.
 						 * @returns An Effect that yields an array of `PluginDataEntry<T>` objects.
 						 */
-						getEntries: () => _getEntries<T>(pluginId, validator),
+						getEntries: () => _getEntries<T, E>(pluginId, validator),
 					};
 				}
 
@@ -523,7 +523,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							if (!existing) return undefined;
 
 							// Validate and parse the existing data
-							const data = yield* parseData<T>(existing.data, validator);
+							const data = yield* parseData<T, E>(existing.data, validator);
 
 							// Return the parsed data response for the existing entry
 							return yield* parsedDataResponse<T>(generatedEntryId, data);
@@ -553,7 +553,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							);
 
 							// Validate the data before inserting
-							const parsedData = yield* parseData<T>(data, validator);
+							const parsedData = yield* parseData<T, E>(data, validator);
 
 							// Insert the new plugin data into the database
 							// Note: The 'id' field is expected to be unique, so we use
@@ -597,7 +597,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							);
 
 							// Validate the data before updating
-							const parsedData = yield* parseData<T>(data, validator);
+							const parsedData = yield* parseData<T, E>(data, validator);
 
 							// Update the existing plugin data in the database
 							const updated = yield* _updatePluginDataEntry({

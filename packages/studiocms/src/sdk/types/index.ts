@@ -1,5 +1,5 @@
 import type { z } from 'astro/zod';
-import type { ParseResult, Schema } from '../../effect.js';
+import type { Schema } from '../../effect.js';
 import type {
 	CacheConfig,
 	ProcessedCacheConfig,
@@ -33,9 +33,9 @@ export type * from './tsAlias.js';
  * @property [Type] - An optional type definition for the data.
  * @property [validator] - Optional validator options for the data type.
  */
-export interface UsePluginDataOptsBase<T extends object> {
+export interface UsePluginDataOptsBase<T extends object, E extends Schema.Struct.Fields> {
 	Type?: T;
-	validator?: ValidatorOptions<T>;
+	validator?: ValidatorOptions<T, E>;
 }
 
 /**
@@ -46,7 +46,7 @@ export interface UsePluginDataOptsBase<T extends object> {
  * 
  * @property entryId - The unique identifier for the entry associated with the plugin data.
  */
-export interface UsePluginDataOpts<T extends object> extends UsePluginDataOptsBase<T> {
+export interface UsePluginDataOpts<T extends object, E extends Schema.Struct.Fields> extends UsePluginDataOptsBase<T, E> {
 	entryId: string;
 }
 
@@ -57,7 +57,7 @@ export interface UsePluginDataOpts<T extends object> extends UsePluginDataOptsBa
  *
  * @typeParam T - The object type for which the plugin data options are defined.
  */
-export type UserPluginDataOptsImplementation<T extends object> = Partial<UsePluginDataOpts<T>>;
+export type UserPluginDataOptsImplementation<T extends object, E extends Schema.Struct.Fields> = Partial<UsePluginDataOpts<T, E>>;
 
 /**
  * Represents a plugin data entry with a strongly-typed `data` property.
@@ -87,8 +87,8 @@ export interface JSONValidatorFn<T> {
  *
  * @property effectSchema - The schema used for validation, which takes a value of type `T` and returns either a `ParseError` or `never`.
  */
-export interface EffectSchemaValidator<T> {
-	effectSchema: Schema.Schema<T, ParseResult.ParseError, never>;
+export interface EffectSchemaValidator<E extends Schema.Struct.Fields> {
+	effectSchema: Schema.Struct<E>;
 }
 
 /**
@@ -159,7 +159,7 @@ export interface ZodValidator<T> {
  * };
  * ```
  */
-export type ValidatorOptions<T> = JSONValidatorFn<T> | EffectSchemaValidator<T> | ZodValidator<T>;
+export type ValidatorOptions<T, E extends Schema.Struct.Fields> = JSONValidatorFn<T> | EffectSchemaValidator<E> | ZodValidator<T>;
 
 /**
  * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.

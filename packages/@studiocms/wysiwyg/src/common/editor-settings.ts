@@ -27,7 +27,9 @@ export const baseConfig: Partial<EditorConfig> = {
 	height: '100%',
 	width: 'auto',
 	fromElement: false,
-	storageManager: { type: 'inline' },
+	storageManager: { 
+		type: 'inline',
+	},
 	panels: { defaults: [] },
 	canvas: {
 		styles: [GRAPES_CSS_PATH],
