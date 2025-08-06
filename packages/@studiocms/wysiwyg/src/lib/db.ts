@@ -55,28 +55,28 @@ export const UseSDK = Effect.gen(function* () {
 
 	const { usePluginData } = sdk.PLUGINS;
 
-	const _usePluginDataCategory = () =>
+	const createPluginDataAccessor = () =>
 		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
 			validator,
 		});
 
-	const _usePluginDataSingle = (id: string) =>
+	const createPluginDataAccessorById = (id: string) =>
 		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
 			entryId: id,
 			validator,
 		});
 
 	return {
-		getAll: () => _usePluginDataCategory().getEntries(),
+		getAll: () => createPluginDataAccessor().getEntries(),
 		load: Effect.fn(function* (id: string) {
-			return yield* _usePluginDataSingle(id).select();
+			return yield* createPluginDataAccessorById(id).select();
 		}),
 		store: Effect.fn(function* (id: string, data: StudioCMSProjectData) {
-			const existing = yield* _usePluginDataSingle(id).select();
+			const existing = yield* createPluginDataAccessorById(id).select();
 			if (existing) {
-				return yield* _usePluginDataSingle(id).update(data);
+				return yield* createPluginDataAccessorById(id).update(data);
 			}
-			return yield* _usePluginDataSingle(id).insert(data);
+			return yield* createPluginDataAccessorById(id).insert(data);
 		}),
 	};
 });
