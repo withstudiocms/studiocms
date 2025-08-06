@@ -653,11 +653,6 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 	}
 }
 
-// Use more efficient registration check and avoid potential race conditions
-if ('customElements' in window && !customElements.get('user-quick-tools')) {
-	customElements.define('user-quick-tools', UserQuickTools);
-}
-
 // Also register the configurable version
 if ('customElements' in window && !customElements.get('user-quick-tools-config')) {
 	customElements.define('user-quick-tools-config', ConfigurableUserQuickTools);
@@ -668,14 +663,19 @@ function initializeWhenReady() {
 	const createElement = () => {
 		if (!document.querySelector('user-quick-tools')) {
 			// Development version: Use the basic user quick tools component
-			// const element = document.createElement('user-quick-tools');
+			// const element = document.createElement('user-quick-tools-config');
+			// element.setAttribute('data-init-strategy', 'immediate');
 			
 			// Production version: Use configurable version with data attributes
 			const element = document.createElement('user-quick-tools-config');
 			element.setAttribute('data-init-strategy', 'idle');
-			element.setAttribute('data-timeout', '2000');
+			element.setAttribute('data-timeout', '1000');
+
+			// Click protection and menu ready delay
 			element.setAttribute('data-click-protection', '400'); // 400ms click protection
 			element.setAttribute('data-menu-delay', '350'); // 350ms menu ready delay
+
+			// Append to body
 			document.body.appendChild(element);
 		}
 	};
