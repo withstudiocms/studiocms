@@ -42,7 +42,7 @@ const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
 const KNOWN_API_ROUTES = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
 const DEFAULT_AVATAR = 'https://seccdn.libravatar.org/static/img/mm/80.png';
 
-// CSS moved to a template literal for better minification and caching
+// Enhanced CSS with click protection and visual feedback
 const COMPONENT_STYLES = `
 :host {
     --border: 240 5% 17%;
@@ -93,17 +93,24 @@ const COMPONENT_STYLES = `
     background: hsl(var(--background-step-1));
     box-shadow: 0 3px 7px rgba(0,0,0,0.3);
     border-radius: 50%;
-    border: 1px solid hsl(var(--border));
     z-index: 600;
     cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
 .avatar {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    border: 1px solid hsl(var(--border));
     object-fit: cover;
     z-index: 700;
+    transition: transform 0.3s ease;
+}
+
+.cornerMenu.menuOpened .avatar {
+    transform: scale(1.5);
+    border: 1px solid hsl(var(--border));
 }
 
 .menu {
@@ -137,13 +144,34 @@ const COMPONENT_STYLES = `
 
 .cornerMenu.menuOpened .menu {
     opacity: 1;
-    pointer-events: all;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.15s ease;
 }
 
 .cornerMenu.menuOpened .menu:hover {
     background: hsl(var(--background-step-3));
+}
+
+/* Click protection: Only enable pointer events when menu is ready */
+.cornerMenu.menu-ready .menu {
+    pointer-events: all;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1), 0 0 0 1px hsla(var(--primary-base), 0.2);
+}
+
+.cornerMenu.menu-ready .menu:hover {
+    box-shadow: 0 3px 7px rgba(0,0,0,0.2), 0 0 0 2px hsla(var(--primary-base), 0.4);
+}
+
+/* Visual feedback for ignored clicks */
+.menu.click-ignored {
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(-2px) translateY(-1px); }
+    50% { transform: translateX(2px) translateY(1px); }
+    75% { transform: translateX(-1px) translateY(-2px); }
 }
 
 .cornerMenu.menuOpened .menu:nth-child(1) { transform: translate(-105px, 20px); transition-delay: 0s; }
@@ -184,11 +212,18 @@ function isDashboardRoute(pathname: string, dashboardRoute: string): boolean {
 class UserQuickTools extends HTMLElement {
 	private sessionData: GetSessionResponse | null = null;
 	private isMenuOpen = false;
+	private menuItemsReady = false;
+	private lastMenuToggleTime = 0;
+	private readyTimeout: number | null = null;
 	private themeObserver: MutationObserver | null = null;
 	private cornerMenu: HTMLElement | null = null;
 	private menuOverlay: HTMLElement | null = null;
 	private isInitialized = false;
 	private userInteractionListeners: Array<{ event: string; handler: EventListener }> = [];
+
+	// Click protection settings
+	private readonly CLICK_PROTECTION_DURATION = 400; // milliseconds
+	private readonly MENU_READY_DELAY = 350; // milliseconds (after animation completes)
 
 	// Static menu items configuration
 	private static readonly MENU_ITEMS: Omit<MenuItem, 'href'>[] = [
@@ -390,6 +425,24 @@ class UserQuickTools extends HTMLElement {
 		element.title = item.name;
 		element.innerHTML = item.svg;
 		element.href = item.href;
+		
+		// Add click protection
+		element.addEventListener('click', (e) => {
+			const timeSinceToggle = Date.now() - this.lastMenuToggleTime;
+			
+			// Prevent clicks if menu items aren't ready OR if clicked too soon after toggle
+			if (!this.menuItemsReady || timeSinceToggle < this.CLICK_PROTECTION_DURATION) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				// Visual feedback for ignored clicks
+				element.classList.add('click-ignored');
+				setTimeout(() => element.classList.remove('click-ignored'), 300);
+				
+				return false;
+			}
+		});
+		
 		return element;
 	}
 
@@ -424,13 +477,40 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	private handleMenuToggle(): void {
+		this.lastMenuToggleTime = Date.now();
 		this.isMenuOpen = !this.isMenuOpen;
+		
+		if (this.isMenuOpen) {
+			// Menu is opening - delay clickable state
+			this.menuItemsReady = false;
+			this.cornerMenu?.classList.remove('menu-ready');
+			
+			this.readyTimeout = window.setTimeout(() => {
+				this.menuItemsReady = true;
+				this.cornerMenu?.classList.add('menu-ready');
+			}, this.MENU_READY_DELAY);
+		} else {
+			// Menu is closing - immediately disable clicks
+			this.menuItemsReady = false;
+			this.cornerMenu?.classList.remove('menu-ready');
+			if (this.readyTimeout) {
+				clearTimeout(this.readyTimeout);
+				this.readyTimeout = null;
+			}
+		}
+		
 		this.updateMenuState();
 	}
 
 	private handleOverlayClick(): void {
 		if (this.isMenuOpen) {
 			this.isMenuOpen = false;
+			this.menuItemsReady = false;
+			this.cornerMenu?.classList.remove('menu-ready');
+			if (this.readyTimeout) {
+				clearTimeout(this.readyTimeout);
+				this.readyTimeout = null;
+			}
 			this.updateMenuState();
 		}
 	}
@@ -492,10 +572,19 @@ class UserQuickTools extends HTMLElement {
 	private cleanup(): void {
 		this.themeObserver?.disconnect();
 		this.themeObserver = null;
+		
+		// Clean up click protection timeout
+		if (this.readyTimeout) {
+			clearTimeout(this.readyTimeout);
+			this.readyTimeout = null;
+		}
+		
 		this.cornerMenu = null;
 		this.menuOverlay = null;
 		this.sessionData = null;
 		this.isInitialized = false;
+		this.menuItemsReady = false;
+		this.lastMenuToggleTime = 0;
 	}
 }
 
@@ -503,6 +592,8 @@ class UserQuickTools extends HTMLElement {
 interface UserQuickToolsConfig {
 	strategy: 'immediate' | 'idle' | 'interaction';
 	timeout?: number;
+	clickProtectionDuration?: number;
+	menuReadyDelay?: number;
 }
 
 // Enhanced custom element with configuration support
@@ -517,7 +608,19 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 				(this.getAttribute('data-init-strategy') as UserQuickToolsConfig['strategy']) ||
 				'interaction',
 			timeout: Number.parseInt(this.getAttribute('data-timeout') || '1000'),
+			clickProtectionDuration: Number.parseInt(this.getAttribute('data-click-protection') || '400'),
+			menuReadyDelay: Number.parseInt(this.getAttribute('data-menu-delay') || '350'),
 		};
+
+		// Override defaults with config values
+		if (this.config.clickProtectionDuration) {
+			// @ts-ignore - accessing private property for configuration
+			this.CLICK_PROTECTION_DURATION = this.config.clickProtectionDuration;
+		}
+		if (this.config.menuReadyDelay) {
+			// @ts-ignore - accessing private property for configuration
+			this.MENU_READY_DELAY = this.config.menuReadyDelay;
+		}
 	}
 
 	connectedCallback() {
@@ -566,10 +669,13 @@ function initializeWhenReady() {
 		if (!document.querySelector('user-quick-tools')) {
 			// Development version: Use the basic user quick tools component
 			// const element = document.createElement('user-quick-tools');
+			
 			// Production version: Use configurable version with data attributes
 			const element = document.createElement('user-quick-tools-config');
 			element.setAttribute('data-init-strategy', 'idle');
 			element.setAttribute('data-timeout', '2000');
+			element.setAttribute('data-click-protection', '400'); // 400ms click protection
+			element.setAttribute('data-menu-delay', '350'); // 350ms menu ready delay
 			document.body.appendChild(element);
 		}
 	};
