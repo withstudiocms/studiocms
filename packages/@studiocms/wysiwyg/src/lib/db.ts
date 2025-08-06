@@ -21,9 +21,19 @@ export const UseSDK = Effect.gen(function* () {
 
 	const { usePluginData } = sdk.PLUGINS;
 
-	const _getAllProjectData = yield* usePluginData<StudioCMSProjectData, EffectSchema>(PLUGIN_ID, {
-		validator: { effectSchema },
-	}).getEntries();
+	const _usePluginDataCategory = () =>
+		usePluginData<StudioCMSProjectData, EffectSchema>(PLUGIN_ID, {
+			validator: { effectSchema },
+		});
 
-	return {};
+	const _usePluginDataSingle = (id: string) =>
+		usePluginData<StudioCMSProjectData, EffectSchema>(PLUGIN_ID, {
+			entryId: id,
+			validator: { effectSchema },
+		});
+
+	return {
+		getAll: () => _usePluginDataCategory().getEntries(),
+		getById: (id: string) => _usePluginDataSingle(id).select(),
+	};
 });
