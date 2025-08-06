@@ -73,38 +73,29 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 		}
 	);
 
+
 /**
- * Watches a configuration file for changes and adds it to the watch list.
+ * Creates an Astro integration utility that watches for changes in the first existing configuration file
+ * found in the provided `configPaths`. When a configuration file is detected, it is registered for watching
+ * using Astro's `addWatchFile` mechanism.
  *
- * This utility is defined for the 'astro:config:setup' hook. It locates the configuration
- * file based on the provided root pathname and a list of possible config paths, then
- * registers the found config file with the `addWatchFile` function to enable hot-reloading
- * or rebuilds when the config changes.
- *
- * @param context - An object containing:
- *   - `addWatchFile`: A function to register files to be watched.
- *   - `config.root.pathname`: The root directory pathname to search for config files.
- * @param options - An object containing:
- *   - `configPaths`: An array of possible configuration file paths to search for.
- *
- * @returns void
+ * @param configPaths - An array of possible configuration file paths to check for existence.
+ * @returns An Astro integration utility function for the `astro:config:setup` hook.
  */
-export const watchConfigFile = defineUtility('astro:config:setup')(
-	(
-		{
+export const watchConfigFileBuilder = ({ configPaths }: WatchConfigFileOptions) =>
+	defineUtility('astro:config:setup')(
+		({
 			addWatchFile,
 			config: {
 				root: { pathname },
 			},
-		},
-		{ configPaths }: WatchConfigFileOptions
-	) => {
-		// Find the first existing configuration file from the provided paths
-		// If a configuration file is found, register it for watching
-		const configFileUrl = findConfig(pathname, configPaths);
-		if (configFileUrl) {
-			addWatchFile(configFileUrl);
+		}) => {
+			// Find the first existing configuration file from the provided paths
+			// If a configuration file is found, register it for watching
+			const configFileUrl = findConfig(pathname, configPaths);
+			if (configFileUrl) {
+				addWatchFile(configFileUrl);
+			}
+			return;
 		}
-		return;
-	}
-);
+	);
