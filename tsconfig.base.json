@@ -12,6 +12,7 @@
     "verbatimModuleSyntax": true,
     "stripInternal": true,
     "pretty": true,
+    "noErrorTruncation": true,
     "plugins": [
       {
         "name": "@effect/language-service"
