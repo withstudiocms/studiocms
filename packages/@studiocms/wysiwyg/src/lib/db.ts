@@ -34,7 +34,7 @@ const Page = Schema.Struct({
 
 const Pages = Schema.Array(Page);
 
-export const StudioCMSProjectData = Schema.Struct({
+export const StudioCMSProjectDataSchema = Schema.Struct({
 	dataSources: AnyArray,
 	assets: AnyArray,
 	styles: AnyArray,
@@ -43,8 +43,10 @@ export const StudioCMSProjectData = Schema.Struct({
 	__STUDIOCMS_HTML: Schema.optional(Schema.String),
 });
 
-export type StudioCMSProjectData = (typeof StudioCMSProjectData)['Type'] & ProjectData;
-export type StudioCMSProjectDataSchema = (typeof StudioCMSProjectData)['fields'];
+export type StudioCMSProjectData = (typeof StudioCMSProjectDataSchema)['Type'] & ProjectData;
+export type StudioCMSProjectDataFields = (typeof StudioCMSProjectDataSchema)['fields'];
+
+export const validator = { effectSchema: StudioCMSProjectDataSchema };
 
 export const PLUGIN_ID = 'studiocms-wysiwyg';
 
@@ -54,23 +56,27 @@ export const UseSDK = Effect.gen(function* () {
 	const { usePluginData } = sdk.PLUGINS;
 
 	const _usePluginDataCategory = () =>
-		usePluginData<StudioCMSProjectData, StudioCMSProjectDataSchema>(PLUGIN_ID, {
-			validator: { effectSchema: StudioCMSProjectData },
+		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
+			validator,
 		});
 
 	const _usePluginDataSingle = (id: string) =>
-		usePluginData<StudioCMSProjectData, StudioCMSProjectDataSchema>(PLUGIN_ID, {
+		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
 			entryId: id,
-			validator: { effectSchema: StudioCMSProjectData },
+			validator,
 		});
-
-	const test = yield* _usePluginDataSingle('test').select();
-
-	if (test) {
-	}
 
 	return {
 		getAll: () => _usePluginDataCategory().getEntries(),
-		getById: (id: string) => _usePluginDataSingle(id).select(),
+		load: Effect.fn(function* (id: string) {
+			return yield* _usePluginDataSingle(id).select();
+		}),
+		store: Effect.fn(function* (id: string, data: StudioCMSProjectData) {
+			const existing = yield* _usePluginDataSingle(id).select();
+			if (existing) {
+				return yield* _usePluginDataSingle(id).update(data);
+			}
+			return yield* _usePluginDataSingle(id).insert(data);
+		}),
 	};
 });
