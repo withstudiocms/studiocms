@@ -187,6 +187,8 @@ class UserQuickTools extends HTMLElement {
 	private themeObserver: MutationObserver | null = null;
 	private cornerMenu: HTMLElement | null = null;
 	private menuOverlay: HTMLElement | null = null;
+	private isInitialized = false;
+	private userInteractionListeners: Array<{ event: string; handler: EventListener }> = [];
 
 	// Static menu items configuration
 	private static readonly MENU_ITEMS: Omit<MenuItem, 'href'>[] = [
@@ -222,18 +224,56 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	connectedCallback() {
-		// Use requestIdleCallback for non-blocking initialization
-		this.scheduleInitialization();
+		// Check if we should skip entirely
+		const pathname = window.location.pathname;
+		if (shouldSkipRendering(pathname)) {
+			return;
+		}
+
+		// Initialize on user interaction for maximum Lighthouse score
+		this.initOnUserInteraction();
 	}
 
-	private scheduleInitialization() {
+	public initOnUserInteraction() {
+		// Events that indicate user engagement
+		const interactionEvents = ['mouseenter', 'touchstart', 'scroll', 'keydown', 'click'];
+
+		const handleUserInteraction = () => {
+			if (this.isInitialized) return;
+
+			// Remove all interaction listeners
+			this.removeInteractionListeners();
+
+			// Start initialization
+			this.scheduleInitialization();
+		};
+
+		// Add passive listeners for performance
+		interactionEvents.forEach((eventType) => {
+			const listener = handleUserInteraction;
+			document.addEventListener(eventType, listener, {
+				passive: true,
+				once: true, // Automatically removes after first trigger
+			});
+
+			// Store reference for manual cleanup if needed
+			this.userInteractionListeners.push({ event: eventType, handler: listener });
+		});
+	}
+
+	private removeInteractionListeners() {
+		this.userInteractionListeners.forEach(({ event, handler }) => {
+			document.removeEventListener(event, handler);
+		});
+		this.userInteractionListeners = [];
+	}
+
+	public scheduleInitialization() {
+		if (this.isInitialized) return;
+		this.isInitialized = true;
+
 		const initializeComponent = () => {
 			const pathname = window.location.pathname;
-
-			// First check: Skip entirely if on API routes (no API call needed)
-			if (shouldSkipRendering(pathname)) {
-				return;
-			}
 
 			// Start async initialization without blocking
 			this.initializeAsync(pathname).catch((error) => {
@@ -294,6 +334,7 @@ class UserQuickTools extends HTMLElement {
 
 	disconnectedCallback() {
 		this.cleanup();
+		this.removeInteractionListeners();
 	}
 
 	private render(): void {
@@ -316,7 +357,7 @@ class UserQuickTools extends HTMLElement {
 		this.shadowRoot.append(document.createElement('style'), this.menuOverlay, this.cornerMenu);
 
 		// Add styles
-		// biome-ignore lint/style/noNonNullAssertion: we know style element exists here
+		// biome-ignore lint/style/noNonNullAssertion: this is safe as we check for element existence
 		this.shadowRoot.querySelector('style')!.textContent = COMPONENT_STYLES;
 	}
 
@@ -337,7 +378,7 @@ class UserQuickTools extends HTMLElement {
 					...item,
 					href: routeMap[item.name],
 				});
-				// biome-ignore lint/style/noNonNullAssertion: we know cornerMenu exists here
+				// biome-ignore lint/style/noNonNullAssertion: this is safe as we check for element existence
 				this.cornerMenu!.appendChild(menuElement);
 			}
 		});
@@ -407,7 +448,7 @@ class UserQuickTools extends HTMLElement {
 
 		const updateTheme = () => {
 			const theme = document.documentElement.getAttribute('data-theme');
-			// biome-ignore lint/style/noNonNullAssertion: we know cornerMenu exists here
+			// biome-ignore lint/style/noNonNullAssertion: this is safe as we check for element existence
 			this.cornerMenu!.dataset.theme = theme === 'light' ? 'light' : 'dark';
 		};
 
@@ -454,6 +495,58 @@ class UserQuickTools extends HTMLElement {
 		this.cornerMenu = null;
 		this.menuOverlay = null;
 		this.sessionData = null;
+		this.isInitialized = false;
+	}
+}
+
+// Optional: Add configuration for different initialization strategies
+interface UserQuickToolsConfig {
+	strategy: 'immediate' | 'idle' | 'interaction';
+	timeout?: number;
+}
+
+// Enhanced custom element with configuration support
+class ConfigurableUserQuickTools extends UserQuickTools {
+	private config: UserQuickToolsConfig;
+
+	constructor() {
+		super();
+		// Read config from data attributes or default to interaction mode
+		this.config = {
+			strategy:
+				(this.getAttribute('data-init-strategy') as UserQuickToolsConfig['strategy']) ||
+				'interaction',
+			timeout: Number.parseInt(this.getAttribute('data-timeout') || '1000'),
+		};
+	}
+
+	connectedCallback() {
+		const pathname = window.location.pathname;
+		if (shouldSkipRendering(pathname)) {
+			return;
+		}
+
+		switch (this.config.strategy) {
+			case 'immediate':
+				this.scheduleInitialization();
+				break;
+			case 'idle':
+				if ('requestIdleCallback' in window) {
+					requestIdleCallback(() => this.scheduleInitialization(), {
+						timeout: this.config.timeout,
+					});
+				} else {
+					setTimeout(() => this.scheduleInitialization(), 0);
+				}
+				break;
+			case 'interaction':
+				this.initOnUserInteraction();
+				break;
+			default:
+				console.warn(`Unknown initialization strategy: ${this.config.strategy}`);
+				this.initOnUserInteraction();
+				break;
+		}
 	}
 }
 
@@ -462,11 +555,21 @@ if ('customElements' in window && !customElements.get('user-quick-tools')) {
 	customElements.define('user-quick-tools', UserQuickTools);
 }
 
+// Also register the configurable version
+if ('customElements' in window && !customElements.get('user-quick-tools-config')) {
+	customElements.define('user-quick-tools-config', ConfigurableUserQuickTools);
+}
+
 // Improved DOM ready detection with non-blocking approach
 function initializeWhenReady() {
 	const createElement = () => {
 		if (!document.querySelector('user-quick-tools')) {
-			const element = document.createElement('user-quick-tools');
+			// Development version: Use the basic user quick tools component
+			// const element = document.createElement('user-quick-tools');
+			// Optional: Use configurable version with data attributes
+			const element = document.createElement('user-quick-tools-config');
+			element.setAttribute('data-init-strategy', 'idle');
+			element.setAttribute('data-timeout', '2000');
 			document.body.appendChild(element);
 		}
 	};
