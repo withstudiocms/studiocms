@@ -138,7 +138,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 					FullPageData.makeProvide(pageData)
 				);
 
-				// @ts-expect-error - Drizzle broken types
 				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
 				yield* Console.log('- Imported new page from WP-API: ', page.title.rendered);
@@ -179,7 +178,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 					FullPageData.makeProvide(pageData)
 				);
 
-				// @ts-expect-error - Drizzle broken types
 				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
 				yield* Console.log('- Imported new post from WP-API: ', page.title.rendered);

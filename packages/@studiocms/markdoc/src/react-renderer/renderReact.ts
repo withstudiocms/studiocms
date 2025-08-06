@@ -3,7 +3,6 @@ import Markdoc from '@markdoc/markdoc';
 import { experimental_AstroContainer } from 'astro/container';
 import * as React from 'react';
 import type { MarkDocRenderer } from '../types.js';
-// @ts-ignore - This is a custom component that wraps the React content and TS Compiler does not recognize it
 import ReactWrapper from './ReactWrapper.astro';
 
 /**

@@ -5,6 +5,7 @@ import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
+import type { CombinedInsertContent } from 'studiocms/sdk/types';
 import {
 	APIEndpointConfig,
 	CategoryOrTagConfig,
@@ -15,7 +16,7 @@ import {
 	StringConfig,
 	UseBlogPkgConfig,
 } from './configs.js';
-import type { PageContent, PageData } from './importers.js';
+import type { PageData } from './importers.js';
 import { Page, Post } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
@@ -149,9 +150,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
 
-				const pageContent: PageContent = {
-					id: crypto.randomUUID(),
-					contentId: pageId,
+				const pageContent: CombinedInsertContent = {
 					contentLang: 'default',
 					content: content,
 				};
@@ -368,9 +367,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
 
-				const pageContent: PageContent = {
-					id: crypto.randomUUID(),
-					contentId: pageId,
+				const pageContent: CombinedInsertContent = {
 					contentLang: 'default',
 					content: content,
 				};

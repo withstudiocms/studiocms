@@ -12,6 +12,7 @@ import type { PluginDataEntry, ValidatorOptions } from '../types/index.js';
 export enum SelectPluginDataRespondOrFail {
 	ExistsNoFail = 'existsNoFail',
 	ExistsShouldFail = 'existsShouldFail',
+	NotExistsShouldFail = 'notExistsShouldFail',
 }
 
 /**
@@ -61,7 +62,7 @@ export const isJsonValid =
 	<T extends object>(data: unknown) =>
 	(isValid: boolean) => {
 		if (isValid) return data as T;
-		throw new Error(`Validation failed for data: ${JSON.stringify(data)}`);
+		throw new Error('Validation failed for plugin data');
 	};
 
 /**

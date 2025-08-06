@@ -104,7 +104,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * caching entries until no more entries are returned from the database.
 			 *
 			 * @remarks
-			 * - Uses a batch size of 1000 entries per database query to efficiently handle large datasets.
+			 * - Uses a default batch size of 100 entries per database query to efficiently handle large datasets.
 			 * - Each cache entry is stored as a tuple containing the entry data and the shared timestamp.
 			 * - Intended to be used as an effect within an effectful programming model.
 			 *
@@ -173,7 +173,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					if (cached && !isCacheExpired(cached)) {
 						const { data: cacheData } = cached;
 						// If the entry is found in the cache and is not expired, return it
-						return { id: cacheData.id, data: cacheData.data };
+						return cacheData;
 					}
 
 					// If the entry is not found in the cache or is expired, query the database
@@ -281,6 +281,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 					// If the entry is not found in the database, we can skip it
 					if (!freshEntry) {
+						yield* Effect.log(`Removing stale cache entry: ${entry.id}`);
 						pluginData.delete(entry.id);
 						return undefined;
 					}
@@ -406,6 +407,13 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						if (existing)
 							return yield* Effect.fail(new Error(`Plugin data with ID ${id} already exists.`));
 						// If it does not exist, return undefined
+						return undefined;
+					}
+					case SelectPluginDataRespondOrFail.NotExistsShouldFail: {
+						// If it does not exist, fail with an error
+						if (!existing)
+							return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
+						// If it exists, return undefined
 						return undefined;
 					}
 					default:
@@ -556,7 +564,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							});
 
 							// Return the inserted data
-							return inserted;
+							return yield* parsedDataResponse<T>(inserted.id, parsedData);
 						}
 					),
 
@@ -585,7 +593,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 							// when trying to update non-existing data
 							yield* _selectPluginDataEntryRespondOrFail(
 								generatedEntryId,
-								SelectPluginDataRespondOrFail.ExistsShouldFail
+								SelectPluginDataRespondOrFail.NotExistsShouldFail
 							);
 
 							// Validate the data before updating
