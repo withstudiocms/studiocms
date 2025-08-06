@@ -566,7 +566,7 @@ function initializeWhenReady() {
 		if (!document.querySelector('user-quick-tools')) {
 			// Development version: Use the basic user quick tools component
 			// const element = document.createElement('user-quick-tools');
-			// Optional: Use configurable version with data attributes
+			// Production version: Use configurable version with data attributes
 			const element = document.createElement('user-quick-tools-config');
 			element.setAttribute('data-init-strategy', 'idle');
 			element.setAttribute('data-timeout', '2000');
