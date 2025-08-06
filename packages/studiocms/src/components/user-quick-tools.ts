@@ -171,7 +171,7 @@ function verifyUserPermissionLevel(
  * Check if current path should skip rendering completely (no API calls)
  */
 function shouldSkipRendering(pathname: string): boolean {
-	return KNOWN_API_ROUTES.some(route => pathname.includes(route));
+	return KNOWN_API_ROUTES.some((route) => pathname.includes(route));
 }
 
 /**
@@ -221,18 +221,39 @@ class UserQuickTools extends HTMLElement {
 		this.attachShadow({ mode: 'open' });
 	}
 
-	async connectedCallback() {
-		try {
+	connectedCallback() {
+		// Use requestIdleCallback for non-blocking initialization
+		this.scheduleInitialization();
+	}
+
+	private scheduleInitialization() {
+		const initializeComponent = () => {
 			const pathname = window.location.pathname;
-			
+
 			// First check: Skip entirely if on API routes (no API call needed)
 			if (shouldSkipRendering(pathname)) {
 				return;
 			}
 
-			// Second check: Get session data
+			// Start async initialization without blocking
+			this.initializeAsync(pathname).catch((error) => {
+				console.error('UserQuickTools initialization failed:', error);
+			});
+		};
+
+		// Use requestIdleCallback if available, otherwise setTimeout
+		if ('requestIdleCallback' in window) {
+			requestIdleCallback(initializeComponent, { timeout: 1000 });
+		} else {
+			setTimeout(initializeComponent, 0);
+		}
+	}
+
+	private async initializeAsync(pathname: string) {
+		try {
+			// Second check: Get session data (non-blocking)
 			const sessionData = await this.getSession();
-			
+
 			// Third check: Skip if not logged in
 			if (!sessionData?.isLoggedIn) {
 				return;
@@ -243,13 +264,32 @@ class UserQuickTools extends HTMLElement {
 				return;
 			}
 
+			// All checks passed - render the component
 			this.sessionData = sessionData;
+
+			// Schedule rendering during idle time to avoid blocking
+			this.scheduleRender();
+		} catch (error) {
+			// Fail silently for better UX - component just won't appear
+			console.warn('UserQuickTools failed to initialize:', error);
+		}
+	}
+
+	private scheduleRender() {
+		const renderComponent = () => {
 			this.render();
 			this.setupEventListeners();
 			this.setupThemeObserver();
-		} catch (error) {
-			console.error('UserQuickTools initialization failed:', error);
-		}
+		};
+
+		// Use requestAnimationFrame for smooth rendering
+		requestAnimationFrame(() => {
+			if ('requestIdleCallback' in window) {
+				requestIdleCallback(renderComponent, { timeout: 500 });
+			} else {
+				setTimeout(renderComponent, 0);
+			}
+		});
 	}
 
 	disconnectedCallback() {
@@ -276,7 +316,7 @@ class UserQuickTools extends HTMLElement {
 		this.shadowRoot.append(document.createElement('style'), this.menuOverlay, this.cornerMenu);
 
 		// Add styles
-		// biome-ignore lint/style/noNonNullAssertion: We ensure the style element exists before accessing it
+		// biome-ignore lint/style/noNonNullAssertion: we know style element exists here
 		this.shadowRoot.querySelector('style')!.textContent = COMPONENT_STYLES;
 	}
 
@@ -297,7 +337,7 @@ class UserQuickTools extends HTMLElement {
 					...item,
 					href: routeMap[item.name],
 				});
-				// biome-ignore lint/style/noNonNullAssertion: We ensure the cornerMenu exists before accessing it
+				// biome-ignore lint/style/noNonNullAssertion: we know cornerMenu exists here
 				this.cornerMenu!.appendChild(menuElement);
 			}
 		});
@@ -367,7 +407,7 @@ class UserQuickTools extends HTMLElement {
 
 		const updateTheme = () => {
 			const theme = document.documentElement.getAttribute('data-theme');
-			// biome-ignore lint/style/noNonNullAssertion: We ensure the cornerMenu exists before accessing it
+			// biome-ignore lint/style/noNonNullAssertion: we know cornerMenu exists here
 			this.cornerMenu!.dataset.theme = theme === 'light' ? 'light' : 'dark';
 		};
 
@@ -380,15 +420,26 @@ class UserQuickTools extends HTMLElement {
 
 	private async getSession(): Promise<GetSessionResponse | null> {
 		try {
+			// Add timeout to prevent hanging requests
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
 			const response = await fetch('/studiocms_api/dashboard/verify-session', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ originPathname: window.location.toString() }),
+				signal: controller.signal,
 			});
 
+			clearTimeout(timeoutId);
 			return response.ok ? await response.json() : null;
 		} catch (error) {
-			console.error('Session verification failed:', error);
+			// Network errors should not block page rendering
+			if (error instanceof Error && error.name === 'AbortError') {
+				console.warn('Session verification timed out');
+			} else {
+				console.warn('Session verification failed:', error);
+			}
 			return null;
 		}
 	}
@@ -411,16 +462,25 @@ if ('customElements' in window && !customElements.get('user-quick-tools')) {
 	customElements.define('user-quick-tools', UserQuickTools);
 }
 
-// Improved DOM ready detection
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', () => {
+// Improved DOM ready detection with non-blocking approach
+function initializeWhenReady() {
+	const createElement = () => {
 		if (!document.querySelector('user-quick-tools')) {
-			document.body.appendChild(document.createElement('user-quick-tools'));
+			const element = document.createElement('user-quick-tools');
+			document.body.appendChild(element);
 		}
-	});
-} else {
-	// DOM is already ready
-	if (!document.querySelector('user-quick-tools')) {
-		document.body.appendChild(document.createElement('user-quick-tools'));
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			// Use setTimeout to avoid blocking DOMContentLoaded handlers
+			setTimeout(createElement, 0);
+		});
+	} else {
+		// DOM is already ready - schedule for next tick
+		setTimeout(createElement, 0);
 	}
 }
+
+// Initialize when script loads
+initializeWhenReady();
