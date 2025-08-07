@@ -42,22 +42,28 @@ export const studioCMSProjectDataSchema = Schema.Struct({
 	__STUDIOCMS_HTML: Schema.optional(Schema.String),
 });
 
-export type StudioCMSProjectData = typeof studioCMSProjectDataSchema;
+export type StudioCMSProjectDataSchema = typeof studioCMSProjectDataSchema;
+
+export type StudioCMSProjectData = StudioCMSProjectDataSchema['Type'];
 
 export const PLUGIN_ID = 'studiocms-wysiwyg';
 
 export const UseSDK = Effect.gen(function* () {
 	const sdk = yield* SDKCore;
 
-	const { usePluginData } = sdk.PLUGINS;
+	const { usePluginData, InferType } = sdk.PLUGINS;
+
+	const inferInsertType = new InferType(studioCMSProjectDataSchema);
+
+	type InferInsertType = typeof inferInsertType.Insert;
 
 	const createPluginDataAccessor = () =>
-		usePluginData<StudioCMSProjectData>(PLUGIN_ID, {
+		usePluginData<StudioCMSProjectDataSchema>(PLUGIN_ID, {
 			validator: { effectSchema: studioCMSProjectDataSchema },
 		});
 
 	const createPluginDataAccessorById = (id: string) =>
-		usePluginData<StudioCMSProjectData>(PLUGIN_ID, {
+		usePluginData<StudioCMSProjectDataSchema>(PLUGIN_ID, {
 			entryId: id,
 			validator: { effectSchema: studioCMSProjectDataSchema },
 		});
@@ -67,7 +73,7 @@ export const UseSDK = Effect.gen(function* () {
 		load: Effect.fn(function* (id: string) {
 			return yield* createPluginDataAccessorById(id).select();
 		}),
-		store: Effect.fn(function* (id: string, data: StudioCMSProjectData) {
+		store: Effect.fn(function* (id: string, data: InferInsertType) {
 			const existing = yield* createPluginDataAccessorById(id).select();
 			if (existing) {
 				return yield* createPluginDataAccessorById(id).update(data);

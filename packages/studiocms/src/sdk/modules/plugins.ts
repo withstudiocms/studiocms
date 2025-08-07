@@ -468,16 +468,17 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					LibSQLDatabaseError | Error,
 					never
 				>;
-				insert: (data: T) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
-				update: (data: T) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
+				insert: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
+				update: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
 			};
 
 			/**
 			 * Implementation of the `usePluginData` function that provides access to plugin data entries.
 			 */
-			function usePluginData<
-				T extends Schema.Struct<Schema.Struct.Fields> | object,
-			>(pluginId: string, { entryId, validator }: UserPluginDataOptsImplementation<T> = {}) {
+			function usePluginData<T extends Schema.Struct<Schema.Struct.Fields> | object>(
+				pluginId: string,
+				{ entryId, validator }: UserPluginDataOptsImplementation<T> = {}
+			) {
 				if (!entryId) {
 					return {
 						/**
@@ -624,6 +625,32 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				};
 			}
 
+			/**
+			 * Infers and simplifies the insert type from a given Schema.Struct.
+			 *
+			 * @template S - The schema structure extending Schema.Struct.
+			 * @property {RecursiveSimplifyMutable<S['Type']>} Insert - The inferred and recursively simplified mutable type for insertion.
+			 * @remarks
+			 * This class is intended to extract and simplify the type information from a schema definition,
+			 * making it suitable for insert operations. The Insert property holds the resulting type.
+			 *
+			 * @example
+			 * ```typescript
+			 * const infer = new InferType(mySchema);
+			 * type InsertType = typeof infer.Insert;
+			 * ```
+			 */
+
+			// biome-ignore lint/suspicious/noExplicitAny: as this is a generic type for the plugin data.
+			class InferType<S extends Schema.Struct<any>> {
+				// Define the type inference logic here
+				readonly Insert: RecursiveSimplifyMutable<S['Type']>;
+
+				constructor(schema: S) {
+					this.Insert = schema as unknown as RecursiveSimplifyMutable<S['Type']>;
+				}
+			}
+
 			return {
 				/**
 				 * Provides a set of effectful operations for managing plugin data entries by plugin ID and optional entry ID.
@@ -654,6 +681,23 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				 * @returns An Effect that resolves to `void` on success or an `Error` on failure.
 				 */
 				clearPluginDataCache,
+
+				/**
+				 * Infers and simplifies the insert type from a given Schema.Struct.
+				 *
+				 * @template S - The schema structure extending Schema.Struct.
+				 * @property {RecursiveSimplifyMutable<S['Type']>} Insert - The inferred and recursively simplified mutable type for insertion.
+				 * @remarks
+				 * This class is intended to extract and simplify the type information from a schema definition,
+				 * making it suitable for insert operations. The Insert property holds the resulting type.
+				 *
+				 * @example
+				 * ```typescript
+				 * const infer = new InferType(mySchema);
+				 * type InsertType = typeof infer.Insert;
+				 * ```
+				 */
+				InferType,
 			};
 		}),
 	}
