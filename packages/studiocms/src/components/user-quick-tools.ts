@@ -271,7 +271,7 @@ class UserQuickTools extends HTMLElement {
 
 	public initOnUserInteraction() {
 		// Events that indicate user engagement
-		const interactionEvents = ['mouseenter', 'touchstart', 'scroll', 'keydown', 'click'];
+		const interactionEvents = ['mouseenter', 'mousemove', 'touchstart', 'scroll', 'keydown', 'click'];
 
 		const handleUserInteraction = () => {
 			if (this.isInitialized) return;
