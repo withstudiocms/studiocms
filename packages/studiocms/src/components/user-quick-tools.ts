@@ -654,8 +654,8 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 }
 
 // Also register the configurable version
-if ('customElements' in window && !customElements.get('user-quick-tools-config')) {
-	customElements.define('user-quick-tools-config', ConfigurableUserQuickTools);
+if ('customElements' in window && !customElements.get('user-quick-tools')) {
+	customElements.define('user-quick-tools', ConfigurableUserQuickTools);
 }
 
 // Improved DOM ready detection with non-blocking approach
@@ -663,11 +663,11 @@ function initializeWhenReady() {
 	const createElement = () => {
 		if (!document.querySelector('user-quick-tools')) {
 			// Development version: Use the basic user quick tools component
-			// const element = document.createElement('user-quick-tools-config');
+			// const element = document.createElement('user-quick-tools');
 			// element.setAttribute('data-init-strategy', 'immediate');
 			
 			// Production version: Use configurable version with data attributes
-			const element = document.createElement('user-quick-tools-config');
+			const element = document.createElement('user-quick-tools');
 			element.setAttribute('data-init-strategy', 'idle');
 			element.setAttribute('data-timeout', '1000');
 
