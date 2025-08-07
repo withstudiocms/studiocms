@@ -13,7 +13,7 @@ const AnyArray = Schema.Array(Schema.Any);
  *
  * This schema describes the structure of the project data used in StudioCMS,
  * including optional HTML content, data sources, assets, styles, symbols, and pages.
- * 
+ *
  */
 export const studioCMSProjectDataSchema = Schema.Struct({
 	__STUDIOCMS_HTML: Schema.optional(Schema.String),
@@ -101,16 +101,9 @@ export const UseSDK = Effect.gen(function* () {
 	type InferInsertType = typeof inferInsertType;
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
-	const { getEntries } = usePluginData<SchemaType>(TABLE_PLUGIN_ID, {
+	const { getEntries, getEntry } = usePluginData<SchemaType>(TABLE_PLUGIN_ID, {
 		validator: { effectSchema: studioCMSProjectDataSchema },
 	});
-
-	// This function retrieves all entries of the plugin data, allowing for interaction with the WYSIWYG editor's stored data.
-	const createPluginDataAccessorById = (id: string) =>
-		usePluginData<SchemaType>(TABLE_PLUGIN_ID, {
-			entryId: id,
-			validator: { effectSchema: studioCMSProjectDataSchema },
-		});
 
 	return {
 		/**
@@ -127,7 +120,7 @@ export const UseSDK = Effect.gen(function* () {
 		 * @returns An Effect that resolves to the plugin data entry with the specified ID.
 		 */
 		load: Effect.fn(function* (id: string) {
-			return yield* createPluginDataAccessorById(id).select();
+			return yield* getEntry(id).select();
 		}),
 
 		/**
@@ -138,11 +131,11 @@ export const UseSDK = Effect.gen(function* () {
 		 * @returns An Effect that resolves to the inserted or updated plugin data entry.
 		 */
 		store: Effect.fn(function* (id: string, data: InferInsertType) {
-			const existing = yield* createPluginDataAccessorById(id).select();
+			const existing = yield* getEntry(id).select();
 			if (existing) {
-				return yield* createPluginDataAccessorById(id).update(data);
+				return yield* getEntry(id).update(data);
 			}
-			return yield* createPluginDataAccessorById(id).insert(data);
+			return yield* getEntry(id).insert(data);
 		}),
 	};
 });
