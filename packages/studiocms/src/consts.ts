@@ -241,19 +241,35 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 export const StudioCMSDefaultRobotsConfig = ({
 	config,
 	sitemapEnabled,
-	dashboardRoute
+	dashboardRoute,
 }: {
-	config: AstroConfig,
-	sitemapEnabled: boolean,
-	dashboardRoute: (path: string) => string
-}): RobotsConfig => ({
-	host: config.site?.replace(/^https?:\/\/|:\d+$/g, '') || false,
-	sitemap: sitemapEnabled,
-	policy: [
-		{
-			userAgent: ['*'],
-			allow: ['/'],
-			disallow: [dashboardRoute(''), '/studiocms_api/'],
-		},
-	],
-});
+	config: AstroConfig;
+	sitemapEnabled: boolean;
+	dashboardRoute: (path: string) => string;
+}): RobotsConfig => {
+	// Extract the host from the site URL in the Astro config.
+	// If the site URL is not set or invalid, default to false.
+	let host: string | false = false;
+	if (config.site) {
+		try {
+			const url = new URL(config.site);
+			host = url.hostname;
+		} catch {
+			// Fallback to regex approach
+			host = config.site.replace(/^https?:\/\/|:\d+$/g, '') || false;
+		}
+	}
+
+	// Return the robots.txt configuration object.
+	return {
+		host,
+		sitemap: sitemapEnabled,
+		policy: [
+			{
+				userAgent: ['*'],
+				allow: ['/'],
+				disallow: [dashboardRoute(''), '/studiocms_api/'],
+			},
+		],
+	};
+};
