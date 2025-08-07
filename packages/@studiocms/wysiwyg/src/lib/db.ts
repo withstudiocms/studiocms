@@ -81,27 +81,10 @@ export const UseSDK = Effect.gen(function* () {
 	} = yield* SDKCore;
 
 	// InferType is a utility class that helps infer types from a given schema.
-	const { Insert: inferInsertType, usePluginData: inferUsePluginData } = new InferType(
-		studioCMSProjectDataSchema
-	);
-
-	/**
-	 * Type representing the structure of the plugin data used in StudioCMS.
-	 * This type is inferred from the `studioCMSProjectDataSchema` schema.
-	 */
-	type SchemaType = typeof inferUsePluginData;
-
-	/**
-	 * Type representing the structure of the data that can be inserted into the plugin.
-	 * This type is inferred from the `Insert` property of the `InferType` class.
-	 * It represents a simplified, mutable version of the schema's type.
-	 *
-	 * @typeParam T - The type of data to be inserted, inferred from the schema.
-	 */
-	type InferInsertType = typeof inferInsertType;
+	const infer = new InferType(studioCMSProjectDataSchema);
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
-	const { getEntries, getEntry } = usePluginData<SchemaType>(TABLE_PLUGIN_ID, {
+	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(TABLE_PLUGIN_ID, {
 		validator: { effectSchema: studioCMSProjectDataSchema },
 	});
 
@@ -128,7 +111,7 @@ export const UseSDK = Effect.gen(function* () {
 		 * @param data - The data to be inserted or updated in the plugin data entry.
 		 * @returns An Effect that resolves to the inserted or updated plugin data entry.
 		 */
-		store: Effect.fn(function* (id: string, data: InferInsertType) {
+		store: Effect.fn(function* (id: string, data: typeof infer.$Insert) {
 			const existing = yield* getEntry(id).select();
 			if (existing) return yield* getEntry(id).update(data);
 			return yield* getEntry(id).insert(data);

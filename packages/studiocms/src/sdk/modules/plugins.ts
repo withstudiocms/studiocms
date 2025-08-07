@@ -1,5 +1,5 @@
 import { eq, like } from 'astro:db';
-import { Effect, genLogger, pipe, type Schema } from '../../effect.js';
+import { Effect, genLogger, pipe, Schema } from '../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
 	noUndefinedEntries,
@@ -702,14 +702,19 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @property Insert - A recursively simplified, mutable version of the schema's type.
 			 *
 			 */
-			// biome-ignore lint/suspicious/noExplicitAny: as this is a generic type for the plugin data.
-			class InferType<S extends Schema.Struct<any>> {
-				readonly _Schema: S;
+			class InferType<
+				// biome-ignore lint/suspicious/noExplicitAny: as this is a generic type for the plugin data.
+				S extends Schema.Struct<any>,
+				R = RecursiveSimplifyMutable<S['Type']>,
+			> {
+				readonly _Schema: S | null = null;
+				readonly $UsePluginData!: S;
+				readonly $Insert!: R;
 				constructor(schema: S) {
-					this._Schema = schema;
+					if (Schema.isSchema(schema)) {
+						this._Schema = schema;
+					}
 				}
-				readonly usePluginData!: S;
-				readonly Insert!: RecursiveSimplifyMutable<S['Type']>;
 			}
 
 			return {
