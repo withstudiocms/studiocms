@@ -624,12 +624,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				};
 			}
 
-			const simplifyEffectSchemaReturn = <S extends Schema.Struct<Schema.Struct.Fields>>(
-				data: S['Type']
-			): RecursiveSimplifyMutable<S['Type']> => {
-				return data as RecursiveSimplifyMutable<S['Type']>;
-			};
-
 			return {
 				/**
 				 * Provides a set of effectful operations for managing plugin data entries by plugin ID and optional entry ID.
@@ -660,8 +654,6 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				 * @returns An Effect that resolves to `void` on success or an `Error` on failure.
 				 */
 				clearPluginDataCache,
-
-				simplifyEffectSchemaReturn,
 			};
 		}),
 	}
