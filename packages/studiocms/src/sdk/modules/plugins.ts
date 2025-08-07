@@ -351,6 +351,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			 * @typeParam T - The expected shape of the plugin data after validation.
 			 * @param pluginId - The unique identifier for the plugin whose entries are to be retrieved.
 			 * @param validator - (Optional) Validation options to apply to each entry's data.
+			 * @param filter - (Optional) A callback function to filter the entries after retrieval.
 			 * @returns An Effect yielding an array of validated and parsed plugin data responses.
 			 */
 			const _getEntries = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries')(
@@ -370,12 +371,13 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						if (data.length > 0) return data;
 					}
 
+					// Make initial todo to fetch entries from the database and process them
 					const todo = pipe(_db.getEntriesPluginData(pluginId), Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator))));
 
-					if (filter) {
-						return yield* todo.pipe(Effect.map((data) => filter(data)));
-					}
+					// If a filter callback is provided, apply it to the todo result
+					if (filter) return yield* todo.pipe(Effect.map(filter));
 
+					// Otherwise, return the todo result directly
 					return yield* todo;
 				}
 			);
