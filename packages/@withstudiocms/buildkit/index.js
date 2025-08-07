@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import { run } from 'node:test';
+import { spec } from 'node:test/reporters';
+import { pathToFileURL } from 'node:url';
+import { parseArgs } from 'node:util';
 import esbuild from 'esbuild';
 import glob from 'fast-glob';
 import { dim, gray, green, red, yellow } from 'kleur/colors';
+
+const isCI = !!process.env.CI;
+const defaultTimeout = isCI ? 1400000 : 600000;
 
 /** @type {import('esbuild').BuildOptions} */
 const defaultConfig = {
@@ -56,8 +64,32 @@ const dtsGen = (buildTsConfig, outdir) => ({
 	},
 });
 
-export default async function run() {
-	const [cmd, ...args] = process.argv.slice(2);
+async function clean(outdir, date, skip = []) {
+	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
+	console.log(dim(`[${date}] `) + dim(`Cleaning ${files.length} files from ${outdir}`));
+	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
+}
+
+async function readPackageJSON(path) {
+	try {
+		const content = await fs.readFile(path, { encoding: 'utf8' });
+		try {
+			return JSON.parse(content);
+		} catch (parseError) {
+			throw new Error(`Invalid JSON in ${path}: ${parseError.message}`);
+		}
+	} catch (readError) {
+		throw new Error(`Failed to read ${path}: ${readError.message}`);
+	}
+}
+
+/**
+ * Run the dev or build command with the provided arguments.
+ * @param {string} cmd - The command to run ('dev' or 'build').
+ * @param {string[]} args - The arguments to pass to the command.
+ * @returns {Promise<void>}
+ */
+async function devAndBuild(cmd, args) {
 	const config = Object.assign({}, defaultConfig);
 	const patterns = args
 		.filter((f) => !!f) // remove empty args
@@ -101,7 +133,7 @@ export default async function run() {
 							if (result.warnings.length) {
 								console.info(
 									dim(`[${date}] `) +
-										yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
+									yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
 								);
 							}
 							console.info(dim(`[${date}] `) + green('√ updated'));
@@ -152,15 +184,91 @@ export default async function run() {
 			console.log(dim(`[${date}] `) + green('√ Build Complete'));
 			break;
 		}
-		case 'help': {
-			showHelp();
-			break;
-		}
-		default: {
-			showHelp();
-			break;
-		}
 	}
+}
+
+/**
+ * Run tests using the Node.js test runner.
+ * @param {string[]} args - The arguments to pass to the test runner.
+ * @returns {Promise<void>}
+ */
+async function test() {
+	const args = parseArgs({
+		allowPositionals: true,
+		options: {
+			// aka --test-name-pattern: https://nodejs.org/api/test.html#filtering-tests-by-name
+			match: { type: 'string', alias: 'm' },
+			// aka --test-only: https://nodejs.org/api/test.html#only-tests
+			only: { type: 'boolean', alias: 'o' },
+			// aka --test-concurrency: https://nodejs.org/api/test.html#test-runner-execution-model
+			parallel: { type: 'boolean', alias: 'p' },
+			// experimental: https://nodejs.org/api/test.html#watch-mode
+			watch: { type: 'boolean', alias: 'w' },
+			// Test timeout in milliseconds (default: 30000ms)
+			timeout: { type: 'string', alias: 't' },
+			// Test setup file
+			setup: { type: 'string', alias: 's' },
+			// Test teardown file
+			teardown: { type: 'string' },
+		},
+	});
+
+	const pattern = args.positionals[1];
+	if (!pattern) throw new Error('Missing test glob pattern');
+
+	const files = await glob(pattern, {
+		filesOnly: true,
+		absolute: true,
+		ignore: ['**/node_modules/**'],
+	});
+
+	// For some reason, the `only` option does not work and we need to explicitly set the CLI flag instead.
+	// Node.js requires opt-in to run .only tests :(
+	// https://nodejs.org/api/test.html#only-tests
+	if (args.values.only) {
+		process.env.NODE_OPTIONS ??= '';
+		process.env.NODE_OPTIONS += ' --test-only';
+	}
+
+	if (!args.values.parallel) {
+		// If not parallel, we create a temporary file that imports all the test files
+		// so that it all runs in a single process.
+		const tempTestFile = path.resolve('./node_modules/.astro/test.mjs');
+		await fs.mkdir(path.dirname(tempTestFile), { recursive: true });
+		await fs.writeFile(
+			tempTestFile,
+			files.map((f) => `import ${JSON.stringify(pathToFileURL(f).toString())};`).join('\n')
+		);
+
+		files.length = 0;
+		files.push(tempTestFile);
+	}
+
+	const teardownModule = args.values.teardown
+		? await import(pathToFileURL(path.resolve(args.values.teardown)).toString())
+		: undefined;
+
+	// https://nodejs.org/api/test.html#runoptions
+	run({
+		files,
+		testNamePatterns: args.values.match,
+		concurrency: args.values.parallel,
+		only: args.values.only,
+		setup: args.values.setup,
+		watch: args.values.watch,
+		timeout: args.values.timeout ? Number(args.values.timeout) : defaultTimeout, // Node.js defaults to Infinity, so set better fallback
+	})
+		.on('test:fail', () => {
+			// For some reason, a test fail using the JS API does not set an exit code of 1,
+			// so we set it here manually
+			process.exitCode = 1;
+		})
+		.on('end', () => {
+			const testPassed = process.exitCode === 0 || process.exitCode === undefined;
+			teardownModule?.default(testPassed);
+		})
+		.pipe(new spec())
+		.pipe(process.stdout);
 }
 
 function showHelp() {
@@ -171,42 +279,52 @@ ${yellow('Usage:')}
   buildkit <command> [...files] [...options]
 
 ${yellow('Commands:')}
-  dev     Watch files and rebuild on changes
-  build   Perform a one-time build
-  help    Show this help message
+  dev                     Watch files and rebuild on changes
+  build                   Perform a one-time build
+  test                    Run tests with Node.js test runner
+  help                    Show this help message
 
-${yellow('Options:')}
-  --no-clean-dist    Skip cleaning the dist directory
-  --bundle          Enable bundling mode
-  --force-cjs       Force CommonJS output format
-  --tsconfig=<path> Specify TypeScript config file (default: tsconfig.json)
-  --outdir=<path>   Specify output directory (default: dist)
+${yellow('Dev and Build Options:')}
+  --no-clean-dist         Skip cleaning the dist directory
+  --bundle                Enable bundling mode
+  --force-cjs             Force CommonJS output format
+  --tsconfig=<path>       Specify TypeScript config file (default: tsconfig.json)
+  --outdir=<path>         Specify output directory (default: dist)
+
+${yellow('Test Options:')}
+  -m, --match <pattern>   Filter tests by name pattern
+  -o, --only              Run only tests marked with .only
+  -p, --parallel          Run tests in parallel (default: true)
+  -w, --watch             Watch for file changes and rerun tests
+  -t, --timeout <ms>      Set test timeout in milliseconds (default: ${defaultTimeout})
+  -s, --setup <file>      Specify setup file to run before tests
+  -t, --teardown <file>   Specify teardown file to run after tests
 
 ${yellow('Examples:')}
-  buildkit build "src/**/*.ts"
-  buildkit dev "src/**/*.ts" --no-clean-dist
-  buildkit build "src/**/*.ts" --bundle --force-cjs
+  - buildkit dev "src/**/*.ts" --no-clean-dist
+  - buildkit build "src/**/*.ts"
+  - buildkit build "src/**/*.ts" --bundle --force-cjs
+  - buildkit test "test/**/*.test.js" --timeout 50000 
+  - buildkit test "test/**/*.test.js" --match "studiocms" --only
 `);
 }
 
-async function clean(outdir, date, skip = []) {
-	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
-	console.log(dim(`[${date}] `) + dim(`Cleaning ${files.length} files from ${outdir}`));
-	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
-}
-
-async function readPackageJSON(path) {
-	try {
-		const content = await fs.readFile(path, { encoding: 'utf8' });
-		try {
-			return JSON.parse(content);
-		} catch (parseError) {
-			throw new Error(`Invalid JSON in ${path}: ${parseError.message}`);
+export default async function main() {
+	const [cmd, ...args] = process.argv.slice(2);
+	switch (cmd) {
+		case 'dev':
+		case 'build':
+			await devAndBuild(cmd, args);
+			break;
+		case 'test':
+			await test(...args);
+			break;
+		default: {
+			showHelp();
+			break;
 		}
-	} catch (readError) {
-		throw new Error(`Failed to read ${path}: ${readError.message}`);
 	}
 }
 
 // THIS IS THE ENTRY POINT FOR THE CLI - DO NOT REMOVE
-run();
+main();
