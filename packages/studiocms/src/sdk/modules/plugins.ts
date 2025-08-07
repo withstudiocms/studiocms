@@ -626,21 +626,15 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			}
 
 			/**
-			 * Infers and simplifies the insert type from a given Schema.Struct.
+			 * Utility class to infer types from a given Schema.
 			 *
-			 * @template S - The schema structure extending Schema.Struct.
-			 * @property {RecursiveSimplifyMutable<S['Type']>} Insert - The inferred and recursively simplified mutable type for insertion.
-			 * @remarks
-			 * This class is intended to extract and simplify the type information from a schema definition,
-			 * making it suitable for insert operations. The Insert property holds the resulting type.
+			 * @typeParam S - The schema type extending `Schema.Struct<any>`.
 			 *
-			 * @example
-			 * ```typescript
-			 * const infer = new InferType(mySchema);
-			 * type InsertType = typeof infer.Insert;
-			 * ```
+			 * @property _Schema - The schema instance used for type inference.
+			 * @property usePluginData - The inferred type from the schema, used for plugin data.
+			 * @property Insert - A recursively simplified, mutable version of the schema's type.
+			 *
 			 */
-
 			// biome-ignore lint/suspicious/noExplicitAny: as this is a generic type for the plugin data.
 			class InferType<S extends Schema.Struct<any>> {
 				readonly _Schema: S;
@@ -683,19 +677,14 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				clearPluginDataCache,
 
 				/**
-				 * Infers and simplifies the insert type from a given Schema.Struct.
+				 * Utility class to infer types from a given Schema.
 				 *
-				 * @template S - The schema structure extending Schema.Struct.
-				 * @property {RecursiveSimplifyMutable<S['Type']>} Insert - The inferred and recursively simplified mutable type for insertion.
-				 * @remarks
-				 * This class is intended to extract and simplify the type information from a schema definition,
-				 * making it suitable for insert operations. The Insert property holds the resulting type.
+				 * @typeParam S - The schema type extending `Schema.Struct<any>`.
 				 *
-				 * @example
-				 * ```typescript
-				 * const infer = new InferType(mySchema);
-				 * type InsertType = typeof infer.Insert;
-				 * ```
+				 * @property _Schema - The schema instance used for type inference.
+				 * @property usePluginData - The inferred type from the schema, used for plugin data.
+				 * @property Insert - A recursively simplified, mutable version of the schema's type.
+				 *
 				 */
 				InferType,
 			};
