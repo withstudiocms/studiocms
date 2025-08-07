@@ -564,21 +564,21 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				entryId: string,
 				validator?: ValidatorOptions<T>
 			) => {
-				const id = `${pluginId}-${entryId}`;
+				const generatedEntryId = `${pluginId}-${entryId}`;
 				return {
 					/**
 					 * Generates a unique ID for the plugin data entry.
 					 *
 					 * @returns An Effect that yields the generated ID. In the format `${pluginId}-${entryId}`
 					 */
-					generatedId: () => Effect.succeed(id),
+					generatedId: () => Effect.succeed(generatedEntryId),
 
 					/**
 					 * Selects a plugin data entry by its ID, validating the data if a validator is provided.
 					 *
 					 * @returns An Effect that yields the selected plugin data entry or `undefined` if not found.
 					 */
-					select: () => _select<T>(id, validator),
+					select: () => _select<T>(generatedEntryId, validator),
 
 					/**
 					 * Inserts new plugin data into the database after validating the input.
@@ -587,7 +587,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					 * @yields Throws an error if validation fails or if the entry already exists.
 					 * @returns The parsed data response for the inserted entry.
 					 */
-					insert: (data: T) => _insert<T>(id, data, validator),
+					insert: (data: T) => _insert<T>(generatedEntryId, data, validator),
 
 					/**
 					 * Updates existing plugin data in the database after validating the input.
@@ -596,7 +596,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					 * @yields Throws an error if validation fails.
 					 * @returns The parsed data response for the updated entry.
 					 */
-					update: (data: T) => _update<T>(id, data, validator),
+					update: (data: T) => _update<T>(generatedEntryId, data, validator),
 				};
 			};
 
