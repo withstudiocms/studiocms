@@ -119,9 +119,7 @@ export const UseSDK = Effect.gen(function* () {
 		 * @param id - The unique identifier for the plugin data entry.
 		 * @returns An Effect that resolves to the plugin data entry with the specified ID.
 		 */
-		load: Effect.fn(function* (id: string) {
-			return yield* getEntry(id).select();
-		}),
+		load: (id: string) => getEntry(id).select(),
 
 		/**
 		 * Inserts or updates a plugin data entry with the specified ID and data.
@@ -132,9 +130,7 @@ export const UseSDK = Effect.gen(function* () {
 		 */
 		store: Effect.fn(function* (id: string, data: InferInsertType) {
 			const existing = yield* getEntry(id).select();
-			if (existing) {
-				return yield* getEntry(id).update(data);
-			}
+			if (existing) return yield* getEntry(id).update(data);
 			return yield* getEntry(id).insert(data);
 		}),
 	};
