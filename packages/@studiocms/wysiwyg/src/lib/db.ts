@@ -52,6 +52,29 @@ export const studioCMSProjectDataSchema = Schema.Struct({
  */
 export const TABLE_PLUGIN_ID = 'studiocms-wysiwyg';
 
+/**
+ * Provides an SDK for interacting with StudioCMS plugin data using Effect-based operations.
+ *
+ * This generator function yields an object with methods to retrieve, load, and store
+ * WYSIWYG editor plugin data, leveraging schema inference for type safety.
+ *
+ * @remarks
+ * - Utilizes `InferType` to infer types from `studioCMSProjectDataSchema`.
+ * - All operations are effectful and return Effect-based results.
+ *
+ * @returns An object containing methods for plugin data access:
+ * - `getAll`: Retrieves all plugin data entries.
+ * - `load`: Loads a specific plugin data entry by ID.
+ * - `store`: Inserts or updates a plugin data entry by ID.
+ *
+ * @example
+ * ```typescript
+ * const sdk = yield* UseSDK;
+ * const allEntries = sdk.getAll();
+ * const entry = yield* sdk.load('entry-id');
+ * yield* sdk.store('entry-id', { ...data });
+ * ```
+ */
 export const UseSDK = Effect.gen(function* () {
 	const {
 		PLUGINS: { usePluginData, InferType },
