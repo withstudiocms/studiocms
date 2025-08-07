@@ -381,4 +381,7 @@ export default async function main() {
 }
 
 // THIS IS THE ENTRY POINT FOR THE CLI - DO NOT REMOVE
-main();
+main().catch((error) => {
+	console.error(error);
+	process.exit(1);
+});
