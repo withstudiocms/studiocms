@@ -257,7 +257,7 @@ async function test(args) {
 		},
 	});
 
-	const pattern = parsedArgs.positionals[1];
+	const pattern = parsedArgs.positionals[0];
 	if (!pattern) throw new Error('Missing test glob pattern');
 
 	const files = await glob(pattern, {
