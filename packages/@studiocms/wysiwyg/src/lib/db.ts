@@ -56,7 +56,7 @@ export const UseSDK = Effect.gen(function* () {
 	type SchemaType = typeof inferUsePluginData;
 	type InferInsertType = typeof inferInsertType;
 
-	const createPluginDataAccessor = () =>
+	const { getEntries } =
 		usePluginData<SchemaType>(PLUGIN_ID, {
 			validator: { effectSchema: studioCMSProjectDataSchema },
 		});
@@ -68,7 +68,7 @@ export const UseSDK = Effect.gen(function* () {
 		});
 
 	return {
-		getAll: () => createPluginDataAccessor().getEntries(),
+		getAll: () => getEntries(),
 		load: Effect.fn(function* (id: string) {
 			return yield* createPluginDataAccessorById(id).select();
 		}),
