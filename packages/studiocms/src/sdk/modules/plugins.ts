@@ -643,13 +643,12 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 
 			// biome-ignore lint/suspicious/noExplicitAny: as this is a generic type for the plugin data.
 			class InferType<S extends Schema.Struct<any>> {
-				readonly usePluginData: S;
-				readonly Insert: RecursiveSimplifyMutable<S['Type']>;
-
+				readonly _Schema: S;
 				constructor(schema: S) {
-					this.usePluginData = schema as S;
-					this.Insert = schema as RecursiveSimplifyMutable<S['Type']>;
+					this._Schema = schema;
 				}
+				readonly usePluginData!: S;
+				readonly Insert!: RecursiveSimplifyMutable<S['Type']>;
 			}
 
 			return {
