@@ -84,6 +84,7 @@ export const UseSDK = Effect.gen(function* () {
 	// InferType is a utility class that helps infer types from a given schema.
 	const infer = new InferType(studioCMSProjectDataSchema);
 
+	// Define the type for the plugin data entry using the inferred schema.
 	type InferInsert = typeof infer.$Insert;
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
