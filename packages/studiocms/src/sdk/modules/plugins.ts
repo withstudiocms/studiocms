@@ -562,7 +562,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				});
 
 				// Return the parsed data response for the updated record
-				return yield* parsedDataResponse<T>(updated.id, data);
+				return yield* parsedDataResponse<T>(updated.id, parsedData);
 			});
 
 			const buildReturn = <T extends Schema.Struct<Schema.Struct.Fields> | object>(
