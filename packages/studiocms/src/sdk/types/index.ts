@@ -33,9 +33,9 @@ export type * from './tsAlias.js';
  * @property [Type] - An optional type definition for the data.
  * @property [validator] - Optional validator options for the data type.
  */
-export interface UsePluginDataOptsBase<T extends object, E extends Schema.Struct.Fields> {
+export interface UsePluginDataOptsBase<T extends Schema.Struct<Schema.Struct.Fields> | object> {
 	Type?: T;
-	validator?: ValidatorOptions<T, E>;
+	validator?: ValidatorOptions<T>;
 }
 
 /**
@@ -43,21 +43,24 @@ export interface UsePluginDataOptsBase<T extends object, E extends Schema.Struct
  *
  * @template T - The type of the plugin data object.
  * @extends UsePluginDataOptsBase<T>
- * 
+ *
  * @property entryId - The unique identifier for the entry associated with the plugin data.
  */
-export interface UsePluginDataOpts<T extends object, E extends Schema.Struct.Fields> extends UsePluginDataOptsBase<T, E> {
+export interface UsePluginDataOpts<T extends Schema.Struct<Schema.Struct.Fields> | object>
+	extends UsePluginDataOptsBase<T> {
 	entryId: string;
 }
 
 /**
  * Represents a partial implementation of the `UsePluginDataOpts` type for a given object type `T`.
- * 
+ *
  * This type is useful when you want to provide only a subset of the properties defined in `UsePluginDataOpts<T>`.
  *
  * @typeParam T - The object type for which the plugin data options are defined.
  */
-export type UserPluginDataOptsImplementation<T extends object, E extends Schema.Struct.Fields> = Partial<UsePluginDataOpts<T, E>>;
+export type UserPluginDataOptsImplementation<
+	T extends Schema.Struct<Schema.Struct.Fields> | object,
+> = Partial<UsePluginDataOpts<T>>;
 
 /**
  * Represents a plugin data entry with a strongly-typed `data` property.
@@ -87,8 +90,9 @@ export interface JSONValidatorFn<T> {
  *
  * @property effectSchema - The schema used for validation, which takes a value of type `T` and returns either a `ParseError` or `never`.
  */
-export interface EffectSchemaValidator<E extends Schema.Struct.Fields> {
-	effectSchema: Schema.Struct<E>;
+// biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
+export interface EffectSchemaValidator<E extends Schema.Struct<any>> {
+	effectSchema: E;
 }
 
 /**
@@ -138,13 +142,13 @@ export interface ZodValidator<T> {
  *
  * // Example of defining an Effect schema validator for a User type
  * import { Schema } from 'studiocms/effect';
- * 
+ *
  * const userEffectSchema = Schema.Struct({
  *  id: Schema.Number,
  *  name: Schema.String,
  *  email: Schema.String
  * });
- * 
+ *
  * type UserEffectSchema = (typeof userEffectSchema)['Type'];
  * type UserEffectSchemaFields = (typeof userEffectSchema)['fields'];
  *
@@ -164,7 +168,10 @@ export interface ZodValidator<T> {
  * };
  * ```
  */
-export type ValidatorOptions<T, E extends Schema.Struct.Fields = never> = JSONValidatorFn<T> | EffectSchemaValidator<E> | ZodValidator<T>;
+// biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
+export type ValidatorOptions<T extends Schema.Struct<any> | object> = T extends Schema.Struct<any>
+	? EffectSchemaValidator<T>
+	: JSONValidatorFn<T> | ZodValidator<T>;
 
 /**
  * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.

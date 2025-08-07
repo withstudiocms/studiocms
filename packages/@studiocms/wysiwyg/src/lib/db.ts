@@ -1,5 +1,4 @@
 import { SDKCore } from 'studiocms:sdk';
-import type { ProjectData } from 'grapesjs';
 import { Effect, Schema } from 'studiocms/effect';
 
 // this is used for testing, and is planned to be used in the future
@@ -34,7 +33,7 @@ const Page = Schema.Struct({
 
 const Pages = Schema.Array(Page);
 
-export const StudioCMSProjectDataSchema = Schema.Struct({
+export const studioCMSProjectDataSchema = Schema.Struct({
 	dataSources: AnyArray,
 	assets: AnyArray,
 	styles: AnyArray,
@@ -43,10 +42,9 @@ export const StudioCMSProjectDataSchema = Schema.Struct({
 	__STUDIOCMS_HTML: Schema.optional(Schema.String),
 });
 
-export type StudioCMSProjectData = (typeof StudioCMSProjectDataSchema)['Type'] & ProjectData;
-export type StudioCMSProjectDataFields = (typeof StudioCMSProjectDataSchema)['fields'];
+export type StudioCMSProjectData = typeof studioCMSProjectDataSchema;
 
-export const validator = { effectSchema: StudioCMSProjectDataSchema };
+export const validator = { effectSchema: studioCMSProjectDataSchema };
 
 export const PLUGIN_ID = 'studiocms-wysiwyg';
 
@@ -56,14 +54,14 @@ export const UseSDK = Effect.gen(function* () {
 	const { usePluginData } = sdk.PLUGINS;
 
 	const createPluginDataAccessor = () =>
-		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
-			validator,
+		usePluginData<StudioCMSProjectData>(PLUGIN_ID, {
+			validator: { effectSchema: studioCMSProjectDataSchema },
 		});
 
 	const createPluginDataAccessorById = (id: string) =>
-		usePluginData<StudioCMSProjectData, StudioCMSProjectDataFields>(PLUGIN_ID, {
+		usePluginData<StudioCMSProjectData>(PLUGIN_ID, {
 			entryId: id,
-			validator,
+			validator: { effectSchema: studioCMSProjectDataSchema },
 		});
 
 	return {

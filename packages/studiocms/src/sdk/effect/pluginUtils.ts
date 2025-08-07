@@ -1,6 +1,13 @@
 import { Effect, type ParseResult, pipe, Schema } from '../../effect.js';
 import type { PluginDataEntry, ValidatorOptions } from '../types/index.js';
 
+
+export type RecursiveSimplifyMutable<A> = {
+	-readonly [K in keyof A]: A[K] extends object ? RecursiveSimplifyMutable<A[K]> : A[K];
+} extends infer B
+	? B
+	: never;
+
 /**
  * Enum representing the possible responses when selecting plugin data,
  * indicating whether the existence of the data should cause a failure or not.
@@ -83,7 +90,7 @@ export const isJsonValid =
  * @throws Error if none of the expected validator options are provided.
  */
 export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getValidatorFn')(
-	function* <T extends object, E extends Schema.Struct.Fields>(validator: ValidatorOptions<T, E>) {
+	function* <T extends Schema.Struct<Schema.Struct.Fields> | object>(validator: ValidatorOptions<T>) {
 		if ('jsonFn' in validator) {
 			// Return the JSON validator function
 			return (data: unknown) =>
@@ -149,8 +156,8 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
  * @throws {Error} If the input is neither a string nor an object, or if parsing/validation fails.
  */
 export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')(function* <
-	T extends object, E extends Schema.Struct.Fields
->(rawData: unknown, validator?: ValidatorOptions<T, E>) {
+	T extends Schema.Struct<Schema.Struct.Fields> | object
+>(rawData: unknown, validator?: ValidatorOptions<T>) {
 	let parsedInput: unknown;
 
 	// Check if rawData is a string or an object
@@ -175,7 +182,7 @@ export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')
 	}
 
 	// If a validator is provided, get the validation function
-	const validatorFn = yield* getValidatorFn<T, E>(validator);
+	const validatorFn = yield* getValidatorFn<T>(validator);
 
 	// Validate the parsed input using the validator function
 	// If validation fails, it will throw an error which will be caught by the Effect framework
