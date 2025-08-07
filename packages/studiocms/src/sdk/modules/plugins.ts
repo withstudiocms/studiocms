@@ -372,7 +372,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 					}
 
 					// Make initial todo to fetch entries from the database and process them
-					const todo = pipe(_db.getEntriesPluginData(pluginId), Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator))));
+					const todo = pipe(
+						_db.getEntriesPluginData(pluginId),
+						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator)))
+					);
 
 					// If a filter callback is provided, apply it to the todo result
 					if (filter) return yield* todo.pipe(Effect.map(filter));
@@ -621,7 +624,9 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				pluginId: string,
 				opts?: UsePluginDataOptsBase<T>
 			): {
-				getEntries: (filter?: (data: PluginDataEntry<R>[]) => PluginDataEntry<R>[]) => Effect.Effect<PluginDataEntry<R>[], LibSQLDatabaseError | Error, never>;
+				getEntries: (
+					filter?: (data: PluginDataEntry<R>[]) => PluginDataEntry<R>[]
+				) => Effect.Effect<PluginDataEntry<R>[], LibSQLDatabaseError | Error, never>;
 				getEntry: (id: string) => {
 					generatedId: () => Effect.Effect<string, never, never>;
 					select: () => Effect.Effect<
@@ -679,7 +684,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						 * @param validator - Optional validator options for validating the plugin data.
 						 * @returns An Effect that yields an array of `PluginDataEntry<T>` objects.
 						 */
-						getEntries: (filter?: (data: PluginDataEntry<T>[]) => PluginDataEntry<T>[]) => _getEntries<T>(pluginId, validator, filter),
+						getEntries: (filter?: (data: PluginDataEntry<T>[]) => PluginDataEntry<T>[]) =>
+							_getEntries<T>(pluginId, validator, filter),
 						getEntry: (id: string) => buildReturn<T>(pluginId, id, validator),
 					};
 				}
