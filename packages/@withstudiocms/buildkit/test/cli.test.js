@@ -42,11 +42,11 @@ describe('buildkit CLI', () => {
 			expect(output).toContain('--force-cjs');
 			expect(output).toContain('Test Options:');
 			expect(output).toContain('-m, --match <pattern>');
-			expect(output).toContain('--only');
-			expect(output).toContain('--parallel');
-			expect(output).toContain('--watch');
-			expect(output).toContain('--timeout <ms>');
-			expect(output).toContain('--setup <file>');
+			expect(output).toContain('-o, --only');
+			expect(output).toContain('-p, --parallel');
+			expect(output).toContain('-w, --watch');
+			expect(output).toContain('-t, --timeout <ms>');
+			expect(output).toContain('-s, --setup <file>');
 			expect(output).toContain('--teardown <file>');
 		});
 

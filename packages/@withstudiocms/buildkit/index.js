@@ -87,7 +87,6 @@ async function readPackageJSON(path) {
  * Run the dev or build command with the provided arguments.
  * @param {string} cmd - The command to run ('dev' or 'build').
  * @param {string[]} args - The arguments to pass to the command.
- * @returns {Promise<void>}
  */
 async function devAndBuild(cmd, args) {
 	const config = Object.assign({}, defaultConfig);
@@ -99,6 +98,11 @@ async function devAndBuild(cmd, args) {
 			patterns.map((pattern) => glob(pattern, { filesOnly: true, absolute: true }))
 		))
 	);
+
+	if (entryPoints.length === 0) {
+		throw new Error(`No entry points found for pattern(s): ${patterns.join(', ')}`);
+	}
+
 	const date = dt.format(new Date());
 
 	const noClean = args.includes('--no-clean-dist');
@@ -189,11 +193,11 @@ async function devAndBuild(cmd, args) {
 
 /**
  * Run tests using the Node.js test runner.
- * @param {string[]} args - The arguments to pass to the test runner.
- * @returns {Promise<void>}
+ * @param {string[]} args - The command line arguments for the test command.
  */
-async function test() {
-	const args = parseArgs({
+async function test(args) {
+	const parsedArgs = parseArgs({
+		args,
 		allowPositionals: true,
 		options: {
 			// aka --test-name-pattern: https://nodejs.org/api/test.html#filtering-tests-by-name
@@ -213,7 +217,7 @@ async function test() {
 		},
 	});
 
-	const pattern = args.positionals[1];
+	const pattern = parsedArgs.positionals[1];
 	if (!pattern) throw new Error('Missing test glob pattern');
 
 	const files = await glob(pattern, {
@@ -222,15 +226,19 @@ async function test() {
 		ignore: ['**/node_modules/**'],
 	});
 
+	if (files.length === 0) {
+		throw new Error(`No test files found matching pattern: ${pattern}`);
+	}
+
 	// For some reason, the `only` option does not work and we need to explicitly set the CLI flag instead.
 	// Node.js requires opt-in to run .only tests :(
 	// https://nodejs.org/api/test.html#only-tests
-	if (args.values.only) {
+	if (parsedArgs.values.only) {
 		process.env.NODE_OPTIONS ??= '';
 		process.env.NODE_OPTIONS += ' --test-only';
 	}
 
-	if (!args.values.parallel) {
+	if (!parsedArgs.values.parallel) {
 		// If not parallel, we create a temporary file that imports all the test files
 		// so that it all runs in a single process.
 		const tempTestFile = path.resolve('./node_modules/.astro/test.mjs');
@@ -244,19 +252,19 @@ async function test() {
 		files.push(tempTestFile);
 	}
 
-	const teardownModule = args.values.teardown
-		? await import(pathToFileURL(path.resolve(args.values.teardown)).toString())
+	const teardownModule = parsedArgs.values.teardown
+		? await import(pathToFileURL(path.resolve(parsedArgs.values.teardown)).toString())
 		: undefined;
 
 	// https://nodejs.org/api/test.html#runoptions
 	run({
 		files,
-		testNamePatterns: args.values.match,
-		concurrency: args.values.parallel,
-		only: args.values.only,
-		setup: args.values.setup,
-		watch: args.values.watch,
-		timeout: args.values.timeout ? Number(args.values.timeout) : defaultTimeout, // Node.js defaults to Infinity, so set better fallback
+		testNamePatterns: parsedArgs.values.match,
+		concurrency: parsedArgs.values.parallel,
+		only: parsedArgs.values.only,
+		setup: parsedArgs.values.setup,
+		watch: parsedArgs.values.watch,
+		timeout: parsedArgs.values.timeout ? Number(parsedArgs.values.timeout) : defaultTimeout, // Node.js defaults to Infinity, so set better fallback
 	})
 		.on('test:fail', () => {
 			// For some reason, a test fail using the JS API does not set an exit code of 1,
@@ -298,7 +306,7 @@ ${yellow('Test Options:')}
   -w, --watch             Watch for file changes and rerun tests
   -t, --timeout <ms>      Set test timeout in milliseconds (default: ${defaultTimeout})
   -s, --setup <file>      Specify setup file to run before tests
-  -t, --teardown <file>   Specify teardown file to run after tests
+  --teardown <file>       Specify teardown file to run after tests
 
 ${yellow('Examples:')}
   - buildkit dev "src/**/*.ts" --no-clean-dist
@@ -317,7 +325,7 @@ export default async function main() {
 			await devAndBuild(cmd, args);
 			break;
 		case 'test':
-			await test(...args);
+			await test(args);
 			break;
 		default: {
 			showHelp();
