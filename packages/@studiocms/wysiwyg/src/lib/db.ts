@@ -111,7 +111,7 @@ export const UseSDK = Effect.gen(function* () {
 		 *
 		 * @returns An array of all plugin data entries.
 		 */
-		getAll: () => getEntries(),
+		getAll: () => getEntries((data) => data.filter((entry) => entry.data.__STUDIOCMS_HTML)),
 
 		/**
 		 * Retrieves a specific entry of the plugin data by its ID.

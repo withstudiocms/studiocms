@@ -356,7 +356,8 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			const _getEntries = Effect.fn('studiocms/sdk/SDKCore/modules/plugins/effect/_getEntries')(
 				function* <T extends Schema.Struct<Schema.Struct.Fields> | object>(
 					pluginId: string,
-					validator?: ValidatorOptions<T>
+					validator?: ValidatorOptions<T>,
+					filter?: (data: PluginDataEntry<T>[]) => PluginDataEntry<T>[]
 				) {
 					if (yield* isCacheEnabled) {
 						const data = yield* pipe(
@@ -369,13 +370,13 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						if (data.length > 0) return data;
 					}
 
-					// If caching is not enabled or no valid data was found in the cache,
-					// we need to fetch the latest data from the database
-					// This ensures that we always have the most up-to-date entries for the plugin
-					return yield* pipe(
-						_db.getEntriesPluginData(pluginId),
-						Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator)))
-					);
+					const todo = pipe(_db.getEntriesPluginData(pluginId), Effect.flatMap(Effect.forEach((entry) => _processEntryFromDB<T>(entry, validator))));
+
+					if (filter) {
+						return yield* todo.pipe(Effect.map((data) => filter(data)));
+					}
+
+					return yield* todo;
 				}
 			);
 
@@ -618,7 +619,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				pluginId: string,
 				opts?: UsePluginDataOptsBase<T>
 			): {
-				getEntries: () => Effect.Effect<PluginDataEntry<R>[], LibSQLDatabaseError | Error, never>;
+				getEntries: (filter?: (data: PluginDataEntry<R>[]) => PluginDataEntry<R>[]) => Effect.Effect<PluginDataEntry<R>[], LibSQLDatabaseError | Error, never>;
 				getEntry: (id: string) => {
 					generatedId: () => Effect.Effect<string, never, never>;
 					select: () => Effect.Effect<
@@ -676,7 +677,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 						 * @param validator - Optional validator options for validating the plugin data.
 						 * @returns An Effect that yields an array of `PluginDataEntry<T>` objects.
 						 */
-						getEntries: () => _getEntries<T>(pluginId, validator),
+						getEntries: (filter?: (data: PluginDataEntry<T>[]) => PluginDataEntry<T>[]) => _getEntries<T>(pluginId, validator, filter),
 						getEntry: (id: string) => buildReturn<T>(pluginId, id, validator),
 					};
 				}
