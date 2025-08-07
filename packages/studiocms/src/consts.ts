@@ -230,14 +230,14 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	},
 };
 
-export const StudioCMSDefaultRobotsPolicy = (dashboardRoute: string): RobotsConfig['policy'] => [
-	{
-		userAgent: ['*'],
-		allow: ['/'],
-		disallow: [dashboardRoute, '/studiocms_api/'],
-	},
-];
-
+/**
+ * Generates the default robots.txt configuration for StudioCMS.
+ *
+ * @param config - The Astro site configuration object.
+ * @param sitemapEnabled - Indicates whether the sitemap should be enabled.
+ * @param dashboardRoute - A function that returns the dashboard route path given a base path.
+ * @returns The robots.txt configuration object.
+ */
 export const StudioCMSDefaultRobotsConfig = ({
 	config,
 	sitemapEnabled,
