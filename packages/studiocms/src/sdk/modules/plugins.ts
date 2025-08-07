@@ -711,9 +711,10 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				readonly $UsePluginData!: S;
 				readonly $Insert!: R;
 				constructor(schema: S) {
-					if (Schema.isSchema(schema)) {
-						this._Schema = schema;
+					if (!schema || !Schema.isSchema(schema)) {
+						throw new Error('InferType requires a valid Schema.Struct instance.');
 					}
+					this._Schema = schema;
 				}
 			}
 
