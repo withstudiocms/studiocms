@@ -222,8 +222,8 @@ class UserQuickTools extends HTMLElement {
 	private userInteractionListeners: Array<{ event: string; handler: EventListener }> = [];
 
 	// Click protection settings
-	private readonly CLICK_PROTECTION_DURATION = 400; // milliseconds
-	private readonly MENU_READY_DELAY = 350; // milliseconds (after animation completes)
+	protected CLICK_PROTECTION_DURATION = 400; // milliseconds
+	protected MENU_READY_DELAY = 350; // milliseconds (after animation completes)
 
 	// Static menu items configuration
 	private static readonly MENU_ITEMS: Omit<MenuItem, 'href'>[] = [
@@ -614,11 +614,9 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 
 		// Override defaults with config values
 		if (this.config.clickProtectionDuration) {
-			// @ts-ignore - accessing private property for configuration
 			this.CLICK_PROTECTION_DURATION = this.config.clickProtectionDuration;
 		}
 		if (this.config.menuReadyDelay) {
-			// @ts-ignore - accessing private property for configuration
 			this.MENU_READY_DELAY = this.config.menuReadyDelay;
 		}
 	}
