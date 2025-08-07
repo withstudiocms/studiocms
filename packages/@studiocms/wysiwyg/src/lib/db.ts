@@ -44,8 +44,6 @@ export const studioCMSProjectDataSchema = Schema.Struct({
 
 export type StudioCMSProjectData = typeof studioCMSProjectDataSchema;
 
-export const validator = { effectSchema: studioCMSProjectDataSchema };
-
 export const PLUGIN_ID = 'studiocms-wysiwyg';
 
 export const UseSDK = Effect.gen(function* () {
