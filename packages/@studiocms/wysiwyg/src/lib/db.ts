@@ -124,10 +124,9 @@ export const UseSDK = Effect.gen(function* () {
 		 * @param data - The data to be inserted or updated in the plugin data entry.
 		 * @returns An Effect that resolves to the inserted or updated plugin data entry.
 		 */
-		store: Effect.fn(function* (id: string, data: InferInsert) {
-			return yield* getEntry(id)
+		store: (id: string, data: InferInsert) =>
+			getEntry(id)
 				.select()
-				.pipe(Effect.flatMap((entry) => updateOrInsert(entry)(id, data)));
-		}),
+				.pipe(Effect.flatMap((entry) => updateOrInsert(entry)(id, data))),
 	};
 });
