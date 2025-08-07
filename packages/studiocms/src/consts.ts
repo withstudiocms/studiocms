@@ -1,5 +1,6 @@
 import type { AstroConfig } from 'astro';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
+import type { RobotsConfig } from './lib/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
 /**
@@ -228,3 +229,31 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 		exclude: ['three'],
 	},
 };
+
+export const StudioCMSDefaultRobotsPolicy = (dashboardRoute: string): RobotsConfig['policy'] => [
+	{
+		userAgent: ['*'],
+		allow: ['/'],
+		disallow: [dashboardRoute, '/studiocms_api/'],
+	},
+];
+
+export const StudioCMSDefaultRobotsConfig = ({
+	config,
+	sitemapEnabled,
+	dashboardRoute
+}: {
+	config: AstroConfig,
+	sitemapEnabled: boolean,
+	dashboardRoute: (path: string) => string
+}): RobotsConfig => ({
+	host: config.site?.replace(/^https?:\/\/|:\d+$/g, '') || false,
+	sitemap: sitemapEnabled,
+	policy: [
+		{
+			userAgent: ['*'],
+			allow: ['/'],
+			disallow: [dashboardRoute(''), '/studiocms_api/'],
+		},
+	],
+});
