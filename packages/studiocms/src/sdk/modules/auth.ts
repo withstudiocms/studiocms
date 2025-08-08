@@ -11,9 +11,10 @@ import {
 	tsUsers,
 } from '../tables.js';
 import type {
-	tsOAuthAccountsSelect,
+	tsOAuthAccountsInsert,
 	tsSessionTableInsert,
 	tsUsersInsert,
+	tsUsersSelect,
 	tsUsersUpdate,
 } from '../types/index.js';
 
@@ -102,7 +103,6 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								db
 									.insert(tsEmailVerificationTokens)
 									.values({
-										// @ts-expect-error Drizzle... removed this from the type?
 										id: crypto.randomUUID(),
 										userId,
 										token,
@@ -155,7 +155,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @returns A promise that resolves to the inserted OAuth account.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the OAuth account.
 					 */
-					create: dbService.makeQuery((ex, data: tsOAuthAccountsSelect) =>
+					create: dbService.makeQuery((ex, data: tsOAuthAccountsInsert) =>
 						ex((db) => db.insert(tsOAuthAccounts).values(data).returning().get()).pipe(
 							Effect.catchTags({
 								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
@@ -431,14 +431,22 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @returns A promise that resolves to an object containing the search results for the username and email.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while searching for the username or email.
 					 */
-					searchUsersForUsernameOrEmail: (username = '', email = '') =>
+					searchUsersForUsernameOrEmail: (username?: string, email?: string) =>
 						Effect.gen(function* () {
-							const usernameSearch = yield* dbService.execute((db) =>
-								db.select().from(tsUsers).where(eq(tsUsers.username, username))
-							);
-							const emailSearch = yield* dbService.execute((db) =>
-								db.select().from(tsUsers).where(eq(tsUsers.email, email))
-							);
+							let usernameSearch: tsUsersSelect[] = [];
+							let emailSearch: tsUsersSelect[] = [];
+
+							if (username) {
+								usernameSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.username, username))
+								);
+							}
+
+							if (email) {
+								emailSearch = yield* dbService.execute((db) =>
+									db.select().from(tsUsers).where(eq(tsUsers.email, email))
+								);
+							}
 
 							return { usernameSearch, emailSearch };
 						}).pipe(

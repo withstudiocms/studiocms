@@ -86,7 +86,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				);
 			}
 
-			const siteConfig: Partial<SiteConfig> = {
+			const siteConfig: SiteConfig = {
 				title: settings.name,
 				description: settings.description,
 			};
@@ -95,7 +95,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				siteConfig.siteIcon = siteIcon;
 			}
 
-			// @ts-expect-error - Drizzle broken types
 			const insert = yield* sdk.UPDATE.siteConfig(siteConfig);
 
 			if (insert.lastCacheUpdate) {
@@ -139,7 +138,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 					FullPageData.makeProvide(pageData)
 				);
 
-				// @ts-expect-error - Drizzle broken types
 				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
 				yield* Console.log('- Imported new page from WP-API: ', page.title.rendered);
@@ -180,7 +178,6 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 					FullPageData.makeProvide(pageData)
 				);
 
-				// @ts-expect-error - Drizzle broken types
 				yield* sdk.POST.databaseEntry.pages(pageData, pageContent);
 
 				yield* Console.log('- Imported new post from WP-API: ', page.title.rendered);

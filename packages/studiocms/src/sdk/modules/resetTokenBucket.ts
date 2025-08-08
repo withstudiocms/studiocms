@@ -67,7 +67,6 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 						return yield* dbService.execute((db) =>
 							db
 								.insert(tsUserResetTokens)
-								// @ts-expect-error Drizzle... removed this from the type?
 								.values({ id: crypto.randomUUID(), userId, token })
 								.returning()
 								.get()

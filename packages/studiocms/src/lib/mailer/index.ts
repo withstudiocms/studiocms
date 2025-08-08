@@ -136,7 +136,6 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				sdk.dbService.execute((db) =>
 					db
 						.insert(tsMailerConfig)
-						// @ts-expect-error drizzle broke the id variable...
 						.values({ ...config, id: CMSMailerConfigId })
 						.onConflictDoUpdate({
 							target: tsMailerConfig.id,

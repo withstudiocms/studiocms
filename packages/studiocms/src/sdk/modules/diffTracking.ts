@@ -139,7 +139,6 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 							db
 								.insert(tsDiffTracking)
 								.values({
-									// @ts-expect-error Drizzle... removed this from the type?
 									id: crypto.randomUUID(),
 									userId,
 									pageId,
@@ -406,7 +405,6 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 							yield* dbService.execute((db) =>
 								db
 									.update(tsPageContent)
-									// @ts-expect-error Drizzle... removed this from the type?
 									.set({ content: diffEntry.pageContentStart })
 									.where(eq(tsPageContent.contentId, diffEntry.pageId))
 							);

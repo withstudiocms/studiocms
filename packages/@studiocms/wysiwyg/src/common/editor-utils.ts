@@ -48,6 +48,20 @@ export const inlineStorage = (
 	});
 };
 
+// export const StudioCMSDbStorageAdapter = (
+// 	editor: Editor,
+// 	opts: { projectId: string; }
+// ) => {
+// 	editor.Storage.add('db', {
+// 		async load() {
+// 			// Load data from the database using the projectId
+// 		},
+// 		async store(data) {
+// 			// Store data in the database using the projectId
+// 		},
+// 	});
+// }
+
 /**
  * Reduces an array of `TraitProperties` into an accumulator object, mapping trait names to their values.
  *

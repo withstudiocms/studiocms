@@ -11,8 +11,7 @@
 import fs from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
-import { configResolverBuilder, exists, watchConfigFile } from '@withstudiocms/config-utils';
-import type { WatchConfigFileOptions } from '@withstudiocms/config-utils/types';
+import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -93,16 +92,17 @@ export const studiocms = defineIntegration({
 		// Resolved Options for StudioCMS
 		let options: StudioCMSConfig;
 
-		// Config Resolver
+		// Watch Config File Builder
+		const watchConfigFile = watchConfigFileBuilder({
+			configPaths,
+		});
+
+		// Config Resolver Builder
 		const configResolver = configResolverBuilder({
 			configPaths,
 			label: name,
 			zodSchema: StudioCMSOptionsSchema,
 		});
-
-		const watchOpts: WatchConfigFileOptions = {
-			configPaths,
-		};
 
 		// Messages Array for Logging
 		const messages: Messages = [];
@@ -134,8 +134,9 @@ export const studiocms = defineIntegration({
 					isDevMode = command === 'dev';
 
 					// Watch the StudioCMS Config File
-					watchConfigFile(params, watchOpts);
+					watchConfigFile(params);
 
+					// Load the configuration using the config resolver
 					options = await configResolver(params, opts);
 
 					const {

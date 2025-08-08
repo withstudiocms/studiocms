@@ -75,7 +75,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 						return apiResponseLogger(400, 'Invalid form data, name is required');
 					}
 
-					// @ts-expect-error drizzle broke the variable...
 					if (!data.email) {
 						return apiResponseLogger(400, 'Invalid form data, email is required');
 					}
@@ -94,7 +93,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					const checkEmail = z.coerce
 						.string()
 						.email({ message: 'Email address is invalid' })
-						// @ts-expect-error drizzle broke the variable...
 						.safeParse(data.email);
 
 					if (!checkEmail.success)
@@ -107,7 +105,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 						if (usernameSearch.length > 0)
 							return apiResponseLogger(400, 'Invalid username: Username is already in use');
 					}
-					// @ts-expect-error drizzle broke the variable...
 					if (userData.user?.email !== data.email) {
 						if (emailSearch.length > 0)
 							return apiResponseLogger(400, 'Invalid email: Email is already in use');
@@ -155,7 +152,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 						password: yield* pass.hashPassword(newPassword),
 					};
 
-					// @ts-expect-error drizzle broke the variable...
 					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
 					yield* sdk.AUTH.user.update(userData.user!.id, userUpdate);
 
@@ -172,7 +168,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					}
 					const newAvatar = yield* userHelper.createUserAvatar(userData.user.email);
 
-					// @ts-expect-error drizzle broke the variable...
 					yield* sdk.AUTH.user.update(userData.user.id, { avatar: newAvatar });
 
 					// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion

@@ -1,98 +1,177 @@
+import type { z } from 'astro/zod';
+import type { Schema } from '../../effect.js';
 import type {
 	CacheConfig,
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../schemas/config/sdk.js';
 import type {
-	AvailableLists,
-	CombinedRank,
-	DatabaseTables,
 	PageContentReturnId,
-	PageDataCategoriesInsertResponse,
 	PageDataReturnId,
 	PageDataStripped,
-	PageDataTagsInsertResponse,
-	SingleRank,
 	SiteConfig,
 } from './tableDefs.js';
 import type {
 	CombinedInsertContent,
-	tsDiffTrackingInsert,
-	tsDiffTrackingSelect,
-	tsEmailVerificationTokensInsert,
-	tsEmailVerificationTokensSelect,
-	tsNotificationSettingsInsert,
-	tsNotificationSettingsSelect,
 	tsOAuthAccountsSelect,
-	tsPageContentInsert,
 	tsPageContentSelect,
-	tsPageDataCategoriesInsert,
 	tsPageDataCategoriesSelect,
-	tsPageDataInsert,
 	tsPageDataSelect,
-	tsPageDataTagsInsert,
 	tsPageDataTagsSelect,
-	tsPageFolderInsert,
-	tsPageFolderSelect,
-	tsPermissionsInsert,
 	tsPermissionsSelect,
-	tsSessionTableInsert,
-	tsSessionTableSelect,
-	tsSiteConfigInsert,
-	tsSiteConfigSelect,
-	tsUserResetTokensInsert,
-	tsUserResetTokensSelect,
-	tsUsersInsert,
+	tsPluginDataSelect,
 	tsUsersSelect,
-	tsUsersUpdate,
 } from './tsAlias.js';
 
-// tableDefs.ts
-export type {
-	AvailableLists,
-	CombinedRank,
-	DatabaseTables,
-	PageContentReturnId,
-	PageDataCategoriesInsertResponse,
-	PageDataReturnId,
-	PageDataStripped,
-	PageDataTagsInsertResponse,
-	SingleRank,
-	SiteConfig,
-};
+export type * from './tableDefs.js';
+export type * from './tsAlias.js';
 
-// tsAlias.ts
-export type {
-	tsDiffTrackingInsert,
-	tsDiffTrackingSelect,
-	CombinedInsertContent,
-	tsOAuthAccountsSelect,
-	tsPageContentInsert,
-	tsPageContentSelect,
-	tsPageDataCategoriesInsert,
-	tsPageDataCategoriesSelect,
-	tsPageDataInsert,
-	tsPageDataSelect,
-	tsPageDataTagsInsert,
-	tsPageDataTagsSelect,
-	tsPermissionsSelect,
-	tsPermissionsInsert,
-	tsSiteConfigInsert,
-	tsSessionTableSelect,
-	tsSiteConfigSelect,
-	tsUsersSelect,
-	tsUsersInsert,
-	tsSessionTableInsert,
-	tsUsersUpdate,
-	tsPageFolderInsert,
-	tsPageFolderSelect,
-	tsEmailVerificationTokensInsert,
-	tsEmailVerificationTokensSelect,
-	tsNotificationSettingsInsert,
-	tsNotificationSettingsSelect,
-	tsUserResetTokensInsert,
-	tsUserResetTokensSelect,
-};
+/**
+ * Base options for using plugin data.
+ *
+ * @template T - The type of the data object.
+ * @property [Type] - An optional type definition for the data.
+ * @property [validator] - Optional validator options for the data type.
+ */
+export interface UsePluginDataOptsBase<T extends Schema.Struct<Schema.Struct.Fields> | object> {
+	Type?: T;
+	validator?: ValidatorOptions<T>;
+}
+
+/**
+ * Options for using plugin data, extending the base options with an entry identifier.
+ *
+ * @template T - The type of the plugin data object.
+ * @extends UsePluginDataOptsBase<T>
+ *
+ * @property entryId - The unique identifier for the entry associated with the plugin data.
+ */
+export interface UsePluginDataOpts<T extends Schema.Struct<Schema.Struct.Fields> | object>
+	extends UsePluginDataOptsBase<T> {
+	entryId: string;
+}
+
+/**
+ * Represents a partial implementation of the `UsePluginDataOpts` type for a given object type `T`.
+ *
+ * This type is useful when you want to provide only a subset of the properties defined in `UsePluginDataOpts<T>`.
+ *
+ * @typeParam T - The object type for which the plugin data options are defined.
+ */
+export type UserPluginDataOptsImplementation<
+	T extends Schema.Struct<Schema.Struct.Fields> | object,
+> = Partial<UsePluginDataOpts<T>>;
+
+/**
+ * Represents a plugin data entry with a strongly-typed `data` property.
+ *
+ * @template T - The type of the `data` property.
+ * @extends Omit<tsPluginDataSelect, 'data'>
+ * @property {T} data - The plugin-specific data payload.
+ */
+export interface PluginDataEntry<T extends object> extends Omit<tsPluginDataSelect, 'data'> {
+	data: T;
+}
+
+/**
+ * Represents a JSON validator function for a specific type.
+ *
+ * @template T - The type that the validator function checks for.
+ * @property jsonFn - A type guard function that determines if the provided data is of type T.
+ */
+export interface JSONValidatorFn<T> {
+	jsonFn: (data: unknown) => data is T;
+}
+
+/**
+ * Interface representing a validator for an effect schema.
+ *
+ * @typeParam T - The type of the value that the schema validates.
+ *
+ * @property effectSchema - The schema used for validation, which takes a value of type `T` and returns either a `ParseError` or `never`.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
+export interface EffectSchemaValidator<E extends Schema.Struct<any>> {
+	effectSchema: E;
+}
+
+/**
+ * Interface representing a validator that uses a Zod schema to validate data of type `T`.
+ *
+ * @template T - The type of data to be validated.
+ * @property zodSchema - The Zod schema instance used for validation.
+ */
+export interface ZodValidator<T> {
+	zodSchema: z.ZodSchema<T>;
+}
+
+/**
+ * Represents the available validator options for a given type `T`.
+ *
+ * This type is a union of supported validator types:
+ * - `JSONValidatorFn<T>`: A function-based JSON validator for type `T`.
+ * - `EffectSchemaValidator<T>`: A validator using the Effect schema for type `T`.
+ * - `ZodValidator<T>`: A validator using the Zod schema for type `T`.
+ *
+ * @template T - The type to be validated.
+ *
+ * @example
+ * ```typescript
+ * // The Interface for a User type
+ * interface User {
+ *   id: number;
+ *   name: string;
+ *   email: string;
+ * }
+ *
+ * // Example of defining a JSON validator Fn for a User type
+ * const userValidator: ValidatorOptions<User> = {
+ *   jsonFn: (data: unknown): data is User => {
+ *     return (
+ *       typeof data === 'object' &&
+ *       data !== null &&
+ *       'id' in data &&
+ *       'name' in data &&
+ *       'email' in data &&
+ *       typeof (data as any).id === 'number' &&
+ *       typeof (data as any).name === 'string' &&
+ *       typeof (data as any).email === 'string'
+ *     );
+ *   }
+ * };
+ *
+ * // Example of defining an Effect schema validator for a User type
+ * import { Schema } from 'studiocms/effect';
+ *
+ * const userEffectSchema = Schema.Struct({
+ *  id: Schema.Number,
+ *  name: Schema.String,
+ *  email: Schema.String
+ * });
+ *
+ * type UserEffectSchema = (typeof userEffectSchema)['Type'];
+ * type UserEffectSchemaFields = (typeof userEffectSchema)['fields'];
+ *
+ * const userEffectValidator: ValidatorOptions<UserEffectSchema, UserEffectSchemaFields> = {
+ *   effectSchema: userEffectSchema
+ * };
+ *
+ * // Example of defining a Zod validator for a User type
+ * import { z } from 'astro/zod';
+ *
+ * const userZodValidator: ValidatorOptions<User> = {
+ *   zodSchema: z.object({
+ *     id: z.number(),
+ *     name: z.string(),
+ *     email: z.string()
+ *   })
+ * };
+ * ```
+ */
+// biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
+export type ValidatorOptions<T extends Schema.Struct<any> | object> = T extends Schema.Struct<any>
+	? EffectSchemaValidator<T>
+	: JSONValidatorFn<T> | ZodValidator<T>;
 
 /**
  * Represents a cache map that combines the immutability of `ReadonlyMap` with the mutability of `Map`.
@@ -317,13 +396,8 @@ export interface FolderListCacheObject extends BaseCacheObject {
 	data: FolderListItem[];
 }
 
-/**
- * Represents a cache object that stores pages and site configuration data.
- */
-export interface StudioCMSCacheObject {
-	pages: Map<string, PageDataCacheObject>;
-	siteConfig: SiteConfigCacheObject | undefined;
-	version: VersionCacheObject | undefined;
+export interface PluginDataCacheObject extends BaseCacheObject {
+	data: tsPluginDataSelect;
 }
 
 /**

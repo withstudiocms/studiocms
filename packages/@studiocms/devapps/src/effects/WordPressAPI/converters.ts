@@ -5,6 +5,7 @@ import { userProjectRoot } from 'virtual:studiocms-devapps/config';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
+import type { CombinedInsertContent } from 'studiocms/sdk/types';
 import {
 	APIEndpointConfig,
 	CategoryOrTagConfig,
@@ -15,7 +16,7 @@ import {
 	StringConfig,
 	UseBlogPkgConfig,
 } from './configs.js';
-import type { PageContent, PageData } from './importers.js';
+import type { PageData } from './importers.js';
 import { Page, Post } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
@@ -84,7 +85,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					yield* Console.log('No featured media for:', data.title.rendered);
 
 					const pageData: PageData = {
-						// @ts-expect-error - Drizzle broke this
 						id: crypto.randomUUID(),
 						title: data.title.rendered,
 						description: decode(cleanHTML),
@@ -108,7 +108,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				);
 
 				const pageData: PageData = {
-					// @ts-expect-error - Drizzle broke this
 					id: crypto.randomUUID(),
 					title: data.title.rendered,
 					description: decode(cleanHTML),
@@ -134,13 +133,12 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPageContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageContent'
 			)(function* () {
-				const [{ page }, { pageData }] = yield* Effect.all([RawPageData, FullPageData]);
+				const [{ page }, { pageData: { id: pageId } }] = yield* Effect.all([RawPageData, FullPageData]);
 
 				const data = yield* Schema.decodeUnknown(Page)(page);
 
-				// @ts-expect-error - Drizzle broke this
-				if (pageData.id === undefined) {
-					yield* Effect.fail(new Error('pageData is missing id'));
+				if (!pageId) {
+					return yield* Effect.fail(new Error('pageData is missing id'));
 				}
 
 				const cleanUpContent = yield* cleanUpHtml.pipe(
@@ -152,11 +150,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
 
-				const pageContent: PageContent = {
-					// @ts-expect-error - Drizzle broke this
-					id: crypto.randomUUID(),
-					// @ts-expect-error - Drizzle broke this
-					contentId: pageData.id,
+				const pageContent: CombinedInsertContent = {
 					contentLang: 'default',
 					content: content,
 				};
@@ -211,7 +205,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 							case 'categories': {
 								const data = newItems.map((category) => {
 									const data: typeof tsPageDataCategories.$inferInsert = {
-										// @ts-expect-error - Drizzle broke this
 										id: category.id,
 										name: category.name,
 										slug: category.slug,
@@ -220,7 +213,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 									};
 
 									if (category.parent) {
-										// @ts-expect-error - Drizzle broke this
 										data.parent = category.parent;
 									}
 
@@ -230,7 +222,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 								yield* Console.log(
 									'Inserting new Categories into the database:',
 									data
-										// @ts-expect-error - Drizzle broke this
 										.map((d) => `${d.id}: ${d.name}`)
 										.join(', ')
 								);
@@ -244,7 +235,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 							case 'tags': {
 								const tagData = newItems.map((tag) => {
 									const data: typeof tsPageDataTags.$inferInsert = {
-										// @ts-expect-error - Drizzle broke this
 										id: tag.id,
 										name: tag.name,
 										slug: tag.slug,
@@ -258,7 +248,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 								yield* Console.log(
 									'Inserting new Tags into the database:',
 									tagData
-										// @ts-expect-error - Drizzle broke this
 										.map((data) => `${data.id}: ${data.name}`)
 										.join(', ')
 								);
@@ -301,7 +290,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					yield* Console.log('No featured media for:', data.title.rendered);
 
 					const pageData: PageData = {
-						// @ts-expect-error - Drizzle broke this
 						id: crypto.randomUUID(),
 						title: data.title.rendered,
 						description: decode(cleanedHTML),
@@ -336,7 +324,6 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				);
 
 				const pageData: PageData = {
-					// @ts-expect-error - Drizzle broke this
 					id: crypto.randomUUID(),
 					title: data.title.rendered,
 					description: decode(cleanedHTML),
@@ -363,13 +350,12 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPostContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostContent'
 			)(function* () {
-				const [{ pageData }, { page: post }] = yield* Effect.all([FullPageData, RawPageData]);
+				const [{ pageData: { id: pageId } }, { page: post }] = yield* Effect.all([FullPageData, RawPageData]);
 
 				const data = yield* Schema.decodeUnknown(Post)(post);
 
-				// @ts-expect-error - Drizzle broke this
-				if (pageData.id === undefined) {
-					yield* Effect.fail(new Error('pageData is missing id'));
+				if (!pageId) {
+					return yield* Effect.fail(new Error('pageData is missing id'));
 				}
 
 				const cleanupContent = yield* cleanUpHtml.pipe(
@@ -381,11 +367,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 				const content = yield* turndown.pipe(StringConfig.makeProvide(htmlWithImages));
 
-				const pageContent: PageContent = {
-					// @ts-expect-error - Drizzle broke this
-					id: crypto.randomUUID(),
-					// @ts-expect-error - Drizzle broke this
-					contentId: pageData.id,
+				const pageContent: CombinedInsertContent = {
 					contentLang: 'default',
 					content: content,
 				};

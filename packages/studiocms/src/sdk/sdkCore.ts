@@ -15,6 +15,7 @@ import { SDKCore_GET } from './modules/get.js';
 import { SDKCore_INIT } from './modules/init.js';
 import { SDKCore_MIDDLEWARES } from './modules/middlewares.js';
 import { SDKCore_NotificationSettings } from './modules/notificationSettings.js';
+import { SDKCore_PLUGINS } from './modules/plugins.js';
 import { SDKCore_POST } from './modules/post.js';
 import { SDKCore_ResetTokenBucket } from './modules/resetTokenBucket.js';
 import { SDKCore_REST_API } from './modules/rest_api.js';
@@ -24,6 +25,7 @@ import type {
 	FolderListCacheObject,
 	FolderTreeCacheObject,
 	PageDataCacheObject,
+	PluginDataCacheObject,
 	SiteConfigCacheObject,
 	VersionCacheObject,
 } from './types/index.js';
@@ -115,6 +117,21 @@ const FolderList: CacheMap<string, FolderListCacheObject> = new Map<
 >();
 
 /**
+ * A cache map that stores plugin data objects, indexed by their string identifiers.
+ *
+ * @remarks
+ * This map is used to efficiently retrieve and store `PluginDataCacheObject` instances
+ * associated with specific plugin keys.
+ *
+ * @typeParam string - The key type, representing the unique identifier for each plugin.
+ * @typeParam PluginDataCacheObject - The value type, representing the cached data for a plugin.
+ */
+const pluginData: CacheMap<string, PluginDataCacheObject> = new Map<
+	string,
+	PluginDataCacheObject
+>();
+
+/**
  * The `SDKCore` class serves as the central service aggregator for the StudioCMS SDK.
  * It extends `Effect.Service` and provides a unified interface to various sub-services
  * such as folder tree management, generators, parsers, user management, collectors,
@@ -157,6 +174,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		SDKCore_INIT.Default,
 		AstroDB.Default,
 		SDKCore_MIDDLEWARES.Default,
+		SDKCore_PLUGINS.Default,
 	],
 	effect: Effect.gen(function* () {
 		// Get Services
@@ -188,6 +206,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			AUTH,
 			INIT,
 			MIDDLEWARES,
+			PLUGINS,
 		] = yield* Effect.all([
 			SDKCore_FolderTree,
 			SDKCore_Generators,
@@ -207,6 +226,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			SDKCore_AUTH,
 			SDKCore_INIT,
 			SDKCore_MIDDLEWARES,
+			SDKCore_PLUGINS,
 		]);
 
 		// Breakout service functions that need to be returned in this.
@@ -248,6 +268,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			AUTH,
 			INIT,
 			MIDDLEWARES,
+			PLUGINS,
 		};
 	}),
 }) {
@@ -287,5 +308,6 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		pageFolderTree,
 		siteConfig,
 		version,
+		pluginData,
 	});
 }

@@ -11,6 +11,7 @@ import type {
 	FolderTreeCacheObject,
 	PageDataCacheObject,
 	PageDataCacheReturnType,
+	PluginDataCacheObject,
 	SiteConfig,
 	SiteConfigCacheObject,
 	tsPageDataSelect,
@@ -34,6 +35,7 @@ export interface CachedContext {
 	folderTree: CacheMap<string, FolderTreeCacheObject>;
 	pageFolderTree: CacheMap<string, FolderTreeCacheObject>;
 	FolderList: CacheMap<string, FolderListCacheObject>;
+	pluginData: CacheMap<string, PluginDataCacheObject>;
 }
 
 /**

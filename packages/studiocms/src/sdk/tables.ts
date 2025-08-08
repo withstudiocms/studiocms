@@ -11,6 +11,7 @@ import {
 	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
+	StudioCMSPluginData,
 	StudioCMSSessionTable,
 	StudioCMSSiteConfig,
 	StudioCMSUserResetTokens,
@@ -19,6 +20,12 @@ import {
 import { tsMetric } from '../lib/webVitals/consts.js';
 
 export { tsMetric };
+
+/**
+ * # StudioCMS - Plugin Data Table
+ * @description Exported TypeSafe Table definition for use in StudioCMS Integrations
+ */
+export const tsPluginData = asDrizzleTable('StudioCMSPluginData', StudioCMSPluginData);
 
 /**
  * # StudioCMS - Email Verification Tokens Table
