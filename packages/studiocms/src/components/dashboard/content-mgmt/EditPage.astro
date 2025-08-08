@@ -225,8 +225,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 <script is:inline define:vars={{ editors: editorKeys }}>
 
-// TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
-
   async function setupPluginFields() {
     const pageTypeDropdown = document.querySelector('#page-type-dropdown');
     const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
@@ -235,20 +233,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       option.addEventListener('click', async () => {
         const selectedValue = option.getAttribute('value');
 
-        const pluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
+        const matchedPluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
 
-        if (!pluginFields) {
+        if (!matchedPluginFields) {
           return;
         }
 
         const customPageTypeFields = document.getElementById('custom-page-type-fields');
 
-        if (pluginFields.fields > 0) {
+        if (matchedPluginFields.fields && matchedPluginFields.fields.length > 0) {
           customPageTypeFields.classList.remove('page-types-hidden');
           customPageTypeFields.style.display = 'block';
         }
 
-        if (pluginFields.fields === 0) {
+        if (!matchedPluginFields.fields || matchedPluginFields.fields.length === 0) {
           customPageTypeFields.classList.add('page-types-hidden');
           customPageTypeFields.style.display = 'none';
         }
@@ -256,6 +254,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     })
   }
 
+  // TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
 
   async function setupPageEditorSwapper() {
     const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');

@@ -11,7 +11,7 @@ const componentRegistry = getRegistryComponents();
 interface Props extends PluginPageTypeEditorProps {}
 
 // Extract the content from Astro props
-const { content, id } = Astro.props as Props;
+const { content, id = '' } = Astro.props as Props;
 ---
 
 <div

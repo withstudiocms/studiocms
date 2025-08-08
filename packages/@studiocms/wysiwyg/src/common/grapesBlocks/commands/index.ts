@@ -23,15 +23,24 @@ export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) 
 	customCodeCommands(editor, opts.customCode as RequiredCustomCodeOptions);
 
 	AddCmd(editor)('save-page', {
-		run: (editor, sender) => {
-   			sender?.set('active', 0);
-			editor.store();
-			toast({
-				title: 'WYSIWYG: Manually Saved Page',
-				description: "Your editor changes have been saved. Don't forget to save your changes in StudioCMS!",
-				type: 'info',
-				duration: 3000,
-			})
+		run: async (editor, sender) => {
+			sender?.set('active', 0);
+			try {
+				await editor.store();
+				toast({
+					title: 'WYSIWYG: Manually Saved Page',
+					description:
+						"Your editor changes have been saved. Don't forget to save your changes in StudioCMS!",
+					type: 'info',
+					duration: 3000,
+				});
+			} catch (e) {
+				toast({
+					title: 'WYSIWYG: Save failed',
+					description: String(e),
+					type: 'danger',
+				});
+			}
 		},
 	});
 }

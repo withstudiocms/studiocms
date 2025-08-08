@@ -1,4 +1,5 @@
 import { toast } from '@studiocms/ui/components/Toast/toast.js';
+import type { ToastProps } from '@studiocms/ui/types';
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
 import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { STORE_ENDPOINT_PATH } from '../consts.js';
@@ -21,11 +22,18 @@ export const generateHTML = async (editor: Editor): Promise<string> => {
 	return html;
 };
 
+/**
+ * Updates the save indicator UI element based on the editor's dirty state.
+ * If the editor has no unsaved changes (`getDirtyCount() === 0`),
+ * removes the 'dirty' class from the element with the class 'save-indicator'.
+ *
+ * @param editor - The editor instance to check for unsaved changes.
+ */
 const updateSaveIndicator = (editor: Editor) => {
-	const saveIndicator = document.querySelector('.save-indicator') as HTMLElement;
-	if (editor.getDirtyCount() === 0) {
+	const saveIndicator = document.querySelector<HTMLElement>('.save-indicator');
+	if (saveIndicator && editor.getDirtyCount() === 0) {
 		saveIndicator.classList.remove('dirty');
-	} 
+	}
 };
 
 /**
@@ -54,30 +62,38 @@ export const StudioCMSDbStorageAdapter = (
 			// Append the projectId to the URL search parameters
 			urlToFetch.searchParams.set('projectId', opts.projectId);
 
-			// Load data from the database using the projectId
-			const data = await fetch(urlToFetch, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
+			const toastProps: ToastProps = {
+				title: 'WYSIWYG: Error loading page',
+				description: 'There was an error loading your page. Fallback data loaded...',
+				type: 'warning',
+				duration: 3000,
+			};
 
-			// Check if the response is ok, if not return the fallback projectData
-			// This ensures that if the request fails, we still have a valid projectData
-			// to work with and prevents the editor from crashing due to missing data.
-			if (!data.ok) {
-				toast({
-					title: 'WYSIWYG: Error loading page',
-					description: 'There was an error loading your page. Fallback data loaded...',
-					type: 'warning',
-					duration: 3000,
+			try {
+				// Load data from the database using the projectId
+				const data = await fetch(urlToFetch, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				});
+
+				// Check if the response is ok, if not return the fallback projectData
+				// This ensures that if the request fails, we still have a valid projectData
+				// to work with and prevents the editor from crashing due to missing data.
+				if (!data.ok) {
+					toast(toastProps);
+					return opts.projectData;
+				}
+
+				// Parse the response data as JSON and return it
+				const responseData = (await data.json()).data as ProjectData;
+				return responseData;
+			} catch (error) {
+				console.error('Error loading project data:', error);
+				toast(toastProps);
 				return opts.projectData;
 			}
-
-			// Parse the response data as JSON and return it
-			const responseData = (await data.json()).data as ProjectData;
-			return responseData;
 		},
 		async store(data) {
 			// get the URL to the store endpoint
@@ -89,32 +105,45 @@ export const StudioCMSDbStorageAdapter = (
 				__STUDIOCMS_HTML: await generateHTML(editor),
 			};
 
-			// Store data in the database using the projectId
-			const response = await fetch(urlToFetch, {
-				method: 'POST',
-				body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
+			const toastProps: ToastProps = {
+				title: 'WYSIWYG: Error saving page',
+				description: 'There was an error saving your changes. Only saving fallback data...',
+				type: 'danger',
+				duration: 3000,
+			};
 
-			// Check if the response is ok, if not, show an error toast
-			// If the response is ok, show a success toast
-			// This provides feedback to the user about the success or failure of the save operation.
-			if (!response.ok) {
-				toast({
-					title: 'WYSIWYG: Error saving page',
-					description: 'There was an error saving your changes. Please try again.',
-					type: 'danger',
-					duration: 3000,
+			try {
+				// Store data in the database using the projectId
+				const response = await fetch(urlToFetch, {
+					method: 'POST',
+					body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				});
+				
+				// Check if the response is ok, if not, show an error toast
+				// If the response is ok, show a success toast
+				// This provides feedback to the user about the success or failure of the save operation.
+				if (!response.ok) {
+					toast(toastProps);
+				}
+
+				// save the fallback projectData in the pageContent
+				opts.pageContent.innerText = JSON.stringify(projectData);
+
+				// Update the save indicator to reflect the saved state
+				updateSaveIndicator(editor);
+			} catch (error) {
+				console.error('Error saving project data:', error);
+				toast(toastProps);
+
+				// If an error occurs, store the fallback projectData in the pageContent
+				opts.pageContent.innerText = JSON.stringify(projectData);
+
+				// Update the save indicator to reflect the saved state
+				updateSaveIndicator(editor);
 			}
-
-			// Fallback
-			// Update the page content with the serialized data
-			opts.pageContent.innerText = JSON.stringify(projectData);
-
-			updateSaveIndicator(editor);
 		},
 	});
 };

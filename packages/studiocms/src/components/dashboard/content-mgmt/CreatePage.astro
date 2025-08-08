@@ -1,40 +1,24 @@
 ---
-import { type UiLanguageKeys, useTranslations } from "studiocms:i18n";
-import type { SettingsField } from "studiocms:plugin-helpers";
-import pluginList from "studiocms:plugins";
-import { Card, Input, Select, TabItem, Tabs } from "studiocms:ui/components";
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import pluginList from 'studiocms:plugins';
+import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import {
-  categoriesOptions,
-  pageTypeOptions,
-  parentFolderOptions,
-  tagsOptions,
-  trueFalse,
-} from "./shared.js";
+	categoriesOptions,
+	pageTypeOptions,
+	parentFolderOptions,
+	tagsOptions,
+	trueFalse,
+} from './shared.js';
 
-const pluginFields = pluginList.flatMap(({ pageTypes }) => {
-  const pageTypeOutput: {
-    identifier: string;
-    fields?: SettingsField[];
-  }[] = [];
-
-  if (!pageTypes) {
-    return pageTypeOutput;
-  }
-
-  for (const pageType of pageTypes) {
-    pageTypeOutput.push(pageType);
-  }
-
-  return pageTypeOutput;
-});
+const pluginFields = pluginList.flatMap(({ pageTypes }) => pageTypes ?? []);
 
 interface Props {
-  lang: UiLanguageKeys;
+	lang: UiLanguageKeys;
 }
 
 const { lang } = Astro.props;
 
-const t = useTranslations(lang, "@studiocms/dashboard:content-page");
+const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
 
 <div
@@ -232,7 +216,7 @@ const t = useTranslations(lang, "@studiocms/dashboard:content-page");
         const selectedValue = option.getAttribute("value");
 
         const pluginFields = pluginFields.find(
-          (pluginField) => pluginField.identifier === selectedValue,
+          (p) => p.identifier === selectedValue,
         );
 
         if (!pluginFields) {
@@ -243,7 +227,7 @@ const t = useTranslations(lang, "@studiocms/dashboard:content-page");
           "custom-page-type-fields",
         );
 
-        if (pluginFields.fields > 0) {
+        if (selected?.fields?.length) {
           customPageTypeFields.style.display = "block";
         }
       });
@@ -357,21 +341,21 @@ const t = useTranslations(lang, "@studiocms/dashboard:content-page");
   .page-content-editor {
     height: 250px;
     margin-bottom: 1rem;
+  }
 
-    .editor-container {
-      height: 100%;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
+  .page-content-editor .editor-container {
+    height: 100%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
 
-    #page-content {
-      height: 100%;
-      width: 100%;
-      border: 1px solid hsl(var(--border));
-      border-radius: 4px;
-      padding: 1rem;
-      font-size: 1rem;
-      overflow-y: auto;
-    }
+  .page-content-editor #page-content {
+    height: 100%;
+    width: 100%;
+    border: 1px solid hsl(var(--border));
+    border-radius: 4px;
+    padding: 1rem;
+    font-size: 1rem;
+    overflow-y: auto;
   }
 </style>

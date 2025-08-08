@@ -4,14 +4,20 @@
 
 .save-indicator {
 	stroke: hsl(var(--text-normal));
+	transition: stroke 150ms ease-in-out;
 }
 
 .save-indicator.dirty {
 	stroke: hsl(var(--warning-base));
 }
 
+.save-indicator .dirty-indicator {
+	display: none;
+	transition: all 150ms ease-in-out;
+}
+
 .save-indicator.dirty .dirty-indicator {
-  display: block !important;
+	display: block !important;
 }
 
 .scms-grapesjs-container {
@@ -24,22 +30,21 @@
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
-
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
 
-	.editor {
-		width: 100%;
-		height: 100%;
+.scms-grapesjs-container .editor {
+	width: 100%;
+	height: 100%;
+}
 
-		#gjs {
-			width: 100%;
-			height: 100%;
-			box-sizing: border-box;
-		}
-	}
+.scms-grapesjs-container .editor #gjs {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
 }
 
 /* Primary color for the background */
