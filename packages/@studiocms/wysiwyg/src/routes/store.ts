@@ -109,9 +109,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 			}
 
 			// Parse the request JSON
-			const requestData = yield* parseGETJsonRequest(context);
-
-            const projectId = requestData.projectId;
+			const { projectId } = yield* parseGETJsonRequest(context);
 
             // Load the project data using the SDK
             const projectData = yield* sdk.load(projectId);
@@ -160,10 +158,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
             // Parse the request JSON
-            const requestData = yield* parsePOSTJsonRequest(context);
-
-            const projectId = requestData.projectId;
-            const data = requestData.data;
+            const { projectId, data } = yield* parsePOSTJsonRequest(context);
 
             // Store the project data using the SDK
             const result = yield* sdk.store(projectId, data);
