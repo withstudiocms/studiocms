@@ -32,19 +32,20 @@ const { content, id } = Astro.props as Props;
     import { toast } from "@studiocms/ui/components/Toast/toast.js";
     import grapesjs, { usePlugin, type EditorEvent } from "grapesjs";
     import { baseConfig } from "../common/editor-settings.js";
-    import { getEditorElmData, StudioCMSDbStorageAdapter } from "../common/editor-utils.js";
+    import {
+        getEditorElmData,
+        StudioCMSDbStorageAdapter,
+    } from "../common/editor-utils.js";
     import { astroComponents } from "../common/componentRegistry.js";
     import grapesBlocks from "../common/grapesBlocks/index.js";
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings
-    const { astroComponentsOpts, StudioCMSDbStorageAdapterOpts } = getEditorElmData(
-        document,
-        {
+    const { astroComponentsOpts, StudioCMSDbStorageAdapterOpts } =
+        getEditorElmData(document, {
             container: ".scms-grapesjs-container",
             pageContent: "#page-content",
-        },
-    );
+        });
 
     // Initialize the GrapesJS editor with the base configuration and plugins
     // The plugins include custom components, inline storage, and various editor features
@@ -112,20 +113,32 @@ const { content, id } = Astro.props as Props;
     });
 
     const updateSaveIndicator = () => {
-        const saveIndicator = document.querySelector('.save-indicator') as HTMLElement;
+        const saveIndicator = document.querySelector(
+            ".save-indicator",
+        ) as HTMLElement;
 
         if (saveIndicator) {
             const isDirty = editor.getDirtyCount() > 0;
 
             if (isDirty) {
-                saveIndicator.classList.add('dirty');
+                saveIndicator.classList.add("dirty");
             } else {
-                saveIndicator.classList.remove('dirty');
+                saveIndicator.classList.remove("dirty");
             }
         }
     };
 
-    const events: EditorEvent[] = ['load', 'update', 'component:add', 'component:remove', 'component:update', 'undo', 'redo'];
+    const updateIndicatorEvents: EditorEvent[] = [
+        "load",
+        "update",
+        "component:add",
+        "component:remove",
+        "component:update",
+        "undo",
+        "redo",
+    ];
 
-    events.forEach(event => editor.on(event, updateSaveIndicator));
+    updateIndicatorEvents.forEach((event) =>
+        editor.on(event, updateSaveIndicator),
+    );
 </script>
