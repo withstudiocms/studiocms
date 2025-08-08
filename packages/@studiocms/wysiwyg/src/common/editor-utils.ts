@@ -1,3 +1,4 @@
+import { toast } from '@studiocms/ui/components/Toast/toast.js';
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
 import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { STORE_ENDPOINT_PATH } from '../consts.js';
@@ -40,31 +41,36 @@ export const StudioCMSDbStorageAdapter = (
 ) => {
 	editor.Storage.add('db', {
 		async load() {
+			const urlToFetch = new URL(STORE_ENDPOINT_PATH, window.location.origin);
+			urlToFetch.searchParams.set('projectId', opts.projectId);
+
 			// Load data from the database using the projectId
-			const data = await fetch(STORE_ENDPOINT_PATH, {
+			const data = await fetch(urlToFetch, {
 				method: 'GET',
-				body: JSON.stringify({ projectId: opts.projectId }),
 				headers: {
 					'Content-Type': 'application/json',
 				},
 			});
 
 			// Check if the response is ok, if not return the fallback projectData
-			// This ensures that if the request fails, we still have a valid projectData 
+			// This ensures that if the request fails, we still have a valid projectData
 			// to work with and prevents the editor from crashing due to missing data.
-			if (!data.ok) {
-				return opts.projectData;
-			}
+			if (!data.ok) return opts.projectData;
 
 			// Parse the response data as JSON and return it
-			const responseData: ProjectData = await data.json();
+			const responseData = (await data.json()).data as ProjectData;
 			return responseData;
 		},
 		async store(data) {
+			const projectData = {
+				...data,
+				__STUDIOCMS_HTML: await generateHTML(editor),
+			};
+
 			// Store data in the database using the projectId
-			const response = await fetch(STORE_ENDPOINT_PATH, {
+			const response = await fetch(new URL(STORE_ENDPOINT_PATH, window.location.origin), {
 				method: 'POST',
-				body: JSON.stringify({ projectId: opts.projectId, data }),
+				body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -72,14 +78,25 @@ export const StudioCMSDbStorageAdapter = (
 
 			// Check if the response is ok, if not throw an error
 			if (!response.ok) {
-				throw new Error(`Failed to store data for project ${opts.projectId}`);
+				toast({
+					title: 'WYSIWYG: Error saving page',
+					description: 'There was an error saving your changes. Please try again.',
+					type: 'danger',
+					duration: 3000,
+				});
+			} else {
+				toast({
+					title: 'WYSIWYG: Page saved',
+					description:
+						"Your editor changes have been saved. Don't forget to save your changes in StudioCMS!",
+					type: 'info',
+					duration: 3000,
+				});
 			}
 
+			// Fallback
 			// Update the page content with the serialized data
-			opts.pageContent.innerText = JSON.stringify({
-				...data,
-				__STUDIOCMS_HTML: await generateHTML(editor),
-			});
+			opts.pageContent.innerText = JSON.stringify(projectData);
 		},
 	});
 };

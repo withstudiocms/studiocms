@@ -1,4 +1,3 @@
-import { toast } from '@studiocms/ui/components/Toast/toast.js';
 import type { CommandFunction, CommandObject, Editor, ObjectAny } from 'grapesjs';
 import type { RequiredCustomCodeOptions, RequiredGrapesBlocksOptions } from '../types.js';
 import clear from './clear.js';
@@ -26,12 +25,6 @@ export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) 
 		run: (editor, sender) => {
    			sender?.set('active', 0);
 			editor.store();
-			toast({
-				title: 'Page saved',
-				description: 'Your changes have been saved successfully.',
-				type: 'success',
-				duration: 3000,
-			});
 		},
 	});
 }

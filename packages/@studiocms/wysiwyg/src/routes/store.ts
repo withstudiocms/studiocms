@@ -5,15 +5,6 @@ import { AllResponse, OptionsResponse } from 'studiocms/lib/endpointResponses';
 import { UseSDK } from '../lib/db.js';
 
 /**
- * Schema definition for validating the GET request parameters.
- *
- * @property projectId - The unique identifier of the project as a string.
- */
-const GETJsonSchema = Schema.Struct({
-	projectId: Schema.String,
-});
-
-/**
  * Creates a JSON schema for a POST request payload containing a `projectId` and mutable `data` field.
  *
  * @template S - The type of the schema for the `data` field, extending `Schema.Struct<any>`.
@@ -26,31 +17,6 @@ const POSTJsonSchema = <S extends Schema.Struct<any>>(schema: S) =>
 		projectId: Schema.String,
 		data: Schema.mutable(schema),
 	});
-
-/**
- * Parses and validates the JSON body of a GET request using the provided API context.
- *
- * This function attempts to read the JSON payload from the request, decode it using the
- * `GETJsonSchema`, and handle any parsing or validation errors gracefully. If an error occurs
- * during parsing or schema validation, it maps the error to a more descriptive `Error` instance.
- *
- * @param context - The API context containing the request to parse.
- * @returns An `Effect` that resolves to the decoded data if successful, or fails with an error if parsing or validation fails.
- */
-const parseGETJsonRequest = (context: APIContext) =>
-	Effect.tryPromise(() => context.request.json()).pipe(
-		Effect.flatMap((data) => Schema.decodeUnknown(GETJsonSchema)(data)),
-		Effect.mapError((error) => {
-			console.error('Error parsing GET JSON request:', error);
-			if (error instanceof ParseResult.ParseError) {
-				return new Error(`Invalid request data: ${error.message}`);
-			}
-			if (error instanceof Cause.UnknownException) {
-				return new Error(`Unknown error occurred: ${error.message}`);
-			}
-			return new Error('Failed to parse request data: Unknown error');
-		})
-	);
 
 /**
  * Parses and validates the JSON body of a POST request using a provided schema.
@@ -114,8 +80,15 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			// Parse the request JSON
-			const { projectId } = yield* parseGETJsonRequest(context);
+			const SearchParams = context.url.searchParams;
+
+			// If the request has a projectId in the search params, use it
+			const projectId = SearchParams.get('projectId');
+
+			// If no projectId is provided, return an error response
+			if (!projectId) {
+				return apiResponseLogger(400, 'Project ID is required');
+			}
 
 			// Load the project data using the SDK
 			const projectData = yield* load(projectId);

@@ -5,7 +5,7 @@ import { Schema } from 'studiocms/effect';
  *
  * This schema allows for arrays that can contain any type of elements,
  */
-export const AnyArray = Schema.mutable(Schema.Array(Schema.Any));
+export const AnyArray = Schema.mutable(Schema.Array(Schema.Unknown));
 
 /**
  * Schema definition for a mutable string.
@@ -59,28 +59,18 @@ export const MArrayStruct = <F extends Schema.Struct.Fields>(fields: F) => MArra
  *
  */
 export const studioCMSProjectDataSchema = Schema.Struct({
-	__STUDIOCMS_HTML: Schema.optional(MString),
 	dataSources: AnyArray,
 	assets: AnyArray,
 	styles: AnyArray,
 	symbols: AnyArray,
-	pages: MArrayStruct({
-		id: MString,
-		name: MString,
-		frames: MArrayStruct({
-			id: MString,
-			component: MStruct({
-				type: MString,
-				stylable: AnyArray,
-				attributes: MRecord({ key: Schema.String, value: Schema.Any }),
-				components: AnyArray,
-				head: MStruct({
-					type: MString,
-				}),
-				docEl: MStruct({
-					tagName: MString,
-				}),
-			}),
-		}),
-	}),
+	pages: AnyArray,
+	__STUDIOCMS_HTML: Schema.optional(MString),
 });
+
+//   "dataSources": [],
+//   "assets": [],
+//   "styles": [
+//   ],
+//   "pages": [
+//   ],
+//   "symbols": [],

@@ -29,8 +29,7 @@ export const baseConfig: Partial<EditorConfig> = {
 	fromElement: false,
 	storageManager: {
 		type: 'db',
-		stepsBeforeSave: 10,
-		autosave: true,
+		stepsBeforeSave: 5,
 	},
 	panels: { defaults: [] },
 	canvas: {
