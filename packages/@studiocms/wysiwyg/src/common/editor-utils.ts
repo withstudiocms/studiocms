@@ -1,5 +1,6 @@
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
 import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
+import { STORE_ENDPOINT_PATH } from '../consts.js';
 import { firstUpperCase, parse } from '../utils.js';
 
 /**
@@ -30,6 +31,8 @@ export const generateHTML = async (editor: Editor): Promise<string> => {
  * @param opts - Options for storage:
  *   - `projectData`: The project data to be loaded.
  *   - `pageContent`: The HTML element where serialized data will be stored.
+ * 
+ * @deprecated Use `StudioCMSDbStorageAdapter` for database-backed storage instead.
  */
 export const inlineStorage = (
 	editor: Editor,
@@ -48,19 +51,69 @@ export const inlineStorage = (
 	});
 };
 
-// export const StudioCMSDbStorageAdapter = (
-// 	editor: Editor,
-// 	opts: { projectId: string; }
-// ) => {
-// 	editor.Storage.add('db', {
-// 		async load() {
-// 			// Load data from the database using the projectId
-// 		},
-// 		async store(data) {
-// 			// Store data in the database using the projectId
-// 		},
-// 	});
-// }
+/**
+ * Registers a custom storage adapter named 'db' for the provided editor instance.
+ * This adapter enables loading and storing project data to a backend database using fetch requests.
+ *
+ * @param editor - The editor instance to which the storage adapter will be added.
+ * @param opts - Configuration options for the storage adapter.
+ * @param opts.projectId - The unique identifier for the project whose data is being managed.
+ * @param opts.projectData - The initial project data to use as a fallback if loading fails.
+ * @param opts.pageContent - The HTML element where the serialized project data and generated HTML will be stored.
+ *
+ * The storage adapter provides two asynchronous methods:
+ * - `load`: Fetches project data from the backend using the projectId. Returns the fetched data or the fallback projectData if the request fails.
+ * - `store`: Sends the updated project data to the backend and updates the pageContent element with the serialized data and generated HTML.
+ */
+export const StudioCMSDbStorageAdapter = (
+	editor: Editor,
+	opts: { projectId: string; projectData: ProjectData; pageContent: HTMLElement }
+) => {
+	editor.Storage.add('db', {
+		async load() {
+			// Load data from the database using the projectId
+			const data = await fetch(STORE_ENDPOINT_PATH, {
+				method: 'GET',
+				body: JSON.stringify({ projectId: opts.projectId }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			// Check if the response is ok, if not return the fallback projectData
+			// This ensures that if the request fails, we still have a valid projectData 
+			// to work with and prevents the editor from crashing due to missing data.
+			if (!data.ok) {
+				return opts.projectData;
+			}
+
+			// Parse the response data as JSON and return it
+			const responseData: ProjectData = await data.json();
+			return responseData;
+		},
+		async store(data) {
+			// Store data in the database using the projectId
+			const response = await fetch(STORE_ENDPOINT_PATH, {
+				method: 'POST',
+				body: JSON.stringify({ projectId: opts.projectId, data }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			// Check if the response is ok, if not throw an error
+			if (!response.ok) {
+				throw new Error(`Failed to store data for project ${opts.projectId}`);
+			}
+
+			// Update the page content with the serialized data
+			opts.pageContent.innerText = JSON.stringify({
+				...data,
+				__STUDIOCMS_HTML: await generateHTML(editor),
+			});
+		},
+	});
+};
 
 /**
  * Reduces an array of `TraitProperties` into an accumulator object, mapping trait names to their values.
@@ -217,6 +270,8 @@ export function getEditorElmData(
 		container.dataset.componentRegistry || '[]'
 	);
 
+	const projectId = container.dataset.pageId || '';
+
 	// Provide fallback data for project pages if the page content is empty
 	// This ensures that the inline storage options are always populated
 	// with valid data, preventing potential errors in the editor.
@@ -233,6 +288,11 @@ export function getEditorElmData(
 		inlineStorageOpts: {
 			pageContent,
 			projectData,
+		},
+		StudioCMSDbStorageAdapterOpts: {
+			projectId,
+			projectData,
+			pageContent,
 		},
 	};
 }

@@ -17,33 +17,49 @@ const AnyArray = Schema.Array(Schema.Any);
  *
  */
 export const studioCMSProjectDataSchema = Schema.Struct({
-	__STUDIOCMS_HTML: Schema.optional(Schema.String),
-	dataSources: AnyArray,
-	assets: AnyArray,
-	styles: AnyArray,
-	symbols: AnyArray,
-	pages: Schema.Array(
-		Schema.Struct({
-			id: Schema.String,
-			name: Schema.String,
-			frames: Schema.Array(
+	__STUDIOCMS_HTML: Schema.optional(Schema.mutable(Schema.String)),
+	dataSources: Schema.mutable(AnyArray),
+	assets: Schema.mutable(AnyArray),
+	styles: Schema.mutable(AnyArray),
+	symbols: Schema.mutable(AnyArray),
+	pages: Schema.mutable(
+		Schema.Array(
+			Schema.mutable(
 				Schema.Struct({
-					id: Schema.String,
-					component: Schema.Struct({
-						type: Schema.String,
-						stylable: AnyArray,
-						attributes: Schema.Record({ key: Schema.String, value: Schema.Any }),
-						components: AnyArray,
-						head: Schema.Struct({
-							type: Schema.String,
-						}),
-						docEl: Schema.Struct({
-							tagName: Schema.String,
-						}),
-					}),
+					id: Schema.mutable(Schema.String),
+					name: Schema.mutable(Schema.String),
+					frames: Schema.mutable(
+						Schema.Array(
+							Schema.mutable(
+								Schema.Struct({
+									id: Schema.mutable(Schema.String),
+									component: Schema.mutable(
+										Schema.Struct({
+											type: Schema.mutable(Schema.String),
+											stylable: Schema.mutable(AnyArray),
+											attributes: Schema.mutable(
+												Schema.Record({ key: Schema.String, value: Schema.Any })
+											),
+											components: Schema.mutable(AnyArray),
+											head: Schema.mutable(
+												Schema.Struct({
+													type: Schema.mutable(Schema.String),
+												})
+											),
+											docEl: Schema.mutable(
+												Schema.Struct({
+													tagName: Schema.mutable(Schema.String),
+												})
+											),
+										})
+									),
+								})
+							)
+						)
+					),
 				})
-			),
-		})
+			)
+		)
 	),
 });
 

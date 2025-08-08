@@ -11,11 +11,12 @@ const componentRegistry = getRegistryComponents();
 interface Props extends PluginPageTypeEditorProps {}
 
 // Extract the content from Astro props
-const { content } = Astro.props as Props;
+const { content, id } = Astro.props as Props;
 ---
 
 <div
     class="scms-grapesjs-container"
+    data-page-id={id}
     data-component-registry={JSON.stringify(componentRegistry)}
 >
     <div class="editor">
@@ -31,13 +32,13 @@ const { content } = Astro.props as Props;
     import { toast } from "@studiocms/ui/components/Toast/toast.js";
     import grapesjs, { usePlugin } from "grapesjs";
     import { baseConfig } from "../common/editor-settings.js";
-    import { getEditorElmData, inlineStorage } from "../common/editor-utils.js";
+    import { getEditorElmData, StudioCMSDbStorageAdapter } from "../common/editor-utils.js";
     import { astroComponents } from "../common/componentRegistry.js";
     import grapesBlocks from "../common/grapesBlocks/index.js";
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings
-    const { astroComponentsOpts, inlineStorageOpts } = getEditorElmData(
+    const { astroComponentsOpts, StudioCMSDbStorageAdapterOpts } = getEditorElmData(
         document,
         {
             container: ".scms-grapesjs-container",
@@ -54,7 +55,7 @@ const { content } = Astro.props as Props;
         ...baseConfig,
         plugins: [
             usePlugin(astroComponents, astroComponentsOpts),
-            usePlugin(inlineStorage, inlineStorageOpts),
+            usePlugin(StudioCMSDbStorageAdapter, StudioCMSDbStorageAdapterOpts),
             usePlugin(grapesBlocks),
         ],
     });

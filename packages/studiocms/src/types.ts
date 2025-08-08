@@ -74,5 +74,6 @@ export interface PluginPageTypeRendererProps {
 }
 
 export interface PluginPageTypeEditorProps {
+    id?: string;
 	content?: string;
 }
