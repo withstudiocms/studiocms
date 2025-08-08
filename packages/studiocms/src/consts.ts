@@ -1,5 +1,6 @@
 import type { AstroConfig } from 'astro';
 import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
+import type { RobotsConfig } from './lib/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
 /**
@@ -227,4 +228,48 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	optimizeDeps: {
 		exclude: ['three'],
 	},
+};
+
+/**
+ * Generates the default robots.txt configuration for StudioCMS.
+ *
+ * @param config - The Astro site configuration object.
+ * @param sitemapEnabled - Indicates whether the sitemap should be enabled.
+ * @param dashboardRoute - A function that returns the dashboard route path given a base path.
+ * @returns The robots.txt configuration object.
+ */
+export const StudioCMSDefaultRobotsConfig = ({
+	config,
+	sitemapEnabled,
+	dashboardRoute,
+}: {
+	config: AstroConfig;
+	sitemapEnabled: boolean;
+	dashboardRoute: (path: string) => string;
+}): RobotsConfig => {
+	// Extract the host from the site URL in the Astro config.
+	// If the site URL is not set or invalid, default to false.
+	let host: string | false = false;
+	if (config.site) {
+		try {
+			const url = new URL(config.site);
+			host = url.hostname;
+		} catch {
+			// Fallback to regex approach
+			host = config.site.replace(/^https?:\/\/|:\d+$/g, '') || false;
+		}
+	}
+
+	// Return the robots.txt configuration object.
+	return {
+		host,
+		sitemap: sitemapEnabled,
+		policy: [
+			{
+				userAgent: ['*'],
+				allow: ['/'],
+				disallow: [dashboardRoute(''), '/studiocms_api/'],
+			},
+		],
+	};
 };

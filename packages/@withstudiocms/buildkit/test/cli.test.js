@@ -35,10 +35,19 @@ describe('buildkit CLI', () => {
 			expect(output).toContain('Commands:');
 			expect(output).toContain('dev');
 			expect(output).toContain('build');
-			expect(output).toContain('Options:');
+			expect(output).toContain('test');
+			expect(output).toContain('Dev and Build Options:');
 			expect(output).toContain('--no-clean-dist');
 			expect(output).toContain('--bundle');
 			expect(output).toContain('--force-cjs');
+			expect(output).toContain('Test Options:');
+			expect(output).toContain('-m, --match <pattern>');
+			expect(output).toContain('-o, --only');
+			expect(output).toContain('-p, --parallel');
+			expect(output).toContain('-w, --watch');
+			expect(output).toContain('-t, --timeout <ms>');
+			expect(output).toContain('-s, --setup <file>');
+			expect(output).toContain('--teardown <file>');
 		});
 
 		it('should show help with invalid command', async () => {
