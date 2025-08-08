@@ -90,6 +90,28 @@ const handleUserSessionVerification = ({ locals }: APIContext) =>
 	});
 
 /**
+ * Performs API checks for user session verification and CSRF validation.
+ *
+ * This generator function sequentially verifies the user's session and the CSRF token.
+ * If either check fails, it returns the corresponding `Response` object (e.g., unauthorized or CSRF error).
+ * If both checks pass, it returns `undefined`, allowing further processing.
+ *
+ * @param context - The API context containing request and session information.
+ * @returns A `Response` object if a check fails, or `undefined` if all checks pass.
+ */
+const apiChecks = Effect.fn(function* (context: APIContext) {
+	const userCheck = yield* handleUserSessionVerification(context);
+	if (userCheck instanceof Response) {
+		return userCheck; // Return the unauthorized response if user check fails
+	}
+	const csrfCheck = yield* handleCSRF(context);
+	if (csrfCheck instanceof Response) {
+		return csrfCheck; // Return the CSRF error response if validation fails
+	}
+	return undefined;
+})
+
+/**
  * Handles GET requests for loading project data in the WYSIWYG store route.
  *
  * This API route performs the following actions:
@@ -110,16 +132,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 
 			// Ensure the user is logged in and has the necessary permissions
 			// This is done to prevent unauthorized access to project data
-			const userCheck = yield* handleUserSessionVerification(context);
-			if (userCheck instanceof Response) {
-				return userCheck; // Return the unauthorized response if user check fails
-			}
-
-			// Retrieve the CSRF token from the request headers and cookies
-			// This is to ensure that the request is secure and not a CSRF attack
-			const csrfCheck = yield* handleCSRF(context);
-			if (csrfCheck instanceof Response) {
-				return csrfCheck; // Return the CSRF error response if validation fails
+			// as well as CSRF validation
+			const securityCheck = yield* apiChecks(context);
+			if (securityCheck instanceof Response) {
+				return securityCheck; // Return the unauthorized response if security check fails
 			}
 
 			const SearchParams = context.url.searchParams;
@@ -167,16 +183,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			// Ensure the user is logged in and has the necessary permissions
 			// This is done to prevent unauthorized access to project data
-			const userCheck = yield* handleUserSessionVerification(context);
-			if (userCheck instanceof Response) {
-				return userCheck; // Return the unauthorized response if user check fails
-			}
-
-			// Retrieve the CSRF token from the request headers and cookies
-			// This is to ensure that the request is secure and not a CSRF attack
-			const csrfCheck = yield* handleCSRF(context);
-			if (csrfCheck instanceof Response) {
-				return csrfCheck; // Return the CSRF error response if validation fails
+			// as well as CSRF validation
+			const securityCheck = yield* apiChecks(context);
+			if (securityCheck instanceof Response) {
+				return securityCheck; // Return the unauthorized response if security check fails
 			}
 
 			// Parse the request JSON
