@@ -1,13 +1,7 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { PluginDataEntry } from 'studiocms:sdk/types';
 import { Effect, Schema } from 'studiocms/effect';
-
-// this is used for testing, and is planned to be used in the future
-
-/**
- * Schema definition for an array containing elements of any type.
- */
-const AnyArray = Schema.Array(Schema.Any);
+import { AnyArray, MArrayStruct, MRecord, MString, MStruct } from './schema.js';
 
 /**
  * Schema definition for StudioCMS project data.
@@ -17,50 +11,30 @@ const AnyArray = Schema.Array(Schema.Any);
  *
  */
 export const studioCMSProjectDataSchema = Schema.Struct({
-	__STUDIOCMS_HTML: Schema.optional(Schema.mutable(Schema.String)),
-	dataSources: Schema.mutable(AnyArray),
-	assets: Schema.mutable(AnyArray),
-	styles: Schema.mutable(AnyArray),
-	symbols: Schema.mutable(AnyArray),
-	pages: Schema.mutable(
-		Schema.Array(
-			Schema.mutable(
-				Schema.Struct({
-					id: Schema.mutable(Schema.String),
-					name: Schema.mutable(Schema.String),
-					frames: Schema.mutable(
-						Schema.Array(
-							Schema.mutable(
-								Schema.Struct({
-									id: Schema.mutable(Schema.String),
-									component: Schema.mutable(
-										Schema.Struct({
-											type: Schema.mutable(Schema.String),
-											stylable: Schema.mutable(AnyArray),
-											attributes: Schema.mutable(
-												Schema.Record({ key: Schema.String, value: Schema.Any })
-											),
-											components: Schema.mutable(AnyArray),
-											head: Schema.mutable(
-												Schema.Struct({
-													type: Schema.mutable(Schema.String),
-												})
-											),
-											docEl: Schema.mutable(
-												Schema.Struct({
-													tagName: Schema.mutable(Schema.String),
-												})
-											),
-										})
-									),
-								})
-							)
-						)
-					),
-				})
-			)
-		)
-	),
+	__STUDIOCMS_HTML: Schema.optional(MString),
+	dataSources: AnyArray,
+	assets: AnyArray,
+	styles: AnyArray,
+	symbols: AnyArray,
+	pages: MArrayStruct({
+		id: MString,
+		name: MString,
+		frames: MArrayStruct({
+			id: MString,
+			component: MStruct({
+				type: MString,
+				stylable: AnyArray,
+				attributes: MRecord({ key: Schema.String, value: Schema.Any }),
+				components: AnyArray,
+				head: MStruct({
+					type: MString,
+				}),
+				docEl: MStruct({
+					tagName: MString,
+				}),
+			}),
+		}),
+	}),
 });
 
 /**
@@ -148,6 +122,6 @@ export const UseSDK = Effect.gen(function* () {
 		/**
 		 * Returns the inferred type for the plugin data schema.
 		 */
-		types: infer
+		types: infer,
 	};
 });
