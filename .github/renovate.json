@@ -5,7 +5,8 @@
     "schedule:weekly",
     "group:allNonMajor",
     ":disablePeerDependencies",
-    "customManagers:biomeVersions"
+    "customManagers:biomeVersions",
+    "helpers:pinGitHubActionDigestsToSemver"
   ],
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
