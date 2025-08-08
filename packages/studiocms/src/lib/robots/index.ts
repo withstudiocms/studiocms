@@ -2,20 +2,8 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { AstroConfig, AstroIntegration } from 'astro';
 import { generateContent, printInfo } from './core.js';
-import type { RobotsConfig } from './types.js';
+import { type RobotsConfig, RobotsTXTConfigSchema } from './schema.js';
 import { getFileSizeInKilobytes, measureExecutionTime } from './utils.js';
-
-const defaultConfig: RobotsConfig = {
-	sitemap: false,
-	host: false,
-	policy: [
-		{
-			userAgent: ['*'],
-			allow: ['/'],
-			disallow: ['/dashboard/', '/studiocms_api/'],
-		},
-	],
-};
 
 /**
  * **Robots.txt Integration**
@@ -25,12 +13,12 @@ const defaultConfig: RobotsConfig = {
  * @param astroConfig Robots Configuration
  * @returns AstroIntegration
  */
-export default function createRobotsIntegration(options?: RobotsConfig): AstroIntegration {
+export default function createRobotsIntegration(options: RobotsConfig): AstroIntegration {
 	let astroConfig: AstroConfig;
 	let finalSiteMapHref: string;
 	let executionTime: number;
 
-	const config = { ...defaultConfig, ...options };
+	const config = RobotsTXTConfigSchema.parse(options);
 
 	return {
 		name: 'studiocms/robotstxt',

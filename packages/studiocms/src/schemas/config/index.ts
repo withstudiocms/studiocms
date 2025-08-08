@@ -1,5 +1,5 @@
 import { z } from 'astro/zod';
-import type { RobotsConfig } from '../../lib/robots/types.js';
+import { RobotsTXTConfigSchema } from '../../lib/robots/schema.js';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { authConfigSchema } from './auth.js';
 import { dashboardConfigSchema } from './dashboard.js';
@@ -85,7 +85,7 @@ export const StudioCMSOptionsSchema = z
 				 *
 				 * @default robotsTXT: { policy: [ { userAgent: ['*'], allow: ['/'], disallow: ['/dashboard/'] } ] }
 				 */
-				robotsTXT: z.union([z.custom<RobotsConfig>(), z.boolean()]).optional().default(true),
+				robotsTXT: z.union([RobotsTXTConfigSchema, z.boolean()]).optional().default(true),
 
 				/**
 				 * Enable Quick Actions Menu - Whether to enable the quick actions menu which allows easy access to your dashboard while logged in on non-dashboard pages.
