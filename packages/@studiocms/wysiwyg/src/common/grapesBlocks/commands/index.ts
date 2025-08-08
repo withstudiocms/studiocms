@@ -24,7 +24,7 @@ export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) 
 
 	AddCmd(editor)('save-page', {
 		run: (editor, sender) => {
-			sender.set('active', false);
+   			sender?.set('active', 0);
 			editor.store();
 			toast({
 				title: 'Page saved',
