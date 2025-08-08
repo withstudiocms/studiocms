@@ -2,11 +2,11 @@ import { apiResponseLogger } from 'studiocms:logger';
 import type { APIContext, APIRoute } from 'astro';
 import { Cause, convertToVanilla, Effect, genLogger, ParseResult, Schema } from 'studiocms/effect';
 import { AllResponse, OptionsResponse } from 'studiocms/lib/endpointResponses';
-import { studioCMSProjectDataSchema, UseSDK } from '../lib/db.js';
+import { UseSDK } from '../lib/db.js';
 
 /**
  * Schema definition for validating the GET request parameters.
- * 
+ *
  * @property projectId - The unique identifier of the project as a string.
  */
 const GETJsonSchema = Schema.Struct({
@@ -14,15 +14,18 @@ const GETJsonSchema = Schema.Struct({
 });
 
 /**
- * Defines the JSON schema for a POST request payload.
+ * Creates a JSON schema for a POST request payload containing a `projectId` and mutable `data` field.
  *
- * @property projectId - The unique identifier for the project as a string.
- * @property data - The mutable project data, validated against `studioCMSProjectDataSchema`.
+ * @template S - The type of the schema for the `data` field, extending `Schema.Struct<any>`.
+ * @param schema - The schema definition for the `data` property.
+ * @returns A new schema struct with `projectId` as a string and `data` as a mutable version of the provided schema.
  */
-const POSTJsonSchema = Schema.Struct({
-    projectId: Schema.String,
-    data: Schema.mutable(studioCMSProjectDataSchema),
-});
+// biome-ignore lint/suspicious/noExplicitAny: Allows for flexible schema definitions
+const POSTJsonSchema = <S extends Schema.Struct<any>>(schema: S) =>
+	Schema.Struct({
+		projectId: Schema.String,
+		data: Schema.mutable(schema),
+	});
 
 /**
  * Parses and validates the JSON body of a GET request using the provided API context.
@@ -50,31 +53,34 @@ const parseGETJsonRequest = (context: APIContext) =>
 	);
 
 /**
- * Parses and validates the JSON body of a POST request using the provided API context.
+ * Parses and validates the JSON body of a POST request using a provided schema.
  *
- * This function attempts to read the JSON body from the incoming request and decode it
- * using the `POSTJsonSchema`. If parsing or validation fails, it maps the error to a
- * more descriptive error message, logging the original error to the console.
+ * @template S - The schema type extending `Schema.Struct<any>`.
+ * @param context - The API context containing the request object.
+ * @param schema - The schema used to validate and decode the request body.
+ * @returns An `Effect` that resolves with the validated data or rejects with a descriptive error.
  *
- * @param context - The API context containing the incoming request.
- * @returns An `Effect` that resolves with the validated data or rejects with an error
- *          describing the failure reason.
+ * @remarks
+ * - Attempts to parse the request body as JSON and validate it against the given schema.
+ * - On validation failure, returns an error with a detailed message.
+ * - Handles unknown exceptions and logs errors to the console.
  */
-const parsePOSTJsonRequest = (context: APIContext) =>
-    Effect.tryPromise(() => context.request.json()).pipe(
-        Effect.flatMap((data) => Schema.decodeUnknown(POSTJsonSchema)(data)),
-        Effect.mapError((error) => {
-            console.error('Error parsing POST JSON request:', error);
-            if (error instanceof ParseResult.ParseError) {
-                return new Error(`Invalid request data: ${error.message}`);
-            }
-            if (error instanceof Cause.UnknownException) {
-                return new Error(`Unknown error occurred: ${error.message}`);
-            }
-            return new Error('Failed to parse request data: Unknown error');
-        })
-    );
-    
+// biome-ignore lint/suspicious/noExplicitAny: Allows for flexible schema definitions
+const parsePOSTJsonRequest = <S extends Schema.Struct<any>>(context: APIContext, schema: S) =>
+	Effect.tryPromise(() => context.request.json()).pipe(
+		Effect.flatMap((data) => Schema.decodeUnknown(POSTJsonSchema(schema))(data)),
+		Effect.mapError((error) => {
+			console.error('Error parsing POST JSON request:', error);
+			if (error instanceof ParseResult.ParseError) {
+				return new Error(`Invalid request data: ${error.message}`);
+			}
+			if (error instanceof Cause.UnknownException) {
+				return new Error(`Unknown error occurred: ${error.message}`);
+			}
+			return new Error('Failed to parse request data: Unknown error');
+		})
+	);
+
 /**
  * Handles GET requests for loading project data in the WYSIWYG store route.
  *
@@ -92,7 +98,7 @@ const parsePOSTJsonRequest = (context: APIContext) =>
 export const GET: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
 		genLogger('@studiocms/wysiwyg/routes/store:GET')(function* () {
-			const sdk = yield* UseSDK;
+			const { load } = yield* UseSDK;
 
 			// Get user data
 			const userData = context.locals.userSessionData;
@@ -111,17 +117,17 @@ export const GET: APIRoute = async (context: APIContext) =>
 			// Parse the request JSON
 			const { projectId } = yield* parseGETJsonRequest(context);
 
-            // Load the project data using the SDK
-            const projectData = yield* sdk.load(projectId);
+			// Load the project data using the SDK
+			const projectData = yield* load(projectId);
 
-            if (!projectData) {
-                return apiResponseLogger(404, 'Project not found');
-            }
+			if (!projectData) {
+				return apiResponseLogger(404, 'Project not found');
+			}
 
-            // Return the project data as a JSON response
-            return new Response(JSON.stringify(projectData), {
-                headers: { 'Content-Type': 'application/json' },
-            });
+			// Return the project data as a JSON response
+			return new Response(JSON.stringify(projectData), {
+				headers: { 'Content-Type': 'application/json' },
+			});
 		})
 	);
 
@@ -141,7 +147,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 export const POST: APIRoute = async (context: APIContext) =>
 	await convertToVanilla(
 		genLogger('@studiocms/wysiwyg/routes/store:POST')(function* () {
-			const sdk = yield* UseSDK;
+			const { store, types } = yield* UseSDK;
 
 			// Get user data
 			const userData = context.locals.userSessionData;
@@ -157,18 +163,18 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-            // Parse the request JSON
-            const { projectId, data } = yield* parsePOSTJsonRequest(context);
+			// Parse the request JSON
+			const { projectId, data } = yield* parsePOSTJsonRequest(context, types._Schema);
 
-            // Store the project data using the SDK
-            const result = yield* sdk.store(projectId, data);
+			// Store the project data using the SDK
+			const result = yield* store(projectId, data);
 
-            if (!result) {
-                return apiResponseLogger(500, 'Failed to store project data');
-            }
+			if (!result) {
+				return apiResponseLogger(500, 'Failed to store project data');
+			}
 
-            // Return a success response
-            return apiResponseLogger(200, 'Project data stored successfully');
+			// Return a success response
+			return apiResponseLogger(200, 'Project data stored successfully');
 		})
 	);
 

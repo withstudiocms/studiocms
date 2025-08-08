@@ -144,5 +144,10 @@ export const UseSDK = Effect.gen(function* () {
 			getEntry(id)
 				.select()
 				.pipe(Effect.flatMap((entry) => updateOrInsert(entry)(id, data))),
+
+		/**
+		 * Returns the inferred type for the plugin data schema.
+		 */
+		types: infer
 	};
 });
