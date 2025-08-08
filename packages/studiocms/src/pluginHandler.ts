@@ -4,12 +4,12 @@ import { addVirtualImports, createResolver, defineUtility } from 'astro-integrat
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { routesDir } from './consts.js';
+import { routesDir, StudioCMSDefaultRobotsConfig } from './consts.js';
 import { StudioCMSError } from './errors.js';
 import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import robotsTXT from './lib/robots/index.js';
-import type { RobotsConfig } from './lib/robots/types.js';
+import type { RobotsConfig } from './lib/robots/schema.js';
 import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	AvailableDashboardPages,
@@ -210,7 +210,7 @@ type Options = {
  */
 export const pluginHandler = defineUtility('astro:config:setup')(
 	async (params, options: Options) => {
-		const { logger } = params;
+		const { logger, config } = params;
 
 		const { dbStartPage, verbose, name, pkgVersion, plugins, robotsTXTConfig, dashboardRoute } =
 			options;
@@ -552,14 +552,22 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			// Verify Plugin Requirements
 			verifyPluginRequires(sourcePluginsList, pluginRequires);
 
+			const robotsDefaultConfig = StudioCMSDefaultRobotsConfig({
+				config,
+				sitemapEnabled,
+				dashboardRoute,
+			});
+
 			// Robots.txt Integration (Default)
 			if (robotsTXTConfig === true) {
-				integrations.push({ integration: robotsTXT({ sitemap: sitemapEnabled }) });
+				integrations.push({
+					integration: robotsTXT(robotsDefaultConfig),
+				});
 			} else if (typeof robotsTXTConfig === 'object') {
 				integrations.push({
 					integration: robotsTXT({
+						...robotsDefaultConfig,
 						...robotsTXTConfig,
-						sitemap: sitemapEnabled,
 					}),
 				});
 			}
