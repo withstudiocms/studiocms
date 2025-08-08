@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { AstroIntegrationLogger } from 'astro';
-import type { RobotsConfig } from './types.js';
+import type { RobotsConfig } from './schema.js';
 
 /**
  * Validates the given host string against a specific pattern and logs errors if the validation fails.
