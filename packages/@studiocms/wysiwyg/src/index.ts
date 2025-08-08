@@ -55,7 +55,7 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 			prerender: false,
 		},
 		{
-			entrypoint: resolve('./routes/store.ts'),
+			entrypoint: resolve('./routes/store.js'),
 			pattern: STORE_ENDPOINT_PATH,
 			prerender: false,
 		}
