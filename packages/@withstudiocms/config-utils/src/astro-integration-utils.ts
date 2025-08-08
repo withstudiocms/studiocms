@@ -73,7 +73,6 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 		}
 	);
 
-
 /**
  * Creates an Astro integration utility that watches for changes in the first existing configuration file
  * found in the provided `configPaths`. When a configuration file is detected, it is registered for watching

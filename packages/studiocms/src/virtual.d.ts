@@ -326,7 +326,8 @@ declare module 'studiocms:sdk/types' {
 	// src/sdk/types/index
 	export type UsePluginDataOptsBase<T> = import('./sdk/types/index').UsePluginDataOptsBase<T>;
 	export type UsePluginDataOpts<T> = import('./sdk/types/index').UsePluginDataOpts<T>;
-	export type UserPluginDataOptsImplementation<T> = import('./sdk/types/index').UserPluginDataOptsImplementation<T>;
+	export type UserPluginDataOptsImplementation<T> =
+		import('./sdk/types/index').UserPluginDataOptsImplementation<T>;
 	export type PluginDataEntry<T> = import('./sdk/types/index').PluginDataEntry<T>;
 	export type JSONValidatorFn<T> = import('./sdk/types/index').JSONValidatorFn<T>;
 	export type EffectSchemaValidator<T> = import('./sdk/types/index').EffectSchemaValidator<T>;
@@ -366,7 +367,8 @@ declare module 'studiocms:sdk/types' {
 	export type PageDataReturnId = import('./sdk/types/index').PageDataReturnId;
 	export type PageContentReturnId = import('./sdk/types/index').PageContentReturnId;
 	export type PageDataTagsInsertResponse = import('./sdk/types/index').PageDataTagsInsertResponse;
-	export type PageDataCategoriesInsertResponse = import('./sdk/types/index').PageDataCategoriesInsertResponse;
+	export type PageDataCategoriesInsertResponse =
+		import('./sdk/types/index').PageDataCategoriesInsertResponse;
 	export type DatabaseTables = import('./sdk/types/index').DatabaseTables;
 	export type SingleRank = import('./sdk/types/index').SingleRank;
 	export type CombinedRank = import('./sdk/types/index').CombinedRank;
@@ -375,12 +377,16 @@ declare module 'studiocms:sdk/types' {
 	// src/sdk/types/tsAlias
 	export type tsPluginDataInsert = import('./sdk/types/index').tsPluginDataInsert;
 	export type tsPluginDataSelect = import('./sdk/types/index').tsPluginDataSelect;
-	export type tsEmailVerificationTokensInsert = import('./sdk/types/index').tsEmailVerificationTokensInsert;
-	export type tsEmailVerificationTokensSelect = import('./sdk/types/index').tsEmailVerificationTokensSelect
-	export type tsNotificationSettingsInsert = import('./sdk/types/index').tsNotificationSettingsInsert;
-	export type tsNotificationSettingsSelect = import('./sdk/types/index').tsNotificationSettingsSelect;
+	export type tsEmailVerificationTokensInsert =
+		import('./sdk/types/index').tsEmailVerificationTokensInsert;
+	export type tsEmailVerificationTokensSelect =
+		import('./sdk/types/index').tsEmailVerificationTokensSelect;
+	export type tsNotificationSettingsInsert =
+		import('./sdk/types/index').tsNotificationSettingsInsert;
+	export type tsNotificationSettingsSelect =
+		import('./sdk/types/index').tsNotificationSettingsSelect;
 	export type tsUserResetTokensInsert = import('./sdk/types/index').tsUserResetTokensInsert;
-	export type tsUserResetTokensSelect = import('./sdk/types/index').tsUserResetTokensSelect
+	export type tsUserResetTokensSelect = import('./sdk/types/index').tsUserResetTokensSelect;
 	export type tsPageFolderSelect = import('./sdk/types/index').tsPageFolderSelect;
 	export type tsPageFolderInsert = import('./sdk/types/index').tsPageFolderInsert;
 	export type tsUsersSelect = import('./sdk/types/index').tsUsersSelect;

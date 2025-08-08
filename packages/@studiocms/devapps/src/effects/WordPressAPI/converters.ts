@@ -133,7 +133,12 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPageContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPageContent'
 			)(function* () {
-				const [{ page }, { pageData: { id: pageId } }] = yield* Effect.all([RawPageData, FullPageData]);
+				const [
+					{ page },
+					{
+						pageData: { id: pageId },
+					},
+				] = yield* Effect.all([RawPageData, FullPageData]);
 
 				const data = yield* Schema.decodeUnknown(Page)(page);
 
@@ -221,9 +226,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 								yield* Console.log(
 									'Inserting new Categories into the database:',
-									data
-										.map((d) => `${d.id}: ${d.name}`)
-										.join(', ')
+									data.map((d) => `${d.id}: ${d.name}`).join(', ')
 								);
 								yield* sdk.dbService.execute((client) =>
 									client.insert(tsPageDataCategories).values(data)
@@ -247,9 +250,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 
 								yield* Console.log(
 									'Inserting new Tags into the database:',
-									tagData
-										.map((data) => `${data.id}: ${data.name}`)
-										.join(', ')
+									tagData.map((data) => `${data.id}: ${data.name}`).join(', ')
 								);
 								yield* sdk.dbService.execute((client) =>
 									client.insert(tsPageDataTags).values(tagData)
@@ -350,7 +351,12 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 			const convertToPostContent = genLogger(
 				'@studiocms/devapps/effects/WordPressAPI/converters.effect.convertToPostContent'
 			)(function* () {
-				const [{ pageData: { id: pageId } }, { page: post }] = yield* Effect.all([FullPageData, RawPageData]);
+				const [
+					{
+						pageData: { id: pageId },
+					},
+					{ page: post },
+				] = yield* Effect.all([FullPageData, RawPageData]);
 
 				const data = yield* Schema.decodeUnknown(Post)(post);
 

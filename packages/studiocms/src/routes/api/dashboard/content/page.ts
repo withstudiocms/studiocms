@@ -119,7 +119,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const pageContent: CombinedInsertContent = {
 				contentLang: 'default',
 				content: content.content || '',
-			}
+			};
 
 			yield* sdk.POST.page({
 				pageData: {

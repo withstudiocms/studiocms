@@ -27,7 +27,7 @@ export const baseConfig: Partial<EditorConfig> = {
 	height: '100%',
 	width: 'auto',
 	fromElement: false,
-	storageManager: { 
+	storageManager: {
 		type: 'inline',
 	},
 	panels: { defaults: [] },
