@@ -52,7 +52,7 @@ const updateSaveIndicator = (editor: Editor) => {
  */
 export const StudioCMSDbStorageAdapter = (
 	editor: Editor,
-	opts: { projectId: string; projectData: ProjectData; pageContent: HTMLElement }
+	opts: { projectId: string; projectData: ProjectData; pageContent: HTMLElement; csrfToken: string }
 ) => {
 	editor.Storage.add('db', {
 		async load() {
@@ -73,9 +73,11 @@ export const StudioCMSDbStorageAdapter = (
 				// Load data from the database using the projectId
 				const data = await fetch(urlToFetch, {
 					method: 'GET',
+					credentials: 'same-origin',
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',
+						'X-CSRF-Token': opts.csrfToken,
 					},
 				});
 
@@ -117,9 +119,11 @@ export const StudioCMSDbStorageAdapter = (
 				// Store data in the database using the projectId
 				const response = await fetch(urlToFetch, {
 					method: 'POST',
+					credentials: 'same-origin',
 					body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
 					headers: {
 						'Content-Type': 'application/json',
+						'X-CSRF-Token': opts.csrfToken,
 					},
 				});
 
@@ -305,6 +309,8 @@ export function getEditorElmData(
 
 	const projectId = container.dataset.pageId || '';
 
+	const csrfToken = container.dataset.wysiwygCsrfToken || '';
+
 	// Provide fallback data for project pages if the page content is empty
 	// This ensures that the inline storage options are always populated
 	// with valid data, preventing potential errors in the editor.
@@ -322,6 +328,7 @@ export function getEditorElmData(
 			projectId,
 			projectData,
 			pageContent,
+			csrfToken,
 		},
 	};
 }

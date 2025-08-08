@@ -80,6 +80,15 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
+			// Retrieve the CSRF token from the request headers and cookies
+			// This is to ensure that the request is secure and not a CSRF attack
+			const submittedToken = context.request.headers.get('X-CSRF-Token');
+			const storedToken = context.cookies.get('wysiwyg-csrf-token')?.value;
+
+			if (!submittedToken || !storedToken || submittedToken !== storedToken) {
+				return new Response('Invalid CSRF Token', { status: 403 });
+			}
+
 			const SearchParams = context.url.searchParams;
 
 			// If the request has a projectId in the search params, use it
@@ -135,6 +144,15 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const isAuthorized = context.locals.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
+			}
+
+			// Retrieve the CSRF token from the request headers and cookies
+			// This is to ensure that the request is secure and not a CSRF attack
+			const submittedToken = context.request.headers.get('X-CSRF-Token');
+			const storedToken = context.cookies.get('wysiwyg-csrf-token')?.value;
+
+			if (!submittedToken || !storedToken || submittedToken !== storedToken) {
+				return new Response('Invalid CSRF Token', { status: 403 });
 			}
 
 			// Parse the request JSON

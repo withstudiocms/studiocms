@@ -588,6 +588,8 @@ declare namespace App {
 		defaultLang: import('./lib/i18n/config').UiTranslationKey;
 		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
 
+		wysiwygCsrfToken: string;
+
 		SCMSGenerator: string;
 		SCMSUiGenerator: string;
 

@@ -12,12 +12,15 @@ interface Props extends PluginPageTypeEditorProps {}
 
 // Extract the content from Astro props
 const { content, id = '' } = Astro.props as Props;
+
+const token = Astro.locals.wysiwygCsrfToken;
 ---
 
 <div
     class="scms-grapesjs-container"
     data-page-id={id}
     data-component-registry={JSON.stringify(componentRegistry)}
+    data-wysiwyg-csrf-token={token}
 >
     <div class="editor">
         <div id="gjs"></div>
