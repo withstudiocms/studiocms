@@ -74,6 +74,7 @@ export const StudioCMSDbStorageAdapter = (
 				const data = await fetch(urlToFetch, {
 					method: 'GET',
 					headers: {
+						Accept: 'application/json',
 						'Content-Type': 'application/json',
 					},
 				});
@@ -121,12 +122,14 @@ export const StudioCMSDbStorageAdapter = (
 						'Content-Type': 'application/json',
 					},
 				});
-				
+
 				// Check if the response is ok, if not, show an error toast
 				// If the response is ok, show a success toast
 				// This provides feedback to the user about the success or failure of the save operation.
 				if (!response.ok) {
 					toast(toastProps);
+					opts.pageContent.innerText = JSON.stringify(projectData);
+					return;
 				}
 
 				// save the fallback projectData in the pageContent
@@ -140,9 +143,6 @@ export const StudioCMSDbStorageAdapter = (
 
 				// If an error occurs, store the fallback projectData in the pageContent
 				opts.pageContent.innerText = JSON.stringify(projectData);
-
-				// Update the save indicator to reflect the saved state
-				updateSaveIndicator(editor);
 			}
 		},
 	});

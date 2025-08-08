@@ -205,9 +205,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   }
 </script>
 
-<script is:inline define:vars={{ pluginFields }}>
+<script is:inline define:vars={{ pluginPageTypes: pluginFields }}>
   async function setupPluginFields() {
     const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+    if (!pageTypeDropdown) return;
     const pageTypeOptions =
       pageTypeDropdown.querySelectorAll(".sui-select-option");
 
@@ -215,11 +216,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       option.addEventListener("click", async () => {
         const selectedValue = option.getAttribute("value");
 
-        const pluginFields = pluginFields.find(
+        const selected = pluginPageTypes.find(
           (p) => p.identifier === selectedValue,
         );
 
-        if (!pluginFields) {
+        if (!selected) {
           return;
         }
 
@@ -227,9 +228,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
           "custom-page-type-fields",
         );
 
-        if (selected?.fields?.length) {
-          customPageTypeFields.style.display = "block";
-        }
+        if (!customPageTypeFields) return;
+        customPageTypeFields.style.display = selected?.fields?.length ? "block" : "none";
       });
     });
   }
