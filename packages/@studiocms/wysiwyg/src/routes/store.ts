@@ -48,6 +48,48 @@ const parsePOSTJsonRequest = <S extends Schema.Struct<any>>(context: APIContext,
 	);
 
 /**
+ * Validates the CSRF token from the request headers against the stored token in cookies.
+ *
+ * @param context - The API context containing the request and cookies.
+ * @returns An Effect that throws a 403 Response if the CSRF token is invalid or missing.
+ */
+const handleCSRF = ({ request, cookies }: APIContext) =>
+	Effect.try(() => {
+		const submittedToken = request.headers.get('X-CSRF-Token');
+		const storedToken = cookies.get('wysiwyg-csrf-token')?.value;
+
+		if (!submittedToken || !storedToken || submittedToken !== storedToken) {
+			return new Response('Invalid CSRF Token', { status: 403 });
+		}
+	});
+
+/**
+ * Verifies the user's session and authorization level.
+ *
+ * This function checks if the user is logged in and has editor permissions.
+ * If the user is not logged in or lacks the required permissions, it returns a 403 Unauthorized response.
+ *
+ * @param locals - The API context containing user session data and permission level.
+ * @returns An effect that either allows further processing or returns a 403 Unauthorized response.
+ */
+const handleUserSessionVerification = ({ locals }: APIContext) =>
+	Effect.try(() => {
+		// Get user data
+		const userData = locals.userSessionData;
+
+		// Check if user is logged in
+		if (!userData.isLoggedIn) {
+			return apiResponseLogger(403, 'Unauthorized');
+		}
+
+		// Check if user has permission
+		const isAuthorized = locals.userPermissionLevel.isEditor;
+		if (!isAuthorized) {
+			return apiResponseLogger(403, 'Unauthorized');
+		}
+	});
+
+/**
  * Handles GET requests for loading project data in the WYSIWYG store route.
  *
  * This API route performs the following actions:
@@ -66,27 +108,18 @@ export const GET: APIRoute = async (context: APIContext) =>
 		genLogger('@studiocms/wysiwyg/routes/store:GET')(function* () {
 			const { load } = yield* UseSDK;
 
-			// Get user data
-			const userData = context.locals.userSessionData;
-
-			// Check if user is logged in
-			if (!userData.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
-
-			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
+			// Ensure the user is logged in and has the necessary permissions
+			// This is done to prevent unauthorized access to project data
+			const userCheck = yield* handleUserSessionVerification(context);
+			if (userCheck instanceof Response) {
+				return userCheck; // Return the unauthorized response if user check fails
 			}
 
 			// Retrieve the CSRF token from the request headers and cookies
 			// This is to ensure that the request is secure and not a CSRF attack
-			const submittedToken = context.request.headers.get('X-CSRF-Token');
-			const storedToken = context.cookies.get('wysiwyg-csrf-token')?.value;
-
-			if (!submittedToken || !storedToken || submittedToken !== storedToken) {
-				return new Response('Invalid CSRF Token', { status: 403 });
+			const csrfCheck = yield* handleCSRF(context);
+			if (csrfCheck instanceof Response) {
+				return csrfCheck; // Return the CSRF error response if validation fails
 			}
 
 			const SearchParams = context.url.searchParams;
@@ -132,27 +165,18 @@ export const POST: APIRoute = async (context: APIContext) =>
 		genLogger('@studiocms/wysiwyg/routes/store:POST')(function* () {
 			const { store, types } = yield* UseSDK;
 
-			// Get user data
-			const userData = context.locals.userSessionData;
-
-			// Check if user is logged in
-			if (!userData.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
-
-			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
+			// Ensure the user is logged in and has the necessary permissions
+			// This is done to prevent unauthorized access to project data
+			const userCheck = yield* handleUserSessionVerification(context);
+			if (userCheck instanceof Response) {
+				return userCheck; // Return the unauthorized response if user check fails
 			}
 
 			// Retrieve the CSRF token from the request headers and cookies
 			// This is to ensure that the request is secure and not a CSRF attack
-			const submittedToken = context.request.headers.get('X-CSRF-Token');
-			const storedToken = context.cookies.get('wysiwyg-csrf-token')?.value;
-
-			if (!submittedToken || !storedToken || submittedToken !== storedToken) {
-				return new Response('Invalid CSRF Token', { status: 403 });
+			const csrfCheck = yield* handleCSRF(context);
+			if (csrfCheck instanceof Response) {
+				return csrfCheck; // Return the CSRF error response if validation fails
 			}
 
 			// Parse the request JSON
