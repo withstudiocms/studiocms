@@ -177,7 +177,7 @@ async function devAndBuild(cmd, args) {
 							if (result.warnings.length) {
 								console.info(
 									dim(`[${date}] `) +
-									yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
+										yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
 								);
 							}
 							console.info(dim(`[${date}] `) + green('√ updated'));
