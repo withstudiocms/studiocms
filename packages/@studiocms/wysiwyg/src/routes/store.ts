@@ -2,6 +2,7 @@ import { apiResponseLogger } from 'studiocms:logger';
 import type { APIContext, APIRoute } from 'astro';
 import { Cause, convertToVanilla, Effect, genLogger, ParseResult, Schema } from 'studiocms/effect';
 import { AllResponse, OptionsResponse } from 'studiocms/lib/endpointResponses';
+import { CSRF_COOKIE_NAME, CSRF_HEADER_NAME } from '../consts.js';
 import { UseSDK } from '../lib/db.js';
 
 /**
@@ -55,11 +56,11 @@ const parsePOSTJsonRequest = <S extends Schema.Struct<any>>(context: APIContext,
  */
 const handleCSRF = ({ request, cookies }: APIContext) =>
 	Effect.try(() => {
-		const submittedToken = request.headers.get('X-CSRF-Token');
-		const storedToken = cookies.get('wysiwyg-csrf-token')?.value;
+		const submittedToken = request.headers.get(CSRF_HEADER_NAME);
+		const storedToken = cookies.get(CSRF_COOKIE_NAME)?.value;
 
 		if (!submittedToken || !storedToken || submittedToken !== storedToken) {
-			return new Response('Invalid CSRF Token', { status: 403 });
+			return apiResponseLogger(403, 'CSRF token validation failed');
 		}
 	});
 
@@ -117,7 +118,7 @@ const apiChecks = Effect.fn(function* (context: APIContext) {
  * This API route performs the following actions:
  * - Retrieves the SDK instance.
  * - Checks if the user is logged in and has editor permissions.
- * - Parses the incoming GET request JSON for the `projectId`.
+ * - Extracts the `projectId` from the URL search parameters.
  * - Loads the project data using the SDK.
  * - Returns the project data as a JSON response if found.
  * - Returns appropriate error responses for unauthorized access or missing projects.
@@ -138,10 +139,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return securityCheck; // Return the unauthorized response if security check fails
 			}
 
-			const SearchParams = context.url.searchParams;
+			const searchParams = context.url.searchParams;
 
 			// If the request has a projectId in the search params, use it
-			const projectId = SearchParams.get('projectId');
+			const projectId = searchParams.get('projectId');
 
 			// If no projectId is provided, return an error response
 			if (!projectId) {
@@ -158,7 +159,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 
 			// Return the project data as a JSON response
 			return new Response(JSON.stringify(projectData), {
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 
+					'Content-Type': 'application/json',
+					'Cache-Control': 'no-store, private'
+				 },
 			});
 		})
 	);

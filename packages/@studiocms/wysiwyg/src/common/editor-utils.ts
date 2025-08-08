@@ -2,7 +2,7 @@ import { toast } from '@studiocms/ui/components/Toast/toast.js';
 import type { ToastProps } from '@studiocms/ui/types';
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
 import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
-import { STORE_ENDPOINT_PATH } from '../consts.js';
+import { CSRF_HEADER_NAME, STORE_ENDPOINT_PATH } from '../consts.js';
 import { firstUpperCase, parse } from '../lib/utils.js';
 
 /**
@@ -77,7 +77,7 @@ export const StudioCMSDbStorageAdapter = (
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',
-						'X-CSRF-Token': opts.csrfToken,
+						[CSRF_HEADER_NAME]: opts.csrfToken,
 					},
 				});
 
@@ -89,8 +89,13 @@ export const StudioCMSDbStorageAdapter = (
 					return opts.projectData;
 				}
 
-				// Parse the response data as JSON and return it
-				const responseData = (await data.json()).data as ProjectData;
+				// Parse the response and guard against a missing or malformed `.data`
+				const json = await data.json();
+				const responseData = json?.data as ProjectData | undefined;
+				if (!responseData) {
+					toast(toastProps);
+					return opts.projectData;
+				}
 				return responseData;
 			} catch (error) {
 				console.error('Error loading project data:', error);
@@ -123,7 +128,7 @@ export const StudioCMSDbStorageAdapter = (
 					body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRF-Token': opts.csrfToken,
+						[CSRF_HEADER_NAME]: opts.csrfToken,
 					},
 				});
 

@@ -22,3 +22,15 @@ export const STORE_ENDPOINT_PATH = '/studiocms_api/wysiwyg_editor/store';
  * Used to register and reference the plugin in the system.
  */
 export const TABLE_PLUGIN_ID = 'studiocms-wysiwyg';
+
+/**
+ * The name of the CSRF header used for WYSIWYG editor requests.
+ * This header is used to validate requests and prevent CSRF attacks.
+ */
+export const CSRF_HEADER_NAME = 'X-CSRF-Token';
+
+/**
+ * The name of the CSRF cookie used for WYSIWYG editor requests.
+ * This cookie stores the CSRF token to be validated against incoming requests.
+ */
+export const CSRF_COOKIE_NAME = 'wysiwyg-csrf-token';

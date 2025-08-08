@@ -135,7 +135,13 @@ router[`/${dashboardRoute}/**`] = {
 router[`/${dashboardRoute}/content-management/edit/**`] = {
 	handler: async (context, next) => {
 		const csrfToken = crypto.randomBytes(32).toString('hex');
-		context.cookies.set('wysiwyg-csrf-token', csrfToken, { httpOnly: true, path: '/', sameSite: 'strict' });
+		context.cookies.set('wysiwyg-csrf-token', csrfToken, { 
+			httpOnly: true, 
+			path: '/', 
+			sameSite: 'strict',
+			secure: context.url.protocol === 'https:',
+			maxAge: 60 * 60 * 2,
+		});
 
 		context.locals.wysiwygCsrfToken = csrfToken;
 
