@@ -1,7 +1,7 @@
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
 import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { STORE_ENDPOINT_PATH } from '../consts.js';
-import { firstUpperCase, parse } from '../utils.js';
+import { firstUpperCase, parse } from '../lib/utils.js';
 
 /**
  * Generates an HTML string representation of the main component within the editor,

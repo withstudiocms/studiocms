@@ -1,5 +1,5 @@
 import type { WysiwygDBContent } from '../types.js';
-import { parse } from '../utils.js';
+import { parse } from './utils.js';
 
 /**
  * Asynchronously pre-renders HTML content from a serialized string.
