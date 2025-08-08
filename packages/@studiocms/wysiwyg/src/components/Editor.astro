@@ -76,29 +76,29 @@ const { content, id } = Astro.props as Props;
 
     // Do stuff on load
     editor.on("load", function () {
-        var $ = grapesjs.$;
+        const $ = grapesjs.$;
 
         // Load and show settings and style manager
-        var openTmBtn = editor.Panels.getButton("views", "open-tm");
+        let openTmBtn = editor.Panels.getButton("views", "open-tm");
         openTmBtn && openTmBtn.set("active", 1);
-        var openSm = editor.Panels.getButton("views", "open-sm");
+        let openSm = editor.Panels.getButton("views", "open-sm");
         openSm && openSm.set("active", 1);
 
         // Remove trait view
         editor.Panels.removeButton("views", "open-tm");
 
         // Add Settings Sector
-        var traitsSector = $(
+        let traitsSector = $(
             '<div class="gjs-sm-sector no-select">' +
                 '<div class="gjs-sm-sector-title"><span class="icon-settings fa fa-cog"></span> <span class="gjs-sm-sector-label">Settings</span></div>' +
                 '<div class="gjs-sm-properties" style="display: none;"></div></div>',
         );
-        var traitsProps = traitsSector.find(".gjs-sm-properties");
+        let traitsProps = traitsSector.find(".gjs-sm-properties");
         traitsProps.append($(".gjs-traits-cs"));
         $(".gjs-sm-sectors").before(traitsSector);
         traitsSector.find(".gjs-sm-sector-title").on("click", function () {
-            var traitStyle = traitsProps.get(0).style;
-            var hidden = traitStyle.display === "none";
+            let traitStyle = traitsProps.get(0).style;
+            let hidden = traitStyle.display === "none";
             if (hidden) {
                 traitStyle.display = "block";
             } else {
@@ -107,7 +107,7 @@ const { content, id } = Astro.props as Props;
         });
 
         // Open block manager
-        var openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
+        let openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
         openBlocksBtn && openBlocksBtn.set("active", 1);
     });
 </script>

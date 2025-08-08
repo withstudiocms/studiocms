@@ -66,11 +66,3 @@ export const studioCMSProjectDataSchema = Schema.Struct({
 	pages: AnyArray,
 	__STUDIOCMS_HTML: Schema.optional(MString),
 });
-
-//   "dataSources": [],
-//   "assets": [],
-//   "styles": [
-//   ],
-//   "pages": [
-//   ],
-//   "symbols": [],

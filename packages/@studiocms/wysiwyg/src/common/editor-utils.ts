@@ -41,7 +41,10 @@ export const StudioCMSDbStorageAdapter = (
 ) => {
 	editor.Storage.add('db', {
 		async load() {
+			// get the URL to the store endpoint
 			const urlToFetch = new URL(STORE_ENDPOINT_PATH, window.location.origin);
+
+			// Append the projectId to the URL search parameters
 			urlToFetch.searchParams.set('projectId', opts.projectId);
 
 			// Load data from the database using the projectId
@@ -55,20 +58,32 @@ export const StudioCMSDbStorageAdapter = (
 			// Check if the response is ok, if not return the fallback projectData
 			// This ensures that if the request fails, we still have a valid projectData
 			// to work with and prevents the editor from crashing due to missing data.
-			if (!data.ok) return opts.projectData;
+			if (!data.ok) {
+				toast({
+					title: 'WYSIWYG: Error loading page',
+					description: 'There was an error loading your page. Fallback data loaded...',
+					type: 'warning',
+					duration: 3000,
+				});
+				return opts.projectData;
+			}
 
 			// Parse the response data as JSON and return it
 			const responseData = (await data.json()).data as ProjectData;
 			return responseData;
 		},
 		async store(data) {
+			// get the URL to the store endpoint
+			const urlToFetch = new URL(STORE_ENDPOINT_PATH, window.location.origin);
+
+			// get the editor's project data and generate HTML
 			const projectData = {
 				...data,
 				__STUDIOCMS_HTML: await generateHTML(editor),
 			};
 
 			// Store data in the database using the projectId
-			const response = await fetch(new URL(STORE_ENDPOINT_PATH, window.location.origin), {
+			const response = await fetch(urlToFetch, {
 				method: 'POST',
 				body: JSON.stringify({ projectId: opts.projectId, data: projectData }),
 				headers: {
@@ -76,7 +91,9 @@ export const StudioCMSDbStorageAdapter = (
 				},
 			});
 
-			// Check if the response is ok, if not throw an error
+			// Check if the response is ok, if not, show an error toast
+			// If the response is ok, show a success toast
+			// This provides feedback to the user about the success or failure of the save operation.
 			if (!response.ok) {
 				toast({
 					title: 'WYSIWYG: Error saving page',
@@ -154,7 +171,7 @@ export const getTraitData = (model: Component) => {
  */
 export const getSlotData = (model: Component) => {
 	const children = model.components().toArray();
-	let slotData = '';
+	let slotData: string | undefined;
 
 	if (children.length > 0) {
 		slotData = children.map((child) => child.toHTML()).join('');
@@ -271,10 +288,6 @@ export function getEditorElmData(
 	// Return the options for Astro components and inline storage
 	return {
 		astroComponentsOpts: { componentRegistry },
-		inlineStorageOpts: {
-			pageContent,
-			projectData,
-		},
 		StudioCMSDbStorageAdapterOpts: {
 			projectId,
 			projectData,
