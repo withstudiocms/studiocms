@@ -215,51 +215,50 @@ export const PolicyOptionsSchema = z.object({
 	cleanParam: StringArrayUnion.optional(),
 });
 
-export const RobotsTXTConfigSchema = z
-	.object({
-		/**
-		 * @default false
-		 * @description
-		 * [ Optional ] Some crawlers(Yandex) support and only accept domain names.
-		 * @example
-		 * ```ts
-		 * integrations:[
-		 *  robots({
-		 *    host: siteUrl.replace(/^https?:\/\/|:\d+/g, "")
-		 *  })
-		 * ]
-		 * ```
-		 */
-		host: StringBooleanUnion.optional(),
-		/**
-		 * @description
-		 * [ Optional, zero or more per file ] The location of a sitemap for this website.
-		 * @example
-		 * ```ts
-		 * sitemap: [
-		 *  "https://example.com/sitemap.xml",
-		 *  "https://www.example.com/sitemap.xml"
-		 * ]
-		 * ```
-		 * The value of the [SITEMAP](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#sitemap) field is case-sensitive.
-		 */
-		sitemap: StringArrayBooleanUnion.optional(),
-		/**
-		 * @description
-		 * [ Optional ] List of `policy` rules.
-		 * @default
-		 * ```ts
-		 * policy:[
-		 *  {
-		 *    userAgent: "*",
-		 *    allow: "/"
-		 *  }
-		 * ]
-		 * ```
-		 * For more help, refer to [SYNTAX](https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend) by Yandex.
-		 */
-		policy: z.array(PolicyOptionsSchema).optional(),
-	})
+export const RobotsTXTConfigSchema = z.object({
+	/**
+	 * @default false
+	 * @description
+	 * [ Optional ] Some crawlers(Yandex) support and only accept domain names.
+	 * @example
+	 * ```ts
+	 * integrations:[
+	 *  robots({
+	 *    host: siteUrl.replace(/^https?:\/\/|:\d+/g, "")
+	 *  })
+	 * ]
+	 * ```
+	 */
+	host: StringBooleanUnion.optional(),
+	/**
+	 * @description
+	 * [ Optional, zero or more per file ] The location of a sitemap for this website.
+	 * @example
+	 * ```ts
+	 * sitemap: [
+	 *  "https://example.com/sitemap.xml",
+	 *  "https://www.example.com/sitemap.xml"
+	 * ]
+	 * ```
+	 * The value of the [SITEMAP](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#sitemap) field is case-sensitive.
+	 */
+	sitemap: StringArrayBooleanUnion.optional(),
+	/**
+	 * @description
+	 * [ Optional ] List of `policy` rules.
+	 * @default
+	 * ```ts
+	 * policy:[
+	 *  {
+	 *    userAgent: "*",
+	 *    allow: "/"
+	 *  }
+	 * ]
+	 * ```
+	 * For more help, refer to [SYNTAX](https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend) by Yandex.
+	 */
+	policy: z.array(PolicyOptionsSchema).optional(),
+});
 
 export type SearchEngine = z.infer<typeof SearchEngines>;
 export type UserAgent = z.infer<typeof UserAgentSchema>;
