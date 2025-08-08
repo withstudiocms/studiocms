@@ -120,6 +120,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 			// Load the project data using the SDK
 			const projectData = yield* load(projectId);
 
+			// If no project data is found, return a 404 error
 			if (!projectData) {
 				return apiResponseLogger(404, 'Project not found');
 			}
@@ -169,6 +170,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			// Store the project data using the SDK
 			const result = yield* store(projectId, data);
 
+			// If the result is null or undefined, return an error response
 			if (!result) {
 				return apiResponseLogger(500, 'Failed to store project data');
 			}

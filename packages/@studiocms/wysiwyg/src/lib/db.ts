@@ -1,47 +1,8 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { PluginDataEntry } from 'studiocms:sdk/types';
-import { Effect, Schema } from 'studiocms/effect';
-import { AnyArray, MArrayStruct, MRecord, MString, MStruct } from './schema.js';
-
-/**
- * Schema definition for StudioCMS project data.
- *
- * This schema describes the structure of the project data used in StudioCMS,
- * including optional HTML content, data sources, assets, styles, symbols, and pages.
- *
- */
-export const studioCMSProjectDataSchema = Schema.Struct({
-	__STUDIOCMS_HTML: Schema.optional(MString),
-	dataSources: AnyArray,
-	assets: AnyArray,
-	styles: AnyArray,
-	symbols: AnyArray,
-	pages: MArrayStruct({
-		id: MString,
-		name: MString,
-		frames: MArrayStruct({
-			id: MString,
-			component: MStruct({
-				type: MString,
-				stylable: AnyArray,
-				attributes: MRecord({ key: Schema.String, value: Schema.Any }),
-				components: AnyArray,
-				head: MStruct({
-					type: MString,
-				}),
-				docEl: MStruct({
-					tagName: MString,
-				}),
-			}),
-		}),
-	}),
-});
-
-/**
- * The unique identifier for the WYSIWYG plugin within the StudioCMS ecosystem.
- * Used to register and reference the plugin in the system.
- */
-export const TABLE_PLUGIN_ID = 'studiocms-wysiwyg';
+import { Effect } from 'studiocms/effect';
+import { TABLE_PLUGIN_ID } from '../consts.js';
+import { studioCMSProjectDataSchema } from '../schema.js';
 
 /**
  * Provides an SDK for interacting with StudioCMS plugin data using Effect-based operations.

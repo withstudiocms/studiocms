@@ -50,3 +50,37 @@ export const MRecord = <K extends Schema.Schema.All, V extends Schema.Schema.All
  * @returns A mutable schema for an array containing structs with the specified fields.
  */
 export const MArrayStruct = <F extends Schema.Struct.Fields>(fields: F) => MArray(MStruct(fields));
+
+/**
+ * Schema definition for StudioCMS project data.
+ *
+ * This schema describes the structure of the project data used in StudioCMS,
+ * including optional HTML content, data sources, assets, styles, symbols, and pages.
+ *
+ */
+export const studioCMSProjectDataSchema = Schema.Struct({
+	__STUDIOCMS_HTML: Schema.optional(MString),
+	dataSources: AnyArray,
+	assets: AnyArray,
+	styles: AnyArray,
+	symbols: AnyArray,
+	pages: MArrayStruct({
+		id: MString,
+		name: MString,
+		frames: MArrayStruct({
+			id: MString,
+			component: MStruct({
+				type: MString,
+				stylable: AnyArray,
+				attributes: MRecord({ key: Schema.String, value: Schema.Any }),
+				components: AnyArray,
+				head: MStruct({
+					type: MString,
+				}),
+				docEl: MStruct({
+					tagName: MString,
+				}),
+			}),
+		}),
+	}),
+});
