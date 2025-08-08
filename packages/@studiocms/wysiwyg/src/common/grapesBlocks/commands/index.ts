@@ -1,3 +1,4 @@
+import { toast } from '@studiocms/ui/components/Toast/toast.js';
 import type { CommandFunction, CommandObject, Editor, ObjectAny } from 'grapesjs';
 import type { RequiredCustomCodeOptions, RequiredGrapesBlocksOptions } from '../types.js';
 import clear from './clear.js';
@@ -25,6 +26,12 @@ export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) 
 		run: (editor, sender) => {
    			sender?.set('active', 0);
 			editor.store();
+			toast({
+				title: 'WYSIWYG: Manually Saved Page',
+				description: "Your editor changes have been saved. Don't forget to save your changes in StudioCMS!",
+				type: 'info',
+				duration: 3000,
+			})
 		},
 	});
 }

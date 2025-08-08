@@ -30,7 +30,7 @@ const { content, id } = Astro.props as Props;
 
 <script>
     import { toast } from "@studiocms/ui/components/Toast/toast.js";
-    import grapesjs, { usePlugin } from "grapesjs";
+    import grapesjs, { usePlugin, type EditorEvent } from "grapesjs";
     import { baseConfig } from "../common/editor-settings.js";
     import { getEditorElmData, StudioCMSDbStorageAdapter } from "../common/editor-utils.js";
     import { astroComponents } from "../common/componentRegistry.js";
@@ -110,4 +110,22 @@ const { content, id } = Astro.props as Props;
         let openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
         openBlocksBtn && openBlocksBtn.set("active", 1);
     });
+
+    const updateSaveIndicator = () => {
+        const saveIndicator = document.querySelector('.save-indicator') as HTMLElement;
+
+        if (saveIndicator) {
+            const isDirty = editor.getDirtyCount() > 0;
+
+            if (isDirty) {
+                saveIndicator.classList.add('dirty');
+            } else {
+                saveIndicator.classList.remove('dirty');
+            }
+        }
+    };
+
+    const events: EditorEvent[] = ['load', 'update', 'component:add', 'component:remove', 'component:update', 'undo', 'redo'];
+
+    events.forEach(event => editor.on(event, updateSaveIndicator));
 </script>

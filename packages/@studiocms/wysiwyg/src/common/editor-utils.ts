@@ -21,6 +21,13 @@ export const generateHTML = async (editor: Editor): Promise<string> => {
 	return html;
 };
 
+const updateSaveIndicator = (editor: Editor) => {
+	const saveIndicator = document.querySelector('.save-indicator') as HTMLElement;
+	if (editor.getDirtyCount() === 0) {
+		saveIndicator.classList.remove('dirty');
+	} 
+};
+
 /**
  * Registers a custom storage adapter named 'db' for the provided editor instance.
  * This adapter enables loading and storing project data to a backend database using fetch requests.
@@ -101,19 +108,13 @@ export const StudioCMSDbStorageAdapter = (
 					type: 'danger',
 					duration: 3000,
 				});
-			} else {
-				toast({
-					title: 'WYSIWYG: Page saved',
-					description:
-						"Your editor changes have been saved. Don't forget to save your changes in StudioCMS!",
-					type: 'info',
-					duration: 3000,
-				});
 			}
 
 			// Fallback
 			// Update the page content with the serialized data
 			opts.pageContent.innerText = JSON.stringify(projectData);
+
+			updateSaveIndicator(editor);
 		},
 	});
 };
