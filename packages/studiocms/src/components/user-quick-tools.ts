@@ -271,7 +271,14 @@ class UserQuickTools extends HTMLElement {
 
 	public initOnUserInteraction() {
 		// Events that indicate user engagement
-		const interactionEvents = ['mouseenter', 'mousemove', 'touchstart', 'scroll', 'keydown', 'click'];
+		const interactionEvents = [
+			'mouseenter',
+			'mousemove',
+			'touchstart',
+			'scroll',
+			'keydown',
+			'click',
+		];
 
 		const handleUserInteraction = () => {
 			if (this.isInitialized) return;
@@ -423,26 +430,34 @@ class UserQuickTools extends HTMLElement {
 		const element = document.createElement('a');
 		element.className = `menu ${item.cssClass}`;
 		element.title = item.name;
-		element.innerHTML = item.svg;
+		// Create SVG element safely
+		const parser = new DOMParser();
+		const svgDoc = parser.parseFromString(item.svg, 'image/svg+xml');
+		const svgElement = svgDoc.documentElement;
+		if (svgElement && svgElement.nodeName === 'svg') {
+			element.appendChild(svgElement.cloneNode(true));
+		} else {
+			console.warn('Invalid SVG content for menu item:', item.name);
+		}
 		element.href = item.href;
-		
+
 		// Add click protection
 		element.addEventListener('click', (e) => {
 			const timeSinceToggle = Date.now() - this.lastMenuToggleTime;
-			
+
 			// Prevent clicks if menu items aren't ready OR if clicked too soon after toggle
 			if (!this.menuItemsReady || timeSinceToggle < this.CLICK_PROTECTION_DURATION) {
 				e.preventDefault();
 				e.stopPropagation();
-				
+
 				// Visual feedback for ignored clicks
 				element.classList.add('click-ignored');
 				setTimeout(() => element.classList.remove('click-ignored'), 300);
-				
+
 				return false;
 			}
 		});
-		
+
 		return element;
 	}
 
@@ -460,6 +475,7 @@ class UserQuickTools extends HTMLElement {
 			width: '32',
 			height: '32',
 			className: 'avatar',
+			loading: 'lazy',
 		});
 
 		avatar.setAttribute('aria-hidden', 'true');
@@ -479,12 +495,12 @@ class UserQuickTools extends HTMLElement {
 	private handleMenuToggle(): void {
 		this.lastMenuToggleTime = Date.now();
 		this.isMenuOpen = !this.isMenuOpen;
-		
+
 		if (this.isMenuOpen) {
 			// Menu is opening - delay clickable state
 			this.menuItemsReady = false;
 			this.cornerMenu?.classList.remove('menu-ready');
-			
+
 			this.readyTimeout = window.setTimeout(() => {
 				this.menuItemsReady = true;
 				this.cornerMenu?.classList.add('menu-ready');
@@ -498,7 +514,7 @@ class UserQuickTools extends HTMLElement {
 				this.readyTimeout = null;
 			}
 		}
-		
+
 		this.updateMenuState();
 	}
 
@@ -572,13 +588,13 @@ class UserQuickTools extends HTMLElement {
 	private cleanup(): void {
 		this.themeObserver?.disconnect();
 		this.themeObserver = null;
-		
+
 		// Clean up click protection timeout
 		if (this.readyTimeout) {
 			clearTimeout(this.readyTimeout);
 			this.readyTimeout = null;
 		}
-		
+
 		this.cornerMenu = null;
 		this.menuOverlay = null;
 		this.sessionData = null;
@@ -663,7 +679,7 @@ function initializeWhenReady() {
 			// Development version: Use the basic user quick tools component
 			// const element = document.createElement('user-quick-tools');
 			// element.setAttribute('data-init-strategy', 'immediate');
-			
+
 			// Production version: Use configurable version with data attributes
 			const element = document.createElement('user-quick-tools');
 			element.setAttribute('data-init-strategy', 'idle');
