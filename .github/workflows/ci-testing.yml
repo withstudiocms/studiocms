@@ -25,7 +25,7 @@ jobs:
       CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
     steps:
       - name: Check out code using Git
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
@@ -40,7 +40,7 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - name: Check out code using Git
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
@@ -58,7 +58,7 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - name: Check out code using Git
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
@@ -76,7 +76,7 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - name: Check out code using Git
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
   
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@main
