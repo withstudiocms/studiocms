@@ -15,12 +15,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  issues: write
   repository-projects: read
-  contents: write
-  pull-requests: write
-  pages: write
-  id-token: write
 
 jobs:
   format:
@@ -58,7 +53,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
   
       - name: Run Todo Issue Bot
-        uses: juulsn/todo-issue@main
+        uses: juulsn/todo-issue@15060dad73c1571dc9d6fbe6a3e64f2aad27ae74 # April 22nd, 2025
         with:
           excludePattern: '^(node_modules/)'
           autoAssign: false
