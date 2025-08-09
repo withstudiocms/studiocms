@@ -5,35 +5,35 @@ catalog:
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
-  typescript: ^5.8.3
+  typescript: ^5.9.2
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.16.1
+    "@astrojs/db": ^0.17.0
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.3.3
-    astro: ^5.12.8
+    "@astrojs/node": ^9.4.0
+    astro: ^5.12.9
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.0
-    "@effect/cluster": ^0.46.2
-    "@effect/experimental": ^0.54.3
-    "@effect/language-service": ^0.31.2
-    "@effect/platform": ^0.90.0
-    "@effect/platform-node": ^0.94.1
+    "@effect/cluster": ^0.47.0
+    "@effect/experimental": ^0.54.4
+    "@effect/language-service": ^0.35.2
+    "@effect/platform": ^0.90.1
+    "@effect/platform-node": ^0.95.0
     "@effect/printer": ^0.45.0
     "@effect/printer-ansi": ^0.45.0
-    "@effect/rpc": ^0.68.2
-    "@effect/sql": ^0.44.0
+    "@effect/rpc": ^0.68.3
+    "@effect/sql": ^0.44.1
     "@effect/typeclass": ^0.36.0
-    "@effect/workflow": ^0.8.1
-    effect: ^3.17.6
+    "@effect/workflow": ^0.8.3
+    effect: ^3.17.7
   min:
-    "@astrojs/db": ^0.16.1
+    "@astrojs/db": ^0.17.0
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
-    "@studiocms/web-vitals": ^4.3.0
+    "@studiocms/web-vitals": ^4.4.0
     astro: ^5.12.8
     drizzle-orm: ^0.42.0
     vite: ^6.3.4
@@ -46,7 +46,7 @@ catalogs:
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.3.0
+    "@studiocms/web-vitals": ^4.4.0
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
