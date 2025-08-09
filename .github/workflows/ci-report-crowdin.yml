@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
@@ -30,6 +30,6 @@ jobs:
       - name: Send a Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_I18N_REPORT }}
-        uses: Ilshidur/action-discord@0.3.2
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554 # 0.4.0
         with:
           args: "${{ steps.message.outputs.DISCORD_MESSAGE }}"

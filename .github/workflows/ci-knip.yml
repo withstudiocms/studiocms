@@ -25,7 +25,7 @@ jobs:
       if: github.event.pull_request.head.repo.full_name == github.repository
       steps:
         - name: Checkout Repo
-          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
           with:
             ref: ${{ github.head_ref }}
             token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
