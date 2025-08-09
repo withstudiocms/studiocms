@@ -5,7 +5,8 @@
     "schedule:weekly",
     "group:allNonMajor",
     ":disablePeerDependencies",
-    "customManagers:biomeVersions"
+    "customManagers:biomeVersions",
+    "helpers:pinGitHubActionDigestsToSemver"
   ],
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
@@ -32,7 +33,8 @@
     },
     {
       "groupName": "github-actions",
-      "matchManagers": ["github-actions"]
+      "matchManagers": ["github-actions"],
+      "updatePinnedDependencies": true
     },
     {
       "groupName": "Effect Dependencies",
