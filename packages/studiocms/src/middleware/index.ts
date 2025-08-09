@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { User, VerifyEmail } from 'studiocms:auth/lib';
 import { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
@@ -118,6 +119,34 @@ router[`/${dashboardRoute}/**`] = {
 				return next();
 			}).pipe(Effect.provide(User.Default))
 		),
+};
+
+// TODO: Add a way for plugins to enable CSRF protection on their own editors
+/**
+ * Middleware function to set a CSRF token for the WYSIWYG editor.
+ * This middleware generates a new CSRF token and sets it in the cookies
+ * for the WYSIWYG editor routes.
+ *
+ * @param context - The API context object containing request and response information.
+ * @param next - The next middleware function in the chain to be executed.
+ *
+ * @returns A generator function that generates a CSRF token and sets it in the cookies.
+ */
+router[`/${dashboardRoute}/content-management/edit/**`] = {
+	handler: async (context, next) => {
+		const csrfToken = crypto.randomBytes(32).toString('hex');
+		context.cookies.set('wysiwyg-csrf-token', csrfToken, { 
+			httpOnly: true, 
+			path: '/', 
+			sameSite: 'strict',
+			secure: context.url.protocol === 'https:',
+			maxAge: 60 * 60 * 2,
+		});
+
+		context.locals.wysiwygCsrfToken = csrfToken;
+
+		return next();
+	},
 };
 
 export const onRequest = defineMiddlewareRouter(router);

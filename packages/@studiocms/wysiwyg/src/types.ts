@@ -1,11 +1,9 @@
 import { z } from 'astro/zod';
-import type { ProjectData } from 'grapesjs';
+import type { Schema } from 'studiocms/effect';
 import { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
+import type { studioCMSProjectDataSchema } from './schema.js';
 
-export interface WysiwygDBContent extends ProjectData {
-	/** The HTML content of the WYSIWYG editor */
-	__STUDIOCMS_HTML: string;
-}
+export interface WysiwygDBContent extends Schema.SimplifyMutable<typeof studioCMSProjectDataSchema.Type> {}
 
 /**
  * Defines the schema for HTML configuration options.

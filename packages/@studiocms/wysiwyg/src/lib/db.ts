@@ -1,57 +1,8 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { PluginDataEntry } from 'studiocms:sdk/types';
-import { Effect, Schema } from 'studiocms/effect';
-
-// this is used for testing, and is planned to be used in the future
-
-/**
- * Schema definition for an array containing elements of any type.
- */
-const AnyArray = Schema.Array(Schema.Any);
-
-/**
- * Schema definition for StudioCMS project data.
- *
- * This schema describes the structure of the project data used in StudioCMS,
- * including optional HTML content, data sources, assets, styles, symbols, and pages.
- *
- */
-export const studioCMSProjectDataSchema = Schema.Struct({
-	__STUDIOCMS_HTML: Schema.optional(Schema.String),
-	dataSources: AnyArray,
-	assets: AnyArray,
-	styles: AnyArray,
-	symbols: AnyArray,
-	pages: Schema.Array(
-		Schema.Struct({
-			id: Schema.String,
-			name: Schema.String,
-			frames: Schema.Array(
-				Schema.Struct({
-					id: Schema.String,
-					component: Schema.Struct({
-						type: Schema.String,
-						stylable: AnyArray,
-						attributes: Schema.Record({ key: Schema.String, value: Schema.Any }),
-						components: AnyArray,
-						head: Schema.Struct({
-							type: Schema.String,
-						}),
-						docEl: Schema.Struct({
-							tagName: Schema.String,
-						}),
-					}),
-				})
-			),
-		})
-	),
-});
-
-/**
- * The unique identifier for the WYSIWYG plugin within the StudioCMS ecosystem.
- * Used to register and reference the plugin in the system.
- */
-export const TABLE_PLUGIN_ID = 'studiocms-wysiwyg';
+import { Effect } from 'studiocms/effect';
+import { WYSIWYG_TABLE_PLUGIN_ID } from '../consts.js';
+import { studioCMSProjectDataSchema } from '../schema.js';
 
 /**
  * Provides an SDK for interacting with StudioCMS plugin data using Effect-based operations.
@@ -88,7 +39,7 @@ export const UseSDK = Effect.gen(function* () {
 	type InferInsert = typeof infer.$Insert;
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
-	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(TABLE_PLUGIN_ID, {
+	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(WYSIWYG_TABLE_PLUGIN_ID, {
 		validator: { effectSchema: studioCMSProjectDataSchema },
 	});
 
@@ -128,5 +79,10 @@ export const UseSDK = Effect.gen(function* () {
 			getEntry(id)
 				.select()
 				.pipe(Effect.flatMap((entry) => updateOrInsert(entry)(id, data))),
+
+		/**
+		 * Returns the inferred type for the plugin data schema.
+		 */
+		types: infer,
 	};
 });

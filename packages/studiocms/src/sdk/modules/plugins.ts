@@ -707,7 +707,7 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				S extends Schema.Struct<any>,
 				R = RecursiveSimplifyMutable<S['Type']>,
 			> {
-				readonly _Schema: S | null = null;
+				readonly _Schema: S;
 				readonly $UsePluginData!: S;
 				readonly $Insert!: R;
 				constructor(schema: S) {

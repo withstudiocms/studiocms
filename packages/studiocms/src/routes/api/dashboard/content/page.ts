@@ -96,7 +96,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			const content = {
 				id: crypto.randomUUID(),
-				content: formData.get('page-content')?.toString() ?? '',
+				// content is no longer supported during page creation due to current editor setup
+				// look into options in the future for how we can do this correctly.
+				// Requires being able to swap in editors which currently does not work.
+				content: '',
 			} as UpdatePageContent;
 
 			if (!data.title) {

@@ -11,12 +11,16 @@ const componentRegistry = getRegistryComponents();
 interface Props extends PluginPageTypeEditorProps {}
 
 // Extract the content from Astro props
-const { content } = Astro.props as Props;
+const { content, id = '' } = Astro.props as Props;
+
+const token = Astro.locals.wysiwygCsrfToken;
 ---
 
 <div
     class="scms-grapesjs-container"
+    data-page-id={id}
     data-component-registry={JSON.stringify(componentRegistry)}
+    data-wysiwyg-csrf-token={token}
 >
     <div class="editor">
         <div id="gjs"></div>
@@ -29,21 +33,22 @@ const { content } = Astro.props as Props;
 
 <script>
     import { toast } from "@studiocms/ui/components/Toast/toast.js";
-    import grapesjs, { usePlugin } from "grapesjs";
+    import grapesjs, { usePlugin, type EditorEvent } from "grapesjs";
     import { baseConfig } from "../common/editor-settings.js";
-    import { getEditorElmData, inlineStorage } from "../common/editor-utils.js";
+    import {
+        getEditorElmData,
+        StudioCMSDbStorageAdapter,
+    } from "../common/editor-utils.js";
     import { astroComponents } from "../common/componentRegistry.js";
     import grapesBlocks from "../common/grapesBlocks/index.js";
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings
-    const { astroComponentsOpts, inlineStorageOpts } = getEditorElmData(
-        document,
-        {
+    const { astroComponentsOpts, StudioCMSDbStorageAdapterOpts } =
+        getEditorElmData(document, {
             container: ".scms-grapesjs-container",
             pageContent: "#page-content",
-        },
-    );
+        });
 
     // Initialize the GrapesJS editor with the base configuration and plugins
     // The plugins include custom components, inline storage, and various editor features
@@ -54,7 +59,7 @@ const { content } = Astro.props as Props;
         ...baseConfig,
         plugins: [
             usePlugin(astroComponents, astroComponentsOpts),
-            usePlugin(inlineStorage, inlineStorageOpts),
+            usePlugin(StudioCMSDbStorageAdapter, StudioCMSDbStorageAdapterOpts),
             usePlugin(grapesBlocks),
         ],
     });
@@ -67,7 +72,7 @@ const { content } = Astro.props as Props;
                 title: "Warning",
                 type: "warning",
                 description: msg,
-                duration: 10000,
+                duration: 5000,
             });
         }
         origWarn(msg);
@@ -75,29 +80,29 @@ const { content } = Astro.props as Props;
 
     // Do stuff on load
     editor.on("load", function () {
-        var $ = grapesjs.$;
+        const $ = grapesjs.$;
 
         // Load and show settings and style manager
-        var openTmBtn = editor.Panels.getButton("views", "open-tm");
+        let openTmBtn = editor.Panels.getButton("views", "open-tm");
         openTmBtn && openTmBtn.set("active", 1);
-        var openSm = editor.Panels.getButton("views", "open-sm");
+        let openSm = editor.Panels.getButton("views", "open-sm");
         openSm && openSm.set("active", 1);
 
         // Remove trait view
         editor.Panels.removeButton("views", "open-tm");
 
         // Add Settings Sector
-        var traitsSector = $(
+        let traitsSector = $(
             '<div class="gjs-sm-sector no-select">' +
                 '<div class="gjs-sm-sector-title"><span class="icon-settings fa fa-cog"></span> <span class="gjs-sm-sector-label">Settings</span></div>' +
                 '<div class="gjs-sm-properties" style="display: none;"></div></div>',
         );
-        var traitsProps = traitsSector.find(".gjs-sm-properties");
+        let traitsProps = traitsSector.find(".gjs-sm-properties");
         traitsProps.append($(".gjs-traits-cs"));
         $(".gjs-sm-sectors").before(traitsSector);
         traitsSector.find(".gjs-sm-sector-title").on("click", function () {
-            var traitStyle = traitsProps.get(0).style;
-            var hidden = traitStyle.display === "none";
+            let traitStyle = traitsProps.get(0).style;
+            let hidden = traitStyle.display === "none";
             if (hidden) {
                 traitStyle.display = "block";
             } else {
@@ -106,7 +111,37 @@ const { content } = Astro.props as Props;
         });
 
         // Open block manager
-        var openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
+        let openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
         openBlocksBtn && openBlocksBtn.set("active", 1);
     });
+
+    const updateSaveIndicator = () => {
+        const saveIndicator = document.querySelector(
+            ".save-indicator",
+        ) as HTMLElement;
+
+        if (saveIndicator) {
+            const isDirty = editor.getDirtyCount() > 0;
+
+            if (isDirty) {
+                saveIndicator.classList.add("dirty");
+            } else {
+                saveIndicator.classList.remove("dirty");
+            }
+        }
+    };
+
+    const updateIndicatorEvents: EditorEvent[] = [
+        "load",
+        "update",
+        "component:add",
+        "component:remove",
+        "component:update",
+        "undo",
+        "redo",
+    ];
+
+    updateIndicatorEvents.forEach((event) =>
+        editor.on(event, updateSaveIndicator),
+    );
 </script>

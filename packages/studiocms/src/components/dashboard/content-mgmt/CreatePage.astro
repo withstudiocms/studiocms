@@ -1,10 +1,7 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import type { SettingsField } from 'studiocms:plugin-helpers';
 import pluginList from 'studiocms:plugins';
 import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
-import { editorKeys } from 'virtual:studiocms/components/Editors';
-import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -13,29 +10,7 @@ import {
 	trueFalse,
 } from './shared.js';
 
-const editors = await importEditorKeys(editorKeys);
-
-// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
-let editor: any = editors[convertToSafeString('studiocms/markdown')];
-
-const CurrentEditorComponent = editor;
-
-const pluginFields = pluginList.flatMap(({ pageTypes }) => {
-	const pageTypeOutput: {
-		identifier: string;
-		fields?: SettingsField[];
-	}[] = [];
-
-	if (!pageTypes) {
-		return pageTypeOutput;
-	}
-
-	for (const pageType of pageTypes) {
-		pageTypeOutput.push(pageType);
-	}
-
-	return pageTypeOutput;
-});
+const pluginFields = pluginList.flatMap(({ pageTypes }) => pageTypes ?? []);
 
 interface Props {
 	lang: UiLanguageKeys;
@@ -45,286 +20,342 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
-<div id="create-page-container" data-content-management-url={Astro.locals.routeMap.mainLinks.contentManagement}>
-    <form id="page-create-form" action={Astro.locals.routeMap.endpointLinks.content.page}>
 
-      <Tabs variant={'starlight'}>
-        <TabItem label={t('tab-label-basic-info')} icon={'information-circle-20-solid'} color={'primary'}>
-          <div class="tab-section">
-            <div class="form-row">
-                <Input label={t('input-page-title')} name='page-title' isRequired />
-                <Input label={t('input-page-slug')} name='page-slug' isRequired />
-            </div>
-    
-            <div class="form-row">
-              <Input label={t('input-page-description')} name='page-description' isRequired />
-              <Input label={t('input-page-hero-image')} name='page-hero-image' placeholder='https://...' />
-            </div>
-    
-            <div class="form-row">
-                <Select 
-                    label={t('select-page-type')}
-                    name="page-type" 
-                    isRequired 
-                    fullWidth 
-                    defaultValue='studiocms/markdown'
-                    options={pageTypeOptions} 
-                    />
-                <Select 
-                    label={t('select-page-show-in-nav')}
-                    name="show-in-nav" 
-                    isRequired 
-                    defaultValue='false'
-                    fullWidth 
-                    options={trueFalse} 
-                    />
-            </div>
-    
-            <div class="form-row">
-                <Select label={t('select-page-parent-folder')} name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
-                <Select label={t('select-page-draft')} name="draft" fullWidth options={trueFalse} disabled placeholder='Use submission buttons above'/>
-            </div>
-    
-            <div class="form-row">
-                <Select label={t('select-page-categories')} name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-                <Select label={t('select-page-tags')} name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
-            </div>
-    
-            <div class="form-row">
-                <Select label={t('select-page-show-author')} name="show-author" defaultValue="false" fullWidth options={trueFalse} />
-                <Select label={t('select-page-show-contributors')} name="show-contributors" defaultValue="false" fullWidth options={trueFalse} />
-            </div>
-
-            <div id="custom-page-type-fields" style="display: none;">
-              <Card fullWidth>
-                <div slot="header">
-                  <span>
-                    <t-content-create-page key="custom-page-type-fields-header">{t('custom-page-type-fields-header')}</t-content-create-page>
-                  </span>
-                </div>
-                <div>
-                  <t-content-create-page key="custom-page-types-description-new">{t('custom-page-types-description-new')}</t-content-create-page>
-                </div>
-              </Card>
-            </div>
-
+<div
+  id="create-page-container"
+  data-content-management-url={Astro.locals.routeMap.mainLinks
+    .contentManagement}
+>
+  <form
+    id="page-create-form"
+    action={Astro.locals.routeMap.endpointLinks.content.page}
+  >
+    <Tabs variant={"starlight"}>
+      <TabItem
+        label={t("tab-label-basic-info")}
+        icon={"information-circle-20-solid"}
+        color={"primary"}
+      >
+        <div class="tab-section">
+          <div class="form-row">
+            <Input label={t("input-page-title")} name="page-title" isRequired />
+            <Input label={t("input-page-slug")} name="page-slug" isRequired />
           </div>
-          </TabItem>
-          <TabItem label={t('tab-label-content')} icon={'document-text-20-solid'} color={'success'}>
-            <div class="tab-section">
-              <div class="page-content-editor">
-                <CurrentEditorComponent />
-                <div id="page-content-editor-placeholder" style="display: none;"></div>
-              </div>
-            </div>
-          </TabItem>
-        </Tabs>
 
-    </form>
+          <div class="form-row">
+            <Input
+              label={t("input-page-description")}
+              name="page-description"
+              isRequired
+            />
+            <Input
+              label={t("input-page-hero-image")}
+              name="page-hero-image"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div class="form-row">
+            <Select
+              label={t("select-page-type")}
+              name="page-type"
+              isRequired
+              fullWidth
+              defaultValue="studiocms/markdown"
+              options={pageTypeOptions}
+            />
+            <Select
+              label={t("select-page-show-in-nav")}
+              name="show-in-nav"
+              isRequired
+              defaultValue="false"
+              fullWidth
+              options={trueFalse}
+            />
+          </div>
+
+          <div class="form-row">
+            <Select
+              label={t("select-page-parent-folder")}
+              name="parent-folder"
+              fullWidth
+              options={parentFolderOptions}
+              defaultValue="null"
+            />
+            <Select
+              label={t("select-page-draft")}
+              name="draft"
+              fullWidth
+              options={trueFalse}
+              disabled
+              placeholder="Use submission buttons above"
+            />
+          </div>
+
+          <div class="form-row">
+            <Select
+              label={t("select-page-categories")}
+              name="categories"
+              placeholder="Work in Progress"
+              fullWidth
+              options={categoriesOptions}
+              disabled
+            />
+            <Select
+              label={t("select-page-tags")}
+              name="tags"
+              placeholder="Work in Progress"
+              fullWidth
+              options={tagsOptions}
+              disabled
+            />
+          </div>
+
+          <div class="form-row">
+            <Select
+              label={t("select-page-show-author")}
+              name="show-author"
+              defaultValue="false"
+              fullWidth
+              options={trueFalse}
+            />
+            <Select
+              label={t("select-page-show-contributors")}
+              name="show-contributors"
+              defaultValue="false"
+              fullWidth
+              options={trueFalse}
+            />
+          </div>
+
+          <div id="custom-page-type-fields" style="display: none;">
+            <Card fullWidth>
+              <div slot="header">
+                <span>
+                  <t-content-create-page key="custom-page-type-fields-header"
+                    >{
+                      t("custom-page-type-fields-header")
+                    }</t-content-create-page
+                  >
+                </span>
+              </div>
+              <div>
+                <t-content-create-page key="custom-page-types-description-new"
+                  >{
+                    t("custom-page-types-description-new")
+                  }</t-content-create-page
+                >
+              </div>
+            </Card>
+          </div>
+        </div>
+      </TabItem>
+      <TabItem
+        label={t("tab-label-content")}
+        icon={"document-text-20-solid"}
+        color={"success"}
+      >
+        <div class="tab-section">
+          <div class="page-content-editor">
+            <div id="page-content-editor-placeholder"></div>
+          </div>
+        </div>
+      </TabItem>
+    </Tabs>
+  </form>
 </div>
 
 <script>
-    import { 
-        $i18n,
-        baseTranslation,
-        makeTranslation,
-        updateElmLabel,
-        updateSelectElmLabel
-    } from 'studiocms:i18n/client';
+  import {
+    $i18n,
+    baseTranslation,
+    makeTranslation,
+    updateElmLabel,
+    updateSelectElmLabel,
+  } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:content-page';
+  const currentPage = "@studiocms/dashboard:content-page";
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-      
-    i18n.subscribe(comp => {
-        updateElmLabel('page-title', comp['input-page-title']);
-        updateElmLabel('page-slug', comp['input-page-slug']);
-        updateElmLabel('page-description', comp['input-page-description']);
-        updateElmLabel('page-hero-image', comp['input-page-hero-image']);
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-        updateSelectElmLabel('page-type', comp['select-page-type']);
-        updateSelectElmLabel('show-in-nav', comp['select-page-show-in-nav']);
-        updateSelectElmLabel('parent-folder', comp['select-page-parent-folder']);
-        updateSelectElmLabel('draft', comp['select-page-draft']);
-        updateSelectElmLabel('categories', comp['select-page-categories']);
-        updateSelectElmLabel('tags', comp['select-page-tags']);
-        updateSelectElmLabel('show-author', comp['select-page-show-author']);
-        updateSelectElmLabel('show-contributors', comp['select-page-show-contributors']);
-    });
-    
-    if (!customElements.get('t-content-create-page')) {
-        customElements.define('t-content-create-page', makeTranslation(currentPage, i18n));
-    }
+  i18n.subscribe((comp) => {
+    updateElmLabel("page-title", comp["input-page-title"]);
+    updateElmLabel("page-slug", comp["input-page-slug"]);
+    updateElmLabel("page-description", comp["input-page-description"]);
+    updateElmLabel("page-hero-image", comp["input-page-hero-image"]);
+
+    updateSelectElmLabel("page-type", comp["select-page-type"]);
+    updateSelectElmLabel("show-in-nav", comp["select-page-show-in-nav"]);
+    updateSelectElmLabel("parent-folder", comp["select-page-parent-folder"]);
+    updateSelectElmLabel("draft", comp["select-page-draft"]);
+    updateSelectElmLabel("categories", comp["select-page-categories"]);
+    updateSelectElmLabel("tags", comp["select-page-tags"]);
+    updateSelectElmLabel("show-author", comp["select-page-show-author"]);
+    updateSelectElmLabel(
+      "show-contributors",
+      comp["select-page-show-contributors"],
+    );
+  });
+
+  if (!customElements.get("t-content-create-page")) {
+    customElements.define(
+      "t-content-create-page",
+      makeTranslation(currentPage, i18n),
+    );
+  }
 </script>
 
-
-<script is:inline define:vars={{ editors, pluginFields }}>
-
-// TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
-
+<script is:inline define:vars={{ pluginPageTypes: pluginFields }}>
   async function setupPluginFields() {
-    const pageTypeDropdown = document.querySelector('#page-type-dropdown');
-    const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
+    const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+    if (!pageTypeDropdown) return;
+    const pageTypeOptions =
+      pageTypeDropdown.querySelectorAll(".sui-select-option");
 
     pageTypeOptions.forEach((option) => {
-      option.addEventListener('click', async () => {
-        const selectedValue = option.getAttribute('value');
+      option.addEventListener("click", async () => {
+        const selectedValue = option.getAttribute("value");
 
-        const pluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
+        const selected = pluginPageTypes.find(
+          (p) => p.identifier === selectedValue,
+        );
 
-        if (!pluginFields) {
+        if (!selected) {
           return;
         }
 
-        const customPageTypeFields = document.getElementById('custom-page-type-fields');
+        const customPageTypeFields = document.getElementById(
+          "custom-page-type-fields",
+        );
 
-        if (pluginFields.fields > 0) {
-          customPageTypeFields.style.display = 'block';
-        }
-      })
-    })
-  }
-
-  async function setupPageEditorSwapper() {
-    const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
-
-    currentPageTypeOptions.forEach((option) => {
-      option.addEventListener('click', async () => {
-
-        const selectedValue = option.getAttribute('value');
-
-        if (selectedValue !== 'studiocms/markdown') {
-          const editorContainer = document.querySelector('.page-content-editor');
-          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
-
-          if (editors.find((editor) => editor.identifier !== selectedValue)) {
-            return;
-          }
-
-          editorContainer.style.display = 'none';
-          editorPlaceholder.style.display = 'block';
-          editorPlaceholder.innerText = 'You have changed your pageType. Please save your changes and refresh the page to see the new editor.';
-        }
-
-        if (selectedValue === 'studiocms/markdown') {
-          const editorContainer = document.querySelector('.page-content-editor');
-          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
-
-          editorContainer.style.display = 'block';
-          editorPlaceholder.style.display = 'none';
-        }
-      })
-    })
+        if (!customPageTypeFields) return;
+        customPageTypeFields.style.display = selected?.fields?.length ? "block" : "none";
+      });
+    });
   }
 
   setupPluginFields();
-  setupPageEditorSwapper();
 </script>
 
 <script>
-import { toast } from "studiocms:ui/components";
-    // get the elements
-    const createPageForm = document.getElementById('page-create-form') as HTMLFormElement;
-    const createContainer = document.getElementById('create-page-container') as HTMLDivElement;
+  import { toast } from "studiocms:ui/components";
+  // get the elements
+  const createPageForm = document.getElementById(
+    "page-create-form",
+  ) as HTMLFormElement;
+  const createContainer = document.getElementById(
+    "create-page-container",
+  ) as HTMLDivElement;
+  const draftButton = document.getElementById("draft-button") as HTMLElement;
 
-    const { contentManagementUrl } = createContainer.dataset;
+  const { contentManagementUrl } = createContainer.dataset;
 
-    const draftButton = document.getElementById('draft-button') as HTMLElement;
-    const publishButton = document.getElementById('publish-button') as HTMLElement;
+  createPageForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.warn(
+      "Form not submitted. Please use the buttons above to save or publish the page.",
+    );
+  });
 
-    createPageForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      console.warn('Form not submitted. Please use the buttons above to save or publish the page.');
+  async function runFormAction(e: Event, form: HTMLFormElement) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    formData.set("draft", "true");
+
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: formData,
     });
 
-    async function runFormAction(e: Event, form: HTMLFormElement, draft: boolean = false) {
-      e.preventDefault();
-      const formData = new FormData(form);
+    const res = await response.json();
 
-      formData.set('draft', draft ? 'true' : 'false');
-
-      const response = await fetch(form.action, {
-          method: 'POST',
-          body: formData,
+    if (response.status !== 200) {
+      toast({
+        title: "Error",
+        description: res.error,
+        type: "danger",
       });
-
-      const res = await response.json();
-
-      if (response.status !== 200) {
-          toast({
-              title: 'Error',
-              description: res.error,
-              type: 'danger'
-          })
-          return;
-      }
-
-      if (response.status === 200) {
-          toast({
-              title: 'Success',
-              description: res.message,
-              type: 'success'
-          })
-          if (contentManagementUrl) window.location.href = contentManagementUrl;
-          return;
-      }
+      return;
     }
 
-    draftButton.addEventListener('click', async (e) => await runFormAction(e, createPageForm, true));
+    if (response.status === 200) {
+      toast({
+        title: "Success",
+        description: res.message,
+        type: "success",
+      });
+      if (contentManagementUrl) window.location.href = contentManagementUrl;
+      return;
+    }
+  }
 
-    publishButton.addEventListener('click', async (e) => await runFormAction(e, createPageForm))
-  </script>
+  draftButton.addEventListener(
+    "click",
+    async (e) => await runFormAction(e, createPageForm),
+  );
+
+  async function setupPageEditor() {
+    const editorPlaceholder = document.getElementById(
+      "page-content-editor-placeholder",
+    ) as HTMLDivElement;
+    editorPlaceholder.innerText =
+      "Editor is not available until page creation, please create the page first!";
+  }
+
+  setupPageEditor();
+</script>
 
 <style>
   #create-page-container {
-      height: 100%;
-      width: 100%;
-      min-width: 100%;
+    height: 100%;
+    width: 100%;
+    min-width: 100%;
   }
 
   #page-create-form {
-      display: flex;
-      flex-direction: column;
-      gap: .75rem;
-      padding-top: .5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
   }
 
   .tab-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .75rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
   }
 
   @media screen and (max-width: 768px) {
-      .form-row {
-          grid-template-columns: 1fr;
-      }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
   }
 
   .page-content-editor {
-      height: 250px;
-      margin-bottom: 1rem;
+    height: 250px;
+    margin-bottom: 1rem;
+  }
 
-      .editor-container {
-          height: 100%;
-          overflow: hidden;
-          margin-bottom: 1rem;
-      }
+  .page-content-editor .editor-container {
+    height: 100%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
 
-      #page-content {
-          height: 100%;
-          width: 100%;
-          border: 1px solid hsl(var(--border));
-          border-radius: 4px;
-          padding: 1rem;
-          font-size: 1rem;
-          overflow-y: auto;
-      }
+  .page-content-editor #page-content {
+    height: 100%;
+    width: 100%;
+    border: 1px solid hsl(var(--border));
+    border-radius: 4px;
+    padding: 1rem;
+    font-size: 1rem;
+    overflow-y: auto;
   }
 </style>

@@ -8,8 +8,8 @@
 
 import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
-import { shared } from './common/shared.js';
-import { GRAPES_CSS_PATH, PARTIAL_PATH } from './consts.js';
+import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
+import { shared } from './lib/shared.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
 
 /**
@@ -54,6 +54,11 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 			pattern: GRAPES_CSS_PATH,
 			prerender: false,
 		},
+		{
+			entrypoint: resolve('./routes/store.js'),
+			pattern: STORE_ENDPOINT_PATH,
+			prerender: false,
+		}
 	];
 
 	// Return the plugin configuration

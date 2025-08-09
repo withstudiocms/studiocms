@@ -1,8 +1,8 @@
 ---
 import { createRenderer } from 'studiocms:component-registry/runtime';
 import type { PluginPageTypeRendererProps } from 'studiocms/types';
-import { preRenderer } from '../common/prerender.js';
-import { shared } from '../common/shared.js';
+import { preRenderer } from '../lib/prerender.js';
+import { shared } from '../lib/shared.js';
 
 // @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
 const ssrResult: SSRResult = $$result;

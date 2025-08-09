@@ -1,5 +1,5 @@
 import type { WysiwygDBContent } from '../types.js';
-import { parse } from '../utils.js';
+import { parse } from './utils.js';
 
 /**
  * Asynchronously pre-renders HTML content from a serialized string.
@@ -32,10 +32,8 @@ export const preRenderer = async (content: string) => {
 			parsedContent = '<h1>Error: Content found but invalid format</h1>';
 		}
 	} catch (error) {
-		// If parsing fails, log the error and return an error message
-		// This ensures that any issues during parsing do not crash the application
 		console.error('Error parsing content:', error);
-		parsedContent = `<h1>Error parsing content: ${error instanceof Error ? error.message : 'Unknown error'}</h1>`;
+		parsedContent = '<h1>Error parsing content</h1>';
 	}
 
 	// Return the final parsed content, which may be an error message or valid HTML
