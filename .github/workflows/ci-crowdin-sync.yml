@@ -34,7 +34,7 @@ jobs:
           persist-credentials: false
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
-      - name: Synchronize with Crowdin
+      - name: Crowdin pull
         uses: crowdin/github-action@590c05e09a29f392b203faf4d6aa8e0cd32c7835 # v2.9.1
         with:
           upload_sources: false
