@@ -1,7 +1,7 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { PluginDataEntry } from 'studiocms:sdk/types';
 import { Effect } from 'studiocms/effect';
-import { TABLE_PLUGIN_ID } from '../consts.js';
+import { WYSIWYG_TABLE_PLUGIN_ID } from '../consts.js';
 import { studioCMSProjectDataSchema } from '../schema.js';
 
 /**
@@ -39,7 +39,7 @@ export const UseSDK = Effect.gen(function* () {
 	type InferInsert = typeof infer.$Insert;
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
-	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(TABLE_PLUGIN_ID, {
+	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(WYSIWYG_TABLE_PLUGIN_ID, {
 		validator: { effectSchema: studioCMSProjectDataSchema },
 	});
 
