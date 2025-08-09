@@ -19,14 +19,13 @@ on:
     branches: 
       - main
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   crowdin-download:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'download' || github.event_name == 'repository_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -53,6 +52,8 @@ jobs:
   crowdin-upload:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'upload' || github.event_name == 'push'
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
