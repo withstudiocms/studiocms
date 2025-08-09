@@ -5,15 +5,15 @@ catalog:
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
-  typescript: ^5.8.3
+  typescript: ^5.9.2
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.16.1
+    "@astrojs/db": ^0.17.0
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.3.3
-    astro: ^5.12.8
+    "@astrojs/node": ^9.4.0
+    astro: ^5.12.9
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.0
@@ -46,7 +46,7 @@ catalogs:
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.3.0
+    "@studiocms/web-vitals": ^4.4.0
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
