@@ -1,4 +1,4 @@
-name: Translation Changesets
+name: CI - Translation Changesets
 
 on:
   pull_request:

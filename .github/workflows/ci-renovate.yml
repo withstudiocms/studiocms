@@ -1,4 +1,4 @@
-name: Add changeset to Renovate updates
+name: CI - Renovate Changesets
 
 on:
   pull_request:
