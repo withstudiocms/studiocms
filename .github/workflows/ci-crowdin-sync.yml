@@ -21,6 +21,7 @@ on:
 
 jobs:
   crowdin-download:
+    name: Download Crowdin Translations
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'download' || github.event_name == 'repository_dispatch'
     permissions:
@@ -50,6 +51,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
   crowdin-upload:
+    name: Upload Crowdin Sources
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'upload' || github.event_name == 'push'
     permissions:
