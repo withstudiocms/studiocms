@@ -3,8 +3,6 @@ name: CI - Renovate Changesets
 on:
   pull_request:
     types: [opened, synchronize, labeled]
-    paths:
-      - 'packages/**'
 
 permissions: {}
 

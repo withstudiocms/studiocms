@@ -2,16 +2,31 @@ name: CI - Crowdin Sync PR
 
 on:
   workflow_dispatch:
+    inputs:
+      direction:
+        description: 'Direction of translation sync'
+        required: true
+        default: 'download'
+        type: choice
+        options:
+          - download
+          - upload
   repository_dispatch:
     types: [file.translated, file.approved, file.added, file.updated]
+  push:
+    paths: 
+      - 'packages/studiocms/src/lib/i18n/translations/**'
+    branches: 
+      - main
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  crowdin:
+  crowdin-download:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'download' || github.event_name == 'repository_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -32,5 +47,24 @@ jobs:
           pull_request_base_branch_name: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+  crowdin-upload:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'upload' || github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Crowdin push
+        uses: crowdin/github-action@590c05e09a29f392b203faf4d6aa8e0cd32c7835 # v2.9.1
+        with:
+          upload_sources: true
+          upload_translations: true
+          download_translations: false
+        env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
