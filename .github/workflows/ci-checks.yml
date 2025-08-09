@@ -1,17 +1,17 @@
-name: ci - Knip Lint
+name: ci - Checks
 
 on:
-  workflow_dispatch:
+  push:
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
+    branches: ["**"]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions: {}
 
 jobs:
-  lint:
+  knip:
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -30,3 +30,17 @@ jobs:
 
       - name: Run Knip Linter
         run: pnpm knip
+
+  zizmor:
+    name: Run Zizmor Actions Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
