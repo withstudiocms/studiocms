@@ -436,8 +436,8 @@ importers:
         specifier: catalog:react
         version: 4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(jiti@2.4.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tsx@4.20.3)(yaml@2.8.0)
       '@markdoc/markdoc':
-        specifier: ^0.5.2
-        version: 0.5.2(@types/react@19.1.9)(react@19.1.1)
+        specifier: ^0.5.4
+        version: 0.5.4(@types/react@19.1.9)(react@19.1.1)
       '@studiocms/md':
         specifier: workspace:*
         version: link:../md
@@ -1752,8 +1752,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@markdoc/markdoc@0.5.2':
-    resolution: {integrity: sha512-clrqWpJ3+S8PXigRE+zBIs6LVZYXaJ7JTDFq1CcCWc4xpoB2kz+9qRUQQ4vXtLUjQ8ige1BGdMruV6gM/2gloA==}
+  '@markdoc/markdoc@0.5.4':
+    resolution: {integrity: sha512-36YFNlqFk//gVNGm5xZaTWVwbAVF2AOmVjf1tiUrS6tCoD/YSkVy2E3CkAfhc5MlKcjparL/QFHCopxL4zRyaQ==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
@@ -3826,6 +3826,7 @@ packages:
 
   libsql@0.5.17:
     resolution: {integrity: sha512-RRlj5XQI9+Wq+/5UY8EnugSWfRmHEw4hn3DKlPrkUgZONsge1PwTtHcpStP6MSNi8ohcbsRgEHJaymA33a8cBw==}
+    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   linkify-it@5.0.0:
@@ -6537,7 +6538,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@markdoc/markdoc@0.5.2(@types/react@19.1.9)(react@19.1.1)':
+  '@markdoc/markdoc@0.5.4(@types/react@19.1.9)(react@19.1.1)':
     optionalDependencies:
       '@types/linkify-it': 3.0.5
       '@types/markdown-it': 12.2.3
