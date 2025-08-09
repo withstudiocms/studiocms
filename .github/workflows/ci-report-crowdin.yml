@@ -5,11 +5,15 @@ on:
     - cron: '0 10 * * TUE'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   translation:
     name: translation_report
     if: ${{ github.repository_owner == 'withstudiocms' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
