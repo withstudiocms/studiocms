@@ -19,7 +19,7 @@ jobs:
             token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@main
+        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
       - name: Create Translation Changesets
         run: pnpm ci:translations:changeset

@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@main
+        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
       - name: Build packages and playground
         run: pnpm build
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@main
+        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
       - name: Build StudioCMS Dependencies
         run: pnpm --filter @withstudiocms/* build
@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@main
+        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
       - name: Build package
         run: pnpm build:studiocms
@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@main
+        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
       - name: Build package
         run: pnpm build:studiocms
