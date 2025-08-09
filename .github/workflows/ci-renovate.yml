@@ -6,11 +6,16 @@ on:
     paths:
       - 'packages/**'
 
+permissions: {}
+
 jobs:
   renovate:
     name: Update Renovate PR
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Update PR

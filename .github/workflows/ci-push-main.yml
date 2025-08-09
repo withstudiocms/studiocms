@@ -14,13 +14,17 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-  repository-projects: read
+permissions: {}
 
 jobs:
   format:
     name: Format Code
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -49,6 +53,9 @@ jobs:
   todo-auto-issue:
     name: Create issues from TODOs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -73,6 +80,10 @@ jobs:
   changeset-release:
     name: Changeset Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
