@@ -39,9 +39,12 @@ export const UseSDK = Effect.gen(function* () {
 	type InferInsert = typeof infer.$Insert;
 
 	// This function provides access to the plugin data for the WYSIWYG editor.
-	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(WYSIWYG_TABLE_PLUGIN_ID, {
-		validator: { effectSchema: studioCMSProjectDataSchema },
-	});
+	const { getEntries, getEntry } = usePluginData<typeof infer.$UsePluginData>(
+		WYSIWYG_TABLE_PLUGIN_ID,
+		{
+			validator: { effectSchema: studioCMSProjectDataSchema },
+		}
+	);
 
 	// This function updates or inserts a plugin data entry based on whether it exists.
 	// If the entry exists, it updates the existing entry; otherwise, it inserts a new entry.

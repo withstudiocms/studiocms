@@ -3,7 +3,8 @@ import type { Schema } from 'studiocms/effect';
 import { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
 import type { studioCMSProjectDataSchema } from './schema.js';
 
-export interface WysiwygDBContent extends Schema.SimplifyMutable<typeof studioCMSProjectDataSchema.Type> {}
+export interface WysiwygDBContent
+	extends Schema.SimplifyMutable<typeof studioCMSProjectDataSchema.Type> {}
 
 /**
  * Defines the schema for HTML configuration options.

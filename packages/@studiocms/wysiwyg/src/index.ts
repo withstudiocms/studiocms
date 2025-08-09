@@ -58,7 +58,7 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 			entrypoint: resolve('./routes/store.js'),
 			pattern: STORE_ENDPOINT_PATH,
 			prerender: false,
-		}
+		},
 	];
 
 	// Return the plugin configuration

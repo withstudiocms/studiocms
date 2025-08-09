@@ -110,7 +110,7 @@ const apiChecks = Effect.fn(function* (context: APIContext) {
 		return csrfCheck; // Return the CSRF error response if validation fails
 	}
 	return undefined;
-})
+});
 
 /**
  * Handles GET requests for loading project data in the WYSIWYG store route.
@@ -159,10 +159,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 
 			// Return the project data as a JSON response
 			return new Response(JSON.stringify(projectData), {
-				headers: { 
+				headers: {
 					'Content-Type': 'application/json',
-					'Cache-Control': 'no-store, private'
-				 },
+					'Cache-Control': 'no-store, private',
+				},
 			});
 		})
 	);

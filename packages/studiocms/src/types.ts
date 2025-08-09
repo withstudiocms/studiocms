@@ -74,11 +74,11 @@ export interface PluginPageTypeRendererProps {
 }
 
 export interface PluginPageTypeEditorProps {
-    /**
-     * Page identifier useful for identifying the page in the editor.
+	/**
+	 * Page identifier useful for identifying the page in the editor.
 	 * This is used to identify the page in the editor and should be unique.
-     */
-    id?: string;
+	 */
+	id?: string;
 
 	/**
 	 * The content of the page from the database
