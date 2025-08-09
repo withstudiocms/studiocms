@@ -1,16 +1,19 @@
-name: Add changeset to Renovate updates
+name: CI - Renovate Changesets
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, labeled]
-    paths:
-      - 'packages/**'
+
+permissions: {}
 
 jobs:
   renovate:
     name: Update Renovate PR
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Update PR
