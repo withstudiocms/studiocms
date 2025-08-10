@@ -43,35 +43,46 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 			const middlewares = {
 				verifyCache: () =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
+						const cacheStatus = yield* isCacheEnabled;
+
+						if (!cacheStatus) {
+							return;
+						}
+
+						// biome-ignore lint/suspicious/noExplicitAny: Allows for flexible initialization
+						const todo: Effect.Effect<any, unknown, never>[] = [];
+
 						// Ensure the pages cache is initialized
-						if ((yield* isCacheEnabled) && pages.size === 0) {
-							yield* updatePages(true);
+						if (pages.size === 0) {
+							todo.push(updatePages(true));
 						}
 
 						// Ensure the folderList cache is initialized
-						if ((yield* isCacheEnabled) && FolderList.size === 0) {
-							yield* updateFolderList();
+						if (FolderList.size === 0) {
+							todo.push(updateFolderList());
 						}
 
 						// Ensure the FolderTree is initialized
-						if ((yield* isCacheEnabled) && folderTree.size === 0) {
-							yield* updateFolderTree();
+						if (folderTree.size === 0) {
+							todo.push(updateFolderTree());
 						}
 
 						// Ensure the pageFolderTree is initialized
-						if ((yield* isCacheEnabled) && pageFolderTree.size === 0) {
-							yield* updatePageFolderTree();
+						if (pageFolderTree.size === 0) {
+							todo.push(updatePageFolderTree());
 						}
 
 						// Ensure the siteConfig is initialized
-						if ((yield* isCacheEnabled) && siteConfig.size === 0) {
-							yield* updateSiteConfig();
+						if (siteConfig.size === 0) {
+							todo.push(updateSiteConfig());
 						}
 
 						// Ensure the plugin data cache is initialized
-						if ((yield* isCacheEnabled) && pluginData.size === 0) {
-							yield* initPluginDataCache();
+						if (pluginData.size === 0) {
+							todo.push(initPluginDataCache());
 						}
+
+						yield* Effect.all(todo);
 					}),
 			};
 

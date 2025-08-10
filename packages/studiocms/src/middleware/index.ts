@@ -54,26 +54,16 @@ router['/**'] = {
 	handler: async (context, next) =>
 		await convertToVanilla(
 			genLogger('studiocms/middleware/middlewareEffect')(function* () {
-				const [
-					{
-						GET: { latestVersion, siteConfig },
-						MIDDLEWARES: { verifyCache },
-					},
-					{ getUserData },
-					{ isEmailVerificationEnabled },
-				] = yield* Effect.all([SDKCore, User, VerifyEmail]);
+				const {
+					GET: { latestVersion, siteConfig },
+					MIDDLEWARES: { verifyCache },
+				} = yield* SDKCore;
 
-				// Ensure all necessary caches are initialized
-				yield* verifyCache();
-
-				const [version, siteConf, userSessionData, emailVerificationEnabled] = yield* Effect.all([
+				const [version, siteConf] = yield* Effect.all([
+					verifyCache(),
 					latestVersion(),
 					siteConfig(),
-					getUserData(context),
-					isEmailVerificationEnabled(),
 				]);
-
-				const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 				context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 				context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
@@ -81,6 +71,40 @@ router['/**'] = {
 				context.locals.siteConfig = siteConf || fallbackSiteConfig;
 				context.locals.defaultLang = defaultLang;
 				context.locals.routeMap = StudioCMSRoutes;
+
+				return next();
+			}).pipe(Effect.provide(mainRouteEffectDeps))
+		),
+};
+
+/**
+ * Middleware function to handle the main route effect for the dashboard.
+ * This middleware retrieves user session data, checks if email verification is enabled,
+ * and determines the user's permission level. It populates the `context.locals` object
+ * with this information for use in subsequent middleware or route handlers.
+ *
+ * @param context - The API context object containing request and response information.
+ * @param next - The next middleware function in the chain to be executed.
+ *
+ * @returns A generator function that yields effects for user and email operations,
+ *          and then proceeds to the next middleware.
+ */
+router[`/${dashboardRoute}/**`] = {
+	handler: async (context, next) =>
+		await convertToVanilla(
+			genLogger('studiocms/middleware/mainRouteEffect')(function* () {
+				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
+					User,
+					VerifyEmail,
+				]);
+
+				const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
+					getUserData(context),
+					isEmailVerificationEnabled(),
+				]);
+
+				const userPermissionLevel = yield* getUserPermissions(userSessionData);
+
 				context.locals.userSessionData = userSessionData;
 				context.locals.emailVerificationEnabled = emailVerificationEnabled;
 				context.locals.userPermissionLevel = userPermissionLevel;
