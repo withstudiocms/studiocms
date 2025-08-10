@@ -4,6 +4,7 @@ import { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { Effect, Layer } from 'effect';
@@ -12,7 +13,7 @@ import { defineMiddlewareRouter, getUserPermissions, type Router } from './utils
 
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
-const fallbackSiteConfig = {
+const fallbackSiteConfig: SiteConfigCacheObject = {
 	lastCacheUpdate: new Date(),
 	data: {
 		defaultOgImage: null,
@@ -60,9 +61,9 @@ router['/**'] = {
 				} = yield* SDKCore;
 
 				const [version, siteConf] = yield* Effect.all([
-					verifyCache(),
 					latestVersion(),
 					siteConfig(),
+					verifyCache(),
 				]);
 
 				context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
