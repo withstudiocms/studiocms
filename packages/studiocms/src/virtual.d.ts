@@ -581,23 +581,68 @@ declare module 'studiocms:plugins/auth/providers' {
 
 declare namespace App {
 	interface Locals {
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		latestVersion: import('./sdk/types/index').VersionCacheObject;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		userSessionData: import('./lib/auth/types').UserSessionData;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		emailVerificationEnabled: boolean;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		defaultLang: import('./lib/i18n/config').UiTranslationKey;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
-
-		wysiwygCsrfToken: string;
-
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		SCMSGenerator: string;
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		SCMSUiGenerator: string;
-
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		userPermissionLevel: {
 			isVisitor: boolean;
 			isEditor: boolean;
 			isAdmin: boolean;
 			isOwner: boolean;
+		};
+
+		wysiwygCsrfToken: string;
+
+		StudioCMS: {
+			SCMSGenerator: string;
+			SCMSUiGenerator: string;
+			siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+			routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+			defaultLang: import('./lib/i18n/config').UiTranslationKey;
+			latestVersion: import('./sdk/types/index').VersionCacheObject;
+
+			security?: {
+				userSessionData: import('./lib/auth/types').UserSessionData;
+				emailVerificationEnabled: boolean;
+				userPermissionLevel: {
+					isVisitor: boolean;
+					isEditor: boolean;
+					isAdmin: boolean;
+					isOwner: boolean;
+				};
+			};
 		};
 	}
 }

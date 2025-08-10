@@ -33,68 +33,53 @@ const fallbackSiteConfig: SiteConfigCacheObject = {
 const mainRouteEffectDeps = Layer.merge(User.Default, VerifyEmail.Default);
 
 // Define a middleware router that routes requests to different handlers based on the request path.
-const router: Router = {};
+const router: Router = [
+	{
+		/**
+		 * Main middleware function that sets up the context for the StudioCMS application.
+		 * It initializes the generator for the StudioCMS version, UI version, latest version,
+		 * site configuration, default language, and route map.
+		 */
+		includePaths: ['/**'],
+		handler: async (context, next) => {
+			return convertToVanilla(
+				genLogger('studiocms/middleware/mainMiddleware')(function* () {
+					const { GET } = yield* SDKCore;
 
-/**
- * Middleware function for handling StudioCMS-specific context initialization.
- * This middleware performs the following operations:
- * - Retrieves the latest version of the StudioCMS SDK.
- * - Fetches the site configuration.
- * - Retrieves user session data.
- * - Checks if email verification is enabled.
- * - Determines the user's permission level.
- * - Populates the `context.locals` object with various StudioCMS-related data.
- *
- * @param context - The API context object containing request and response information.
- * @param next - The next middleware function in the chain to be executed.
- *
- * @returns A generator function that yields effects for SDK, user, and email operations,
- *          and then proceeds to the next middleware.
- */
-router['/**'] = {
-	handlers: [
-		async (context, next) =>
-			await convertToVanilla(
-				genLogger('studiocms/middleware/middlewareEffect')(function* () {
-					const {
-						GET: { latestVersion, siteConfig },
-						MIDDLEWARES: { verifyCache },
-					} = yield* SDKCore;
-
-					const [version, siteConf] = yield* Effect.all([
-						latestVersion(),
-						siteConfig(),
-						verifyCache(),
+					const [latestVersion, siteConfig] = yield* Effect.all([
+						GET.latestVersion(),
+						GET.siteConfig(),
 					]);
+
+					context.locals.StudioCMS = {
+						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
+						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
+						siteConfig: siteConfig || fallbackSiteConfig,
+						routeMap: StudioCMSRoutes,
+						defaultLang,
+						latestVersion,
+					};
 
 					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-					context.locals.latestVersion = version;
-					context.locals.siteConfig = siteConf || fallbackSiteConfig;
+					context.locals.latestVersion = latestVersion;
+					context.locals.siteConfig = siteConfig || fallbackSiteConfig;
 					context.locals.defaultLang = defaultLang;
 					context.locals.routeMap = StudioCMSRoutes;
 
 					return next();
 				})
-			),
-	],
-};
-
-/**
- * Middleware function to handle the main route effect for the dashboard.
- * This middleware retrieves user session data, checks if email verification is enabled,
- * and determines the user's permission level. It populates the `context.locals` object
- * with this information for use in subsequent middleware or route handlers.
- *
- * @param context - The API context object containing request and response information.
- * @param next - The next middleware function in the chain to be executed.
- *
- * @returns A generator function that yields effects for user and email operations,
- *          and then proceeds to the next middleware.
- */
-router[`/${dashboardRoute}/**`] = {
-	handlers: [
-		async (context, next) =>
+			);
+		},
+	},
+	{
+		/**
+		 * Middleware function to handle the main route for the dashboard.
+		 * This middleware sets up the user session data, email verification status,
+		 * and user permission levels for the dashboard routes.
+		 */
+		includePaths: [`/${dashboardRoute}/**`],
+		handler: async (context, next) =>
 			await convertToVanilla(
 				genLogger('studiocms/middleware/mainRouteEffect')(function* () {
 					const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
@@ -109,6 +94,12 @@ router[`/${dashboardRoute}/**`] = {
 
 					const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
+					context.locals.StudioCMS.security = {
+						userSessionData,
+						emailVerificationEnabled,
+						userPermissionLevel,
+					};
+
 					context.locals.userSessionData = userSessionData;
 					context.locals.emailVerificationEnabled = emailVerificationEnabled;
 					context.locals.userPermissionLevel = userPermissionLevel;
@@ -116,27 +107,22 @@ router[`/${dashboardRoute}/**`] = {
 					return next();
 				}).pipe(Effect.provide(mainRouteEffectDeps))
 			),
-	],
-};
-
-/**
- * Middleware function to ensure that the user is logged in before accessing any dashboard routes.
- * If the user is not logged in, they are redirected to the login page.
- *
- * @param context - The API context object containing request and response information.
- * @param next - The next middleware function in the chain to be executed.
- *
- * @returns A generator function that checks the user's session data and redirects if necessary.
- */
-router[`/${dashboardRoute}/**`] = {
-	excludePaths: [
-		`/${dashboardRoute}/login**`,
-		`/${dashboardRoute}/signup**`,
-		`/${dashboardRoute}/logout**`,
-		`/${dashboardRoute}/forgot-password**`,
-	],
-	handlers: [
-		async (context, next) =>
+	},
+	{
+		/**
+		 * Middleware function to handle user authentication for the dashboard.
+		 * This middleware checks if the user is logged in and redirects to the login page if not
+		 * authenticated. It also excludes certain paths from this check, such as login, signup,
+		 * logout, and forgot password routes.
+		 */
+		includePaths: [`/${dashboardRoute}/**`],
+		excludePaths: [
+			`/${dashboardRoute}/login**`,
+			`/${dashboardRoute}/signup**`,
+			`/${dashboardRoute}/logout**`,
+			`/${dashboardRoute}/forgot-password**`,
+		],
+		handler: async (context, next) =>
 			await convertToVanilla(
 				genLogger('studiocms/middleware/middlewareEffect')(function* () {
 					const { getUserData } = yield* User;
@@ -149,23 +135,22 @@ router[`/${dashboardRoute}/**`] = {
 					return next();
 				}).pipe(Effect.provide(User.Default))
 			),
-	],
-};
-
-// TODO: Add a way for plugins to enable CSRF protection on their own editors
-/**
- * Middleware function to set a CSRF token for the WYSIWYG editor.
- * This middleware generates a new CSRF token and sets it in the cookies
- * for the WYSIWYG editor routes.
- *
- * @param context - The API context object containing request and response information.
- * @param next - The next middleware function in the chain to be executed.
- *
- * @returns A generator function that generates a CSRF token and sets it in the cookies.
- */
-router[`/${dashboardRoute}/content-management/edit/**`] = {
-	handlers: [
-		async (context, next) => {
+	},
+	{
+		/**
+		 * Middleware function to set a CSRF token for the WYSIWYG editor.
+		 * This middleware generates a new CSRF token and sets it in the cookies
+		 * for the WYSIWYG editor routes.
+		 *
+		 * @param context - The API context object containing request and response information.
+		 * @param next - The next middleware function in the chain to be executed.
+		 *
+		 * @returns A generator function that generates a CSRF token and sets it in the cookies.
+		 *
+		 * TODO: Add a way for plugins to enable CSRF protection on their own editors
+		 */
+		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
+		handler: async (context, next) => {
 			const csrfToken = crypto.randomBytes(32).toString('hex');
 			context.cookies.set('wysiwyg-csrf-token', csrfToken, {
 				httpOnly: true,
@@ -179,7 +164,7 @@ router[`/${dashboardRoute}/content-management/edit/**`] = {
 
 			return next();
 		},
-	],
-};
+	},
+];
 
 export const onRequest = defineMiddlewareRouter(router);

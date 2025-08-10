@@ -5,33 +5,24 @@ import { defineMiddleware, sequence } from 'astro/middleware';
 import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
 
-/**
- * Middleware Router Type.
- */
-export type Router = Record<string, { handlers: MiddlewareHandler[]; excludePaths?: string[] }>;
+export type Router = {
+	handler: MiddlewareHandler;
+	excludePaths?: string[];
+	includePaths?: string[];
+}[];
 
-/**
- * Define a middleware router that routes requests to different handlers based on the request path.
- *
- * @example
- * ```ts
- * const router: Router = {};
- * router["/"] = (context, next) => {};
- * router["/about"] = (context, next) => {};
- * export const onRequest = defineMiddlewareRouter(router);
- * ```
- */
 export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
-	const entries = Object.entries(router);
 	return defineMiddleware((context, next) => {
 		return sequence(
-			...entries
-				.filter(
-					([path, { excludePaths = [] }]) =>
-						micromatch.isMatch(context.url.pathname, path) &&
-						!micromatch.isMatch(context.url.pathname, excludePaths)
-				)
-				.map(([_, { handlers }]) => sequence(...handlers))
+			...router
+				.filter(({ includePaths = [], excludePaths = [] }) => {
+					const pathname = context.url.pathname;
+					return (
+						micromatch.isMatch(pathname, includePaths) &&
+						!micromatch.isMatch(pathname, excludePaths)
+					);
+				})
+				.map(({ handler }) => handler)
 		)(context, next);
 	});
 }
