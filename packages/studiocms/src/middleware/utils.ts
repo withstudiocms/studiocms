@@ -129,12 +129,8 @@ export function updateLocals(
 	context: APIContext,
 	values: DeepPartial<APIContext['locals']['StudioCMS']>
 ) {
-	// Filter out any undefined values from the input object
-	// This ensures that only defined values are merged into the context locals.
-	const valuesEntries = Object.entries(values).filter(([, v]) => v !== undefined);
-	const cleanValues = Object.fromEntries(valuesEntries) as Partial<
-		APIContext['locals']['StudioCMS']
-	>;
+	// Remove undefined recursively to avoid clobbering nested values
+	const cleanValues = deepOmitUndefined(values) as Partial<APIContext['locals']['StudioCMS']>;
 
 	// Clone the current values to avoid mutating the original object
 	const currentValues = context.locals.StudioCMS || {};
@@ -146,4 +142,18 @@ export function updateLocals(
 	// Update the context locals with the merged values
 	// This allows for partial updates without losing existing data
 	context.locals.StudioCMS = updatedValues;
+}
+
+function deepOmitUndefined<T>(input: T): T {
+	if (input && typeof input === 'object' && !Array.isArray(input)) {
+		const out: Record<string, unknown> = {};
+		for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
+			if (v !== undefined) {
+				// biome-ignore lint/suspicious/noExplicitAny: We need to handle any type here
+				out[k] = deepOmitUndefined(v as any);
+			}
+		}
+		return out as T;
+	}
+	return input;
 }
