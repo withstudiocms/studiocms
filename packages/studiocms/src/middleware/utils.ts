@@ -3,7 +3,7 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { APIContext, MiddlewareHandler } from 'astro';
 import { defineMiddleware, sequence } from 'astro/middleware';
-import { deepmerge } from 'deepmerge-ts';
+import { deepmergeCustom } from 'deepmerge-ts';
 import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
 
@@ -11,12 +11,12 @@ import { genLogger } from '../lib/effects/index.js';
  * Represents an array of route configuration objects for middleware.
  *
  * Each route configuration object can specify:
- * - `includePaths`: Path(s) to include for the middleware. Can be a string or an array of strings.
+ * - `includePaths`: Optional Path(s) to include for the middleware. Can be a string or an array of strings.
  * - `excludePaths`: Optional path(s) to exclude from the middleware. Can be a string or an array of strings.
  * - `handler`: The middleware handler function to execute for the matched paths.
  */
 export type Router = {
-	includePaths: string | string[];
+	includePaths?: string | string[];
 	excludePaths?: string | string[];
 	handler: MiddlewareHandler;
 }[];
@@ -44,13 +44,19 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 		// based on the include and exclude paths.
 		const handlers = router
 			.filter(({ includePaths, excludePaths }) => {
-				// Check if the pathname matches any of the include paths
-				// If no include paths are specified, default to true (include all).
-				const include = micromatch.isMatch(pathname, includePaths);
+				// Check if the pathname matches any of the include paths.
+				// If no include paths are specified or empty, default to true (include all).
+				const include =
+					includePaths == null || (Array.isArray(includePaths) && includePaths.length === 0)
+						? true
+						: micromatch.isMatch(pathname, includePaths as string | string[]);
 
-				// Check if the pathname matches any of the exclude paths
-				// If no exclude paths are specified, default to false (do not exclude).
-				const exclude = excludePaths ? micromatch.isMatch(pathname, excludePaths) : false;
+				// Check if the pathname matches any of the exclude paths.
+				// If no exclude paths are specified or empty, default to false (do not exclude).
+				const exclude =
+					excludePaths == null || (Array.isArray(excludePaths) && excludePaths.length === 0)
+						? false
+						: micromatch.isMatch(pathname, excludePaths as string | string[]);
 
 				// Return true if the pathname matches the include paths and does not match the exclude paths.
 				return include && !exclude;
@@ -106,6 +112,10 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	},
 });
 
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+
+const deepmerge = deepmergeCustom({ mergeArrays: false });
+
 /**
  * Updates the `StudioCMS` property within the `locals` object of the provided API context.
  *
@@ -117,14 +127,21 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
  */
 export function updateLocals(
 	context: APIContext,
-	values: Partial<APIContext['locals']['StudioCMS']>
+	values: DeepPartial<APIContext['locals']['StudioCMS']>
 ) {
+	// Filter out any undefined values from the input object
+	// This ensures that only defined values are merged into the context locals.
+	const valuesEntries = Object.entries(values).filter(([, v]) => v !== undefined);
+	const cleanValues = Object.fromEntries(valuesEntries) as Partial<
+		APIContext['locals']['StudioCMS']
+	>;
+
 	// Clone the current values to avoid mutating the original object
 	const currentValues = context.locals.StudioCMS || {};
 
-	// Use deepmerge to combine the current values with the new values
-	// This ensures that nested objects are merged correctly
-	const updatedValues = deepmerge(currentValues, values) as APIContext['locals']['StudioCMS'];
+	// Use deepmerge to combine the current values with the clean values
+	// This allows for partial updates without losing existing data.
+	const updatedValues = deepmerge(currentValues, cleanValues) as APIContext['locals']['StudioCMS'];
 
 	// Update the context locals with the merged values
 	// This allows for partial updates without losing existing data
