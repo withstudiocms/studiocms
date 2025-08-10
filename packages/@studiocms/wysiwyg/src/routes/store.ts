@@ -76,15 +76,15 @@ const handleCSRF = ({ request, cookies }: APIContext) =>
 const handleUserSessionVerification = ({ locals }: APIContext) =>
 	Effect.try(() => {
 		// Get user data
-		const userData = locals.userSessionData;
+		const userData = locals.StudioCMS.security?.userSessionData;
 
 		// Check if user is logged in
-		if (!userData.isLoggedIn) {
+		if (!userData?.isLoggedIn) {
 			return apiResponseLogger(403, 'Unauthorized');
 		}
 
 		// Check if user has permission
-		const isAuthorized = locals.userPermissionLevel.isEditor;
+		const isAuthorized = locals.StudioCMS.security?.userPermissionLevel.isEditor;
 		if (!isAuthorized) {
 			return apiResponseLogger(403, 'Unauthorized');
 		}

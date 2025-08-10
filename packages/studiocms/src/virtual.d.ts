@@ -579,6 +579,32 @@ declare module 'studiocms:plugins/auth/providers' {
 	export const oAuthProviders: OAuthProviders;
 }
 
+interface StudioCMSSecurityLocals {
+	userSessionData: import('./lib/auth/types').UserSessionData;
+	emailVerificationEnabled: boolean;
+	userPermissionLevel: {
+		isVisitor: boolean;
+		isEditor: boolean;
+		isAdmin: boolean;
+		isOwner: boolean;
+	};
+}
+
+interface StudioCMSPluginLocals {
+	editorCSRFToken: string;
+}
+
+interface StudioCMSLocals {
+	SCMSGenerator: string;
+	SCMSUiGenerator: string;
+	siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+	routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+	defaultLang: import('./lib/i18n/config').UiTranslationKey;
+	latestVersion: import('./sdk/types/index').VersionCacheObject;
+	security?: StudioCMSSecurityLocals;
+	plugins?: StudioCMSPluginLocals;
+}
+
 declare namespace App {
 	interface Locals {
 		/**
@@ -622,27 +648,11 @@ declare namespace App {
 			isAdmin: boolean;
 			isOwner: boolean;
 		};
-
+		/**
+		 * @deprecated - use the new value from locals.StudioCMS object instead
+		 */
 		wysiwygCsrfToken: string;
 
-		StudioCMS: {
-			SCMSGenerator: string;
-			SCMSUiGenerator: string;
-			siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
-			routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
-			defaultLang: import('./lib/i18n/config').UiTranslationKey;
-			latestVersion: import('./sdk/types/index').VersionCacheObject;
-
-			security?: {
-				userSessionData: import('./lib/auth/types').UserSessionData;
-				emailVerificationEnabled: boolean;
-				userPermissionLevel: {
-					isVisitor: boolean;
-					isEditor: boolean;
-					isAdmin: boolean;
-					isOwner: boolean;
-				};
-			};
-		};
+		StudioCMS: StudioCMSLocals;
 	}
 }

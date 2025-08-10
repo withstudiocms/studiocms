@@ -147,7 +147,6 @@ const router: Router = [
 			),
 	},
 	{
-		// TODO: Add a way for plugins to enable CSRF protection on their own editors
 		/**
 		 * Middleware function to set a CSRF token for the WYSIWYG editor.
 		 * This middleware generates a new CSRF token and sets it in the cookies
@@ -176,6 +175,14 @@ const router: Router = [
 				maxAge: 60 * 60 * 2,
 			});
 
+			context.locals.StudioCMS = {
+				...(context.locals.StudioCMS ?? {}),
+				plugins: {
+					editorCSRFToken: csrfToken,
+				},
+			};
+
+			// Set deprecated locals for backward compatibility
 			context.locals.wysiwygCsrfToken = csrfToken;
 
 			return next();

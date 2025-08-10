@@ -13,7 +13,7 @@ interface Props extends PluginPageTypeEditorProps {}
 // Extract the content from Astro props
 const { content, id = '' } = Astro.props as Props;
 
-const token = Astro.locals.wysiwygCsrfToken;
+const token = Astro.locals.StudioCMS.plugins?.editorCSRFToken ?? '';
 ---
 
 <div
