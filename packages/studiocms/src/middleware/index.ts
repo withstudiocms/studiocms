@@ -147,8 +147,6 @@ const router: Router = [
 		 * @param next - The next middleware function in the chain to be executed.
 		 *
 		 * @returns A generator function that generates a CSRF token and sets it in the cookies.
-		 *
-		 *
 		 */
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
 		handler: async (context, next) => {
