@@ -51,6 +51,7 @@ const router: Router = [
 						GET.siteConfig(),
 					]);
 
+					// Set the StudioCMS base context locals
 					context.locals.StudioCMS = {
 						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
@@ -95,12 +96,15 @@ const router: Router = [
 
 					const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
-					context.locals.StudioCMS.security = {
-						userSessionData,
-						emailVerificationEnabled,
-						userPermissionLevel,
+					// Set the security-related data in the context locals
+					context.locals.StudioCMS = {
+						...(context.locals.StudioCMS ?? {}),
+						security: {
+							userSessionData,
+							emailVerificationEnabled,
+							userPermissionLevel,
+						},
 					};
-
 					// Set deprecated locals for backward compatibility
 					context.locals.userSessionData = userSessionData;
 					context.locals.emailVerificationEnabled = emailVerificationEnabled;
