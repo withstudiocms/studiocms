@@ -6,6 +6,7 @@ import { defineMiddleware, sequence } from 'astro/middleware';
 import { deepmergeCustom } from 'deepmerge-ts';
 import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
+import type { DeepPartial } from '../types.js';
 
 /**
  * Represents an array of route configuration objects for middleware.
@@ -47,16 +48,20 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 				// Check if the pathname matches any of the include paths.
 				// If no include paths are specified or empty, default to true (include all).
 				const include =
-					includePaths == null || (Array.isArray(includePaths) && includePaths.length === 0)
+					includePaths == null ||
+					(Array.isArray(includePaths) && includePaths.length === 0) ||
+					(typeof includePaths === 'string' && includePaths.trim() === '')
 						? true
-						: micromatch.isMatch(pathname, includePaths as string | string[]);
+						: micromatch.isMatch(pathname, includePaths);
 
 				// Check if the pathname matches any of the exclude paths.
 				// If no exclude paths are specified or empty, default to false (do not exclude).
 				const exclude =
-					excludePaths == null || (Array.isArray(excludePaths) && excludePaths.length === 0)
+					excludePaths == null ||
+					(Array.isArray(excludePaths) && excludePaths.length === 0) ||
+					(typeof excludePaths === 'string' && excludePaths.trim() === '')
 						? false
-						: micromatch.isMatch(pathname, excludePaths as string | string[]);
+						: micromatch.isMatch(pathname, excludePaths);
 
 				// Return true if the pathname matches the include paths and does not match the exclude paths.
 				return include && !exclude;
@@ -112,8 +117,6 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	},
 });
 
-type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
-
 const deepmerge = deepmergeCustom({ mergeArrays: false });
 
 /**
@@ -128,7 +131,7 @@ const deepmerge = deepmergeCustom({ mergeArrays: false });
 export function updateLocals(
 	context: APIContext,
 	values: DeepPartial<APIContext['locals']['StudioCMS']>
-) {
+): APIContext['locals']['StudioCMS'] {
 	// Remove undefined recursively to avoid clobbering nested values
 	const cleanValues = deepOmitUndefined(values) as Partial<APIContext['locals']['StudioCMS']>;
 
@@ -142,6 +145,7 @@ export function updateLocals(
 	// Update the context locals with the merged values
 	// This allows for partial updates without losing existing data
 	context.locals.StudioCMS = updatedValues;
+	return updatedValues;
 }
 
 function deepOmitUndefined<T>(input: T): T {
