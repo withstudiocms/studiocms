@@ -52,30 +52,32 @@ const router: Router = {};
  *          and then proceeds to the next middleware.
  */
 router['/**'] = {
-	handler: async (context, next) =>
-		await convertToVanilla(
-			genLogger('studiocms/middleware/middlewareEffect')(function* () {
-				const {
-					GET: { latestVersion, siteConfig },
-					MIDDLEWARES: { verifyCache },
-				} = yield* SDKCore;
+	handlers: [
+		async (context, next) =>
+			await convertToVanilla(
+				genLogger('studiocms/middleware/middlewareEffect')(function* () {
+					const {
+						GET: { latestVersion, siteConfig },
+						MIDDLEWARES: { verifyCache },
+					} = yield* SDKCore;
 
-				const [version, siteConf] = yield* Effect.all([
-					latestVersion(),
-					siteConfig(),
-					verifyCache(),
-				]);
+					const [version, siteConf] = yield* Effect.all([
+						latestVersion(),
+						siteConfig(),
+						verifyCache(),
+					]);
 
-				context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
-				context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-				context.locals.latestVersion = version;
-				context.locals.siteConfig = siteConf || fallbackSiteConfig;
-				context.locals.defaultLang = defaultLang;
-				context.locals.routeMap = StudioCMSRoutes;
+					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
+					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
+					context.locals.latestVersion = version;
+					context.locals.siteConfig = siteConf || fallbackSiteConfig;
+					context.locals.defaultLang = defaultLang;
+					context.locals.routeMap = StudioCMSRoutes;
 
-				return next();
-			}).pipe(Effect.provide(mainRouteEffectDeps))
-		),
+					return next();
+				})
+			),
+	],
 };
 
 /**
@@ -91,28 +93,30 @@ router['/**'] = {
  *          and then proceeds to the next middleware.
  */
 router[`/${dashboardRoute}/**`] = {
-	handler: async (context, next) =>
-		await convertToVanilla(
-			genLogger('studiocms/middleware/mainRouteEffect')(function* () {
-				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
-					User,
-					VerifyEmail,
-				]);
+	handlers: [
+		async (context, next) =>
+			await convertToVanilla(
+				genLogger('studiocms/middleware/mainRouteEffect')(function* () {
+					const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
+						User,
+						VerifyEmail,
+					]);
 
-				const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
-					getUserData(context),
-					isEmailVerificationEnabled(),
-				]);
+					const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
+						getUserData(context),
+						isEmailVerificationEnabled(),
+					]);
 
-				const userPermissionLevel = yield* getUserPermissions(userSessionData);
+					const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
-				context.locals.userSessionData = userSessionData;
-				context.locals.emailVerificationEnabled = emailVerificationEnabled;
-				context.locals.userPermissionLevel = userPermissionLevel;
+					context.locals.userSessionData = userSessionData;
+					context.locals.emailVerificationEnabled = emailVerificationEnabled;
+					context.locals.userPermissionLevel = userPermissionLevel;
 
-				return next();
-			}).pipe(Effect.provide(mainRouteEffectDeps))
-		),
+					return next();
+				}).pipe(Effect.provide(mainRouteEffectDeps))
+			),
+	],
 };
 
 /**
@@ -131,19 +135,21 @@ router[`/${dashboardRoute}/**`] = {
 		`/${dashboardRoute}/logout**`,
 		`/${dashboardRoute}/forgot-password**`,
 	],
-	handler: async (context, next) =>
-		await convertToVanilla(
-			genLogger('studiocms/middleware/middlewareEffect')(function* () {
-				const { getUserData } = yield* User;
+	handlers: [
+		async (context, next) =>
+			await convertToVanilla(
+				genLogger('studiocms/middleware/middlewareEffect')(function* () {
+					const { getUserData } = yield* User;
 
-				const userSessionData = yield* getUserData(context);
+					const userSessionData = yield* getUserData(context);
 
-				if (!userSessionData.isLoggedIn)
-					return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+					if (!userSessionData.isLoggedIn)
+						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
 
-				return next();
-			}).pipe(Effect.provide(User.Default))
-		),
+					return next();
+				}).pipe(Effect.provide(User.Default))
+			),
+	],
 };
 
 // TODO: Add a way for plugins to enable CSRF protection on their own editors
@@ -158,20 +164,22 @@ router[`/${dashboardRoute}/**`] = {
  * @returns A generator function that generates a CSRF token and sets it in the cookies.
  */
 router[`/${dashboardRoute}/content-management/edit/**`] = {
-	handler: async (context, next) => {
-		const csrfToken = crypto.randomBytes(32).toString('hex');
-		context.cookies.set('wysiwyg-csrf-token', csrfToken, {
-			httpOnly: true,
-			path: '/',
-			sameSite: 'strict',
-			secure: context.url.protocol === 'https:',
-			maxAge: 60 * 60 * 2,
-		});
+	handlers: [
+		async (context, next) => {
+			const csrfToken = crypto.randomBytes(32).toString('hex');
+			context.cookies.set('wysiwyg-csrf-token', csrfToken, {
+				httpOnly: true,
+				path: '/',
+				sameSite: 'strict',
+				secure: context.url.protocol === 'https:',
+				maxAge: 60 * 60 * 2,
+			});
 
-		context.locals.wysiwygCsrfToken = csrfToken;
+			context.locals.wysiwygCsrfToken = csrfToken;
 
-		return next();
-	},
+			return next();
+		},
+	],
 };
 
 export const onRequest = defineMiddlewareRouter(router);

@@ -15,9 +15,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-            persist-credentials: false
-            ref: ${{ github.head_ref }}
-            token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          persist-credentials: false
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025

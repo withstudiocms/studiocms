@@ -15,7 +15,6 @@ concurrency:
 
 permissions:
   contents: read
-  actions: write
 
 env:
   FORCE_COLOR: true

@@ -41,19 +41,21 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 			] = yield* Effect.all([CacheContext, SDKCore_GET, SDKCore_PLUGINS]);
 
 			const CachesToCheck = [
-				{ cache: pages, updater: updatePages(true) },
-				{ cache: FolderList, updater: updateFolderList() },
-				{ cache: folderTree, updater: updateFolderTree() },
-				{ cache: pageFolderTree, updater: updatePageFolderTree() },
-				{ cache: siteConfig, updater: updateSiteConfig() },
-				{ cache: pluginData, updater: initPluginDataCache() },
+				{ cache: pages, updater: () => updatePages(true) },
+				{ cache: FolderList, updater: () => updateFolderList() },
+				{ cache: folderTree, updater: () => updateFolderTree() },
+				{ cache: pageFolderTree, updater: () => updatePageFolderTree() },
+				{ cache: siteConfig, updater: () => updateSiteConfig() },
+				{ cache: pluginData, updater: () => initPluginDataCache() },
 			];
 
 			const middlewares = {
 				verifyCache: () =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
 						// Check if cache is enabled before proceeding
-						const cacheStatus = yield* isCacheEnabled;
+						const cacheStatus = yield* isCacheEnabled.pipe(
+							Effect.catchAll(() => Effect.succeed(false))
+						);
 
 						// If cache is not enabled, we skip the verification
 						// and return early to avoid unnecessary operations.
@@ -64,7 +66,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 
 						// Iterate through the caches and update them if they are empty
 						const todos = CachesToCheck.flatMap(({ cache, updater }) =>
-							cache.size === 0 ? [updater] : []
+							cache.size === 0 ? [updater()] : []
 						);
 
 						// If there are no caches to update, we log and return
@@ -75,10 +77,9 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 
 						// Log the caches that are being updated
 						yield* Effect.log(`Updating caches: ${todos.length} caches to update.`);
+						const start = Date.now();
 						yield* Effect.all(todos);
-
-						// Log the completion of the cache verification
-						yield* Effect.log('Cache verification completed.');
+						yield* Effect.log(`Cache verification completed in ${Date.now() - start}ms.`);
 					}),
 			};
 
