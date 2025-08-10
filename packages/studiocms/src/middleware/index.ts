@@ -119,10 +119,14 @@ const router: Router = [
 		 */
 		includePaths: [`/${dashboardRoute}/**`],
 		excludePaths: [
-			`/${dashboardRoute}/login**`,
-			`/${dashboardRoute}/signup**`,
-			`/${dashboardRoute}/logout**`,
-			`/${dashboardRoute}/forgot-password**`,
+			`/${dashboardRoute}/login`,
+			`/${dashboardRoute}/login/**`,
+			`/${dashboardRoute}/signup`,
+			`/${dashboardRoute}/signup/**`,
+			`/${dashboardRoute}/logout`,
+			`/${dashboardRoute}/logout/**`,
+			`/${dashboardRoute}/forgot-password`,
+			`/${dashboardRoute}/forgot-password/**`,
 		],
 		handler: async (context, next) =>
 			await convertToVanilla(
@@ -157,7 +161,9 @@ const router: Router = [
 				httpOnly: true,
 				path: '/',
 				sameSite: 'strict',
-				secure: context.url.protocol === 'https:',
+				secure:
+					context.url.protocol === 'https:' ||
+					context.request.headers.get('x-forwarded-proto') === 'https',
 				maxAge: 60 * 60 * 2,
 			});
 
