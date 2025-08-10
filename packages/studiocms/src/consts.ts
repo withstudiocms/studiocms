@@ -273,3 +273,5 @@ export const StudioCMSDefaultRobotsConfig = ({
 		],
 	};
 };
+
+export const STUDIOCMS_EDITOR_CSRF_COOKIE_NAME = 'studiocms-editor-csrf-token';

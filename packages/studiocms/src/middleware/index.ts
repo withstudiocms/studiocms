@@ -8,6 +8,7 @@ import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { Effect, Layer } from 'effect';
+import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
 import { defineMiddlewareRouter, getUserPermissions, type Router } from './utils.js';
 
@@ -80,7 +81,7 @@ const router: Router = [
 		 * This middleware sets up the user session data, email verification status,
 		 * and user permission levels for the dashboard routes.
 		 */
-		includePaths: [`/${dashboardRoute}/**`],
+		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
 		handler: async (context, next) =>
 			await convertToVanilla(
 				genLogger('studiocms/middleware/mainRouteEffect')(function* () {
@@ -97,13 +98,10 @@ const router: Router = [
 					const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 					// Set the security-related data in the context locals
-					context.locals.StudioCMS = {
-						...(context.locals.StudioCMS ?? {}),
-						security: {
-							userSessionData,
-							emailVerificationEnabled,
-							userPermissionLevel,
-						},
+					context.locals.StudioCMS.security = {
+						userSessionData,
+						emailVerificationEnabled,
+						userPermissionLevel,
 					};
 					// Set deprecated locals for backward compatibility
 					context.locals.userSessionData = userSessionData;
@@ -121,7 +119,7 @@ const router: Router = [
 		 * authenticated. It also excludes certain paths from this check, such as login, signup,
 		 * logout, and forgot password routes.
 		 */
-		includePaths: [`/${dashboardRoute}/**`],
+		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
 		excludePaths: [
 			`/${dashboardRoute}/login`,
 			`/${dashboardRoute}/login/**`,
@@ -136,8 +134,7 @@ const router: Router = [
 			await convertToVanilla(
 				genLogger('studiocms/middleware/middlewareEffect')(function* () {
 					const { getUserData } = yield* User;
-					const userSessionData =
-						context.locals.StudioCMS?.security?.userSessionData ?? (yield* getUserData(context));
+					const userSessionData = yield* getUserData(context);
 
 					if (!userSessionData.isLoggedIn)
 						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
@@ -160,7 +157,7 @@ const router: Router = [
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
 		handler: async (context, next) => {
 			const csrfToken = crypto.randomBytes(32).toString('hex');
-			context.cookies.set('wysiwyg-csrf-token', csrfToken, {
+			context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
 				httpOnly: true,
 				path: '/',
 				sameSite: 'strict',
@@ -172,14 +169,10 @@ const router: Router = [
 						.map((s) => s.trim())
 						.includes('https');
 				})(),
-				maxAge: 60 * 60 * 2,
 			});
 
-			context.locals.StudioCMS = {
-				...(context.locals.StudioCMS ?? {}),
-				plugins: {
-					editorCSRFToken: csrfToken,
-				},
+			context.locals.StudioCMS.plugins = {
+				editorCSRFToken: csrfToken,
 			};
 
 			// Set deprecated locals for backward compatibility

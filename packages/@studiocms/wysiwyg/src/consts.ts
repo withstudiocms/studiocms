@@ -39,4 +39,4 @@ export const CSRF_HEADER_NAME = 'X-CSRF-Token';
  * The name of the CSRF cookie used for WYSIWYG editor requests.
  * This cookie stores the CSRF token to be validated against incoming requests.
  */
-export const CSRF_COOKIE_NAME = 'wysiwyg-csrf-token';
+export const CSRF_COOKIE_NAME = 'studiocms-editor-csrf-token';
