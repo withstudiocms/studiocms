@@ -9,7 +9,7 @@ catalog:
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.17.0
+    "@astrojs/db": ^0.17.1
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
     "@astrojs/node": ^9.4.0
@@ -30,7 +30,7 @@ catalogs:
     "@effect/workflow": ^0.8.3
     effect: ^3.17.7
   min:
-    "@astrojs/db": ^0.17.0
+    "@astrojs/db": ^0.17.1
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
     "@studiocms/web-vitals": ^4.4.0

@@ -7,8 +7,8 @@ settings:
 catalogs:
   astrojs:
     '@astrojs/db':
-      specifier: ^0.17.0
-      version: 0.17.0
+      specifier: ^0.17.1
+      version: 0.17.1
     '@astrojs/node':
       specifier: ^9.4.0
       version: 9.4.0
@@ -82,8 +82,8 @@ catalogs:
       version: 3.17.7
   min:
     '@astrojs/db':
-      specifier: ^0.17.0
-      version: 0.17.0
+      specifier: ^0.17.1
+      version: 0.17.1
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.3
@@ -276,7 +276,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:min
-        version: 0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       astro:
         specifier: catalog:min
         version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
@@ -623,7 +623,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:min
-        version: 0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@clack/core':
         specifier: 0.4.1
         version: 0.4.1
@@ -695,7 +695,7 @@ importers:
         version: 0.4.17(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
       '@studiocms/web-vitals':
         specifier: catalog:min
-        version: 4.4.0(@astrojs/db@0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@withstudiocms/cli-kit':
         specifier: catalog:studiocms
         version: 0.1.0
@@ -819,7 +819,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.4.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -834,7 +834,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.4.0(@astrojs/db@0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -876,8 +876,8 @@ packages:
   '@astrojs/compiler@2.12.2':
     resolution: {integrity: sha512-w2zfvhjNCkNMmMMOn5b0J8+OmUaBL1o40ipMvqcG6NRpdC+lKxmTi48DT8Xw0SzJ3AfmeFLB45zXZXtmbsjcgw==}
 
-  '@astrojs/db@0.17.0':
-    resolution: {integrity: sha512-nS7ma+uzi3pfGJxsrEIF5BhLMJAj79GD5tHcd4jMc8NMmk4yiMU0x1YPBnSWe+yAOX9ARKN+dISw8iM2VZzkCg==}
+  '@astrojs/db@0.17.1':
+    resolution: {integrity: sha512-QL09xZf5Om8AshIlt+YhLDYf6M1QSzv+kfuljsPrhEXJ8U/tuKnbWs2M3wimFaLG3/fU0prFix8lWt7zU8ytfA==}
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
@@ -5540,7 +5540,7 @@ snapshots:
 
   '@astrojs/compiler@2.12.2': {}
 
-  '@astrojs/db@0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)':
+  '@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)':
     dependencies:
       '@libsql/client': 0.15.10
       deep-diff: 1.0.2
@@ -6993,9 +6993,9 @@ snapshots:
       pathe: 1.1.2
       vite: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
 
-  '@studiocms/web-vitals@4.4.0(@astrojs/db@0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+  '@studiocms/web-vitals@4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
-      '@astrojs/db': 0.17.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+      '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.0.3
 
   '@swc/helpers@0.5.17':
