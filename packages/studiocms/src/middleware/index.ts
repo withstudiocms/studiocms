@@ -60,6 +60,7 @@ const router: Router = [
 						latestVersion,
 					};
 
+					// Set deprecated locals for backward compatibility
 					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
 					context.locals.latestVersion = latestVersion;
@@ -100,6 +101,7 @@ const router: Router = [
 						userPermissionLevel,
 					};
 
+					// Set deprecated locals for backward compatibility
 					context.locals.userSessionData = userSessionData;
 					context.locals.emailVerificationEnabled = emailVerificationEnabled;
 					context.locals.userPermissionLevel = userPermissionLevel;
