@@ -40,49 +40,45 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 				{ initPluginDataCache },
 			] = yield* Effect.all([CacheContext, SDKCore_GET, SDKCore_PLUGINS]);
 
+			const CachesToCheck = [
+				{ cache: pages, updater: updatePages(true) },
+				{ cache: FolderList, updater: updateFolderList() },
+				{ cache: folderTree, updater: updateFolderTree() },
+				{ cache: pageFolderTree, updater: updatePageFolderTree() },
+				{ cache: siteConfig, updater: updateSiteConfig() },
+				{ cache: pluginData, updater: initPluginDataCache() },
+			];
+
 			const middlewares = {
 				verifyCache: () =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
+						// Check if cache is enabled before proceeding
 						const cacheStatus = yield* isCacheEnabled;
 
-						if (!cacheStatus) {
+						// If cache is not enabled, we skip the verification
+						// and return early to avoid unnecessary operations.
+						if (!cacheStatus) return;
+
+						// Log the cache verification process
+						yield* Effect.log('Verifying caches...');
+
+						// Iterate through the caches and update them if they are empty
+						const todos = CachesToCheck.flatMap(({ cache, updater }) =>
+							cache.size === 0 ? [updater] : []
+						);
+
+						// If there are no caches to update, we log and return
+						if (todos.length === 0) {
+							yield* Effect.log('All caches are already populated.');
 							return;
 						}
 
-						// biome-ignore lint/suspicious/noExplicitAny: Allows for flexible initialization
-						const todo: Effect.Effect<any, unknown, never>[] = [];
+						// Log the caches that are being updated
+						yield* Effect.log(`Updating caches: ${todos.length} caches to update.`);
+						yield* Effect.all(todos);
 
-						// Ensure the pages cache is initialized
-						if (pages.size === 0) {
-							todo.push(updatePages(true));
-						}
-
-						// Ensure the folderList cache is initialized
-						if (FolderList.size === 0) {
-							todo.push(updateFolderList());
-						}
-
-						// Ensure the FolderTree is initialized
-						if (folderTree.size === 0) {
-							todo.push(updateFolderTree());
-						}
-
-						// Ensure the pageFolderTree is initialized
-						if (pageFolderTree.size === 0) {
-							todo.push(updatePageFolderTree());
-						}
-
-						// Ensure the siteConfig is initialized
-						if (siteConfig.size === 0) {
-							todo.push(updateSiteConfig());
-						}
-
-						// Ensure the plugin data cache is initialized
-						if (pluginData.size === 0) {
-							todo.push(initPluginDataCache());
-						}
-
-						yield* Effect.all(todo);
+						// Log the completion of the cache verification
+						yield* Effect.log('Cache verification completed.');
 					}),
 			};
 
