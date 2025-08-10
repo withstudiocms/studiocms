@@ -11,8 +11,8 @@ import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
 import {
 	defineMiddlewareRouter,
-	fallbackSiteConfig,
 	getUserPermissions,
+	makeFallbackSiteConfig,
 	type Router,
 	updateLocals,
 } from './utils.js';
@@ -42,7 +42,7 @@ const router: Router = [
 					updateLocals(context, {
 						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
-						siteConfig: siteConfig || fallbackSiteConfig,
+						siteConfig: siteConfig ?? makeFallbackSiteConfig(),
 						routeMap: StudioCMSRoutes,
 						defaultLang,
 						latestVersion,
@@ -52,7 +52,7 @@ const router: Router = [
 					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
 					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
 					context.locals.latestVersion = latestVersion;
-					context.locals.siteConfig = siteConfig || fallbackSiteConfig;
+					context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
 					context.locals.defaultLang = defaultLang;
 					context.locals.routeMap = StudioCMSRoutes;
 

@@ -89,7 +89,7 @@ export const getUserPermissions = (userData: UserSessionData) =>
 		};
 	});
 
-export const fallbackSiteConfig: SiteConfigCacheObject = {
+export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	lastCacheUpdate: new Date(),
 	data: {
 		defaultOgImage: null,
@@ -104,7 +104,7 @@ export const fallbackSiteConfig: SiteConfigCacheObject = {
 		siteIcon: null,
 		title: 'StudioCMS-Setup',
 	},
-};
+});
 
 /**
  * Updates the `StudioCMS` property within the `locals` object of the provided API context.
