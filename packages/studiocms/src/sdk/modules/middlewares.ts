@@ -1,3 +1,4 @@
+import _logger, { isVerbose } from 'studiocms:logger';
 import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
@@ -49,6 +50,8 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 				{ cache: pluginData, updater: () => initPluginDataCache() },
 			];
 
+			const logger = _logger.fork('studiocms:middleware/cacheVerification');
+
 			const middlewares = {
 				verifyCache: () =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
@@ -62,7 +65,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						if (!cacheStatus) return;
 
 						// Log the cache verification process
-						yield* Effect.log('Verifying caches...');
+						isVerbose && logger.info('Verifying caches...');
 
 						// Iterate through the caches and update them if they are empty
 						const todos = CachesToCheck.flatMap(({ cache, updater }) =>
@@ -71,15 +74,15 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 
 						// If there are no caches to update, we log and return
 						if (todos.length === 0) {
-							yield* Effect.log('All caches are already populated.');
+							isVerbose && logger.info('All caches are already populated.');
 							return;
 						}
 
 						// Log the caches that are being updated
-						yield* Effect.log(`Updating caches: ${todos.length} caches to update.`);
+						isVerbose && logger.info(`Updating caches: ${todos.length} caches to update.`);
 						const start = Date.now();
 						yield* Effect.all(todos);
-						yield* Effect.log(`Cache verification completed in ${Date.now() - start}ms.`);
+						isVerbose && logger.info(`Cache verification completed in ${Date.now() - start}ms.`);
 					}),
 			};
 

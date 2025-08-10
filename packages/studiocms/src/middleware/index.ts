@@ -31,11 +31,15 @@ const router: Router = [
 		handler: async (context, next) => {
 			return convertToVanilla(
 				genLogger('studiocms/middleware/mainMiddleware')(function* () {
-					const { GET } = yield* SDKCore;
+					const {
+						GET,
+						MIDDLEWARES: { verifyCache },
+					} = yield* SDKCore;
 
 					const [latestVersion, siteConfig] = yield* Effect.all([
 						GET.latestVersion(),
 						GET.siteConfig(),
+						verifyCache(),
 					]);
 
 					// Set the StudioCMS base context locals
