@@ -6,27 +6,30 @@ import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
 
 /**
- * Represents an array of route configurations for middleware handling.
+ * Represents an array of route configuration objects for middleware.
  *
- * Each route configuration object contains:
- * - `includePaths`: An array of path strings to explicitly include for the middleware.
- * - `excludePaths` (optional): An array of path strings to exclude from the middleware.
- * - `handler`: The middleware handler function to process requests.
+ * Each route configuration object can specify:
+ * - `includePaths`: Path(s) to include for the middleware. Can be a string or an array of strings.
+ * - `excludePaths`: Optional path(s) to exclude from the middleware. Can be a string or an array of strings.
+ * - `handler`: The middleware handler function to execute for the matched paths.
  */
 export type Router = {
-	excludePaths?: string | string[];
 	includePaths: string | string[];
+	excludePaths?: string | string[];
 	handler: MiddlewareHandler;
 }[];
 
 /**
- * Defines a middleware router that sequences middleware handlers based on path matching.
+ * Defines a middleware router that filters and executes middleware handlers based on the request pathname.
  *
- * Filters the provided `router` array to include handlers whose `includePaths` match the current request's pathname
- * and whose `excludePaths` do not match. The resulting handlers are composed into a sequence and executed.
+ * This function takes a `Router` object, which contains route definitions with `includePaths` and `excludePaths`.
+ * It matches the current request's pathname against these paths using `micromatch`, and executes all matching handlers in sequence.
  *
- * @param router - An array of route objects, each containing `includePaths`, `excludePaths`, and a `handler`.
- * @returns A `MiddlewareHandler` that executes the matched handlers in sequence.
+ * - If no handlers match, the next middleware in the chain is called.
+ * - If multiple handlers match, they are executed in order.
+ *
+ * @param router - The router containing route definitions with `includePaths`, `excludePaths`, and their respective handlers.
+ * @returns A `MiddlewareHandler` that processes the request according to the matched route handlers.
  */
 export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 	return defineMiddleware((context, next) => {
