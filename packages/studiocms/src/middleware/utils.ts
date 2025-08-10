@@ -14,8 +14,8 @@ import { genLogger } from '../lib/effects/index.js';
  * - `handler`: The middleware handler function to process requests.
  */
 export type Router = {
-	includePaths: string[];
-	excludePaths?: string[];
+	excludePaths?: string | string[];
+	includePaths: string | string[];
 	handler: MiddlewareHandler;
 }[];
 
@@ -39,14 +39,15 @@ export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 		// based on the include and exclude paths.
 		const handlers = router
 			.filter(({ includePaths, excludePaths }) => {
-				const include =
-					includePaths == null || (Array.isArray(includePaths) && includePaths.length === 0)
-						? true
-						: micromatch.isMatch(pathname, includePaths as string | string[]);
-				const exclude =
-					excludePaths == null || (Array.isArray(excludePaths) && excludePaths.length === 0)
-						? false
-						: micromatch.isMatch(pathname, excludePaths as string | string[]);
+				// Check if the pathname matches any of the include paths
+				// If no include paths are specified, default to true (include all).
+				const include = micromatch.isMatch(pathname, includePaths);
+
+				// Check if the pathname matches any of the exclude paths
+				// If no exclude paths are specified, default to false (do not exclude).
+				const exclude = excludePaths ? micromatch.isMatch(pathname, excludePaths) : false;
+
+				// Return true if the pathname matches the include paths and does not match the exclude paths.
 				return include && !exclude;
 			})
 			.map(({ handler }) => handler);
