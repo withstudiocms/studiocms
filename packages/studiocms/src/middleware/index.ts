@@ -165,9 +165,14 @@ const router: Router = [
 				httpOnly: true,
 				path: '/',
 				sameSite: 'strict',
-				secure:
-					context.url.protocol === 'https:' ||
-					context.request.headers.get('x-forwarded-proto') === 'https',
+				secure: (() => {
+					if (context.url.protocol === 'https:') return true;
+					const xfp = context.request.headers.get('x-forwarded-proto')?.toLowerCase() ?? '';
+					return xfp
+						.split(',')
+						.map((s) => s.trim())
+						.includes('https');
+				})(),
 				maxAge: 60 * 60 * 2,
 			});
 
