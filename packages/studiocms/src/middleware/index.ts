@@ -4,34 +4,20 @@ import { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { Effect, Layer } from 'effect';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
 import { convertToVanilla, genLogger } from '../lib/effects/index.js';
-import { defineMiddlewareRouter, getUserPermissions, type Router } from './utils.js';
+import {
+	defineMiddlewareRouter,
+	fallbackSiteConfig,
+	getUserPermissions,
+	type Router,
+	updateLocals,
+} from './utils.js';
 
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
-
-const fallbackSiteConfig: SiteConfigCacheObject = {
-	lastCacheUpdate: new Date(),
-	data: {
-		defaultOgImage: null,
-		description: 'A StudioCMS Project',
-		diffPerPage: 10,
-		enableDiffs: false,
-		enableMailer: false,
-		gridItems: [],
-		hideDefaultIndex: false,
-		loginPageBackground: 'studiocms-curves',
-		loginPageCustomImage: null,
-		siteIcon: null,
-		title: 'StudioCMS-Setup',
-	},
-};
-
-const mainRouteEffectDeps = Layer.merge(User.Default, VerifyEmail.Default);
 
 // Define a middleware router that routes requests to different handlers based on the request path.
 const router: Router = [
@@ -53,14 +39,14 @@ const router: Router = [
 					]);
 
 					// Set the StudioCMS base context locals
-					context.locals.StudioCMS = {
+					updateLocals(context, {
 						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
 						siteConfig: siteConfig || fallbackSiteConfig,
 						routeMap: StudioCMSRoutes,
 						defaultLang,
 						latestVersion,
-					};
+					});
 
 					// Set deprecated locals for backward compatibility
 					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
@@ -98,18 +84,21 @@ const router: Router = [
 					const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 					// Set the security-related data in the context locals
-					context.locals.StudioCMS.security = {
-						userSessionData,
-						emailVerificationEnabled,
-						userPermissionLevel,
-					};
+					updateLocals(context, {
+						security: {
+							userSessionData,
+							emailVerificationEnabled,
+							userPermissionLevel,
+						},
+					});
+
 					// Set deprecated locals for backward compatibility
 					context.locals.userSessionData = userSessionData;
 					context.locals.emailVerificationEnabled = emailVerificationEnabled;
 					context.locals.userPermissionLevel = userPermissionLevel;
 
 					return next();
-				}).pipe(Effect.provide(mainRouteEffectDeps))
+				}).pipe(Effect.provide(Layer.merge(User.Default, VerifyEmail.Default)))
 			),
 	},
 	{
@@ -119,7 +108,7 @@ const router: Router = [
 		 * authenticated. It also excludes certain paths from this check, such as login, signup,
 		 * logout, and forgot password routes.
 		 */
-		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
+		includePaths: [`/${dashboardRoute}/**`],
 		excludePaths: [
 			`/${dashboardRoute}/login`,
 			`/${dashboardRoute}/login/**`,
@@ -134,7 +123,8 @@ const router: Router = [
 			await convertToVanilla(
 				genLogger('studiocms/middleware/middlewareEffect')(function* () {
 					const { getUserData } = yield* User;
-					const userSessionData = yield* getUserData(context);
+					const userSessionData =
+						context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
 
 					if (!userSessionData.isLoggedIn)
 						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
@@ -171,9 +161,12 @@ const router: Router = [
 				})(),
 			});
 
-			context.locals.StudioCMS.plugins = {
-				editorCSRFToken: csrfToken,
-			};
+			// Update the context locals with the CSRF token for the editor
+			updateLocals(context, {
+				plugins: {
+					editorCSRFToken: csrfToken,
+				},
+			});
 
 			// Set deprecated locals for backward compatibility
 			context.locals.wysiwygCsrfToken = csrfToken;

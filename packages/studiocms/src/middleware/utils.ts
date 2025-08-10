@@ -1,7 +1,9 @@
 import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import type { MiddlewareHandler } from 'astro';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { APIContext, MiddlewareHandler } from 'astro';
 import { defineMiddleware, sequence } from 'astro/middleware';
+import { deepmerge } from 'deepmerge-ts';
 import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
 
@@ -86,3 +88,45 @@ export const getUserPermissions = (userData: UserSessionData) =>
 			isOwner: userPermissionLevel >= User.UserPermissionLevel.owner,
 		};
 	});
+
+export const fallbackSiteConfig: SiteConfigCacheObject = {
+	lastCacheUpdate: new Date(),
+	data: {
+		defaultOgImage: null,
+		description: 'A StudioCMS Project',
+		diffPerPage: 10,
+		enableDiffs: false,
+		enableMailer: false,
+		gridItems: [],
+		hideDefaultIndex: false,
+		loginPageBackground: 'studiocms-curves',
+		loginPageCustomImage: null,
+		siteIcon: null,
+		title: 'StudioCMS-Setup',
+	},
+};
+
+/**
+ * Updates the `StudioCMS` property within the `locals` object of the provided API context.
+ *
+ * This function performs a deep merge of the existing `StudioCMS` values with the provided partial values,
+ * ensuring that nested objects are merged correctly and existing data is preserved.
+ *
+ * @param context - The API context containing the `locals` object to be updated.
+ * @param values - A partial object containing the properties to update within `StudioCMS`.
+ */
+export function updateLocals(
+	context: APIContext,
+	values: Partial<APIContext['locals']['StudioCMS']>
+) {
+	// Clone the current values to avoid mutating the original object
+	const currentValues = context.locals.StudioCMS || {};
+
+	// Use deepmerge to combine the current values with the new values
+	// This ensures that nested objects are merged correctly
+	const updatedValues = deepmerge(currentValues, values) as APIContext['locals']['StudioCMS'];
+
+	// Update the context locals with the merged values
+	// This allows for partial updates without losing existing data
+	context.locals.StudioCMS = updatedValues;
+}

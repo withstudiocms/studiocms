@@ -714,6 +714,9 @@ importers:
       chalk:
         specifier: ^5.5.0
         version: 5.5.0
+      deepmerge-ts:
+        specifier: ^7.1.5
+        version: 7.1.5
       diff:
         specifier: ^8.0.2
         version: 8.0.2
