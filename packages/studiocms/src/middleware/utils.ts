@@ -30,17 +30,33 @@ export type Router = {
  */
 export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 	return defineMiddleware((context, next) => {
-		return sequence(
-			...router
-				.filter(({ includePaths, excludePaths = [] }) => {
-					const pathname = context.url.pathname;
-					return (
-						micromatch.isMatch(pathname, includePaths) &&
-						!micromatch.isMatch(pathname, excludePaths)
-					);
-				})
-				.map(({ handler }) => handler)
-		)(context, next);
+		// Extract the pathname from the request URL
+		// This is used to match against the `includePaths` and `excludePaths`
+		// defined in the router.
+		const pathname = context.url.pathname;
+
+		// Filter the router to find handlers that match the current pathname
+		// based on the include and exclude paths.
+		const handlers = router
+			.filter(({ includePaths, excludePaths }) => {
+				const include =
+					includePaths == null || (Array.isArray(includePaths) && includePaths.length === 0)
+						? true
+						: micromatch.isMatch(pathname, includePaths as string | string[]);
+				const exclude =
+					excludePaths == null || (Array.isArray(excludePaths) && excludePaths.length === 0)
+						? false
+						: micromatch.isMatch(pathname, excludePaths as string | string[]);
+				return include && !exclude;
+			})
+			.map(({ handler }) => handler);
+
+		// If no handlers match, proceed to the next middleware.
+		if (handlers.length === 0) return next();
+
+		// Execute the matched handlers in sequence.
+		// This allows for multiple middleware functions to be executed in order.
+		return sequence(...handlers)(context, next);
 	});
 }
 

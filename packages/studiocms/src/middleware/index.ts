@@ -128,8 +128,8 @@ const router: Router = [
 			await convertToVanilla(
 				genLogger('studiocms/middleware/middlewareEffect')(function* () {
 					const { getUserData } = yield* User;
-
-					const userSessionData = yield* getUserData(context);
+					const userSessionData =
+						context.locals.StudioCMS?.security?.userSessionData ?? (yield* getUserData(context));
 
 					if (!userSessionData.isLoggedIn)
 						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
