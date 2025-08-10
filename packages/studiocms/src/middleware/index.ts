@@ -137,6 +137,7 @@ const router: Router = [
 			),
 	},
 	{
+		// TODO: Add a way for plugins to enable CSRF protection on their own editors
 		/**
 		 * Middleware function to set a CSRF token for the WYSIWYG editor.
 		 * This middleware generates a new CSRF token and sets it in the cookies
@@ -147,7 +148,7 @@ const router: Router = [
 		 *
 		 * @returns A generator function that generates a CSRF token and sets it in the cookies.
 		 *
-		 * TODO: Add a way for plugins to enable CSRF protection on their own editors
+		 *
 		 */
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
 		handler: async (context, next) => {
