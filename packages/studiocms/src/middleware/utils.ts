@@ -5,17 +5,34 @@ import { defineMiddleware, sequence } from 'astro/middleware';
 import micromatch from 'micromatch';
 import { genLogger } from '../lib/effects/index.js';
 
+/**
+ * Represents an array of route configurations for middleware handling.
+ *
+ * Each route configuration object contains:
+ * - `includePaths`: An array of path strings to explicitly include for the middleware.
+ * - `excludePaths` (optional): An array of path strings to exclude from the middleware.
+ * - `handler`: The middleware handler function to process requests.
+ */
 export type Router = {
-	handler: MiddlewareHandler;
+	includePaths: string[];
 	excludePaths?: string[];
-	includePaths?: string[];
+	handler: MiddlewareHandler;
 }[];
 
+/**
+ * Defines a middleware router that sequences middleware handlers based on path matching.
+ *
+ * Filters the provided `router` array to include handlers whose `includePaths` match the current request's pathname
+ * and whose `excludePaths` do not match. The resulting handlers are composed into a sequence and executed.
+ *
+ * @param router - An array of route objects, each containing `includePaths`, `excludePaths`, and a `handler`.
+ * @returns A `MiddlewareHandler` that executes the matched handlers in sequence.
+ */
 export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
 	return defineMiddleware((context, next) => {
 		return sequence(
 			...router
-				.filter(({ includePaths = [], excludePaths = [] }) => {
+				.filter(({ includePaths, excludePaths = [] }) => {
 					const pathname = context.url.pathname;
 					return (
 						micromatch.isMatch(pathname, includePaths) &&
