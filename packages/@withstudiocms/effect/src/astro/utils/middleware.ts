@@ -1,9 +1,8 @@
-import type { APIContext, MiddlewareNext } from "astro";
-import { sequence } from "astro/middleware";
-import micromatch from "micromatch";
-import { defineMiddleware } from "../middleware.js";
-import type { EffectMiddlewareRouterEntry } from "../types.js";
-
+import type { APIContext, MiddlewareNext } from 'astro';
+import { sequence } from 'astro/middleware';
+import micromatch from 'micromatch';
+import { defineMiddleware } from '../middleware.js';
+import type { EffectMiddlewareRouterEntry } from '../types.js';
 
 /**
  * Checks if a given pathname matches specified paths using micromatch.
@@ -20,12 +19,39 @@ export const matchFilterCheck = (
 	paths: string | string[] | undefined,
 	pathname: string,
 	defaultValue: boolean
-): boolean =>
-	paths == null ||
-	(Array.isArray(paths) && paths.length === 0) ||
-	(typeof paths === 'string' && paths.trim() === '')
-		? defaultValue
-		: micromatch.isMatch(pathname, paths);
+): boolean => {
+	if (
+		paths === null ||
+		(Array.isArray(paths) && paths.length === 0) ||
+		(typeof paths === 'string' && paths.trim() === '')
+	) {
+		// If paths is undefined, empty array, or empty string, return defaultValue
+		return defaultValue;
+	}
+
+	let cleanedPaths: string[];
+
+	if (typeof paths === 'string') {
+		if (paths.trim() === '') {
+			// If the string is empty, return defaultValue
+			return defaultValue;
+		}
+		cleanedPaths = [paths.trim()];
+	} else if (Array.isArray(paths)) {
+		if (paths.length === 0 || paths.every((p) => p.trim() === '')) {
+			// If the array is empty or all elements are empty strings, return defaultValue
+			return defaultValue;
+		}
+		cleanedPaths = paths.map((p) => p.trim()).filter((p) => p !== '');
+	} else {
+		// If paths is neither a string nor an array, return defaultValue
+		return defaultValue;
+	}
+
+	return micromatch.isMatch(pathname, cleanedPaths, {
+		nocase: true, // Case-insensitive matching
+	});
+};
 
 /**
  * Determines whether a given pathname should be included or excluded based on provided include and exclude path patterns.
