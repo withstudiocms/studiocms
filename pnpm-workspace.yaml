@@ -1,7 +1,7 @@
 catalog:
   "@types/node": ^22.0.0
   arctic: ^3.7.0
-  astro-integration-kit: ^0.18
+  astro-integration-kit: ^0.19.0
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
@@ -39,14 +39,14 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.3.0
-    "@types/react": ^19.1.9
+    "@types/react": ^19.1.10
     "@types/react-dom": ^19.1.7
     react: ^19.1.1
     "react-dom": ^19.1.1
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.4.0
+    "@studiocms/web-vitals": ^4.4.1
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
