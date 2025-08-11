@@ -18,11 +18,13 @@ export type EffectMiddlewareHandler = (
  *
  * @property includePaths - Optional path(s) to include for this middleware. Can be a string or an array of strings.
  * @property excludePaths - Optional path(s) to exclude from this middleware. Can be a string or an array of strings.
+ * @property priority - Optional priority for the middleware, determining the order of execution. Lower numbers execute first.
  * @property handler - The middleware handler function to execute for matched paths.
  */
 export interface EffectMiddlewareRouterEntry {
 	includePaths?: string | string[];
 	excludePaths?: string | string[];
+	priority?: number;
 	handler: EffectMiddlewareHandler;
 }
 

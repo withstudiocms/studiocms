@@ -72,6 +72,23 @@ export function handlerFilter(
 }
 
 /**
+ * Comparator function to sort numbers by priority, with lower numbers executing first.
+ *
+ * If a priority value is `undefined` or `null`, it defaults to `Number.MAX_SAFE_INTEGER`,
+ * ensuring that items without a set priority are sorted to the end of the array.
+ * If both values are not set, their order is preserved.
+ *
+ * @param a - The first priority value to compare.
+ * @param b - The second priority value to compare.
+ * @returns A negative number if `a` should come before `b`, a positive number if `b` should come before `a`, or zero if they are equal.
+ */
+export const sortByPriority = (a?: number | null, b?: number | null) => {
+	const priorityA = a ?? Number.MAX_SAFE_INTEGER;
+	const priorityB = b ?? Number.MAX_SAFE_INTEGER;
+	return priorityA - priorityB;
+};
+
+/**
  * Builds and executes a sequence of middleware handlers based on the current request pathname.
  *
  * Filters the provided router entries by matching the request pathname against their `includePaths` and `excludePaths`
@@ -93,6 +110,7 @@ export function buildMiddlewareSequence(
 
 	const handlers = router
 		.filter(({ includePaths, excludePaths }) => handlerFilter(includePaths, excludePaths, pathname))
+		.sort((a, b) => sortByPriority(a.priority, b.priority))
 		.map(({ handler }) => defineMiddleware(handler));
 
 	if (handlers.length === 0) return next();
