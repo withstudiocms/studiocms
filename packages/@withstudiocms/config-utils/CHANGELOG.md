@@ -1,5 +1,11 @@
 # @withstudiocms/config-utils
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [#666](https://github.com/withstudiocms/studiocms/pull/666) [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweak watch config utility to be a builder akin to the configresolver util
+
 ## 0.1.0-beta.1
 
 ### Patch Changes

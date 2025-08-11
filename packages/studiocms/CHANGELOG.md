@@ -1,5 +1,40 @@
 # studiocms
 
+## 0.1.0-beta.24
+
+### Patch Changes
+
+- [#666](https://github.com/withstudiocms/studiocms/pull/666) [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update package keywords
+
+- [#662](https://github.com/withstudiocms/studiocms/pull/662) [`48c47b9`](https://github.com/withstudiocms/studiocms/commit/48c47b91f73ade82d20227cd71c73c006bc09063) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add export for component-registry/types
+
+- [#668](https://github.com/withstudiocms/studiocms/pull/668) [`df69c22`](https://github.com/withstudiocms/studiocms/commit/df69c226abec71dc1db3a1cbdc1d8a22810213ce) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize user-quick-tools widget
+
+  - **Performance**: Implemented O(1) permission checking with Set-based hierarchy, deferred initialization strategies (idle/interaction/immediate), and non-blocking rendering using requestIdleCallback/requestAnimationFrame
+  - **UX Improvements**: Added click protection to prevent accidental interactions, visual shake feedback for ignored clicks, smooth animations with configurable delays, and dynamic theme switching support
+  - **Configurability**: Component now supports data attributes for initialization strategy, timing parameters, and protection durations
+  - **Robustness**: Enhanced error handling with 5-second timeout for session fetching, graceful failures without blocking page rendering, and proper cleanup on unmount
+  - **Code Quality**: Modularized component structure with clear separation of concerns, extracted styles into constants, and improved TypeScript typing
+
+- [#662](https://github.com/withstudiocms/studiocms/pull/662) [`48c47b9`](https://github.com/withstudiocms/studiocms/commit/48c47b91f73ade82d20227cd71c73c006bc09063) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduce new middlewares sdk module to ensure cache objects are initialized and not empty
+
+- [#678](https://github.com/withstudiocms/studiocms/pull/678) [`853e6e6`](https://github.com/withstudiocms/studiocms/commit/853e6e668b46eaa2808e7fcdf4ff4039de3a596d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Effect and Astro Deps
+
+- [#666](https://github.com/withstudiocms/studiocms/pull/666) [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor to align with once again available types from @astrojs/db
+
+- [#666](https://github.com/withstudiocms/studiocms/pull/666) [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds new `StudioCMSPluginData` table for usage by StudioCMS plugins. As well as new SDK plugins utilities for dynamic table typing as well.
+
+  #### Breaking Update
+
+  Users will be required to run `astro db push --remote` to update your table schema so that the table schema is updated before running the new version!
+
+- [#672](https://github.com/withstudiocms/studiocms/pull/672) [`f952925`](https://github.com/withstudiocms/studiocms/commit/f9529253a343634ec8ea039e4a3cb64d6ce3b1f6) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates editor page, to also inject a id variable for the current page
+
+- [#670](https://github.com/withstudiocms/studiocms/pull/670) [`3a6f0cf`](https://github.com/withstudiocms/studiocms/commit/3a6f0cfcdc8b31c8e56fba1ef81b0d8080a2d86a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Converts internal robotstxt to proper zod schema and cleans up code
+
+- Updated dependencies [[`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba)]:
+  - @withstudiocms/config-utils@0.1.0-beta.2
+
 ## 0.1.0-beta.23
 
 ### Patch Changes
