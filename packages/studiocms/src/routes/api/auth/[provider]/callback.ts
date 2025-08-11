@@ -1,6 +1,5 @@
-import { AllResponse, defineAPIRoute, OptionsResponse } from '@withstudiocms/effect';
 import type { APIRoute } from 'astro';
-import { genLogger } from '../../../../effect.js';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../../effect.js';
 import { OAuthAPIEffect } from './_effects/index.js';
 
 export const GET: APIRoute = async (context) =>
