@@ -29,6 +29,14 @@ export const getUserPermissions = (userData: UserSessionData) =>
 		};
 	});
 
+/**
+ * Creates a fallback site configuration object with default values.
+ *
+ * This function is typically used when no site configuration is available,
+ * providing sensible defaults for the StudioCMS project.
+ *
+ * @returns {SiteConfigCacheObject} The fallback site configuration object.
+ */
 export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	lastCacheUpdate: new Date(),
 	data: {
@@ -46,6 +54,14 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	},
 });
 
+/**
+ * Creates a customized deep merge function with array merging disabled.
+ *
+ * This instance of `deepmerge` will merge objects recursively, but arrays will not be merged;
+ * instead, arrays from the source will overwrite arrays in the target.
+ *
+ * @see {@link https://github.com/TehShrike/deepmerge} for more details on deepmerge options.
+ */
 const deepmerge = deepmergeCustom({ mergeArrays: false });
 
 /**
@@ -77,6 +93,17 @@ export function updateLocals(
 	return updatedValues;
 }
 
+/**
+ * Recursively removes all properties with `undefined` values from an object.
+ *
+ * - If the input is an object (but not an array), it traverses its properties and omits any property whose value is `undefined`.
+ * - For nested objects, the function is applied recursively.
+ * - Arrays and non-object values are returned as-is.
+ *
+ * @typeParam T - The type of the input object.
+ * @param input - The object to process.
+ * @returns A new object of type `T` with all `undefined` properties removed.
+ */
 function deepOmitUndefined<T>(input: T): T {
 	if (input && typeof input === 'object' && !Array.isArray(input)) {
 		const out: Record<string, unknown> = {};

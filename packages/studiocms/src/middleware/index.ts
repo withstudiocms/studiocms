@@ -6,13 +6,24 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
-import { defineMiddlewareRouter } from '@withstudiocms/effect';
-import { Effect, Layer } from 'effect';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
+import { defineMiddlewareRouter, Effect } from '../effect.js';
 import { getUserPermissions, makeFallbackSiteConfig, updateLocals } from './utils.js';
 
+// Import the dashboard route override from the configuration
+// If no override is set, it defaults to 'dashboard'
+// This allows for flexibility in the dashboard route without hardcoding it
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
+/**
+ * Main middleware sequence for StudioCMS.
+ *
+ * This middleware sets up the base context locals for StudioCMS, including the generator version,
+ * site configuration, route map, and default language. It also handles user session data,
+ * email verification status, and user permission levels for the dashboard routes.
+ * Additionally, it manages CSRF token setup for the editor and ensures that the user is authenticated
+ * for dashboard routes, redirecting to the login page if not authenticated.
+ */
 export const onRequest = defineMiddlewareRouter([
 	{
 		/**
@@ -63,36 +74,39 @@ export const onRequest = defineMiddlewareRouter([
 		 */
 		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
 		priority: 2,
-		handler: (context, next) =>
-			Effect.gen(function* () {
-				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
-					User,
-					VerifyEmail,
-				]);
+		handler: Effect.fn(function* (context, next) {
+			const { getUserData, isEmailVerificationEnabled } = yield* Effect.gen(function* () {
+				const { getUserData } = yield* User;
+				const { isEmailVerificationEnabled } = yield* VerifyEmail;
+				return { getUserData, isEmailVerificationEnabled };
+			}).pipe(User.Provide, VerifyEmail.Provide);
 
-				const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
-					getUserData(context),
-					isEmailVerificationEnabled(),
-				]);
+			// Retrieve the user session data from the context locals or fetch it
+			const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
+				getUserData(context),
+				isEmailVerificationEnabled(),
+			]);
 
-				const userPermissionLevel = yield* getUserPermissions(userSessionData);
+			// Get the user permission levels based on the session data
+			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
 
-				// Set the security-related data in the context locals
-				updateLocals(context, {
-					security: {
-						userSessionData,
-						emailVerificationEnabled,
-						userPermissionLevel,
-					},
-				});
+			// Set the security-related data in the context locals
+			updateLocals(context, {
+				security: {
+					userSessionData,
+					emailVerificationEnabled,
+					userPermissionLevel,
+				},
+			});
 
-				// Set deprecated locals for backward compatibility
-				context.locals.userSessionData = userSessionData;
-				context.locals.emailVerificationEnabled = emailVerificationEnabled;
-				context.locals.userPermissionLevel = userPermissionLevel;
+			// Set deprecated locals for backward compatibility
+			context.locals.userSessionData = userSessionData;
+			context.locals.emailVerificationEnabled = emailVerificationEnabled;
+			context.locals.userPermissionLevel = userPermissionLevel;
 
-				return next();
-			}).pipe(Effect.provide(Layer.merge(User.Default, VerifyEmail.Default))),
+			// Continue to the next middleware
+			return next();
+		}),
 	},
 	{
 		/**
@@ -113,17 +127,22 @@ export const onRequest = defineMiddlewareRouter([
 			`/${dashboardRoute}/forgot-password/**`,
 		],
 		priority: 3,
-		handler: (context, next) =>
-			Effect.gen(function* () {
+		handler: Effect.fn(function* (context, next) {
+			const getUserData = yield* Effect.gen(function* () {
 				const { getUserData } = yield* User;
-				const userSessionData =
-					context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
+				return getUserData;
+			}).pipe(User.Provide);
 
-				if (!userSessionData.isLoggedIn)
-					return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+			// Retrieve the user session data from the context locals or fetch it
+			const userSessionData =
+				context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
 
-				return next();
-			}).pipe(Effect.provide(User.Default)),
+			// Check if the user is logged in and redirect to the login page if not
+			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+
+			// Else, Continue to the next middleware
+			return next();
+		}),
 	},
 	{
 		/**
