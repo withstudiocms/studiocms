@@ -45,7 +45,7 @@ const atStudioCMSPackages = [
 	'wysiwyg',
 ] as const;
 
-const atWithStudioCMSPackages = ['config-utils'] as const;
+const atWithStudioCMSPackages = ['config-utils', 'effect'] as const;
 
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
@@ -55,9 +55,19 @@ const atWithStudioCMSPackages = ['config-utils'] as const;
  *          or an empty object if no extras are defined for the package.
  */
 const extras = (pkg: string) => {
-	const extrasMap: Record<string, { ignoreDependencies?: (string | RegExp)[] | undefined }> = {
+	const extrasMap: Record<
+		string,
+		{ ignoreDependencies?: (string | RegExp)[] | undefined; entry?: string[] | undefined }
+	> = {
 		markdoc: {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
+		},
+		effect: {
+			entry: [
+				'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+				'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+			],
+			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
 		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
@@ -100,6 +110,7 @@ const config: KnipConfig = {
 			(acc, pkg) => {
 				acc[`packages/@withstudiocms/${pkg}`] = {
 					...baseAstroWorkspaceConfig,
+					...extras(pkg),
 				};
 				return acc;
 			},
