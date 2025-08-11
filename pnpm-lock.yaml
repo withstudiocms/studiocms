@@ -619,6 +619,61 @@ importers:
         specifier: 'catalog:'
         version: 22.16.3
 
+  packages/@withstudiocms/effect:
+    dependencies:
+      '@effect/cli':
+        specifier: catalog:effect
+        version: 0.69.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/cluster':
+        specifier: catalog:effect
+        version: 0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/experimental':
+        specifier: catalog:effect
+        version: 0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform':
+        specifier: catalog:effect
+        version: 0.90.1(effect@3.17.7)
+      '@effect/platform-node':
+        specifier: catalog:effect
+        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/printer':
+        specifier: catalog:effect
+        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
+      '@effect/printer-ansi':
+        specifier: catalog:effect
+        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
+      '@effect/rpc':
+        specifier: catalog:effect
+        version: 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/sql':
+        specifier: catalog:effect
+        version: 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/typeclass':
+        specifier: catalog:effect
+        version: 0.36.0(effect@3.17.7)
+      '@effect/workflow':
+        specifier: catalog:effect
+        version: 0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      astro:
+        specifier: catalog:min
+        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      effect:
+        specifier: catalog:effect
+        version: 3.17.7
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+    devDependencies:
+      '@types/micromatch':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
+
   packages/studiocms:
     dependencies:
       '@astrojs/db':

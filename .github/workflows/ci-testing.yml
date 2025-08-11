@@ -14,8 +14,8 @@ permissions:
   contents: read
   
 jobs:
-  buildkit-vitest:
-    name: Run Buildkit Vitest Tests
+  withstudiocms-tests:
+    name: Run withstudiocms packages Tests
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -28,8 +28,8 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
 
-      - name: Run Buildkit Vitest Tests
-        run: pnpm ci:vitest
+      - name: Run withstudiocms packages Tests
+        run: pnpm ci:test:withstudiocms
 
   build-studiocms-playground:
     name: Build StudioCMS Playground
