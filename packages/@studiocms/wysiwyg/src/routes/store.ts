@@ -60,6 +60,7 @@ const handleCSRF = ({ request, cookies }: APIContext) =>
 		const storedToken = cookies.get(CSRF_COOKIE_NAME)?.value;
 
 		if (!submittedToken || !storedToken || submittedToken !== storedToken) {
+			console.warn('CSRF token validation failed');
 			return apiResponseLogger(403, 'CSRF token validation failed');
 		}
 	});
@@ -76,16 +77,18 @@ const handleCSRF = ({ request, cookies }: APIContext) =>
 const handleUserSessionVerification = ({ locals }: APIContext) =>
 	Effect.try(() => {
 		// Get user data
-		const userData = locals.userSessionData;
+		const userData = locals.StudioCMS.security?.userSessionData.isLoggedIn;
 
 		// Check if user is logged in
-		if (!userData.isLoggedIn) {
+		if (!userData) {
+			console.warn('User is not logged in, returning 403 Unauthorized');
 			return apiResponseLogger(403, 'Unauthorized');
 		}
 
 		// Check if user has permission
-		const isAuthorized = locals.userPermissionLevel.isEditor;
+		const isAuthorized = locals.StudioCMS.security?.userPermissionLevel.isEditor;
 		if (!isAuthorized) {
+			console.warn('User does not have editor permissions, returning 403 Unauthorized');
 			return apiResponseLogger(403, 'Unauthorized');
 		}
 	});

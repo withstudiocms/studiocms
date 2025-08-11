@@ -1,4 +1,4 @@
-name: CI - Snapshot Release on PRs and Main
+name: CI - Pkg-pr-new
 
 on:
   workflow_dispatch:
@@ -15,7 +15,6 @@ concurrency:
 
 permissions:
   contents: read
-  actions: write
 
 env:
   FORCE_COLOR: true
@@ -32,7 +31,7 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    name: Pkg-pr-new Main Snapshot Preview
+    name: Main Snapshot Preview
     timeout-minutes: 15
     steps:
       - name: Disable git crlf
@@ -40,6 +39,7 @@ jobs:
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          persist-credentials: false
           # Changeset needs access to the main branch to find pending changesets
           fetch-depth: 0
 
@@ -94,7 +94,7 @@ jobs:
       id-token: write
       issues: write
       pull-requests: write
-    name: Pkg-pr-new PR Snapshot Preview
+    name: PR Snapshot Preview
     timeout-minutes: 15
     steps:
       - name: Disable git crlf
@@ -102,6 +102,7 @@ jobs:
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          persist-credentials: false
           # Changeset needs access to the main branch to find pending changesets
           fetch-depth: 0
 

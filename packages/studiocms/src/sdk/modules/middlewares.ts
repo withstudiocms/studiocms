@@ -1,3 +1,4 @@
+import _logger, { isVerbose } from 'studiocms:logger';
 import { Effect, genLogger } from '../../effect.js';
 import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
@@ -40,38 +41,48 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 				{ initPluginDataCache },
 			] = yield* Effect.all([CacheContext, SDKCore_GET, SDKCore_PLUGINS]);
 
+			const CachesToCheck = [
+				{ cache: pages, updater: () => updatePages(true) },
+				{ cache: FolderList, updater: () => updateFolderList() },
+				{ cache: folderTree, updater: () => updateFolderTree() },
+				{ cache: pageFolderTree, updater: () => updatePageFolderTree() },
+				{ cache: siteConfig, updater: () => updateSiteConfig() },
+				{ cache: pluginData, updater: () => initPluginDataCache() },
+			];
+
+			const logger = _logger.fork('studiocms:middleware/cacheVerification');
+
 			const middlewares = {
 				verifyCache: () =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
-						// Ensure the pages cache is initialized
-						if ((yield* isCacheEnabled) && pages.size === 0) {
-							yield* updatePages(true);
+						// Check if cache is enabled before proceeding
+						const cacheStatus = yield* isCacheEnabled.pipe(
+							Effect.catchAll(() => Effect.succeed(false))
+						);
+
+						// If cache is not enabled, we skip the verification
+						// and return early to avoid unnecessary operations.
+						if (!cacheStatus) return;
+
+						// Log the cache verification process
+						isVerbose && logger.info('Verifying caches...');
+
+						// Iterate through the caches and update them if they are empty
+						const todos = CachesToCheck.flatMap(({ cache, updater }) =>
+							cache.size === 0 ? [updater()] : []
+						);
+
+						// If there are no caches to update, we log and return
+						if (todos.length === 0) {
+							isVerbose && logger.info('All caches are already populated.');
+							return;
 						}
 
-						// Ensure the folderList cache is initialized
-						if ((yield* isCacheEnabled) && FolderList.size === 0) {
-							yield* updateFolderList();
-						}
-
-						// Ensure the FolderTree is initialized
-						if ((yield* isCacheEnabled) && folderTree.size === 0) {
-							yield* updateFolderTree();
-						}
-
-						// Ensure the pageFolderTree is initialized
-						if ((yield* isCacheEnabled) && pageFolderTree.size === 0) {
-							yield* updatePageFolderTree();
-						}
-
-						// Ensure the siteConfig is initialized
-						if ((yield* isCacheEnabled) && siteConfig.size === 0) {
-							yield* updateSiteConfig();
-						}
-
-						// Ensure the plugin data cache is initialized
-						if ((yield* isCacheEnabled) && pluginData.size === 0) {
-							yield* initPluginDataCache();
-						}
+						// Log the caches that are being updated
+						isVerbose && logger.info(`Updating caches: ${todos.length} caches to update.`);
+						const start = Date.now();
+						yield* Effect.all(todos);
+						isVerbose && logger.info(`Cache verification completed in ${Date.now() - start}ms.`);
 					}),
 			};
 
