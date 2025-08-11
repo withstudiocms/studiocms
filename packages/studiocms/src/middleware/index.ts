@@ -76,8 +76,10 @@ export const onRequest = defineMiddlewareRouter([
 		priority: 2,
 		handler: Effect.fn(function* (context, next) {
 			const { getUserData, isEmailVerificationEnabled } = yield* Effect.gen(function* () {
-				const { getUserData } = yield* User;
-				const { isEmailVerificationEnabled } = yield* VerifyEmail;
+				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
+					User,
+					VerifyEmail,
+				]);
 				return { getUserData, isEmailVerificationEnabled };
 			}).pipe(User.Provide, VerifyEmail.Provide);
 
