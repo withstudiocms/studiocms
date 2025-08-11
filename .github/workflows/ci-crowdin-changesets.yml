@@ -13,14 +13,14 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'translations') && github.event.pull_request.user.login == 'studiocms-no-reply'
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
           ref: ${{ github.head_ref }}
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@4202f6901825c1e837677402a7508132103ea792 # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
 
       - name: Create Translation Changesets
         run: pnpm ci:translations:changeset
