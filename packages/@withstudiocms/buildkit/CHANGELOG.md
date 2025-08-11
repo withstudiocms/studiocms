@@ -1,5 +1,11 @@
 # @withstudiocms/buildkit
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- [#669](https://github.com/withstudiocms/studiocms/pull/669) [`d757989`](https://github.com/withstudiocms/studiocms/commit/d75798912aaadab3d874c48176f2f9902bfa8502) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements node testing system for usage by StudioCMS and related packages
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
