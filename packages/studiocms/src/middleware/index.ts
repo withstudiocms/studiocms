@@ -6,64 +6,54 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
+import { defineMiddlewareRouter } from '@withstudiocms/effect';
 import { Effect, Layer } from 'effect';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
-import { convertToVanilla, genLogger } from '../lib/effects/index.js';
-import {
-	defineMiddlewareRouter,
-	getUserPermissions,
-	makeFallbackSiteConfig,
-	type Router,
-	updateLocals,
-} from './utils.js';
+import { getUserPermissions, makeFallbackSiteConfig, updateLocals } from './utils.js';
 
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
-// Define a middleware router that routes requests to different handlers based on the request path.
-const router: Router = [
+export const onRequest = defineMiddlewareRouter([
 	{
 		/**
-		 * Main middleware function that sets up the context for the StudioCMS application.
-		 * It initializes the generator for the StudioCMS version, UI version, latest version,
-		 * site configuration, default language, and route map.
+		 * Middleware function to handle the main locals setup for StudioCMS.
+		 * This middleware sets the base context locals for StudioCMS, including the generator version,
+		 * site configuration, route map, and default language.
 		 */
 		includePaths: ['/**'],
-		handler: async (context, next) => {
-			return convertToVanilla(
-				genLogger('studiocms/middleware/mainMiddleware')(function* () {
-					const {
-						GET,
-						MIDDLEWARES: { verifyCache },
-					} = yield* SDKCore;
+		priority: 1,
+		handler: Effect.fn(function* (context, next) {
+			const {
+				GET,
+				MIDDLEWARES: { verifyCache },
+			} = yield* SDKCore;
 
-					const [latestVersion, siteConfig] = yield* Effect.all([
-						GET.latestVersion(),
-						GET.siteConfig(),
-						verifyCache(),
-					]);
+			const [latestVersion, siteConfig] = yield* Effect.all([
+				GET.latestVersion(),
+				GET.siteConfig(),
+				verifyCache(),
+			]);
 
-					// Set the StudioCMS base context locals
-					updateLocals(context, {
-						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
-						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
-						siteConfig: siteConfig ?? makeFallbackSiteConfig(),
-						routeMap: StudioCMSRoutes,
-						defaultLang,
-						latestVersion,
-					});
+			// Set the StudioCMS base context locals
+			updateLocals(context, {
+				SCMSGenerator: `StudioCMS v${SCMSVersion}`,
+				SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
+				siteConfig: siteConfig ?? makeFallbackSiteConfig(),
+				routeMap: StudioCMSRoutes,
+				defaultLang,
+				latestVersion,
+			});
 
-					// Set deprecated locals for backward compatibility
-					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
-					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-					context.locals.latestVersion = latestVersion;
-					context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
-					context.locals.defaultLang = defaultLang;
-					context.locals.routeMap = StudioCMSRoutes;
+			// Set deprecated locals for backward compatibility
+			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
+			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
+			context.locals.latestVersion = latestVersion;
+			context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
+			context.locals.defaultLang = defaultLang;
+			context.locals.routeMap = StudioCMSRoutes;
 
-					return next();
-				})
-			);
-		},
+			return next();
+		}),
 	},
 	{
 		/**
@@ -72,38 +62,37 @@ const router: Router = [
 		 * and user permission levels for the dashboard routes.
 		 */
 		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
-		handler: async (context, next) =>
-			await convertToVanilla(
-				genLogger('studiocms/middleware/mainRouteEffect')(function* () {
-					const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
-						User,
-						VerifyEmail,
-					]);
+		priority: 2,
+		handler: (context, next) =>
+			Effect.gen(function* () {
+				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
+					User,
+					VerifyEmail,
+				]);
 
-					const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
-						getUserData(context),
-						isEmailVerificationEnabled(),
-					]);
+				const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
+					getUserData(context),
+					isEmailVerificationEnabled(),
+				]);
 
-					const userPermissionLevel = yield* getUserPermissions(userSessionData);
+				const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
-					// Set the security-related data in the context locals
-					updateLocals(context, {
-						security: {
-							userSessionData,
-							emailVerificationEnabled,
-							userPermissionLevel,
-						},
-					});
+				// Set the security-related data in the context locals
+				updateLocals(context, {
+					security: {
+						userSessionData,
+						emailVerificationEnabled,
+						userPermissionLevel,
+					},
+				});
 
-					// Set deprecated locals for backward compatibility
-					context.locals.userSessionData = userSessionData;
-					context.locals.emailVerificationEnabled = emailVerificationEnabled;
-					context.locals.userPermissionLevel = userPermissionLevel;
+				// Set deprecated locals for backward compatibility
+				context.locals.userSessionData = userSessionData;
+				context.locals.emailVerificationEnabled = emailVerificationEnabled;
+				context.locals.userPermissionLevel = userPermissionLevel;
 
-					return next();
-				}).pipe(Effect.provide(Layer.merge(User.Default, VerifyEmail.Default)))
-			),
+				return next();
+			}).pipe(Effect.provide(Layer.merge(User.Default, VerifyEmail.Default))),
 	},
 	{
 		/**
@@ -123,61 +112,62 @@ const router: Router = [
 			`/${dashboardRoute}/forgot-password`,
 			`/${dashboardRoute}/forgot-password/**`,
 		],
-		handler: async (context, next) =>
-			await convertToVanilla(
-				genLogger('studiocms/middleware/middlewareEffect')(function* () {
-					const { getUserData } = yield* User;
-					const userSessionData =
-						context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
+		priority: 3,
+		handler: (context, next) =>
+			Effect.gen(function* () {
+				const { getUserData } = yield* User;
+				const userSessionData =
+					context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
 
-					if (!userSessionData.isLoggedIn)
-						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+				if (!userSessionData.isLoggedIn)
+					return context.redirect(StudioCMSRoutes.authLinks.loginURL);
 
-					return next();
-				}).pipe(Effect.provide(User.Default))
-			),
+				return next();
+			}).pipe(Effect.provide(User.Default)),
 	},
 	{
 		/**
-		 * Middleware function to set a CSRF token for the WYSIWYG editor.
-		 * This middleware generates a new CSRF token and sets it in the cookies
-		 * for the WYSIWYG editor routes.
-		 *
-		 * @param context - The API context object containing request and response information.
-		 * @param next - The next middleware function in the chain to be executed.
-		 *
-		 * @returns A generator function that generates a CSRF token and sets it in the cookies.
+		 * Middleware function to handle the CSRF token setup for the editor.
+		 * This middleware generates a CSRF token, sets it as a cookie, and updates the context locals
+		 * with the CSRF token for use in the editor.
 		 */
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
-		handler: async (context, next) => {
-			const csrfToken = crypto.randomBytes(32).toString('hex');
-			context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
-				httpOnly: true,
-				path: '/',
-				sameSite: 'strict',
-				secure: (() => {
-					if (context.url.protocol === 'https:') return true;
-					const xfp = context.request.headers.get('x-forwarded-proto')?.toLowerCase() ?? '';
-					return xfp
-						.split(',')
-						.map((s) => s.trim())
-						.includes('https');
-				})(),
-			});
+		priority: 4,
+		handler: Effect.fn(function* (context, next) {
+			return yield* Effect.try({
+				try: () => {
+					const csrfToken = crypto.randomBytes(32).toString('hex');
+					context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
+						httpOnly: true,
+						path: '/',
+						sameSite: 'strict',
+						secure: (() => {
+							if (context.url.protocol === 'https:') return true;
+							const xfp = context.request.headers.get('x-forwarded-proto')?.toLowerCase() ?? '';
+							return xfp
+								.split(',')
+								.map((s) => s.trim())
+								.includes('https');
+						})(),
+					});
 
-			// Update the context locals with the CSRF token for the editor
-			updateLocals(context, {
-				plugins: {
-					editorCSRFToken: csrfToken,
+					// Update the context locals with the CSRF token for the editor
+					updateLocals(context, {
+						plugins: {
+							editorCSRFToken: csrfToken,
+						},
+					});
+
+					// Set deprecated locals for backward compatibility
+					context.locals.wysiwygCsrfToken = csrfToken;
+
+					return next();
+				},
+				catch: (error) => {
+					console.error('Error setting CSRF token:', error);
+					return next();
 				},
 			});
-
-			// Set deprecated locals for backward compatibility
-			context.locals.wysiwygCsrfToken = csrfToken;
-
-			return next();
-		},
+		}),
 	},
-];
-
-export const onRequest = defineMiddlewareRouter(router);
+]);

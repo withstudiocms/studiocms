@@ -1,6 +1,5 @@
 // Re-export the Effect package
-export * from 'effect';
-export { dual } from 'effect/Function';
+export * from '@withstudiocms/effect';
 
 // Export custom Effect utils
 export {

@@ -29,13 +29,13 @@ export const OptionsResponse = (opts: OptionsResponseOpts): Response =>
  * @param opts.headers - Optional additional headers to include in the response.
  * @returns A `Response` object with the specified headers and a 405 status.
  */
-export const AllResponse = (opts: AllResponseOpts): Response =>
+export const AllResponse = (opts?: AllResponseOpts): Response =>
 	new Response(null, {
 		status: 405,
 		statusText: 'Method Not Allowed',
 		headers: {
-			...opts.headers,
-			'Access-Control-Allow-Origin': opts.allowedOrigins?.join(', ') || '*',
+			...opts?.headers,
+			'Access-Control-Allow-Origin': opts?.allowedOrigins?.join(', ') || '*',
 			Date: new Date().toUTCString(),
 		},
 	});
@@ -54,8 +54,8 @@ export const createJsonResponse = <T>(data: T, opts: createResponseOpts = {}) =>
 		statusText: opts.statusText || 'OK',
 		headers: {
 			'Content-Type': 'application/json',
-			...opts.headers,
-			'Access-Control-Allow-Origin': opts.allowedOrigins?.join(', ') || '*',
+			...opts?.headers,
+			'Access-Control-Allow-Origin': opts?.allowedOrigins?.join(', ') || '*',
 			Date: new Date().toUTCString(),
 		},
 	});
@@ -73,8 +73,8 @@ export const createTextResponse = (data: string, opts: createResponseOpts = {}) 
 		statusText: opts.statusText || 'OK',
 		headers: {
 			'Content-Type': 'text/plain',
-			...opts.headers,
-			'Access-Control-Allow-Origin': opts.allowedOrigins?.join(', ') || '*',
+			...opts?.headers,
+			'Access-Control-Allow-Origin': opts?.allowedOrigins?.join(', ') || '*',
 			Date: new Date().toUTCString(),
 		},
 	});
@@ -92,8 +92,8 @@ export const createHtmlResponse = (data: string, opts: createResponseOpts = {}) 
 		statusText: opts.statusText || 'OK',
 		headers: {
 			'Content-Type': 'text/html',
-			...opts.headers,
-			'Access-Control-Allow-Origin': opts.allowedOrigins?.join(', ') || '*',
+			...opts?.headers,
+			'Access-Control-Allow-Origin': opts?.allowedOrigins?.join(', ') || '*',
 			Date: new Date().toUTCString(),
 		},
 	});
@@ -113,8 +113,8 @@ export const createRedirectResponse = (url: string, opts: createResponseOpts = {
 		statusText: 'Found',
 		headers: {
 			Location: url,
-			...opts.headers,
-			'Access-Control-Allow-Origin': opts.allowedOrigins?.join(', ') || '*',
+			...opts?.headers,
+			'Access-Control-Allow-Origin': opts?.allowedOrigins?.join(', ') || '*',
 			Date: new Date().toUTCString(),
 		},
 	});

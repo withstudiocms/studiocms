@@ -757,6 +757,9 @@ importers:
       '@withstudiocms/config-utils':
         specifier: workspace:*
         version: link:../@withstudiocms/config-utils
+      '@withstudiocms/effect':
+        specifier: workspace:*
+        version: link:../@withstudiocms/effect
       astro:
         specifier: catalog:min
         version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
@@ -770,7 +773,7 @@ importers:
         specifier: ^5.5.0
         version: 5.5.0
       deepmerge-ts:
-        specifier: ^7.1.5
+        specifier: 'catalog:'
         version: 7.1.5
       diff:
         specifier: ^8.0.2
