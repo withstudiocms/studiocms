@@ -1,5 +1,15 @@
 # @studiocms/blog
 
+## 0.1.0-beta.24
+
+### Patch Changes
+
+- [#666](https://github.com/withstudiocms/studiocms/pull/666) [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update package keywords
+
+- Updated dependencies [[`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba), [`48c47b9`](https://github.com/withstudiocms/studiocms/commit/48c47b91f73ade82d20227cd71c73c006bc09063), [`df69c22`](https://github.com/withstudiocms/studiocms/commit/df69c226abec71dc1db3a1cbdc1d8a22810213ce), [`48c47b9`](https://github.com/withstudiocms/studiocms/commit/48c47b91f73ade82d20227cd71c73c006bc09063), [`853e6e6`](https://github.com/withstudiocms/studiocms/commit/853e6e668b46eaa2808e7fcdf4ff4039de3a596d), [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba), [`0b1574b`](https://github.com/withstudiocms/studiocms/commit/0b1574bfe32ef98dc62ed9082a132a540f0ad4ba), [`f952925`](https://github.com/withstudiocms/studiocms/commit/f9529253a343634ec8ea039e4a3cb64d6ce3b1f6), [`3a6f0cf`](https://github.com/withstudiocms/studiocms/commit/3a6f0cfcdc8b31c8e56fba1ef81b0d8080a2d86a)]:
+  - @studiocms/md@0.1.0-beta.24
+  - studiocms@0.1.0-beta.24
+
 ## 0.1.0-beta.23
 
 ### Patch Changes
