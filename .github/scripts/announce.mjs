@@ -136,8 +136,8 @@ async function generateMessage() {
 	if (message.length < 2000) {
 		return message;
 	}
-	const { name, version, url } = packages.find((pkg) => pkg.name === 'astro') ?? packages[0];
-	message = `${emoji} Some ${descriptor} ${pluralize(verb)}\n\n`;
+	const { name, version, url } = packages.find((pkg) => pkg.name === 'studiocms') ?? packages[0];
+	message = `<@&1309310416362537020>\n\n${emoji} Some ${descriptor} ${pluralize(verb)}\n\n`;
 	message += `• \`${name}@${version}\` Read the [release notes →](<${url}>)\n`;
 
 	message += `\nAlso ${item(extraVerbs)}:`;
