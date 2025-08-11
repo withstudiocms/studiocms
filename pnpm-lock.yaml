@@ -26,8 +26,8 @@ catalogs:
       specifier: ^3.7.0
       version: 3.7.0
     astro-integration-kit:
-      specifier: ^0.18
-      version: 0.18.0
+      specifier: ^0.19.0
+      version: 0.19.0
     deepmerge-ts:
       specifier: ^7.1.5
       version: 7.1.5
@@ -48,14 +48,14 @@ catalogs:
       specifier: ^0.47.0
       version: 0.47.0
     '@effect/experimental':
-      specifier: ^0.54.4
-      version: 0.54.4
+      specifier: ^0.54.5
+      version: 0.54.5
     '@effect/language-service':
       specifier: ^0.35.2
       version: 0.35.2
     '@effect/platform':
-      specifier: ^0.90.1
-      version: 0.90.1
+      specifier: ^0.90.2
+      version: 0.90.2
     '@effect/platform-node':
       specifier: ^0.95.0
       version: 0.95.0
@@ -91,11 +91,11 @@ catalogs:
       specifier: ^0.15.10
       version: 0.15.10
     '@studiocms/web-vitals':
-      specifier: ^4.4.0
-      version: 4.4.0
+      specifier: ^4.4.1
+      version: 4.4.1
     astro:
-      specifier: ^5.12.8
-      version: 5.12.8
+      specifier: ^5.12.9
+      version: 5.12.9
     drizzle-orm:
       specifier: ^0.42.0
       version: 0.42.0
@@ -126,8 +126,8 @@ catalogs:
       specifier: ^0.4.17
       version: 0.4.17
     '@studiocms/web-vitals':
-      specifier: ^4.4.0
-      version: 4.4.0
+      specifier: ^4.4.1
+      version: 4.4.1
     '@withstudiocms/cli-kit':
       specifier: ^0.1.0
       version: 0.1.0
@@ -195,16 +195,16 @@ importers:
     dependencies:
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -229,10 +229,10 @@ importers:
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -254,10 +254,10 @@ importers:
         version: 1.21.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -279,10 +279,10 @@ importers:
         version: 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
@@ -316,16 +316,16 @@ importers:
     dependencies:
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -344,16 +344,16 @@ importers:
     dependencies:
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -372,16 +372,16 @@ importers:
     dependencies:
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -400,10 +400,10 @@ importers:
     dependencies:
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       codemirror:
         specifier: 5.65.19
         version: 5.65.19
@@ -443,10 +443,10 @@ importers:
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -483,10 +483,10 @@ importers:
         version: 1.2.0
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -511,10 +511,10 @@ importers:
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -554,13 +554,13 @@ importers:
     dependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 0.4.17(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
+        version: 0.4.17(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
@@ -604,10 +604,10 @@ importers:
     dependencies:
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
@@ -623,19 +623,19 @@ importers:
     dependencies:
       '@effect/cli':
         specifier: catalog:effect
-        version: 0.69.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.69.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/cluster':
         specifier: catalog:effect
-        version: 0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/experimental':
         specifier: catalog:effect
-        version: 0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       '@effect/platform-node':
         specifier: catalog:effect
-        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/printer':
         specifier: catalog:effect
         version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
@@ -644,19 +644,19 @@ importers:
         version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
       '@effect/rpc':
         specifier: catalog:effect
-        version: 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/sql':
         specifier: catalog:effect
-        version: 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/typeclass':
         specifier: catalog:effect
         version: 0.36.0(effect@3.17.7)
       '@effect/workflow':
         specifier: catalog:effect
-        version: 0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       effect:
         specifier: catalog:effect
         version: 3.17.7
@@ -687,19 +687,19 @@ importers:
         version: 0.9.1
       '@effect/cli':
         specifier: catalog:effect
-        version: 0.69.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.69.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/cluster':
         specifier: catalog:effect
-        version: 0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/experimental':
         specifier: catalog:effect
-        version: 0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.90.1(effect@3.17.7)
+        version: 0.90.2(effect@3.17.7)
       '@effect/platform-node':
         specifier: catalog:effect
-        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@effect/printer':
         specifier: catalog:effect
         version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
@@ -708,25 +708,25 @@ importers:
         version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
       '@effect/rpc':
         specifier: catalog:effect
-        version: 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/sql':
         specifier: catalog:effect
-        version: 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+        version: 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@effect/typeclass':
         specifier: catalog:effect
         version: 0.36.0(effect@3.17.7)
       '@effect/workflow':
         specifier: catalog:effect
-        version: 0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+        version: 0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@iconify-json/flat-color-icons':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.3
+        version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.46
-        version: 1.2.46
+        specifier: ^1.2.47
+        version: 1.2.47
       '@inox-tools/runtime-logger':
         specifier: ^0.6.0
-        version: 0.6.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.6.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       '@libsql/client':
         specifier: catalog:min
         version: 0.15.10
@@ -747,10 +747,10 @@ importers:
         version: 1.1.0
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 0.4.17(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
+        version: 0.4.17(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
       '@studiocms/web-vitals':
         specifier: catalog:min
-        version: 4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.4.1(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@withstudiocms/cli-kit':
         specifier: catalog:studiocms
         version: 0.1.0
@@ -759,10 +759,10 @@ importers:
         version: link:../@withstudiocms/config-utils
       astro:
         specifier: catalog:min
-        version: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -892,7 +892,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.4.1(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -1216,11 +1216,11 @@ packages:
       '@effect/workflow': ^0.8.3
       effect: ^3.17.7
 
-  '@effect/experimental@0.54.4':
-    resolution: {integrity: sha512-rOgeydJEyDkm0nP84DH7FXSJZheXXFukvfMYAgYIvCE5PbuEEtr9MDsBo05hxWJxMqoNrMQln/sCr3QaSS/GBw==}
+  '@effect/experimental@0.54.5':
+    resolution: {integrity: sha512-0lIad4BL8SgEn3Mb2QceNIilxjGHmfOiDkgqAYQ0gCqoEvYQM+LuqnT6mOD7UyY+m9pAN1W/0SCfF0zP3XOMgg==}
     peerDependencies:
-      '@effect/platform': ^0.90.0
-      effect: ^3.17.6
+      '@effect/platform': ^0.90.1
+      effect: ^3.17.7
       ioredis: ^5
       lmdb: ^3
     peerDependenciesMeta:
@@ -1251,8 +1251,8 @@ packages:
       '@effect/sql': ^0.44.1
       effect: ^3.17.7
 
-  '@effect/platform@0.90.1':
-    resolution: {integrity: sha512-PpYq+ws+mmQG07jUhvUM49/+gZBEN3MVB1+71UpML+9t67ljn64hBaqd4qAhQHs4gJWdXw4Tobo5/vE/ZJkS6g==}
+  '@effect/platform@0.90.2':
+    resolution: {integrity: sha512-xf8odJ7vsHITlOJIragdwqu14jla9+FLefPIHbtwAXt+8ZEknbNmo8YXvmudLjLgK4mewqNuwPd6ktjBboaNXQ==}
     peerDependencies:
       effect: ^3.17.7
 
@@ -1462,14 +1462,14 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@iconify-json/flat-color-icons@1.2.1':
-    resolution: {integrity: sha512-iv1NQai4ThVJf5RGB2UBY/EYG4P5KpdnRTUM1hqLweD6OmWxZUyNJkqLzwns6/t+VBYM0H5gS/ckSWyxxEIYmQ==}
+  '@iconify-json/flat-color-icons@1.2.3':
+    resolution: {integrity: sha512-KcmJ7CY0TKFv5GuBjiS4/v++jEcNXna1jfY+yq014tnw/MN/jMI2oYpoMHGuIpYtUqDu7eove+WySnOYO8nS3w==}
 
   '@iconify-json/heroicons@1.2.2':
     resolution: {integrity: sha512-qoW4pXr5kTTL6juEjgTs83OJIwpePu7q1tdtKVEdj+i0zyyVHgg/dd9grsXJQnpTpBt6/VwNjrXBvFjRsKPENg==}
 
-  '@iconify-json/simple-icons@1.2.46':
-    resolution: {integrity: sha512-MJfKQDhOMQD5Fc8PcTtCdFX0oBf/nKVfp69ScdEKIXW0JXELX5V2Ld45EsjShi8aJ6DNhdDtSDZvKuDnkDiKnw==}
+  '@iconify-json/simple-icons@1.2.47':
+    resolution: {integrity: sha512-wa/2O7G4sBmwSEWWLh5C+HeY00lVOoWYRKJOYQtk7lAbQrHUReD1ijiGOyTynV1YavxtNueL1CBA1UZmYJfOrQ==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2299,10 +2299,10 @@ packages:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
 
-  '@studiocms/web-vitals@4.4.0':
-    resolution: {integrity: sha512-T4fnKr4aD3SWSu1DY+ZpbxOMzHxY5E49DK9JeGbai6Z3YAMRgpAHKVF+e0QQW8hYvhEwNwYBLgozr0NpcHelww==}
+  '@studiocms/web-vitals@4.4.1':
+    resolution: {integrity: sha512-7NKQQg+CYhQo2BYHMFcGPrYMKABGCe30eAHuuwASI2AtzykD7BF9Ekg5e0SA1VJUFIuypxSq0OHqBV4vS3vbUg==}
     peerDependencies:
-      '@astrojs/db': ^0.17.0
+      '@astrojs/db': ^0.17.1
 
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
@@ -2625,15 +2625,15 @@ packages:
     peerDependencies:
       astro: ^4.12.0 || ^5.0.0
 
+  astro-integration-kit@0.19.0:
+    resolution: {integrity: sha512-ftDrem91kJZoenhpJJfRtB29D/bmNglEp2oOXqF1uL5yODZauGIy3tDgIbec0UEMp6tNuky4tfWseUXpej5Dng==}
+    peerDependencies:
+      astro: ^4.14.0 || ^5.0.0
+
   astro-transition-event-polyfill@1.1.0:
     resolution: {integrity: sha512-DhR5MAcNl6zsTu5bU60vAe+nBZLTW61zNFUU6DX1gNSiFDQbQiRC7ft322kAMRDRir7MJIQ5/hCMcEWx3jDNWA==}
     peerDependencies:
       astro: ^4.5 || ^5.1.0
-
-  astro@5.12.8:
-    resolution: {integrity: sha512-KkJ7FR+c2SyZYlpakm48XBiuQcRsrVtdjG5LN5an0givI/tLik+ePJ4/g3qrAVhYMjJOxBA2YgFQxANPiWB+Mw==}
-    engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
-    hasBin: true
 
   astro@5.12.9:
     resolution: {integrity: sha512-cZ7kZ61jyE5nwSrFKSRyf5Gds+uJELqQxJFqMkcgiWQvhWZJUSShn8Uz3yc9WLyLw5Kim5P5un9SkJSGogfEZQ==}
@@ -6091,9 +6091,9 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@effect/cli@0.69.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
+  '@effect/cli@0.69.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/platform': 0.90.1(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
       '@effect/printer': 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
       '@effect/printer-ansi': 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
       effect: 3.17.7
@@ -6101,28 +6101,28 @@ snapshots:
       toml: 3.0.0
       yaml: 2.8.0
 
-  '@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
+  '@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/platform': 0.90.1(effect@3.17.7)
-      '@effect/rpc': 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
-      '@effect/sql': 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
-      '@effect/workflow': 0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
+      '@effect/rpc': 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
+      '@effect/sql': 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
+      '@effect/workflow': 0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       effect: 3.17.7
 
-  '@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)':
+  '@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/platform': 0.90.1(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
       effect: 3.17.7
       uuid: 11.1.0
 
   '@effect/language-service@0.35.2': {}
 
-  '@effect/platform-node-shared@0.48.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
+  '@effect/platform-node-shared@0.48.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/cluster': 0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/platform': 0.90.1(effect@3.17.7)
-      '@effect/rpc': 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
-      '@effect/sql': 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/cluster': 0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
+      '@effect/rpc': 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
+      '@effect/sql': 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       '@parcel/watcher': 2.5.1
       effect: 3.17.7
       multipasta: 0.2.7
@@ -6131,13 +6131,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
+  '@effect/platform-node@0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/cluster': 0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/platform': 0.90.1(effect@3.17.7)
-      '@effect/platform-node-shared': 0.48.0(@effect/cluster@0.47.0(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/rpc': 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
-      '@effect/sql': 0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/cluster': 0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
+      '@effect/platform-node-shared': 0.48.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
+      '@effect/rpc': 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
+      '@effect/sql': 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       effect: 3.17.7
       mime: 3.0.0
       undici: 7.12.0
@@ -6146,7 +6146,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.90.1(effect@3.17.7)':
+  '@effect/platform@0.90.2(effect@3.17.7)':
     dependencies:
       '@opentelemetry/semantic-conventions': 1.36.0
       effect: 3.17.7
@@ -6165,15 +6165,15 @@ snapshots:
       '@effect/typeclass': 0.36.0(effect@3.17.7)
       effect: 3.17.7
 
-  '@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)':
+  '@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/platform': 0.90.1(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
       effect: 3.17.7
 
-  '@effect/sql@0.44.1(@effect/experimental@0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)':
+  '@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/experimental': 0.54.4(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
-      '@effect/platform': 0.90.1(effect@3.17.7)
+      '@effect/experimental': 0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
       '@opentelemetry/semantic-conventions': 1.36.0
       effect: 3.17.7
       uuid: 11.1.0
@@ -6182,10 +6182,10 @@ snapshots:
     dependencies:
       effect: 3.17.7
 
-  '@effect/workflow@0.8.3(@effect/platform@0.90.1(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
+  '@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)':
     dependencies:
-      '@effect/platform': 0.90.1(effect@3.17.7)
-      '@effect/rpc': 0.68.3(@effect/platform@0.90.1(effect@3.17.7))(effect@3.17.7)
+      '@effect/platform': 0.90.2(effect@3.17.7)
+      '@effect/rpc': 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
       effect: 3.17.7
 
   '@emnapi/core@1.4.5':
@@ -6284,7 +6284,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@iconify-json/flat-color-icons@1.2.1':
+  '@iconify-json/flat-color-icons@1.2.3':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -6292,7 +6292,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.46':
+  '@iconify-json/simple-icons@1.2.47':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -6459,21 +6459,21 @@ snapshots:
   '@img/sharp-win32-x64@0.34.3':
     optional: true
 
-  '@inox-tools/modular-station@0.6.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))':
+  '@inox-tools/modular-station@0.6.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))':
     dependencies:
       '@inox-tools/utils': 0.6.0
-      astro: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
-      astro-integration-kit: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro-integration-kit: 0.18.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
-  '@inox-tools/runtime-logger@0.6.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))':
+  '@inox-tools/runtime-logger@0.6.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))':
     dependencies:
-      '@inox-tools/modular-station': 0.6.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      '@inox-tools/modular-station': 0.6.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       '@inox-tools/utils': 0.6.0
-      astro: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
-      astro-integration-kit: 0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro-integration-kit: 0.18.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -7042,16 +7042,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@0.4.17(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))':
+  '@studiocms/ui@0.4.17(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:
       '@iconify-json/heroicons': 1.2.2
       '@iconify/types': 2.0.0
-      astro: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
-      astro-transition-event-polyfill: 1.1.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro-transition-event-polyfill: 1.1.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
       pathe: 1.1.2
       vite: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
 
-  '@studiocms/web-vitals@4.4.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+  '@studiocms/web-vitals@4.4.1(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.0.3
@@ -7424,118 +7424,22 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-integration-kit@0.18.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)):
+  astro-integration-kit@0.18.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)):
     dependencies:
-      astro: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       pathe: 1.1.2
       recast: 0.23.11
 
-  astro-transition-event-polyfill@1.1.0(astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)):
+  astro-integration-kit@0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)):
+    dependencies:
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      pathe: 1.1.2
+
+  astro-transition-event-polyfill@1.1.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)):
     dependencies:
       '@types/node': 20.19.7
-      astro: 5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
       pathe: 2.0.3
-
-  astro@5.12.8(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0):
-    dependencies:
-      '@astrojs/compiler': 2.12.2
-      '@astrojs/internal-helpers': 0.7.1
-      '@astrojs/markdown-remark': 6.3.5
-      '@astrojs/telemetry': 3.3.0
-      '@capsizecss/unpack': 2.4.0
-      '@oslojs/encoding': 1.1.0
-      '@rollup/pluginutils': 5.2.0(rollup@4.45.0)
-      acorn: 8.15.0
-      aria-query: 5.3.2
-      axobject-query: 4.1.0
-      boxen: 8.0.1
-      ci-info: 4.3.0
-      clsx: 2.1.1
-      common-ancestor-path: 1.0.1
-      cookie: 1.0.2
-      cssesc: 3.0.0
-      debug: 4.4.1
-      deterministic-object-hash: 2.0.2
-      devalue: 5.1.1
-      diff: 5.2.0
-      dlv: 1.1.3
-      dset: 3.1.4
-      es-module-lexer: 1.7.0
-      esbuild: 0.25.8
-      estree-walker: 3.0.3
-      flattie: 1.1.1
-      fontace: 0.3.0
-      github-slugger: 2.0.0
-      html-escaper: 3.0.3
-      http-cache-semantics: 4.2.0
-      import-meta-resolve: 4.1.0
-      js-yaml: 4.1.0
-      kleur: 4.1.5
-      magic-string: 0.30.17
-      magicast: 0.3.5
-      mrmime: 2.0.1
-      neotraverse: 0.6.18
-      p-limit: 6.2.0
-      p-queue: 8.1.0
-      package-manager-detector: 1.3.0
-      picomatch: 4.0.2
-      prompts: 2.4.2
-      rehype: 13.0.2
-      semver: 7.7.2
-      shiki: 3.7.0
-      smol-toml: 1.4.1
-      tinyexec: 0.3.2
-      tinyglobby: 0.2.14
-      tsconfck: 3.1.6(typescript@5.9.2)
-      ultrahtml: 1.6.0
-      unifont: 0.5.2
-      unist-util-visit: 5.0.0
-      unstorage: 1.16.0
-      vfile: 6.0.3
-      vite: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
-      vitefu: 1.1.1(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
-      xxhash-wasm: 1.1.0
-      yargs-parser: 21.1.1
-      yocto-spinner: 0.2.3
-      zod: 3.25.76
-      zod-to-json-schema: 3.24.6(zod@3.25.76)
-      zod-to-ts: 1.2.0(typescript@5.9.2)(zod@3.25.76)
-    optionalDependencies:
-      sharp: 0.33.5
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@types/node'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - db0
-      - encoding
-      - idb-keyval
-      - ioredis
-      - jiti
-      - less
-      - lightningcss
-      - rollup
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - typescript
-      - uploadthing
-      - yaml
 
   astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0):
     dependencies:
