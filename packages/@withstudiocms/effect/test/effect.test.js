@@ -1,24 +1,23 @@
 import assert from 'node:assert';
-import { describe } from 'node:test';
-import { Effect } from 'effect';
-import { appendSearchParamsToUrl, runEffect } from '../dist/effect.js';
+import { describe, it } from 'node:test';
+import { appendSearchParamsToUrl, Effect, runEffect } from '../dist/effect.js';
 
 describe('Effect Utilities', () => {
 
-	describe('runEffect resolves Effect with value', async () => {
+	it('runEffect resolves Effect with value', async () => {
 		const effect = Effect.succeed(42);
 		const result = await runEffect(effect);
 		assert.strictEqual(result, 42);
 	});
 
-	describe('runEffect rejects Effect with error', async () => {
+	it('runEffect rejects Effect with error', async () => {
 		const errorEffect = Effect.fail('error!');
 		await assert.rejects(() => runEffect(errorEffect), {
 			message: 'error!',
 		});
 	});
 
-	describe('appendSearchParamsToUrl (curried) appends param', () => {
+	it('appendSearchParamsToUrl (curried) appends param', () => {
 		const url = new URL('https://example.com');
 		const appendParam = appendSearchParamsToUrl('foo', 'bar');
 		const resultUrl = appendParam(url);
@@ -26,7 +25,7 @@ describe('Effect Utilities', () => {
 		assert.strictEqual(resultUrl.toString(), 'https://example.com/?foo=bar');
 	});
 
-	describe('appendSearchParamsToUrl (uncurried) appends param', () => {
+	it('appendSearchParamsToUrl (uncurried) appends param', () => {
 		const url = new URL('https://example.com');
 		const resultUrl = appendSearchParamsToUrl(url, 'baz', 'qux');
 		assert.strictEqual(resultUrl.searchParams.get('baz'), 'qux');

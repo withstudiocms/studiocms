@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { Effect, Schema } from 'effect';
 import {
 	parseAPIContextFormDataToObject,
 	parseAPIContextJson,
@@ -8,6 +7,7 @@ import {
 	readAPIContextFormData,
 	readAPIContextJson,
 } from '../../dist/astro/context-utils.js';
+import { Effect, Schema } from '../../dist/effect.js';
 
 // Mocks
 const mockJson = { foo: 'bar' };
