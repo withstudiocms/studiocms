@@ -46,7 +46,7 @@ export const onRequest = defineMiddlewareRouter([
 			]);
 
 			// Set the StudioCMS base context locals
-			setLocals(context, SetLocal.general, {
+			setLocals(context, SetLocal.GENERAL, {
 				SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 				SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
 				siteConfig: siteConfig ?? makeFallbackSiteConfig(),
@@ -93,7 +93,7 @@ export const onRequest = defineMiddlewareRouter([
 			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
 
 			// Set the security-related data in the context locals
-			setLocals(context, SetLocal.security, {
+			setLocals(context, SetLocal.SECURITY, {
 				userSessionData,
 				emailVerificationEnabled,
 				userPermissionLevel,
@@ -171,7 +171,7 @@ export const onRequest = defineMiddlewareRouter([
 					});
 
 					// Update the context locals with the CSRF token for the editor
-					setLocals(context, SetLocal.plugins, {
+					setLocals(context, SetLocal.PLUGINS, {
 						editorCSRFToken: csrfToken,
 					});
 

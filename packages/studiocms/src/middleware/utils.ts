@@ -95,9 +95,9 @@ export type SetLocalValuesKeys = keyof SetLocalValues;
  * @property {string} plugins - Represents plugin-specific settings.
  */
 export enum SetLocal {
-	general = 'general',
-	security = 'security',
-	plugins = 'plugins',
+	GENERAL = 'general',
+	SECURITY = 'security',
+	PLUGINS = 'plugins',
 }
 
 /**
@@ -124,7 +124,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 	values: V
 ): void {
 	switch (key) {
-		case SetLocal.general: {
+		case SetLocal.GENERAL: {
 			// Merge general values into the root of StudioCMS
 			// Exclude 'security' and 'plugins' to avoid overwriting them
 			const { security: _s1, plugins: _p1, ...generalValues } = context.locals.StudioCMS || {};
@@ -139,7 +139,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 			context.locals.StudioCMS = { ...updatedValues };
 			break;
 		}
-		case SetLocal.security: {
+		case SetLocal.SECURITY: {
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
 			const currentValues = context.locals.StudioCMS.security || {};
@@ -152,7 +152,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 			context.locals.StudioCMS.security = updatedValues;
 			break;
 		}
-		case SetLocal.plugins: {
+		case SetLocal.PLUGINS: {
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
 			const currentValues = context.locals.StudioCMS.plugins || {};
