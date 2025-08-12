@@ -32,7 +32,7 @@ import { Effect, runEffect } from '@withstudiocms/effect`;
 
 ### Effect Export
 
-Contains a bundled export of the main Effect packages and utils, as well as custom Effect utils hand tailored by our team.
+Contains a bundled export of the main Effect packages and utils, as well as custom Effect utils hand-tailored by our team.
 
 ```ts
 import { Effect, runEffect, appendSearchParamsToUrl, HTTPClient } from '@withstudiocms/effect/effect`;
@@ -40,7 +40,7 @@ import { Effect, runEffect, appendSearchParamsToUrl, HTTPClient } from '@withstu
 
 ### Astro Export
 
-Contains Astro specific utilities for handling APIRoutes, Middleware and API context with Effect.
+Contains Astro-specific utilities for handling APIRoutes, Middleware and API context with Effect.
 
 ```ts
 import { 
