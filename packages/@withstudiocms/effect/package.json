@@ -15,7 +15,12 @@
 	"keywords": [
 		"astro-studiocms",
 		"cms",
-		"studiocms"
+		"studiocms",
+		"astro",
+		"withastro",
+		"effect",
+		"effect-ts",
+		"effect-ts-astro"
 	],
 	"homepage": "https://studiocms.dev",
 	"contributors": [
