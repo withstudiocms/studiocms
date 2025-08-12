@@ -5,7 +5,7 @@ import { spec } from 'node:test/reporters';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import chalk from 'chalk';
-import glob from 'fast-glob';
+import { glob } from 'tinyglobby';
 
 /**
  * @type {boolean} Indicates if the script is running in a CI environment.
@@ -74,7 +74,7 @@ export default async function test(args) {
     if (!pattern) throw new Error('Missing test glob pattern');
 
     const files = await glob(pattern, {
-        filesOnly: true,
+        onlyFiles: true,
         absolute: true,
         ignore: ['**/node_modules/**'],
     });

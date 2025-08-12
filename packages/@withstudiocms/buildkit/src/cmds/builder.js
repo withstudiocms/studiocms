@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import chalk from 'chalk';
 import esbuild from 'esbuild';
-import glob from 'fast-glob';
+import { glob } from 'tinyglobby';
 
 /** @type {import('esbuild').BuildOptions} */
 const defaultConfig = {

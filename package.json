@@ -49,7 +49,7 @@
     "pkg-pr-new": "^0.0.54",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-    "tinyglobby": "^0.2.14",
+    "tinyglobby": "catalog:",
 		"ts-patch": "^3.3.0"
   },
   "pnpm": {

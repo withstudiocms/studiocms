@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "esbuild": "catalog:",
-    "fast-glob": "^3.3.3",
+    "tinyglobby": "catalog:",
 		"chalk": "catalog:"
   },
   "devDependencies": {
