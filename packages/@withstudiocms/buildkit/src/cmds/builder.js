@@ -1,9 +1,9 @@
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
+import chalk from 'chalk';
 import esbuild from 'esbuild';
 import glob from 'fast-glob';
-import { dim, gray, green, red, yellow } from 'kleur/colors';
 
 /** @type {import('esbuild').BuildOptions} */
 const defaultConfig = {
@@ -53,13 +53,13 @@ const dtsGen = (buildTsConfig, outdir) => ({
         build.onEnd((result) => {
             if (result.errors.length > 0) return;
             const date = dt.format(new Date());
-            console.log(`${dim(`[${date}]`)} Generating TypeScript declarations...`);
+            console.log(`${chalk.dim(`[${date}]`)} Generating TypeScript declarations...`);
             try {
                 const res = execSync(`tsc --emitDeclarationOnly -p ${buildTsConfig} --outDir ./${outdir}`);
                 console.log(res.toString());
-                console.log(dim(`[${date}] `) + green('√ Generated TypeScript declarations'));
+                console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
             } catch (error) {
-                console.error(dim(`[${date}] `) + red(`${error}\n\n${error.stdout.toString()}`));
+                console.error(chalk.dim(`[${date}] `) + chalk.red(`${error}\n\n${error.stdout.toString()}`));
             }
         });
     },
@@ -73,7 +73,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
  */
 async function clean(outdir, date, skip = []) {
     const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
-    console.log(dim(`[${date}] `) + dim(`Cleaning ${files.length} files from ${outdir}`));
+    console.log(chalk.dim(`[${date}] `) + chalk.dim(`Cleaning ${files.length} files from ${outdir}`));
     await Promise.all(files.map((file) => fs.rm(file, { force: true })));
 }
 
@@ -137,7 +137,7 @@ export default async function builder(cmd, args) {
         case 'dev': {
             if (!noClean) {
                 console.log(
-                    `${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+                    `${chalk.dim(`[${date}]`)} Cleaning ${outdir} directory... ${chalk.dim(`(${entryPoints.length} files found)`)}`
                 );
                 await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
             }
@@ -159,11 +159,11 @@ export default async function builder(cmd, args) {
                         } else {
                             if (result.warnings.length) {
                                 console.info(
-                                    dim(`[${date}] `) +
-                                    yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
+                                    chalk.dim(`[${date}] `) +
+                                    chalk.yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
                                 );
                             }
-                            console.info(dim(`[${date}] `) + green('√ updated'));
+                            console.info(chalk.dim(`[${date}] `) + chalk.green('√ updated'));
                         }
                     });
                 },
@@ -179,7 +179,7 @@ export default async function builder(cmd, args) {
             });
 
             console.log(
-                `${dim(`[${date}] `) + gray('Watching for changes...')} ${dim(`(${entryPoints.length} files found)`)}`
+                `${chalk.dim(`[${date}] `) + chalk.gray('Watching for changes...')} ${chalk.dim(`(${entryPoints.length} files found)`)}`
             );
             await builder.watch();
 
@@ -191,12 +191,12 @@ export default async function builder(cmd, args) {
         case 'build': {
             if (!noClean) {
                 console.log(
-                    `${dim(`[${date}]`)} Cleaning ${outdir} directory... ${dim(`(${entryPoints.length} files found)`)}`
+                    `${chalk.dim(`[${date}]`)} Cleaning ${outdir} directory... ${chalk.dim(`(${entryPoints.length} files found)`)}`
                 );
                 await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
             }
             console.log(
-                `${dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${dim(`(${entryPoints.length} files found)`)}`
+                `${chalk.dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${chalk.dim(`(${entryPoints.length} files found)`)}`
             );
             await esbuild.build({
                 ...config,
@@ -208,7 +208,7 @@ export default async function builder(cmd, args) {
                 format,
                 plugins: [dtsGen(buildTsConfig, outdir)],
             });
-            console.log(dim(`[${date}] `) + green('√ Build Complete'));
+            console.log(chalk.dim(`[${date}] `) + chalk.green('√ Build Complete'));
             break;
         }
     }

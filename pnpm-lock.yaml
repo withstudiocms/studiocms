@@ -28,6 +28,9 @@ catalogs:
     astro-integration-kit:
       specifier: ^0.19.0
       version: 0.19.0
+    chalk:
+      specifier: ^5.5.0
+      version: 5.5.0
     deepmerge-ts:
       specifier: ^7.1.5
       version: 7.1.5
@@ -571,15 +574,15 @@ importers:
 
   packages/@withstudiocms/buildkit:
     dependencies:
+      chalk:
+        specifier: 'catalog:'
+        version: 5.5.0
       esbuild:
         specifier: 'catalog:'
         version: 0.25.8
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
-      kleur:
-        specifier: ^4.1.5
-        version: 4.1.5
     devDependencies:
       strip-ansi:
         specifier: ^7.1.0
@@ -722,7 +725,7 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1
       chalk:
-        specifier: ^5.5.0
+        specifier: 'catalog:'
         version: 5.5.0
       deepmerge-ts:
         specifier: 'catalog:'
