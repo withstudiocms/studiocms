@@ -12,6 +12,7 @@ import type { KnipConfig } from 'knip';
 const baseAstroWorkspaceConfig = {
 	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	ignore: ['**/node_modules/**', '**/dist/**'],
 	astro: {
 		entry: ['src/**/*.astro'],
 		project: ['src/**/*.astro'],
@@ -84,13 +85,7 @@ const config: KnipConfig = {
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: [
-				'@clack/core',
-				'studiocms-dashboard',
-				'@effect/experimental',
-				'@effect/typeclass',
-				'@effect/workflow',
-			],
+			ignoreDependencies: ['@clack/core', 'studiocms-dashboard'],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {

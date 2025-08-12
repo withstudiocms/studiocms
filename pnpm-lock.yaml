@@ -685,39 +685,6 @@ importers:
       '@clack/prompts':
         specifier: 0.9.1
         version: 0.9.1
-      '@effect/cli':
-        specifier: catalog:effect
-        version: 0.69.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/cluster':
-        specifier: catalog:effect
-        version: 0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/experimental':
-        specifier: catalog:effect
-        version: 0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
-      '@effect/platform':
-        specifier: catalog:effect
-        version: 0.90.2(effect@3.17.7)
-      '@effect/platform-node':
-        specifier: catalog:effect
-        version: 0.95.0(@effect/cluster@0.47.0(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/workflow@0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/sql@0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
-      '@effect/printer':
-        specifier: catalog:effect
-        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
-      '@effect/printer-ansi':
-        specifier: catalog:effect
-        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.7))(effect@3.17.7)
-      '@effect/rpc':
-        specifier: catalog:effect
-        version: 0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
-      '@effect/sql':
-        specifier: catalog:effect
-        version: 0.44.1(@effect/experimental@0.54.5(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7)
-      '@effect/typeclass':
-        specifier: catalog:effect
-        version: 0.36.0(effect@3.17.7)
-      '@effect/workflow':
-        specifier: catalog:effect
-        version: 0.8.3(@effect/platform@0.90.2(effect@3.17.7))(@effect/rpc@0.68.3(@effect/platform@0.90.2(effect@3.17.7))(effect@3.17.7))(effect@3.17.7)
       '@iconify-json/flat-color-icons':
         specifier: ^1.2.3
         version: 1.2.3
@@ -814,9 +781,6 @@ importers:
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
       mrmime:
         specifier: ^2.0.1
         version: 2.0.1
@@ -857,9 +821,6 @@ importers:
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
-      '@types/micromatch':
-        specifier: ^4.0.9
-        version: 4.0.9
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
