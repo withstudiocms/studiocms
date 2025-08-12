@@ -222,7 +222,7 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 				const currentURLOrigin = currentRequestJson.currentURLOrigin;
 
 				const partialUrl = new URL(
-					context.locals.routeMap.endpointLinks.partials.render,
+					context.locals.StudioCMS?.routeMap.endpointLinks.partials.render,
 					currentURLOrigin
 				);
 

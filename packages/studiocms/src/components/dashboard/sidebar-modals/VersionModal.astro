@@ -14,7 +14,9 @@ interface Props {
 
 const { latestVersion } = Astro.props as Props;
 
-const lastChecked = latestVersion.lastCacheUpdate;
+console.log('VersionModal', JSON.stringify(latestVersion, null, 2));
+
+const lastChecked = new Date(latestVersion.lastCacheUpdate);
 ---
 <!-- The modals in this file are needed inside of the sidebar but cannot be positioned there due to issues with positioning. -->
 <Modal id="version-modal" size="lg">

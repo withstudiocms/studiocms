@@ -77,43 +77,15 @@ export function updateLocals(
 	context: APIContext,
 	values: DeepPartial<APIContext['locals']['StudioCMS']>
 ): APIContext['locals']['StudioCMS'] {
-	// Remove undefined recursively to avoid clobbering nested values
-	const cleanValues = deepOmitUndefined(values) as Partial<APIContext['locals']['StudioCMS']>;
-
 	// Clone the current values to avoid mutating the original object
 	const currentValues = context.locals.StudioCMS || {};
 
-	// Use deepmerge to combine the current values with the clean values
+	// Use deepmerge to combine the current values with the provided values
 	// This allows for partial updates without losing existing data.
-	const updatedValues = deepmerge(currentValues, cleanValues) as APIContext['locals']['StudioCMS'];
+	const updatedValues = deepmerge(currentValues, values) as APIContext['locals']['StudioCMS'];
 
 	// Update the context locals with the merged values
 	// This allows for partial updates without losing existing data
 	context.locals.StudioCMS = updatedValues;
 	return updatedValues;
-}
-
-/**
- * Recursively removes all properties with `undefined` values from an object.
- *
- * - If the input is an object (but not an array), it traverses its properties and omits any property whose value is `undefined`.
- * - For nested objects, the function is applied recursively.
- * - Arrays and non-object values are returned as-is.
- *
- * @typeParam T - The type of the input object.
- * @param input - The object to process.
- * @returns A new object of type `T` with all `undefined` properties removed.
- */
-function deepOmitUndefined<T>(input: T): T {
-	if (input && typeof input === 'object' && !Array.isArray(input)) {
-		const out: Record<string, unknown> = {};
-		for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
-			if (v !== undefined) {
-				// biome-ignore lint/suspicious/noExplicitAny: We need to handle any type here
-				out[k] = deepOmitUndefined(v as any);
-			}
-		}
-		return out as T;
-	}
-	return input;
 }
