@@ -1,5 +1,5 @@
+import { dual, Effect, List, Logger, LogLevel, pipe, type Utils } from '@withstudiocms/effect';
 import chalk from 'chalk';
-import { dual, Effect, List, Logger, LogLevel, pipe, type Utils } from '../../effect.js';
 
 function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';
