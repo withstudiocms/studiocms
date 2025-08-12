@@ -46,7 +46,7 @@ export const onRequest = defineMiddlewareRouter([
 			]);
 
 			// Set the StudioCMS base context locals
-			setLocals(context, SetLocal.GENERAL, {
+			yield* setLocals(context, SetLocal.GENERAL, {
 				SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 				SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
 				siteConfig: siteConfig ?? makeFallbackSiteConfig(),
@@ -93,7 +93,7 @@ export const onRequest = defineMiddlewareRouter([
 			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
 
 			// Set the security-related data in the context locals
-			setLocals(context, SetLocal.SECURITY, {
+			yield* setLocals(context, SetLocal.SECURITY, {
 				userSessionData,
 				emailVerificationEnabled,
 				userPermissionLevel,
@@ -153,38 +153,30 @@ export const onRequest = defineMiddlewareRouter([
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
 		priority: 4,
 		handler: Effect.fn(function* (context, next) {
-			return yield* Effect.try({
-				try: () => {
-					const csrfToken = crypto.randomBytes(32).toString('hex');
-					context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
-						httpOnly: true,
-						path: '/',
-						sameSite: 'strict',
-						secure: (() => {
-							if (context.url.protocol === 'https:') return true;
-							const xfp = context.request.headers.get('x-forwarded-proto')?.toLowerCase() ?? '';
-							return xfp
-								.split(',')
-								.map((s) => s.trim())
-								.includes('https');
-						})(),
-					});
-
-					// Update the context locals with the CSRF token for the editor
-					setLocals(context, SetLocal.PLUGINS, {
-						editorCSRFToken: csrfToken,
-					});
-
-					// Set deprecated locals for backward compatibility
-					context.locals.wysiwygCsrfToken = csrfToken;
-
-					return next();
-				},
-				catch: (error) => {
-					console.error('Error setting CSRF token:', error);
-					return next();
-				},
+			const csrfToken = crypto.randomBytes(32).toString('hex');
+			context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
+				httpOnly: true,
+				path: '/',
+				sameSite: 'strict',
+				secure: (() => {
+					if (context.url.protocol === 'https:') return true;
+					const xfp = context.request.headers.get('x-forwarded-proto')?.toLowerCase() ?? '';
+					return xfp
+						.split(',')
+						.map((s) => s.trim())
+						.includes('https');
+				})(),
 			});
+
+			// Update the context locals with the CSRF token for the editor
+			yield* setLocals(context, SetLocal.PLUGINS, {
+				editorCSRFToken: csrfToken,
+			});
+
+			// Set deprecated locals for backward compatibility
+			context.locals.wysiwygCsrfToken = csrfToken;
+
+			return next();
 		}),
 	},
 ]);

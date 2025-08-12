@@ -2,8 +2,12 @@ import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
-import { deepmergeCustom } from 'deepmerge-ts';
-import { genLogger } from '../effect.js';
+import {
+	type DeepMergeBuiltInMetaData,
+	type DeepMergeOptions,
+	deepmergeCustom,
+} from 'deepmerge-ts';
+import { Effect, genLogger } from '../effect.js';
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -53,15 +57,41 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	},
 });
 
+type effectMergeConfig = DeepMergeOptions<DeepMergeBuiltInMetaData, DeepMergeBuiltInMetaData>;
+
 /**
- * Creates a customized deep merge function with array merging disabled.
+ * Creates an Effect-wrapped deep merge function for merging multiple objects or arrays.
  *
- * This instance of `deepmerge` will merge objects recursively, but arrays will not be merged;
- * instead, arrays from the source will overwrite arrays in the target.
+ * @param opts - Configuration options for merging, such as whether to merge arrays.
+ * @returns An Effect function that merges the provided objects using deepmerge,
+ *          and returns an Error if the merge fails.
  *
- * @see {@link https://github.com/TehShrike/deepmerge} for more details on deepmerge options.
+ * @template Ts - A tuple of objects or arrays to be merged.
+ *
+ * @example
+ * const merge = effectMerge();
+ * const result = merge(obj1, obj2, obj3);
  */
-const deepmerge = deepmergeCustom({ mergeArrays: false });
+const effectMerge = (opts: effectMergeConfig = {}) =>
+	Effect.fn(function* <Ts extends Readonly<ReadonlyArray<unknown>>>(...objects: readonly [...Ts]) {
+		const deepmerge = Effect.fn(
+			<Ts extends Readonly<ReadonlyArray<unknown>>>(...objects: readonly [...Ts]) => {
+				const merge = deepmergeCustom(opts);
+				return Effect.try({
+					try: () => merge(...objects),
+					catch: (cause) =>
+						new Error(
+							`Failed to run deepmerge: ${cause instanceof Error ? cause.message : String(cause)}`
+						),
+				});
+			}
+		);
+		return yield* deepmerge(...objects).pipe(
+			Effect.catchAll((error) => {
+				return Effect.fail(new Error(`Deep merge failed: ${error.message}`));
+			})
+		);
+	});
 
 /**
  * Represents the structure for setting local values in the StudioCMS context.
@@ -100,6 +130,11 @@ export enum SetLocal {
 	PLUGINS = 'plugins',
 }
 
+function getGeneralLocals(StudioCMS: APIContext['locals']['StudioCMS']): SetLocalValues['general'] {
+	const { security: _s, plugins: _p, ...general } = StudioCMS || {};
+	return general;
+}
+
 /**
  * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
  *
@@ -118,35 +153,34 @@ export enum SetLocal {
  * @returns The updated section of `locals.StudioCMS` after merging.
  * @throws {Error} If an unknown key is provided.
  */
-export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues[T]>(
-	context: APIContext,
-	key: T,
-	values: V
-): void {
+export const setLocals = Effect.fn(function* <
+	T extends SetLocalValuesKeys,
+	V extends SetLocalValues[T],
+>(context: APIContext, key: T, values: V) {
 	switch (key) {
 		case SetLocal.GENERAL: {
 			// Merge general values into the root of StudioCMS
 			// Exclude 'security' and 'plugins' to avoid overwriting them
-			const { security: _s1, plugins: _p1, ...generalValues } = context.locals.StudioCMS || {};
-			const {
-				security: _s2,
-				plugins: _p2,
-				...updatedValues
-			} = deepmerge(generalValues, values) as APIContext['locals']['StudioCMS'];
+			const generalValues = getGeneralLocals(context.locals.StudioCMS);
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
+				generalValues,
+				values
+			)) as SetLocalValues[SetLocal.GENERAL];
 
 			// Update the locals with the merged values
 			// This will not overwrite 'security' or 'plugins'
-			context.locals.StudioCMS = { ...updatedValues };
+			const toUpdate = getGeneralLocals(updatedValues);
+			context.locals.StudioCMS = { ...toUpdate };
 			break;
 		}
 		case SetLocal.SECURITY: {
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
 			const currentValues = context.locals.StudioCMS.security || {};
-			const updatedValues = deepmerge(
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
 				currentValues,
 				values
-			) as APIContext['locals']['StudioCMS']['security'];
+			)) as SetLocalValues[SetLocal.SECURITY];
 
 			// Update the locals with the merged security values
 			context.locals.StudioCMS.security = updatedValues;
@@ -156,16 +190,16 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
 			const currentValues = context.locals.StudioCMS.plugins || {};
-			const updatedValues = deepmerge(
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
 				currentValues,
 				values
-			) as APIContext['locals']['StudioCMS']['plugins'];
+			)) as SetLocalValues[SetLocal.PLUGINS];
 
 			// Update the locals with the merged plugin values
 			context.locals.StudioCMS.plugins = updatedValues;
 			break;
 		}
 		default:
-			throw new Error(`Unknown key: ${key}`);
+			return yield* Effect.fail(new Error(`Unknown key: ${key}`));
 	}
-}
+});
