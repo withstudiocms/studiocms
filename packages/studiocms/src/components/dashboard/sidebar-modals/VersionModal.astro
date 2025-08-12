@@ -14,8 +14,6 @@ interface Props {
 
 const { latestVersion } = Astro.props as Props;
 
-console.log('VersionModal', JSON.stringify(latestVersion, null, 2));
-
 const lastChecked = new Date(latestVersion.lastCacheUpdate);
 ---
 <!-- The modals in this file are needed inside of the sidebar but cannot be positioned there due to issues with positioning. -->
@@ -56,7 +54,7 @@ const lastChecked = new Date(latestVersion.lastCacheUpdate);
         <div class="version-modal-release-notes">
             <div><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
             </span>
         </div>
 

@@ -1,12 +1,13 @@
 ---
 interface Props {
 	link: string;
+	changelog: string;
 }
 
-const { link } = Astro.props;
+const { link, changelog } = Astro.props;
 ---
 
-<frame-button data-link={link}>
+<frame-button data-link={link} data-changelog={changelog}>
     <slot />
 </frame-button>
 
@@ -73,6 +74,7 @@ const { link } = Astro.props;
                 });
                 
                 slot.addEventListener('click', async () => {
+                    const changelogLink = this.getAttribute('data-changelog')!;
                     const link = this.getAttribute('data-link')!;
                     const { changelog } = await (await fetch(link, {
                         method: 'POST',
@@ -84,7 +86,7 @@ const { link } = Astro.props;
 
                     frameContent.innerHTML = `
                         <h1>Full Changelog</h1>
-                        <a href="${link}" target="_blank">See on GitHub ⤴</a>
+                        <a href="${changelogLink}" target="_blank">See on GitHub ⤴</a>
                         ${changelog}
                     `;
 
