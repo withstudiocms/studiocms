@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../../effect.js';
 import { OAuthAPIEffect } from './_effects/index.js';
 
-export const GET: APIRoute = async (context) =>
-	defineAPIRoute(context)((ctx) =>
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/auth/[provider]/index.GET')(function* () {
 			const { initSession } = yield* OAuthAPIEffect;
 			return yield* initSession(ctx);
