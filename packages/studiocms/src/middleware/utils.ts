@@ -4,7 +4,6 @@ import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
 import { deepmergeCustom } from 'deepmerge-ts';
 import { genLogger } from '../effect.js';
-import type { DeepPartial } from '../types.js';
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -65,27 +64,90 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 const deepmerge = deepmergeCustom({ mergeArrays: false });
 
 /**
- * Updates the `StudioCMS` property within the `locals` object of the provided API context.
+ * Represents the structure for setting local values in the StudioCMS context.
  *
- * This function performs a deep merge of the existing `StudioCMS` values with the provided partial values,
- * ensuring that nested objects are merged correctly and existing data is preserved.
- *
- * @param context - The API context containing the `locals` object to be updated.
- * @param values - A partial object containing the properties to update within `StudioCMS`.
+ * @property general - Contains general StudioCMS local values, excluding 'security' and 'plugins'.
+ * @property security - Contains security-related StudioCMS local values.
+ * @property plugins - Contains plugin-related StudioCMS local values.
  */
-export function updateLocals(
+export type SetLocalValues = {
+	general: Omit<APIContext['locals']['StudioCMS'], 'security' | 'plugins'>;
+	security: APIContext['locals']['StudioCMS']['security'];
+	plugins: APIContext['locals']['StudioCMS']['plugins'];
+};
+
+/**
+ * Represents the keys of the {@link SetLocalValues} type.
+ * Useful for extracting valid property names from the {@link SetLocalValues} object type.
+ */
+export type SetLocalValuesKeys = keyof SetLocalValues;
+
+/**
+ * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
+ *
+ * Depending on the provided `key`, merges the new `values` into the corresponding section of `locals.StudioCMS`:
+ * - `'general'`: Merges into the root of `StudioCMS`.
+ * - `'security'`: Merges into the `security` property of `StudioCMS`.
+ * - `'plugins'`: Merges into the `plugins` property of `StudioCMS`.
+ *
+ * Uses a deep merge strategy to combine existing and new values.
+ *
+ * @template T - The key of the section to update (`'general'`, `'security'`, or `'plugins'`).
+ * @template V - The type of values to merge, corresponding to the section specified by `T`.
+ * @param context - The API context containing the `locals.StudioCMS` object to update.
+ * @param key - The section of `StudioCMS` to update.
+ * @param values - The new values to merge into the specified section.
+ * @returns The updated section of `locals.StudioCMS` after merging.
+ * @throws {Error} If an unknown key is provided.
+ */
+export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues[T]>(
 	context: APIContext,
-	values: DeepPartial<APIContext['locals']['StudioCMS']>
-): APIContext['locals']['StudioCMS'] {
-	// Clone the current values to avoid mutating the original object
-	const currentValues = context.locals.StudioCMS || {};
+	key: T,
+	values: V
+): void {
+	switch (key) {
+		case 'general': {
+			// Merge general values into the root of StudioCMS
+			// Exclude 'security' and 'plugins' to avoid overwriting them
+			const { security: _s1, plugins: _p1, ...generalValues } = context.locals.StudioCMS || {};
+			const {
+				security: _s2,
+				plugins: _p2,
+				...updatedValues
+			} = deepmerge(generalValues, values) as APIContext['locals']['StudioCMS'];
 
-	// Use deepmerge to combine the current values with the provided values
-	// This allows for partial updates without losing existing data.
-	const updatedValues = deepmerge(currentValues, values) as APIContext['locals']['StudioCMS'];
+			// Update the locals with the merged values
+			// This will not overwrite 'security' or 'plugins'
+			context.locals.StudioCMS = { ...updatedValues };
+			break;
+		}
+		case 'security': {
+			// Merge security values into the 'security' property of StudioCMS
+			// This will not overwrite 'general' or 'plugins'
+			const currentValues = context.locals.StudioCMS.security || {};
+			const updatedValues = deepmerge(
+				currentValues,
+				values
+			) as APIContext['locals']['StudioCMS']['security'];
 
-	// Update the context locals with the merged values
-	// This allows for partial updates without losing existing data
-	context.locals.StudioCMS = updatedValues;
-	return updatedValues;
+			// Update the locals with the merged security values
+			context.locals.StudioCMS.security = updatedValues;
+			break;
+		}
+		case 'plugins': {
+			// Merge plugin values into the 'plugins' property of StudioCMS
+			// This will not overwrite 'general' or 'security'
+			const currentValues = context.locals.StudioCMS.plugins || {};
+			const updatedValues = deepmerge(
+				currentValues,
+				values
+			) as APIContext['locals']['StudioCMS']['plugins'];
+
+			// Update the locals with the merged plugin values
+			context.locals.StudioCMS.plugins = updatedValues;
+			break;
+		}
+		default:
+			throw new Error(`Unknown key: ${key}`);
+	}
 }

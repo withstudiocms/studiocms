@@ -8,7 +8,7 @@ import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
 import { defineMiddlewareRouter, Effect } from '../effect.js';
-import { getUserPermissions, makeFallbackSiteConfig, updateLocals } from './utils.js';
+import { getUserPermissions, makeFallbackSiteConfig, setLocals } from './utils.js';
 
 // Import the dashboard route override from the configuration
 // If no override is set, it defaults to 'dashboard'
@@ -46,7 +46,7 @@ export const onRequest = defineMiddlewareRouter([
 			]);
 
 			// Set the StudioCMS base context locals
-			updateLocals(context, {
+			setLocals(context, 'general', {
 				SCMSGenerator: `StudioCMS v${SCMSVersion}`,
 				SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
 				siteConfig: siteConfig ?? makeFallbackSiteConfig(),
@@ -93,12 +93,10 @@ export const onRequest = defineMiddlewareRouter([
 			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
 
 			// Set the security-related data in the context locals
-			updateLocals(context, {
-				security: {
-					userSessionData,
-					emailVerificationEnabled,
-					userPermissionLevel,
-				},
+			setLocals(context, 'security', {
+				userSessionData,
+				emailVerificationEnabled,
+				userPermissionLevel,
 			});
 
 			// Set deprecated locals for backward compatibility
@@ -173,10 +171,8 @@ export const onRequest = defineMiddlewareRouter([
 					});
 
 					// Update the context locals with the CSRF token for the editor
-					updateLocals(context, {
-						plugins: {
-							editorCSRFToken: csrfToken,
-						},
+					setLocals(context, 'plugins', {
+						editorCSRFToken: csrfToken,
 					});
 
 					// Set deprecated locals for backward compatibility
