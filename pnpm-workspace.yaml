@@ -18,13 +18,13 @@ catalogs:
   effect:
     "@effect/cli": ^0.69.0
     "@effect/cluster": ^0.47.0
-    "@effect/experimental": ^0.54.4
+    "@effect/experimental": ^0.54.5
     "@effect/language-service": ^0.35.2
-    "@effect/platform": ^0.90.1
+    "@effect/platform": ^0.90.2
     "@effect/platform-node": ^0.95.0
     "@effect/printer": ^0.45.0
     "@effect/printer-ansi": ^0.45.0
-    "@effect/rpc": ^0.68.3
+    "@effect/rpc": ^0.68.4
     "@effect/sql": ^0.44.1
     "@effect/typeclass": ^0.36.0
     "@effect/workflow": ^0.8.3
