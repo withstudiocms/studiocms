@@ -83,6 +83,24 @@ export type SetLocalValues = {
 export type SetLocalValuesKeys = keyof SetLocalValues;
 
 /**
+ * Enum representing different local settings categories.
+ *
+ * @remarks
+ * Used to specify the context for local configuration, such as general settings,
+ * security-related settings, or plugin-specific settings.
+ *
+ * @enum {string}
+ * @property {string} general - Represents general settings.
+ * @property {string} security - Represents security-related settings.
+ * @property {string} plugins - Represents plugin-specific settings.
+ */
+export enum SetLocal {
+	general = 'general',
+	security = 'security',
+	plugins = 'plugins',
+}
+
+/**
  * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
  *
  * Depending on the provided `key`, merges the new `values` into the corresponding section of `locals.StudioCMS`:
@@ -106,7 +124,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 	values: V
 ): void {
 	switch (key) {
-		case 'general': {
+		case SetLocal.general: {
 			// Merge general values into the root of StudioCMS
 			// Exclude 'security' and 'plugins' to avoid overwriting them
 			const { security: _s1, plugins: _p1, ...generalValues } = context.locals.StudioCMS || {};
@@ -121,7 +139,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 			context.locals.StudioCMS = { ...updatedValues };
 			break;
 		}
-		case 'security': {
+		case SetLocal.security: {
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
 			const currentValues = context.locals.StudioCMS.security || {};
@@ -134,7 +152,7 @@ export function setLocals<T extends SetLocalValuesKeys, V extends SetLocalValues
 			context.locals.StudioCMS.security = updatedValues;
 			break;
 		}
-		case 'plugins': {
+		case SetLocal.plugins: {
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
 			const currentValues = context.locals.StudioCMS.plugins || {};
