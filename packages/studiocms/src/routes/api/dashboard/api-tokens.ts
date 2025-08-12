@@ -1,13 +1,17 @@
 import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/api-tokens.POST')(function* () {
 			const sdk = yield* SDKCore;
 
@@ -17,22 +21,22 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Get Json Data
 			const jsonData: { description: string; user: string } = yield* Effect.tryPromise({
-				try: () => context.request.json(),
+				try: () => ctx.request.json(),
 				catch: () => new Error('Invalid JSON in request body'),
 			});
 
@@ -57,8 +61,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 		})
 	);
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/api-tokens.DELETE')(function* () {
 			const sdk = yield* SDKCore;
 
@@ -68,22 +72,22 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Get Json Data
 			const jsonData: { tokenID: string; userID: string } = yield* Effect.tryPromise({
-				try: () => context.request.json(),
+				try: () => ctx.request.json(),
 				catch: () => new Error('Invalid JSON in request body'),
 			});
 
@@ -102,6 +106,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		})
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['POST', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

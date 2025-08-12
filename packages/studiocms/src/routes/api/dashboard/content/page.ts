@@ -3,12 +3,19 @@ import { Notifications } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses';
-import type { CombinedInsertContent } from '../../../../sdk/types/index.js';
+import type {
+	CombinedInsertContent,
+	tsPageContentSelect,
+	tsPageDataSelect,
+} from 'studiocms:sdk/types';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../effect.js';
 import { tryCatch } from '../../../../utils/tryCatch.js';
 
 type ApiEndpoints = {
@@ -57,27 +64,27 @@ function getParentFolderValue(value?: string) {
 	return value;
 }
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/page.POST')(function* () {
 			const sdk = yield* SDKCore;
 			const notify = yield* Notifications;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const formData = yield* Effect.tryPromise(() => context.request.formData());
+			const formData = yield* Effect.tryPromise(() => ctx.request.formData());
 
 			const data: UpdatePageData = {
 				title: formData.get('page-title')?.toString(),
@@ -139,7 +146,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 			});
 
 			if (apiRoute) {
-				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(ctx)));
 			}
 
 			yield* sdk.CLEAR.pages();
@@ -150,27 +157,27 @@ export const POST: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/page.PATCH')(function* () {
 			const sdk = yield* SDKCore;
 			const notify = yield* Notifications;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const formData = yield* Effect.tryPromise(() => context.request.formData());
+			const formData = yield* Effect.tryPromise(() => ctx.request.formData());
 
 			const data: Partial<tsPageDataSelect> = {
 				title: formData.get('page-title')?.toString(),
@@ -255,7 +262,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				(metaData) => metaData.id === data.id
 			);
 
-			const { enableDiffs, diffPerPage = 10 } = context.locals.siteConfig.data;
+			const { enableDiffs, diffPerPage = 10 } = ctx.locals.siteConfig.data;
 
 			if (enableDiffs) {
 				yield* sdk.diffTracking.insert(
@@ -275,7 +282,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			}
 
 			if (apiRoute) {
-				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(ctx)));
 			}
 
 			yield* notify.sendEditorNotification(
@@ -287,27 +294,27 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/page.DELETE')(function* () {
 			const sdk = yield* SDKCore;
 			const notify = yield* Notifications;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { id, slug } = jsonData;
 
@@ -326,7 +333,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* sdk.DELETE.page(id);
 
 			if (apiRoute) {
-				yield* Effect.tryPromise(() => tryCatch(apiRoute(context)));
+				yield* Effect.tryPromise(() => tryCatch(apiRoute(ctx)));
 			}
 
 			yield* notify.sendEditorNotification('page_deleted', pageToDelete.data.title);
@@ -335,6 +342,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['POST', 'PATCH', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

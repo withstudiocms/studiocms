@@ -1,7 +1,6 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
 
 type SearchItem = {
 	id: string;
@@ -13,8 +12,8 @@ type SearchItem = {
 
 type SearchList = SearchItem[];
 
-export const GET: APIRoute = async () =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)(() =>
 		genLogger('studiocms/routes/api/dashboard/search-list.GET')(function* () {
 			const sdk = yield* SDKCore;
 
@@ -54,6 +53,6 @@ export const GET: APIRoute = async () =>
 		});
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

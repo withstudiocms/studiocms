@@ -2,22 +2,21 @@ import { VerifyEmail } from 'studiocms:auth/lib';
 import { removeLeadingTrailingSlashes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/verify-email.GET')(function* () {
 			const verifyEmail = yield* VerifyEmail;
 			const sdk = yield* SDKCore;
 
 			// Check if mailer is enabled
-			if (!context.locals.siteConfig.data.enableMailer) {
+			if (!ctx.locals.StudioCMS.siteConfig.data.enableMailer) {
 				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 			}
 
-			const url = new URL(context.request.url);
+			const url = new URL(ctx.request.url);
 			const params = url.searchParams;
 			const token = params.get('token');
 			const userId = params.get('userId');
@@ -42,13 +41,13 @@ export const GET: APIRoute = async (context: APIContext) =>
 
 			yield* sdk.AUTH.verifyEmail.delete(userId);
 
-			return context.redirect(
-				removeLeadingTrailingSlashes(context.site?.toString() as string) +
-					context.locals.routeMap.mainLinks.dashboardIndex
+			return ctx.redirect(
+				removeLeadingTrailingSlashes(ctx.site?.toString() as string) +
+					ctx.locals.StudioCMS.routeMap.mainLinks.dashboardIndex
 			);
 		}).pipe(VerifyEmail.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

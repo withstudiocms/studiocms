@@ -1,29 +1,33 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import pluginList from 'studiocms:plugins';
 import { settingsEndpoints } from 'studiocms:plugins/endpoints';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../effect.js';
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/plugins/[plugin].POST')(function* () {
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const { plugin } = context.params;
+			const { plugin } = ctx.params;
 
 			const filteredPluginList = yield* Effect.try(() =>
 				pluginList.filter((plugin) => !!plugin.settingsPage)
@@ -47,10 +51,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(404, 'Plugin does not have a settings page');
 			}
 
-			return settingsPage.onSave(context);
+			return settingsPage.onSave(ctx);
 		})
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();
