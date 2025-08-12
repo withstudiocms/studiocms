@@ -1,5 +1,5 @@
 import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, Effect } from 'studiocms/effect';
+import { Effect, runEffect } from 'studiocms/effect';
 import { DiscordOAuthAPI } from './effect/discord.js';
 
 /**
@@ -8,13 +8,13 @@ import { DiscordOAuthAPI } from './effect/discord.js';
  * This function uses the Effect system to compose asynchronous operations,
  * retrieving the `initSession` method from the `DiscordOAuthAPI` and invoking it
  * with the provided API context. The result is converted to a vanilla response
- * using `convertToVanilla`.
+ * using `runEffect`.
  *
  * @param context - The API context containing request and environment information.
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	await runEffect(
 		Effect.gen(function* () {
 			const { initSession } = yield* DiscordOAuthAPI;
 			return yield* initSession(context);
@@ -32,7 +32,7 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Discord OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	await runEffect(
 		Effect.gen(function* () {
 			const { initCallback } = yield* DiscordOAuthAPI;
 			return yield* initCallback(context);

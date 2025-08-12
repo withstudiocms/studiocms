@@ -193,9 +193,6 @@ importers:
 
   packages/@studiocms/auth0:
     dependencies:
-      '@effect/platform':
-        specifier: catalog:effect
-        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
@@ -314,9 +311,6 @@ importers:
 
   packages/@studiocms/discord:
     dependencies:
-      '@effect/platform':
-        specifier: catalog:effect
-        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
@@ -342,9 +336,6 @@ importers:
 
   packages/@studiocms/github:
     dependencies:
-      '@effect/platform':
-        specifier: catalog:effect
-        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
@@ -370,9 +361,6 @@ importers:
 
   packages/@studiocms/google:
     dependencies:
-      '@effect/platform':
-        specifier: catalog:effect
-        version: 0.90.2(effect@3.17.7)
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
