@@ -4,6 +4,7 @@ import { run } from 'node:test';
 import { spec } from 'node:test/reporters';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
+import chalk from 'chalk';
 import glob from 'fast-glob';
 
 /**
@@ -17,6 +18,15 @@ const isCI = !!process.env.CI;
  * @type {number}
  */
 const defaultTimeout = isCI ? 1400000 : 600000;
+
+// DateTime format for logging
+/**
+ * @type {Intl.DateTimeFormat}
+ */
+const dt = new Intl.DateTimeFormat('en-us', {
+    hour: '2-digit',
+    minute: '2-digit',
+});
 
 /**
  * Run tests using the Node.js test runner.
@@ -43,6 +53,22 @@ export default async function test(args) {
             teardown: { type: 'string' },
         },
     });
+
+    // Find the package.json file in the current directory
+    // and read it to get the project name
+    const packageJSONPath = path.resolve('./package.json');
+    let packageJSON;
+    try {
+        packageJSON = JSON.parse(await fs.readFile(packageJSONPath, { encoding: 'utf8' }));
+    } catch (error) {
+        throw new Error(`Failed to read package.json: ${error.message}`);
+    }
+
+    console.log(
+        `${chalk.dim(`[${dt.format(new Date())}]`)} Running tests for ${chalk.bold(packageJSON.name)}...\n`
+    );
+
+    const start = Date.now();
 
     const pattern = parsedArgs.positionals[0];
     if (!pattern) throw new Error('Missing test glob pattern');
@@ -101,6 +127,13 @@ export default async function test(args) {
         .on('end', () => {
             const testPassed = process.exitCode === 0 || process.exitCode === undefined;
             teardownModule?.default(testPassed);
+            const end = Date.now();
+            console.log(
+                `\n${chalk.dim(`[${dt.format(new Date())}]`)} Tests for ${chalk.bold(packageJSON.name)} completed in ${((end - start) / 1000).toFixed(2)} seconds. ${process.exitCode === 0 || process.exitCode === undefined
+                    ? chalk.green('All tests passed!')
+                    : chalk.red('Some tests failed!')
+                }`
+            );
         })
         .pipe(new spec())
         .pipe(process.stdout);
