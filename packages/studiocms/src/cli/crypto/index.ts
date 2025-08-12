@@ -1,7 +1,7 @@
-import { Command } from '@effect/cli';
+import { Cli } from '../../effect.js';
 import { genJWT } from './genJWT/index.js';
 
-export const cryptoCMD = Command.make('crypto').pipe(
-	Command.withDescription('Crypto Utilities for StudioCMS Security'),
-	Command.withSubcommands([genJWT])
+export const cryptoCMD = Cli.Command.make('crypto').pipe(
+	Cli.Command.withDescription('Crypto Utilities for StudioCMS Security'),
+	Cli.Command.withSubcommands([genJWT])
 );

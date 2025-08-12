@@ -20,9 +20,9 @@ const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 ---
-<div id="edit-folder-container" data-content-management-url={Astro.locals.routeMap.mainLinks.contentManagement}>
+<div id="edit-folder-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
 
-    <form id="edit-folder-form" action={Astro.locals.routeMap.endpointLinks.content.folder}>
+    <form id="edit-folder-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder}>
 
         <input type="hidden" name="folder-id" value={currentFolder.id} />
     

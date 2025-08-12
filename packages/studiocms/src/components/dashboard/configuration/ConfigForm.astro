@@ -59,11 +59,11 @@ const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
 	};
 });
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
-<form id="site-config-form" action={Astro.locals.routeMap.endpointLinks.config}>
+<form id="site-config-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.config}>
     <div class="form-content">
 
         <div class="form-row">

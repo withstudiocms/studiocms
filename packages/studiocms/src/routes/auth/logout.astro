@@ -2,7 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:logout');
 ---
 <AuthLayout 
@@ -14,7 +14,7 @@ const t = useTranslations(lang, '@studiocms/auth:logout');
 
 </AuthLayout>
 
-<div style="display: none;" id="redirect-to-logout" data-redirect={Astro.locals.routeMap.authLinks.logoutAPI}></div>
+<div style="display: none;" id="redirect-to-logout" data-redirect={Astro.locals.StudioCMS.routeMap.authLinks.logoutAPI}></div>
 
 <script>
 

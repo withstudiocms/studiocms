@@ -7,13 +7,13 @@ import { Button, Card, Icon, Toggle } from 'studiocms:ui/components';
 import { Effect } from 'effect';
 
 interface Props {
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 	config: SiteConfigCacheObject;
 }
 
 const { currentUser: data, config: siteConfig } = Astro.props as Props;
 
-if (!data.user) {
+if (!data?.user) {
 	throw new Error('User not found');
 }
 
@@ -21,7 +21,16 @@ const NotificationOptions = notificationTypes;
 
 const userNotifications = data.user.notifications?.split(',') || [];
 
-const { isEditor, isAdmin, isVisitor: isUser } = Astro.locals.userPermissionLevel;
+const {
+	isEditor,
+	isAdmin,
+	isVisitor: isUser,
+} = Astro.locals.StudioCMS.security?.userPermissionLevel ?? {
+	isVisitor: false,
+	isEditor: false,
+	isAdmin: false,
+	isOwner: false,
+};
 
 let isNotificationsEnabled = false;
 
@@ -35,7 +44,7 @@ if (enableMailer) {
 	}
 }
 ---
-<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={Astro.locals.routeMap.endpointLinks.updateUserNotifications}>
+<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.updateUserNotifications}>
 
     <div slot="header">
         <h2>Notifications Events</h2>

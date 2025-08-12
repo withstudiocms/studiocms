@@ -1,12 +1,12 @@
 import { db, eq } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';
-import { Data, Effect, pipe } from 'effect';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import socks from 'socks';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
+import { Data, Effect, pipe } from '../../effect.js';
 import { errorTap, genLogger, pipeLogger } from './logger.js';
 import { MailerConfig, TransporterConfig } from './smtp.config.js';
 

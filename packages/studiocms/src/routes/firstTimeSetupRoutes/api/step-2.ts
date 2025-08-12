@@ -2,18 +2,22 @@ import { Password, User } from 'studiocms:auth/lib';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
 export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	defineAPIRoute(context)((ctx) =>
 		genLogger('studiocms:first-time-setup:step-2:POST')(function* () {
 			const sdk = yield* SDKCore;
 			const userUtils = yield* User;
 			const passwordUtils = yield* Password;
 
-			const reqData = yield* Effect.tryPromise(() => context.request.json());
+			const reqData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { username, displayname, email, password, confirmPassword } = reqData;
 
@@ -112,6 +116,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		});
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

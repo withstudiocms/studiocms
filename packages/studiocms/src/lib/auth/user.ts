@@ -410,10 +410,11 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		/**
 		 * @private
 		 */
-		const getLevel = (userData: UserSessionData | CombinedUserData) =>
+		const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
 			pipeLogger('studiocms/lib/auth/user/User.getLevel')(
 				Effect.try({
 					try: () => {
+						if (!userData) return 'unknown';
 						let userPermissionLevel: AvailablePermissionRanks = 'unknown';
 						if ('permissionLevel' in userData) {
 							userPermissionLevel = userData.permissionLevel;
@@ -435,7 +436,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @param userData - The session data of the user, which includes their permission level.
 		 * @returns The user's permission level as an enum value.
 		 */
-		const getUserPermissionLevel = (userData: UserSessionData | CombinedUserData) =>
+		const getUserPermissionLevel = (userData: UserSessionData | CombinedUserData | null) =>
 			genLogger('studiocms/lib/auth/user/User.getUserPermissionLevel')(function* () {
 				const level = yield* getLevel(userData);
 
@@ -469,7 +470,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		};
 
 		const isUserAllowed = (
-			userData: UserSessionData | CombinedUserData,
+			userData: UserSessionData | CombinedUserData | null,
 			requiredPerms: AvailablePermissionRanks
 		) =>
 			genLogger('studiocms/lib/auth/user/User.isUserAllowed')(function* () {

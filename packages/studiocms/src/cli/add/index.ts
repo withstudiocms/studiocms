@@ -1,11 +1,10 @@
 import { existsSync, promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { Args, Command } from '@effect/cli';
 import { cancelled, success } from '@withstudiocms/cli-kit/messages';
 import { exists, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils';
 import { type ASTNode, builders, loadFile, type ProxifiedModule } from 'magicast';
 import { getDefaultExportOptions } from 'magicast/helpers';
-import { Console, Effect, genLogger, Layer } from '../../effect.js';
+import { Cli, Console, Effect, genLogger, Layer } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { logger } from '../utils/logger.js';
 import { TryToInstallPlugins } from './tryToInstallPlugins.js';
@@ -103,9 +102,9 @@ export function appendForwardSlash(path: string) {
 	return path.endsWith('/') ? path : `${path}/`;
 }
 
-export const plugin = Args.text({ name: 'plugin' }).pipe(
-	Args.withDescription(' name of the plugin to add'),
-	Args.repeated
+export const plugin = Cli.Args.text({ name: 'plugin' }).pipe(
+	Cli.Args.withDescription(' name of the plugin to add'),
+	Cli.Args.repeated
 );
 
 const resolveOrCreateConfig = (root: URL) =>
@@ -177,7 +176,7 @@ const addPluginDeps = Layer.mergeAll(
 	UpdateStudioCMSConfig.Default
 );
 
-export const addPlugin = Command.make(
+export const addPlugin = Cli.Command.make(
 	'add',
 	{
 		plugin,
@@ -290,4 +289,4 @@ export const addPlugin = Command.make(
 				}
 			}
 		}).pipe(Effect.provide(addPluginDeps))
-).pipe(Command.withDescription('Add StudioCMS plugin(s) to your project'));
+).pipe(Cli.Command.withDescription('Add StudioCMS plugin(s) to your project'));

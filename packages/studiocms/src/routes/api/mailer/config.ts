@@ -1,9 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect, Schema } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	Schema,
+} from '../../../effect.js';
 
 export class SmtpConfigSchema extends Schema.Class<SmtpConfigSchema>('SmtpConfigSchema')({
 	port: Schema.Number,
@@ -17,23 +22,23 @@ export class SmtpConfigSchema extends Schema.Class<SmtpConfigSchema>('SmtpConfig
 	default_sender: Schema.String,
 }) {}
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('routes/mailer/config/POST')(function* () {
 			const mailer = yield* Mailer;
 
 			// Check if user is logged in
-			if (!context.locals.userSessionData.isLoggedIn) {
+			if (!ctx.locals.StudioCMS.security?.userSessionData.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			if (!context.locals.userPermissionLevel.isOwner) {
+			if (!ctx.locals.StudioCMS.security?.userPermissionLevel.isOwner) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Get Json Data
-			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+			const smtpConfig = yield* Effect.tryPromise(() => ctx.request.json()).pipe(
 				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
 			);
 
@@ -66,22 +71,22 @@ export const POST: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, `Error updating mailer config: ${error.message}`);
 	});
 
-export const UPDATE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const UPDATE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('routes/mailer/config/UPDATE')(function* () {
 			const mailer = yield* Mailer;
 
 			// Check if user is logged in
-			if (!context.locals.userSessionData.isLoggedIn) {
+			if (!ctx.locals.StudioCMS.security?.userSessionData.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 			// Check if user has permission
-			if (!context.locals.userPermissionLevel.isOwner) {
+			if (!ctx.locals.StudioCMS.security?.userPermissionLevel.isOwner) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Get Json Data
-			const smtpConfig = yield* Effect.tryPromise(() => context.request.json()).pipe(
+			const smtpConfig = yield* Effect.tryPromise(() => ctx.request.json()).pipe(
 				Effect.flatMap(Schema.decodeUnknown(SmtpConfigSchema))
 			);
 
@@ -113,6 +118,7 @@ export const UPDATE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, `Error updating mailer config: ${error.message}`);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'UPDATE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['POST', 'UPDATE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

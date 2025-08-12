@@ -5,7 +5,7 @@ import { Sidebar } from 'studiocms:ui/components';
 import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 	latestVersion: VersionCacheObject;
 }
 

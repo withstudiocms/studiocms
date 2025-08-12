@@ -14,7 +14,7 @@ const recentlyCreatedUsers = totalUsers
 <div class="recently-signed-up-users-container">
     {
         recentlyCreatedUsers.map((user) => (
-            <a href={`${Astro.locals.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
+            <a href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
                 <Card class="user-card" fullWidth>
                     <div class="user-flex">
                         <User 

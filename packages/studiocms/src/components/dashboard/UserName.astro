@@ -2,9 +2,9 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 
 interface Props {
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 }
 
 const { currentUser } = Astro.props as Props;
 ---
-<Fragment set:text={currentUser.user?.name} />
+<Fragment set:text={currentUser?.user?.name || 'Unknown User'} />

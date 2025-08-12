@@ -11,7 +11,7 @@ import DashboardGridItem from './DashboardGridItem.astro';
 interface Props {
 	lang: UiLanguageKeys;
 	config: SiteConfigCacheObject;
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 }
 
 const {

@@ -1,4 +1,4 @@
-import { Effect } from 'effect';
+import { type Effect, runEffect } from '../../effect.js';
 
 /**
  * Converts an `Effect` into an object containing both synchronous and asynchronous execution methods.
@@ -8,5 +8,4 @@ import { Effect } from 'effect';
  *
  * @param effect - The `Effect` instance to be converted.
  */
-export const convertToVanilla = async <A, E>(effect: Effect.Effect<A, E, never>) =>
-	await Effect.runPromise<A, E>(effect);
+export const convertToVanilla = <A, E>(effect: Effect.Effect<A, E, never>) => runEffect(effect);

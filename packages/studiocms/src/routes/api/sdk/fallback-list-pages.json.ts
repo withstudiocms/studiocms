@@ -1,10 +1,9 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
 
-export const GET: APIRoute = async (): Promise<Response> =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)(() =>
 		genLogger('routes/sdk/fallback-list-pages.json/GET')(function* () {
 			const sdk = yield* SDKCore;
 			const pages = yield* sdk.GET.pages();
@@ -36,6 +35,6 @@ export const GET: APIRoute = async (): Promise<Response> =>
 		);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

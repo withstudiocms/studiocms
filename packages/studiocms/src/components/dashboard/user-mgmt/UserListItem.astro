@@ -21,7 +21,7 @@ interface Props {
 
 const { user, searchQuery } = Astro.props;
 ---
-<a class="sidebar-user" href={`${Astro.locals.routeMap.mainLinks.userManagementEdit}/?user=${user.id}${searchQuery ? `&search=${searchQuery}` : ''}`} data-astro-reload>
+<a class="sidebar-user" href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}${searchQuery ? `&search=${searchQuery}` : ''}`} data-astro-reload>
     <User 
         name={user.name}
         avatar={user.avatar ?? undefined} 

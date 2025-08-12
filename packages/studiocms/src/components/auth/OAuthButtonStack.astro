@@ -4,7 +4,7 @@ import { Divider } from 'studiocms:ui/components';
 import OAuthButton from './OAuthButton.astro';
 import { providerData, showOAuth } from './oAuthButtonProviders.js';
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:oauth-stack');
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);

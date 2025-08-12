@@ -5,7 +5,9 @@ import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astr
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---

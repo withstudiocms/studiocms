@@ -1,4 +1,4 @@
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 import { jsonParse } from '../../utils/jsonParse.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import type { DiffReturnType, diffItem, diffReturn, tsPageDataSelect } from '../types/index.js';

@@ -3,9 +3,14 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect, Schema } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	Schema,
+} from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 type PermissionRank = 'visitor' | 'editor' | 'admin' | 'owner' | 'unknown';
@@ -20,11 +25,11 @@ export class JSONData extends Schema.Class<JSONData>('JSONData')({
 	),
 }) {}
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:users:[id]:GET')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 			const userUtils = yield* User;
 
 			if (user instanceof Response) {
@@ -37,7 +42,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid form data, id is required');
@@ -111,12 +116,13 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to fetch user data', error);
 	});
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:users:[id]:PATCH')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 			const userUtils = yield* User;
+			const notifier = yield* Notifications;
 
 			if (user instanceof Response) {
 				return user;
@@ -128,7 +134,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid form data, id is required');
@@ -179,7 +185,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { rank: newRank } = yield* Schema.decodeUnknown(JSONData)(jsonData);
 
@@ -220,8 +226,8 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				url,
 				username,
 			};
-			yield* Notifications.sendUserNotification('account_updated', id);
-			yield* Notifications.sendAdminNotification('user_updated', username);
+			yield* notifier.sendUserNotification('account_updated', id);
+			yield* notifier.sendAdminNotification('user_updated', username);
 
 			return new Response(JSON.stringify(data), {
 				headers: {
@@ -233,12 +239,13 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to update user data', error);
 	});
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:users:[id]:DELETE')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 			const userUtils = yield* User;
+			const notifier = yield* Notifications;
 
 			if (user instanceof Response) {
 				return user;
@@ -250,7 +257,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid form data, id is required');
@@ -311,7 +318,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(400, response.message);
 			}
 
-			yield* Notifications.sendAdminNotification('user_deleted', existingUser.username);
+			yield* notifier.sendAdminNotification('user_deleted', existingUser.username);
 
 			return apiResponseLogger(200, response.message);
 		}).pipe(User.Provide, Notifications.Provide)
@@ -319,6 +326,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, `Failed to delete user: ${error}`);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

@@ -3,7 +3,7 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
 import { deepmergeCustom } from 'deepmerge-ts';
-import { genLogger } from '../lib/effects/index.js';
+import { genLogger } from '../effect.js';
 import type { DeepPartial } from '../types.js';
 
 /**

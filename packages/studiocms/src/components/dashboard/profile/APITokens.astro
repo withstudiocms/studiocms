@@ -6,12 +6,12 @@ import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
 
 interface Props {
-	userSession: UserSessionData;
+	userSession: UserSessionData | null;
 }
 
 const { userSession } = Astro.props;
 
-const { user } = userSession;
+const user = userSession?.user ?? null;
 
 if (!user) {
 	throw new Error('User not found');
@@ -19,7 +19,7 @@ if (!user) {
 
 const userTokens = await runSDK(SDKCoreJs.REST_API.tokens.get(user.id));
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 <Card fullWidth class="api-tokens">

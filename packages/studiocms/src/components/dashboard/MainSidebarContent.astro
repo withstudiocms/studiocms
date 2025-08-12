@@ -14,18 +14,23 @@ import VersionCheck from './sidebar/VersionCheck.astro';
 import { getSidebarLinks } from './sidebarConfig.js';
 
 const { versionCheck } = dashboardConfig;
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:sidebar');
 const sidebar = getSidebarLinks(lang);
 
 interface Props {
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 	latestVersion: VersionCacheObject;
 }
 
 const { currentUser: userData, latestVersion } = Astro.props as Props;
 
-const { isEditor, isAdmin, isOwner } = Astro.locals.userPermissionLevel;
+const { isEditor, isAdmin, isOwner } = Astro.locals.StudioCMS.security?.userPermissionLevel ?? {
+	isVisitor: false,
+	isEditor: false,
+	isAdmin: false,
+	isOwner: false,
+};
 
 const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ---

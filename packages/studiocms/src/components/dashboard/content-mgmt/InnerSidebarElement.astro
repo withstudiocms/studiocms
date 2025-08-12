@@ -28,12 +28,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
       { 
         label: t('dropdown-create-page'), 
         icon: 'document', 
-        value: Astro.locals.routeMap.mainLinks.contentManagementCreate 
+        value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate 
       },
       { 
         label: t('dropdown-create-folder'), 
         icon: 'folder', 
-        value: Astro.locals.routeMap.mainLinks.contentManagementFolderCreate 
+        value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate 
       },
     ]}
     align={'end'}
@@ -61,15 +61,15 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   class="inner-sidebar-items scrollbar"
   id="inner-sidebar-items-search"
   style="display: none;"
-  data-searchlist={Astro.locals.routeMap.endpointLinks.searchList}
-  data-editpage={Astro.locals.routeMap.mainLinks.contentManagementEdit}
-  data-editfolder={Astro.locals.routeMap.mainLinks.contentManagementFolderEdit}
+  data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.searchList}
+  data-editpage={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}
+  data-editfolder={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}
   ></div>
 
 
 <div id="i-dropdown-options"
-  data-createpage={Astro.locals.routeMap.mainLinks.contentManagementCreate}
-  data-createfolder={Astro.locals.routeMap.mainLinks.contentManagementFolderCreate}
+  data-createpage={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate}
+  data-createfolder={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate}
   ></div>
 
   <script>

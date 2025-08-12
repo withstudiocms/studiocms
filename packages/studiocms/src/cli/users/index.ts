@@ -1,7 +1,6 @@
-import { Command, Options } from '@effect/cli';
 import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
-import { Console, Effect, genLogger } from '../../effect.js';
+import { Cli, Console, Effect, genLogger } from '../../effect.js';
 import { type BaseContext, CliContext, genContext } from '../utils/context.js';
 import { intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
@@ -10,16 +9,16 @@ import { libsqlCreateUsers } from './steps/libsqlCreateUsers.js';
 import { libsqlModifyUsers } from './steps/libsqlModifyUsers.js';
 import { next } from './steps/next.js';
 
-export const debug = Options.boolean('debug').pipe(
-	Options.optional,
-	Options.withDefault(false),
-	Options.withDescription('Enable debug mode')
+export const debug = Cli.Options.boolean('debug').pipe(
+	Cli.Options.optional,
+	Cli.Options.withDefault(false),
+	Cli.Options.withDescription('Enable debug mode')
 );
 
-export const dryRun = Options.boolean('dry-run').pipe(
-	Options.optional,
-	Options.withAlias('d'),
-	Options.withDescription('Dry run mode')
+export const dryRun = Cli.Options.boolean('dry-run').pipe(
+	Cli.Options.optional,
+	Cli.Options.withAlias('d'),
+	Cli.Options.withDescription('Dry run mode')
 );
 
 // biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
@@ -39,7 +38,7 @@ export enum DBEditOptions {
 	modify = 'modify',
 }
 
-export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
+export const usersCMD = Cli.Command.make('users', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
 	genLogger('studiocms/cli/users')(function* () {
 		let debug: boolean;
 
@@ -148,4 +147,4 @@ export const usersCMD = Command.make('users', { debug, dryRun }, ({ debug: _debu
 		// All done, exit
 		context.exit(0);
 	})
-).pipe(Command.withDescription('Utilities for Tweaking Users in StudioCMS'));
+).pipe(Cli.Command.withDescription('Utilities for Tweaking Users in StudioCMS'));

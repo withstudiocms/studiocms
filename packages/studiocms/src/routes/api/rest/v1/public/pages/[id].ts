@@ -1,15 +1,19 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	genLogger,
+	OptionsResponse,
+} from '../../../../../../effect.js';
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid page ID');
@@ -35,6 +39,6 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to fetch page data', err);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

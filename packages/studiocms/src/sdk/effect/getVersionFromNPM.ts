@@ -1,4 +1,4 @@
-import { Effect, HTTPClient, Platform, Schema } from '@withstudiocms/effect';
+import { Effect, HTTPClient, Platform, Schema } from '../../effect.js';
 
 /**
  * Represents the version information retrieved from NPM.

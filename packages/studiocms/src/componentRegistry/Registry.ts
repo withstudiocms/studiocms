@@ -1,10 +1,13 @@
-import * as FileSystem from '@effect/platform/FileSystem';
-import * as Path from '@effect/platform/Path';
-import * as NodeFileSystem from '@effect/platform-node/NodeFileSystem';
-import { Effect, genLogger } from '../effect.js';
+import { Effect, genLogger, Layer, Platform, PlatformNode } from '../effect.js';
 import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from './errors.js';
 import { PropsParser } from './PropsParser.js';
 import type { AstroComponentProps } from './types.js';
+
+const registryDeps = Layer.mergeAll(
+	PropsParser.Default,
+	Platform.Path.layer,
+	PlatformNode.NodeFileSystem.layer
+);
 
 /**
  * A service class for registering, retrieving, and validating Astro component props.
@@ -32,11 +35,11 @@ import type { AstroComponentProps } from './types.js';
  * - Throws `ComponentNotFoundError` if a requested component is not registered.
  */
 export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('ComponentRegistry', {
-	dependencies: [PropsParser.Default, Path.layer, NodeFileSystem.layer],
+	dependencies: [PropsParser.Default, Platform.Path.layer, PlatformNode.NodeFileSystem.layer],
 	effect: genLogger('studiocms/componentRegistry/Registry')(function* () {
 		const parser = yield* PropsParser;
-		const fs = yield* FileSystem.FileSystem;
-		const path = yield* Path.Path;
+		const fs = yield* Platform.FileSystem.FileSystem;
+		const path = yield* Platform.Path.Path;
 		const components = new Map<string, AstroComponentProps>();
 
 		return {
@@ -111,9 +114,5 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 					return { valid: errors.length === 0, errors };
 				}),
 		};
-	}).pipe(
-		Effect.provide(PropsParser.Default),
-		Effect.provide(Path.layer),
-		Effect.provide(NodeFileSystem.layer)
-	),
+	}).pipe(Effect.provide(registryDeps)),
 }) {}

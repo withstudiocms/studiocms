@@ -1,18 +1,22 @@
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
 const HERO_IMAGE =
 	'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
 export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	defineAPIRoute(context)((ctx) =>
 		genLogger('studiocms:first-time-setup:step-1:POST')(function* () {
 			const sdk = yield* SDKCore;
 
-			const reqData = yield* Effect.tryPromise(() => context.request.json());
+			const reqData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const {
 				title,
@@ -115,6 +119,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		});
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

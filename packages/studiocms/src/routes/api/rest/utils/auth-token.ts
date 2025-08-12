@@ -1,8 +1,7 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext } from 'astro';
-import { Effect } from 'effect';
-import { genLogger } from '../../../../lib/effects/index.js';
+import { Effect, genLogger } from '../../../../effect.js';
 
 /**
  * Extracts the Bearer authentication token from the `Authorization` header of the given API context's request.

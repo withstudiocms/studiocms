@@ -3,9 +3,9 @@ import changelog from 'studiocms:changelog';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
-import { parseMarkdown } from '../../../utils/tinyMDParser';
-import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone';
-import { timeAgo } from '../component-scripts/timeAgo';
+import { parseMarkdown } from '../../../utils/tinyMDParser.js';
+import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js';
+import { timeAgo } from '../component-scripts/timeAgo.js';
 import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
 
 interface Props {
@@ -21,7 +21,7 @@ const lastChecked = latestVersion.lastCacheUpdate;
 
     <h2 slot="header" class="inline-title">
         <span>Version Information</span>
-        <button data-link={Astro.locals.routeMap.sdk.updateLatestVersionCache} 
+        <button data-link={Astro.locals.StudioCMS.routeMap.sdk.updateLatestVersionCache} 
             id="version-modal-reload"
             class="reload-button" 
             title="Check for updates" 

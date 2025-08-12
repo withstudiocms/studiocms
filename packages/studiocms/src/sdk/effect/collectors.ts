@@ -1,6 +1,5 @@
 import { eq, inArray } from 'astro:db';
-import { Effect } from 'effect';
-import type { UnknownException } from 'effect/Cause';
+import { type Cause, Effect } from '../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import {
 	tsOAuthAccounts,
@@ -152,7 +151,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		 */
 		const transformPageDataToMetaOnly = <T extends CombinedPageData[] | CombinedPageData>(
 			data: T
-		): Effect.Effect<PageDataReturnType<T>, UnknownException, never> =>
+		): Effect.Effect<PageDataReturnType<T>, Cause.UnknownException, never> =>
 			Effect.try(() => {
 				if (Array.isArray(data)) {
 					return data.map(

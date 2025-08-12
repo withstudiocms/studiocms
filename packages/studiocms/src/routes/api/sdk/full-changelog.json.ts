@@ -1,10 +1,9 @@
 import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
 import { ProcessChangelog } from './utils/changelog.js';
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('routes/sdk/full-changelog/POST')(function* () {
 			const changeLogger = yield* ProcessChangelog;
 
@@ -12,7 +11,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 
 			const changelogData = yield* changeLogger.generateChangelog(rawChangelog);
 
-			const renderedChangelog = yield* changeLogger.renderChangelog(changelogData, context);
+			const renderedChangelog = yield* changeLogger.renderChangelog(changelogData, ctx);
 
 			return new Response(JSON.stringify({ success: true, changelog: renderedChangelog }), {
 				status: 200,
@@ -32,6 +31,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		});
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

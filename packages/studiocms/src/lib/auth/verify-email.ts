@@ -223,7 +223,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 *    - 'editor': Returns the user's email verification status if editor verification is required, otherwise returns true.
 			 *    - Default: Returns the user's email verification status.
 			 */
-			const isEmailVerified = (user: CombinedUserData | UserSessionData | undefined) =>
+			const isEmailVerified = (user: CombinedUserData | UserSessionData | undefined | null) =>
 				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.isEmailVerified')(function* () {
 					if (!user) return false;
 

@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { Args, Command, Options } from '@effect/cli';
 import {
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
@@ -8,7 +7,7 @@ import {
 import { boxen, label } from '@withstudiocms/cli-kit/messages';
 import { SignJWT } from 'jose';
 import { importPKCS8 } from 'jose/key/import';
-import { Effect, genLogger } from '../../../effect.js';
+import { Cli, Effect, genLogger } from '../../../effect.js';
 import { genContext } from '../../utils/context.js';
 import { dateAdd } from '../../utils/dateAdd.js';
 import { logger } from '../../utils/logger.js';
@@ -18,23 +17,23 @@ import { logger } from '../../utils/logger.js';
  */
 export const OneYear = 31556926;
 
-export const keyFile = Args.text({ name: 'keyfile' }).pipe(
-	Args.withDescription(
+export const keyFile = Cli.Args.text({ name: 'keyfile' }).pipe(
+	Cli.Args.withDescription(
 		'a relative path (e.g., `../keys/libsql.pem`) from the current directory to your private key file (.pem)'
 	)
 );
 
-export const expire = Options.integer('exp').pipe(
-	Options.withAlias('e'),
-	Options.optional,
-	Options.withDefault(OneYear),
-	Options.withDescription('Expiry date in seconds (>=0) from issued at (iat) time')
+export const expire = Cli.Options.integer('exp').pipe(
+	Cli.Options.withAlias('e'),
+	Cli.Options.optional,
+	Cli.Options.withDefault(OneYear),
+	Cli.Options.withDescription('Expiry date in seconds (>=0) from issued at (iat) time')
 );
 
-export const debug = Options.boolean('debug').pipe(
-	Options.optional,
-	Options.withDefault(false),
-	Options.withDescription('Enable debug mode')
+export const debug = Cli.Options.boolean('debug').pipe(
+	Cli.Options.optional,
+	Cli.Options.withDefault(false),
+	Cli.Options.withDescription('Enable debug mode')
 );
 
 /**
@@ -45,7 +44,7 @@ export const debug = Options.boolean('debug').pipe(
 const convertJwtToBase64Url = (jwtToken: string) =>
 	Effect.try(() => Buffer.from(jwtToken).toString('base64url'));
 
-export const genJWT = Command.make(
+export const genJWT = Cli.Command.make(
 	'gen-jwt',
 	{ keyFile, expire, debug },
 	({ expire, keyFile, debug: _debug }) =>
@@ -161,4 +160,4 @@ export const genJWT = Command.make(
 				return yield* Effect.fail(new Error('JWT ERROR: Unknown'));
 			}
 		})
-).pipe(Command.withDescription('Generate a JWT token from a keyfile'));
+).pipe(Cli.Command.withDescription('Generate a JWT token from a keyfile'));

@@ -4,9 +4,14 @@ import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { Effect, Schema } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	Schema,
+} from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export class JSONData extends Schema.Class<JSONData>('JSONData')({
@@ -23,12 +28,12 @@ export class JSONData extends Schema.Class<JSONData>('JSONData')({
 	),
 }) {}
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:users:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -60,7 +65,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				data = data.filter((user) => user.rank !== 'owner');
 			}
 
-			const searchParams = context.url.searchParams;
+			const searchParams = ctx.url.searchParams;
 
 			const rankFilter = searchParams.get('rank');
 			const usernameFilter = searchParams.get('username');
@@ -85,18 +90,19 @@ export const GET: APIRoute = async (context: APIContext) =>
 					'Content-Type': 'application/json',
 				},
 			});
-		}).pipe(Notifications.Provide)
+		})
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to fetch users', error);
 	});
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:users:POST')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 			const userUtils = yield* User;
 			const passwordUtils = yield* Password;
+			const notifier = yield* Notifications;
 
 			if (user instanceof Response) {
 				return user;
@@ -108,7 +114,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 			let {
 				username,
 				password,
@@ -181,7 +187,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				user: newUser.id,
 				rank: newUserRank,
 			});
-			yield* Notifications.sendAdminNotification('new_user', newUser.username);
+			yield* notifier.sendAdminNotification('new_user', newUser.username);
 			return apiResponseLogger(
 				200,
 				JSON.stringify({
@@ -197,6 +203,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to create user', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

@@ -45,7 +45,7 @@ function getIcon(pageData: CombinedPageData | null) {
     page ? (
         <TreeSidebarLink 
             icon={getIcon(pageData)} 
-            href={`${Astro.locals.routeMap.mainLinks.contentManagementEdit}/?edit=${id}`}
+            href={`${Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}/?edit=${id}`}
             >
             {name}
         </TreeSidebarLink>
@@ -53,7 +53,7 @@ function getIcon(pageData: CombinedPageData | null) {
         <TreeSidebarFolder 
             {name} 
             icon="folder" 
-            href={`${Astro.locals.routeMap.mainLinks.contentManagementFolderEdit}/?folder=${id}`}
+            href={`${Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}/?folder=${id}`}
             >
             {children && children.length > 0 && (
                 <div class="inner-sidebar-folder-child-nodes">

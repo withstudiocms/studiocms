@@ -3,7 +3,7 @@ import type { Database as Client } from '@astrojs/db/runtime';
 import type { ResultSet } from '@libsql/client';
 import type { ExtractTablesWithRelations } from 'drizzle-orm';
 import type { SQLiteTransaction } from 'drizzle-orm/sqlite-core';
-import { Cause, Context, Data, Effect, Exit, Option, Runtime } from 'effect';
+import { Cause, Context, Data, Effect, Exit, Option, Runtime } from '../../effect.js';
 
 /**
  * Represents an error thrown by the LibSQL database integration.

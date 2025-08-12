@@ -65,7 +65,7 @@ const currentMode = editPage
     <Button color='primary' id='nav-open' class='mobile-btn'>
       <Icon name="bars-3" height={24} width={24} slot="start-content" />
     </Button>
-    <h1 class="page-title" data-link={Astro.locals.routeMap.sdk.pages}>
+    <h1 class="page-title" data-link={Astro.locals.StudioCMS.routeMap.sdk.pages}>
       {currentMode === 'none' ? (
         <t-content-header key="title">
           {pageTitle}
@@ -117,7 +117,7 @@ const currentMode = editPage
           <div class="modal-body">
             <input type="hidden" name="page-id" value={currentId} />
             <input type="hidden" name="page-slug" value={pageSlug} />
-            <input type="hidden" name="action-route" value={Astro.locals.routeMap.endpointLinks.content.page} />
+            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page} />
                     
             <span><t-content-header key="delete-modal-desc-1">
             {t('delete-modal-desc-1')}
@@ -165,7 +165,7 @@ const currentMode = editPage
           <div class="modal-body">
             <input type="hidden" name="folder-id" value={currentId} />
             <input type="hidden" name="folder-name" value={folderName} />
-            <input type="hidden" name="action-route" value={Astro.locals.routeMap.endpointLinks.content.folder} />
+            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder} />
 
             <span><t-content-header key="delete-folder-modal-desc-1">
             {t('delete-folder-modal-desc-1')}

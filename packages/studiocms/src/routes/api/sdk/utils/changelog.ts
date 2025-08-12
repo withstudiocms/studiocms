@@ -1,12 +1,10 @@
-import { FetchHttpClient, HttpClient, HttpClientRequest } from '@effect/platform';
 import type { APIContext } from 'astro';
-import { Effect, Schedule } from 'effect';
 import type { List, Root } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { toString as ToString } from 'mdast-util-to-string';
 import { visit } from 'unist-util-visit';
-import { genLogger } from '../../../../lib/effects/index.js';
+import { Effect, genLogger, HTTPClient, Platform } from '../../../../effect.js';
 
 export type ParserState = 'packageName' | 'version' | 'semverCategory' | 'changes';
 
@@ -33,12 +31,7 @@ function parsePackageReference(str: string) {
 
 export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('ProcessChangelog', {
 	effect: genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect')(function* () {
-		const httpClient = (yield* HttpClient.HttpClient).pipe(
-			HttpClient.retryTransient({
-				times: 3,
-				schedule: Schedule.spaced('1 second'),
-			})
-		);
+		const httpClient = yield* HTTPClient;
 
 		const getRawChangelog = genLogger(
 			'routes/sdk/utils/changelog/ProcessChangelog/effect.getRawChangelog'
@@ -233,11 +226,11 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 					currentURLOrigin
 				);
 
-				return yield* HttpClientRequest.post(partialUrl).pipe(
-					HttpClientRequest.setHeaders({
+				return yield* Platform.HttpClientRequest.post(partialUrl).pipe(
+					Platform.HttpClientRequest.setHeaders({
 						'Content-Type': 'application/json',
 					}),
-					HttpClientRequest.bodyJson({
+					Platform.HttpClientRequest.bodyJson({
 						content,
 					}),
 					Effect.flatMap(httpClient.execute),
@@ -251,7 +244,7 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 			renderChangelog,
 		};
 	}),
-	dependencies: [FetchHttpClient.layer],
+	dependencies: [HTTPClient.Default],
 }) {
 	static Provide = Effect.provide(this.Default);
 }
