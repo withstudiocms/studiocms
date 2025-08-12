@@ -94,7 +94,7 @@ const effectMerge = <BaseTs = unknown, PMF extends Partial<DeepMergeFunctionsURI
 				) => DeepMergeHKT<Ts, GetDeepMergeFunctionsURIs<PMF>, DeepMergeBuiltInMetaData>,
 			catch: (cause) =>
 				new Error(
-					`Failed to run deepmerge: ${cause instanceof Error ? cause.message : String(cause)}`
+					`Failed to build custom deepmerge instance: ${cause instanceof Error ? cause.message : String(cause)}`
 				),
 		});
 
