@@ -10,7 +10,7 @@ import studiocmsCurvesLight from './studiocms-curves-light.webp';
 interface ValidImage {
 	readonly name: string;
 	readonly label: string;
-	readonly format: 'png' | 'web';
+	readonly format: 'local' | 'web';
 	readonly light: ImageMetadata | null;
 	readonly dark: ImageMetadata | null;
 }
@@ -22,21 +22,21 @@ const validImages: ValidImage[] = [
 	{
 		name: 'studiocms-blobs',
 		label: 'Blobs',
-		format: 'png',
+		format: 'local',
 		light: studiocmsBlobsLight,
 		dark: studiocmsBlobsDark,
 	},
 	{
 		name: 'studiocms-blocks',
 		label: 'Blocks',
-		format: 'png',
+		format: 'local',
 		light: studiocmsBlocksLight,
 		dark: studiocmsBlocksDark,
 	},
 	{
 		name: 'studiocms-curves',
 		label: 'Curves',
-		format: 'png',
+		format: 'local',
 		light: studiocmsCurvesLight,
 		dark: studiocmsCurvesDark,
 	},
