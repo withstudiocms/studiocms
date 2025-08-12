@@ -425,7 +425,7 @@ declare module 'studiocms:auth/utils/authEnvCheck' {
 }
 
 declare module 'studiocms:auth/utils/validImages' {
-	export const validImages: typeof import('./utils/validImages.js').validImages;
+	export const validImages: typeof import('./utils/validImages/index.js').validImages;
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
