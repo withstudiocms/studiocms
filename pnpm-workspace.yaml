@@ -26,7 +26,7 @@ catalogs:
     "@effect/platform-node": ^0.95.0
     "@effect/printer": ^0.45.0
     "@effect/printer-ansi": ^0.45.0
-    "@effect/rpc": ^0.68.3
+    "@effect/rpc": ^0.68.4
     "@effect/sql": ^0.44.1
     "@effect/typeclass": ^0.36.0
     "@effect/workflow": ^0.8.3
@@ -41,7 +41,7 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.3.0
-    "@types/react": ^19.1.9
+    "@types/react": ^19.1.10
     "@types/react-dom": ^19.1.7
     react: ^19.1.1
     "react-dom": ^19.1.1
