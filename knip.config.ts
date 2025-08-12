@@ -99,7 +99,7 @@ const config: KnipConfig = {
 			{} as Record<string, any>
 		),
 		'packages/@withstudiocms/buildkit': {
-			project: '**/*.js',
+			entry: ['src/**/*.js', 'test/**/*.js'],
 		},
 		...atWithStudioCMSPackages.reduce(
 			(acc, pkg) => {
