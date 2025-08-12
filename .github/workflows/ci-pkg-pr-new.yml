@@ -86,8 +86,71 @@ jobs:
             echo "No affected packages to publish"
           fi
 
+  preview-release:
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'studiocms-no-reply'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    name: Preview Release Snapshot
+    timeout-minutes: 15
+    steps:
+      - name: Disable git crlf
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
+          # Changeset needs access to the main branch to find pending changesets
+          fetch-depth: 0
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.node-version'
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Prepublish
+        run: pnpm ci:prepublish
+
+      - name: Get pnpm packages
+        id: pnpm-packages
+        run: |
+          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
+
+      - name: Compute packages paths
+        id: compute-packages-paths
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          PACKAGES: ${{ steps.pnpm-packages.outputs.packages-output }}
+        with:
+          script: |
+              const { relative } = require('node:path');
+              const packages = JSON.parse(process.env.PACKAGES);
+              const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
+              core.setOutput('packages-paths', JSON.stringify(packagesMap));
+
+      - name: Publish packages
+        env:
+          PACKAGES_PATHS: ${{ steps.compute-packages-paths.outputs.packages-paths }}
+        run: |
+          packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
+          if [ -n "$packages" ]; then
+            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
+          else
+            echo "No affected packages to publish"
+          fi
+
   preview-pr:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'studiocms-no-reply'
     runs-on: ubuntu-latest
     permissions:
       contents: read
