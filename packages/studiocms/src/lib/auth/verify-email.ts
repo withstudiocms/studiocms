@@ -4,9 +4,8 @@ import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { Data, Effect } from 'effect';
 import { CMSNotificationSettingsId } from '../../consts.js';
-import { genLogger, pipeLogger } from '../effects/logger.js';
+import { Data, Effect, genLogger, pipeLogger } from '../../effect.js';
 import type { UserSessionData } from './types.js';
 
 export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ message: string }> {}

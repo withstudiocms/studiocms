@@ -1,5 +1,4 @@
-import { Data, Effect } from 'effect';
-import { genLogger, pipeLogger } from '../../effects/index.js';
+import { Data, Effect, genLogger, pipeLogger } from '../../../effect.js';
 import passwordList from './lists/passwords.js';
 import usernameList from './lists/usernames.js';
 
