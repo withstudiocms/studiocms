@@ -13,21 +13,22 @@
   },
   "license": "MIT",
   "files": [
-    "index.js",
-    "cmd"
+    "src",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
   ],
   "type": "module",
-  "main": "./index.js",
+  "main": "./src/index.js",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "bin": {
-    "buildkit": "./index.js"
+    "buildkit": "./src/index.js"
   },
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "buildkit test 'test/**/*.test.js'"
   },
   "dependencies": {
     "esbuild": "catalog:",
@@ -35,7 +36,6 @@
     "kleur": "^4.1.5"
   },
   "devDependencies": {
-    "vitest": "^3.2.4",
     "strip-ansi": "^7.1.0"
   }
 }

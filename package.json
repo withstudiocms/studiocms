@@ -28,7 +28,6 @@
     "ci:publish": "pnpm changeset publish",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "ci:test:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* test",
-    "ci:vitest": "pnpm --filter @withstudiocms/buildkit test",
     "ci:crowdin:bot": "node ./scripts/crowdin-report-bot.mjs",
     "ci:translations:changeset": "node ./scripts/translation-changeset.mjs",
     "clean:node": "node ./scripts/clean-node-modules.mjs",
