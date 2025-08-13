@@ -2,15 +2,7 @@ import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
-import {
-	type DeepMergeBuiltInMetaData,
-	type DeepMergeFunctionsURIs,
-	type DeepMergeHKT,
-	type DeepMergeOptions,
-	deepmergeCustom,
-	type GetDeepMergeFunctionsURIs,
-} from 'deepmerge-ts';
-import { Effect, genLogger } from '../effect.js';
+import { deepmerge, Effect, genLogger } from '../effect.js';
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -59,69 +51,6 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 		title: 'StudioCMS-Setup',
 	},
 });
-
-/**
- * Creates an Effect-based deep merge utility function with customizable merge options.
- *
- * This function builds a deep merge operation using the provided options, allowing for
- * custom merging behavior such as handling arrays or specific object types differently.
- * It leverages the Effect system for error handling and composability, ensuring that
- * any errors during the merge process are captured and returned as Effect failures.
- *
- * @template BaseTs - The base type of objects to be merged.
- * @template PMF - Partial mapping of custom deep merge function URIs.
- * @param opts - Options to customize the deep merge behavior, such as metadata or merge strategies.
- * @returns An Effect function that merges the provided objects or arrays according to the custom strategy,
- *          returning the merged result or an error if the merge fails.
- *
- * @example
- * ```typescript
- * const mergeEffect = effectMerge({ someOption: true });
- * const result = yield* mergeEffect(obj1, obj2, obj3);
- * ```
- */
-// biome-ignore lint/complexity/noBannedTypes: this is a dynamic utility function
-const effectMerge = <BaseTs = unknown, PMF extends Partial<DeepMergeFunctionsURIs> = {}>(
-	opts: DeepMergeOptions<DeepMergeBuiltInMetaData, DeepMergeBuiltInMetaData> = {}
-) =>
-	Effect.fn(function* <Ts extends ReadonlyArray<BaseTs>>(...objects: readonly [...Ts]) {
-		// Build the custom deepmerge function with the provided options
-		// This allows for custom merging behavior, such as handling arrays differently
-		const customMerge = Effect.try({
-			try: () =>
-				deepmergeCustom(opts) as <Ts extends ReadonlyArray<BaseTs>>(
-					...objects: Ts
-				) => DeepMergeHKT<Ts, GetDeepMergeFunctionsURIs<PMF>, DeepMergeBuiltInMetaData>,
-			catch: (cause) =>
-				new Error(
-					`Failed to build custom deepmerge instance: ${cause instanceof Error ? cause.message : String(cause)}`
-				),
-		});
-
-		// Create a deepmerge function that uses the custom merge strategy
-		// This function will merge the provided objects or arrays according to the custom strategy
-		const deepmerge = Effect.fn(function* <Ts extends ReadonlyArray<BaseTs>>(
-			...objs: readonly [...Ts]
-		) {
-			const _deepmerge = yield* customMerge;
-			return _deepmerge(...objs) as DeepMergeHKT<
-				Ts,
-				GetDeepMergeFunctionsURIs<PMF>,
-				DeepMergeBuiltInMetaData
-			>;
-		});
-
-		// Finally, execute the deepmerge function with the provided objects
-		// This will return the merged result or throw an error if the merge fails
-		// The Effect will handle any errors that occur during the merge process
-		// This allows for a clean and type-safe way to merge objects or arrays
-		// while providing detailed error handling
-		return yield* deepmerge(...objects).pipe(
-			Effect.catchAll((error) => {
-				return Effect.fail(new Error(`Deep merge failed: ${error.message}`));
-			})
-		);
-	});
 
 /**
  * Represents the structure for setting local values in the StudioCMS context.
@@ -192,10 +121,9 @@ export const setLocals = Effect.fn(function* <
 			// Merge general values into the root of StudioCMS
 			// Exclude 'security' and 'plugins' to avoid overwriting them
 			const generalValues = getGeneralLocals(context.locals.StudioCMS);
-			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
-				generalValues,
-				values
-			)) as SetLocalValues[SetLocal.GENERAL];
+			const updatedValues = (yield* deepmerge((merge) => merge(generalValues, values), {
+				mergeArrays: false,
+			})) as SetLocalValues[SetLocal.GENERAL];
 
 			// Update the locals with the merged values
 			// This will not overwrite 'security' or 'plugins'
@@ -207,10 +135,9 @@ export const setLocals = Effect.fn(function* <
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
 			const currentValues = context.locals.StudioCMS.security || {};
-			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
-				currentValues,
-				values
-			)) as SetLocalValues[SetLocal.SECURITY];
+			const updatedValues = (yield* deepmerge((merge) => merge(currentValues, values), {
+				mergeArrays: false,
+			})) as SetLocalValues[SetLocal.SECURITY];
 
 			// Update the locals with the merged security values
 			context.locals.StudioCMS.security = updatedValues;
@@ -220,10 +147,9 @@ export const setLocals = Effect.fn(function* <
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
 			const currentValues = context.locals.StudioCMS.plugins || {};
-			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
-				currentValues,
-				values
-			)) as SetLocalValues[SetLocal.PLUGINS];
+			const updatedValues = (yield* deepmerge((merge) => merge(currentValues, values), {
+				mergeArrays: false,
+			})) as SetLocalValues[SetLocal.PLUGINS];
 
 			// Update the locals with the merged plugin values
 			context.locals.StudioCMS.plugins = updatedValues;
