@@ -140,8 +140,6 @@ describe('Api-Route Tests', () => {
 
 			const result = await route(mockContext);
 
-			console.log(result.headers)
-
 			assert.strictEqual(result.status, 204);
 			assert.strictEqual(result.headers.get('Access-Control-Allow-Origin'), '*');
 		});
