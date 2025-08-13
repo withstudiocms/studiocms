@@ -1,4 +1,4 @@
-
+#!/usr/bin/env node
 import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import chalk from 'chalk';
