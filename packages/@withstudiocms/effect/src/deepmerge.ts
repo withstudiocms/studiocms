@@ -54,3 +54,33 @@ export const deepmerge = Effect.fn(function* <T>(
 			),
 	});
 });
+
+/**
+ * Deepmerge service for effectful dependency injection.
+ *
+ * This service provides two main functionalities:
+ * - `custom`: A custom deep merge function.
+ * - `merge`: The standard deep merge function.
+ *
+ * Both functions are provided as effectful dependencies using the Effect system.
+ *
+ * @remarks
+ * This class extends `Effect.Service` and registers itself under the name 'Deepmerge'.
+ *
+ * @example
+ * ```typescript
+ * const deepmergeService = Effect.service(Deepmerge);
+ * const merged = deepmergeService.merge(obj1, obj2);
+ * ```
+ */
+export class Deepmerge extends Effect.Service<Deepmerge>()('Deepmerge', {
+	effect: Effect.gen(function* () {
+		const __deepmergeCustom = yield* Effect.succeed(deepmergeCustom);
+		const __deepmerge = yield* Effect.succeed(deepmerge);
+
+		return {
+			custom: __deepmergeCustom,
+			merge: __deepmerge,
+		};
+	}),
+}) {}
