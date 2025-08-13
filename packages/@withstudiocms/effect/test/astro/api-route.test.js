@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
 	createEffectAPIRoute,
+	createEffectAPIRoutes,
 	defineAPIRoute,
+	EffectAPIRouteBuilder,
 	withEffectAPI,
 } from '../../dist/astro/api-route.js';
 import { Effect } from '../../dist/effect.js';
@@ -201,6 +203,69 @@ describe('Api-Route Tests', () => {
 			const result = await route(mockContext);
 
 			assert.strictEqual(result.headers.get('Access-Control-Allow-Origin'), 'https://example.com');
+		});
+	});
+
+	describe('createEffectAPIRoutes tests', () => {
+		it('should create multiple API routes with the provided handlers', async () => {
+			const mockContext = { request: new Request('http://localhost') };
+			const mockResponse1 = new Response('ok1', { status: 200 });
+			const mockResponse2 = new Response('ok2', { status: 200 });
+
+			let handlerCalledWith1 = null;
+			let handlerCalledWith2 = null;
+
+			const handler1 = (ctx) => {
+				handlerCalledWith1 = ctx;
+				return Effect.succeed(mockResponse1);
+			};
+
+			const handler2 = (ctx) => {
+				handlerCalledWith2 = ctx;
+				return Effect.succeed(mockResponse2);
+			};
+
+			const routes = createEffectAPIRoutes({
+				GET: handler1,
+				POST: handler2,
+			});
+
+			const result1 = await routes.GET(mockContext);
+			const result2 = await routes.POST(mockContext);
+
+			assert.strictEqual(handlerCalledWith1, mockContext);
+			assert.strictEqual(result1, mockResponse1);
+
+			assert.strictEqual(handlerCalledWith2, mockContext);
+			assert.strictEqual(result2, mockResponse2);
+		});
+	});
+
+	describe('EffectAPIRouteBuilder tests', () => {
+		it('should build an API route with the provided handler', async () => {
+			const mockContext = { request: new Request('http://localhost') };
+			const mockResponse = new Response('ok', { status: 200 });
+
+			let handlerCalledWith = null;
+			const handler = (ctx) => {
+				handlerCalledWith = ctx;
+				return Effect.succeed(mockResponse);
+			};
+
+			const { GET, POST } =
+				new EffectAPIRouteBuilder()
+					.get(handler)
+					.post(handler)
+					.build();
+
+			const [postResult, getResult] = await Promise.all([
+				POST(mockContext),
+				GET(mockContext),
+			]);
+
+			assert.strictEqual(handlerCalledWith, mockContext);
+			assert.strictEqual(postResult, mockResponse);
+			assert.strictEqual(getResult, mockResponse);
 		});
 	});
 });
