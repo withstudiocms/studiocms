@@ -4,7 +4,7 @@ import type { APIContext } from 'astro';
 import type { AstroAPIRequestBody, EffectRouteOptions } from '../types.js';
 
 /**
- * Applies CORS (Cross-Origin Resource Sharing) headers to an API response based on the provided configuration.
+ * Gets CORS (Cross-Origin Resource Sharing) headers to an API response based on the provided configuration.
  *
  * @param context - The API context containing the incoming request, used to extract the `Origin` header.
  * @param corsConfig - Optional CORS configuration specifying allowed origins, methods, headers, and credentials.
@@ -18,7 +18,7 @@ import type { AstroAPIRequestBody, EffectRouteOptions } from '../types.js';
  * - If `corsConfig.headers` is provided, sets the allowed request headers.
  * - If `corsConfig.credentials` is `true`, allows credentials to be included in requests.
  */
-export function applyCors(
+export function getCorsHeaders(
 	context: APIContext,
 	corsConfig?: EffectRouteOptions['cors']
 ): Record<string, string> {

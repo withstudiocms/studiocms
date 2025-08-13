@@ -7,7 +7,7 @@ import type {
 	RouteHandlerConfig,
 	RouteHandlers,
 } from './types.js';
-import { applyCors, validateRequest } from './utils/api-route.js';
+import { getCorsHeaders, validateRequest } from './utils/api-route.js';
 
 /**
  * Defines an API route handler for Astro using an effect-based approach.
@@ -79,7 +79,7 @@ export const withEffectAPI = (
 	return async (context: APIContext): Promise<Response> => {
 		try {
 			// Apply CORS headers if configured
-			const corsHeaders = applyCors(context, options.cors);
+			const corsHeaders = getCorsHeaders(context, options.cors);
 
 			// Handle preflight requests
 			if (context.request.method === 'OPTIONS') {
@@ -130,7 +130,7 @@ export const withEffectAPI = (
 			// Apply success middleware
 			return options.onSuccess ? await options.onSuccess(response, processedContext) : response;
 		} catch (error) {
-			const corsHeaders = applyCors(context, options.cors);
+			const corsHeaders = getCorsHeaders(context, options.cors);
 
 			if (options.onError) {
 				const errorResponse = await options.onError(error, context);
