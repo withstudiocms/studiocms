@@ -15,7 +15,7 @@ permissions:
   
 jobs:
   withstudiocms-typecheck:
-    name: Run withstudiocms packages TypeCheck
+    name: Run withstudiocms TypeCheck
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -28,11 +28,11 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
 
-      - name: Run withstudiocms packages TypeCheck
+      - name: Run withstudiocms TypeCheck
         run: pnpm ci:typecheck:withstudiocms
 
   withstudiocms-tests:
-    name: Run withstudiocms packages Tests
+    name: Run withstudiocms Tests
     runs-on: ubuntu-latest
     needs: withstudiocms-typecheck
     env:
@@ -46,33 +46,13 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
 
-      - name: Run withstudiocms packages Tests
+      - name: Run withstudiocms Tests
         run: pnpm ci:test:withstudiocms
-
-  build-studiocms-playground:
-    name: Build StudioCMS Playground
-    runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
-      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
-      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
-      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
-    steps:
-      - name: Check out code using Git
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
-
-      - name: Build packages and playground
-        run: pnpm build
 
   test-studiocms-types:
     name: Run StudioCMS TypeCheck
     runs-on: ubuntu-latest
-    needs: build-studiocms-playground
+    continue-on-error: true
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -93,7 +73,7 @@ jobs:
   test-studiocms-plugin-types:
     name: Run StudioCMS Plugin & Packages TypeCheck
     runs-on: ubuntu-latest
-    needs: build-studiocms-playground
+    needs: test-studiocms-types
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -110,3 +90,24 @@ jobs:
 
       - name: Run TypeCheck for Plugins & Packages
         run: pnpm --filter @studiocms/* typecheck
+
+  build-studiocms-playground:
+    name: Build StudioCMS Playground
+    runs-on: ubuntu-latest
+    needs: [test-studiocms-types, test-studiocms-plugin-types]
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
+      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
+      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
+
+      - name: Build packages and playground
+        run: pnpm build
