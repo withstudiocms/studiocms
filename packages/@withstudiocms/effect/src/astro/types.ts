@@ -46,7 +46,7 @@ export type EffectAPIRouteHandler = (
  */
 export interface AllResponseOpts {
 	allowedOrigins?: string[];
-	headers?: Record<string, string>;
+	headers?: HeadersInit;
 }
 
 /**
@@ -97,6 +97,8 @@ export type AstroAPIRequestBody<T extends 'json' | 'text' | 'formData'> = Awaite
 	ReturnType<APIContext['request'][T]>
 >;
 
+export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
+
 /**
  * Options for configuring an Effect API route.
  *
@@ -128,18 +130,18 @@ export interface EffectRouteOptions {
 	onBeforeEffect?: (context: APIContext) => APIContext | Promise<APIContext>;
 	cors?: {
 		origin?: string | string[] | boolean;
-		methods?: string[];
+		methods?: ReadonlyArray<HTTPMethod>;
 		headers?: string[];
 		credentials?: boolean;
 	};
 	timeout?: number;
 	validate?: {
-		params?: (params: APIContext['params']) => boolean;
-		query?: (query: APIContext['url']['searchParams']) => boolean;
+		params?: (params: APIContext['params']) => boolean | Promise<boolean>;
+		query?: (query: APIContext['url']['searchParams']) => boolean | Promise<boolean>;
 		body?: // biome-ignore lint/suspicious/noExplicitAny: This is the json return type
-			| { kind: 'json'; json: (body: any) => boolean }
-			| { kind: 'text'; text: (body: string) => boolean }
-			| { kind: 'formData'; formData: (body: FormData) => boolean };
+			| { kind: 'json'; json: (body: any) => boolean | Promise<boolean> }
+			| { kind: 'text'; text: (body: string) => boolean | Promise<boolean> }
+			| { kind: 'formData'; formData: (body: FormData) => boolean | Promise<boolean> };
 	};
 }
 
@@ -155,17 +157,7 @@ export interface EffectRouteOptions {
  *   Supported methods include: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, and ALL.
  */
 export interface RouteHandlerConfig extends EffectRouteOptions {
-	// Allow method-specific overrides
-	methods?: {
-		GET?: Partial<EffectRouteOptions>;
-		POST?: Partial<EffectRouteOptions>;
-		PUT?: Partial<EffectRouteOptions>;
-		DELETE?: Partial<EffectRouteOptions>;
-		PATCH?: Partial<EffectRouteOptions>;
-		HEAD?: Partial<EffectRouteOptions>;
-		OPTIONS?: Partial<EffectRouteOptions>;
-		ALL?: Partial<EffectRouteOptions>;
-	};
+	methods?: Partial<Record<HTTPMethod | 'ALL', Partial<EffectRouteOptions>>>;
 }
 
 /**
@@ -181,18 +173,19 @@ export interface RouteHandlerConfig extends EffectRouteOptions {
  * @property OPTIONS - Handler for HTTP OPTIONS requests.
  * @property ALL - Handler for all HTTP methods.
  */
-export interface RouteHandlers {
-	GET?: EffectAPIRouteHandler;
-	POST?: EffectAPIRouteHandler;
-	PUT?: EffectAPIRouteHandler;
-	DELETE?: EffectAPIRouteHandler;
-	PATCH?: EffectAPIRouteHandler;
-	HEAD?: EffectAPIRouteHandler;
-	OPTIONS?: EffectAPIRouteHandler;
-	ALL?: EffectAPIRouteHandler;
-}
+export type RouteHandlers = Partial<Record<HTTPMethod | 'ALL', EffectAPIRouteHandler>>;
 
-// Type utility to extract only the defined methods from RouteHandlers
+/**
+ * Extracts the defined routes from a collection of route handlers.
+ *
+ * @template T - The type of the route handlers.
+ * @returns An object type where each key corresponds to a defined route handler,
+ *   and the value is the corresponding APIRoute type.
+ *
+ * @remarks
+ * This utility type filters out any undefined properties from the provided route handlers,
+ * ensuring that only valid routes are included in the resulting type.
+ */
 export type ExtractDefinedRoutes<T extends RouteHandlers> = {
 	[K in keyof T as T[K] extends EffectAPIRouteHandler ? K : never]: APIRoute;
 };
