@@ -1,7 +1,15 @@
 /*
-
 	Example usage of the enhanced API route utilities with precise typing and comprehensive options.
 
+	These examples demonstrate how to use the `withEffectAPI`, `createEffectAPIRoutes`, and `EffectAPIRouteBuilder`
+	to create API routes with detailed configurations, including CORS settings, validation, and error handling.
+
+	In order for these examples to work locally, make sure you have built the package, you should then see types.
+
+	From the root of the repository, run:
+	```bash
+	pnpm run build:studiocms
+	```
 */
 
 import {
@@ -9,7 +17,7 @@ import {
 	Effect,
 	EffectAPIRouteBuilder,
 	withEffectAPI,
-} from '../src/index.js';
+} from '../dist/index.js';
 
 // Example 1: Enhanced withEffect with comprehensive options
 export const GET1 = withEffectAPI(
@@ -65,7 +73,8 @@ const routes2 = createEffectAPIRoutes(
 			POST: {
 				validate: {
 					body: {
-						json: (body) => Boolean(body && typeof body?.name === 'string'),
+						kind: 'json',
+						json: (body) => Boolean(body && typeof body.name === 'string'),
 					},
 				},
 				timeout: 30000, // Longer timeout for POST
@@ -103,6 +112,7 @@ const routes3 = new EffectAPIRouteBuilder()
 		{
 			validate: {
 				body: {
+					kind: 'json',
 					json: (body) => body && typeof body === 'object',
 				},
 			},
@@ -181,6 +191,7 @@ const userRoutes = createEffectAPIRoutes(
 			PUT: {
 				validate: {
 					body: {
+						kind: 'json',
 						json: (body) => body && typeof body === 'object' && Object.keys(body).length > 0,
 					},
 				},

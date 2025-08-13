@@ -36,7 +36,7 @@ export interface EffectMiddlewareRouterEntry {
  */
 export type EffectAPIRouteHandler = (
 	context: APIContext
-) => Effect.Effect<Promise<Response> | Response, unknown, never>;
+) => Effect.Effect<Response, unknown, never>;
 
 /**
  * Options for configuring the response of an API endpoint.
@@ -136,17 +136,10 @@ export interface EffectRouteOptions {
 	validate?: {
 		params?: (params: APIContext['params']) => boolean;
 		query?: (query: APIContext['url']['searchParams']) => boolean;
-		body?:
-			| {
-					// biome-ignore lint/suspicious/noExplicitAny: Allow any for flexibility
-					json: (body: any) => boolean;
-			  }
-			| {
-					text: (body: string) => boolean;
-			  }
-			| {
-					formData: (body: FormData) => boolean;
-			  };
+		body?: // biome-ignore lint/suspicious/noExplicitAny: This is the json return type
+			| { kind: 'json'; json: (body: any) => boolean }
+			| { kind: 'text'; text: (body: string) => boolean }
+			| { kind: 'formData'; formData: (body: FormData) => boolean };
 	};
 }
 
