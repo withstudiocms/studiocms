@@ -71,7 +71,7 @@ export interface OptionsResponseOpts extends AllResponseOpts {
  * @property {number} [status] - Optional HTTP status code for the response.
  * @property {string} [statusText] - Optional HTTP status text for the response.
  */
-export interface createResponseOpts extends AllResponseOpts {
+export interface CreateResponseOpts extends AllResponseOpts {
 	status?: number;
 	statusText?: string;
 }

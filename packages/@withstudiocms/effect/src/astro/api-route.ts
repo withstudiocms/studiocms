@@ -82,7 +82,7 @@ export const withEffectAPI = (
 			const corsHeaders = applyCors(context, options.cors);
 
 			// Handle preflight requests
-			if (context.request.method === 'OPTIONS' && options.cors) {
+			if (context.request.method === 'OPTIONS') {
 				return new Response(null, {
 					status: 204,
 					headers: corsHeaders,
@@ -135,11 +135,9 @@ export const withEffectAPI = (
 			if (options.onError) {
 				const errorResponse = await options.onError(error, context);
 				// Ensure CORS headers on error responses too
-				if (corsHeaders) {
-					Object.entries(corsHeaders).forEach(([key, value]) => {
-						errorResponse.headers.set(key, value);
-					});
-				}
+				Object.entries(corsHeaders).forEach(([key, value]) => {
+					errorResponse.headers.set(key, value);
+				});
 				return errorResponse;
 			}
 
@@ -237,89 +235,62 @@ export class EffectAPIRouteBuilder<T extends Partial<RouteHandlers> = {}> {
 		return this;
 	}
 
+	private addHandler<K extends keyof RouteHandlers, U extends EffectAPIRouteHandler>(
+		method: K,
+		handler: U,
+		options?: Partial<EffectRouteOptions>
+	): EffectAPIRouteBuilder<T & Record<K, U>> {
+		const newHandlers = { ...this.handlers, [method]: handler } as T & Record<K, U>;
+		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
+		newBuilder.config = { ...this.config };
+
+		if (options) {
+			newBuilder.config.methods = { ...this.config.methods, [method]: options };
+		}
+		return newBuilder;
+	}
+
 	// Add handlers with fluent interface - each method returns a new type that includes the added method
 	public get<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { GET: U }> {
-		const newHandlers = { ...this.handlers, GET: handler } as T & { GET: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, GET: options };
-		}
-		return newBuilder;
+		return this.addHandler('GET', handler, options) as EffectAPIRouteBuilder<T & { GET: U }>;
 	}
 
 	public post<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { POST: U }> {
-		const newHandlers = { ...this.handlers, POST: handler } as T & { POST: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, POST: options };
-		}
-		return newBuilder;
+		return this.addHandler('POST', handler, options) as EffectAPIRouteBuilder<T & { POST: U }>;
 	}
 
 	public put<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { PUT: U }> {
-		const newHandlers = { ...this.handlers, PUT: handler } as T & { PUT: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, PUT: options };
-		}
-		return newBuilder;
+		return this.addHandler('PUT', handler, options) as EffectAPIRouteBuilder<T & { PUT: U }>;
 	}
 
 	public delete<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { DELETE: U }> {
-		const newHandlers = { ...this.handlers, DELETE: handler } as T & { DELETE: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, DELETE: options };
-		}
-		return newBuilder;
+		return this.addHandler('DELETE', handler, options) as EffectAPIRouteBuilder<T & { DELETE: U }>;
 	}
 
 	public patch<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { PATCH: U }> {
-		const newHandlers = { ...this.handlers, PATCH: handler } as T & { PATCH: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, PATCH: options };
-		}
-		return newBuilder;
+		return this.addHandler('PATCH', handler, options) as EffectAPIRouteBuilder<T & { PATCH: U }>;
 	}
 
 	public all<U extends EffectAPIRouteHandler>(
 		handler: U,
 		options?: Partial<EffectRouteOptions>
 	): EffectAPIRouteBuilder<T & { ALL: U }> {
-		const newHandlers = { ...this.handlers, ALL: handler } as T & { ALL: U };
-		const newBuilder = new EffectAPIRouteBuilder(newHandlers);
-		newBuilder.config = { ...this.config };
-
-		if (options) {
-			newBuilder.config.methods = { ...this.config.methods, ALL: options };
-		}
-		return newBuilder;
+		return this.addHandler('ALL', handler, options) as EffectAPIRouteBuilder<T & { ALL: U }>;
 	}
 
 	// Build the final routes with precise typing

@@ -36,7 +36,7 @@ describe('deepmerge test', () => {
 				deepmerge(
 					(merge) => merge(obj1, obj2),
 					{
-						arrayMerge: (target, source) => [...target, ...source],
+						mergeArrays: (arrays) => arrays.flat(),
 					}
 				)
 			);
@@ -114,7 +114,7 @@ describe('deepmerge test', () => {
 				return yield* service.merge(
 					(merge) => merge(obj1, obj2),
 					{
-						arrayMerge: (target, source) => [...target, ...source],
+						mergeArrays: (arrays) => arrays.flat(),
 					}
 				);
 			}).pipe(Effect.provide(Deepmerge.Default));

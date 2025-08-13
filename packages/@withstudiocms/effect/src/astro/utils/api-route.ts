@@ -102,9 +102,25 @@ export async function validateRequest(
 
 			if (contentType?.includes('application/json')) {
 				body = await context.request.clone().json();
-			} else if (contentType?.includes('application/x-www-form-urlencoded')) {
+			} else if (
+				contentType?.includes('application/x-www-form-urlencoded') ||
+				contentType?.includes('multipart/form-data')
+			) {
 				const formData = await context.request.clone().formData();
-				body = Object.fromEntries(formData);
+				// Preserve multiple values for the same key
+				const formDataObj: Record<string, FormDataEntryValue | FormDataEntryValue[]> = {};
+				for (const [key, value] of formData.entries()) {
+					if (formDataObj[key]) {
+						if (Array.isArray(formDataObj[key])) {
+							(formDataObj[key] as FormDataEntryValue[]).push(value);
+						} else {
+							formDataObj[key] = [formDataObj[key] as FormDataEntryValue, value];
+						}
+					} else {
+						formDataObj[key] = value;
+					}
+				}
+				body = formDataObj;
 			} else {
 				body = await context.request.clone().text();
 			}

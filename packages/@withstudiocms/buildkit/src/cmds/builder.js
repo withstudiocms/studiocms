@@ -59,7 +59,12 @@ const dtsGen = (buildTsConfig, outdir) => ({
                 console.log(res.toString());
                 console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
             } catch (error) {
-                console.error(chalk.dim(`[${date}] `) + chalk.red(`${error}\n\n${error.stdout.toString()}`));
+                const msg =
+                    (error && (error.message || String(error))) +
+                    '\n\n' +
+                    (error?.stdout?.toString?.() ?? '') +
+                    (error?.stderr?.toString?.() ?? '');
+                console.error(chalk.dim(`[${date}] `) + chalk.red(msg));
             }
         });
     },
@@ -155,7 +160,7 @@ export default async function builder(cmd, args) {
                         const date = dt.format(new Date());
                         if (result?.errors.length) {
                             const errMsg = result.errors.join('\n');
-                            console.error(dim(`[${date}] `) + red(errMsg));
+                            console.error(chalk.dim(`[${date}] `) + chalk.red(errMsg));
                         } else {
                             if (result.warnings.length) {
                                 console.info(

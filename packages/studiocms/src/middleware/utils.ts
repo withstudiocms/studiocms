@@ -127,8 +127,8 @@ export const setLocals = Effect.fn(function* <
 
 			// Update the locals with the merged values
 			// This will not overwrite 'security' or 'plugins'
-			const toUpdate = getGeneralLocals(updatedValues);
-			context.locals.StudioCMS = { ...toUpdate };
+			const { security, plugins } = context.locals.StudioCMS ?? {};
+			context.locals.StudioCMS = { ...updatedValues, security, plugins };
 			break;
 		}
 		case SetLocal.SECURITY: {
