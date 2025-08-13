@@ -22,7 +22,10 @@ export function applyCors(
 	context: APIContext,
 	corsConfig?: EffectRouteOptions['cors']
 ): Record<string, string> {
-	if (!corsConfig) return {};
+	if (!corsConfig)
+		return {
+			'Access-Control-Allow-Origin': '*',
+		};
 
 	const headers: Record<string, string> = {};
 	const origin = context.request.headers.get('Origin');
