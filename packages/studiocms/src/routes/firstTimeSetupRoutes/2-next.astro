@@ -1,5 +1,5 @@
 ---
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
+// import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Card, Center, Input } from 'studiocms:ui/components';
@@ -10,12 +10,14 @@ import Tabs from './components/Tabs.astro';
 
 const { providers } = authConfig;
 
-const { SHOW_OAUTH, AUTH0, DISCORD, GITHUB, GOOGLE } = await authEnvCheck(providers);
+// TODO - re-setup OAuth providers using new detection system
 
-const githubEnabled = GITHUB.ENABLED && providers.github;
-const discordEnabled = DISCORD.ENABLED && providers.discord;
-const googleEnabled = GOOGLE.ENABLED && providers.google;
-const auth0Enabled = AUTH0.ENABLED && providers.auth0;
+// const { SHOW_OAUTH, AUTH0, DISCORD, GITHUB, GOOGLE } = await authEnvCheck(providers);
+
+// const githubEnabled = GITHUB.ENABLED && providers.github;
+// const discordEnabled = DISCORD.ENABLED && providers.discord;
+// const googleEnabled = GOOGLE.ENABLED && providers.google;
+// const auth0Enabled = AUTH0.ENABLED && providers.auth0;
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -73,7 +75,7 @@ const auth0Enabled = AUTH0.ENABLED && providers.auth0;
                 </form>
             </TabItem>
 
-            {
+            <!-- {
                 SHOW_OAUTH && githubEnabled && (
                     <TabItem label='GitHub' icon="simple-icons:github">
                         <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.githubIndex}>Connect to GitHub</Button></Center>
@@ -100,7 +102,7 @@ const auth0Enabled = AUTH0.ENABLED && providers.auth0;
                         <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.auth0Index}>Connect to Auth0</Button></Center>
                     </TabItem>
                 )
-            }
+            } -->
 
         </Tabs>
 

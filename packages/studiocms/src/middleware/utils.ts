@@ -1,81 +1,16 @@
 import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-import type { APIContext, MiddlewareHandler } from 'astro';
-import { defineMiddleware, sequence } from 'astro/middleware';
-import { deepmergeCustom } from 'deepmerge-ts';
-import micromatch from 'micromatch';
-import { genLogger } from '../lib/effects/index.js';
-import type { DeepPartial } from '../types.js';
-
-/**
- * Represents an array of route configuration objects for middleware.
- *
- * Each route configuration object can specify:
- * - `includePaths`: Optional Path(s) to include for the middleware. Can be a string or an array of strings.
- * - `excludePaths`: Optional path(s) to exclude from the middleware. Can be a string or an array of strings.
- * - `handler`: The middleware handler function to execute for the matched paths.
- */
-export type Router = {
-	includePaths?: string | string[];
-	excludePaths?: string | string[];
-	handler: MiddlewareHandler;
-}[];
-
-/**
- * Defines a middleware router that filters and executes middleware handlers based on the request pathname.
- *
- * This function takes a `Router` object, which contains route definitions with `includePaths` and `excludePaths`.
- * It matches the current request's pathname against these paths using `micromatch`, and executes all matching handlers in sequence.
- *
- * - If no handlers match, the next middleware in the chain is called.
- * - If multiple handlers match, they are executed in order.
- *
- * @param router - The router containing route definitions with `includePaths`, `excludePaths`, and their respective handlers.
- * @returns A `MiddlewareHandler` that processes the request according to the matched route handlers.
- */
-export function defineMiddlewareRouter(router: Router): MiddlewareHandler {
-	return defineMiddleware((context, next) => {
-		// Extract the pathname from the request URL
-		// This is used to match against the `includePaths` and `excludePaths`
-		// defined in the router.
-		const pathname = context.url.pathname;
-
-		// Filter the router to find handlers that match the current pathname
-		// based on the include and exclude paths.
-		const handlers = router
-			.filter(({ includePaths, excludePaths }) => {
-				// Check if the pathname matches any of the include paths.
-				// If no include paths are specified or empty, default to true (include all).
-				const include =
-					includePaths == null ||
-					(Array.isArray(includePaths) && includePaths.length === 0) ||
-					(typeof includePaths === 'string' && includePaths.trim() === '')
-						? true
-						: micromatch.isMatch(pathname, includePaths);
-
-				// Check if the pathname matches any of the exclude paths.
-				// If no exclude paths are specified or empty, default to false (do not exclude).
-				const exclude =
-					excludePaths == null ||
-					(Array.isArray(excludePaths) && excludePaths.length === 0) ||
-					(typeof excludePaths === 'string' && excludePaths.trim() === '')
-						? false
-						: micromatch.isMatch(pathname, excludePaths);
-
-				// Return true if the pathname matches the include paths and does not match the exclude paths.
-				return include && !exclude;
-			})
-			.map(({ handler }) => handler);
-
-		// If no handlers match, proceed to the next middleware.
-		if (handlers.length === 0) return next();
-
-		// Execute the matched handlers in sequence.
-		// This allows for multiple middleware functions to be executed in order.
-		return sequence(...handlers)(context, next);
-	});
-}
+import type { APIContext } from 'astro';
+import {
+	type DeepMergeBuiltInMetaData,
+	type DeepMergeFunctionsURIs,
+	type DeepMergeHKT,
+	type DeepMergeOptions,
+	deepmergeCustom,
+	type GetDeepMergeFunctionsURIs,
+} from 'deepmerge-ts';
+import { Effect, genLogger } from '../effect.js';
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -100,6 +35,14 @@ export const getUserPermissions = (userData: UserSessionData) =>
 		};
 	});
 
+/**
+ * Creates a fallback site configuration object with default values.
+ *
+ * This function is typically used when no site configuration is available,
+ * providing sensible defaults for the StudioCMS project.
+ *
+ * @returns {SiteConfigCacheObject} The fallback site configuration object.
+ */
 export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	lastCacheUpdate: new Date(),
 	data: {
@@ -117,47 +60,176 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 	},
 });
 
-const deepmerge = deepmergeCustom({ mergeArrays: false });
+/**
+ * Creates an Effect-based deep merge utility function with customizable merge options.
+ *
+ * This function builds a deep merge operation using the provided options, allowing for
+ * custom merging behavior such as handling arrays or specific object types differently.
+ * It leverages the Effect system for error handling and composability, ensuring that
+ * any errors during the merge process are captured and returned as Effect failures.
+ *
+ * @template BaseTs - The base type of objects to be merged.
+ * @template PMF - Partial mapping of custom deep merge function URIs.
+ * @param opts - Options to customize the deep merge behavior, such as metadata or merge strategies.
+ * @returns An Effect function that merges the provided objects or arrays according to the custom strategy,
+ *          returning the merged result or an error if the merge fails.
+ *
+ * @example
+ * ```typescript
+ * const mergeEffect = effectMerge({ someOption: true });
+ * const result = yield* mergeEffect(obj1, obj2, obj3);
+ * ```
+ */
+// biome-ignore lint/complexity/noBannedTypes: this is a dynamic utility function
+const effectMerge = <BaseTs = unknown, PMF extends Partial<DeepMergeFunctionsURIs> = {}>(
+	opts: DeepMergeOptions<DeepMergeBuiltInMetaData, DeepMergeBuiltInMetaData> = {}
+) =>
+	Effect.fn(function* <Ts extends ReadonlyArray<BaseTs>>(...objects: readonly [...Ts]) {
+		// Build the custom deepmerge function with the provided options
+		// This allows for custom merging behavior, such as handling arrays differently
+		const customMerge = Effect.try({
+			try: () =>
+				deepmergeCustom(opts) as <Ts extends ReadonlyArray<BaseTs>>(
+					...objects: Ts
+				) => DeepMergeHKT<Ts, GetDeepMergeFunctionsURIs<PMF>, DeepMergeBuiltInMetaData>,
+			catch: (cause) =>
+				new Error(
+					`Failed to build custom deepmerge instance: ${cause instanceof Error ? cause.message : String(cause)}`
+				),
+		});
+
+		// Create a deepmerge function that uses the custom merge strategy
+		// This function will merge the provided objects or arrays according to the custom strategy
+		const deepmerge = Effect.fn(function* <Ts extends ReadonlyArray<BaseTs>>(
+			...objs: readonly [...Ts]
+		) {
+			const _deepmerge = yield* customMerge;
+			return _deepmerge(...objs) as DeepMergeHKT<
+				Ts,
+				GetDeepMergeFunctionsURIs<PMF>,
+				DeepMergeBuiltInMetaData
+			>;
+		});
+
+		// Finally, execute the deepmerge function with the provided objects
+		// This will return the merged result or throw an error if the merge fails
+		// The Effect will handle any errors that occur during the merge process
+		// This allows for a clean and type-safe way to merge objects or arrays
+		// while providing detailed error handling
+		return yield* deepmerge(...objects).pipe(
+			Effect.catchAll((error) => {
+				return Effect.fail(new Error(`Deep merge failed: ${error.message}`));
+			})
+		);
+	});
 
 /**
- * Updates the `StudioCMS` property within the `locals` object of the provided API context.
+ * Represents the structure for setting local values in the StudioCMS context.
  *
- * This function performs a deep merge of the existing `StudioCMS` values with the provided partial values,
- * ensuring that nested objects are merged correctly and existing data is preserved.
- *
- * @param context - The API context containing the `locals` object to be updated.
- * @param values - A partial object containing the properties to update within `StudioCMS`.
+ * @property general - Contains general StudioCMS local values, excluding 'security' and 'plugins'.
+ * @property security - Contains security-related StudioCMS local values.
+ * @property plugins - Contains plugin-related StudioCMS local values.
  */
-export function updateLocals(
-	context: APIContext,
-	values: DeepPartial<APIContext['locals']['StudioCMS']>
-): APIContext['locals']['StudioCMS'] {
-	// Remove undefined recursively to avoid clobbering nested values
-	const cleanValues = deepOmitUndefined(values) as Partial<APIContext['locals']['StudioCMS']>;
+export type SetLocalValues = {
+	general: Omit<APIContext['locals']['StudioCMS'], 'security' | 'plugins'>;
+	security: APIContext['locals']['StudioCMS']['security'];
+	plugins: APIContext['locals']['StudioCMS']['plugins'];
+};
 
-	// Clone the current values to avoid mutating the original object
-	const currentValues = context.locals.StudioCMS || {};
+/**
+ * Represents the keys of the {@link SetLocalValues} type.
+ * Useful for extracting valid property names from the {@link SetLocalValues} object type.
+ */
+export type SetLocalValuesKeys = keyof SetLocalValues;
 
-	// Use deepmerge to combine the current values with the clean values
-	// This allows for partial updates without losing existing data.
-	const updatedValues = deepmerge(currentValues, cleanValues) as APIContext['locals']['StudioCMS'];
-
-	// Update the context locals with the merged values
-	// This allows for partial updates without losing existing data
-	context.locals.StudioCMS = updatedValues;
-	return updatedValues;
+/**
+ * Enum representing different local settings categories.
+ *
+ * @remarks
+ * Used to specify the context for local configuration, such as general settings,
+ * security-related settings, or plugin-specific settings.
+ *
+ * @enum {string}
+ * @property {string} general - Represents general settings.
+ * @property {string} security - Represents security-related settings.
+ * @property {string} plugins - Represents plugin-specific settings.
+ */
+export enum SetLocal {
+	GENERAL = 'general',
+	SECURITY = 'security',
+	PLUGINS = 'plugins',
 }
 
-function deepOmitUndefined<T>(input: T): T {
-	if (input && typeof input === 'object' && !Array.isArray(input)) {
-		const out: Record<string, unknown> = {};
-		for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
-			if (v !== undefined) {
-				// biome-ignore lint/suspicious/noExplicitAny: We need to handle any type here
-				out[k] = deepOmitUndefined(v as any);
-			}
+function getGeneralLocals(StudioCMS: APIContext['locals']['StudioCMS']): SetLocalValues['general'] {
+	const { security: _s, plugins: _p, ...general } = StudioCMS || {};
+	return general;
+}
+
+/**
+ * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
+ *
+ * Depending on the provided `key`, merges the new `values` into the corresponding section of `locals.StudioCMS`:
+ * - `'general'`: Merges into the root of `StudioCMS`.
+ * - `'security'`: Merges into the `security` property of `StudioCMS`.
+ * - `'plugins'`: Merges into the `plugins` property of `StudioCMS`.
+ *
+ * Uses a deep merge strategy to combine existing and new values.
+ *
+ * @template T - The key of the section to update (`'general'`, `'security'`, or `'plugins'`).
+ * @template V - The type of values to merge, corresponding to the section specified by `T`.
+ * @param context - The API context containing the `locals.StudioCMS` object to update.
+ * @param key - The section of `StudioCMS` to update.
+ * @param values - The new values to merge into the specified section.
+ * @returns The updated section of `locals.StudioCMS` after merging.
+ * @throws {Error} If an unknown key is provided.
+ */
+export const setLocals = Effect.fn(function* <
+	T extends SetLocalValuesKeys,
+	V extends SetLocalValues[T],
+>(context: APIContext, key: T, values: V) {
+	switch (key) {
+		case SetLocal.GENERAL: {
+			// Merge general values into the root of StudioCMS
+			// Exclude 'security' and 'plugins' to avoid overwriting them
+			const generalValues = getGeneralLocals(context.locals.StudioCMS);
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
+				generalValues,
+				values
+			)) as SetLocalValues[SetLocal.GENERAL];
+
+			// Update the locals with the merged values
+			// This will not overwrite 'security' or 'plugins'
+			const toUpdate = getGeneralLocals(updatedValues);
+			context.locals.StudioCMS = { ...toUpdate };
+			break;
 		}
-		return out as T;
+		case SetLocal.SECURITY: {
+			// Merge security values into the 'security' property of StudioCMS
+			// This will not overwrite 'general' or 'plugins'
+			const currentValues = context.locals.StudioCMS.security || {};
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
+				currentValues,
+				values
+			)) as SetLocalValues[SetLocal.SECURITY];
+
+			// Update the locals with the merged security values
+			context.locals.StudioCMS.security = updatedValues;
+			break;
+		}
+		case SetLocal.PLUGINS: {
+			// Merge plugin values into the 'plugins' property of StudioCMS
+			// This will not overwrite 'general' or 'security'
+			const currentValues = context.locals.StudioCMS.plugins || {};
+			const updatedValues = (yield* effectMerge({ mergeArrays: false })(
+				currentValues,
+				values
+			)) as SetLocalValues[SetLocal.PLUGINS];
+
+			// Update the locals with the merged plugin values
+			context.locals.StudioCMS.plugins = updatedValues;
+			break;
+		}
+		default:
+			return yield* Effect.fail(new Error(`Unknown key: ${key}`));
 	}
-	return input;
-}
+});

@@ -3,10 +3,9 @@ import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
-import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { Discord, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger, Schema } from 'studiocms/effect';
+import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
 /**
@@ -60,7 +59,12 @@ const DISCORD = {
  * - User.Default
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
-	dependencies: [Session.Default, VerifyEmail.Default, User.Default, FetchHttpClient.layer],
+	dependencies: [
+		Session.Default,
+		VerifyEmail.Default,
+		User.Default,
+		Platform.FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const [
 			sdk,
@@ -68,7 +72,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
+		] = yield* Effect.all([SDKCore, Platform.HttpClient.HttpClient, Session, VerifyEmail, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = DISCORD;
 
@@ -87,7 +91,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 						},
 					})
 					.pipe(
-						Effect.flatMap(HttpClientResponse.schemaBodyJson(DiscordUser)),
+						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(DiscordUser)),
 						Effect.catchAll((error) =>
 							Effect.fail(
 								new ValidateAuthCodeError({

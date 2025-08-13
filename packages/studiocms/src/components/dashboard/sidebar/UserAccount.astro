@@ -4,7 +4,7 @@ import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPerm
 import { User } from 'studiocms:ui/components';
 
 interface Props {
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 }
 
 const { currentUser } = Astro.props as Props;
@@ -15,12 +15,12 @@ type PropsOf<T extends (...args: any[]) => any> = Parameters<T>[0];
 type UserProps = PropsOf<typeof User>;
 
 const userProps: UserProps = {
-	name: currentUser.user?.name || 'Visitor',
-	description: getLabelForPermissionLevel(currentUser.permissionLevel),
+	name: currentUser?.user?.name || 'Visitor',
+	description: getLabelForPermissionLevel(currentUser?.permissionLevel || 'Visitor'),
 	loading: 'eager',
 };
 
-if (currentUser.user?.avatar) {
+if (currentUser?.user?.avatar) {
 	userProps.avatar = currentUser.user.avatar;
 }
 ---

@@ -21,7 +21,7 @@ const recentlyUpdatedPages = totalPages
   {
     recentlyUpdatedPages.length > 0 ? (
       recentlyUpdatedPages.map(page => (
-        <Card fullWidth class={'recently-created-page-card'} as='a' href={Astro.locals.routeMap.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
+        <Card fullWidth class={'recently-created-page-card'} as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
             <div class="card-row">
               <span class="card-title">{page.title} {page.draft && <Badge label="Draft" size="sm" variant="flat" rounding="semi" />}</span>
               <span class="card-date">Created: <FormattedDate date={page.publishedAt} /></span>

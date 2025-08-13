@@ -1,0 +1,87 @@
+{
+	"name": "@withstudiocms/effect",
+    "version": "0.1.0-beta.0",
+	"description": "Effect-TS Utilities for Astro",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/effect"
+	},
+	"keywords": [
+		"astro-studiocms",
+		"cms",
+		"studiocms",
+		"astro",
+		"withastro",
+		"effect",
+		"effect-ts",
+		"effect-ts-astro"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "buildkit build 'src/**/*.ts'",
+		"dev": "buildkit dev 'src/**/*.ts'",
+        "test": "buildkit test 'test/**/*.test.js'",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./astro": {
+			"types": "./dist/astro/index.d.ts",
+			"default": "./dist/astro/index.js"
+		},
+        "./effect": {
+            "types": "./dist/effect.d.ts",
+            "default": "./dist/effect.js"
+        }
+	},
+	"type": "module",
+	"dependencies": {
+		"@effect/cli": "catalog:effect",
+		"@effect/cluster": "catalog:effect",
+		"@effect/experimental": "catalog:effect",
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"@effect/printer": "catalog:effect",
+		"@effect/printer-ansi": "catalog:effect",
+		"@effect/rpc": "catalog:effect",
+		"@effect/sql": "catalog:effect",
+		"@effect/typeclass": "catalog:effect",
+		"@effect/workflow": "catalog:effect",
+		"effect": "catalog:effect",
+		"micromatch": "^4.0.8"
+	},
+	"devDependencies": {
+		"@types/micromatch": "^4.0.9",
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"astro": "catalog:min"
+	}
+}

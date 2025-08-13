@@ -9,7 +9,7 @@ import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
 import { makePageTitle } from '../../utils/makePageTitle.js';
 
-const latestVersion = Astro.locals.latestVersion;
+const latestVersion = Astro.locals.StudioCMS.latestVersion;
 
 type Props = {
 	config: SiteConfigCacheObject;
@@ -18,7 +18,7 @@ type Props = {
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 };
 
 const {

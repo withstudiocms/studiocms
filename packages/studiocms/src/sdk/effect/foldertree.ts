@@ -1,4 +1,4 @@
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsPageFolderStructure } from '../tables.js';
 import type { FolderListItem, FolderNode, tsPageFolderSelect } from '../types/index.js';

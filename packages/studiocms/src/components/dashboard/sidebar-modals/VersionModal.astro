@@ -3,9 +3,9 @@ import changelog from 'studiocms:changelog';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
-import { parseMarkdown } from '../../../utils/tinyMDParser';
-import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone';
-import { timeAgo } from '../component-scripts/timeAgo';
+import { parseMarkdown } from '../../../utils/tinyMDParser.js';
+import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js';
+import { timeAgo } from '../component-scripts/timeAgo.js';
 import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
 
 interface Props {
@@ -14,14 +14,14 @@ interface Props {
 
 const { latestVersion } = Astro.props as Props;
 
-const lastChecked = latestVersion.lastCacheUpdate;
+const lastChecked = new Date(latestVersion.lastCacheUpdate);
 ---
 <!-- The modals in this file are needed inside of the sidebar but cannot be positioned there due to issues with positioning. -->
 <Modal id="version-modal" size="lg">
 
     <h2 slot="header" class="inline-title">
         <span>Version Information</span>
-        <button data-link={Astro.locals.routeMap.sdk.updateLatestVersionCache} 
+        <button data-link={Astro.locals.StudioCMS.routeMap.sdk.updateLatestVersionCache} 
             id="version-modal-reload"
             class="reload-button" 
             title="Check for updates" 
@@ -54,7 +54,7 @@ const lastChecked = latestVersion.lastCacheUpdate;
         <div class="version-modal-release-notes">
             <div><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
             </span>
         </div>
 

@@ -6,7 +6,7 @@ import UserName from './UserName.astro';
 
 interface Props {
 	lang: UiLanguageKeys;
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 }
 
 const { lang, currentUser } = Astro.props as Props;

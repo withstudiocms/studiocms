@@ -1,7 +1,6 @@
-import { Command, Options } from '@effect/cli';
 import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
-import { Console, Effect, genLogger } from '../../effect.js';
+import { Cli, Console, Effect, genLogger } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
@@ -9,19 +8,19 @@ import type { StepFn } from '../utils/types.js';
 import { env } from './steps/env.js';
 import { next } from './steps/next.js';
 
-export const debug = Options.boolean('debug').pipe(
-	Options.optional,
-	Options.withDefault(false),
-	Options.withDescription('Enable debug mode')
+export const debug = Cli.Options.boolean('debug').pipe(
+	Cli.Options.optional,
+	Cli.Options.withDefault(false),
+	Cli.Options.withDescription('Enable debug mode')
 );
 
-export const dryRun = Options.boolean('dry-run').pipe(
-	Options.optional,
-	Options.withAlias('d'),
-	Options.withDescription('Dry run mode')
+export const dryRun = Cli.Options.boolean('dry-run').pipe(
+	Cli.Options.optional,
+	Cli.Options.withAlias('d'),
+	Cli.Options.withDescription('Dry run mode')
 );
 
-export const initCMD = Command.make('init', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
+export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
 	genLogger('studiocms/cli/init')(function* () {
 		let debug: boolean;
 
@@ -113,4 +112,4 @@ export const initCMD = Command.make('init', { debug, dryRun }, ({ debug: _debug,
 		// All done, exit
 		context.exit(0);
 	})
-).pipe(Command.withDescription('Initialize the StudioCMS project after new installation.'));
+).pipe(Cli.Command.withDescription('Initialize the StudioCMS project after new installation.'));

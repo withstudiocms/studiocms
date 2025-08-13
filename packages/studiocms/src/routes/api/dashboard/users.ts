@@ -4,28 +4,32 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/users.POST')(function* () {
 			const userHelper = yield* User;
 			const notifications = yield* Notifications;
 			const sdk = yield* SDKCore;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
@@ -34,7 +38,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				id: string;
 				rank: string;
 				emailVerified: boolean;
-			} = yield* Effect.tryPromise(() => context.request.json());
+			} = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { id, rank, emailVerified } = jsonData;
 
@@ -97,8 +101,8 @@ export const POST: APIRoute = async (context: APIContext) =>
 		}).pipe(User.Provide, Notifications.Provide)
 	);
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/users.DELETE')(function* () {
 			const notifications = yield* Notifications;
 			const sdk = yield* SDKCore;
@@ -109,20 +113,20 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			}
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { userId, username, usernameConfirm } = jsonData;
 
@@ -150,6 +154,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['POST', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

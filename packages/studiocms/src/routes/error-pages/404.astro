@@ -4,10 +4,12 @@ import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components';
 import Layout from '../../layouts/dashboard/Layout.astro';
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:404');
 
-const { siteConfig: config, userSessionData: currentUser } = Astro.locals;
+const { siteConfig: config, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
 ---
 
 <Layout 

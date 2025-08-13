@@ -1,11 +1,11 @@
 ---
 import { User, VerifyEmail } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 
 interface Props {
 	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
-	currentUser: UserSessionData;
+	currentUser: UserSessionData | null;
 }
 
 const { requiredPermission, currentUser } = Astro.props;
@@ -22,18 +22,18 @@ let [isAuthorized, emailVerified] = await Effect.runPromise(
 	}).pipe(User.Provide, VerifyEmail.Provide)
 );
 
-let redirectProfile = Astro.locals.routeMap.mainLinks.userProfile;
+let redirectProfile = Astro.locals.StudioCMS.routeMap.mainLinks.userProfile;
 
-if (Astro.locals.emailVerificationEnabled && emailVerified === false) {
+if (Astro.locals.StudioCMS.security?.emailVerificationEnabled && emailVerified === false) {
 	isAuthorized = false;
-	redirectProfile = Astro.locals.routeMap.mainLinks.unverifiedEmail;
+	redirectProfile = Astro.locals.StudioCMS.routeMap.mainLinks.unverifiedEmail;
 }
 
-const redirectLogin = Astro.locals.routeMap.authLinks.loginURL;
+const redirectLogin = Astro.locals.StudioCMS.routeMap.authLinks.loginURL;
 ---
 
 <login-check
-    data-is_logged_in={`${currentUser.isLoggedIn}`}
+    data-is_logged_in={`${currentUser?.isLoggedIn ?? false}`}
     data-authorized={`${isAuthorized}`}
     data-redirect_profile={redirectProfile}
     data-redirect_login={redirectLogin}

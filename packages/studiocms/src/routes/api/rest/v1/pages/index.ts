@@ -2,10 +2,14 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 type UpdatePageData = tsPageDataSelect;
@@ -16,12 +20,12 @@ interface CreatePageJson {
 	content?: UpdatePageContent;
 }
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -35,7 +39,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 
 			const pages = yield* sdk.GET.pages(true);
 
-			const searchParams = context.url.searchParams;
+			const searchParams = ctx.url.searchParams;
 
 			const titleFilter = searchParams.get('title');
 			const slugFilter = searchParams.get('slug');
@@ -82,12 +86,13 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:POST')(function* () {
 			const sdk = yield* SDKCore;
+			const notifier = yield* Notifications;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -99,7 +104,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const jsonData: CreatePageJson = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: CreatePageJson = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { data, content } = jsonData;
 
@@ -116,7 +121,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 			}
 
 			const dataId = crypto.randomUUID();
-			const contentId = crypto.randomUUID();
 
 			const {
 				title,
@@ -149,11 +153,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 					publishedAt: new Date(),
 					...restPageData,
 				},
-				// @ts-expect-error drizzle broke the id variable
-				{ id: contentId, ...contentData }
+				{ ...contentData }
 			);
 
-			yield* Notifications.sendEditorNotification('new_page', data.title);
+			yield* notifier.sendEditorNotification('new_page', data.title);
 
 			return apiResponseLogger(200, `Page created successfully with id: ${dataId}`);
 		}).pipe(Notifications.Provide)
@@ -161,6 +164,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

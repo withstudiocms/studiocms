@@ -1,16 +1,20 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (C) =>
+	defineAPIRoute(C)((ctx) =>
 		genLogger('studioCMS:rest:v1:settings:GET')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -34,10 +38,10 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Error fetching site config', error);
 	});
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (C) =>
+	defineAPIRoute(C)((ctx) =>
 		genLogger('studioCMS:rest:v1:settings:PATCH')(function* () {
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -49,7 +53,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const siteConfig = yield* Effect.tryPromise(() => context.request.json());
+			const siteConfig = yield* Effect.tryPromise(() => ctx.request.json());
 
 			if (!siteConfig.title) {
 				return apiResponseLogger(400, 'Invalid form data, title is required');
@@ -77,6 +81,6 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Error updating site config', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'PATCH'] });
 
 export const ALL: APIRoute = async () => AllResponse();

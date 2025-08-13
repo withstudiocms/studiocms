@@ -9,7 +9,9 @@ import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.as
 import Layout from '../../../layouts/dashboard/Layout.astro';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
-const { siteConfig: config, userSessionData: currentUser, defaultLang: lang } = Astro.locals;
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 const td = useTranslations(lang, '@studiocms/dashboard:content-diff');

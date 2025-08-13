@@ -2,8 +2,7 @@ import { Notifications } from 'studiocms:notifier';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData, tsUsersInsert } from 'studiocms:sdk/types';
 import type { APIContext, AstroGlobal } from 'astro';
-import { Data, Effect, pipe } from 'effect';
-import { genLogger, pipeLogger } from '../effects/index.js';
+import { Data, Effect, genLogger, pipe, pipeLogger } from '../../effect.js';
 import { Password } from './password.js';
 import { Session } from './session.js';
 import type { UserSessionData } from './types.js';
@@ -410,10 +409,11 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		/**
 		 * @private
 		 */
-		const getLevel = (userData: UserSessionData | CombinedUserData) =>
+		const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
 			pipeLogger('studiocms/lib/auth/user/User.getLevel')(
 				Effect.try({
 					try: () => {
+						if (!userData) return 'unknown';
 						let userPermissionLevel: AvailablePermissionRanks = 'unknown';
 						if ('permissionLevel' in userData) {
 							userPermissionLevel = userData.permissionLevel;
@@ -435,7 +435,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @param userData - The session data of the user, which includes their permission level.
 		 * @returns The user's permission level as an enum value.
 		 */
-		const getUserPermissionLevel = (userData: UserSessionData | CombinedUserData) =>
+		const getUserPermissionLevel = (userData: UserSessionData | CombinedUserData | null) =>
 			genLogger('studiocms/lib/auth/user/User.getUserPermissionLevel')(function* () {
 				const level = yield* getLevel(userData);
 
@@ -469,7 +469,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		};
 
 		const isUserAllowed = (
-			userData: UserSessionData | CombinedUserData,
+			userData: UserSessionData | CombinedUserData | null,
 			requiredPerms: AvailablePermissionRanks
 		) =>
 			genLogger('studiocms/lib/auth/user/User.isUserAllowed')(function* () {

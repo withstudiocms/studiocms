@@ -25,7 +25,7 @@ const compId = crypto.randomUUID();
   </span>
 </a>
 
-<script is:inline data-astro-rerun define:vars={{ compId, dashboardIndex: Astro.locals.routeMap.mainLinks.dashboardIndex }}>
+<script is:inline data-astro-rerun define:vars={{ compId, dashboardIndex: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex }}>
   function setSidebarLinks() {
     const link = document.getElementById(compId)
 

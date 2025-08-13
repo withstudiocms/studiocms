@@ -1,7 +1,15 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import type { APIContext, APIRoute } from 'astro';
-import { Cause, convertToVanilla, Effect, genLogger, ParseResult, Schema } from 'studiocms/effect';
-import { AllResponse, OptionsResponse } from 'studiocms/lib/endpointResponses';
+import {
+	AllResponse,
+	Cause,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	ParseResult,
+	Schema,
+} from 'studiocms/effect';
 import { CSRF_COOKIE_NAME, CSRF_HEADER_NAME } from '../consts.js';
 import { UseSDK } from '../lib/db.js';
 
@@ -129,20 +137,20 @@ const apiChecks = Effect.fn(function* (context: APIContext) {
  * @param context - The API context containing request and user session information.
  * @returns A `Response` object with the project data as JSON, or an error response.
  */
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('@studiocms/wysiwyg/routes/store:GET')(function* () {
 			const { load } = yield* UseSDK;
 
 			// Ensure the user is logged in and has the necessary permissions
 			// This is done to prevent unauthorized access to project data
 			// as well as CSRF validation
-			const securityCheck = yield* apiChecks(context);
+			const securityCheck = yield* apiChecks(ctx);
 			if (securityCheck instanceof Response) {
 				return securityCheck; // Return the unauthorized response if security check fails
 			}
 
-			const searchParams = context.url.searchParams;
+			const searchParams = ctx.url.searchParams;
 
 			// If the request has a projectId in the search params, use it
 			const projectId = searchParams.get('projectId');
@@ -183,21 +191,21 @@ export const GET: APIRoute = async (context: APIContext) =>
  * @param context - The API context containing request and user session information.
  * @returns An API response indicating success or failure of the store operation.
  */
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('@studiocms/wysiwyg/routes/store:POST')(function* () {
 			const { store, types } = yield* UseSDK;
 
 			// Ensure the user is logged in and has the necessary permissions
 			// This is done to prevent unauthorized access to project data
 			// as well as CSRF validation
-			const securityCheck = yield* apiChecks(context);
+			const securityCheck = yield* apiChecks(ctx);
 			if (securityCheck instanceof Response) {
 				return securityCheck; // Return the unauthorized response if security check fails
 			}
 
 			// Parse the request JSON
-			const { projectId, data } = yield* parsePOSTJsonRequest(context, types._Schema);
+			const { projectId, data } = yield* parsePOSTJsonRequest(ctx, types._Schema);
 
 			// Store the project data using the SDK
 			const result = yield* store(projectId, data);
@@ -212,6 +220,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		})
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

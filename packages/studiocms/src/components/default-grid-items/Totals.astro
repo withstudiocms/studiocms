@@ -1,7 +1,7 @@
 ---
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Card, Icon } from 'studiocms:ui/components';
-import { Effect } from 'effect';
+import { Effect } from '../../effect.js';
 import { allowedIdentifiers } from './utils.js';
 
 const [allPages, totalUsers] = await runSDK(
@@ -17,7 +17,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
 
 <div class="totals-grid-item-container">
     <div class="totals-grid-item">
-        <a href={Astro.locals.routeMap.mainLinks.contentManagement}>
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="document-text" height={24} width={24} />
@@ -30,7 +30,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         </a>
     </div>
     <div class="totals-grid-item">
-        <a href={Astro.locals.routeMap.mainLinks.contentManagement}>
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="document" height={24} width={24} />
@@ -43,7 +43,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         </a>
     </div>
     <div class="totals-grid-item">
-        <a href={Astro.locals.routeMap.mainLinks.userManagement}>
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.userManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
                     <Icon name="user-group" height={24} width={24} />

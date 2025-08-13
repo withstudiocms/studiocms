@@ -1,10 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../effect.js';
 
 interface FolderBase {
 	folderName: string;
@@ -15,27 +19,27 @@ interface FolderEdit extends FolderBase {
 	id: string;
 }
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/folder.POST')(function* () {
 			const notify = yield* Notifications;
 			const sdk = yield* SDKCore;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: FolderBase = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: FolderBase = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { folderName, parentFolder } = jsonData;
 
@@ -57,27 +61,27 @@ export const POST: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/folder.PATCH')(function* () {
 			const notify = yield* Notifications;
 			const sdk = yield* SDKCore;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isEditor;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: FolderEdit = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: FolderEdit = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { id, folderName, parentFolder } = jsonData;
 
@@ -101,27 +105,27 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/content/folder.DELETE')(function* () {
 			const notify = yield* Notifications;
 			const sdk = yield* SDKCore;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: FolderEdit = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: FolderEdit = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { id } = jsonData;
 
@@ -143,6 +147,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		}).pipe(Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST', 'PATCH', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['POST', 'PATCH', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

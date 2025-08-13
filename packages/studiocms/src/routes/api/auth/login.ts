@@ -1,9 +1,15 @@
 import { Password, Session, VerifyEmail } from 'studiocms:auth/lib';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect, Layer } from 'effect';
-import { convertToVanilla, genLogger, pipeLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	Layer,
+	OptionsResponse,
+	pipeLogger,
+} from '../../../effect.js';
 import { AuthAPIUtils } from './shared.js';
 
 const deps = Layer.mergeAll(
@@ -13,8 +19,8 @@ const deps = Layer.mergeAll(
 	Session.Default
 );
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/auth/login/POST')(function* () {
 			const [
 				sdk,
@@ -24,7 +30,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 				{ isEmailVerified },
 			] = yield* Effect.all([SDKCore, AuthAPIUtils, Password, Session, VerifyEmail]);
 
-			const formData = yield* readFormData(context);
+			const formData = yield* readFormData(ctx);
 
 			const [username, password] = yield* pipeLogger(
 				'studiocms/routes/api/auth/login/POST.parseFormData'
@@ -62,12 +68,12 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 					'Please verify your email before logging in'
 				);
 
-			yield* createUserSession(existingUser.id, context);
+			yield* createUserSession(existingUser.id, ctx);
 
 			return new Response();
 		}).pipe(Effect.provide(deps))
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

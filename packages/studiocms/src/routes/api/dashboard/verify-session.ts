@@ -3,9 +3,14 @@ import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/li
 import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect, Schema } from '../../../effect.js';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	Schema,
+} from '../../../effect.js';
 
 /**
  * Represents the JSON data structure for verifying a session in the dashboard API.
@@ -98,10 +103,10 @@ const responseBuilder = (
 			: null,
 		permissionLevel: permissionLevel,
 		routes: {
-			logout: context.locals.routeMap.authLinks.logoutURL,
-			userProfile: context.locals.routeMap.mainLinks.userProfile,
-			contentManagement: context.locals.routeMap.mainLinks.contentManagement,
-			dashboardIndex: context.locals.routeMap.mainLinks.dashboardIndex,
+			logout: context.locals.StudioCMS.routeMap.authLinks.logoutURL,
+			userProfile: context.locals.StudioCMS.routeMap.mainLinks.userProfile,
+			contentManagement: context.locals.StudioCMS.routeMap.mainLinks.contentManagement,
+			dashboardIndex: context.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
 		},
 	};
 
@@ -125,17 +130,17 @@ const responseBuilder = (
  * @param context - The API context containing cookies and route information.
  * @returns A Response object with session verification results or an error message.
  */
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/verify-session.POST')(function* () {
 			const ses = yield* Session;
 			const sdk = yield* SDKCore;
 
 			const logger = _logger.fork('studiocms:runtime:api:verify-session');
 
-			const { cookies } = context;
+			const { cookies } = ctx;
 
-			const { originPathname } = yield* getParsedData(context);
+			const { originPathname } = yield* getParsedData(ctx);
 
 			const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
 
@@ -143,24 +148,24 @@ export const POST: APIRoute = async (context: APIContext) =>
 				logger.info(
 					`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(context, false, null, 'unknown');
+				return responseBuilder(ctx, false, null, 'unknown');
 			}
 
 			const { session, user } = yield* ses.validateSessionToken(sessionToken);
 
 			if (session === null) {
-				yield* ses.deleteSessionTokenCookie(context);
+				yield* ses.deleteSessionTokenCookie(ctx);
 				logger.info(
 					`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
 				);
-				return responseBuilder(context, false, null, 'unknown');
+				return responseBuilder(ctx, false, null, 'unknown');
 			}
 
 			if (!user || user === null) {
 				logger.info(
 					`No user found for session token, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(context, false, null, 'unknown');
+				return responseBuilder(ctx, false, null, 'unknown');
 			}
 
 			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
@@ -169,7 +174,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				logger.error(
 					`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
 				);
-				return responseBuilder(context, false, null, 'unknown');
+				return responseBuilder(ctx, false, null, 'unknown');
 			}
 
 			let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
@@ -192,10 +197,10 @@ export const POST: APIRoute = async (context: APIContext) =>
 					break;
 			}
 
-			return responseBuilder(context, true, user, permissionLevel);
+			return responseBuilder(ctx, true, user, permissionLevel);
 		}).pipe(Session.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

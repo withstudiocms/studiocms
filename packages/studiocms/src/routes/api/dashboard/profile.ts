@@ -4,11 +4,15 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsUsersUpdate } from 'studiocms:sdk/types';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
 type UserBasicUpdate = Omit<tsUsersUpdate, 'id'>;
 
@@ -34,8 +38,8 @@ type AvatarProfileUpdate = {
 
 type UserProfileUpdate = BasicUserProfileUpdate | PasswordProfileUpdate | AvatarProfileUpdate;
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/profile.POST')(function* () {
 			const pass = yield* Password;
 			const userHelper = yield* User;
@@ -48,21 +52,21 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			if (!context.locals.userPermissionLevel.isVisitor) {
+			if (!ctx.locals.StudioCMS.security?.userPermissionLevel.isVisitor) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Get Json Data
 			const userProfileUpdate: UserProfileUpdate = yield* Effect.tryPromise(() =>
-				context.request.json()
+				ctx.request.json()
 			);
 
 			switch (userProfileUpdate.mode) {
@@ -183,6 +187,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 		}).pipe(Password.Provide, User.Provide, Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

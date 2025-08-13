@@ -6,64 +6,65 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
-import { Effect, Layer } from 'effect';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '../consts.js';
-import { convertToVanilla, genLogger } from '../lib/effects/index.js';
-import {
-	defineMiddlewareRouter,
-	getUserPermissions,
-	makeFallbackSiteConfig,
-	type Router,
-	updateLocals,
-} from './utils.js';
+import { defineMiddlewareRouter, Effect } from '../effect.js';
+import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from './utils.js';
 
+// Import the dashboard route override from the configuration
+// If no override is set, it defaults to 'dashboard'
+// This allows for flexibility in the dashboard route without hardcoding it
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
-// Define a middleware router that routes requests to different handlers based on the request path.
-const router: Router = [
+/**
+ * Main middleware sequence for StudioCMS.
+ *
+ * This middleware sets up the base context locals for StudioCMS, including the generator version,
+ * site configuration, route map, and default language. It also handles user session data,
+ * email verification status, and user permission levels for the dashboard routes.
+ * Additionally, it manages CSRF token setup for the editor and ensures that the user is authenticated
+ * for dashboard routes, redirecting to the login page if not authenticated.
+ */
+export const onRequest = defineMiddlewareRouter([
 	{
 		/**
-		 * Main middleware function that sets up the context for the StudioCMS application.
-		 * It initializes the generator for the StudioCMS version, UI version, latest version,
-		 * site configuration, default language, and route map.
+		 * Middleware function to handle the main locals setup for StudioCMS.
+		 * This middleware sets the base context locals for StudioCMS, including the generator version,
+		 * site configuration, route map, and default language.
 		 */
 		includePaths: ['/**'],
-		handler: async (context, next) => {
-			return convertToVanilla(
-				genLogger('studiocms/middleware/mainMiddleware')(function* () {
-					const {
-						GET,
-						MIDDLEWARES: { verifyCache },
-					} = yield* SDKCore;
+		priority: 1,
+		handler: Effect.fn(function* (context, next) {
+			const {
+				GET,
+				MIDDLEWARES: { verifyCache },
+			} = yield* SDKCore;
 
-					const [latestVersion, siteConfig] = yield* Effect.all([
-						GET.latestVersion(),
-						GET.siteConfig(),
-						verifyCache(),
-					]);
+			const [latestVersion, siteConfig] = yield* Effect.all([
+				GET.latestVersion(),
+				GET.siteConfig(),
+				verifyCache(),
+			]);
 
-					// Set the StudioCMS base context locals
-					updateLocals(context, {
-						SCMSGenerator: `StudioCMS v${SCMSVersion}`,
-						SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
-						siteConfig: siteConfig ?? makeFallbackSiteConfig(),
-						routeMap: StudioCMSRoutes,
-						defaultLang,
-						latestVersion,
-					});
+			// Set the StudioCMS base context locals
+			yield* setLocals(context, SetLocal.GENERAL, {
+				SCMSGenerator: `StudioCMS v${SCMSVersion}`,
+				SCMSUiGenerator: `StudioCMS UI v${SCMSUiVersion}`,
+				siteConfig: siteConfig ?? makeFallbackSiteConfig(),
+				routeMap: StudioCMSRoutes,
+				defaultLang,
+				latestVersion,
+			});
 
-					// Set deprecated locals for backward compatibility
-					context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
-					context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-					context.locals.latestVersion = latestVersion;
-					context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
-					context.locals.defaultLang = defaultLang;
-					context.locals.routeMap = StudioCMSRoutes;
+			// Set deprecated locals for backward compatibility
+			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
+			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
+			context.locals.latestVersion = latestVersion;
+			context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
+			context.locals.defaultLang = defaultLang;
+			context.locals.routeMap = StudioCMSRoutes;
 
-					return next();
-				})
-			);
-		},
+			return next();
+		}),
 	},
 	{
 		/**
@@ -72,38 +73,40 @@ const router: Router = [
 		 * and user permission levels for the dashboard routes.
 		 */
 		includePaths: [`/${dashboardRoute}/**`, '/studiocms_api/**'],
-		handler: async (context, next) =>
-			await convertToVanilla(
-				genLogger('studiocms/middleware/mainRouteEffect')(function* () {
-					const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
-						User,
-						VerifyEmail,
-					]);
+		priority: 2,
+		handler: Effect.fn(function* (context, next) {
+			const { getUserData, isEmailVerificationEnabled } = yield* Effect.gen(function* () {
+				const [{ getUserData }, { isEmailVerificationEnabled }] = yield* Effect.all([
+					User,
+					VerifyEmail,
+				]);
+				return { getUserData, isEmailVerificationEnabled };
+			}).pipe(User.Provide, VerifyEmail.Provide);
 
-					const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
-						getUserData(context),
-						isEmailVerificationEnabled(),
-					]);
+			// Retrieve the user session data from the context locals or fetch it
+			const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
+				getUserData(context),
+				isEmailVerificationEnabled(),
+			]);
 
-					const userPermissionLevel = yield* getUserPermissions(userSessionData);
+			// Get the user permission levels based on the session data
+			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
 
-					// Set the security-related data in the context locals
-					updateLocals(context, {
-						security: {
-							userSessionData,
-							emailVerificationEnabled,
-							userPermissionLevel,
-						},
-					});
+			// Set the security-related data in the context locals
+			yield* setLocals(context, SetLocal.SECURITY, {
+				userSessionData,
+				emailVerificationEnabled,
+				userPermissionLevel,
+			});
 
-					// Set deprecated locals for backward compatibility
-					context.locals.userSessionData = userSessionData;
-					context.locals.emailVerificationEnabled = emailVerificationEnabled;
-					context.locals.userPermissionLevel = userPermissionLevel;
+			// Set deprecated locals for backward compatibility
+			context.locals.userSessionData = userSessionData;
+			context.locals.emailVerificationEnabled = emailVerificationEnabled;
+			context.locals.userPermissionLevel = userPermissionLevel;
 
-					return next();
-				}).pipe(Effect.provide(Layer.merge(User.Default, VerifyEmail.Default)))
-			),
+			// Continue to the next middleware
+			return next();
+		}),
 	},
 	{
 		/**
@@ -123,33 +126,33 @@ const router: Router = [
 			`/${dashboardRoute}/forgot-password`,
 			`/${dashboardRoute}/forgot-password/**`,
 		],
-		handler: async (context, next) =>
-			await convertToVanilla(
-				genLogger('studiocms/middleware/middlewareEffect')(function* () {
-					const { getUserData } = yield* User;
-					const userSessionData =
-						context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
+		priority: 3,
+		handler: Effect.fn(function* (context, next) {
+			const getUserData = yield* Effect.gen(function* () {
+				const { getUserData } = yield* User;
+				return getUserData;
+			}).pipe(User.Provide);
 
-					if (!userSessionData.isLoggedIn)
-						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+			// Retrieve the user session data from the context locals or fetch it
+			const userSessionData =
+				context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
 
-					return next();
-				}).pipe(Effect.provide(User.Default))
-			),
+			// Check if the user is logged in and redirect to the login page if not
+			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+
+			// Else, Continue to the next middleware
+			return next();
+		}),
 	},
 	{
 		/**
-		 * Middleware function to set a CSRF token for the WYSIWYG editor.
-		 * This middleware generates a new CSRF token and sets it in the cookies
-		 * for the WYSIWYG editor routes.
-		 *
-		 * @param context - The API context object containing request and response information.
-		 * @param next - The next middleware function in the chain to be executed.
-		 *
-		 * @returns A generator function that generates a CSRF token and sets it in the cookies.
+		 * Middleware function to handle the CSRF token setup for the editor.
+		 * This middleware generates a CSRF token, sets it as a cookie, and updates the context locals
+		 * with the CSRF token for use in the editor.
 		 */
 		includePaths: [`/${dashboardRoute}/content-management/edit/**`],
-		handler: async (context, next) => {
+		priority: 4,
+		handler: Effect.fn(function* (context, next) {
 			const csrfToken = crypto.randomBytes(32).toString('hex');
 			context.cookies.set(STUDIOCMS_EDITOR_CSRF_COOKIE_NAME, csrfToken, {
 				httpOnly: true,
@@ -166,18 +169,14 @@ const router: Router = [
 			});
 
 			// Update the context locals with the CSRF token for the editor
-			updateLocals(context, {
-				plugins: {
-					editorCSRFToken: csrfToken,
-				},
+			yield* setLocals(context, SetLocal.PLUGINS, {
+				editorCSRFToken: csrfToken,
 			});
 
 			// Set deprecated locals for backward compatibility
 			context.locals.wysiwygCsrfToken = csrfToken;
 
 			return next();
-		},
+		}),
 	},
-];
-
-export const onRequest = defineMiddlewareRouter(router);
+]);

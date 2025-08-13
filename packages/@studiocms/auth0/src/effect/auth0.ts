@@ -3,10 +3,9 @@ import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
-import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
 import { Auth0, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { Effect, genLogger, pipe, Schema } from 'studiocms/effect';
+import { Effect, genLogger, Platform, pipe, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
 /**
@@ -92,7 +91,12 @@ const AUTH0 = {
  * creates new users if necessary, verifies email, and creates user sessions.
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
-	dependencies: [Session.Default, VerifyEmail.Default, User.Default, FetchHttpClient.layer],
+	dependencies: [
+		Session.Default,
+		VerifyEmail.Default,
+		User.Default,
+		Platform.FetchHttpClient.layer,
+	],
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
 		const [
 			sdk,
@@ -100,7 +104,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 			{ setOAuthSessionTokenCookie, createUserSession },
 			{ isEmailVerified, sendVerificationEmail },
 			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([SDKCore, HttpClient.HttpClient, Session, VerifyEmail, User]);
+		] = yield* Effect.all([SDKCore, Platform.HttpClient.HttpClient, Session, VerifyEmail, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, DOMAIN, REDIRECT_URI } = AUTH0;
 
@@ -119,7 +123,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 						headers: { Authorization: `Bearer ${tokens.accessToken()}` },
 					})
 					.pipe(
-						Effect.flatMap(HttpClientResponse.schemaBodyJson(Auth0User)),
+						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(Auth0User)),
 						Effect.catchAll((error) =>
 							Effect.fail(
 								new ValidateAuthCodeError({

@@ -1,16 +1,20 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	genLogger,
+	OptionsResponse,
+} from '../../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../../utils/auth-token.js';
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:pages:[id]:history:[diffid]:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -22,7 +26,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id, diffid } = context.params;
+			const { id, diffid } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid page ID');
@@ -48,6 +52,6 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

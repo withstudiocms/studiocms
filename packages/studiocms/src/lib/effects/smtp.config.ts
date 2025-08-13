@@ -1,4 +1,4 @@
-import { Schema } from 'effect';
+import { Schema } from '../../effect.js';
 
 export class Address extends Schema.Class<Address>('Address')({
 	name: Schema.String,

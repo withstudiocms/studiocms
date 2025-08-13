@@ -2,18 +2,18 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 
 interface Props {
-	userData: UserSessionData;
+	userData?: UserSessionData | null;
 }
 
 const { userData } = Astro.props as Props;
 
-const isLoggedIn = userData.isLoggedIn;
+const isLoggedIn = userData?.isLoggedIn ?? false;
 ---
 <div 
   id="login-check" 
   style="display: none;" 
   data-is_logged_in={`${isLoggedIn}`}
-  data-redirect_route={Astro.locals.routeMap.mainLinks.dashboardIndex}
+  data-redirect_route={Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex}
   ></div>
 
 <script is:inline>

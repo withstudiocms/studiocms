@@ -6,10 +6,15 @@ import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext, APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { Effect, pipe } from 'effect';
-import { dual } from 'effect/Function';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	appendSearchParamsToUrl,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	pipe,
+} from '../../../effect.js';
 
 type JSONData = {
 	username: string | undefined;
@@ -25,19 +30,13 @@ type Token = {
 	token: string;
 };
 
-const appendParams = dual<
-	(name: string, value: string) => (url: URL) => URL,
-	(url: URL, name: string, value: string) => URL
->(3, (url, name, value) => {
-	url.searchParams.append(name, value);
-	return url;
-});
-
 const generateResetUrl = (
 	{
 		locals: {
-			routeMap: {
-				mainLinks: { dashboardIndex },
+			StudioCMS: {
+				routeMap: {
+					mainLinks: { dashboardIndex },
+				},
 			},
 		},
 	}: APIContext,
@@ -47,44 +46,44 @@ const generateResetUrl = (
 	const resetURL = new URL(`${dashboardIndex}/password-reset`, baseUrl);
 	return pipe(
 		resetURL,
-		appendParams('userid', userId),
-		appendParams('token', token),
-		appendParams('id', id)
+		appendSearchParamsToUrl('userid', userId),
+		appendSearchParamsToUrl('token', token),
+		appendSearchParamsToUrl('id', id)
 	);
 };
 
 const noMailerError = (message: string, resetLink: URL) =>
 	`Failed to send email: ${message}. You can provide the following Reset link to your User: ${resetLink}`;
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/create-user-invite.POST')(function* () {
 			const userHelper = yield* User;
 			const mailer = yield* Mailer;
 			const notify = yield* Notifications;
 			const sdk = yield* SDKCore;
 
-			const siteConfig = context.locals.siteConfig.data;
+			const siteConfig = ctx.locals.StudioCMS.siteConfig.data;
 
 			if (!siteConfig) {
 				return apiResponseLogger(500, 'Failed to get site config');
 			}
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: JSONData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: JSONData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { username, email, displayname, rank, originalUrl } = jsonData;
 
@@ -152,7 +151,7 @@ export const POST: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(500, 'Failed to create reset token');
 			}
 
-			const resetLink = generateResetUrl(context, originalUrl, token);
+			const resetLink = generateResetUrl(ctx, originalUrl, token);
 
 			yield* notify.sendAdminNotification('new_user', newUser.username);
 
@@ -196,6 +195,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		}).pipe(User.Provide, Mailer.Provide, Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

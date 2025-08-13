@@ -1,22 +1,21 @@
 ---
-import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
 import { authConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { Button, Input } from 'studiocms:ui/components';
+import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders.js';
 import AuthLayout from '../../layouts/auth/AuthLayout.astro';
 
-const lang = Astro.locals.defaultLang;
+const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:signup');
 
 const {
-	providers,
 	providers: {
 		usernameAndPassword,
 		usernameAndPasswordConfig: { allowUserRegistration },
 	},
 } = authConfig;
 
-const { SHOW_OAUTH } = await authEnvCheck(providers);
+const SHOW_OAUTH = showOAuth && providerData.some(({ enabled }) => enabled);
 
 let paragraph:
 	| 'sub-header-usernamepasswordoauth'
@@ -51,7 +50,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     </div>
 
     { usernameAndPassword && (
-        <form class="form" id="sign-up-form" method="post" action={Astro.locals.routeMap.authLinks.registerAPI}>
+        <form class="form" id="sign-up-form" method="post" action={Astro.locals.StudioCMS.routeMap.authLinks.registerAPI}>
 
             <Input label={t('username-label')} name="username" type="text" />
             <Input label={t('email-label')} name="email" type="email" />
@@ -70,7 +69,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
             <t-signup key="allow-login-haveaccount">
                 {t('allow-login-haveaccount')}
             </t-signup> 
-            <a href={Astro.locals.routeMap.authLinks.loginURL}>
+            <a href={Astro.locals.StudioCMS.routeMap.authLinks.loginURL}>
                 <t-signup key="allow-login-login">
                     {t('allow-login-login')}
                 </t-signup>

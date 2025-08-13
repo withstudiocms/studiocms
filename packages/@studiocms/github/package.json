@@ -59,7 +59,6 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "@effect/platform": "catalog:effect",
     "astro": "catalog:min",
     "effect": "catalog:effect",
     "studiocms": "workspace:*",

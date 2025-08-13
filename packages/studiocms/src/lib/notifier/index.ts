@@ -3,8 +3,7 @@ import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { Effect } from 'effect';
-import { genLogger } from '../effects/index.js';
+import { Effect, genLogger } from '../../effect.js';
 import type { UserNotificationOptions } from './client.js';
 
 /**
@@ -326,7 +325,6 @@ export class Notifications extends Effect.Service<Notifications>()(
 			};
 		}),
 		dependencies: [Mailer.Default],
-		accessors: true,
 	}
 ) {
 	static Provide = Effect.provide(this.Default);

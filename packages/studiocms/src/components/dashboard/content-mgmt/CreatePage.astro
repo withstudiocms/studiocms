@@ -23,12 +23,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 <div
   id="create-page-container"
-  data-content-management-url={Astro.locals.routeMap.mainLinks
+  data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
     .contentManagement}
 >
   <form
     id="page-create-form"
-    action={Astro.locals.routeMap.endpointLinks.content.page}
+    action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
   >
     <Tabs variant={"starlight"}>
       <TabItem

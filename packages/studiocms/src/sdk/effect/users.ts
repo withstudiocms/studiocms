@@ -1,6 +1,6 @@
 import { eq } from 'astro:db';
-import { Effect } from 'effect';
 import { GhostUserDefaults } from '../../consts.js';
+import { Effect } from '../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import {
 	tsDiffTracking,

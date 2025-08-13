@@ -6,7 +6,7 @@ interface Props {
 
 const { name, identifier } = Astro.props;
 
-const href = Astro.locals.routeMap.mainLinks.plugins + identifier;
+const href = Astro.locals.StudioCMS.routeMap.mainLinks.plugins + identifier;
 
 const isActive = Astro.url.pathname === href && 'active';
 ---

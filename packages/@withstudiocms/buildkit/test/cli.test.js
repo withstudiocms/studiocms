@@ -1,70 +1,71 @@
+import assert from 'node:assert';
+import { afterEach, beforeEach, describe, it } from 'node:test';
 import stripAnsi from 'strip-ansi';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import run from '../index.js';
+import run from '../src/index.js';
+
+let consoleLogSpy;
+let originalArgv;
+
+beforeEach(() => {
+	originalArgv = process.argv;
+	consoleLogSpy = {
+		calls: [],
+		fn: (...args) => {
+			consoleLogSpy.calls.push(args);
+		},
+		restore: () => {
+			console.log = originalConsoleLog;
+		}
+	};
+	global.originalConsoleLog = console.log;
+	console.log = consoleLogSpy.fn;
+});
+
+afterEach(() => {
+	process.argv = originalArgv;
+	consoleLogSpy.restore();
+});
 
 describe('buildkit CLI', () => {
-	let consoleLogSpy;
-	let originalArgv;
 
-	beforeEach(() => {
-		originalArgv = process.argv;
-		consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+	it('help command: should show help when no command is provided', async () => {
+		process.argv = ['node', 'buildkit'];
+		await run();
+
+		assert.ok(consoleLogSpy.calls.length > 0);
+
+		const output = consoleLogSpy.calls.map((call) => stripAnsi(call[0])).join('\n');
+
+		assert.ok(output.includes('StudioCMS Buildkit'));
+		assert.ok(output.includes('Usage:'));
+		assert.ok(output.includes('Commands:'));
+		assert.ok(output.includes('dev'));
+		assert.ok(output.includes('build'));
+		assert.ok(output.includes('test'));
+		assert.ok(output.includes('Dev and Build Options:'));
+		assert.ok(output.includes('--no-clean-dist'));
+		assert.ok(output.includes('--bundle'));
+		assert.ok(output.includes('--force-cjs'));
+		assert.ok(output.includes('Test Options:'));
+		assert.ok(output.includes('-m, --match <pattern>'));
+		assert.ok(output.includes('-o, --only'));
+		assert.ok(output.includes('-p, --parallel'));
+		assert.ok(output.includes('-w, --watch'));
+		assert.ok(output.includes('-t, --timeout <ms>'));
+		assert.ok(output.includes('-s, --setup <file>'));
+		assert.ok(output.includes('--teardown <file>'));
 	});
 
-	afterEach(() => {
-		process.argv = originalArgv;
-		consoleLogSpy.mockRestore();
+	it('buildkit CLI: help command: should show help with invalid command', async () => {
+		process.argv = ['node', 'buildkit', 'invalid-command'];
+		await run();
+
+		assert.ok(consoleLogSpy.calls.length > 0);
+
+		const output = consoleLogSpy.calls.map((call) => stripAnsi(call[0])).join('\n');
+
+		assert.ok(output.includes('StudioCMS Buildkit'));
+		assert.ok(output.includes('Usage:'));
 	});
 
-	describe('help command', () => {
-		it('should show help when no command is provided', async () => {
-			// Set up process.argv for no command
-			process.argv = ['node', 'buildkit'];
-
-			// Run the CLI
-			await run();
-
-			expect(consoleLogSpy).toHaveBeenCalled();
-
-			// Get all console.log calls combined
-			const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
-
-			// Verify help content
-			expect(output).toContain('StudioCMS Buildkit');
-			expect(output).toContain('Usage:');
-			expect(output).toContain('Commands:');
-			expect(output).toContain('dev');
-			expect(output).toContain('build');
-			expect(output).toContain('test');
-			expect(output).toContain('Dev and Build Options:');
-			expect(output).toContain('--no-clean-dist');
-			expect(output).toContain('--bundle');
-			expect(output).toContain('--force-cjs');
-			expect(output).toContain('Test Options:');
-			expect(output).toContain('-m, --match <pattern>');
-			expect(output).toContain('-o, --only');
-			expect(output).toContain('-p, --parallel');
-			expect(output).toContain('-w, --watch');
-			expect(output).toContain('-t, --timeout <ms>');
-			expect(output).toContain('-s, --setup <file>');
-			expect(output).toContain('--teardown <file>');
-		});
-
-		it('should show help with invalid command', async () => {
-			// Set up process.argv with invalid command
-			process.argv = ['node', 'buildkit', 'invalid-command'];
-
-			// Run the CLI
-			await run();
-
-			expect(consoleLogSpy).toHaveBeenCalled();
-
-			// Get all console.log calls combined
-			const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
-
-			// Verify help content
-			expect(output).toContain('StudioCMS Buildkit');
-			expect(output).toContain('Usage:');
-		});
-	});
 });

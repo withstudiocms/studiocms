@@ -6,31 +6,18 @@ import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect, Layer } from 'effect';
-import { dual, pipe } from 'effect/Function';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	appendSearchParamsToUrl,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	Layer,
+	OptionsResponse,
+	pipe,
+} from '../../../effect.js';
 import { AuthAPIUtils } from './shared.js';
-
-/**
- * Utility function to append search parameters to a URL.
- * This function can be used in a curried manner or with all arguments at once.
- *
- * @param args - Either a tuple of (URL, name, value) or a function that takes (name, value) and returns a function that takes a URL.
- * @returns A new URL with the search parameters appended.
- */
-const appendSearchParams = dual<
-	(name: string, value: string) => (url: URL) => URL,
-	(url: URL, name: string, value: string) => URL
->(
-	(args) => args.length === 3,
-	(url, name, value) => {
-		const newUrl = url;
-		newUrl.searchParams.append(name, value);
-		return newUrl;
-	}
-);
 
 /**
  * Generates a password reset link using the provided token and context.
@@ -44,16 +31,16 @@ const appendSearchParams = dual<
 function generateResetLink(token: { id: string; userId: string; token: string }) {
 	return pipe(
 		new URL(StudioCMSRoutes.mainLinks.passwordReset, site),
-		appendSearchParams('userid', token.userId),
-		appendSearchParams('token', token.token),
-		appendSearchParams('id', token.id)
+		appendSearchParamsToUrl('userid', token.userId),
+		appendSearchParamsToUrl('token', token.token),
+		appendSearchParamsToUrl('id', token.id)
 	);
 }
 
 const deps = Layer.mergeAll(Mailer.Default, Notifications.Default, AuthAPIUtils.Default);
 
-export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/auth/forgot-password/POST')(function* () {
 			const [sdk, { sendMail }, { sendAdminNotification }, { readJson, validateEmail }] =
 				yield* Effect.all([SDKCore, Mailer, Notifications, AuthAPIUtils]);
@@ -64,7 +51,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Check if the mailer is enabled
-			const config = context.locals.siteConfig.data;
+			const config = ctx.locals.siteConfig.data;
 
 			// If the mailer is not enabled, return an error
 			if (!config.enableMailer) {
@@ -72,7 +59,7 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 			}
 
 			// Parse the request body as JSON
-			const jsonData = yield* readJson(context);
+			const jsonData = yield* readJson(ctx);
 
 			// Get the email from the JSON data
 			const { email } = jsonData;
@@ -151,6 +138,6 @@ export const POST: APIRoute = async (context: APIContext): Promise<Response> =>
 		}).pipe(Effect.provide(deps))
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

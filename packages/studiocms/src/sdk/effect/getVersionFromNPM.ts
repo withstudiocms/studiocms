@@ -1,5 +1,4 @@
-import { FetchHttpClient, HttpClient, HttpClientResponse } from '@effect/platform';
-import { Effect, Schedule, Schema } from 'effect';
+import { Effect, HTTPClient, Platform, Schema } from '../../effect.js';
 
 /**
  * Represents the version information retrieved from NPM.
@@ -35,12 +34,7 @@ export class GetVersionFromNPM extends Effect.Service<GetVersionFromNPM>()(
 	'studiocms/sdk/effect/GetVersionFromNPM',
 	{
 		effect: Effect.gen(function* () {
-			const httpClient = (yield* HttpClient.HttpClient).pipe(
-				HttpClient.retryTransient({
-					times: 3,
-					schedule: Schedule.spaced('1 second'),
-				})
-			);
+			const client = yield* HTTPClient;
 
 			/**
 			 * Retrieves the version of an NPM package.
@@ -51,14 +45,14 @@ export class GetVersionFromNPM extends Effect.Service<GetVersionFromNPM>()(
 			 */
 			const get = (pkg: string, ver = 'latest') =>
 				Effect.gen(function* () {
-					const response = yield* httpClient
+					const response = yield* client
 						.get(`https://registry.npmjs.org/${pkg}/${ver}`)
-						.pipe(Effect.flatMap(HttpClientResponse.schemaBodyJson(NpmVersion)));
+						.pipe(Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(NpmVersion)));
 					return response.version;
 				});
 
 			return { get };
 		}),
-		dependencies: [FetchHttpClient.layer],
+		dependencies: [HTTPClient.Default],
 	}
 ) {}

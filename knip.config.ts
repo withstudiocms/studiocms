@@ -12,6 +12,7 @@ import type { KnipConfig } from 'knip';
 const baseAstroWorkspaceConfig = {
 	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	ignore: ['**/node_modules/**', '**/dist/**'],
 	astro: {
 		entry: ['src/**/*.astro'],
 		project: ['src/**/*.astro'],
@@ -45,7 +46,7 @@ const atStudioCMSPackages = [
 	'wysiwyg',
 ] as const;
 
-const atWithStudioCMSPackages = ['config-utils'] as const;
+const atWithStudioCMSPackages = ['config-utils', 'effect'] as const;
 
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
@@ -55,9 +56,19 @@ const atWithStudioCMSPackages = ['config-utils'] as const;
  *          or an empty object if no extras are defined for the package.
  */
 const extras = (pkg: string) => {
-	const extrasMap: Record<string, { ignoreDependencies?: (string | RegExp)[] | undefined }> = {
+	const extrasMap: Record<
+		string,
+		{ ignoreDependencies?: (string | RegExp)[] | undefined; entry?: string[] | undefined }
+	> = {
 		markdoc: {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
+		},
+		effect: {
+			entry: [
+				'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+				'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+			],
+			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
 		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
@@ -74,13 +85,7 @@ const config: KnipConfig = {
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: [
-				'@clack/core',
-				'studiocms-dashboard',
-				'@effect/experimental',
-				'@effect/typeclass',
-				'@effect/workflow',
-			],
+			ignoreDependencies: ['@clack/core', 'studiocms-dashboard'],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {
@@ -94,12 +99,13 @@ const config: KnipConfig = {
 			{} as Record<string, any>
 		),
 		'packages/@withstudiocms/buildkit': {
-			project: '**/*.js',
+			entry: ['src/**/*.js', 'test/**/*.js'],
 		},
 		...atWithStudioCMSPackages.reduce(
 			(acc, pkg) => {
 				acc[`packages/@withstudiocms/${pkg}`] = {
 					...baseAstroWorkspaceConfig,
+					...extras(pkg),
 				};
 				return acc;
 			},

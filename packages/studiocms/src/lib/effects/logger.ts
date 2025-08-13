@@ -1,9 +1,5 @@
+import { dual, Effect, List, Logger, LogLevel, pipe, type Utils } from '@withstudiocms/effect';
 import chalk from 'chalk';
-import { Effect, Logger, LogLevel } from 'effect';
-import type { Adapter } from 'effect/Effect';
-import { dual, pipe } from 'effect/Function';
-import { toArray } from 'effect/List';
-import type { YieldWrap } from 'effect/Utils';
 
 function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';
@@ -117,7 +113,7 @@ const makeLogger = (label: string) =>
 			loggerCache.get(label) ?? _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
 		loggerCache.set(label, logger);
 
-		const list = toArray(spans);
+		const list = List.toArray(spans);
 
 		const spanPart = list.length ? ` :: ${list.join(' › ')}` : '';
 		const message = `${String(_message)}${spanPart}`;
@@ -231,18 +227,18 @@ export const pipeLogger = dual<
  */
 export function genLogger(label: string) {
 	// biome-ignore lint/suspicious/noExplicitAny:  this is a valid use case for explicit any.
-	return <Eff extends YieldWrap<Effect.Effect<any, any, any>>, AEff>(
-		f: (resume: Adapter) => Generator<Eff, AEff, never>
+	return <Eff extends Utils.YieldWrap<Effect.Effect<any, any, any>>, AEff>(
+		f: (resume: Effect.Adapter) => Generator<Eff, AEff, never>
 	): Effect.Effect<
 		AEff,
 		[Eff] extends [never]
 			? never
-			: [Eff] extends [YieldWrap<Effect.Effect<infer _A, infer E, infer _R>>]
+			: [Eff] extends [Utils.YieldWrap<Effect.Effect<infer _A, infer E, infer _R>>]
 				? E
 				: never,
 		[Eff] extends [never]
 			? never
-			: [Eff] extends [YieldWrap<Effect.Effect<infer _A, infer _E, infer R>>]
+			: [Eff] extends [Utils.YieldWrap<Effect.Effect<infer _A, infer _E, infer R>>]
 				? R
 				: never
 	> => pipeLogger(label)(Effect.gen(f));

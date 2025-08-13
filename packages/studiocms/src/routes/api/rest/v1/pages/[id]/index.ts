@@ -3,9 +3,13 @@ import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
 import type { APIContext, APIRoute } from 'astro';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
@@ -17,12 +21,12 @@ interface UpdatePageJson {
 	content?: UpdatePageContent;
 }
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
 			const sdk = yield* SDKCore;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -34,7 +38,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid page ID');
@@ -56,12 +60,13 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (c: APIContext) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:[id]:PATCH')(function* () {
 			const sdk = yield* SDKCore;
+			const notifier = yield* Notifications;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -73,13 +78,13 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid page ID');
 			}
 
-			const jsonData: UpdatePageJson = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: UpdatePageJson = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { data, content } = jsonData;
 
@@ -167,7 +172,7 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 			yield* sdk.CLEAR.page.byId(id);
 
 			// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
-			yield* Notifications.sendEditorNotification('page_updated', updatedMetaData!.title);
+			yield* notifier.sendEditorNotification('page_updated', updatedMetaData!.title);
 
 			return apiResponseLogger(200, 'Page updated successfully');
 		}).pipe(Notifications.Provide)
@@ -175,12 +180,13 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:public:pages:[id]:DELETE')(function* () {
 			const sdk = yield* SDKCore;
+			const notifier = yield* Notifications;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -192,13 +198,13 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid page ID');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			const { slug } = jsonData;
 
@@ -221,7 +227,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* sdk.DELETE.page(id);
 			yield* sdk.CLEAR.page.byId(id);
 
-			yield* Notifications.sendEditorNotification('page_deleted', page.data.title);
+			yield* notifier.sendEditorNotification('page_deleted', page.data.title);
 
 			return apiResponseLogger(200, 'Page deleted successfully');
 		}).pipe(Notifications.Provide)
@@ -229,6 +235,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Internal Server Error', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

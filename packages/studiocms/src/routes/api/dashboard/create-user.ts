@@ -2,11 +2,15 @@ import { Password, User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIRoute } from 'astro';
 import { z } from 'astro/zod';
-import { Effect } from 'effect';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
 type JSONData = {
 	username: string | undefined;
@@ -16,8 +20,8 @@ type JSONData = {
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
 };
 
-export const POST: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const POST: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studiocms/routes/api/dashboard/create-user.POST')(function* () {
 			const pass = yield* Password;
 			const userHelper = yield* User;
@@ -25,20 +29,20 @@ export const POST: APIRoute = async (context: APIContext) =>
 			const sdk = yield* SDKCore;
 
 			// Get user data
-			const userData = context.locals.userSessionData;
+			const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
 			// Check if user is logged in
-			if (!userData.isLoggedIn) {
+			if (!userData?.isLoggedIn) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
 			// Check if user has permission
-			const isAuthorized = context.locals.userPermissionLevel.isAdmin;
+			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
 			if (!isAuthorized) {
 				return apiResponseLogger(403, 'Unauthorized');
 			}
 
-			const jsonData: JSONData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData: JSONData = yield* Effect.tryPromise(() => ctx.request.json());
 
 			let { username, password, email, displayname, rank } = jsonData;
 
@@ -115,6 +119,6 @@ export const POST: APIRoute = async (context: APIContext) =>
 		}).pipe(Password.Provide, User.Provide, Notifications.Provide)
 	);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['POST']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
 
 export const ALL: APIRoute = async () => AllResponse();

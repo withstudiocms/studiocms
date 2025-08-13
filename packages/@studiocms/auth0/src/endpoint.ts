@@ -1,5 +1,5 @@
 import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, Effect } from 'studiocms/effect';
+import { Effect, runEffect } from 'studiocms/effect';
 import { Auth0OAuthAPI } from './effect/auth0.js';
 
 /**
@@ -14,7 +14,7 @@ import { Auth0OAuthAPI } from './effect/auth0.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	await runEffect(
 		Effect.gen(function* () {
 			const { initSession } = yield* Auth0OAuthAPI;
 			return yield* initSession(context);
@@ -32,7 +32,7 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Auth0 OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+	await runEffect(
 		Effect.gen(function* () {
 			const { initCallback } = yield* Auth0OAuthAPI;
 			return yield* initCallback(context);

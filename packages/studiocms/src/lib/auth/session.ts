@@ -3,8 +3,7 @@ import type { tsSessionTableSelect } from 'studiocms:sdk/types';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { APIContext, AstroGlobal } from 'astro';
-import { Data, Effect, pipe } from 'effect';
-import { genLogger, pipeLogger } from '../effects/logger.js';
+import { Data, Effect, genLogger, pipe, pipeLogger } from '../../effect.js';
 import type { SessionValidationResult, UserSession } from './types.js';
 
 export class SessionError extends Data.TaggedError('SessionError')<{ message: string }> {}

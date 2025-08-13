@@ -9,7 +9,9 @@ import FallbackCanvas from './FallbackCanvas.astro';
 import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
-const { siteConfig: config, userSessionData: userData } = Astro.locals;
+const { siteConfig: config, security } = Astro.locals.StudioCMS;
+
+const userData = security?.userSessionData || null;
 
 interface Props {
 	title: string;

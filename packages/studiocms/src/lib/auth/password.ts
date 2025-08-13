@@ -1,9 +1,7 @@
 import crypto from 'node:crypto';
-import { FetchHttpClient, HttpClient } from '@effect/platform';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
-import { Data, Effect } from 'effect';
-import { genLogger, pipeLogger } from '../effects/index.js';
+import { Data, Effect, genLogger, Platform, pipeLogger } from '../../effect.js';
 import { Scrypt } from './utils/scrypt.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
@@ -35,7 +33,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 	effect: genLogger('studiocms/lib/auth/password/Password.effect')(function* () {
 		const scrypt = yield* Scrypt;
 		const check = yield* CheckIfUnsafe;
-		const client = yield* HttpClient.HttpClient;
+		const client = yield* Platform.HttpClient.HttpClient;
 
 		/**
 		 * Compares two strings in constant time to prevent timing attacks.
@@ -206,7 +204,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			verifyPasswordStrength,
 		};
 	}),
-	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, FetchHttpClient.layer],
+	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, Platform.FetchHttpClient.layer],
 }) {
 	static Provide = Effect.provide(this.Default);
 }

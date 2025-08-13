@@ -41,14 +41,18 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 				{ initPluginDataCache },
 			] = yield* Effect.all([CacheContext, SDKCore_GET, SDKCore_PLUGINS]);
 
-			const CachesToCheck = [
-				{ cache: pages, updater: () => updatePages(true) },
-				{ cache: FolderList, updater: () => updateFolderList() },
-				{ cache: folderTree, updater: () => updateFolderTree() },
-				{ cache: pageFolderTree, updater: () => updatePageFolderTree() },
-				{ cache: siteConfig, updater: () => updateSiteConfig() },
-				{ cache: pluginData, updater: () => initPluginDataCache() },
-			];
+			const Caches = new Map<
+				string,
+				// biome-ignore lint/suspicious/noExplicitAny: Allow any for cache and updater types
+				{ cache: Map<string, any>; updater: () => Effect.Effect<any, unknown, never> }
+			>([
+				['pages', { cache: pages, updater: () => updatePages(true) }],
+				['folderList', { cache: FolderList, updater: () => updateFolderList() }],
+				['folderTree', { cache: folderTree, updater: () => updateFolderTree() }],
+				['pageFolderTree', { cache: pageFolderTree, updater: () => updatePageFolderTree() }],
+				['siteConfig', { cache: siteConfig, updater: () => updateSiteConfig() }],
+				['pluginData', { cache: pluginData, updater: () => initPluginDataCache() }],
+			]);
 
 			const logger = _logger.fork('studiocms:middleware/cacheVerification');
 
@@ -67,10 +71,17 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						// Log the cache verification process
 						isVerbose && logger.info('Verifying caches...');
 
-						// Iterate through the caches and update them if they are empty
-						const todos = CachesToCheck.flatMap(({ cache, updater }) =>
-							cache.size === 0 ? [updater()] : []
-						);
+						// biome-ignore lint/suspicious/noExplicitAny: Allow any for todos type
+						const todos: Effect.Effect<any, unknown, never>[] = [];
+
+						Caches.forEach(({ cache, updater }, name) => {
+							if (cache.size === 0) {
+								isVerbose && logger.info(`Cache "${name}" is empty, updating...`);
+								todos.push(updater());
+							} else {
+								isVerbose && logger.info(`Cache "${name}" is already populated.`);
+							}
+						});
 
 						// If there are no caches to update, we log and return
 						if (todos.length === 0) {

@@ -371,7 +371,7 @@ export const studiocms = defineIntegration({
 								export * from '${resolve('./utils/authEnvCheck.js')}'
 							`,
 							'studiocms:auth/utils/validImages': `
-								export * from '${resolve('./utils/validImages.js')}'
+								export * from '${resolve('./utils/validImages/index.js')}'
 							`,
 							'studiocms:auth/utils/getLabelForPermissionLevel': `
 								export * from '${resolve('./utils/getLabelForPermissionLevel.js')}'

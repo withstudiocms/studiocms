@@ -15,13 +15,20 @@ import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.a
 import Layout from '../../../layouts/dashboard/Layout.astro';
 import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const userSession = security?.userSessionData ?? null;
+const emailVerificationEnabled = security?.emailVerificationEnabled ?? false;
 const {
-	siteConfig: config,
-	userSessionData: userSession,
-	defaultLang: lang,
-	emailVerificationEnabled,
-	userPermissionLevel: { isAdmin: isAdministrator, isOwner, isEditor: isAllowedAPITokens },
-} = Astro.locals;
+	isOwner,
+	isAdmin,
+	isEditor: isAllowedAPITokens,
+} = security?.userPermissionLevel ?? {
+	isOwner: false,
+	isAdmin: false,
+	isEditor: false,
+	isVisitor: false,
+};
 
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 
@@ -47,11 +54,11 @@ const [user, diffs, pages, userTokens] = await convertToVanilla(
 
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
-const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === userSession.user?.id;
+const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === userSession?.user?.id;
 
 if (isOwner) allowedRanks.unshift({ label: 'Owner', value: 'owner' });
 
-if (isAdministrator) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
+if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 ---
 <Layout 
   title={t('title')}

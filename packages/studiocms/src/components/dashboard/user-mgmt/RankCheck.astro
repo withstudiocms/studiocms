@@ -8,7 +8,9 @@ interface Props {
 
 const { requiredPermission } = Astro.props;
 
-const { userSessionData: user } = Astro.locals;
+const { userSessionData: user } = Astro.locals.StudioCMS?.security ?? {
+	userSessionData: null,
+};
 
 const isAuthorized = await Effect.runPromise(
 	Effect.gen(function* () {
@@ -21,7 +23,7 @@ const isAuthorized = await Effect.runPromise(
 );
 
 if (!isAuthorized) {
-	return Astro.redirect(Astro.locals.routeMap.mainLinks.userManagement);
+	return Astro.redirect(Astro.locals.StudioCMS.routeMap.mainLinks.userManagement);
 }
 ---
 

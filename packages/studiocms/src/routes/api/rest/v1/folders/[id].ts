@@ -1,11 +1,15 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { Effect, Schema } from 'effect';
-import { convertToVanilla } from '../../../../../lib/effects/convertToVanilla.js';
-import { genLogger } from '../../../../../lib/effects/logger.js';
-import { AllResponse, OptionsResponse } from '../../../../../lib/endpointResponses.js';
+import type { APIRoute } from 'astro';
+import {
+	AllResponse,
+	defineAPIRoute,
+	Effect,
+	genLogger,
+	OptionsResponse,
+	Schema,
+} from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
@@ -13,10 +17,10 @@ export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 	parentFolder: Schema.Union(Schema.String, Schema.Null),
 }) {}
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:folders:[id]:GET')(function* () {
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -28,7 +32,7 @@ export const GET: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid folder ID');
@@ -52,12 +56,13 @@ export const GET: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to fetch folder', error);
 	});
 
-export const PATCH: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const PATCH: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:folders:[id]:PATCH')(function* () {
 			const sdk = yield* SDKCore;
+			const notifier = yield* Notifications;
 
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -69,13 +74,13 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid folder ID');
 			}
 
-			const jsonData = yield* Effect.tryPromise(() => context.request.json());
+			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
 			const { folderName, parentFolder } = yield* Schema.decodeUnknown(FolderBase)(jsonData);
 
 			if (!folderName) {
@@ -92,18 +97,19 @@ export const PATCH: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(404, 'Folder not found');
 			}
 
-			yield* Notifications.sendEditorNotification('folder_updated', folderName);
+			yield* notifier.sendEditorNotification('folder_updated', folderName);
 			return apiResponseLogger(200, 'Folder updated successfully');
 		}).pipe(Notifications.Provide)
 	).catch((error) => {
 		return apiResponseLogger(500, 'Failed to update folder', error);
 	});
 
-export const DELETE: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
+export const DELETE: APIRoute = async (c) =>
+	defineAPIRoute(c)((ctx) =>
 		genLogger('studioCMS:rest:v1:folders:[id]:DELETE')(function* () {
 			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(context);
+			const notifier = yield* Notifications;
+			const user = yield* verifyAuthTokenFromHeader(ctx);
 
 			if (user instanceof Response) {
 				return user;
@@ -115,7 +121,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 				return apiResponseLogger(401, 'Unauthorized');
 			}
 
-			const { id } = context.params;
+			const { id } = ctx.params;
 
 			if (!id) {
 				return apiResponseLogger(400, 'Invalid folder ID');
@@ -132,7 +138,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 			yield* sdk.UPDATE.folderList;
 			yield* sdk.UPDATE.folderTree;
 
-			yield* Notifications.sendEditorNotification('folder_deleted', folder.name);
+			yield* notifier.sendEditorNotification('folder_deleted', folder.name);
 
 			return apiResponseLogger(200, 'Folder deleted successfully');
 		}).pipe(Notifications.Provide)
@@ -140,6 +146,7 @@ export const DELETE: APIRoute = async (context: APIContext) =>
 		return apiResponseLogger(500, 'Failed to delete folder', error);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET', 'PATCH', 'DELETE']);
+export const OPTIONS: APIRoute = async () =>
+	OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] });
 
 export const ALL: APIRoute = async () => AllResponse();

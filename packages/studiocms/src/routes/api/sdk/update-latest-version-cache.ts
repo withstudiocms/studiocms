@@ -1,8 +1,7 @@
 import logger from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIRoute } from 'astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
-import { AllResponse, OptionsResponse } from '../../../lib/endpointResponses.js';
+import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
 
 const createJsonResponse = (data: unknown, status = 200) =>
 	new Response(JSON.stringify(data), {
@@ -13,8 +12,8 @@ const createJsonResponse = (data: unknown, status = 200) =>
 		},
 	});
 
-export const GET: APIRoute = async (): Promise<Response> =>
-	await convertToVanilla(
+export const GET: APIRoute = async (c) =>
+	defineAPIRoute(c)(() =>
 		genLogger('routes/sdk/update-latest-version-cache/GET')(function* () {
 			logger.info('Updating latest version cache');
 			const sdk = yield* SDKCore;
@@ -33,6 +32,6 @@ export const GET: APIRoute = async (): Promise<Response> =>
 		);
 	});
 
-export const OPTIONS: APIRoute = async () => OptionsResponse(['GET']);
+export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
 
 export const ALL: APIRoute = async () => AllResponse();

@@ -2,8 +2,7 @@ import { CMS_ENCRYPTION_KEY } from 'astro:env/server';
 import { createCipheriv, createDecipheriv } from 'node:crypto';
 import { DynamicBuffer } from '@oslojs/binary';
 import { decodeBase64 } from '@oslojs/encoding';
-import { Data, Effect } from 'effect';
-import { genLogger, pipeLogger } from '../effects/index.js';
+import { Data, Effect, genLogger, pipeLogger } from '../../effect.js';
 
 export class EncryptionError extends Data.TaggedError('EncryptionError')<{
 	message: string;
