@@ -64,7 +64,9 @@ const routes2 = createEffectAPIRoutes(
 		methods: {
 			POST: {
 				validate: {
-					body: (body) => body && typeof body.name === 'string',
+					body: {
+						json: (body) => Boolean(body && typeof body?.name === 'string'),
+					},
 				},
 				timeout: 30000, // Longer timeout for POST
 			},
@@ -100,7 +102,9 @@ const routes3 = new EffectAPIRouteBuilder()
 			}),
 		{
 			validate: {
-				body: (body) => body && typeof body === 'object',
+				body: {
+					json: (body) => body && typeof body === 'object',
+				},
 			},
 		}
 	)
@@ -176,7 +180,9 @@ const userRoutes = createEffectAPIRoutes(
 		methods: {
 			PUT: {
 				validate: {
-					body: (body) => body && typeof body === 'object' && Object.keys(body).length > 0,
+					body: {
+						json: (body) => body && typeof body === 'object' && Object.keys(body).length > 0,
+					},
 				},
 			},
 		},

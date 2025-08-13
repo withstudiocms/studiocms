@@ -74,14 +74,8 @@ export const deepmerge = Effect.fn(function* <T>(
  * ```
  */
 export class Deepmerge extends Effect.Service<Deepmerge>()('Deepmerge', {
-	effect: Effect.try({
-		try: () => ({
-			custom: deepmergeCustom,
-			merge: deepmerge,
-		}),
-		catch: (cause) =>
-			new Error(
-				`Failed to initialize Deepmerge service: ${cause instanceof Error ? cause.message : String(cause)}`
-			),
+	effect: Effect.succeed({
+		custom: deepmergeCustom,
+		merge: deepmerge,
 	}),
 }) {}

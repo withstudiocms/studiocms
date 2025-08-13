@@ -136,7 +136,17 @@ export interface EffectRouteOptions {
 	validate?: {
 		params?: (params: APIContext['params']) => boolean;
 		query?: (query: APIContext['url']['searchParams']) => boolean;
-		body?: <T extends 'json' | 'text' | 'formData'>(body: AstroAPIRequestBody<T>) => boolean;
+		body?:
+			| {
+					// biome-ignore lint/suspicious/noExplicitAny: Allow any for flexibility
+					json: (body: any) => boolean;
+			  }
+			| {
+					text: (body: string) => boolean;
+			  }
+			| {
+					formData: (body: FormData) => boolean;
+			  };
 	};
 }
 

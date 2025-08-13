@@ -107,26 +107,21 @@ export async function validateRequest(
 				contentType?.includes('multipart/form-data')
 			) {
 				const formData = await context.request.clone().formData();
-				// Preserve multiple values for the same key
-				const formDataObj: Record<string, FormDataEntryValue | FormDataEntryValue[]> = {};
-				for (const [key, value] of formData.entries()) {
-					if (formDataObj[key]) {
-						if (Array.isArray(formDataObj[key])) {
-							(formDataObj[key] as FormDataEntryValue[]).push(value);
-						} else {
-							formDataObj[key] = [formDataObj[key] as FormDataEntryValue, value];
-						}
-					} else {
-						formDataObj[key] = value;
-					}
-				}
-				body = formDataObj;
+				body = formData;
 			} else {
 				body = await context.request.clone().text();
 			}
 
-			if (!validate.body(body)) {
-				return 'Invalid request body';
+			if (validate.body) {
+				if ('json' in validate.body && !validate.body.json(body)) {
+					return 'Invalid JSON body';
+				}
+				if ('text' in validate.body && !validate.body.text(body)) {
+					return 'Invalid text body';
+				}
+				if ('formData' in validate.body && !validate.body.formData(body)) {
+					return 'Invalid form data body';
+				}
 			}
 		} catch (_error) {
 			return 'Failed to parse request body';
