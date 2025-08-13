@@ -36,7 +36,7 @@ export interface EffectMiddlewareRouterEntry {
  */
 export type EffectAPIRouteHandler = (
 	context: APIContext
-) => Effect.Effect<Response, unknown, never>;
+) => Effect.Effect<Promise<Response> | Response, unknown, never>;
 
 /**
  * Options for configuring the response of an API endpoint.
