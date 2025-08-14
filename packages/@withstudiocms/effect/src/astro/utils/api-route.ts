@@ -4,7 +4,7 @@ import type { APIContext } from 'astro';
 import type { AstroAPIRequestBody, EffectRouteOptions } from '../types.js';
 
 /**
- * Gets CORS (Cross-Origin Resource Sharing) headers to an API response based on the provided configuration.
+ * Generates CORS (Cross-Origin Resource Sharing) headers for an API response based on the provided configuration.
  *
  * @param context - The API context containing the incoming request, used to extract the `Origin` header.
  * @param corsConfig - Optional CORS configuration specifying allowed origins, methods, headers, and credentials.
@@ -17,6 +17,7 @@ import type { AstroAPIRequestBody, EffectRouteOptions } from '../types.js';
  * - If `corsConfig.methods` is provided, sets the allowed HTTP methods.
  * - If `corsConfig.headers` is provided, sets the allowed request headers.
  * - If `corsConfig.credentials` is `true`, allows credentials to be included in requests.
+ * - When credentials are enabled, the wildcard origin '*' is not permitted by browsers; the origin will be reflected and 'Vary: Origin' will be set.
  */
 export function getCorsHeaders(
 	context: APIContext,
@@ -31,16 +32,19 @@ export function getCorsHeaders(
 	const origin = context.request.headers.get('Origin');
 
 	// Handle origin
-	if (corsConfig.origin === true) {
-		headers['Access-Control-Allow-Origin'] = '*';
-	} else if (corsConfig.origin === false) {
-		// Don't set any origin header
-	} else if (typeof corsConfig.origin === 'string') {
-		headers['Access-Control-Allow-Origin'] = corsConfig.origin;
-	} else if (Array.isArray(corsConfig.origin) && origin) {
-		if (corsConfig.origin.includes(origin)) {
+	// If credentials are enabled, '*' is not allowed. Reflect the request origin instead.
+	if (headers['Access-Control-Allow-Credentials'] === 'true') {
+		if (headers['Access-Control-Allow-Origin'] === '*' && origin) {
 			headers['Access-Control-Allow-Origin'] = origin;
+		} else if (headers['Access-Control-Allow-Origin'] === '*') {
+			// No Origin to reflect – avoid sending '*' with credentials
+			delete headers['Access-Control-Allow-Origin'];
 		}
+	}
+
+	// When reflecting origin, set Vary: Origin for correct caching behavior
+	if (headers['Access-Control-Allow-Origin'] && headers['Access-Control-Allow-Origin'] !== '*') {
+		headers['Vary'] = headers['Vary'] ? `${headers['Vary']}, Origin` : 'Origin';
 	}
 
 	// Handle methods
@@ -91,7 +95,7 @@ const SupportedContentTypeHeadersMap = {
 	'application/json': SupportedValidatorContentType.JSON,
 	'application/x-www-form-urlencoded': SupportedValidatorContentType.FORM_DATA,
 	'multipart/form-data': SupportedValidatorContentType.FORM_DATA,
-};
+} as const;
 
 type SupportedContentType = keyof typeof SupportedContentTypeHeadersMap;
 
@@ -116,14 +120,14 @@ export async function validateRequest(
 	if (!validate) return null;
 
 	// Validate params
-	if (validate.params && !validate.params(context.params)) {
+	if (validate.params && !(await validate.params(context.params))) {
 		return 'Invalid parameters';
 	}
 
 	// Validate query parameters
 	if (validate.query) {
-		const url = new URL(context.url);
-		if (!validate.query(url.searchParams)) {
+		const url = context.url instanceof URL ? context.url : new URL(context.url);
+		if (!(await validate.query(url.searchParams))) {
 			return 'Invalid query parameters';
 		}
 	}
@@ -131,15 +135,19 @@ export async function validateRequest(
 	// Validate body (if present)
 	if (validate.body && context.request.method !== 'GET' && context.request.method !== 'HEAD') {
 		try {
-			const contentType = context.request.headers.get('content-type');
+			const contentType = context.request.headers.get('content-type')?.toLowerCase() ?? '';
 
 			let bodyType: SupportedValidatorContentType = SupportedValidatorContentType.TEXT;
 			let body: AstroAPIRequestBody<'json' | 'text' | 'formData'>;
 
 			// Determine body type based on content type
-			if (contentType && contentType in SupportedContentTypeHeadersMap) {
-				bodyType = SupportedContentTypeHeadersMap[contentType as SupportedContentType];
+			const mediaType = contentType.split(';', 1)[0].trim();
+			if (mediaType && mediaType in SupportedContentTypeHeadersMap) {
+				bodyType = SupportedContentTypeHeadersMap[mediaType as SupportedContentType];
 				body = await context.request.clone()[bodyType]();
+			} else if (mediaType.endsWith('+json')) {
+				bodyType = SupportedValidatorContentType.JSON;
+				body = await context.request.clone().json();
 			} else {
 				bodyType = SupportedValidatorContentType.TEXT;
 				body = await context.request.clone().text();
@@ -148,17 +156,26 @@ export async function validateRequest(
 			// Validate body based on type
 			switch (bodyType) {
 				case SupportedValidatorContentType.JSON:
-					if (validate.body.kind === 'json' && !validate.body.json(body)) {
+					if (validate.body.kind !== 'json') {
+						return 'Invalid body content type';
+					}
+					if (!(await validate.body.json(body))) {
 						return 'Invalid JSON body';
 					}
 					break;
 				case SupportedValidatorContentType.FORM_DATA:
-					if (validate.body.kind === 'formData' && !validate.body.formData(body as FormData)) {
+					if (validate.body.kind !== 'formData') {
+						return 'Invalid body content type';
+					}
+					if (!(await validate.body.formData(body as FormData))) {
 						return 'Invalid form data body';
 					}
 					break;
 				case SupportedValidatorContentType.TEXT:
-					if (validate.body.kind === 'text' && !validate.body.text(body as string)) {
+					if (validate.body.kind !== 'text') {
+						return 'Invalid body content type';
+					}
+					if (!(await validate.body.text(body as string))) {
 						return 'Invalid text body';
 					}
 					break;
