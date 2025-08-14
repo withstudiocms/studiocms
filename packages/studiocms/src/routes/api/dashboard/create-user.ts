@@ -21,6 +21,14 @@ type JSONData = {
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
 };
 
+export enum UserPermissionLevel {
+	visitor = 1,
+	editor = 2,
+	admin = 3,
+	owner = 4,
+	unknown = 0,
+}
+
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
@@ -71,8 +79,8 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate target rank and ensure caller has sufficient privilege
-				const allowedRanks = new Set(['owner', 'admin'] as const);
-				if (!allowedRanks.has(rank as ['owner', 'admin'][number])) {
+				const allowedRanks = new Set(['owner', 'admin', 'editor', 'visitor'] as const);
+				if (!allowedRanks.has(rank)) {
 					return apiResponseLogger(400, 'Invalid rank');
 				}
 				const callerPerm = yield* userHelper.getUserPermissionLevel(userData);
@@ -91,9 +99,24 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				};
 				const targetPerm = rankToPerm(rank);
+				// Use explicit weights to avoid relying on enum ordinal
+				const permWeight = (lvl: UserPermissionLevel) => {
+					switch (lvl) {
+						case User.UserPermissionLevel.owner:
+							return 4;
+						case User.UserPermissionLevel.admin:
+							return 3;
+						case User.UserPermissionLevel.editor:
+							return 2;
+						case User.UserPermissionLevel.visitor:
+							return 1;
+						default:
+							return 0;
+					}
+				};
 				// Caller must strictly outrank the target rank they want to assign
-				if (callerPerm <= targetPerm) {
-					return apiResponseLogger(403, 'Unauthorized');
+				if (permWeight(callerPerm) <= permWeight(targetPerm)) {
+					return createJsonResponse({ error: 'Forbidden' }, { status: 403 });
 				}
 
 				// If the email is invalid, return an error

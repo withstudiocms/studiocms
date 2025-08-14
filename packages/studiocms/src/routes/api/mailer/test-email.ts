@@ -18,7 +18,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// Check if mailer is enabled
 				if (!ctx.locals.StudioCMS.siteConfig.data.enableMailer) {
-					return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
+					return apiResponseLogger(403, 'Mailer is disabled for this site');
 				}
 
 				// Check if user is logged in
@@ -31,12 +31,22 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(403, 'Unauthorized');
 				}
 
-				// Get Json data
-				const { test_email } = yield* readAPIContextJson<{ test_email: string }>(ctx);
+				// Get JSON data safely
+				let test_email: unknown;
+				try {
+					({ test_email } = yield* readAPIContextJson<{ test_email?: unknown }>(ctx));
+				} catch {
+					return apiResponseLogger(400, 'Invalid JSON body');
+				}
 
 				// Validate form data
-				if (!test_email || typeof test_email !== 'string') {
+				if (typeof test_email !== 'string' || test_email.trim() === '') {
 					return apiResponseLogger(400, 'Invalid form data, test_email is required');
+				}
+				const email = test_email.trim();
+				// Basic email sanity-check
+				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+					return apiResponseLogger(400, 'Invalid email address');
 				}
 
 				// Send Test Email
