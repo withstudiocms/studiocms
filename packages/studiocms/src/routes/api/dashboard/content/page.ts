@@ -113,18 +113,10 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				} as UpdatePageContent;
 
 				if (!data.title) {
-					return apiResponseLogger(400, 'Invalid form data, data is required');
-				}
-
-				if (!content) {
-					return apiResponseLogger(400, 'Invalid form data, content is required');
+					return apiResponseLogger(400, 'Invalid form data, title is required');
 				}
 
 				const dataId = crypto.randomUUID();
-
-				if (!data.title) {
-					return apiResponseLogger(400, 'Invalid form data, title is required');
-				}
 
 				// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 				const apiRoute = getPageTypeEndpoints(data.package!, 'onCreate');
@@ -200,20 +192,12 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					content: formData.get('page-content')?.toString(),
 				};
 
-				if (!data) {
-					return apiResponseLogger(400, 'Invalid form data, data is required');
-				}
-
-				if (!content) {
-					return apiResponseLogger(400, 'Invalid form data, content is required');
-				}
-
 				if (!data.id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
 				}
 
 				if (!content.id) {
-					return apiResponseLogger(400, 'Invalid form data, id is required');
+					return apiResponseLogger(400, 'Invalid form data, contentId is required');
 				}
 
 				const currentPageData = yield* sdk.GET.page.byId(data.id);
@@ -262,7 +246,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					(metaData) => metaData.id === data.id
 				);
 
-				const { enableDiffs, diffPerPage = 10 } = ctx.locals.siteConfig.data;
+				const { enableDiffs, diffPerPage = 10 } = ctx.locals.StudioCMS.siteConfig.data;
 
 				if (enableDiffs) {
 					yield* sdk.diffTracking.insert(
@@ -285,10 +269,10 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					yield* Effect.tryPromise(() => tryCatch(apiRoute(ctx)));
 				}
 
-				yield* notify.sendEditorNotification(
-					'page_updated',
-					data.title || startMetaData?.title || ''
-				);
+				yield* Effect.all([
+					sdk.CLEAR.pages(),
+					notify.sendEditorNotification('page_updated', data.title || startMetaData?.title || ''),
+				]);
 
 				return apiResponseLogger(200, 'Page updated successfully');
 			}).pipe(Notifications.Provide),
@@ -330,7 +314,10 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					yield* Effect.tryPromise(() => tryCatch(apiRoute(ctx)));
 				}
 
-				yield* notify.sendEditorNotification('page_deleted', pageToDelete.data.title);
+				yield* Effect.all([
+					sdk.CLEAR.pages(),
+					notify.sendEditorNotification('page_deleted', pageToDelete.data.title),
+				]);
 
 				return apiResponseLogger(200, 'Page deleted successfully');
 			}).pipe(Notifications.Provide),

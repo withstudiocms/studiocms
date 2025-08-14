@@ -93,6 +93,8 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 						name: folderName,
 						parent: parentFolder || null,
 					}),
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
 					notify.sendEditorNotification('folder_updated', folderName),
 				]);
 
@@ -130,6 +132,8 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				yield* Effect.all([
 					sdk.DELETE.folder(id),
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
 					notify.sendEditorNotification('folder_deleted', folderName),
 				]);
 

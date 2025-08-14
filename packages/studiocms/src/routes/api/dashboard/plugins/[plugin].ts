@@ -24,7 +24,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Check if user has permission
-				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel?.isAdmin === true;
 				if (!isAuthorized) {
 					return apiResponseLogger(403, 'Unauthorized');
 				}

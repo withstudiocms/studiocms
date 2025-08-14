@@ -10,11 +10,19 @@ const html = pipe(
 	{
 		queryParam: Astro.url.searchParams.get('content'),
 		preQuery: Astro.url.searchParams.get('preload-content'),
-		astroJsonData: (await Astro.request.json()) as FullJsonData,
+		astroJsonData: await (async () => {
+			const ct = Astro.request.headers.get('content-type') ?? '';
+			if (!ct.toLowerCase().includes('application/json')) return undefined;
+			try {
+				return (await Astro.request.json()) as FullJsonData;
+			} catch {
+				return undefined;
+			}
+		})(),
 	},
 	(data) => {
 		const { queryParam, preQuery, astroJsonData } = data;
-		if (astroJsonData?.content) {
+		if (astroJsonData && astroJsonData.content !== undefined) {
 			return astroJsonData.content;
 		}
 		if (queryParam && queryParam !== 'null') {

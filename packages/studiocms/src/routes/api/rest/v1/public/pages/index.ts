@@ -21,8 +21,6 @@ export const { ALL, GET, OPTIONS } = createEffectAPIRoutes(
 				const titleFilter = searchParams.get('title');
 				const slugFilter = searchParams.get('slug');
 				const authorFilter = searchParams.get('author');
-				const draftFilter = searchParams.get('draft') === 'true';
-				const publishedFilter = searchParams.get('published') === 'true';
 				const parentFolderFilter = searchParams.get('parentFolder');
 
 				let filteredPages = pages;
@@ -37,14 +35,6 @@ export const { ALL, GET, OPTIONS } = createEffectAPIRoutes(
 
 				if (authorFilter) {
 					filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
-				}
-
-				if (draftFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
-				}
-
-				if (publishedFilter) {
-					filteredPages = filteredPages.filter((page) => !page.data.draft);
 				}
 
 				if (parentFolderFilter) {
@@ -62,7 +52,10 @@ export const { ALL, GET, OPTIONS } = createEffectAPIRoutes(
 		cors: { methods: ['GET', 'OPTIONS'] },
 		onError: (error) => {
 			console.error('API Error:', error);
-			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{ status: 500, statusText: 'Internal Server Error' }
+			);
 		},
 	}
 );

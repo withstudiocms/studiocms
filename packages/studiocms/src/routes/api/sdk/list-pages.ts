@@ -25,13 +25,21 @@ export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
 	{
 		cors: { methods: ['GET', 'OPTIONS'] },
 		onError: (error) => {
-			console.error('API Error:', error);
-			return createJsonResponse(
-				{ error: 'Something went wrong' },
-				{
-					status: 500,
-				}
-			);
+			const status =
+				typeof error === 'object' &&
+				error !== null &&
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				'status' in (error as any) &&
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				typeof (error as any).status === 'number'
+					? // biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+						(error as any).status
+					: 500;
+			const message =
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				status >= 500 ? 'Something went wrong' : ((error as any)?.message ?? 'Request failed');
+			console.error('routes/sdk/list-pages error', { status, message });
+			return createJsonResponse({ error: message }, { status });
 		},
 	}
 );

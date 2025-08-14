@@ -25,7 +25,7 @@ interface UpdatePageJson {
 export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		GET: (ctx) =>
-			genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
+			genLogger('studioCMS:rest:v1:pages:[id]:GET')(function* () {
 				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
 				if (user instanceof Response) {
@@ -53,7 +53,7 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				return createJsonResponse(page);
 			}),
 		PATCH: (ctx) =>
-			genLogger('studioCMS:rest:v1:public:pages:[id]:PATCH')(function* () {
+			genLogger('studioCMS:rest:v1:pages:[id]:PATCH')(function* () {
 				const [sdk, user, notifier] = yield* Effect.all([
 					SDKCore,
 					verifyAuthTokenFromHeader(ctx),
@@ -94,6 +94,9 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				if (!content.id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
+				if (data.id !== id) {
+					return apiResponseLogger(400, 'Payload id does not match path id');
 				}
 
 				const currentPageData = yield* sdk.GET.page.byId(id);
@@ -169,7 +172,7 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				return apiResponseLogger(200, 'Page updated successfully');
 			}).pipe(Notifications.Provide),
 		DELETE: (ctx) =>
-			genLogger('studioCMS:rest:v1:public:pages:[id]:DELETE')(function* () {
+			genLogger('studioCMS:rest:v1:pages:[id]:DELETE')(function* () {
 				const [sdk, user, notifier] = yield* Effect.all([
 					SDKCore,
 					verifyAuthTokenFromHeader(ctx),

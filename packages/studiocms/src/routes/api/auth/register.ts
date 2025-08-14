@@ -67,7 +67,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				if (!checkEmail.success)
 					return yield* badFormDataEntry('Invalid email', checkEmail.error.message);
 
-				const invalidEmailDomains: string[] = ['example.com', 'text.com', 'testing.com'];
+				const invalidEmailDomains: string[] = ['example.com', 'test.com', 'testing.com'];
 
 				if (invalidEmailDomains.includes(checkEmail.data.split('@')[1])) {
 					return yield* badFormDataEntry('Invalid Email', 'Must be from a valid domain');

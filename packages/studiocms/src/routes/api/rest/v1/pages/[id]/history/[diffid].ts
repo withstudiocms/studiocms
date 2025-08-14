@@ -44,6 +44,10 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Diff not found');
 				}
 
+				if (diff.pageId !== id) {
+					return apiResponseLogger(404, 'Diff not found');
+				}
+
 				return createJsonResponse(diff);
 			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),

@@ -31,23 +31,26 @@ export const { POST, PATCH, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// Check if user is logged in
 				if (!ctx.locals.StudioCMS.security?.userSessionData.isLoggedIn) {
-					return apiResponseLogger(403, 'Unauthorized');
+					return apiResponseLogger(401, 'Authentication required');
 				}
 
 				// Check if user has permission
 				if (!ctx.locals.StudioCMS.security?.userPermissionLevel.isOwner) {
-					return apiResponseLogger(403, 'Unauthorized');
+					return apiResponseLogger(403, 'Forbidden');
 				}
 
 				// Get Json Data
 				const smtpConfig = yield* parseAPIContextJson(ctx, SmtpConfigSchema);
 
 				// Validate form data
-				if (!smtpConfig.port) {
-					return apiResponseLogger(400, 'Invalid form data, port is required');
+				if (!Number.isInteger(smtpConfig.port) || smtpConfig.port < 1 || smtpConfig.port > 65535) {
+					return apiResponseLogger(
+						400,
+						'Invalid form data, port must be an integer between 1 and 65535'
+					);
 				}
 
-				if (!smtpConfig.host) {
+				if (typeof smtpConfig.host !== 'string' || smtpConfig.host.trim() === '') {
 					return apiResponseLogger(400, 'Invalid form data, host is required');
 				}
 
@@ -55,7 +58,10 @@ export const { POST, PATCH, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Invalid form data, secure must be a boolean');
 				}
 
-				if (!smtpConfig.default_sender) {
+				if (
+					typeof smtpConfig.default_sender !== 'string' ||
+					smtpConfig.default_sender.trim() === ''
+				) {
 					return apiResponseLogger(400, 'Invalid form data, default_sender is required');
 				}
 
@@ -112,9 +118,19 @@ export const { POST, PATCH, OPTIONS, ALL } = createEffectAPIRoutes(
 	},
 	{
 		cors: { methods: ['POST', 'PATCH', 'OPTIONS'] },
-		onError: (error) => {
+		// biome-ignore lint/suspicious/noExplicitAny: allows for better error handling
+		onError: (error: any) => {
 			console.error('API Error:', error);
-			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
+			const isClientError =
+				error?.status === 400 ||
+				error?.name === 'SyntaxError' ||
+				error?._tag === 'ParseError' ||
+				error?._tag === 'JSONParseError' ||
+				(typeof error?.name === 'string' && error.name.includes('Schema'));
+			return createJsonResponse(
+				{ error: isClientError ? 'Invalid request body' : 'Internal Server Error' },
+				{ status: isClientError ? 400 : 500 }
+			);
 		},
 	}
 );

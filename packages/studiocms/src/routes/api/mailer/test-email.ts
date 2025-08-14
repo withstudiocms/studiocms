@@ -47,9 +47,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				});
 
 				if ('error' in response) {
-					return apiResponseLogger(500, response.error);
+					console.error('Mailer test-email failed:', response.error);
+					return apiResponseLogger(500, 'Failed to send test email');
 				}
-				return apiResponseLogger(200, response.message);
+				return apiResponseLogger(200, 'Test email sent');
 			}).pipe(Mailer.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),

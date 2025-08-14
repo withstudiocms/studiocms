@@ -84,8 +84,12 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				);
 
 				// If no user is found, return an error
+				// If no user is found, return a generic success to avoid account enumeration
 				if (emailSearch.length === 0) {
-					return apiResponseLogger(404, 'User not found');
+					return apiResponseLogger(
+						200,
+						'If an account exists for this email, a reset link has been sent.'
+					);
 				}
 
 				// Get the first user from the search results
@@ -134,8 +138,11 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(500, `Failed to send email to user: ${mailRes.error}`);
 				}
 
-				// If everything is successful, return a success response
-				return apiResponseLogger(200, 'Password reset link sent successfully');
+				// Always return a generic success response
+				return apiResponseLogger(
+					200,
+					'If an account exists for this email, a reset link has been sent.'
+				);
 			}).pipe(Effect.provide(deps)),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),

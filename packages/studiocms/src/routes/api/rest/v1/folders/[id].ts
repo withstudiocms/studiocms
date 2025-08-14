@@ -88,7 +88,11 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Folder not found');
 				}
 
-				yield* notifier.sendEditorNotification('folder_updated', folderName);
+				yield* Effect.all([
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
+					notifier.sendEditorNotification('folder_updated', folderName),
+				]);
 				return apiResponseLogger(200, 'Folder updated successfully');
 			}).pipe(Notifications.Provide),
 		DELETE: (ctx) =>

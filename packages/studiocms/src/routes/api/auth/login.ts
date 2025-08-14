@@ -42,23 +42,23 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					])
 				);
 
-				if (!username) return yield* badFormDataEntry('Missing field', 'Username is required');
-				if (!password) return yield* badFormDataEntry('Missing field', 'Password is required');
+				if (!username) return yield* badFormDataEntry('Invalid credentials', 'Invalid credentials');
+				if (!password) return yield* badFormDataEntry('Invalid credentials', 'Invalid credentials');
 
 				const existingUser = yield* sdk.GET.users.byUsername(username);
 
 				// If the user does not exist, return an ambiguous error
 				if (!existingUser)
-					return yield* badFormDataEntry('Invalid credentials', 'Username is invalid');
+					return yield* badFormDataEntry('Invalid credentials', 'Invalid credentials');
 
 				// Check if the user has a password or is using a oAuth login
 				if (!existingUser.password)
-					return yield* badFormDataEntry('Incorrect method', 'User is using OAuth login');
+					return yield* badFormDataEntry('Invalid credentials', 'Invalid credentials');
 
 				const validPassword = yield* verifyPasswordHash(existingUser.password, password);
 
 				if (!validPassword)
-					return yield* badFormDataEntry('Invalid credentials', 'Password is invalid');
+					return yield* badFormDataEntry('Invalid credentials', 'Invalid credentials');
 
 				const isEmailAccountVerified = yield* isEmailVerified(existingUser);
 

@@ -76,11 +76,7 @@ export const { GET, POST, ALL, OPTIONS } = createEffectAPIRoutes(
 					);
 				}
 
-				return new Response(JSON.stringify(filteredPages), {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+				return createJsonResponse(filteredPages);
 			}),
 		POST: (ctx) =>
 			genLogger('studioCMS:rest:v1:public:pages:POST')(function* () {
@@ -146,7 +142,7 @@ export const { GET, POST, ALL, OPTIONS } = createEffectAPIRoutes(
 						description: description || '',
 						authorId: userId || null,
 						updatedAt: new Date(),
-						publishedAt: new Date(),
+						publishedAt: restPageData?.draft ? undefined : new Date(),
 						...restPageData,
 					},
 					{ ...contentData }

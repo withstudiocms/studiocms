@@ -64,20 +64,32 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const hashedPassword = yield* pass.hashPassword(password);
 
-				const userUpdate = {
-					password: hashedPassword,
-				};
+				// Verify the reset token and derive the userId from it
+				const isTokenValid = yield* sdk.resetTokenBucket.check(token);
+				if (!isTokenValid) {
+					return apiResponseLogger(403, 'Invalid or expired reset token');
+				}
 
-				const userData = yield* sdk.GET.users.byId(userid);
+				const tokenInfo = yield* sdk.testToken(token);
+				if (!tokenInfo || !tokenInfo.userId) {
+					return apiResponseLogger(403, 'Invalid or expired reset token');
+				}
+
+				const targetUserId = tokenInfo.userId as string;
+
+				const userUpdate = { password: hashedPassword };
+
+				const userData = yield* sdk.GET.users.byId(targetUserId);
 
 				if (!userData) {
 					return apiResponseLogger(404, 'User not found');
 				}
 
+				yield* sdk.AUTH.user.update(targetUserId, userUpdate);
+
 				yield* Effect.all([
-					sdk.AUTH.user.update(userid, userUpdate),
-					sdk.resetTokenBucket.delete(userid),
-					notify.sendUserNotification('account_updated', userid),
+					sdk.resetTokenBucket.delete(targetUserId),
+					notify.sendUserNotification('account_updated', targetUserId),
 					notify.sendAdminNotification('user_updated', userData.username),
 				]);
 

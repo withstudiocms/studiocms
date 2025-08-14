@@ -40,23 +40,17 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const searchParams = ctx.url.searchParams;
 
-				const limit = searchParams.get('limit');
+				const limitParam = searchParams.get('limit');
+				const parsedLimit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+				const limit =
+					typeof parsedLimit === 'number' && Number.isFinite(parsedLimit) && parsedLimit > 0
+						? Math.min(parsedLimit, 100) // clamp to protect backend
+						: undefined;
 
-				let diffs: {
-					id: string;
-					userId: string;
-					pageId: string;
-					timestamp: Date | null;
-					pageMetaData: unknown;
-					pageContentStart: string;
-					diff: string | null;
-				}[] = [];
-
-				if (limit) {
-					diffs = yield* sdk.diffTracking.get.byPageId.latest(id, Number.parseInt(limit));
-				} else {
-					diffs = yield* sdk.diffTracking.get.byPageId.all(id);
-				}
+				const diffs =
+					limit !== undefined
+						? yield* sdk.diffTracking.get.byPageId.latest(id, limit)
+						: yield* sdk.diffTracking.get.byPageId.all(id);
 
 				return createJsonResponse(diffs);
 			}),

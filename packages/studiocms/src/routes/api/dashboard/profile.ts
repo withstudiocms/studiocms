@@ -61,7 +61,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// Check if user is logged in
 				if (!userData?.isLoggedIn) {
-					return apiResponseLogger(403, 'Unauthorized');
+					return apiResponseLogger(401, 'Unauthorized');
 				}
 
 				// Check if user has permission
@@ -135,6 +135,17 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 						if (!newPassword) {
 							return apiResponseLogger(400, 'Invalid form data, new password is required');
+						}
+
+						// Verify the current password matches the stored hash (when one exists)
+						if (currentPassword && userData.user?.password) {
+							const isValid = yield* pass.verifyPasswordHash(
+								userData.user.password,
+								currentPassword
+							);
+							if (!isValid) {
+								return apiResponseLogger(400, 'Invalid current password');
+							}
 						}
 
 						if (!confirmNewPassword) {

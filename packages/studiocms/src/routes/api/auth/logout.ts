@@ -30,13 +30,14 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return redirect(StudioCMSRoutes.authLinks.loginURL);
 				}
 
-				// If there is no user, redirect to the login page
+				// If there is no user, delete cookie and redirect to the login page
 				if (!user || user === null) {
+					yield* deleteSessionTokenCookie(ctx);
 					return redirect(StudioCMSRoutes.authLinks.loginURL);
 				}
 
 				// Invalidate the session and delete the session token cookie
-				yield* Effect.all([invalidateSession(user.id), deleteSessionTokenCookie(ctx)]);
+				yield* Effect.all([invalidateSession(session.id), deleteSessionTokenCookie(ctx)]);
 
 				return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
 			}).pipe(Session.Provide),

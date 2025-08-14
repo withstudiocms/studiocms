@@ -42,6 +42,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Invalid ID or Type');
 				}
 
+				if (!['data', 'content', 'both'].includes(type)) {
+					return apiResponseLogger(400, 'Invalid Type');
+				}
+
 				const data = yield* sdk.diffTracking.revertToDiff(id, type);
 
 				yield* Effect.all([

@@ -22,6 +22,19 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
 				}
 
+				// Require authentication
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+				// Restrict to admins/owners (or relax below to allow "self" requests only)
+				const isPrivileged =
+					ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin ||
+					ctx.locals.StudioCMS.security?.userPermissionLevel.isOwner;
+				if (!isPrivileged) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+
 				const { userId } = yield* readAPIContextJson<{ userId: string }>(ctx);
 
 				if (!userId) {

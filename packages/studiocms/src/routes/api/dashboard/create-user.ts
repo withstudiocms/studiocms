@@ -70,6 +70,32 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Missing field: Rank is required');
 				}
 
+				// Validate target rank and ensure caller has sufficient privilege
+				const allowedRanks = new Set(['owner', 'admin'] as const);
+				if (!allowedRanks.has(rank as ['owner', 'admin'][number])) {
+					return apiResponseLogger(400, 'Invalid rank');
+				}
+				const callerPerm = yield* userHelper.getUserPermissionLevel(userData);
+				const rankToPerm = (r: typeof rank) => {
+					switch (r) {
+						case 'owner':
+							return User.UserPermissionLevel.owner;
+						case 'admin':
+							return User.UserPermissionLevel.admin;
+						case 'editor':
+							return User.UserPermissionLevel.editor;
+						case 'visitor':
+							return User.UserPermissionLevel.visitor;
+						default:
+							return User.UserPermissionLevel.unknown;
+					}
+				};
+				const targetPerm = rankToPerm(rank);
+				// Caller must strictly outrank the target rank they want to assign
+				if (callerPerm <= targetPerm) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+
 				// If the email is invalid, return an error
 				const checkEmail = z.coerce
 					.string()

@@ -55,13 +55,13 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const existingUser = yield* sdk.GET.users.byId(id);
 
 				if (!existingUser) {
-					return apiResponseLogger(400, 'User not found');
+					return apiResponseLogger(404, 'User not found');
 				}
 
 				const { avatar, createdAt, email, name, permissionsData, updatedAt, url, username } =
 					existingUser;
 
-				const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+				const existingUserRank = (permissionsData?.rank ?? 'visitor') as PermissionRank;
 
 				const data = {
 					avatar,
@@ -75,7 +75,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 					username,
 				};
 
-				const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
+				const loggedInUser = yield* sdk.GET.users.byId(user.userId);
 
 				if (!loggedInUser || loggedInUser === undefined) {
 					return apiResponseLogger(400, 'User Error');
@@ -84,7 +84,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const permissionLevelInput = {
 					isLoggedIn: true,
 					user: loggedInUser,
-					permissionLevel: rank as PermissionRank,
+					permissionLevel: (loggedInUser.permissionsData?.rank ?? 'visitor') as PermissionRank,
 				};
 
 				const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);
@@ -147,7 +147,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 
 				const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
 
-				const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
+				const loggedInUser = yield* sdk.GET.users.byId(user.userId);
 
 				if (!loggedInUser || loggedInUser === undefined) {
 					return apiResponseLogger(400, 'User Error');
@@ -156,7 +156,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const permissionLevelInput = {
 					isLoggedIn: true,
 					user: loggedInUser,
-					permissionLevel: rank as PermissionRank,
+					permissionLevel: (loggedInUser.permissionsData?.rank ?? 'visitor') as PermissionRank,
 				};
 
 				const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);
@@ -186,6 +186,25 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 
 				if (!newRank) {
 					return apiResponseLogger(400, 'Missing field: Rank is required');
+				}
+
+				// Prevent privilege escalation: actor cannot assign a rank >= their own
+				const requiredPermsForNewRank = (() => {
+					switch (newRank) {
+						case 'owner':
+							return User.UserPermissionLevel.owner;
+						case 'admin':
+							return User.UserPermissionLevel.admin;
+						case 'editor':
+							return User.UserPermissionLevel.editor;
+						case 'visitor':
+							return User.UserPermissionLevel.visitor;
+						default:
+							return User.UserPermissionLevel.unknown;
+					}
+				})();
+				if (userPermissionLevel <= requiredPermsForNewRank) {
+					return apiResponseLogger(403, 'Forbidden');
 				}
 
 				const updateRank = yield* sdk.UPDATE.permissions({
@@ -250,6 +269,9 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				if (!id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
 				}
+				if (id === user.userId) {
+					return apiResponseLogger(400, 'Cannot delete your own account');
+				}
 
 				const existingUser = yield* sdk.GET.users.byId(id);
 
@@ -261,7 +283,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 
 				const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
 
-				const loggedInUser = (yield* sdk.GET.users.all()).find((user) => user.id === id);
+				const loggedInUser = yield* sdk.GET.users.byId(user.userId);
 
 				if (!loggedInUser || loggedInUser === undefined) {
 					return apiResponseLogger(400, 'User Error');
@@ -270,7 +292,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const permissionLevelInput = {
 					isLoggedIn: true,
 					user: loggedInUser,
-					permissionLevel: rank as PermissionRank,
+					permissionLevel: (loggedInUser.permissionsData?.rank ?? 'visitor') as PermissionRank,
 				};
 
 				const userPermissionLevel = yield* userUtils.getUserPermissionLevel(permissionLevelInput);

@@ -108,6 +108,11 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Missing field: Rank is required');
 				}
 
+				const userPerms = ctx.locals.StudioCMS.security?.userPermissionLevel;
+				if (rank === 'owner' && !userPerms?.isOwner) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+
 				// If the email is invalid, return an error
 				const checkEmail = z.coerce
 					.string()

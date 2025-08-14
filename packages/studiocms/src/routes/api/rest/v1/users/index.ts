@@ -70,19 +70,25 @@ export const { ALL, GET, POST, OPTIONS } = createEffectAPIRoutes(
 				const rankFilter = searchParams.get('rank');
 				const usernameFilter = searchParams.get('username');
 				const nameFilter = searchParams.get('name');
+				const usernameFilterLower = usernameFilter?.toLowerCase();
+				const nameFilterLower = nameFilter?.toLowerCase();
 
 				let filteredData = data;
 
 				if (rankFilter) {
-					filteredData = filteredData.filter((user) => user.rank === rankFilter);
+					filteredData = filteredData.filter((u) => u.rank === rankFilter);
 				}
 
-				if (usernameFilter) {
-					filteredData = filteredData.filter((user) => user.username.includes(usernameFilter));
+				if (usernameFilterLower) {
+					filteredData = filteredData.filter((u) =>
+						(u.username ?? '').toLowerCase().includes(usernameFilterLower)
+					);
 				}
 
-				if (nameFilter) {
-					filteredData = filteredData.filter((user) => user.name.includes(nameFilter));
+				if (nameFilterLower) {
+					filteredData = filteredData.filter((u) =>
+						(u.name ?? '').toLowerCase().includes(nameFilterLower)
+					);
 				}
 
 				return createJsonResponse(filteredData);
@@ -119,6 +125,11 @@ export const { ALL, GET, POST, OPTIONS } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Missing field: Username is required');
 				}
 
+				// Only owners can assign the 'owner' rank
+				if (newUserRank === 'owner' && rank !== 'owner') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
+
 				if (!password) {
 					password = yield* sdk.generateRandomPassword(12);
 				}
@@ -133,6 +144,10 @@ export const { ALL, GET, POST, OPTIONS } = createEffectAPIRoutes(
 
 				if (!newUserRank) {
 					return apiResponseLogger(400, 'Missing field: Rank is required');
+				}
+				// Prevent privilege escalation: admins cannot assign owner rank
+				if (rank === 'admin' && newUserRank === 'owner') {
+					return apiResponseLogger(403, 'Forbidden: insufficient permission to assign owner rank');
 				}
 
 				// If the email is invalid, return an error

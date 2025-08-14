@@ -28,7 +28,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				if (page.data.draft) {
-					return apiResponseLogger(403, 'Unauthorized');
+					return apiResponseLogger(404, 'Page not found');
 				}
 
 				return createJsonResponse(page);
@@ -40,7 +40,10 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 		cors: { methods: ['GET', 'OPTIONS'] },
 		onError: (error) => {
 			console.error('API Error:', error);
-			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{ status: 500, statusText: 'Internal Server Error' }
+			);
 		},
 	}
 );

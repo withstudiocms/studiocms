@@ -39,7 +39,15 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 					.get(
 						'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
 					)
-					.pipe(Effect.flatMap((res) => res.text));
+					.pipe(
+						Effect.flatMap((res) =>
+							res.status === 200
+								? res.text
+								: Effect.fail(
+										new Error(`Failed to fetch CHANGELOG.md: ${res.status} ${res.toString()}`)
+									)
+						)
+					);
 			});
 
 		const generateChangelog = (raw: string) =>

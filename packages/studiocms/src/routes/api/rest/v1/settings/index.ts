@@ -33,7 +33,7 @@ export const { GET, PATCH, ALL, OPTIONS } = createEffectAPIRoutes(
 			}),
 		PATCH: (ctx) =>
 			genLogger('studioCMS:rest:v1:settings:PATCH')(function* () {
-				const user = yield* verifyAuthTokenFromHeader(ctx);
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
 				if (user instanceof Response) {
 					return user;
@@ -52,23 +52,28 @@ export const { GET, PATCH, ALL, OPTIONS } = createEffectAPIRoutes(
 					loginPageCustomImage?: string;
 				}>(ctx);
 
-				if (!siteConfig.title) {
+				if (typeof siteConfig.title !== 'string' || siteConfig.title.trim() === '') {
 					return apiResponseLogger(400, 'Invalid form data, title is required');
 				}
 
-				if (!siteConfig.description) {
+				if (typeof siteConfig.description !== 'string' || siteConfig.description.trim() === '') {
 					return apiResponseLogger(400, 'Invalid form data, description is required');
 				}
 
-				if (!siteConfig.loginPageBackground) {
+				if (
+					typeof siteConfig.loginPageBackground !== 'string' ||
+					siteConfig.loginPageBackground.trim() === ''
+				) {
 					return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
 				}
 
-				if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
+				if (
+					siteConfig.loginPageBackground === 'custom' &&
+					(typeof siteConfig.loginPageCustomImage !== 'string' ||
+						siteConfig.loginPageCustomImage.trim() === '')
+				) {
 					return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
 				}
-
-				const sdk = yield* SDKCore;
 
 				yield* sdk.UPDATE.siteConfig(siteConfig);
 
@@ -81,6 +86,10 @@ export const { GET, PATCH, ALL, OPTIONS } = createEffectAPIRoutes(
 		cors: { methods: ['GET', 'PATCH', 'OPTIONS'] },
 		onError: (error) => {
 			console.error('API Error:', error);
+			if (error instanceof SyntaxError) {
+				// Likely invalid JSON in request body
+				return createJsonResponse({ error: 'Invalid JSON' }, { status: 400 });
+			}
 			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
 		},
 	}

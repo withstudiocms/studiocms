@@ -42,6 +42,16 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 
 				const DefaultHeroOrUserSetOgImage = defaultOgImage || HERO_IMAGE;
 
+				if (typeof enableDiffs !== 'boolean') {
+					return createJsonResponse({ error: 'enableDiffs must be a boolean' }, { status: 400 });
+				}
+				if (typeof diffPerPage !== 'number' || !Number.isInteger(diffPerPage) || diffPerPage <= 0) {
+					return createJsonResponse(
+						{ error: 'diffPerPage must be a positive integer' },
+						{ status: 400 }
+					);
+				}
+
 				if (!title) {
 					return createJsonResponse(
 						{ error: 'Title is required' },
@@ -114,7 +124,7 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 		onError: (error) => {
 			if (error instanceof Error) {
 				console.error('Error in first time setup step 1:', error);
-				return createJsonResponse({ error: error.message }, { status: 500 });
+				return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
 			}
 			// Fallback for non-Error exceptions
 			console.error('Non-Error exception:', error);

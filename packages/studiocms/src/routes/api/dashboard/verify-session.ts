@@ -143,7 +143,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					logger.error(
 						`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
 					);
-					return responseBuilder(ctx, false, null, 'unknown');
+					return responseBuilder(ctx, true, user, 'unknown');
 				}
 
 				let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
