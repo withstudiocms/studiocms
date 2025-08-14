@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import { existsSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -8,11 +9,17 @@ import {
     importBundledFile,
     loadAndBundleConfigFile,
     loadConfigFile,
-} from '../dist/loader.js'; // Adjust path as needed
+} from '../dist/loader.js';
 
 // Create a temporary directory for testing
 const testDir = join(tmpdir(), `config-loader-test-${Date.now()}`);
 const testDirUrl = new URL(`file://${testDir}/`);
+
+// Ensure unique directory
+
+if (existsSync(testDir)) {
+    throw new Error(`Test directory already exists: ${testDir}`);
+}
 
 before(async () => {
     await mkdir(testDir, { recursive: true });
@@ -91,6 +98,8 @@ describe('Config Loader Utils', () => {
 
             assert.ok(result.code);
             assert.ok(result.dependencies.length > 0);
+            // Verify the bundled code includes the expected configuration
+            assert.ok(result.code.includes('external-config'));
         });
     });
 
@@ -114,19 +123,19 @@ describe('Config Loader Utils', () => {
             assert.ok(typeof result.default.timestamp === 'number');
         });
 
-        it('should clean up temporary files after import', async () => {
+        it('should successfully import and handle cleanup', async () => {
             const code = `export default { cleanup: 'test' };`;
-
-            await importBundledFile({
+            const result = await importBundledFile({
                 code,
                 root: testDirUrl,
                 label: 'cleanup-test'
             });
+            // Verify the import worked correctly
+            assert.ok(result.default);
+            assert.strictEqual(result.default.cleanup, 'test');
 
-            // Check that no temporary files are left behind
-            // (This is a bit tricky to test directly, but the function should handle cleanup)
-            // We can at least verify the import worked
-            assert.ok(true); // If we get here, cleanup likely worked
+            // Note: Actual cleanup verification would require mocking fs operations
+            // or checking the temp directory, which is beyond the scope of this test
         });
     });
 

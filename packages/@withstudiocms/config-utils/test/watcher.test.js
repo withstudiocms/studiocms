@@ -1,16 +1,12 @@
 import assert from 'node:assert';
-import { mkdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { after, before, describe, it } from 'node:test';
+import { after, describe, it } from 'node:test';
 import { exists, findConfig } from '../dist/watcher.js';
 
 // Create a temporary directory for testing
-const testDir = join(tmpdir(), `watcher-test-${Date.now()}`);
-
-before(() => {
-    mkdirSync(testDir, { recursive: true });
-});
+const testDir = mkdtempSync(join(tmpdir(), 'watcher-test-'));
 
 after(() => {
     rmSync(testDir, { recursive: true, force: true });

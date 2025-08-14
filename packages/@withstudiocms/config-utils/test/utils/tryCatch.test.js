@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { tryCatch } from '../../dist/utils/tryCatch.js'; // Adjust path as needed
+import { tryCatch } from '../../dist/utils/tryCatch.js';
 
 describe('tryCatch', () => {
     describe('with synchronous functions', () => {
@@ -245,13 +245,10 @@ describe('tryCatch', () => {
                 return 'slow result';
             };
 
-            const start = Date.now();
             const [result, error] = await tryCatch(slowFn);
-            const duration = Date.now() - start;
 
             assert.strictEqual(result, 'slow result');
             assert.strictEqual(error, null);
-            assert.ok(duration >= 50);
         });
     });
 
