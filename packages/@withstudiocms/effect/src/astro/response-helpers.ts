@@ -1,4 +1,4 @@
-import type { AllResponseOpts, createResponseOpts, OptionsResponseOpts } from './types.js';
+import type { AllResponseOpts, CreateResponseOpts, OptionsResponseOpts } from './types.js';
 
 /**
  * Generates a 204 No Content HTTP response for OPTIONS requests with appropriate CORS and allowed methods headers.
@@ -48,7 +48,7 @@ export const AllResponse = (opts?: AllResponseOpts): Response =>
  * @param opts - Optional settings for the response, including status code, status text, headers, and allowed origins.
  * @returns A `Response` object with the serialized JSON data and specified options.
  */
-export const createJsonResponse = <T>(data: T, opts: createResponseOpts = {}) =>
+export const createJsonResponse = <T>(data: T, opts: CreateResponseOpts = {}) =>
 	new Response(JSON.stringify(data), {
 		status: opts.status || 200,
 		statusText: opts.statusText || 'OK',
@@ -67,7 +67,7 @@ export const createJsonResponse = <T>(data: T, opts: createResponseOpts = {}) =>
  * @param opts - Optional settings for the response, including status, statusText, headers, and allowed origins.
  * @returns A `Response` object with the specified text content and options.
  */
-export const createTextResponse = (data: string, opts: createResponseOpts = {}) =>
+export const createTextResponse = (data: string, opts: CreateResponseOpts = {}) =>
 	new Response(data, {
 		status: opts.status || 200,
 		statusText: opts.statusText || 'OK',
@@ -86,7 +86,7 @@ export const createTextResponse = (data: string, opts: createResponseOpts = {}) 
  * @param opts - Optional settings for the response, including status, statusText, headers, and allowedOrigins.
  * @returns A `Response` object with the specified HTML content and headers.
  */
-export const createHtmlResponse = (data: string, opts: createResponseOpts = {}) =>
+export const createHtmlResponse = (data: string, opts: CreateResponseOpts = {}) =>
 	new Response(data, {
 		status: opts.status || 200,
 		statusText: opts.statusText || 'OK',
@@ -107,7 +107,7 @@ export const createHtmlResponse = (data: string, opts: createResponseOpts = {}) 
  * @param opts.allowedOrigins - Array of allowed origins for CORS, joined and set in the `Access-Control-Allow-Origin` header. Defaults to `*` if not provided.
  * @returns A `Response` object configured for a 302 redirect.
  */
-export const createRedirectResponse = (url: string, opts: createResponseOpts = {}) =>
+export const createRedirectResponse = (url: string, opts: CreateResponseOpts = {}) =>
 	new Response(null, {
 		status: 302,
 		statusText: 'Found',

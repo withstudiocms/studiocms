@@ -14,8 +14,8 @@ permissions:
   contents: read
   
 jobs:
-  withstudiocms-tests:
-    name: Run withstudiocms packages Tests
+  withstudiocms-typecheck:
+    name: Run withstudiocms TypeCheck
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -26,14 +26,73 @@ jobs:
           persist-credentials: false
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e
 
-      - name: Run withstudiocms packages Tests
+      - name: Run withstudiocms TypeCheck
+        run: pnpm ci:typecheck:withstudiocms
+
+  withstudiocms-tests:
+    name: Run withstudiocms Tests
+    runs-on: ubuntu-latest
+    needs: withstudiocms-typecheck
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+  
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e
+
+      - name: Run withstudiocms Tests
         run: pnpm ci:test:withstudiocms
 
-  build-studiocms-playground:
-    name: Build StudioCMS Playground
+  studiocms-typecheck:
+    name: Run StudioCMS TypeCheck
     runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e
+
+      - name: Run TypeCheck
+        run: pnpm ci:typecheck:studiocms
+
+  studiocms-plugin-typecheck:
+    name: Run StudioCMS Plugin & Packages TypeCheck
+    runs-on: ubuntu-latest
+    needs: studiocms-typecheck
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e
+
+      - name: Run TypeCheck for Plugins & Packages
+        run: pnpm ci:typecheck:studiocms-packages
+
+  studiocms-playground-test-build:
+    name: Build Packages and Playground
+    runs-on: ubuntu-latest
+    needs: 
+      - withstudiocms-typecheck
+      - withstudiocms-tests
+      - studiocms-typecheck
+      - studiocms-plugin-typecheck
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
@@ -50,45 +109,3 @@ jobs:
 
       - name: Build packages and playground
         run: pnpm build
-
-  test-studiocms-types:
-    name: Run StudioCMS TypeCheck
-    runs-on: ubuntu-latest
-    needs: build-studiocms-playground
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
-    steps:
-      - name: Check out code using Git
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
-
-      - name: Build StudioCMS Dependencies
-        run: pnpm --filter @withstudiocms/* build
-
-      - name: Run TypeCheck
-        run: pnpm --filter studiocms typecheck
-
-  test-studiocms-plugin-types:
-    name: Run StudioCMS Plugin & Packages TypeCheck
-    runs-on: ubuntu-latest
-    needs: build-studiocms-playground
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
-    steps:
-      - name: Check out code using Git
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
-
-      - name: Build package
-        run: pnpm build:studiocms
-
-      - name: Run TypeCheck for Plugins & Packages
-        run: pnpm --filter @studiocms/* typecheck

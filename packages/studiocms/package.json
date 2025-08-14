@@ -170,7 +170,6 @@
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "catalog:",
-		"deepmerge-ts": "catalog:",
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.52",
 		"dompurify": "^3.2.6",

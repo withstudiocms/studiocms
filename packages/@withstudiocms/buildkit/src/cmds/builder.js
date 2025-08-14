@@ -1,5 +1,4 @@
-
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import chalk from 'chalk';
 import esbuild from 'esbuild';
@@ -55,11 +54,21 @@ const dtsGen = (buildTsConfig, outdir) => ({
             const date = dt.format(new Date());
             console.log(`${chalk.dim(`[${date}]`)} Generating TypeScript declarations...`);
             try {
-                const res = execSync(`tsc --emitDeclarationOnly -p ${buildTsConfig} --outDir ./${outdir}`);
-                console.log(res.toString());
+                const res = execFileSync(
+                    'tsc',
+                    ['--emitDeclarationOnly', '-p', buildTsConfig, '--outDir', `./${outdir}`],
+                    { encoding: 'utf8' }
+                );
+                if (res) console.log(res);
                 console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
             } catch (error) {
-                console.error(chalk.dim(`[${date}] `) + chalk.red(`${error}\n\n${error.stdout.toString()}`));
+                const msg =
+                    (error && (error.message || String(error))) +
+                    '\n\n' +
+                    // stdout/stderr may be Buffer or string depending on exec options
+                    (typeof error?.stdout === 'string' ? error.stdout : error?.stdout?.toString?.() ?? '') +
+                    (typeof error?.stderr === 'string' ? error.stderr : error?.stderr?.toString?.() ?? '');
+                console.error(chalk.dim(`[${date}] `) + chalk.red(msg));
             }
         });
     },
@@ -154,17 +163,18 @@ export default async function builder(cmd, args) {
                     build.onEnd(async (result) => {
                         const date = dt.format(new Date());
                         if (result?.errors.length) {
-                            const errMsg = result.errors.join('\n');
-                            console.error(dim(`[${date}] `) + red(errMsg));
-                        } else {
-                            if (result.warnings.length) {
-                                console.info(
-                                    chalk.dim(`[${date}] `) +
-                                    chalk.yellow(`! updated with warnings:\n${result.warnings.join('\n')}`)
-                                );
-                            }
-                            console.info(chalk.dim(`[${date}] `) + chalk.green('√ updated'));
+                            const formatted = await esbuild.formatMessages(result.errors, { kind: 'error', color: true });
+                            console.error(chalk.dim(`[${date}] `) + chalk.red(formatted.join('\n')));
+                            return;
                         }
+                        if (result.warnings.length) {
+                            const formattedWarns = await esbuild.formatMessages(result.warnings, { kind: 'warning', color: true });
+                            console.info(
+                                chalk.dim(`[${date}] `) +
+                                chalk.yellow(`! updated with warnings:\n${formattedWarns.join('\n')}`)
+                            );
+                        }
+                        console.info(chalk.dim(`[${date}] `) + chalk.green('√ updated'));
                     });
                 },
             };

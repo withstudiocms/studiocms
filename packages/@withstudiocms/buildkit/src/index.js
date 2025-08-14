@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import builder from "./cmds/builder.js";
 import showHelp from "./cmds/help.js";
 import test from "./cmds/test.js";

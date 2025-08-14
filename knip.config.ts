@@ -12,7 +12,7 @@ import type { KnipConfig } from 'knip';
 const baseAstroWorkspaceConfig = {
 	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
-	ignore: ['**/node_modules/**', '**/dist/**'],
+	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**'],
 	astro: {
 		entry: ['src/**/*.astro'],
 		project: ['src/**/*.astro'],

@@ -73,6 +73,7 @@
 		"@effect/sql": "catalog:effect",
 		"@effect/typeclass": "catalog:effect",
 		"@effect/workflow": "catalog:effect",
+		"deepmerge-ts": "catalog:",
 		"effect": "catalog:effect",
 		"micromatch": "^4.0.8"
 	},
