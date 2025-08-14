@@ -29,39 +29,52 @@ export function getCorsHeaders(
 		};
 
 	const headers: Record<string, string> = {};
-	const origin = context.request.headers.get('Origin');
-
-	// Handle origin
-	// If credentials are enabled, '*' is not allowed. Reflect the request origin instead.
-	if (headers['Access-Control-Allow-Credentials'] === 'true') {
-		if (headers['Access-Control-Allow-Origin'] === '*' && origin) {
+	const origin =
+		context.request.headers.get('origin') ?? context.request.headers.get('Origin') ?? '';
+	// Handle origin according to configuration
+	const cfgOrigin = corsConfig.origin;
+	if (cfgOrigin === true) {
+		headers['Access-Control-Allow-Origin'] = '*';
+	} else if (typeof cfgOrigin === 'string') {
+		headers['Access-Control-Allow-Origin'] = cfgOrigin;
+	} else if (Array.isArray(cfgOrigin)) {
+		if (origin && cfgOrigin.includes(origin)) {
 			headers['Access-Control-Allow-Origin'] = origin;
-		} else if (headers['Access-Control-Allow-Origin'] === '*') {
-			// No Origin to reflect – avoid sending '*' with credentials
-			delete headers['Access-Control-Allow-Origin'];
 		}
 	}
-
-	// When reflecting origin, set Vary: Origin for correct caching behavior
-	if (headers['Access-Control-Allow-Origin'] && headers['Access-Control-Allow-Origin'] !== '*') {
-		headers['Vary'] = headers['Vary'] ? `${headers['Vary']}, Origin` : 'Origin';
-	}
-
+	// If cfgOrigin is false or undefined, do not set the header here.
 	// Handle methods
 	if (corsConfig.methods) {
 		headers['Access-Control-Allow-Methods'] = corsConfig.methods.join(', ');
 	}
-
 	// Handle headers
 	if (corsConfig.headers) {
 		headers['Access-Control-Allow-Headers'] = corsConfig.headers.join(', ');
+	} else if (context.request.method === 'OPTIONS') {
+		const acrh =
+			context.request.headers.get('access-control-request-headers') ??
+			context.request.headers.get('Access-Control-Request-Headers');
+		if (acrh) {
+			headers['Access-Control-Allow-Headers'] = acrh;
+		}
 	}
-
-	// Handle credentials
+	// Handle credentials and adjust origin accordingly
 	if (corsConfig.credentials) {
 		headers['Access-Control-Allow-Credentials'] = 'true';
+		// If credentials are enabled, '*' is not allowed. Reflect the request origin instead.
+		if (headers['Access-Control-Allow-Origin'] === '*') {
+			if (origin) {
+				headers['Access-Control-Allow-Origin'] = origin;
+			} else {
+				// No Origin to reflect – avoid sending '*' with credentials
+				delete headers['Access-Control-Allow-Origin'];
+			}
+		}
 	}
-
+	// When reflecting origin, set Vary: Origin for correct caching behavior
+	if (origin && headers['Access-Control-Allow-Origin'] === origin) {
+		headers['Vary'] = headers['Vary'] ? `${headers['Vary']}, Origin` : 'Origin';
+	}
 	return headers;
 }
 
