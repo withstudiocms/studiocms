@@ -62,6 +62,40 @@ export function getCorsHeaders(
 }
 
 /**
+ * Enum representing supported content types for API routes.
+ *
+ * @remarks
+ * This enum is used to specify the expected format of request or response bodies
+ * in API route utilities.
+ *
+ * @enum
+ * @property JSON - Represents JSON content type.
+ * @property FORM_DATA - Represents form data content type (e.g., multipart/form-data).
+ * @property TEXT - Represents plain text content type.
+ */
+enum SupportedValidatorContentType {
+	JSON = 'json',
+	FORM_DATA = 'formData',
+	TEXT = 'text',
+}
+
+/**
+ * Maps HTTP `Content-Type` header values to their corresponding request body parsing strategies.
+ *
+ * - `'application/json'` maps to `'json'`, indicating the body should be parsed as JSON.
+ * - `'application/x-www-form-urlencoded'` and `'multipart/form-data'` both map to `'formData'`, indicating the body should be parsed as form data.
+ *
+ * This map is useful for determining how to process incoming request bodies based on their `Content-Type` header.
+ */
+const SupportedContentTypeHeadersMap = {
+	'application/json': SupportedValidatorContentType.JSON,
+	'application/x-www-form-urlencoded': SupportedValidatorContentType.FORM_DATA,
+	'multipart/form-data': SupportedValidatorContentType.FORM_DATA,
+};
+
+type SupportedContentType = keyof typeof SupportedContentTypeHeadersMap;
+
+/**
  * Validates the incoming API request based on the provided validation options.
  *
  * @param context - The API context containing request details such as params, URL, and request object.
@@ -98,30 +132,36 @@ export async function validateRequest(
 	if (validate.body && context.request.method !== 'GET' && context.request.method !== 'HEAD') {
 		try {
 			const contentType = context.request.headers.get('content-type');
+
+			let bodyType: SupportedValidatorContentType = SupportedValidatorContentType.TEXT;
 			let body: AstroAPIRequestBody<'json' | 'text' | 'formData'>;
 
-			if (contentType?.includes('application/json')) {
-				body = await context.request.clone().json();
-			} else if (
-				contentType?.includes('application/x-www-form-urlencoded') ||
-				contentType?.includes('multipart/form-data')
-			) {
-				const formData = await context.request.clone().formData();
-				body = formData;
+			// Determine body type based on content type
+			if (contentType && contentType in SupportedContentTypeHeadersMap) {
+				bodyType = SupportedContentTypeHeadersMap[contentType as SupportedContentType];
+				body = await context.request.clone()[bodyType]();
 			} else {
+				bodyType = SupportedValidatorContentType.TEXT;
 				body = await context.request.clone().text();
 			}
 
-			if (validate.body) {
-				if ('json' in validate.body && !validate.body.json(body)) {
-					return 'Invalid JSON body';
-				}
-				if ('text' in validate.body && !validate.body.text(body)) {
-					return 'Invalid text body';
-				}
-				if ('formData' in validate.body && !validate.body.formData(body)) {
-					return 'Invalid form data body';
-				}
+			// Validate body based on type
+			switch (bodyType) {
+				case SupportedValidatorContentType.JSON:
+					if (validate.body.kind === 'json' && !validate.body.json(body)) {
+						return 'Invalid JSON body';
+					}
+					break;
+				case SupportedValidatorContentType.FORM_DATA:
+					if (validate.body.kind === 'formData' && !validate.body.formData(body as FormData)) {
+						return 'Invalid form data body';
+					}
+					break;
+				case SupportedValidatorContentType.TEXT:
+					if (validate.body.kind === 'text' && !validate.body.text(body as string)) {
+						return 'Invalid text body';
+					}
+					break;
 			}
 		} catch (_error) {
 			return 'Failed to parse request body';
