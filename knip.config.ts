@@ -70,6 +70,9 @@ const extras = (pkg: string) => {
 			],
 			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
 		},
+		'config-utils': {
+			entry: ['src/**/*.{js,cjs,mjs,ts,mts}', 'test/**/*.{js,cjs,mjs,ts,mts}'],
+		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
 	return supportsExtras ? extrasMap[pkg] : {};

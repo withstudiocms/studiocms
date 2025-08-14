@@ -8,7 +8,9 @@ on:
       - reopened
       - synchronize
 
-concurrency: testing-${{ github.ref }}
+concurrency: 
+  group: testing-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
