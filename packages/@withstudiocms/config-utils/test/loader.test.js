@@ -11,7 +11,7 @@ import {
 } from '../dist/loader.js'; // Adjust path as needed
 
 // Create a temporary directory for testing
-const testDir = join(tmpdir(), 'config-loader-test-' + Date.now());
+const testDir = join(tmpdir(), `config-loader-test-${Date.now()}`);
 const testDirUrl = new URL(`file://${testDir}/`);
 
 before(async () => {
