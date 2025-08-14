@@ -4,9 +4,11 @@ import { z } from 'astro/zod';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../effect.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
@@ -17,7 +19,13 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				const userUtils = yield* User;
 				const passwordUtils = yield* Password;
 
-				const reqData = yield* Effect.tryPromise(() => ctx.request.json());
+				const reqData = yield* readAPIContextJson<{
+					username: string;
+					displayname: string;
+					email: string;
+					password: string;
+					confirmPassword: string;
+				}>(ctx);
 
 				const { username, displayname, email, password, confirmPassword } = reqData;
 
@@ -31,15 +39,15 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				for (const { field, name } of requiredFields) {
 					if (!field) {
-						return new Response(JSON.stringify({ error: `${name} is required` }), { status: 400 });
+						return createJsonResponse({ error: `${name} is required` }, { status: 400 });
 					}
 				}
 
 				if (password !== confirmPassword) {
-					return new Response(
-						JSON.stringify({
+					return createJsonResponse(
+						{
 							error: 'Passwords do not match',
-						}),
+						},
 						{
 							status: 400,
 						}
@@ -49,10 +57,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				// If the username is invalid, return an error
 				const usernameTest = yield* userUtils.verifyUsernameInput(username);
 				if (usernameTest !== true) {
-					return new Response(
-						JSON.stringify({
+					return createJsonResponse(
+						{
 							error: usernameTest,
-						}),
+						},
 						{
 							status: 400,
 						}
@@ -62,10 +70,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				// If the password is invalid, return an error
 				const passwordTest = yield* passwordUtils.verifyPasswordStrength(password);
 				if (passwordTest !== true) {
-					return new Response(
-						JSON.stringify({
+					return createJsonResponse(
+						{
 							error: passwordTest,
-						}),
+						},
 						{
 							status: 400,
 						}
@@ -79,10 +87,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					.safeParse(email);
 
 				if (!checkEmail.success) {
-					return new Response(
-						JSON.stringify({
+					return createJsonResponse(
+						{
 							error: checkEmail.error.message,
-						}),
+						},
 						{
 							status: 400,
 						}
@@ -96,9 +104,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					rank: 'owner',
 				});
 
-				return new Response(JSON.stringify({ message: 'Success' }), {
-					status: 200,
-				});
+				return createJsonResponse({ message: 'Success' }, { status: 200 });
 			}).pipe(User.Provide, Password.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
@@ -108,20 +114,14 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 		onError: (error) => {
 			if (error instanceof Error) {
 				console.error('Error in first time setup step 2:', error);
-				return new Response(JSON.stringify({ error: error.message }), {
-					status: 500,
-					statusText: 'Internal Server Error',
-				});
+				return createJsonResponse({ error: error.message }, { status: 500 });
 			}
 			// Fallback for non-Error exceptions
 			console.error('Non-Error exception:', error);
 			// Return a generic error response
 			// This could happen if the error is not an instance of Error
 			// or if the error handling is not as expected.
-			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-				status: 500,
-				statusText: 'Internal Server Error',
-			});
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
 		},
 	}
 );

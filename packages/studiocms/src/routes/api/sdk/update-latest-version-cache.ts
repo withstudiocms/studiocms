@@ -3,19 +3,11 @@ import { SDKCore } from 'studiocms:sdk';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
 } from '../../../effect.js';
-
-const createJsonResponse = (data: unknown, status = 200) =>
-	new Response(JSON.stringify(data), {
-		status,
-		headers: {
-			'Content-Type': 'application/json',
-			Date: new Date().toUTCString(),
-		},
-	});
 
 export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
 	{
@@ -33,7 +25,12 @@ export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
 		cors: { methods: ['GET', 'OPTIONS'] },
 		onError: (error) => {
 			logger.error(`API Error: ${(error as Error).message}`);
-			return createJsonResponse({ error: 'Something went wrong' }, 500);
+			return createJsonResponse(
+				{ error: 'Something went wrong' },
+				{
+					status: 500,
+				}
+			);
 		},
 	}
 );

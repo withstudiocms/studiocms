@@ -46,6 +46,7 @@ export function getCorsHeaders(
 	// Handle methods
 	if (corsConfig.methods) {
 		headers['Access-Control-Allow-Methods'] = corsConfig.methods.join(', ');
+		headers.Allow = corsConfig.methods.join(', ');
 	}
 	// Handle headers
 	if (corsConfig.headers) {

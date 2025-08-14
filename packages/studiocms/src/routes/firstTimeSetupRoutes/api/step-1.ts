@@ -2,9 +2,11 @@ import { SDKCore } from 'studiocms:sdk';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../effect.js';
 
 const HERO_IMAGE =
@@ -16,7 +18,16 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 			genLogger('studiocms:first-time-setup:step-1:POST')(function* () {
 				const sdk = yield* SDKCore;
 
-				const reqData = yield* Effect.tryPromise(() => ctx.request.json());
+				const reqData = yield* readAPIContextJson<{
+					title: string;
+					description: string;
+					defaultOgImage: string;
+					siteIcon: string;
+					enableDiffs: boolean;
+					diffPerPage: number;
+					loginPageBackground: string;
+					loginPageCustomImage: string;
+				}>(ctx);
 
 				const {
 					title,
@@ -32,10 +43,8 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 				const DefaultHeroOrUserSetOgImage = defaultOgImage || HERO_IMAGE;
 
 				if (!title) {
-					return new Response(
-						JSON.stringify({
-							error: 'Title is required',
-						}),
+					return createJsonResponse(
+						{ error: 'Title is required' },
 						{
 							status: 400,
 						}
@@ -43,10 +52,8 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 				}
 
 				if (!description) {
-					return new Response(
-						JSON.stringify({
-							error: 'Description is required',
-						}),
+					return createJsonResponse(
+						{ error: 'Description is required' },
 						{
 							status: 400,
 						}
@@ -55,11 +62,11 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 
 				if (loginPageBackground === 'custom') {
 					if (!loginPageCustomImage) {
-						return new Response(
-							JSON.stringify({
+						return createJsonResponse(
+							{
 								error:
 									'Custom login page image is required if "custom" login page background is set',
-							}),
+							},
 							{
 								status: 400,
 							}
@@ -70,11 +77,11 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 				const Config = yield* sdk.GET.siteConfig();
 
 				if (Config) {
-					return new Response(
-						JSON.stringify({
+					return createJsonResponse(
+						{
 							error:
 								'Config already exists, please delete the existing config to run setup again. Or create a new database.',
-						}),
+						},
 						{
 							status: 400,
 						}
@@ -97,9 +104,7 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 
 				yield* sdk.INIT.ghostUser();
 
-				return new Response(JSON.stringify({ message: 'Success' }), {
-					status: 200,
-				});
+				return createJsonResponse({ message: 'Success' }, { status: 200 });
 			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
@@ -109,20 +114,14 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 		onError: (error) => {
 			if (error instanceof Error) {
 				console.error('Error in first time setup step 1:', error);
-				return new Response(JSON.stringify({ error: error.message }), {
-					status: 500,
-					statusText: 'Internal Server Error',
-				});
+				return createJsonResponse({ error: error.message }, { status: 500 });
 			}
 			// Fallback for non-Error exceptions
 			console.error('Non-Error exception:', error);
 			// Return a generic error response
 			// This could happen if the error is not an instance of Error
 			// or if the error handling is not as expected.
-			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-				status: 500,
-				statusText: 'Internal Server Error',
-			});
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
 		},
 	}
 );
