@@ -20,7 +20,20 @@ const baseAstroWorkspaceConfig = {
 };
 
 /**
- * An array of package names used within the StudioCMS project.
+ * Configuration object for non-Astro workspace file selection patterns.
+ *
+ * @property entry - Glob patterns specifying entry files for the workspace, including various JavaScript and TypeScript extensions.
+ * @property project - Glob patterns specifying project files for the workspace, including various JavaScript and TypeScript extensions.
+ * @property ignore - Glob patterns specifying files or directories to ignore in the workspace.
+ */
+const baseWithStudioCMSConfig = {
+	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}', 'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**'],
+};
+
+/**
+ * An array of package names used within the StudioCMS project that are not part of the `@studiocms` namespace.
  *
  * @remarks
  * This constant is defined as a readonly tuple using `as const` to ensure
@@ -46,7 +59,19 @@ const atStudioCMSPackages = [
 	'wysiwyg',
 ] as const;
 
-const atWithStudioCMSPackages = ['config-utils', 'effect'] as const;
+/**
+ * An array of package names used within the StudioCMS project that are not part of the `@withstudiocms` namespace.
+ *
+ * @remarks
+ * This constant is defined as a readonly tuple using `as const` to ensure
+ * that the package names are immutable and their types are preserved.
+ *
+ * @example
+ * ```typescript
+ * atWithStudioCMSPackages.includes('config-utils'); // true
+ * ```
+ */
+const atWithStudioCMSPackages = ['config-utils', 'effect', 'buildkit'] as const;
 
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
@@ -64,14 +89,7 @@ const extras = (pkg: string) => {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
 		},
 		effect: {
-			entry: [
-				'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
-				'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
-			],
 			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
-		},
-		'config-utils': {
-			entry: ['src/**/*.{js,cjs,mjs,ts,mts}', 'test/**/*.{js,cjs,mjs,ts,mts}'],
 		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
@@ -101,13 +119,10 @@ const config: KnipConfig = {
 			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic object construction
 			{} as Record<string, any>
 		),
-		'packages/@withstudiocms/buildkit': {
-			entry: ['src/**/*.js', 'test/**/*.js'],
-		},
 		...atWithStudioCMSPackages.reduce(
 			(acc, pkg) => {
 				acc[`packages/@withstudiocms/${pkg}`] = {
-					...baseAstroWorkspaceConfig,
+					...baseWithStudioCMSConfig,
 					...extras(pkg),
 				};
 				return acc;
