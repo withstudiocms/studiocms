@@ -1,86 +1,87 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
-export const GET: APIRoute = async (C) =>
-	defineAPIRoute(C)((ctx) =>
-		genLogger('studioCMS:rest:v1:settings:GET')(function* () {
-			const sdk = yield* SDKCore;
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+export const { GET, PATCH, ALL, OPTIONS } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:settings:GET')(function* () {
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
-			if (user instanceof Response) {
-				return user;
-			}
+				if (user instanceof Response) {
+					return user;
+				}
 
-			const { rank } = user;
+				const { rank } = user;
 
-			if (rank !== 'owner') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				if (rank !== 'owner') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			const siteConfig = yield* sdk.GET.siteConfig();
+				const siteConfig = yield* sdk.GET.siteConfig();
 
-			return new Response(JSON.stringify(siteConfig), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Error fetching site config', error);
-	});
+				return createJsonResponse(siteConfig);
+			}),
+		PATCH: (ctx) =>
+			genLogger('studioCMS:rest:v1:settings:PATCH')(function* () {
+				const user = yield* verifyAuthTokenFromHeader(ctx);
 
-export const PATCH: APIRoute = async (C) =>
-	defineAPIRoute(C)((ctx) =>
-		genLogger('studioCMS:rest:v1:settings:PATCH')(function* () {
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (user instanceof Response) {
+					return user;
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { rank } = user;
 
-			const { rank } = user;
+				if (rank !== 'owner') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (rank !== 'owner') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const siteConfig = yield* readAPIContextJson<{
+					title: string;
+					description: string;
+					loginPageBackground: string;
+					loginPageCustomImage?: string;
+				}>(ctx);
 
-			const siteConfig = yield* Effect.tryPromise(() => ctx.request.json());
+				if (!siteConfig.title) {
+					return apiResponseLogger(400, 'Invalid form data, title is required');
+				}
 
-			if (!siteConfig.title) {
-				return apiResponseLogger(400, 'Invalid form data, title is required');
-			}
+				if (!siteConfig.description) {
+					return apiResponseLogger(400, 'Invalid form data, description is required');
+				}
 
-			if (!siteConfig.description) {
-				return apiResponseLogger(400, 'Invalid form data, description is required');
-			}
+				if (!siteConfig.loginPageBackground) {
+					return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
+				}
 
-			if (!siteConfig.loginPageBackground) {
-				return apiResponseLogger(400, 'Invalid form data, loginPageBackground is required');
-			}
+				if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
+					return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
+				}
 
-			if (siteConfig.loginPageBackground === 'custom' && !siteConfig.loginPageCustomImage) {
-				return apiResponseLogger(400, 'Invalid form data, loginPageCustomImage is required');
-			}
+				const sdk = yield* SDKCore;
 
-			const sdk = yield* SDKCore;
+				yield* sdk.UPDATE.siteConfig(siteConfig);
 
-			yield* sdk.UPDATE.siteConfig(siteConfig);
-
-			return apiResponseLogger(200, 'Site config updated');
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Error updating site config', error);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'PATCH'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return apiResponseLogger(200, 'Site config updated');
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'PATCH'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'PATCH', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+		},
+	}
+);

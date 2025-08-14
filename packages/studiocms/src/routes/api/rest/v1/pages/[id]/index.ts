@@ -2,13 +2,14 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
-import type { APIContext, APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 
@@ -21,221 +22,217 @@ interface UpdatePageJson {
 	content?: UpdatePageContent;
 }
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
-			const sdk = yield* SDKCore;
+export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:public:pages:[id]:GET')(function* () {
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (user instanceof Response) {
+					return user;
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { rank } = user;
 
-			const { rank } = user;
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const { id } = ctx.params;
 
-			const { id } = ctx.params;
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid page ID');
+				}
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid page ID');
-			}
+				const page = yield* sdk.GET.page.byId(id);
 
-			const page = yield* sdk.GET.page.byId(id);
+				if (!page) {
+					return apiResponseLogger(404, 'Page not found');
+				}
 
-			if (!page) {
-				return apiResponseLogger(404, 'Page not found');
-			}
+				return createJsonResponse(page);
+			}),
+		PATCH: (ctx) =>
+			genLogger('studioCMS:rest:v1:public:pages:[id]:PATCH')(function* () {
+				const [sdk, user, notifier] = yield* Effect.all([
+					SDKCore,
+					verifyAuthTokenFromHeader(ctx),
+					Notifications,
+				]);
 
-			return new Response(JSON.stringify(page), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Internal Server Error', error);
-	});
+				if (user instanceof Response) {
+					return user;
+				}
 
-export const PATCH: APIRoute = async (c: APIContext) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:public:pages:[id]:PATCH')(function* () {
-			const sdk = yield* SDKCore;
-			const notifier = yield* Notifications;
+				const { rank, userId } = user;
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { id } = ctx.params;
 
-			const { rank, userId } = user;
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid page ID');
+				}
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const jsonData = yield* readAPIContextJson<UpdatePageJson>(ctx);
 
-			const { id } = ctx.params;
+				const { data, content } = jsonData;
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid page ID');
-			}
+				if (!data) {
+					return apiResponseLogger(400, 'Invalid form data, data is required');
+				}
 
-			const jsonData: UpdatePageJson = yield* Effect.tryPromise(() => ctx.request.json());
+				if (!content) {
+					return apiResponseLogger(400, 'Invalid form data, content is required');
+				}
 
-			const { data, content } = jsonData;
+				if (!data.id) {
+					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
 
-			if (!data) {
-				return apiResponseLogger(400, 'Invalid form data, data is required');
-			}
+				if (!content.id) {
+					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
 
-			if (!content) {
-				return apiResponseLogger(400, 'Invalid form data, content is required');
-			}
+				const currentPageData = yield* sdk.GET.page.byId(id);
 
-			if (!data.id) {
-				return apiResponseLogger(400, 'Invalid form data, id is required');
-			}
+				if (!currentPageData) {
+					return apiResponseLogger(404, 'Page not found');
+				}
 
-			if (!content.id) {
-				return apiResponseLogger(400, 'Invalid form data, id is required');
-			}
+				const { authorId, contributorIds } = currentPageData.data;
 
-			const currentPageData = yield* sdk.GET.page.byId(id);
+				let AuthorId = authorId;
 
-			if (!currentPageData) {
-				return apiResponseLogger(404, 'Page not found');
-			}
+				if (!authorId) {
+					AuthorId = userId || null;
+				}
 
-			const { authorId, contributorIds } = currentPageData.data;
+				const ContributorIds = contributorIds || [];
 
-			let AuthorId = authorId;
+				if (!ContributorIds.includes(userId)) {
+					ContributorIds.push(userId);
+				}
 
-			if (!authorId) {
-				AuthorId = userId || null;
-			}
+				data.authorId = AuthorId;
+				data.contributorIds = JSON.stringify(ContributorIds);
+				data.updatedAt = new Date();
 
-			const ContributorIds = contributorIds || [];
-
-			if (!ContributorIds.includes(userId)) {
-				ContributorIds.push(userId);
-			}
-
-			data.authorId = AuthorId;
-			data.contributorIds = JSON.stringify(ContributorIds);
-			data.updatedAt = new Date();
-
-			const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-				(metaData) => metaData.id === data.id
-			);
-
-			const {
-				data: { defaultContent },
-			} = yield* sdk.GET.page.byId(data.id);
-
-			const _updated = yield* sdk.UPDATE.page.byId(data.id, {
-				pageData: data as tsPageDataSelect,
-				pageContent: content as tsPageContentSelect,
-			});
-
-			const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-				(metaData) => metaData.id === data.id
-			);
-
-			const siteConfig = yield* sdk.GET.siteConfig();
-
-			if (!siteConfig) {
-				return apiResponseLogger(500, 'Site configuration not found');
-			}
-
-			const { enableDiffs, diffPerPage = 10 } = siteConfig.data;
-
-			if (enableDiffs) {
-				yield* sdk.diffTracking.insert(
-					userId,
-					data.id,
-					{
-						content: {
-							start: defaultContent?.content || '',
-							end: content.content || '',
-						},
-						// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
-						metaData: { start: startMetaData!, end: updatedMetaData! },
-					},
-					diffPerPage
+				const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
+					(metaData) => metaData.id === data.id
 				);
-			}
 
-			yield* sdk.CLEAR.page.byId(id);
+				const {
+					data: { defaultContent },
+				} = yield* sdk.GET.page.byId(data.id);
 
-			// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
-			yield* notifier.sendEditorNotification('page_updated', updatedMetaData!.title);
+				const _updated = yield* sdk.UPDATE.page.byId(data.id, {
+					pageData: data as tsPageDataSelect,
+					pageContent: content as tsPageContentSelect,
+				});
 
-			return apiResponseLogger(200, 'Page updated successfully');
-		}).pipe(Notifications.Provide)
-	).catch((error) => {
-		return apiResponseLogger(500, 'Internal Server Error', error);
-	});
+				const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
+					(metaData) => metaData.id === data.id
+				);
 
-export const DELETE: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:public:pages:[id]:DELETE')(function* () {
-			const sdk = yield* SDKCore;
-			const notifier = yield* Notifications;
+				const siteConfig = yield* sdk.GET.siteConfig();
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (!siteConfig) {
+					return apiResponseLogger(500, 'Site configuration not found');
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { enableDiffs, diffPerPage = 10 } = siteConfig.data;
 
-			const { rank } = user;
+				if (enableDiffs) {
+					yield* sdk.diffTracking.insert(
+						userId,
+						data.id,
+						{
+							content: {
+								start: defaultContent?.content || '',
+								end: content.content || '',
+							},
+							// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
+							metaData: { start: startMetaData!, end: updatedMetaData! },
+						},
+						diffPerPage
+					);
+				}
 
-			if (rank !== 'owner' && rank !== 'admin') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				yield* sdk.CLEAR.page.byId(id);
 
-			const { id } = ctx.params;
+				// biome-ignore lint/style/noNonNullAssertion: This is a valid use case for non-null assertion
+				yield* notifier.sendEditorNotification('page_updated', updatedMetaData!.title);
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid page ID');
-			}
+				return apiResponseLogger(200, 'Page updated successfully');
+			}).pipe(Notifications.Provide),
+		DELETE: (ctx) =>
+			genLogger('studioCMS:rest:v1:public:pages:[id]:DELETE')(function* () {
+				const [sdk, user, notifier] = yield* Effect.all([
+					SDKCore,
+					verifyAuthTokenFromHeader(ctx),
+					Notifications,
+				]);
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
+				if (user instanceof Response) {
+					return user;
+				}
 
-			const { slug } = jsonData;
+				const { rank } = user;
 
-			if (!slug) {
-				return apiResponseLogger(400, 'Invalid request');
-			}
+				if (rank !== 'owner' && rank !== 'admin') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			const isHomePage = yield* sdk.GET.page.bySlug('index');
+				const { id } = ctx.params;
 
-			if (isHomePage.data && isHomePage.data.id === id) {
-				return apiResponseLogger(400, 'Cannot delete home page');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid page ID');
+				}
 
-			const page = yield* sdk.GET.page.byId(id);
+				const jsonData = yield* readAPIContextJson<{ slug: string }>(ctx);
 
-			if (!page) {
-				return apiResponseLogger(404, 'Page not found');
-			}
+				const { slug } = jsonData;
 
-			yield* sdk.DELETE.page(id);
-			yield* sdk.CLEAR.page.byId(id);
+				if (!slug) {
+					return apiResponseLogger(400, 'Invalid request');
+				}
 
-			yield* notifier.sendEditorNotification('page_deleted', page.data.title);
+				const isHomePage = yield* sdk.GET.page.bySlug('index');
 
-			return apiResponseLogger(200, 'Page deleted successfully');
-		}).pipe(Notifications.Provide)
-	).catch((error) => {
-		return apiResponseLogger(500, 'Internal Server Error', error);
-	});
+				if (isHomePage.data && isHomePage.data.id === id) {
+					return apiResponseLogger(400, 'Cannot delete home page');
+				}
 
-export const OPTIONS: APIRoute = async () =>
-	OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] });
+				const page = yield* sdk.GET.page.byId(id);
 
-export const ALL: APIRoute = async () => AllResponse();
+				if (!page) {
+					return apiResponseLogger(404, 'Page not found');
+				}
+
+				yield* sdk.DELETE.page(id);
+				yield* sdk.CLEAR.page.byId(id);
+
+				yield* notifier.sendEditorNotification('page_deleted', page.data.title);
+
+				return apiResponseLogger(200, 'Page deleted successfully');
+			}).pipe(Notifications.Provide),
+		OPTIONS: () =>
+			Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'PATCH', 'DELETE', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

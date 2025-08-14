@@ -1,13 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	parseAPIContextJson,
 	Schema,
 } from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
@@ -17,136 +18,127 @@ export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 	parentFolder: Schema.Union(Schema.String, Schema.Null),
 }) {}
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:folders:[id]:GET')(function* () {
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:folders:[id]:GET')(function* () {
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
-			if (user instanceof Response) {
-				return user;
-			}
+				if (user instanceof Response) {
+					return user;
+				}
 
-			const { rank } = user;
+				const { rank } = user;
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			const { id } = ctx.params;
+				const { id } = ctx.params;
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid folder ID');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid folder ID');
+				}
 
-			const sdk = yield* SDKCore;
+				const folder = yield* sdk.GET.folder(id);
 
-			const folder = yield* sdk.GET.folder(id);
+				if (!folder) {
+					return apiResponseLogger(404, 'Folder not found');
+				}
 
-			if (!folder) {
-				return apiResponseLogger(404, 'Folder not found');
-			}
+				return createJsonResponse(folder);
+			}),
+		PATCH: (ctx) =>
+			genLogger('studioCMS:rest:v1:folders:[id]:PATCH')(function* () {
+				const [sdk, user, notifier] = yield* Effect.all([
+					SDKCore,
+					verifyAuthTokenFromHeader(ctx),
+					Notifications,
+				]);
 
-			return new Response(JSON.stringify(folder), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Failed to fetch folder', error);
-	});
+				if (user instanceof Response) {
+					return user;
+				}
 
-export const PATCH: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:folders:[id]:PATCH')(function* () {
-			const sdk = yield* SDKCore;
-			const notifier = yield* Notifications;
+				const { rank } = user;
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { id } = ctx.params;
 
-			const { rank } = user;
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid folder ID');
+				}
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const { folderName, parentFolder } = yield* parseAPIContextJson(ctx, FolderBase);
 
-			const { id } = ctx.params;
+				if (!folderName) {
+					return apiResponseLogger(400, 'Invalid form data, folderName is required');
+				}
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid folder ID');
-			}
+				const folderData = yield* sdk.UPDATE.folder({
+					id,
+					name: folderName,
+					parent: parentFolder || null,
+				});
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
-			const { folderName, parentFolder } = yield* Schema.decodeUnknown(FolderBase)(jsonData);
+				if (!folderData) {
+					return apiResponseLogger(404, 'Folder not found');
+				}
 
-			if (!folderName) {
-				return apiResponseLogger(400, 'Invalid form data, folderName is required');
-			}
+				yield* notifier.sendEditorNotification('folder_updated', folderName);
+				return apiResponseLogger(200, 'Folder updated successfully');
+			}).pipe(Notifications.Provide),
+		DELETE: (ctx) =>
+			genLogger('studioCMS:rest:v1:folders:[id]:DELETE')(function* () {
+				const [sdk, notifier, user] = yield* Effect.all([
+					SDKCore,
+					Notifications,
+					verifyAuthTokenFromHeader(ctx),
+				]);
 
-			const folderData = yield* sdk.UPDATE.folder({
-				id,
-				name: folderName,
-				parent: parentFolder || null,
-			});
+				if (user instanceof Response) {
+					return user;
+				}
 
-			if (!folderData) {
-				return apiResponseLogger(404, 'Folder not found');
-			}
+				const { rank } = user;
 
-			yield* notifier.sendEditorNotification('folder_updated', folderName);
-			return apiResponseLogger(200, 'Folder updated successfully');
-		}).pipe(Notifications.Provide)
-	).catch((error) => {
-		return apiResponseLogger(500, 'Failed to update folder', error);
-	});
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-export const DELETE: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:folders:[id]:DELETE')(function* () {
-			const sdk = yield* SDKCore;
-			const notifier = yield* Notifications;
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				const { id } = ctx.params;
 
-			if (user instanceof Response) {
-				return user;
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid folder ID');
+				}
 
-			const { rank } = user;
+				const folder = yield* sdk.GET.folder(id);
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				if (!folder) {
+					return apiResponseLogger(404, 'Folder not found');
+				}
 
-			const { id } = ctx.params;
+				yield* Effect.all([
+					sdk.DELETE.folder(id),
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
+					notifier.sendEditorNotification('folder_deleted', folder.name),
+				]);
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid folder ID');
-			}
-
-			const folder = yield* sdk.GET.folder(id);
-
-			if (!folder) {
-				return apiResponseLogger(404, 'Folder not found');
-			}
-
-			yield* sdk.DELETE.folder(id);
-
-			yield* sdk.UPDATE.folderList;
-			yield* sdk.UPDATE.folderTree;
-
-			yield* notifier.sendEditorNotification('folder_deleted', folder.name);
-
-			return apiResponseLogger(200, 'Folder deleted successfully');
-		}).pipe(Notifications.Provide)
-	).catch((error) => {
-		return apiResponseLogger(500, 'Failed to delete folder', error);
-	});
-
-export const OPTIONS: APIRoute = async () =>
-	OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return apiResponseLogger(200, 'Folder deleted successfully');
+			}).pipe(Notifications.Provide),
+		OPTIONS: () =>
+			Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'PATCH', 'DELETE', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
+		},
+	}
+);
