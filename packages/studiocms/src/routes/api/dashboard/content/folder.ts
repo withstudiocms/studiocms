@@ -1,13 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../../effect.js';
 
 interface FolderBase {
@@ -19,135 +20,135 @@ interface FolderEdit extends FolderBase {
 	id: string;
 }
 
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/content/folder.POST')(function* () {
-			const notify = yield* Notifications;
-			const sdk = yield* SDKCore;
+export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		POST: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/content/folder.POST')(function* () {
+				const [notify, sdk] = yield* Effect.all([Notifications, SDKCore]);
 
-			// Get user data
-			const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
-			// Check if user is logged in
-			if (!userData?.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			// Check if user has permission
-			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			const jsonData: FolderBase = yield* Effect.tryPromise(() => ctx.request.json());
+				const { folderName, parentFolder } = yield* readAPIContextJson<FolderBase>(ctx);
 
-			const { folderName, parentFolder } = jsonData;
+				if (!folderName) {
+					return apiResponseLogger(400, 'Invalid form data, folderName is required');
+				}
 
-			if (!folderName) {
-				return apiResponseLogger(400, 'Invalid form data, folderName is required');
-			}
-			yield* sdk.POST.folder({
-				id: crypto.randomUUID(),
-				name: folderName,
-				parent: parentFolder || null,
-			});
+				yield* Effect.all([
+					sdk.POST.folder({
+						id: crypto.randomUUID(),
+						name: folderName,
+						parent: parentFolder || null,
+					}),
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
+					notify.sendEditorNotification('new_folder', folderName),
+				]);
 
-			yield* sdk.UPDATE.folderList;
-			yield* sdk.UPDATE.folderTree;
+				return apiResponseLogger(200, 'Folder created successfully');
+			}).pipe(Notifications.Provide),
+		PATCH: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/content/folder.PATCH')(function* () {
+				const [notify, sdk] = yield* Effect.all([Notifications, SDKCore]);
 
-			yield* notify.sendEditorNotification('new_folder', folderName);
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
-			return apiResponseLogger(200, 'Folder created successfully');
-		}).pipe(Notifications.Provide)
-	);
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-export const PATCH: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/content/folder.PATCH')(function* () {
-			const notify = yield* Notifications;
-			const sdk = yield* SDKCore;
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			// Get user data
-			const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				const { id, folderName, parentFolder } = yield* readAPIContextJson<FolderEdit>(ctx);
 
-			// Check if user is logged in
-			if (!userData?.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
 
-			// Check if user has permission
-			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isEditor;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				if (!folderName) {
+					return apiResponseLogger(400, 'Invalid form data, folderName is required');
+				}
 
-			const jsonData: FolderEdit = yield* Effect.tryPromise(() => ctx.request.json());
+				yield* Effect.all([
+					sdk.UPDATE.folder({
+						id,
+						name: folderName,
+						parent: parentFolder || null,
+					}),
+					notify.sendEditorNotification('folder_updated', folderName),
+				]);
 
-			const { id, folderName, parentFolder } = jsonData;
+				return apiResponseLogger(200, 'Folder updated successfully');
+			}).pipe(Notifications.Provide),
+		DELETE: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/content/folder.DELETE')(function* () {
+				const [notify, sdk] = yield* Effect.all([Notifications, SDKCore]);
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid form data, id is required');
-			}
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
-			if (!folderName) {
-				return apiResponseLogger(400, 'Invalid form data, folderName is required');
-			}
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			yield* sdk.UPDATE.folder({
-				id,
-				name: folderName,
-				parent: parentFolder || null,
-			});
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			yield* notify.sendEditorNotification('folder_updated', folderName);
+				const { id } = yield* readAPIContextJson<{ id: string }>(ctx);
 
-			return apiResponseLogger(200, 'Folder updated successfully');
-		}).pipe(Notifications.Provide)
-	);
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
 
-export const DELETE: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/content/folder.DELETE')(function* () {
-			const notify = yield* Notifications;
-			const sdk = yield* SDKCore;
+				const { name: folderName } = (yield* sdk.GET.folder(id)) || {};
 
-			// Get user data
-			const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				if (!folderName) {
+					return apiResponseLogger(404, 'Folder not found');
+				}
 
-			// Check if user is logged in
-			if (!userData?.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				yield* Effect.all([
+					sdk.DELETE.folder(id),
+					notify.sendEditorNotification('folder_deleted', folderName),
+				]);
 
-			// Check if user has permission
-			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
-
-			const jsonData: FolderEdit = yield* Effect.tryPromise(() => ctx.request.json());
-
-			const { id } = jsonData;
-
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid form data, id is required');
-			}
-
-			const { name: folderName } = (yield* sdk.GET.folder(id)) || {};
-
-			if (!folderName) {
-				return apiResponseLogger(404, 'Folder not found');
-			}
-
-			yield* sdk.DELETE.folder(id);
-
-			yield* notify.sendEditorNotification('folder_deleted', folderName);
-
-			return apiResponseLogger(200, 'Folder deleted successfully');
-		}).pipe(Notifications.Provide)
-	);
-
-export const OPTIONS: APIRoute = async () =>
-	OptionsResponse({ allowedMethods: ['POST', 'PATCH', 'DELETE'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return apiResponseLogger(200, 'Folder deleted successfully');
+			}).pipe(Notifications.Provide),
+		OPTIONS: () =>
+			Effect.try(() => OptionsResponse({ allowedMethods: ['POST', 'PATCH', 'DELETE'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['POST', 'PATCH', 'DELETE'] },
+		onError: (error) => {
+			console.error('Error in folder API:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

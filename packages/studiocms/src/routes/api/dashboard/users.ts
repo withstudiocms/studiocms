@@ -4,157 +4,160 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../effect.js';
 
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/users.POST')(function* () {
-			const userHelper = yield* User;
-			const notifications = yield* Notifications;
-			const sdk = yield* SDKCore;
+export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		POST: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/users.POST')(function* () {
+				const [userHelper, notifications, sdk] = yield* Effect.all([User, Notifications, SDKCore]);
 
-			// Get user data
-			const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
-			// Check if user is logged in
-			if (!userData?.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
-
-			// Check if user has permission
-			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
-
-			const jsonData: {
-				id: string;
-				rank: string;
-				emailVerified: boolean;
-			} = yield* Effect.tryPromise(() => ctx.request.json());
-
-			const { id, rank, emailVerified } = jsonData;
-
-			if (!id || !rank) {
-				return apiResponseLogger(400, 'Invalid request');
-			}
-
-			const insertData: tsPermissionsSelect = {
-				user: id,
-				rank,
-			};
-
-			const user = yield* sdk.GET.users.byId(id);
-
-			if (!user) {
-				return apiResponseLogger(404, 'User not found');
-			}
-
-			const userPermissionLevel = yield* userHelper.getUserPermissionLevel(userData);
-
-			const requiredPerms = () => {
-				switch (user.permissionsData?.rank) {
-					case 'owner':
-						return User.UserPermissionLevel.owner;
-					case 'admin':
-						return User.UserPermissionLevel.admin;
-					case 'editor':
-						return User.UserPermissionLevel.editor;
-					case 'visitor':
-						return User.UserPermissionLevel.visitor;
-					default:
-						return User.UserPermissionLevel.unknown;
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
 				}
-			};
 
-			const isAllowedToUpdateRank = userPermissionLevel > requiredPerms();
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			if (!isAllowedToUpdateRank) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				const { id, rank, emailVerified } = yield* readAPIContextJson<{
+					id: string;
+					rank: string;
+					emailVerified: boolean;
+				}>(ctx);
 
-			// Update user rank
-			const updatedData = yield* sdk.UPDATE.permissions(insertData);
+				if (!id || !rank) {
+					return apiResponseLogger(400, 'Invalid request');
+				}
 
-			if (!updatedData) {
-				return apiResponseLogger(400, 'Failed to update user rank');
-			}
+				const insertData: tsPermissionsSelect = {
+					user: id,
+					rank,
+				};
 
-			if (emailVerified) {
-				// Update user email verification status
-				yield* sdk.AUTH.user.update(id, {
-					emailVerified: emailVerified,
-				});
-			}
+				const user = yield* sdk.GET.users.byId(id);
 
-			yield* notifications.sendUserNotification('account_updated', id);
-			yield* notifications.sendAdminNotification('user_updated', user.username);
+				if (!user) {
+					return apiResponseLogger(404, 'User not found');
+				}
 
-			return apiResponseLogger(200, 'User rank updated successfully');
-		}).pipe(User.Provide, Notifications.Provide)
-	);
+				const userPermissionLevel = yield* userHelper.getUserPermissionLevel(userData);
 
-export const DELETE: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/users.DELETE')(function* () {
-			const notifications = yield* Notifications;
-			const sdk = yield* SDKCore;
+				const requiredPerms = () => {
+					switch (user.permissionsData?.rank) {
+						case 'owner':
+							return User.UserPermissionLevel.owner;
+						case 'admin':
+							return User.UserPermissionLevel.admin;
+						case 'editor':
+							return User.UserPermissionLevel.editor;
+						case 'visitor':
+							return User.UserPermissionLevel.visitor;
+						default:
+							return User.UserPermissionLevel.unknown;
+					}
+				};
 
-			// Check if demo mode is enabled
-			if (developerConfig.demoMode !== false) {
-				return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
-			}
+				const isAllowedToUpdateRank = userPermissionLevel > requiredPerms();
 
-			// Get user data
-			const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				if (!isAllowedToUpdateRank) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			// Check if user is logged in
-			if (!userData?.isLoggedIn) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				// Update user rank
+				const updatedData = yield* sdk.UPDATE.permissions(insertData);
 
-			// Check if user has permission
-			const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
-			if (!isAuthorized) {
-				return apiResponseLogger(403, 'Unauthorized');
-			}
+				if (!updatedData) {
+					return apiResponseLogger(400, 'Failed to update user rank');
+				}
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
+				if (emailVerified) {
+					// Update user email verification status
+					yield* sdk.AUTH.user.update(id, {
+						emailVerified: emailVerified,
+					});
+				}
 
-			const { userId, username, usernameConfirm } = jsonData;
+				yield* Effect.all([
+					notifications.sendUserNotification('account_updated', id),
+					notifications.sendAdminNotification('user_updated', user.username),
+				]);
 
-			if (!userId || !username || !usernameConfirm) {
-				return apiResponseLogger(400, 'Invalid request');
-			}
+				return apiResponseLogger(200, 'User rank updated successfully');
+			}).pipe(User.Provide, Notifications.Provide),
+		DELETE: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/users.DELETE')(function* () {
+				const [notifications, sdk] = yield* Effect.all([Notifications, SDKCore]);
 
-			if (username !== usernameConfirm) {
-				return apiResponseLogger(400, 'Username does not match');
-			}
+				// Check if demo mode is enabled
+				if (developerConfig.demoMode !== false) {
+					return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+				}
 
-			const response = yield* sdk.DELETE.user(userId);
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
 
-			if (!response) {
-				return apiResponseLogger(400, 'Failed to delete user');
-			}
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			if (response.status === 'error') {
-				return apiResponseLogger(400, response.message);
-			}
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			yield* notifications.sendAdminNotification('user_deleted', username);
+				const { userId, username, usernameConfirm } = yield* readAPIContextJson<{
+					userId: string;
+					username: string;
+					usernameConfirm: string;
+				}>(ctx);
 
-			return apiResponseLogger(200, response.message);
-		}).pipe(Notifications.Provide)
-	);
+				if (!userId || !username || !usernameConfirm) {
+					return apiResponseLogger(400, 'Invalid request');
+				}
 
-export const OPTIONS: APIRoute = async () =>
-	OptionsResponse({ allowedMethods: ['POST', 'DELETE'] });
+				if (username !== usernameConfirm) {
+					return apiResponseLogger(400, 'Username does not match');
+				}
 
-export const ALL: APIRoute = async () => AllResponse();
+				const response = yield* sdk.DELETE.user(userId);
+
+				if (!response) {
+					return apiResponseLogger(400, 'Failed to delete user');
+				}
+
+				if (response.status === 'error') {
+					return apiResponseLogger(400, response.message);
+				}
+
+				yield* notifications.sendAdminNotification('user_deleted', username);
+
+				return apiResponseLogger(200, response.message);
+			}).pipe(Notifications.Provide),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST', 'DELETE'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['POST', 'DELETE', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
+		},
+	}
+);
