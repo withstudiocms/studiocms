@@ -1,7 +1,12 @@
 import logger from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
-import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
+import {
+	AllResponse,
+	createEffectAPIRoutes,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
 const createJsonResponse = (data: unknown, status = 200) =>
 	new Response(JSON.stringify(data), {
@@ -12,26 +17,23 @@ const createJsonResponse = (data: unknown, status = 200) =>
 		},
 	});
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)(() =>
-		genLogger('routes/sdk/update-latest-version-cache/GET')(function* () {
-			logger.info('Updating latest version cache');
-			const sdk = yield* SDKCore;
-			const latestVersion = yield* sdk.UPDATE.latestVersion();
-			logger.info('Latest version cache updated');
-			return createJsonResponse({ success: true, latestVersion });
-		})
-	).catch((error) => {
-		logger.error(`Error updating latest version cache: ${error.message}`);
-		return createJsonResponse(
-			{
-				success: false,
-				error: `Error updating latest version cache: ${error.message}`,
-			},
-			500
-		);
-	});
+export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
+	{
+		GET: () =>
+			genLogger('routes/sdk/update-latest-version-cache/GET')(function* () {
+				const sdk = yield* SDKCore;
+				const latestVersion = yield* sdk.UPDATE.latestVersion();
 
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return createJsonResponse({ success: true, latestVersion });
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			logger.error(`API Error: ${(error as Error).message}`);
+			return createJsonResponse({ error: 'Something went wrong' }, 500);
+		},
+	}
+);
