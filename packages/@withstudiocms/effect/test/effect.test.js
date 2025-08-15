@@ -3,7 +3,6 @@ import { describe, it } from 'node:test';
 import { appendSearchParamsToUrl, Effect, runEffect } from '../dist/effect.js';
 
 describe('Effect Utilities', () => {
-
 	it('runEffect resolves Effect with value', async () => {
 		const effect = Effect.succeed(42);
 		const result = await runEffect(effect);
@@ -31,5 +30,4 @@ describe('Effect Utilities', () => {
 		assert.strictEqual(resultUrl.searchParams.get('baz'), 'qux');
 		assert.strictEqual(resultUrl.toString(), 'https://example.com/?baz=qux');
 	});
-
 });

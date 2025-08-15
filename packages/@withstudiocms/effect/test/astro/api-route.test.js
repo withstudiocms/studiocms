@@ -61,7 +61,9 @@ describe('Api-Route Tests', () => {
 		it('should propagate errors thrown by the handler', async () => {
 			const mockContext = { request: new Request('http://localhost') };
 			const error = new Error('fail');
-			const handler = () => { return Effect.fail(error) };
+			const handler = () => {
+				return Effect.fail(error);
+			};
 
 			const route = createEffectAPIRoute(handler);
 
@@ -102,8 +104,11 @@ describe('Api-Route Tests', () => {
 		});
 
 		it('should apply CORS headers if configured', async () => {
-			const mockContext = { request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }) };
-			const handler = () => Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
+			const mockContext = {
+				request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }),
+			};
+			const handler = () =>
+				Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
 
 			const route = withEffectAPI(handler, {
 				cors: {
@@ -117,7 +122,12 @@ describe('Api-Route Tests', () => {
 		});
 
 		it('should handle preflight requests with CORS', async () => {
-			const mockContext = { request: new Request('https://example.com', { method: 'OPTIONS', headers: { Origin: 'https://example.com' } }) };
+			const mockContext = {
+				request: new Request('https://example.com', {
+					method: 'OPTIONS',
+					headers: { Origin: 'https://example.com' },
+				}),
+			};
 			const handler = () => Effect.succeed(new Response(null, { status: 204 }));
 
 			const route = withEffectAPI(handler, {
@@ -158,7 +168,10 @@ describe('Api-Route Tests', () => {
 
 			const onSuccess = (response, ctx) => {
 				assert.strictEqual(ctx, mockContext);
-				return new Response(response.body, { status: response.status, headers: { 'X-Custom-Header': 'value' } });
+				return new Response(response.body, {
+					status: response.status,
+					headers: { 'X-Custom-Header': 'value' },
+				});
 			};
 
 			const route = withEffectAPI(handler, { onSuccess });
@@ -191,8 +204,11 @@ describe('Api-Route Tests', () => {
 		});
 
 		it('should handle multiple CORS origins', async () => {
-			const mockContext = { request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }) };
-			const handler = () => Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
+			const mockContext = {
+				request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }),
+			};
+			const handler = () =>
+				Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
 
 			const route = withEffectAPI(handler, {
 				cors: {
@@ -252,16 +268,9 @@ describe('Api-Route Tests', () => {
 				return Effect.succeed(mockResponse);
 			};
 
-			const { GET, POST } =
-				new EffectAPIRouteBuilder()
-					.get(handler)
-					.post(handler)
-					.build();
+			const { GET, POST } = new EffectAPIRouteBuilder().get(handler).post(handler).build();
 
-			const [postResult, getResult] = await Promise.all([
-				POST(mockContext),
-				GET(mockContext),
-			]);
+			const [postResult, getResult] = await Promise.all([POST(mockContext), GET(mockContext)]);
 
 			assert.strictEqual(handlerCalledWith, mockContext);
 			assert.strictEqual(postResult, mockResponse);
