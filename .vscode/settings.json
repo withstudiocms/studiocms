@@ -2,11 +2,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "mdPrettify.substitutions": [
     {
-      "language": [
-        "typescriptreact",
-        "typescript",
-        "astro"
-      ],
+      "language": ["typescriptreact", "typescript", "astro"],
       "substitutions": [
         {
           "ugly": "\\bEffect\\b",

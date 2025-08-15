@@ -16,7 +16,7 @@ const defaultTimeout = isCI ? 1400000 : 600000;
  * Show the help message for the buildkit CLI.
  */
 export default function showHelp() {
-  console.log(`
+	console.log(`
 ${chalk.green('StudioCMS Buildkit')} - Build tool for StudioCMS packages
 
 ${chalk.yellow('Usage:')}

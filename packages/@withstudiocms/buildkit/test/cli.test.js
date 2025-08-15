@@ -15,7 +15,7 @@ beforeEach(() => {
 		},
 		restore: () => {
 			console.log = originalConsoleLog;
-		}
+		},
 	};
 	global.originalConsoleLog = console.log;
 	console.log = consoleLogSpy.fn;
@@ -27,7 +27,6 @@ afterEach(() => {
 });
 
 describe('buildkit CLI', () => {
-
 	it('help command: should show help when no command is provided', async () => {
 		process.argv = ['node', 'buildkit'];
 		await run();
@@ -67,5 +66,4 @@ describe('buildkit CLI', () => {
 		assert.ok(output.includes('StudioCMS Buildkit'));
 		assert.ok(output.includes('Usage:'));
 	});
-
 });

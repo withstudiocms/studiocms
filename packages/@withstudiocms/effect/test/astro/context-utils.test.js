@@ -90,18 +90,13 @@ describe('API Context Utils', () => {
 	});
 
 	it('parseAPIContextFormDataToObject: should parse and decode FormData with schema', async () => {
-		const effect = parseAPIContextFormDataToObject(
-			mockAPIContext,
-			dummySchema
-		);
+		const effect = parseAPIContextFormDataToObject(mockAPIContext, dummySchema);
 		const result = await Effect.runPromise(effect);
 		assert.deepEqual(result, { foo: 'bar', file: mockFormData.get('file') });
 	});
 
 	it('parseAPIContextFormDataToObject: should parse FormData without schema', async () => {
-		const effect = parseAPIContextFormDataToObject(
-			mockAPIContext
-		);
+		const effect = parseAPIContextFormDataToObject(mockAPIContext);
 		const result = await Effect.runPromise(effect);
 		assert.deepEqual(result, { foo: 'bar', file: mockFormData.get('file') });
 	});
@@ -135,5 +130,4 @@ describe('API Context Utils', () => {
 		const result = await Effect.runPromise(effect);
 		assert.equal(result, null);
 	});
-
 });

@@ -4,15 +4,12 @@ import { Deepmerge, deepmerge } from '../dist/deepmerge.js';
 import { Effect } from '../dist/effect.js';
 
 describe('deepmerge test', () => {
-
 	describe('deepmerge utility', () => {
 		it('merges two simple objects', async () => {
 			const obj1 = { a: 1, b: 2 };
 			const obj2 = { b: 3, c: 4 };
 
-			const result = await Effect.runPromise(
-				deepmerge((merge) => merge(obj1, obj2))
-			);
+			const result = await Effect.runPromise(deepmerge((merge) => merge(obj1, obj2)));
 
 			assert.deepStrictEqual(result, { a: 1, b: 3, c: 4 });
 		});
@@ -21,9 +18,7 @@ describe('deepmerge test', () => {
 			const obj1 = { a: { x: 1 }, b: 2 };
 			const obj2 = { a: { y: 2 }, b: 3 };
 
-			const result = await Effect.runPromise(
-				deepmerge((merge) => merge(obj1, obj2))
-			);
+			const result = await Effect.runPromise(deepmerge((merge) => merge(obj1, obj2)));
 
 			assert.deepStrictEqual(result, { a: { x: 1, y: 2 }, b: 3 });
 		});
@@ -33,12 +28,9 @@ describe('deepmerge test', () => {
 			const obj2 = { arr: [3, 4] };
 
 			const result = await Effect.runPromise(
-				deepmerge(
-					(merge) => merge(obj1, obj2),
-					{
-						mergeArrays: (arrays) => arrays.flat(),
-					}
-				)
+				deepmerge((merge) => merge(obj1, obj2), {
+					mergeArrays: (arrays) => arrays.flat(),
+				})
 			);
 
 			assert.deepStrictEqual(result, { arr: [1, 2, 3, 4] });
@@ -49,12 +41,9 @@ describe('deepmerge test', () => {
 				throw new Error('Test error');
 			};
 
-			await assert.rejects(
-				Effect.runPromise(deepmerge(() => errorFn())),
-				{
-					message: 'Failed to run deepmerge: Test error'
-				}
-			);
+			await assert.rejects(Effect.runPromise(deepmerge(() => errorFn())), {
+				message: 'Failed to run deepmerge: Test error',
+			});
 		});
 	});
 
@@ -65,7 +54,7 @@ describe('deepmerge test', () => {
 
 			const effect = Effect.gen(function* () {
 				const service = yield* Deepmerge;
-				return yield* service.merge((merge) => merge(obj1, obj2))
+				return yield* service.merge((merge) => merge(obj1, obj2));
 			}).pipe(Effect.provide(Deepmerge.Default));
 
 			const result = await Effect.runPromise(effect);
@@ -79,7 +68,7 @@ describe('deepmerge test', () => {
 
 			const effect = Effect.gen(function* () {
 				const service = yield* Deepmerge;
-				return yield* service.merge((merge) => merge(obj1, obj2))
+				return yield* service.merge((merge) => merge(obj1, obj2));
 			}).pipe(Effect.provide(Deepmerge.Default));
 
 			const result = await Effect.runPromise(effect);
@@ -97,12 +86,9 @@ describe('deepmerge test', () => {
 				return yield* service.merge(() => errorFn());
 			}).pipe(Effect.provide(Deepmerge.Default));
 
-			await assert.rejects(
-				Effect.runPromise(effect),
-				{
-					message: 'Failed to run deepmerge: Service test error'
-				}
-			);
+			await assert.rejects(Effect.runPromise(effect), {
+				message: 'Failed to run deepmerge: Service test error',
+			});
 		});
 
 		it('can be used with custom options', async () => {
@@ -111,12 +97,9 @@ describe('deepmerge test', () => {
 
 			const effect = Effect.gen(function* () {
 				const service = yield* Deepmerge;
-				return yield* service.merge(
-					(merge) => merge(obj1, obj2),
-					{
-						mergeArrays: (arrays) => arrays.flat(),
-					}
-				);
+				return yield* service.merge((merge) => merge(obj1, obj2), {
+					mergeArrays: (arrays) => arrays.flat(),
+				});
 			}).pipe(Effect.provide(Deepmerge.Default));
 
 			const result = await Effect.runPromise(effect);
@@ -124,5 +107,4 @@ describe('deepmerge test', () => {
 			assert.deepStrictEqual(result, { arr: [1, 2, 3, 4] });
 		});
 	});
-
 });
