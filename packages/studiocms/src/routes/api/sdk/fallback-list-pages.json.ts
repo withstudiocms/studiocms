@@ -1,40 +1,31 @@
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
-import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
+import {
+	AllResponse,
+	createEffectAPIRoutes,
+	createJsonResponse,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)(() =>
-		genLogger('routes/sdk/fallback-list-pages.json/GET')(function* () {
-			const sdk = yield* SDKCore;
-			const pages = yield* sdk.GET.pages();
-			const lastUpdated = new Date().toISOString();
+export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
+	{
+		GET: () =>
+			genLogger('routes/sdk/fallback-list-pages.json/GET')(function* () {
+				const sdk = yield* SDKCore;
+				const pages = yield* sdk.GET.pages();
+				const lastUpdated = new Date().toISOString();
 
-			return new Response(
-				JSON.stringify({ lastUpdated, pages: pages.map((pageItem) => pageItem.data) }, null, 2),
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						'Access-Control-Allow-Origin': '*',
-						'Cache-Control': 'public, max-age=604800, immutable',
-						Date: new Date(lastUpdated).toUTCString(),
-					},
-				}
-			);
-		})
-	).catch((error) => {
-		return new Response(
-			JSON.stringify({ success: false, error: `Error fetching pages: ${error.message}` }),
-			{
-				status: 500,
-				headers: {
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-					Date: new Date().toUTCString(),
-				},
-			}
-		);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return createJsonResponse({ lastUpdated, pages: pages.map((pageItem) => pageItem.data) });
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+		},
+	}
+);

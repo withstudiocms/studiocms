@@ -4,7 +4,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { toString as ToString } from 'mdast-util-to-string';
 import { visit } from 'unist-util-visit';
-import { Effect, genLogger, HTTPClient, Platform } from '../../../../effect.js';
+import { Effect, genLogger, HTTPClient, Platform, readAPIContextJson } from '../../../../effect.js';
 
 export type ParserState = 'packageName' | 'version' | 'semverCategory' | 'changes';
 
@@ -33,15 +33,22 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 	effect: genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect')(function* () {
 		const httpClient = yield* HTTPClient;
 
-		const getRawChangelog = genLogger(
-			'routes/sdk/utils/changelog/ProcessChangelog/effect.getRawChangelog'
-		)(function* () {
-			return yield* httpClient
-				.get(
-					'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
-				)
-				.pipe(Effect.flatMap((res) => res.text));
-		});
+		const getRawChangelog = () =>
+			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.getRawChangelog')(function* () {
+				return yield* httpClient
+					.get(
+						'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
+					)
+					.pipe(
+						Effect.flatMap((res) =>
+							res.status === 200
+								? res.text
+								: Effect.fail(
+										new Error(`Failed to fetch CHANGELOG.md: ${res.status} ${res.toString()}`)
+									)
+						)
+					);
+			});
 
 		const generateChangelog = (raw: string) =>
 			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.generateChangelog')(
@@ -217,7 +224,9 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 
 		const renderChangelog = (content: string, context: APIContext) =>
 			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.renderChangelog')(function* () {
-				const currentRequestJson = yield* Effect.tryPromise(() => context.request.json());
+				const currentRequestJson = yield* readAPIContextJson<{
+					currentURLOrigin: string;
+				}>(context);
 
 				const currentURLOrigin = currentRequestJson.currentURLOrigin;
 

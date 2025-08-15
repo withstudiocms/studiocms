@@ -45,7 +45,20 @@ export function getCorsHeaders(
 	// If cfgOrigin is false or undefined, do not set the header here.
 	// Handle methods
 	if (corsConfig.methods) {
-		headers['Access-Control-Allow-Methods'] = corsConfig.methods.join(', ');
+		// Normalize methods and only add OPTIONS to the CORS/preflight headers.
+		const normalized = corsConfig.methods.map((m) => m.toUpperCase());
+		if (context.request.method === 'OPTIONS') {
+			// Ensure OPTIONS is present exactly once and use for both CORS and Allow.
+			const methodsSet = Array.from(new Set(['OPTIONS', ...normalized]));
+			const methodsList = methodsSet.join(', ');
+			headers['Access-Control-Allow-Methods'] = methodsList;
+			// Only set `Allow` for preflight here to avoid overriding response-specific values.
+			if (!headers['Allow']) {
+				headers['Allow'] = methodsList;
+			}
+		} else {
+			headers['Access-Control-Allow-Methods'] = normalized.join(', ');
+		}
 	}
 	// Handle headers
 	if (corsConfig.headers) {

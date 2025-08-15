@@ -141,7 +141,7 @@ describe('Api-Route Tests', () => {
 
 			assert.strictEqual(result.status, 204);
 			assert.strictEqual(result.headers.get('Access-Control-Allow-Origin'), 'https://example.com');
-			assert.strictEqual(result.headers.get('Access-Control-Allow-Methods'), 'GET, POST, OPTIONS');
+			assert.strictEqual(result.headers.get('Access-Control-Allow-Methods'), 'OPTIONS, GET, POST');
 		});
 
 		it('should handle preflight requests without CORS', async () => {

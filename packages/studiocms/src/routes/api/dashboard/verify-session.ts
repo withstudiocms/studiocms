@@ -2,13 +2,15 @@ import { Session } from 'studiocms:auth/lib';
 import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/lib/types';
 import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIContext } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	parseAPIContextJson,
 	Schema,
 } from '../../../effect.js';
 
@@ -23,22 +25,6 @@ import {
 export class JsonData extends Schema.Class<JsonData>('JsonData')({
 	originPathname: Schema.String,
 }) {}
-
-/**
- * Parses and validates JSON data from the API request context.
- *
- * This function attempts to read the JSON body from the incoming request,
- * then decodes and validates it against the `JsonData` schema.
- *
- * @param context - The API context containing the request object.
- * @returns An Effect that yields the validated and parsed data.
- * @throws If the request body cannot be parsed as JSON or fails schema validation.
- */
-export const getParsedData = (context: APIContext) =>
-	Effect.gen(function* () {
-		const jsonData = yield* Effect.tryPromise(() => context.request.json());
-		return yield* Schema.decodeUnknown(JsonData)(jsonData);
-	});
 
 /**
  * Represents the response data for verifying a user session on the dashboard API.
@@ -110,97 +96,91 @@ const responseBuilder = (
 		},
 	};
 
-	return new Response(JSON.stringify(data), {
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
+	return createJsonResponse(data);
 };
 
-/**
- * Handles POST requests to verify the user's session and return session details.
- *
- * This API route performs the following steps:
- * - Retrieves the session token from cookies.
- * - Validates the session token and user.
- * - Determines the user's permission level using the SDKCore.
- * - Returns a JSON response with user info, permission level, and relevant dashboard routes.
- * - If the session token or user is invalid, returns a 400 error response.
- *
- * @param context - The API context containing cookies and route information.
- * @returns A Response object with session verification results or an error message.
- */
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/verify-session.POST')(function* () {
-			const ses = yield* Session;
-			const sdk = yield* SDKCore;
+export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		POST: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/verify-session.POST')(function* () {
+				const [ses, sdk] = yield* Effect.all([Session, SDKCore]);
 
-			const logger = _logger.fork('studiocms:runtime:api:verify-session');
+				const logger = _logger.fork('studiocms:runtime:api:verify-session');
 
-			const { cookies } = ctx;
+				const { cookies } = ctx;
 
-			const { originPathname } = yield* getParsedData(ctx);
+				const { originPathname } = yield* parseAPIContextJson(ctx, JsonData);
 
-			const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
+				const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
 
-			if (!sessionToken) {
-				logger.info(
-					`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
-				);
-				return responseBuilder(ctx, false, null, 'unknown');
-			}
+				if (!sessionToken) {
+					logger.info(
+						`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
+					);
+					return responseBuilder(ctx, false, null, 'unknown');
+				}
 
-			const { session, user } = yield* ses.validateSessionToken(sessionToken);
+				const { session, user } = yield* ses.validateSessionToken(sessionToken);
 
-			if (session === null) {
-				yield* ses.deleteSessionTokenCookie(ctx);
-				logger.info(
-					`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
-				);
-				return responseBuilder(ctx, false, null, 'unknown');
-			}
+				if (session === null) {
+					yield* ses.deleteSessionTokenCookie(ctx);
+					logger.info(
+						`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
+					);
+					return responseBuilder(ctx, false, null, 'unknown');
+				}
 
-			if (!user || user === null) {
-				logger.info(
-					`No user found for session token, returning unknown session status. Origin: ${originPathname}`
-				);
-				return responseBuilder(ctx, false, null, 'unknown');
-			}
+				if (!user || user === null) {
+					logger.info(
+						`No user found for session token, returning unknown session status. Origin: ${originPathname}`
+					);
+					return responseBuilder(ctx, false, null, 'unknown');
+				}
 
-			const result = yield* sdk.AUTH.permission.currentStatus(user.id);
+				const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
-			if (!result) {
-				logger.error(
-					`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
-				);
-				return responseBuilder(ctx, false, null, 'unknown');
-			}
+				if (!result) {
+					logger.error(
+						`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
+					);
+					return responseBuilder(ctx, true, user, 'unknown');
+				}
 
-			let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
+				let permissionLevel: UserSessionData['permissionLevel'] = 'unknown';
 
-			switch (result.rank) {
-				case 'owner':
-					permissionLevel = 'owner';
-					break;
-				case 'admin':
-					permissionLevel = 'admin';
-					break;
-				case 'editor':
-					permissionLevel = 'editor';
-					break;
-				case 'visitor':
-					permissionLevel = 'visitor';
-					break;
-				default:
-					permissionLevel = 'unknown';
-					break;
-			}
+				switch (result.rank) {
+					case 'owner':
+						permissionLevel = 'owner';
+						break;
+					case 'admin':
+						permissionLevel = 'admin';
+						break;
+					case 'editor':
+						permissionLevel = 'editor';
+						break;
+					case 'visitor':
+						permissionLevel = 'visitor';
+						break;
+					default:
+						permissionLevel = 'unknown';
+						break;
+				}
 
-			return responseBuilder(ctx, true, user, permissionLevel);
-		}).pipe(Session.Provide)
-	);
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return responseBuilder(ctx, true, user, permissionLevel);
+			}).pipe(Session.Provide),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['POST', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

@@ -1,40 +1,45 @@
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
-import { AllResponse, defineAPIRoute, genLogger, OptionsResponse } from '../../../effect.js';
+import {
+	AllResponse,
+	createEffectAPIRoutes,
+	createJsonResponse,
+	Effect,
+	genLogger,
+	OptionsResponse,
+} from '../../../effect.js';
 
-const commonHeaders = {
-	'Content-Type': 'application/json',
-	'Access-Control-Allow-Origin': '*',
-};
+export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
+	{
+		GET: () =>
+			genLogger('routes/sdk/list-pages/GET')(function* () {
+				const sdk = yield* SDKCore;
+				const pages = yield* sdk.GET.pages();
 
-const createErrorResponse = (message: string, status = 500) =>
-	new Response(JSON.stringify({ success: false, error: message }), {
-		status,
-		headers: {
-			...commonHeaders,
-			Date: new Date().toUTCString(),
+				const lastUpdated = new Date().toISOString();
+
+				return createJsonResponse({ lastUpdated, pages });
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			const status =
+				typeof error === 'object' &&
+				error !== null &&
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				'status' in (error as any) &&
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				typeof (error as any).status === 'number'
+					? // biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+						(error as any).status
+					: 500;
+			const message =
+				// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
+				status >= 500 ? 'Something went wrong' : ((error as any)?.message ?? 'Request failed');
+			console.error('routes/sdk/list-pages error', { status, message });
+			return createJsonResponse({ error: message }, { status });
 		},
-	});
-
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)(() =>
-		genLogger('routes/sdk/list-pages/GET')(function* () {
-			const sdk = yield* SDKCore;
-			const pages = yield* sdk.GET.pages();
-
-			const lastUpdated = new Date().toISOString();
-
-			return new Response(JSON.stringify({ lastUpdated, pages }, null, 2), {
-				headers: {
-					...commonHeaders,
-					Date: lastUpdated,
-				},
-			});
-		})
-	).catch((error) => {
-		return createErrorResponse(`Error fetching pages: ${error.message}`);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+	}
+);

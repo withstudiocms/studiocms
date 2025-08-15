@@ -306,7 +306,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
     const createNewConfig = formData.get("create-new-config") as string;
 
     const response = await fetch(smtpConfigForm.action, {
-      method: createNewConfig ? "POST" : "UPDATE",
+      method: createNewConfig ? "POST" : "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

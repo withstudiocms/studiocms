@@ -1,13 +1,14 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	parseAPIContextJson,
 	Schema,
 } from '../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
@@ -17,90 +18,95 @@ export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 	parentFolder: Schema.Union(Schema.String, Schema.Null),
 }) {}
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:folders:GET')(function* () {
-			const sdk = yield* SDKCore;
+export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:folders:GET')(function* () {
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (user instanceof Response) {
+					return user;
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { rank } = user;
 
-			const { rank } = user;
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const folders = yield* sdk.GET.folderList();
 
-			const folders = yield* sdk.GET.folderList();
+				const searchParams = ctx.url.searchParams;
+				const folderNameFilter = searchParams.get('name');
+				const folderParentFilter = searchParams.get('parent');
 
-			const searchParams = ctx.url.searchParams;
-			const folderNameFilter = searchParams.get('name');
-			const folderParentFilter = searchParams.get('parent');
+				let filteredFolders = folders.data;
 
-			let filteredFolders = folders.data;
+				if (folderNameFilter) {
+					filteredFolders = filteredFolders.filter((folder) =>
+						folder.name.includes(folderNameFilter)
+					);
+				}
 
-			if (folderNameFilter) {
-				filteredFolders = filteredFolders.filter((folder) =>
-					folder.name.includes(folderNameFilter)
-				);
-			}
+				if (folderParentFilter) {
+					filteredFolders = filteredFolders.filter(
+						(folder) => folder.parent === folderParentFilter
+					);
+				}
 
-			if (folderParentFilter) {
-				filteredFolders = filteredFolders.filter((folder) => folder.parent === folderParentFilter);
-			}
+				const finalFolders = {
+					data: filteredFolders,
+					lastCacheUpdate: folders.lastCacheUpdate,
+				};
 
-			const finalFolders = {
-				data: filteredFolders,
-				lastCacheUpdate: folders.lastCacheUpdate,
-			};
+				return createJsonResponse(finalFolders);
+			}),
+		POST: (ctx) =>
+			genLogger('studioCMS:rest:v1:folders:POST')(function* () {
+				const [notifier, user, sdk] = yield* Effect.all([
+					Notifications,
+					verifyAuthTokenFromHeader(ctx),
+					SDKCore,
+				]);
 
-			return new Response(JSON.stringify(finalFolders), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Failed to fetch folders', error);
-	});
+				if (user instanceof Response) {
+					return user;
+				}
 
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:folders:POST')(function* () {
-			const notifier = yield* Notifications;
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				const { rank } = user;
 
-			if (user instanceof Response) {
-				return user;
-			}
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			const { rank } = user;
+				const { folderName, parentFolder } = yield* parseAPIContextJson(ctx, FolderBase);
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const newFolder = yield* sdk.POST.databaseEntry.folder({
+					name: folderName,
+					parent: parentFolder || null,
+					id: crypto.randomUUID(),
+				});
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
-			const { folderName, parentFolder } = yield* Schema.decodeUnknown(FolderBase)(jsonData);
-
-			const sdk = yield* SDKCore;
-			const newFolder = yield* sdk.POST.databaseEntry.folder({
-				name: folderName,
-				parent: parentFolder || null,
-				id: crypto.randomUUID(),
-			});
-			yield* sdk.UPDATE.folderList;
-			yield* sdk.UPDATE.folderTree;
-			yield* notifier.sendEditorNotification('new_folder', folderName);
-			return apiResponseLogger(200, `Folder created successfully with id: ${newFolder.id}`);
-		}).pipe(Notifications.Provide)
-	).catch((error) => {
-		return apiResponseLogger(500, 'Failed to create folder', error);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'POST'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				yield* Effect.all([
+					sdk.UPDATE.folderList,
+					sdk.UPDATE.folderTree,
+					notifier.sendEditorNotification('new_folder', folderName),
+				]);
+				return apiResponseLogger(200, `Folder created successfully with id: ${newFolder.id}`);
+			}).pipe(Notifications.Provide),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'POST'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'POST', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

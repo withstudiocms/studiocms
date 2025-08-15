@@ -3,84 +3,111 @@ import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../effect.js';
 
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/reset-password.POST')(function* () {
-			const notify = yield* Notifications;
-			const sdk = yield* SDKCore;
-			const pass = yield* Password;
+export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		POST: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/reset-password.POST')(function* () {
+				const [notify, sdk, pass] = yield* Effect.all([Notifications, SDKCore, Password]);
 
-			// Check if demo mode is enabled
-			if (developerConfig.demoMode !== false) {
-				return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
-			}
+				// Check if demo mode is enabled
+				if (developerConfig.demoMode !== false) {
+					return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+				}
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
+				const { token, id, userid, password, confirm_password } = yield* readAPIContextJson<{
+					token: string;
+					id: string;
+					userid: string;
+					password: string;
+					confirm_password: string;
+				}>(ctx);
 
-			const { token, id, userid, password, confirm_password } = jsonData;
+				if (!token) {
+					return apiResponseLogger(400, 'Invalid form data, token is required');
+				}
 
-			if (!token) {
-				return apiResponseLogger(400, 'Invalid form data, token is required');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid form data, id is required');
+				}
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid form data, id is required');
-			}
+				if (!userid) {
+					return apiResponseLogger(400, 'Invalid form data, userid is required');
+				}
 
-			if (!userid) {
-				return apiResponseLogger(400, 'Invalid form data, userid is required');
-			}
+				if (!password) {
+					return apiResponseLogger(400, 'Invalid form data, password is required');
+				}
 
-			if (!password) {
-				return apiResponseLogger(400, 'Invalid form data, password is required');
-			}
+				if (!confirm_password) {
+					return apiResponseLogger(400, 'Invalid form data, confirm_password is required');
+				}
 
-			if (!confirm_password) {
-				return apiResponseLogger(400, 'Invalid form data, confirm_password is required');
-			}
+				if (password !== confirm_password) {
+					return apiResponseLogger(400, 'Passwords do not match');
+				}
 
-			if (password !== confirm_password) {
-				return apiResponseLogger(400, 'Passwords do not match');
-			}
+				// If the password is invalid, return an error
+				const verifyPasswordResponse = yield* pass.verifyPasswordStrength(password);
+				if (verifyPasswordResponse !== true) {
+					return apiResponseLogger(400, verifyPasswordResponse);
+				}
 
-			// If the password is invalid, return an error
-			const verifyPasswordResponse = yield* pass.verifyPasswordStrength(password);
-			if (verifyPasswordResponse !== true) {
-				return apiResponseLogger(400, verifyPasswordResponse);
-			}
+				const hashedPassword = yield* pass.hashPassword(password);
 
-			const hashedPassword = yield* pass.hashPassword(password);
+				// Verify the reset token and derive the userId from it
+				const isTokenValid = yield* sdk.resetTokenBucket.check(token);
+				if (!isTokenValid) {
+					return apiResponseLogger(403, 'Invalid or expired reset token');
+				}
 
-			const userUpdate = {
-				password: hashedPassword,
-			};
+				const tokenInfo = yield* sdk.testToken(token);
+				if (!tokenInfo || !tokenInfo.userId) {
+					return apiResponseLogger(403, 'Invalid or expired reset token');
+				}
 
-			const userData = yield* sdk.GET.users.byId(userid);
+				const targetUserId = tokenInfo.userId as string;
 
-			if (!userData) {
-				return apiResponseLogger(404, 'User not found');
-			}
+				const userUpdate = { password: hashedPassword };
 
-			yield* sdk.AUTH.user.update(userid, userUpdate);
+				const userData = yield* sdk.GET.users.byId(targetUserId);
 
-			yield* sdk.resetTokenBucket.delete(userid);
+				if (!userData) {
+					return apiResponseLogger(404, 'User not found');
+				}
 
-			yield* notify.sendUserNotification('account_updated', userid);
-			yield* notify.sendAdminNotification('user_updated', userData.username);
+				yield* sdk.AUTH.user.update(targetUserId, userUpdate);
 
-			return apiResponseLogger(200, 'User password updated successfully');
-		}).pipe(Notifications.Provide, Password.Provide)
-	);
+				yield* Effect.all([
+					sdk.resetTokenBucket.delete(targetUserId),
+					notify.sendUserNotification('account_updated', targetUserId),
+					notify.sendAdminNotification('user_updated', userData.username),
+				]);
 
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return apiResponseLogger(200, 'User password updated successfully');
+			}).pipe(Notifications.Provide, Password.Provide),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['POST', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

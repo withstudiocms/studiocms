@@ -1,57 +1,63 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
+	Effect,
 	genLogger,
 	OptionsResponse,
 } from '../../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../../utils/auth-token.js';
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:pages:[id]:history:[diffid]:GET')(function* () {
-			const sdk = yield* SDKCore;
+export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:pages:[id]:history:[diffid]:GET')(function* () {
+				const sdk = yield* SDKCore;
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				const user = yield* verifyAuthTokenFromHeader(ctx);
 
-			if (user instanceof Response) {
-				return user;
-			}
+				if (user instanceof Response) {
+					return user;
+				}
 
-			const { rank } = user;
+				const { rank } = user;
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			const { id, diffid } = ctx.params;
+				const { id, diffid } = ctx.params;
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid page ID');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid page ID');
+				}
 
-			if (!diffid) {
-				return apiResponseLogger(400, 'Invalid diff ID');
-			}
+				if (!diffid) {
+					return apiResponseLogger(400, 'Invalid diff ID');
+				}
 
-			const diff = yield* sdk.diffTracking.get.single(diffid);
+				const diff = yield* sdk.diffTracking.get.single(diffid);
 
-			if (!diff) {
-				return apiResponseLogger(404, 'Diff not found');
-			}
+				if (!diff) {
+					return apiResponseLogger(404, 'Diff not found');
+				}
 
-			return new Response(JSON.stringify(diff), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Internal Server Error', error);
-	});
+				if (diff.pageId !== id) {
+					return apiResponseLogger(404, 'Diff not found');
+				}
 
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return createJsonResponse(diff);
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
+		},
+	}
+);

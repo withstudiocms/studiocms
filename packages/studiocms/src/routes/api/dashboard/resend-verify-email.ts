@@ -1,53 +1,77 @@
 import { VerifyEmail } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
+	readAPIContextJson,
 } from '../../../effect.js';
 
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studiocms/routes/api/dashboard/resend-verify-email.POST')(function* () {
-			const sdk = yield* SDKCore;
-			const verifier = yield* VerifyEmail;
+export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		POST: (ctx) =>
+			genLogger('studiocms/routes/api/dashboard/resend-verify-email.POST')(function* () {
+				const [sdk, verifier] = yield* Effect.all([SDKCore, VerifyEmail]);
 
-			// Check if mailer is enabled
-			if (!ctx.locals.StudioCMS.siteConfig.data.enableMailer) {
-				return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
-			}
+				// Check if mailer is enabled
+				if (!ctx.locals.StudioCMS.siteConfig.data.enableMailer) {
+					return apiResponseLogger(400, 'Mailer is disabled, this action is disabled.');
+				}
 
-			const jsonData = yield* Effect.tryPromise(() => ctx.request.json());
-			const { userId } = jsonData;
+				// Require authentication
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+				// Restrict to admins/owners (or relax below to allow "self" requests only)
+				const isPrivileged =
+					ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin ||
+					ctx.locals.StudioCMS.security?.userPermissionLevel.isOwner;
+				if (!isPrivileged) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
 
-			if (!userId) {
-				return apiResponseLogger(400, 'Invalid request');
-			}
+				const { userId } = yield* readAPIContextJson<{ userId: string }>(ctx);
 
-			const newToken = yield* sdk.AUTH.verifyEmail.create(userId);
+				if (!userId) {
+					return apiResponseLogger(400, 'Invalid request');
+				}
 
-			if (!newToken) {
-				return apiResponseLogger(500, 'Failed to create verification token');
-			}
+				const newToken = yield* sdk.AUTH.verifyEmail.create(userId);
 
-			const response = yield* verifier.sendVerificationEmail(userId);
+				if (!newToken) {
+					return apiResponseLogger(500, 'Failed to create verification token');
+				}
 
-			if (!response) {
-				return apiResponseLogger(500, 'Failed to send verification email');
-			}
+				const response = yield* verifier.sendVerificationEmail(userId);
 
-			if ('error' in response) {
-				return apiResponseLogger(500, response.error);
-			}
+				if (!response) {
+					return apiResponseLogger(500, 'Failed to send verification email');
+				}
 
-			return apiResponseLogger(200, response.message);
-		}).pipe(VerifyEmail.Provide)
-	);
+				if ('error' in response) {
+					return apiResponseLogger(500, response.error);
+				}
 
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['POST'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return apiResponseLogger(200, response.message);
+			}).pipe(VerifyEmail.Provide),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['POST', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

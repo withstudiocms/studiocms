@@ -6,29 +6,34 @@ import { parseMarkdown } from '../../../../utils/tinyMDParser.js';
 
 type FullJsonData = { content: string | undefined };
 
-const queryParam = Astro.url.searchParams.get('content');
-const preQuery = Astro.url.searchParams.get('preload-content');
-const astroJsonData = await Astro.request.json();
-
-const renderedMarkdown = pipe(
-	() => {
-		const jsonData: FullJsonData | undefined = astroJsonData;
-
-		if (jsonData?.content) {
-			return jsonData.content;
+const html = pipe(
+	{
+		queryParam: Astro.url.searchParams.get('content'),
+		preQuery: Astro.url.searchParams.get('preload-content'),
+		astroJsonData: await (async () => {
+			const ct = Astro.request.headers.get('content-type') ?? '';
+			if (!ct.toLowerCase().includes('application/json')) return undefined;
+			try {
+				return (await Astro.request.json()) as FullJsonData;
+			} catch {
+				return undefined;
+			}
+		})(),
+	},
+	(data) => {
+		const { queryParam, preQuery, astroJsonData } = data;
+		if (astroJsonData && astroJsonData.content !== undefined) {
+			return astroJsonData.content;
 		}
-
 		if (queryParam && queryParam !== 'null') {
 			return queryParam;
 		}
-
 		if (preQuery && preQuery !== 'null') {
 			return preQuery;
 		}
-
 		return 'No content to display';
 	},
-	(content) => parseMarkdown(content())
+	(content) => parseMarkdown(content)
 );
 ---
-<Fragment set:html={renderedMarkdown} />
+<Fragment set:html={html} />

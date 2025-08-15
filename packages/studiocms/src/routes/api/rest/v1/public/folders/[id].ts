@@ -1,39 +1,41 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
+	Effect,
 	genLogger,
 	OptionsResponse,
 } from '../../../../../../effect.js';
 
-export const GET: APIRoute = async (context: APIContext) =>
-	defineAPIRoute(context)((ctx) =>
-		genLogger('studioCMS:rest:v1:public:folders:[id]:GET')(function* () {
-			const sdk = yield* SDKCore;
-			const { id } = ctx.params;
+export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:public:folders:[id]:GET')(function* () {
+				const sdk = yield* SDKCore;
+				const { id } = ctx.params;
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid folder ID');
-			}
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid folder ID');
+				}
 
-			const folder = yield* sdk.GET.folder(id);
+				const folder = yield* sdk.GET.folder(id);
 
-			if (!folder) {
-				return apiResponseLogger(404, 'Folder not found');
-			}
+				if (!folder) {
+					return apiResponseLogger(404, 'Folder not found');
+				}
 
-			return new Response(JSON.stringify(folder), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((err) => {
-		return apiResponseLogger(500, 'Failed to fetch folder data', err);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return createJsonResponse(folder);
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+		},
+	}
+);

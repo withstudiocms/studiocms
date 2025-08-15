@@ -1,73 +1,67 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
+	Effect,
 	genLogger,
 	OptionsResponse,
 } from '../../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../../utils/auth-token.js';
 
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('studioCMS:rest:v1:public:pages:[id]:history:GET')(function* () {
-			const sdk = yield* SDKCore;
+export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('studioCMS:rest:v1:public:pages:[id]:history:GET')(function* () {
+				const [sdk, user] = yield* Effect.all([SDKCore, verifyAuthTokenFromHeader(ctx)]);
 
-			const user = yield* verifyAuthTokenFromHeader(ctx);
+				if (user instanceof Response) {
+					return user;
+				}
 
-			if (user instanceof Response) {
-				return user;
-			}
+				const { rank } = user;
 
-			const { rank } = user;
+				if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+					return apiResponseLogger(401, 'Unauthorized');
+				}
 
-			if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
-				return apiResponseLogger(401, 'Unauthorized');
-			}
+				const { id } = ctx.params;
 
-			const { id } = ctx.params;
+				if (!id) {
+					return apiResponseLogger(400, 'Invalid page ID');
+				}
 
-			if (!id) {
-				return apiResponseLogger(400, 'Invalid page ID');
-			}
+				const page = yield* sdk.GET.page.byId(id);
 
-			const page = yield* sdk.GET.page.byId(id);
+				if (!page) {
+					return apiResponseLogger(404, 'Page not found');
+				}
 
-			if (!page) {
-				return apiResponseLogger(404, 'Page not found');
-			}
+				const searchParams = ctx.url.searchParams;
 
-			const searchParams = ctx.url.searchParams;
+				const limitParam = searchParams.get('limit');
+				const parsedLimit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+				const limit =
+					typeof parsedLimit === 'number' && Number.isFinite(parsedLimit) && parsedLimit > 0
+						? Math.min(parsedLimit, 100) // clamp to protect backend
+						: undefined;
 
-			const limit = searchParams.get('limit');
+				const diffs =
+					limit !== undefined
+						? yield* sdk.diffTracking.get.byPageId.latest(id, limit)
+						: yield* sdk.diffTracking.get.byPageId.all(id);
 
-			let diffs: {
-				id: string;
-				userId: string;
-				pageId: string;
-				timestamp: Date | null;
-				pageMetaData: unknown;
-				pageContentStart: string;
-				diff: string | null;
-			}[] = [];
-
-			if (limit) {
-				diffs = yield* sdk.diffTracking.get.byPageId.latest(id, Number.parseInt(limit));
-			} else {
-				diffs = yield* sdk.diffTracking.get.byPageId.all(id);
-			}
-
-			return new Response(JSON.stringify(diffs), {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-		})
-	).catch((error) => {
-		return apiResponseLogger(500, 'Internal Server Error', error);
-	});
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				return createJsonResponse(diffs);
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
+		},
+	}
+);
