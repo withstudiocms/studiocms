@@ -1,16 +1,11 @@
 import { eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
-import { asDrizzleTable } from '@astrojs/db/utils';
 import { CMSMailerConfigId } from '../../consts.js';
-import { StudioCMSMailerConfig } from '../../db/tables.js';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
+import { tsMailerConfig } from '../../db/config.js';
+import { Effect, Layer } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../effects/smtp.js';
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations

@@ -4,8 +4,10 @@ import { SMTPService, SMTPTransportConfig, TransportConfig } from '@withstudiocm
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import { CMSMailerConfigId } from '../../consts.js';
-import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
+import { tsMailerConfig } from '../../db/config.js';
+import { Data, Effect, pipe } from '../../effect.js';
+import { errorTap, genLogger, pipeLogger } from './logger.js';
+import { MailerConfig, TransporterConfig } from './smtp.config.js';
 
 export type { Mail };
 
@@ -18,11 +20,6 @@ export type { Mail };
 function nullToUndefined<T>(value: T | null): T | undefined {
 	return value === null ? undefined : value;
 }
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
