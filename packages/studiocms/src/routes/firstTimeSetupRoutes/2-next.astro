@@ -1,23 +1,45 @@
 ---
-// import { authEnvCheck } from 'studiocms:auth/utils/authEnvCheck';
-import { authConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Button, Card, Center, Input } from 'studiocms:ui/components';
+import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders.js';
 import Layout from './components/Layout.astro';
 import PageHeader from './components/PageHeader.astro';
 import TabItem from './components/TabItem.astro';
 import Tabs from './components/Tabs.astro';
 
-const { providers } = authConfig;
+// Define the current images for the providers
+// This is a mapping of provider labels to their respective icons.
+// If a provider does not have an icon, it will be logged to the console.
+// This is used to ensure that the icons are available for the providers in the UI.
+// If a provider is not found, it will be skipped in the UI rendering.
+const providerIcons: Record<string, string> = {
+	github: 'simple-icons:github',
+	discord: 'simple-icons:discord',
+	google: 'flat-color-icons:google',
+	auth0: 'simple-icons:auth0',
+};
 
-// TODO - re-setup OAuth providers using new detection system
+// Map the provider data to the current images
+const Providers = providerData
+	.map((provider) => {
+		if (!provider.enabled) return undefined;
+		const icon = providerIcons[provider.label.toLowerCase()];
+		if (!icon) {
+			console.warn(`No icon found for provider: ${provider.label}`);
+			return undefined;
+		}
 
-// const { SHOW_OAUTH, AUTH0, DISCORD, GITHUB, GOOGLE } = await authEnvCheck(providers);
-
-// const githubEnabled = GITHUB.ENABLED && providers.github;
-// const discordEnabled = DISCORD.ENABLED && providers.discord;
-// const googleEnabled = GOOGLE.ENABLED && providers.google;
-// const auth0Enabled = AUTH0.ENABLED && providers.auth0;
+		return {
+			label: provider.label,
+			icon: icon,
+			href: provider.href,
+		};
+	})
+	.filter(Boolean) as {
+	label: string;
+	icon: string;
+	href: string;
+}[];
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -75,34 +97,23 @@ const { providers } = authConfig;
                 </form>
             </TabItem>
 
-            <!-- {
-                SHOW_OAUTH && githubEnabled && (
-                    <TabItem label='GitHub' icon="simple-icons:github">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.githubIndex}>Connect to GitHub</Button></Center>
-                    </TabItem>
-                )
-            }
             {
-                SHOW_OAUTH && discordEnabled && (
-                    <TabItem label='Discord' icon="simple-icons:discord">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.discordIndex}>Connect to Discord</Button></Center>
-                    </TabItem>
-                )
+                showOAuth && Providers.map(({ href, icon, label }) => {
+                    return (
+                        <TabItem label={label} icon={icon}>
+                            <Center>
+                                <Button 
+                                    color="primary" 
+                                    as="a" 
+                                    href={href} 
+                                    aria-label={`Connect to ${label}`}
+                                    >Connect to {label}
+                                </Button>
+                            </Center>
+                        </TabItem>
+                    )
+                })
             }
-            {
-                SHOW_OAUTH && googleEnabled && (
-                    <TabItem label='Google' icon="flat-color-icons:google">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.googleIndex}>Connect to Google</Button></Center>
-                    </TabItem>
-                )
-            }
-            {
-                SHOW_OAUTH && auth0Enabled && (
-                    <TabItem label='Auth0' icon="simple-icons:auth0">
-                        <Center><Button color="primary" as="a" href={StudioCMSRoutes.authLinks.auth0Index}>Connect to Auth0</Button></Center>
-                    </TabItem>
-                )
-            } -->
 
         </Tabs>
 

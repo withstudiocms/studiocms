@@ -3,8 +3,7 @@ import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { CMSMailerConfigId } from '../../consts.js';
 import { tsMailerConfig } from '../../db/config.js';
-import { Effect, Layer } from '../../effect.js';
-import { genLogger, pipeLogger } from '../effects/index.js';
+import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../effects/smtp.js';
 
 /**
@@ -201,7 +200,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const verifyMailConnection = genLogger('studiocms/lib/mailer/Mailer.verifyMailConnection')(
 			function* () {
-				const result = yield* SMTP.verify();
+				const result = yield* SMTP.verifyTransport();
 
 				// If the result is not true, log an error and return an error message
 				if (result !== true) {

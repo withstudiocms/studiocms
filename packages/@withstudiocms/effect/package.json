@@ -58,7 +58,15 @@
         "./effect": {
             "types": "./dist/effect.d.ts",
             "default": "./dist/effect.js"
-        }
+        },
+		"./scrypt": {
+			"types": "./dist/scrypt.d.ts",
+			"default": "./dist/scrypt.js"
+		},
+		"./smtp": {
+			"types": "./dist/smtp.d.ts",
+			"default": "./dist/smtp.js"
+		}
 	},
 	"type": "module",
 	"dependencies": {
@@ -75,11 +83,14 @@
 		"@effect/workflow": "catalog:effect",
 		"deepmerge-ts": "catalog:",
 		"effect": "catalog:effect",
-		"micromatch": "^4.0.8"
+		"micromatch": "^4.0.8",
+		"nodemailer": "catalog:",
+		"socks": "^2.8.7"
 	},
 	"devDependencies": {
 		"@types/micromatch": "^4.0.9",
 		"@types/node": "catalog:",
+		"@types/nodemailer": "catalog:",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {

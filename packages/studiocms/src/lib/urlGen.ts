@@ -1,5 +1,4 @@
-import { pathWithBase } from './pathGenerators.js';
-import { removeLeadingTrailingSlashes } from './removeLeadingTrailingSlashes.js';
+import { pathWithBase, stripLeadingAndTrailingSlashes } from './pathGenerators.js';
 
 /**
  * # urlGenFactory Helper Function
@@ -20,14 +19,15 @@ export default function urlGenFactory(
 	let dashboardRoute = 'dashboard';
 
 	if (DashboardRouteOverride) {
-		dashboardRoute = removeLeadingTrailingSlashes(DashboardRouteOverride);
+		dashboardRoute = stripLeadingAndTrailingSlashes(DashboardRouteOverride);
 	}
 
 	if (path) {
+		const cleanPath = stripLeadingAndTrailingSlashes(path);
 		if (isDashboardRoute) {
-			url = pathWithBase(`${dashboardRoute}/${path}`);
+			url = pathWithBase(`${dashboardRoute}/${cleanPath}`);
 		} else {
-			url = pathWithBase(path);
+			url = pathWithBase(cleanPath);
 		}
 	} else {
 		if (isDashboardRoute) {

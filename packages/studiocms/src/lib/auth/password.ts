@@ -5,7 +5,78 @@ import { Data, Effect, genLogger, Platform, pipeLogger } from '../../effect.js';
 import { Scrypt } from './utils/scrypt.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
+/**
+ * PasswordError is a custom error class for handling password-related errors.
+ * It extends the TaggedError class from the Data module, allowing for structured error handling.
+ */
 export class PasswordError extends Data.TaggedError('PasswordError')<{ message: string }> {}
+
+/**
+ * The generation prefix for the secure password format.
+ * This is used to identify the version of the password hashing scheme.
+ */
+const GEN1_0_PREFIX = 'gen1.0';
+
+/**
+ * Builds a secure password hash from the generation, salt, and hash.
+ *
+ * The format of the secure password is: `gen1.0:salt:hash`.
+ * If any of the components are invalid, a PasswordError is thrown.
+ *
+ * @param generation - The generation identifier (e.g., 'gen1.0').
+ * @param salt - The salt used in the hashing process.
+ * @param hash - The hashed password.
+ * @returns A string representing the secure password.
+ */
+const buildSecurePassword = Effect.fn(
+	({ generation, hash, salt }: { generation: string; salt: string; hash: string }) =>
+		Effect.succeed(`${generation}:${salt}:${hash}`)
+);
+
+/**
+ * Breaks down a secure password hash into its components.
+ *
+ * The hash is expected to be in the format: `gen1.0:salt:hash`.
+ * If the hash does not match this format, or if it uses an unsupported generation,
+ * a PasswordError is thrown.
+ *
+ * @param hash - The secure password hash to break down.
+ * @returns An object containing the generation, salt, and hash value.
+ */
+const breakSecurePassword = Effect.fn((hash: string) =>
+	Effect.try({
+		try: () => {
+			const parts = hash.split(':');
+			if (parts.length !== 3) {
+				throw new PasswordError({
+					message: 'Invalid secure password format. Expected "gen1.0:salt:hash".',
+				});
+			}
+			const [generation, salt, hashValue] = parts;
+			if (generation !== GEN1_0_PREFIX) {
+				throw new PasswordError({
+					message: 'Legacy password hashes are not supported. Please reset any legacy passwords.',
+				});
+			}
+			if (!salt || !hashValue) {
+				throw new PasswordError({
+					message: 'Invalid secure password format: missing salt or hash.',
+				});
+			}
+			return { generation, salt, hash: hashValue };
+		},
+		catch: (cause) => {
+			if (cause instanceof PasswordError) {
+				return cause;
+			}
+			// If the error is not a PasswordError, we wrap it in one
+			// to maintain consistent error handling.
+			return new PasswordError({
+				message: `An unknown Error occurred when breaking the password hash: ${cause}`,
+			});
+		},
+	})
+);
 
 /**
  * The `Password` class provides methods for hashing passwords, verifying password hashes,
@@ -66,7 +137,11 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			genLogger('studiocms/lib/auth/password/Password.hashPassword')(function* () {
 				const salt = _salt || crypto.randomBytes(16).toString('hex');
 				const hashed = yield* scrypt.run(password + salt);
-				return `gen1.0:${salt}:${hashed.toString('hex')}`;
+				return yield* buildSecurePassword({
+					generation: GEN1_0_PREFIX,
+					salt,
+					hash: hashed.toString('hex'),
+				});
 			});
 
 		/**
@@ -78,16 +153,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const verifyPasswordHash = (hash: string, password: string) =>
 			genLogger('studiocms/lib/auth/password/Password.verifyPasswordHash')(function* () {
-				if (!hash.startsWith('gen1.0:')) {
-					// If the hash does not start with 'gen1.0:', it is considered legacy and should not be used.
-					yield* Effect.fail(
-						new PasswordError({
-							message:
-								'Legacy password hashes are not supported. Please reset any legacy passwords.',
-						})
-					);
-				}
-				const [_prefix, salt] = hash.split(':', 3);
+				const { salt } = yield* breakSecurePassword(hash);
 				const newHash = yield* hashPassword(password, salt);
 				return constantTimeEqual(hash, newHash);
 			});
@@ -204,7 +270,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			verifyPasswordStrength,
 		};
 	}),
-	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, Platform.FetchHttpClient.layer],
+	dependencies: [CheckIfUnsafe.Default, Platform.FetchHttpClient.layer],
 }) {
 	static Provide = Effect.provide(this.Default);
 }

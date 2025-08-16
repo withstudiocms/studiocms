@@ -32,6 +32,13 @@ const { version: pkgVersion } = readJson<{ name: string; version: string }>(
 	resolve('../package.json')
 );
 
+type VirtualImport = {
+	id: string;
+	content: string;
+	context?: 'server' | 'client' | undefined;
+};
+type Imports = Record<string, string> | Array<VirtualImport>;
+
 /**
  * **Default StudioCMS Plugin**
  *
@@ -300,25 +307,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			enabled: boolean;
 		}[] = [];
 
-		// Define the Auth Service Endpoints to inject
-		const oAuthProvidersToInject: {
-			safeName: string;
-			button: {
-				label: string;
-				image: string;
-			};
-			endpoints: string;
-			enabled: boolean;
-		}[] = [];
-
 		// Define if the OAuth providers are configured
 		let oAuthProvidersConfigured = false;
 
+		// Define the Virtual Imports mapping
+		const VirtualImports: Imports = [];
+
 		/////
 
-		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
-
-		if (!dbStartPage) {
+		function getPlugins() {
 			// Check for `@astrojs/web-vitals` Integration
 			const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
 
@@ -329,24 +326,261 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			if (plugins) pluginsToProcess.push(...plugins);
 
+			return pluginsToProcess;
+		}
+
+		/**
+		 * Extracts and validates plugin data, ensuring it meets the required format and version.
+		 *
+		 * @param plugin - The StudioCMSPlugin instance to process.
+		 * @returns An object containing the validated plugin data, including hooks and other properties.
+		 * @throws {StudioCMSError} If the plugin's minimum version requirement is not met.
+		 */
+		function getPluginData(plugin: StudioCMSPlugin) {
+			const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
+			let comparison: number;
+			try {
+				comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
+			} catch (_error) {
+				throw new StudioCMSError(
+					`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
+					'The minimum version requirement must be a valid semver string.'
+				);
+			}
+			if (comparison === 1) {
+				throw new StudioCMSError(
+					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
+					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
+				);
+			}
+
+			return {
+				hooks,
+				requires,
+				...safeData,
+			};
+		}
+
+		/**
+		 * Registers an OAuth provider for the StudioCMS plugins.
+		 *
+		 * @param oAuthProvider - The OAuth provider to register.
+		 * @param messages - The messages array to push any errors or warnings.
+		 * @param unInjectedAuthProviders - The list of un-injected auth providers.
+		 */
+		function registerOAuthProvider(
+			oAuthProvider: {
+				endpointPath: string;
+				formattedName: string;
+				name: string;
+				svg: string;
+				requiredEnvVariables?: string[];
+			},
+			messages: Messages,
+			unInjectedAuthProviders: Array<{
+				name: string;
+				safeName: string;
+				formattedName: string;
+				svg: string;
+				endpoints: string;
+				enabled: boolean;
+			}>
+		) {
+			const { endpointPath, formattedName, name, svg, requiredEnvVariables } = oAuthProvider;
+			const safeName = convertToSafeString(name);
+			let enabled = true;
+			const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
+			const env = loadEnv('', process.cwd(), '');
+
+			if (requiredEnvVariables) {
+				const missingKeys = requiredEnvVariables.filter((key) => !env[key] || env[key] === '');
+				if (missingKeys.length > 0) {
+					messages.push({
+						label: `studiocms:plugins:${safeName}:missing-env-keys`,
+						logLevel: 'error',
+						message: boxen(
+							`The following environment variables are required for ${name} to work: ${missingKeys.join(', ')}. Please set them in your environment.`,
+							{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
+						),
+					});
+					enabled = false;
+				}
+			}
+
+			unInjectedAuthProviders.push({
+				name,
+				safeName,
+				formattedName,
+				svg,
+				endpoints,
+				enabled,
+			});
+		}
+
+		function buildOAuthArtifacts(
+			entries: {
+				name: string;
+				safeName: string;
+				formattedName: string;
+				svg: string;
+				endpoints: string;
+				enabled: boolean;
+			}[]
+		): {
+			oAuthEndpoints: {
+				content: string;
+				enabled: boolean;
+				safeName: string;
+			}[];
+			oAuthButtons: {
+				label: string;
+				image: string;
+				enabled: boolean;
+				safeName: string;
+			}[];
+		} {
+			return entries
+				.map(({ enabled, endpoints, formattedName, safeName, svg }) => ({
+					endpoints: {
+						content: endpoints,
+						enabled,
+						safeName,
+					},
+					button: {
+						label: formattedName,
+						image: svg,
+						enabled,
+						safeName,
+					},
+				}))
+				.reduce(
+					(acc, { endpoints, button }) => {
+						acc.oAuthEndpoints.push(endpoints);
+						acc.oAuthButtons.push(button);
+						return acc;
+					},
+					{ oAuthEndpoints: [], oAuthButtons: [] } as {
+						oAuthEndpoints: { content: string; enabled: boolean; safeName: string }[];
+						oAuthButtons: { label: string; image: string; enabled: boolean; safeName: string }[];
+					}
+				);
+		}
+
+		/////
+
+		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
+
+		// If dbStartPage is true, we will process the plugins but only get the Auth Providers
+		// for usage during First-time-setup. No other plugins will be processed.
+		if (dbStartPage) {
+			const pluginsToProcess = getPlugins();
+
+			for (const plugin of pluginsToProcess) {
+				const { hooks, requires, ...safeData } = getPluginData(plugin);
+
+				if (typeof hooks['studiocms:astro:config'] === 'function') {
+					await hooks['studiocms:astro:config']({
+						logger: pluginLogger(safeData.identifier, logger),
+						// Add the plugin Integration to the Astro config
+						addIntegrations(integration) {
+							if (integration) {
+								if (Array.isArray(integration)) {
+									integrations.push(...integration.map((integration) => ({ integration })));
+									return;
+								}
+								integrations.push({ integration });
+							}
+						},
+					});
+				}
+
+				if (typeof hooks['studiocms:config:setup'] === 'function') {
+					await hooks['studiocms:config:setup']({
+						logger: pluginLogger(safeData.identifier, logger),
+
+						setDashboard() {
+							return void 0;
+						},
+
+						setSitemap() {
+							return void 0;
+						},
+
+						setFrontend() {
+							return void 0;
+						},
+
+						setRendering() {
+							return void 0;
+						},
+
+						setImageService() {
+							return void 0;
+						},
+
+						setAuthService({ oAuthProvider }) {
+							if (oAuthProvider)
+								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
+						},
+					});
+				}
+
+				if (requires) {
+					pluginRequires.push({
+						source: safeData.identifier,
+						requires,
+					});
+				}
+
+				sourcePluginsList.push(safeData.identifier);
+			}
+
+			// Verify Plugin Requirements
+			verifyPluginRequires(sourcePluginsList, pluginRequires);
+
+			const { oAuthButtons, oAuthEndpoints } = buildOAuthArtifacts(unInjectedAuthProviders);
+
+			if (oAuthEndpoints.length > 0) {
+				oAuthProvidersConfigured = true;
+			}
+
+			// Add the Virtual Imports for the Auth Providers
+			VirtualImports.push(
+				{
+					id: 'virtual:studiocms:plugins/auth/providers',
+					content: `
+						${oAuthEndpoints.map(({ content }) => content).join('\n')}
+					`,
+				},
+				{
+					id: 'studiocms:plugins/auth/providers',
+					content: `
+						import * as providers from 'virtual:studiocms:plugins/auth/providers';
+
+						const oAuthEndpoints = ${JSON.stringify(oAuthEndpoints.map(({ safeName, enabled }) => ({ safeName, enabled })))};
+
+						export const oAuthButtons = ${JSON.stringify(oAuthButtons)};
+
+						export const oAuthProviders = oAuthEndpoints.map(({ safeName, enabled }) => ({
+							safeName,
+							enabled,
+							initSession: providers[safeName + '_initSession'] || null,
+							initCallback: providers[safeName + '_initCallback'] || null,
+						}));
+					`,
+				}
+			);
+		}
+
+		// If dbStartPage is false, we will process the plugins and get all the data
+		// for the StudioCMS Dashboard and Editors.
+		if (!dbStartPage) {
+			// Get the plugins to process
+			const pluginsToProcess = getPlugins();
+
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
-				const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
-				let comparison: number;
-				try {
-					comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
-				} catch (_error) {
-					throw new StudioCMSError(
-						`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
-						'The minimum version requirement must be a valid semver string.'
-					);
-				}
-				if (comparison === 1) {
-					throw new StudioCMSError(
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
-					);
-				}
+				const { hooks, requires, ...safeData } = getPluginData(plugin);
 
 				let foundSettingsPage: SafePluginListItemType['settingsPage'];
 				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'];
@@ -478,48 +712,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider) {
-								const { endpointPath, formattedName, name, svg, requiredEnvVariables } =
-									oAuthProvider;
-
-								const safeName = convertToSafeString(name);
-
-								let enabled = true;
-
-								const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
-
-								const env = loadEnv('', process.cwd(), '');
-
-								if (requiredEnvVariables) {
-									const missingKeys = requiredEnvVariables.filter(
-										(key) => !env[key] || env[key] === ''
-									);
-
-									if (missingKeys.length > 0) {
-										messages.push({
-											label: `studiocms:plugins:${safeName}:missing-env-keys`,
-											logLevel: 'error',
-											message: boxen(
-												`The following environment variables are required for ${name} to work: ${missingKeys.join(
-													', '
-												)}. Please set them in your environment.`,
-												{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
-											),
-										});
-
-										enabled = false;
-									}
-								}
-
-								unInjectedAuthProviders.push({
-									name,
-									safeName,
-									formattedName,
-									svg,
-									endpoints,
-									enabled,
-								});
-							}
+							if (oAuthProvider)
+								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 						},
 					});
 				}
@@ -592,40 +786,20 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
-			for (const item of unInjectedAuthProviders) {
-				oAuthProvidersToInject.push({
-					safeName: item.safeName,
-					button: {
-						label: item.formattedName,
-						image: item.svg,
-					},
-					endpoints: item.endpoints,
-					enabled: item.enabled,
-				});
-			}
-
-			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({
-				...button,
-				enabled,
-				safeName,
-			}));
-
-			const oAuthEndpoints = oAuthProvidersToInject.map(({ endpoints, enabled, safeName }) => ({
-				content: endpoints,
-				enabled,
-				safeName,
-			}));
+			const { oAuthButtons, oAuthEndpoints } = buildOAuthArtifacts(unInjectedAuthProviders);
 
 			if (oAuthEndpoints.length > 0) {
 				oAuthProvidersConfigured = true;
 			}
 
-			addVirtualImports(params, {
-				name,
-				imports: {
-					'virtual:studiocms/components/Editors': `
-						export const editorKeys = ${JSON.stringify([...allPageTypes.map(({ identifier }) => convertToSafeString(identifier))])};
-
+			VirtualImports.push(
+				{
+					id: 'virtual:studiocms/components/Editors',
+					content: `
+						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+						export const editorKeys = ${JSON.stringify([
+							...allPageTypes.map(({ identifier }) => convertToSafeString(identifier)),
+						])};
 						${allPageTypes
 							.map(({ identifier, pageContentComponent }) => {
 								return pageContentComponentFilter(
@@ -635,7 +809,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							})
 							.join('\n')}
 					`,
-					'studiocms:components/dashboard-grid-components': `
+				},
+				{
+					id: 'studiocms:components/dashboard-grid-components',
+					content: `
 						${availableDashboardGridItems
 							.map((item) => {
 								const components: Record<string, string> = item.body?.components || {};
@@ -648,7 +825,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							})
 							.join('\n')}
 					`,
-					'studiocms:components/dashboard-grid-items': `
+				},
+				{
+					id: 'studiocms:components/dashboard-grid-items',
+					content: `
 						import * as components from 'studiocms:components/dashboard-grid-components';
 						
 						const currentComponents = ${JSON.stringify(availableDashboardGridItems)};
@@ -671,7 +851,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						
 						export default dashboardGridItems;
 					`,
-					'studiocms:plugins/dashboard-pages/components/user': `
+				},
+				{
+					id: 'studiocms:plugins/dashboard-pages/components/user',
+					content: `
 						${
 							availableDashboardPages.user
 								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
@@ -697,7 +880,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								.join('\n') || ''
 						}
 					`,
-					'studiocms:plugins/dashboard-pages/components/admin': `
+				},
+				{
+					id: 'studiocms:plugins/dashboard-pages/components/admin',
+					content: `
 						${
 							availableDashboardPages.admin
 								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
@@ -723,7 +909,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								.join('\n') || ''
 						}
 					`,
-					'studiocms:plugins/dashboard-pages/user': `
+				},
+				{
+					id: 'studiocms:plugins/dashboard-pages/user',
+					content: `
 						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/user';
 						
@@ -744,7 +933,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						
 						export default dashboardPages;
 					`,
-					'studiocms:plugins/dashboard-pages/admin': `
+				},
+				{
+					id: 'studiocms:plugins/dashboard-pages/admin',
+					content: `
 						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
 						
@@ -765,12 +957,18 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						
 						export default dashboardPages;
 					`,
-					'virtual:studiocms/plugins/endpoints': `
+				},
+				{
+					id: 'virtual:studiocms/plugins/endpoints',
+					content: `
 						${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
 					
 						${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
 					`,
-					'studiocms:plugins/endpoints': `
+				},
+				{
+					id: 'studiocms:plugins/endpoints',
+					content: `
 						import * as endpoints from 'virtual:studiocms/plugins/endpoints';
 					
 						const pluginEndpoints = ${JSON.stringify(
@@ -794,23 +992,36 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							onSave: endpoints[safeIdentifier + '_onSave'] || null,
 						}));
 					`,
-					'virtual:studiocms/plugins/renderers': `
+				},
+				{
+					id: 'virtual:studiocms/plugins/renderers',
+					content: `
 						${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}
 					`,
-					'studiocms:plugins/renderers': `
-						import * as renderers from 'virtual:studiocms/plugins/renderers';
-						
+				},
+				{
+					id: 'studiocms:plugins/renderers',
+					content: `
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
 					`,
-					'studiocms:plugins/imageService': `
+				},
+				{
+					id: 'studiocms:plugins/imageService',
+					content: `
 						export const imageServiceKeys = ${JSON.stringify(imageServiceKeys)};
 
 						${imageServiceEndpoints.length > 0 ? imageServiceEndpoints.join('\n') : ''}
 					`,
-					'virtual:studiocms:plugins/auth/providers': `
+				},
+				{
+					id: 'virtual:studiocms:plugins/auth/providers',
+					content: `
 						${oAuthEndpoints.map(({ content }) => content).join('\n')}
 					`,
-					'studiocms:plugins/auth/providers': `
+				},
+				{
+					id: 'studiocms:plugins/auth/providers',
+					content: `
 						import * as providers from 'virtual:studiocms:plugins/auth/providers';
 
 						const oAuthEndpoints = ${JSON.stringify(oAuthEndpoints.map(({ safeName, enabled }) => ({ safeName, enabled })))};
@@ -824,9 +1035,14 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							initCallback: providers[safeName + '_initCallback'] || null,
 						}));
 					`,
-				},
-			});
+				}
+			);
 		}
+
+		addVirtualImports(params, {
+			name,
+			imports: VirtualImports,
+		});
 
 		let pluginListLength = 0;
 		let pluginListMessage = '';
