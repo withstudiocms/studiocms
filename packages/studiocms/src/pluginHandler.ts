@@ -307,17 +307,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			enabled: boolean;
 		}[] = [];
 
-		// Define the Auth Service Endpoints to inject
-		const oAuthProvidersToInject: {
-			safeName: string;
-			button: {
-				label: string;
-				image: string;
-			};
-			endpoints: string;
-			enabled: boolean;
-		}[] = [];
-
 		// Define if the OAuth providers are configured
 		let oAuthProvidersConfigured = false;
 
@@ -428,6 +417,55 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			});
 		}
 
+		function buildOAuthArtifacts(
+			entries: {
+				name: string;
+				safeName: string;
+				formattedName: string;
+				svg: string;
+				endpoints: string;
+				enabled: boolean;
+			}[]
+		): {
+			oAuthEndpoints: {
+				content: string;
+				enabled: boolean;
+				safeName: string;
+			}[];
+			oAuthButtons: {
+				label: string;
+				image: string;
+				enabled: boolean;
+				safeName: string;
+			}[];
+		} {
+			return entries
+				.map(({ enabled, endpoints, formattedName, safeName, svg }) => ({
+					endpoints: {
+						content: endpoints,
+						enabled,
+						safeName,
+					},
+					button: {
+						label: formattedName,
+						image: svg,
+						enabled,
+						safeName,
+					},
+				}))
+				.reduce(
+					(acc, { endpoints, button }) => {
+						acc.oAuthEndpoints.push(endpoints);
+						acc.oAuthButtons.push(button);
+						return acc;
+					},
+					{ oAuthEndpoints: [], oAuthButtons: [] } as {
+						oAuthEndpoints: { content: string; enabled: boolean; safeName: string }[];
+						oAuthButtons: { label: string; image: string; enabled: boolean; safeName: string }[];
+					}
+				);
+		}
+
 		/////
 
 		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
@@ -500,29 +538,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			// Verify Plugin Requirements
 			verifyPluginRequires(sourcePluginsList, pluginRequires);
 
-			for (const item of unInjectedAuthProviders) {
-				oAuthProvidersToInject.push({
-					safeName: item.safeName,
-					button: {
-						label: item.formattedName,
-						image: item.svg,
-					},
-					endpoints: item.endpoints,
-					enabled: item.enabled,
-				});
-			}
-
-			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({
-				...button,
-				enabled,
-				safeName,
-			}));
-
-			const oAuthEndpoints = oAuthProvidersToInject.map(({ endpoints, enabled, safeName }) => ({
-				content: endpoints,
-				enabled,
-				safeName,
-			}));
+			const { oAuthButtons, oAuthEndpoints } = buildOAuthArtifacts(unInjectedAuthProviders);
 
 			if (oAuthEndpoints.length > 0) {
 				oAuthProvidersConfigured = true;
@@ -770,29 +786,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const allPageTypes = safePluginList.flatMap(({ pageTypes }) => pageTypes || []);
 
-			for (const item of unInjectedAuthProviders) {
-				oAuthProvidersToInject.push({
-					safeName: item.safeName,
-					button: {
-						label: item.formattedName,
-						image: item.svg,
-					},
-					endpoints: item.endpoints,
-					enabled: item.enabled,
-				});
-			}
-
-			const oAuthButtons = oAuthProvidersToInject.map(({ button, enabled, safeName }) => ({
-				...button,
-				enabled,
-				safeName,
-			}));
-
-			const oAuthEndpoints = oAuthProvidersToInject.map(({ endpoints, enabled, safeName }) => ({
-				content: endpoints,
-				enabled,
-				safeName,
-			}));
+			const { oAuthButtons, oAuthEndpoints } = buildOAuthArtifacts(unInjectedAuthProviders);
 
 			if (oAuthEndpoints.length > 0) {
 				oAuthProvidersConfigured = true;

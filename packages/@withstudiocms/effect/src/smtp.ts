@@ -81,11 +81,10 @@ const convertTransporterConfig = Effect.fn((config: TransportConfig) =>
 				defaults: defaults || undefined,
 			};
 		},
-		catch: (cause) => {
-			throw new Error(
+		catch: (cause) =>
+			new Error(
 				`Failed to convert TransportConfig: ${cause instanceof Error ? cause.message : String(cause)}`
-			);
-		},
+			),
 	})
 );
 
@@ -239,14 +238,12 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 		 * @returns A promise that resolves with the sent message info or throws an error if sending fails.
 		 */
 		const sendMail = (mailOptions: Mail.Options) =>
-			Effect.async<SMTPTransport.SentMessageInfo, Error>((resume) => {
-				_mailer.sendMail(mailOptions, (err, info) => {
-					if (err) {
-						resume(Effect.fail(new Error(`Failed to send mail: ${err.message}`)));
-					} else {
-						resume(Effect.succeed(info));
-					}
-				});
+			Effect.tryPromise({
+				try: () => _mailer.sendMail(mailOptions),
+				catch: (cause) =>
+					new Error(
+						`Failed to send mail: ${cause instanceof Error ? cause.message : String(cause)}`
+					),
 			});
 
 		/**
@@ -283,12 +280,31 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			});
 		});
 
+		/**
+		 * Closes the SMTP transport connection.
+		 *
+		 * This function returns a promise that resolves when the transport is closed or throws an error if closing fails.
+		 *
+		 * @returns A promise that resolves when the transport is closed or throws an error if closing fails.
+		 */
+		const close = () =>
+			Effect.try({
+				try: () => _mailer.close(),
+				catch: (cause) =>
+					new Error(
+						`Failed to close SMTP transport: ${
+							cause instanceof Error ? cause.message : String(cause)
+						}`
+					),
+			});
+
 		return {
 			Mailer,
 			verifyTransport,
 			sendMail,
 			isIdle,
 			getVersionString,
+			close,
 		};
 	}),
 }) {}
