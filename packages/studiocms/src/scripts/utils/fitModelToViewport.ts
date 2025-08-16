@@ -18,7 +18,12 @@ function fitModelToViewport(
 	const ThreeBox3 = threeModules?.Box3 || Box3;
 	const ThreeVector3 = threeModules?.Vector3 || Vector3;
 
-	// Grab object's bounding box info
+	// Grab object's bounding box info (ensure world matrices are current)
+	if (typeof (model as any).updateWorldMatrix === 'function') {
+		model.updateWorldMatrix(true, true);
+	} else if (typeof (model as any).updateMatrixWorld === 'function') {
+		model.updateMatrixWorld(true);
+	}
 	const box = new ThreeBox3().setFromObject(model);
 	const center = box.getCenter(new ThreeVector3());
 	const size = box.getSize(new ThreeVector3());
