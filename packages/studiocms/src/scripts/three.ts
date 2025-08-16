@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { validImages } from '../utils/validImages/index.js';
-import { fitModelToViewport } from './utils/fitModelToViewport.js';
+import type { OutlinePass as OutlinePassType } from 'three/addons/postprocessing/OutlinePass.js';
+
+const { OutlinePass } = await import('three/addons/postprocessing/OutlinePass.js');
+const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+const { validImages } = await import('../utils/validImages/index.js');
+const { fitModelToViewport } = await import('./utils/fitModelToViewport.js');
 
 // Get the current configuration for the login page
 const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
@@ -95,8 +97,8 @@ class StudioCMS3DLogo {
 	mouseX = 0;
 	mouseY = 0;
 	time: THREE.Clock;
-	composer: EffectComposer;
-	outlinePass: OutlinePass | undefined;
+	composer;
+	outlinePass: OutlinePassType | undefined;
 	outlinedObjects: THREE.Group<THREE.Object3DEventMap>[] = [];
 	defaultComputedCameraZ: number | undefined;
 	BackgroundMesh: THREE.Mesh | undefined;
