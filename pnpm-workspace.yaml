@@ -8,6 +8,8 @@ catalog:
   sharp: ^0.34.3
   tinyglobby: ^0.2.14
   typescript: ^5.9.2
+  nodemailer: ^7.0.5
+  "@types/nodemailer": ^7.0.0
 
 catalogs:
   astrojs:
