@@ -342,22 +342,20 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		function getPluginData(plugin: StudioCMSPlugin) {
 			const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
-			const range = validRange(studiocmsMinimumVersion);
-			if (range) {
-				if (!satisfies(pkgVersion, range)) {
-					throw new StudioCMSError(
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
-					);
-				}
-			} else {
-				const comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
-				if (comparison === 1) {
-					throw new StudioCMSError(
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-						`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
-					);
-				}
+			let comparison: number;
+			try {
+				comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
+			} catch (_error) {
+				throw new StudioCMSError(
+					`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
+					'The minimum version requirement must be a valid semver string.'
+				);
+			}
+			if (comparison === 1) {
+				throw new StudioCMSError(
+					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
+					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
+				);
 			}
 
 			return {
