@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { validImages } from '../utils/validImages/index.js';
-import { fitModelToViewport } from './utils/fitModelToViewport.js';
+
+const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+
+const { validImages } = await import('../utils/validImages/index.js');
+const { fitModelToViewport } = await import('./utils/fitModelToViewport.js');
 
 // Get the current configuration for the login page
 const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
