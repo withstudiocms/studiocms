@@ -75,11 +75,14 @@
 		"@effect/workflow": "catalog:effect",
 		"deepmerge-ts": "catalog:",
 		"effect": "catalog:effect",
-		"micromatch": "^4.0.8"
+		"micromatch": "^4.0.8",
+		"nodemailer": "^7.0.5",
+		"socks": "^2.8.7"
 	},
 	"devDependencies": {
 		"@types/micromatch": "^4.0.9",
 		"@types/node": "catalog:",
+		"@types/nodemailer": "^7.0.0",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {

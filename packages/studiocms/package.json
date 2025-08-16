@@ -196,7 +196,7 @@
 		"@types/mdast": "^4.0.4",
 		"@types/markdown-it": "^14.1.2",
 		"@types/node": "catalog:",
-		"@types/nodemailer": "^6.4.17",
+		"@types/nodemailer": "^7.0.0",
 		"@types/semver": "^7.7.0",
 		"@types/three": "0.169.0",
 		"typescript": "catalog:"
