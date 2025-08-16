@@ -59,13 +59,16 @@ const convertTransporterConfig = (config: tsMailer) =>
 					host,
 					port,
 					secure,
-					auth: {
-						user: nullToUndefined(auth_user),
-						pass: nullToUndefined(auth_pass),
-					},
 					proxy: nullToUndefined(proxy),
+					auth:
+						auth_user !== null || auth_pass !== null
+							? {
+									user: nullToUndefined(auth_user),
+									pass: nullToUndefined(auth_pass),
+								}
+							: undefined,
 					tls:
-						tls_rejectUnauthorized || tls_servername
+						tls_rejectUnauthorized !== null || tls_servername !== null
 							? {
 									rejectUnauthorized: nullToUndefined(tls_rejectUnauthorized),
 									servername: nullToUndefined(tls_servername),
