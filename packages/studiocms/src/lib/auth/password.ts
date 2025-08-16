@@ -7,6 +7,8 @@ import { CheckIfUnsafe, type CheckIfUnsafeError } from './utils/unsafeCheck.js';
 
 export class PasswordError extends Data.TaggedError('PasswordError')<{ message: string }> {}
 
+const GEN1_0_PREFIX = 'gen1.0';
+
 /**
  * The `Password` class provides methods for hashing passwords, verifying password hashes,
  * and checking the strength of passwords. It includes functionality for ensuring passwords
@@ -66,7 +68,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			genLogger('studiocms/lib/auth/password/Password.hashPassword')(function* () {
 				const salt = _salt || crypto.randomBytes(16).toString('hex');
 				const hashed = yield* scrypt.run(password + salt);
-				return `gen1.0:${salt}:${hashed.toString('hex')}`;
+				return `${GEN1_0_PREFIX}:${salt}:${hashed.toString('hex')}`;
 			});
 
 		/**
@@ -78,8 +80,9 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 		 */
 		const verifyPasswordHash = (hash: string, password: string) =>
 			genLogger('studiocms/lib/auth/password/Password.verifyPasswordHash')(function* () {
-				if (!hash.startsWith('gen1.0:')) {
-					// If the hash does not start with 'gen1.0:', it is considered legacy and should not be used.
+				const [prefix, salt] = hash.split(':', 3);
+				if (prefix !== GEN1_0_PREFIX) {
+					// If the prefix does not match, it is considered legacy and should not be used.
 					yield* Effect.fail(
 						new PasswordError({
 							message:
@@ -87,7 +90,6 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 						})
 					);
 				}
-				const [_prefix, salt] = hash.split(':', 3);
 				const newHash = yield* hashPassword(password, salt);
 				return constantTimeEqual(hash, newHash);
 			});
