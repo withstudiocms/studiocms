@@ -22,10 +22,10 @@ export interface Transport extends SMTPTransport.Options {
  * @property {SMTPTransport.Options} [defaults] - Default options for the mail transporter.
  * @property {string} [proxy] - Optional proxy URL to use for the connection.
  */
-export interface TransportConfig extends Brand.Brand<'TransportConfig'> {
+export type TransportConfig = {
 	transport?: Transport;
 	defaults?: SMTPTransport.Options;
-}
+} & Brand.Brand<'TransportConfig'>;
 
 /**
  * Nominal type for TransportConfig to ensure type safety and prevent accidental misuse.

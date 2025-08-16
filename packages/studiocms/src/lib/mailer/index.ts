@@ -4,8 +4,7 @@ import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { Effect, Layer } from '../../effect.js';
-import { genLogger, pipeLogger } from '../effects/index.js';
+import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../effects/smtp.js';
 
 /**
@@ -207,7 +206,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const verifyMailConnection = genLogger('studiocms/lib/mailer/Mailer.verifyMailConnection')(
 			function* () {
-				const result = yield* SMTP.verify();
+				const result = yield* SMTP.verifyTransport();
 
 				// If the result is not true, log an error and return an error message
 				if (result !== true) {
