@@ -58,7 +58,15 @@
         "./effect": {
             "types": "./dist/effect.d.ts",
             "default": "./dist/effect.js"
-        }
+        },
+		"./scrypt": {
+			"types": "./dist/scrypt.d.ts",
+			"default": "./dist/scrypt.js"
+		},
+		"./smtp": {
+			"types": "./dist/smtp.d.ts",
+			"default": "./dist/smtp.js"
+		}
 	},
 	"type": "module",
 	"dependencies": {
