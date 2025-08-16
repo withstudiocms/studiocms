@@ -226,7 +226,7 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
  */
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	build: {
-		chunkSizeWarningLimit: 600,
+		chunkSizeWarningLimit: 700,
 	},
 };
 
