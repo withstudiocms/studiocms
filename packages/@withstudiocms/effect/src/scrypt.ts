@@ -75,13 +75,23 @@ export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 
 		const run = (password: BinaryLike) =>
 			Effect.async<Buffer, ScryptError>((resume) => {
-				scrypt(password, config.encryptionKey, config.keylen, config.options, (err, derivedKey) => {
-					if (err) {
-						resume(Effect.fail(new ScryptError({ error: err })));
-					} else {
-						resume(Effect.succeed(derivedKey));
-					}
-				});
+				try {
+					scrypt(
+						password,
+						config.encryptionKey,
+						config.keylen,
+						config.options,
+						(err, derivedKey) => {
+							if (err) {
+								resume(Effect.fail(new ScryptError({ error: err })));
+							} else {
+								resume(Effect.succeed(derivedKey));
+							}
+						}
+					);
+				} catch (error) {
+					resume(Effect.fail(new ScryptError({ error: error as Error })));
+				}
 			});
 
 		return {

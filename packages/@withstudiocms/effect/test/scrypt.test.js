@@ -202,9 +202,9 @@ describe('Scrypt Module', () => {
 			assert(Exit.isFailure(exit));
 			if (Exit.isFailure(exit)) {
 				assert(exit._tag === 'Failure');
-				const error = exit.cause.defect.code;
-				const expectedCode = 'ERR_CRYPTO_INVALID_SCRYPT_PARAMS';
-				assert.strictEqual(error, expectedCode, `Expected error code ${expectedCode}, got ${error}`);
+				const error = exit.cause.toJSON();
+
+				assert.strictEqual(error.failure._tag, 'ScryptError', `Expected error tag ScryptError, got ${error.failure._tag}`);
 			}
 		});
 

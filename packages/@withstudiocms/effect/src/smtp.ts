@@ -198,12 +198,14 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 		/**
 		 * Runs a function with the nodemailer transport instance within an Effect context.
 		 */
-		const Mailer = Effect.fn(function* <T>(fn: (mailer: typeof _mailer) => T) {
-			return yield* Effect.try({
-				try: () => fn(_mailer),
+		const Mailer = Effect.fn(function* <T>(fn: (mailer: typeof _mailer) => Promise<T> | T) {
+			return yield* Effect.tryPromise({
+				try: () => Promise.resolve().then(() => fn(_mailer)),
 				catch: (cause) =>
 					new Error(
-						`Failed to run Mailer function: ${cause instanceof Error ? cause.message : String(cause)}`
+						`Failed to run Mailer function: ${
+							cause instanceof Error ? cause.message : String(cause)
+						}`
 					),
 			});
 		});
