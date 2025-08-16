@@ -204,7 +204,11 @@ describe('Scrypt Module', () => {
 				assert(exit._tag === 'Failure');
 				const error = exit.cause.toJSON();
 
-				assert.strictEqual(error.failure._tag, 'ScryptError', `Expected error tag ScryptError, got ${error.failure._tag}`);
+				assert.strictEqual(
+					error.failure._tag,
+					'ScryptError',
+					`Expected error tag ScryptError, got ${error.failure._tag}`
+				);
 			}
 		});
 
