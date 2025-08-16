@@ -1,10 +1,12 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: This file is using non-null assertions */
 /** biome-ignore-all lint/suspicious/noExplicitAny: This file is using explicit any types */
-const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
-
-const loginPageBackground = configElement.dataset.config_background;
-const loginPageCustomImage = configElement.dataset.config_custom_image;
-const currentMode = document.documentElement.dataset.theme || 'dark';
+const configElement = document.getElementById('auth-pages-config');
+const loginPageBackground =
+	configElement instanceof HTMLDivElement ? configElement.dataset.config_background : undefined;
+const loginPageCustomImage =
+	configElement instanceof HTMLDivElement ? configElement.dataset.config_custom_image : undefined;
+const currentMode =
+	(document.documentElement as HTMLElement | null)?.dataset?.theme === 'light' ? 'light' : 'dark';
 
 const studioCMS3DModel = 'https://cdn.studiocms.dev/studiocms-logo.glb';
 
@@ -204,9 +206,9 @@ class LazyStudioCMS3DLogo {
 
 	destroy() {
 		this.observer.disconnect();
-		// Clean up Three.js resources if needed
 		if (this.logoInstance) {
-			// Add cleanup method to StudioCMS3DLogo if needed
+			this.logoInstance.dispose?.();
+			this.logoInstance = null;
 		}
 	}
 }
@@ -234,6 +236,8 @@ class StudioCMS3DLogo {
 	lastTime = 0;
 	lastFrameTimes: number[] = [];
 	MAX_FRAME_TIMES_LENGTH = 2;
+	private resizeHandler?: () => void;
+	private mouseMoveHandler?: (ev: MouseEvent) => void;
 
 	// Cache materials to avoid recreating them
 	private glassMaterial: any | undefined;
@@ -293,11 +297,11 @@ class StudioCMS3DLogo {
 		const renderScene = new RenderPass(this.scene, this.camera);
 		this.composer.addPass(renderScene);
 
+		this.registerLoadingCallback();
 		this.loadLogoModel();
 		this.addPostProcessing(true, outlineColor);
 		this.addBackgroundImage(image);
 		this.initListeners(reducedMotion);
-		this.registerLoadingCallback();
 
 		this.lastTime = performance.now();
 		this.updateFPS();
@@ -468,7 +472,7 @@ class StudioCMS3DLogo {
 	};
 
 	initResizeListener = () => {
-		window.addEventListener('resize', () => {
+		this.resizeHandler = () => {
 			if (window.innerWidth > 850) {
 				this.camera.aspect = window.innerWidth / 2 / window.innerHeight;
 				this.camera.updateProjectionMatrix();
@@ -490,14 +494,43 @@ class StudioCMS3DLogo {
 					);
 				}
 			}
-		});
+		};
+		window.addEventListener('resize', this.resizeHandler);
 	};
 
 	initMouseMoveListener = () => {
-		document.addEventListener('mousemove', (ev) => {
+		this.mouseMoveHandler = (ev) => {
 			this.mouseX = ev.clientX;
 			this.mouseY = ev.clientY;
-		});
+		};
+		document.addEventListener('mousemove', this.mouseMoveHandler);
+	};
+
+	dispose = () => {
+		this.renderer?.setAnimationLoop(null);
+		if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
+		if (this.mouseMoveHandler) document.removeEventListener('mousemove', this.mouseMoveHandler);
+		if (this.outlinePass?.dispose) this.outlinePass.dispose();
+		this.composer?.dispose?.();
+		if (this.BackgroundMesh) {
+			this.BackgroundMesh.material?.map?.dispose?.();
+			this.BackgroundMesh.material?.dispose?.();
+			this.BackgroundMesh.geometry?.dispose?.();
+			this.scene.remove(this.BackgroundMesh);
+			this.BackgroundMesh = undefined;
+		}
+		if (this.model) {
+			this.model.traverse((child: any) => {
+				child.geometry?.dispose?.();
+				child.material?.map?.dispose?.();
+				child.material?.dispose?.();
+			});
+			this.scene.remove(this.model);
+			this.model = undefined;
+		}
+		this.glassMaterial?.dispose?.();
+		this.renderer?.dispose?.();
+		this.renderer?.domElement?.remove?.();
 	};
 
 	registerLoadingCallback = () => {
