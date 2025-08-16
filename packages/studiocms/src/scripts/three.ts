@@ -1,14 +1,5 @@
-import * as THREE from 'three';
-import type { OutlinePass as OutlinePassType } from 'three/addons/postprocessing/OutlinePass.js';
-
-const { OutlinePass } = await import('three/addons/postprocessing/OutlinePass.js');
-const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
-const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
-const { validImages } = await import('../utils/validImages/index.js');
-const { fitModelToViewport } = await import('./utils/fitModelToViewport.js');
-
-// Get the current configuration for the login page
+/** biome-ignore-all lint/style/noNonNullAssertion: This file is using non-null assertions */
+/** biome-ignore-all lint/suspicious/noExplicitAny: This file is using explicit any types */
 const configElement = document.getElementById('auth-pages-config') as HTMLDivElement;
 
 const loginPageBackground = configElement.dataset.config_background;
@@ -20,13 +11,19 @@ const studioCMS3DModel = 'https://cdn.studiocms.dev/studiocms-logo.glb';
 /**
  * A valid image that can be used as a background for the StudioCMS Logo.
  */
-type ValidImage = (typeof validImages)[number];
+interface ValidImage {
+	readonly name: string;
+	readonly label: string;
+	readonly format: 'local' | 'web';
+	readonly light: { src: string } | null;
+	readonly dark: { src: string } | null;
+}
 
 /**
  * The parameters for the background image.
  */
 type BackgroundParams = {
-	background: ValidImage['name'];
+	background: string;
 	customImageHref: string;
 	mode: 'light' | 'dark';
 };
@@ -35,20 +32,8 @@ type BackgroundParams = {
  * Parses the background image config.
  * @param imageName The name of the image to parse.
  */
-function parseBackgroundImageConfig(imageName?: string | undefined): ValidImage['name'] {
-	// If the image name is not provided, use the default image
-	if (!imageName) {
-		return 'studiocms-curves';
-	}
-
-	// Check if the image name is one of the valid images (built-in or custom)
-	if (imageName) {
-		return imageName as ValidImage['name'];
-	}
-
-	// Use the default image if the image name is invalid
-	// (i.e. someone tampered with the actual database)
-	return 'studiocms-curves';
+function parseBackgroundImageConfig(imageName?: string | undefined): string {
+	return imageName || 'studiocms-curves';
 }
 
 function parseToString(value: string | undefined | null): string {
@@ -66,16 +51,13 @@ const backgroundConfig: BackgroundParams = {
 
 /**
  * Gets the background config based on the parameters.
- * @param config The config to get the background for.
  */
-function getBackgroundConfig(config: BackgroundParams): ValidImage {
+function getBackgroundConfig(config: BackgroundParams, validImages: ValidImage[]): ValidImage {
 	return validImages.find((image) => image.name === config.background) || validImages[0];
 }
 
 /**
  * Selects the background based on the image.
- * @param image The image to select the background for.
- * @param params The parameters to select the background for.
  */
 function bgSelector(image: ValidImage, params: BackgroundParams) {
 	return image.format === 'web'
@@ -86,22 +68,166 @@ function bgSelector(image: ValidImage, params: BackgroundParams) {
 }
 
 /**
- * Creates the StudioCMS Logo along with its background in a specified container.
+ * Lazy-loading wrapper for the StudioCMS 3D Logo
+ */
+class LazyStudioCMS3DLogo {
+	private container: HTMLDivElement;
+	private observer: IntersectionObserver;
+	private loaded = false;
+	private logoInstance: StudioCMS3DLogo | null = null;
+
+	constructor(containerEl: HTMLDivElement) {
+		this.container = containerEl;
+
+		// Only load Three.js when the container comes into view
+		this.observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && !this.loaded) {
+						this.loadThreeJS();
+						this.loaded = true;
+					}
+				});
+			},
+			{ rootMargin: '100px' } // Start loading 100px before it comes into view
+		);
+
+		this.observer.observe(this.container);
+	}
+
+	private async loadThreeJS() {
+		try {
+			// Show loading state with some basic styling
+			this.showLoadingState();
+
+			// Dynamic import of all required modules
+			const [
+				threeModule,
+				{ OutlinePass },
+				{ GLTFLoader },
+				{ RenderPass },
+				{ EffectComposer },
+				{ validImages },
+				{ fitModelToViewport },
+			] = await Promise.all([
+				import('three'),
+				import('three/addons/postprocessing/OutlinePass.js'),
+				import('three/addons/loaders/GLTFLoader.js'),
+				import('three/addons/postprocessing/RenderPass.js'),
+				import('three/addons/postprocessing/EffectComposer.js'),
+				import('../utils/validImages/index.js'),
+				import('./utils/fitModelToViewport.js'),
+			]);
+
+			// Clear loading state
+			this.container.innerHTML = '';
+
+			// Create the modules object to pass to StudioCMS3DLogo
+			const modules = {
+				...threeModule,
+				OutlinePass,
+				GLTFLoader,
+				RenderPass,
+				EffectComposer,
+				validImages,
+				fitModelToViewport,
+			};
+
+			// Initialize the 3D logo
+			this.logoInstance = new StudioCMS3DLogo(
+				this.container,
+				new threeModule.Color(0xaa87f4),
+				window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+				getBackgroundConfig(backgroundConfig, validImages),
+				modules
+			);
+		} catch (error) {
+			console.error('Failed to load 3D experience:', error);
+			this.showErrorState();
+		}
+	}
+
+	private showLoadingState() {
+		this.container.innerHTML = `
+			<div class="loading-3d" style="
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100%;
+				min-height: 400px;
+				color: var(--text-color, #666);
+				font-family: system-ui, sans-serif;
+			">
+				<div class="loading-spinner" style="
+					width: 40px;
+					height: 40px;
+					border: 3px solid var(--border-color, #e0e0e0);
+					border-top: 3px solid var(--accent-color, #aa87f4);
+					border-radius: 50%;
+					animation: spin 1s linear infinite;
+					margin-bottom: 16px;
+				"></div>
+				<p style="margin: 0; font-size: 14px;">Loading 3D experience...</p>
+			</div>
+			<style>
+				@keyframes spin {
+					0% { transform: rotate(0deg); }
+					100% { transform: rotate(360deg); }
+				}
+			</style>
+		`;
+	}
+
+	private showErrorState() {
+		this.container.innerHTML = `
+			<div class="error-3d" style="
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100%;
+				min-height: 400px;
+				color: var(--text-color, #666);
+				font-family: system-ui, sans-serif;
+			">
+				<div style="
+					font-size: 24px;
+					margin-bottom: 8px;
+					opacity: 0.5;
+				">⚠️</div>
+				<p style="margin: 0; font-size: 14px;">3D experience unavailable</p>
+			</div>
+		`;
+		this.container.classList.add('loaded'); // Still mark as "loaded" to prevent layout shifts
+	}
+
+	destroy() {
+		this.observer.disconnect();
+		// Clean up Three.js resources if needed
+		if (this.logoInstance) {
+			// Add cleanup method to StudioCMS3DLogo if needed
+		}
+	}
+}
+
+/**
+ * Enhanced StudioCMS3DLogo that accepts modules as dependency injection
  */
 class StudioCMS3DLogo {
 	canvasContainer: HTMLDivElement;
-	scene: THREE.Scene;
-	camera: THREE.PerspectiveCamera;
-	renderer: THREE.WebGLRenderer;
-	model: THREE.Group<THREE.Object3DEventMap> | undefined;
+	scene: any;
+	camera: any;
+	renderer: any;
+	model: any | undefined;
 	mouseX = 0;
 	mouseY = 0;
-	time: THREE.Clock;
-	composer;
-	outlinePass: OutlinePassType | undefined;
-	outlinedObjects: THREE.Group<THREE.Object3DEventMap>[] = [];
+	time: any;
+	composer: any;
+	outlinePass: any | undefined;
+	outlinedObjects: any[] = [];
 	defaultComputedCameraZ: number | undefined;
-	BackgroundMesh: THREE.Mesh | undefined;
+	BackgroundMesh: any | undefined;
 	frustumHeight: number | undefined;
 	frames = 0;
 	fps = 0;
@@ -109,46 +235,59 @@ class StudioCMS3DLogo {
 	lastFrameTimes: number[] = [];
 	MAX_FRAME_TIMES_LENGTH = 2;
 
-	/**
-	 * Creates the StudioCMS Logo along with its background in a specified container.
-	 * @param containerEl The container that the canvas is placed in.
-	 * @param outlineColor Color of the outline for the StudioCMS logo
-	 * @param reducedMotion Whether the user prefers reduced motion or not
-	 */
+	// Cache materials to avoid recreating them
+	private glassMaterial: any | undefined;
+	private modules: any;
+
 	constructor(
 		containerEl: HTMLDivElement,
-		outlineColor: THREE.Color,
+		outlineColor: any,
 		reducedMotion: boolean,
-		image: ValidImage
+		image: ValidImage,
+		modules: any
 	) {
-		this.scene = new THREE.Scene();
-		this.scene.background = new THREE.Color(0x101010);
+		this.modules = modules;
+		const {
+			Scene,
+			PerspectiveCamera,
+			WebGLRenderer,
+			Color,
+			AmbientLight,
+			Clock,
+			RenderPass,
+			EffectComposer,
+		} = modules;
 
-		this.camera = new THREE.PerspectiveCamera(
+		this.scene = new Scene();
+		this.scene.background = new Color(0x101010);
+
+		this.camera = new PerspectiveCamera(
 			75,
 			window.innerWidth / 2 / window.innerHeight,
 			0.01,
 			10000
 		);
 
-		this.renderer = new THREE.WebGLRenderer({
+		// Optimize renderer settings
+		this.renderer = new WebGLRenderer({
 			antialias: false,
-			// failIfMajorPerformanceCaveat: true,
+			powerPreference: 'high-performance',
+			stencil: false,
+			depth: true,
 		});
 		this.renderer.setSize(window.innerWidth / 2, window.innerHeight);
-		this.renderer.setPixelRatio(window.devicePixelRatio * 2);
+		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		this.renderer.setClearColor(0x101010, 1);
 		this.renderer.setAnimationLoop(this.animate);
 
 		this.canvasContainer = containerEl;
 		this.canvasContainer.appendChild(this.renderer.domElement);
 
-		this.time = new THREE.Clock(true);
-
+		this.time = new Clock(true);
 		this.composer = new EffectComposer(this.renderer);
 
-		// Light 2, the sequel to light, now available
-		const light2 = new THREE.AmbientLight(0x606060);
+		// Simplified lighting
+		const light2 = new AmbientLight(0x606060);
 		this.scene.add(light2);
 
 		const renderScene = new RenderPass(this.scene, this.camera);
@@ -156,9 +295,7 @@ class StudioCMS3DLogo {
 
 		this.loadLogoModel();
 		this.addPostProcessing(true, outlineColor);
-
-		this.addBackgroundImage(image || validImages[0]);
-
+		this.addBackgroundImage(image);
 		this.initListeners(reducedMotion);
 		this.registerLoadingCallback();
 
@@ -187,7 +324,6 @@ class StudioCMS3DLogo {
 				this.lastFrameTimes.reduce((a, b) => a + b, 0) / this.MAX_FRAME_TIMES_LENGTH;
 
 			if (averageFPS < 24) {
-				// Throw an error if the average FPS is below 24
 				this.renderer.clear();
 				this.renderer.domElement.remove();
 				throw new Error(`Average FPS is below 24: ${averageFPS}`);
@@ -197,6 +333,8 @@ class StudioCMS3DLogo {
 
 	animate = () => {
 		if (this.model && this.canvasContainer) {
+			const { MathUtils } = this.modules;
+
 			// Movement courtesy of Otterlord, easing courtesy of Louis Escher
 			const targetRotationX =
 				this.mouseY === 0
@@ -209,70 +347,69 @@ class StudioCMS3DLogo {
 
 			const lerpFactor = 0.035;
 
-			this.model.rotation.x = THREE.MathUtils.lerp(
-				this.model.rotation.x,
-				targetRotationX,
-				lerpFactor
-			);
-			this.model.rotation.y = THREE.MathUtils.lerp(this.model.rotation.y, 0, lerpFactor);
-			this.model.rotation.z = THREE.MathUtils.lerp(
-				this.model.rotation.z,
-				-targetRotationY,
-				lerpFactor
-			);
+			this.model.rotation.x = MathUtils.lerp(this.model.rotation.x, targetRotationX, lerpFactor);
+			this.model.rotation.y = MathUtils.lerp(this.model.rotation.y, 0, lerpFactor);
+			this.model.rotation.z = MathUtils.lerp(this.model.rotation.z, -targetRotationY, lerpFactor);
 		}
 
 		this.composer.render();
 		this.updateFPS();
 	};
 
-	loadLogoModel = () => {
+	private getGlassMaterial() {
+		if (!this.glassMaterial) {
+			const { MeshPhysicalMaterial } = this.modules;
+			this.glassMaterial = new MeshPhysicalMaterial({
+				color: '#ffffff',
+				roughness: 0.6,
+				transmission: 1,
+				opacity: 1,
+				transparent: true,
+				thickness: 0.5,
+				envMapIntensity: 1,
+				clearcoat: 1,
+				clearcoatRoughness: 0.2,
+				metalness: 0,
+			});
+		}
+		return this.glassMaterial;
+	}
+
+	loadLogoModel = async () => {
+		const { GLTFLoader, Mesh, fitModelToViewport } = this.modules;
 		const loader = new GLTFLoader();
 
-		// Load the GLTF Model from the public dir & apply the material to all children
-		loader.loadAsync(studioCMS3DModel).then((gltf) => {
+		try {
+			const gltf = await loader.loadAsync(studioCMS3DModel);
 			this.model = gltf.scene;
 
-			this.model.traverse((child) => {
-				const isMesh = child instanceof THREE.Mesh;
+			const material = this.getGlassMaterial();
 
-				if (!isMesh) return;
-
-				const material = new THREE.MeshPhysicalMaterial({
-					color: '#ffffff',
-					roughness: 0.6,
-					transmission: 1,
-					opacity: 1,
-					transparent: true,
-					thickness: 0.5,
-					envMapIntensity: 1,
-					clearcoat: 1,
-					clearcoatRoughness: 0.2,
-					metalness: 0,
-				});
-
-				child.material = material;
+			this.model.traverse((child: any) => {
+				if (child instanceof Mesh) {
+					child.material = material;
+				}
 			});
 
 			this.scene.add(this.model);
-
 			this.model.rotation.set(Math.PI / 2, 0, 0);
 
-			// Fit the model into the camera viewport
 			this.defaultComputedCameraZ = fitModelToViewport(this.model, this.camera);
-
-			// Push to array for outline to be added
 			this.outlinedObjects.push(this.model);
-		});
+		} catch (error) {
+			console.error('Failed to load logo model:', error);
+		}
 	};
 
-	addPostProcessing = (outlines: boolean, outlineColor: THREE.Color) => {
+	addPostProcessing = (outlines: boolean, outlineColor: any) => {
 		if (outlines) this.addOutlines(outlineColor);
 	};
 
-	addOutlines = (outlineColor: THREE.Color) => {
+	addOutlines = (outlineColor: any) => {
+		const { OutlinePass, Vector2, Color } = this.modules;
+
 		this.outlinePass = new OutlinePass(
-			new THREE.Vector2(window.innerWidth / 2, window.innerHeight),
+			new Vector2(window.innerWidth / 2, window.innerHeight),
 			this.scene,
 			this.camera
 		);
@@ -283,23 +420,23 @@ class StudioCMS3DLogo {
 		this.outlinePass.edgeThickness = 0.0000000001;
 		this.outlinePass.pulsePeriod = 0;
 		this.outlinePass.visibleEdgeColor.set(outlineColor);
-		this.outlinePass.hiddenEdgeColor.set(new THREE.Color(0xffffff));
+		this.outlinePass.hiddenEdgeColor.set(new Color(0xffffff));
 
 		this.composer.addPass(this.outlinePass);
 	};
 
-	addBackgroundImage = (image: ValidImage) => {
+	addBackgroundImage = async (image: ValidImage) => {
+		const { TextureLoader, PlaneGeometry, MeshBasicMaterial, Mesh, MathUtils } = this.modules;
 		const bgPositionZ = -5;
 
-		// Height of the viewcone
 		if (!this.frustumHeight) {
 			this.frustumHeight =
 				9 *
-				Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) *
+				Math.tan(MathUtils.degToRad(this.camera.fov / 2)) *
 				Math.abs(this.camera.position.z - bgPositionZ);
 		}
 
-		const loader = new THREE.TextureLoader();
+		const loader = new TextureLoader();
 		const bgUrl = bgSelector(image, backgroundConfig);
 
 		if (!bgUrl) {
@@ -307,24 +444,24 @@ class StudioCMS3DLogo {
 			return;
 		}
 
-		loader.loadAsync(bgUrl).then((texture) => {
-			// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
+		try {
+			const texture = await loader.loadAsync(bgUrl);
 			const planeHeight = this.frustumHeight!;
 			const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
 
-			const bgGeo = new THREE.PlaneGeometry(planeWidth, planeHeight);
-			const bgMat = new THREE.MeshBasicMaterial({ map: texture });
+			const bgGeo = new PlaneGeometry(planeWidth, planeHeight);
+			const bgMat = new MeshBasicMaterial({ map: texture });
 
-			this.BackgroundMesh = new THREE.Mesh(bgGeo, bgMat);
-
+			this.BackgroundMesh = new Mesh(bgGeo, bgMat);
 			this.BackgroundMesh.position.set(0, 0, bgPositionZ);
 			this.scene.add(this.BackgroundMesh);
-		});
+		} catch (error) {
+			console.error('Failed to load background image:', error);
+		}
 	};
 
 	initListeners = (reducedMotion: boolean) => {
 		this.initResizeListener();
-
 		if (!reducedMotion) {
 			this.initMouseMoveListener();
 		}
@@ -339,7 +476,6 @@ class StudioCMS3DLogo {
 				this.renderer.setSize(window.innerWidth / 2, window.innerHeight);
 				this.composer.setSize(window.innerWidth / 2, window.innerHeight);
 
-				// Move camera for smaller logo if necessary
 				if (window.innerWidth < 1100 && this.defaultComputedCameraZ) {
 					this.camera.position.set(
 						this.camera.position.x,
@@ -358,7 +494,6 @@ class StudioCMS3DLogo {
 	};
 
 	initMouseMoveListener = () => {
-		// Mouse move event listener to capture and update mouse coordinates
 		document.addEventListener('mousemove', (ev) => {
 			this.mouseX = ev.clientX;
 			this.mouseY = ev.clientY;
@@ -366,7 +501,8 @@ class StudioCMS3DLogo {
 	};
 
 	registerLoadingCallback = () => {
-		THREE.DefaultLoadingManager.onLoad = () => {
+		const { DefaultLoadingManager } = this.modules;
+		DefaultLoadingManager.onLoad = () => {
 			this.canvasContainer.classList.add('loaded');
 		};
 	};
@@ -374,44 +510,26 @@ class StudioCMS3DLogo {
 	recomputeGlassMaterial = () => {
 		if (!this.model) return;
 
-		this.model.traverse((child) => {
-			const isMesh = child instanceof THREE.Mesh;
+		const { Mesh } = this.modules;
+		const material = this.getGlassMaterial();
 
-			if (!isMesh) return;
-
-			const material = new THREE.MeshPhysicalMaterial({
-				color: '#ffffff',
-				roughness: 0.6,
-				transmission: 1,
-				opacity: 1,
-				transparent: true,
-				thickness: 0.5,
-				envMapIntensity: 1,
-				clearcoat: 1,
-				clearcoatRoughness: 0.2,
-				metalness: 0,
-			});
-
-			child.material = material;
+		this.model.traverse((child: any) => {
+			if (child instanceof Mesh) {
+				child.material = material;
+			}
 		});
 	};
 }
 
-// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
-const logoContainer = document.querySelector<HTMLDivElement>('#canvas-container')!;
-const usingReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
-const smallScreen = window.matchMedia('(max-width: 850px)').matches === true;
+// Initialize the lazy-loading 3D logo
+const logoContainer = document.querySelector<HTMLDivElement>('#canvas-container');
+const smallScreen = window.matchMedia('(max-width: 850px)').matches;
 
-if (!smallScreen) {
+if (logoContainer && !smallScreen) {
 	try {
-		new StudioCMS3DLogo(
-			logoContainer,
-			new THREE.Color(0xaa87f4),
-			usingReducedMotion,
-			getBackgroundConfig(backgroundConfig)
-		);
+		new LazyStudioCMS3DLogo(logoContainer);
 	} catch (err) {
-		console.error("ERROR: Couldn't create StudioCMS3DLogo", err);
+		console.error("ERROR: Couldn't create LazyStudioCMS3DLogo", err);
 		logoContainer.classList.add('loaded');
 	}
 }

@@ -225,8 +225,8 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
  * @see https://docs.astro.build/en/reference/configuration-reference/#vite
  */
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
-	optimizeDeps: {
-		exclude: ['three'],
+	build: {
+		chunkSizeWarningLimit: 600,
 	},
 };
 
