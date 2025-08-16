@@ -238,7 +238,6 @@ class StudioCMS3DLogo {
 	model: any | undefined;
 	mouseX = 0;
 	mouseY = 0;
-	time: any;
 	composer: any;
 	outlinePass: any | undefined;
 	outlinedObjects: any[] = [];
@@ -253,6 +252,9 @@ class StudioCMS3DLogo {
 	private resizeHandler?: () => void;
 	private mouseMoveHandler?: (ev: MouseEvent) => void;
 	private prevLoadingOnLoad?: (() => void) | null;
+	// Track background texture aspect ratio to recompute geometry on resize
+	private bgAspect?: number;
+	private loadingManager?: any;
 
 	// Cache materials to avoid recreating them
 	private glassMaterial: any | undefined;
@@ -272,9 +274,9 @@ class StudioCMS3DLogo {
 			WebGLRenderer,
 			Color,
 			AmbientLight,
-			Clock,
 			RenderPass,
 			EffectComposer,
+			LoadingManager,
 		} = modules;
 
 		this.scene = new Scene();
@@ -302,7 +304,11 @@ class StudioCMS3DLogo {
 		this.canvasContainer = containerEl;
 		this.canvasContainer.appendChild(this.renderer.domElement);
 
-		this.time = new Clock(true);
+		// Local LoadingManager to avoid global side effects
+		this.loadingManager = new LoadingManager();
+		this.loadingManager.onLoad = () => {
+			this.canvasContainer.classList.add('loaded');
+		};
 		this.composer = new EffectComposer(this.renderer);
 		// Use real container size for a correct initial fit
 		const rect = containerEl.getBoundingClientRect();
@@ -368,14 +374,20 @@ class StudioCMS3DLogo {
 			const { MathUtils } = this.modules;
 
 			// Movement courtesy of Otterlord, easing courtesy of Louis Escher
+			const viewportWidth =
+				this.renderer?.domElement?.clientWidth ||
+				this.canvasContainer?.clientWidth ||
+				window.innerWidth;
+			const viewportHeight =
+				this.renderer?.domElement?.clientHeight ||
+				this.canvasContainer?.clientHeight ||
+				window.innerHeight;
 			const targetRotationX =
 				this.mouseY === 0
 					? Math.PI / 2
-					: 0.1 * ((this.mouseY / window.innerHeight) * Math.PI - Math.PI / 2) + Math.PI / 2;
+					: 0.1 * ((this.mouseY / viewportHeight) * Math.PI - Math.PI / 2) + Math.PI / 2;
 			const targetRotationZ =
-				this.mouseX === 0
-					? 0
-					: 0.1 * ((this.mouseX / (window.innerWidth / 2)) * Math.PI - Math.PI / 2);
+				this.mouseX === 0 ? 0 : 0.1 * ((this.mouseX / viewportWidth) * Math.PI - Math.PI / 2);
 
 			const lerpFactor = 0.035;
 
@@ -409,10 +421,11 @@ class StudioCMS3DLogo {
 
 	loadLogoModel = async () => {
 		const { GLTFLoader, Mesh, fitModelToViewport } = this.modules;
-		const loader = new GLTFLoader();
+		const loader = new GLTFLoader(this.loadingManager);
 
 		try {
 			const gltf = await loader.loadAsync(studioCMS3DModel);
+			if (!this.renderer) return; // disposed
 			this.model = gltf.scene;
 
 			const material = this.getGlassMaterial();
@@ -469,7 +482,7 @@ class StudioCMS3DLogo {
 				Math.abs(this.camera.position.z - bgPositionZ);
 		}
 
-		const loader = new TextureLoader();
+		const loader = new TextureLoader(this.loadingManager);
 		const bgUrl = bgSelector(image, backgroundConfig);
 
 		if (!bgUrl) {
@@ -479,6 +492,7 @@ class StudioCMS3DLogo {
 
 		try {
 			const texture = await loader.loadAsync(bgUrl);
+			if (!this.renderer) return; // disposed
 			const planeHeight = this.frustumHeight!;
 			const srcW = (texture as any).source?.data?.width ?? (texture as any).image?.width;
 			const srcH = (texture as any).source?.data?.height ?? (texture as any).image?.height;
@@ -486,7 +500,9 @@ class StudioCMS3DLogo {
 				console.error('ERROR: Unable to determine background texture dimensions');
 				return;
 			}
-			const planeWidth = planeHeight * (srcW / srcH);
+
+			this.bgAspect = srcW / srcH;
+			const planeWidth = planeHeight * this.bgAspect;
 
 			const bgGeo = new PlaneGeometry(planeWidth, planeHeight);
 			const bgMat = new MeshBasicMaterial({ map: texture });
@@ -517,6 +533,23 @@ class StudioCMS3DLogo {
 
 				this.renderer.setSize(width, height);
 				this.composer.setSize(width, height);
+				if (this.outlinePass?.setSize) this.outlinePass.setSize(width, height);
+
+				// Recompute background plane size (preserving aspect)
+				if (this.BackgroundMesh && this.bgAspect) {
+					const { PlaneGeometry, MathUtils } = this.modules;
+					const meshZ = this.BackgroundMesh.position?.z ?? -5;
+					// 9 is camera "height" factor from original computation
+					this.frustumHeight =
+						9 *
+						Math.tan(MathUtils.degToRad(this.camera.fov / 2)) *
+						Math.abs(this.camera.position.z - meshZ);
+					const newPlaneHeight = this.frustumHeight!;
+					const newPlaneWidth = newPlaneHeight * this.bgAspect;
+					// Replace geometry to match new size
+					this.BackgroundMesh.geometry?.dispose?.();
+					this.BackgroundMesh.geometry = new PlaneGeometry(newPlaneWidth, newPlaneHeight);
+				}
 
 				if (window.innerWidth < 1100 && this.defaultComputedCameraZ) {
 					this.camera.position.set(
@@ -581,11 +614,7 @@ class StudioCMS3DLogo {
 	};
 
 	registerLoadingCallback = () => {
-		const { DefaultLoadingManager } = this.modules;
-		this.prevLoadingOnLoad = DefaultLoadingManager.onLoad ?? null;
-		DefaultLoadingManager.onLoad = () => {
-			this.canvasContainer.classList.add('loaded');
-		};
+		// No-op when using a local LoadingManager; retained for backward-compat
 	};
 
 	recomputeGlassMaterial = () => {
@@ -613,4 +642,6 @@ if (logoContainer && !smallScreen) {
 		console.error("ERROR: Couldn't create LazyStudioCMS3DLogo", err);
 		logoContainer.classList.add('loaded');
 	}
+} else if (logoContainer) {
+	logoContainer.classList.add('loaded');
 }
