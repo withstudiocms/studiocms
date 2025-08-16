@@ -77,6 +77,7 @@ class LazyStudioCMS3DLogo {
 	private observer: IntersectionObserver;
 	private loaded = false;
 	private logoInstance: StudioCMS3DLogo | null = null;
+	private destroyed = false;
 
 	constructor(containerEl: HTMLDivElement) {
 		this.container = containerEl;
@@ -121,8 +122,10 @@ class LazyStudioCMS3DLogo {
 				import('./utils/fitModelToViewport.js'),
 			]);
 
+			if (this.destroyed || !this.container.isConnected) return;
+
 			// Clear loading state
-			this.container.innerHTML = '';
+			this.container.replaceChildren();
 
 			// Create the modules object to pass to StudioCMS3DLogo
 			const modules = {
@@ -205,6 +208,7 @@ class LazyStudioCMS3DLogo {
 	}
 
 	destroy() {
+		this.destroyed = true;
 		this.observer.disconnect();
 		if (this.logoInstance) {
 			this.logoInstance.dispose?.();
@@ -238,6 +242,7 @@ class StudioCMS3DLogo {
 	MAX_FRAME_TIMES_LENGTH = 2;
 	private resizeHandler?: () => void;
 	private mouseMoveHandler?: (ev: MouseEvent) => void;
+	private prevLoadingOnLoad?: (() => void) | null;
 
 	// Cache materials to avoid recreating them
 	private glassMaterial: any | undefined;
@@ -328,9 +333,14 @@ class StudioCMS3DLogo {
 				this.lastFrameTimes.reduce((a, b) => a + b, 0) / this.MAX_FRAME_TIMES_LENGTH;
 
 			if (averageFPS < 24) {
-				this.renderer.clear();
-				this.renderer.domElement.remove();
-				throw new Error(`Average FPS is below 24: ${averageFPS}`);
+				// Graceful degrade for low-end devices
+				this.renderer?.setAnimationLoop(null);
+				try {
+					this.dispose();
+				} finally {
+					this.canvasContainer?.classList.add('loaded');
+				}
+				return;
 			}
 		}
 	};
@@ -344,7 +354,7 @@ class StudioCMS3DLogo {
 				this.mouseY === 0
 					? Math.PI / 2
 					: 0.1 * ((this.mouseY / window.innerHeight) * Math.PI - Math.PI / 2) + Math.PI / 2;
-			const targetRotationY =
+			const targetRotationZ =
 				this.mouseX === 0
 					? 0
 					: 0.1 * ((this.mouseX / (window.innerWidth / 2)) * Math.PI - Math.PI / 2);
@@ -353,7 +363,7 @@ class StudioCMS3DLogo {
 
 			this.model.rotation.x = MathUtils.lerp(this.model.rotation.x, targetRotationX, lerpFactor);
 			this.model.rotation.y = MathUtils.lerp(this.model.rotation.y, 0, lerpFactor);
-			this.model.rotation.z = MathUtils.lerp(this.model.rotation.z, -targetRotationY, lerpFactor);
+			this.model.rotation.z = MathUtils.lerp(this.model.rotation.z, -targetRotationZ, lerpFactor);
 		}
 
 		this.composer.render();
@@ -451,7 +461,13 @@ class StudioCMS3DLogo {
 		try {
 			const texture = await loader.loadAsync(bgUrl);
 			const planeHeight = this.frustumHeight!;
-			const planeWidth = planeHeight * (texture.source.data.width / texture.source.data.height);
+			const srcW = (texture as any).source?.data?.width ?? (texture as any).image?.width;
+			const srcH = (texture as any).source?.data?.height ?? (texture as any).image?.height;
+			if (!srcW || !srcH) {
+				console.error('ERROR: Unable to determine background texture dimensions');
+				return;
+			}
+			const planeWidth = planeHeight * (srcW / srcH);
 
 			const bgGeo = new PlaneGeometry(planeWidth, planeHeight);
 			const bgMat = new MeshBasicMaterial({ map: texture });
@@ -512,6 +528,14 @@ class StudioCMS3DLogo {
 		if (this.mouseMoveHandler) document.removeEventListener('mousemove', this.mouseMoveHandler);
 		if (this.outlinePass?.dispose) this.outlinePass.dispose();
 		this.composer?.dispose?.();
+		// Restore global loading manager handler
+		try {
+			const { DefaultLoadingManager } = this.modules;
+			if (this.prevLoadingOnLoad !== undefined) {
+				DefaultLoadingManager.onLoad = this.prevLoadingOnLoad as any;
+				this.prevLoadingOnLoad = null;
+			}
+		} catch {}
 		if (this.BackgroundMesh) {
 			this.BackgroundMesh.material?.map?.dispose?.();
 			this.BackgroundMesh.material?.dispose?.();
@@ -529,12 +553,14 @@ class StudioCMS3DLogo {
 			this.model = undefined;
 		}
 		this.glassMaterial?.dispose?.();
+		this.renderer?.forceContextLoss?.();
 		this.renderer?.dispose?.();
 		this.renderer?.domElement?.remove?.();
 	};
 
 	registerLoadingCallback = () => {
 		const { DefaultLoadingManager } = this.modules;
+		this.prevLoadingOnLoad = DefaultLoadingManager.onLoad ?? null;
 		DefaultLoadingManager.onLoad = () => {
 			this.canvasContainer.classList.add('loaded');
 		};
