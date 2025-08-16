@@ -1,6 +1,8 @@
 import { column, defineDb, defineTable, NOW } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';
 
+// Astro DB Configuration Tables for StudioCMS
+
 /** StudioCMS - Users Table for Astro DB */
 const StudioCMSUsers = defineTable({
 	columns: {
@@ -21,8 +23,6 @@ const StudioCMSUsers = defineTable({
 	},
 });
 
-export const tsUsers = asDrizzleTable('StudioCMSUsers', StudioCMSUsers);
-
 const StudioCMSAPIKeys = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -33,8 +33,6 @@ const StudioCMSAPIKeys = defineTable({
 	},
 });
 
-export const tsAPIKeys = asDrizzleTable('StudioCMSAPIKeys', StudioCMSAPIKeys);
-
 const StudioCMSUserResetTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -42,11 +40,6 @@ const StudioCMSUserResetTokens = defineTable({
 		token: column.text(),
 	},
 });
-
-export const tsUserResetTokens = asDrizzleTable(
-	'StudioCMSUserResetTokens',
-	StudioCMSUserResetTokens
-);
 
 /** StudioCMS - OAuth Accounts Table for Astro DB */
 const StudioCMSOAuthAccounts = defineTable({
@@ -57,8 +50,6 @@ const StudioCMSOAuthAccounts = defineTable({
 	},
 });
 
-export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCMSOAuthAccounts);
-
 /** StudioCMS - Session Table for Astro DB */
 const StudioCMSSessionTable = defineTable({
 	columns: {
@@ -68,8 +59,6 @@ const StudioCMSSessionTable = defineTable({
 	},
 });
 
-export const tsSessionTable = asDrizzleTable('StudioCMSSessionTable', StudioCMSSessionTable);
-
 /** StudioCMS - Permissions Table for Astro DB */
 const StudioCMSPermissions = defineTable({
 	columns: {
@@ -77,8 +66,6 @@ const StudioCMSPermissions = defineTable({
 		rank: column.text(),
 	},
 });
-
-export const tsPermissions = asDrizzleTable('StudioCMSPermissions', StudioCMSPermissions);
 
 /** StudioCMS - Page Folder Structure */
 const StudioCMSPageFolderStructure = defineTable({
@@ -88,11 +75,6 @@ const StudioCMSPageFolderStructure = defineTable({
 		parent: column.text({ optional: true }),
 	},
 });
-
-export const tsPageFolderStructure = asDrizzleTable(
-	'StudioCMSPageFolderStructure',
-	StudioCMSPageFolderStructure
-);
 
 /** StudioCMS - Pages Data Table for Astro DB */
 const StudioCMSPageData = defineTable({
@@ -121,8 +103,6 @@ const StudioCMSPageData = defineTable({
 	},
 });
 
-export const tsPageData = asDrizzleTable('StudioCMSPageData', StudioCMSPageData);
-
 /** StudioCMS - Diff Tracking Table for Astro DB */
 const StudioCMSDiffTracking = defineTable({
 	columns: {
@@ -136,8 +116,6 @@ const StudioCMSDiffTracking = defineTable({
 	},
 });
 
-export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSDiffTracking);
-
 /** StudioCMS - Page Data Tags Table for Astro DB */
 const StudioCMSPageDataTags = defineTable({
 	columns: {
@@ -148,8 +126,6 @@ const StudioCMSPageDataTags = defineTable({
 		meta: column.json(),
 	},
 });
-
-export const tsPageDataTags = asDrizzleTable('StudioCMSPageDataTags', StudioCMSPageDataTags);
 
 /** StudioCMS - Page Data Categories Table for Astro DB */
 const StudioCMSPageDataCategories = defineTable({
@@ -163,11 +139,6 @@ const StudioCMSPageDataCategories = defineTable({
 	},
 });
 
-export const tsPageDataCategories = asDrizzleTable(
-	'StudioCMSPageDataCategories',
-	StudioCMSPageDataCategories
-);
-
 /** StudioCMS - Pages Content Table for Astro DB */
 const StudioCMSPageContent = defineTable({
 	columns: {
@@ -177,8 +148,6 @@ const StudioCMSPageContent = defineTable({
 		content: column.text({ multiline: true, optional: true }),
 	},
 });
-
-export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPageContent);
 
 /** StudioCMS - Site Config Table for Astro DB */
 const StudioCMSSiteConfig = defineTable({
@@ -198,8 +167,6 @@ const StudioCMSSiteConfig = defineTable({
 	},
 });
 
-export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
-
 const StudioCMSMailerConfig = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -215,8 +182,6 @@ const StudioCMSMailerConfig = defineTable({
 	},
 });
 
-export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
-
 const StudioCMSNotificationSettings = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -227,11 +192,6 @@ const StudioCMSNotificationSettings = defineTable({
 	},
 });
 
-export const tsNotificationSettings = asDrizzleTable(
-	'StudioCMSNotificationSettings',
-	StudioCMSNotificationSettings
-);
-
 const StudioCMSEmailVerificationTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -241,19 +201,12 @@ const StudioCMSEmailVerificationTokens = defineTable({
 	},
 });
 
-export const tsEmailVerificationTokens = asDrizzleTable(
-	'StudioCMSEmailVerificationTokens',
-	StudioCMSEmailVerificationTokens
-);
-
 const StudioCMSPluginData = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		data: column.json(),
 	},
 });
-
-export const tsPluginData = asDrizzleTable('StudioCMSPluginData', StudioCMSPluginData);
 
 // Export the Database Configuration for StudioCMS
 export default defineDb({
@@ -277,3 +230,38 @@ export default defineDb({
 		StudioCMSPluginData,
 	},
 });
+
+// Export the Prepared Drizzle Tables for StudioCMS
+
+export const tsUsers = asDrizzleTable('StudioCMSUsers', StudioCMSUsers);
+export const tsAPIKeys = asDrizzleTable('StudioCMSAPIKeys', StudioCMSAPIKeys);
+export const tsUserResetTokens = asDrizzleTable(
+	'StudioCMSUserResetTokens',
+	StudioCMSUserResetTokens
+);
+export const tsOAuthAccounts = asDrizzleTable('StudioCMSOAuthAccounts', StudioCMSOAuthAccounts);
+export const tsSessionTable = asDrizzleTable('StudioCMSSessionTable', StudioCMSSessionTable);
+export const tsPermissions = asDrizzleTable('StudioCMSPermissions', StudioCMSPermissions);
+export const tsPageFolderStructure = asDrizzleTable(
+	'StudioCMSPageFolderStructure',
+	StudioCMSPageFolderStructure
+);
+export const tsPageData = asDrizzleTable('StudioCMSPageData', StudioCMSPageData);
+export const tsDiffTracking = asDrizzleTable('StudioCMSDiffTracking', StudioCMSDiffTracking);
+export const tsPageDataTags = asDrizzleTable('StudioCMSPageDataTags', StudioCMSPageDataTags);
+export const tsPageDataCategories = asDrizzleTable(
+	'StudioCMSPageDataCategories',
+	StudioCMSPageDataCategories
+);
+export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPageContent);
+export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
+export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
+export const tsNotificationSettings = asDrizzleTable(
+	'StudioCMSNotificationSettings',
+	StudioCMSNotificationSettings
+);
+export const tsEmailVerificationTokens = asDrizzleTable(
+	'StudioCMSEmailVerificationTokens',
+	StudioCMSEmailVerificationTokens
+);
+export const tsPluginData = asDrizzleTable('StudioCMSPluginData', StudioCMSPluginData);
