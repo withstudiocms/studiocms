@@ -1,5 +1,27 @@
 # studiocms
 
+## 0.1.0-beta.25
+
+### Patch Changes
+
+- [#680](https://github.com/withstudiocms/studiocms/pull/680) [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor usage of effect to utilize new enhanced utilities from new @withstudiocms/effect package.
+
+- [#686](https://github.com/withstudiocms/studiocms/pull/686) [`befa7cf`](https://github.com/withstudiocms/studiocms/commit/befa7cf9572a2cb56a0264e2d6ece5dddd483cb4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate API routes to new createEffectAPIRoutes utility from @withstudiocms/effect
+
+- [#690](https://github.com/withstudiocms/studiocms/pull/690) [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleanup code, fix first time setup oauth, and cleanup old utils
+
+- [#684](https://github.com/withstudiocms/studiocms/pull/684) [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors middleware utils to utilize new deepmerge util from @withstudiocms/effect instead of the source version for benefit of effect
+
+- [#680](https://github.com/withstudiocms/studiocms/pull/680) [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize login page backgrounds
+
+- [#691](https://github.com/withstudiocms/studiocms/pull/691) [`b873c9b`](https://github.com/withstudiocms/studiocms/commit/b873c9bcf04d1ee55c6544f78b716a8dcb0c6411) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - refactor(db): consolidate table definitions into config and remove legacy tables file
+
+  Also fixes outstanding type issue with DB tables...
+
+- Updated dependencies [[`befa7cf`](https://github.com/withstudiocms/studiocms/commit/befa7cf9572a2cb56a0264e2d6ece5dddd483cb4), [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29), [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29), [`169c9be`](https://github.com/withstudiocms/studiocms/commit/169c9be7649bbd9522c6ab68a9aeca4ebfc2b86d), [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db), [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17)]:
+  - @withstudiocms/effect@0.1.0-beta.1
+  - @withstudiocms/config-utils@0.1.0-beta.3
+
 ## 0.1.0-beta.24
 
 ### Patch Changes
