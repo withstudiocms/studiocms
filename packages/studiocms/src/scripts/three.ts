@@ -1,10 +1,9 @@
 import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 
 const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
 const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
-
+const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
 const { validImages } = await import('../utils/validImages/index.js');
 const { fitModelToViewport } = await import('./utils/fitModelToViewport.js');
 
@@ -97,7 +96,7 @@ class StudioCMS3DLogo {
 	mouseX = 0;
 	mouseY = 0;
 	time: THREE.Clock;
-	composer: EffectComposer;
+	composer;
 	outlinePass: OutlinePass | undefined;
 	outlinedObjects: THREE.Group<THREE.Object3DEventMap>[] = [];
 	defaultComputedCameraZ: number | undefined;
