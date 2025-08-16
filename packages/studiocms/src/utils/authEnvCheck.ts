@@ -1,5 +1,9 @@
 import { getSecret } from 'astro:env/server';
 
+/**
+ * @deprecated authEnvCheck is deprecated and no longer works due to extraction of the oauth providers into their own packages.
+ * Use the individual provider packages to check for configuration instead.
+ */
 type Providers = {
 	github: boolean;
 	discord: boolean;
@@ -8,6 +12,10 @@ type Providers = {
 	usernameAndPassword: boolean;
 };
 
+/**
+ * @deprecated authEnvCheck is deprecated and no longer works due to extraction of the oauth providers into their own packages.
+ * Use the individual provider packages to check for configuration instead.
+ */
 const AUTH_KEYS = {
 	GITHUB: {
 		CLIENT_ID: getSecret('CMS_GITHUB_CLIENT_ID'),
@@ -32,6 +40,10 @@ const AUTH_KEYS = {
 	},
 };
 
+/**
+ * @deprecated authEnvCheck is deprecated and no longer works due to extraction of the oauth providers into their own packages.
+ * Use the individual provider packages to check for configuration instead.
+ */
 export type AuthEnvCheckResponse = {
 	GITHUB: {
 		ENABLED: boolean;
@@ -62,6 +74,10 @@ export type AuthEnvCheckResponse = {
 	SHOW_PROVIDER_ERROR: boolean;
 };
 
+/**
+ * @deprecated authEnvCheck is deprecated and no longer works due to extraction of the oauth providers into their own packages.
+ * Use the individual provider packages to check for configuration instead.
+ */
 export async function authEnvCheck(providers: Providers): Promise<AuthEnvCheckResponse> {
 	let GITHUB_ENABLED = false;
 	let DISCORD_ENABLED = false;

@@ -116,14 +116,16 @@ export const setLocals = Effect.fn(function* <
 	T extends SetLocalValuesKeys,
 	V extends SetLocalValues[T],
 >(context: APIContext, key: T, values: V) {
+	const sharedOpts = { mergeArrays: false } as const;
 	switch (key) {
 		case SetLocal.GENERAL: {
 			// Merge general values into the root of StudioCMS
 			// Exclude 'security' and 'plugins' to avoid overwriting them
 			const generalValues = getGeneralLocals(context.locals.StudioCMS);
-			const updatedValues = (yield* deepmerge((merge) => merge(generalValues, values), {
-				mergeArrays: false,
-			})) as SetLocalValues[SetLocal.GENERAL];
+			const updatedValues = (yield* deepmerge(
+				(merge) => merge(generalValues, values),
+				sharedOpts
+			)) as SetLocalValues[SetLocal.GENERAL];
 
 			// Update the locals with the merged values
 			// This will not overwrite 'security' or 'plugins'
@@ -135,9 +137,10 @@ export const setLocals = Effect.fn(function* <
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
 			const currentValues = context.locals.StudioCMS.security || {};
-			const updatedValues = (yield* deepmerge((merge) => merge(currentValues, values), {
-				mergeArrays: false,
-			})) as SetLocalValues[SetLocal.SECURITY];
+			const updatedValues = (yield* deepmerge(
+				(merge) => merge(currentValues, values),
+				sharedOpts
+			)) as SetLocalValues[SetLocal.SECURITY];
 
 			// Update the locals with the merged security values
 			context.locals.StudioCMS.security = updatedValues;
@@ -147,9 +150,10 @@ export const setLocals = Effect.fn(function* <
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
 			const currentValues = context.locals.StudioCMS.plugins || {};
-			const updatedValues = (yield* deepmerge((merge) => merge(currentValues, values), {
-				mergeArrays: false,
-			})) as SetLocalValues[SetLocal.PLUGINS];
+			const updatedValues = (yield* deepmerge(
+				(merge) => merge(currentValues, values),
+				sharedOpts
+			)) as SetLocalValues[SetLocal.PLUGINS];
 
 			// Update the locals with the merged plugin values
 			context.locals.StudioCMS.plugins = updatedValues;
