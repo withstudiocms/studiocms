@@ -2,7 +2,7 @@ import _nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
-import { Context, Effect, Layer } from './effect.js';
+import { Brand, Context, Effect, Layer } from './effect.js';
 
 /**
  * Custom Transport interface for nodemailer that extends the SMTPTransport.Options to
@@ -22,10 +22,36 @@ export interface Transport extends SMTPTransport.Options {
  * @property {SMTPTransport.Options} [defaults] - Default options for the mail transporter.
  * @property {string} [proxy] - Optional proxy URL to use for the connection.
  */
-export interface TransportConfig {
+export interface TransportConfig extends Brand.Brand<'TransportConfig'> {
 	transport?: Transport;
 	defaults?: SMTPTransport.Options;
 }
+
+/**
+ * Nominal type for TransportConfig to ensure type safety and prevent accidental misuse.
+ * @remarks
+ * The `Brand.nominal` utility is used to create a unique type that cannot be
+ * accidentally substituted with other types, even if they have the same structure.
+ * @example
+ * ```typescript
+ * const config: TransportConfig = {
+ *   transport: {
+ *     host: 'smtp.example.com',
+ *     port: 587,
+ *     secure: false,
+ *     auth: {
+ *       user: 'user',
+ *       pass: 'pass'
+ *     }
+ *   }
+ * };
+ *
+ * // This ensures that the config variable is treated as a TransportConfig type,
+ * // preventing accidental assignment of incompatible types.
+ * const transportConfig: TransportConfig = TransportConfig(config);
+ * ```
+ */
+export const TransportConfig = Brand.nominal<TransportConfig>();
 
 /**
  * Converts a TransportConfig object into a format suitable for nodemailer.
@@ -36,27 +62,32 @@ export interface TransportConfig {
  * @param config - The TransportConfig object containing transport and defaults.
  * @returns An object with transport options, defaults, and proxy configuration.
  */
-function convertTransporterConfig(config: TransportConfig): {
-	transport?: SMTPTransport | SMTPTransport.Options | string;
-	defaults?: SMTPTransport.Options;
-	proxy?: string;
-} {
-	const { transport, defaults } = config;
+const convertTransporterConfig = Effect.fn((config: TransportConfig) =>
+	Effect.try({
+		try: () => {
+			const { transport, defaults } = config;
 
-	let transportOptions: SMTPTransport.Options | undefined;
-	let proxyConfig: string | undefined;
+			let transportOptions: SMTPTransport.Options | undefined;
+			let proxyConfig: string | undefined;
 
-	if (transport) {
-		const { proxy, ...rest } = transport;
-		transportOptions = rest as SMTPTransport.Options;
-		proxyConfig = proxy;
-	}
-	return {
-		proxy: proxyConfig,
-		transport: transportOptions,
-		defaults: defaults || undefined,
-	};
-}
+			if (transport) {
+				const { proxy, ...rest } = transport;
+				transportOptions = rest as SMTPTransport.Options;
+				proxyConfig = proxy;
+			}
+			return {
+				proxy: proxyConfig,
+				transport: transportOptions,
+				defaults: defaults || undefined,
+			};
+		},
+		catch: (cause) => {
+			throw new Error(
+				`Failed to convert TransportConfig: ${cause instanceof Error ? cause.message : String(cause)}`
+			);
+		},
+	})
+);
 
 /**
  * A context tag for SMTP transport configuration, extending the base Context.Tag
@@ -81,7 +112,7 @@ export class SMTPTransportConfig extends Context.Tag('SMTPTransportConfig')<
 	TransportConfig
 >() {
 	static makeLive(config: TransportConfig) {
-		return Layer.succeed(SMTPTransportConfig, config);
+		return Layer.succeed(SMTPTransportConfig, SMTPTransportConfig.of(TransportConfig(config)));
 	}
 }
 
@@ -110,7 +141,7 @@ export class SMTPTransportConfig extends Context.Tag('SMTPTransportConfig')<
  */
 export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 	effect: Effect.gen(function* () {
-		// Internal functions to handle nodemailer and SMTP transport creation
+		//// Internal functions to handle nodemailer and SMTP transport creation
 
 		/**
 		 * Creates a nodemailer transport instance with the provided configuration.
@@ -137,11 +168,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 		 * @param proxy - Optional proxy URL to use for the connection.
 		 * @returns A promise that resolves with the created transport instance.
 		 */
-		const createTransport = Effect.fn(function* (
-			transport?: SMTPTransport | SMTPTransport.Options | string,
-			defaults?: SMTPTransport.Options,
-			proxy?: string
-		) {
+		const createTransport = Effect.fn(function* (rawMailerConfig: TransportConfig) {
+			// Convert the raw configuration into a format suitable for nodemailer
+			const { transport, defaults, proxy } = yield* convertTransporterConfig(rawMailerConfig);
+
 			const transportInstance = yield* nodemailer((mailer) =>
 				mailer.createTransport(transport, defaults)
 			);
@@ -155,16 +185,15 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			return transportInstance;
 		});
 
+		//// Main service setup
+
 		// Load the SMTPTransportConfig from the context
 		const rawMailerConfig = yield* SMTPTransportConfig;
 
-		// Convert the raw configuration into a format suitable for nodemailer
-		const { transport, defaults, proxy } = convertTransporterConfig(rawMailerConfig);
-
 		// Create the nodemailer transport instance with the provided configuration
-		const _mailer = yield* createTransport(transport, defaults, proxy);
+		const _mailer = yield* createTransport(rawMailerConfig);
 
-		// User-facing function to send emails using the configured transport
+		//// Public methods exposed by the SMTPService
 
 		/**
 		 * Runs a function with the nodemailer transport instance within an Effect context.
