@@ -87,8 +87,9 @@ class LazyStudioCMS3DLogo {
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting && !this.loaded) {
-						this.loadThreeJS();
 						this.loaded = true;
+						this.observer.disconnect();
+						void this.loadThreeJS();
 					}
 				});
 			},
@@ -153,57 +154,66 @@ class LazyStudioCMS3DLogo {
 	}
 
 	private showLoadingState() {
-		this.container.innerHTML = `
-			<div class="loading-3d" style="
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				height: 100%;
-				min-height: 400px;
-				color: var(--text-color, #666);
-				font-family: system-ui, sans-serif;
-			">
-				<div class="loading-spinner" style="
-					width: 40px;
-					height: 40px;
-					border: 3px solid var(--border-color, #e0e0e0);
-					border-top: 3px solid var(--accent-color, #aa87f4);
-					border-radius: 50%;
-					animation: spin 1s linear infinite;
-					margin-bottom: 16px;
-				"></div>
-				<p style="margin: 0; font-size: 14px;">Loading 3D experience...</p>
-			</div>
-			<style>
-				@keyframes spin {
-					0% { transform: rotate(0deg); }
-					100% { transform: rotate(360deg); }
-				}
-			</style>
-		`;
+		this.container.replaceChildren();
+		const wrap = document.createElement('div');
+		wrap.className = 'loading-3d';
+		Object.assign(wrap.style, {
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+			justifyContent: 'center',
+			height: '100%',
+			minHeight: '400px',
+			color: 'var(--text-color, #666)',
+			fontFamily: 'system-ui, sans-serif',
+		});
+		const spinner = document.createElement('div');
+		spinner.className = 'loading-spinner';
+		Object.assign(spinner.style, {
+			width: '40px',
+			height: '40px',
+			border: '3px solid var(--border-color, #e0e0e0)',
+			borderTop: '3px solid var(--accent-color, #aa87f4)',
+			borderRadius: '50%',
+			marginBottom: '16px',
+			animation: 'spin 1s linear infinite',
+		});
+		const label = document.createElement('p');
+		label.textContent = 'Loading 3D experience...';
+		label.style.margin = '0';
+		label.style.fontSize = '14px';
+		const keyframes = document.createElement('style');
+		keyframes.textContent =
+			'@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
+		wrap.append(spinner, label);
+		this.container.append(wrap, keyframes);
 	}
 
 	private showErrorState() {
-		this.container.innerHTML = `
-			<div class="error-3d" style="
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				height: 100%;
-				min-height: 400px;
-				color: var(--text-color, #666);
-				font-family: system-ui, sans-serif;
-			">
-				<div style="
-					font-size: 24px;
-					margin-bottom: 8px;
-					opacity: 0.5;
-				">⚠️</div>
-				<p style="margin: 0; font-size: 14px;">3D experience unavailable</p>
-			</div>
-		`;
+		this.container.replaceChildren();
+		const wrap = document.createElement('div');
+		wrap.className = 'error-3d';
+		Object.assign(wrap.style, {
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
+			justifyContent: 'center',
+			height: '100%',
+			minHeight: '400px',
+			color: 'var(--text-color, #666)',
+			fontFamily: 'system-ui, sans-serif',
+		});
+		const icon = document.createElement('div');
+		icon.textContent = '⚠️';
+		icon.style.fontSize = '24px';
+		icon.style.marginBottom = '8px';
+		icon.style.opacity = '0.5';
+		const label = document.createElement('p');
+		label.textContent = '3D experience unavailable';
+		label.style.margin = '0';
+		label.style.fontSize = '14px';
+		wrap.append(icon, label);
+		this.container.append(wrap);
 		this.container.classList.add('loaded'); // Still mark as "loaded" to prevent layout shifts
 	}
 
@@ -294,6 +304,14 @@ class StudioCMS3DLogo {
 
 		this.time = new Clock(true);
 		this.composer = new EffectComposer(this.renderer);
+		// Use real container size for a correct initial fit
+		const rect = containerEl.getBoundingClientRect();
+		if (rect.width > 0 && rect.height > 0) {
+			this.camera.aspect = rect.width / rect.height;
+			this.camera.updateProjectionMatrix();
+			this.renderer.setSize(rect.width, rect.height);
+			this.composer.setSize(rect.width, rect.height);
+		}
 
 		// Simplified lighting
 		const light2 = new AmbientLight(0x606060);
@@ -412,6 +430,7 @@ class StudioCMS3DLogo {
 			this.outlinedObjects.push(this.model);
 		} catch (error) {
 			console.error('Failed to load logo model:', error);
+			this.canvasContainer?.classList.add('loaded');
 		}
 	};
 
@@ -490,11 +509,14 @@ class StudioCMS3DLogo {
 	initResizeListener = () => {
 		this.resizeHandler = () => {
 			if (window.innerWidth > 850) {
-				this.camera.aspect = window.innerWidth / 2 / window.innerHeight;
+				const rect = this.canvasContainer.getBoundingClientRect();
+				const width = rect.width || window.innerWidth / 2;
+				const height = rect.height || window.innerHeight;
+				this.camera.aspect = width / height;
 				this.camera.updateProjectionMatrix();
 
-				this.renderer.setSize(window.innerWidth / 2, window.innerHeight);
-				this.composer.setSize(window.innerWidth / 2, window.innerHeight);
+				this.renderer.setSize(width, height);
+				this.composer.setSize(width, height);
 
 				if (window.innerWidth < 1100 && this.defaultComputedCameraZ) {
 					this.camera.position.set(
