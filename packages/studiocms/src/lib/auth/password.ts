@@ -204,7 +204,7 @@ export class Password extends Effect.Service<Password>()('studiocms/lib/auth/pas
 			verifyPasswordStrength,
 		};
 	}),
-	dependencies: [Scrypt.Default, CheckIfUnsafe.Default, Platform.FetchHttpClient.layer],
+	dependencies: [CheckIfUnsafe.Default, Platform.FetchHttpClient.layer],
 }) {
 	static Provide = Effect.provide(this.Default);
 }

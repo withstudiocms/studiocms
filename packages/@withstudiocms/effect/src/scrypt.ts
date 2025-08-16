@@ -89,5 +89,17 @@ export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 		};
 	}),
 }) {
+	/**
+	 * This is used to create a configuration layer for the Scrypt service.
+	 */
 	static makeConfig = (opts: ScryptConfigOptions) => ScryptConfig.Make(opts);
+
+	/**
+	 * Creates a live instance of the Scrypt service with the specified configuration options.
+	 *
+	 * @param opts - The configuration options for the Scrypt service.
+	 * @returns Layer that provides the Scrypt service with the specified configuration.
+	 */
+	static makeLive = (opts: ScryptConfigOptions) =>
+		Layer.provide(this.Default, this.makeConfig(opts));
 }
