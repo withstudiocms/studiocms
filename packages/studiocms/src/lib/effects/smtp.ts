@@ -1,13 +1,10 @@
 import { db, eq } from 'astro:db';
-import { asDrizzleTable } from '@astrojs/db/utils';
 import { SMTPService, SMTPTransportConfig, TransportConfig } from '@withstudiocms/effect/smtp';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import { CMSMailerConfigId } from '../../consts.js';
 import { tsMailerConfig } from '../../db/config.js';
-import { Data, Effect, pipe } from '../../effect.js';
-import { errorTap, genLogger, pipeLogger } from './logger.js';
-import { MailerConfig, TransporterConfig } from './smtp.config.js';
+import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 
 export type { Mail };
 

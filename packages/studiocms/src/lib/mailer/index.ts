@@ -2,9 +2,8 @@ import { eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { CMSMailerConfigId } from '../../consts.js';
-import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { tsMailerConfig } from '../../db/config.js';
-import { Effect, Layer } from '../../effect.js';
+import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../effects/smtp.js';
 
 /**
