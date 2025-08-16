@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import type { OutlinePass as OutlinePassType } from 'three/addons/postprocessing/OutlinePass.js';
 
+const { OutlinePass } = await import('three/addons/postprocessing/OutlinePass.js');
 const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
 const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
 const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
@@ -97,7 +98,7 @@ class StudioCMS3DLogo {
 	mouseY = 0;
 	time: THREE.Clock;
 	composer;
-	outlinePass: OutlinePass | undefined;
+	outlinePass: OutlinePassType | undefined;
 	outlinedObjects: THREE.Group<THREE.Object3DEventMap>[] = [];
 	defaultComputedCameraZ: number | undefined;
 	BackgroundMesh: THREE.Mesh | undefined;
