@@ -8,7 +8,6 @@ import { Brand, Context, Data, Effect, Layer } from './effect.js';
  * about errors that occur during Scrypt-related operations.
  *
  * @extends Data.TaggedError
- * @template { error: Error } - The shape of the additional error context.
  */
 export class ScryptError extends Data.TaggedError('ScryptError')<{ error: Error }> {}
 

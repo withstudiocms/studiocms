@@ -2,7 +2,7 @@ import type { AstroIntegration } from 'astro';
 import { AstroError } from 'astro/errors';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
-import { satisfies, compare as semCompare, validRange } from 'semver';
+import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { routesDir, StudioCMSDefaultRobotsConfig } from './consts.js';
 import { StudioCMSError } from './errors.js';
@@ -340,6 +340,13 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			return pluginsToProcess;
 		}
 
+		/**
+		 * Extracts and validates plugin data, ensuring it meets the required format and version.
+		 *
+		 * @param plugin - The StudioCMSPlugin instance to process.
+		 * @returns An object containing the validated plugin data, including hooks and other properties.
+		 * @throws {StudioCMSError} If the plugin's minimum version requirement is not met.
+		 */
 		function getPluginData(plugin: StudioCMSPlugin) {
 			const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
 			let comparison: number;
@@ -363,6 +370,62 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				requires,
 				...safeData,
 			};
+		}
+
+		/**
+		 * Registers an OAuth provider for the StudioCMS plugins.
+		 *
+		 * @param oAuthProvider - The OAuth provider to register.
+		 * @param messages - The messages array to push any errors or warnings.
+		 * @param unInjectedAuthProviders - The list of un-injected auth providers.
+		 */
+		function registerOAuthProvider(
+			oAuthProvider: {
+				endpointPath: string;
+				formattedName: string;
+				name: string;
+				svg: string;
+				requiredEnvVariables?: string[];
+			},
+			messages: Messages,
+			unInjectedAuthProviders: Array<{
+				name: string;
+				safeName: string;
+				formattedName: string;
+				svg: string;
+				endpoints: string;
+				enabled: boolean;
+			}>
+		) {
+			const { endpointPath, formattedName, name, svg, requiredEnvVariables } = oAuthProvider;
+			const safeName = convertToSafeString(name);
+			let enabled = true;
+			const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
+			const env = loadEnv('', process.cwd(), '');
+
+			if (requiredEnvVariables) {
+				const missingKeys = requiredEnvVariables.filter((key) => !env[key] || env[key] === '');
+				if (missingKeys.length > 0) {
+					messages.push({
+						label: `studiocms:plugins:${safeName}:missing-env-keys`,
+						logLevel: 'error',
+						message: boxen(
+							`The following environment variables are required for ${name} to work: ${missingKeys.join(', ')}. Please set them in your environment.`,
+							{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
+						),
+					});
+					enabled = false;
+				}
+			}
+
+			unInjectedAuthProviders.push({
+				name,
+				safeName,
+				formattedName,
+				svg,
+				endpoints,
+				enabled,
+			});
 		}
 
 		/////
@@ -418,48 +481,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider) {
-								const { endpointPath, formattedName, name, svg, requiredEnvVariables } =
-									oAuthProvider;
-
-								const safeName = convertToSafeString(name);
-
-								let enabled = true;
-
-								const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
-
-								const env = loadEnv('', process.cwd(), '');
-
-								if (requiredEnvVariables) {
-									const missingKeys = requiredEnvVariables.filter(
-										(key) => !env[key] || env[key] === ''
-									);
-
-									if (missingKeys.length > 0) {
-										messages.push({
-											label: `studiocms:plugins:${safeName}:missing-env-keys`,
-											logLevel: 'error',
-											message: boxen(
-												`The following environment variables are required for ${name} to work: ${missingKeys.join(
-													', '
-												)}. Please set them in your environment.`,
-												{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
-											),
-										});
-
-										enabled = false;
-									}
-								}
-
-								unInjectedAuthProviders.push({
-									name,
-									safeName,
-									formattedName,
-									svg,
-									endpoints,
-									enabled,
-								});
-							}
+							if (oAuthProvider)
+								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 						},
 					});
 				}
@@ -673,48 +696,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						},
 
 						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider) {
-								const { endpointPath, formattedName, name, svg, requiredEnvVariables } =
-									oAuthProvider;
-
-								const safeName = convertToSafeString(name);
-
-								let enabled = true;
-
-								const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
-
-								const env = loadEnv('', process.cwd(), '');
-
-								if (requiredEnvVariables) {
-									const missingKeys = requiredEnvVariables.filter(
-										(key) => !env[key] || env[key] === ''
-									);
-
-									if (missingKeys.length > 0) {
-										messages.push({
-											label: `studiocms:plugins:${safeName}:missing-env-keys`,
-											logLevel: 'error',
-											message: boxen(
-												`The following environment variables are required for ${name} to work: ${missingKeys.join(
-													', '
-												)}. Please set them in your environment.`,
-												{ title: `Missing ${name} Environment Variables`, borderColor: 'red' }
-											),
-										});
-
-										enabled = false;
-									}
-								}
-
-								unInjectedAuthProviders.push({
-									name,
-									safeName,
-									formattedName,
-									svg,
-									endpoints,
-									enabled,
-								});
-							}
+							if (oAuthProvider)
+								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 						},
 					});
 				}

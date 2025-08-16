@@ -30,19 +30,7 @@ const GEN1_0_PREFIX = 'gen1.0';
  */
 const buildSecurePassword = Effect.fn(
 	({ generation, hash, salt }: { generation: string; salt: string; hash: string }) =>
-		Effect.try({
-			try: () => `${generation}:${salt}:${hash}`,
-			catch: (cause) => {
-				if (cause instanceof PasswordError) {
-					return cause;
-				}
-				// If the error is not a PasswordError, we wrap it in one
-				// to maintain consistent error handling.
-				return new PasswordError({
-					message: `An unknown Error occurred when building the secure password: ${cause}`,
-				});
-			},
-		})
+		Effect.succeed(`${generation}:${salt}:${hash}`)
 );
 
 /**

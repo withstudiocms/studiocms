@@ -94,6 +94,8 @@ function getGeneralLocals(StudioCMS: APIContext['locals']['StudioCMS']): SetLoca
 	return general;
 }
 
+const sharedOpts = { mergeArrays: false } as const;
+
 /**
  * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
  *
@@ -109,14 +111,11 @@ function getGeneralLocals(StudioCMS: APIContext['locals']['StudioCMS']): SetLoca
  * @param context - The API context containing the `locals.StudioCMS` object to update.
  * @param key - The section of `StudioCMS` to update.
  * @param values - The new values to merge into the specified section.
- * @returns The updated section of `locals.StudioCMS` after merging.
- * @throws {Error} If an unknown key is provided.
  */
 export const setLocals = Effect.fn(function* <
 	T extends SetLocalValuesKeys,
 	V extends SetLocalValues[T],
 >(context: APIContext, key: T, values: V) {
-	const sharedOpts = { mergeArrays: false } as const;
 	switch (key) {
 		case SetLocal.GENERAL: {
 			// Merge general values into the root of StudioCMS
@@ -136,27 +135,33 @@ export const setLocals = Effect.fn(function* <
 		case SetLocal.SECURITY: {
 			// Merge security values into the 'security' property of StudioCMS
 			// This will not overwrite 'general' or 'plugins'
-			const currentValues = context.locals.StudioCMS.security || {};
+			const currentValues = context.locals.StudioCMS?.security ?? {};
 			const updatedValues = (yield* deepmerge(
 				(merge) => merge(currentValues, values),
 				sharedOpts
 			)) as SetLocalValues[SetLocal.SECURITY];
 
 			// Update the locals with the merged security values
-			context.locals.StudioCMS.security = updatedValues;
+			context.locals.StudioCMS = {
+				...(context.locals.StudioCMS ?? {}),
+				security: updatedValues,
+			};
 			break;
 		}
 		case SetLocal.PLUGINS: {
 			// Merge plugin values into the 'plugins' property of StudioCMS
 			// This will not overwrite 'general' or 'security'
-			const currentValues = context.locals.StudioCMS.plugins || {};
+			const currentValues = context.locals.StudioCMS?.plugins ?? {};
 			const updatedValues = (yield* deepmerge(
 				(merge) => merge(currentValues, values),
 				sharedOpts
 			)) as SetLocalValues[SetLocal.PLUGINS];
 
 			// Update the locals with the merged plugin values
-			context.locals.StudioCMS.plugins = updatedValues;
+			context.locals.StudioCMS = {
+				...(context.locals.StudioCMS ?? {}),
+				plugins: updatedValues,
+			};
 			break;
 		}
 		default:

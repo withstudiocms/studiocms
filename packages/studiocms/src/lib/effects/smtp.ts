@@ -5,7 +5,7 @@ import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import { CMSMailerConfigId } from '../../consts.js';
 import { StudioCMSMailerConfig } from '../../db/tables.js';
-import { Data, Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
+import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 
 export type { Mail };
 
@@ -33,19 +33,6 @@ export type tsMailer = typeof tsMailerConfig.$inferSelect;
  * TypeSafe Table definition for use in StudioCMS Integrations
  */
 export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
-
-/**
- * Represents an error specific to SMTP operations.
- *
- * This class extends `Data.TaggedError` to provide a tagged error type
- * with additional context about the error. The context includes an
- * `error` property, which can be an instance of `Error` or any other
- * unknown value.
- *
- * @extends {Data.TaggedError}
- * @template {Error | unknown} T - The type of the error context.
- */
-export class SMTPError extends Data.TaggedError('SMTPError')<{ error: Error | unknown }> {}
 
 /**
  * Converts a mailer configuration object into a TransportConfig object.
@@ -92,7 +79,7 @@ const convertTransporterConfig = (config: tsMailer) =>
 							: undefined,
 				},
 				defaults: {
-					from: default_sender,
+					from: nullToUndefined(default_sender),
 				},
 			});
 		})

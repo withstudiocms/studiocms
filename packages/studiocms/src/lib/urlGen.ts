@@ -23,10 +23,11 @@ export default function urlGenFactory(
 	}
 
 	if (path) {
+		const cleanPath = stripLeadingAndTrailingSlashes(path);
 		if (isDashboardRoute) {
-			url = pathWithBase(`${dashboardRoute}/${path}`);
+			url = pathWithBase(`${dashboardRoute}/${cleanPath}`);
 		} else {
-			url = pathWithBase(path);
+			url = pathWithBase(cleanPath);
 		}
 	} else {
 		if (isDashboardRoute) {

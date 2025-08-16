@@ -20,7 +20,7 @@ export interface Transport extends SMTPTransport.Options {
  * @interface TransportConfig
  * @property {Transport} [transport] - The transport options for the mail transporter.
  * @property {SMTPTransport.Options} [defaults] - Default options for the mail transporter.
- * @property {string} [proxy] - Optional proxy URL to use for the connection.
+ * Note: Proxy configuration is specified on `transport.proxy`.
  */
 export type TransportConfig = {
 	transport?: Transport;

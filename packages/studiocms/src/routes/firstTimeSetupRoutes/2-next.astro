@@ -12,25 +12,26 @@ import Tabs from './components/Tabs.astro';
 // If a provider does not have an icon, it will be logged to the console.
 // This is used to ensure that the icons are available for the providers in the UI.
 // If a provider is not found, it will be skipped in the UI rendering.
-const currentImages = {
-	GitHub: 'simple-icons:github',
-	Discord: 'simple-icons:discord',
-	Google: 'flat-color-icons:google',
-	Auth0: 'simple-icons:auth0',
-} as const;
+const providerIcons: Record<string, string> = {
+	github: 'simple-icons:github',
+	discord: 'simple-icons:discord',
+	google: 'flat-color-icons:google',
+	auth0: 'simple-icons:auth0',
+};
 
 // Map the provider data to the current images
 const Providers = providerData
 	.map((provider) => {
 		if (!provider.enabled) return undefined;
-		if (!currentImages[provider.label as keyof typeof currentImages]) {
+		const icon = providerIcons[provider.label.toLowerCase()];
+		if (!icon) {
 			console.warn(`No icon found for provider: ${provider.label}`);
 			return undefined;
 		}
 
 		return {
 			label: provider.label,
-			icon: currentImages[provider.label as keyof typeof currentImages],
+			icon: icon,
 			href: provider.href,
 		};
 	})
@@ -100,7 +101,15 @@ const Providers = providerData
                 showOAuth && Providers.map(({ href, icon, label }) => {
                     return (
                         <TabItem label={label} icon={icon}>
-                            <Center><Button color="primary" as="a" href={href}>Connect to {label}</Button></Center>
+                            <Center>
+                                <Button 
+                                    color="primary" 
+                                    as="a" 
+                                    href={href} 
+                                    aria-label={`Connect to ${label}`}
+                                    >Connect to {label}
+                                </Button>
+                            </Center>
                         </TabItem>
                     )
                 })
