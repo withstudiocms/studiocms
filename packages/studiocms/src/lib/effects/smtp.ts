@@ -1,11 +1,10 @@
 import { db, eq } from 'astro:db';
-import { asDrizzleTable } from '@astrojs/db/utils';
 import nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import socks from 'socks';
 import { CMSMailerConfigId } from '../../consts.js';
-import { StudioCMSMailerConfig } from '../../db/tables.js';
+import { tsMailerConfig } from '../../db/config.js';
 import { Data, Effect, pipe } from '../../effect.js';
 import { errorTap, genLogger, pipeLogger } from './logger.js';
 import { MailerConfig, TransporterConfig } from './smtp.config.js';
@@ -21,11 +20,6 @@ export type { Mail };
 function nullToUndefined<T>(value: T | null): T | undefined {
 	return value === null ? undefined : value;
 }
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
