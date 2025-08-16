@@ -1,5 +1,12 @@
 # @studiocms/md
 
+## 0.1.0-beta.25
+
+### Patch Changes
+
+- Updated dependencies [[`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17), [`befa7cf`](https://github.com/withstudiocms/studiocms/commit/befa7cf9572a2cb56a0264e2d6ece5dddd483cb4), [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29), [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db), [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17), [`b873c9b`](https://github.com/withstudiocms/studiocms/commit/b873c9bcf04d1ee55c6544f78b716a8dcb0c6411)]:
+  - studiocms@0.1.0-beta.25
+
 ## 0.1.0-beta.24
 
 ### Patch Changes
