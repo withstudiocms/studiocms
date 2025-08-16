@@ -1025,8 +1025,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'studiocms:plugins/renderers',
 					content: `
-						import * as renderers from 'virtual:studiocms/plugins/renderers';
-						
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
 					`,
 				},
