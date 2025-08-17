@@ -33,9 +33,10 @@ export const GET = withEffectAPI(
 			.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
 		const items: RSSFeedItem[] = sortedPosts.map(
-			({ title, description, publishedAt: pubDate, slug, categories: categoryData }) => {
+			({ title, description, publishedAt, slug, categories: categoryData }) => {
 				const link = pathWithBase(getBlogRoute(slug));
-				const categories = categoryData.map(({ name }) => name);
+				const categories = (categoryData ?? []).map(({ name }) => name);
+				const pubDate = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
 
 				return {
 					title,
