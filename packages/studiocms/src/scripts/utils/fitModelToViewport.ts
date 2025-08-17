@@ -1,18 +1,32 @@
-import * as THREE from 'three';
+// Import only what's needed from Three.js
+/** biome-ignore-all lint/suspicious/noExplicitAny: This file uses explicit any for dynamic compatibility */
+import { Box3, Vector3 } from 'three';
 
 /**
  * Takes in a GLTF model and fits it into a camera's viewport.
+ * Optimized to work with dependency injection pattern.
  * @param model The model to fit
  * @param camera The camera to fit the model into
+ * @param threeModules Optional Three.js modules (for dependency injection)
  */
 function fitModelToViewport(
-	model: THREE.Group<THREE.Object3DEventMap>,
-	camera: THREE.PerspectiveCamera
+	model: any, // Using any to support both bundled and injected Three.js
+	camera: any,
+	threeModules?: any
 ): number {
-	// Grab object's bounding box info
-	const box = new THREE.Box3().setFromObject(model);
-	const center = box.getCenter(new THREE.Vector3());
-	const size = box.getSize(new THREE.Vector3());
+	// Use injected modules if available, otherwise fall back to imports
+	const ThreeBox3 = threeModules?.Box3 || Box3;
+	const ThreeVector3 = threeModules?.Vector3 || Vector3;
+
+	// Grab object's bounding box info (ensure world matrices are current)
+	if (typeof (model as any).updateWorldMatrix === 'function') {
+		model.updateWorldMatrix(true, true);
+	} else if (typeof (model as any).updateMatrixWorld === 'function') {
+		model.updateMatrixWorld(true);
+	}
+	const box = new ThreeBox3().setFromObject(model);
+	const center = box.getCenter(new ThreeVector3());
+	const size = box.getSize(new ThreeVector3());
 
 	// Adjust model position relative to the center of the bounding box
 	model.position.x += model.position.x - center.x;

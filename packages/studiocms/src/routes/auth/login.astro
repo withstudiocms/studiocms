@@ -218,41 +218,45 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
     loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
 
-    const forgotPasswordModal = new ModalHelper('forgot-password-modal', 'forgot-password');
+    const forgotPasswordLink = document.getElementById('forgot-password') as HTMLDivElement;
 
-    forgotPasswordModal.registerConfirmCallback(async (formData) => {
-        if (!formData) return;
+    if (forgotPasswordLink) {
+        const forgotPasswordModal = new ModalHelper('forgot-password-modal', 'forgot-password');
 
-        const actionUrl = formData.get('action-url')?.toString() as string;
+        forgotPasswordModal.registerConfirmCallback(async (formData) => {
+            if (!formData) return;
 
-        const data = {
-            email: formData.get('email')?.toString(),
-        };
+            const actionUrl = formData.get('action-url')?.toString() as string;
 
-        const response = await fetch(actionUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+            const data = {
+                email: formData.get('email')?.toString(),
+            };
 
-        const result = await response.json();
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
 
-        if (response.ok) {
-            toast({
-                title: 'Success',
-                description: result.message,
-                type: 'success',
-            })
-            return;
-        } else {
-            toast({
-                title: 'Error',
-                description: result.error || 'An error occurred',
-                type: 'danger',
-            })
-            return;
-        }
-    })
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    title: 'Success',
+                    description: result.message,
+                    type: 'success',
+                })
+                return;
+            } else {
+                toast({
+                    title: 'Error',
+                    description: result.error || 'An error occurred',
+                    type: 'danger',
+                })
+                return;
+            }
+        })
+    }
 </script>
