@@ -2,7 +2,7 @@ catalog:
   "@types/node": ^22.0.0
   arctic: ^3.7.0
   astro-integration-kit: ^0.19.0
-  chalk: ^5.5.0
+  chalk: ^5.6.0
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
@@ -16,8 +16,8 @@ catalogs:
     "@astrojs/db": ^0.17.1
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.4.0
-    astro: ^5.12.9
+    "@astrojs/node": ^9.4.2
+    astro: ^5.13.2
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.0
