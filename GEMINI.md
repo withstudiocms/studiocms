@@ -5,9 +5,9 @@
 **StudioCMS** is an MIT licensed, open-source Server-Side Rendered (SSR) Astro-native Content Management System. It's built specifically for the Astro ecosystem and designed as a headless CMS solution requiring custom frontend development.
 
 ### Quick Reference
-- **Repository**: https://github.com/withstudiocms/studiocms/
-- **Documentation**: https://docs.studiocms.dev
-- **Website**: https://studiocms.dev
+- **Repository**: <https://github.com/withstudiocms/studiocms/>
+- **Documentation**: <https://docs.studiocms.dev>
+- **Website**: <https://studiocms.dev>
 - **Community**: [Discord](https://chat.studiocms.dev)
 - **Translations**: [Crowdin Project](https://crowdin.com/project/studiocms)
 - **Status**: Early development, not production-ready
@@ -27,7 +27,7 @@
 ## Project Architecture
 
 ### Monorepo Structure
-```
+```text
 packages/
 ├── studiocms/              # Core CMS package (main)
 ├── @studiocms/blog/        # Blog plugin
@@ -70,7 +70,7 @@ import { defineStudioCMSConfig } from 'studiocms/config';
 import blog from '@studiocms/blog';
 import github from '@studiocms/github';
 
-export default defineStudioCMS Config({
+export default defineStudioCMSConfig({
   dbStartPage: false,
   plugins: [
     blog(),
@@ -314,7 +314,7 @@ export default myPlugin;
 ## Internationalization (i18n)
 
 ### Translation System
-- **Platform**: Crowdin (https://crowdin.com/project/studiocms)
+- **Platform**: Crowdin (<https://crowdin.com/project/studiocms>)
 - **Base Language**: English (en-us.json)
 - **Location**: `packages/studiocms/src/i18n/translations/`
 - **Configuration**: `packages/studiocms/src/i18n/index.ts`
@@ -337,10 +337,10 @@ const errorMessage = t('errors.not_found');
 ## Community & Support
 
 ### Getting Help
-- **Documentation**: Primary resource at https://docs.studiocms.dev
-- **Discord Community**: Active support at https://chat.studiocms.dev
+- **Documentation**: Primary resource at <https://docs.studiocms.dev>
+- **Discord Community**: Active support at <https://chat.studiocms.dev>
+- **Community Guidelines**: <https://github.com/withstudiocms/.github>
 - **GitHub Issues**: Bug reports and feature requests
-- **Community Guidelines**: https://github.com/withstudiocms/.github
 
 ### Contributing
 - **Code of Conduct**: Available in community repository
@@ -375,10 +375,10 @@ What should happen
 What actually happens
 
 **Configuration**:
-```javascript
+~~~javascript
 // astro.config.mjs (redacted)
 // studiocms.config.mjs (redacted)
-```
+~~~
 ```
 
 ## Quick Decision Tree for Common Scenarios

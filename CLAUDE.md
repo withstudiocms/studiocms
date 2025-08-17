@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-**StudioCMS** is a MIT licensed, open-source SSR (Server Side Rendered) Astro-native CMS (Content Management System). It's built specifically for the Astro ecosystem and serves as a dedicated headless CMS solution.
+**StudioCMS** is an MIT-licensed, open-source SSR (Server-Side Rendered) Astro-native CMS (Content Management System). It's built specifically for the Astro ecosystem and serves as a dedicated headless CMS solution.
 
-- **Repository**: https://github.com/withstudiocms/studiocms/
-- **Documentation**: https://docs.studiocms.dev
-- **Main Website**: https://studiocms.dev
+- **Repository**: <https://github.com/withstudiocms/studiocms/>
+- **Documentation**: <https://docs.studiocms.dev>
+- **Main Website**: <https://studiocms.dev>
 - **Community**: [Discord](https://chat.studiocms.dev)
 - **Translations**: [Crowdin Project](https://crowdin.com/project/studiocms)
 
@@ -29,7 +29,7 @@ This is a monorepo containing multiple packages:
 
 - **Core Package**: `packages/studiocms/` - Main CMS functionality
 - **Plugins**: Various plugin packages for extending functionality
-- **Documentation**: Separate repository at https://github.com/withstudiocms/docs
+- **Documentation**: Separate repository at <https://github.com/withstudiocms/docs>
 
 ### Key Configuration Files
 - `astro.config.mjs` - Astro configuration with StudioCMS integration
@@ -103,10 +103,10 @@ pnpm install
 pnpm astro db push --remote
 
 # Development server
-pnpm run dev --remote
+pnpm dev --remote
 
 # Build for production
-pnpm run build --remote
+pnpm build --remote
 
 # Type checking
 pnpm astro check
@@ -241,10 +241,10 @@ export default defineStudioCMSConfig({
 ## Getting Help
 
 ### Community Resources
-- **Discord**: https://chat.studiocms.dev
-- **GitHub Issues**: https://github.com/withstudiocms/studiocms/issues
-- **Documentation**: https://docs.studiocms.dev
-- **Community Health Files**: https://github.com/withstudiocms/.github
+- **Discord**: <https://chat.studiocms.dev>
+- **GitHub Issues**: <https://github.com/withstudiocms/studiocms/issues>
+- **Documentation**: <https://docs.studiocms.dev>
+- **Community Health Files**: <https://github.com/withstudiocms/.github>
 
 ### Reporting Issues
 When reporting bugs or requesting features:
@@ -255,7 +255,7 @@ When reporting bugs or requesting features:
 5. Specify StudioCMS version and Astro version
 
 ### Contributing
-- Read community health files at https://github.com/withstudiocms/.github
+- Read community health files at <https://github.com/withstudiocms/.github>
 - Follow the contributing guidelines
 - Join the Discord community for discussions
 - Help with translations via Crowdin project
