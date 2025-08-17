@@ -32,11 +32,11 @@ const redirectLogin = Astro.locals.StudioCMS.routeMap.authLinks.loginURL;
 ---
 
 <login-check
-    data-is_logged_in={`${currentUser?.isLoggedIn ?? false}`}
+    data-is-logged-in={`${currentUser?.isLoggedIn ?? false}`}
     data-authorized={`${isAuthorized}`}
-    data-redirect_profile={redirectProfile}
-    data-redirect_login={redirectLogin}
-    style="display: hidden;"></login-check>
+    data-redirect-profile={redirectProfile}
+    data-redirect-login={redirectLogin}
+    style="display: none;"></login-check>
 
 <script>
     if (!customElements.get("login-check")) {
@@ -44,9 +44,9 @@ const redirectLogin = Astro.locals.StudioCMS.routeMap.authLinks.loginURL;
             constructor() {
                 super();
                 const authorized = this.dataset.authorized;
-                const isLoggedIn = this.dataset.is_logged_in;
-                const redirectProfile = this.dataset.redirect_profile;
-                const redirectLogin = this.dataset.redirect_login;
+                const isLoggedIn = this.dataset.isLoggedIn;
+                const redirectProfile = this.dataset.redirectProfile;
+                const redirectLogin = this.dataset.redirectLogin;
 
                 if (isLoggedIn === "false") {
                     window.location.href = redirectLogin!;

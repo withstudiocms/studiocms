@@ -62,8 +62,8 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 
 				// merge built-in components with the provided user component registry
 				const componentRegistryToCheck: Record<string, string> = {
-					...builtInComponents,
-					...componentRegistry,
+					...(builtInComponents ?? {}),
+					...(componentRegistry ?? {}),
 				};
 
 				const componentRegistryEntries = Object.entries(componentRegistryToCheck);

@@ -13,7 +13,7 @@ const currentUser = security?.userSessionData ?? null;
 const userId = currentUser?.user?.id;
 
 if (!userId) {
-	window.location.href = '/';
+	return Astro.redirect(Astro.locals.StudioCMS.routeMap.authLinks.loginURL);
 }
 ---
 

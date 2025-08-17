@@ -42,7 +42,7 @@ export const astroComponents: Plugin<AstroComponents> = (editor, { componentRegi
 		// Define a timed interval to fetch component HTML
 		// This will be used to update the component's preview in the editor
 		// The interval is cleared and reset on each change to avoid multiple fetches
-		let timedInterval: NodeJS.Timeout;
+		let timedInterval: ReturnType<typeof setTimeout>;
 		let abortController: AbortController | null;
 
 		// Add the component type to the GrapesJS DomComponents manager

@@ -32,18 +32,21 @@ const token = Astro.locals.StudioCMS.plugins?.editorCSRFToken;
 >
 
 <script>
-    const { toast } = await import('@studiocms/ui/components/Toast/toast.js');
-    const { default: grapesjs, usePlugin } = await import('grapesjs');
-    const { baseConfig } = await import('../common/gjs-editor-settings.js');
-    const { getEditorElmData, StudioCMSDbStorageAdapter } = await import(
-        '../common/gjs-editor-utils.js'
-    );
-    const { astroComponents } = await import(
-        '../common/gjs-componentRegistry.js'
-    );
-    const { default: grapesBlocks } = await import(
-        '../common/gjs-blocks.js'
-    );
+    const [
+      { toast },
+      { default: grapesjs, usePlugin },
+      { baseConfig },
+      { getEditorElmData, StudioCMSDbStorageAdapter },
+      { astroComponents },
+      { default: grapesBlocks },
+    ] = await Promise.all([
+      import('@studiocms/ui/components/Toast/toast.js'),
+      import('grapesjs'),
+      import('../common/gjs-editor-settings'),
+      import('../common/gjs-editor-utils'),
+      import('../common/gjs-componentRegistry'),
+      import('../common/gjs-blocks'),
+    ]);
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings

@@ -17,20 +17,22 @@ export const GET = withEffectAPI(
 	Effect.fn(function* ({ site: _site, locals }) {
 		const sdk = yield* SDKCore;
 
-		const config = locals.StudioCMS.siteConfig.data;
+		const config = locals?.StudioCMS?.siteConfig?.data;
 
 		// Set Title, Description, and Site
-		const title = `${config?.title} | ${blogConfig.title}`;
+		const siteTitle = config?.title ?? 'StudioCMS';
+		const title = `${siteTitle} | ${blogConfig.title}`;
 		const description = config?.description ?? 'Blog';
 		const site = _site ?? 'https://example.com';
 
 		const posts = yield* sdk.GET.pages();
 
-		const orderedPosts = posts
+		const sortedPosts = posts
 			.map(({ data }) => data)
-			.filter(({ package: pkg }) => pkg === '@studiocms/blog');
+			.filter(({ package: pkg }) => pkg === '@studiocms/blog')
+			.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
-		const items: RSSFeedItem[] = orderedPosts.map(
+		const items: RSSFeedItem[] = sortedPosts.map(
 			({ title, description, publishedAt: pubDate, slug, categories: categoryData }) => {
 				const link = pathWithBase(getBlogRoute(slug));
 				const categories = categoryData.map(({ name }) => name);

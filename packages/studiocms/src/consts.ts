@@ -166,14 +166,9 @@ export const authAPIRoute = makeAPIRoute('auth');
  *
  * @returns A function that constructs the full API route path for the SDK.
  */
-export const makeDashboardRoute = (route?: string | undefined) => {
-	let defaultRoute = 'dashboard';
-
-	if (route) defaultRoute = stripLeadingAndTrailingSlashes(route);
-
-	if (route === '/') defaultRoute = '';
-
-	return (path: string) => `${defaultRoute}/${path}`;
+export const makeDashboardRoute = (route?: string) => {
+	const sanitized = route === '/' ? '' : stripLeadingAndTrailingSlashes(route ?? 'dashboard');
+	return (path: string) => `${sanitized}/${path}`;
 };
 
 /**
@@ -292,4 +287,4 @@ export const FAVICON_ASSETS = {
 		light: `${STUDIOCMS_CDN_URL}/favicon-light.png`,
 		dark: `${STUDIOCMS_CDN_URL}/favicon-dark.png`,
 	},
-};
+} as const;
