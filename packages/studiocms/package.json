@@ -156,7 +156,7 @@
 		"@clack/core": "0.4.1",
 		"@clack/prompts": "0.9.1",
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.47",
+		"@iconify-json/simple-icons": "^1.2.48",
 		"@inox-tools/runtime-logger": "^0.6.0",
 		"@nanostores/i18n": "^1.2.2",
 		"@nanostores/persistent": "^1.1.0",
