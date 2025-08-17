@@ -1,7 +1,7 @@
 import type { Plugin } from 'grapesjs';
 import type { ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { PARTIAL_PATH } from '../consts.js';
-import { buildBlockProps, partialRequestBuilder, traitMapFn } from './editor-utils.js';
+import { buildBlockProps, partialRequestBuilder, traitMapFn } from './gjs-editor-utils.js';
 
 /**
  * Represents a collection of registered components for use within the Astro environment.

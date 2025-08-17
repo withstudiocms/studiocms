@@ -32,15 +32,18 @@ const token = Astro.locals.StudioCMS.plugins?.editorCSRFToken;
 >
 
 <script>
-    import { toast } from "@studiocms/ui/components/Toast/toast.js";
-    import grapesjs, { usePlugin, type EditorEvent } from "grapesjs";
-    import { baseConfig } from "../common/editor-settings.js";
-    import {
-        getEditorElmData,
-        StudioCMSDbStorageAdapter,
-    } from "../common/editor-utils.js";
-    import { astroComponents } from "../common/componentRegistry.js";
-    import grapesBlocks from "../common/grapesBlocks/index.js";
+    const { toast } = await import('@studiocms/ui/components/Toast/toast.js');
+    const { default: grapesjs, usePlugin } = await import('grapesjs');
+    const { baseConfig } = await import('../common/gjs-editor-settings.js');
+    const { getEditorElmData, StudioCMSDbStorageAdapter } = await import(
+        '../common/gjs-editor-utils.js'
+    );
+    const { astroComponents } = await import(
+        '../common/gjs-componentRegistry.js'
+    );
+    const { default: grapesBlocks } = await import(
+        '../common/gjs-blocks.js'
+    );
 
     // Get the editor options for Astro components and inline storage
     // This will be used to initialize the plugins with the correct settings
@@ -131,7 +134,7 @@ const token = Astro.locals.StudioCMS.plugins?.editorCSRFToken;
         }
     };
 
-    const updateIndicatorEvents: EditorEvent[] = [
+    const updateIndicatorEvents = [
         "load",
         "update",
         "component:add",
