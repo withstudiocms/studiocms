@@ -350,7 +350,7 @@ const errorMessage = t('errors.not_found');
 
 ### Issue Reporting Template
 When helping users report issues, suggest this format:
-```
+```md
 **StudioCMS Version**: 
 **Astro Version**: 
 **Node.js Version**: 
