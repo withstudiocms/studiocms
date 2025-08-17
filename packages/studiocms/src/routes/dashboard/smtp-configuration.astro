@@ -3,10 +3,9 @@ import { useTranslations } from 'studiocms:i18n';
 import { Mailer } from 'studiocms:mailer';
 import { SDKCore } from 'studiocms:sdk';
 import { Button, Card, Icon, Input, Select, Toggle } from 'studiocms:ui/components';
-import { Effect } from 'effect';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
+import { Effect, genLogger, runEffect } from '../../effect.js';
 import Layout from '../../layouts/dashboard/Layout.astro';
-import { convertToVanilla, genLogger } from '../../lib/effects/index.js';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
 
@@ -14,7 +13,7 @@ const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
-const [mailerConfig, notificationSettings] = await convertToVanilla(
+const [mailerConfig, notificationSettings] = await runEffect(
 	genLogger('studiocms/routes/dashboard/smtp-configuration')(function* () {
 		const mailer = yield* Mailer;
 		const sdk = yield* SDKCore;
@@ -74,7 +73,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
 
       <form
         id="smtp-config-form"
-        action={Astro.locals.routeMap.endpointLinks.mailer.config}
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.config}
       >
         <div class="form-content">
           {
@@ -181,7 +180,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
 
       <form
         id="test-smtp-form"
-        action={Astro.locals.routeMap.endpointLinks.mailer.testEmail}
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.testEmail}
       >
         <div class="form-content">
           <Input
@@ -224,7 +223,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
 
       <form
         id="notification-settings-form"
-        action={Astro.locals.routeMap.endpointLinks
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks
           .emailNotificationSettingsSite}
       >
         <div class="form-content">

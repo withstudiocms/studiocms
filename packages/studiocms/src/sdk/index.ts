@@ -1,5 +1,4 @@
-import { Effect } from 'effect';
-import { convertToVanilla } from '../lib/effects/index.js';
+import { Effect, runEffect } from '../effect.js';
 import { SDKCore as _SDKCore } from './sdkCore.js';
 
 /**
@@ -30,11 +29,11 @@ export const SDKCore = Effect.gen(function* () {
  *
  * @remarks
  * This function uses `Effect.gen` to yield the `SDKCore` effect, destructures the result to exclude the `_tag` property,
- * and then passes the remaining core properties to `convertToVanilla`.
+ * and then passes the remaining core properties to `runEffect`.
  *
  * @returns A promise that resolves to the core properties of `SDKCore` as a plain JavaScript object.
  */
-export const SDKCoreJs = await convertToVanilla(
+export const SDKCoreJs = await runEffect(
 	Effect.gen(function* () {
 		const { _tag, ...core } = yield* SDKCore;
 		return core;
@@ -42,9 +41,9 @@ export const SDKCoreJs = await convertToVanilla(
 );
 
 /**
- * Alias for `convertToVanilla`, used to run SDK effects and convert them to plain JavaScript objects.
+ * Alias for `runEffect`, used to run SDK effects and convert them to plain JavaScript objects.
  *
  * @param effect - The Effect to be converted.
  * @returns A promise that resolves to the plain JavaScript object representation of the effect's result.
  */
-export const runSDK = convertToVanilla;
+export const runSDK = runEffect;

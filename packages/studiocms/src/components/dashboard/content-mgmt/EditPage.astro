@@ -165,7 +165,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                     
                                 <div class="card-row">
                                     <span class="card-description">{pageData.description}</span>
-                                    <Button size='sm' as='a' href={Astro.locals.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                                    <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
                                     <Icon name="eye" width={24} height={24} class="card-icon" />
                                     </Button>
                                 </div>

@@ -1,5 +1,5 @@
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
-import { convertToVanilla, Effect, genLogger } from '../effect.js';
+import { Effect, genLogger, runEffect } from '../effect.js';
 import { integrationLogger } from '../utils/integrationLogger.js';
 import { convertHyphensToUnderscores } from './convert-hyphens.js';
 import { ComponentRegistry } from './Registry.js';
@@ -43,7 +43,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 		params,
 		{ componentRegistry, builtInComponents, verbose, name }: componentRegistryHandlerOptions
 	) =>
-		await convertToVanilla(
+		await runEffect(
 			genLogger('studiocms/componentRegistry/handler')(function* () {
 				// Setup helpers
 				const logInfo = { logger: params.logger, logLevel: 'info' as const, verbose };

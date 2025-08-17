@@ -1,7 +1,7 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
-import { convertToVanilla, Effect } from '../../../effect.js';
+import { Effect, runEffect } from '../../../effect.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';
@@ -239,7 +239,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 					task: async (message) => {
 						try {
 							// Environment variables are already checked by checkRequiredEnvVars
-							const hashedPassword = await convertToVanilla(hashPassword(newPassword));
+							const hashedPassword = await runEffect(hashPassword(newPassword));
 
 							await db
 								.update(Users)

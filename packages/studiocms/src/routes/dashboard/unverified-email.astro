@@ -36,7 +36,7 @@ if (!userId) {
       <p><t-unverified key="sub-description">{t('sub-description')}</t-unverified></p>
 
       <Button id="resend-button" variant={'solid'} color="primary" class="resend" fullWidth>
-        <div style="display: none;" data-userid={userId} data-url={Astro.locals.routeMap.endpointLinks.resendVerificationEmail}> </div>
+        <div style="display: none;" data-userid={userId} data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.resendVerificationEmail}> </div>
         <span><t-unverified key="resend-button">{t('resend-button')}</t-unverified></span>
       </Button>
 

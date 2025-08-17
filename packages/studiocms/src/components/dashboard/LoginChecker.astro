@@ -12,8 +12,7 @@ const { requiredPermission, currentUser } = Astro.props;
 
 let [isAuthorized, emailVerified] = await Effect.runPromise(
 	Effect.gen(function* () {
-		const { isUserAllowed } = yield* User;
-		const { isEmailVerified } = yield* VerifyEmail;
+		const [{ isUserAllowed }, { isEmailVerified }] = yield* Effect.all([User, VerifyEmail]);
 
 		return yield* Effect.all([
 			isUserAllowed(currentUser, requiredPermission),
