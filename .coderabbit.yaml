@@ -21,10 +21,10 @@ reviews:
   related_issues: true
   related_prs: true
   suggested_labels: true
-  auto_apply_labels: false
+  auto_apply_labels: true
   suggested_reviewers: true
   auto_assign_reviewers: false
-  poem: true
+  poem: false
   labeling_instructions: []
   path_filters: []
   path_instructions: []
@@ -100,7 +100,7 @@ reviews:
     detekt:
       enabled: false
     eslint:
-      enabled: true
+      enabled: false
     flake8:
       enabled: false
     rubocop:
@@ -118,17 +118,17 @@ reviews:
     semgrep:
       enabled: true
     circleci:
-      enabled: true
+      enabled: false
     clippy:
       enabled: false
     sqlfluff:
-      enabled: true
+      enabled: false
     prismaLint:
-      enabled: true
+      enabled: false
     pylint:
       enabled: false
     oxc:
-      enabled: true
+      enabled: false
     shopifyThemeCheck:
       enabled: false
     luacheck:
@@ -136,15 +136,15 @@ reviews:
     brakeman:
       enabled: false
     dotenvLint:
-      enabled: true
+      enabled: false
     htmlhint:
-      enabled: true
+      enabled: false
     checkmake:
       enabled: false
     osvScanner:
       enabled: true
 chat:
-  art: true
+  art: false
   auto_reply: true
   integrations:
     jira:
@@ -157,7 +157,11 @@ knowledge_base:
     enabled: true
   code_guidelines:
     enabled: true
-    filePatterns: []
+    filePatterns:
+      - ".github/copilot-instructions.md"
+      - ".cursorrules"
+      - "CLAUDE.md"
+      - "GEMINI.md"
   learnings:
     scope: auto
   issues:
