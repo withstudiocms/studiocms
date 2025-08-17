@@ -1,15 +1,15 @@
 language: en-US
-tone_instructions: ''
+tone_instructions: ""
 early_access: true
 enable_free_tier: true
 reviews:
   profile: chill
   request_changes_workflow: true
   high_level_summary: true
-  high_level_summary_placeholder: '@coderabbitai summary'
+  high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_in_walkthrough: false
-  auto_title_placeholder: '@coderabbitai'
-  auto_title_instructions: ''
+  auto_title_placeholder: "@coderabbitai"
+  auto_title_instructions: ""
   review_status: true
   commit_status: true
   fail_commit_status: false
@@ -21,7 +21,7 @@ reviews:
   related_issues: true
   related_prs: true
   suggested_labels: true
-  auto_apply_labels: true
+  auto_apply_labels: false
   suggested_reviewers: true
   auto_assign_reviewers: false
   poem: true
@@ -48,7 +48,7 @@ reviews:
       threshold: 80
     title:
       mode: warning
-      requirements: ''
+      requirements: "Concise, descriptive, imperative mood; include scope or module; avoid trailing period; <= 72 chars preferred."
     description:
       mode: warning
     issue_assessment:
@@ -62,12 +62,12 @@ reviews:
     shellcheck:
       enabled: true
     ruff:
-      enabled: true
+      enabled: false
     markdownlint:
       enabled: true
     github-checks:
       enabled: true
-      timeout_ms: 90000
+      timeout_ms: 180000
     languagetool:
       enabled: true
       enabled_rules: []
@@ -81,16 +81,16 @@ reviews:
     hadolint:
       enabled: true
     swiftlint:
-      enabled: true
+      enabled: false
     phpstan:
-      enabled: true
+      enabled: false
       level: default
     phpmd:
-      enabled: true
+      enabled: false
     phpcs:
-      enabled: true
+      enabled: false
     golangci-lint:
-      enabled: true
+      enabled: false
     yamllint:
       enabled: true
     gitleaks:
@@ -98,49 +98,49 @@ reviews:
     checkov:
       enabled: true
     detekt:
-      enabled: true
+      enabled: false
     eslint:
       enabled: true
     flake8:
-      enabled: true
+      enabled: false
     rubocop:
-      enabled: true
+      enabled: false
     buf:
-      enabled: true
+      enabled: false
     regal:
-      enabled: true
+      enabled: false
     actionlint:
       enabled: true
     pmd:
-      enabled: true
+      enabled: false
     cppcheck:
-      enabled: true
+      enabled: false
     semgrep:
       enabled: true
     circleci:
       enabled: true
     clippy:
-      enabled: true
+      enabled: false
     sqlfluff:
       enabled: true
     prismaLint:
       enabled: true
     pylint:
-      enabled: true
+      enabled: false
     oxc:
       enabled: true
     shopifyThemeCheck:
-      enabled: true
+      enabled: false
     luacheck:
-      enabled: true
+      enabled: false
     brakeman:
-      enabled: true
+      enabled: false
     dotenvLint:
       enabled: true
     htmlhint:
       enabled: true
     checkmake:
-      enabled: true
+      enabled: false
     osvScanner:
       enabled: true
 chat:
