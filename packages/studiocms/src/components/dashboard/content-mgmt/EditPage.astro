@@ -225,6 +225,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 <script is:inline define:vars={{ editors: editorKeys }}>
 
+// Refactor this to use a dynamic web component instead of inline script
+
   async function setupPluginFields() {
     const pageTypeDropdown = document.querySelector('#page-type-dropdown');
     const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
