@@ -13,11 +13,11 @@ const { content } = Astro.props;
 </div>
 
 <script>
-    import sunEditor from 'suneditor';
-    import plugins from 'suneditor/src/plugins';
-    import CodeMirror from 'codemirror';
-    import 'codemirror/mode/htmlmixed/htmlmixed'
-    import katex from 'katex';
+    import 'codemirror/mode/htmlmixed/htmlmixed';
+    const { default: sunEditor } = await import('suneditor')
+    const { default: katex } = await import('katex');
+    const { default: plugins } = await import('suneditor/src/plugins');
+    const { default: CodeMirror } = await import('codemirror');
 
     const editor = sunEditor.create('page-content', {
         display: 'block',
