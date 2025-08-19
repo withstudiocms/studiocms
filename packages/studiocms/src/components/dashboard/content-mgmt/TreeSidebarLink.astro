@@ -32,6 +32,7 @@ const compId = crypto.randomUUID();
 
     constructor() {
       super();
+      this.attachShadow({ mode: "open" });
       this.href = this.getAttribute("href") || "#";
     }
 
@@ -45,40 +46,24 @@ const compId = crypto.randomUUID();
       if (!this.shadowRoot) return;
 
       const slot = document.createElement("slot");
-      slot.innerHTML = this.innerHTML;
       this.shadowRoot.appendChild(slot);
     }
 
     private setSidebarActiveState() {
-      const elm = document.getElementById(this.id);
-
-      const notSelectedIcons = [
-        this.shadowRoot?.getElementById('not-selected-icon'),
-        elm?.querySelector<HTMLElement>('#not-selected-icon')
-      ];
-      const selectedIcons = [
-        this.shadowRoot?.getElementById('selected-icon'),
-        elm?.querySelector<HTMLElement>('#selected-icon')
-      ];
+      // Query icons from Light DOM since they're projected through the slot
+      const notSelectedIcon = this.querySelector<HTMLElement>('#not-selected-icon');
+      const selectedIcon = this.querySelector<HTMLElement>('#selected-icon');
 
       const currentQueryParams = new URL(window.location.href).searchParams.get("edit");
 
       if (this.href.includes(`edit=${currentQueryParams}`)) {
         this.classList.add('active');
-        notSelectedIcons.forEach(icon => {
-          if (icon) icon.style.display = 'none';
-        });
-        selectedIcons.forEach(icon => {
-          if (icon) icon.style.display = 'block';
-        });
+        if (notSelectedIcon) notSelectedIcon.style.display = 'none';
+        if (selectedIcon) selectedIcon.style.display = 'block';
       } else {
         this.classList.remove('active');
-        notSelectedIcons.forEach(icon => {
-          if (icon) icon.style.display = 'block';
-        });
-        selectedIcons.forEach(icon => {
-          if (icon) icon.style.display = 'none';
-        });
+        if (notSelectedIcon) notSelectedIcon.style.display = 'block';
+        if (selectedIcon) selectedIcon.style.display = 'none';
       }
     }
 

@@ -38,7 +38,6 @@ const userListItemHrefString = userListItemHref.toString();
         avatar={user.avatar ?? undefined}
         description={getLabelForPermissionLevel(user.permissionsData?.rank!)}
         loading="eager"
-        ,
     />
     <Icon name="chevron-right" width={24} height={24} />
 </user-list-item>
@@ -63,26 +62,7 @@ const userListItemHrefString = userListItemHref.toString();
         private render() {
             if (!this.shadowRoot) return;
 
-            const style = document.createElement("style");
-            style.innerHTML = `
-                :host {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 8px;
-                    text-decoration: none;
-                    color: inherit;
-                    cursor: pointer;
-                }
-                :host(:hover) {
-                    background-color: var(--background-step-3);
-                }
-            `;
-
             const slot = document.createElement("slot");
-            slot.innerHTML = this.innerHTML;
-
-            this.shadowRoot.appendChild(style);
             this.shadowRoot.appendChild(slot);
         }
 
