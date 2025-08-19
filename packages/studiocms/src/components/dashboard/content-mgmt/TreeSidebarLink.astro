@@ -3,6 +3,10 @@ import { Icon } from 'studiocms:ui/components';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { HTMLAttributes } from 'astro/types';
 
+// TODO Simplify this component's Script code,
+// instead of using a inline script, we should use a
+// dynamic web component to pass variables to the script
+
 interface Props extends HTMLAttributes<'a'> {
 	/**
 	 * ONLY USE OUTLINED ICONS! Shit will break otherwise

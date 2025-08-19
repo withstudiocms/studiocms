@@ -3,11 +3,10 @@ import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { SDKCore } from 'studiocms:sdk';
 import { Button, Card, Group, Input } from 'studiocms:ui/components';
-import { Effect } from 'effect';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
+import { Effect, genLogger, runEffect } from '../../../effect.js';
 import Layout from '../../../layouts/dashboard/Layout.astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
 
@@ -20,7 +19,7 @@ const diffId = urlParams.get('diff');
 
 if (!diffId) return Astro.redirect('/404');
 
-const { user, diff } = await convertToVanilla(
+const { user, diff } = await runEffect(
 	genLogger('studiocms/routes/dashboard/content-management/diff.users-diff')(function* () {
 		const sdk = yield* SDKCore;
 
@@ -37,7 +36,7 @@ const { user, diff } = await convertToVanilla(
 
 if (!diff) return Astro.redirect('/404');
 
-const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanilla(
+const [{ data: page }, metaDataChanges, diffContentHTML] = await runEffect(
 	genLogger('studiocms/routes/dashboard/content-management/diff.page-meta')(function* () {
 		const sdk = yield* SDKCore;
 
@@ -72,7 +71,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanill
         variant="outlined"
         color="info"
         size="sm"
-        href={`${Astro.locals.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
+        href={`${Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
         ><t-content-diff key="view-page">{td("view-page")}</t-content-diff>
       </Button>
 
@@ -84,7 +83,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanill
           size="sm"
           disabled={metaDataChanges.length === 0}
           data-id={diff.id}
-          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
           data-type="data"
           ><t-content-diff key="revert-metadata"
             >{td("revert-metadata")}</t-content-diff
@@ -96,7 +95,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanill
           color={"primary"}
           size="sm"
           data-id={diff.id}
-          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
           data-type="content"
           ><t-content-diff key="revert-content"
             >{td("revert-content")}</t-content-diff
@@ -108,7 +107,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await convertToVanill
           color={"primary"}
           size="sm"
           data-id={diff.id}
-          data-url={Astro.locals.routeMap.endpointLinks.content.diff}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
           data-type="both"
           ><t-content-diff key="revert-all">{td("revert-all")}</t-content-diff>
         </Button>

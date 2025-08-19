@@ -16,18 +16,19 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
 			genLogger('studiocms:first-time-setup:step-1:POST')(function* () {
-				const sdk = yield* SDKCore;
-
-				const reqData = yield* readAPIContextJson<{
-					title: string;
-					description: string;
-					defaultOgImage: string;
-					siteIcon: string;
-					enableDiffs: boolean;
-					diffPerPage: number;
-					loginPageBackground: string;
-					loginPageCustomImage: string;
-				}>(ctx);
+				const [sdk, reqData] = yield* Effect.all([
+					SDKCore,
+					readAPIContextJson<{
+						title: string;
+						description: string;
+						defaultOgImage: string;
+						siteIcon: string;
+						enableDiffs: boolean;
+						diffPerPage: number;
+						loginPageBackground: string;
+						loginPageCustomImage: string;
+					}>(ctx),
+				]);
 
 				const {
 					title,

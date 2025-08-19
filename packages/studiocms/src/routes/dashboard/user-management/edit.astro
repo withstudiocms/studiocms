@@ -3,7 +3,6 @@ import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { SDKCore } from 'studiocms:sdk';
 import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
-import { Effect } from 'effect';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import {
 	providerData,
@@ -12,8 +11,8 @@ import {
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
+import { Effect, genLogger, runEffect } from '../../../effect.js';
 import Layout from '../../../layouts/dashboard/Layout.astro';
-import { convertToVanilla, genLogger } from '../../../lib/effects/index.js';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
 
@@ -40,7 +39,7 @@ const allowedRanks = [
 	{ label: 'Visitor', value: 'visitor' },
 ];
 
-const [user, diffs, pages, userTokens] = await convertToVanilla(
+const [user, diffs, pages, userTokens] = await runEffect(
 	genLogger('studiocms/routes/dashboard/user-management/edit')(function* () {
 		const sdk = yield* SDKCore;
 		return yield* Effect.all([
@@ -84,7 +83,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     <PageHeader title={user?.name || t('header')}>
 
       <Group>
-        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={Astro.locals.routeMap.endpointLinks.users}>
+        <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={Astro.locals.StudioCMS.routeMap.endpointLinks.users}>
           <Icon name="trash-20-solid" width={20} height={20} />
           <t-users-edit key="header-delete-button">{t('header-delete-button')}</t-users-edit>
         </Button>
@@ -169,7 +168,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
       </Modal>
     </div>
 
-    <form id="edit-user-form" action={Astro.locals.routeMap.endpointLinks.users}>
+    <form id="edit-user-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.users}>
 
       <div class="text-h3"><t-users-edit key="edit-role-header">{t('edit-role-header')}</t-users-edit></div>
 
@@ -254,7 +253,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
   
                 <div class="card-row">
                   <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
-                  <Button size='sm' as='a' href={Astro.locals.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
+                  <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
                     <Icon name="eye" width={24} height={24} class="card-icon" />
                   </Button>
                 </div>
@@ -272,11 +271,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
   </div>
 
-  <div style="display: none;" id="reset-link-selector" data-link={Astro.locals.routeMap.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={Astro.locals.routeMap.mainLinks.dashboardIndex} data-reseturl={Astro.locals.routeMap.mainLinks.passwordReset}></div>
+  <div style="display: none;" id="reset-link-selector" data-link={Astro.locals.StudioCMS.routeMap.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex} data-reseturl={Astro.locals.StudioCMS.routeMap.mainLinks.passwordReset}></div>
 
   <div 
       id="token-api-links" style="display: none;"
-      data-token_api={Astro.locals.routeMap.endpointLinks.apiTokens}
+      data-token_api={Astro.locals.StudioCMS.routeMap.endpointLinks.apiTokens}
   ></div>
 
   <script>

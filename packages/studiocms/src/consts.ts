@@ -1,5 +1,5 @@
 import type { AstroConfig } from 'astro';
-import { makeAPIRoute, removeLeadingTrailingSlashes } from './lib/index.js';
+import { makeAPIRoute, stripLeadingAndTrailingSlashes } from './lib/index.js';
 import type { RobotsConfig } from './lib/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
 
@@ -106,6 +106,9 @@ export type StudioCMSSocials = {
 	githubLicense: string;
 	githubContributors: string;
 	discord: string;
+	changelog: string;
+	releases: string;
+	npm: string;
 };
 
 /**
@@ -113,9 +116,12 @@ export type StudioCMSSocials = {
  */
 export const studioCMSSocials: StudioCMSSocials = {
 	github: 'https://github.com/withstudiocms/studiocms',
-	githubLicense: 'https://github.com/withstudiocms/studiocms?tab=MIT-1-ov-file#readme',
+	githubLicense: 'https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/LICENSE',
 	githubContributors: 'https://github.com/withstudiocms/studiocms/graphs/contributors',
 	discord: 'https://chat.studiocms.dev',
+	changelog: 'https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md',
+	releases: 'https://github.com/withstudiocms/studiocms/releases',
+	npm: 'https://npm.im/studiocms',
 };
 
 /**
@@ -160,14 +166,9 @@ export const authAPIRoute = makeAPIRoute('auth');
  *
  * @returns A function that constructs the full API route path for the SDK.
  */
-export const makeDashboardRoute = (route?: string | undefined) => {
-	let defaultRoute = 'dashboard';
-
-	if (route) defaultRoute = removeLeadingTrailingSlashes(route);
-
-	if (route === '/') defaultRoute = '';
-
-	return (path: string) => `${defaultRoute}/${path}`;
+export const makeDashboardRoute = (route?: string) => {
+	const sanitized = route === '/' ? '' : stripLeadingAndTrailingSlashes(route ?? 'dashboard');
+	return (path: string) => `${sanitized}/${path}`;
 };
 
 /**
@@ -275,3 +276,15 @@ export const StudioCMSDefaultRobotsConfig = ({
 };
 
 export const STUDIOCMS_EDITOR_CSRF_COOKIE_NAME = 'studiocms-editor-csrf-token';
+
+export const STUDIOCMS_THEME_COLOR = '#a581f3';
+
+export const STUDIOCMS_CDN_URL = 'https://cdn.studiocms.dev';
+
+export const FAVICON_ASSETS = {
+	svg: `${STUDIOCMS_CDN_URL}/favicon.svg`,
+	png: {
+		light: `${STUDIOCMS_CDN_URL}/favicon-light.png`,
+		dark: `${STUDIOCMS_CDN_URL}/favicon-dark.png`,
+	},
+} as const;

@@ -350,6 +350,11 @@ export const StudioCMSRoutes = {
 		 * SDK route for updating the latest version cache.
 		 */
 		updateLatestVersionCache: sdkRoute('update-latest-version-cache'),
+
+		/**
+		 * SDK route for the full changelog JSON.
+		 */
+		changelog: sdkRoute('full-changelog.json'),
 	},
 	fts: {
 		/**

@@ -5,8 +5,9 @@ import { Generator } from 'studiocms:components';
 import { Toaster } from 'studiocms:ui/components';
 import OAuthButtonStack from '../../components/auth/OAuthButtonStack.astro';
 import StaticAuthCheck from '../../components/auth/StaticAuthCheck.astro';
+import ThemeManager from '../../components/dashboard/ThemeManager.astro';
+import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../../consts.js';
 import FallbackCanvas from './FallbackCanvas.astro';
-import ThemeManager from './ThemeManager.astro';
 import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
 
 const { siteConfig: config, security } = Astro.locals.StudioCMS;
@@ -32,15 +33,15 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
     <Generator />
 
 	{/* Favicon */}
-	<link rel="icon" href="https://cdn.studiocms.dev/favicon.svg" type="image/svg+xml" />
-	<link rel="icon" href="https://cdn.studiocms.dev/favicon-light.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
-	<link rel="icon" href="https://cdn.studiocms.dev/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)" />
+	<link rel="icon" href={FAVICON_ASSETS.svg} type="image/svg+xml" />
+	<link rel="icon" href={FAVICON_ASSETS.png.light} type="image/png" media="(prefers-color-scheme: dark)" />
+	<link rel="icon" href={FAVICON_ASSETS.png.dark} type="image/png" media="(prefers-color-scheme: light)" />
 
-  	{/* Primary Meta Tags */}
-    <title>{title}</title>
-    <meta name="title" content={title} />
-    <meta name="description" content={description} />
-	<meta name="theme-color" content="#a581f3" />
+	{/* Primary Meta Tags */}
+	<title>{title}</title>
+	<meta name="title" content={title} />
+	<meta name="description" content={description} />
+	<meta name="theme-color" content={STUDIOCMS_THEME_COLOR} />
 
 	{/* Theme Manager */}
 	<ThemeManager />

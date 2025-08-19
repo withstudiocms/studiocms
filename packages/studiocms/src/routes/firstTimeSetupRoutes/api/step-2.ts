@@ -15,17 +15,18 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
 			genLogger('studiocms:first-time-setup:step-2:POST')(function* () {
-				const sdk = yield* SDKCore;
-				const userUtils = yield* User;
-				const passwordUtils = yield* Password;
-
-				const reqData = yield* readAPIContextJson<{
-					username: string;
-					displayname: string;
-					email: string;
-					password: string;
-					confirmPassword: string;
-				}>(ctx);
+				const [sdk, userUtils, passwordUtils, reqData] = yield* Effect.all([
+					SDKCore,
+					User,
+					Password,
+					readAPIContextJson<{
+						username: string;
+						displayname: string;
+						email: string;
+						password: string;
+						confirmPassword: string;
+					}>(ctx),
+				]);
 
 				const { username, displayname, email, password, confirmPassword } = reqData;
 
@@ -54,8 +55,12 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					);
 				}
 
+				const [usernameTest, passwordTest] = yield* Effect.all([
+					userUtils.verifyUsernameInput(username),
+					passwordUtils.verifyPasswordStrength(password),
+				]);
+
 				// If the username is invalid, return an error
-				const usernameTest = yield* userUtils.verifyUsernameInput(username);
 				if (usernameTest !== true) {
 					return createJsonResponse(
 						{
@@ -68,7 +73,6 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// If the password is invalid, return an error
-				const passwordTest = yield* passwordUtils.verifyPasswordStrength(password);
 				if (passwordTest !== true) {
 					return createJsonResponse(
 						{
