@@ -130,26 +130,30 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
     class LoginPreview extends HTMLElement {
         // selectors
-        lightImageHolder: HTMLImageElement;
-        darkImageHolder: HTMLImageElement;
+        lightImageHolder: HTMLImageElement | null = null;
+        darkImageHolder: HTMLImageElement | null = null;
         jsonData: JsonData;
 
         constructor() {
             super();
             this.attachShadow({ mode: "open" });
-            this.lightImageHolder = this.querySelector(
-                ".light-image-holder",
-            ) as HTMLImageElement;
-            this.darkImageHolder = this.querySelector(
-                ".dark-image-holder",
-            ) as HTMLImageElement;
             const dataSources = this.getAttribute("data-sources");
-            this.jsonData = JSON.parse(dataSources || "{}") as JsonData;
+            try {
+                this.jsonData = JSON.parse(dataSources || "{}");
+            } catch {
+                this.jsonData = { blobs: { light: "", dark: "" }, blocks: { light: "", dark: "" }, curves: { light: "", dark: "" } };
+            }
         }
 
         connectedCallback() {
             this.setupEventListeners();
+            this.cacheRefs();
             this.render();
+        }
+ 
+        cacheRefs() {
+            this.lightImageHolder = this.querySelector(".light-image-holder") as HTMLImageElement;
+            this.darkImageHolder = this.querySelector(".dark-image-holder") as HTMLImageElement;
         }
 
         render() {
@@ -189,17 +193,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                         customInputLabel.classList.add("disabled");
                     }
 
-                    if (selectedValue === "studiocms-blobs") {
+                    if (selectedValue === "studiocms-blobs" && this.lightImageHolder && this.darkImageHolder) {
                         this.lightImageHolder.src = this.jsonData.blobs.light;
                         this.darkImageHolder.src = this.jsonData.blobs.dark;
                     }
 
-                    if (selectedValue === "studiocms-blocks") {
+                    if (selectedValue === "studiocms-blocks" && this.lightImageHolder && this.darkImageHolder) {
                         this.lightImageHolder.src = this.jsonData.blocks.light;
                         this.darkImageHolder.src = this.jsonData.blocks.dark;
                     }
 
-                    if (selectedValue === "studiocms-curves") {
+                    if (selectedValue === "studiocms-curves" && this.lightImageHolder && this.darkImageHolder) {
                         this.lightImageHolder.src = this.jsonData.curves.light;
                         this.darkImageHolder.src = this.jsonData.curves.dark;
                     }
