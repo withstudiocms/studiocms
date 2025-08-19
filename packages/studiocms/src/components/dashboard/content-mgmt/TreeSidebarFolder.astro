@@ -3,10 +3,6 @@ import { Icon } from 'studiocms:ui/components';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { HTMLAttributes } from 'astro/types';
 
-// TODO Simplify this component's Script code,
-// instead of using a inline script, we should use a
-// dynamic web component to pass variables to the script
-
 interface Props extends HTMLAttributes<'a'> {
 	/**
 	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
@@ -23,35 +19,82 @@ const activeIcon = `${icon}-solid`;
 const compId = crypto.randomUUID();
 ---
 
-<a id={compId} class="inner-sidebar-link" {...props} data-astro-reload>
+<tree-sidebar-folder id={compId} class="inner-sidebar-link" {...props}>
   <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
   <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
   <span class="sidebar-link-text">
     {name}
   </span>
-</a>
+</tree-sidebar-folder>
 <slot />
 
-<script is:inline data-astro-rerun define:vars={{ compId }}>
-  function setInnerSidebarLinks() {
-    const link = document.getElementById(compId)
+<script>
+  class TreeSidebarFolder extends HTMLElement {
+    href: string;
 
-    const notSelectedIcon = link.querySelector('#not-selected-icon')
-    const selectedIcon = link.querySelector('#selected-icon')
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.href = this.getAttribute("href") || "#";
+    }
 
-    notSelectedIcon.style.display = 'block';
-    selectedIcon.style.display = 'none';
-    link.classList.remove('active');
+    connectedCallback() {
+      this.render();
+      this.setSidebarActiveState();
+      this.setupEventListeners();
+    }
 
-    const LinkQueryParams = new URL(link.href).searchParams.get('folder');
-    const CurrentQueryParams = new URL(window.location.href).searchParams.get('folder');
+    private render() {
+      if (!this.shadowRoot) return;
 
-    if (LinkQueryParams === CurrentQueryParams) {
-      notSelectedIcon.style.display = 'none';
-      selectedIcon.style.display = 'block';
-      link.classList.add('active');
+      const slot = document.createElement("slot");
+      slot.innerHTML = this.innerHTML;
+      this.shadowRoot.appendChild(slot);
+    }
+
+    private setSidebarActiveState() {
+      const elm = document.getElementById(this.id);
+
+      const notSelectedIcons = [
+        this.shadowRoot?.getElementById('not-selected-icon'),
+        elm?.querySelector<HTMLElement>('#not-selected-icon')
+      ];
+      const selectedIcons = [
+        this.shadowRoot?.getElementById('selected-icon'),
+        elm?.querySelector<HTMLElement>('#selected-icon')
+      ];
+
+      const currentQueryParams = new URL(window.location.href).searchParams.get("folder");
+
+      if (this.href.includes(`folder=${currentQueryParams}`)) {
+        this.classList.add('active');
+        notSelectedIcons.forEach(icon => {
+          if (icon) icon.style.display = 'none';
+        });
+        selectedIcons.forEach(icon => {
+          if (icon) icon.style.display = 'block';
+        });
+      } else {
+        this.classList.remove('active');
+        notSelectedIcons.forEach(icon => {
+          if (icon) icon.style.display = 'block';
+        });
+        selectedIcons.forEach(icon => {
+          if (icon) icon.style.display = 'none';
+        });
+      }
+    }
+
+    private setupEventListeners() {
+      this.addEventListener('click', (event) => {
+        event.preventDefault();
+        const url = new URL(this.href, window.location.origin);
+        window.location.href = url.href;
+      });
     }
   }
-  document.addEventListener('astro:page-load', setInnerSidebarLinks);
-  setInnerSidebarLinks();
+
+  if (!customElements.get('tree-sidebar-folder')) {
+    customElements.define('tree-sidebar-folder', TreeSidebarFolder);
+  }
 </script>

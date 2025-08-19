@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Updates UserListItem to utilize custom html element instead of inline script
+Updates UserListItem, TreeSidebarLink, TreeSidebarFolder, and SidebarLink to utilize custom html element instead of inline script
