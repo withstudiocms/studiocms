@@ -80,9 +80,6 @@ const compId = crypto.randomUUID();
       let elemPath = normalize(new URL(this.href, window.location.origin).pathname);
       const webDashboardIndex = normalize(new URL(window.location.origin + this.dashboardIndex).pathname);
 
-      console.log(`SidebarLink: ${this.href} - comparing ${windowLocation} with ${elemPath}`);
-      console.log(`Dashboard index: ${webDashboardIndex}`);
-
       // Match exact or sub-path segments only (avoid false positives like "/user" vs "/user-settings")
       const startsWithSeg = (path: string, base: string) => {
         if (base === '/' ) return path === '/';
@@ -102,8 +99,6 @@ const compId = crypto.randomUUID();
         // Check if the current path starts with the href path
         isActive = startsWithSeg(windowLocation, elemPath);
       }
-
-      console.log(`SidebarLink: ${this.href} is ${isActive ? 'active' : 'inactive'}`);
 
       this.classList.toggle('active', isActive);
       if (notSelectedIcon) (notSelectedIcon as HTMLElement).style.display = isActive ? 'none' : 'block';
