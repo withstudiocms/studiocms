@@ -15,11 +15,6 @@ import Layout from './components/Layout.astro';
 import PageHeader from './components/PageHeader.astro';
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
-
-const imageFilter = (filterName: string) =>
-	validImages.filter(({ name }) => name === filterName)[0];
-
-const curves = imageFilter('studiocms-curves');
 ---
 <Layout title="Welcome to StudioCMS">
 
@@ -61,7 +56,7 @@ const curves = imageFilter('studiocms-curves');
                     <AccordionItem>
                         <div slot="summary">Login Page Preview</div>
 
-                        <LoginPreview light={curves.light!} dark={curves.dark!} />
+                        <LoginPreview />
                     </AccordionItem>
                 </Accordion>
 

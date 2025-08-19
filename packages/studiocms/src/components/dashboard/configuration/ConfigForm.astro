@@ -179,8 +179,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                 hideDefaultIndex: formData.get('hide-default-index') === 'true'
             }
 
-            console.log(data);
-
             const response = await fetch(configForm.action, {
                 method: 'POST',
                 body: JSON.stringify(data),
