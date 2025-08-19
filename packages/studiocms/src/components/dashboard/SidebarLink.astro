@@ -80,12 +80,30 @@ const compId = crypto.randomUUID();
       let elemPath = normalize(new URL(this.href, window.location.origin).pathname);
       const webDashboardIndex = normalize(new URL(window.location.origin + this.dashboardIndex).pathname);
 
+      console.log(`SidebarLink: ${this.href} - comparing ${windowLocation} with ${elemPath}`);
+      console.log(`Dashboard index: ${webDashboardIndex}`);
+
       // Match exact or sub-path segments only (avoid false positives like "/user" vs "/user-settings")
       const startsWithSeg = (path: string, base: string) => {
         if (base === '/' ) return path === '/';
         return path === base || path.startsWith(base + '/');
       };
-      const isActive = startsWithSeg(windowLocation, elemPath) && elemPath !== webDashboardIndex;
+
+      // Determine if the link is active based on the current URL and the href
+      // The dashboard index is a special case where it should match only the root (i.e., "/dashboard")
+      // but should not match sub-paths like "/dashboard/settings" unless that is the href.
+      let isActive = false;
+
+      if (windowLocation === webDashboardIndex && elemPath === webDashboardIndex) {
+        isActive = true; // Exact match for the dashboard index
+      }
+      
+      if (windowLocation !== webDashboardIndex && elemPath !== webDashboardIndex) {
+        // Check if the current path starts with the href path
+        isActive = startsWithSeg(windowLocation, elemPath);
+      }
+
+      console.log(`SidebarLink: ${this.href} is ${isActive ? 'active' : 'inactive'}`);
 
       this.classList.toggle('active', isActive);
       if (notSelectedIcon) (notSelectedIcon as HTMLElement).style.display = isActive ? 'none' : 'block';
