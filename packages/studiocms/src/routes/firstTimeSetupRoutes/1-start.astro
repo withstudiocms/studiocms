@@ -10,7 +10,7 @@ import {
 	Input,
 	Select,
 } from 'studiocms:ui/components';
-import LightVsDark from '../../components/dashboard/configuration/LightVsDark.astro';
+import LoginPreview from '../../components/dashboard/configuration/LoginPreview.astro';
 import Layout from './components/Layout.astro';
 import PageHeader from './components/PageHeader.astro';
 
@@ -19,8 +19,6 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
 const imageFilter = (filterName: string) =>
 	validImages.filter(({ name }) => name === filterName)[0];
 
-const blobs = imageFilter('studiocms-blobs');
-const blocks = imageFilter('studiocms-blocks');
 const curves = imageFilter('studiocms-curves');
 ---
 <Layout title="Welcome to StudioCMS">
@@ -63,12 +61,7 @@ const curves = imageFilter('studiocms-curves');
                     <AccordionItem>
                         <div slot="summary">Login Page Preview</div>
 
-                        <Card class="login-preview-container">
-                            <div slot="header">
-                                <span>Login Page Preview (Dark/Light)</span>
-                            </div>
-                            <LightVsDark light={curves.light!} dark={curves.dark!} />
-                        </Card>
+                        <LoginPreview light={curves.light!} dark={curves.dark!} />
                     </AccordionItem>
                 </Accordion>
 
@@ -146,11 +139,6 @@ const curves = imageFilter('studiocms-curves');
             gap: 1rem;
         }
     
-        .login-preview-container {
-            width: min-content;
-            height: min-content;
-        }
-    
         @media screen and (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -177,83 +165,4 @@ const curves = imageFilter('studiocms-curves');
             gap: 1rem;
         }
     </style>
-
-    <div id="login-page-bgs"
-        data-blobs-light={blobs?.light?.src} data-blobs-dark={blobs?.dark?.src}
-        data-blocks-light={blocks?.light?.src} data-blocks-dark={blocks?.dark?.src}
-        data-curves-light={curves?.light?.src} data-curves-dark={curves?.dark?.src}
-    ></div>
-
-    <script is:inline>
-
-    // Refactor this to remove inline script
-
-    async function setupLoginPreview() {
-        // Selectors
-        const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
-        const customInput = document.querySelector('input[name="login-page-background-custom"]');
-        const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
-        const previewContainer = document.querySelector('.login-preview-container');
-        const lightImageHolder = document.querySelector('.light-image-holder');
-        const darkImageHolder = document.querySelector('.dark-image-holder');
-
-        // Backgrounds
-        const loginPageBgs = document.querySelector('#login-page-bgs');
-
-        const blobs = {
-            light: loginPageBgs.getAttribute('data-blobs-light'),
-            dark: loginPageBgs.getAttribute('data-blobs-dark'),
-        }
-
-        const blocks = {
-            light: loginPageBgs.getAttribute('data-blocks-light'),
-            dark: loginPageBgs.getAttribute('data-blocks-dark'),
-        }
-
-        const curves = {
-            light: loginPageBgs.getAttribute('data-curves-light'),
-            dark: loginPageBgs.getAttribute('data-curves-dark'),
-        }
-
-        // Event Listeners
-        loginPageBgSelectOptions.forEach((option) => {
-            option.addEventListener('click', () => {
-                const selectedValue = option.getAttribute('value');
-
-                if (selectedValue === 'custom') {
-                    customInput.removeAttribute('disabled');
-                    customInputLabel.classList.remove('disabled');
-                } else {
-                    customInput.setAttribute('disabled', 'disabled');
-                    customInputLabel.classList.add('disabled');
-                }
-
-                if (selectedValue === 'custom') {
-                    previewContainer.style.display = 'none';
-                } else {
-                    previewContainer.style.display = 'block';
-
-                    if (selectedValue === 'studiocms-blobs') {
-                        lightImageHolder.src = blobs.light;
-                        darkImageHolder.src = blobs.dark;
-                    }
-
-                    if (selectedValue === 'studiocms-blocks') {
-                        lightImageHolder.src = blocks.light;
-                        darkImageHolder.src = blocks.dark;
-                    }
-
-                    if (selectedValue === 'studiocms-curves') {
-                        lightImageHolder.src = curves.light;
-                        darkImageHolder.src = curves.dark;
-                    }
-
-                }
-            });
-        });
-    }
-
-    setupLoginPreview();
-    </script>
-
 </Layout>

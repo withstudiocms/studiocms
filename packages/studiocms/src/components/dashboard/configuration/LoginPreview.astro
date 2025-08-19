@@ -1,0 +1,269 @@
+---
+import { Image } from 'astro:assets';
+import { validImages } from 'studiocms:auth/utils/validImages';
+import { useTranslations } from 'studiocms:i18n';
+import { Card } from 'studiocms:ui/components';
+
+const imageFilter = (filterName: string) =>
+	validImages.filter(({ name }) => name === filterName)[0];
+
+type LoginImage = {
+	light: ImageMetadata;
+	dark: ImageMetadata;
+};
+
+function getLoginImage(name: string): LoginImage {
+	const image = imageFilter(name);
+	if (!image) {
+		throw new Error(`Image with name ${name} not found in validImages.`);
+	}
+	if (!image.light || !image.dark) {
+		throw new Error(`Image with name ${name} does not have both light and dark variants.`);
+	}
+	return {
+		light: image.light,
+		dark: image.dark,
+	};
+}
+
+const blobs = getLoginImage('studiocms-blobs');
+const blocks = getLoginImage('studiocms-blocks');
+const curves = getLoginImage('studiocms-curves');
+
+interface Props {
+	light?: ImageMetadata;
+	dark?: ImageMetadata;
+}
+
+const { light, dark } = Astro.props as Props;
+
+const lightSrc = light ? light : blobs.light;
+const darkSrc = dark ? dark : blobs.dark;
+
+const stringifyable = {
+	blobs: {
+		light: blobs.light.src,
+		dark: blobs.dark.src,
+	},
+	blocks: {
+		light: blocks.light.src,
+		dark: blocks.dark.src,
+	},
+	curves: {
+		light: curves.light.src,
+		dark: curves.dark.src,
+	},
+};
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:configuration');
+---
+
+<Card class="login-preview-container">
+    <div slot="header">
+        <span><t-config-form key="login-page-preview">{t('login-page-preview')}</t-config-form></span>
+    </div>
+    <login-preview class="wrapper" data-sources={JSON.stringify(stringifyable)}>
+        <div class="before">
+            <Image
+                width={640}
+                height={360}
+                class="content-image light-image-holder"
+                src={lightSrc as ImageMetadata}
+                draggable="false"
+                alt="Light Preview"
+                loading={"eager"}
+            />
+        </div>
+        <div class="after">
+            <Image
+                width={640}
+                height={360}
+                class="content-image dark-image-holder"
+                src={darkSrc as ImageMetadata}
+                draggable="false"
+                alt="Dark Preview"
+                loading={"eager"}
+            />
+        </div>
+    </login-preview>
+</Card>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        makeTranslation,
+        updateSelectElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:configuration';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        updateSelectElmLabel('login-page-preview', comp['login-page-preview']);
+    });
+    
+    if (!customElements.get('t-config-form')) {
+        customElements.define('t-config-form', makeTranslation(currentPage, i18n));
+    }
+</script>
+<script>
+    type LoginImage = {
+        light: string;
+        dark: string;
+    };
+    type JsonData = {
+        blobs: LoginImage;
+        blocks: LoginImage;
+        curves: LoginImage;
+    };
+
+    class LoginPreview extends HTMLElement {
+        // selectors
+        lightImageHolder: HTMLImageElement;
+        darkImageHolder: HTMLImageElement;
+        jsonData: JsonData;
+
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" });
+            this.lightImageHolder = this.querySelector(
+                ".light-image-holder",
+            ) as HTMLImageElement;
+            this.darkImageHolder = this.querySelector(
+                ".dark-image-holder",
+            ) as HTMLImageElement;
+            const dataSources = this.getAttribute("data-sources");
+            this.jsonData = JSON.parse(dataSources || "{}") as JsonData;
+        }
+
+        connectedCallback() {
+            this.setupEventListeners();
+            this.render();
+        }
+
+        render() {
+            if (!this.shadowRoot) return;
+            if (this.shadowRoot.childNodes.length === 0) {
+                const slot = document.createElement("slot");
+                slot.style.display = "block";
+                slot.style.width = "640px";
+                slot.style.height = "360px";
+                this.shadowRoot.appendChild(slot);
+            }
+        }
+
+        setupEventListeners() {
+            const loginPageBgSelectOptions = document
+                .querySelector<HTMLElement>("#login-page-background-dropdown")
+                ?.querySelectorAll<HTMLElement>(".sui-select-option");
+            const customInput = document.querySelector<HTMLElement>(
+                'input[name="login-page-background-custom"]',
+            );
+            const customInputLabel = document.querySelector<HTMLElement>(
+                'label[for="login-page-background-custom"]',
+            );
+
+            if (!loginPageBgSelectOptions || !customInput || !customInputLabel)
+                return;
+
+            loginPageBgSelectOptions.forEach((option) => {
+                option.addEventListener("click", () => {
+                    const selectedValue = option.getAttribute("value");
+
+                    if (selectedValue === "custom") {
+                        customInput.removeAttribute("disabled");
+                        customInputLabel.classList.remove("disabled");
+                    } else {
+                        customInput.setAttribute("disabled", "disabled");
+                        customInputLabel.classList.add("disabled");
+                    }
+
+                    if (selectedValue === "studiocms-blobs") {
+                        this.lightImageHolder.src = this.jsonData.blobs.light;
+                        this.darkImageHolder.src = this.jsonData.blobs.dark;
+                    }
+
+                    if (selectedValue === "studiocms-blocks") {
+                        this.lightImageHolder.src = this.jsonData.blocks.light;
+                        this.darkImageHolder.src = this.jsonData.blocks.dark;
+                    }
+
+                    if (selectedValue === "studiocms-curves") {
+                        this.lightImageHolder.src = this.jsonData.curves.light;
+                        this.darkImageHolder.src = this.jsonData.curves.dark;
+                    }
+                });
+            });
+        }
+    }
+
+    if (!customElements.get("login-preview")) {
+        customElements.define("login-preview", LoginPreview);
+    }
+</script>
+
+<style>
+    /* Our normalize css */
+    * {
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .login-preview-container {
+        width: min-content;
+        height: min-content;
+    }
+
+    /* Our wrapper */
+    .wrapper {
+        width: 640px;
+        height: 360px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+            0 10px 20px rgba(0, 0, 0, 0.19),
+            0 6px 6px rgba(0, 0, 0, 0.23);
+    }
+
+    /* Our image information */
+    .before,
+    .after {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-color: white;
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .content-image {
+        height: 100%;
+    }
+
+    .after {
+        width: 50%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .wrapper {
+            width: 320px;
+            height: 180px;
+        }
+    }
+</style>
