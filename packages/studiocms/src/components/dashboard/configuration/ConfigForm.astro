@@ -4,7 +4,7 @@ import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
-import LightVsDark from './LightVsDark.astro';
+import LoginPreview from './LoginPreview.astro';
 
 interface Props {
 	config: SiteConfigCacheObject;
@@ -19,13 +19,6 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
 const currentLoginPageBg = validImages.find(
 	({ name }) => name === data.loginPageBackground && name !== 'custom'
 );
-
-const imageFilter = (filterName: string) =>
-	validImages.filter(({ name }) => name === filterName)[0];
-
-const blobs = imageFilter('studiocms-blobs');
-const blocks = imageFilter('studiocms-blocks');
-const curves = imageFilter('studiocms-curves');
 
 const currentlyEnabledGridItems: string[] = (data.gridItems as string[]) ?? [];
 
@@ -109,18 +102,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             <Input label={t('input-custom-login-page')} name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
 
-        <Card class="login-preview-container">
-            <div slot="header">
-                <span>
-                    <t-config-form key="login-page-preview">{t('login-page-preview')}</t-config-form>
-                </span>
-            </div>
-            {
-                currentLoginPageBg && currentLoginPageBg.name !== 'custom' && (
-                    <LightVsDark light={currentLoginPageBg.light!} dark={currentLoginPageBg.dark!} />
-                )
-            }
-        </Card>
+        <LoginPreview light={currentLoginPageBg?.light} dark={currentLoginPageBg?.dark} />
 
     </div>
 </form>
@@ -164,12 +146,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
     }
 </script>
 
-<div id="login-page-bgs"
-    data-blobs-light={blobs?.light?.src} data-blobs-dark={blobs?.dark?.src}
-    data-blocks-light={blocks?.light?.src} data-blocks-dark={blocks?.dark?.src}
-    data-curves-light={curves?.light?.src} data-curves-dark={curves?.dark?.src}
-></div>
-
 <script>
     import { toast } from "studiocms:ui/components";
         const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
@@ -203,8 +179,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                 hideDefaultIndex: formData.get('hide-default-index') === 'true'
             }
 
-            console.log(data);
-
             const response = await fetch(configForm.action, {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -232,79 +206,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         });
 </script>
 
-<script is:inline>
-
-// TODO Refactor this to no longer use inline scripts
-
-async function setupLoginPreview() {
-    // Selectors
-    const loginPageBgSelectOptions = document.querySelector('#login-page-background-dropdown').querySelectorAll('.sui-select-option');
-    const customInput = document.querySelector('input[name="login-page-background-custom"]');
-    const customInputLabel = document.querySelector('label[for="login-page-background-custom"]');
-    const previewContainer = document.querySelector('.login-preview-container');
-    const lightImageHolder = document.querySelector('.light-image-holder');
-    const darkImageHolder = document.querySelector('.dark-image-holder');
-
-    // Backgrounds
-    const loginPageBgs = document.querySelector('#login-page-bgs');
-
-    const blobs = {
-        light: loginPageBgs.getAttribute('data-blobs-light'),
-        dark: loginPageBgs.getAttribute('data-blobs-dark'),
-    }
-
-    const blocks = {
-        light: loginPageBgs.getAttribute('data-blocks-light'),
-        dark: loginPageBgs.getAttribute('data-blocks-dark'),
-    }
-
-    const curves = {
-        light: loginPageBgs.getAttribute('data-curves-light'),
-        dark: loginPageBgs.getAttribute('data-curves-dark'),
-    }
-
-    // Event Listeners
-    loginPageBgSelectOptions.forEach((option) => {
-        option.addEventListener('click', () => {
-            const selectedValue = option.getAttribute('value');
-
-            if (selectedValue === 'custom') {
-                customInput.removeAttribute('disabled');
-                customInputLabel.classList.remove('disabled');
-            } else {
-                customInput.setAttribute('disabled', 'disabled');
-                customInputLabel.classList.add('disabled');
-            }
-
-            if (selectedValue === 'custom') {
-                previewContainer.style.display = 'none';
-            } else {
-                previewContainer.style.display = 'block';
-
-                if (selectedValue === 'studiocms-blobs') {
-                    lightImageHolder.src = blobs.light;
-                    darkImageHolder.src = blobs.dark;
-                }
-
-                if (selectedValue === 'studiocms-blocks') {
-                    lightImageHolder.src = blocks.light;
-                    darkImageHolder.src = blocks.dark;
-                }
-
-                if (selectedValue === 'studiocms-curves') {
-                    lightImageHolder.src = curves.light;
-                    darkImageHolder.src = curves.dark;
-                }
-
-            }
-        });
-    });
-}
-
-document.addEventListener('astro:page-load', setupLoginPreview);
-setupLoginPreview();
-</script>
-
 <style>
     .form-content {
         display: flex;
@@ -316,11 +217,6 @@ setupLoginPreview();
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
-    }
-
-    .login-preview-container {
-        width: min-content;
-        height: min-content;
     }
 
     @media screen and (max-width: 768px) {
