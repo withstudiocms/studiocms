@@ -3,6 +3,7 @@ import changelog from 'studiocms:changelog';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Modal } from 'studiocms:ui/components';
 import currentVersion from 'studiocms:version';
+import { studioCMSSocials } from '../../../consts.js';
 import { parseMarkdown } from '../../../utils/tinyMDParser.js';
 import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js';
 import { timeAgo } from '../component-scripts/timeAgo.js';
@@ -54,21 +55,23 @@ const lastChecked = new Date(latestVersion.lastCacheUpdate);
         <div class="version-modal-release-notes">
             <div><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog changelog="https://github.com/withstudiocms/studiocms/blob/main/packages/studiocms/CHANGELOG.md" link="/studiocms_api/sdk/full-changelog.json"><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog={studioCMSSocials.changelog} link={Astro.locals.StudioCMS.routeMap.sdk.changelog}><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
             </span>
         </div>
 
         <div class="version-modal-links">
             <span class="version-modal-row-title">View on</span>
-            <a href="https://github.com/withstudiocms/studiocms/releases" 
+            <a href={studioCMSSocials.releases} 
                 target="_blank" 
+                rel="noopener noreferrer"
                 class="version-link"
                 title="View Releases on GitHub"
                 aria-label="View Releases on GitHub"
                 ><span class="brand--github"></span>
             </a>
-            <a href="https://npm.im/studiocms" 
+            <a href={studioCMSSocials.npm} 
                 target="_blank" 
+                rel="noopener noreferrer"
                 class="version-link"
                 title="View on NPM"
                 aria-label="View on NPM"

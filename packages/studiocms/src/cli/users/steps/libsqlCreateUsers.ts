@@ -1,7 +1,7 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
-import { convertToVanilla, Effect } from '../../../effect.js';
+import { Effect, runEffect } from '../../../effect.js';
 import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { createUserAvatar } from '../../utils/createUserAvatar.js';
@@ -135,7 +135,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 	}
 
 	// Environment variables are already checked by checkRequiredEnvVars
-	const password = await convertToVanilla(hashPassword(newPassword));
+	const password = await runEffect(hashPassword(newPassword));
 
 	const newUserId = crypto.randomUUID();
 

@@ -1,6 +1,5 @@
 import { SDKCore } from 'studiocms:sdk';
-import type { APIContext, APIRoute } from 'astro';
-import { convertToVanilla, genLogger, pipe } from 'studiocms/effect';
+import { createJsonResponse, Effect, pipe, withEffectAPI } from 'studiocms/effect';
 import { remapFilterSitemap } from '../utils/remapFilter.js';
 
 const template = (entries: { location: string }[]) => `<?xml version="1.0" encoding="UTF-8"?>
@@ -8,20 +7,26 @@ const template = (entries: { location: string }[]) => `<?xml version="1.0" encod
 	${entries.map((entry) => `<url><loc>${entry.location}</loc></url>`).join('')}
 </urlset>`;
 
-export const GET: APIRoute = async (context: APIContext) =>
-	await convertToVanilla(
-		genLogger('@studiocms/blog/routes/sitemap-md.xml.ts:GET')(function* () {
-			const sdk = yield* SDKCore;
+export const GET = withEffectAPI(
+	Effect.fn(function* (ctx) {
+		const sdk = yield* SDKCore;
 
-			const posts = pipe(yield* sdk.GET.pages(), remapFilterSitemap('studiocms/markdown', context));
+		const posts = pipe(yield* sdk.GET.pages(), remapFilterSitemap('studiocms/markdown', ctx));
 
-			const sitemap = template(posts);
+		const sitemap = template(posts);
 
-			return new Response(sitemap, {
-				status: 200,
-				headers: {
-					'Content-Type': 'application/xml',
-				},
-			});
-		})
-	);
+		return new Response(sitemap, {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/xml',
+			},
+		});
+	}),
+	{
+		cors: { methods: ['GET'], origin: '*' },
+		onError: async (error) => {
+			console.error('Sitemap API Error:', error);
+			return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
+		},
+	}
+);

@@ -59,7 +59,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 
 <div id="user-list"
     class="inner-sidebar-users scrollbar" 
-    data-userpartial={Astro.locals.routeMap.endpointLinks.partials.userListItems}
+    data-userpartial={Astro.locals.StudioCMS.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
     { Users.map((user) => <UserListItem user={user} />) }
@@ -68,15 +68,15 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 <div id="search-list"
     class="inner-sidebar-users scrollbar" 
     style="display: none;"
-    data-userpartial={Astro.locals.routeMap.endpointLinks.partials.userListItems}
+    data-userpartial={Astro.locals.StudioCMS.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
 </div>
 
 <div id="new-users-links"
   style="display: none;"
-  data-create_user={Astro.locals.routeMap.endpointLinks.newUsers.create}
-  data-create_invite={Astro.locals.routeMap.endpointLinks.newUsers.invite}
+  data-create_user={Astro.locals.StudioCMS.routeMap.endpointLinks.newUsers.create}
+  data-create_invite={Astro.locals.StudioCMS.routeMap.endpointLinks.newUsers.invite}
   ></div>
 
 <script>

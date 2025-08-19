@@ -2,6 +2,8 @@
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
 import { Divider, Icon, User } from 'studiocms:ui/components';
 
+// TODO Refactor this component to not use inline script
+
 interface Props {
 	user: {
 		id: string;
@@ -36,19 +38,19 @@ const { user, searchQuery } = Astro.props;
     function setUserLinks() {
         const userLinks = document.querySelectorAll('.sidebar-user');
         
-        const setActive = (link) => {
-            userLinks.forEach((link) => {
-                link.classList.remove('active');
+        const setActive = (target) => {
+            userLinks.forEach((el) => {
+                el.classList.remove('active');
             });
-            link.classList.add('active');
+            target.classList.add('active');
         };
         const CurrentQueryParams = new URL(window.location.href).searchParams.get('user');
 
-        userLinks.forEach((link) => {
-            const LinkQueryParams = new URL(link.href).searchParams.get('user');
+        userLinks.forEach((target) => {
+            const LinkQueryParams = new URL(target.href).searchParams.get('user');
 
             if (LinkQueryParams === CurrentQueryParams) {
-                setActive(link);
+                setActive(target);
             }
 
         })

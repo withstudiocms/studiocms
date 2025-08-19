@@ -8,7 +8,7 @@ import { Auth0OAuthAPI } from './effect/auth0.js';
  * This function uses the Effect system to compose asynchronous operations,
  * retrieving the `initSession` method from the `Auth0OAuthAPI` and invoking it
  * with the provided API context. The result is converted to a vanilla response
- * using `convertToVanilla`.
+ * using `runEffect`.
  *
  * @param context - The API context containing request and environment information.
  * @returns A promise resolving to the API response after session initialization.
