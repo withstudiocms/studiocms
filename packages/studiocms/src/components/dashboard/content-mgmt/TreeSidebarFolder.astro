@@ -12,16 +12,32 @@ interface Props extends HTMLAttributes<'a'> {
 	href: string;
 }
 
-const { icon, name, ...props } = Astro.props;
+const { icon, name, class: className, ...props } = Astro.props;
 
 const activeIcon = `${icon}-solid`;
 
 const compId = crypto.randomUUID();
 ---
 
-<tree-sidebar-folder id={compId} class="inner-sidebar-link" {...props}>
-  <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
-  <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
+<tree-sidebar-folder
+  id={compId}
+  class:list={["inner-sidebar-link", className]}
+  {...props}
+>
+  <Icon
+    name={icon}
+    id="not-selected-icon"
+    class="sidebar-link-icon not-selected"
+    width={24}
+    height={24}
+  />
+  <Icon
+    name={activeIcon as HeroIconName}
+    id="selected-icon"
+    class="sidebar-link-icon selected"
+    width={24}
+    height={24}
+  />
   <span class="sidebar-link-text">
     {name}
   </span>
@@ -41,8 +57,8 @@ const compId = crypto.randomUUID();
     connectedCallback() {
       this.render();
       // Basic link semantics and keyboard focus
-      this.setAttribute('role', 'link');
-      if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
+      this.setAttribute("role", "link");
+      if (!this.hasAttribute("tabindex")) this.tabIndex = 0;
       this.setSidebarActiveState();
       this.setupEventListeners();
     }
@@ -58,34 +74,64 @@ const compId = crypto.randomUUID();
 
     setSidebarActiveState() {
       // Query icons from Light DOM since they're projected through the slot
-      const notSelectedIcon = this.querySelector('#not-selected-icon');
-      const selectedIcon = this.querySelector('#selected-icon');
+      const notSelectedIcon = this.querySelector("#not-selected-icon");
+      const selectedIcon = this.querySelector("#selected-icon");
 
       let hrefEdit = null;
       try {
-        hrefEdit = new URL(this.getAttribute('href') || this.href || '#', window.location.origin).searchParams.get('folder');
+        hrefEdit = new URL(
+          this.getAttribute("href") || this.href || "#",
+          window.location.origin,
+        ).searchParams.get("folder");
       } catch {}
-      const currentEdit = new URL(window.location.href).searchParams.get('folder');
+      const currentEdit = new URL(window.location.href).searchParams.get(
+        "folder",
+      );
 
-      const isActive = hrefEdit !== null && currentEdit !== null && hrefEdit === currentEdit;
+      const isActive =
+        hrefEdit !== null && currentEdit !== null && hrefEdit === currentEdit;
 
-      this.classList.toggle('active', !!isActive);
-      if (notSelectedIcon) (notSelectedIcon as HTMLElement).style.display = isActive ? 'none' : 'block';
-      if (selectedIcon) (selectedIcon as HTMLElement).style.display = isActive ? 'block' : 'none';
-      this.toggleAttribute('aria-current', !!isActive);
+      this.classList.toggle("active", !!isActive);
+      if (notSelectedIcon)
+        (notSelectedIcon as HTMLElement).style.display = isActive
+          ? "none"
+          : "block";
+      if (selectedIcon)
+        (selectedIcon as HTMLElement).style.display = isActive
+          ? "block"
+          : "none";
+      if (isActive) {
+        this.setAttribute('aria-current', 'page');
+      } else {
+        this.removeAttribute('aria-current');
+      }
     }
 
     setupEventListeners() {
       this.addEventListener('click', (event) => {
-        event.preventDefault();
+        const e = event as MouseEvent;
         const url = new URL(this.href, window.location.origin);
-        // Basic scheme allowlist to avoid javascript: URLs
-        if (url.protocol === 'http:' || url.protocol === 'https:') {
+        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+        const target = this.getAttribute('target');
+        const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+
+        if (!isHttp) return;
+
+        if (openInNewTab) {
+          // Preserve default middle-click behavior if this were a native link
+          e.preventDefault();
+          window.open(url.href, '_blank');
+          return;
+        }
+
+        // Primary (left) click same-tab navigation
+        if (e.button === 0) {
+          e.preventDefault();
           window.location.href = url.href;
         }
       });
-      this.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      this.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           this.click();
         }
@@ -93,7 +139,7 @@ const compId = crypto.randomUUID();
     }
   }
 
-  if (!customElements.get('tree-sidebar-folder')) {
-    customElements.define('tree-sidebar-folder', TreeSidebarFolder);
+  if (!customElements.get("tree-sidebar-folder")) {
+    customElements.define("tree-sidebar-folder", TreeSidebarFolder);
   }
 </script>

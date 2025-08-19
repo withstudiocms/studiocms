@@ -32,6 +32,7 @@ export const onRequest = defineMiddlewareRouter([
 		 * site configuration, route map, and default language.
 		 */
 		includePaths: ['/**'],
+		excludePaths: ['/_studiocms-devapps/**', '/_web-vitals**'],
 		priority: 1,
 		handler: Effect.fn(function* (context, next) {
 			const {
@@ -39,10 +40,13 @@ export const onRequest = defineMiddlewareRouter([
 				MIDDLEWARES: { verifyCache },
 			} = yield* SDKCore;
 
+			if (!['/studiocms_api/dashboard/verify-session'].includes(context.url.pathname)) {
+				yield* verifyCache();
+			}
+
 			const [latestVersion, siteConfig] = yield* Effect.all([
 				GET.latestVersion(),
 				GET.siteConfig(),
-				verifyCache(),
 			]);
 
 			// Set the StudioCMS base context locals

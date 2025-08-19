@@ -82,10 +82,27 @@ const userListItemHrefString = userListItemHref.toString();
         }
 
         private setupEventListeners() {
-            this.addEventListener("click", (event) => {
-                event.preventDefault();
+            this.addEventListener('click', (event) => {
+                const e = event as MouseEvent;
                 const url = new URL(this.href, window.location.origin);
-                window.location.href = url.href;
+                const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+                const target = this.getAttribute('target');
+                const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+
+                if (!isHttp) return;
+
+                if (openInNewTab) {
+                    // Preserve default middle-click behavior if this were a native link
+                    e.preventDefault();
+                    window.open(url.href, '_blank');
+                    return;
+                }
+
+                // Primary (left) click same-tab navigation
+                if (e.button === 0) {
+                    e.preventDefault();
+                    window.location.href = url.href;
+                }
             });
         }
     }
