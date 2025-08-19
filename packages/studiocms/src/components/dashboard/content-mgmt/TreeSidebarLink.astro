@@ -3,10 +3,6 @@ import { Icon } from 'studiocms:ui/components';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { HTMLAttributes } from 'astro/types';
 
-// TODO Simplify this component's Script code,
-// instead of using a inline script, we should use a
-// dynamic web component to pass variables to the script
-
 interface Props extends HTMLAttributes<'a'> {
 	/**
 	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
@@ -15,41 +11,133 @@ interface Props extends HTMLAttributes<'a'> {
 	href: string;
 }
 
-const { icon, ...props } = Astro.props;
+const { icon, class: className, ...props } = Astro.props;
 
 const activeIcon = `${icon}-solid`;
 
 const compId = crypto.randomUUID();
 ---
 
-<a id={compId} class="inner-sidebar-link" {...props} data-astro-reload>
-  <Icon name={icon} id="not-selected-icon" class='sidebar-link-icon not-selected' width={24} height={24} />
-  <Icon name={activeIcon as HeroIconName} id="selected-icon" class="sidebar-link-icon selected" width={24} height={24} />
+<tree-sidebar-link
+  id={compId}
+  class:list={["inner-sidebar-link", className]}
+  {...props}
+>
+  <Icon
+    name={icon}
+    id="not-selected-icon"
+    class="sidebar-link-icon not-selected"
+    width={24}
+    height={24}
+  />
+  <Icon
+    name={activeIcon as HeroIconName}
+    id="selected-icon"
+    class="sidebar-link-icon selected"
+    width={24}
+    height={24}
+  />
   <span class="sidebar-link-text">
     <slot />
   </span>
-</a>
+</tree-sidebar-link>
 
-<script is:inline data-astro-rerun define:vars={{ compId }}>
-  function setInnerSidebarLinks() {
-    const link = document.getElementById(compId)
+<script>
+  class TreeSidebarLink extends HTMLElement {
+    href: string;
 
-    const notSelectedIcon = link.querySelector('#not-selected-icon')
-    const selectedIcon = link.querySelector('#selected-icon')
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.href = this.getAttribute("href") || "#";
+    }
 
-    notSelectedIcon.style.display = 'block';
-    selectedIcon.style.display = 'none';
-    link.classList.remove('active');
+    connectedCallback() {
+      this.render();
+      // Basic link semantics and keyboard focus
+      this.setAttribute("role", "link");
+      if (!this.hasAttribute("tabindex")) this.tabIndex = 0;
+      this.setSidebarActiveState();
+      this.setupEventListeners();
+    }
 
-    const LinkQueryParams = new URL(link.href).searchParams.get('edit');
-    const CurrentQueryParams = new URL(window.location.href).searchParams.get('edit');
+    render() {
+      if (!this.shadowRoot) return;
+      // Avoid duplicating the slot on reconnect
+      if (this.shadowRoot.childNodes.length === 0) {
+        const slot = document.createElement("slot");
+        this.shadowRoot.appendChild(slot);
+      }
+    }
 
-    if (LinkQueryParams === CurrentQueryParams) {
-      notSelectedIcon.style.display = 'none';
-      selectedIcon.style.display = 'block';
-      link.classList.add('active');
+    setSidebarActiveState() {
+      // Icons live in light DOM (projected via slot)
+      const notSelectedIcon = this.querySelector(".not-selected");
+      const selectedIcon = this.querySelector(".selected");
+
+      let hrefEdit = null;
+      try {
+        hrefEdit = new URL(
+          this.getAttribute("href") || this.href || "#",
+          window.location.origin,
+        ).searchParams.get("edit");
+      } catch {}
+      const currentEdit = new URL(window.location.href).searchParams.get(
+        "edit",
+      );
+
+      const isActive =
+        hrefEdit !== null && currentEdit !== null && hrefEdit === currentEdit;
+
+      this.classList.toggle("active", !!isActive);
+      if (notSelectedIcon)
+        (notSelectedIcon as HTMLElement).style.display = isActive
+          ? "none"
+          : "block";
+      if (selectedIcon)
+        (selectedIcon as HTMLElement).style.display = isActive
+          ? "block"
+          : "none";
+      if (isActive) {
+        this.setAttribute('aria-current', 'page');
+      } else {
+        this.removeAttribute('aria-current');
+      }
+    }
+
+    setupEventListeners() {
+      this.addEventListener('click', (event) => {
+        const e = event as MouseEvent;
+        const url = new URL(this.href, window.location.origin);
+        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+        const target = this.getAttribute('target');
+        const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+
+        if (!isHttp) return;
+
+        if (openInNewTab) {
+          // Preserve default middle-click behavior if this were a native link
+          e.preventDefault();
+          window.open(url.href, '_blank');
+          return;
+        }
+
+        // Primary (left) click same-tab navigation
+        if (e.button === 0) {
+          e.preventDefault();
+          window.location.href = url.href;
+        }
+      });
+      this.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          this.click();
+        }
+      });
     }
   }
-  document.addEventListener('astro:page-load', setInnerSidebarLinks);
-  setInnerSidebarLinks();
+
+  if (!customElements.get("tree-sidebar-link")) {
+    customElements.define("tree-sidebar-link", TreeSidebarLink);
+  }
 </script>

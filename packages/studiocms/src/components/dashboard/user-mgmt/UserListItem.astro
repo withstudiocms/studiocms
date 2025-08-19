@@ -2,8 +2,6 @@
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
 import { Divider, Icon, User } from 'studiocms:ui/components';
 
-// TODO Refactor this component to not use inline script
-
 interface Props {
 	user: {
 		id: string;
@@ -22,40 +20,94 @@ interface Props {
 }
 
 const { user, searchQuery } = Astro.props;
+
+const userListItemHref = new URL(
+	Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit,
+	Astro.url.origin
+);
+userListItemHref.searchParams.set('user', user.id);
+if (searchQuery) {
+	userListItemHref.searchParams.set('search', searchQuery);
+}
+const userListItemHrefString = userListItemHref.toString();
 ---
-<a class="sidebar-user" href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}${searchQuery ? `&search=${searchQuery}` : ''}`} data-astro-reload>
-    <User 
+
+<user-list-item class="sidebar-user" href={userListItemHrefString}>
+    <User
         name={user.name}
-        avatar={user.avatar ?? undefined} 
-        description={getLabelForPermissionLevel(user.permissionsData?.rank!)} 
-        loading='eager',
-        />
+        avatar={user.avatar ?? undefined}
+        description={getLabelForPermissionLevel(user.permissionsData?.rank!)}
+        loading="eager"
+    />
     <Icon name="chevron-right" width={24} height={24} />
-</a>
-<Divider background={'background-step-1'}></Divider>
+</user-list-item>
+<Divider background={"background-step-1"} />
 
-<script is:inline data-astro-rerun>
-    function setUserLinks() {
-        const userLinks = document.querySelectorAll('.sidebar-user');
-        
-        const setActive = (target) => {
+<script>
+    class UserListItem extends HTMLElement {
+        href: string;
+
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" });
+            this.href = this.getAttribute("href") || "#";
+        }
+
+        connectedCallback() {
+            this.render();
+            this.setSidebarActiveState();
+            this.setupEventListeners();
+        }
+
+        private render() {
+            if (!this.shadowRoot) return;
+
+            const slot = document.createElement("slot");
+            this.shadowRoot.appendChild(slot);
+        }
+
+        private setSidebarActiveState() {
+            const userLinks = document.querySelectorAll(".sidebar-user");
+            const currentQueryParams = new URL(
+                window.location.href,
+            ).searchParams.get("user");
+
             userLinks.forEach((el) => {
-                el.classList.remove('active');
+                el.classList.remove("active");
             });
-            target.classList.add('active');
-        };
-        const CurrentQueryParams = new URL(window.location.href).searchParams.get('user');
 
-        userLinks.forEach((target) => {
-            const LinkQueryParams = new URL(target.href).searchParams.get('user');
-
-            if (LinkQueryParams === CurrentQueryParams) {
-                setActive(target);
+            if (this.href.includes(`user=${currentQueryParams}`)) {
+                this.classList.add("active");
             }
+        }
 
-        })
+        private setupEventListeners() {
+            this.addEventListener('click', (event) => {
+                const e = event as MouseEvent;
+                const url = new URL(this.href, window.location.origin);
+                const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+                const target = this.getAttribute('target');
+                const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+
+                if (!isHttp) return;
+
+                if (openInNewTab) {
+                    // Preserve default middle-click behavior if this were a native link
+                    e.preventDefault();
+                    window.open(url.href, '_blank');
+                    return;
+                }
+
+                // Primary (left) click same-tab navigation
+                if (e.button === 0) {
+                    e.preventDefault();
+                    window.location.href = url.href;
+                }
+            });
+        }
     }
 
-    document.addEventListener('astro:page-load', setUserLinks);
-    setUserLinks();
+    if (!customElements.get("user-list-item")) {
+        customElements.define("user-list-item", UserListItem);
+    }
 </script>
