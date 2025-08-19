@@ -39,49 +39,68 @@ const compId = crypto.randomUUID();
 
     connectedCallback() {
       this.render();
+      // Link semantics and keyboard access
+      this.setAttribute('role', 'link');
+      if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
       this.setSidebarActiveState();
       this.setupEventListeners();
     }
 
-    private render() {
+    render() {
       if (!this.shadowRoot) return;
-
-      const slot = document.createElement("slot");
-      this.shadowRoot.appendChild(slot);
+      if (this.shadowRoot.childNodes.length === 0) {
+        const slot = document.createElement("slot");
+        this.shadowRoot.appendChild(slot);
+      }
     }
 
-    private setupEventListeners() {
+    setupEventListeners() {
       this.addEventListener('click', (event) => {
         event.preventDefault();
         const url = new URL(this.href, window.location.origin);
-        window.location.href = url.href;
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          window.location.href = url.href;
+        }
+      });
+      this.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
       });
     }
 
-    private setSidebarActiveState() {
-      // Query icons from Light DOM since they're projected through the slot
-      const notSelectedIcon = this.querySelector<HTMLElement>('#not-selected-icon');
-      const selectedIcon = this.querySelector<HTMLElement>('#selected-icon');
+    setSidebarActiveState() {
+      // Light DOM icons projected through the slot
+      const notSelectedIcon = this.querySelector('.not-selected');
+      const selectedIcon = this.querySelector('.selected');
 
-      const windowLocation = window.location.pathname;
-      const elemPath = new URL(this.href, window.location.origin).pathname;
+      const normalize = (p: string) => p.replace(/\/+$/, '') || '/';
+      const windowLocation = normalize(window.location.pathname);
+      let elemPath = normalize(new URL(this.href, window.location.origin).pathname);
+      const webDashboardIndex = normalize(new URL(window.location.origin + this.dashboardIndex).pathname);
 
-      const webDashboardIndex = new URL(window.location.origin + this.dashboardIndex).pathname;
+      // Match exact or sub-path segments only (avoid false positives like "/user" vs "/user-settings")
+      const startsWithSeg = (path: string, base: string) => {
+        if (base === '/' ) return path === '/';
+        return path === base || path.startsWith(base + '/');
+      };
+      const isActive = startsWithSeg(windowLocation, elemPath) && elemPath !== webDashboardIndex;
 
-      if (elemPath === windowLocation) {
-        if (notSelectedIcon) notSelectedIcon.style.display = 'none';
-        if (selectedIcon) selectedIcon.style.display = 'block';
-        this.classList.add('active');
-      }
-
-      if (windowLocation.includes(elemPath) && elemPath !== webDashboardIndex) {
-        if (notSelectedIcon) notSelectedIcon.style.display = 'none';
-        if (selectedIcon) selectedIcon.style.display = 'block';
-        this.classList.add('active');
+      this.classList.toggle('active', isActive);
+      if (notSelectedIcon) (notSelectedIcon as HTMLElement).style.display = isActive ? 'none' : 'block';
+      if (selectedIcon) (selectedIcon as HTMLElement).style.display = isActive ? 'block' : 'none';
+      this.toggleAttribute('aria-current', isActive);
+  }
+ 
+    static get observedAttributes() { return ['href']; }
+    attributeChangedCallback(name: string, _oldValue: any, newValue: string) {
+      if (name === 'href') {
+        this.href = newValue || '#';
+        this.setSidebarActiveState();
       }
     }
-
-  }
+}
 
   if (!customElements.get('sidebar-link')) {
     customElements.define('sidebar-link', SidebarLink);

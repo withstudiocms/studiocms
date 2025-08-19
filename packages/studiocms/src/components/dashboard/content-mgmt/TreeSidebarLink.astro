@@ -38,40 +38,56 @@ const compId = crypto.randomUUID();
 
     connectedCallback() {
       this.render();
+      // Basic link semantics and keyboard focus
+      this.setAttribute('role', 'link');
+      if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
       this.setSidebarActiveState();
       this.setupEventListeners();
     }
 
-    private render() {
+    render() {
       if (!this.shadowRoot) return;
-
-      const slot = document.createElement("slot");
-      this.shadowRoot.appendChild(slot);
-    }
-
-    private setSidebarActiveState() {
-      // Query icons from Light DOM since they're projected through the slot
-      const notSelectedIcon = this.querySelector<HTMLElement>('#not-selected-icon');
-      const selectedIcon = this.querySelector<HTMLElement>('#selected-icon');
-
-      const currentQueryParams = new URL(window.location.href).searchParams.get("edit");
-
-      if (this.href.includes(`edit=${currentQueryParams}`)) {
-        this.classList.add('active');
-        if (notSelectedIcon) notSelectedIcon.style.display = 'none';
-        if (selectedIcon) selectedIcon.style.display = 'block';
-      } else {
-        this.classList.remove('active');
-        if (notSelectedIcon) notSelectedIcon.style.display = 'block';
-        if (selectedIcon) selectedIcon.style.display = 'none';
+      // Avoid duplicating the slot on reconnect
+      if (this.shadowRoot.childNodes.length === 0) {
+        const slot = document.createElement("slot");
+        this.shadowRoot.appendChild(slot);
       }
     }
 
-    private setupEventListeners() {
+    setSidebarActiveState() {
+      // Icons live in light DOM (projected via slot)
+      const notSelectedIcon = this.querySelector('.not-selected');
+      const selectedIcon = this.querySelector('.selected');
+
+      let hrefEdit = null;
+      try {
+        hrefEdit = new URL(this.getAttribute('href') || this.href || '#', window.location.origin)
+          .searchParams.get('edit');
+      } catch {}
+      const currentEdit = new URL(window.location.href).searchParams.get('edit');
+
+      const isActive = hrefEdit !== null && currentEdit !== null && hrefEdit === currentEdit;
+
+      this.classList.toggle('active', !!isActive);
+      if (notSelectedIcon) (notSelectedIcon as HTMLElement).style.display = isActive ? 'none' : 'block';
+      if (selectedIcon) (selectedIcon as HTMLElement).style.display = isActive ? 'block' : 'none';
+      this.toggleAttribute('aria-current', !!isActive);
+    }
+
+    setupEventListeners() {
       this.addEventListener('click', (event) => {
         event.preventDefault();
         const url = new URL(this.href, window.location.origin);
-        window.location.href = url.href;
+        // Basic scheme allowlist to avoid javascript: URLs
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          window.location.href = url.href;
+        }
+      });
+      this.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
       });
     }
   }
