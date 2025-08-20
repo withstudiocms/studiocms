@@ -165,6 +165,7 @@
 		"@oslojs/encoding": "^1.1.0",
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/cli-kit": "catalog:studiocms",
+		"@withstudiocms/component-registry": "workspace:*",
 		"@withstudiocms/config-utils": "workspace:*",
 		"@withstudiocms/effect": "workspace:*",
 		"astro-integration-kit": "catalog:",

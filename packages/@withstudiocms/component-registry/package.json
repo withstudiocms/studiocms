@@ -52,6 +52,10 @@
 			"types": "./dist/component-proxy/index.d.ts",
 			"default": "./dist/component-proxy/index.js"
 		},
+		"./runtime": {
+			"types": "./dist/runtime.d.ts",
+			"default": "./dist/runtime.js"
+		},
 		"./transform-html": {
 			"types": "./dist/transform-html.d.ts",
 			"default": "./dist/transform-html.js"
