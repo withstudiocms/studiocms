@@ -1,0 +1,107 @@
+---
+import type { SettingsField } from 'studiocms:plugin-helpers';
+
+interface Props {
+	pluginFields: {
+		identifier: string;
+		fields?: SettingsField[];
+	}[];
+}
+
+const { pluginFields } = Astro.props;
+---
+
+<page-type-handler data-plugin-fields={JSON.stringify(pluginFields)}>
+	<slot />
+</page-type-handler>
+
+<script>
+	import type { SettingsField } from 'studiocms:plugin-helpers';
+
+	type PluginField = {
+		identifier: string;
+		fields?: SettingsField[];
+	};
+
+	class PageTypeHandler extends HTMLElement {
+		private pluginFields: PluginField[] = [];
+
+		constructor() {
+			super();
+			this.attachShadow({ mode: "open" });
+			this.loadPluginFields();
+		}
+
+		connectedCallback() {
+			this.setupEventListeners();
+			this.render();
+		}
+
+		private loadPluginFields() {
+			const dataPluginFields = this.getAttribute("data-plugin-fields");
+			try {
+				this.pluginFields = JSON.parse(dataPluginFields || "[]");
+			} catch {
+				this.pluginFields = [];
+			}
+		}
+
+		private render() {
+			if (!this.shadowRoot) return;
+			if (this.shadowRoot.childNodes.length === 0) {
+				const slot = document.createElement("slot");
+				this.shadowRoot.appendChild(slot);
+			}
+		}
+
+		private setupEventListeners() {
+			// Wait for DOM to be ready
+			setTimeout(() => {
+				this.setupPluginFieldsHandler();
+			}, 0);
+		}
+
+		private setupPluginFieldsHandler() {
+			const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+			if (!pageTypeDropdown) return;
+
+			const pageTypeOptions = pageTypeDropdown.querySelectorAll(".sui-select-option");
+
+			pageTypeOptions.forEach((option) => {
+				option.addEventListener("click", () => {
+					this.handlePageTypeChange(option);
+				});
+			});
+		}
+
+		private handlePageTypeChange(option: Element) {
+			const selectedValue = option.getAttribute("value");
+			if (!selectedValue) return;
+
+			const matchedPluginFields = this.pluginFields.find(
+				(pluginField) => pluginField.identifier === selectedValue
+			);
+
+			this.toggleCustomPageTypeFields(matchedPluginFields);
+		}
+
+		private toggleCustomPageTypeFields(matchedPluginFields?: PluginField) {
+			const customPageTypeFields = document.getElementById("custom-page-type-fields");
+			if (!customPageTypeFields) return;
+
+			const hasFields = matchedPluginFields?.fields && matchedPluginFields.fields.length > 0;
+
+			if (hasFields) {
+				customPageTypeFields.classList.remove("page-types-hidden");
+				customPageTypeFields.style.display = "block";
+			} else {
+				customPageTypeFields.classList.add("page-types-hidden");
+				customPageTypeFields.style.display = "none";
+			}
+		}
+	}
+
+	if (!customElements.get("page-type-handler")) {
+		customElements.define("page-type-handler", PageTypeHandler);
+	}
+</script>
