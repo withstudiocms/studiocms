@@ -52,6 +52,10 @@
 			"types": "./dist/component-proxy/index.d.ts",
 			"default": "./dist/component-proxy/index.js"
 		},
+		"./errors": {
+			"types": "./dist/errors.d.ts",
+			"default": "./dist/errors.js"
+		},
 		"./runtime": {
 			"types": "./dist/runtime.d.ts",
 			"default": "./dist/runtime.js"
@@ -63,6 +67,10 @@
 		"./types": {
 			"types": "./dist/types.d.ts",
 			"default": "./dist/types.js"
+		},
+		"./utils": {
+			"types": "./dist/utils.d.ts",
+			"default": "./dist/utils.js"
 		}
 	},
 	"type": "module",

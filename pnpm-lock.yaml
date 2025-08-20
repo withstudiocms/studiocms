@@ -836,9 +836,6 @@ importers:
       three:
         specifier: 0.170.0
         version: 0.170.0
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0

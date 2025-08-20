@@ -112,18 +112,6 @@
 			"types": "./dist/runtime/index.d.ts",
 			"default": "./dist/runtime/index.js"
 		},
-		"./componentRegistry": {
-			"types": "./dist/componentRegistry/index.d.ts",
-			"default": "./dist/componentRegistry/index.js"
-		},
-		"./componentRegistry/runtime": {
-			"types": "./dist/componentRegistry/runtime.d.ts",
-			"default": "./dist/componentRegistry/runtime.js"
-		},
-		"./componentRegistry/types": {
-			"types": "./dist/componentRegistry/types.d.ts",
-			"default": "./dist/componentRegistry/types.js"
-		},
 		"./lib/*": {
 			"types": "./dist/lib/*.d.ts",
 			"default": "./dist/lib/*"
@@ -188,7 +176,6 @@
 		"package-manager-detector": "^1.3.0",
 		"semver": "^7.7.2",
 		"three": "0.170.0",
-		"ts-morph": "^26.0.0",
 		"ultrahtml": "^1.6.0",
 		"unist-util-visit": "^5.0.0"
 	},

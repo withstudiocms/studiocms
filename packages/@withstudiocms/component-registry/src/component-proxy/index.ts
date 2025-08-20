@@ -5,6 +5,8 @@ import { __unsafeHTML } from 'ultrahtml';
 import type { AstroComponentChildren, AstroProps, ComponentType } from '../types.js';
 import { decode } from './decoder/index.js';
 
+export * from './decoder/index.js';
+
 /**
  * Creates a proxy for components that can either be strings or functions.
  * If the component is a string, it is directly assigned to the proxy.

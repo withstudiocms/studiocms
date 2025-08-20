@@ -1,3 +1,2 @@
-export { createComponentProxy, dedent, transformHTML } from './AstroComponentProxy.js';
-
-export { decode } from './decoder/index.js';
+export { createComponentProxy, decode } from '@withstudiocms/component-registry/component-proxy';
+export { transformHTML } from '@withstudiocms/component-registry/transform-html';
