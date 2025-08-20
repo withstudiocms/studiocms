@@ -1,12 +1,8 @@
-export function dateTimeListener(id: string) {
-	const lastCheckedDate = document.getElementById(id) as HTMLTimeElement;
+import { DTConfig } from './dateWithTimeAndZone.js';
 
-	lastCheckedDate.textContent = new Date(lastCheckedDate.dateTime).toLocaleString(undefined, {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric',
-		timeZoneName: 'short',
-	});
+export function dateTimeListener(id: string) {
+	const el = document.getElementById(id);
+	if (!(el instanceof HTMLTimeElement)) return;
+
+	el.textContent = new Date(el.dateTime).toLocaleString(undefined, DTConfig);
 }

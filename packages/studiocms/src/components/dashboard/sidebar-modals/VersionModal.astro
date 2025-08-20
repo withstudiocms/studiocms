@@ -80,10 +80,25 @@ const lastChecked = new Date(latestVersion.lastCacheUpdate);
         </div>
     </div>
 </Modal>
+
+<style is:global>
+
+/* Fix for modal positioning/size issues 
+
+This overrides the @studiocms/ui modal max size 
+to allow for more information on a slightly bigger modal.
+
+*/
+#version-modal.sui-modal.lg {
+  max-width: 800px !important;
+  width: min(90vw, 800px) !important;
+}
+</style>
+
 <style>
 	.version-modal-top-row {
         display: grid;
-        grid-template-columns: 1fr 1fr 2fr;
+        grid-template-columns: 1fr 1fr minmax(0, 3fr);
         gap: 1rem;
     }
 
