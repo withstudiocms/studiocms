@@ -23,8 +23,8 @@ catalogs:
       specifier: ^22.0.0
       version: 22.16.3
     '@types/nodemailer':
-      specifier: ^7.0.0
-      version: 7.0.0
+      specifier: ^7.0.1
+      version: 7.0.1
     arctic:
       specifier: ^3.7.0
       version: 3.7.0
@@ -138,8 +138,8 @@ catalogs:
       specifier: ^0.4.17
       version: 0.4.17
     '@studiocms/web-vitals':
-      specifier: ^4.4.1
-      version: 4.4.1
+      specifier: ^4.5.0
+      version: 4.5.0
     '@withstudiocms/cli-kit':
       specifier: ^0.1.0
       version: 0.1.0
@@ -188,8 +188,8 @@ importers:
         specifier: ^5.62.0
         version: 5.62.0(@types/node@22.16.3)(typescript@5.9.2)
       pkg-pr-new:
-        specifier: ^0.0.55
-        version: 0.0.55
+        specifier: ^0.0.56
+        version: 0.0.56
       studiocms:
         specifier: workspace:*
         version: link:packages/studiocms
@@ -678,7 +678,7 @@ importers:
         version: 22.16.3
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 7.0.0
+        version: 7.0.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
@@ -829,7 +829,7 @@ importers:
         version: 22.16.3
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 7.0.0
+        version: 7.0.1
       '@types/semver':
         specifier: ^7.7.0
         version: 7.7.0
@@ -859,7 +859,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.4.1(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.5.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -2728,6 +2728,11 @@ packages:
     peerDependencies:
       '@astrojs/db': ^0.17.1
 
+  '@studiocms/web-vitals@4.5.0':
+    resolution: {integrity: sha512-6eoTuTyAqS34zl0uHpSTO35y22vRFSKHqwT+qp6PG7p+0cVSvgVY3CEiEXEAdYeSvRlceG7FH3ha3HrG1kshqw==}
+    peerDependencies:
+      '@astrojs/db': ^0.17.1
+
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
 
@@ -2821,8 +2826,8 @@ packages:
   '@types/node@24.3.0':
     resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
 
-  '@types/nodemailer@7.0.0':
-    resolution: {integrity: sha512-APKHivjoJ1OyLrlhdJ/QJpnj78OaGSHQ18J12CeOVbffvBgUjqBiIzCW2lnRuwQiLxCpahgMf+T7G2dZBvgeYw==}
+  '@types/nodemailer@7.0.1':
+    resolution: {integrity: sha512-UfHAghPmGZVzaL8x9y+mKZMWyHC399+iq0MOmya5tIyenWX3lcdSb60vOmp0DocR6gCDTYTozv/ULQnREyyjkg==}
 
   '@types/pg@8.6.1':
     resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
@@ -4837,8 +4842,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pkg-pr-new@0.0.55:
-    resolution: {integrity: sha512-2F/w3KCVIYMvHn1HrnKwl/4oK9nwhreljnIFEGzCYr+4FyvMFjBmkL3h+1Ggd3vMvnH2TMSwrxSI4DoLEC6QXw==}
+  pkg-pr-new@0.0.56:
+    resolution: {integrity: sha512-QUdWJ5m0IUNIujAIwc03wJ3L1BVCpSK8jm7yIz4F2pkvQ8afVltyl+/tJTPLKs5jcd2gkQZPl71NYwMYplRvaA==}
     hasBin: true
 
   pkg-types@1.3.1:
@@ -5680,8 +5685,8 @@ packages:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
 
-  web-vitals@5.0.3:
-    resolution: {integrity: sha512-4KmOFYxj7qT6RAdCH0SWwq8eKeXNhAFXR4PmgF6nrWFmrJ41n7lq3UCA6UK0GebQ4uu+XP8e8zGjaDO3wZlqTg==}
+  web-vitals@5.1.0:
+    resolution: {integrity: sha512-ArI3kx5jI0atlTtmV0fWU3fjpLmq/nD3Zr1iFFlJLaqa5wLBkUSzINwBPySCX/8jRyjlmy1Volw1kz1g9XE4Jg==}
 
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -8056,7 +8061,12 @@ snapshots:
   '@studiocms/web-vitals@4.4.1(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
-      web-vitals: 5.0.3
+      web-vitals: 5.1.0
+
+  '@studiocms/web-vitals@4.5.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+    dependencies:
+      '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+      web-vitals: 5.1.0
 
   '@swc/helpers@0.5.17':
     dependencies:
@@ -8177,7 +8187,7 @@ snapshots:
     dependencies:
       undici-types: 7.10.0
 
-  '@types/nodemailer@7.0.0':
+  '@types/nodemailer@7.0.1':
     dependencies:
       '@aws-sdk/client-sesv2': 3.864.0
       '@types/node': 24.3.0
@@ -10899,7 +10909,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pkg-pr-new@0.0.55:
+  pkg-pr-new@0.0.56:
     dependencies:
       '@jsdevtools/ez-spawn': 3.0.4
       '@octokit/action': 6.1.0
@@ -11888,7 +11898,7 @@ snapshots:
 
   web-streams-polyfill@3.3.3: {}
 
-  web-vitals@5.0.3: {}
+  web-vitals@5.1.0: {}
 
   webidl-conversions@3.0.1: {}
 

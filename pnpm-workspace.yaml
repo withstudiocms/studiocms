@@ -9,7 +9,7 @@ catalog:
   tinyglobby: ^0.2.14
   typescript: ^5.9.2
   nodemailer: ^7.0.5
-  "@types/nodemailer": ^7.0.0
+  "@types/nodemailer": ^7.0.1
 
 catalogs:
   astrojs:
@@ -50,7 +50,7 @@ catalogs:
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.4.1
+    "@studiocms/web-vitals": ^4.5.0
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
