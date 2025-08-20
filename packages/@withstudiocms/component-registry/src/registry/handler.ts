@@ -1,9 +1,11 @@
+/// <reference types="../virtual.d.ts" preserve="true" />
+
 import { Effect, runEffect } from '@withstudiocms/effect';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
+import type { AstroComponentProps, ComponentRegistryEntry } from '../types.js';
+import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
 import { ComponentRegistry } from './Registry.js';
-import type { AstroComponentProps, ComponentRegistryEntry } from './types.js';
-import { convertHyphensToUnderscores, integrationLogger } from './utils.js';
 
 export const ComponentRegistryHandlerOptionSchema = z.object({
 	config: z.object({

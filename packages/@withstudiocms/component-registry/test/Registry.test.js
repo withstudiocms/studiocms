@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { Effect } from '@withstudiocms/effect';
 import { ComponentNotFoundError } from '../dist/errors.js';
-import { ComponentRegistry } from '../dist/Registry.js'; // Adjust path as needed
+import { ComponentRegistry } from '../dist/registry/index.js'; // Adjust path as needed
 
 describe('ComponentRegistry', () => {
 	const testDir = './test-components';

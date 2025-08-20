@@ -1,7 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import { Project, type PropertySignature, SyntaxKind } from 'ts-morph';
-import { ComponentRegistryError, FileParseError } from './errors.js';
-import type { AstroComponentProp, AstroComponentProps, JSDocTag } from './types.js';
+import { ComponentRegistryError, FileParseError } from '../errors.js';
+import type { AstroComponentProp, AstroComponentProps, JSDocTag } from '../types.js';
 
 /**
  * Service for parsing component props from TypeScript source code and extracting prop definitions from Astro files.

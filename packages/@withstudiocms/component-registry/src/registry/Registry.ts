@@ -1,7 +1,7 @@
 import { Effect, Layer, Platform, PlatformNode } from '@withstudiocms/effect';
-import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from './errors.js';
+import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from '../errors.js';
+import type { AstroComponentProps } from '../types.js';
 import { PropsParser } from './PropsParser.js';
-import type { AstroComponentProps } from './types.js';
 
 const registryDeps = Layer.mergeAll(
 	PropsParser.Default,
