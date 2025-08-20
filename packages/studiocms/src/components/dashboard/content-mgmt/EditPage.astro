@@ -8,6 +8,8 @@ import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Button, Card, Center, Icon, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
 import { Effect } from 'effect';
+import PageEditorSwapper from './PageEditorSwapper.astro';
+import PageTypeHandler from './PageTypeHandler.astro';
 import PluginFields from './PluginFields.astro';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
 import {
@@ -17,8 +19,6 @@ import {
 	tagsOptions,
 	trueFalse,
 } from './shared.js';
-import PageTypeHandler from './PageTypeHandler.astro';
-import PageEditorSwapper from './PageEditorSwapper.astro';
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';

@@ -2,6 +2,7 @@
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import PageTypeHandler from './PageTypeHandler.astro';
 import {
 	categoriesOptions,
 	pageTypeOptions,
@@ -9,7 +10,6 @@ import {
 	tagsOptions,
 	trueFalse,
 } from './shared.js';
-import PageTypeHandler from './PageTypeHandler.astro';
 
 const pluginFields = pluginList.flatMap(({ pageTypes }) => pageTypes ?? []);
 
