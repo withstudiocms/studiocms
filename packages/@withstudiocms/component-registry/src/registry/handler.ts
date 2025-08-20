@@ -19,22 +19,30 @@ export const ComponentRegistryHandlerOptionSchema = z.object({
 
 export type ComponentRegistryHandlerOptions = z.infer<typeof ComponentRegistryHandlerOptionSchema>;
 
-const resolver = Effect.fn(
-	(
-		fn: (
-			resolve: (_base: string) => {
-				resolve: (...path: Array<string>) => string;
-			}
-		) => { resolve: (...path: string[]) => string }
-	) =>
+/**
+ * Creates an Effect-based resolver function for resolving component paths.
+ *
+ * @param base - The base path used to initialize the resolver.
+ * @returns An Effect-wrapped function that accepts a callback. The callback receives a `resolve` function,
+ * which can be used to resolve component paths relative to the base. If an error occurs during resolution,
+ * it is caught, logged to the console, and an Error object is returned with the original error as its cause.
+ *
+ * @example
+ * const resolveEffect = resolver('/components');
+ * const result = yield* resolveEffect((resolve) => resolve('Button'));
+ */
+const resolver = Effect.fn(function* (base: string) {
+	const { resolve: _resolve } = createResolver(base);
+	return Effect.fn((fn: (resolve: (...path: Array<string>) => string) => string) =>
 		Effect.try({
-			try: () => fn(createResolver),
+			try: () => fn(_resolve),
 			catch: (error) => {
 				console.error('Error occurred while resolving component:', error);
 				return new Error('Failed to resolve component', { cause: error });
 			},
 		})
-);
+	);
+});
 
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
 	async (
@@ -49,16 +57,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 			Effect.gen(function* () {
 				const logger = params.logger.fork(name);
 				const logInfo = { logger, logLevel: 'info' as const, verbose };
-				const { resolve } = yield* resolver((res) => res(import.meta.url));
-				const { resolve: astroConfigResolve } = yield* resolver((res) =>
-					res(params.config.root.pathname)
-				);
 
 				// Log the start of the component registry setup
 				integrationLogger(logInfo, 'Setting up component registry...');
 
-				// Get the Registry instance
-				const registry = yield* ComponentRegistry;
+				const [resolve, astroConfigResolve, registry] = yield* Effect.all([
+					resolver(import.meta.url),
+					resolver(params.config.root.pathname),
+					ComponentRegistry,
+				]);
 
 				// Setup Components and Component Keys Arrays
 				const componentKeys: string[] = [];
@@ -109,11 +116,19 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 						// Resolve the path using astroConfigResolve
 						integrationLogger(logInfo, `Resolving path for component "${key}"...`);
 
-						let resolvedPath: string;
-						try {
-							resolvedPath = astroConfigResolve(value);
-						} catch (error) {
-							integrationLogger(logInfo, `Failed to resolve path for component "${key}": ${error}`);
+						// Use Effect's error handling instead of try/catch
+						const resolvedPath = yield* astroConfigResolve((res) => res(value)).pipe(
+							Effect.catchAll((error) => {
+								integrationLogger(
+									logInfo,
+									`Failed to resolve path for component "${key}": ${error}`
+								);
+								return Effect.succeed(null); // Return null to indicate failure
+							})
+						);
+
+						// Check if resolution failed
+						if (!resolvedPath) {
 							continue;
 						}
 
@@ -172,6 +187,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				}
 
 				const virtualRuntimeId = `${virtualId}/runtime`;
+				const virtualRuntimeImport = yield* resolve((res) => res('../runtime.js'));
 
 				const virtualImports = {
 					'virtual:component-registry-internal-proxy': `
@@ -180,7 +196,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
                         ${components ? components.join('\n') : ''}
                     `,
 					'virtual:component-registry-internal-proxy/runtime': `
-                        export * from '${resolve('../runtime.js')}';
+                        export * from '${virtualRuntimeImport}';
                     `,
 					[virtualId]: `export * from 'virtual:component-registry-internal-proxy';`,
 					[virtualRuntimeId]: `export * from 'virtual:component-registry-internal-proxy/runtime';`,
