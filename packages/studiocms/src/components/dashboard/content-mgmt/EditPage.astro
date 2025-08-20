@@ -45,7 +45,7 @@ function getParentFolderValue(value: string | null): string | undefined {
 
 const diffs = await runSDK(SDKCoreJs.diffTracking.get.byPageId.latest(pageData.id, 10));
 
-const user = (id: string) => users.find((u: UserData) => u.id === id)?.name;
+const user = (id: string) => users.find((u) => u.id === id)?.name;
 
 // biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 let editor: any = editors[convertToSafeString(pageData.package)];
