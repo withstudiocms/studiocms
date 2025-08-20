@@ -49,7 +49,7 @@
     "@withstudiocms/buildkit": "workspace:*",
     "execa": "^9.6.0",
     "knip": "^5.62.0",
-    "pkg-pr-new": "^0.0.55",
+    "pkg-pr-new": "^0.0.56",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
     "tinyglobby": "catalog:",
