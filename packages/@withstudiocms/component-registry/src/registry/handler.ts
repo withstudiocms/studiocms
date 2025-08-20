@@ -44,6 +44,36 @@ const resolver = Effect.fn(function* (base: string) {
 	);
 });
 
+/**
+ * Handles the setup and registration of components in the component registry during the Astro config setup phase.
+ *
+ * This utility merges built-in and user-provided component registries, validates and resolves component paths,
+ * registers components, and generates virtual imports for use at runtime. It also logs detailed information
+ * about the registration process, including the number of components processed and their properties.
+ *
+ * @remarks
+ * - Only components with string values ending in `.astro` are considered valid.
+ * - Uses Effect for error handling and asynchronous operations.
+ * - Generates virtual modules for internal proxying and runtime usage.
+ *
+ * @param params - The parameters provided by the Astro utility hook, including logger and config.
+ * @param options - An object containing configuration and registry options:
+ *   - `config.verbose` - Enables verbose logging if true.
+ *   - `config.name` - The name of the integration for logging purposes.
+ *   - `config.virtualId` - The virtual module ID for generated imports.
+ *   - `builtInComponents` - A record of built-in component names to file paths.
+ *   - `componentRegistry` - A record of user-provided component names to file paths.
+ * @returns A promise that resolves after the component registry has been set up and virtual imports have been added.
+ *
+ * @example
+ * ```typescript
+ * await componentRegistryHandler(params, {
+ *   config: { verbose: true, name: 'my-integration', virtualId: 'virtual:my-registry' },
+ *   builtInComponents: { button: '/components/Button.astro' },
+ *   componentRegistry: { card: '/components/Card.astro' }
+ * });
+ * ```
+ */
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
 	async (
 		params,
