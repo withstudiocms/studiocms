@@ -30,11 +30,16 @@ export function createComponentProxy(result: SSRResult, _components: ComponentTy
 					try {
 						const normalized = JSON.parse(JSON.stringify(props.code ?? ''));
 						props = { ...props, code: decode(String(normalized)) };
-					} catch {
+					} catch (err) {
 						console.warn(
-							`Failed to decode code prop for component "${lowerKey}". Using original value.`
+							`Failed to decode code prop for component "${lowerKey}". Falling back to raw string.`,
+							err
 						);
-						props.code = decode(JSON.parse(`"${props.code}"`));
+						const safe =
+							typeof props.code === 'string'
+								? props.code
+								: String(props.code ?? '');
+						props = { ...props, code: decode(safe) };
 					}
 				}
 				const output = await renderJSX(
