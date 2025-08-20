@@ -1,0 +1,78 @@
+{
+	"name": "@withstudiocms/component-registry",
+    "version": "0.1.0-beta.0",
+	"description": "Component Registry Utilities for Astro",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/component-registry"
+	},
+	"keywords": [
+		"astro-studiocms",
+		"cms",
+		"studiocms",
+		"astro",
+		"withastro"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "buildkit build 'src/**/*.ts'",
+		"dev": "buildkit dev 'src/**/*.ts'",
+        "__test": "buildkit test 'test/**/*.test.js'",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./component-proxy": {
+			"types": "./dist/component-proxy/index.d.ts",
+			"default": "./dist/component-proxy/index.js"
+		},
+		"./transform-html": {
+			"types": "./dist/transform-html.d.ts",
+			"default": "./dist/transform-html.js"
+		},
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"default": "./dist/types.js"
+		}
+	},
+	"type": "module",
+	"dependencies": {
+		"@withstudiocms/effect": "workspace:*",
+		"astro-integration-kit": "catalog:",
+		"ts-morph": "^26.0.0",
+		"ultrahtml": "1.6.0"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"astro": "catalog:min"
+	}
+}
