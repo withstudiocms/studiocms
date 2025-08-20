@@ -17,6 +17,8 @@ import {
 	tagsOptions,
 	trueFalse,
 } from './shared.js';
+import PageTypeHandler from './PageTypeHandler.astro';
+import PageEditorSwapper from './PageEditorSwapper.astro';
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
@@ -71,8 +73,10 @@ const pluginFields = pluginList
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
-<div id="edit-page-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
-    <form id="edit-page-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}>
+<PageTypeHandler pluginFields={pluginFields ? [pluginFields] : []}>
+	<PageEditorSwapper editorKeys={editorKeys}>
+		<div id="edit-page-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
+			<form id="edit-page-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}>
 
         <Tabs variant={'starlight'}>
           <TabItem label={t('tab-label-basic-info')} icon={'information-circle-20-solid'} color={'primary'}>
@@ -186,8 +190,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
         </Tabs>
 
-    </form>
-</div>
+			</form>
+		</div>
+	</PageEditorSwapper>
+</PageTypeHandler>
 
 <script>
     import { 
@@ -223,76 +229,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     }
 </script>
 
-<script is:inline define:vars={{ editors: editorKeys }}>
 
-// TODO Refactor this to use a dynamic web component instead of inline script
-
-  async function setupPluginFields() {
-    const pageTypeDropdown = document.querySelector('#page-type-dropdown');
-    const pageTypeOptions = pageTypeDropdown.querySelectorAll('.sui-select-option');
-
-    pageTypeOptions.forEach((option) => {
-      option.addEventListener('click', async () => {
-        const selectedValue = option.getAttribute('value');
-
-        const matchedPluginFields = pluginFields.find((pluginField) => pluginField.identifier === selectedValue);
-
-        if (!matchedPluginFields) {
-          return;
-        }
-
-        const customPageTypeFields = document.getElementById('custom-page-type-fields');
-
-        if (matchedPluginFields.fields && matchedPluginFields.fields.length > 0) {
-          customPageTypeFields.classList.remove('page-types-hidden');
-          customPageTypeFields.style.display = 'block';
-        }
-
-        if (!matchedPluginFields.fields || matchedPluginFields.fields.length === 0) {
-          customPageTypeFields.classList.add('page-types-hidden');
-          customPageTypeFields.style.display = 'none';
-        }
-      })
-    })
-  }
-
-  // TODO: Make this work to be able to swap in new editors instead... This almost works but does not load scripts once the partial is loaded.
-
-  async function setupPageEditorSwapper() {
-    const currentPageTypeOptions = document.querySelector('#page-type-dropdown').querySelectorAll('.sui-select-option');
-
-    currentPageTypeOptions.forEach((option) => {
-      option.addEventListener('click', async () => {
-
-        const selectedValue = option.getAttribute('value');
-
-        if (selectedValue !== 'studiocms/markdown') {
-          const editorContainer = document.querySelector('.page-content-editor');
-          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
-
-          if (editors.find((editor) => editor !== selectedValue)) {
-            return;
-          }
-
-          editorContainer.style.display = 'none';
-          editorPlaceholder.style.display = 'block';
-          editorPlaceholder.innerText = 'You have changed your pageType. Please save your changes and refresh the page to see the new editor.';
-        }
-
-        if (selectedValue === 'studiocms/markdown') {
-          const editorContainer = document.querySelector('.page-content-editor');
-          const editorPlaceholder = document.getElementById('page-content-editor-placeholder');
-
-          editorContainer.style.display = 'block';
-          editorPlaceholder.style.display = 'none';
-        }
-      })
-    })
-  }
-
-  setupPluginFields();
-  setupPageEditorSwapper();
-</script>
 <script>
 import { toast } from "studiocms:ui/components";
 
