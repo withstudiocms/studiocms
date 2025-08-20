@@ -180,7 +180,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
                         ${components ? components.join('\n') : ''}
                     `,
 					'virtual:component-registry-internal-proxy/runtime': `
-                        export * from '${resolve('./runtime.js')}';
+                        export * from '${resolve('../runtime.js')}';
                     `,
 					[virtualId]: `export * from 'virtual:component-registry-internal-proxy';`,
 					[virtualRuntimeId]: `export * from 'virtual:component-registry-internal-proxy/runtime';`,
