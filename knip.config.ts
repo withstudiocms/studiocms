@@ -71,7 +71,12 @@ const atStudioCMSPackages = [
  * atWithStudioCMSPackages.includes('config-utils'); // true
  * ```
  */
-const atWithStudioCMSPackages = ['config-utils', 'effect', 'buildkit'] as const;
+const atWithStudioCMSPackages = [
+	'config-utils',
+	'effect',
+	'buildkit',
+	'component-registry',
+] as const;
 
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.

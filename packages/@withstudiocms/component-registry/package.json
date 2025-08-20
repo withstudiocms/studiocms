@@ -40,7 +40,7 @@
 	"scripts": {
 		"build": "buildkit build 'src/**/*.ts'",
 		"dev": "buildkit dev 'src/**/*.ts'",
-        "__test": "buildkit test 'test/**/*.test.js'",
+        "test": "buildkit test 'test/**/*.test.js'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"exports": {
