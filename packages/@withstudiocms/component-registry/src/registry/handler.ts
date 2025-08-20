@@ -157,20 +157,13 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 							})
 						);
 
-						// Check if resolution failed
-						if (!resolvedPath) {
-							continue;
-						}
-
-						integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
-
 						// Check if the resolved path is empty
 						if (!resolvedPath) {
 							integrationLogger(logInfo, `Component "${key}" resolved path is empty, skipping...`);
 							continue;
 						}
 
-						integrationLogger(logInfo, `Component "${key}" is valid and will be included.`);
+						integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
 
 						const keyName = key.toLowerCase();
 						const safeKeyName = convertHyphensToUnderscores(keyName);

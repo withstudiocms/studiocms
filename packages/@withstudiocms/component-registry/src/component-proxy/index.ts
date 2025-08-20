@@ -18,21 +18,28 @@ export * from './decoder/index.js';
  * @returns A record of proxied components.
  */
 export function createComponentProxy(result: SSRResult, _components: ComponentType = {}) {
-	const components: ComponentType = {};
-	for (const [key, value] of Object.entries(_components)) {
+	// Avoid prototype pollution on special keys like __proto__/constructor
+	const components: ComponentType = Object.create(null);
+	for (const [rawKey, value] of Object.entries(_components)) {
+		const lowerKey = rawKey.toLowerCase();
 		if (typeof value === 'string') {
-			components[key.toLowerCase()] = value;
+			components[lowerKey] = value;
 		} else {
-			components[key.toLowerCase()] = async (
-				props: AstroProps,
-				children: AstroComponentChildren
-			) => {
-				if (key === 'codeblock' || key === 'codespan') {
-					props.code = decode(JSON.parse(`"${props.code}"`));
+			components[lowerKey] = async (props: AstroProps, children: AstroComponentChildren) => {
+				if (lowerKey === 'codeblock' || lowerKey === 'codespan') {
+					try {
+						const normalized = JSON.parse(JSON.stringify(props.code ?? ''));
+						props = { ...props, code: decode(String(normalized)) };
+					} catch {
+						console.warn(
+							`Failed to decode code prop for component "${lowerKey}". Using original value.`
+						);
+						props.code = decode(JSON.parse(`"${props.code}"`));
+					}
 				}
 				const output = await renderJSX(
 					result,
-					jsx(value, { ...props, 'set:html': children.value })
+					jsx(value, { ...props, 'set:html': children?.value })
 				);
 				return __unsafeHTML(output);
 			};

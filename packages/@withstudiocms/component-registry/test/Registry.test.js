@@ -104,7 +104,7 @@ const { message } = Astro.props;
 			assert.strictEqual(component.props[0].name, 'message');
 		});
 
-		it('should handle component with no props', async () => {
+		it('should error on component with no props', async () => {
 			const astroContent = `---
 // No props interface
 ---
