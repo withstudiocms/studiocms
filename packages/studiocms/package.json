@@ -112,6 +112,10 @@
 			"types": "./dist/runtime/index.d.ts",
 			"default": "./dist/runtime/index.js"
 		},
+		"./lib/auth/*": {
+			"types": "./dist/lib/auth/*.d.ts",
+			"default": "./dist/lib/auth/*.js"
+		},
 		"./lib/*": {
 			"types": "./dist/virtuals/lib/*.d.ts",
 			"default": "./dist/virtuals/lib/*"

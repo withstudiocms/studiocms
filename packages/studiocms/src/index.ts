@@ -251,6 +251,11 @@ export const studiocms = defineIntegration({
 							'studiocms:config': buildVirtualConfig(options),
 							'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 							'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
+							'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
+								dbUrl: env.ASTRO_DB_REMOTE_URL,
+								dbSecret: env.ASTRO_DB_APP_TOKEN,
+								cmsEncryptionKey: env.CMS_ENCRYPTION_KEY,
+							}),
 							'studiocms:lib': buildDynamicOnlyVirtual({
 								resolve,
 								items: [
@@ -262,6 +267,52 @@ export const studiocms = defineIntegration({
 									'./virtuals/lib/routeMap.js',
 									'./virtuals/lib/urlGen.js',
 								],
+							}),
+							'studiocms:notifier': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/notifier/index.js'],
+							}),
+							'studiocms:notifier/client': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/notifier/client.js'],
+							}),
+							'studiocms:mailer': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/mailer/index.js'],
+							}),
+							'studiocms:mailer/templates': buildNamedVirtual({
+								resolve,
+								namedExport: 'getTemplate',
+								path: './virtuals/mailer/template.js',
+								exportDefault: true,
+							}),
+							'studiocms:components': buildAstroComponentVirtualExport({
+								resolve,
+								items: {
+									FormattedDate: './virtuals/components/FormattedDate.astro',
+									Generator: './virtuals/components/Generator.astro',
+								},
+							}),
+							'studiocms:renderer': buildAstroComponentVirtualExport({
+								resolve,
+								items: {
+									StudioCMSRenderer: StudioCMSRendererComponentPath,
+								},
+							}),
+							'studiocms:imageHandler/components': buildAstroComponentVirtualExport({
+								resolve,
+								items: {
+									CustomImage: CustomImageComponentPath,
+								},
+							}),
+
+							// Not yet moved
+							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
+								resolve,
+								dynamicExports: ['./lib/i18n/index.js'],
+								astroComponents: {
+									LanguageSelector: './lib/i18n/LanguageSelector.astro',
+								},
 							}),
 							'studiocms:sdk': buildDynamicOnlyVirtual({
 								resolve,
@@ -302,55 +353,6 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/scripts/three': buildVirtualAmbientScript({
 								resolve,
 								items: ['./scripts/three.js'],
-							}),
-							'studiocms:notifier': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/notifier/index.js'],
-							}),
-							'studiocms:notifier/client': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/notifier/client.js'],
-							}),
-							'studiocms:mailer': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/mailer/index.js'],
-							}),
-							'studiocms:mailer/templates': buildNamedVirtual({
-								resolve,
-								namedExport: 'getTemplate',
-								path: './virtuals/mailer/template.js',
-								exportDefault: true,
-							}),
-							'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
-								dbUrl: env.ASTRO_DB_REMOTE_URL,
-								dbSecret: env.ASTRO_DB_APP_TOKEN,
-								cmsEncryptionKey: env.CMS_ENCRYPTION_KEY,
-							}),
-							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
-								resolve,
-								dynamicExports: ['./lib/i18n/index.js'],
-								astroComponents: {
-									LanguageSelector: './lib/i18n/LanguageSelector.astro',
-								},
-							}),
-							'studiocms:components': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									FormattedDate: './virtuals/components/FormattedDate.astro',
-									Generator: './virtuals/components/Generator.astro',
-								},
-							}),
-							'studiocms:renderer': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									StudioCMSRenderer: StudioCMSRendererComponentPath,
-								},
-							}),
-							'studiocms:imageHandler/components': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									CustomImage: CustomImageComponentPath,
-								},
 							}),
 
 							'studiocms:logger': `
