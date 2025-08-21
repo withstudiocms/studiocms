@@ -258,6 +258,7 @@ export const studiocms = defineIntegration({
 							'studiocms:config': buildVirtualConfig(options),
 							'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 							'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
+							'studiocms:logger': buildLoggerVirtual(verbose),
 							'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
 								dbUrl: env.ASTRO_DB_REMOTE_URL,
 								dbSecret: env.ASTRO_DB_APP_TOKEN,
@@ -312,7 +313,6 @@ export const studiocms = defineIntegration({
 							'studiocms:i18n/client': dynamicVirtual(['./virtuals/i18n/client.js']),
 							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
-							'studiocms:logger': buildLoggerVirtual(verbose),
 						},
 					});
 
