@@ -1,6 +1,6 @@
 import { defineUtility } from 'astro-integration-kit';
 import { StudioCMSCoreError } from '../errors.js';
-import { integrationLogger } from './integrationLogger.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
 
 /**
  * Checks the Users Astro Config for the following:

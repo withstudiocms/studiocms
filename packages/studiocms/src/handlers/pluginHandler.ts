@@ -18,9 +18,8 @@ import type {
 } from '../schemas/index.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Messages, Route } from '../types.js';
-import { integrationLogger } from '../utils/integrationLogger.js';
+import { integrationLogger, pluginLogger } from '../utils/integrationLogger.js';
 import { pageContentComponentFilter, rendererComponentFilter } from '../utils/pageTypeFilter.js';
-import { pluginLogger } from '../utils/pluginLogger.js';
 import { readJson } from '../utils/readJson.js';
 import { convertToSafeString } from '../utils/safeString.js';
 

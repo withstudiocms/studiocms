@@ -22,3 +22,8 @@ export const integrationLogger = async (opts: LoggerOpts, message: string): Prom
 			logger[logLevel](message);
 	}
 };
+
+export function pluginLogger(id: string, logger: AstroIntegrationLogger): AstroIntegrationLogger {
+	const newLogger = logger.fork(`plugin:${id}`);
+	return newLogger;
+}
