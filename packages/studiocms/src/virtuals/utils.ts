@@ -2,100 +2,63 @@ import fs from 'node:fs';
 import { createResolver } from 'astro-integration-kit';
 import type { StudioCMSConfig } from '../schemas/index.js';
 
-export const buildVirtualConfig = (options: StudioCMSConfig): string => `
-export const config = ${JSON.stringify(options)};
-export default config;
-export const dashboardConfig = config.features.dashboardConfig;
-export const authConfig = config.features.authConfig;
-export const developerConfig = config.features.developerConfig;
-export const sdk = config.features.sdk;
-
-// Deprecated alias
-export const AuthConfig = authConfig;
-`;
+const { resolve } = createResolver(import.meta.url);
 
 // biome-ignore lint/suspicious/noExplicitAny: Match the type input of JSON.stringify
 export const buildDefaultOnlyVirtual = (mod: any): string =>
 	`export default ${JSON.stringify(mod)};`;
-
-type DynamicExportBuilder = {
-	resolve: (...path: Array<string>) => string;
-	items: Array<string>;
-};
-
-export const buildDynamicOnlyVirtual = (builder: DynamicExportBuilder): string => {
-	const { resolve, items } = builder;
-
-	const entries = items.map((item) => `export * from ${JSON.stringify(resolve(item))};`);
-
-	return `${entries.join('\n')}`;
-};
-
-export const buildVirtualAmbientScript = ({
-	resolve,
-	items,
-}: {
-	resolve: (...path: Array<string>) => string;
-	items: string[];
-}): string => {
-	return items.map((item) => `import '${resolve(item)}';`).join('\n');
-};
-
-export const buildNamedVirtual = ({
-	resolve,
-	namedExport,
-	path,
-	exportDefault,
-}: {
-	resolve: (...path: Array<string>) => string;
-	namedExport: string;
-	path: string;
-	exportDefault?: boolean;
-}) => `
-import { ${namedExport} } from ${JSON.stringify(resolve(path))};
-export { ${namedExport} };
-${exportDefault ? `export default ${namedExport};` : ''}
-`;
 
 export const buildNamedMultiExportVirtual = (items: Record<string, string>) =>
 	Object.entries(items)
 		.map(([key, val]) => `export const ${key} = ${JSON.stringify(val)};`)
 		.join('\n');
 
-export const buildAstroComponentVirtualExport = ({
-	resolve,
-	items,
-}: {
-	resolve: (...path: Array<string>) => string;
-	items: Record<string, string>;
-}) =>
-	Object.entries(items)
-		.map(([key, val]) => `export { default as ${key} } from ${JSON.stringify(resolve(val))}`)
-		.join('\n');
+export const buildVirtualModules = (resolve: (...path: Array<string>) => string) => {
+	const dynamicVirtual = (items: Array<string>): string =>
+		items.map((item) => `export * from ${JSON.stringify(resolve(item))};`).join('\n');
 
-export const buildDynamicAndAstroVirtualExport = ({
-	resolve,
-	dynamicExports,
-	astroComponents,
-}: {
-	resolve: (...path: Array<string>) => string;
-	dynamicExports: Array<string>;
-	astroComponents: Record<string, string>;
-}) => {
-	const dynamicExportMaps = buildDynamicOnlyVirtual({
-		resolve,
-		items: dynamicExports,
-	});
+	const ambientScripts = (items: Array<string>): string =>
+		items.map((item) => `import '${resolve(item)}';`).join('\n');
 
-	const astroComponentMaps = buildAstroComponentVirtualExport({
-		resolve,
-		items: astroComponents,
-	});
+	const namedVirtual = ({
+		namedExport,
+		path,
+		exportDefault,
+	}: {
+		namedExport: string;
+		path: string;
+		exportDefault?: boolean;
+	}) => `
+import { ${namedExport} } from ${JSON.stringify(resolve(path))};
+export { ${namedExport} };
+${exportDefault ? `export default ${namedExport};` : ''}
+`;
 
-	return `${dynamicExportMaps}\n${astroComponentMaps}`;
+	const astroComponentVirtual = (items: Record<string, string>) =>
+		Object.entries(items)
+			.map(([key, val]) => `export { default as ${key} } from ${JSON.stringify(resolve(val))}`)
+			.join('\n');
+
+	const dynamicWithAstroVirtual = ({
+		dynamicExports,
+		astroComponents,
+	}: {
+		dynamicExports: Array<string>;
+		astroComponents: Record<string, string>;
+	}) => {
+		const dynamic = dynamicVirtual(dynamicExports);
+		const astro = astroComponentVirtual(astroComponents);
+		return `${dynamic}\n${astro}`;
+	};
+
+	return {
+		dynamicVirtual,
+		ambientScripts,
+		namedVirtual,
+		astroComponentVirtual,
+		dynamicWithAstroVirtual,
+	};
 };
-
-const { resolve } = createResolver(import.meta.url);
 
 export const buildLoggerVirtual = (verbose: boolean) => {
 	const loggerStub = fs.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8');
@@ -103,4 +66,12 @@ export const buildLoggerVirtual = (verbose: boolean) => {
 	const loggerContent = loggerStub.replace(/\$\$verbose\$\$/g, verbose.toString());
 
 	return loggerContent;
+};
+
+export const buildVirtualConfig = (options: StudioCMSConfig): string => {
+	const configStub = fs.readFileSync(resolve('./stubs/config.stub.js'), 'utf-8');
+
+	const configContent = configStub.replace(/\$\$options\$\$/g, JSON.stringify(options));
+
+	return configContent;
 };

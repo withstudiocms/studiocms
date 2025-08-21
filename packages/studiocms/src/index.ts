@@ -43,15 +43,11 @@ import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { readJson } from './utils/jsonUtils.js';
 import {
-	buildAstroComponentVirtualExport,
 	buildDefaultOnlyVirtual,
-	buildDynamicAndAstroVirtualExport,
-	buildDynamicOnlyVirtual,
 	buildLoggerVirtual,
 	buildNamedMultiExportVirtual,
-	buildNamedVirtual,
-	buildVirtualAmbientScript,
 	buildVirtualConfig,
+	buildVirtualModules,
 } from './virtuals/utils.js';
 
 // Resolver Function
@@ -248,6 +244,14 @@ export const studiocms = defineIntegration({
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
+					const {
+						dynamicVirtual,
+						ambientScripts,
+						namedVirtual,
+						astroComponentVirtual,
+						dynamicWithAstroVirtual,
+					} = buildVirtualModules(resolve);
+
 					addVirtualImports(params, {
 						name,
 						imports: {
@@ -259,98 +263,55 @@ export const studiocms = defineIntegration({
 								dbSecret: env.ASTRO_DB_APP_TOKEN,
 								cmsEncryptionKey: env.CMS_ENCRYPTION_KEY,
 							}),
-							'studiocms:lib': buildDynamicOnlyVirtual({
-								resolve,
-								items: [
-									'./virtuals/lib/head.js',
-									'./virtuals/lib/headDefaults.js',
-									'./virtuals/lib/jsonUtils.js',
-									'./virtuals/lib/pathGenerators.js',
-									'./virtuals/lib/removeLeadingTrailingSlashes.js',
-									'./virtuals/lib/routeMap.js',
-									'./virtuals/lib/urlGen.js',
-								],
-							}),
-							'studiocms:notifier': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/notifier/index.js'],
-							}),
-							'studiocms:notifier/client': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/notifier/client.js'],
-							}),
-							'studiocms:mailer': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/mailer/index.js'],
-							}),
-							'studiocms:mailer/templates': buildNamedVirtual({
-								resolve,
+							'studiocms:lib': dynamicVirtual([
+								'./virtuals/lib/head.js',
+								'./virtuals/lib/headDefaults.js',
+								'./virtuals/lib/jsonUtils.js',
+								'./virtuals/lib/pathGenerators.js',
+								'./virtuals/lib/removeLeadingTrailingSlashes.js',
+								'./virtuals/lib/routeMap.js',
+								'./virtuals/lib/urlGen.js',
+							]),
+							'studiocms:notifier': dynamicVirtual(['./virtuals/notifier/index.js']),
+							'studiocms:notifier/client': dynamicVirtual(['./virtuals/notifier/client.js']),
+							'studiocms:mailer': dynamicVirtual(['./virtuals/mailer/index.js']),
+							'studiocms:mailer/templates': namedVirtual({
 								namedExport: 'getTemplate',
 								path: './virtuals/mailer/template.js',
 								exportDefault: true,
 							}),
-							'studiocms:components': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									FormattedDate: './virtuals/components/FormattedDate.astro',
-									Generator: './virtuals/components/Generator.astro',
-								},
+							'studiocms:components': astroComponentVirtual({
+								FormattedDate: './virtuals/components/FormattedDate.astro',
+								Generator: './virtuals/components/Generator.astro',
 							}),
-							'studiocms:renderer': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									StudioCMSRenderer: StudioCMSRendererComponentPath,
-								},
+							'studiocms:renderer': astroComponentVirtual({
+								StudioCMSRenderer: StudioCMSRendererComponentPath,
 							}),
-							'studiocms:imageHandler/components': buildAstroComponentVirtualExport({
-								resolve,
-								items: {
-									CustomImage: CustomImageComponentPath,
-								},
+							'studiocms:imageHandler/components': astroComponentVirtual({
+								CustomImage: CustomImageComponentPath,
 							}),
-							'studiocms:plugin-helpers': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./plugins.js', './virtuals/plugins/index.js'],
-							}),
-							'studiocms:auth/lib': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/auth/index.js'],
-							}),
-							'studiocms:auth/lib/types': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/auth/types.js'],
-							}),
-							'studiocms:auth/utils/validImages': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/auth/validImages/index.js'],
-							}),
-							'studiocms:auth/utils/getLabelForPermissionLevel': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/auth/getLabelForPermissionLevel.js'],
-							}),
-							'studiocms:auth/scripts/three': buildVirtualAmbientScript({
-								resolve,
-								items: ['./virtuals/auth/scripts/three.js'],
-							}),
-							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
-								resolve,
+							'studiocms:plugin-helpers': dynamicVirtual([
+								'./plugins.js',
+								'./virtuals/plugins/index.js',
+							]),
+							'studiocms:auth/lib': dynamicVirtual(['./virtuals/auth/index.js']),
+							'studiocms:auth/lib/types': dynamicVirtual(['./virtuals/auth/types.js']),
+							'studiocms:auth/utils/validImages': dynamicVirtual([
+								'./virtuals/auth/validImages/index.js',
+							]),
+							'studiocms:auth/utils/getLabelForPermissionLevel': dynamicVirtual([
+								'./virtuals/auth/getLabelForPermissionLevel.js',
+							]),
+							'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
+							'studiocms:i18n': dynamicWithAstroVirtual({
 								dynamicExports: ['./virtuals/i18n/index.js'],
 								astroComponents: {
 									LanguageSelector: './virtuals/i18n/LanguageSelector.astro',
 								},
 							}),
-							'studiocms:i18n/client': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/i18n/client.js'],
-							}),
-							'studiocms:sdk': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/sdk/index.js'],
-							}),
-							'studiocms:sdk/types': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./virtuals/sdk/types.js'],
-							}),
+							'studiocms:i18n/client': dynamicVirtual(['./virtuals/i18n/client.js']),
+							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
+							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
 							'studiocms:logger': buildLoggerVirtual(verbose),
 						},
 					});
