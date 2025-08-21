@@ -203,7 +203,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				integrationLogger(logInfo, 'Extracting component props...');
 
 				const componentProps: ComponentRegistryEntry[] = yield* registry.getAllComponents().pipe(
-					Effect.map((map) => map.entries().toArray()),
+					Effect.map((map) => Array.from(map.entries())),
 					Effect.map((array) =>
 						array.map(([iName, data]) => ({
 							...data,
