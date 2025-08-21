@@ -263,18 +263,6 @@ export const studiocms = defineIntegration({
 									'./virtuals/lib/urlGen.js',
 								],
 							}),
-							'studiocms:mailer': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/mailer/index.js'],
-							}),
-							'studiocms:notifier': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/notifier/index.js'],
-							}),
-							'studiocms:notifier/client': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/notifier/client.js'],
-							}),
 							'studiocms:sdk': buildDynamicOnlyVirtual({
 								resolve,
 								items: ['./sdk/index.js'],
@@ -315,10 +303,22 @@ export const studiocms = defineIntegration({
 								resolve,
 								items: ['./scripts/three.js'],
 							}),
+							'studiocms:notifier': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/notifier/index.js'],
+							}),
+							'studiocms:notifier/client': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/notifier/client.js'],
+							}),
+							'studiocms:mailer': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/mailer/index.js'],
+							}),
 							'studiocms:mailer/templates': buildNamedVirtual({
 								resolve,
 								namedExport: 'getTemplate',
-								path: './lib/mailer/template.js',
+								path: './virtuals/mailer/template.js',
 								exportDefault: true,
 							}),
 							'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
