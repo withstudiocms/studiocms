@@ -76,10 +76,6 @@
 			"types": "./dist/db/config.d.ts",
 			"default": "./dist/db/config.js"
 		},
-		"./db/tables": {
-			"types": "./dist/db/tables.d.ts",
-			"default": "./dist/db/tables.js"
-		},
 		"./errors": {
 			"types": "./dist/errors.d.ts",
 			"default": "./dist/errors.js"
