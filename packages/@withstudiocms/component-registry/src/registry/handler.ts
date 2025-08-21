@@ -3,7 +3,7 @@
 import { deepmerge, Effect, runEffect } from '@withstudiocms/effect';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
-import type { AstroComponentProps, ComponentRegistryEntry } from '../types.js';
+import type { ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
 import { buildAliasExports, buildVirtualImport, InternalId, RuntimeInternalId } from './consts.js';
 import { ComponentRegistry } from './Registry.js';
@@ -201,22 +201,19 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
 
 				integrationLogger(logInfo, 'Extracting component props...');
-				const componentPropsMap: Map<string, AstroComponentProps> =
-					yield* registry.getAllComponents();
 
-				const componentPropsEntries = Array.from(componentPropsMap.entries());
-
-				const componentProps: ComponentRegistryEntry[] = componentPropsEntries.map(
-					([iName, data]) => ({
-						...data,
-						name: iName,
-						safeName: convertHyphensToUnderscores(iName),
-					})
+				const componentProps: ComponentRegistryEntry[] = yield* registry.getAllComponents().pipe(
+					Effect.map((map) => map.entries().toArray()),
+					Effect.map((array) =>
+						array.map(([iName, data]) => ({
+							...data,
+							name: iName,
+							safeName: convertHyphensToUnderscores(iName),
+						}))
+					)
 				);
 
 				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
-
-				integrationLogger(logInfo, 'Component registry setup complete.');
 
 				if (verbose && componentProps.length <= 10) {
 					integrationLogger(
@@ -240,6 +237,8 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 						...(virtualId ? buildAliasExports(virtualId) : {}),
 					},
 				});
+
+				integrationLogger(logInfo, 'Component registry setup complete.');
 			}).pipe(Effect.provide(ComponentRegistry.Default))
 		)
 );
