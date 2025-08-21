@@ -71,7 +71,7 @@ export const buildVirtualModules = (resolve: (...path: Array<string>) => string)
 		namedExport: string;
 		path: string;
 		exportDefault?: boolean;
-	}) => `
+	}): string => `
 import { ${namedExport} } from ${JSON.stringify(resolve(path))};
 export { ${namedExport} };
 ${exportDefault ? `export default ${namedExport};` : ''}
@@ -80,7 +80,7 @@ ${exportDefault ? `export default ${namedExport};` : ''}
 	/**
 	 * Generates export statements for Astro components with custom names.
 	 */
-	const astroComponentVirtual = (items: Record<string, string>) =>
+	const astroComponentVirtual = (items: Record<string, string>): string =>
 		Object.entries(items)
 			.map(([key, val]) => `export { default as ${key} } from ${JSON.stringify(resolve(val))}`)
 			.join('\n');
@@ -94,11 +94,7 @@ ${exportDefault ? `export default ${namedExport};` : ''}
 	}: {
 		dynamicExports: Array<string>;
 		astroComponents: Record<string, string>;
-	}) => {
-		const dynamic = dynamicVirtual(dynamicExports);
-		const astro = astroComponentVirtual(astroComponents);
-		return `${dynamic}\n${astro}`;
-	};
+	}): string => [dynamicVirtual(dynamicExports), astroComponentVirtual(astroComponents)].join('\n');
 
 	return {
 		dynamicVirtual,
@@ -116,13 +112,10 @@ ${exportDefault ? `export default ${namedExport};` : ''}
  * @param options - The configuration options to be injected into the stub template.
  * @returns The resulting configuration file content as a string with the options embedded.
  */
-export const buildVirtualConfig = (options: StudioCMSConfig): string => {
-	const configStub = fs.readFileSync(resolve('./stubs/config.stub.js'), 'utf-8');
-
-	const configContent = configStub.replace(/\$\$options\$\$/g, JSON.stringify(options));
-
-	return configContent;
-};
+export const buildVirtualConfig = (options: StudioCMSConfig): string =>
+	fs
+		.readFileSync(resolve('./stubs/config.stub.js'), 'utf-8')
+		.replace(/\$\$options\$\$/g, JSON.stringify(options));
 
 /**
  * Builds the content for a logger virtual file by reading a logger stub file and replacing
@@ -131,10 +124,7 @@ export const buildVirtualConfig = (options: StudioCMSConfig): string => {
  * @param verbose - Determines whether verbose logging should be enabled.
  * @returns The logger file content with the verbosity setting applied.
  */
-export const buildLoggerVirtual = (verbose: boolean) => {
-	const loggerStub = fs.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8');
-
-	const loggerContent = loggerStub.replace(/\$\$verbose\$\$/g, verbose.toString());
-
-	return loggerContent;
-};
+export const buildLoggerVirtual = (verbose: boolean): string =>
+	fs
+		.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8')
+		.replace(/\$\$verbose\$\$/g, verbose.toString());
