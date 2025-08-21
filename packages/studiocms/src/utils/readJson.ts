@@ -1,5 +1,6 @@
 import fs from 'node:fs';
+import { jsonParse } from './jsonParse.js';
 
-export function readJson<T>(path: string | URL): T {
-	return JSON.parse(fs.readFileSync(path, 'utf-8'));
+export function readJson<T extends object>(path: string | URL): T {
+	return jsonParse<T>(fs.readFileSync(path, 'utf-8'));
 }

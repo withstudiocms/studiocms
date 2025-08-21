@@ -7,7 +7,18 @@ import DoubleSidebar from '../../components/dashboard/DoubleSidebar.astro';
 import LoginChecker from '../../components/dashboard/LoginChecker.astro';
 import SidebarModals from '../../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../../components/dashboard/SingleSidebar.astro';
-import { makePageTitle } from '../../utils/makePageTitle.js';
+
+const makePageTitle = (
+	pageName: string,
+	config: {
+		title: string;
+	},
+	separator?: string
+) => {
+	const separatorString = separator ? `${separator}` : '|';
+
+	return `${pageName} ${separatorString} ${config.title}`;
+};
 
 const latestVersion = Astro.locals.StudioCMS.latestVersion;
 
