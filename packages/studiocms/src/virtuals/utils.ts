@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import { createResolver } from 'astro-integration-kit';
 import type { StudioCMSConfig } from '../schemas/index.js';
 
 export const buildVirtualConfig = (options: StudioCMSConfig): string => `
@@ -91,4 +93,14 @@ export const buildDynamicAndAstroVirtualExport = ({
 	});
 
 	return `${dynamicExportMaps}\n${astroComponentMaps}`;
+};
+
+const { resolve } = createResolver(import.meta.url);
+
+export const buildLoggerVirtual = (verbose: boolean) => {
+	const loggerStub = fs.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8');
+
+	const loggerContent = loggerStub.replace(/\$\$verbose\$\$/g, verbose.toString());
+
+	return loggerContent;
 };

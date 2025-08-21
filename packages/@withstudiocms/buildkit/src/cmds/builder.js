@@ -13,6 +13,7 @@ const defaultConfig = {
 	sourcemap: false,
 	sourcesContent: false,
 	loader: {
+		'.stub.js': 'copy',
 		'.astro': 'copy',
 		'.d.ts': 'copy',
 		'.json': 'copy',
