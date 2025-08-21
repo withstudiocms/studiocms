@@ -1,5 +1,5 @@
 import { sdk as sdkConfig } from 'studiocms:config';
-import { Context, Effect, Layer } from '../effect.js';
+import { Context, Effect, Layer } from '../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from './errors.js';
 import type {
 	BaseCacheObject,

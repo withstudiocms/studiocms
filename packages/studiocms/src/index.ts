@@ -340,15 +340,13 @@ export const studiocms = defineIntegration({
 								resolve,
 								items: ['./virtuals/i18n/client.js'],
 							}),
-
-							// TODO Migrate SDK to virtuals folder
 							'studiocms:sdk': buildDynamicOnlyVirtual({
 								resolve,
-								items: ['./sdk/index.js'],
+								items: ['./virtuals/sdk/index.js'],
 							}),
 							'studiocms:sdk/types': buildDynamicOnlyVirtual({
 								resolve,
-								items: ['./sdk/types.js'],
+								items: ['./virtuals/sdk/types.js'],
 							}),
 
 							// TODO Decide if there is a better way to build this

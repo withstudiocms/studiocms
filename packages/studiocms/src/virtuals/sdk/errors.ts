@@ -1,5 +1,5 @@
 import { Data } from 'effect';
-import { StudioCMSError } from '../errors.js';
+import { StudioCMSError } from '../../errors.js';
 
 /**
  * Represents an error specific to the StudioCMS SDK.

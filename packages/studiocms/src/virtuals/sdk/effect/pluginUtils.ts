@@ -1,4 +1,4 @@
-import { Effect, type ParseResult, pipe, Schema } from '../../effect.js';
+import { Effect, type ParseResult, pipe, Schema } from '../../../effect.js';
 import type { PluginDataEntry, ValidatorOptions } from '../types/index.js';
 
 export type RecursiveSimplifyMutable<A> = {

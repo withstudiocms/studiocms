@@ -1,5 +1,5 @@
 import { and, eq } from 'astro:db';
-import { Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB, SDKCore_Generators } from '../effect/index.js';
 import { tsAPIKeys, tsPermissions } from '../tables.js';
 import { _clearLibSQLError } from '../utils.js';

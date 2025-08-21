@@ -1,6 +1,6 @@
 import { and, eq } from 'astro:db';
-import { GhostUserDefaults } from '../../consts.js';
-import { Effect, genLogger } from '../../effect.js';
+import { GhostUserDefaults } from '../../../consts.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB, SDKCore_Generators } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import {

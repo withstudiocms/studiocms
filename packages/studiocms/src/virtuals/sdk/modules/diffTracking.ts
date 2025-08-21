@@ -1,7 +1,7 @@
 import { asc, desc, eq, inArray } from 'astro:db';
 import { createTwoFilesPatch } from 'diff';
 import { type Diff2HtmlConfig, html } from 'diff2html';
-import { Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB, SDKCore_Parsers } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsDiffTracking, tsPageContent, tsPageData } from '../tables.js';

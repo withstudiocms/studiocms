@@ -278,7 +278,7 @@ declare module 'studiocms:component-registry/runtime' {
 }
 
 declare module 'studiocms:sdk' {
-	type Mod = typeof import('./sdk/index.js');
+	type Mod = typeof import('./virtuals/sdk/index.js');
 
 	/**
 	 * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
@@ -325,92 +325,102 @@ declare module 'studiocms:sdk' {
 
 declare module 'studiocms:sdk/types' {
 	// src/sdk/types/index
-	export type UsePluginDataOptsBase<T> = import('./sdk/types/index').UsePluginDataOptsBase<T>;
-	export type UsePluginDataOpts<T> = import('./sdk/types/index').UsePluginDataOpts<T>;
+	export type UsePluginDataOptsBase<T> =
+		import('./virtuals/sdk/types/index').UsePluginDataOptsBase<T>;
+	export type UsePluginDataOpts<T> = import('./virtuals/sdk/types/index').UsePluginDataOpts<T>;
 	export type UserPluginDataOptsImplementation<T> =
-		import('./sdk/types/index').UserPluginDataOptsImplementation<T>;
-	export type PluginDataEntry<T> = import('./sdk/types/index').PluginDataEntry<T>;
-	export type JSONValidatorFn<T> = import('./sdk/types/index').JSONValidatorFn<T>;
-	export type EffectSchemaValidator<T> = import('./sdk/types/index').EffectSchemaValidator<T>;
-	export type ZodValidator<T> = import('./sdk/types/index').ZodValidator<T>;
-	export type ValidatorOptions<T> = import('./sdk/types/index').ValidatorOptions<T>;
-	export type CacheMap<K, V> = import('./sdk/types/index').CacheMap<K, V>;
-	export type PaginateInput = import('./sdk/types/index').PaginateInput;
-	export type MetaOnlyPageData = import('./sdk/types/index').MetaOnlyPageData;
-	export type PageDataReturnType<T> = import('./sdk/types/index').PageDataReturnType<T>;
-	export type PageDataCacheReturnType<T> = import('./sdk/types/index').PageDataCacheReturnType<T>;
-	export type diffItem = import('./sdk/types/index').diffItem;
-	export type diffReturn = import('./sdk/types/index').diffReturn;
-	export type DiffReturnType<T> = import('./sdk/types/index').DiffReturnType<T>;
-	export type FolderNode = import('./sdk/types/index').FolderNode;
-	export type FolderListItem = import('./sdk/types/index').FolderListItem;
-	export type AstroDBVirtualModule = import('./sdk/types/index').AstroDBVirtualModule;
-	export type CacheConfig = import('./sdk/types/index').CacheConfig;
-	export type ProcessedCacheConfig = import('./sdk/types/index').ProcessedCacheConfig;
-	export type ProcessedSDKConfig = import('./sdk/types/index').ProcessedSDKConfig;
-	export type BaseCacheObject = import('./sdk/types/index').BaseCacheObject;
-	export type PageDataCacheObject = import('./sdk/types/index').PageDataCacheObject;
-	export type MetaOnlyPageDataCacheObject = import('./sdk/types/index').MetaOnlyPageDataCacheObject;
-	export type SiteConfigCacheObject = import('./sdk/types/index').SiteConfigCacheObject;
-	export type VersionCacheObject = import('./sdk/types/index').VersionCacheObject;
-	export type FolderTreeCacheObject = import('./sdk/types/index').FolderTreeCacheObject;
-	export type FolderListCacheObject = import('./sdk/types/index').FolderListCacheObject;
-	export type addDatabaseEntryInsertPage = import('./sdk/types/index').addDatabaseEntryInsertPage;
-	export type CombinedUserData = import('./sdk/types/index').CombinedUserData;
-	export type CombinedPageData = import('./sdk/types/index').CombinedPageData;
-	export type DeletionResponse = import('./sdk/types/index').DeletionResponse;
-	export type PageInsert = import('./sdk/types/index').PageInsert;
-	export type MultiPageInsert = import('./sdk/types/index').MultiPageInsert;
+		import('./virtuals/sdk/types/index').UserPluginDataOptsImplementation<T>;
+	export type PluginDataEntry<T> = import('./virtuals/sdk/types/index').PluginDataEntry<T>;
+	export type JSONValidatorFn<T> = import('./virtuals/sdk/types/index').JSONValidatorFn<T>;
+	export type EffectSchemaValidator<T> =
+		import('./virtuals/sdk/types/index').EffectSchemaValidator<T>;
+	export type ZodValidator<T> = import('./virtuals/sdk/types/index').ZodValidator<T>;
+	export type ValidatorOptions<T> = import('./virtuals/sdk/types/index').ValidatorOptions<T>;
+	export type CacheMap<K, V> = import('./virtuals/sdk/types/index').CacheMap<K, V>;
+	export type PaginateInput = import('./virtuals/sdk/types/index').PaginateInput;
+	export type MetaOnlyPageData = import('./virtuals/sdk/types/index').MetaOnlyPageData;
+	export type PageDataReturnType<T> = import('./virtuals/sdk/types/index').PageDataReturnType<T>;
+	export type PageDataCacheReturnType<T> =
+		import('./virtuals/sdk/types/index').PageDataCacheReturnType<T>;
+	export type diffItem = import('./virtuals/sdk/types/index').diffItem;
+	export type diffReturn = import('./virtuals/sdk/types/index').diffReturn;
+	export type DiffReturnType<T> = import('./virtuals/sdk/types/index').DiffReturnType<T>;
+	export type FolderNode = import('./virtuals/sdk/types/index').FolderNode;
+	export type FolderListItem = import('./virtuals/sdk/types/index').FolderListItem;
+	export type AstroDBVirtualModule = import('./virtuals/sdk/types/index').AstroDBVirtualModule;
+	export type CacheConfig = import('./virtuals/sdk/types/index').CacheConfig;
+	export type ProcessedCacheConfig = import('./virtuals/sdk/types/index').ProcessedCacheConfig;
+	export type ProcessedSDKConfig = import('./virtuals/sdk/types/index').ProcessedSDKConfig;
+	export type BaseCacheObject = import('./virtuals/sdk/types/index').BaseCacheObject;
+	export type PageDataCacheObject = import('./virtuals/sdk/types/index').PageDataCacheObject;
+	export type MetaOnlyPageDataCacheObject =
+		import('./virtuals/sdk/types/index').MetaOnlyPageDataCacheObject;
+	export type SiteConfigCacheObject = import('./virtuals/sdk/types/index').SiteConfigCacheObject;
+	export type VersionCacheObject = import('./virtuals/sdk/types/index').VersionCacheObject;
+	export type FolderTreeCacheObject = import('./virtuals/sdk/types/index').FolderTreeCacheObject;
+	export type FolderListCacheObject = import('./virtuals/sdk/types/index').FolderListCacheObject;
+	export type addDatabaseEntryInsertPage =
+		import('./virtuals/sdk/types/index').addDatabaseEntryInsertPage;
+	export type CombinedUserData = import('./virtuals/sdk/types/index').CombinedUserData;
+	export type CombinedPageData = import('./virtuals/sdk/types/index').CombinedPageData;
+	export type DeletionResponse = import('./virtuals/sdk/types/index').DeletionResponse;
+	export type PageInsert = import('./virtuals/sdk/types/index').PageInsert;
+	export type MultiPageInsert = import('./virtuals/sdk/types/index').MultiPageInsert;
 
 	// src/sdk/types/tableDefs
-	export type SiteConfig = import('./sdk/types/index').SiteConfig;
-	export type PageDataStripped = import('./sdk/types/index').PageDataStripped;
-	export type PageDataReturnId = import('./sdk/types/index').PageDataReturnId;
-	export type PageContentReturnId = import('./sdk/types/index').PageContentReturnId;
-	export type PageDataTagsInsertResponse = import('./sdk/types/index').PageDataTagsInsertResponse;
+	export type SiteConfig = import('./virtuals/sdk/types/index').SiteConfig;
+	export type PageDataStripped = import('./virtuals/sdk/types/index').PageDataStripped;
+	export type PageDataReturnId = import('./virtuals/sdk/types/index').PageDataReturnId;
+	export type PageContentReturnId = import('./virtuals/sdk/types/index').PageContentReturnId;
+	export type PageDataTagsInsertResponse =
+		import('./virtuals/sdk/types/index').PageDataTagsInsertResponse;
 	export type PageDataCategoriesInsertResponse =
-		import('./sdk/types/index').PageDataCategoriesInsertResponse;
-	export type DatabaseTables = import('./sdk/types/index').DatabaseTables;
-	export type SingleRank = import('./sdk/types/index').SingleRank;
-	export type CombinedRank = import('./sdk/types/index').CombinedRank;
-	export type AvailableLists = import('./sdk/types/index').AvailableLists;
+		import('./virtuals/sdk/types/index').PageDataCategoriesInsertResponse;
+	export type DatabaseTables = import('./virtuals/sdk/types/index').DatabaseTables;
+	export type SingleRank = import('./virtuals/sdk/types/index').SingleRank;
+	export type CombinedRank = import('./virtuals/sdk/types/index').CombinedRank;
+	export type AvailableLists = import('./virtuals/sdk/types/index').AvailableLists;
 
 	// src/sdk/types/tsAlias
-	export type tsPluginDataInsert = import('./sdk/types/index').tsPluginDataInsert;
-	export type tsPluginDataSelect = import('./sdk/types/index').tsPluginDataSelect;
+	export type tsPluginDataInsert = import('./virtuals/sdk/types/index').tsPluginDataInsert;
+	export type tsPluginDataSelect = import('./virtuals/sdk/types/index').tsPluginDataSelect;
 	export type tsEmailVerificationTokensInsert =
-		import('./sdk/types/index').tsEmailVerificationTokensInsert;
+		import('./virtuals/sdk/types/index').tsEmailVerificationTokensInsert;
 	export type tsEmailVerificationTokensSelect =
-		import('./sdk/types/index').tsEmailVerificationTokensSelect;
+		import('./virtuals/sdk/types/index').tsEmailVerificationTokensSelect;
 	export type tsNotificationSettingsInsert =
-		import('./sdk/types/index').tsNotificationSettingsInsert;
+		import('./virtuals/sdk/types/index').tsNotificationSettingsInsert;
 	export type tsNotificationSettingsSelect =
-		import('./sdk/types/index').tsNotificationSettingsSelect;
-	export type tsUserResetTokensInsert = import('./sdk/types/index').tsUserResetTokensInsert;
-	export type tsUserResetTokensSelect = import('./sdk/types/index').tsUserResetTokensSelect;
-	export type tsPageFolderSelect = import('./sdk/types/index').tsPageFolderSelect;
-	export type tsPageFolderInsert = import('./sdk/types/index').tsPageFolderInsert;
-	export type tsUsersSelect = import('./sdk/types/index').tsUsersSelect;
-	export type tsUsersInsert = import('./sdk/types/index').tsUsersInsert;
-	export type tsUsersUpdate = import('./sdk/types/index').tsUsersUpdate;
-	export type tsOAuthAccountsSelect = import('./sdk/types/index').tsOAuthAccountsSelect;
-	export type tsSessionTableSelect = import('./sdk/types/index').tsSessionTableSelect;
-	export type tsSessionTableInsert = import('./sdk/types/index').tsSessionTableInsert;
-	export type tsPermissionsSelect = import('./sdk/types/index').tsPermissionsSelect;
-	export type tsPermissionsInsert = import('./sdk/types/index').tsPermissionsInsert;
-	export type tsPageDataSelect = import('./sdk/types/index').tsPageDataSelect;
-	export type tsPageDataInsert = import('./sdk/types/index').tsPageDataInsert;
-	export type tsPageDataTagsSelect = import('./sdk/types/index').tsPageDataTagsSelect;
-	export type tsPageDataTagsInsert = import('./sdk/types/index').tsPageDataTagsInsert;
-	export type tsPageDataCategoriesSelect = import('./sdk/types/index').tsPageDataCategoriesSelect;
-	export type tsPageDataCategoriesInsert = import('./sdk/types/index').tsPageDataCategoriesInsert;
-	export type tsPageContentSelect = import('./sdk/types/index').tsPageContentSelect;
-	export type tsPageContentInsert = import('./sdk/types/index').tsPageContentInsert;
-	export type tsDiffTrackingSelect = import('./sdk/types/index').tsDiffTrackingSelect;
-	export type tsDiffTrackingInsert = import('./sdk/types/index').tsDiffTrackingInsert;
-	export type tsSiteConfigSelect = import('./sdk/types/index').tsSiteConfigSelect;
-	export type tsSiteConfigInsert = import('./sdk/types/index').tsSiteConfigInsert;
-	export type CombinedInsertContent = import('./sdk/types/index').CombinedInsertContent;
+		import('./virtuals/sdk/types/index').tsNotificationSettingsSelect;
+	export type tsUserResetTokensInsert =
+		import('./virtuals/sdk/types/index').tsUserResetTokensInsert;
+	export type tsUserResetTokensSelect =
+		import('./virtuals/sdk/types/index').tsUserResetTokensSelect;
+	export type tsPageFolderSelect = import('./virtuals/sdk/types/index').tsPageFolderSelect;
+	export type tsPageFolderInsert = import('./virtuals/sdk/types/index').tsPageFolderInsert;
+	export type tsUsersSelect = import('./virtuals/sdk/types/index').tsUsersSelect;
+	export type tsUsersInsert = import('./virtuals/sdk/types/index').tsUsersInsert;
+	export type tsUsersUpdate = import('./virtuals/sdk/types/index').tsUsersUpdate;
+	export type tsOAuthAccountsSelect = import('./virtuals/sdk/types/index').tsOAuthAccountsSelect;
+	export type tsSessionTableSelect = import('./virtuals/sdk/types/index').tsSessionTableSelect;
+	export type tsSessionTableInsert = import('./virtuals/sdk/types/index').tsSessionTableInsert;
+	export type tsPermissionsSelect = import('./virtuals/sdk/types/index').tsPermissionsSelect;
+	export type tsPermissionsInsert = import('./virtuals/sdk/types/index').tsPermissionsInsert;
+	export type tsPageDataSelect = import('./virtuals/sdk/types/index').tsPageDataSelect;
+	export type tsPageDataInsert = import('./virtuals/sdk/types/index').tsPageDataInsert;
+	export type tsPageDataTagsSelect = import('./virtuals/sdk/types/index').tsPageDataTagsSelect;
+	export type tsPageDataTagsInsert = import('./virtuals/sdk/types/index').tsPageDataTagsInsert;
+	export type tsPageDataCategoriesSelect =
+		import('./virtuals/sdk/types/index').tsPageDataCategoriesSelect;
+	export type tsPageDataCategoriesInsert =
+		import('./virtuals/sdk/types/index').tsPageDataCategoriesInsert;
+	export type tsPageContentSelect = import('./virtuals/sdk/types/index').tsPageContentSelect;
+	export type tsPageContentInsert = import('./virtuals/sdk/types/index').tsPageContentInsert;
+	export type tsDiffTrackingSelect = import('./virtuals/sdk/types/index').tsDiffTrackingSelect;
+	export type tsDiffTrackingInsert = import('./virtuals/sdk/types/index').tsDiffTrackingInsert;
+	export type tsSiteConfigSelect = import('./virtuals/sdk/types/index').tsSiteConfigSelect;
+	export type tsSiteConfigInsert = import('./virtuals/sdk/types/index').tsSiteConfigInsert;
+	export type CombinedInsertContent = import('./virtuals/sdk/types/index').CombinedInsertContent;
 }
 
 declare module 'studiocms-dashboard:web-vitals' {
@@ -588,10 +598,10 @@ interface StudioCMSPluginLocals {
 interface StudioCMSLocals {
 	SCMSGenerator: string;
 	SCMSUiGenerator: string;
-	siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+	siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
 	routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
 	defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
-	latestVersion: import('./sdk/types/index').VersionCacheObject;
+	latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
 	security?: StudioCMSSecurityLocals;
 	plugins?: StudioCMSPluginLocals;
 }
@@ -601,11 +611,11 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		latestVersion: import('./sdk/types/index').VersionCacheObject;
+		latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+		siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */

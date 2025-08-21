@@ -1,4 +1,4 @@
-import { Effect, runEffect } from '../effect.js';
+import { Effect, runEffect } from '../../effect.js';
 import { SDKCore as _SDKCore } from './sdkCore.js';
 
 /**

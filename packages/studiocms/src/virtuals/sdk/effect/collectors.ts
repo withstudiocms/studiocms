@@ -1,5 +1,5 @@
 import { eq, inArray } from 'astro:db';
-import { type Cause, Effect } from '../../effect.js';
+import { type Cause, Effect } from '../../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import {
 	tsOAuthAccounts,

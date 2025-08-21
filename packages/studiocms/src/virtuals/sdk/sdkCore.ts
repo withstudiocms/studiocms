@@ -1,4 +1,4 @@
-import { Effect } from '../effect.js';
+import { Effect } from '../../effect.js';
 import {
 	AstroDB,
 	SDKCore_Collectors,

@@ -1,5 +1,5 @@
 import { cmsEncryptionKey } from 'virtual:studiocms/sdk/env';
-import { Effect } from '../../effect.js';
+import { Effect } from '../../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { generateJwt, type JwtVerificationResult, verifyJwt } from './lib/jwt-generator.js';
 

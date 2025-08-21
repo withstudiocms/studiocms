@@ -1,10 +1,10 @@
 import type { z } from 'astro/zod';
-import type { Schema } from '../../effect.js';
+import type { Schema } from '../../../effect.js';
 import type {
 	CacheConfig,
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
-} from '../../schemas/config/sdk.js';
+} from '../../../schemas/config/sdk.js';
 import type {
 	PageContentReturnId,
 	PageDataReturnId,

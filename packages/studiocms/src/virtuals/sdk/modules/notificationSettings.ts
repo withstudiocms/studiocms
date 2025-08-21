@@ -1,6 +1,6 @@
 import { eq } from 'astro:db';
-import { CMSNotificationSettingsId, NotificationSettingsDefaults } from '../../consts.js';
-import { Effect, genLogger } from '../../effect.js';
+import { CMSNotificationSettingsId, NotificationSettingsDefaults } from '../../../consts.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsNotificationSettings } from '../tables.js';

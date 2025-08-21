@@ -1,6 +1,6 @@
 import { eq } from 'astro:db';
-import { CMSSiteConfigId } from '../../consts.js';
-import { Effect, genLogger } from '../../effect.js';
+import { CMSSiteConfigId } from '../../../consts.js';
+import { Effect, genLogger } from '../../../effect.js';
 import {
 	FolderListMapID,
 	FolderTreeMapID,

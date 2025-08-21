@@ -1,4 +1,4 @@
-import { Effect, HTTPClient, Platform, Schema } from '../../effect.js';
+import { Effect, HTTPClient, Platform, Schema } from '../../../effect.js';
 
 /**
  * Represents the version information retrieved from NPM.

@@ -1,5 +1,5 @@
 import { eq, like } from 'astro:db';
-import { Effect, genLogger, pipe, Schema } from '../../effect.js';
+import { Effect, genLogger, pipe, Schema } from '../../../effect.js';
 import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
 	noUndefinedEntries,

@@ -5,8 +5,8 @@ import {
 	CMSSiteConfigId,
 	GhostUserDefaults,
 	versionCacheLifetime,
-} from '../../consts.js';
-import { Effect, genLogger } from '../../effect.js';
+} from '../../../consts.js';
+import { Effect, genLogger } from '../../../effect.js';
 import {
 	FolderListMapID,
 	FolderTreeMapID,

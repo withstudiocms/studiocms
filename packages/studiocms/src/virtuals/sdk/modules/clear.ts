@@ -1,4 +1,4 @@
-import { Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { _ClearUnknownError, CacheContext, isCacheEnabled } from '../utils.js';
 
 /**

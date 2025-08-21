@@ -1,5 +1,5 @@
-import { CMSSiteConfigId } from '../../consts.js';
-import { Effect, genLogger } from '../../effect.js';
+import { CMSSiteConfigId } from '../../../consts.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsSiteConfig } from '../tables.js';

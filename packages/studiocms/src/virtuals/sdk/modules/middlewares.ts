@@ -1,5 +1,5 @@
 import _logger, { isVerbose } from 'studiocms:logger';
-import { Effect, genLogger } from '../../effect.js';
+import { Effect, genLogger } from '../../../effect.js';
 import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
 import { SDKCore_PLUGINS } from './plugins.js';
