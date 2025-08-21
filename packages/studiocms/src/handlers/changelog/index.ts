@@ -6,7 +6,7 @@ import { loadChangelog, semverCategories } from './changelogLoader.js';
 const { resolve } = createResolver(import.meta.url);
 
 export const changelogHelper = defineUtility('astro:config:setup')((params) => {
-	const changelog = loadChangelog(resolve('../../CHANGELOG.md'));
+	const changelog = loadChangelog(resolve('../../../CHANGELOG.md'));
 
 	// Generate markdown output
 	const output: string[] = [];
