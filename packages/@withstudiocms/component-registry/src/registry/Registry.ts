@@ -1,7 +1,7 @@
-import { Effect, genLogger, Layer, Platform, PlatformNode } from '../effect.js';
-import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from './errors.js';
+import { Effect, Layer, Platform, PlatformNode } from '@withstudiocms/effect';
+import { ComponentNotFoundError, ComponentRegistryError, FileParseError } from '../errors.js';
+import type { AstroComponentProps } from '../types.js';
 import { PropsParser } from './PropsParser.js';
-import type { AstroComponentProps } from './types.js';
 
 const registryDeps = Layer.mergeAll(
 	PropsParser.Default,
@@ -36,7 +36,7 @@ const registryDeps = Layer.mergeAll(
  */
 export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('ComponentRegistry', {
 	dependencies: [PropsParser.Default, Platform.Path.layer, PlatformNode.NodeFileSystem.layer],
-	effect: genLogger('studiocms/componentRegistry/Registry')(function* () {
+	effect: Effect.gen(function* () {
 		const parser = yield* PropsParser;
 		const fs = yield* Platform.FileSystem.FileSystem;
 		const path = yield* Platform.Path.Path;
@@ -44,7 +44,7 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 
 		return {
 			registerComponentFromFile: (filePath: string, componentName?: string) =>
-				genLogger('studiocms/componentRegistry/Registry.registerComponentFromFile')(function* () {
+				Effect.gen(function* () {
 					const fileContent = yield* fs.readFileString(filePath);
 					const propsDefinition = yield* parser.extractPropsFromAstroFile(fileContent).pipe(
 						Effect.mapError(
@@ -76,19 +76,19 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 			getAllComponents: () => Effect.succeed(new Map(components)),
 
 			getComponentProps: (componentName: string) =>
-				genLogger('studiocms/componentRegistry/Registry.getComponentProps')(function* () {
+				Effect.gen(function* () {
 					const component = components.get(componentName);
 					if (!component) {
-						yield* Effect.fail(new ComponentNotFoundError({ componentName }));
+						return yield* Effect.fail(new ComponentNotFoundError({ componentName }));
 					}
 					return component;
 				}),
 
 			validateProps: (componentName: string, props: Record<string, unknown>) =>
-				genLogger('studiocms/componentRegistry/Registry.validateProps')(function* () {
+				Effect.gen(function* () {
 					const component = components.get(componentName);
 					if (!component) {
-						yield* Effect.fail(new ComponentNotFoundError({ componentName }));
+						return yield* Effect.fail(new ComponentNotFoundError({ componentName }));
 					}
 
 					const errors: string[] = [];

@@ -211,7 +211,7 @@ declare module 'studiocms:component-registry' {
 	 * Each entry in the array is an object with a `name` and `props` property.
 	 * The `props` property is an array of objects representing the properties of the component.
 	 */
-	export const componentProps: import('./componentRegistry/types.js').ComponentRegistryEntry[];
+	export const componentProps: import('@withstudiocms/component-registry/types').ComponentRegistryEntry[];
 }
 
 declare module 'studiocms:component-registry/runtime' {
@@ -223,7 +223,7 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @property safeName - A readonly string representing a safe, unique identifier for the component.
 	 */
 	export type ComponentRegistryEntry =
-		import('./componentRegistry/runtime.js').ComponentRegistryEntry;
+		import('@withstudiocms/component-registry/runtime').ComponentRegistryEntry;
 
 	/**
 	 * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
@@ -234,19 +234,19 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @deprecated This function is deprecated and will be removed in future versions.
 	 * Use `getRendererComponents` instead for importing components from the component registry.
 	 */
-	export const importComponentsKeys: typeof import('./componentRegistry/runtime.js').importComponentsKeys;
+	export const importComponentsKeys: typeof import('@withstudiocms/component-registry/runtime').importComponentsKeys;
 
 	/**
 	 * @returns A promise that resolves to an object containing the imported components.
 	 */
-	export const getRendererComponents: typeof import('./componentRegistry/runtime.js').getRendererComponents;
+	export const getRendererComponents: typeof import('@withstudiocms/component-registry/runtime').getRendererComponents;
 
 	/**
 	 * Returns the component registry entries.
 	 *
 	 * @returns {ComponentRegistryEntry[]} An object mapping safe component names to their registry entries.
 	 */
-	export const getRegistryComponents: typeof import('./componentRegistry/runtime.js').getRegistryComponents;
+	export const getRegistryComponents: typeof import('@withstudiocms/component-registry/runtime').getRegistryComponents;
 
 	/**
 	 * List of component properties that are registered in the component registry.
@@ -254,7 +254,7 @@ declare module 'studiocms:component-registry/runtime' {
 	 * Each entry in the array is an object with a `name` and `props` property.
 	 * The `props` property is an array of objects representing the properties of the component.
 	 */
-	export const componentProps: import('./componentRegistry/runtime.js').ComponentRegistryEntry[];
+	export const componentProps: import('@withstudiocms/component-registry/runtime').ComponentRegistryEntry[];
 
 	/**
 	 * Converts all underscores in a given string to hyphens.
@@ -262,18 +262,18 @@ declare module 'studiocms:component-registry/runtime' {
 	 * @param str - The input string containing underscores to be converted.
 	 * @returns A new string with all underscores replaced by hyphens.
 	 */
-	export const convertUnderscoresToHyphens: typeof import('./componentRegistry/runtime.js').convertUnderscoresToHyphens;
+	export const convertUnderscoresToHyphens: typeof import('@withstudiocms/component-registry/runtime').convertUnderscoresToHyphens;
 	/**
 	 * Converts all hyphens in a given string to underscores.
 	 *
 	 * @param str - The input string containing hyphens to be converted.
 	 * @returns A new string with all hyphens replaced by underscores.
 	 */
-	export const convertHyphensToUnderscores: typeof import('./componentRegistry/runtime.js').convertHyphensToUnderscores;
+	export const convertHyphensToUnderscores: typeof import('@withstudiocms/component-registry/runtime').convertHyphensToUnderscores;
 
-	export const setupRendererComponentProxy: typeof import('./componentRegistry/runtime.js').setupRendererComponentProxy;
+	export const setupRendererComponentProxy: typeof import('@withstudiocms/component-registry/runtime').setupRendererComponentProxy;
 
-	export const createRenderer: typeof import('./componentRegistry/runtime.js').createRenderer;
+	export const createRenderer: typeof import('@withstudiocms/component-registry/runtime').createRenderer;
 }
 
 declare module 'studiocms:sdk' {

@@ -1,7 +1,10 @@
 import { toast } from '@studiocms/ui/components/Toast/toast.js';
 import type { ToastProps } from '@studiocms/ui/types';
+import type {
+	AstroComponentProp,
+	ComponentRegistryEntry,
+} from '@withstudiocms/component-registry/types';
 import type { BlockProperties, Component, Editor, ProjectData, TraitProperties } from 'grapesjs';
-import type { AstroComponentProp, ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { CSRF_HEADER_NAME, STORE_ENDPOINT_PATH } from '../consts.js';
 import { firstUpperCase, parse } from '../lib/utils.js';
 

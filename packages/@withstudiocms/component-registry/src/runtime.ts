@@ -1,14 +1,15 @@
-import * as registry from 'studiocms:component-registry';
-import { componentKeys, componentProps } from 'studiocms:component-registry';
-import logger from 'studiocms:logger';
+import * as registry from 'virtual:component-registry-internal-proxy';
+import { componentKeys, componentProps } from 'virtual:component-registry-internal-proxy';
+import { name } from 'virtual:component-registry-internal-proxy/name';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
-import { prefixError, StudioCMSRendererError } from '../lib/renderer/errors.js';
-import { createComponentProxy, transformHTML } from '../runtime/AstroComponentProxy.js';
-import { convertUnderscoresToHyphens } from './convert-hyphens.js';
+import { createComponentProxy } from './component-proxy/index.js';
+import { toComponentProxyError } from './errors.js';
+import { transformHTML } from './transform-html.js';
 import type { ComponentRegistryEntry } from './types.js';
+import { convertUnderscoresToHyphens } from './utils.js';
 
-export * from './convert-hyphens.js';
+export * from './utils.js';
 
 export { componentProps };
 export type { ComponentRegistryEntry } from './types.js';
@@ -23,6 +24,16 @@ export function getRegistryComponents(): ComponentRegistryEntry[] {
 }
 
 /**
+ * Constructs an error message prefix indicating a failure to import a component.
+ *
+ * @param key - The key or identifier of the component that failed to import.
+ * @param name - The name of the component registry or source.
+ * @returns A formatted error message string describing the import failure.
+ */
+const buildPrefix = (key: string, name: string) =>
+	`Failed to import component "${key}" from [${name}] component-registry`;
+
+/**
  * @returns A promise that resolves to an object containing the imported components.
  */
 export async function getRendererComponents() {
@@ -35,19 +46,9 @@ export async function getRendererComponents() {
 				registry[key as keyof typeof registry];
 		} catch (e) {
 			if (e instanceof Error) {
-				const newErr = prefixError(
-					e,
-					`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
-				);
-				logger.error(newErr);
-				throw new StudioCMSRendererError(newErr.message, newErr.stack);
+				throw toComponentProxyError(e, buildPrefix(key, name));
 			}
-			const newErr = prefixError(
-				new Error('Unknown error'),
-				`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
-			);
-			logger.error(newErr);
-			throw new StudioCMSRendererError(newErr.message, newErr.stack);
+			throw toComponentProxyError(new Error('Unknown error'), buildPrefix(key, name));
 		}
 	}
 
@@ -55,24 +56,11 @@ export async function getRendererComponents() {
 }
 
 /**
- * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
- *
- * @param keys - An array of strings representing the keys of the components to import.
- * @returns A promise that resolves to an object containing the imported components.
- * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
- * @deprecated This function is deprecated and will be removed in future versions.
- * Use `getRendererComponents` instead for importing components from the component registry.
- */
-export async function importComponentsKeys() {
-	return getRendererComponents();
-}
-
-/**
  * Sets up a component proxy for the renderer.
  *
  * @param result - The SSRResult object from Astro.
  * @returns A promise that resolves to a component proxy containing the components.
- * @throws {StudioCMSRendererError} If there is an error during setup, it will be prefixed and logged.
+ * @throws {ComponentProxyError} If there is an error during setup, it will be prefixed and logged.
  */
 export async function setupRendererComponentProxy(result: SSRResult) {
 	const components = await getRendererComponents();

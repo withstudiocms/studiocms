@@ -1,4 +1,40 @@
-import { Data } from '../effect.js';
+import { Data } from '@withstudiocms/effect';
+import { AstroError } from 'astro/errors';
+
+export class ComponentProxyError extends AstroError {
+	message: string;
+	stack?: string;
+	name = 'Component Proxy Error';
+	constructor(message: string, hint: string, stack?: string) {
+		super(message, hint);
+		this.message = message;
+		this.hint = hint;
+		this.stack = stack;
+	}
+}
+
+export function prefixError(err: Error, prefix: string): Error {
+	// If the error is an object with a `message` property, attempt to prefix the message
+	if (err?.message) {
+		try {
+			err.message = `${prefix}:\n${err.message}`;
+			return err;
+		} catch {
+			// Any errors here are ok, there's fallback code below
+		}
+	}
+
+	// If that failed, create a new error with the desired message and attempt to keep the stack
+	const wrappedError = new Error(`${prefix}${err ? `: ${err}` : ''}`);
+	try {
+		wrappedError.stack = err.stack;
+		wrappedError.cause = err;
+	} catch {
+		// It's ok if we could not set the stack or cause - the message is the most important part
+	}
+
+	return wrappedError;
+}
 
 /**
  * Error class representing issues related to the component registry.
@@ -56,3 +92,8 @@ export class FileParseError extends Data.TaggedError('FileParseError')<{
 export class ComponentNotFoundError extends Data.TaggedError('ComponentNotFoundError')<{
 	readonly componentName: string;
 }> {}
+
+export function toComponentProxyError(err: Error, prefix: string): ComponentProxyError {
+	const wrapped = prefixError(err, prefix);
+	return new ComponentProxyError(wrapped.message, wrapped.message, wrapped.stack);
+}

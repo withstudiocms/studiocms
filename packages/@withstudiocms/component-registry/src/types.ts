@@ -1,3 +1,10 @@
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
+export type ComponentType = Record<string, any>;
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
+export type AstroProps = Record<string, any>;
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+export type AstroComponentChildren = { value: any };
+
 /**
  * Represents a JSDoc tag with its name and optional text content.
  *

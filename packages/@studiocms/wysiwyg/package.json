@@ -71,6 +71,7 @@
   },
   "peerDependencies": {
     "@studiocms/ui": "catalog:studiocms",
+    "@withstudiocms/component-registry": "workspace:*",
     "astro": "catalog:min",
     "studiocms": "workspace:*",
     "vite": "catalog:min"

@@ -555,6 +555,9 @@ importers:
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 0.4.17(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0))
+      '@withstudiocms/component-registry':
+        specifier: workspace:*
+        version: link:../../@withstudiocms/component-registry
       astro:
         specifier: catalog:min
         version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
@@ -596,6 +599,31 @@ importers:
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
+
+  packages/@withstudiocms/component-registry:
+    dependencies:
+      '@withstudiocms/effect':
+        specifier: workspace:*
+        version: link:../effect
+      astro:
+        specifier: catalog:min
+        version: 5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.19.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.4.2)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      ts-morph:
+        specifier: ^26.0.0
+        version: 26.0.0
+      ultrahtml:
+        specifier: 1.6.0
+        version: 1.6.0
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.16.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
 
   packages/@withstudiocms/config-utils:
     dependencies:
@@ -730,6 +758,9 @@ importers:
       '@withstudiocms/cli-kit':
         specifier: catalog:studiocms
         version: 0.1.0
+      '@withstudiocms/component-registry':
+        specifier: workspace:*
+        version: link:../@withstudiocms/component-registry
       '@withstudiocms/config-utils':
         specifier: workspace:*
         version: link:../@withstudiocms/config-utils
@@ -805,9 +836,6 @@ importers:
       three:
         specifier: 0.170.0
         version: 0.170.0
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0
@@ -4268,7 +4296,6 @@ packages:
 
   libsql@0.5.17:
     resolution: {integrity: sha512-RRlj5XQI9+Wq+/5UY8EnugSWfRmHEw4hn3DKlPrkUgZONsge1PwTtHcpStP6MSNi8ohcbsRgEHJaymA33a8cBw==}
-    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   linkify-it@5.0.0:

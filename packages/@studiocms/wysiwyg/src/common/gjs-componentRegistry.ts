@@ -1,5 +1,5 @@
+import type { ComponentRegistryEntry } from '@withstudiocms/component-registry/types';
 import type { Plugin } from 'grapesjs';
-import type { ComponentRegistryEntry } from 'studiocms/componentRegistry/types';
 import { PARTIAL_PATH } from '../consts.js';
 import { buildBlockProps, partialRequestBuilder, traitMapFn } from './gjs-editor-utils.js';
 

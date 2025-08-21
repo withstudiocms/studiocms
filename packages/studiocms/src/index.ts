@@ -11,13 +11,13 @@
 import fs from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
+import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { componentRegistryHandler } from './componentRegistry/handler.js';
 import {
 	AstroConfigImageSettings,
 	AstroConfigViteSettings,
@@ -192,8 +192,11 @@ export const studiocms = defineIntegration({
 
 					// Setup Component Registry
 					await componentRegistryHandler(params, {
-						name,
-						verbose,
+						config: {
+							name,
+							verbose,
+							virtualId: 'studiocms:component-registry',
+						},
 						componentRegistry,
 						builtInComponents,
 					});
