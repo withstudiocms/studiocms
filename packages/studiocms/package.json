@@ -113,8 +113,8 @@
 			"default": "./dist/runtime/index.js"
 		},
 		"./lib/*": {
-			"types": "./dist/lib/*.d.ts",
-			"default": "./dist/lib/*"
+			"types": "./dist/virtuals/lib/*.d.ts",
+			"default": "./dist/virtuals/lib/*"
 		},
 		"./types": {
 			"types": "./dist/types.d.ts",
