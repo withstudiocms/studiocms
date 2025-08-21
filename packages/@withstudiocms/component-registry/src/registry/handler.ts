@@ -1,19 +1,41 @@
 /// <reference types="../virtual.d.ts" preserve="true" />
 
-import { Effect, runEffect } from '@withstudiocms/effect';
+import { deepmerge, Effect, runEffect } from '@withstudiocms/effect';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import type { AstroComponentProps, ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
+import { buildAliasExports, buildVirtualImport, InternalId, RuntimeInternalId } from './consts.js';
 import { ComponentRegistry } from './Registry.js';
 
 export const ComponentRegistryHandlerOptionSchema = z.object({
 	config: z.object({
+		/**
+		 * The name of the integration
+		 */
 		name: z.string(),
-		virtualId: z.string(),
+
+		/**
+		 * The virtual module ID for generated imports
+		 *
+		 * @example 'virtual:my-integration'
+		 */
+		virtualId: z.string().optional(),
+
+		/**
+		 * Enables verbose logging
+		 */
 		verbose: z.boolean().default(false).optional(),
 	}),
+
+	/**
+	 * A record of user-provided component names to file paths.
+	 */
 	componentRegistry: z.record(z.string(), z.string()).optional(),
+
+	/**
+	 * A record of built-in component names to file paths.
+	 */
 	builtInComponents: z.record(z.string(), z.string()).optional(),
 });
 
@@ -78,14 +100,14 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 	async (
 		params,
 		{
-			config: { verbose, name, virtualId },
-			builtInComponents,
-			componentRegistry,
+			config: { verbose = false, name, virtualId },
+			builtInComponents = {},
+			componentRegistry = {},
 		}: ComponentRegistryHandlerOptions
 	) =>
 		await runEffect(
 			Effect.gen(function* () {
-				const logger = params.logger.fork(name);
+				const logger = params.logger.fork(`${name}:component-registry`);
 				const logInfo = { logger, logLevel: 'info' as const, verbose };
 
 				// Log the start of the component registry setup
@@ -102,10 +124,9 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 				const components: string[] = [];
 
 				// merge built-in components with the provided user component registry
-				const componentRegistryToCheck: Record<string, string> = {
-					...(builtInComponents ?? {}),
-					...(componentRegistry ?? {}),
-				};
+				const componentRegistryToCheck: Record<string, string> = yield* deepmerge((fn) =>
+					fn({}, builtInComponents, componentRegistry)
+				);
 
 				const componentRegistryEntries = Object.entries(componentRegistryToCheck);
 
@@ -147,7 +168,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 						integrationLogger(logInfo, `Resolving path for component "${key}"...`);
 
 						// Use Effect's error handling instead of try/catch
-						const resolvedPath = yield* astroConfigResolve((res) => res(value)).pipe(
+						const resolvedPath = yield* astroConfigResolve((fn) => fn(value)).pipe(
 							Effect.catchAll((error) => {
 								integrationLogger(
 									logInfo,
@@ -209,25 +230,15 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 					);
 				}
 
-				const virtualRuntimeId = `${virtualId}/runtime`;
-				const virtualRuntimeImport = yield* resolve((res) => res('../runtime.js'));
-
-				const virtualImports = {
-					'virtual:component-registry-internal-proxy': `
-                        export const componentKeys = ${JSON.stringify(componentKeys)};
-                        export const componentProps = ${JSON.stringify(componentProps)};
-                        ${components ? components.join('\n') : ''}
-                    `,
-					'virtual:component-registry-internal-proxy/runtime': `
-                        export * from '${virtualRuntimeImport}';
-                    `,
-					[virtualId]: `export * from 'virtual:component-registry-internal-proxy';`,
-					[virtualRuntimeId]: `export * from 'virtual:component-registry-internal-proxy/runtime';`,
-				};
+				const virtualRuntimeImport = yield* resolve((fn) => fn('../runtime.js'));
 
 				addVirtualImports(params, {
 					name,
-					imports: virtualImports,
+					imports: {
+						[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
+						[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
+						...(virtualId ? buildAliasExports(virtualId) : {}),
+					},
 				});
 			}).pipe(Effect.provide(ComponentRegistry.Default))
 		)
