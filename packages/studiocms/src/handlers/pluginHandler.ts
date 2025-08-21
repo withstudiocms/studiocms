@@ -4,32 +4,32 @@ import { addVirtualImports, createResolver, defineUtility } from 'astro-integrat
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { routesDir, StudioCMSDefaultRobotsConfig } from './consts.js';
-import { StudioCMSError } from './errors.js';
-import { dynamicSitemap } from './integrations/dynamic-sitemap/index.js';
-import robotsTXT from './integrations/robots/index.js';
-import type { RobotsConfig } from './integrations/robots/schema.js';
-import { checkForWebVitals } from './integrations/webVitals/checkForWebVitalsPlugin.js';
+import { routesDir, StudioCMSDefaultRobotsConfig } from '../consts.js';
+import { StudioCMSError } from '../errors.js';
+import { dynamicSitemap } from '../integrations/dynamic-sitemap/index.js';
+import robotsTXT from '../integrations/robots/index.js';
+import type { RobotsConfig } from '../integrations/robots/schema.js';
+import { checkForWebVitals } from '../integrations/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	AvailableDashboardPages,
 	SafePluginListItemType,
 	SafePluginListType,
 	StudioCMSPlugin,
-} from './schemas/index.js';
-import type { GridItemInput } from './schemas/plugins/shared.js';
-import type { Messages, Route } from './types.js';
-import { integrationLogger } from './utils/integrationLogger.js';
-import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
-import { pluginLogger } from './utils/pluginLogger.js';
-import { readJson } from './utils/readJson.js';
-import { convertToSafeString } from './utils/safeString.js';
+} from '../schemas/index.js';
+import type { GridItemInput } from '../schemas/plugins/shared.js';
+import type { Messages, Route } from '../types.js';
+import { integrationLogger } from '../utils/integrationLogger.js';
+import { pageContentComponentFilter, rendererComponentFilter } from '../utils/pageTypeFilter.js';
+import { pluginLogger } from '../utils/pluginLogger.js';
+import { readJson } from '../utils/readJson.js';
+import { convertToSafeString } from '../utils/safeString.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
 
 // Read the package.json file for the package name and version
 const { version: pkgVersion } = readJson<{ name: string; version: string }>(
-	resolve('../package.json')
+	resolve('../../package.json')
 );
 
 type VirtualImport = {
@@ -65,7 +65,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<totals></totals>',
 							components: {
-								totals: resolve('./components/default-grid-items/Totals.astro'),
+								totals: resolve('../components/default-grid-items/Totals.astro'),
 							},
 						},
 					},
@@ -79,7 +79,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 							html: '<recentlyupdatedpages></recentlyupdatedpages>',
 							components: {
 								recentlyupdatedpages: resolve(
-									'./components/default-grid-items/Recently-updated-pages.astro'
+									'../components/default-grid-items/Recently-updated-pages.astro'
 								),
 							},
 						},
@@ -94,7 +94,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 							html: '<recentlysignedupusers></recentlysignedupusers>',
 							components: {
 								recentlysignedupusers: resolve(
-									'./components/default-grid-items/Recently-signed-up.astro'
+									'../components/default-grid-items/Recently-signed-up.astro'
 								),
 							},
 						},
@@ -109,7 +109,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 							html: '<recentlycreatedpages></recentlycreatedpages>',
 							components: {
 								recentlycreatedpages: resolve(
-									'./components/default-grid-items/Recently-created-pages.astro'
+									'../components/default-grid-items/Recently-created-pages.astro'
 								),
 							},
 						},
@@ -796,7 +796,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'virtual:studiocms/components/Editors',
 					content: `
-						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 						export const editorKeys = ${JSON.stringify([
 							...allPageTypes.map(({ identifier }) => convertToSafeString(identifier)),
 						])};
@@ -913,7 +913,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'studiocms:plugins/dashboard-pages/user',
 					content: `
-						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/user';
 						
 						const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
@@ -937,7 +937,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'studiocms:plugins/dashboard-pages/admin',
 					content: `
-						import { convertToSafeString } from '${resolve('./utils/safeString.js')}';
+						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
 						
 						const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};

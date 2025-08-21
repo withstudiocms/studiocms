@@ -24,15 +24,13 @@ import {
 	makeDashboardRoute,
 	routesDir,
 } from './consts.js';
+import { pluginHandler, routeHandler, scriptHandler } from './handlers/index.js';
 import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
-import { pluginHandler } from './pluginHandler.js';
-import { routeHandler } from './routeHandler.js';
 import {
 	type StudioCMSConfig,
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import { scriptHandler } from './scriptHandler.js';
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { checkAstroConfig } from './utils/astroConfigCheck.js';

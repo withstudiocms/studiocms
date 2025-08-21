@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { createResolver, defineUtility } from 'astro-integration-kit';
-import type { Script } from './types.js';
+import type { Script } from '../types.js';
 
 /**
  * Represents configuration options for the script handler.
@@ -59,7 +59,7 @@ export const scriptHandler = defineUtility('astro:config:setup')(
 		 */
 		const scripts: Script[] = [
 			{
-				content: await fs.readFile(resolve('./virtuals/scripts/user-quick-tools.js'), 'utf-8'),
+				content: await fs.readFile(resolve('../virtuals/scripts/user-quick-tools.js'), 'utf-8'),
 				stage: 'page',
 				enabled: injectQuickActionsMenu && !dbStartPage,
 			},
