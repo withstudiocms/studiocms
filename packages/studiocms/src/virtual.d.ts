@@ -414,8 +414,9 @@ declare module 'studiocms:sdk/types' {
 }
 
 declare module 'studiocms-dashboard:web-vitals' {
-	export const getWebVitals: typeof import('./lib/webVitals/webVital').getWebVitals;
-	export type WebVitalsResponseItem = import('./lib/webVitals/webVital').WebVitalsResponseItem;
+	export const getWebVitals: typeof import('./integrations/webVitals/webVital').getWebVitals;
+	export type WebVitalsResponseItem =
+		import('./integrations/webVitals/webVital').WebVitalsResponseItem;
 }
 
 declare module 'studiocms:auth/utils/validImages' {

@@ -1,5 +1,5 @@
 import type { AstroConfig } from 'astro';
-import type { RobotsConfig } from './lib/robots/schema.js';
+import type { RobotsConfig } from './integrations/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
 import { makeAPIRoute } from './virtuals/lib/makeAPIRoute.js';
 import { stripLeadingAndTrailingSlashes } from './virtuals/lib/pathGenerators.js';
