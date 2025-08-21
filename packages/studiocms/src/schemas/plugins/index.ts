@@ -1,10 +1,10 @@
 import type { AstroIntegrationLogger } from 'astro';
 import { z } from 'astro/zod';
-import type { GridItemInput } from '../../lib/dashboardGrid.js';
 import {
 	astroIntegrationSchema,
 	DashboardPageSchema,
 	FrontendNavigationLinksSchema,
+	type GridItemInput,
 	PageTypesSchema,
 	SettingsPageSchema,
 } from './shared.js';

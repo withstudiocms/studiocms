@@ -1,3 +1,3 @@
-import type { GridItemUsable } from '../../lib/dashboardGrid.js';
+import type { GridItemUsable } from '../../schemas/plugins/shared.js';
 
 export type GridItem = GridItemUsable;
