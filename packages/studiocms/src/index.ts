@@ -329,6 +329,17 @@ export const studiocms = defineIntegration({
 								resolve,
 								items: ['./virtuals/auth/scripts/three.js'],
 							}),
+							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
+								resolve,
+								dynamicExports: ['./virtuals/i18n/index.js'],
+								astroComponents: {
+									LanguageSelector: './virtuals/i18n/LanguageSelector.astro',
+								},
+							}),
+							'studiocms:i18n/client': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/i18n/client.js'],
+							}),
 
 							// Not yet moved
 							'studiocms:sdk': buildDynamicOnlyVirtual({
@@ -338,17 +349,6 @@ export const studiocms = defineIntegration({
 							'studiocms:sdk/types': buildDynamicOnlyVirtual({
 								resolve,
 								items: ['./sdk/types.js'],
-							}),
-							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
-								resolve,
-								dynamicExports: ['./lib/i18n/index.js'],
-								astroComponents: {
-									LanguageSelector: './lib/i18n/LanguageSelector.astro',
-								},
-							}),
-							'studiocms:i18n/client': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/i18n/client.js'],
 							}),
 
 							// TODO: Decide if there is a better way to build this

@@ -116,6 +116,10 @@
 			"types": "./dist/virtuals/auth/*.d.ts",
 			"default": "./dist/virtuals/auth/*.js"
 		},
+		"./lib/i18n*": {
+			"types": "./dist/virtuals/i18n/*.d.ts",
+			"default": "./dist/virtuals/i18n/*.js"
+		},
 		"./lib/*": {
 			"types": "./dist/virtuals/lib/*.d.ts",
 			"default": "./dist/virtuals/lib/*"

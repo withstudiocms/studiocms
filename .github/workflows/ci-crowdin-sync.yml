@@ -15,7 +15,7 @@ on:
     types: [file.translated, file.approved, file.added, file.updated]
   push:
     paths: 
-      - 'packages/studiocms/src/lib/i18n/translations/**'
+      - 'packages/studiocms/src/virtuals/i18n/translations/**'
     branches: 
       - main
 
