@@ -41,7 +41,7 @@ import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
-import { readJson } from './utils/readJson.js';
+import { readJson } from './utils/jsonUtils.js';
 import {
 	buildAstroComponentVirtualExport,
 	buildDefaultOnlyVirtual,

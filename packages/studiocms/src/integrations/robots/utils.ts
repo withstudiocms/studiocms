@@ -1,17 +1,6 @@
 import fs from 'node:fs';
 
 /**
- * Reads a JSON file from the specified path and parses its content.
- *
- * @template T - The type of the parsed JSON object.
- * @param {string | URL} path - The path to the JSON file.
- * @returns {T} The parsed JSON object.
- */
-export function readJson<T>(path: string | URL): T {
-	return JSON.parse(fs.readFileSync(path, 'utf-8'));
-}
-
-/**
  * Measures the execution time of a given callback function.
  *
  * @param callback - The function whose execution time is to be measured.

@@ -19,8 +19,8 @@ import type {
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Messages, Route } from '../types.js';
 import { integrationLogger, pluginLogger } from '../utils/integrationLogger.js';
+import { readJson } from '../utils/jsonUtils.js';
 import { pageContentComponentFilter, rendererComponentFilter } from '../utils/pageTypeFilter.js';
-import { readJson } from '../utils/readJson.js';
 import { convertToSafeString } from '../utils/safeString.js';
 
 // Resolver Function

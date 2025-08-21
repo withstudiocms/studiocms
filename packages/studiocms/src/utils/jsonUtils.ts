@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 /**
  * Parses a JSON string and returns the resulting object.
  *
@@ -8,4 +10,11 @@
  */
 export function jsonParse<T extends object>(text: string): T {
 	return JSON.parse(text);
+}
+
+/**
+ * Reads a JSON file and parses it into an object of type T.
+ */
+export function readJson<T extends object>(path: string | URL): T {
+	return jsonParse<T>(fs.readFileSync(path, 'utf-8'));
 }
