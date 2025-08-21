@@ -1,4 +1,4 @@
-import type { CurrentRESTAPIVersions } from '../consts.js';
+import type { CurrentRESTAPIVersions } from '../../consts.js';
 
 /**
  * Creates a function that generates API route strings.

@@ -1,7 +1,7 @@
 import { defineUtility } from 'astro-integration-kit';
 import { authAPIRoute, dashboardAPIRoute, routesDir } from './consts.js';
-import { apiRoute, sdkRouteResolver, v1RestRoute } from './lib/index.js';
 import type { Route } from './types.js';
+import { apiRoute, sdkRouteResolver, v1RestRoute } from './virtuals/lib/makeAPIRoute.js';
 
 /**
  * Configuration options for the route handler.

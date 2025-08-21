@@ -3,7 +3,7 @@ import version from 'studiocms:version';
 import type { AstroGlobalPartial } from 'astro';
 import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
-import { StudioCMSCoreError } from '../errors.js';
+import { StudioCMSCoreError } from '../../errors.js';
 import { HeadConfigSchema } from './head.js';
 
 const _schema = HeadConfigSchema;

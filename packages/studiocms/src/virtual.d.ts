@@ -111,8 +111,8 @@ declare module 'studiocms:changelog' {
 }
 
 declare module 'studiocms:components' {
-	export const FormattedDate: typeof import('./components/FormattedDate.astro').default;
-	export const Generator: typeof import('./components/Generator.astro').default;
+	export const FormattedDate: typeof import('./virtuals/components/FormattedDate.astro').default;
+	export const Generator: typeof import('./virtuals/components/Generator.astro').default;
 }
 
 declare module 'virtual:studiocms/components/Editors' {
@@ -151,34 +151,34 @@ declare module 'studiocms:i18n/client' {
 }
 
 declare module 'studiocms:imageHandler/components' {
-	export const CustomImage: typeof import('./components/image/CustomImage.astro').default;
+	export const CustomImage: typeof import('./virtuals/components/CustomImage.astro').default;
 }
 
 declare module 'studiocms:lib' {
-	export const HeadConfigSchema: typeof import('./lib/head.js').HeadConfigSchema;
-	export const createHead: typeof import('./lib/head.js').createHead;
-	export const headDefaults: typeof import('./lib/headDefaults.js').headDefaults;
-	export const stringify: typeof import('./lib/jsonUtils.js').stringify;
-	export const stringifyMap: typeof import('./lib/jsonUtils.js').stringifyMap;
-	export const pathWithBase: typeof import('./lib/pathGenerators.js').pathWithBase;
-	export const fileWithBase: typeof import('./lib/pathGenerators.js').fileWithBase;
-	export const ensureLeadingSlash: typeof import('./lib/pathGenerators.js').ensureLeadingSlash;
-	export const ensureTrailingSlash: typeof import('./lib/pathGenerators.js').ensureTrailingSlash;
-	export const stripLeadingSlash: typeof import('./lib/pathGenerators.js').stripLeadingSlash;
-	export const stripTrailingSlash: typeof import('./lib/pathGenerators.js').stripTrailingSlash;
-	export const stripHtmlExtension: typeof import('./lib/pathGenerators.js').stripHtmlExtension;
-	export const ensureHtmlExtension: typeof import('./lib/pathGenerators.js').ensureHtmlExtension;
-	export const removeLeadingTrailingSlashes: typeof import('./lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
-	export const getSluggedRoute: typeof import('./lib/routeMap.js').getSluggedRoute;
-	export const getEditRoute: typeof import('./lib/routeMap.js').getEditRoute;
-	export const getDeleteRoute: typeof import('./lib/routeMap.js').getDeleteRoute;
-	export const makeNonDashboardRoute: typeof import('./lib/routeMap.js').makeNonDashboardRoute;
-	export const makeDashboardRoute: typeof import('./lib/routeMap.js').makeDashboardRoute;
-	export const StudioCMSRoutes: typeof import('./lib/routeMap.js').StudioCMSRoutes;
-	export const urlGenFactory: typeof import('./lib/urlGen.js').default;
+	export const HeadConfigSchema: typeof import('./virtuals/lib/head.js').HeadConfigSchema;
+	export const createHead: typeof import('./virtuals/lib/head.js').createHead;
+	export const headDefaults: typeof import('./virtuals/lib/headDefaults.js').headDefaults;
+	export const stringify: typeof import('./virtuals/lib/jsonUtils.js').stringify;
+	export const stringifyMap: typeof import('./virtuals/lib/jsonUtils.js').stringifyMap;
+	export const pathWithBase: typeof import('./virtuals/lib/pathGenerators.js').pathWithBase;
+	export const fileWithBase: typeof import('./virtuals/lib/pathGenerators.js').fileWithBase;
+	export const ensureLeadingSlash: typeof import('./virtuals/lib/pathGenerators.js').ensureLeadingSlash;
+	export const ensureTrailingSlash: typeof import('./virtuals/lib/pathGenerators.js').ensureTrailingSlash;
+	export const stripLeadingSlash: typeof import('./virtuals/lib/pathGenerators.js').stripLeadingSlash;
+	export const stripTrailingSlash: typeof import('./virtuals/lib/pathGenerators.js').stripTrailingSlash;
+	export const stripHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').stripHtmlExtension;
+	export const ensureHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').ensureHtmlExtension;
+	export const removeLeadingTrailingSlashes: typeof import('./virtuals/lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
+	export const getSluggedRoute: typeof import('./virtuals/lib/routeMap.js').getSluggedRoute;
+	export const getEditRoute: typeof import('./virtuals/lib/routeMap.js').getEditRoute;
+	export const getDeleteRoute: typeof import('./virtuals/lib/routeMap.js').getDeleteRoute;
+	export const makeNonDashboardRoute: typeof import('./virtuals/lib/routeMap.js').makeNonDashboardRoute;
+	export const makeDashboardRoute: typeof import('./virtuals/lib/routeMap.js').makeDashboardRoute;
+	export const StudioCMSRoutes: typeof import('./virtuals/lib/routeMap.js').StudioCMSRoutes;
+	export const urlGenFactory: typeof import('./virtuals/lib/urlGen.js').default;
 
-	export type HeadConfig = import('./lib/head.js').HeadConfig;
-	export type HeadUserConfig = import('./lib/head.js').HeadUserConfig;
+	export type HeadConfig = import('./virtuals/lib/head.js').HeadConfig;
+	export type HeadUserConfig = import('./virtuals/lib/head.js').HeadUserConfig;
 }
 
 declare module 'studiocms:plugins' {
@@ -521,7 +521,7 @@ declare module 'studiocms:auth/lib/types' {
 declare module 'virtual:studiocms/plugins/renderers' {}
 
 declare module 'studiocms:renderer' {
-	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
+	export const StudioCMSRenderer: typeof import('./virtuals/components/Renderer.astro').default;
 }
 
 declare module 'virtual:studiocms/sdk/env' {
@@ -598,7 +598,7 @@ interface StudioCMSLocals {
 	SCMSGenerator: string;
 	SCMSUiGenerator: string;
 	siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
-	routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+	routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
 	defaultLang: import('./lib/i18n/config').UiTranslationKey;
 	latestVersion: import('./sdk/types/index').VersionCacheObject;
 	security?: StudioCMSSecurityLocals;
@@ -630,7 +630,7 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+		routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
