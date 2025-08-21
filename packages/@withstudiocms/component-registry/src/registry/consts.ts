@@ -11,6 +11,11 @@ export const InternalId = 'virtual:component-registry-internal-proxy';
 export const RuntimeInternalId = `${InternalId}/runtime`;
 
 /**
+ * Internal virtual module ID for the component registry.
+ */
+export const NameInternalId = `${InternalId}/name`;
+
+/**
  * Builds a virtual import string that exports component keys, component props, and component definitions.
  *
  * @param componentKeys - An array of strings representing the keys of the components to be registered.

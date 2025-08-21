@@ -5,7 +5,13 @@ import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import type { ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
-import { buildAliasExports, buildVirtualImport, InternalId, RuntimeInternalId } from './consts.js';
+import {
+	buildAliasExports,
+	buildVirtualImport,
+	InternalId,
+	NameInternalId,
+	RuntimeInternalId,
+} from './consts.js';
 import { ComponentRegistry } from './Registry.js';
 
 export const ComponentRegistryHandlerOptionSchema = z.object({
@@ -233,6 +239,7 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 					name,
 					imports: {
 						[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
+						[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
 						[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
 						...(virtualId ? buildAliasExports(virtualId) : {}),
 					},

@@ -1,5 +1,6 @@
 import * as registry from 'virtual:component-registry-internal-proxy';
 import { componentKeys, componentProps } from 'virtual:component-registry-internal-proxy';
+import { name } from 'virtual:component-registry-internal-proxy/name';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { createComponentProxy } from './component-proxy/index.js';
@@ -23,6 +24,16 @@ export function getRegistryComponents(): ComponentRegistryEntry[] {
 }
 
 /**
+ * Constructs an error message prefix indicating a failure to import a component.
+ *
+ * @param key - The key or identifier of the component that failed to import.
+ * @param name - The name of the component registry or source.
+ * @returns A formatted error message string describing the import failure.
+ */
+const buildPrefix = (key: string, name: string) =>
+	`Failed to import component "${key}" from [${name}] component-registry`;
+
+/**
  * @returns A promise that resolves to an object containing the imported components.
  */
 export async function getRendererComponents() {
@@ -35,17 +46,11 @@ export async function getRendererComponents() {
 				registry[key as keyof typeof registry];
 		} catch (e) {
 			if (e instanceof Error) {
-				const newErr = prefixError(
-					e,
-					`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
-				);
+				const newErr = prefixError(e, buildPrefix(key, name));
 				console.error(newErr);
 				throw new ComponentProxyError(newErr.message, newErr.stack);
 			}
-			const newErr = prefixError(
-				new Error('Unknown error'),
-				`Failed to import component "${key}" from Virtual Module "studiocms:component-registry"`
-			);
+			const newErr = prefixError(new Error('Unknown error'), buildPrefix(key, name));
 			console.error(newErr);
 			throw new ComponentProxyError(newErr.message, newErr.stack);
 		}

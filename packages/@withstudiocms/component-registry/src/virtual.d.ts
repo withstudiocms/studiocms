@@ -13,6 +13,11 @@ declare module 'virtual:component-registry-internal-proxy' {
 	export const componentProps: import('./types.js').ComponentRegistryEntry[];
 }
 
+declare module 'virtual:component-registry-internal-proxy/name' {
+	export const name: string;
+	export default name;
+}
+
 declare module 'virtual:component-registry-internal-proxy/runtime' {
 	/**
 	 * Represents an entry in the component registry.
