@@ -589,7 +589,7 @@ interface StudioCMSLocals {
 	SCMSUiGenerator: string;
 	siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
 	routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
-	defaultLang: import('./lib/i18n/config').UiTranslationKey;
+	defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
 	latestVersion: import('./sdk/types/index').VersionCacheObject;
 	security?: StudioCMSSecurityLocals;
 	plugins?: StudioCMSPluginLocals;
@@ -616,7 +616,7 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		defaultLang: import('./lib/i18n/config').UiTranslationKey;
+		defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
