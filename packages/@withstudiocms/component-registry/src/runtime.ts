@@ -4,7 +4,7 @@ import { name } from 'virtual:component-registry-internal-proxy/name';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { createComponentProxy } from './component-proxy/index.js';
-import { ComponentProxyError, prefixError } from './errors.js';
+import { toComponentProxyError } from './errors.js';
 import { transformHTML } from './transform-html.js';
 import type { ComponentRegistryEntry } from './types.js';
 import { convertUnderscoresToHyphens } from './utils.js';
@@ -46,13 +46,9 @@ export async function getRendererComponents() {
 				registry[key as keyof typeof registry];
 		} catch (e) {
 			if (e instanceof Error) {
-				const newErr = prefixError(e, buildPrefix(key, name));
-				console.error(newErr);
-				throw new ComponentProxyError(newErr.message, newErr.stack);
+				throw toComponentProxyError(e, buildPrefix(key, name));
 			}
-			const newErr = prefixError(new Error('Unknown error'), buildPrefix(key, name));
-			console.error(newErr);
-			throw new ComponentProxyError(newErr.message, newErr.stack);
+			throw toComponentProxyError(new Error('Unknown error'), buildPrefix(key, name));
 		}
 	}
 

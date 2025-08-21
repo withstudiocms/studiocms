@@ -2,11 +2,18 @@ import { Data } from '@withstudiocms/effect';
 import { AstroError } from 'astro/errors';
 
 export class ComponentProxyError extends AstroError {
+	message: string;
+	stack?: string;
 	name = 'Component Proxy Error';
+	constructor(message: string, hint: string, stack?: string) {
+		super(message, hint);
+		this.message = message;
+		this.hint = hint;
+		this.stack = stack;
+	}
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
-export function prefixError(err: any, prefix: string): any {
+export function prefixError(err: Error, prefix: string): Error {
 	// If the error is an object with a `message` property, attempt to prefix the message
 	if (err?.message) {
 		try {
@@ -85,3 +92,8 @@ export class FileParseError extends Data.TaggedError('FileParseError')<{
 export class ComponentNotFoundError extends Data.TaggedError('ComponentNotFoundError')<{
 	readonly componentName: string;
 }> {}
+
+export function toComponentProxyError(err: Error, prefix: string): ComponentProxyError {
+	const wrapped = prefixError(err, prefix);
+	return new ComponentProxyError(wrapped.message, wrapped.message, wrapped.stack);
+}
