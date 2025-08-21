@@ -129,25 +129,25 @@ describe('transformHTML', () => {
 	});
 
 	describe('sanitization with custom options', () => {
-		// TODO: Figure out why this test is failing
-		// Seems to be related to UltraHTML's built in Sanitization Transformer
+		it('should allow specific attributes when configured', async () => {
+			const html = '<div data-test="value" onclick="alert()">Content</div>';
+			const components = {};
+			const sanitizeOpts = {
+				dropAttributes: {
+					onclick: ['div'], // Remove onclick from divs
+				},
+				allowAttributes: {
+					'data-test': ['div'],
+				},
+			};
 
-		// it('should allow specific attributes when configured', async () => {
-		// 	const html = '<div data-test="value" onclick="alert()">Content</div>';
-		// 	const components = {};
-		// 	const sanitizeOpts = {
-		// 		allowAttributes: {
-		// 			div: ['data-test'],
-		// 		},
-		// 	};
+			const result = await transformHTML(html, components, sanitizeOpts);
 
-		// 	const result = await transformHTML(html, components, sanitizeOpts);
-
-		// 	// data-test should be allowed, onclick should be removed
-		// 	assert.ok(result.includes('data-test="value"') || result.includes("data-test='value'"));
-		// 	assert.ok(!result.includes('onclick'));
-		// 	assert.ok(result.includes('Content'));
-		// });
+			// data-test should be allowed, onclick should be removed
+			assert.ok(result.includes('data-test="value"') || result.includes("data-test='value'"));
+			assert.ok(!result.includes('onclick'));
+			assert.ok(result.includes('Content'));
+		});
 
 		it('should handle strict sanitization', async () => {
 			const html = '<div><iframe src="evil.com"></iframe><p>Safe</p></div>';
