@@ -59,7 +59,7 @@ export const scriptHandler = defineUtility('astro:config:setup')(
 		 */
 		const scripts: Script[] = [
 			{
-				content: await fs.readFile(resolve('./scripts/user-quick-tools.js'), 'utf-8'),
+				content: await fs.readFile(resolve('./virtuals/scripts/user-quick-tools.js'), 'utf-8'),
 				stage: 'page',
 				enabled: injectQuickActionsMenu && !dbStartPage,
 			},

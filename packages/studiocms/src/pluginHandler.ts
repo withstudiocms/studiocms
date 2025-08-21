@@ -6,10 +6,10 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { routesDir, StudioCMSDefaultRobotsConfig } from './consts.js';
 import { StudioCMSError } from './errors.js';
-import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
-import robotsTXT from './lib/robots/index.js';
-import type { RobotsConfig } from './lib/robots/schema.js';
-import { checkForWebVitals } from './lib/webVitals/checkForWebVitalsPlugin.js';
+import { dynamicSitemap } from './integrations/dynamic-sitemap/index.js';
+import robotsTXT from './integrations/robots/index.js';
+import type { RobotsConfig } from './integrations/robots/schema.js';
+import { checkForWebVitals } from './integrations/webVitals/checkForWebVitalsPlugin.js';
 import type {
 	AvailableDashboardPages,
 	SafePluginListItemType,

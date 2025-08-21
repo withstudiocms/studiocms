@@ -71,7 +71,7 @@
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
 		},
-		"./Renderer": "./dist/components/Renderer.astro",
+		"./Renderer": "./dist/virtuals/components/Renderer.astro",
 		"./db/config": {
 			"types": "./dist/db/config.d.ts",
 			"default": "./dist/db/config.js"

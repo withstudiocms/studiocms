@@ -4,4 +4,4 @@
 export * from '@withstudiocms/effect';
 
 // Export custom Effect utils Specific to StudioCMS
-export * from './lib/effects/index.js';
+export * from './utils/effects/index.js';

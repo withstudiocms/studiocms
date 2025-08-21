@@ -24,6 +24,7 @@ import {
 	makeDashboardRoute,
 	routesDir,
 } from './consts.js';
+import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import { pluginHandler } from './pluginHandler.js';
 import { routeHandler } from './routeHandler.js';
 import {
@@ -38,7 +39,6 @@ import { checkAstroConfig } from './utils/astroConfigCheck.js';
 import { changelogHelper } from './utils/changelog.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
-import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
 import { readJson } from './utils/readJson.js';
 import {
 	buildAstroComponentVirtualExport,

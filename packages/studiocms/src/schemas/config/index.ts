@@ -1,5 +1,5 @@
 import { z } from 'astro/zod';
-import { RobotsTXTConfigSchema } from '../../lib/robots/schema.js';
+import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.js';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { authConfigSchema } from './auth.js';
 import { dashboardConfigSchema } from './dashboard.js';

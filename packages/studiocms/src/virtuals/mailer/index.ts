@@ -4,7 +4,7 @@ import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { CMSMailerConfigId } from '../../consts.js';
 import { tsMailerConfig } from '../../db/config.js';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
-import { type Mail, SMTPMailer } from '../../lib/effects/smtp.js';
+import { type Mail, SMTPMailer } from '../../utils/effects/smtp.js';
 
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
