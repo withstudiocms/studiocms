@@ -85,16 +85,16 @@
 			"default": "./dist/plugins.js"
 		},
 		"./sdk/base": {
-			"types": "./dist/sdk/index.d.ts",
-			"default": "./dist/sdk/index.js"
+			"types": "./dist/virtuals/sdk/index.d.ts",
+			"default": "./dist/virtuals/sdk/index.js"
 		},
 		"./sdk/tables": {
-			"types": "./dist/sdk/tables.d.ts",
-			"default": "./dist/sdk/tables.js"
+			"types": "./dist/virtuals/sdk/tables.d.ts",
+			"default": "./dist/virtuals/sdk/tables.js"
 		},
 		"./sdk/types": {
-			"types": "./dist/sdk/types/index.d.ts",
-			"default": "./dist/sdk/types/index.js"
+			"types": "./dist/virtuals/sdk/types/index.d.ts",
+			"default": "./dist/virtuals/sdk/types/index.js"
 		},
 		"./schemas": {
 			"types": "./dist/schemas/index.d.ts",
@@ -135,8 +135,8 @@
 			"default": "./dist/effect.js"
 		},
 		"./sdk/*": {
-			"types": "./dist/sdk/*.d.ts",
-			"default": "./dist/sdk/*.js"
+			"types": "./dist/virtuals/sdk/*.d.ts",
+			"default": "./dist/virtuals/sdk/*.js"
 		},
 		"./oAuthUtils": {
 			"types": "./dist/oAuthUtils.d.ts",
