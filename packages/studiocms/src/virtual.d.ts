@@ -13,7 +13,7 @@ declare module 'studiocms:logger' {
 }
 
 declare module 'studiocms:components/dashboard-grid-items' {
-	export const dashboardGridItems: import('./lib/dashboardGrid').GridItemUsable[];
+	export const dashboardGridItems: import('./schemas/plugins/shared').GridItemUsable[];
 	export default dashboardGridItems;
 }
 

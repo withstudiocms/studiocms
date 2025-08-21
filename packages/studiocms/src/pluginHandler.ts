@@ -6,7 +6,6 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { routesDir, StudioCMSDefaultRobotsConfig } from './consts.js';
 import { StudioCMSError } from './errors.js';
-import type { GridItemInput } from './lib/dashboardGrid.js';
 import { dynamicSitemap } from './lib/dynamic-sitemap/index.js';
 import robotsTXT from './lib/robots/index.js';
 import type { RobotsConfig } from './lib/robots/schema.js';
@@ -17,6 +16,7 @@ import type {
 	SafePluginListType,
 	StudioCMSPlugin,
 } from './schemas/index.js';
+import type { GridItemInput } from './schemas/plugins/shared.js';
 import type { Messages, Route } from './types.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { pageContentComponentFilter, rendererComponentFilter } from './utils/pageTypeFilter.js';
