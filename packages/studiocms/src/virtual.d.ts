@@ -49,40 +49,41 @@ declare module 'studiocms:plugins/renderers' {
 }
 
 declare module 'studiocms:mailer' {
-	type Mod = typeof import('./lib/mailer/index');
+	type Mod = typeof import('./virtuals/mailer/index');
 	export const Mailer: Mod['Mailer'];
 
 	// Table Def
-	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
+	export const tsMailerConfig: import('./virtuals/mailer/index').tsMailerConfig;
 	// Types
-	export type tsMailer = import('./lib/mailer/index').tsMailer;
-	export type tsMailerInsert = import('./lib/mailer/index').tsMailerInsert;
-	export type TransporterConfig = import('./lib/mailer/index').TransporterConfig;
-	export type MailerConfig = import('./lib/mailer/index').MailerConfig;
-	export type MailOptions = import('./lib/mailer/index').MailOptions;
-	export type MailerResponse = import('./lib/mailer/index').MailerResponse;
+	export type tsMailer = import('./virtuals/mailer/index').tsMailer;
+	export type tsMailerInsert = import('./virtuals/mailer/index').tsMailerInsert;
+	export type TransporterConfig = import('./virtuals/mailer/index').TransporterConfig;
+	export type MailerConfig = import('./virtuals/mailer/index').MailerConfig;
+	export type MailOptions = import('./virtuals/mailer/index').MailOptions;
+	export type MailerResponse = import('./virtuals/mailer/index').MailerResponse;
 }
 
 declare module 'studiocms:mailer/templates' {
-	export const getTemplate: typeof import('./lib/mailer/template').getTemplate;
+	export const getTemplate: typeof import('./virtuals/mailer/template').getTemplate;
 	export default getTemplate;
 }
 
 declare module 'studiocms:notifier' {
-	type Mod = typeof import('./lib/notifier/index');
+	type Mod = typeof import('./virtuals/notifier/index');
 	export const Notifications: Mod['Notifications'];
 
-	export type UserNotification = import('./lib/notifier/index').UserNotification;
-	export type EditorNotification = import('./lib/notifier/index').EditorNotification;
-	export type AdminNotification = import('./lib/notifier/index').AdminNotification;
-	export const notificationTypes: typeof import('./lib/notifier/index').notificationTypes;
-	export const notificationTitleStrings: typeof import('./lib/notifier/index').notificationTitleStrings;
+	export type UserNotification = import('./virtuals/notifier/index').UserNotification;
+	export type EditorNotification = import('./virtuals/notifier/index').EditorNotification;
+	export type AdminNotification = import('./virtuals/notifier/index').AdminNotification;
+	export const notificationTypes: typeof import('./virtuals/notifier/index').notificationTypes;
+	export const notificationTitleStrings: typeof import('./virtuals/notifier/index').notificationTitleStrings;
 }
 
 declare module 'studiocms:notifier/client' {
-	export type UserNotificationOptions = import('./lib/notifier/client').UserNotificationOptions;
-	export const getEnabledNotificationCheckboxes: typeof import('./lib/notifier/client').getEnabledNotificationCheckboxes;
-	export const formatNotificationOptions: typeof import('./lib/notifier/client').formatNotificationOptions;
+	export type UserNotificationOptions =
+		import('./virtuals/notifier/client').UserNotificationOptions;
+	export const getEnabledNotificationCheckboxes: typeof import('./virtuals/notifier/client').getEnabledNotificationCheckboxes;
+	export const formatNotificationOptions: typeof import('./virtuals/notifier/client').formatNotificationOptions;
 }
 
 declare module 'studiocms:config' {
