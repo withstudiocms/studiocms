@@ -341,7 +341,7 @@ export const studiocms = defineIntegration({
 								items: ['./virtuals/i18n/client.js'],
 							}),
 
-							// Not yet moved
+							// TODO Migrate SDK to virtuals folder
 							'studiocms:sdk': buildDynamicOnlyVirtual({
 								resolve,
 								items: ['./sdk/index.js'],
@@ -351,7 +351,7 @@ export const studiocms = defineIntegration({
 								items: ['./sdk/types.js'],
 							}),
 
-							// TODO: Decide if there is a better way to build this
+							// TODO Decide if there is a better way to build this
 							'studiocms:logger': `
 								import { logger as _logger } from '@it-astro:logger:studiocms-runtime';
 
