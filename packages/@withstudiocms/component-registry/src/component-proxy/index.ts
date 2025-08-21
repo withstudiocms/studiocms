@@ -35,10 +35,7 @@ export function createComponentProxy(result: SSRResult, _components: ComponentTy
 							`Failed to decode code prop for component "${lowerKey}". Falling back to raw string.`,
 							err
 						);
-						const safe =
-							typeof props.code === 'string'
-								? props.code
-								: String(props.code ?? '');
+						const safe = typeof props.code === 'string' ? props.code : String(props.code ?? '');
 						props = { ...props, code: decode(safe) };
 					}
 				}
