@@ -35,10 +35,10 @@ export class EncryptionError extends Data.TaggedError('EncryptionError')<{
  * - `crypto`: Used for generating random values and creating cipher/decipher instances.
  */
 export class Encryption extends Effect.Service<Encryption>()(
-	'studiocms/lib/auth/encryption/Encryption',
+	'studiocms/virtuals/auth/encryption/Encryption',
 	{
-		effect: genLogger('studiocms/lib/auth/encryption/Encryption.effect')(function* () {
-			const getKey = pipeLogger('studiocms/lib/auth/encryption/Encryption.getKey')(
+		effect: genLogger('studiocms/virtuals/auth/encryption/Encryption.effect')(function* () {
+			const getKey = pipeLogger('studiocms/virtuals/auth/encryption/Encryption.getKey')(
 				Effect.try({
 					try: () => decodeBase64(CMS_ENCRYPTION_KEY),
 					catch: (cause) =>
@@ -59,7 +59,7 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 *          the encrypted content, and the authentication tag.
 			 */
 			const encrypt = (data: Uint8Array) =>
-				pipeLogger('studiocms/lib/auth/encryption/Encryption.encrypt')(
+				pipeLogger('studiocms/virtuals/auth/encryption/Encryption.encrypt')(
 					Effect.try({
 						try: () => {
 							const iv = new Uint8Array(16);
@@ -84,7 +84,7 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 * @returns The encrypted data as a Uint8Array.
 			 */
 			const encryptToString = (data: string) =>
-				genLogger('studiocms/lib/auth/encryption/Encryption.encryptToString')(function* () {
+				genLogger('studiocms/virtuals/auth/encryption/Encryption.encryptToString')(function* () {
 					const encodedData = yield* Effect.try({
 						try: () => new TextEncoder().encode(data),
 						catch: (cause) =>
@@ -101,7 +101,7 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 * @throws Will throw an error if the encrypted data is less than 33 bytes.
 			 */
 			const decrypt = (data: Uint8Array) =>
-				pipeLogger('studiocms/lib/auth/encryption/Encryption.decrypt')(
+				pipeLogger('studiocms/virtuals/auth/encryption/Encryption.decrypt')(
 					Effect.try({
 						try: () => {
 							if (data.byteLength < 33) {
@@ -126,7 +126,7 @@ export class Encryption extends Effect.Service<Encryption>()(
 			 * @returns The decrypted data as a string.
 			 */
 			const decryptToString = (data: Uint8Array) =>
-				genLogger('studiocms/lib/auth/encryption/Encryption.decryptToString')(function* () {
+				genLogger('studiocms/virtuals/auth/encryption/Encryption.decryptToString')(function* () {
 					const decrypted = yield* decrypt(data);
 					return yield* Effect.try({
 						try: () => new TextDecoder().decode(decrypted),

@@ -119,7 +119,7 @@ class LazyStudioCMS3DLogo {
 				import('three/addons/loaders/GLTFLoader.js'),
 				import('three/addons/postprocessing/RenderPass.js'),
 				import('three/addons/postprocessing/EffectComposer.js'),
-				import('../utils/validImages/index.js'),
+				import('../validImages/index.js'),
 				import('./utils/fitModelToViewport.js'),
 			]);
 

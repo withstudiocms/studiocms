@@ -196,8 +196,8 @@ declare module 'studiocms:plugin-helpers' {
 	export type FinalDashboardPage = import('./plugins.ts').FinalDashboardPage;
 	export type DashboardPage = import('./plugins.js').DashboardPage;
 
-	export const getPluginDashboardPages: typeof import('./lib/plugins/index.js').getPluginDashboardPages;
-	export const frontendNavigation: typeof import('./lib/plugins/index.js').frontendNavigation;
+	export const getPluginDashboardPages: typeof import('./virtuals/plugins/index.js').getPluginDashboardPages;
+	export const frontendNavigation: typeof import('./virtuals/plugins/index.js').frontendNavigation;
 }
 
 declare module 'studiocms:component-registry' {
@@ -418,19 +418,12 @@ declare module 'studiocms-dashboard:web-vitals' {
 	export type WebVitalsResponseItem = import('./lib/webVitals/webVital').WebVitalsResponseItem;
 }
 
-declare module 'studiocms:auth/utils/authEnvCheck' {
-	/** @deprecated */
-	export const authEnvCheck: typeof import('./utils/authEnvCheck.js').authEnvCheck;
-	/** @deprecated */
-	export type AuthEnvCheckResponse = import('./utils/authEnvCheck.js').AuthEnvCheckResponse;
-}
-
 declare module 'studiocms:auth/utils/validImages' {
-	export const validImages: typeof import('./utils/validImages/index.js').validImages;
+	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
-	export const getLabelForPermissionLevel: typeof import('./utils/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
+	export const getLabelForPermissionLevel: typeof import('./virtuals/auth/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
 }
 
 declare module 'studiocms:auth/scripts/three' {
@@ -444,12 +437,8 @@ declare module 'studiocms:auth/scripts/three' {
 	export default defaultExport;
 }
 
-declare module 'studiocms:auth/scripts/formListener' {
-	export const formListener: typeof import('./scripts/formListener.js').formListener;
-}
-
 declare module 'studiocms:auth/lib' {
-	type Mod = import('./lib/auth/index.js').Mod;
+	type Mod = import('./virtuals/auth/index.js').Mod;
 	const mod: Mod;
 	export = mod;
 }
@@ -463,7 +452,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} providerUserId - The unique identifier for the user provided by the OAuth provider.
 	 * @property {string} userId - The unique identifier for the user within the application.
 	 */
-	export type OAuthAccountsTable = import('./lib/auth/types.js').OAuthAccountsTable;
+	export type OAuthAccountsTable = import('./virtuals/auth/types.js').OAuthAccountsTable;
 	/**
 	 * Interface representing a table of user permissions.
 	 *
@@ -471,7 +460,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} user - The username of the individual.
 	 * @property {string} rank - The rank or role assigned to the user.
 	 */
-	export type PermissionsTable = import('./lib/auth/types.js').PermissionsTable;
+	export type PermissionsTable = import('./virtuals/auth/types.js').PermissionsTable;
 	/**
 	 * Represents the session data for a user.
 	 *
@@ -479,20 +468,20 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {UserTable | null} user - The user data, or null if no user is logged in.
 	 * @property {'owner' | 'admin' | 'editor' | 'visitor' | 'unknown'} permissionLevel - The permission level of the user.
 	 */
-	export type UserSessionData = import('./lib/auth/types.js').UserSessionData;
+	export type UserSessionData = import('./virtuals/auth/types.js').UserSessionData;
 	/**
 	 * Represents a user session which includes user information and session details.
 	 *
 	 * @property {UserTable} user - The user data.
 	 * @property {SessionTable} session - The session data.
 	 */
-	export type UserSession = import('./lib/auth/types.js').UserSession;
+	export type UserSession = import('./virtuals/auth/types.js').UserSession;
 	/**
 	 * Represents the result of validating a session token.
 	 *
 	 * This type can either be a valid `UserSession` or an object indicating an invalid session with both `session` and `user` properties set to `null`.
 	 */
-	export type SessionValidationResult = import('./lib/auth/types.js').SessionValidationResult;
+	export type SessionValidationResult = import('./virtuals/auth/types.js').SessionValidationResult;
 	/**
 	 * Represents an individual refillable token bucket.
 	 *
@@ -500,7 +489,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} refillAt - The time at which the bucket was last refilled.
 	 */
-	export type RefillBucket = import('./lib/auth/types.js').RefillBucket;
+	export type RefillBucket = import('./virtuals/auth/types.js').RefillBucket;
 	/**
 	 * Represents a bucket with an expiration mechanism.
 	 *
@@ -508,7 +497,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} createdAt - The timestamp when the bucket was created.
 	 */
-	export type ExpiringBucket = import('./lib/auth/types.js').ExpiringBucket;
+	export type ExpiringBucket = import('./virtuals/auth/types.js').ExpiringBucket;
 	/**
 	 * Interface representing a throttling counter.
 	 *
@@ -516,7 +505,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} timeout - The duration (in milliseconds) for which the throttling is applied.
 	 * @property {number} updatedAt - The timestamp (in milliseconds since epoch) when the throttling counter was last updated.
 	 */
-	export type ThrottlingCounter = import('./lib/auth/types.js').ThrottlingCounter;
+	export type ThrottlingCounter = import('./virtuals/auth/types.js').ThrottlingCounter;
 }
 
 declare module 'virtual:studiocms/plugins/renderers' {}
@@ -581,7 +570,7 @@ declare module 'studiocms:plugins/auth/providers' {
 }
 
 interface StudioCMSSecurityLocals {
-	userSessionData: import('./lib/auth/types').UserSessionData;
+	userSessionData: import('./virtuals/auth/types').UserSessionData;
 	emailVerificationEnabled: boolean;
 	userPermissionLevel: {
 		isVisitor: boolean;
@@ -619,7 +608,7 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		userSessionData: import('./lib/auth/types').UserSessionData;
+		userSessionData: import('./virtuals/auth/types').UserSessionData;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */

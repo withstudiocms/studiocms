@@ -2,7 +2,10 @@ import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cl
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../../effect.js';
-import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
+import {
+	CheckIfUnsafe,
+	type CheckIfUnsafeError,
+} from '../../../virtuals/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { createUserAvatar } from '../../utils/createUserAvatar.js';
 import { logger } from '../../utils/logger.js';

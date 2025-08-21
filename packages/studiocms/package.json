@@ -113,8 +113,8 @@
 			"default": "./dist/runtime/index.js"
 		},
 		"./lib/auth/*": {
-			"types": "./dist/lib/auth/*.d.ts",
-			"default": "./dist/lib/auth/*.js"
+			"types": "./dist/virtuals/auth/*.d.ts",
+			"default": "./dist/virtuals/auth/*.js"
 		},
 		"./lib/*": {
 			"types": "./dist/virtuals/lib/*.d.ts",

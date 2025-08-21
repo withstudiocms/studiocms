@@ -113,8 +113,8 @@ export const permissionRanksMap: Record<AvailablePermissionRanks, string[]> = {
  * - `UserPermissionLevel`: Enum representing different user permission levels.
  * - `permissionRanksMap`: Mapping of permission ranks to their corresponding levels.
  */
-export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User', {
-	effect: genLogger('studiocms/lib/auth/user/User.effect')(function* () {
+export class User extends Effect.Service<User>()('studiocms/virtuals/auth/user/User', {
+	effect: genLogger('studiocms/virtuals/auth/user/User.effect')(function* () {
 		const check = yield* CheckIfUnsafe;
 		const sessionInst = yield* Session;
 		const pass = yield* Password;
@@ -126,7 +126,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		const verifyUsernameLength = (
 			username: string
 		): Effect.Effect<string | undefined, UserError, never> =>
-			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameLength')(
+			pipeLogger('studiocms/virtuals/auth/user/User.verifyUsernameLength')(
 				Effect.try({
 					try: () => {
 						if (username.length < 3 || username.length > 32) {
@@ -144,7 +144,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		const verifyUsernameCharacters = (
 			username: string
 		): Effect.Effect<string | undefined, UserError, never> =>
-			pipeLogger('studiocms/lib/auth/user/User.verifyUsernameCharacters')(
+			pipeLogger('studiocms/virtuals/auth/user/User.verifyUsernameCharacters')(
 				Effect.try({
 					try: () => {
 						if (!/^[a-z0-9_-]+$/.test(username)) {
@@ -162,7 +162,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		const verifyUsernameSafe = (
 			username: string
 		): Effect.Effect<string | undefined, CheckIfUnsafeError, never> =>
-			genLogger('studiocms/lib/auth/user/User.verifyUsernameSafe')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.verifyUsernameSafe')(function* () {
 				const isUnsafe = yield* check.username(username);
 				if (isUnsafe) {
 					return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
@@ -184,7 +184,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		const verifyUsernameInput = (
 			username: string
 		): Effect.Effect<string | true, UserError | CheckIfUnsafeError, never> =>
-			genLogger('studiocms/lib/auth/user/User.verifyUsernameInput')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.verifyUsernameInput')(function* () {
 				const testLength = yield* verifyUsernameLength(username);
 				if (testLength) {
 					return testLength;
@@ -213,12 +213,12 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @returns A promise that resolves to the URL of the user's avatar.
 		 */
 		const createUserAvatar = (email: string) =>
-			genLogger('studiocms/lib/auth/user/User.createUserAvatar')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.createUserAvatar')(function* () {
 				const clean = email.trim().toLowerCase();
 				const msgUint8 = new TextEncoder().encode(clean);
 
 				const hashBuffer = yield* pipeLogger(
-					'studiocms/lib/auth/user/User.createUserAvatar.hashBuffer'
+					'studiocms/virtuals/auth/user/User.createUserAvatar.hashBuffer'
 				)(
 					Effect.tryPromise({
 						try: () => crypto.subtle.digest('SHA-256', msgUint8),
@@ -243,7 +243,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @returns A promise that resolves to the newly created user record.
 		 */
 		const createLocalUser = (name: string, username: string, email: string, password: string) =>
-			genLogger('studiocms/lib/auth/user/User.createLocalUser')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.createLocalUser')(function* () {
 				const passwordHash = yield* pass.hashPassword(password);
 				const avatar = yield* createUserAvatar(email);
 
@@ -273,7 +273,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 			userFields: tsUsersInsert,
 			oAuthFields: { provider: string; providerUserId: string }
 		) =>
-			genLogger('studiocms/lib/auth/user/User.createOAuthUser')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.createOAuthUser')(function* () {
 				const newUser = yield* sdk.AUTH.user.create(userFields);
 
 				yield* sdk.AUTH.oAuth.create({
@@ -298,7 +298,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @returns A promise that resolves when the password has been successfully updated.
 		 */
 		const updateUserPassword = (userId: string, password: string) =>
-			genLogger('studiocms/lib/auth/user/User.updateUserPassword')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.updateUserPassword')(function* () {
 				const passwordHash = yield* pass.hashPassword(password);
 				yield* sdk.AUTH.user.update(userId, { password: passwordHash });
 			});
@@ -311,7 +311,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @throws Will throw an error if the user is not found or if the user does not have a password.
 		 */
 		const getUserPasswordHash = (userId: string) =>
-			genLogger('studiocms/lib/auth/user/User.getUserPasswordHash')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.getUserPasswordHash')(function* () {
 				const user = yield* sdk.GET.users.byId(userId);
 
 				if (!user) {
@@ -332,7 +332,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @returns A promise that resolves to the user data if found, or null if no user is found with the given email.
 		 */
 		const getUserFromEmail = (email: string) =>
-			genLogger('studiocms/lib/auth/user/User.getUserFromEmail')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.getUserFromEmail')(function* () {
 				const data = yield* sdk.GET.users.byEmail(email);
 
 				return data ?? null;
@@ -342,7 +342,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @private
 		 */
 		const getDefaultUserSession = () =>
-			pipeLogger('studiocms/lib/auth/user/User.getDefaultUserSession')(
+			pipeLogger('studiocms/virtuals/auth/user/User.getDefaultUserSession')(
 				Effect.succeed({
 					isLoggedIn: false,
 					user: null,
@@ -366,7 +366,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * 7. Returns an object containing the user's login status, user information, and permission level.
 		 */
 		const getUserData = (context: AstroGlobal | APIContext) =>
-			genLogger('studiocms/lib/auth/user/User.getUserData')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.getUserData')(function* () {
 				const sessionToken = yield* Effect.try({
 					try: () => context.cookies.get(Session.sessionCookieName)?.value ?? null,
 					catch: (cause) => new UserError({ message: `user error: ${cause}` }),
@@ -410,7 +410,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @private
 		 */
 		const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
-			pipeLogger('studiocms/lib/auth/user/User.getLevel')(
+			pipeLogger('studiocms/virtuals/auth/user/User.getLevel')(
 				Effect.try({
 					try: () => {
 						if (!userData) return 'unknown';
@@ -436,7 +436,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 		 * @returns The user's permission level as an enum value.
 		 */
 		const getUserPermissionLevel = (userData: UserSessionData | CombinedUserData | null) =>
-			genLogger('studiocms/lib/auth/user/User.getUserPermissionLevel')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.getUserPermissionLevel')(function* () {
 				const level = yield* getLevel(userData);
 
 				switch (level) {
@@ -472,7 +472,7 @@ export class User extends Effect.Service<User>()('studiocms/lib/auth/user/User',
 			userData: UserSessionData | CombinedUserData | null,
 			requiredPerms: AvailablePermissionRanks
 		) =>
-			genLogger('studiocms/lib/auth/user/User.isUserAllowed')(function* () {
+			genLogger('studiocms/virtuals/auth/user/User.isUserAllowed')(function* () {
 				const userLevel = yield* getUserPermissionLevel(userData);
 				const neededLevel = parseRequiredPerms(requiredPerms);
 

@@ -1,3 +1,7 @@
+/**
+ * This tool is used by Auth Login pages
+ */
+
 import { toast } from 'studiocms:ui/components';
 
 /**

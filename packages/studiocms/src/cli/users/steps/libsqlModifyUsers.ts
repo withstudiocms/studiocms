@@ -2,7 +2,10 @@ import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cl
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import { Effect, runEffect } from '../../../effect.js';
-import { CheckIfUnsafe, type CheckIfUnsafeError } from '../../../lib/auth/utils/unsafeCheck.js';
+import {
+	CheckIfUnsafe,
+	type CheckIfUnsafeError,
+} from '../../../virtuals/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';

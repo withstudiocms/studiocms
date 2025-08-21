@@ -305,15 +305,32 @@ export const studiocms = defineIntegration({
 									CustomImage: CustomImageComponentPath,
 								},
 							}),
+							'studiocms:plugin-helpers': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./plugins.js', './virtuals/plugins/index.js'],
+							}),
+							'studiocms:auth/lib': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/auth/index.js'],
+							}),
+							'studiocms:auth/lib/types': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/auth/types.js'],
+							}),
+							'studiocms:auth/utils/validImages': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/auth/validImages/index.js'],
+							}),
+							'studiocms:auth/utils/getLabelForPermissionLevel': buildDynamicOnlyVirtual({
+								resolve,
+								items: ['./virtuals/auth/getLabelForPermissionLevel.js'],
+							}),
+							'studiocms:auth/scripts/three': buildVirtualAmbientScript({
+								resolve,
+								items: ['./virtuals/auth/scripts/three.js'],
+							}),
 
 							// Not yet moved
-							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
-								resolve,
-								dynamicExports: ['./lib/i18n/index.js'],
-								astroComponents: {
-									LanguageSelector: './lib/i18n/LanguageSelector.astro',
-								},
-							}),
 							'studiocms:sdk': buildDynamicOnlyVirtual({
 								resolve,
 								items: ['./sdk/index.js'],
@@ -322,39 +339,19 @@ export const studiocms = defineIntegration({
 								resolve,
 								items: ['./sdk/types.js'],
 							}),
+							'studiocms:i18n': buildDynamicAndAstroVirtualExport({
+								resolve,
+								dynamicExports: ['./lib/i18n/index.js'],
+								astroComponents: {
+									LanguageSelector: './lib/i18n/LanguageSelector.astro',
+								},
+							}),
 							'studiocms:i18n/client': buildDynamicOnlyVirtual({
 								resolve,
 								items: ['./lib/i18n/client.js'],
 							}),
-							'studiocms:plugin-helpers': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./plugins.js', './lib/plugins/index.js'],
-							}),
-							'studiocms:auth/lib': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/auth/index.js'],
-							}),
-							'studiocms:auth/lib/types': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./lib/auth/types.js'],
-							}),
-							'studiocms:auth/utils/authEnvCheck': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./utils/authEnvCheck.js'],
-							}),
-							'studiocms:auth/utils/validImages': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./utils/validImages/index.js'],
-							}),
-							'studiocms:auth/utils/getLabelForPermissionLevel': buildDynamicOnlyVirtual({
-								resolve,
-								items: ['./utils/getLabelForPermissionLevel.js'],
-							}),
-							'studiocms:auth/scripts/three': buildVirtualAmbientScript({
-								resolve,
-								items: ['./scripts/three.js'],
-							}),
 
+							// TODO: Decide if there is a better way to build this
 							'studiocms:logger': `
 								import { logger as _logger } from '@it-astro:logger:studiocms-runtime';
 

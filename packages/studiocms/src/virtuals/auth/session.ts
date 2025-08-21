@@ -56,8 +56,8 @@ export const sessionCookieName = 'auth_session';
  * authentication and session management are required. It provides a robust and
  * extensible framework for handling session-related operations.
  */
-export class Session extends Effect.Service<Session>()('studiocms/lib/auth/session/Session', {
-	effect: genLogger('studiocms/lib/auth/session/Session.effect')(function* () {
+export class Session extends Effect.Service<Session>()('studiocms/virtuals/auth/session/Session', {
+	effect: genLogger('studiocms/virtuals/auth/session/Session.effect')(function* () {
 		/**
 		 * Generates a session token.
 		 *
@@ -66,7 +66,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * a session token.
 		 */
 		const generateSessionToken = () =>
-			pipeLogger('studiocms/lib/auth/session/Session.generateSessionToken')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.generateSessionToken')(
 				Effect.try({
 					try: () => {
 						const data = new Uint8Array(20);
@@ -85,7 +85,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * Generates a new expiration date for a session.
 		 */
 		const makeExpirationDate = () =>
-			pipeLogger('studiocms/lib/auth/session/Session.makeExpirationDate')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.makeExpirationDate')(
 				Effect.try({
 					try: () => new Date(Date.now() + sessionExpTime),
 
@@ -100,7 +100,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @private
 		 */
 		const makeSessionId = (token: string) =>
-			pipeLogger('studiocms/lib/auth/session/Session.makeSessionId')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.makeSessionId')(
 				Effect.try({
 					try: () => pipe(new TextEncoder().encode(token), sha256, encodeHexLowerCase),
 					catch: (cause) =>
@@ -118,7 +118,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @returns A promise that resolves to the created session object.
 		 */
 		const createSession = (token: string, userId: string) =>
-			genLogger('studiocms/lib/auth/session/Session.createSession')(function* () {
+			genLogger('studiocms/virtuals/auth/session/Session.createSession')(function* () {
 				const sessionId = yield* makeSessionId(token);
 
 				const session: tsSessionTableSelect = {
@@ -139,7 +139,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 *          If the session is invalid or expired, both session and user will be null.
 		 */
 		const validateSessionToken = (token: string) =>
-			genLogger('studiocms/lib/auth/session/Session.validateSessionToken')(function* () {
+			genLogger('studiocms/virtuals/auth/session/Session.validateSessionToken')(function* () {
 				const sessionId = yield* makeSessionId(token);
 
 				const nullSession: SessionValidationResult = { session: null, user: null };
@@ -178,7 +178,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @returns A promise that resolves when the session has been successfully deleted.
 		 */
 		const invalidateSession = (sessionId: string) =>
-			pipeLogger('studiocms/lib/auth/session/Session.invalidateSession')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.invalidateSession')(
 				sdk.AUTH.session.delete(sessionId)
 			);
 
@@ -190,7 +190,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @param expiresAt - The expiration date of the cookie.
 		 */
 		const setSessionTokenCookie = (context: APIContext, token: string, expiresAt: Date) =>
-			pipeLogger('studiocms/lib/auth/session/Session.setSessionTokenCookie')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.setSessionTokenCookie')(
 				Effect.try({
 					try: () =>
 						context.cookies.set(sessionCookieName, token, {
@@ -213,7 +213,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @param context - The context in which the cookie is being set. This can be either an APIContext or AstroGlobal.
 		 */
 		const deleteSessionTokenCookie = (context: APIContext | AstroGlobal) =>
-			pipeLogger('studiocms/lib/auth/session/Session.deleteSessionTokenCookie')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.deleteSessionTokenCookie')(
 				Effect.try({
 					try: () =>
 						context.cookies.set(sessionCookieName, '', {
@@ -238,7 +238,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @param value - The value of the cookie to set.
 		 */
 		const setOAuthSessionTokenCookie = (context: APIContext, key: string, value: string) =>
-			pipeLogger('studiocms/lib/auth/session/Session.setOAuthSessionTokenCookie')(
+			pipeLogger('studiocms/virtuals/auth/session/Session.setOAuthSessionTokenCookie')(
 				Effect.try({
 					try: () =>
 						context.cookies.set(key, value, {
@@ -263,7 +263,7 @@ export class Session extends Effect.Service<Session>()('studiocms/lib/auth/sessi
 		 * @returns A promise that resolves when the session has been successfully created.
 		 */
 		const createUserSession = (userId: string, context: APIContext) =>
-			genLogger('studiocms/lib/auth/session/Session.createUserSession')(function* () {
+			genLogger('studiocms/virtuals/auth/session/Session.createUserSession')(function* () {
 				const sessionToken = yield* generateSessionToken();
 				const expiration = yield* makeExpirationDate();
 				yield* createSession(sessionToken, userId);

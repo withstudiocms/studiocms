@@ -34,16 +34,16 @@ export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ mes
  * - `generateUrl`: Generates a URL with the given base, path, and query parameters.
  */
 export class VerifyEmail extends Effect.Service<VerifyEmail>()(
-	'studiocms/lib/auth/verify-email/VerifyEmail',
+	'studiocms/virtuals/auth/verify-email/VerifyEmail',
 	{
-		effect: genLogger('studiocms/lib/auth/verify-email/VerifyEmail.effect')(function* () {
+		effect: genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.effect')(function* () {
 			const MailService = yield* Mailer;
 
 			/**
 			 * @private
 			 */
 			const getMailerStatus = () =>
-				pipeLogger('studiocms/lib/auth/verify-email/VerifyEmail.getMailerStatus')(
+				pipeLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.getMailerStatus')(
 					MailService.isEnabled
 				);
 
@@ -54,7 +54,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 * @returns The notification settings.
 			 */
 			const getSettings = () =>
-				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.getSettings')(function* () {
+				genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.getSettings')(function* () {
 					const settings = yield* sdk.GET.databaseTable.notificationSettings();
 
 					if (!settings) {
@@ -79,7 +79,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 *
 			 */
 			const isEmailVerificationEnabled = () =>
-				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.isEmailVerificationEnabled')(
+				genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.isEmailVerificationEnabled')(
 					function* () {
 						const mailer = yield* getMailerStatus();
 						const settings = yield* getSettings();
@@ -95,7 +95,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 * @returns A promise that resolves to the email verification request.
 			 */
 			const getEmailVerificationRequest = (id: string) =>
-				pipeLogger('studiocms/lib/auth/verify-email/VerifyEmail.getEmailVerificationRequest')(
+				pipeLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.getEmailVerificationRequest')(
 					sdk.AUTH.verifyEmail.get(id)
 				);
 
@@ -106,9 +106,9 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 * @returns A promise that resolves when the email verification request is successfully deleted.
 			 */
 			const deleteEmailVerificationRequest = (id: string) =>
-				pipeLogger('studiocms/lib/auth/verify-email/VerifyEmail.deleteEmailVerificationRequest')(
-					sdk.AUTH.verifyEmail.delete(id)
-				);
+				pipeLogger(
+					'studiocms/virtuals/auth/verify-email/VerifyEmail.deleteEmailVerificationRequest'
+				)(sdk.AUTH.verifyEmail.delete(id));
 
 			/**
 			 * Creates an email verification request for a given user.
@@ -120,18 +120,18 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 * @returns A promise that resolves to the result of the email verification request creation.
 			 */
 			const createEmailVerificationRequest = (userId: string) =>
-				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.createEmailVerificationRequest')(
-					function* () {
-						yield* deleteEmailVerificationRequest(userId);
-						return yield* sdk.AUTH.verifyEmail.create(userId);
-					}
-				);
+				genLogger(
+					'studiocms/virtuals/auth/verify-email/VerifyEmail.createEmailVerificationRequest'
+				)(function* () {
+					yield* deleteEmailVerificationRequest(userId);
+					return yield* sdk.AUTH.verifyEmail.create(userId);
+				});
 
 			/**
 			 * @private
 			 */
 			const generateUrl = (base: string, path: string, params?: Record<string, string>) =>
-				pipeLogger('studiocms/lib/auth/verify-email/VerifyEmail.generateUrl')(
+				pipeLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.generateUrl')(
 					Effect.try({
 						try: () => {
 							const url = new URL(path, base);
@@ -155,7 +155,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 * @throws Will throw an error if the user is not found, if the verification token creation fails, or if the user does not have an email.
 			 */
 			const sendVerificationEmail = (userId: string, isOAuth = false) =>
-				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.sendVerificationEmail')(
+				genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.sendVerificationEmail')(
 					function* () {
 						const mailer = yield* getMailerStatus();
 						const settings = yield* getSettings();
@@ -223,7 +223,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 *    - Default: Returns the user's email verification status.
 			 */
 			const isEmailVerified = (user: CombinedUserData | UserSessionData | undefined | null) =>
-				genLogger('studiocms/lib/auth/verify-email/VerifyEmail.isEmailVerified')(function* () {
+				genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.isEmailVerified')(function* () {
 					if (!user) return false;
 
 					const mailer = yield* getMailerStatus();
