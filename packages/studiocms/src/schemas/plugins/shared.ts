@@ -1,7 +1,7 @@
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
 import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
-import { type UiTranslationKey, uiTranslationsAvailable } from '../../lib/i18n/config.js';
+import { type UiTranslationKey, uiTranslationsAvailable } from '../../virtuals/i18n/config.js';
 
 // https://github.com/withastro/astro/blob/910eb00fe0b70ca80bd09520ae100e8c78b675b5/packages/astro/src/core/config/schema.ts#L113
 export const astroIntegrationSchema = z.object({

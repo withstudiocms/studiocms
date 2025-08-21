@@ -3,7 +3,7 @@ import { makeDashboardRoute, StudioCMSRoutes } from 'studiocms:lib';
 import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
 import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
-import { defaultLang } from '../../lib/i18n/config.js';
+import { defaultLang } from '../../virtuals/i18n/config.js';
 
 /**
  * Represents a link in the sidebar of the dashboard.
