@@ -98,7 +98,7 @@
       "api-tokens-modal-response-header": "Neuer Token",
       "api-tokens-modal-response-description": "Bitte speichere deinen neuen Token. Er wird nie wieder sichtbar sein.",
       "sync-with-libravatar": "Libravatar Synchronisieren",
-      "basic-avatar-url": "Avatar URL"
+      "basic-avatar-url": "Profilbild-URL"
     },
     "@studiocms/dashboard:password-reset": {
       "title": "Passwort zurücksetzen",
