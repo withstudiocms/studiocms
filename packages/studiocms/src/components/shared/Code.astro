@@ -1,4 +1,5 @@
 ---
+import '../../styles/code-component.css';
 
 interface Props {
 	code: string;
@@ -19,5 +20,39 @@ if (del) {
 if (ins) {
 	props['data-lines-inserted'] = ins;
 }
+
+const id = Math.random().toString(36).substring(2, 9);
 ---
-<pre class="code-container scrollbar"><code class="custom-code" class:list={[(del || ins) && 'diff']} {...props} set:html={htmlCode}></code></pre>
+
+<pre class="code-container scrollbar"><code id={id} class="custom-code" class:list={[(del || ins) && 'diff']} {...props} set:html={htmlCode} /></pre>
+<script is:inline define:vars={{ id: id }}>
+	const codesWithDiff = document.getElementById(id);
+
+	if (!codesWithDiff) return;
+
+	const code = codesWithDiff.classList.contains("diff");
+
+	if (!code) return;
+
+	const linesInserted = codesWithDiff.getAttribute("data-lines-inserted");
+	const linesDeleted = codesWithDiff.getAttribute("data-lines-deleted");
+
+	if (!linesInserted && !linesDeleted) return;
+
+	const parsedInsertedLines =
+		linesInserted?.split(",").map((line) => parseInt(line, 10)) || [];
+	const parsedDeletedLines =
+		linesDeleted?.split(",").map((line) => parseInt(line, 10)) || [];
+
+	const codeLines = codesWithDiff.querySelectorAll(".line");
+
+	codeLines.forEach((line, index) => {
+		if (parsedInsertedLines.includes(index + 1)) {
+			line.classList.add("diff", "ins");
+		}
+
+		if (parsedDeletedLines.includes(index + 1)) {
+			line.classList.add("diff", "del");
+		}
+	});
+</script>
