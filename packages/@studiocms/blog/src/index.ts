@@ -1,5 +1,5 @@
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { pathWithBase } from 'studiocms/lib/pathGenerators.js';
+import { pathWithBase } from 'studiocms/lib/pathGenerators';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
