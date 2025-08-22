@@ -65,7 +65,7 @@ const allComponents = await Effect.runPromise(
 Create proxies for existing Astro components to enable dynamic rendering:
 
 ```typescript
-import { createComponentProxy } from '@withstudiocms/component-registry';
+import { createComponentProxy, transformHTML } from '@withstudiocms/component-registry';
 
 // Inside an Astro component
 // body?.components contains imported Astro components from a virtual module
@@ -138,8 +138,12 @@ const components = {
 
 // Transform with sanitization
 const result = await transformHTML(html, components, {
-  allowedElements: ['div', 'button', 'h3', 'p'],
-  allowedAttributes: { '*': ['class'] }
+  allowedElements: ['div', 'button', 'h3', 'p', 'my-button', 'my-card'],
+  allowedAttributes: {
+    '*': ['class'],
+    'my-button': ['text'],
+    'my-card': ['title', 'content']
+  }
 });
 ```
 
