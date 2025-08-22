@@ -13,9 +13,7 @@ const defaultConfig = {
 	sourcemap: false,
 	sourcesContent: false,
 	loader: {
-		'.stub.js': 'copy',
 		'.astro': 'copy',
-		'.d.ts': 'copy',
 		'.json': 'copy',
 		'.gif': 'copy',
 		'.jpeg': 'copy',
@@ -32,6 +30,42 @@ const defaultConfig = {
 		'.otf': 'copy',
 	},
 };
+
+/**
+ * Plugin to copy *.stub.(js|mjs|cjs) without parsing/bundling.
+ * NOTE: Importing these will yield a file URL string at runtime, not executed JS.
+ * @type {import('esbuild').Plugin} The esbuild plugin for generating TypeScript declarations.
+ */
+const copyStubJsPlugin = {
+	name: 'copy-stub-js',
+	setup(build) {
+		// Match both entry points and imported modules
+		const filter = /\.stub\.(?:js|mjs|cjs)$/;
+		build.onLoad({ filter }, async (args) => {
+			const contents = await fs.readFile(args.path);
+			return { contents, loader: 'copy' };
+		});
+	},
+};
+
+/**
+ * Plugin to copy *.d.ts without parsing/bundling.
+ * NOTE: Importing these will yield a file URL string at runtime, not executed JS.
+ * @type {import('esbuild').Plugin} The esbuild plugin for generating TypeScript declarations.
+ */
+const copyDTSPlugin = {
+	name: 'copy-dts',
+	setup(build) {
+		// Match both entry points and imported modules
+		const filter = /\.d\.ts$/;
+		build.onLoad({ filter }, async (args) => {
+			const contents = await fs.readFile(args.path);
+			return { contents, loader: 'copy' };
+		});
+	},
+};
+
+const copyPlugins = [copyStubJsPlugin, copyDTSPlugin];
 
 // DateTime format for logging
 /**
@@ -192,7 +226,7 @@ export default async function builder(cmd, args) {
 				outdir,
 				format,
 				sourcemap: 'linked',
-				plugins: [rebuildPlugin],
+				plugins: [rebuildPlugin, ...copyPlugins],
 			});
 
 			console.log(
@@ -223,7 +257,7 @@ export default async function builder(cmd, args) {
 				outdir,
 				outExtension: forceCJS ? { '.js': '.cjs' } : {},
 				format,
-				plugins: [dtsGen(buildTsConfig, outdir)],
+				plugins: [dtsGen(buildTsConfig, outdir), ...copyPlugins],
 			});
 			console.log(chalk.dim(`[${date}] `) + chalk.green('√ Build Complete'));
 			break;

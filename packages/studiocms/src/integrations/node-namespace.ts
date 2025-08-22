@@ -25,12 +25,13 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 						plugin: {
 							name: 'namespace-builtins',
 							enforce: 'pre',
-							// biome-ignore lint/suspicious/noExplicitAny: This is a Vite plugin, so we don't have control over the type of `id`
-							resolveId(id: any) {
-								if (id[0] === '.' || id[0] === '/') return;
-
-								if (builtins.includes(id)) {
-									return { id: `node:${id}`, external: true };
+							resolveId(id: string) {
+								if (!id || id[0] === '.' || id[0] === '/') return;
+								// Support already-namespaced ids and builtin subpaths (e.g., 'fs/promises').
+								const plain = id.startsWith('node:') ? id.slice(5) : id;
+								if (builtins.includes(plain)) {
+									const namespaced = id.startsWith('node:') ? id : `node:${id}`;
+									return { id: namespaced, external: true };
 								}
 								return;
 							},

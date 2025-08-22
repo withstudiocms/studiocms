@@ -9,7 +9,18 @@ interface Props {
 
 const { code, del, ins } = Astro.props;
 
-const htmlCode = code.split('\n').map((line) => `<span class="line">${line}</span>\n`);
+const escapeHtml = (s: string) =>
+	s
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;')
+		.replaceAll("'", '&#39;');
+
+const htmlCode = code
+	.split('\n')
+	.map((line) => `<span class="line">${escapeHtml(line)}</span>`)
+	.join('\n');
 
 const props: Record<string, string> = {};
 
@@ -24,7 +35,10 @@ if (ins) {
 const id = Math.random().toString(36).substring(2, 9);
 ---
 
-<pre class="code-container scrollbar"><code id={id} class="custom-code" class:list={[(del || ins) && 'diff']} {...props} set:html={htmlCode} /></pre>
+<pre
+	class="code-container scrollbar">
+  <code id={id} class:list={["custom-code", (del || ins) ? 'diff' : '']} {...props} set:html={htmlCode} />
+</pre>
 <script is:inline define:vars={{ id: id }}>
 	const codesWithDiff = document.getElementById(id);
 

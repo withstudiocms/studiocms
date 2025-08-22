@@ -140,7 +140,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				});
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve(apiRoute(ctx)));
+					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
 				}
 
 				yield* Effect.all([
@@ -265,7 +265,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve(apiRoute(ctx)));
+					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
 				}
 
 				yield* Effect.all([
@@ -310,7 +310,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				yield* sdk.DELETE.page(id);
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve(apiRoute(ctx)));
+					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
 				}
 
 				yield* Effect.all([

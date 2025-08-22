@@ -118,7 +118,7 @@
 		},
 		"./lib/*": {
 			"types": "./dist/virtuals/lib/*.d.ts",
-			"default": "./dist/virtuals/lib/*"
+			"default": "./dist/virtuals/lib/*.js"
 		},
 		"./types": {
 			"types": "./dist/types.d.ts",
