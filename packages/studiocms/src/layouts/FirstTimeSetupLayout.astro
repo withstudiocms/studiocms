@@ -1,0 +1,64 @@
+---
+import 'studiocms:ui/global-css';
+import '../styles/dashboard-base.css';
+import '../styles/dashboard-diff.css';
+import { Toaster } from 'studiocms:ui/components';
+import ThemeManager from '../components/shared/ThemeManager.astro';
+import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../consts.js';
+
+type Props = {
+	title?: string;
+	description?: string;
+	lang?: string;
+};
+
+const {
+	title = 'StudioCMS Setup',
+	description = 'StudioCMS Onboarding',
+	lang = 'en-us',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html {lang}>
+  
+<head>
+  {/* Global Metadata */}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  {/* Favicon */}
+  <link rel="icon" href={FAVICON_ASSETS.svg} type="image/svg+xml" />
+  <link rel="icon" href={FAVICON_ASSETS.png.light} type="image/png" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href={FAVICON_ASSETS.png.dark} type="image/png" media="(prefers-color-scheme: light)" />
+
+  {/* Primary Meta Tags */}
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content={STUDIOCMS_THEME_COLOR} />
+
+  {/* Theme Manager */}
+  <ThemeManager />
+</head>
+  <body>
+    <Toaster />
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+    <style>
+      .container {
+        margin: 0 auto;
+        padding: 0 1rem;
+        padding-top: 2rem;
+
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+  </body>
+</html>

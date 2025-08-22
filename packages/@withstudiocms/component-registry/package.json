@@ -38,8 +38,8 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.ts'",
-		"dev": "buildkit dev 'src/**/*.ts'",
+		"build": "buildkit build 'src/**/*.{ts,d.ts}'",
+		"dev": "buildkit dev 'src/**/*.{ts,d.ts}'",
         "test": "buildkit test 'test/**/*.test.js'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},

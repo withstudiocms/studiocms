@@ -51,8 +51,8 @@
 		"ui.d.ts"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,webp,woff2}'",
-		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,webp,woff2}'",
+		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
+		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"bin": {
@@ -71,14 +71,10 @@
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
 		},
-		"./Renderer": "./dist/components/Renderer.astro",
+		"./Renderer": "./dist/virtuals/components/Renderer.astro",
 		"./db/config": {
 			"types": "./dist/db/config.d.ts",
 			"default": "./dist/db/config.js"
-		},
-		"./db/tables": {
-			"types": "./dist/db/tables.d.ts",
-			"default": "./dist/db/tables.js"
 		},
 		"./errors": {
 			"types": "./dist/errors.d.ts",
@@ -89,16 +85,16 @@
 			"default": "./dist/plugins.js"
 		},
 		"./sdk/base": {
-			"types": "./dist/sdk/index.d.ts",
-			"default": "./dist/sdk/index.js"
+			"types": "./dist/virtuals/sdk/index.d.ts",
+			"default": "./dist/virtuals/sdk/index.js"
 		},
 		"./sdk/tables": {
-			"types": "./dist/sdk/tables.d.ts",
-			"default": "./dist/sdk/tables.js"
+			"types": "./dist/virtuals/sdk/tables.d.ts",
+			"default": "./dist/virtuals/sdk/tables.js"
 		},
 		"./sdk/types": {
-			"types": "./dist/sdk/types/index.d.ts",
-			"default": "./dist/sdk/types/index.js"
+			"types": "./dist/virtuals/sdk/types/index.d.ts",
+			"default": "./dist/virtuals/sdk/types/index.js"
 		},
 		"./schemas": {
 			"types": "./dist/schemas/index.d.ts",
@@ -112,9 +108,17 @@
 			"types": "./dist/runtime/index.d.ts",
 			"default": "./dist/runtime/index.js"
 		},
+		"./lib/auth/*": {
+			"types": "./dist/virtuals/auth/*.d.ts",
+			"default": "./dist/virtuals/auth/*.js"
+		},
+		"./lib/i18n/*": {
+			"types": "./dist/virtuals/i18n/*.d.ts",
+			"default": "./dist/virtuals/i18n/*.js"
+		},
 		"./lib/*": {
-			"types": "./dist/lib/*.d.ts",
-			"default": "./dist/lib/*"
+			"types": "./dist/virtuals/lib/*.d.ts",
+			"default": "./dist/virtuals/lib/*.js"
 		},
 		"./types": {
 			"types": "./dist/types.d.ts",
@@ -131,8 +135,8 @@
 			"default": "./dist/effect.js"
 		},
 		"./sdk/*": {
-			"types": "./dist/sdk/*.d.ts",
-			"default": "./dist/sdk/*.js"
+			"types": "./dist/virtuals/sdk/*.d.ts",
+			"default": "./dist/virtuals/sdk/*.js"
 		},
 		"./oAuthUtils": {
 			"types": "./dist/oAuthUtils.d.ts",

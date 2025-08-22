@@ -13,7 +13,7 @@ declare module 'studiocms:logger' {
 }
 
 declare module 'studiocms:components/dashboard-grid-items' {
-	export const dashboardGridItems: import('./lib/dashboardGrid').GridItemUsable[];
+	export const dashboardGridItems: import('./schemas/plugins/shared').GridItemUsable[];
 	export default dashboardGridItems;
 }
 
@@ -49,40 +49,41 @@ declare module 'studiocms:plugins/renderers' {
 }
 
 declare module 'studiocms:mailer' {
-	type Mod = typeof import('./lib/mailer/index');
+	type Mod = typeof import('./virtuals/mailer/index');
 	export const Mailer: Mod['Mailer'];
 
 	// Table Def
-	export const tsMailerConfig: import('./lib/mailer/index').tsMailerConfig;
+	export const tsMailerConfig: import('./virtuals/mailer/index').tsMailerConfig;
 	// Types
-	export type tsMailer = import('./lib/mailer/index').tsMailer;
-	export type tsMailerInsert = import('./lib/mailer/index').tsMailerInsert;
-	export type TransporterConfig = import('./lib/mailer/index').TransporterConfig;
-	export type MailerConfig = import('./lib/mailer/index').MailerConfig;
-	export type MailOptions = import('./lib/mailer/index').MailOptions;
-	export type MailerResponse = import('./lib/mailer/index').MailerResponse;
+	export type tsMailer = import('./virtuals/mailer/index').tsMailer;
+	export type tsMailerInsert = import('./virtuals/mailer/index').tsMailerInsert;
+	export type TransporterConfig = import('./virtuals/mailer/index').TransporterConfig;
+	export type MailerConfig = import('./virtuals/mailer/index').MailerConfig;
+	export type MailOptions = import('./virtuals/mailer/index').MailOptions;
+	export type MailerResponse = import('./virtuals/mailer/index').MailerResponse;
 }
 
 declare module 'studiocms:mailer/templates' {
-	export const getTemplate: typeof import('./lib/mailer/template').getTemplate;
+	export const getTemplate: typeof import('./virtuals/mailer/template').getTemplate;
 	export default getTemplate;
 }
 
 declare module 'studiocms:notifier' {
-	type Mod = typeof import('./lib/notifier/index');
+	type Mod = typeof import('./virtuals/notifier/index');
 	export const Notifications: Mod['Notifications'];
 
-	export type UserNotification = import('./lib/notifier/index').UserNotification;
-	export type EditorNotification = import('./lib/notifier/index').EditorNotification;
-	export type AdminNotification = import('./lib/notifier/index').AdminNotification;
-	export const notificationTypes: typeof import('./lib/notifier/index').notificationTypes;
-	export const notificationTitleStrings: typeof import('./lib/notifier/index').notificationTitleStrings;
+	export type UserNotification = import('./virtuals/notifier/index').UserNotification;
+	export type EditorNotification = import('./virtuals/notifier/index').EditorNotification;
+	export type AdminNotification = import('./virtuals/notifier/index').AdminNotification;
+	export const notificationTypes: typeof import('./virtuals/notifier/index').notificationTypes;
+	export const notificationTitleStrings: typeof import('./virtuals/notifier/index').notificationTitleStrings;
 }
 
 declare module 'studiocms:notifier/client' {
-	export type UserNotificationOptions = import('./lib/notifier/client').UserNotificationOptions;
-	export const getEnabledNotificationCheckboxes: typeof import('./lib/notifier/client').getEnabledNotificationCheckboxes;
-	export const formatNotificationOptions: typeof import('./lib/notifier/client').formatNotificationOptions;
+	export type UserNotificationOptions =
+		import('./virtuals/notifier/client').UserNotificationOptions;
+	export const getEnabledNotificationCheckboxes: typeof import('./virtuals/notifier/client').getEnabledNotificationCheckboxes;
+	export const formatNotificationOptions: typeof import('./virtuals/notifier/client').formatNotificationOptions;
 }
 
 declare module 'studiocms:config' {
@@ -111,8 +112,8 @@ declare module 'studiocms:changelog' {
 }
 
 declare module 'studiocms:components' {
-	export const FormattedDate: typeof import('./components/FormattedDate.astro').default;
-	export const Generator: typeof import('./components/Generator.astro').default;
+	export const FormattedDate: typeof import('./virtuals/components/FormattedDate.astro').default;
+	export const Generator: typeof import('./virtuals/components/Generator.astro').default;
 }
 
 declare module 'virtual:studiocms/components/Editors' {
@@ -120,65 +121,65 @@ declare module 'virtual:studiocms/components/Editors' {
 }
 
 declare module 'studiocms:i18n' {
-	export const staticPaths: typeof import('./lib/i18n/index.js').staticPaths;
-	export const getLangFromUrl: typeof import('./lib/i18n/index.js').getLangFromUrl;
-	export const useTranslations: typeof import('./lib/i18n/index.js').useTranslations;
-	export const useTranslatedPath: typeof import('./lib/i18n/index.js').useTranslatedPath;
-	export const languageSelectorOptions: typeof import('./lib/i18n/index.js').languageSelectorOptions;
-	export const getCurrentURLPath: typeof import('./lib/i18n/index.js').getCurrentURLPath;
-	export const switchLanguage: typeof import('./lib/i18n/index.js').switchLanguage;
-	export type UiLanguageKeys = import('./lib/i18n/index.js').UiLanguageKeys;
-	export type UiTranslations = import('./lib/i18n/index.js').UiTranslations;
-	export const defaultLang: typeof import('./lib/i18n/index').defaultLang;
+	export const staticPaths: typeof import('./virtuals/i18n/index.js').staticPaths;
+	export const getLangFromUrl: typeof import('./virtuals/i18n/index.js').getLangFromUrl;
+	export const useTranslations: typeof import('./virtuals/i18n/index.js').useTranslations;
+	export const useTranslatedPath: typeof import('./virtuals/i18n/index.js').useTranslatedPath;
+	export const languageSelectorOptions: typeof import('./virtuals/i18n/index.js').languageSelectorOptions;
+	export const getCurrentURLPath: typeof import('./virtuals/i18n/index.js').getCurrentURLPath;
+	export const switchLanguage: typeof import('./virtuals/i18n/index.js').switchLanguage;
+	export type UiLanguageKeys = import('./virtuals/i18n/index.js').UiLanguageKeys;
+	export type UiTranslations = import('./virtuals/i18n/index.js').UiTranslations;
+	export const defaultLang: typeof import('./virtuals/i18n/index.js').defaultLang;
 }
 
 declare module 'studiocms:i18n/client' {
-	export const $localeSettings: typeof import('./lib/i18n/client').$localeSettings;
-	export const $locale: typeof import('./lib/i18n/client').$locale;
-	export const format: typeof import('./lib/i18n/client').format;
-	export const $i18n: typeof import('./lib/i18n/client').$i18n;
-	export const baseTranslation: typeof import('./lib/i18n/client').baseTranslation;
-	export const documentUpdater: typeof import('./lib/i18n/client').documentUpdater;
-	export const makeTranslation: typeof import('./lib/i18n/client').makeTranslation;
-	export const updateElmLabel: typeof import('./lib/i18n/client').updateElmLabel;
-	export const defaultLang: typeof import('./lib/i18n/client').defaultLang;
-	export const uiTranslationsAvailable: typeof import('./lib/i18n/client').uiTranslationsAvailable;
-	export type UiTranslationKey = import('./lib/i18n/client').UiTranslationKey;
-	export const pageHeaderUpdater: typeof import('./lib/i18n/client').pageHeaderUpdater;
-	export const updateSelectElmLabel: typeof import('./lib/i18n/client').updateSelectElmLabel;
-	export const updateElmPlaceholder: typeof import('./lib/i18n/client').updateElmPlaceholder;
-	export const updateToggleElmLabel: typeof import('./lib/i18n/client').updateToggleElmLabel;
+	export const $localeSettings: typeof import('./virtuals/i18n/client').$localeSettings;
+	export const $locale: typeof import('./virtuals/i18n/client').$locale;
+	export const format: typeof import('./virtuals/i18n/client').format;
+	export const $i18n: typeof import('./virtuals/i18n/client').$i18n;
+	export const baseTranslation: typeof import('./virtuals/i18n/client').baseTranslation;
+	export const documentUpdater: typeof import('./virtuals/i18n/client').documentUpdater;
+	export const makeTranslation: typeof import('./virtuals/i18n/client').makeTranslation;
+	export const updateElmLabel: typeof import('./virtuals/i18n/client').updateElmLabel;
+	export const defaultLang: typeof import('./virtuals/i18n/client').defaultLang;
+	export const uiTranslationsAvailable: typeof import('./virtuals/i18n/client').uiTranslationsAvailable;
+	export type UiTranslationKey = import('./virtuals/i18n/client').UiTranslationKey;
+	export const pageHeaderUpdater: typeof import('./virtuals/i18n/client').pageHeaderUpdater;
+	export const updateSelectElmLabel: typeof import('./virtuals/i18n/client').updateSelectElmLabel;
+	export const updateElmPlaceholder: typeof import('./virtuals/i18n/client').updateElmPlaceholder;
+	export const updateToggleElmLabel: typeof import('./virtuals/i18n/client').updateToggleElmLabel;
 }
 
 declare module 'studiocms:imageHandler/components' {
-	export const CustomImage: typeof import('./components/image/CustomImage.astro').default;
+	export const CustomImage: typeof import('./virtuals/components/CustomImage.astro').default;
 }
 
 declare module 'studiocms:lib' {
-	export const HeadConfigSchema: typeof import('./lib/head.js').HeadConfigSchema;
-	export const createHead: typeof import('./lib/head.js').createHead;
-	export const headDefaults: typeof import('./lib/headDefaults.js').headDefaults;
-	export const stringify: typeof import('./lib/jsonUtils.js').stringify;
-	export const stringifyMap: typeof import('./lib/jsonUtils.js').stringifyMap;
-	export const pathWithBase: typeof import('./lib/pathGenerators.js').pathWithBase;
-	export const fileWithBase: typeof import('./lib/pathGenerators.js').fileWithBase;
-	export const ensureLeadingSlash: typeof import('./lib/pathGenerators.js').ensureLeadingSlash;
-	export const ensureTrailingSlash: typeof import('./lib/pathGenerators.js').ensureTrailingSlash;
-	export const stripLeadingSlash: typeof import('./lib/pathGenerators.js').stripLeadingSlash;
-	export const stripTrailingSlash: typeof import('./lib/pathGenerators.js').stripTrailingSlash;
-	export const stripHtmlExtension: typeof import('./lib/pathGenerators.js').stripHtmlExtension;
-	export const ensureHtmlExtension: typeof import('./lib/pathGenerators.js').ensureHtmlExtension;
-	export const removeLeadingTrailingSlashes: typeof import('./lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
-	export const getSluggedRoute: typeof import('./lib/routeMap.js').getSluggedRoute;
-	export const getEditRoute: typeof import('./lib/routeMap.js').getEditRoute;
-	export const getDeleteRoute: typeof import('./lib/routeMap.js').getDeleteRoute;
-	export const makeNonDashboardRoute: typeof import('./lib/routeMap.js').makeNonDashboardRoute;
-	export const makeDashboardRoute: typeof import('./lib/routeMap.js').makeDashboardRoute;
-	export const StudioCMSRoutes: typeof import('./lib/routeMap.js').StudioCMSRoutes;
-	export const urlGenFactory: typeof import('./lib/urlGen.js').default;
+	export const HeadConfigSchema: typeof import('./virtuals/lib/head.js').HeadConfigSchema;
+	export const createHead: typeof import('./virtuals/lib/head.js').createHead;
+	export const headDefaults: typeof import('./virtuals/lib/headDefaults.js').headDefaults;
+	export const stringify: typeof import('./virtuals/lib/jsonUtils.js').stringify;
+	export const stringifyMap: typeof import('./virtuals/lib/jsonUtils.js').stringifyMap;
+	export const pathWithBase: typeof import('./virtuals/lib/pathGenerators.js').pathWithBase;
+	export const fileWithBase: typeof import('./virtuals/lib/pathGenerators.js').fileWithBase;
+	export const ensureLeadingSlash: typeof import('./virtuals/lib/pathGenerators.js').ensureLeadingSlash;
+	export const ensureTrailingSlash: typeof import('./virtuals/lib/pathGenerators.js').ensureTrailingSlash;
+	export const stripLeadingSlash: typeof import('./virtuals/lib/pathGenerators.js').stripLeadingSlash;
+	export const stripTrailingSlash: typeof import('./virtuals/lib/pathGenerators.js').stripTrailingSlash;
+	export const stripHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').stripHtmlExtension;
+	export const ensureHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').ensureHtmlExtension;
+	export const removeLeadingTrailingSlashes: typeof import('./virtuals/lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
+	export const getSluggedRoute: typeof import('./virtuals/lib/routeMap.js').getSluggedRoute;
+	export const getEditRoute: typeof import('./virtuals/lib/routeMap.js').getEditRoute;
+	export const getDeleteRoute: typeof import('./virtuals/lib/routeMap.js').getDeleteRoute;
+	export const makeNonDashboardRoute: typeof import('./virtuals/lib/routeMap.js').makeNonDashboardRoute;
+	export const makeDashboardRoute: typeof import('./virtuals/lib/routeMap.js').makeDashboardRoute;
+	export const StudioCMSRoutes: typeof import('./virtuals/lib/routeMap.js').StudioCMSRoutes;
+	export const urlGenFactory: typeof import('./virtuals/lib/urlGen.js').default;
 
-	export type HeadConfig = import('./lib/head.js').HeadConfig;
-	export type HeadUserConfig = import('./lib/head.js').HeadUserConfig;
+	export type HeadConfig = import('./virtuals/lib/head.js').HeadConfig;
+	export type HeadUserConfig = import('./virtuals/lib/head.js').HeadUserConfig;
 }
 
 declare module 'studiocms:plugins' {
@@ -195,8 +196,8 @@ declare module 'studiocms:plugin-helpers' {
 	export type FinalDashboardPage = import('./plugins.ts').FinalDashboardPage;
 	export type DashboardPage = import('./plugins.js').DashboardPage;
 
-	export const getPluginDashboardPages: typeof import('./lib/plugins/index.js').getPluginDashboardPages;
-	export const frontendNavigation: typeof import('./lib/plugins/index.js').frontendNavigation;
+	export const getPluginDashboardPages: typeof import('./virtuals/plugins/index.js').getPluginDashboardPages;
+	export const frontendNavigation: typeof import('./virtuals/plugins/index.js').frontendNavigation;
 }
 
 declare module 'studiocms:component-registry' {
@@ -277,7 +278,7 @@ declare module 'studiocms:component-registry/runtime' {
 }
 
 declare module 'studiocms:sdk' {
-	type Mod = typeof import('./sdk/index.js');
+	type Mod = typeof import('./virtuals/sdk/index.js');
 
 	/**
 	 * The new Effect-TS based SDK implementation that replaces the deprecated SDK.
@@ -324,112 +325,116 @@ declare module 'studiocms:sdk' {
 
 declare module 'studiocms:sdk/types' {
 	// src/sdk/types/index
-	export type UsePluginDataOptsBase<T> = import('./sdk/types/index').UsePluginDataOptsBase<T>;
-	export type UsePluginDataOpts<T> = import('./sdk/types/index').UsePluginDataOpts<T>;
+	export type UsePluginDataOptsBase<T> =
+		import('./virtuals/sdk/types/index').UsePluginDataOptsBase<T>;
+	export type UsePluginDataOpts<T> = import('./virtuals/sdk/types/index').UsePluginDataOpts<T>;
 	export type UserPluginDataOptsImplementation<T> =
-		import('./sdk/types/index').UserPluginDataOptsImplementation<T>;
-	export type PluginDataEntry<T> = import('./sdk/types/index').PluginDataEntry<T>;
-	export type JSONValidatorFn<T> = import('./sdk/types/index').JSONValidatorFn<T>;
-	export type EffectSchemaValidator<T> = import('./sdk/types/index').EffectSchemaValidator<T>;
-	export type ZodValidator<T> = import('./sdk/types/index').ZodValidator<T>;
-	export type ValidatorOptions<T> = import('./sdk/types/index').ValidatorOptions<T>;
-	export type CacheMap<K, V> = import('./sdk/types/index').CacheMap<K, V>;
-	export type PaginateInput = import('./sdk/types/index').PaginateInput;
-	export type MetaOnlyPageData = import('./sdk/types/index').MetaOnlyPageData;
-	export type PageDataReturnType<T> = import('./sdk/types/index').PageDataReturnType<T>;
-	export type PageDataCacheReturnType<T> = import('./sdk/types/index').PageDataCacheReturnType<T>;
-	export type diffItem = import('./sdk/types/index').diffItem;
-	export type diffReturn = import('./sdk/types/index').diffReturn;
-	export type DiffReturnType<T> = import('./sdk/types/index').DiffReturnType<T>;
-	export type FolderNode = import('./sdk/types/index').FolderNode;
-	export type FolderListItem = import('./sdk/types/index').FolderListItem;
-	export type AstroDBVirtualModule = import('./sdk/types/index').AstroDBVirtualModule;
-	export type CacheConfig = import('./sdk/types/index').CacheConfig;
-	export type ProcessedCacheConfig = import('./sdk/types/index').ProcessedCacheConfig;
-	export type ProcessedSDKConfig = import('./sdk/types/index').ProcessedSDKConfig;
-	export type BaseCacheObject = import('./sdk/types/index').BaseCacheObject;
-	export type PageDataCacheObject = import('./sdk/types/index').PageDataCacheObject;
-	export type MetaOnlyPageDataCacheObject = import('./sdk/types/index').MetaOnlyPageDataCacheObject;
-	export type SiteConfigCacheObject = import('./sdk/types/index').SiteConfigCacheObject;
-	export type VersionCacheObject = import('./sdk/types/index').VersionCacheObject;
-	export type FolderTreeCacheObject = import('./sdk/types/index').FolderTreeCacheObject;
-	export type FolderListCacheObject = import('./sdk/types/index').FolderListCacheObject;
-	export type addDatabaseEntryInsertPage = import('./sdk/types/index').addDatabaseEntryInsertPage;
-	export type CombinedUserData = import('./sdk/types/index').CombinedUserData;
-	export type CombinedPageData = import('./sdk/types/index').CombinedPageData;
-	export type DeletionResponse = import('./sdk/types/index').DeletionResponse;
-	export type PageInsert = import('./sdk/types/index').PageInsert;
-	export type MultiPageInsert = import('./sdk/types/index').MultiPageInsert;
+		import('./virtuals/sdk/types/index').UserPluginDataOptsImplementation<T>;
+	export type PluginDataEntry<T> = import('./virtuals/sdk/types/index').PluginDataEntry<T>;
+	export type JSONValidatorFn<T> = import('./virtuals/sdk/types/index').JSONValidatorFn<T>;
+	export type EffectSchemaValidator<T> =
+		import('./virtuals/sdk/types/index').EffectSchemaValidator<T>;
+	export type ZodValidator<T> = import('./virtuals/sdk/types/index').ZodValidator<T>;
+	export type ValidatorOptions<T> = import('./virtuals/sdk/types/index').ValidatorOptions<T>;
+	export type CacheMap<K, V> = import('./virtuals/sdk/types/index').CacheMap<K, V>;
+	export type PaginateInput = import('./virtuals/sdk/types/index').PaginateInput;
+	export type MetaOnlyPageData = import('./virtuals/sdk/types/index').MetaOnlyPageData;
+	export type PageDataReturnType<T> = import('./virtuals/sdk/types/index').PageDataReturnType<T>;
+	export type PageDataCacheReturnType<T> =
+		import('./virtuals/sdk/types/index').PageDataCacheReturnType<T>;
+	export type diffItem = import('./virtuals/sdk/types/index').diffItem;
+	export type diffReturn = import('./virtuals/sdk/types/index').diffReturn;
+	export type DiffReturnType<T> = import('./virtuals/sdk/types/index').DiffReturnType<T>;
+	export type FolderNode = import('./virtuals/sdk/types/index').FolderNode;
+	export type FolderListItem = import('./virtuals/sdk/types/index').FolderListItem;
+	export type AstroDBVirtualModule = import('./virtuals/sdk/types/index').AstroDBVirtualModule;
+	export type CacheConfig = import('./virtuals/sdk/types/index').CacheConfig;
+	export type ProcessedCacheConfig = import('./virtuals/sdk/types/index').ProcessedCacheConfig;
+	export type ProcessedSDKConfig = import('./virtuals/sdk/types/index').ProcessedSDKConfig;
+	export type BaseCacheObject = import('./virtuals/sdk/types/index').BaseCacheObject;
+	export type PageDataCacheObject = import('./virtuals/sdk/types/index').PageDataCacheObject;
+	export type MetaOnlyPageDataCacheObject =
+		import('./virtuals/sdk/types/index').MetaOnlyPageDataCacheObject;
+	export type SiteConfigCacheObject = import('./virtuals/sdk/types/index').SiteConfigCacheObject;
+	export type VersionCacheObject = import('./virtuals/sdk/types/index').VersionCacheObject;
+	export type FolderTreeCacheObject = import('./virtuals/sdk/types/index').FolderTreeCacheObject;
+	export type FolderListCacheObject = import('./virtuals/sdk/types/index').FolderListCacheObject;
+	export type addDatabaseEntryInsertPage =
+		import('./virtuals/sdk/types/index').addDatabaseEntryInsertPage;
+	export type CombinedUserData = import('./virtuals/sdk/types/index').CombinedUserData;
+	export type CombinedPageData = import('./virtuals/sdk/types/index').CombinedPageData;
+	export type DeletionResponse = import('./virtuals/sdk/types/index').DeletionResponse;
+	export type PageInsert = import('./virtuals/sdk/types/index').PageInsert;
+	export type MultiPageInsert = import('./virtuals/sdk/types/index').MultiPageInsert;
 
 	// src/sdk/types/tableDefs
-	export type SiteConfig = import('./sdk/types/index').SiteConfig;
-	export type PageDataStripped = import('./sdk/types/index').PageDataStripped;
-	export type PageDataReturnId = import('./sdk/types/index').PageDataReturnId;
-	export type PageContentReturnId = import('./sdk/types/index').PageContentReturnId;
-	export type PageDataTagsInsertResponse = import('./sdk/types/index').PageDataTagsInsertResponse;
+	export type SiteConfig = import('./virtuals/sdk/types/index').SiteConfig;
+	export type PageDataStripped = import('./virtuals/sdk/types/index').PageDataStripped;
+	export type PageDataReturnId = import('./virtuals/sdk/types/index').PageDataReturnId;
+	export type PageContentReturnId = import('./virtuals/sdk/types/index').PageContentReturnId;
+	export type PageDataTagsInsertResponse =
+		import('./virtuals/sdk/types/index').PageDataTagsInsertResponse;
 	export type PageDataCategoriesInsertResponse =
-		import('./sdk/types/index').PageDataCategoriesInsertResponse;
-	export type DatabaseTables = import('./sdk/types/index').DatabaseTables;
-	export type SingleRank = import('./sdk/types/index').SingleRank;
-	export type CombinedRank = import('./sdk/types/index').CombinedRank;
-	export type AvailableLists = import('./sdk/types/index').AvailableLists;
+		import('./virtuals/sdk/types/index').PageDataCategoriesInsertResponse;
+	export type DatabaseTables = import('./virtuals/sdk/types/index').DatabaseTables;
+	export type SingleRank = import('./virtuals/sdk/types/index').SingleRank;
+	export type CombinedRank = import('./virtuals/sdk/types/index').CombinedRank;
+	export type AvailableLists = import('./virtuals/sdk/types/index').AvailableLists;
 
 	// src/sdk/types/tsAlias
-	export type tsPluginDataInsert = import('./sdk/types/index').tsPluginDataInsert;
-	export type tsPluginDataSelect = import('./sdk/types/index').tsPluginDataSelect;
+	export type tsPluginDataInsert = import('./virtuals/sdk/types/index').tsPluginDataInsert;
+	export type tsPluginDataSelect = import('./virtuals/sdk/types/index').tsPluginDataSelect;
 	export type tsEmailVerificationTokensInsert =
-		import('./sdk/types/index').tsEmailVerificationTokensInsert;
+		import('./virtuals/sdk/types/index').tsEmailVerificationTokensInsert;
 	export type tsEmailVerificationTokensSelect =
-		import('./sdk/types/index').tsEmailVerificationTokensSelect;
+		import('./virtuals/sdk/types/index').tsEmailVerificationTokensSelect;
 	export type tsNotificationSettingsInsert =
-		import('./sdk/types/index').tsNotificationSettingsInsert;
+		import('./virtuals/sdk/types/index').tsNotificationSettingsInsert;
 	export type tsNotificationSettingsSelect =
-		import('./sdk/types/index').tsNotificationSettingsSelect;
-	export type tsUserResetTokensInsert = import('./sdk/types/index').tsUserResetTokensInsert;
-	export type tsUserResetTokensSelect = import('./sdk/types/index').tsUserResetTokensSelect;
-	export type tsPageFolderSelect = import('./sdk/types/index').tsPageFolderSelect;
-	export type tsPageFolderInsert = import('./sdk/types/index').tsPageFolderInsert;
-	export type tsUsersSelect = import('./sdk/types/index').tsUsersSelect;
-	export type tsUsersInsert = import('./sdk/types/index').tsUsersInsert;
-	export type tsUsersUpdate = import('./sdk/types/index').tsUsersUpdate;
-	export type tsOAuthAccountsSelect = import('./sdk/types/index').tsOAuthAccountsSelect;
-	export type tsSessionTableSelect = import('./sdk/types/index').tsSessionTableSelect;
-	export type tsSessionTableInsert = import('./sdk/types/index').tsSessionTableInsert;
-	export type tsPermissionsSelect = import('./sdk/types/index').tsPermissionsSelect;
-	export type tsPermissionsInsert = import('./sdk/types/index').tsPermissionsInsert;
-	export type tsPageDataSelect = import('./sdk/types/index').tsPageDataSelect;
-	export type tsPageDataInsert = import('./sdk/types/index').tsPageDataInsert;
-	export type tsPageDataTagsSelect = import('./sdk/types/index').tsPageDataTagsSelect;
-	export type tsPageDataTagsInsert = import('./sdk/types/index').tsPageDataTagsInsert;
-	export type tsPageDataCategoriesSelect = import('./sdk/types/index').tsPageDataCategoriesSelect;
-	export type tsPageDataCategoriesInsert = import('./sdk/types/index').tsPageDataCategoriesInsert;
-	export type tsPageContentSelect = import('./sdk/types/index').tsPageContentSelect;
-	export type tsPageContentInsert = import('./sdk/types/index').tsPageContentInsert;
-	export type tsDiffTrackingSelect = import('./sdk/types/index').tsDiffTrackingSelect;
-	export type tsDiffTrackingInsert = import('./sdk/types/index').tsDiffTrackingInsert;
-	export type tsSiteConfigSelect = import('./sdk/types/index').tsSiteConfigSelect;
-	export type tsSiteConfigInsert = import('./sdk/types/index').tsSiteConfigInsert;
-	export type CombinedInsertContent = import('./sdk/types/index').CombinedInsertContent;
+		import('./virtuals/sdk/types/index').tsNotificationSettingsSelect;
+	export type tsUserResetTokensInsert =
+		import('./virtuals/sdk/types/index').tsUserResetTokensInsert;
+	export type tsUserResetTokensSelect =
+		import('./virtuals/sdk/types/index').tsUserResetTokensSelect;
+	export type tsPageFolderSelect = import('./virtuals/sdk/types/index').tsPageFolderSelect;
+	export type tsPageFolderInsert = import('./virtuals/sdk/types/index').tsPageFolderInsert;
+	export type tsUsersSelect = import('./virtuals/sdk/types/index').tsUsersSelect;
+	export type tsUsersInsert = import('./virtuals/sdk/types/index').tsUsersInsert;
+	export type tsUsersUpdate = import('./virtuals/sdk/types/index').tsUsersUpdate;
+	export type tsOAuthAccountsSelect = import('./virtuals/sdk/types/index').tsOAuthAccountsSelect;
+	export type tsSessionTableSelect = import('./virtuals/sdk/types/index').tsSessionTableSelect;
+	export type tsSessionTableInsert = import('./virtuals/sdk/types/index').tsSessionTableInsert;
+	export type tsPermissionsSelect = import('./virtuals/sdk/types/index').tsPermissionsSelect;
+	export type tsPermissionsInsert = import('./virtuals/sdk/types/index').tsPermissionsInsert;
+	export type tsPageDataSelect = import('./virtuals/sdk/types/index').tsPageDataSelect;
+	export type tsPageDataInsert = import('./virtuals/sdk/types/index').tsPageDataInsert;
+	export type tsPageDataTagsSelect = import('./virtuals/sdk/types/index').tsPageDataTagsSelect;
+	export type tsPageDataTagsInsert = import('./virtuals/sdk/types/index').tsPageDataTagsInsert;
+	export type tsPageDataCategoriesSelect =
+		import('./virtuals/sdk/types/index').tsPageDataCategoriesSelect;
+	export type tsPageDataCategoriesInsert =
+		import('./virtuals/sdk/types/index').tsPageDataCategoriesInsert;
+	export type tsPageContentSelect = import('./virtuals/sdk/types/index').tsPageContentSelect;
+	export type tsPageContentInsert = import('./virtuals/sdk/types/index').tsPageContentInsert;
+	export type tsDiffTrackingSelect = import('./virtuals/sdk/types/index').tsDiffTrackingSelect;
+	export type tsDiffTrackingInsert = import('./virtuals/sdk/types/index').tsDiffTrackingInsert;
+	export type tsSiteConfigSelect = import('./virtuals/sdk/types/index').tsSiteConfigSelect;
+	export type tsSiteConfigInsert = import('./virtuals/sdk/types/index').tsSiteConfigInsert;
+	export type CombinedInsertContent = import('./virtuals/sdk/types/index').CombinedInsertContent;
 }
 
 declare module 'studiocms-dashboard:web-vitals' {
-	export const getWebVitals: typeof import('./lib/webVitals/webVital').getWebVitals;
-	export type WebVitalsResponseItem = import('./lib/webVitals/webVital').WebVitalsResponseItem;
-}
-
-declare module 'studiocms:auth/utils/authEnvCheck' {
-	/** @deprecated */
-	export const authEnvCheck: typeof import('./utils/authEnvCheck.js').authEnvCheck;
-	/** @deprecated */
-	export type AuthEnvCheckResponse = import('./utils/authEnvCheck.js').AuthEnvCheckResponse;
+	export const getWebVitals: typeof import('./integrations/webVitals/webVital').getWebVitals;
+	export type WebVitalsResponseItem =
+		import('./integrations/webVitals/webVital').WebVitalsResponseItem;
 }
 
 declare module 'studiocms:auth/utils/validImages' {
-	export const validImages: typeof import('./utils/validImages/index.js').validImages;
+	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
-	export const getLabelForPermissionLevel: typeof import('./utils/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
+	export const getLabelForPermissionLevel: typeof import('./virtuals/auth/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
 }
 
 declare module 'studiocms:auth/scripts/three' {
@@ -443,12 +448,8 @@ declare module 'studiocms:auth/scripts/three' {
 	export default defaultExport;
 }
 
-declare module 'studiocms:auth/scripts/formListener' {
-	export const formListener: typeof import('./scripts/formListener.js').formListener;
-}
-
 declare module 'studiocms:auth/lib' {
-	type Mod = import('./lib/auth/index.js').Mod;
+	type Mod = import('./virtuals/auth/index.js').Mod;
 	const mod: Mod;
 	export = mod;
 }
@@ -462,7 +463,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} providerUserId - The unique identifier for the user provided by the OAuth provider.
 	 * @property {string} userId - The unique identifier for the user within the application.
 	 */
-	export type OAuthAccountsTable = import('./lib/auth/types.js').OAuthAccountsTable;
+	export type OAuthAccountsTable = import('./virtuals/auth/types.js').OAuthAccountsTable;
 	/**
 	 * Interface representing a table of user permissions.
 	 *
@@ -470,7 +471,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {string} user - The username of the individual.
 	 * @property {string} rank - The rank or role assigned to the user.
 	 */
-	export type PermissionsTable = import('./lib/auth/types.js').PermissionsTable;
+	export type PermissionsTable = import('./virtuals/auth/types.js').PermissionsTable;
 	/**
 	 * Represents the session data for a user.
 	 *
@@ -478,20 +479,20 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {UserTable | null} user - The user data, or null if no user is logged in.
 	 * @property {'owner' | 'admin' | 'editor' | 'visitor' | 'unknown'} permissionLevel - The permission level of the user.
 	 */
-	export type UserSessionData = import('./lib/auth/types.js').UserSessionData;
+	export type UserSessionData = import('./virtuals/auth/types.js').UserSessionData;
 	/**
 	 * Represents a user session which includes user information and session details.
 	 *
 	 * @property {UserTable} user - The user data.
 	 * @property {SessionTable} session - The session data.
 	 */
-	export type UserSession = import('./lib/auth/types.js').UserSession;
+	export type UserSession = import('./virtuals/auth/types.js').UserSession;
 	/**
 	 * Represents the result of validating a session token.
 	 *
 	 * This type can either be a valid `UserSession` or an object indicating an invalid session with both `session` and `user` properties set to `null`.
 	 */
-	export type SessionValidationResult = import('./lib/auth/types.js').SessionValidationResult;
+	export type SessionValidationResult = import('./virtuals/auth/types.js').SessionValidationResult;
 	/**
 	 * Represents an individual refillable token bucket.
 	 *
@@ -499,7 +500,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} refillAt - The time at which the bucket was last refilled.
 	 */
-	export type RefillBucket = import('./lib/auth/types.js').RefillBucket;
+	export type RefillBucket = import('./virtuals/auth/types.js').RefillBucket;
 	/**
 	 * Represents a bucket with an expiration mechanism.
 	 *
@@ -507,7 +508,7 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} count - The current token count in the bucket.
 	 * @property {number} createdAt - The timestamp when the bucket was created.
 	 */
-	export type ExpiringBucket = import('./lib/auth/types.js').ExpiringBucket;
+	export type ExpiringBucket = import('./virtuals/auth/types.js').ExpiringBucket;
 	/**
 	 * Interface representing a throttling counter.
 	 *
@@ -515,13 +516,13 @@ declare module 'studiocms:auth/lib/types' {
 	 * @property {number} timeout - The duration (in milliseconds) for which the throttling is applied.
 	 * @property {number} updatedAt - The timestamp (in milliseconds since epoch) when the throttling counter was last updated.
 	 */
-	export type ThrottlingCounter = import('./lib/auth/types.js').ThrottlingCounter;
+	export type ThrottlingCounter = import('./virtuals/auth/types.js').ThrottlingCounter;
 }
 
 declare module 'virtual:studiocms/plugins/renderers' {}
 
 declare module 'studiocms:renderer' {
-	export const StudioCMSRenderer: typeof import('./components/Renderer.astro').default;
+	export const StudioCMSRenderer: typeof import('./virtuals/components/Renderer.astro').default;
 }
 
 declare module 'virtual:studiocms/sdk/env' {
@@ -580,7 +581,7 @@ declare module 'studiocms:plugins/auth/providers' {
 }
 
 interface StudioCMSSecurityLocals {
-	userSessionData: import('./lib/auth/types').UserSessionData;
+	userSessionData: import('./virtuals/auth/types').UserSessionData;
 	emailVerificationEnabled: boolean;
 	userPermissionLevel: {
 		isVisitor: boolean;
@@ -597,10 +598,10 @@ interface StudioCMSPluginLocals {
 interface StudioCMSLocals {
 	SCMSGenerator: string;
 	SCMSUiGenerator: string;
-	siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
-	routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
-	defaultLang: import('./lib/i18n/config').UiTranslationKey;
-	latestVersion: import('./sdk/types/index').VersionCacheObject;
+	siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
+	routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
+	defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
+	latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
 	security?: StudioCMSSecurityLocals;
 	plugins?: StudioCMSPluginLocals;
 }
@@ -610,15 +611,15 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		latestVersion: import('./sdk/types/index').VersionCacheObject;
+		latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		siteConfig: import('./sdk/types/index').SiteConfigCacheObject;
+		siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		userSessionData: import('./lib/auth/types').UserSessionData;
+		userSessionData: import('./virtuals/auth/types').UserSessionData;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
@@ -626,11 +627,11 @@ declare namespace App {
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		defaultLang: import('./lib/i18n/config').UiTranslationKey;
+		defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */
-		routeMap: typeof import('./lib/routeMap').StudioCMSRoutes;
+		routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
 		/**
 		 * @deprecated - use the new value from locals.StudioCMS object instead
 		 */

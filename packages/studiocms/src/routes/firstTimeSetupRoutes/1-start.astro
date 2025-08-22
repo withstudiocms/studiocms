@@ -11,8 +11,8 @@ import {
 	Select,
 } from 'studiocms:ui/components';
 import LoginPreview from '../../components/dashboard/configuration/LoginPreview.astro';
-import Layout from './components/Layout.astro';
-import PageHeader from './components/PageHeader.astro';
+import PageHeader from '../../components/first-time-setup/PageHeader.astro';
+import Layout from '../../layouts/FirstTimeSetupLayout.astro';
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
 ---

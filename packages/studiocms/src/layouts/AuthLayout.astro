@@ -1,0 +1,74 @@
+---
+import 'studiocms:ui/global-css';
+import '../styles/auth-layout.css';
+import { Generator } from 'studiocms:components';
+import { Toaster } from 'studiocms:ui/components';
+import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
+import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
+import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
+import ThreeCanvasLoader from '../components/auth/ThreeCanvasLoader.astro';
+import ThemeManager from '../components/shared/ThemeManager.astro';
+import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../consts.js';
+
+const { siteConfig: config, security } = Astro.locals.StudioCMS;
+
+const userData = security?.userSessionData || null;
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+	disableScreen?: boolean;
+	checkLogin?: boolean;
+}
+
+const { title, description, lang, disableScreen, checkLogin } = Astro.props;
+---
+<!doctype html>
+<html {lang}>
+  <head>
+	{/* Global Metadata */}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <Generator />
+
+	{/* Favicon */}
+	<link rel="icon" href={FAVICON_ASSETS.svg} type="image/svg+xml" />
+	<link rel="icon" href={FAVICON_ASSETS.png.light} type="image/png" media="(prefers-color-scheme: dark)" />
+	<link rel="icon" href={FAVICON_ASSETS.png.dark} type="image/png" media="(prefers-color-scheme: light)" />
+
+	{/* Primary Meta Tags */}
+	<title>{title}</title>
+	<meta name="title" content={title} />
+	<meta name="description" content={description} />
+	<meta name="theme-color" content={STUDIOCMS_THEME_COLOR} />
+
+	{/* Theme Manager */}
+	<ThemeManager />
+</head>
+  <body>
+	<Toaster />
+	<main>
+		<div id="canvas-container">
+			<FallbackCanvas {config} />
+		</div>
+		<div class="login-form-container">
+
+			<slot name="header" />
+
+			<slot />
+			
+			{ !disableScreen && <OAuthButtonStack /> }
+
+			<div class="form-footer">
+				<slot name="footer" />
+			</div>
+
+		</div>
+	</main>
+	{ checkLogin && (
+		<StaticAuthCheck {userData} />
+	)}
+	<ThreeCanvasLoader {config} />
+  </body>
+</html>

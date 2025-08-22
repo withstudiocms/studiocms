@@ -3,7 +3,7 @@ import { authConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
 import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders';
-import AuthLayout from '../../layouts/auth/AuthLayout.astro';
+import AuthLayout from '../../layouts/AuthLayout.astro';
 
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:login');
@@ -212,7 +212,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
 </script>
 
 <script>
-    import { formListener } from '../../scripts/formListener.js';
+    import { formListener } from '../../components/auth/component-scripts/formListener.js';
     import { ModalHelper, toast } from 'studiocms:ui/components';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 

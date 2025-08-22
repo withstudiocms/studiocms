@@ -24,22 +24,31 @@ import {
 	makeDashboardRoute,
 	routesDir,
 } from './consts.js';
-import { pluginHandler } from './pluginHandler.js';
-import { routeHandler } from './routeHandler.js';
+import {
+	changelogHelper,
+	checkAstroConfig,
+	pluginHandler,
+	routeHandler,
+	scriptHandler,
+} from './handlers/index.js';
+import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import {
 	type StudioCMSConfig,
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import { scriptHandler } from './scriptHandler.js';
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
-import { checkAstroConfig } from './utils/astroConfigCheck.js';
-import { changelogHelper } from './utils/changelog.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
-import { nodeNamespaceBuiltinsAstro } from './utils/integrations.js';
-import { readJson } from './utils/readJson.js';
+import { readJson } from './utils/jsonUtils.js';
+import {
+	buildDefaultOnlyVirtual,
+	buildLoggerVirtual,
+	buildNamedMultiExportVirtual,
+	buildVirtualConfig,
+	buildVirtualModules,
+} from './virtuals/utils.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -52,15 +61,12 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
 
-// Renderer Component Resolver
-const RendererComponent = resolve('./components/Renderer.astro');
-
-// Default Custom Image Component Resolver
-const customImage = resolve('./components/image/CustomImage.astro');
+const StudioCMSRendererComponentPath = './virtuals/components/Renderer.astro';
+const CustomImageComponentPath = './virtuals/components/CustomImage.astro';
 
 // Built-in Components for the Component Registry
 const builtInComponents = {
-	'cms-img': customImage,
+	'cms-img': resolve(CustomImageComponentPath),
 };
 
 /**
@@ -238,150 +244,75 @@ export const studiocms = defineIntegration({
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
 
+					const {
+						dynamicVirtual,
+						ambientScripts,
+						namedVirtual,
+						astroComponentVirtual,
+						dynamicWithAstroVirtual,
+					} = buildVirtualModules(resolve);
+
 					addVirtualImports(params, {
 						name,
 						imports: {
-							'studiocms:config': `
-								export default ${JSON.stringify(options)};
-								export const config = ${JSON.stringify(options)};
-								export const dashboardConfig = ${JSON.stringify(options.features.dashboardConfig)};
-								export const authConfig = ${JSON.stringify(options.features.authConfig)};
-								export const AuthConfig = authConfig;
-								export const developerConfig = ${JSON.stringify(options.features.developerConfig)};
-								export const sdk = ${JSON.stringify(options.features.sdk)};
-							`,
-							'studiocms:plugins': `
-								export default ${JSON.stringify(safePluginList)};
-							`,
-							'studiocms:version': `
-								export default ${JSON.stringify(pkgVersion)};
-							`,
-							// Core Virtual Components
-							'studiocms:components': `
-								export { default as FormattedDate } from '${resolve(
-									'./components/FormattedDate.astro'
-								)}';
-								export { default as Generator } from '${resolve('./components/Generator.astro')}';
-							`,
-
-							// StudioCMS lib
-							'studiocms:lib': `
-								export * from '${resolve('./lib/head.js')}';
-								export * from '${resolve('./lib/headDefaults.js')}';
-								export * from '${resolve('./lib/jsonUtils.js')}';
-								export * from '${resolve('./lib/pathGenerators.js')}';
-								export * from '${resolve('./lib/removeLeadingTrailingSlashes.js')}';
-								export * from '${resolve('./lib/routeMap.js')}';
-								export * from '${resolve('./lib/urlGen.js')}';
-							`,
-
-							'studiocms:mailer': `
-								export * from '${resolve('./lib/mailer/index.js')}';
-							`,
-							'studiocms:mailer/templates': `
-								import { getTemplate } from '${resolve('./lib/mailer/template.js')}';
-								export { getTemplate };
-								export default getTemplate;
-							`,
-
-							'studiocms:notifier': `
-								export * from '${resolve('./lib/notifier/index.js')}';
-							`,
-							'studiocms:notifier/client': `
-								export * from '${resolve('./lib/notifier/client.js')}';
-							`,
-
-							// SDK Virtual Modules
-							'virtual:studiocms/sdk/env': `
-								export const dbUrl = '${env.ASTRO_DB_REMOTE_URL}';
-								export const dbSecret = '${env.ASTRO_DB_APP_TOKEN}';
-								export const cmsEncryptionKey = '${env.CMS_ENCRYPTION_KEY}';
-							`,
-
-							'studiocms:sdk': `
-							    export * from '${resolve('./sdk/index.js')}';
-							`,
-							'studiocms:sdk/types': `
-								export * from '${resolve('./sdk/types.js')}';
-							`,
-
-							// i18n Virtual Module
-							'studiocms:i18n': `
-								export * from '${resolve('./lib/i18n/index.js')}';
-								export { default as LanguageSelector } from '${resolve('./lib/i18n/LanguageSelector.astro')}';
-							`,
-							'studiocms:i18n/client': `
-								export * from '${resolve('./lib/i18n/client.js')}';
-							`,
-
-							'studiocms:logger': `
-								import { logger as _logger } from '@it-astro:logger:studiocms-runtime';
-
-								export const logger = _logger.fork('studiocms:runtime');
-
-								export default logger;
-
-								const apiLogger = _logger.fork('studiocms:runtime/api');
-
-								export const isVerbose = ${verbose};
-
-								function buildErrorMessage(message, error) {
-									if (!error) return message;
-									if (error instanceof Error) return message + ': ' + error.message + '\\n' + error.stack;
-									return message + ': ' + error;
-								};
-
-								export function apiResponseLogger(status, message, error) {
-									if (status !== 200) {
-										apiLogger.error(buildErrorMessage(message, error));
-										return new Response(JSON.stringify({ error: message }), { 
-											status, 
-											headers: { 'Content-Type': 'application/json' } 
-										});
-									}
-									isVerbose &&  apiLogger.info(message);
-									return new Response(JSON.stringify({ message }), { 
-										status, 
-										headers: { 'Content-Type': 'application/json' } 
-									});
-								};
-							`,
-
-							// Plugin Helpers
-							'studiocms:plugin-helpers': `
-								export * from "${resolve('./plugins.js')}";
-								export * from "${resolve('./lib/plugins/index.js')}";
-							`,
-
-							// Renderer Virtual Imports
-							'studiocms:renderer': `
-								export { default as StudioCMSRenderer } from '${RendererComponent}';
-							`,
-
-							// Image Handler Virtual Imports
-							'studiocms:imageHandler/components': `
-								export { default as CustomImage } from '${customImage}';
-							`,
-
-							// Auth Virtual Imports
-							'studiocms:auth/lib': `
-								export * from '${resolve('./lib/auth/index.js')}';
-							`,
-							'studiocms:auth/lib/types': `
-								export * from '${resolve('./lib/auth/types.js')}'
-							`,
-							'studiocms:auth/utils/authEnvCheck': `
-								export * from '${resolve('./utils/authEnvCheck.js')}'
-							`,
-							'studiocms:auth/utils/validImages': `
-								export * from '${resolve('./utils/validImages/index.js')}'
-							`,
-							'studiocms:auth/utils/getLabelForPermissionLevel': `
-								export * from '${resolve('./utils/getLabelForPermissionLevel.js')}'
-							`,
-							'studiocms:auth/scripts/three': `
-								import '${resolve('./scripts/three.js')}';
-							`,
+							'studiocms:config': buildVirtualConfig(options),
+							'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
+							'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
+							'studiocms:logger': buildLoggerVirtual(verbose),
+							'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
+								dbUrl: env.ASTRO_DB_REMOTE_URL,
+								dbSecret: env.ASTRO_DB_APP_TOKEN,
+								cmsEncryptionKey: env.CMS_ENCRYPTION_KEY,
+							}),
+							'studiocms:lib': dynamicVirtual([
+								'./virtuals/lib/head.js',
+								'./virtuals/lib/headDefaults.js',
+								'./virtuals/lib/jsonUtils.js',
+								'./virtuals/lib/pathGenerators.js',
+								'./virtuals/lib/removeLeadingTrailingSlashes.js',
+								'./virtuals/lib/routeMap.js',
+								'./virtuals/lib/urlGen.js',
+							]),
+							'studiocms:notifier': dynamicVirtual(['./virtuals/notifier/index.js']),
+							'studiocms:notifier/client': dynamicVirtual(['./virtuals/notifier/client.js']),
+							'studiocms:mailer': dynamicVirtual(['./virtuals/mailer/index.js']),
+							'studiocms:mailer/templates': namedVirtual({
+								namedExport: 'getTemplate',
+								path: './virtuals/mailer/template.js',
+								exportDefault: true,
+							}),
+							'studiocms:components': astroComponentVirtual({
+								FormattedDate: './virtuals/components/FormattedDate.astro',
+								Generator: './virtuals/components/Generator.astro',
+							}),
+							'studiocms:renderer': astroComponentVirtual({
+								StudioCMSRenderer: StudioCMSRendererComponentPath,
+							}),
+							'studiocms:imageHandler/components': astroComponentVirtual({
+								CustomImage: CustomImageComponentPath,
+							}),
+							'studiocms:plugin-helpers': dynamicVirtual([
+								'./plugins.js',
+								'./virtuals/plugins/index.js',
+							]),
+							'studiocms:auth/lib': dynamicVirtual(['./virtuals/auth/index.js']),
+							'studiocms:auth/lib/types': dynamicVirtual(['./virtuals/auth/types.js']),
+							'studiocms:auth/utils/validImages': dynamicVirtual([
+								'./virtuals/auth/validImages/index.js',
+							]),
+							'studiocms:auth/utils/getLabelForPermissionLevel': dynamicVirtual([
+								'./virtuals/auth/getLabelForPermissionLevel.js',
+							]),
+							'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
+							'studiocms:i18n': dynamicWithAstroVirtual({
+								dynamicExports: ['./virtuals/i18n/index.js'],
+								astroComponents: {
+									LanguageSelector: './virtuals/i18n/LanguageSelector.astro',
+								},
+							}),
+							'studiocms:i18n/client': dynamicVirtual(['./virtuals/i18n/client.js']),
+							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
+							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
 						},
 					});
 

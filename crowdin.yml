@@ -4,9 +4,10 @@
 
 "preserve_hierarchy": true
 
-"files": [
-  {
-    "source": "/packages/studiocms/src/lib/i18n/translations/en.json",
-    "translation": "/packages/studiocms/src/lib/i18n/translations/%two_letters_code%.json"
-  }
-]
+"files":
+  [
+    {
+      "source": "/packages/studiocms/src/virtuals/i18n/translations/en.json",
+      "translation": "/packages/studiocms/src/virtuals/i18n/translations/%two_letters_code%.json",
+    },
+  ]

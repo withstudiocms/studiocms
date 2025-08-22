@@ -2,7 +2,7 @@
 /// <reference types="../astroenv.d.ts" />
 import type { InjectedRoute, InjectedScriptStage } from 'astro';
 import type { StudioCMSOptions } from './schemas/index.js';
-import type { CombinedPageData } from './sdk/types/index.js';
+import type { CombinedPageData } from './virtuals/sdk/types/index.js';
 
 /**
  * Represents an array of message objects.
