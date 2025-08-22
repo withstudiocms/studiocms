@@ -3,7 +3,7 @@ import { authConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { Button, Input } from 'studiocms:ui/components';
 import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders.js';
-import AuthLayout from '../../layouts/auth/AuthLayout.astro';
+import AuthLayout from '../../layouts/AuthLayout.astro';
 
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:signup');

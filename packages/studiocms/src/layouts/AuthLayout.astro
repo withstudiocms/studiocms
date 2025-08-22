@@ -1,14 +1,14 @@
 ---
 import 'studiocms:ui/global-css';
-import '../../styles/auth-layout.css';
+import '../styles/auth-layout.css';
 import { Generator } from 'studiocms:components';
 import { Toaster } from 'studiocms:ui/components';
-import OAuthButtonStack from '../../components/auth/OAuthButtonStack.astro';
-import StaticAuthCheck from '../../components/auth/StaticAuthCheck.astro';
-import ThemeManager from '../../components/shared/ThemeManager.astro';
-import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../../consts.js';
-import FallbackCanvas from './FallbackCanvas.astro';
-import ThreeCanvasLoader from './ThreeCanvasLoader.astro';
+import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
+import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
+import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
+import ThreeCanvasLoader from '../components/auth/ThreeCanvasLoader.astro';
+import ThemeManager from '../components/shared/ThemeManager.astro';
+import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../consts.js';
 
 const { siteConfig: config, security } = Astro.locals.StudioCMS;
 
