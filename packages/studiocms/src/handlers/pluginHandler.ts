@@ -482,15 +482,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				if (typeof hooks['studiocms:astro:config'] === 'function') {
 					await hooks['studiocms:astro:config']({
 						logger: pluginLogger(safeData.identifier, logger),
-						// Add the plugin Integration to the Astro config
-						addIntegrations(integration) {
-							if (integration) {
-								if (Array.isArray(integration)) {
-									integrations.push(...integration.map((integration) => ({ integration })));
-									return;
-								}
-								integrations.push({ integration });
-							}
+						addIntegrations() {
+							return void 0;
 						},
 					});
 				}

@@ -1,38 +1,7 @@
-@font-face {
-	font-family: "Monaspace";
-	src: url("./SyntaxFont.woff2") format("woff2");
-}
-
-@font-palette-values --github-dark {
-	font-family: "Monaspace";
-	override-colors: 
-		0 #f97583 /* keywords, {} */, 
-		1 #68737e /* comments */, 
-		2 #fda5ff /* literals */,
-		3 #79b8ff /* numbers */, 
-		4 #cea5fb /* functions, [] */, 
-		5 #ffffff /* js others */, 
-		6 #d19a66 /* not in use */, 
-		7 #9ecbff /* inside quotes, css properties, few chars */, 
-		8 #9ecbff /* few chars */;
-}
-
-@font-palette-values --github-light {
-	font-family: "Monaspace";
-	override-colors:
-		0 #cf222e /* keywords, {} */, 
-		1 #6e7781 /* comments */, 
-		2 #000d99 /* literals */,
-		3 #000d99 /* numbers */, 
-		4 #6639ba /* functions, [] */, 
-		5 #000000 /* js others */, 
-		6 #d19a66 /* not in use */, 
-		7 #000d99 /* inside quotes, css properties, few chars */, 
-		8 #000d99 /* few chars */;
-}
+@import '../fonts/syntax-font.css';
 
 .custom-code {
-	font-family: "Monaspace", monospace;
+	font-family: var(--scms-font-syntax);
 	font-palette: --github-dark;
 	font-size: 14px;
 	line-height: 1.6;

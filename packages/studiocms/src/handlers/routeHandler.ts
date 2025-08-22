@@ -112,6 +112,11 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 	 */
 	const routes: Route[] = [
 		{
+			pattern: '/',
+			entrypoint: routesDir.fts('index.astro'),
+			enabled: dbStartPage,
+		},
+		{
 			pattern: 'start',
 			entrypoint: routesDir.fts('1-start.astro'),
 			enabled: dbStartPage,

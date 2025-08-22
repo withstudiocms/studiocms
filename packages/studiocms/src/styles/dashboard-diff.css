@@ -1,4 +1,4 @@
-@import "./onest-font.css";
+@import "../fonts/onest-font.css";
 
 :root {
 	--d2h-bg-color: hsl(var(--background-step-1));
