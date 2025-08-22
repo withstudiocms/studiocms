@@ -135,12 +135,12 @@
       "save-button": "Guardar",
       "smtp-settings": "Ajustes SMTP",
       "test-smtp": "Enviar correo electrónico de prueba",
-      "smtp-host": "Host",
+      "smtp-host": "",
       "smtp-host-placeholder": "smtp.example.mx / 1.1.1.1",
       "smtp-port": "Puerto",
       "smtp-port-placeholder": "587",
       "smtp-secure": "Seguro",
-      "smtp-proxy": "Proxy",
+      "smtp-proxy": "",
       "smtp-proxy-placeholder": "http://proxy.example.mx",
       "smtp-tls-reject-unauthorized": "Rechazar TLS no autorizado",
       "smtp-tls-servername": "Nombre del servidor TLS",
@@ -262,7 +262,7 @@
       "tab-label-content": "Contenido de página",
       "tab-label-diff": "Historial de edición",
       "input-page-title": "Título de página",
-      "input-page-slug": "Slug",
+      "input-page-slug": "",
       "input-page-description": "Descripción",
       "input-page-hero-image": "OpenGraph/Imagen principal",
       "select-page-type": "Tipo de página",
@@ -280,7 +280,7 @@
       "diff-no-history": "No se ha encontrado ningún historial."
     },
     "@studiocms/dashboard:404": {
-      "title": "Error 404",
+      "title": "",
       "description": "Error 404 - Página no encontrada",
       "sub-description": "La página que buscas puede haber sido eliminada, su nombre ha cambiado o no está temporalmente disponible.",
       "back-button": "Regresar"
