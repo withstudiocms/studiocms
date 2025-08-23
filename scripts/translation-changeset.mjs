@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import write from '@changesets/write';
 import ensureChangeset from './utils/ensure-changeset.mjs';
 

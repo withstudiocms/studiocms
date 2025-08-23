@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { setOutput } from '@actions/core';
 import crowdin from '@crowdin/crowdin-api-client';
 
