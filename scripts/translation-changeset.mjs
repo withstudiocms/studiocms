@@ -1,5 +1,5 @@
 import write from '@changesets/write';
-import { execa } from 'execa';
+import ensureChangeset from './utils/ensure-changeset.mjs';
 
 async function run() {
 	// Get the PR number from the CI environment
@@ -15,12 +15,8 @@ async function run() {
 	const summary = `Translation Updated (PR: #${PR_NUMBER})`;
 
 	// Check if the changeset already exists
-
-	// Run the grep command to check if the changeset already exists
-	const { stdout } = await execa('grep', ['-R', '-F', summary, '.changeset'], { reject: false });
-
-	// If the changeset already exists, exit the process
-	if (stdout) {
+	const changesetExists = await ensureChangeset(summary);
+	if (changesetExists) {
 		console.log('Changeset already exists');
 		process.exit(0);
 	}
