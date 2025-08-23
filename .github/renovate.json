@@ -32,13 +32,21 @@
       "enabled": false
     },
     {
+      "groupName": "pnpm Workspace Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["pnpm-workspace.yaml"]
+    },
+    {
       "groupName": "github-actions",
       "matchManagers": ["github-actions"],
-      "updatePinnedDependencies": true
+      "updatePinnedDependencies": true,
+      "pinDigests": true,
+      "labels": ["github-actions"]
     },
     {
       "groupName": "Effect Dependencies",
-      "matchPackageNames": ["effect", "@effect/**"]
+      "matchPackageNames": ["effect", "@effect/**"],
+      "labels": ["effect-deps"]
     },
     {
       "groupName": "studiocms Dependencies",
@@ -49,12 +57,17 @@
       "groupName": "@studiocms Plugin Dependencies",
       "matchManagers": ["npm"],
       "matchFileNames": [
+        "packages/@studiocms/auth0/**",
         "packages/@studiocms/blog/**",
         "packages/@studiocms/cloudinary-image-service/**",
+        "packages/@studiocms/discord/**",
+        "packages/@studiocms/github/**",
+        "packages/@studiocms/google/**",
         "packages/@studiocms/html/**",
         "packages/@studiocms/markdoc/**",
         "packages/@studiocms/md/**",
-        "packages/@studiocms/mdx/**"
+        "packages/@studiocms/mdx/**",
+        "packages/@studiocms/wysiwyg/**"
       ]
     },
     {
@@ -69,8 +82,6 @@
     }
   ],
   "ignoreDeps": [
-    "@biomejs/biome",
-    "knip",
     "@types/node",
     "drizzle-orm",
     "sharp",

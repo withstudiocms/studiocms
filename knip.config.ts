@@ -106,8 +106,8 @@ const config: KnipConfig = {
 	workspaces: {
 		'.': {
 			ignoreDependencies: ['@changesets/config'],
-			entry: ['.github/workflows/*.yml', 'scripts/*.mjs'],
-			project: ['scripts/*.mjs'],
+			entry: ['.github/workflows/*.yml', 'scripts/**/*.mjs'],
+			project: ['scripts/**/*.mjs'],
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,

@@ -14,7 +14,7 @@ async function run() {
 	}
 
 	// Changeset summary
-	const summary = `Translation Updated (PR: #${PR_NUMBER})`;
+	const summary = `chore(deps): Updated Effect dependencies (PR: #${PR_NUMBER})`;
 
 	// Check if the changeset already exists
 	const changesetExists = await ensureChangeset(summary);
@@ -25,7 +25,7 @@ async function run() {
 
 	// Create a new changeset
 	const changesetId = await write(
-		{ summary, releases: [{ name: 'studiocms', type: 'patch' }] },
+		{ summary, releases: [{ name: '@withstudiocms/effect', type: 'patch' }] },
 		process.cwd()
 	);
 
