@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/buildkit",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.4",
   "description": "Build kit based on esbuild for the withstudiocms github org",
   "author": {
     "name": "withstudiocms",
@@ -33,7 +33,7 @@
   "dependencies": {
     "esbuild": "catalog:",
     "tinyglobby": "catalog:",
-		"chalk": "catalog:"
+    "chalk": "catalog:"
   },
   "devDependencies": {
     "strip-ansi": "^7.1.0"

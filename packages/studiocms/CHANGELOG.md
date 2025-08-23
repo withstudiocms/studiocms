@@ -1,5 +1,50 @@
 # studiocms
 
+## 0.1.0-beta.25
+
+### Patch Changes
+
+- [#706](https://github.com/withstudiocms/studiocms/pull/706) [`501b73a`](https://github.com/withstudiocms/studiocms/commit/501b73ae7856528af09e266b1cbd551aff17648f) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Refactor dashboard content management components to eliminate inline scripts and improve code reusability
+
+- [#693](https://github.com/withstudiocms/studiocms/pull/693) [`120b438`](https://github.com/withstudiocms/studiocms/commit/120b438d3152b4ae95e483f8f98bacfeff5c46de) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleanup use of deprecated code
+
+- [#664](https://github.com/withstudiocms/studiocms/pull/664) [`42bac4a`](https://github.com/withstudiocms/studiocms/commit/42bac4afe7ee9896fa7cb3df638ae21d793a196d) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.48
+
+- [#717](https://github.com/withstudiocms/studiocms/pull/717) [`aca52e6`](https://github.com/withstudiocms/studiocms/commit/aca52e61624284de2078f47ccf894d668bc0f51d) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency jose to ^6.0.13
+
+- [#680](https://github.com/withstudiocms/studiocms/pull/680) [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor usage of effect to utilize new enhanced utilities from new @withstudiocms/effect package.
+
+- [#707](https://github.com/withstudiocms/studiocms/pull/707) [`b7871ef`](https://github.com/withstudiocms/studiocms/commit/b7871eff7982a786edf7ee42e4f024295faacb99) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates to utilize new `@withstudiocms/component-registry` package
+
+- [#686](https://github.com/withstudiocms/studiocms/pull/686) [`befa7cf`](https://github.com/withstudiocms/studiocms/commit/befa7cf9572a2cb56a0264e2d6ece5dddd483cb4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate API routes to new createEffectAPIRoutes utility from @withstudiocms/effect
+
+- [#711](https://github.com/withstudiocms/studiocms/pull/711) [`22d748f`](https://github.com/withstudiocms/studiocms/commit/22d748f445b53bc340aad9a99ac4ebac6b0e9d7c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleanup internal folder structure
+
+- [#690](https://github.com/withstudiocms/studiocms/pull/690) [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleanup code, fix first time setup oauth, and cleanup old utils
+
+- [#704](https://github.com/withstudiocms/studiocms/pull/704) [`73a4835`](https://github.com/withstudiocms/studiocms/commit/73a4835d09b8d9bc8b5c0999e73c20731386b774) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Unifies date-time config on last updated check for version check modal
+
+- [#684](https://github.com/withstudiocms/studiocms/pull/684) [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors middleware utils to utilize new deepmerge util from @withstudiocms/effect instead of the source version for benefit of effect
+
+- [#703](https://github.com/withstudiocms/studiocms/pull/703) [`ea38ad2`](https://github.com/withstudiocms/studiocms/commit/ea38ad21cf8df154a9ce2fc9fbde58ddabdd1a2d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize login page preview on Config page and first-time setup.
+
+- [#680](https://github.com/withstudiocms/studiocms/pull/680) [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize login page backgrounds
+
+- [#715](https://github.com/withstudiocms/studiocms/pull/715) [`8570819`](https://github.com/withstudiocms/studiocms/commit/8570819f99553cfda14b62b9fe18cd13284be7db) Thanks [@studiocms-no-reply](https://github.com/studiocms-no-reply)! - Translation Updated (PR: #715)
+
+- [#702](https://github.com/withstudiocms/studiocms/pull/702) [`55fa633`](https://github.com/withstudiocms/studiocms/commit/55fa633348b75820ed6ebeb1859f241e609380be) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates UserListItem, TreeSidebarLink, TreeSidebarFolder, and SidebarLink to utilize custom html element instead of inline script
+
+- [#692](https://github.com/withstudiocms/studiocms/pull/692) [`315cde0`](https://github.com/withstudiocms/studiocms/commit/315cde0269484585e36f8d99eda48346d81476eb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimize threejs login page, ensuring fast page load.
+
+- [#691](https://github.com/withstudiocms/studiocms/pull/691) [`b873c9b`](https://github.com/withstudiocms/studiocms/commit/b873c9bcf04d1ee55c6544f78b716a8dcb0c6411) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - refactor(db): consolidate table definitions into config and remove legacy tables file
+
+  Also fixes outstanding type issue with DB tables...
+
+- Updated dependencies [[`befa7cf`](https://github.com/withstudiocms/studiocms/commit/befa7cf9572a2cb56a0264e2d6ece5dddd483cb4), [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29), [`aaef521`](https://github.com/withstudiocms/studiocms/commit/aaef521314f8cdd52b6a5cf4f1b51a51b56c6a29), [`355aeca`](https://github.com/withstudiocms/studiocms/commit/355aecacd44aec8cb2ca9daca392a0d9376f7b29), [`169c9be`](https://github.com/withstudiocms/studiocms/commit/169c9be7649bbd9522c6ab68a9aeca4ebfc2b86d), [`b7871ef`](https://github.com/withstudiocms/studiocms/commit/b7871eff7982a786edf7ee42e4f024295faacb99), [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db), [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17)]:
+  - @withstudiocms/effect@0.1.0-beta.1
+  - @withstudiocms/config-utils@0.1.0-beta.3
+  - @withstudiocms/component-registry@0.1.0-beta.1
+
 ## 0.1.0-beta.24
 
 ### Patch Changes
