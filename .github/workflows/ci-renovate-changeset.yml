@@ -23,3 +23,37 @@ jobs:
           use-conventional-commits: true
           author-name: StudioCMS
           author-email: no-reply@studiocms.dev
+
+
+  renovate-effect:
+    name: Update Renovate Effect PR
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'effect-deps')
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: true
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        
+      - name: Create Effect Changesets
+        run: pnpm ci:effect:changeset
+        env:
+          CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+    
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
+        with:
+          commit_message: '[ci] changesets'
+          branch: ${{ github.head_ref }}
+          commit_user_name: studiocms-no-reply
+          commit_user_email: no-reply@studiocms.dev
+          commit_author: StudioCMS <no-reply@studiocms.dev>
