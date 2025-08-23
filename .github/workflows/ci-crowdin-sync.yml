@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Crowdin pull
-        uses: crowdin/github-action@590c05e09a29f392b203faf4d6aa8e0cd32c7835 # v2.9.1
+        uses: crowdin/github-action@9787f4fcb6a8450929673f1e8db841e8a5c35a2f # v2.10.0
         with:
           upload_sources: false
           upload_translations: false
@@ -63,7 +63,7 @@ jobs:
           persist-credentials: false
 
       - name: Crowdin push
-        uses: crowdin/github-action@590c05e09a29f392b203faf4d6aa8e0cd32c7835 # v2.9.1
+        uses: crowdin/github-action@9787f4fcb6a8450929673f1e8db841e8a5c35a2f # v2.10.0
         with:
           upload_sources: true
           upload_translations: true

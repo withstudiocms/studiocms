@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@64eaa84b54df4f4bdcce73b0e11690782151114e # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d # main Jul 17th, 2025
 
       - id: message
         name: Format Discord message
