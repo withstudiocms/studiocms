@@ -17,7 +17,7 @@ async function run() {
 	// Check if the changeset already exists
 
 	// Run the grep command to check if the changeset already exists
-	const { stdout } = await execa('grep', [summary, '-r', '.changeset'], { reject: false });
+	const { stdout } = await execa('grep', ['-R', '-F', summary, '.changeset'], { reject: false });
 
 	// If the changeset already exists, exit the process
 	if (stdout) {
