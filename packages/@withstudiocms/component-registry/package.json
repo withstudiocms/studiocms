@@ -1,6 +1,6 @@
 {
 	"name": "@withstudiocms/component-registry",
-    "version": "0.1.0-beta.0",
+	"version": "0.1.0-beta.1",
 	"description": "Component Registry Utilities for Astro",
 	"license": "MIT",
 	"author": {
@@ -40,7 +40,7 @@
 	"scripts": {
 		"build": "buildkit build 'src/**/*.{ts,d.ts}'",
 		"dev": "buildkit dev 'src/**/*.{ts,d.ts}'",
-        "test": "buildkit test 'test/**/*.test.js'",
+		"test": "buildkit test 'test/**/*.test.js'",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"exports": {

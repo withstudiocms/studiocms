@@ -1,5 +1,15 @@
 # @withstudiocms/buildkit
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#684](https://github.com/withstudiocms/studiocms/pull/684) [`15e6ee0`](https://github.com/withstudiocms/studiocms/commit/15e6ee0c50e37b22bcb24a0b67403e357e2502db) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix: add shebang to builder, help, test, and index scripts for executable compatibility
+
+- [#711](https://github.com/withstudiocms/studiocms/pull/711) [`22d748f`](https://github.com/withstudiocms/studiocms/commit/22d748f445b53bc340aad9a99ac4ebac6b0e9d7c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds copy support for `.stub.js`
+
+- [#680](https://github.com/withstudiocms/studiocms/pull/680) [`9c66603`](https://github.com/withstudiocms/studiocms/commit/9c6660397bc3a8c952713e7587df507b8c6d3d17) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors buildkit to be broken out into individual files to help with maintainability
+
 ## 0.1.0-beta.3
 
 ### Patch Changes

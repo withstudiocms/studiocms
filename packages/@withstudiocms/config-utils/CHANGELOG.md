@@ -1,5 +1,11 @@
 # @withstudiocms/config-utils
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- [#685](https://github.com/withstudiocms/studiocms/pull/685) [`169c9be`](https://github.com/withstudiocms/studiocms/commit/169c9be7649bbd9522c6ab68a9aeca4ebfc2b86d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add tests to ensure functionality of main utils
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
