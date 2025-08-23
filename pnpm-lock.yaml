@@ -417,8 +417,8 @@ importers:
         specifier: workspace:*
         version: link:../../studiocms
       suneditor:
-        specifier: ^2.47.6
-        version: 2.47.6
+        specifier: ^2.47.7
+        version: 2.47.7
       vite:
         specifier: catalog:min
         version: 6.3.5(@types/node@22.16.3)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
@@ -4296,6 +4296,7 @@ packages:
 
   libsql@0.5.17:
     resolution: {integrity: sha512-RRlj5XQI9+Wq+/5UY8EnugSWfRmHEw4hn3DKlPrkUgZONsge1PwTtHcpStP6MSNi8ohcbsRgEHJaymA33a8cBw==}
+    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   linkify-it@5.0.0:
@@ -5319,8 +5320,8 @@ packages:
   style-to-object@1.0.9:
     resolution: {integrity: sha512-G4qppLgKu/k6FwRpHiGiKPaPTFcG3g4wNVX/Qsfu+RqQM30E7Tyu/TEgxcL9PNLF5pdRLwQdE3YKKf+KF2Dzlw==}
 
-  suneditor@2.47.6:
-    resolution: {integrity: sha512-bs3MFSvjdbkN37dSd98YhxvEfnMezwNptwAq/cBUNb1wb/YzqGWyWR1MHEs+CEjK42oHXE3u42fzBtC1LFaT5Q==}
+  suneditor@2.47.7:
+    resolution: {integrity: sha512-26KkkTZp5s5DjPfr+TdqFLxjN4BEqVHAYOqJOooD51s+mVunGOwcpZfuz1IkcxOvj7D0y45gyocttIp8HsM08Q==}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -11573,7 +11574,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.4
 
-  suneditor@2.47.6: {}
+  suneditor@2.47.7: {}
 
   supports-color@7.2.0:
     dependencies:
