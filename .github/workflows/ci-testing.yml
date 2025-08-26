@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b
 
       - name: Run withstudiocms TypeCheck
         run: pnpm ci:typecheck:withstudiocms
@@ -46,7 +46,7 @@ jobs:
           persist-credentials: false
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b
 
       - name: Run withstudiocms Tests
         run: pnpm ci:test:withstudiocms
@@ -64,7 +64,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b
 
       - name: Run TypeCheck
         run: pnpm ci:typecheck:studiocms
@@ -82,7 +82,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b
 
       - name: Run TypeCheck for Plugins & Packages
         run: pnpm ci:typecheck:studiocms-packages
@@ -107,7 +107,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main Jul 17th, 2025
 
       - name: Build packages and playground
         run: pnpm build
