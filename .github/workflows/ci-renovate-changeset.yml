@@ -42,7 +42,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@0e19542989c6e2d8fcd52d847f83524b7c84933d
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b
         
       - name: Create Effect Changesets
         run: pnpm ci:effect:changeset
