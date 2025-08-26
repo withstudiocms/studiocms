@@ -50,7 +50,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@cloudinary/url-gen": "^1.21.0",
+    "@cloudinary/url-gen": "^1.22.0",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {

@@ -63,8 +63,8 @@ catalogs:
       specifier: ^0.54.6
       version: 0.54.6
     '@effect/language-service':
-      specifier: ^0.35.2
-      version: 0.35.2
+      specifier: ^0.36.0
+      version: 0.36.0
     '@effect/platform':
       specifier: ^0.90.6
       version: 0.90.6
@@ -122,8 +122,8 @@ catalogs:
       specifier: ^19.1.11
       version: 19.1.11
     '@types/react-dom':
-      specifier: ^19.1.7
-      version: 19.1.7
+      specifier: ^19.1.8
+      version: 19.1.8
     react:
       specifier: ^19.1.1
       version: 19.1.1
@@ -138,8 +138,8 @@ catalogs:
       specifier: ^0.4.17
       version: 0.4.17
     '@studiocms/web-vitals':
-      specifier: ^4.5.0
-      version: 4.5.0
+      specifier: ^4.5.2
+      version: 4.5.2
     '@withstudiocms/cli-kit':
       specifier: ^0.1.0
       version: 0.1.0
@@ -174,7 +174,7 @@ importers:
         version: 1.46.0
       '@effect/language-service':
         specifier: catalog:effect
-        version: 0.35.2
+        version: 0.36.0
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
@@ -188,8 +188,8 @@ importers:
         specifier: ^5.63.0
         version: 5.63.0(@types/node@22.16.3)(typescript@5.9.2)
       pkg-pr-new:
-        specifier: ^0.0.56
-        version: 0.0.56
+        specifier: ^0.0.57
+        version: 0.0.57
       studiocms:
         specifier: workspace:*
         version: link:packages/studiocms
@@ -256,8 +256,8 @@ importers:
   packages/@studiocms/cloudinary-image-service:
     dependencies:
       '@cloudinary/url-gen':
-        specifier: ^1.21.0
-        version: 1.21.0
+        specifier: ^1.22.0
+        version: 1.22.0
       astro:
         specifier: catalog:min
         version: 5.12.9(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)
@@ -431,7 +431,7 @@ importers:
     dependencies:
       '@astrojs/react':
         specifier: catalog:react
-        version: 4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.7(@types/react@19.1.11))(@types/react@19.1.11)(jiti@2.5.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tsx@4.20.3)(yaml@2.8.0)
+        version: 4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.8(@types/react@19.1.11))(@types/react@19.1.11)(jiti@2.5.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tsx@4.20.3)(yaml@2.8.0)
       '@markdoc/markdoc':
         specifier: ^0.5.4
         version: 0.5.4(@types/react@19.1.11)(react@19.1.1)
@@ -468,7 +468,7 @@ importers:
         version: 19.1.11
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.1.7(@types/react@19.1.11)
+        version: 19.1.8(@types/react@19.1.11)
 
   packages/@studiocms/md:
     dependencies:
@@ -545,7 +545,7 @@ importers:
         version: 19.1.11
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.1.7(@types/react@19.1.11)
+        version: 19.1.8(@types/react@19.1.11)
 
   packages/@studiocms/wysiwyg:
     dependencies:
@@ -723,8 +723,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.48
-        version: 1.2.48
+        specifier: ^1.2.49
+        version: 1.2.49
       '@inox-tools/runtime-logger':
         specifier: ^0.6.0
         version: 0.6.0(astro@5.12.9(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -884,7 +884,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.5.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.5.2(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -1303,8 +1303,8 @@ packages:
   '@cloudinary/transformation-builder-sdk@1.17.0':
     resolution: {integrity: sha512-zPHNtEpLkil+1obvLK7zHDMWAs9ZwUGI0GUKnMMkEC3pOLtKETswPBdLAjJTMH512lGc18vgdzogWdItPRN3Kg==}
 
-  '@cloudinary/url-gen@1.21.0':
-    resolution: {integrity: sha512-ctYcCzX3G3vcgnESTU2ET3K1XsBiXcEnBddCGV0QbR3fJhLLrIShjSMEwZoepgh4LAFOHJu9DzvLFr+E8R7c7g==}
+  '@cloudinary/url-gen@1.22.0':
+    resolution: {integrity: sha512-le8RMlgyC0JN3+FlC/YAlPYfvmJdtw8QGcSKDjCsfhS2CIem0mJl6ayti8bMoZ0P5wDvBewvRB0/dUQvhCzy3g==}
 
   '@commander-js/extra-typings@13.1.0':
     resolution: {integrity: sha512-q5P52BYb1hwVWE6dtID7VvuJWrlfbCv4klj7BjUUOqMz4jbSZD4C9fJ9lRjL2jnBGTg+gDDlaXN51rkWcLk4fg==}
@@ -1345,8 +1345,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.35.2':
-    resolution: {integrity: sha512-J7GbtthuYeruD4kYUHn3QEZtbl9v7OX9+ElD20mDBGBMA+Q6W4KnVMxZc+yDvKQBBYvfXImVUSzBbXzbrZJpyg==}
+  '@effect/language-service@0.36.0':
+    resolution: {integrity: sha512-KoE5e+7vhcd29fBTDBvttWHv1z1KPg9Ji2DyhD0hETBaoM9IsFymboD6WqpDoGH1QZRr6CmTD3DfaZUs8K6Mrg==}
     hasBin: true
 
   '@effect/platform-node-shared@0.49.0':
@@ -1740,8 +1740,8 @@ packages:
   '@iconify-json/heroicons@1.2.2':
     resolution: {integrity: sha512-qoW4pXr5kTTL6juEjgTs83OJIwpePu7q1tdtKVEdj+i0zyyVHgg/dd9grsXJQnpTpBt6/VwNjrXBvFjRsKPENg==}
 
-  '@iconify-json/simple-icons@1.2.48':
-    resolution: {integrity: sha512-EACOtZMoPJtERiAbX1De0asrrCtlwI27+03c9OJlYWsly9w1O5vcD8rTzh+kDPjo+K8FOVnq2Qy+h/CzljSKDA==}
+  '@iconify-json/simple-icons@1.2.49':
+    resolution: {integrity: sha512-nRLwrHzz+cTAQYBNQrcr4eWOmQIcHObTj/QSi7nj0SFwVh5MvBsgx8OhoDC/R8iGklNmMpmoE/NKU0cPXMlOZw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2749,8 +2749,8 @@ packages:
     peerDependencies:
       '@astrojs/db': ^0.17.1
 
-  '@studiocms/web-vitals@4.5.0':
-    resolution: {integrity: sha512-6eoTuTyAqS34zl0uHpSTO35y22vRFSKHqwT+qp6PG7p+0cVSvgVY3CEiEXEAdYeSvRlceG7FH3ha3HrG1kshqw==}
+  '@studiocms/web-vitals@4.5.2':
+    resolution: {integrity: sha512-DossG3WptmGNJDyHuc0p3xffgDup69CTVmJVU6aEfTkG1UEsPYyiSQjJTkgoseCe6cM5V6mWrwHLkqMXba7ofw==}
     peerDependencies:
       '@astrojs/db': ^0.17.1
 
@@ -2853,8 +2853,8 @@ packages:
   '@types/pg@8.6.1':
     resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
 
-  '@types/react-dom@19.1.7':
-    resolution: {integrity: sha512-i5ZzwYpqjmrKenzkoLM2Ibzt6mAsM7pxB6BCIouEVVmgiqaMj1TjaK7hnA36hbW5aZv20kx7Lw6hWzPWg0Rurw==}
+  '@types/react-dom@19.1.8':
+    resolution: {integrity: sha512-xG7xaBMJCpcK0RpN8jDbAACQo54ycO6h4dSSmgv8+fu6ZIAdANkx/WsawASUjVXYfy+J9AbUpRMNNEsXCDfDBQ==}
     peerDependencies:
       '@types/react': ^19.0.0
 
@@ -4862,8 +4862,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pkg-pr-new@0.0.56:
-    resolution: {integrity: sha512-QUdWJ5m0IUNIujAIwc03wJ3L1BVCpSK8jm7yIz4F2pkvQ8afVltyl+/tJTPLKs5jcd2gkQZPl71NYwMYplRvaA==}
+  pkg-pr-new@0.0.57:
+    resolution: {integrity: sha512-yEZp/Uvjk1EbRNnboB+laqEa4/aYwG6dGD1z9O4EdXqWajPOp3HWXyYXZx6u4hgFxD9w5mY4YSKbTPY4T48ifw==}
     hasBin: true
 
   pkg-types@1.3.1:
@@ -5994,10 +5994,10 @@ snapshots:
     dependencies:
       prismjs: 1.30.0
 
-  '@astrojs/react@4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.7(@types/react@19.1.11))(@types/react@19.1.11)(jiti@2.5.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tsx@4.20.3)(yaml@2.8.0)':
+  '@astrojs/react@4.3.0(@types/node@22.16.3)(@types/react-dom@19.1.8(@types/react@19.1.11))(@types/react@19.1.11)(jiti@2.5.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tsx@4.20.3)(yaml@2.8.0)':
     dependencies:
       '@types/react': 19.1.11
-      '@types/react-dom': 19.1.7(@types/react@19.1.11)
+      '@types/react-dom': 19.1.8(@types/react@19.1.11)
       '@vitejs/plugin-react': 4.6.0(vite@6.3.5(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
@@ -6745,9 +6745,9 @@ snapshots:
 
   '@cloudinary/transformation-builder-sdk@1.17.0':
     dependencies:
-      '@cloudinary/url-gen': 1.21.0
+      '@cloudinary/url-gen': 1.22.0
 
-  '@cloudinary/url-gen@1.21.0':
+  '@cloudinary/url-gen@1.22.0':
     dependencies:
       '@cloudinary/transformation-builder-sdk': 1.17.0
 
@@ -6785,7 +6785,7 @@ snapshots:
       effect: 3.17.9
       uuid: 11.1.0
 
-  '@effect/language-service@0.35.2': {}
+  '@effect/language-service@0.36.0': {}
 
   '@effect/platform-node-shared@0.49.0(@effect/cluster@0.48.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/workflow@0.9.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9)':
     dependencies:
@@ -7038,7 +7038,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.48':
+  '@iconify-json/simple-icons@1.2.49':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -8079,7 +8079,7 @@ snapshots:
       '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.1.0
 
-  '@studiocms/web-vitals@4.5.0(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+  '@studiocms/web-vitals@4.5.2(@astrojs/db@0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.17.1(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.1.0
@@ -8217,7 +8217,7 @@ snapshots:
       pg-types: 2.2.0
     optional: true
 
-  '@types/react-dom@19.1.7(@types/react@19.1.11)':
+  '@types/react-dom@19.1.8(@types/react@19.1.11)':
     dependencies:
       '@types/react': 19.1.11
 
@@ -10925,8 +10925,9 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pkg-pr-new@0.0.56:
+  pkg-pr-new@0.0.57:
     dependencies:
+      '@actions/core': 1.11.1
       '@jsdevtools/ez-spawn': 3.0.4
       '@octokit/action': 6.1.0
       ignore: 5.3.2

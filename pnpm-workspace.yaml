@@ -23,7 +23,7 @@ catalogs:
     "@effect/cli": ^0.69.2
     "@effect/cluster": ^0.48.2
     "@effect/experimental": ^0.54.6
-    "@effect/language-service": ^0.35.2
+    "@effect/language-service": ^0.36.0
     "@effect/platform": ^0.90.6
     "@effect/platform-node": ^0.96.0
     "@effect/printer": ^0.45.0
@@ -44,13 +44,13 @@ catalogs:
   react:
     "@astrojs/react": ^4.3.0
     "@types/react": ^19.1.11
-    "@types/react-dom": ^19.1.7
+    "@types/react-dom": ^19.1.8
     react: ^19.1.1
     "react-dom": ^19.1.1
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.5.0
+    "@studiocms/web-vitals": ^4.5.2
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
