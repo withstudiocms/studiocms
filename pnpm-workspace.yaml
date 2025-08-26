@@ -44,13 +44,13 @@ catalogs:
   react:
     "@astrojs/react": ^4.3.0
     "@types/react": ^19.1.11
-    "@types/react-dom": ^19.1.7
+    "@types/react-dom": ^19.1.8
     react: ^19.1.1
     "react-dom": ^19.1.1
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^0.4.17
-    "@studiocms/web-vitals": ^4.5.0
+    "@studiocms/web-vitals": ^4.5.2
     "@withstudiocms/cli-kit": ^0.1.0
 
 packages:
