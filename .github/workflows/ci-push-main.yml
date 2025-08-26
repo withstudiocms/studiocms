@@ -36,7 +36,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
 
       - name: Format code
         run: pnpm run lint:fix
@@ -91,7 +91,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main Jul 17th, 2025
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
 
       - name: Run Prepublish
         run: pnpm ci:prepublish
@@ -116,15 +116,12 @@ jobs:
           PR_URL: ${{ steps.changesets.outputs.pull_request_url }}
           GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
-      - name: Generate Announcement
-        id: message
-        if: steps.changesets.outputs.published == 'true'
-        run: node .github/scripts/announce.mjs '${{ steps.changesets.outputs.publishedPackages }}'
-
-      - name: Send message on Discord
-        if: steps.changesets.outputs.published == 'true'
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
-        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554 # 0.4.0
+      - name: Release Bot
+        if: ${{ steps.changesets.outputs.published == 'true' }}
+        uses: withstudiocms/automations/.github/actions/releasebot@78e87c84a960d27f3832db1e6af755abc31fb09b # main
         with:
-          args: "${{ steps.message.outputs.DISCORD_MESSAGE }}"
+          repository: withstudiocms/studiocms
+          CWD: ${{ github.workspace }}
+          PublishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
+          RoleMentionId: '1309310416362537020'
