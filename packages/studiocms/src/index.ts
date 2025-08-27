@@ -10,8 +10,6 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
-import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
-import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
@@ -24,6 +22,7 @@ import { loadEnv } from 'vite';
 import {
 	AstroConfigImageSettings,
 	AstroConfigViteSettings,
+	getUiOpts,
 	makeDashboardRoute,
 	routesDir,
 } from './consts.js';
@@ -45,7 +44,6 @@ import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { readJson } from './utils/jsonUtils.js';
-import { stripIconify } from './utils/stripIconify.js';
 import {
 	buildDefaultOnlyVirtual,
 	buildLoggerVirtual,
@@ -235,21 +233,7 @@ export const studiocms = defineIntegration({
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{
-							integration: ui({
-								noInjectCSS: true,
-								icons: {
-									flatcoloricons: stripIconify({
-										src: flatColorIcons,
-										icons: ['google'],
-									}),
-									simpleicons: stripIconify({
-										src: simpleIcons,
-										icons: ['github', 'discord', 'auth0'],
-									}),
-								},
-							}),
-						},
+						{ integration: ui(getUiOpts()) },
 					];
 
 					if (newIntegrations.length > 0) {
