@@ -7,7 +7,7 @@ import type { IconifyJSON } from '@studiocms/ui/types';
  * @param icons - An array of icon names to include in the resulting IconifyJSON.
  * @returns A new IconifyJSON object with only the specified icons and the original metadata.
  */
-export function stripIconify(src: IconifyJSON, icons: string[]): IconifyJSON {
+export function stripIconify({ src, icons }: { src: IconifyJSON; icons: string[] }): IconifyJSON {
 	const { icons: allIcons, ...srcData } = src;
 
 	const filteredIcons = Object.entries(allIcons).filter(([name]) => icons.includes(name));

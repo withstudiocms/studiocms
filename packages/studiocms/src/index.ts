@@ -239,8 +239,14 @@ export const studiocms = defineIntegration({
 							integration: ui({
 								noInjectCSS: true,
 								icons: {
-									flatcoloricons: stripIconify(flatColorIcons, ['google']),
-									simpleicons: stripIconify(simpleIcons, ['github', 'discord', 'auth0']),
+									flatcoloricons: stripIconify({
+										src: flatColorIcons,
+										icons: ['google'],
+									}),
+									simpleicons: stripIconify({
+										src: simpleIcons,
+										icons: ['github', 'discord', 'auth0'],
+									}),
 								},
 							}),
 						},
