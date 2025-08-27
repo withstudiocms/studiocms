@@ -45,6 +45,7 @@ import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
 import { integrationLogger } from './utils/integrationLogger.js';
 import { readJson } from './utils/jsonUtils.js';
+import { stripIconify } from './utils/stripIconify.js';
 import {
 	buildDefaultOnlyVirtual,
 	buildLoggerVirtual,
@@ -238,8 +239,8 @@ export const studiocms = defineIntegration({
 							integration: ui({
 								noInjectCSS: true,
 								icons: {
-									flatcoloricons: flatColorIcons,
-									simpleicons: simpleIcons,
+									flatcoloricons: stripIconify(flatColorIcons, ['google']),
+									simpleicons: stripIconify(simpleIcons, ['github', 'discord', 'auth0']),
 								},
 							}),
 						},

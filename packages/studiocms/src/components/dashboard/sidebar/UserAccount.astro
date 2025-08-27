@@ -17,7 +17,7 @@ type UserProps = PropsOf<typeof User>;
 const userProps: UserProps = {
 	name: currentUser?.user?.name || 'Visitor',
 	description: getLabelForPermissionLevel(currentUser?.permissionLevel || 'Visitor'),
-	loading: 'eager',
+	// loading: 'eager',
 };
 
 if (currentUser?.user?.avatar) {
