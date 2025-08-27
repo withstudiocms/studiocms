@@ -42,7 +42,7 @@ import {
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
-import { integrationLogger } from './utils/integrationLogger.js';
+import { integrationLogger, logMessages } from './utils/integrationLogger.js';
 import { readJson } from './utils/jsonUtils.js';
 import {
 	buildDefaultOnlyVirtual,
@@ -395,16 +395,7 @@ export const studiocms = defineIntegration({
 					}
 
 					// Log all messages
-					for (const { label, message, logLevel } of messages) {
-						integrationLogger(
-							{
-								logger: l.fork(label),
-								logLevel,
-								verbose: logLevel === 'info' ? options.verbose : true,
-							},
-							message
-						);
-					}
+					logMessages(messages, options, logger);
 
 					if (options.dbStartPage) {
 						integrationLogger(
@@ -423,16 +414,7 @@ export const studiocms = defineIntegration({
 				// BUILD: Log messages at the end of the build
 				'astro:build:done': ({ logger }) => {
 					// Log messages at the end of the build
-					for (const { label, message, logLevel } of messages) {
-						integrationLogger(
-							{
-								logger: logger.fork(label),
-								logLevel,
-								verbose: logLevel === 'info' ? options.verbose : true,
-							},
-							message
-						);
-					}
+					logMessages(messages, options, logger);
 
 					if (options.features.developerConfig.demoMode !== false) {
 						integrationLogger(
