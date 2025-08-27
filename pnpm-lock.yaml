@@ -193,9 +193,6 @@ importers:
       studiocms:
         specifier: workspace:*
         version: link:packages/studiocms
-      tinyglobby:
-        specifier: 'catalog:'
-        version: 0.2.14
       ts-patch:
         specifier: ^3.3.0
         version: 3.3.0
