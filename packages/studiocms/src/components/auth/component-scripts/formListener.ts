@@ -2,7 +2,7 @@
  * This tool is used by Auth Login pages
  */
 
-import { toast } from 'studiocms:ui/components';
+import { toast } from 'studiocms:ui/components/toaster';
 
 /**
  * Handles form submission events for login and registration forms.

@@ -1,5 +1,6 @@
 ---
 "studiocms": patch
+"@studiocms/blog": patch
 "@studiocms/wysiwyg": patch
 ---
 
