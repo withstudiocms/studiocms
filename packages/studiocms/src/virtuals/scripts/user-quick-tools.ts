@@ -56,6 +56,7 @@ const COMPONENT_STYLES = `
     --danger-base: hsl(339 97% 31%);
     --info-base: hsl(217 92% 52%);
     --light: 70;
+    --threshold: 50;
 }
 
 [data-theme="light"] {
