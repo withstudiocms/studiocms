@@ -1,6 +1,7 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import { Button, Icon } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
 import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astro';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -24,7 +25,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
   <div slot="header">
     <PageHeader title={t('header')}>
       <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
-        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
         <t-config key="save-button">{t('save-button')}</t-config>
       </Button>
     </PageHeader>

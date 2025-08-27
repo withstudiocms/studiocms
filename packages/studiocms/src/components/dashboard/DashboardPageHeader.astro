@@ -1,7 +1,10 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { Button, Icon, Modal, Textarea } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Modal } from 'studiocms:ui/components/modal';
+import { Textarea } from 'studiocms:ui/components/textarea';
 import { studioCMSSocials } from '../../consts.js';
 import UserName from './UserName.astro';
 
@@ -18,7 +21,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 <header class="index-page-header">
   <div class="page-title-container">
     <Button color='primary' id='nav-open' class='mobile-btn'>
-      <Icon name="bars-3" height={24} width={24} />
+      <Icon name="heroicons:bars-3" height={24} width={24} />
     </Button>
     <h1 class="page-title">
       <t-dashboard-header key="welcome-title">{t("welcome-title")}</t-dashboard-header>, <UserName {currentUser} />.
@@ -30,7 +33,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
       <t-dashboard-header key="title-button:discord">{t("title-button:discord")}</t-dashboard-header>
     </Button>
     <Button color='success' variant='flat' id="feedback-button">
-      <Icon name='chat-bubble-oval-left-ellipsis' width={24} height={24} />
+      <Icon name='heroicons:chat-bubble-oval-left-ellipsis' width={24} height={24} />
       <t-dashboard-header key="title-button:feedback">{t("title-button:feedback")}</t-dashboard-header>
     </Button>
   </div>
@@ -50,7 +53,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:index');
 </Modal>
 
 <script>
-  import { ModalHelper, toast } from 'studiocms:ui/components';
+  import { toast } from 'studiocms:ui/components/toaster';
+  import { ModalHelper } from 'studiocms:ui/components/modal';
 
   const ENDPOINT = "https://api.feelback.dev/v0";
 

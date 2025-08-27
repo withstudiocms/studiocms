@@ -1,37 +1,37 @@
 @import "../fonts/onest-font.css";
 
 :root {
-	--d2h-bg-color: hsl(var(--background-step-1));
-	--d2h-border-color: hsl(var(--border));
-	--d2h-dim-color: hsl(var(--text-muted));
-	--d2h-line-border-color: hsl(var(--border));
-	--d2h-file-header-bg-color: hsl(var(--background-step-2));
-	--d2h-file-header-border-color: hsl(var(--border));
-	--d2h-empty-placeholder-bg-color: hsl(var(--background-step-1));
-	--d2h-empty-placeholder-border-color: hsl(var(--border));
-	--d2h-selected-color: hsl(var(--info-flat));
-	--d2h-ins-bg-color: hsl(from hsl(var(--success-base)) h s calc(l / 5));
-	--d2h-ins-border-color: hsl(from hsl(var(--success-base)) h s calc(l / 2));
-	--d2h-ins-highlight-bg-color: hsl(from hsl(var(--success-base)) h s calc(l / 3));
-	--d2h-ins-label-color: hsl(var(--success-base));
-	--d2h-del-bg-color: hsl(from hsl(var(--danger-base)) h s calc(l / 3));
-	--d2h-del-border-color: hsl(from hsl(var(--danger-base)) h s calc(l / 2));
-	--d2h-del-highlight-bg-color: hsl(from hsl(var(--danger-base)) h s calc(l / 1.5));
-	--d2h-del-label-color: hsl(var(--danger-base));
-	--d2h-change-del-color: hsl(from hsl(var(--warning-base)) h s calc(l * 1.2));
-	--d2h-change-ins-color: hsl(from hsl(var(--success-base)) h s calc(l * 1.25));
-	--d2h-info-bg-color: hsl(from hsl(var(--info-base)) h s calc(l / 5));
-	--d2h-info-border-color: hsl(from hsl(var(--info-base)) h s calc(l / 2));
-	--d2h-change-label-color: hsl(var(--warning-base));
-	--d2h-moved-label-color: hsl(var(--info-base));
+	--d2h-bg-color: var(--background-step-1);
+	--d2h-border-color: var(--border);
+	--d2h-dim-color: var(--text-muted);
+	--d2h-line-border-color: var(--border);
+	--d2h-file-header-bg-color: var(--background-step-2);
+	--d2h-file-header-border-color: var(--border);
+	--d2h-empty-placeholder-bg-color: var(--background-step-1);
+	--d2h-empty-placeholder-border-color: var(--border);
+	--d2h-selected-color: var(--info-flat);
+	--d2h-ins-bg-color: hsl(from var(--success-base) h s calc(l / 5));
+	--d2h-ins-border-color: hsl(from var(--success-base) h s calc(l / 2));
+	--d2h-ins-highlight-bg-color: hsl(from var(--success-base) h s calc(l / 3));
+	--d2h-ins-label-color: var(--success-base);
+	--d2h-del-bg-color: hsl(from var(--danger-base) h s calc(l / 3));
+	--d2h-del-border-color: hsl(from var(--danger-base) h s calc(l / 2));
+	--d2h-del-highlight-bg-color: hsl(from var(--danger-base) h s calc(l / 1.5));
+	--d2h-del-label-color: var(--danger-base);
+	--d2h-change-del-color: hsl(from var(--warning-base) h s calc(l * 1.2));
+	--d2h-change-ins-color: hsl(from var(--success-base) h s calc(l * 1.25));
+	--d2h-info-bg-color: hsl(from var(--info-base) h s calc(l / 5));
+	--d2h-info-border-color: hsl(from var(--info-base) h s calc(l / 2));
+	--d2h-change-label-color: var(--warning-base);
+	--d2h-moved-label-color: var(--info-base);
 }
 
 [data-theme="light"] {
-	--d2h-ins-bg-color: hsl(var(--success-base));
-	--d2h-ins-highlight-bg-color: hsl(from hsl(var(--success-base)) h s calc(l / 0.7));
-	--d2h-del-bg-color: hsl(from hsl(var(--danger-base)) h s calc(l * 2));
-	--d2h-del-highlight-bg-color: hsl(from hsl(var(--danger-base)) h s calc(l * 1.5));
-	--d2h-info-bg-color: hsl(from hsl(var(--info-base)) h s calc(l * 1.5));
+	--d2h-ins-bg-color: var(--success-base);
+	--d2h-ins-highlight-bg-color: hsl(from var(--success-base) h s calc(l / 0.7));
+	--d2h-del-bg-color: hsl(from var(--danger-base) h s calc(l * 2));
+	--d2h-del-highlight-bg-color: hsl(from var(--danger-base) h s calc(l * 1.5));
+	--d2h-info-bg-color: hsl(from var(--info-base) h s calc(l * 1.5));
 }
 
 .d2h-wrapper {
@@ -141,16 +141,16 @@
 		background-color: inherit;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		-webkit-box-shadow: inset 0 0 2px hsl(var(--border));
+		-webkit-box-shadow: inset 0 0 2px var(--border);
 	}
 	&::-webkit-scrollbar-thumb {
-		background-color: hsl(var(--mono-flat-hover));
+		background-color: var(--mono-flat-hover);
 		border: 4px solid transparent;
 		background-clip: content-box;
 		border-radius: var(--radius-full);
 	}
 	&::-webkit-scrollbar-thumb:hover {
-		background-color: hsl(var(--mono-flat-active));
+		background-color: var(--mono-flat-active);
 		cursor: default;
 	}
 }

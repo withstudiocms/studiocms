@@ -1,7 +1,11 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-import { Button, Divider, Dropdown, Icon, Input } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
 import PageList from './PageList.astro';
 
 interface Props {
@@ -17,7 +21,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 
 <div class="inner-sidebar-header">
   <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
-    <Icon name="arrow-left" width={24} height={24} slot="start-content" />
+    <Icon name="heroicons:arrow-left" width={24} height={24} slot="start-content" />
   </Button>
   <form id="search-form">
     <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
@@ -27,12 +31,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     options={[
       { 
         label: t('dropdown-create-page'), 
-        icon: 'document', 
+        icon: 'heroicons:document', 
         value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate 
       },
       { 
         label: t('dropdown-create-folder'), 
-        icon: 'folder', 
+        icon: 'heroicons:folder', 
         value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate 
       },
     ]}
@@ -40,11 +44,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     offset={8}
   >
     <Button variant="solid" color="primary" size='md' class="add-button">
-      <Icon name="plus" width={24} height={24} slot="start-content" />
+      <Icon name="heroicons:plus" width={24} height={24} slot="start-content" />
     </Button>
   </Dropdown>
   <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
-    <Icon name="x-mark" width={24} height={24} slot="start-content" />
+    <Icon name="heroicons:x-mark" width={24} height={24} slot="start-content" />
   </Button>
 </div>
 
@@ -133,7 +137,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 </script>
 
 <script>
-  import { DropdownHelper } from 'studiocms:ui/components';
+  import { DropdownHelper } from 'studiocms:ui/components/dropdown';
 
   const createNewDropdown = new DropdownHelper('create-new-dropdown');
 

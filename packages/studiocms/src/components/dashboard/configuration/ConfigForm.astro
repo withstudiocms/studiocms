@@ -3,7 +3,11 @@ import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { Toggle } from 'studiocms:ui/components/toggle';
 import LoginPreview from './LoginPreview.astro';
 
 interface Props {
@@ -88,7 +92,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         <div class="grid-items-container">
             {
                 gridItemOptions.map(({ enabled, label, name }) => (
-                    <Card style="background-color: hsl(var(--background-step-2));">
+                    <Card style="background-color: var(--background-step-2);">
                         <Toggle {label} {name} color='primary' defaultChecked={enabled} />
                     </Card>
                 ))
@@ -147,7 +151,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 </script>
 
 <script>
-    import { toast } from "studiocms:ui/components";
+    import { toast } from "studiocms:ui/components/toaster";
         const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
 
         configForm.addEventListener('submit', async (e) => {

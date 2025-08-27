@@ -4,7 +4,11 @@ import { dashboardConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
-import { Button, Divider, Dropdown, Group, Icon } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
 import Footer from './Footer.astro';
 import SidebarLink from './SidebarLink.astro';
 import SidebarPluginLink from './SidebarPluginLink.astro';
@@ -46,18 +50,18 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
         { versionCheck && <VersionCheck {latestVersion} /> }
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
           <div id="dark-content">
-            <Icon name='moon-16-solid' width={16} height={16} slot="dark" />
+            <Icon name='heroicons:moon-16-solid' width={16} height={16} slot="dark" />
           </div>
           <div id="light-content">
-            <Icon name='sun-16-solid' width={16} height={16} slot="light" />
+            <Icon name='heroicons:sun-16-solid' width={16} height={16} slot="light" />
           </div>
           <div id="fallback-content">
-            <Icon name='arrow-path-16-solid' width={16} height={16} slot="fallback" />
+            <Icon name='heroicons:arrow-path-16-solid' width={16} height={16} slot="fallback" />
           </div>
         </Button>
       </Group>
       <Button color='primary' size='sm' id='nav-close' class='mobile-btn mid-size-btn'>
-        <Icon name="x-mark" height={16} width={16} />
+        <Icon name="heroicons:x-mark" height={16} width={16} />
       </Button>
     </div>
   </div>
@@ -146,9 +150,9 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
   <Dropdown 
     id='sidebar-user-dropdown'
     options={[
-      { label: t("user-dropdown:settings"), icon: "user", value: Astro.locals.StudioCMS.routeMap.mainLinks.userProfile },
-      { label: t("user-dropdown:view-site"), icon: "globe-alt", value: Astro.locals.StudioCMS.routeMap.mainLinks.baseSiteURL },
-      { label: t("user-dropdown:logout"), icon: "arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.StudioCMS.routeMap.authLinks.logoutURL },
+      { label: t("user-dropdown:settings"), icon: "heroicons:user", value: Astro.locals.StudioCMS.routeMap.mainLinks.userProfile },
+      { label: t("user-dropdown:view-site"), icon: "heroicons:globe-alt", value: Astro.locals.StudioCMS.routeMap.mainLinks.baseSiteURL },
+      { label: t("user-dropdown:logout"), icon: "heroicons:arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.StudioCMS.routeMap.authLinks.logoutURL },
     ]}
     offset={8}
     >
@@ -244,7 +248,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 </script>
 
 <script>
-  import { DropdownHelper } from "studiocms:ui/components";
+  import { DropdownHelper } from "studiocms:ui/components/dropdown";
   import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
 
   function setup() {
@@ -294,14 +298,14 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
   .empty-placeholder-span {
     width: 100%;
     text-align: center;
-    color: hsl(var(--text-muted));
+    color: var(--text-muted);
     font-size: .875em;
   }
 
   .user-dropdown-trigger-container {
     width: calc(280px - 3rem);
     cursor: pointer;
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
     padding: .5rem;
     border-radius: .5rem;
     transition: all .15s ease;

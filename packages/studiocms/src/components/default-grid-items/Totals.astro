@@ -1,6 +1,7 @@
 ---
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { Card, Icon } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
 import { Effect } from '../../effect.js';
 import { allowedIdentifiers } from './utils.js';
 
@@ -20,7 +21,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
-                    <Icon name="document-text" height={24} width={24} />
+                    <Icon name="heroicons:document-text" height={24} width={24} />
                     <div class="totals-grid-item-text">
                         <span class="totals-grid-item-label">Total Pages</span>
                         <span>{totalPages.length}</span>
@@ -33,7 +34,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
-                    <Icon name="document" height={24} width={24} />
+                    <Icon name="heroicons:document" height={24} width={24} />
                     <div class="totals-grid-item-text">
                         <span class="totals-grid-item-label">Draft Pages</span>
                         <span>{totalDraftPages.length}</span>
@@ -46,7 +47,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
         <a href={Astro.locals.StudioCMS.routeMap.mainLinks.userManagement}>
             <Card class="totals-grid-item-card">
                 <div class="totals-grid-item-content">
-                    <Icon name="user-group" height={24} width={24} />
+                    <Icon name="heroicons:user-group" height={24} width={24} />
                     <div class="totals-grid-item-text">
                         <span class="totals-grid-item-label">Total Users</span>
                         <span>{totalUsers.length}</span>
@@ -64,14 +65,14 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
     }
 
     .totals-grid-item-card {
-        background-color: hsl(var(--background-step-2));
+        background-color: var(--background-step-2);
         width: 100%;
         height: 100%;
         transition: all 0.15s ease;
     }
 
     .totals-grid-item-card:hover {
-        background-color: hsl(var(--background-step-3));
+        background-color: var(--background-step-3);
     }
 
     .totals-grid-item-container {

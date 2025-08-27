@@ -2,7 +2,14 @@
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { SDKCore } from 'studiocms:sdk';
-import { Button, Card, Center, Group, Icon, Input, Modal, Select } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
+import { Select } from 'studiocms:ui/components/select';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import {
 	providerData,
@@ -84,11 +91,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
       <Group>
         <Button id="delete-user-modal-trigger" color="danger" type="submit" size="sm" disabled={disableDelete} data-action={Astro.locals.StudioCMS.routeMap.endpointLinks.users}>
-          <Icon name="trash-20-solid" width={20} height={20} />
+          <Icon name="heroicons:trash-20-solid" width={20} height={20} />
           <t-users-edit key="header-delete-button">{t('header-delete-button')}</t-users-edit>
         </Button>
         <Button id="edit-user-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-user-form">
-          <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+          <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
           <t-users-edit key="header-save-button">{t('header-save-button')}</t-users-edit>
         </Button>
       </Group>
@@ -111,7 +118,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
             <Input name="confirm-user-username" placeholder={`${user?.username.slice(0, user?.username.length-2)}...`} isRequired />
           
-            <span style="color: hsl(var(--danger-base))"><t-users-edit key="delete-modal-warning">{t('delete-modal-warning')}</t-users-edit></span>
+            <span style="color: var(--danger-base)"><t-users-edit key="delete-modal-warning">{t('delete-modal-warning')}</t-users-edit></span>
           </div>
         </Center>
       </Modal>
@@ -151,7 +158,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
     <div>
       <Button id="password-reset-link-trigger" variant={'outlined'} color={'danger'} size="sm" disabled={disableDelete}>
-        <Icon name="lock-open-20-solid" width={20} height={20} />
+        <Icon name="heroicons:lock-open-20-solid" width={20} height={20} />
         <t-users-edit key="password-reset-button">{t('password-reset-button')}</t-users-edit>
       </Button>
       <Modal id='password-reset-link-modal'>
@@ -211,11 +218,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
                 <div slot="header" class="token-list-item-header">
                     <div class="token-list-item-header-row">
                         <h4>
-                            <Icon name="key" width={24} height={24} />
+                            <Icon name="heroicons:key" width={24} height={24} />
                             {token.description}
                         </h4>
                         <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={token.userId} disabled>
-                            <Icon slot="start-content" name="trash" width={24} height={24} />
+                            <Icon slot="start-content" name="heroicons:trash" width={24} height={24} />
                             <t-users-edit key="api-tokens-delete-button">{t('api-tokens-delete-button')}</t-users-edit>
                         </Button>
                     </div>
@@ -254,13 +261,13 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
                 <div class="card-row">
                   <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
                   <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
-                    <Icon name="eye" width={24} height={24} class="card-icon" />
+                    <Icon name="heroicons:eye" width={24} height={24} class="card-icon" />
                   </Button>
                 </div>
               </Card>
             ))
           ) : (
-            <Card fullWidth style="background-color: hsl(var(--background-step-1));">
+            <Card fullWidth style="background-color: var(--background-step-1);">
               <Center><t-users-edit key="last-edit-pages-no-edits">{t('last-edit-pages-no-edits')}</t-users-edit></Center>
             </Card>
           )
@@ -308,7 +315,8 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
   </script>
 
   <script>
-    import { ModalHelper, toast } from 'studiocms:ui/components';
+    import { toast } from 'studiocms:ui/components/toaster';
+    import { ModalHelper } from 'studiocms:ui/components/modal';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
     
@@ -508,7 +516,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     height: 100%;
     width: 100%;
     padding-top: 1.5rem;
-    background-color: hsl(var(--background-base));
+    background-color: var(--background-base);
   }
 
   .placeholder-info {
@@ -523,7 +531,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
     p {
       font-size: 1.25rem;
-      color: hsl(var(--text-muted));
+      color: var(--text-muted);
     }
   }
 
@@ -550,7 +558,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     }
 
     code {
-        background-color: hsl(var(--background-step-3));
+        background-color: var(--background-step-3);
         padding: .25rem;
         border-radius: 4px;
     }
@@ -569,7 +577,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
       }
 
       code {
-        background-color: hsl(var(--background-step-3));
+        background-color: var(--background-step-3);
         padding: .25rem;
         border-radius: 4px;
       }
@@ -581,11 +589,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     border-collapse: collapse;
 
     tr {
-      border-bottom: 2px solid hsl(var(--background-step-1));
+      border-bottom: 2px solid var(--background-step-1);
     }
 
     tr:nth-child(even) {
-      background-color: hsl(var(--background-step-2));
+      background-color: var(--background-step-2);
     }
 
     tr:last-child {
@@ -606,7 +614,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
   .edit-card {
     display: flex;
     flex-direction: column;
-    background-color: hsl(var(--background-step-2));
+    background-color: var(--background-step-2);
     
     & .card-row {
       display: flex;
@@ -619,18 +627,18 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
       }
 
       & .card-date {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         font-size: .8rem;
       }
 
       & .card-description {
         font-size: 1rem;
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         line-clamp: 1;
       }
 
       & .card-icon {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
       }
     }
   }
@@ -638,7 +646,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
   .token-list-item {
     display: flex;
     flex-direction: column;
-    background-color: hsl(var(--background-step-2));
+    background-color: var(--background-step-2);
 
     .token-list-item-header {
       display: flex;
@@ -668,7 +676,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
         .created-at {
           font-size: 0.75rem;
-          color: hsl(var(--text-muted));
+          color: var(--text-muted);
         }
       }
     }

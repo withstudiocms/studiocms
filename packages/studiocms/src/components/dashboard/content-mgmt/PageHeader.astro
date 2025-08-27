@@ -1,7 +1,12 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { Button, Center, Group, Icon, Input, Modal } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Center } from 'studiocms:ui/components/center';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
 
 interface Props {
 	lang: UiLanguageKeys;
@@ -62,7 +67,7 @@ const currentMode = editPage
 <header class="page-header">
   <div class="page-title-container">
     <Button color='primary' id='nav-open' class='mobile-btn'>
-      <Icon name="bars-3" height={24} width={24} slot="start-content" />
+      <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
     </Button>
     <h1 class="page-title" data-link={Astro.locals.StudioCMS.routeMap.sdk.pages}>
       {currentMode === 'none' ? (
@@ -89,13 +94,13 @@ const currentMode = editPage
     { editPage && ( 
       <Group>
         <Button id="delete-page-modal-trigger" color="danger" type="submit" size="sm">
-            <Icon name="trash-20-solid" width={20} height={20} />
+            <Icon name="heroicons:trash-20-solid" width={20} height={20} />
             <t-content-header key="delete-button">
               {t('delete-button')}
             </t-content-header>
         </Button>
         <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-page-form">
-          <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+          <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
           <t-content-header key="save-button">
             {t('save-button')}
           </t-content-header>
@@ -126,7 +131,7 @@ const currentMode = editPage
            
             <Input name="slug-confirm" placeholder={`${pageSlug?.slice(0, pageSlug.length-2)}...`} isRequired />
             
-            <span style="color: hsl(var(--danger-base))"><t-content-header key="delete-modal-warning">
+            <span style="color: var(--danger-base)"><t-content-header key="delete-modal-warning">
             {t('delete-modal-warning')}
           </t-content-header></span>
           </div>
@@ -137,13 +142,13 @@ const currentMode = editPage
     { editFolder && ( 
       <Group>
         <Button id="delete-folder-modal-trigger" color="danger" type="submit" size="sm">
-          <Icon name="trash-20-solid" width={20} height={20} />
+          <Icon name="heroicons:trash-20-solid" width={20} height={20} />
           <t-content-header key="delete-button">
             {t('delete-button')}
           </t-content-header>
         </Button>
         <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-folder-form">
-          <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+          <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
           <t-content-header key="save-button">
             {t('save-button')}
           </t-content-header>
@@ -174,7 +179,7 @@ const currentMode = editPage
 
             <Input name="confirm-folder-name" placeholder={`${folderName.slice(0, folderName.length-2)}...`} isRequired />
           
-            <span style="color: hsl(var(--danger-base))"><t-content-header key="delete-modal-warning">
+            <span style="color: var(--danger-base)"><t-content-header key="delete-modal-warning">
             {t('delete-modal-warning')}
           </t-content-header></span>
           </div>
@@ -184,7 +189,7 @@ const currentMode = editPage
 
     { createFolder && ( 
       <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="create-folder-form">
-        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
           <t-content-header key="create-button">
             {t('create-button')}
           </t-content-header>
@@ -194,13 +199,13 @@ const currentMode = editPage
     {createPage && ( 
       <Group>
       <Button id="draft-button" variant="outlined" size="sm" color="primary" type="submit" form="page-create-form">
-        <Icon slot="start-content" name="document-text-20-solid" width={20} height={20} />
+        <Icon slot="start-content" name="heroicons:document-text-20-solid" width={20} height={20} />
           <t-content-header key="draft-button">
             {t('draft-button')}
           </t-content-header>
       </Button>
       <Button id="publish-button" variant="solid" size="sm"  color="primary" type="submit" form="page-create-form" disabled>
-        <Icon slot="start-content" name="check-20-solid" width={20} height={20} />
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
           <t-content-header key="publish-button">
             {t('publish-button')}
           </t-content-header>
@@ -233,8 +238,8 @@ const currentMode = editPage
 </script>
 
 <script>
-    import { ModalHelper } from 'studiocms:ui/components';
-    import { toast } from "studiocms:ui/components";
+    import { ModalHelper } from 'studiocms:ui/components/modal';
+    import { toast } from "studiocms:ui/components/toaster";
 
     const mode = (document.getElementById('current-mode-selector') as HTMLDivElement).dataset.mode;
 
@@ -445,7 +450,7 @@ const currentMode = editPage
     }
 
     code {
-        background-color: hsl(var(--background-step-3));
+        background-color: var(--background-step-3);
         padding: .25rem;
         border-radius: 4px;
     }

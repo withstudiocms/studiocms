@@ -62,7 +62,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 1,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Overview', icon: 'bolt' },
+						header: { title: 'Overview', icon: 'heroicons:bolt' },
 						body: {
 							html: '<totals></totals>',
 							components: {
@@ -75,7 +75,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 2,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Recently Updated Pages', icon: 'document-arrow-up' },
+						header: { title: 'Recently Updated Pages', icon: 'heroicons:document-arrow-up' },
 						body: {
 							html: '<recentlyupdatedpages></recentlyupdatedpages>',
 							components: {
@@ -90,7 +90,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 1,
 						variant: 'default',
 						requiresPermission: 'admin',
-						header: { title: 'Recently Signed Up Users', icon: 'user-group' },
+						header: { title: 'Recently Signed Up Users', icon: 'heroicons:user-group' },
 						body: {
 							html: '<recentlysignedupusers></recentlysignedupusers>',
 							components: {
@@ -105,7 +105,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 2,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Recently Created Pages', icon: 'document-plus' },
+						header: { title: 'Recently Created Pages', icon: 'heroicons:document-plus' },
 						body: {
 							html: '<recentlycreatedpages></recentlycreatedpages>',
 							components: {

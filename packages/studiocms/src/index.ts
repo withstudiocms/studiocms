@@ -4,11 +4,14 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@astrojs/db" preserve="true" />
+/// <reference types="@studiocms/ui/v/types" preserve="true" />
 /// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import fs from 'node:fs';
+import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
+import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
@@ -231,7 +234,15 @@ export const studiocms = defineIntegration({
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: ui({ noInjectCSS: true }) },
+						{
+							integration: ui({
+								noInjectCSS: true,
+								icons: {
+									flatcoloricons: flatColorIcons,
+									simpleicons: simpleIcons,
+								},
+							}),
+						},
 					];
 
 					if (newIntegrations.length > 0) {

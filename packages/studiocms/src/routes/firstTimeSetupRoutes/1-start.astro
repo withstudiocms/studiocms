@@ -1,15 +1,12 @@
 ---
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import {
-	Accordion,
-	AccordionItem,
-	Button,
-	Card,
-	Divider,
-	Input,
-	Select,
-} from 'studiocms:ui/components';
+import { Accordion, AccordionItem } from 'studiocms:ui/components/accordion';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
 import LoginPreview from '../../components/dashboard/configuration/LoginPreview.astro';
 import PageHeader from '../../components/first-time-setup/PageHeader.astro';
 import Layout from '../../layouts/FirstTimeSetupLayout.astro';
@@ -20,7 +17,7 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
 
     <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Step 1' }} />
 
-    <Card class='card' style="background-color: hsl(var(--background-step-1))" fullWidth>
+    <Card class='card' style="background-color: var(--background-step-1)" fullWidth>
 
         <div slot="header">
             <h2>Basic Site Information</h2>

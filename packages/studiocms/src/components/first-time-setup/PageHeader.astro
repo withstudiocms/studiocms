@@ -1,11 +1,12 @@
 ---
-import { Badge, type HeroIconName } from 'studiocms:ui/components';
+import { Badge } from 'studiocms:ui/components';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 
 interface Props {
 	title: string;
 	badge?: {
 		label: string;
-		icon?: HeroIconName;
+		icon?: AvailableIcons;
 	};
 }
 
@@ -14,7 +15,7 @@ const { title, badge } = Astro.props;
 <header class="page-header">
   <div class="page-title-container">
     <h1 class="page-title">{title}</h1>
-    { badge && <Badge label={badge.label} size="lg" /> }
+    { badge && <Badge label={badge.label} size="lg" icon={badge.icon} /> }
   </div>
   <div class="page-actions-container">
     <slot />

@@ -1,6 +1,8 @@
 ---
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
-import { Divider, Icon, User } from 'studiocms:ui/components';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Icon } from 'studiocms:ui/components/icon';
+import { User } from 'studiocms:ui/components/user';
 
 interface Props {
 	user: {
@@ -39,7 +41,7 @@ const userListItemHrefString = userListItemHref.toString();
         description={getLabelForPermissionLevel(user.permissionsData?.rank!)}
         loading="eager"
     />
-    <Icon name="chevron-right" width={24} height={24} />
+    <Icon name="heroicons:chevron-right" width={24} height={24} />
 </user-list-item>
 <Divider background={"background-step-1"} />
 

@@ -1,5 +1,6 @@
 ---
-import { Card, TabItem, Tabs } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { CoreWebVitals } from '../../consts.js';
 import SummaryCard from '../../dashboard-grid-items/SummaryCard.astro';
 import { buildPageRouteDataObject } from '../../utils/buildPageRouteDataObject';
@@ -140,12 +141,12 @@ const ratingText = {
     th {
         text-align: left;
         padding: .5rem;
-        border-bottom: 1px solid hsl(var(--border));
+        border-bottom: 1px solid var(--border);
     }
 
     td {
         padding: .5rem;
-        border-bottom: 1px solid hsl(var(--border));
+        border-bottom: 1px solid var(--border);
         background-color: inherit;
 
         span {
@@ -154,19 +155,19 @@ const ratingText = {
     }
 
     span.good {
-        color: hsl(var(--success-base));
+        color: var(--success-base);
     }
 
     span.needs-improvement {
-        color: hsl(var(--warning-base)); 
+        color: var(--warning-base); 
     }
 
     span.poor {
-        color: hsl(var(--danger-base));
+        color: var(--danger-base);
     }
 
     tr {
-        border-bottom: 1px solid hsl(var(--border));
+        border-bottom: 1px solid var(--border);
     }
 
 
@@ -175,11 +176,11 @@ const ratingText = {
     }
 
     tbody tr:nth-child(odd) {
-        background-color: hsl(var(--background-base));
+        background-color: var(--background-base);
     }
 
     tbody tr:nth-child(even) {
-        background-color: hsl(var(--background-step-1));
+        background-color: var(--background-step-1);
     }
 
 

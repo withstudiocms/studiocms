@@ -17,8 +17,8 @@
 	min-width: 0;
 	padding: 16px;
 	margin-right: 1rem;
-	background-color: hsl(var(--background-step-2)) !important;
-	border: 1px solid hsl(var(--border)) !important;
+	background-color: var(--background-step-2) !important;
+	border: 1px solid var(--border) !important;
 	border-radius: 0.25rem;
 	overflow-x: auto;
 }
@@ -49,16 +49,16 @@
 
 .line.diff.ins::after {
 	content: "+";
-	background-color: hsl(var(--success-flat-hover));
-	color: hsl(var(--success-base)) !important;
-	border-left: 2px solid hsl(var(--success-base));
+	background-color: var(--success-flat-hover);
+	color: var(--success-base) !important;
+	border-left: 2px solid var(--success-base);
 	font-family: monospace;
 }
 
 .line.diff.del::after {
 	content: "-";
-	background-color: hsl(var(--danger-flat-hover));
-	color: hsl(var(--danger-base)) !important;
-	border-left: 2px solid hsl(var(--danger-base));
+	background-color: var(--danger-flat-hover);
+	color: var(--danger-base) !important;
+	border-left: 2px solid var(--danger-base);
 	font-family: monospace;
 }

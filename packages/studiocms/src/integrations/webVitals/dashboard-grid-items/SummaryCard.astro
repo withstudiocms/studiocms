@@ -1,6 +1,6 @@
 ---
 import './metric.css';
-import { Icon } from 'studiocms:ui/components';
+import { Icon } from 'studiocms:ui/components/icon';
 import type { WebVitalsMetricType } from '../schemas.js';
 import type { WebVitalsMetricSummary } from '../types.js';
 import MetricCard from './MetricCard.astro';
@@ -36,7 +36,7 @@ const format =
                 {/* p75 marker */}
                 <span aria-hidden="true" class="p75-marker" class:list={[rating && ratingText[rating]]}>
                     <span class="marker-text">p75</span>
-                    <Icon name="chevron-down-16-solid" width={16} height={16} />
+                    <Icon name="heroicons:chevron-down-16-solid" width={16} height={16} />
                 </span>
                 {/* Distribution bar */}
                 <p class="distribution-bar">

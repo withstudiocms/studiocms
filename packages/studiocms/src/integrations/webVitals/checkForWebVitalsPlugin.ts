@@ -77,7 +77,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 								variant: 'default',
 								header: {
 									title: 'Core Web Vitals',
-									icon: 'chart-pie',
+									icon: 'heroicons:chart-pie',
 								},
 								body: {
 									html: '<corevitals></corevitals>',
@@ -96,7 +96,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 										es: 'Análisis y datos vitales',
 										fr: '',
 									},
-									icon: 'chart-pie',
+									icon: 'heroicons:chart-pie',
 									route: 'analytics',
 									description: 'View the Core Web Vitals and Analytics of your site.',
 									sidebar: 'single',

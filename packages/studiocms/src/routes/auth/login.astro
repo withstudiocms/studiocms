@@ -1,7 +1,11 @@
 ---
 import { authConfig, developerConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
-import { Button, Card, Center, Input, Modal } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
 import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders';
 import AuthLayout from '../../layouts/AuthLayout.astro';
 
@@ -141,13 +145,13 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
 <style>
     .forgot-password {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         font-size: 0.875rem;
         text-decoration: underline;
     }
 
     .forgot-password:hover {
-        color: hsl(var(--primary-hover));
+        color: var(--primary-hover);
         cursor: pointer;
     }
 
@@ -158,7 +162,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
     .demo-table td {
         padding: 0.5rem;
-        border-bottom: 1px solid hsl(var(--border));
+        border-bottom: 1px solid var(--border);
     }
 
     .demo-table td:first-child {
@@ -170,7 +174,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     }
 
     .demo-table tr:nth-child(odd) {
-        background-color: hsl(var(--background-step-1));
+        background-color: var(--background-step-1);
     }
 
     .form-header {
@@ -213,7 +217,8 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
 <script>
     import { formListener } from '../../components/auth/component-scripts/formListener.js';
-    import { ModalHelper, toast } from 'studiocms:ui/components';
+    import { ModalHelper } from 'studiocms:ui/components/modal';
+    import { toast } from 'studiocms:ui/components/toaster';
     const loginForm = document.getElementById('login-form') as HTMLFormElement;
 
     loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
