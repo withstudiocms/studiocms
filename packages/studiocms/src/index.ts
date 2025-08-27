@@ -395,7 +395,7 @@ export const studiocms = defineIntegration({
 					}
 
 					// Log all messages
-					logMessages(messages, options, logger);
+					await logMessages(messages, options, logger);
 
 					if (options.dbStartPage) {
 						integrationLogger(
@@ -412,9 +412,9 @@ export const studiocms = defineIntegration({
 					}
 				},
 				// BUILD: Log messages at the end of the build
-				'astro:build:done': ({ logger }) => {
+				'astro:build:done': async ({ logger }) => {
 					// Log messages at the end of the build
-					logMessages(messages, options, logger);
+					await logMessages(messages, options, logger);
 
 					if (options.features.developerConfig.demoMode !== false) {
 						integrationLogger(

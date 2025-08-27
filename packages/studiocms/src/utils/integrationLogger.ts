@@ -30,14 +30,14 @@ export function pluginLogger(id: string, logger: AstroIntegrationLogger): AstroI
 	return newLogger;
 }
 
-export function logMessages(
+export async function logMessages(
 	messages: Messages,
 	options: StudioCMSConfig,
 	logger: AstroIntegrationLogger
 ) {
 	// Log messages at the end of the build
 	for (const { label, message, logLevel } of messages) {
-		integrationLogger(
+		await integrationLogger(
 			{
 				logger: logger.fork(label),
 				logLevel,
