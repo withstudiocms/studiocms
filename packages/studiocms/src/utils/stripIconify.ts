@@ -1,11 +1,12 @@
 import type { IconifyJSON } from '@studiocms/ui/types';
 
 /**
- * Returns a new IconifyJSON object containing only the specified icons.
+ * Strips an Iconify JSON object to only include specified icons.
  *
- * @param src - The source IconifyJSON object containing all icons and metadata.
- * @param icons - An array of icon names to include in the resulting IconifyJSON.
- * @returns A new IconifyJSON object with only the specified icons and the original metadata.
+ * @param params - An object containing the source Iconify JSON and an array of icon names to retain.
+ * @param params.src - The original Iconify JSON object.
+ * @param params.icons - An array of icon names to retain in the stripped Iconify JSON.
+ * @returns A new Iconify JSON object containing only the specified icons.
  */
 export function stripIconify({ src, icons }: { src: IconifyJSON; icons: string[] }): IconifyJSON {
 	const { icons: allIcons, ...srcData } = src;
