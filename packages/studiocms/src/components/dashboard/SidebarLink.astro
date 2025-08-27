@@ -13,7 +13,7 @@ interface Props extends HTMLAttributes<'a'> {
 
 const { icon, class: className, ...props } = Astro.props;
 
-const activeIcon = `${icon}-solid`;
+const activeIcon = (icon.endsWith('-solid') ? icon : `${icon}-solid`) as AvailableIcons;
 
 const compId = crypto.randomUUID();
 ---
@@ -33,7 +33,7 @@ const compId = crypto.randomUUID();
     height={24}
   />
   <Icon
-    name={activeIcon as AvailableIcons}
+    name={activeIcon}
     id="selected-icon"
     class="sidebar-link-icon selected"
     width={24}

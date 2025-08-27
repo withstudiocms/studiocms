@@ -181,14 +181,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   }
 
   const itemTemplate = (item: SearchItem, searchTerm: string) => {
-    const url = item.type === 'folder' 
-      ? `${document.getElementById('inner-sidebar-items-search')?.dataset.editfolder}?folder=${item.id}&search=${searchTerm}`
-      : `${document.getElementById('inner-sidebar-items-search')?.dataset.editpage}/?edit=${item.id}&search=${searchTerm}`;
+    const base = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
+    const safeSearch = encodeURIComponent(searchTerm);
+    const safeId = encodeURIComponent(item.id);
+    const url = item.type === 'folder'
+      ? `${base?.dataset.editfolder}?folder=${safeId}&search=${safeSearch}`
+      : `${base?.dataset.editpage}/?edit=${safeId}&search=${safeSearch}`;
+    const safeName = DOMPurify.sanitize(item.name, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
     return `
-  <div id="search-selector" data-href=${url} class="inner-sidebar-link">
+  <div id="search-selector" data-href="${url}" class="inner-sidebar-link">
     ${ getIcon(item) }
     <span class="sidebar-link-text">
-      ${item.name}
+      ${safeName}
     </span>
   </div>
   `;
@@ -243,9 +247,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 
     console.log(`Search Results (${results.length}) `, results);
 
-    searchItems.innerHTML = results.map(({ item }) => {
-      return itemTemplate(item, searchTerm);
-    }).join('');
+    searchItems.innerHTML = DOMPurify.sanitize(
+      results.map(({ item }) => itemTemplate(item, searchTerm)).join('')
+    );
 
     document.getElementById('inner-sidebar-items')!.style.display = 'none';
     searchItems.style.display = 'block';

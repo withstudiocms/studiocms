@@ -22,7 +22,7 @@ const recentlyCreatedUsers = totalUsers
                             name={user.name}
                             avatar={user.avatar ?? undefined} 
                             description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}`} 
-                            loading='eager',
+                            loading='eager'
                             />
                         <Icon name="heroicons:eye" width={24} height={24} />
                     </div>

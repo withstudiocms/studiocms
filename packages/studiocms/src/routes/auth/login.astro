@@ -219,9 +219,11 @@ if (usernameAndPassword && SHOW_OAUTH) {
     import { formListener } from '../../components/auth/component-scripts/formListener.js';
     import { ModalHelper } from 'studiocms:ui/components/modal';
     import { toast } from 'studiocms:ui/components/toaster';
-    const loginForm = document.getElementById('login-form') as HTMLFormElement;
-
-    loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+    
+    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    if (loginForm) {
+        loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+    }
 
     const forgotPasswordLink = document.getElementById('forgot-password') as HTMLDivElement;
 

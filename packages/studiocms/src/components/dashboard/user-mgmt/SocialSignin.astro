@@ -21,8 +21,8 @@ const hasOAuthData = oAuthData && oAuthData.length > 0;
 const connectedAccounts: { provider: string }[] = [];
 
 if (hasOAuthData) {
-	for (const provider in oAuthData) {
-		connectedAccounts.push({ provider });
+	for (const { provider } of oAuthData ?? []) {
+		connectedAccounts.push({ provider: provider.toLowerCase() });
 	}
 }
 
@@ -98,7 +98,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
             align-items: stretch;
             justify-content: space-between !important;
             width: 100%;
-            margin-button: 1rem;
+            margin-bottom: 1rem;
             cursor: default;
 
             & .icon-and-label {

@@ -62,8 +62,6 @@ if (!userId) {
     const userId = resendButton.querySelector('div')!.dataset.userid;
     const url = resendButton.querySelector('div')!.dataset.url;
 
-    console.log(userId, url);
-
     if (!userId || !url) {
       return;
     }
