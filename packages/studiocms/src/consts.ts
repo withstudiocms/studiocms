@@ -333,17 +333,11 @@ export const STUDIOCMS_UI_OPTS: UiOptions = {
  * - The `icons` property is deeply merged, combining default and user-provided icons.
  */
 export function getUiOpts(userOpts?: Partial<UiOptions>): UiOptions {
-	const opts: UiOptions = {};
-
-	opts.noInjectCSS = userOpts?.noInjectCSS ?? STUDIOCMS_UI_OPTS?.noInjectCSS;
-	opts.customCss = userOpts?.customCss ?? STUDIOCMS_UI_OPTS?.customCss;
-
-	if (userOpts?.icons) {
-		opts.icons = {
-			...STUDIOCMS_UI_OPTS?.icons,
-			...userOpts.icons,
-		};
-	}
-
-	return opts;
+	const base = { ...STUDIOCMS_UI_OPTS };
+	const merged: UiOptions = {
+		...base,
+		...userOpts,
+		icons: userOpts?.icons ? { ...base.icons, ...userOpts.icons } : base.icons,
+	};
+	return merged;
 }

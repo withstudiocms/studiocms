@@ -55,8 +55,7 @@ const COMPONENT_STYLES = `
     --warning-base: hsl(48 96% 53%);
     --danger-base: hsl(339 97% 31%);
     --info-base: hsl(217 92% 52%);
-    --light: hsl(70);
-    --threshold: 50;
+    --light: 70;
 }
 
 [data-theme="light"] {
@@ -155,11 +154,13 @@ const COMPONENT_STYLES = `
 /* Click protection: Only enable pointer events when menu is ready */
 .cornerMenu.menu-ready .menu {
     pointer-events: all;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.1), 0 0 0 1px hsla(var(--primary-base), 0.2);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1),
+                0 0 0 1px color-mix(in hsl, var(--primary-base) 20%, transparent);
 }
 
 .cornerMenu.menu-ready .menu:hover {
-    box-shadow: 0 3px 7px rgba(0,0,0,0.2), 0 0 0 2px hsla(var(--primary-base), 0.4);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.2),
+                0 0 0 2px color-mix(in hsl, var(--primary-base) 40%, transparent);
 }
 
 /* Visual feedback for ignored clicks */
