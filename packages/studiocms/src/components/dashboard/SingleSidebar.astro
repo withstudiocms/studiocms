@@ -1,7 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
-import { Sidebar } from 'studiocms:ui/components';
+import { Sidebar } from 'studiocms:ui/components/sidebar';
 import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
@@ -16,7 +16,7 @@ const { currentUser, latestVersion } = Astro.props as Props;
 </Sidebar>
 
 <script>
-  import { SingleSidebarHelper } from "studiocms:ui/components";
+  import { SingleSidebarHelper } from "studiocms:ui/components/sidebar";
 
   function setupSidebar() {
     if (!document.getElementById('sui-sidebar')) return;

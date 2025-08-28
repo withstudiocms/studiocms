@@ -1,0 +1,14 @@
+---
+import { STUDIOCMS_THEME_COLOR } from '../../../consts.js';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="theme-color" content={STUDIOCMS_THEME_COLOR} />

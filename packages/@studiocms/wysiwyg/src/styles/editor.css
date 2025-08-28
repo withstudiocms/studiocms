@@ -3,12 +3,12 @@
 }
 
 .save-indicator {
-	stroke: hsl(var(--text-normal));
+	stroke: var(--text-normal);
 	transition: stroke 150ms ease-in-out;
 }
 
 .save-indicator.dirty {
-	stroke: hsl(var(--warning-base));
+	stroke: var(--warning-base);
 }
 
 .save-indicator .dirty-indicator {
@@ -25,7 +25,7 @@
 	height: 100%;
 	min-height: 80vh;
 	overflow: hidden;
-	border: 2px solid hsl(var(--border));
+	border: 2px solid var(--border);
 	border-radius: var(--radius-md);
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
@@ -49,24 +49,24 @@
 
 /* Primary color for the background */
 .gjs-one-bg {
-	background-color: hsl(var(--background-step-3));
+	background-color: var(--background-step-3);
 }
 
 /* Secondary color for the text color */
 .gjs-two-color {
-	color: hsl(var(--text-normal));
+	color: var(--text-normal);
 }
 
 /* Tertiary color for the background */
 .gjs-three-bg {
-	background-color: hsl(var(--background-base));
-	color: hsl(var(--text-muted));
+	background-color: var(--background-base);
+	color: var(--text-muted);
 }
 
 /* Quaternary color for the text color */
 .gjs-four-color,
 .gjs-four-color-h:hover {
-	color: hsl(var(--primary-base));
+	color: var(--primary-base);
 }
 
 [data-tooltip]::after {

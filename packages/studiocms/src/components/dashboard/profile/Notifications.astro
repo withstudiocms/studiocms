@@ -3,8 +3,11 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { Mailer } from 'studiocms:mailer';
 import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/types';
-import { Button, Card, Icon, Toggle } from 'studiocms:ui/components';
-import { Effect } from 'effect';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Toggle } from 'studiocms:ui/components/toggle';
+import { Effect } from '../../../effect.js';
 
 interface Props {
 	currentUser: UserSessionData | null;
@@ -57,7 +60,7 @@ if (enableMailer) {
                 size='sm'
                 disabled={!isNotificationsEnabled}
                 >
-                <Icon slot="start-content" name="check" width={24} height={24} />
+                <Icon slot="start-content" name="heroicons:check" width={24} height={24} />
                 Save
             </Button>
 
@@ -108,7 +111,7 @@ if (enableMailer) {
 </Card>
 
 <script>
-    import { toast } from 'studiocms:ui/components';
+    import { toast } from 'studiocms:ui/components/toaster';
     import { getEnabledNotificationCheckboxes, formatNotificationOptions } from 'studiocms:notifier/client'
 
     const form = document.getElementById('notifications-form') as HTMLFormElement;

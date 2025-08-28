@@ -1,7 +1,9 @@
 ---
 import { FormattedDate } from 'studiocms:components';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { Badge, Card, Center } from 'studiocms:ui/components';
+import { Badge } from 'studiocms:ui/components/badge';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
 import { allowedIdentifiers, sortByDate, withinLast30Days } from './utils.js';
 
 // Get all pages and users from the database
@@ -33,8 +35,8 @@ const recentlyUpdatedPages = totalPages
         </Card>
       ))
     ) : (
-      <Card fullWidth style="background-color: hsl(var(--background-step-2));">
-        <Center><span style="color: hsl(var(--text-muted));">No recently updated pages found.</span></Center>
+      <Card fullWidth style="background-color: var(--background-step-2);">
+        <Center><span style="color: var(--text-muted);">No recently updated pages found.</span></Center>
       </Card>
     )
   }
@@ -51,7 +53,7 @@ const recentlyUpdatedPages = totalPages
   .recently-updated-page-card {
     display: flex;
     flex-direction: column;
-    background-color: hsl(var(--background-step-2));
+    background-color: var(--background-step-2);
     text-decoration: none;
     color: initial;
     transition: all .15s ease;
@@ -74,27 +76,27 @@ const recentlyUpdatedPages = totalPages
       }
 
       & .card-date {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         font-size: .8rem;
       }
 
       & .card-description {
         font-size: 1rem;
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         line-clamp: 1;
       }
 
       & .card-icon {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
       }
     }
   }
 
   .recently-updated-page-card .card-title {
-    color: hsl(var(--text-normal));
+    color: var(--text-normal);
   }
 
   .recently-updated-page-card:hover {
-    background-color: hsl(var(--background-step-3)) !important;
+    background-color: var(--background-step-3) !important;
   }
 </style>

@@ -2,7 +2,7 @@ import type { UiLanguageKeys } from 'studiocms:i18n';
 import { makeDashboardRoute, StudioCMSRoutes } from 'studiocms:lib';
 import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
-import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import { defaultLang } from '../../virtuals/i18n/config.js';
 
 /**
@@ -11,7 +11,7 @@ import { defaultLang } from '../../virtuals/i18n/config.js';
 interface SidebarLink {
 	title?: string;
 	key?: string;
-	icon: HeroIconName;
+	icon: AvailableIcons;
 	href: string;
 }
 
@@ -56,7 +56,7 @@ function filterAndProcessPages(
 
 	for (const { title: t, icon: ico, slug, requiredPermissions } of pages) {
 		const href = makeDashboardRoute(slug);
-		const icon = ico || 'cube-transparent';
+		const icon = (ico || 'heroicons:cube-transparent') as AvailableIcons;
 		const title = t[lang] || t[defaultLang];
 
 		if (admin) {
@@ -113,7 +113,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	const baseLinks: SidebarLink[] = [
 		{
 			key: 'dashboard-link-label',
-			icon: 'home',
+			icon: 'heroicons:home',
 			href: StudioCMSRoutes.mainLinks.dashboardIndex,
 		},
 		...filterAndProcessPages(userPages, false, ['none', 'visitor'], lang),
@@ -123,7 +123,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	const editorLinks: SidebarLink[] = [
 		{
 			key: 'content-management-label',
-			icon: 'pencil-square',
+			icon: 'heroicons:pencil-square',
 			href: StudioCMSRoutes.mainLinks.contentManagement,
 		},
 		...filterAndProcessPages(userPages, false, ['editor'], lang),
@@ -133,7 +133,7 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	const adminLinks: SidebarLink[] = [
 		{
 			key: 'user-management-label',
-			icon: 'user-group',
+			icon: 'heroicons:user-group',
 			href: StudioCMSRoutes.mainLinks.userManagement,
 		},
 		...filterAndProcessPages(adminPages, true, ['admin'], lang),
@@ -143,12 +143,12 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 	const ownerLinks: SidebarLink[] = [
 		{
 			key: 'site-configuration-label',
-			icon: 'cog-6-tooth',
+			icon: 'heroicons:cog-6-tooth',
 			href: StudioCMSRoutes.mainLinks.siteConfiguration,
 		},
 		{
 			key: 'mailer-configuration-label',
-			icon: 'inbox',
+			icon: 'heroicons:inbox',
 			href: StudioCMSRoutes.mainLinks.smtpConfiguration,
 		},
 		...filterAndProcessPages(adminPages, true, ['owner'], lang),

@@ -1,7 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
-import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components';
+import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components/sidebar';
 import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
@@ -22,7 +22,7 @@ const { currentUser, latestVersion } = Astro.props as Props;
 </SuiDoubleSidebar>
 
 <script>
-  import { DoubleSidebarHelper } from "studiocms:ui/components";
+  import { DoubleSidebarHelper } from "studiocms:ui/components/sidebar";
 
   if (document.getElementById('sui-sidebars')) {
     const sidebar = new DoubleSidebarHelper();

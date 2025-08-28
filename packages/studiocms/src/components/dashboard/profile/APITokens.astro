@@ -3,7 +3,12 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { Button, Card, Center, Icon, Input, Modal } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
 
 interface Props {
 	userSession: UserSessionData | null;
@@ -36,7 +41,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                 color='primary'
                 size='sm'
                 >
-                <Icon slot="start-content" name="plus" width={24} height={24} />
+                <Icon slot="start-content" name="heroicons:plus" width={24} height={24} />
                 <t-profile-tokens key="api-tokens-create">
                     {t('api-tokens-create')}
                 </t-profile-tokens>
@@ -53,11 +58,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                 <div slot="header" class="token-list-item-header">
                     <div class="token-list-item-header-row">
                         <h4>
-                            <Icon name="key" width={24} height={24} />
+                            <Icon name="heroicons:key" width={24} height={24} />
                             {token.description}
                         </h4>
                         <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={user.id} disabled>
-                            <Icon slot="start-content" name="trash" width={24} height={24} />
+                            <Icon slot="start-content" name="heroicons:trash" width={24} height={24} />
                             <t-profile-tokens key="api-tokens-delete-button">{t('api-tokens-delete-button')}</t-profile-tokens>
                         </Button>
                     </div>
@@ -137,7 +142,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 </script>
 
 <script>
-    import { ModalHelper, toast } from 'studiocms:ui/components';
+    import { ModalHelper } from 'studiocms:ui/components/modal';
+    import { toast } from 'studiocms:ui/components/toaster';
 
     const createAPITokenModal = new ModalHelper('create-api-token-modal', 'create-api-token');
     const createTokenResponseModal = new ModalHelper('create-token-response-modal');
@@ -260,13 +266,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         gap: .5rem;
 
         .description {
-            color: hsl(var(--text-muted));
+            color: var(--text-muted);
         }
 
         .token-list-item {
             display: flex;
             flex-direction: column;
-            background-color: hsl(var(--background-step-2));
+            background-color: var(--background-step-2);
 
             .token-list-item-header {
                 display: flex;
@@ -296,7 +302,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
                     .created-at {
                         font-size: 0.75rem;
-                        color: hsl(var(--text-muted));
+                        color: var(--text-muted);
                     }
                 }
             }

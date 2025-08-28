@@ -3,7 +3,11 @@ import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-import { Card, Divider, Input, Select, Toggle } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { Toggle } from 'studiocms:ui/components/toggle';
 import LoginPreview from './LoginPreview.astro';
 
 interface Props {
@@ -88,7 +92,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         <div class="grid-items-container">
             {
                 gridItemOptions.map(({ enabled, label, name }) => (
-                    <Card style="background-color: hsl(var(--background-step-2));">
+                    <Card style="background-color: var(--background-step-2);">
                         <Toggle {label} {name} color='primary' defaultChecked={enabled} />
                     </Card>
                 ))
@@ -147,61 +151,59 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 </script>
 
 <script>
-    import { toast } from "studiocms:ui/components";
+    import { toast } from "studiocms:ui/components/toaster";
         const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
 
         configForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const formData = new FormData(configForm);
-
-            // Get dashboard grid items
-            const gridItems = Array.from(configForm.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>).map((input) => {
-                return {
+            try {
+                const formData = new FormData(configForm);
+                // Scope to grid container to avoid unrelated checkboxes
+                const gridItems = Array.from(document.querySelectorAll('.grid-items-container input[type="checkbox"]') as NodeListOf<HTMLInputElement>).map((input) => ({
                     name: input.name,
                     enabled: input.checked,
+                }));
+                const enabledGridItems = gridItems.filter((item) => item.enabled).map((item) => item.name);
+                const diffPerPageRaw = formData.get('diff-per-page') as string;
+                const diffPerPageParsed = Number.parseInt(diffPerPageRaw, 10);
+                const data = {
+                    title: formData.get('site-title') as string,
+                    description: formData.get('site-description') as string,
+                    defaultOgImage: formData.get('default-og-image') ?? null,
+                    siteIcon: formData.get('site-icon') ?? null,
+                    loginPageBackground: formData.get('login-page-background') as string,
+                    loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
+                    enableDiffs: formData.get('diff-enabled') === 'true',
+                   diffPerPage: Number.isNaN(diffPerPageParsed) ? 10 : diffPerPageParsed,
+                    gridItems: enabledGridItems,
+                    enableMailer: formData.get('enable-mailer') === 'true',
+                    hideDefaultIndex: formData.get('hide-default-index') === 'true'
+                };
+                const response = await fetch(configForm.action, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const res: any = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    toast({
+                        title: 'Error',
+                        description: res?.error || res?.message || 'Request failed',
+                        type: 'danger'
+                    });
+                    return;
                 }
-            });
-
-            const enabledGridItems = gridItems.filter((item) => item.enabled).map((item) => item.name);
-
-            const data = {
-                title: formData.get('site-title') as string,
-                description: formData.get('site-description') as string,
-                defaultOgImage: formData.get('default-og-image') ?? null,
-                siteIcon: formData.get('site-icon') ?? null,
-                loginPageBackground: formData.get('login-page-background') as string,
-                loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
-                enableDiffs: formData.get('diff-enabled') === 'true',
-                diffPerPage: parseInt(formData.get('diff-per-page') as string),
-                gridItems: enabledGridItems,
-                enableMailer: formData.get('enable-mailer') === 'true',
-                hideDefaultIndex: formData.get('hide-default-index') === 'true'
-            }
-
-            const response = await fetch(configForm.action, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            const res = await response.json();
-
-            if (response.status !== 200) {
-                toast({
-                    title: 'Error',
-                    description: res.error,
-                    type: 'danger'
-                })
-            }
-
-            if (response.status === 200) {
                 toast({
                     title: 'Success',
-                    description: res.message,
+                    description: res?.message || 'Configuration saved',
                     type: 'success'
-                })
+                });
+            } catch (err) {
+                toast({
+                    title: 'Network error',
+                    description: (err as Error)?.message ?? 'Unexpected error',
+                    type: 'danger'
+                });
             }
         });
 </script>

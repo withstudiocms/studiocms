@@ -2,7 +2,12 @@
 import { useTranslations } from 'studiocms:i18n';
 import { Mailer } from 'studiocms:mailer';
 import { SDKCore } from 'studiocms:sdk';
-import { Button, Card, Icon, Input, Select, Toggle } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { Toggle } from 'studiocms:ui/components/toggle';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import { Effect, genLogger, runEffect } from '../../effect.js';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -56,7 +61,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
       >
         <Icon
           slot="start-content"
-          name="check-20-solid"
+          name="heroicons:check-20-solid"
           width={20}
           height={20}
         />
@@ -205,7 +210,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
         >
           <Icon
             slot="start-content"
-            name="inbox-20-solid"
+            name="heroicons:inbox-20-solid"
             width={20}
             height={20}
           />
@@ -250,7 +255,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
         >
           <Icon
             slot="start-content"
-            name="check-20-solid"
+            name="heroicons:check-20-solid"
             width={20}
             height={20}
           />
@@ -262,7 +267,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
 </Layout>
 
 <script>
-  import { toast } from "studiocms:ui/components";
+  import { toast } from "studiocms:ui/components/toaster";
 
   const smtpConfigForm = document.getElementById(
     "smtp-config-form",

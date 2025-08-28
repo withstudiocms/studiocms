@@ -3,7 +3,10 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
-import { Button, Card, Center, Icon } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Icon } from 'studiocms:ui/components/icon';
 import { providerData } from './oAuthButtonProviders.js';
 
 interface Props {
@@ -73,7 +76,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                                 <Fragment set:html={image} />
                                 <span>{label}</span>
                             </div>
-                            <Icon name="minus-circle" width={24} height={24} />
+                            <Icon name="heroicons:minus-circle" width={24} height={24} />
                         </Button>
                     ))
                 }
@@ -105,7 +108,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                                 <Fragment set:html={image} />
                                 <span>{label}</span>
                             </div>
-                            <Icon name="plus-circle" width={24} height={24} />
+                            <Icon name="heroicons:plus-circle" width={24} height={24} />
                         </Button>
                     ))
                 }
@@ -161,7 +164,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
     }
 
     .social-signin-bg {
-        background-color: hsl(var(--background-step-1));
+        background-color: var(--background-step-1);
         height: auto;
     }
 
@@ -170,7 +173,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         align-items: stretch;
         justify-content: space-between !important;
         width: 100%;
-        margin-button: 1rem;
+        margin-bottom: 1rem;
     }
 
     .icon-and-label {

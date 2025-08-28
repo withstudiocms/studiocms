@@ -1,6 +1,8 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { Button, Card, Center } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
 import { providerData } from '../profile/oAuthButtonProviders.js';
 
 interface Props {
@@ -19,8 +21,8 @@ const hasOAuthData = oAuthData && oAuthData.length > 0;
 const connectedAccounts: { provider: string }[] = [];
 
 if (hasOAuthData) {
-	for (const provider in oAuthData) {
-		connectedAccounts.push({ provider });
+	for (const { provider } of oAuthData ?? []) {
+		connectedAccounts.push({ provider: provider.toLowerCase() });
 	}
 }
 
@@ -81,7 +83,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 
 <style>
     .social-signin-bg {
-        background-color: hsl(var(--background-step-1));
+        background-color: var(--background-step-1);
         height: auto;
         width: auto;
 
@@ -96,7 +98,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
             align-items: stretch;
             justify-content: space-between !important;
             width: 100%;
-            margin-button: 1rem;
+            margin-bottom: 1rem;
             cursor: default;
 
             & .icon-and-label {

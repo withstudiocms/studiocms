@@ -1,13 +1,13 @@
-import type { HeroIconName } from 'studiocms:ui/components';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 
 export const ratingIcons: {
-	good: HeroIconName;
-	'needs-improvement': HeroIconName;
-	poor: HeroIconName;
+	good: AvailableIcons;
+	'needs-improvement': AvailableIcons;
+	poor: AvailableIcons;
 } = {
-	good: 'check-circle',
-	'needs-improvement': 'exclamation-circle',
-	poor: 'x-circle',
+	good: 'heroicons:check-circle',
+	'needs-improvement': 'heroicons:exclamation-circle',
+	poor: 'heroicons:x-circle',
 };
 
 export const ratingText = {

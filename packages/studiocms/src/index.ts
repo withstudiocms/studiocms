@@ -4,6 +4,7 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@astrojs/db" preserve="true" />
+/// <reference types="@studiocms/ui/v/types" preserve="true" />
 /// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
@@ -21,6 +22,7 @@ import { loadEnv } from 'vite';
 import {
 	AstroConfigImageSettings,
 	AstroConfigViteSettings,
+	getUiOpts,
 	makeDashboardRoute,
 	routesDir,
 } from './consts.js';
@@ -40,7 +42,7 @@ import {
 import type { Messages } from './types.js';
 import { addIntegrationArray } from './utils/addIntegrationArray.js';
 import { getLatestVersion } from './utils/getLatestVersion.js';
-import { integrationLogger } from './utils/integrationLogger.js';
+import { integrationLogger, logMessages } from './utils/integrationLogger.js';
 import { readJson } from './utils/jsonUtils.js';
 import {
 	buildDefaultOnlyVirtual,
@@ -231,7 +233,7 @@ export const studiocms = defineIntegration({
 					// Setup StudioCMS Integrations Array (Default Integrations)
 					const integrations = [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: ui({ noInjectCSS: true }) },
+						{ integration: ui(getUiOpts()) },
 					];
 
 					if (newIntegrations.length > 0) {
@@ -393,16 +395,7 @@ export const studiocms = defineIntegration({
 					}
 
 					// Log all messages
-					for (const { label, message, logLevel } of messages) {
-						integrationLogger(
-							{
-								logger: l.fork(label),
-								logLevel,
-								verbose: logLevel === 'info' ? options.verbose : true,
-							},
-							message
-						);
-					}
+					await logMessages(messages, options, logger);
 
 					if (options.dbStartPage) {
 						integrationLogger(
@@ -419,18 +412,9 @@ export const studiocms = defineIntegration({
 					}
 				},
 				// BUILD: Log messages at the end of the build
-				'astro:build:done': ({ logger }) => {
+				'astro:build:done': async ({ logger }) => {
 					// Log messages at the end of the build
-					for (const { label, message, logLevel } of messages) {
-						integrationLogger(
-							{
-								logger: logger.fork(label),
-								logLevel,
-								verbose: logLevel === 'info' ? options.verbose : true,
-							},
-							message
-						);
-					}
+					await logMessages(messages, options, logger);
 
 					if (options.features.developerConfig.demoMode !== false) {
 						integrationLogger(

@@ -2,7 +2,10 @@
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { SDKCore } from 'studiocms:sdk';
-import { Button, Card, Group, Input } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Group } from 'studiocms:ui/components/group';
+import { Input } from 'studiocms:ui/components/input';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import { Effect, genLogger, runEffect } from '../../../effect.js';
@@ -174,7 +177,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await runEffect(
 </Layout>
 
 <script>
-  import { toast } from "studiocms:ui/components";
+  import { toast } from "studiocms:ui/components/toaster";
 
   const revertMetaData = document.getElementById(
     "revert-metadata",
@@ -338,11 +341,11 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await runEffect(
     border-collapse: collapse;
 
     tr {
-      border-bottom: 2px solid hsl(var(--background-step-2));
+      border-bottom: 2px solid var(--background-step-2);
     }
 
     tr:nth-child(even) {
-      background-color: hsl(var(--background-step-2));
+      background-color: var(--background-step-2);
     }
 
     tr:last-child {
@@ -354,7 +357,7 @@ const [{ data: page }, metaDataChanges, diffContentHTML] = await runEffect(
     }
 
     td:last-child {
-      border-left: 2px solid hsl(var(--background-step-3));
+      border-left: 2px solid var(--background-step-3);
     }
   }
 </style>

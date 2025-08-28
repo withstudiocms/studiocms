@@ -1,4 +1,4 @@
-import type { HeroIconName } from '@studiocms/ui/components/Icon/iconType.js';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
@@ -267,7 +267,7 @@ const BaseDashboardPagePropsSchema = z.object({
 	 * @default 'cube-transparent'
 	 * @optional
 	 */
-	icon: z.custom<HeroIconName>().default('cube-transparent').optional(),
+	icon: z.string().default('heroicons:cube-transparent').optional(),
 	/**
 	 * The required permissions to access the page
 	 */
@@ -649,7 +649,7 @@ export interface GridItemInput {
 		 * The icon of the header.
 		 * Optional.
 		 */
-		icon?: HeroIconName;
+		icon?: AvailableIcons;
 	};
 
 	/**
@@ -713,7 +713,7 @@ export interface GridItemUsable {
 		/**
 		 * Optional. The icon of the header.
 		 */
-		icon?: HeroIconName;
+		icon?: AvailableIcons;
 	};
 
 	/**

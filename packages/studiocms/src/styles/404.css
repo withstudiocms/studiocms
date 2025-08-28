@@ -46,7 +46,7 @@
 			align-items: center;
 			justify-content: center;
 			text-align: center;
-			color: hsl(var(--text-normal));
+			color: var(--text-normal);
 		}
 	}
 }

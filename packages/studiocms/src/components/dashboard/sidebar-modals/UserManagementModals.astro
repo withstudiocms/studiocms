@@ -1,5 +1,10 @@
 ---
-import { Button, Center, Icon, Input, Modal, Select } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Center } from 'studiocms:ui/components/center';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
+import { Select } from 'studiocms:ui/components/select';
 ---
 <Modal
   id='create-new-user-modal'
@@ -51,7 +56,7 @@ import { Button, Center, Icon, Input, Modal, Select } from 'studiocms:ui/compone
       <div class="link-container">
         <code id="invite-response-placeholder"></code>
         <Button color="primary" size="sm" class="copy-btn">
-          <Icon name="document-duplicate-20-solid" width={20} height={20} />
+          <Icon name="heroicons:document-duplicate-20-solid" width={20} height={20} />
         </Button>
       </div>
     </div>
@@ -70,7 +75,7 @@ import { Button, Center, Icon, Input, Modal, Select } from 'studiocms:ui/compone
     }
 
     code {
-      background-color: hsl(var(--background-step-3));
+      background-color: var(--background-step-3);
       padding: .25rem;
       border-radius: 4px;
     }

@@ -1,7 +1,11 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
-import { Button, Card, Group, Icon, Input } from 'studiocms:ui/components';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
 
 interface Props {
 	currentUser: UserSessionData | null;
@@ -23,13 +27,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         <div class="form-header">
             <Group>
                 <Button id="refresh-avatar" size='sm' variant={'outlined'} color={'info'} data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.profile}>
-                    <Icon slot="start-content" name="user-circle" width={24} height={24} />
+                    <Icon slot="start-content" name="heroicons:user-circle" width={24} height={24} />
                     <t-profile-basic key="sync-with-libravatar">
                         {t('sync-with-libravatar')}
                     </t-profile-basic>
                 </Button>
                 <Button type='submit' size='sm' variant={'solid'} color='primary'>
-                    <Icon slot="start-content" name="check" width={24} height={24} />
+                    <Icon slot="start-content" name="heroicons:check" width={24} height={24} />
                     <t-profile-basic key="basic-info-save-button">
                         {t('basic-info-save-button')}
                     </t-profile-basic>
@@ -80,7 +84,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 
 <script>
-    import { toast } from "studiocms:ui/components";
+    import { toast } from "studiocms:ui/components/toaster";
 
     const syncAvatar = document.getElementById('refresh-avatar') as HTMLButtonElement;
     const syncUrl = syncAvatar.dataset.url as string;

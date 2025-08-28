@@ -1,6 +1,6 @@
 .TinyMDE {
-	background-color: hsl(var(--background-step-2)) !important;
-	color: hsl(var(--text-normal)) !important;
+	background-color: var(--background-step-2) !important;
+	color: var(--text-normal) !important;
 	font-size: 16px !important;
 	line-height: 24px !important;
 	outline: none !important;
@@ -8,9 +8,9 @@
 	height: 100% !important;
 	border-bottom-left-radius: 8px !important;
 	border-bottom-right-radius: 8px !important;
-	border-right: 2px solid hsl(var(--border)) !important;
-	border-bottom: 2px solid hsl(var(--border)) !important;
-	border-left: 2px solid hsl(var(--border)) !important;
+	border-right: 2px solid var(--border) !important;
+	border-bottom: 2px solid var(--border) !important;
+	border-left: 2px solid var(--border) !important;
 	overflow-y: auto;
 	overflow-x: hidden;
 
@@ -23,14 +23,14 @@
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: hsl(var(--default-active));
+		background-color: var(--default-active);
 		border: 4px solid transparent;
 		background-clip: content-box;
 		border-radius: 99px;
 	}
 
 	&::-webkit-scrollbar-thumb:hover {
-		background-color: hsl(var(--default-hover));
+		background-color: var(--default-hover);
 	}
 }
 
@@ -73,19 +73,19 @@
 .TMCode {
 	font-family: monospace !important;
 	font-size: 0.9em !important;
-	background-color: hsl(var(--background-step-3)) !important;
+	background-color: var(--background-step-3) !important;
 }
 
 .TMCodeFenceBacktickOpen,
 .TMCodeFenceTildeOpen {
-	border-bottom: 1px solid hsl(var(--border)) !important;
+	border-bottom: 1px solid var(--border) !important;
 	font-family: monospace !important;
 	font-size: 0.9em !important;
 }
 
 .TMCodeFenceBacktickClose,
 .TMCodeFenceTildeClose {
-	border-top: 1px solid hsl(var(--border)) !important;
+	border-top: 1px solid var(--border) !important;
 	font-family: monospace !important;
 	font-size: 0.9em !important;
 }
@@ -95,19 +95,19 @@
 }
 
 .TMCode {
-	border: 1px solid hsl(var(--border)) !important;
+	border: 1px solid var(--border) !important;
 	border-radius: 2px !important;
 }
 
 .TMBlockquote {
 	font-style: italic !important;
-	border-left: 2px solid hsl(var(--border)) !important;
+	border-left: 2px solid var(--border) !important;
 	padding-left: 10px !important;
 	margin-left: 10px !important;
 }
 
 .TMMark {
-	color: hsl(var(--text-muted)) !important;
+	color: var(--text-muted) !important;
 }
 
 .TMMark_TMH1,
@@ -163,7 +163,7 @@
 	position: absolute !important;
 	bottom: 50% !important;
 	left: 40% !important;
-	border-bottom: 2px solid hsl(var(--border)) !important;
+	border-bottom: 2px solid var(--border) !important;
 	width: 20% !important;
 	z-index: 0 !important;
 }
@@ -180,9 +180,9 @@
 }
 
 .TMCommandBar {
-	background-color: hsl(var(--background-step-3)) !important;
+	background-color: var(--background-step-3) !important;
 	height: 24px !important;
-	border: 2px solid hsl(var(--border)) !important;
+	border: 2px solid var(--border) !important;
 	box-sizing: content-box !important;
 	display: flex !important;
 	-webkit-user-select: none !important;
@@ -206,8 +206,8 @@
 	height: 24px !important;
 	padding: 3px !important;
 	margin-right: 4px !important;
-	color: hsl(var(--text-muted)) !important;
-	fill: hsl(var(--text-muted)) !important;
+	color: var(--text-muted) !important;
+	fill: var(--text-muted) !important;
 	text-align: center !important;
 	cursor: pointer !important;
 	vertical-align: middle !important;
@@ -229,34 +229,34 @@
 	margin-left: 4px !important;
 	margin-right: 8px !important;
 	width: 0px !important;
-	border-left: 1px solid hsl(var(--border)) !important;
-	border-right: 1px solid hsl(var(--border)) !important;
+	border-left: 1px solid var(--border) !important;
+	border-right: 1px solid var(--border) !important;
 }
 
 .TMCommandButton_Active {
 	font-weight: bold !important;
-	color: hsl(var(--text-inverted)) !important;
-	background-color: hsl(var(--primary-active)) !important;
-	fill: hsl(var(--text-inverted)) !important;
+	color: var(--text-inverted) !important;
+	background-color: var(--primary-active) !important;
+	fill: var(--text-inverted) !important;
 }
 
 .TMCommandButton_Inactive {
-	background-color: hsl(var(--background-step-3)) !important;
-	fill: hsl(var(--text-normal)) !important;
-	color: hsl(var(--text-normal)) !important;
+	background-color: var(--background-step-3) !important;
+	fill: var(--text-normal) !important;
+	color: var(--text-normal) !important;
 }
 
 .TMCommandButton_Disabled {
-	color: hsl(var(--text-muted)) !important;
-	fill: hsl(var(--text-muted)) !important;
+	color: var(--text-muted) !important;
+	fill: var(--text-muted) !important;
 }
 
 @media (hover: hover) {
 	.TMCommandButton_Active:hover,
 	.TMCommandButton_Disabled:hover,
 	.TMCommandButton_Inactive:hover {
-		background-color: hsl(var(--primary-hover)) !important;
-		fill: hsl(var(--text-inverted)) !important;
-		color: hsl(var(--text-inverted)) !important;
+		background-color: var(--primary-hover) !important;
+		fill: var(--text-inverted) !important;
+		color: var(--text-inverted) !important;
 	}
 }

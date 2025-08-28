@@ -1,7 +1,7 @@
 ---
 import changelog from 'studiocms:changelog';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
-import { Modal } from 'studiocms:ui/components';
+import { Modal } from 'studiocms:ui/components/modal';
 import currentVersion from 'studiocms:version';
 import { studioCMSSocials } from '../../../consts.js';
 import { parseMarkdown } from '../../../utils/tinyMDParser.js';
@@ -116,25 +116,25 @@ to allow for more information on a slightly bigger modal.
         font-size: 1rem;
 
         .read-more-text {
-            color: hsl(var(--text-muted));
+            color: var(--text-muted);
             text-align: end;
             font-weight: 400;
             cursor: pointer;
         }
 
         .read-more-text:hover {
-            color: hsl(var(--primary-base));
+            color: var(--primary-base);
             text-decoration: underline;
         }
 
         a {
-            color: hsl(var(--text-muted));
+            color: var(--text-muted);
             text-decoration: none;
             font-weight: 700;
         }
 
         a:hover {
-            color: hsl(var(--primary-base));
+            color: var(--primary-base);
         }
     }
 
@@ -150,7 +150,7 @@ to allow for more information on a slightly bigger modal.
 
     .version-modal-row-title {
         font-weight: 500;
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
     }
 
     .version-modal-col-value {
@@ -169,7 +169,7 @@ to allow for more information on a slightly bigger modal.
     }
 
     .version-modal-release-notes {
-        border: 1px solid hsl(var(--border));
+        border: 1px solid var(--border);
         border-radius: 0.5rem;
         padding: 1rem;
         overflow: auto;
@@ -182,7 +182,7 @@ to allow for more information on a slightly bigger modal.
     }
 
     .latest-update-check {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         font-size: .7em;
         font-weight: 700;
         text-align: center;
@@ -198,11 +198,11 @@ to allow for more information on a slightly bigger modal.
 
     a:-webkit-any-link:hover {
         text-decoration: underline;
-        color: hsl(var(--primary-base));
+        color: var(--primary-base);
     }
 
     a:-webkit-any-link {
-        color: hsl(var(--text-muted));
+        color: var(--text-muted);
         text-decoration: none;
     }
 
@@ -217,7 +217,7 @@ to allow for more information on a slightly bigger modal.
     .reload-button {
         display: flex;
         padding: 0.125rem;
-        border: 2px solid hsl(var(--border));
+        border: 2px solid var(--border);
         border-radius: 0.5rem;
         width: 1.5rem;
         height: 1.5rem;
@@ -228,10 +228,10 @@ to allow for more information on a slightly bigger modal.
         transition: all 0.15s ease;
         margin-left: 0.25rem;
         &:hover {
-            background-color: hsl(var(--border));
+            background-color: var(--border);
 
             .reload {
-                background-color: hsl(var(--primary-base));
+                background-color: var(--primary-base);
             }
         }
     }
@@ -241,7 +241,7 @@ to allow for more information on a slightly bigger modal.
         width: 16px;
         height: 16px;
         --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99'/%3E%3C/svg%3E");
-        background-color: hsl(var(--text-muted));
+        background-color: var(--text-muted);
         -webkit-mask-image: var(--svg);
         mask-image: var(--svg);
         -webkit-mask-repeat: no-repeat;

@@ -30,14 +30,14 @@ const sortedData = sortTree(data);
 
 function getIcon(pageData: CombinedPageData | null) {
 	if (pageData?.slug === 'index') {
-		return 'home-modern';
+		return 'heroicons:home-modern';
 	}
 
 	if (pageData?.draft) {
-		return 'pencil';
+		return 'heroicons:pencil';
 	}
 
-	return 'document-text';
+	return 'heroicons:document-text';
 }
 ---
 
@@ -52,7 +52,7 @@ function getIcon(pageData: CombinedPageData | null) {
     ) : (
         <TreeSidebarFolder 
             {name} 
-            icon="folder" 
+            icon="heroicons:folder" 
             href={`${Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}/?folder=${id}`}
             >
             {children && children.length > 0 && (
@@ -64,10 +64,10 @@ function getIcon(pageData: CombinedPageData | null) {
     )
 ))}
 {isNewPage && (
-    <TreeSidebarLink icon="document-plus" href='#'>
+    <TreeSidebarLink icon="heroicons:document-plus" href='#'>
         New Page...
     </TreeSidebarLink>
 )}
 {isNewFolder && (
-    <TreeSidebarFolder name="New Folder..." icon="folder-plus" href="#" />
+    <TreeSidebarFolder name="New Folder..." icon="heroicons:folder-plus" href="#" />
 )}

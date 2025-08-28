@@ -45,31 +45,31 @@ const DEFAULT_AVATAR = 'https://seccdn.libravatar.org/static/img/mm/80.png';
 // Enhanced CSS with click protection and visual feedback
 const COMPONENT_STYLES = `
 :host {
-    --border: 240 5% 17%;
-    --background-base: 0 0% 6%;
-    --background-step-1: 0 0% 8%;
-    --background-step-2: 0 0% 10%;
-    --background-step-3: 0 0% 14%;
-    --primary-base: 259 83% 73%;
-    --success-base: 142 71% 46%;
-    --warning-base: 48 96% 53%;
-    --danger-base: 339 97% 31%;
-    --info-base: 217 92% 52%;
+    --border: hsl(240 5% 17%);
+    --background-base: hsl(0 0% 6%);
+    --background-step-1: hsl(0 0% 8%);
+    --background-step-2: hsl(0 0% 10%);
+    --background-step-3: hsl(0 0% 14%);
+    --primary-base: hsl(259 83% 73%);
+    --success-base: hsl(142 71% 46%);
+    --warning-base: hsl(48 96% 53%);
+    --danger-base: hsl(339 97% 31%);
+    --info-base: hsl(217 92% 52%);
     --light: 70;
     --threshold: 50;
 }
 
 [data-theme="light"] {
-    --border: 263 5% 68%;
-    --background-base: 0 0% 97%;
-    --background-step-1: 0 0% 90%;
-    --background-step-2: 0 0% 85%;
-    --background-step-3: 0 0% 80%;
-    --primary-base: 259 85% 61%;
-    --success-base: 142 59% 47%;
-    --warning-base: 48 92% 46%;
-    --danger-base: 339 97% 31%;
-    --info-base: 217 92% 52%;
+    --border: hsl(263 5% 68%);
+    --background-base: hsl(0 0% 97%);
+    --background-step-1: hsl(0 0% 90%);
+    --background-step-2: hsl(0 0% 85%);
+    --background-step-3: hsl(0 0% 80%);
+    --primary-base: hsl(259 85% 61%);
+    --success-base: hsl(142 59% 47%);
+    --warning-base: hsl(48 92% 46%);
+    --danger-base: hsl(339 97% 31%);
+    --info-base: hsl(217 92% 52%);
 }
 
 .menu_overlay {
@@ -90,7 +90,7 @@ const COMPONENT_STYLES = `
     bottom: 25px;
     width: 50px;
     height: 50px;
-    background: hsl(var(--background-step-1));
+    background: var(--background-step-1);
     box-shadow: 0 3px 7px rgba(0,0,0,0.3);
     border-radius: 50%;
     z-index: 600;
@@ -102,7 +102,7 @@ const COMPONENT_STYLES = `
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
     object-fit: cover;
     z-index: 700;
     transition: transform 0.3s ease;
@@ -110,7 +110,7 @@ const COMPONENT_STYLES = `
 
 .cornerMenu.menuOpened .avatar {
     transform: scale(1.5);
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
 }
 
 .menu {
@@ -118,10 +118,10 @@ const COMPONENT_STYLES = `
     position: absolute;
     width: 32px;
     height: 32px;
-    background: hsl(var(--background-step-2));
+    background: var(--background-step-2);
     box-shadow: 0 3px 7px rgba(0,0,0,0.1);
     border-radius: 50%;
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
     color: hsl(0, 0%, var(--switch));
     display: flex;
     align-items: center;
@@ -149,17 +149,19 @@ const COMPONENT_STYLES = `
 }
 
 .cornerMenu.menuOpened .menu:hover {
-    background: hsl(var(--background-step-3));
+    background: var(--background-step-3);
 }
 
 /* Click protection: Only enable pointer events when menu is ready */
 .cornerMenu.menu-ready .menu {
     pointer-events: all;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.1), 0 0 0 1px hsla(var(--primary-base), 0.2);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1),
+                0 0 0 1px color-mix(in hsl, var(--primary-base) 20%, transparent);
 }
 
 .cornerMenu.menu-ready .menu:hover {
-    box-shadow: 0 3px 7px rgba(0,0,0,0.2), 0 0 0 2px hsla(var(--primary-base), 0.4);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.2),
+                0 0 0 2px color-mix(in hsl, var(--primary-base) 40%, transparent);
 }
 
 /* Visual feedback for ignored clicks */
@@ -179,10 +181,10 @@ const COMPONENT_STYLES = `
 .cornerMenu.menuOpened .menu:nth-child(3) { transform: translate(-38px, -76px); transition-delay: 0.1s; }
 .cornerMenu.menuOpened .menu:nth-child(4) { transform: translate(18px, -99px); transition-delay: 0.15s; }
 
-.menu.logout { color: hsl(var(--danger-base)); }
-.menu.profile { color: hsl(var(--primary-base)); }
-.menu.dashboard { color: hsl(var(--success-base)); }
-.menu.edit { color: hsl(var(--warning-base)); }
+.menu.logout { color: var(--danger-base); }
+.menu.profile { color: var(--primary-base); }
+.menu.dashboard { color: var(--success-base); }
+.menu.edit { color: var(--warning-base); }
 `;
 
 /**

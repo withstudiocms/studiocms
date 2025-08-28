@@ -1,7 +1,10 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
-import { Card, Input, Select, TabItem, Tabs } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import PageTypeHandler from './PageTypeHandler.astro';
 import {
 	categoriesOptions,
@@ -35,7 +38,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     <Tabs variant={"starlight"}>
       <TabItem
         label={t("tab-label-basic-info")}
-        icon={"information-circle-20-solid"}
+        icon={"heroicons:information-circle-20-solid"}
         color={"primary"}
       >
         <div class="tab-section">
@@ -154,7 +157,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       </TabItem>
       <TabItem
         label={t("tab-label-content")}
-        icon={"document-text-20-solid"}
+        icon={"heroicons:document-text-20-solid"}
         color={"success"}
       >
         <div class="tab-section">
@@ -211,7 +214,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 
 <script>
-  import { toast } from "studiocms:ui/components";
+  import { toast } from "studiocms:ui/components/toaster";
   // get the elements
   const createPageForm = document.getElementById(
     "page-create-form",
@@ -325,7 +328,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   .page-content-editor #page-content {
     height: 100%;
     width: 100%;
-    border: 1px solid hsl(var(--border));
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 1rem;
     font-size: 1rem;

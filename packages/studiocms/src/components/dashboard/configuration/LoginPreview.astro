@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { useTranslations } from 'studiocms:i18n';
-import { Card } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
 
 const imageFilter = (filterName: string) =>
 	validImages.filter(({ name }) => name === filterName)[0];

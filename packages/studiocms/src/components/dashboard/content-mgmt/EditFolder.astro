@@ -1,7 +1,8 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { Input, Select } from 'studiocms:ui/components';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
 import { parentFolderOptions } from './shared.js';
 
 const urlParams = Astro.url.searchParams;
@@ -64,7 +65,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 </script>
 
 <script>
-import { toast } from "studiocms:ui/components";
+import { toast } from "studiocms:ui/components/toaster";
 
     const form = document.getElementById('edit-folder-form') as HTMLFormElement;
     const createContainer = document.getElementById('edit-folder-container') as HTMLDivElement;
