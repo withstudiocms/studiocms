@@ -26,7 +26,7 @@ type IScrypt = Effect.Effect<
  * Password management utilities
  */
 export const Password = (Scrypt: IScrypt) =>
-	Effect.fn('@withstudiocms/AuthKit/modules/password')(function* () {
+	Effect.gen(function* () {
 		const scrypt = yield* Scrypt;
 
 		/**

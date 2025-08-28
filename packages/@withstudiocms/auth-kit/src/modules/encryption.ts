@@ -8,7 +8,7 @@ import { useDecryptionError, useEncryptionError } from '../errors.js';
  * Encryption utilities
  */
 export const Encryption = (CMS_ENCRYPTION_KEY: string) =>
-	Effect.fn('@withstudiocms/AuthKit/modules/encryption')(function* () {
+	Effect.gen(function* () {
 		/**
 		 * Get the encryption key
 		 * @private
