@@ -1,0 +1,61 @@
+{
+  "name": "@withstudiocms/auth-kit",
+  "version": "0.1.0-beta.0",
+  "description": "Utilities for managing authentication",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/auth-kit"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro-studiocms",
+    "cms",
+    "studiocms"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "test": "buildkit test 'test/**/*.test.js'",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@withstudiocms/effect": "workspace:*",
+		"@oslojs/binary": "^1.0.0",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+    "astro-integration-kit": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min"
+  }
+}
