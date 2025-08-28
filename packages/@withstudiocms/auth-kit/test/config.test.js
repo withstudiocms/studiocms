@@ -19,7 +19,7 @@ describe('Config Helper', () => {
 				}),
 				session: {
 					cookieName: 'auth_session',
-					expTime: 1000 * 60 * 60, // 1 hour
+					expTime: 1000 * 60 * 60,
 				},
 			})
 		);
@@ -33,7 +33,7 @@ describe('Config Helper', () => {
 			},
 			session: {
 				cookieName: 'auth_session',
-				expTime: 1000 * 60 * 60, // 1 hour
+				expTime: 1000 * 60 * 60,
 			},
 		});
 	});

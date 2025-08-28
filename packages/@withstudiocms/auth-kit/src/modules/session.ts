@@ -28,7 +28,9 @@ export const Session = (config: SessionConfig) =>
 		 * base32 encoding without padding. The resulting string is used as
 		 * a session token.
 		 */
-		const generateSessionToken = Effect.fn(() =>
+		const generateSessionToken = Effect.fn(
+			'@withstudiocms/AuthKit/modules/session.generateSessionToken'
+		)(() =>
 			useSessionError(() => {
 				const data = new Uint8Array(20);
 				const random = crypto.getRandomValues(data);
@@ -44,13 +46,15 @@ export const Session = (config: SessionConfig) =>
 		 * @param userId - The ID of the user for whom the session is being created.
 		 * @returns The created session object.
 		 */
-		const createSession = Effect.fn(function* (token: string, userId: string) {
-			const sessionId = yield* makeSessionId(token);
-			const expirationDate = yield* makeExpirationDate(expTime);
-			return yield* useSessionErrorPromise(() =>
-				sessionTools.createSession({ expiresAt: expirationDate, id: sessionId, userId })
-			);
-		});
+		const createSession = Effect.fn('@withstudiocms/AuthKit/modules/session.createSession')(
+			function* (token: string, userId: string) {
+				const sessionId = yield* makeSessionId(token);
+				const expirationDate = yield* makeExpirationDate(expTime);
+				return yield* useSessionErrorPromise(() =>
+					sessionTools.createSession({ expiresAt: expirationDate, id: sessionId, userId })
+				);
+			}
+		);
 
 		/**
 		 * Validates a session token by checking its existence and expiration in the database.
@@ -61,7 +65,9 @@ export const Session = (config: SessionConfig) =>
 		 * @returns A promise that resolves to an object containing the session and user information.
 		 *          If the session is invalid or expired, both session and user will be null.
 		 */
-		const validateSessionToken = Effect.fn(function* (token: string) {
+		const validateSessionToken = Effect.fn(
+			'@withstudiocms/AuthKit/modules/session.validateSessionToken'
+		)(function* (token: string) {
 			const sessionId = yield* makeSessionId(token);
 
 			const nullSession: SessionValidationResult = {
@@ -104,8 +110,8 @@ export const Session = (config: SessionConfig) =>
 		 * @param sessionId - The unique identifier of the session to be invalidated.
 		 * @returns A promise that resolves when the session has been successfully deleted.
 		 */
-		const invalidateSession = Effect.fn((sessionId) =>
-			useSessionErrorPromise(() => sessionTools.deleteSession(sessionId))
+		const invalidateSession = Effect.fn('@withstudiocms/AuthKit/modules/session.invalidateSession')(
+			(sessionId) => useSessionErrorPromise(() => sessionTools.deleteSession(sessionId))
 		);
 
 		/**
@@ -117,16 +123,17 @@ export const Session = (config: SessionConfig) =>
 		 * @param secure - Whether the cookie should be marked as secure.
 		 */
 		const setSessionTokenCookie = Effect.fn(
-			(context: APIContext | AstroGlobal, token: string, expiresAt: Date, secure?: boolean) =>
-				useSessionError(() =>
-					context.cookies.set(cookieName, token, {
-						httpOnly: true,
-						sameSite: 'lax',
-						secure: secure ?? false,
-						expires: expiresAt,
-						path: '/',
-					})
-				)
+			'@withstudiocms/AuthKit/modules/session.setSessionTokenCookie'
+		)((context: APIContext | AstroGlobal, token: string, expiresAt: Date, secure?: boolean) =>
+			useSessionError(() =>
+				context.cookies.set(cookieName, token, {
+					httpOnly: true,
+					sameSite: 'lax',
+					secure: secure ?? false,
+					expires: expiresAt,
+					path: '/',
+				})
+			)
 		);
 
 		/**
@@ -136,16 +143,17 @@ export const Session = (config: SessionConfig) =>
 		 * @param secure - Whether the cookie should be marked as secure.
 		 */
 		const deleteSessionTokenCookie = Effect.fn(
-			(context: APIContext | AstroGlobal, secure?: boolean) =>
-				useSessionError(() =>
-					context.cookies.set(cookieName, '', {
-						httpOnly: true,
-						sameSite: 'lax',
-						secure: secure ?? false,
-						maxAge: 0,
-						path: '/',
-					})
-				)
+			'@withstudiocms/AuthKit/modules/session.deleteSessionTokenCookie'
+		)((context: APIContext | AstroGlobal, secure?: boolean) =>
+			useSessionError(() =>
+				context.cookies.set(cookieName, '', {
+					httpOnly: true,
+					sameSite: 'lax',
+					secure: secure ?? false,
+					maxAge: 0,
+					path: '/',
+				})
+			)
 		);
 
 		/**
@@ -157,16 +165,17 @@ export const Session = (config: SessionConfig) =>
 		 * @param secure - Whether the cookie should be marked as secure.
 		 */
 		const setOAuthSessionTokenCookie = Effect.fn(
-			(context: APIContext | AstroGlobal, key: string, value: string, secure?: boolean) =>
-				useSessionError(() =>
-					context.cookies.set(key, value, {
-						httpOnly: true,
-						sameSite: 'lax',
-						secure: secure ?? false,
-						maxAge: 60 * 10,
-						path: '/',
-					})
-				)
+			'@withstudiocms/AuthKit/modules/session.setOAuthSessionTokenCookie'
+		)((context: APIContext | AstroGlobal, key: string, value: string, secure?: boolean) =>
+			useSessionError(() =>
+				context.cookies.set(key, value, {
+					httpOnly: true,
+					sameSite: 'lax',
+					secure: secure ?? false,
+					maxAge: 60 * 10,
+					path: '/',
+				})
+			)
 		);
 
 		/**
@@ -177,16 +186,14 @@ export const Session = (config: SessionConfig) =>
 		 * @returns A promise that resolves when the session has been successfully created.
 		 * @param secure - Whether the cookies should be marked as secure.
 		 */
-		const createUserSession = Effect.fn(function* (
-			userId: string,
-			context: APIContext | AstroGlobal,
-			secure?: boolean
-		) {
-			const sessionToken = yield* generateSessionToken();
-			const expirationDate = yield* makeExpirationDate(expTime);
-			yield* createSession(sessionToken, userId);
-			yield* setSessionTokenCookie(context, sessionToken, expirationDate, secure);
-		});
+		const createUserSession = Effect.fn('@withstudiocms/AuthKit/modules/session.createUserSession')(
+			function* (userId: string, context: APIContext | AstroGlobal, secure?: boolean) {
+				const sessionToken = yield* generateSessionToken();
+				const expirationDate = yield* makeExpirationDate(expTime);
+				yield* createSession(sessionToken, userId);
+				yield* setSessionTokenCookie(context, sessionToken, expirationDate, secure);
+			}
+		);
 
 		return {
 			generateSessionToken,
