@@ -35,7 +35,7 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 			 */
 			const username = (val: string) =>
 				Effect.try({
-					try: () => usernameList.includes(val),
+					try: () => usernameList.has(val),
 					catch: (cause) =>
 						new CheckIfUnsafeError({
 							message: `An unknown Error occurred when checking the username list: ${cause}`,
@@ -50,7 +50,7 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 			 */
 			const password = (val: string) =>
 				Effect.try({
-					try: () => passwordList.includes(val),
+					try: () => passwordList.has(val),
 					catch: (cause) =>
 						new CheckIfUnsafeError({
 							message: `An unknown Error occurred when checking the password list: ${cause}`,

@@ -1,4 +1,4 @@
-const passwords: string[] = [
+const passwords = new Set<string>([
 	'password',
 	'123456',
 	'12345678',
@@ -9999,6 +9999,6 @@ const passwords: string[] = [
 	'evangeli',
 	'eeeee1',
 	'eyphed',
-];
+]);
 
 export default passwords;
