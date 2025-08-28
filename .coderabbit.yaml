@@ -36,6 +36,8 @@ reviews:
     ignore_title_keywords: []
     labels: []
     drafts: false
+    ignore_usernames:
+      - studiocms-no-reply
     base_branches: []
   finishing_touches:
     docstrings:
