@@ -32,6 +32,27 @@ export class PasswordError extends Data.TaggedError('PasswordError')<{
 	message?: string;
 }> {}
 
+/**
+ * Error thrown when a safety check fails, indicating an unsafe condition.
+ *
+ * @extends Data.TaggedError
+ * @template {object} T - The shape of the error data.
+ * @property {string} message - A descriptive message explaining why the error was thrown.
+ */
+export class CheckIfUnsafeError extends Data.TaggedError('CheckIfUnsafeError')<{
+	message: string;
+}> {}
+
+/**
+ * Represents an error related to session handling within the authentication kit.
+ *
+ * @extends {Data.TaggedError<'SessionError', { cause: unknown }>}
+ *
+ * @example
+ * throw new SessionError({ cause: someError });
+ *
+ * @property {unknown} cause - The underlying cause of the session error.
+ */
 export class SessionError extends Data.TaggedError('SessionError')<{ cause: unknown }> {}
 
 /**
@@ -74,14 +95,47 @@ export const usePasswordError = <A>(_try: () => A): Effect.Effect<A, PasswordErr
 		catch: (cause) => new PasswordError({ cause }),
 	});
 
+/**
+ * Executes a function within an Effect, mapping any thrown error to a `SessionError`.
+ *
+ * @template A - The return type of the function to execute.
+ * @param _try - A function that returns a value of type `A`. If this function throws, the error is caught and wrapped in a `SessionError`.
+ * @returns An `Effect` that yields the result of `_try` or fails with a `SessionError` if an error is thrown.
+ */
 export const useSessionError = <A>(_try: () => A): Effect.Effect<A, SessionError> =>
 	Effect.try({
 		try: _try,
-		catch: (cause) => new SessionError({ cause })
+		catch: (cause) => new SessionError({ cause }),
 	});
 
+/**
+ * Wraps an asynchronous function in an Effect that captures any thrown errors
+ * and converts them into a `SessionError`.
+ *
+ * @template A The type of the resolved value from the promise.
+ * @param _try - A function that returns a promise to be executed.
+ * @returns An `Effect` that resolves with the value of the promise or fails with a `SessionError`.
+ */
 export const useSessionErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, SessionError> =>
 	Effect.tryPromise({
 		try: _try,
-		catch: (cause) => new SessionError({ cause })
+		catch: (cause) => new SessionError({ cause }),
+	});
+
+/**
+ * Executes a provided function within an Effect, catching any thrown errors and wrapping them
+ * in a `CheckIfUnsafeError` with a prefixed message.
+ *
+ * @template A - The return type of the function to execute.
+ * @param _try - A function to execute that may throw an error.
+ * @param prefix - A string to prefix to the error message if an error is caught.
+ * @returns An Effect that yields the result of the function or a `CheckIfUnsafeError` if an error occurs.
+ */
+export const useUnsafeCheckError = <A>(
+	_try: () => A,
+	prefix: string
+): Effect.Effect<A, CheckIfUnsafeError> =>
+	Effect.try({
+		try: _try,
+		catch: (cause) => new CheckIfUnsafeError({ message: `${prefix}: ${cause}` }),
 	});

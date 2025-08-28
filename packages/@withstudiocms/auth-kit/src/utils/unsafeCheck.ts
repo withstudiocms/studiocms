@@ -1,10 +1,7 @@
-import { Data, Effect } from '@withstudiocms/effect';
+import { Effect } from '@withstudiocms/effect';
+import { useUnsafeCheckError } from '../errors.js';
 import passwordList from './lists/passwords.js';
 import usernameList from './lists/usernames.js';
-
-export class CheckIfUnsafeError extends Data.TaggedError('CheckIfUnsafeError')<{
-	message: string;
-}> {}
 
 /**
  * A service class that provides utility functions to check if a value is unsafe,
@@ -34,13 +31,10 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 			 * @returns An object containing functions to check if the value is a reserved username or password
 			 */
 			const username = (val: string) =>
-				Effect.try({
-					try: () => usernameList.has(val),
-					catch: (cause) =>
-						new CheckIfUnsafeError({
-							message: `An unknown Error occurred when checking the username list: ${cause}`,
-						}),
-				});
+				useUnsafeCheckError(
+					() => usernameList.has(val),
+					'An unknown Error occurred when checking the username list'
+				);
 
 			/**
 			 * Checks if a value is a password
@@ -48,14 +42,12 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 			 * @param value - The value to check
 			 * @returns An object containing functions to check if the value is a reserved username or password
 			 */
+
 			const password = (val: string) =>
-				Effect.try({
-					try: () => passwordList.has(val),
-					catch: (cause) =>
-						new CheckIfUnsafeError({
-							message: `An unknown Error occurred when checking the password list: ${cause}`,
-						}),
-				});
+				useUnsafeCheckError(
+					() => passwordList.has(val),
+					'An unknown Error occurred when checking the password list'
+				);
 
 			return {
 				username,

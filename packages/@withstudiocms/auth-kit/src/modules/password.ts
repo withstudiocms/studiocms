@@ -1,6 +1,6 @@
-import { type BinaryLike, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { Effect } from '@withstudiocms/effect';
-import type { ScryptError } from '@withstudiocms/effect/scrypt';
+import type { IScrypt } from '../types.js';
 import {
 	breakSecurePassword,
 	buildSecurePassword,
@@ -10,17 +10,6 @@ import {
 	verifyPasswordLength,
 	verifySafe,
 } from '../utils/password.js';
-
-/**
- * Mocked internal Scrypt type
- */
-type IScrypt = Effect.Effect<
-	{
-		run: (password: BinaryLike) => Effect.Effect<Buffer<ArrayBufferLike>, ScryptError, never>;
-	},
-	never,
-	never
->;
 
 /**
  * Password management utilities

@@ -2,7 +2,7 @@ import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Effect, pipe } from '@withstudiocms/effect';
 import { SessionError, useSessionError } from '../errors.js';
-import type { SessionConfig } from '../types';
+import type { SessionConfig } from '../types.js';
 
 export const defaultSessionConfig: SessionConfig = {
 	expTime: 1000 * 60 * 60 * 24 * 14,
