@@ -62,18 +62,18 @@ export const breakSecurePassword = Effect.fn((hash: string) =>
 		const parts = hash.split(':');
 		if (parts.length !== 3) {
 			throw new PasswordError({
-				message: 'Invalid secure password format. Expected "gen1.0:salt:hash".',
+				cause: 'Invalid secure password format. Expected "gen1.0:salt:hash".',
 			});
 		}
 		const [generation, salt, hashValue] = parts;
 		if (generation !== PASS_GEN1_0_PREFIX) {
 			throw new PasswordError({
-				message: 'Legacy password hashes are not supported. Please reset any legacy passwords.',
+				cause: 'Legacy password hashes are not supported. Please reset any legacy passwords.',
 			});
 		}
 		if (!salt || !hashValue) {
 			throw new PasswordError({
-				message: 'Invalid secure password format: missing salt or hash.',
+				cause: 'Invalid secure password format: missing salt or hash.',
 			});
 		}
 		return { generation, salt, hash: hashValue };
