@@ -32,6 +32,8 @@ export class PasswordError extends Data.TaggedError('PasswordError')<{
 	message?: string;
 }> {}
 
+export class SessionError extends Data.TaggedError('SessionError')<{ cause: unknown }> {}
+
 /**
  * Executes a function within an Effect context, capturing any thrown errors as an `EncryptionError`.
  *
@@ -70,4 +72,16 @@ export const usePasswordError = <A>(_try: () => A): Effect.Effect<A, PasswordErr
 	Effect.try({
 		try: _try,
 		catch: (cause) => new PasswordError({ cause }),
+	});
+
+export const useSessionError = <A>(_try: () => A): Effect.Effect<A, SessionError> =>
+	Effect.try({
+		try: _try,
+		catch: (cause) => new SessionError({ cause })
+	});
+
+export const useSessionErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, SessionError> =>
+	Effect.tryPromise({
+		try: _try,
+		catch: (cause) => new SessionError({ cause })
 	});

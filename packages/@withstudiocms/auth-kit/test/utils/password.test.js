@@ -10,7 +10,7 @@ import {
 	verifySafe,
 } from '../../dist/utils/password.js';
 
-describe('Auth Kit - Password Utils', () => {
+describe('Password Utils', () => {
 	test('constantTimeEqual returns true for equal strings', () => {
 		assert.equal(constantTimeEqual('abc', 'abc'), true);
 	});

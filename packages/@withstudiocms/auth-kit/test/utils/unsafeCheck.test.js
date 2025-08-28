@@ -3,7 +3,7 @@ import { describe, test } from 'node:test';
 import { Effect, runEffect } from '@withstudiocms/effect';
 import { CheckIfUnsafe } from '../../dist/utils/unsafeCheck.js';
 
-describe('Auth Kit - CheckIfUnsafe Service', () => {
+describe('CheckIfUnsafe Utils', () => {
 	test('CheckIfUnsafe.username returns true for a reserved username', async () => {
 		const effect = Effect.gen(function* () {
 			const service = yield* CheckIfUnsafe;

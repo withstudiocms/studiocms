@@ -4,7 +4,7 @@ import { Context } from '@withstudiocms/effect';
 import { ScryptConfigOptions } from '@withstudiocms/effect/scrypt';
 import { AuthKitConfig, AuthKitOptions } from '../dist/config.js';
 
-describe('Auth Kit - Config Utils', () => {
+describe('Config Helper', () => {
 	test('AuthKitOptions.Live returns a Layer with correct config', async () => {
 		const CMS_ENCRYPTION_KEY = 'test-key';
 
@@ -17,6 +17,10 @@ describe('Auth Kit - Config Utils', () => {
 					keylen: 64,
 					options: { N: 16384, r: 8, p: 1 },
 				}),
+				session: {
+					cookieName: 'auth_session',
+					expTime: 1000 * 60 * 60, // 1 hour
+				},
 			})
 		);
 
@@ -26,6 +30,10 @@ describe('Auth Kit - Config Utils', () => {
 				encryptionKey: 'test-key',
 				keylen: 64,
 				options: { N: 16384, r: 8, p: 1 },
+			},
+			session: {
+				cookieName: 'auth_session',
+				expTime: 1000 * 60 * 60, // 1 hour
 			},
 		});
 	});
