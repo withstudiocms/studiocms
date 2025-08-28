@@ -13,25 +13,29 @@ export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit',
 		 * Scrypt Effect processor
 		 * @private
 		 */
-		const Scrypt = Effect.gen(function* () {
-			const { run } = yield* _Scrypt;
-			return { run };
-		}).pipe(Effect.provide(_Scrypt.makeLive(scrypt)));
+		const Scrypt = Effect.withSpan('@withstudiocms/AuthKit.Scrypt')(
+			Effect.gen(function* () {
+				const { run } = yield* _Scrypt;
+				return { run };
+			}).pipe(Effect.provide(_Scrypt.makeLive(scrypt)))
+		);
 
 		/**
 		 * Encryption utilities
 		 */
-		const Encryption = _Encryption(CMS_ENCRYPTION_KEY);
+		const Encryption = Effect.withSpan('@withstudiocms/AuthKit.Encryption')(
+			_Encryption(CMS_ENCRYPTION_KEY)
+		);
 
 		/**
 		 * Password management utilities
 		 */
-		const Password = _Password(Scrypt);
+		const Password = Effect.withSpan('@withstudiocms/AuthKit.Password')(_Password(Scrypt));
 
 		/**
 		 * Session management utilities
 		 */
-		const Session = _Session(session);
+		const Session = Effect.withSpan('@withstudiocms/AuthKit.Session')(_Session(session));
 
 		return {
 			Encryption,
