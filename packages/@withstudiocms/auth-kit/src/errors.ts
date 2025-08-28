@@ -59,6 +59,13 @@ export const useDecryptionError = <A>(_try: () => A): Effect.Effect<A, Decryptio
 		catch: (cause) => new DecryptionError({ cause }),
 	});
 
+/**
+ * Executes a function that may throw and wraps any thrown error in a `PasswordError`.
+ *
+ * @template A - The return type of the function to execute.
+ * @param _try - A function that may throw an error.
+ * @returns An `Effect` that yields the result of the function or a `PasswordError` if an error is thrown.
+ */
 export const usePasswordError = <A>(_try: () => A): Effect.Effect<A, PasswordError> =>
 	Effect.try({
 		try: _try,

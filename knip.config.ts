@@ -72,6 +72,7 @@ const atStudioCMSPackages = [
  * ```
  */
 const atWithStudioCMSPackages = [
+	'auth-kit',
 	'config-utils',
 	'effect',
 	'buildkit',

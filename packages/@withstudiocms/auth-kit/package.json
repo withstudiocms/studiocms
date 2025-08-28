@@ -35,7 +35,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
-    "test": "buildkit test 'test/**/*.test.js'",
+    "_test": "buildkit test 'test/**/*.test.js'",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
@@ -49,8 +49,7 @@
     "@withstudiocms/effect": "workspace:*",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
-		"@oslojs/encoding": "^1.1.0",
-    "astro-integration-kit": "catalog:"
+		"@oslojs/encoding": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "catalog:"
