@@ -12,7 +12,15 @@ import {
 } from '../utils/password.js';
 
 /**
- * Password management utilities
+ * Provides password hashing, verification, and strength checking utilities using Scrypt.
+ *
+ * @param Scrypt - An effectful Scrypt implementation for password hashing.
+ * @returns An Effect that yields an object containing:
+ * - `hashPassword`: Hashes a plain text password with optional salt.
+ * - `verifyPasswordHash`: Verifies a password against a hashed value.
+ * - `verifyPasswordStrength`: Checks if a password meets strength requirements.
+ *
+ * @module @withstudiocms/AuthKit/modules/password
  */
 export const Password = (Scrypt: IScrypt) =>
 	Effect.gen(function* () {

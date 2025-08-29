@@ -4,6 +4,17 @@ import { Effect, pipe } from '@withstudiocms/effect';
 import { SessionError, useSessionError } from '../errors.js';
 import type { SessionConfig } from '../types.js';
 
+/**
+ * The default configuration for user sessions.
+ *
+ * @remarks
+ * - `expTime` sets the session expiration time in milliseconds (default: 14 days).
+ * - `cookieName` specifies the name of the cookie used to store the session.
+ *
+ * @example
+ * // Use the default session configuration
+ * app.useSession(defaultSessionConfig);
+ */
 export const defaultSessionConfig: SessionConfig = {
 	expTime: 1000 * 60 * 60 * 24 * 14,
 	cookieName: 'auth_session',

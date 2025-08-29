@@ -20,6 +20,35 @@ import {
 import { Password as _Password } from './password.js';
 import { Session as _Session } from './session.js';
 
+/**
+ * Factory function to create user-related operations for authentication and user management.
+ *
+ * This function initializes and returns a set of user management utilities, including
+ * username validation, avatar creation, user creation (local and OAuth), password management,
+ * user data retrieval, and permission checks. It requires configuration for password hashing,
+ * session management, and user tools.
+ *
+ * @param config - The configuration object for user management.
+ * @param config.Scrypt - The password hashing implementation.
+ * @param config.session - The session management configuration.
+ * @param config.userTools - Utilities for user data access, creation, and notification.
+ * @returns An Effect generator yielding an object with user management methods:
+ * - `verifyUsernameInput`: Validates a username against length, character, and safety rules.
+ * - `createUserAvatar`: Generates a Libravatar URL for a user's email.
+ * - `createLocalUser`: Creates a new local user with the provided details.
+ * - `createOAuthUser`: Creates a new user with OAuth credentials.
+ * - `updateUserPassword`: Updates a user's password.
+ * - `getUserPasswordHash`: Retrieves the password hash for a user.
+ * - `getUserFromEmail`: Retrieves a user by their email address.
+ * - `getUserData`: Retrieves user session data from the provided context.
+ * - `getUserPermissionLevel`: Gets the user's permission level as an enum.
+ * - `isUserAllowed`: Checks if a user has the required permission level.
+ *
+ * @example
+ * ```typescript
+ * const userModule = User({ Scrypt, session, userTools });
+ * ```
+ */
 export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 	Effect.gen(function* () {
 		const [Password, Session] = yield* Effect.all([_Password(Scrypt), _Session(session)]);

@@ -55,6 +55,15 @@ export class CheckIfUnsafeError extends Data.TaggedError('CheckIfUnsafeError')<{
  */
 export class SessionError extends Data.TaggedError('SessionError')<{ cause: unknown }> {}
 
+/**
+ * Represents an error related to user operations within the authentication kit.
+ *
+ * @extends Data.TaggedError
+ * @template { cause: unknown } - The shape of the error details.
+ *
+ * @example
+ * throw new UserError({ cause: someError });
+ */
 export class UserError extends Data.TaggedError('UserError')<{ cause: unknown }> {}
 
 /**
@@ -142,12 +151,26 @@ export const useUnsafeCheckError = <A>(
 		catch: (cause) => new CheckIfUnsafeError({ message: `${prefix}: ${cause}` }),
 	});
 
+/**
+ * Executes a function within an Effect, mapping any thrown error to a `UserError`.
+ *
+ * @typeParam A - The return type of the function to execute.
+ * @param _try - A function to execute that may throw an error.
+ * @returns An `Effect` that yields the result of the function or a `UserError` if an error is thrown.
+ */
 export const useUserError = <A>(_try: () => A): Effect.Effect<A, UserError> =>
 	Effect.try({
 		try: _try,
 		catch: (cause) => new UserError({ cause }),
 	});
 
+/**
+ * Wraps a promise-returning function in an Effect, mapping any thrown error to a `UserError`.
+ *
+ * @template A The type of the resolved value from the promise.
+ * @param _try - A function that returns a promise of type `A`.
+ * @returns An `Effect` that resolves with the value of type `A` or fails with a `UserError`.
+ */
 export const useUserErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, UserError> =>
 	Effect.tryPromise({
 		try: _try,

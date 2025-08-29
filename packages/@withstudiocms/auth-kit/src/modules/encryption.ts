@@ -5,7 +5,19 @@ import { Effect } from '@withstudiocms/effect';
 import { useDecryptionError, useEncryptionError } from '../errors.js';
 
 /**
- * Encryption utilities
+ * Factory function to create an encryption module using AES-128-GCM.
+ *
+ * @param CMS_ENCRYPTION_KEY - The base64-encoded encryption key to use for encryption and decryption.
+ * @returns An Effect that yields an object containing encryption and decryption utilities:
+ * - `encrypt`: Encrypts a Uint8Array and returns the encrypted data as a Uint8Array.
+ * - `encryptToString`: Encrypts a string and returns the encrypted data as a Uint8Array.
+ * - `decrypt`: Decrypts an encrypted Uint8Array and returns the decrypted data as a Uint8Array.
+ * - `decryptToString`: Decrypts an encrypted Uint8Array and returns the decrypted data as a string.
+ *
+ * @remarks
+ * The encrypted data format is: [IV (16 bytes)] + [encrypted content] + [auth tag (16 bytes)].
+ * The encryption key must be a valid base64-encoded string suitable for AES-128-GCM.
+ * Throws errors if encryption or decryption fails, or if the input data is invalid.
  */
 export const Encryption = (CMS_ENCRYPTION_KEY: string) =>
 	Effect.gen(function* () {

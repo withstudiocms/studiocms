@@ -6,7 +6,24 @@ import type { SessionConfig, SessionValidationResult } from '../types.js';
 import { defaultSessionConfig, makeExpirationDate, makeSessionId } from '../utils/session.js';
 
 /**
- * Session management utilities.
+ * Creates a session management module with the provided configuration.
+ *
+ * This factory function returns an object containing various session-related
+ * effectful operations, such as generating session tokens, creating and validating
+ * sessions, managing session cookies, and handling OAuth session tokens.
+ *
+ * @param config - The session configuration object. This is merged with the default session configuration.
+ * @returns An Effect that yields an object with session management methods:
+ * - `generateSessionToken`: Generates a secure random session token.
+ * - `createSession`: Creates a new session for a user.
+ * - `validateSessionToken`: Validates a session token, extends expiration if needed, and deletes expired sessions.
+ * - `invalidateSession`: Deletes a session by its ID.
+ * - `setSessionTokenCookie`: Sets a session token cookie in the provided context.
+ * - `deleteSessionTokenCookie`: Deletes the session token cookie in the provided context.
+ * - `setOAuthSessionTokenCookie`: Sets an OAuth session token cookie in the provided context.
+ * - `createUserSession`: Creates a new user session and sets the session token cookie.
+ *
+ * @throws {SessionError} If required session tools are not provided in the configuration.
  */
 export const Session = (config: SessionConfig) =>
 	Effect.gen(function* () {

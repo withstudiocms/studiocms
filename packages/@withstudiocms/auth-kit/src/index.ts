@@ -6,6 +6,40 @@ import { Password as _Password } from './modules/password.js';
 import { Session as _Session } from './modules/session.js';
 import { User as _User } from './modules/user.js';
 
+/**
+ * The `AuthKit` service provides a collection of authentication utilities for use within the
+ * @withstudiocms ecosystem. It exposes encryption, password management, session management,
+ * and user management utilities, all configured via dependency injection.
+ *
+ * @remarks
+ * This service is built on top of the Effect system, allowing for composable and testable
+ * authentication logic. Each utility is wrapped with tracing spans for observability.
+ *
+ * @example
+ * ```typescript
+ * const authKit = AuthKit.makeConfig({
+ *   CMS_ENCRYPTION_KEY: 'secret-key',
+ *   scrypt: ...,
+ *   session: ...,
+ *   userTools: ...
+ * });
+ * ```
+ *
+ * @property Encryption - Provides encryption and decryption utilities using the configured key.
+ * @property Password - Utilities for password hashing and verification using Scrypt.
+ * @property Session - Session management utilities for handling user sessions.
+ * @property User - User management utilities, including authentication and user lookup.
+ *
+ * @method static makeConfig
+ * Creates a live configuration for the AuthKit service using the provided raw configuration.
+ *
+ * @see AuthKitOptions
+ * @see _Scrypt
+ * @see _Encryption
+ * @see _Password
+ * @see _Session
+ * @see _User
+ */
 export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit', {
 	effect: Effect.gen(function* () {
 		const { CMS_ENCRYPTION_KEY, scrypt, session, userTools } = yield* AuthKitOptions;
@@ -53,5 +87,19 @@ export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit',
 		} as const;
 	}),
 }) {
+	/**
+	 * Creates a live instance of `AuthKitOptions` using the provided raw configuration.
+	 *
+	 * @param CMS_ENCRYPTION_KEY - The encryption key used for cryptographic operations.
+	 * @param session - session configuration overrides.
+	 * @param userTools - Tools or utilities related to user management.
+	 * @returns A Layer that provides the configured `AuthKitOptions`.
+	 *
+	 * @remarks
+	 * - Scrypt parameters (`N`, `r`, `p`) are read from environment variables (`SCRYPT_N`, `SCRYPT_R`, `SCRYPT_P`),
+	 *   with sensible defaults and minimum values enforced for security.
+	 * - The session configuration merges defaults with any provided overrides.
+	 * - The returned Layer can be used for dependency injection in the application.
+	 */
 	static makeConfig = (config: RawAuthKitConfig) => AuthKitOptions.Live(config);
 }

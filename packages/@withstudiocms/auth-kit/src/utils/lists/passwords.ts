@@ -1,3 +1,19 @@
+/**
+ * A `Set` containing a comprehensive list of commonly used, weak, or compromised passwords.
+ *
+ * @remarks
+ * This set is intended to be used for password strength validation, helping to prevent users from selecting insecure passwords.
+ * The list includes passwords that are frequently found in data breaches, dictionary attacks, or are otherwise considered unsafe.
+ *
+ * @example
+ * ```typescript
+ * if (passwords.has(userInputPassword)) {
+ *   throw new Error("Password is too common or insecure.");
+ * }
+ * ```
+ *
+ * @see {@link https://github.com/danielmiessler/SecLists} for similar password lists.
+ */
 const passwords = new Set<string>([
 	'password',
 	'123456',

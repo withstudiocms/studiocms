@@ -55,6 +55,13 @@ export interface UserData {
 	notifications: string | null;
 }
 
+/**
+ * Represents the data associated with an OAuth authentication event.
+ *
+ * @property userId - The unique identifier of the user in the local system.
+ * @property provider - The name of the OAuth provider (e.g., 'google', 'github').
+ * @property providerUserId - The unique identifier of the user as provided by the OAuth provider.
+ */
 export interface OAuthData {
 	userId: string;
 	provider: string;
@@ -81,17 +88,37 @@ export const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 
  */
 export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
 
+/**
+ * Represents the permissions data for a user.
+ *
+ * @property user - The unique identifier of the user.
+ * @property rank - The permission rank assigned to the user.
+ */
 export interface PermissionsData {
 	user: string;
 	rank: AvailablePermissionRanks;
 }
 
+/**
+ * Represents the session data for a user.
+ *
+ * @property isLoggedIn - Indicates whether the user is currently logged in.
+ * @property user - The user data object, or `null` if no user is logged in.
+ * @property permissionLevel - The user's permission level, represented by an available permission rank.
+ */
 export type UserSessionData = {
 	isLoggedIn: boolean;
 	user: UserData | null;
 	permissionLevel: AvailablePermissionRanks;
 };
 
+/**
+ * Represents a user object that combines base user data with optional OAuth and permissions data.
+ *
+ * @extends UserData
+ * @property {OAuthData[] | undefined} oAuthData - An array of OAuth provider data associated with the user, or undefined if not available.
+ * @property {PermissionsData | undefined} permissionsData - The permissions data for the user, or undefined if not available.
+ */
 export interface CombinedUserData extends UserData {
 	oAuthData: OAuthData[] | undefined;
 	permissionsData: PermissionsData | undefined;
@@ -149,6 +176,13 @@ export interface SessionConfig {
 	sessionTools?: SessionTools;
 }
 
+/**
+ * Provides utility methods for user management and notification within the authentication system.
+ *
+ * @remarks
+ * This interface defines methods for creating, updating, and retrieving user data,
+ * as well as generating unique IDs and sending notifications to administrators.
+ */
 export interface UserTools {
 	idGenerator(): string;
 	notifier?: {
@@ -166,6 +200,13 @@ export interface UserTools {
 	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;
 }
 
+/**
+ * Configuration options for user authentication and session management.
+ *
+ * @property Scrypt - The Scrypt configuration used for password hashing.
+ * @property session - The required session configuration object.
+ * @property userTools - Optional utilities or tools related to user management.
+ */
 export interface UserConfig {
 	Scrypt: IScrypt;
 	session: Required<SessionConfig>;
