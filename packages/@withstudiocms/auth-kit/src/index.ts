@@ -16,7 +16,6 @@ import { _Encryption, _Password, _Session, _User } from './modules/index.js';
  * ```typescript
  * const authKit = AuthKit.makeConfig({
  *   CMS_ENCRYPTION_KEY: 'secret-key',
- *   scrypt: ...,
  *   session: ...,
  *   userTools: ...
  * });

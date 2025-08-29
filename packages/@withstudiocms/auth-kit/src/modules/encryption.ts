@@ -33,6 +33,13 @@ export const Encryption = (CMS_ENCRYPTION_KEY: string) =>
 		 */
 		const _key = yield* getKey;
 
+		// Validate key length for AES-128-GCM (16 bytes)
+		yield* useEncryptionError(() => {
+			if (_key.byteLength !== 16) {
+				throw new Error('CMS_ENCRYPTION_KEY must decode to 16 bytes for aes-128-gcm');
+			}
+		});
+
 		/**
 		 * The encryption algorithm
 		 * @private
@@ -84,13 +91,16 @@ export const Encryption = (CMS_ENCRYPTION_KEY: string) =>
 		const decrypt = Effect.fn('@withstudiocms/AuthKit/modules/encryption.decrypt')(
 			(data: Uint8Array) =>
 				useDecryptionError(() => {
-					if (data.byteLength < 33) {
+					const IV_LEN = 16;
+					const TAG_LEN = 16;
+					const MAX_LEN = IV_LEN + TAG_LEN;
+					if (data.byteLength < MAX_LEN) {
 						throw new Error('Invalid data');
 					}
-					const decipher = createDecipheriv(_algorithm, _key, data.slice(0, 16));
-					decipher.setAuthTag(data.slice(data.byteLength - 16));
+					const decipher = createDecipheriv(_algorithm, _key, data.slice(0, IV_LEN));
+					decipher.setAuthTag(data.slice(data.byteLength - TAG_LEN));
 					const decrypted = new DynamicBuffer(0);
-					decrypted.write(decipher.update(data.slice(16, data.byteLength - 16)));
+					decrypted.write(decipher.update(data.slice(IV_LEN, data.byteLength - TAG_LEN)));
 					decrypted.write(decipher.final());
 					return decrypted.bytes();
 				})

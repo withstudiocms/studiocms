@@ -557,3 +557,6 @@ const usernames = new Set<string>([
 ]);
 
 export default usernames;
+
+// Prefer using this predicate to avoid exposing the mutable Set.
+export const isReservedUsername = (name: string): boolean => usernames.has(name.toLowerCase());

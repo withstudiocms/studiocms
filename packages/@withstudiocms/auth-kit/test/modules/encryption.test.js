@@ -54,12 +54,11 @@ describe('Encryption Module', () => {
 		assert.match(parsedError.cause.failure._tag, /DecryptionError/);
 	});
 
-	test('fails to encrypt and decrypt empty string', async () => {
+	test('encrypt and decrypt empty string', async () => {
 		const service = await Effect.runPromise(serviceBuilder);
 		const encrypted = await runEffect(service.encryptToString(''));
-		const err = await runEffect(service.decryptToString(encrypted)).catch((e) => JSON.stringify(e));
-		const parsedError = JSON.parse(err);
+		const string = await runEffect(service.decryptToString(encrypted));
 
-		assert.match(parsedError.cause.failure._tag, /DecryptionError/);
+		assert.equal(string, '');
 	});
 });

@@ -10018,3 +10018,6 @@ const passwords = new Set<string>([
 ]);
 
 export default passwords;
+
+// Prefer using this predicate to avoid exposing the mutable Set.
+export const isReservedPassword = (pass: string): boolean => passwords.has(pass.toLowerCase());

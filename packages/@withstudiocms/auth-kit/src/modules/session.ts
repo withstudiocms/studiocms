@@ -38,6 +38,14 @@ export const Session = (config: SessionConfig) =>
 			);
 		}
 
+		if (!Number.isFinite(expTime) || expTime <= 0) {
+			return yield* Effect.fail(
+				new SessionError({
+					cause: 'Invalid session config: expTime must be a positive number (ms)',
+				})
+			);
+		}
+
 		const expTimeHalf = expTime / 2;
 
 		/**
@@ -132,7 +140,7 @@ export const Session = (config: SessionConfig) =>
 		 * @returns A promise that resolves when the session has been successfully deleted.
 		 */
 		const invalidateSession = Effect.fn('@withstudiocms/AuthKit/modules/session.invalidateSession')(
-			(sessionId) => useSessionErrorPromise(() => sessionTools.deleteSession(sessionId))
+			(sessionId: string) => useSessionErrorPromise(() => sessionTools.deleteSession(sessionId))
 		);
 
 		/**

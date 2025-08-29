@@ -1,7 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import { useUnsafeCheckError } from '../errors.js';
-import passwordList from './lists/passwords.js';
-import usernameList from './lists/usernames.js';
+import { isReservedPassword } from './lists/passwords.js';
+import { isReservedUsername } from './lists/usernames.js';
 
 /**
  * A service class that provides utility functions to check if a value is unsafe,
@@ -32,7 +32,7 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 			 */
 			const username = (val: string) =>
 				useUnsafeCheckError(
-					() => usernameList.has(val),
+					() => isReservedUsername(val),
 					'An unknown Error occurred when checking the username list'
 				);
 
@@ -45,7 +45,7 @@ export class CheckIfUnsafe extends Effect.Service<CheckIfUnsafe>()(
 
 			const password = (val: string) =>
 				useUnsafeCheckError(
-					() => passwordList.has(val),
+					() => isReservedPassword(val),
 					'An unknown Error occurred when checking the password list'
 				);
 

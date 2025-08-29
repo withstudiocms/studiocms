@@ -65,7 +65,7 @@ export class AuthKitOptions extends Context.Tag('AuthKitOptions')<AuthKitOptions
 	 * Creates a live instance of `AuthKitOptions` using the provided raw configuration.
 	 *
 	 * @param CMS_ENCRYPTION_KEY - The encryption key used for cryptographic operations.
-	 * @param _session - Optional session configuration overrides.
+	 * @param session - session configuration overrides.
 	 * @param userTools - Tools or utilities related to user management.
 	 * @returns A Layer that provides the configured `AuthKitOptions`.
 	 *
@@ -77,12 +77,34 @@ export class AuthKitOptions extends Context.Tag('AuthKitOptions')<AuthKitOptions
 	 */
 	static Live = ({ CMS_ENCRYPTION_KEY, session: _session, userTools }: RawAuthKitConfig) => {
 		// Scrypt parameters
+		// Validate encryption key (expects base64-encoded 16 bytes for AES-128)
+		if (typeof CMS_ENCRYPTION_KEY !== 'string' || CMS_ENCRYPTION_KEY.length === 0) {
+			throw new Error('CMS_ENCRYPTION_KEY must be a non-empty base64 string');
+		}
+		try {
+			const raw =
+				typeof Buffer !== 'undefined'
+					? Buffer.from(CMS_ENCRYPTION_KEY, 'base64')
+					: new Uint8Array(
+							atob(CMS_ENCRYPTION_KEY)
+								.split('')
+								.map((c) => c.charCodeAt(0))
+						);
+			if (raw.byteLength !== 16) {
+				throw new Error(`CMS_ENCRYPTION_KEY must decode to 16 bytes, got ${raw.byteLength}`);
+			}
+		} catch {
+			throw new Error('CMS_ENCRYPTION_KEY is not valid base64');
+		}
+
+		const clamp = (v: number, min: number, max: number) =>
+			Number.isSafeInteger(v) ? Math.min(max, Math.max(min, v)) : min;
 		const parsedN = Number.parseInt(process.env.SCRYPT_N ?? '', 10);
-		const SCRYPT_N = Number.isFinite(parsedN) ? Math.max(16384, parsedN) : 16384;
 		const parsedR = Number.parseInt(process.env.SCRYPT_R ?? '', 10);
-		const SCRYPT_R = Number.isFinite(parsedR) ? Math.max(8, parsedR) : 8;
 		const parsedP = Number.parseInt(process.env.SCRYPT_P ?? '', 10);
-		const SCRYPT_P = Number.isFinite(parsedP) ? Math.max(1, parsedP) : 1;
+		const SCRYPT_N = clamp(parsedN, 16384, 1 << 20); // up to ~1,048,576
+		const SCRYPT_R = clamp(parsedR, 8, 32);
+		const SCRYPT_P = clamp(parsedP, 1, 16);
 
 		const scrypt = ScryptConfigOptions({
 			encryptionKey: CMS_ENCRYPTION_KEY,

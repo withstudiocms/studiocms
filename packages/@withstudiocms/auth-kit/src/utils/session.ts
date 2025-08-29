@@ -1,7 +1,7 @@
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Effect, pipe } from '@withstudiocms/effect';
-import { SessionError, useSessionError } from '../errors.js';
+import { useSessionError } from '../errors.js';
 import type { SessionConfig } from '../types.js';
 
 /**
@@ -25,8 +25,9 @@ export const defaultSessionConfig: SessionConfig = {
  */
 export const makeSessionId = Effect.fn((token: string) =>
 	useSessionError(() => {
-		if (typeof token !== 'string') {
-			throw new SessionError({ cause: 'Invalid token' });
+		// runtime guard for JS callers
+		if (typeof token !== 'string' || token.length === 0) {
+			throw new TypeError('Invalid token');
 		}
 		return pipe(new TextEncoder().encode(token), sha256, encodeHexLowerCase);
 	})
@@ -37,8 +38,8 @@ export const makeSessionId = Effect.fn((token: string) =>
  */
 export const makeExpirationDate = Effect.fn((expTime: number) =>
 	useSessionError(() => {
-		if (typeof expTime !== 'number') {
-			throw new SessionError({ cause: 'Invalid expiration time' });
+		if (!Number.isFinite(expTime) || expTime <= 0) {
+			throw new TypeError('Invalid expiration time');
 		}
 		return new Date(Date.now() + expTime);
 	})

@@ -68,7 +68,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		 * - Not be considered unsafe.
 		 *
 		 * @param username - The username to verify.
-		 * @returns `true` if the username is valid, `false` otherwise.
+		 * @returns `true` if valid, otherwise a short error string describing the first validation failure.
 		 */
 		const verifyUsernameInput = Effect.fn(
 			'@withstudiocms/AuthKit/modules/user.verifyUsernameInput'
@@ -208,9 +208,9 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		)(function* (userId: string) {
 			const user = yield* useUserErrorPromise(() => userTools.getUserById(userId));
 
-			if (!user) return yield* Effect.fail(new Error('User not found'));
-
-			if (!user.password) return yield* Effect.fail(new Error('User has no password'));
+			if (!user) return yield* Effect.fail(new UserError({ cause: 'User not found' }));
+			if (!user.password)
+				return yield* Effect.fail(new UserError({ cause: 'User has no password' }));
 
 			return user.password;
 		});
@@ -266,13 +266,9 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 			};
 
 			const result = yield* useUserErrorPromise(() => userTools.getCurrentPermissions(user.id));
-
-			if (!result) {
-				console.error('Error fetching user permission level');
-				return yield* getDefaultUserSession();
-			}
-
-			const permissionLevel = rankToPermissionLevel[result.rank] || 'unknown';
+			const permissionLevel =
+				(result && rankToPermissionLevel[result.rank]) ||
+				('unknown' as UserSessionData['permissionLevel']);
 
 			return {
 				isLoggedIn: true,
