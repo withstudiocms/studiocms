@@ -45,8 +45,14 @@ export const Session = (config: SessionConfig) =>
 				})
 			);
 		}
+		if (typeof cookieName !== 'string' || cookieName.trim().length === 0) {
+			return yield* Effect.fail(
+				new SessionError({ cause: 'Invalid session config: cookieName must be a non-empty string' })
+			);
+		}
 
 		const expTimeHalf = expTime / 2;
+		const defaultSecure = process.env.NODE_ENV === 'production';
 
 		/**
 		 * Generates a session token.
@@ -120,13 +126,25 @@ export const Session = (config: SessionConfig) =>
 
 			const { user, session } = userSession;
 
-			if (Date.now() >= session.expiresAt.getTime()) {
+			const now = Date.now();
+			const expiresAtMs =
+				session.expiresAt instanceof Date
+					? session.expiresAt.getTime()
+					: new Date(session.expiresAt).getTime();
+
+			if (!Number.isFinite(expiresAtMs)) {
+				// Corrupt/invalid stored date — invalidate defensively
 				yield* useSessionErrorPromise(() => sessionTools.deleteSession(session.id));
 				return nullSession;
 			}
 
-			if (Date.now() >= session.expiresAt.getTime() - expTimeHalf) {
-				const expiresAt = new Date(Date.now() + expTime);
+			if (now >= expiresAtMs) {
+				yield* useSessionErrorPromise(() => sessionTools.deleteSession(session.id));
+				return nullSession;
+			}
+
+			if (now >= expiresAtMs - expTimeHalf) {
+				const expiresAt = new Date(now + expTime);
 				yield* useSessionErrorPromise(() => sessionTools.updateSession(session.id, { expiresAt }));
 			}
 
@@ -158,7 +176,7 @@ export const Session = (config: SessionConfig) =>
 				context.cookies.set(cookieName, token, {
 					httpOnly: true,
 					sameSite: 'lax',
-					secure: secure ?? false,
+					secure: secure ?? defaultSecure,
 					expires: expiresAt,
 					path: '/',
 				})
@@ -178,7 +196,7 @@ export const Session = (config: SessionConfig) =>
 				context.cookies.set(cookieName, '', {
 					httpOnly: true,
 					sameSite: 'lax',
-					secure: secure ?? false,
+					secure: secure ?? defaultSecure,
 					maxAge: 0,
 					path: '/',
 				})
@@ -200,7 +218,7 @@ export const Session = (config: SessionConfig) =>
 				context.cookies.set(key, value, {
 					httpOnly: true,
 					sameSite: 'lax',
-					secure: secure ?? false,
+					secure: secure ?? defaultSecure,
 					maxAge: 60 * 10,
 					path: '/',
 				})

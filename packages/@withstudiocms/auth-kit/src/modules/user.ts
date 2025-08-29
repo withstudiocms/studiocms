@@ -9,6 +9,7 @@ import type {
 	UserSessionData,
 } from '../types.js';
 import { UserPermissionLevel } from '../types.js';
+import libravatar from '../utils/libravatar.js';
 import {
 	getDefaultUserSession,
 	getLevel,
@@ -97,15 +98,9 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		 */
 		const createUserAvatar = Effect.fn('@withstudiocms/AuthKit/modules/user.createUserAvatar')(
 			(email: string) =>
-				useUserErrorPromise(async () => {
-					const clean = email.trim().toLowerCase();
-					const msgUint8 = new TextEncoder().encode(clean);
-					const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-					const hashArray = Array.from(new Uint8Array(hashBuffer));
-					const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-
-					return `https://seccdn.libravatar.org/avatar/${hashHex}?s=400&d=retro` as string;
-				})
+				useUserErrorPromise(async () =>
+					libravatar.getAvatarUrl({ email, https: true, size: 400, default: 'retro' })
+				)
 		);
 
 		/**

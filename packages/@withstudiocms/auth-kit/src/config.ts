@@ -76,9 +76,9 @@ export class AuthKitOptions extends Context.Tag('AuthKitOptions')<AuthKitOptions
 	 * - The returned Layer can be used for dependency injection in the application.
 	 */
 	static Live = ({ CMS_ENCRYPTION_KEY, session: _session, userTools }: RawAuthKitConfig) => {
-		// Scrypt parameters
 		// Validate encryption key (expects base64-encoded 16 bytes for AES-128)
-		if (typeof CMS_ENCRYPTION_KEY !== 'string' || CMS_ENCRYPTION_KEY.length === 0) {
+		const normalizedKey = CMS_ENCRYPTION_KEY.trim();
+		if (normalizedKey.length === 0) {
 			throw new Error('CMS_ENCRYPTION_KEY must be a non-empty base64 string');
 		}
 		try {
@@ -97,17 +97,22 @@ export class AuthKitOptions extends Context.Tag('AuthKitOptions')<AuthKitOptions
 			throw new Error('CMS_ENCRYPTION_KEY is not valid base64');
 		}
 
+		// Scrypt parameters
 		const clamp = (v: number, min: number, max: number) =>
 			Number.isSafeInteger(v) ? Math.min(max, Math.max(min, v)) : min;
-		const parsedN = Number.parseInt(process.env.SCRYPT_N ?? '', 10);
-		const parsedR = Number.parseInt(process.env.SCRYPT_R ?? '', 10);
-		const parsedP = Number.parseInt(process.env.SCRYPT_P ?? '', 10);
-		const SCRYPT_N = clamp(parsedN, 16384, 1 << 20); // up to ~1,048,576
+		const env = (k: string) =>
+			typeof process !== 'undefined' && process.env ? process.env[k] : undefined;
+		const parsedN = Number.parseInt(env('SCRYPT_N') ?? '', 10);
+		const parsedR = Number.parseInt(env('SCRYPT_R') ?? '', 10);
+		const parsedP = Number.parseInt(env('SCRYPT_P') ?? '', 10);
+		const toPowerOfTwo = (n: number) => 1 << Math.floor(Math.log2(n));
+		const baseN = clamp(parsedN, 16384, 1 << 20); // [16k, 1,048,576]
+		const SCRYPT_N = toPowerOfTwo(baseN);
 		const SCRYPT_R = clamp(parsedR, 8, 32);
 		const SCRYPT_P = clamp(parsedP, 1, 16);
 
 		const scrypt = ScryptConfigOptions({
-			encryptionKey: CMS_ENCRYPTION_KEY,
+			encryptionKey: normalizedKey,
 			keylen: 64,
 			options: {
 				N: SCRYPT_N,
@@ -118,8 +123,14 @@ export class AuthKitOptions extends Context.Tag('AuthKitOptions')<AuthKitOptions
 
 		const session = {
 			...defaultSessionConfig,
-			..._session,
+			...(_session ?? {}),
 		};
+		if (typeof session.cookieName !== 'string' || session.cookieName.trim() === '') {
+			throw new Error('session.cookieName must be a non-empty string');
+		}
+		if (!Number.isSafeInteger(session.expTime) || session.expTime <= 0) {
+			throw new Error('session.expTime must be a positive integer (ms)');
+		}
 
 		return Layer.succeed(
 			this,

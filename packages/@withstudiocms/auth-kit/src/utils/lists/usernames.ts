@@ -557,6 +557,12 @@ const usernames = new Set<string>([
 ]);
 
 export default usernames;
+// Canonicalize usernames for stable comparisons.
+const canonicalizeUsername = (name: string): string =>
+	(name ?? '').trim().normalize('NFKC').toLowerCase();
 
 // Prefer using this predicate to avoid exposing the mutable Set.
-export const isReservedUsername = (name: string): boolean => usernames.has(name.toLowerCase());
+export const isReservedUsername = (name: string): boolean => {
+	const normalized = canonicalizeUsername(name);
+	return usernames.has(normalized);
+};
