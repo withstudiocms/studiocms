@@ -56,12 +56,6 @@ catalogs:
     '@effect/cli':
       specifier: ^0.69.2
       version: 0.69.2
-    '@effect/cluster':
-      specifier: ^0.48.2
-      version: 0.48.2
-    '@effect/experimental':
-      specifier: ^0.54.6
-      version: 0.54.6
     '@effect/language-service':
       specifier: ^0.36.0
       version: 0.36.0
@@ -71,24 +65,6 @@ catalogs:
     '@effect/platform-node':
       specifier: ^0.96.0
       version: 0.96.0
-    '@effect/printer':
-      specifier: ^0.45.0
-      version: 0.45.0
-    '@effect/printer-ansi':
-      specifier: ^0.45.0
-      version: 0.45.0
-    '@effect/rpc':
-      specifier: ^0.69.1
-      version: 0.69.1
-    '@effect/sql':
-      specifier: ^0.44.2
-      version: 0.44.2
-    '@effect/typeclass':
-      specifier: ^0.36.0
-      version: 0.36.0
-    '@effect/workflow':
-      specifier: ^0.9.2
-      version: 0.9.2
     effect:
       specifier: ^3.17.9
       version: 3.17.9
@@ -668,36 +644,12 @@ importers:
       '@effect/cli':
         specifier: catalog:effect
         version: 0.69.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/printer-ansi@0.45.0(@effect/typeclass@0.36.0(effect@3.17.9))(effect@3.17.9))(@effect/printer@0.45.0(@effect/typeclass@0.36.0(effect@3.17.9))(effect@3.17.9))(effect@3.17.9)
-      '@effect/cluster':
-        specifier: catalog:effect
-        version: 0.48.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/workflow@0.9.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9))(effect@3.17.9)
-      '@effect/experimental':
-        specifier: catalog:effect
-        version: 0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9)
       '@effect/platform':
         specifier: catalog:effect
         version: 0.90.6(effect@3.17.9)
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.96.0(@effect/cluster@0.48.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/workflow@0.9.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9)
-      '@effect/printer':
-        specifier: catalog:effect
-        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.9))(effect@3.17.9)
-      '@effect/printer-ansi':
-        specifier: catalog:effect
-        version: 0.45.0(@effect/typeclass@0.36.0(effect@3.17.9))(effect@3.17.9)
-      '@effect/rpc':
-        specifier: catalog:effect
-        version: 0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9)
-      '@effect/sql':
-        specifier: catalog:effect
-        version: 0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9)
-      '@effect/typeclass':
-        specifier: catalog:effect
-        version: 0.36.0(effect@3.17.9)
-      '@effect/workflow':
-        specifier: catalog:effect
-        version: 0.9.2(@effect/platform@0.90.6(effect@3.17.9))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.9))(effect@3.17.9))(effect@3.17.9)
       astro:
         specifier: catalog:min
         version: 5.12.9(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0)

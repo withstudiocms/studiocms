@@ -70,19 +70,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@effect/cli": "catalog:effect",
-		"@effect/cluster": "catalog:effect",
-		"@effect/experimental": "catalog:effect",
-		"@effect/platform": "catalog:effect",
-		"@effect/platform-node": "catalog:effect",
-		"@effect/printer": "catalog:effect",
-		"@effect/printer-ansi": "catalog:effect",
-		"@effect/rpc": "catalog:effect",
-		"@effect/sql": "catalog:effect",
-		"@effect/typeclass": "catalog:effect",
-		"@effect/workflow": "catalog:effect",
 		"deepmerge-ts": "catalog:",
-		"effect": "catalog:effect",
 		"micromatch": "^4.0.8",
 		"nodemailer": "catalog:",
 		"socks": "^2.8.7"
@@ -94,6 +82,10 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"astro": "catalog:min"
+		"@effect/cli": "catalog:effect",
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
 	}
 }
