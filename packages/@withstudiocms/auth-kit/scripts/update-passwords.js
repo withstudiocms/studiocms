@@ -66,7 +66,7 @@ function generateTypeScriptCode(content) {
  * const isPasswordBlocked = blockedPasswords.has(userPassword.toLowerCase());
  */
 export const passwords = new Set<string>([
-${passwords.map((password) => `  "${password.replace(/"/g, '\\"')}"`).join(',\n')}
+${passwords.map((password) => `  "${password.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`).join(',\n')}
 ]);
 
 /**
