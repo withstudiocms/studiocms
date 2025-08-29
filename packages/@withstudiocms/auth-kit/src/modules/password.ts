@@ -65,16 +65,14 @@ export const Password = (Scrypt: IScrypt) =>
 		const verifyPasswordStrength = Effect.fn(
 			'@withstudiocms/AuthKit/modules/password.verifyPasswordStrength'
 		)(function* (pass: string) {
-			// Password must be between 6 ~ 255 characters
-			const lengthCheck = yield* verifyPasswordLength(pass);
+			const [lengthCheck, unsafeCheck, pwnedCheck] = yield* Effect.all([
+				verifyPasswordLength(pass),
+				verifySafe(pass),
+				checkPwnedDB(pass),
+			]);
+
 			if (lengthCheck) return lengthCheck;
-
-			// Check if password is known unsafe password
-			const unsafeCheck = yield* verifySafe(pass);
 			if (unsafeCheck) return unsafeCheck;
-
-			// Check if password is in pwned password database
-			const pwnedCheck = yield* checkPwnedDB(pass);
 			if (pwnedCheck) return pwnedCheck;
 
 			return true;

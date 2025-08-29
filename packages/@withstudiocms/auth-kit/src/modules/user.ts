@@ -44,13 +44,14 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		const verifyUsernameInput = Effect.fn(
 			'@withstudiocms/AuthKit/modules/user.verifyUsernameInput'
 		)(function* (username: string) {
-			const testLength = yield* verifyUsernameLength(username);
+			const [testLength, usernameChars, safeCheck] = yield* Effect.all([
+				verifyUsernameLength(username),
+				verifyUsernameCharacters(username),
+				verifyUsernameSafe(username),
+			]);
+
 			if (testLength) return testLength;
-
-			const usernameChars = yield* verifyUsernameCharacters(username);
 			if (usernameChars) return usernameChars;
-
-			const safeCheck = yield* verifyUsernameSafe(username);
 			if (safeCheck) return safeCheck;
 
 			return true;
@@ -89,9 +90,12 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		 */
 		const createLocalUser = Effect.fn('@withstudiocms/AuthKit/modules/user.createLocalUser')(
 			function* (name: string, username: string, email: string, password: string) {
-				const passwordHash = yield* Password.hashPassword(password);
-				const avatar = yield* createUserAvatar(email);
-				const id = yield* useUserError(() => userTools.idGenerator());
+				const [passwordHash, avatar, id] = yield* Effect.all([
+					Password.hashPassword(password),
+					createUserAvatar(email),
+					useUserError(() => userTools.idGenerator()),
+				]);
+
 				const createdAt = new Date();
 
 				const createdUser = yield* useUserErrorPromise(() =>
@@ -284,8 +288,10 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 			userData: UserSessionData | CombinedUserData | null,
 			requiredPerms: AvailablePermissionRanks
 		) {
-			const userLevel = yield* getUserPermissionLevel(userData);
-			const neededLevel = parseRequiredPerms(requiredPerms);
+			const [userLevel, neededLevel] = yield* Effect.all([
+				getUserPermissionLevel(userData),
+				parseRequiredPerms(requiredPerms),
+			]);
 			return userLevel >= neededLevel;
 		});
 

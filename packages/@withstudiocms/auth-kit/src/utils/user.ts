@@ -58,17 +58,18 @@ export const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
 		return userPermissionLevel;
 	});
 
-export const parseRequiredPerms = (requiredPerms: AvailablePermissionRanks) => {
-	switch (requiredPerms) {
-		case 'owner':
-			return UserPermissionLevel.owner;
-		case 'admin':
-			return UserPermissionLevel.admin;
-		case 'editor':
-			return UserPermissionLevel.editor;
-		case 'visitor':
-			return UserPermissionLevel.visitor;
-		default:
-			return UserPermissionLevel.unknown;
-	}
-};
+export const parseRequiredPerms = (requiredPerms: AvailablePermissionRanks) =>
+	useUserError(() => {
+		switch (requiredPerms) {
+			case 'owner':
+				return UserPermissionLevel.owner;
+			case 'admin':
+				return UserPermissionLevel.admin;
+			case 'editor':
+				return UserPermissionLevel.editor;
+			case 'visitor':
+				return UserPermissionLevel.visitor;
+			default:
+				return UserPermissionLevel.unknown;
+		}
+	});

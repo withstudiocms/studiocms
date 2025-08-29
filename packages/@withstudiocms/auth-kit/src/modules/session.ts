@@ -50,8 +50,10 @@ export const Session = (config: SessionConfig) =>
 		 */
 		const createSession = Effect.fn('@withstudiocms/AuthKit/modules/session.createSession')(
 			function* (token: string, userId: string) {
-				const sessionId = yield* makeSessionId(token);
-				const expirationDate = yield* makeExpirationDate(expTime);
+				const [sessionId, expirationDate] = yield* Effect.all([
+					makeSessionId(token),
+					makeExpirationDate(expTime),
+				]);
 				return yield* useSessionErrorPromise(() =>
 					sessionTools.createSession({ expiresAt: expirationDate, id: sessionId, userId })
 				);
