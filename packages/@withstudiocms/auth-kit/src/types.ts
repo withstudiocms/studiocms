@@ -61,15 +61,35 @@ export interface OAuthData {
 	providerUserId: string;
 }
 
+/**
+ * An array of available permission ranks for users.
+ *
+ * The permission ranks are defined as a constant tuple and include the following values:
+ * - 'owner': The highest level of permission, typically the creator or primary administrator.
+ * - 'admin': A high level of permission, usually for users who manage the system.
+ * - 'editor': A mid-level permission, for users who can modify content.
+ * - 'visitor': A low-level permission, for users who can view content but not modify it.
+ * - 'unknown': A default or fallback permission rank for users with undefined roles.
+ */
+export const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknown'] as const;
+
+/**
+ * Represents the available permission ranks for a user.
+ *
+ * This type is derived from the `availablePermissionRanks` array,
+ * and it includes all the possible values that a user can have as a permission rank.
+ */
+export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
+
 export interface PermissionsData {
 	user: string;
-	rank: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	rank: AvailablePermissionRanks;
 }
 
 export type UserSessionData = {
 	isLoggedIn: boolean;
 	user: UserData | null;
-	permissionLevel: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	permissionLevel: AvailablePermissionRanks;
 };
 
 export interface CombinedUserData extends UserData {
@@ -151,26 +171,6 @@ export interface UserConfig {
 	session: Required<SessionConfig>;
 	userTools?: UserTools;
 }
-
-/**
- * An array of available permission ranks for users.
- *
- * The permission ranks are defined as a constant tuple and include the following values:
- * - 'owner': The highest level of permission, typically the creator or primary administrator.
- * - 'admin': A high level of permission, usually for users who manage the system.
- * - 'editor': A mid-level permission, for users who can modify content.
- * - 'visitor': A low-level permission, for users who can view content but not modify it.
- * - 'unknown': A default or fallback permission rank for users with undefined roles.
- */
-export const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknown'] as const;
-
-/**
- * Represents the available permission ranks for a user.
- *
- * This type is derived from the `availablePermissionRanks` array,
- * and it includes all the possible values that a user can have as a permission rank.
- */
-export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
 
 /**
  * An enumeration representing different user permission levels.
