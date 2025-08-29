@@ -1,7 +1,7 @@
 import { encodeBase32LowerCaseNoPadding } from '@oslojs/encoding';
 import { Effect } from '@withstudiocms/effect';
 import type { APIContext, AstroGlobal } from 'astro';
-import { useSessionError, useSessionErrorPromise } from '../errors.js';
+import { SessionError, useSessionError, useSessionErrorPromise } from '../errors.js';
 import type { SessionConfig, SessionValidationResult } from '../types.js';
 import { defaultSessionConfig, makeExpirationDate, makeSessionId } from '../utils/session.js';
 
@@ -16,7 +16,9 @@ export const Session = (config: SessionConfig) =>
 		} as SessionConfig;
 
 		if (!sessionTools) {
-			return yield* Effect.fail(new Error('Session tools must be provided in the configuration'));
+			return yield* Effect.fail(
+				new SessionError({ cause: 'Session tools must be provided in the configuration' })
+			);
 		}
 
 		const expTimeHalf = expTime / 2;

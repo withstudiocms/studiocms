@@ -55,6 +55,8 @@ export class CheckIfUnsafeError extends Data.TaggedError('CheckIfUnsafeError')<{
  */
 export class SessionError extends Data.TaggedError('SessionError')<{ cause: unknown }> {}
 
+export class UserError extends Data.TaggedError('UserError')<{ cause: unknown }> {}
+
 /**
  * Executes a function within an Effect context, capturing any thrown errors as an `EncryptionError`.
  *
@@ -138,4 +140,16 @@ export const useUnsafeCheckError = <A>(
 	Effect.try({
 		try: _try,
 		catch: (cause) => new CheckIfUnsafeError({ message: `${prefix}: ${cause}` }),
+	});
+
+export const useUserError = <A>(_try: () => A): Effect.Effect<A, UserError> =>
+	Effect.try({
+		try: _try,
+		catch: (cause) => new UserError({ cause }),
+	});
+
+export const useUserErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, UserError> =>
+	Effect.tryPromise({
+		try: _try,
+		catch: (cause) => new UserError({ cause }),
 	});

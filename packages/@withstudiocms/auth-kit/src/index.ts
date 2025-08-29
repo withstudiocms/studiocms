@@ -4,10 +4,11 @@ import { AuthKitOptions, type RawAuthKitConfig } from './config.js';
 import { Encryption as _Encryption } from './modules/encryption.js';
 import { Password as _Password } from './modules/password.js';
 import { Session as _Session } from './modules/session.js';
+import { User as _User } from './modules/user.js';
 
 export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit', {
 	effect: Effect.gen(function* () {
-		const { CMS_ENCRYPTION_KEY, scrypt, session } = yield* AuthKitOptions;
+		const { CMS_ENCRYPTION_KEY, scrypt, session, userTools } = yield* AuthKitOptions;
 
 		/**
 		 * Scrypt Effect processor
@@ -37,10 +38,18 @@ export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit',
 		 */
 		const Session = Effect.withSpan('@withstudiocms/AuthKit.Session')(_Session(session));
 
+		/**
+		 * User management utilities
+		 */
+		const User = Effect.withSpan('@withstudiocms/AuthKit.User')(
+			_User({ Scrypt, session, userTools })
+		);
+
 		return {
 			Encryption,
 			Password,
 			Session,
+			User,
 		} as const;
 	}),
 }) {

@@ -3,6 +3,17 @@ import type { Effect } from '@withstudiocms/effect';
 import type { ScryptError } from '@withstudiocms/effect/scrypt';
 
 /**
+ * Mocked internal Scrypt type
+ */
+export type IScrypt = Effect.Effect<
+	{
+		run: (password: BinaryLike) => Effect.Effect<Buffer<ArrayBufferLike>, ScryptError, never>;
+	},
+	never,
+	never
+>;
+
+/**
  * Represents a user session with expiration information.
  *
  * @property expiresAt - The date and time when the session expires.
@@ -42,6 +53,28 @@ export interface UserData {
 	createdAt: Date | null;
 	emailVerified: boolean;
 	notifications: string | null;
+}
+
+export interface OAuthData {
+	userId: string;
+	provider: string;
+	providerUserId: string;
+}
+
+export interface PermissionsData {
+	user: string;
+	rank: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+}
+
+export type UserSessionData = {
+	isLoggedIn: boolean;
+	user: UserData | null;
+	permissionLevel: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+};
+
+export interface CombinedUserData extends UserData {
+	oAuthData: OAuthData[] | undefined;
+	permissionsData: PermissionsData | undefined;
 }
 
 /**
@@ -96,13 +129,63 @@ export interface SessionConfig {
 	sessionTools?: SessionTools;
 }
 
+export interface UserTools {
+	idGenerator(): string;
+	notifier?: {
+		admin(type: 'new_user', message: string): Promise<void>;
+	};
+	createLocalUser(data: UserData): Promise<UserData>;
+	createOAuthUser(data: {
+		provider: string;
+		providerUserId: string;
+		userId: string;
+	}): Promise<UserData>;
+	updateLocalUser(id: string, data: Partial<UserData>): Promise<UserData>;
+	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
+	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;
+	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;
+}
+
+export interface UserConfig {
+	Scrypt: IScrypt;
+	session: Required<SessionConfig>;
+	userTools?: UserTools;
+}
+
 /**
- * Mocked internal Scrypt type
+ * An array of available permission ranks for users.
+ *
+ * The permission ranks are defined as a constant tuple and include the following values:
+ * - 'owner': The highest level of permission, typically the creator or primary administrator.
+ * - 'admin': A high level of permission, usually for users who manage the system.
+ * - 'editor': A mid-level permission, for users who can modify content.
+ * - 'visitor': A low-level permission, for users who can view content but not modify it.
+ * - 'unknown': A default or fallback permission rank for users with undefined roles.
  */
-export type IScrypt = Effect.Effect<
-	{
-		run: (password: BinaryLike) => Effect.Effect<Buffer<ArrayBufferLike>, ScryptError, never>;
-	},
-	never,
-	never
->;
+export const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknown'] as const;
+
+/**
+ * Represents the available permission ranks for a user.
+ *
+ * This type is derived from the `availablePermissionRanks` array,
+ * and it includes all the possible values that a user can have as a permission rank.
+ */
+export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number];
+
+/**
+ * An enumeration representing different user permission levels.
+ *
+ * The permission levels are defined as follows:
+ * - visitor: 1
+ * - editor: 2
+ * - admin: 3
+ * - owner: 4
+ * - unknown: 0
+ */
+export enum UserPermissionLevel {
+	visitor = 1,
+	editor = 2,
+	admin = 3,
+	owner = 4,
+	unknown = 0,
+}
