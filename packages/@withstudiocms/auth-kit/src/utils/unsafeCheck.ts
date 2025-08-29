@@ -1,6 +1,8 @@
 import { Effect } from '@withstudiocms/effect';
 import { useUnsafeCheckError } from '../errors.js';
+// @ts-ignore - This is an Auto-generated module
 import { isReservedPassword } from './lists/passwords.js';
+// @ts-ignore - This is an Auto-generated module
 import { isReservedUsername } from './lists/usernames.js';
 
 /**

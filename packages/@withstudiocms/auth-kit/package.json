@@ -33,8 +33,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "update:username-list": "node ./scripts/update-usernames.js",
+    "update:password-list": "node ./scripts/update-passwords.js",
+    "update:lists": "pnpm update:username-list && pnpm update:password-list",
+    "build": "pnpm update:lists && pnpm buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "pnpm update:lists && pnpm buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
     "test": "buildkit test 'test/**/*.test.js'",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
