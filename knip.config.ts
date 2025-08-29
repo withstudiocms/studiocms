@@ -89,13 +89,20 @@ const atWithStudioCMSPackages = [
 const extras = (pkg: string) => {
 	const extrasMap: Record<
 		string,
-		{ ignoreDependencies?: (string | RegExp)[] | undefined; entry?: string[] | undefined }
+		{
+			ignoreDependencies?: (string | RegExp)[] | undefined;
+			entry?: string[] | undefined;
+			ignoreUnresolved?: (string | RegExp)[] | undefined;
+		}
 	> = {
 		markdoc: {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
 		},
 		effect: {
 			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
+		},
+		'auth-kit': {
+			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
