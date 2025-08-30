@@ -47,7 +47,7 @@
     "@withstudiocms/buildkit": "workspace:*",
     "execa": "^9.6.0",
     "knip": "^5.63.0",
-    "pkg-pr-new": "^0.0.57",
+    "pkg-pr-new": "^0.0.58",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
 		"ts-patch": "^3.3.0"
