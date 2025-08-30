@@ -109,7 +109,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				});
 
 				return createJsonResponse({ message: 'Success' }, { status: 200 });
-			}).pipe(User.Provide, Password.Provide),
+			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},
