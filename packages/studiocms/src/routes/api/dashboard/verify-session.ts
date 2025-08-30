@@ -111,7 +111,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { originPathname } = yield* parseAPIContextJson(ctx, JsonData);
 
-				const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
+				const sessionToken = cookies.get('auth_session')?.value ?? null;
 
 				if (!sessionToken) {
 					logger.info(
@@ -167,7 +167,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				return responseBuilder(ctx, true, user, permissionLevel);
-			}).pipe(Session.Provide),
+			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

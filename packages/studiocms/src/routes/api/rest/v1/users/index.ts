@@ -205,7 +205,7 @@ export const { ALL, GET, POST, OPTIONS } = createEffectAPIRoutes(
 						password,
 					})
 				);
-			}).pipe(Notifications.Provide, User.Provide, Password.Provide),
+			}).pipe(Notifications.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

@@ -189,11 +189,11 @@ export interface UserTools {
 		admin(type: 'new_user', message: string): Promise<void>;
 	};
 	createLocalUser(data: UserData): Promise<UserData>;
-	createOAuthUser(data: {
+	createOAuthUser(data: { provider: string; providerUserId: string; userId: string }): Promise<{
+		userId: string;
 		provider: string;
 		providerUserId: string;
-		userId: string;
-	}): Promise<UserData>;
+	}>;
 	updateLocalUser(id: string, data: Partial<UserData>): Promise<UserData>;
 	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
 	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;

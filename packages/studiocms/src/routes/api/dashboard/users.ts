@@ -4,6 +4,7 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
+import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -66,15 +67,15 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				const toLevel = (r?: string) => {
 					switch (r) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				};
 
@@ -84,7 +85,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				const isAllowedToUpdateRank =
 					userPermissionLevel > targetCurrentLevel &&
 					userPermissionLevel > targetNewLevel &&
-					(rank !== 'owner' || userPermissionLevel === User.UserPermissionLevel.owner);
+					(rank !== 'owner' || userPermissionLevel === UserPermissionLevel.owner);
 
 				if (!isAllowedToUpdateRank) {
 					return apiResponseLogger(403, 'Unauthorized');
@@ -110,7 +111,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				]);
 
 				return apiResponseLogger(200, 'User rank updated successfully');
-			}).pipe(User.Provide, Notifications.Provide),
+			}).pipe(Notifications.Provide),
 		DELETE: (ctx) =>
 			genLogger('studiocms/routes/api/dashboard/users.DELETE')(function* () {
 				const [notifications, sdk] = yield* Effect.all([Notifications, SDKCore]);

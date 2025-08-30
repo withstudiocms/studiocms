@@ -201,7 +201,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					default:
 						return apiResponseLogger(400, 'Invalid form data, mode is required or unsupported');
 				}
-			}).pipe(Password.Provide, User.Provide, Notifications.Provide),
+			}).pipe(Notifications.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},
