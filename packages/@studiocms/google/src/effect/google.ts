@@ -5,6 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { Google, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
+import { LinkNewOAuthCookieName } from 'studiocms/consts';
 import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
@@ -65,12 +66,7 @@ const GOOGLE = {
  * - User.Default: User data management utilities.
  */
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
-	dependencies: [
-		Session.Default,
-		VerifyEmail.Default,
-		User.Default,
-		Platform.FetchHttpClient.layer,
-	],
+	dependencies: [VerifyEmail.Default, Platform.FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
 		const [
 			sdk,
@@ -174,7 +170,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					}
 
 					const loggedInUser = yield* getUserData(context);
-					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+					const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
 						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
@@ -209,6 +205,11 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 							name: googleUser.name,
 							avatar: googleUser.picture,
 							createdAt: new Date(),
+							emailVerified: false,
+							notifications: null,
+							password: null,
+							updatedAt: new Date(),
+							url: null,
 						},
 						{ provider: GoogleOAuthAPI.ProviderID, providerUserId: googleUserId }
 					);

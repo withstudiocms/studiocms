@@ -19,7 +19,7 @@ const isAuthorized = await Effect.runPromise(
 			user,
 			(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
 		);
-	}).pipe(User.Provide)
+	})
 );
 
 if (!isAuthorized) {

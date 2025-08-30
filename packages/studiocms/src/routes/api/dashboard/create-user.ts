@@ -2,6 +2,7 @@ import { Password, User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
+import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import { z } from 'astro/zod';
 import {
 	AllResponse,
@@ -20,14 +21,6 @@ type JSONData = {
 	displayname: string | undefined;
 	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
 };
-
-export enum UserPermissionLevel {
-	visitor = 1,
-	editor = 2,
-	admin = 3,
-	owner = 4,
-	unknown = 0,
-}
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -87,28 +80,28 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				const rankToPerm = (r: typeof rank) => {
 					switch (r) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				};
 				const targetPerm = rankToPerm(rank);
 				// Use explicit weights to avoid relying on enum ordinal
 				const permWeight = (lvl: UserPermissionLevel) => {
 					switch (lvl) {
-						case User.UserPermissionLevel.owner:
+						case UserPermissionLevel.owner:
 							return 4;
-						case User.UserPermissionLevel.admin:
+						case UserPermissionLevel.admin:
 							return 3;
-						case User.UserPermissionLevel.editor:
+						case UserPermissionLevel.editor:
 							return 2;
-						case User.UserPermissionLevel.visitor:
+						case UserPermissionLevel.visitor:
 							return 1;
 						default:
 							return 0;
@@ -169,7 +162,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					200,
 					JSON.stringify({ username, email, displayname, rank: rank, password })
 				);
-			}).pipe(Password.Provide, User.Provide, Notifications.Provide),
+			}).pipe(Notifications.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

@@ -2,6 +2,7 @@ import { User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
+import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -92,15 +93,15 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const requiredPerms = () => {
 					switch (existingUserRank) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				};
 
@@ -111,7 +112,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				}
 
 				return createJsonResponse(data);
-			}).pipe(User.Provide),
+			}),
 		PATCH: (ctx) =>
 			genLogger('studioCMS:rest:v1:users:[id]:PATCH')(function* () {
 				const [sdk, user, userUtils, notifier] = yield* Effect.all([
@@ -164,15 +165,15 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const requiredPerms = () => {
 					switch (existingUserRank) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				};
 
@@ -192,15 +193,15 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const requiredPermsForNewRank = (() => {
 					switch (newRank) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				})();
 				if (userPermissionLevel <= requiredPermsForNewRank) {
@@ -244,7 +245,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				yield* notifier.sendAdminNotification('user_updated', username);
 
 				return createJsonResponse(data);
-			}).pipe(User.Provide, Notifications.Provide),
+			}).pipe(Notifications.Provide),
 		DELETE: (ctx) =>
 			genLogger('studioCMS:rest:v1:users:[id]:DELETE')(function* () {
 				const [sdk, user, userUtils, notifier] = yield* Effect.all([
@@ -300,15 +301,15 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				const requiredPerms = () => {
 					switch (existingUserRank) {
 						case 'owner':
-							return User.UserPermissionLevel.owner;
+							return UserPermissionLevel.owner;
 						case 'admin':
-							return User.UserPermissionLevel.admin;
+							return UserPermissionLevel.admin;
 						case 'editor':
-							return User.UserPermissionLevel.editor;
+							return UserPermissionLevel.editor;
 						case 'visitor':
-							return User.UserPermissionLevel.visitor;
+							return UserPermissionLevel.visitor;
 						default:
-							return User.UserPermissionLevel.unknown;
+							return UserPermissionLevel.unknown;
 					}
 				};
 
@@ -331,7 +332,7 @@ export const { ALL, DELETE, GET, OPTIONS, PATCH } = createEffectAPIRoutes(
 				yield* notifier.sendAdminNotification('user_deleted', existingUser.username);
 
 				return apiResponseLogger(200, response.message);
-			}).pipe(User.Provide, Notifications.Provide),
+			}).pipe(Notifications.Provide),
 		OPTIONS: () =>
 			Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'PATCH', 'DELETE'] })),
 		ALL: () => Effect.try(() => AllResponse()),

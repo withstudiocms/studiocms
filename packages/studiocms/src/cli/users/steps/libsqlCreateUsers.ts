@@ -1,11 +1,9 @@
+import type { CheckIfUnsafeError } from '@withstudiocms/auth-kit/errors';
+import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../../effect.js';
-import {
-	CheckIfUnsafe,
-	type CheckIfUnsafeError,
-} from '../../../virtuals/auth/utils/unsafeCheck.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { createUserAvatar } from '../../utils/createUserAvatar.js';
 import { logger } from '../../utils/logger.js';

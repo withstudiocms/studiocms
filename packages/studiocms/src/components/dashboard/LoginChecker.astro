@@ -18,7 +18,7 @@ let [isAuthorized, emailVerified] = await Effect.runPromise(
 			isUserAllowed(currentUser, requiredPermission),
 			isEmailVerified(currentUser),
 		]);
-	}).pipe(User.Provide, VerifyEmail.Provide)
+	}).pipe(VerifyEmail.Provide)
 );
 
 let redirectProfile = Astro.locals.StudioCMS.routeMap.mainLinks.userProfile;

@@ -1,6 +1,7 @@
 import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import type { APIContext } from 'astro';
 import { deepmerge, Effect, genLogger } from '../effect.js';
 
@@ -20,10 +21,10 @@ export const getUserPermissions = (userData: UserSessionData) =>
 		const userPermissionLevel = yield* getUserPermissionLevel(userData);
 
 		return {
-			isVisitor: userPermissionLevel >= User.UserPermissionLevel.visitor,
-			isEditor: userPermissionLevel >= User.UserPermissionLevel.editor,
-			isAdmin: userPermissionLevel >= User.UserPermissionLevel.admin,
-			isOwner: userPermissionLevel >= User.UserPermissionLevel.owner,
+			isVisitor: userPermissionLevel >= UserPermissionLevel.visitor,
+			isEditor: userPermissionLevel >= UserPermissionLevel.editor,
+			isAdmin: userPermissionLevel >= UserPermissionLevel.admin,
+			isOwner: userPermissionLevel >= UserPermissionLevel.owner,
 		};
 	});
 

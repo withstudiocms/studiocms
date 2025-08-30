@@ -5,6 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { GitHub, generateState } from 'arctic';
 import type { APIContext } from 'astro';
+import { LinkNewOAuthCookieName } from 'studiocms/consts';
 import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
@@ -64,12 +65,7 @@ const GITHUB = {
  * @see {@link User}
  */
 export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAuthAPI', {
-	dependencies: [
-		Session.Default,
-		VerifyEmail.Default,
-		User.Default,
-		Platform.FetchHttpClient.layer,
-	],
+	dependencies: [VerifyEmail.Default, Platform.FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/github/effect')(function* () {
 		const [
 			sdk,
@@ -163,7 +159,7 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 					}
 
 					const loggedInUser = yield* getUserData(context);
-					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+					const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
 						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
@@ -194,11 +190,15 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 						{
 							id: crypto.randomUUID(),
 							username: githubUsername,
-							email: githubUser.email,
+							email: githubUser.email || null,
 							name: githubUser.name || githubUsername,
 							avatar: githubUser.avatar_url,
 							createdAt: new Date(),
-							url: githubUser.blog,
+							url: githubUser.blog || null,
+							emailVerified: false,
+							notifications: null,
+							password: null,
+							updatedAt: new Date(),
 						},
 						{ provider: GitHubOAuthAPI.ProviderID, providerUserId: `${githubUserId}` }
 					);

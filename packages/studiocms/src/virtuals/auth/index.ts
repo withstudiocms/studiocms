@@ -1,7 +1,4 @@
-import { Encryption } from './encryption.js';
-import { Password } from './password.js';
-import { Session } from './session.js';
-import { User } from './user.js';
+import { Encryption, Password, Session, User } from './core.js';
 import { VerifyEmail } from './verify-email.js';
 
 export { Encryption };

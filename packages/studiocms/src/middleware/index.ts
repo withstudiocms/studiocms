@@ -85,7 +85,7 @@ export const onRequest = defineMiddlewareRouter([
 					VerifyEmail,
 				]);
 				return { getUserData, isEmailVerificationEnabled };
-			}).pipe(User.Provide, VerifyEmail.Provide);
+			}).pipe(VerifyEmail.Provide);
 
 			// Retrieve the user session data from the context locals or fetch it
 			const [userSessionData, emailVerificationEnabled] = yield* Effect.all([
@@ -94,7 +94,7 @@ export const onRequest = defineMiddlewareRouter([
 			]);
 
 			// Get the user permission levels based on the session data
-			const userPermissionLevel = yield* getUserPermissions(userSessionData).pipe(User.Provide);
+			const userPermissionLevel = yield* getUserPermissions(userSessionData);
 
 			// Set the security-related data in the context locals
 			yield* setLocals(context, SetLocal.SECURITY, {
@@ -135,7 +135,7 @@ export const onRequest = defineMiddlewareRouter([
 			const getUserData = yield* Effect.gen(function* () {
 				const { getUserData } = yield* User;
 				return getUserData;
-			}).pipe(User.Provide);
+			});
 
 			// Retrieve the user session data from the context locals or fetch it
 			const userSessionData =

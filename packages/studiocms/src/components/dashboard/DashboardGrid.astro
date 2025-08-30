@@ -32,7 +32,7 @@ const checkAllowed = (perm: 'owner' | 'admin' | 'editor' | 'visitor' | undefined
 	Effect.gen(function* () {
 		const user = yield* User;
 		return user.isUserAllowed(currentUser, perm ?? 'unknown');
-	}).pipe(User.Provide);
+	});
 ---
 
 <div class="dashboard-grid-container">

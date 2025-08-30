@@ -3,6 +3,7 @@ import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/li
 import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext } from 'astro';
+import { AuthSessionCookieName } from '../../../consts.js';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -111,7 +112,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { originPathname } = yield* parseAPIContextJson(ctx, JsonData);
 
-				const sessionToken = cookies.get(Session.sessionCookieName)?.value ?? null;
+				const sessionToken = cookies.get(AuthSessionCookieName)?.value ?? null;
 
 				if (!sessionToken) {
 					logger.info(
@@ -167,7 +168,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				return responseBuilder(ctx, true, user, permissionLevel);
-			}).pipe(Session.Provide),
+			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

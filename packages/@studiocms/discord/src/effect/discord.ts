@@ -5,6 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { Discord, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
+import { LinkNewOAuthCookieName } from 'studiocms/consts';
 import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
@@ -59,12 +60,7 @@ const DISCORD = {
  * - User.Default
  */
 export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordOAuthAPI', {
-	dependencies: [
-		Session.Default,
-		VerifyEmail.Default,
-		User.Default,
-		Platform.FetchHttpClient.layer,
-	],
+	dependencies: [VerifyEmail.Default, Platform.FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/discord/effect')(function* () {
 		const [
 			sdk,
@@ -168,7 +164,7 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 					}
 
 					const loggedInUser = yield* getUserData(context);
-					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+					const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
 						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
@@ -205,6 +201,11 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 							email: discordUser.email,
 							avatar: avatar_url,
 							createdAt: new Date(),
+							emailVerified: false,
+							notifications: null,
+							password: null,
+							updatedAt: new Date(),
+							url: null,
 						},
 						{ provider: DiscordOAuthAPI.ProviderID, providerUserId: discordUserId }
 					);
