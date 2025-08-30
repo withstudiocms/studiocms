@@ -1,5 +1,19 @@
 # studiocms
 
+## 0.1.0-beta.26
+
+### Patch Changes
+
+- [#730](https://github.com/withstudiocms/studiocms/pull/730) [`cf0e866`](https://github.com/withstudiocms/studiocms/commit/cf0e866e1508d6fec7d59c765126c6bbfe09f068) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to StudioCMS UI 1.0 beta
+
+- [#724](https://github.com/withstudiocms/studiocms/pull/724) [`0921bd3`](https://github.com/withstudiocms/studiocms/commit/0921bd330bcd69080aba0265db822b33327fbb9f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.49
+
+- [#734](https://github.com/withstudiocms/studiocms/pull/734) [`c613781`](https://github.com/withstudiocms/studiocms/commit/c613781d04003f1808a1632dcfcd2f2662d4ee8b) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- Updated dependencies [[`2ad259e`](https://github.com/withstudiocms/studiocms/commit/2ad259e9662bd4c8b58e07629491cb322eb479fa), [`e70f380`](https://github.com/withstudiocms/studiocms/commit/e70f38001d9ef80e27f701d249fda23c670dfb5e)]:
+  - @withstudiocms/effect@0.1.0-beta.2
+  - @withstudiocms/component-registry@0.1.0-beta.2
+
 ## 0.1.0-beta.25
 
 ### Patch Changes

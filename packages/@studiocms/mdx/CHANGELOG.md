@@ -1,5 +1,15 @@
 # @studiocms/mdx
 
+## 0.1.0-beta.26
+
+### Patch Changes
+
+- [#737](https://github.com/withstudiocms/studiocms/pull/737) [`ef0adee`](https://github.com/withstudiocms/studiocms/commit/ef0adeeba53be6c6cbe9e82d7fa3dbdc5cd4ea7e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @mdx-js/mdx to ^3.1.1
+
+- Updated dependencies [[`cf0e866`](https://github.com/withstudiocms/studiocms/commit/cf0e866e1508d6fec7d59c765126c6bbfe09f068), [`0921bd3`](https://github.com/withstudiocms/studiocms/commit/0921bd330bcd69080aba0265db822b33327fbb9f), [`c613781`](https://github.com/withstudiocms/studiocms/commit/c613781d04003f1808a1632dcfcd2f2662d4ee8b)]:
+  - studiocms@0.1.0-beta.26
+  - @studiocms/md@0.1.0-beta.26
+
 ## 0.1.0-beta.25
 
 ### Patch Changes
