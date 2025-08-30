@@ -17,7 +17,7 @@ catalogs:
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
     "@astrojs/node": ^9.4.3
-    astro: ^5.13.3
+    astro: ^5.13.5
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.2
@@ -43,8 +43,8 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.3.0
-    "@types/react": ^19.1.11
-    "@types/react-dom": ^19.1.8
+    "@types/react": ^19.1.12
+    "@types/react-dom": ^19.1.9
     react: ^19.1.1
     "react-dom": ^19.1.1
   studiocms:
