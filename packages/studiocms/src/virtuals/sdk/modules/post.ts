@@ -22,6 +22,7 @@ import type {
 	tsPageDataTagsInsert,
 	tsPageFolderInsert,
 	tsPermissionsInsert,
+	tsPermissionsSelect,
 } from '../types/index.js';
 import {
 	_ClearUnknownError,
@@ -284,7 +285,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 									.insert(tsPermissions)
 									.values({
 										user: userId,
-										rank,
+										rank: rank as tsPermissionsSelect['rank'],
 									})
 									.returning({ user: tsPermissions.user, rank: tsPermissions.rank })
 							);
