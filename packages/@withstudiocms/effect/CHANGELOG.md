@@ -1,5 +1,22 @@
 # @withstudiocms/effect
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [#736](https://github.com/withstudiocms/studiocms/pull/736) [`2ad259e`](https://github.com/withstudiocms/studiocms/commit/2ad259e9662bd4c8b58e07629491cb322eb479fa) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Move Effect packages to peerDependencies.
+
+  BREAKING CHANGE: Consumers may need to install the following peer deps:
+
+  - effect
+  - @effect/cli
+  - @effect/platform
+  - @effect/platform-node
+
+  See package.json for exact version ranges.
+
+- [#725](https://github.com/withstudiocms/studiocms/pull/725) [`e70f380`](https://github.com/withstudiocms/studiocms/commit/e70f38001d9ef80e27f701d249fda23c670dfb5e) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #725)
+
 ## 0.1.0-beta.1
 
 ### Patch Changes
