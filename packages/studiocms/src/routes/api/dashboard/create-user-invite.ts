@@ -199,7 +199,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				return apiResponseLogger(200, resetLink.toString());
-			}).pipe(User.Provide, Mailer.Provide, Notifications.Provide),
+			}).pipe(Mailer.Provide, Notifications.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

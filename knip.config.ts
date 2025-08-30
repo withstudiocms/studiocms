@@ -98,9 +98,6 @@ const extras = (pkg: string) => {
 		markdoc: {
 			ignoreDependencies: ['react-dom', '@types/react-dom'],
 		},
-		effect: {
-			ignoreDependencies: ['@effect/experimental', '@effect/typeclass', '@effect/workflow'],
-		},
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},

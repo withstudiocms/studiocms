@@ -12,13 +12,7 @@ import {
 } from '../../../effect.js';
 import { AuthAPIUtils } from './shared.js';
 
-const deps = Layer.mergeAll(
-	AuthAPIUtils.Default,
-	User.Default,
-	VerifyEmail.Default,
-	Password.Default,
-	Session.Default
-);
+const deps = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{

@@ -341,3 +341,6 @@ export function getUiOpts(userOpts?: Partial<UiOptions>): UiOptions {
 	};
 	return merged;
 }
+
+export const LinkNewOAuthCookieName = 'link-new-o-auth';
+export const AuthSessionCookieName = 'auth_session';

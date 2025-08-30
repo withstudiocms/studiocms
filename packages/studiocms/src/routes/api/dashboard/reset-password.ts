@@ -94,7 +94,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				]);
 
 				return apiResponseLogger(200, 'User password updated successfully');
-			}).pipe(Notifications.Provide, Password.Provide),
+			}).pipe(Notifications.Provide),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},
