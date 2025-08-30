@@ -5,6 +5,7 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { Auth0, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
+import { LinkNewOAuthCookieName } from 'studiocms/consts';
 import { Effect, genLogger, Platform, pipe, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
 
@@ -91,12 +92,7 @@ const AUTH0 = {
  * creates new users if necessary, verifies email, and creates user sessions.
  */
 export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAPI', {
-	dependencies: [
-		Session.Default,
-		VerifyEmail.Default,
-		User.Default,
-		Platform.FetchHttpClient.layer,
-	],
+	dependencies: [VerifyEmail.Default, Platform.FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/auth0/effect')(function* () {
 		const [
 			sdk,
@@ -200,7 +196,7 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 					}
 
 					const loggedInUser = yield* getUserData(context);
-					const linkNewOAuth = !!cookies.get(User.LinkNewOAuthCookieName)?.value;
+					const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
 
 					if (loggedInUser.user && linkNewOAuth) {
 						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
@@ -235,6 +231,11 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 							email: auth0User.email,
 							avatar: auth0User.picture,
 							createdAt: new Date(),
+							emailVerified: false,
+							notifications: null,
+							password: null,
+							updatedAt: new Date(),
+							url: null,
 						},
 						{ provider: Auth0OAuthAPI.ProviderID, providerUserId: auth0UserId }
 					);

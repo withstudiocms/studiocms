@@ -3,12 +3,13 @@ import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { AuthKit } from '@withstudiocms/auth-kit';
 import { AuthKitOptions } from '@withstudiocms/auth-kit/config';
 import type { CombinedUserData, PermissionsData } from '@withstudiocms/auth-kit/types';
+import { AuthSessionCookieName } from '../../consts.js';
 import { Effect, Layer, runEffect } from '../../effect.js';
 
 const authKitConfig = AuthKitOptions.Live({
 	CMS_ENCRYPTION_KEY,
 	session: {
-		cookieName: 'auth_session',
+		cookieName: AuthSessionCookieName,
 		expTime: 1000 * 60 * 60 * 24 * 14,
 		sessionTools: {
 			createSession: async (params) => runEffect(sdk.AUTH.session.create(params)),

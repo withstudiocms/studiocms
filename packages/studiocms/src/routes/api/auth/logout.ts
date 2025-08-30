@@ -1,5 +1,6 @@
 import { Session } from 'studiocms:auth/lib';
 import { StudioCMSRoutes } from 'studiocms:lib';
+import { AuthSessionCookieName } from '../../../consts.js';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -18,7 +19,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { cookies, redirect } = ctx;
 
-				const sessionToken = cookies.get('auth_session')?.value ?? null;
+				const sessionToken = cookies.get(AuthSessionCookieName)?.value ?? null;
 
 				if (!sessionToken) return redirect(StudioCMSRoutes.authLinks.loginURL);
 
