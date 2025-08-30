@@ -96,7 +96,7 @@ export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number]
  */
 export interface PermissionsData {
 	user: string;
-	rank: AvailablePermissionRanks | string;
+	rank: AvailablePermissionRanks;
 }
 
 /**
@@ -108,8 +108,8 @@ export interface PermissionsData {
  */
 export type UserSessionData = {
 	isLoggedIn: boolean;
-	user: UserData | null;
-	permissionLevel: AvailablePermissionRanks | string;
+	user: Required<UserData> | null;
+	permissionLevel: AvailablePermissionRanks;
 };
 
 /**

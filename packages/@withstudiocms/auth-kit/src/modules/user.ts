@@ -248,7 +248,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 
 			const { session: ses, user } = yield* Session.validateSessionToken(sessionToken);
 
-			if (!ses || !user) {
+			if (!ses || !user || user === null) {
 				yield* Session.deleteSessionTokenCookie(context);
 				return yield* getDefaultUserSession();
 			}
@@ -269,7 +269,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 				isLoggedIn: true,
 				user,
 				permissionLevel,
-			};
+			} as UserSessionData;
 		});
 
 		/**

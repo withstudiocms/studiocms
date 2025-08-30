@@ -53,7 +53,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const insertData: tsPermissionsSelect = {
 					user: id,
-					rank,
+					rank: rank as tsPermissionsSelect['rank'],
 				};
 
 				const user = yield* sdk.GET.users.byId(id);
