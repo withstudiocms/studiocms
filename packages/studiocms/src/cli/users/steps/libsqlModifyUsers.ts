@@ -1,5 +1,5 @@
 import type { CheckIfUnsafeError } from '@withstudiocms/auth-kit/errors';
-import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck.js';
+import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
