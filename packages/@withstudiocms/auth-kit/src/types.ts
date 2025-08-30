@@ -65,7 +65,7 @@ export interface UserData {
 export interface OAuthData {
 	userId: string;
 	provider: string;
-	providerUserId?: string | undefined;
+	providerUserId: string;
 }
 
 /**
@@ -99,6 +99,8 @@ export interface PermissionsData {
 	rank: AvailablePermissionRanks;
 }
 
+type Present<T> = { [K in keyof T]-?: Exclude<T[K], undefined> };
+
 /**
  * Represents the session data for a user.
  *
@@ -108,7 +110,7 @@ export interface PermissionsData {
  */
 export type UserSessionData = {
 	isLoggedIn: boolean;
-	user: Required<UserData> | null;
+	user: Present<UserData> | null;
 	permissionLevel: AvailablePermissionRanks;
 };
 
@@ -132,7 +134,7 @@ export interface CombinedUserData extends UserData {
  */
 export interface SessionAndUserData {
 	session: UserSession;
-	user: Required<UserData>;
+	user: Present<UserData>;
 }
 
 /**
@@ -188,13 +190,13 @@ export interface UserTools {
 	notifier?: {
 		admin(type: 'new_user', message: string): Promise<void>;
 	};
-	createLocalUser(data: UserData): Promise<Required<UserData>>;
+	createLocalUser(data: UserData): Promise<Present<UserData>>;
 	createOAuthUser(data: { provider: string; providerUserId: string; userId: string }): Promise<{
 		userId: string;
 		provider: string;
 		providerUserId: string;
 	}>;
-	updateLocalUser(id: string, data: Partial<UserData>): Promise<Required<UserData>>;
+	updateLocalUser(id: string, data: Partial<UserData>): Promise<Present<UserData>>;
 	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
 	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;
 	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;
