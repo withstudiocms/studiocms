@@ -145,7 +145,9 @@ export const Session = (config: SessionConfig) =>
 
 			if (now >= expiresAtMs - expTimeHalf) {
 				const expiresAt = new Date(now + expTime);
-				yield* useSessionErrorPromise(() => sessionTools.updateSession(session.id, { expiresAt }));
+				yield* useSessionErrorPromise(() =>
+					sessionTools.updateSession(session.id, { ...session, expiresAt })
+				);
 			}
 
 			return { session, user } as SessionValidationResult;

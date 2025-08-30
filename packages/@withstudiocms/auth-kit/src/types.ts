@@ -43,16 +43,16 @@ export interface UserSession {
  */
 export interface UserData {
 	name: string;
-	id: string;
-	url: string | null;
-	email: string | null;
-	avatar: string | null;
 	username: string;
-	password: string | null;
-	updatedAt: Date | null;
-	createdAt: Date | null;
-	emailVerified: boolean;
-	notifications: string | null;
+	id?: string | undefined;
+	url?: string | null | undefined;
+	email?: string | null | undefined;
+	avatar?: string | null | undefined;
+	password?: string | null | undefined;
+	updatedAt?: Date | null | undefined;
+	createdAt?: Date | null | undefined;
+	emailVerified?: boolean | undefined;
+	notifications?: string | null | undefined;
 }
 
 /**
@@ -65,7 +65,7 @@ export interface UserData {
 export interface OAuthData {
 	userId: string;
 	provider: string;
-	providerUserId: string;
+	providerUserId?: string | undefined;
 }
 
 /**
@@ -96,7 +96,7 @@ export type AvailablePermissionRanks = (typeof availablePermissionRanks)[number]
  */
 export interface PermissionsData {
 	user: string;
-	rank: AvailablePermissionRanks;
+	rank: AvailablePermissionRanks | string;
 }
 
 /**
@@ -109,7 +109,7 @@ export interface PermissionsData {
 export type UserSessionData = {
 	isLoggedIn: boolean;
 	user: UserData | null;
-	permissionLevel: AvailablePermissionRanks;
+	permissionLevel: AvailablePermissionRanks | string;
 };
 
 /**
@@ -132,7 +132,7 @@ export interface CombinedUserData extends UserData {
  */
 export interface SessionAndUserData {
 	session: UserSession;
-	user: UserData;
+	user: Required<UserData>;
 }
 
 /**
@@ -160,7 +160,7 @@ export interface SessionTools {
 	createSession(params: UserSession): Promise<UserSession>;
 	sessionAndUserData(sessionId: string): Promise<SessionAndUserData[]>;
 	deleteSession(sessionId: string): Promise<void>;
-	updateSession(sessionId: string, data: Partial<UserSession>): Promise<UserSession[]>;
+	updateSession(sessionId: string, data: UserSession): Promise<UserSession[]>;
 }
 
 /**
@@ -188,13 +188,13 @@ export interface UserTools {
 	notifier?: {
 		admin(type: 'new_user', message: string): Promise<void>;
 	};
-	createLocalUser(data: UserData): Promise<UserData>;
+	createLocalUser(data: UserData): Promise<Required<UserData>>;
 	createOAuthUser(data: { provider: string; providerUserId: string; userId: string }): Promise<{
 		userId: string;
 		provider: string;
 		providerUserId: string;
 	}>;
-	updateLocalUser(id: string, data: Partial<UserData>): Promise<UserData>;
+	updateLocalUser(id: string, data: Partial<UserData>): Promise<Required<UserData>>;
 	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
 	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;
 	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;
