@@ -31,9 +31,6 @@
     "ci:typecheck:studiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
     "ci:test:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* test",
-    "ci:crowdin:bot": "node ./scripts/crowdin-report-bot.mjs",
-    "ci:translations:changeset": "node ./scripts/translation-changeset.mjs",
-    "ci:effect:changeset": "node ./scripts/effect-changeset.mjs",
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
   },

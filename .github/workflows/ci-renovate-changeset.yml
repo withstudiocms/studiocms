@@ -45,7 +45,7 @@ jobs:
         uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
         
       - name: Create Effect Changesets
-        run: pnpm ci:effect:changeset
+        run: node .github/scripts/effect-changeset.mjs
         env:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
