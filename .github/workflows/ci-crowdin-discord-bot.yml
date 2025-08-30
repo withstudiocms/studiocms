@@ -28,7 +28,6 @@ jobs:
         name: Format Discord message
         run: node .github/scripts/crowdin-report-bot.mjs
         env:
-          WORKFLOW_DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 

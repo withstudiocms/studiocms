@@ -3,7 +3,7 @@
 import { setOutput } from '@actions/core';
 import crowdin from '@crowdin/crowdin-api-client';
 
-const { WORKFLOW_DISPATCH, CROWDIN_PROJECT_ID, CROWDIN_PERSONAL_TOKEN } = process.env;
+const { CROWDIN_PROJECT_ID, CROWDIN_PERSONAL_TOKEN } = process.env;
 
 await setDiscordMessage();
 
@@ -49,7 +49,7 @@ async function setDiscordMessage() {
 		})
 	);
 
-	let message = `**The Weekly translation report is here!** <@&1311284611799846942>${WORKFLOW_DISPATCH ? ' EARLY!!!' : ''}\n\n`;
+	let message = '**The Weekly translation report is here!** <@&1311284611799846942>\n\n';
 
 	for (const lang of remappedData) {
 		message += `- ${lang.name} (${lang.id}) - ${lang.translationProgress}% Complete\n`;
