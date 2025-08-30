@@ -1,9 +1,9 @@
 {
   "name": "root",
   "private": true,
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@10.15.0",
   "engines": {
-    "node": "20.14.0"
+    "node": "20.18.1"
   },
   "scripts": {
     "build": "pnpm build:studiocms && pnpm --filter node-playground build",
@@ -14,8 +14,8 @@
     "build:studiocms:main": "pnpm --filter studiocms build",
     "test:built": "pnpm build:studiocms && pnpm playground:dev",
     "test-build:studiocms": "pnpm --filter studiocms build",
-    "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* -r -parallel dev",
-    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r -parallel dev",
+    "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* -r --parallel dev",
+    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
     "cli:test": "pnpm studiocms",
     "changeset": "changeset",
     "knip": "knip",
