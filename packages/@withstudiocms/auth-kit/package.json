@@ -57,7 +57,8 @@
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
-    }
+    },
+    "./utils/*": "./dist/utils/*"
   },
   "type": "module",
   "dependencies": {
