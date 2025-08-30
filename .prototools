@@ -1,5 +1,5 @@
 biome = "1.9.4"
-node = "20.14.0"
+node = "20.18.1"
 pnpm = "10.15.0"
 
 [plugins]
