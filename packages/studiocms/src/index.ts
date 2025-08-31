@@ -273,7 +273,6 @@ export const studiocms = defineIntegration({
 								'./virtuals/lib/head.js',
 								'./virtuals/lib/headDefaults.js',
 								'./virtuals/lib/pathGenerators.js',
-								'./virtuals/lib/removeLeadingTrailingSlashes.js',
 								'./virtuals/lib/routeMap.js',
 								'./virtuals/lib/urlGen.js',
 							]),
