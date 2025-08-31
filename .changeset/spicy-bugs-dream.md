@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Cleanup and remove deprecated `removeLeadingTrailingSlashse` in favor of `stripLeadingAndTrailingSlashes` function
+Clean up and remove deprecated `removeLeadingTrailingSlashes` in favor of `stripLeadingAndTrailingSlashes`.
