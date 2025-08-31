@@ -80,6 +80,19 @@ export const getDefaultUserSession = Effect.fn(() =>
 	} as UserSessionData)
 );
 
+const normalizeRank = (v: unknown): AvailablePermissionRanks => {
+	switch (v) {
+		case 'owner':
+		case 'admin':
+		case 'editor':
+		case 'visitor':
+		case 'unknown':
+			return v;
+		default:
+			return 'unknown';
+	}
+};
+
 /**
  * Determines the user's permission level based on the provided user data.
  *
@@ -95,10 +108,10 @@ export const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
 		if (!userData) return 'unknown';
 		let userPermissionLevel: AvailablePermissionRanks = 'unknown';
 		if ('permissionLevel' in userData) {
-			userPermissionLevel = userData.permissionLevel as AvailablePermissionRanks;
+			userPermissionLevel = normalizeRank(userData.permissionLevel);
 		}
 		if ('permissionsData' in userData && userData.permissionsData?.rank) {
-			userPermissionLevel = userData.permissionsData.rank as AvailablePermissionRanks;
+			userPermissionLevel = normalizeRank(userData.permissionsData.rank);
 		}
 		return userPermissionLevel;
 	});

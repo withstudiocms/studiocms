@@ -73,7 +73,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate target rank and ensure caller has sufficient privilege
-				if (!ValidRanks.has(rank)) {
+				if (!ValidRanks.has(rank) || rank === 'unknown') {
 					return apiResponseLogger(400, 'Invalid rank');
 				}
 				const callerPerm = yield* userHelper.getUserPermissionLevel(userData);
@@ -107,8 +107,13 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 							return 0;
 					}
 				};
-				// Caller must strictly outrank the target rank they want to assign
-				if (permWeight(callerPerm) <= permWeight(targetPerm)) {
+
+				// Only owners can assign 'owner'
+				if (rank === 'owner' && callerPerm !== UserPermissionLevel.owner) {
+					return createJsonResponse({ error: 'Forbidden' }, { status: 403 });
+				}
+				// Allow equality for owner→owner; otherwise require caller >= target
+				if (permWeight(callerPerm) < permWeight(targetPerm)) {
 					return createJsonResponse({ error: 'Forbidden' }, { status: 403 });
 				}
 

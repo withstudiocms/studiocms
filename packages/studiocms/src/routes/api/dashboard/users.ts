@@ -47,7 +47,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate rank to prevent invalid updates
-				if (!ValidRanks.has(rank)) {
+				if (!ValidRanks.has(rank) || rank === 'unknown') {
 					return apiResponseLogger(400, 'Invalid rank supplied');
 				}
 
@@ -64,7 +64,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const userPermissionLevel = yield* userHelper.getUserPermissionLevel(userData);
 
-				const toLevel = (r?: string) => {
+				const toLevel = (r?: AvailablePermissionRanks) => {
 					switch (r) {
 						case 'owner':
 							return UserPermissionLevel.owner;
@@ -79,15 +79,29 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				};
 
-				const targetCurrentLevel = toLevel(user.permissionsData?.rank);
+				const targetCurrentLevel = toLevel(
+					user.permissionsData?.rank as AvailablePermissionRanks | undefined
+				);
 				const targetNewLevel = toLevel(rank);
 
+				const weight = (lvl: UserPermissionLevel) => {
+					switch (lvl) {
+						case UserPermissionLevel.owner:
+							return 4;
+						case UserPermissionLevel.admin:
+							return 3;
+						case UserPermissionLevel.editor:
+							return 2;
+						case UserPermissionLevel.visitor:
+							return 1;
+						default:
+							return 0;
+					}
+				};
+
 				const isAllowedToUpdateRank =
-					// Must outrank the target's current level
-					userPermissionLevel > targetCurrentLevel &&
-					// Must be at least the new level (allow equality for promotions to own level)
-					userPermissionLevel >= targetNewLevel &&
-					// Only owners can set rank to 'owner'
+					weight(userPermissionLevel) > weight(targetCurrentLevel) &&
+					weight(userPermissionLevel) >= weight(targetNewLevel) &&
 					(rank !== 'owner' || userPermissionLevel === UserPermissionLevel.owner);
 
 				if (!isAllowedToUpdateRank) {

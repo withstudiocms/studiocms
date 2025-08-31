@@ -24,6 +24,8 @@ const { link, changelog } = Astro.props;
 
                 const frameContainer = document.createElement('div');
                 frameContainer.style.position = 'absolute';
+                frameContainer.setAttribute('role', 'dialog');
+                frameContainer.setAttribute('aria-modal', 'true');
                 frameContainer.style.width = '100%';
                 frameContainer.style.height = '100%';
                 frameContainer.style.backgroundColor = 'var(--background-step-1)';
@@ -52,6 +54,7 @@ const { link, changelog } = Astro.props;
                 frameButton.style.justifyContent = 'center';
                 frameButton.style.alignItems = 'center';
                 frameButton.style.transition = 'background-color 0.15s ease-in-out';
+                frameButton.setAttribute('aria-label', 'Close full changelog');
 
                 const frameContent = document.createElement('div');
                 frameContent.style.padding = '1.5rem';
@@ -97,6 +100,11 @@ const { link, changelog } = Astro.props;
                     frameContainer.style.display = 'flex';
                 });
 
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape' && frameContainer.style.display === 'flex') {
+                    frameContainer.style.display = 'none';
+                  }
+                });
 
                 frameContainer.appendChild(frameButton);
                 frameContainer.appendChild(frameContent);
