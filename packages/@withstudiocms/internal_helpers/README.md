@@ -1,6 +1,6 @@
-# @withstudiocms/auth-kit
+# @withstudiocms/internal_helpers
 
-Authentication Management utilities for StudioCMS
+Internal helpers and utilities for the @withstudiocms eco-system.
 
 ## License
 
