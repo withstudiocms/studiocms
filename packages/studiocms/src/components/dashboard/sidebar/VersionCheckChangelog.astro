@@ -17,6 +17,8 @@ const { link, changelog } = Astro.props;
     if (!customElements.get('frame-button')) {
         
         class FrameButton extends HTMLElement {
+            _onKeydown: (e: KeyboardEvent) => void;
+
             constructor() {
                 super();
                 // Get the slot element
@@ -100,11 +102,11 @@ const { link, changelog } = Astro.props;
                     frameContainer.style.display = 'flex';
                 });
 
-                document.addEventListener('keydown', (e) => {
+                this._onKeydown = (e: KeyboardEvent) => {
                   if (e.key === 'Escape' && frameContainer.style.display === 'flex') {
                     frameContainer.style.display = 'none';
                   }
-                });
+                };
 
                 frameContainer.appendChild(frameButton);
                 frameContainer.appendChild(frameContent);
@@ -112,6 +114,13 @@ const { link, changelog } = Astro.props;
                 const shadow = this.attachShadow({ mode: 'open' });
                 shadow.appendChild(frameContainer);
                 shadow.appendChild(slot);
+            }
+
+            connectedCallback() {
+                document.addEventListener('keydown', this._onKeydown);
+            }
+            disconnectedCallback() {
+                document.removeEventListener('keydown', this._onKeydown);
             }
         }
 
