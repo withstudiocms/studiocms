@@ -19,6 +19,7 @@ import {
 	getLatestVersion,
 	integrationLogger,
 	logMessages,
+	type Messages,
 } from '@withstudiocms/internal_helpers/astro-integration';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { envField } from 'astro/config';
@@ -46,7 +47,6 @@ import {
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import type { Messages } from './types.js';
 import {
 	buildDefaultOnlyVirtual,
 	buildLoggerVirtual,

@@ -1,4 +1,8 @@
-import { integrationLogger, pluginLogger } from '@withstudiocms/internal_helpers/astro-integration';
+import {
+	integrationLogger,
+	type Messages,
+	pluginLogger,
+} from '@withstudiocms/internal_helpers/astro-integration';
 import {
 	convertToSafeString,
 	pageContentComponentFilter,
@@ -26,7 +30,7 @@ import type {
 	StudioCMSPlugin,
 } from '../schemas/index.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
-import type { Messages, Route } from '../types.js';
+import type { Route } from '../types.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
