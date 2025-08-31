@@ -41,8 +41,8 @@ catalogs:
       specifier: ^0.25.8
       version: 0.25.9
     nodemailer:
-      specifier: ^7.0.5
-      version: 7.0.5
+      specifier: ^7.0.6
+      version: 7.0.6
     sharp:
       specifier: ^0.34.3
       version: 0.34.3
@@ -664,7 +664,7 @@ importers:
         version: 4.0.8
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.5
+        version: 7.0.6
       socks:
         specifier: ^2.8.7
         version: 2.8.7
@@ -810,7 +810,7 @@ importers:
         version: 1.0.1
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.5
+        version: 7.0.6
       package-manager-detector:
         specifier: ^1.3.0
         version: 1.3.0
@@ -4450,8 +4450,8 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
-  nodemailer@7.0.5:
-    resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
+  nodemailer@7.0.6:
+    resolution: {integrity: sha512-F44uVzgwo49xboqbFgBGkRaiMgtoBrBEWCVincJPK9+S9Adkzt/wXCLKbf7dxucmxfTI5gHGB+bEmdyzN6QKjw==}
     engines: {node: '>=6.0.0'}
 
   nopt@1.0.10:
@@ -10206,7 +10206,7 @@ snapshots:
 
   node-releases@2.0.19: {}
 
-  nodemailer@7.0.5: {}
+  nodemailer@7.0.6: {}
 
   nopt@1.0.10:
     dependencies:
