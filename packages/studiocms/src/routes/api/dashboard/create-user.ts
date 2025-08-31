@@ -2,8 +2,9 @@ import { Password, User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { type AvailablePermissionRanks, UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import { z } from 'astro/zod';
+import { ValidRanks } from '../../../consts.js';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -19,7 +20,7 @@ type JSONData = {
 	password: string | undefined;
 	email: string | undefined;
 	displayname: string | undefined;
-	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
+	rank: AvailablePermissionRanks | undefined;
 };
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
@@ -72,8 +73,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate target rank and ensure caller has sufficient privilege
-				const allowedRanks = new Set(['owner', 'admin', 'editor', 'visitor'] as const);
-				if (!allowedRanks.has(rank)) {
+				if (!ValidRanks.has(rank)) {
 					return apiResponseLogger(400, 'Invalid rank');
 				}
 				const callerPerm = yield* userHelper.getUserPermissionLevel(userData);

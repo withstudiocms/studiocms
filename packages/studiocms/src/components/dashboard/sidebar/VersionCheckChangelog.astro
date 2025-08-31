@@ -1,4 +1,6 @@
 ---
+import css from '@studiocms/ui/css/prose.css?raw';
+
 interface Props {
 	link: string;
 	changelog: string;
@@ -7,7 +9,7 @@ interface Props {
 const { link, changelog } = Astro.props;
 ---
 
-<frame-button data-link={link} data-changelog={changelog}>
+<frame-button data-link={link} data-changelog={changelog} data-styles={css}>
     <slot />
 </frame-button>
 
@@ -83,15 +85,18 @@ const { link, changelog } = Astro.props;
                         },
                         body: JSON.stringify({ currentURLOrigin: window.location.origin }),
                     })).json();
+                    const styles = this.getAttribute('data-styles')!;
 
                     frameContent.innerHTML = `
                         <h1>Full Changelog</h1>
                         <a href="${changelogLink}" target="_blank">See on GitHub ⤴</a>
-                        ${changelog}
+                        <style>${styles}</style>
+                        <div class="prose">${changelog}</div>
                     `;
 
                     frameContainer.style.display = 'flex';
                 });
+
 
                 frameContainer.appendChild(frameButton);
                 frameContainer.appendChild(frameContent);

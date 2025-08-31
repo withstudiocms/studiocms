@@ -7,6 +7,8 @@ Authentication Management utilities for StudioCMS
 The following are example tables that would work with this auth-kit system. The same tables are used within StudioCMS.
 
 ```ts
+import { defineTable, column, NOW } from 'astro:db';
+
 const Users = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),

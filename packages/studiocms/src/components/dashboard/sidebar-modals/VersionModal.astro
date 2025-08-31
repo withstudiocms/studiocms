@@ -1,4 +1,5 @@
 ---
+import 'studiocms:ui/prose';
 import changelog from 'studiocms:changelog';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Modal } from 'studiocms:ui/components/modal';
@@ -53,7 +54,7 @@ const lastChecked = new Date(latestVersion.lastCacheUpdate);
         </div>
 
         <div class="version-modal-release-notes">
-            <div><Fragment set:html={parseMarkdown(changelog)} /></div>
+            <div class="prose"><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
                 <VersionCheckChangelog changelog={studioCMSSocials.changelog} link={Astro.locals.StudioCMS.routeMap.sdk.changelog}><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
             </span>

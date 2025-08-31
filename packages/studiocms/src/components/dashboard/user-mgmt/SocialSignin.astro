@@ -3,15 +3,12 @@ import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Center } from 'studiocms:ui/components/center';
+import type { OAuthData } from '@withstudiocms/auth-kit/types';
 import { providerData } from '../profile/oAuthButtonProviders.js';
 
 interface Props {
 	lang: UiLanguageKeys;
-	oAuthData?: {
-		provider: string;
-		providerUserId: string;
-		userId: string;
-	}[];
+	oAuthData?: OAuthData[];
 }
 
 const { oAuthData, lang } = Astro.props;

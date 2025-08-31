@@ -1,6 +1,7 @@
 import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import type uiIntegration from '@studiocms/ui';
+import { availablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import type { AstroConfig } from 'astro';
 import type { RobotsConfig } from './integrations/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
@@ -344,3 +345,5 @@ export function getUiOpts(userOpts?: Partial<UiOptions>): UiOptions {
 
 export const LinkNewOAuthCookieName = 'link-new-o-auth';
 export const AuthSessionCookieName = 'auth_session';
+
+export const ValidRanks = new Set(availablePermissionRanks);

@@ -1,9 +1,10 @@
 ---
 import { User } from 'studiocms:auth/lib';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { Effect } from '../../../effect.js';
 
 interface Props {
-	requiredPermission?: string;
+	requiredPermission?: AvailablePermissionRanks;
 }
 
 const { requiredPermission } = Astro.props;
@@ -15,10 +16,7 @@ const { userSessionData: user } = Astro.locals.StudioCMS?.security ?? {
 const isAuthorized = await Effect.runPromise(
 	Effect.gen(function* () {
 		const { isUserAllowed } = yield* User;
-		return yield* isUserAllowed(
-			user,
-			(requiredPermission as 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown') ?? 'unknown'
-		);
+		return yield* isUserAllowed(user, requiredPermission ?? 'unknown');
 	})
 );
 

@@ -4,7 +4,8 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
-import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { type AvailablePermissionRanks, UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { ValidRanks } from '../../../consts.js';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -37,7 +38,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { id, rank, emailVerified } = yield* readAPIContextJson<{
 					id: string;
-					rank: string;
+					rank: AvailablePermissionRanks;
 					emailVerified: boolean;
 				}>(ctx);
 
@@ -46,14 +47,13 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate rank to prevent invalid updates
-				const validRanks = new Set(['owner', 'admin', 'editor', 'visitor']);
-				if (!validRanks.has(rank)) {
+				if (!ValidRanks.has(rank)) {
 					return apiResponseLogger(400, 'Invalid rank supplied');
 				}
 
 				const insertData: tsPermissionsSelect = {
 					user: id,
-					rank: rank as tsPermissionsSelect['rank'],
+					rank: rank,
 				};
 
 				const user = yield* sdk.GET.users.byId(id);
@@ -83,8 +83,11 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				const targetNewLevel = toLevel(rank);
 
 				const isAllowedToUpdateRank =
+					// Must outrank the target's current level
 					userPermissionLevel > targetCurrentLevel &&
-					userPermissionLevel > targetNewLevel &&
+					// Must be at least the new level (allow equality for promotions to own level)
+					userPermissionLevel >= targetNewLevel &&
+					// Only owners can set rank to 'owner'
 					(rank !== 'owner' || userPermissionLevel === UserPermissionLevel.owner);
 
 				if (!isAllowedToUpdateRank) {

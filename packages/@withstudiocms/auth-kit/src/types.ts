@@ -122,8 +122,8 @@ export type UserSessionData = {
  * @property {PermissionsData | undefined} permissionsData - The permissions data for the user, or undefined if not available.
  */
 export interface CombinedUserData extends UserData {
-	oAuthData: OAuthData[] | undefined;
-	permissionsData: PermissionsData | undefined;
+	oAuthData?: OAuthData[];
+	permissionsData?: PermissionsData;
 }
 
 /**
@@ -232,3 +232,18 @@ export enum UserPermissionLevel {
 	owner = 4,
 	unknown = 0,
 }
+
+export const rankToLevel: Record<AvailablePermissionRanks, UserPermissionLevel> = {
+	unknown: UserPermissionLevel.unknown,
+	visitor: UserPermissionLevel.visitor,
+	editor: UserPermissionLevel.editor,
+	admin: UserPermissionLevel.admin,
+	owner: UserPermissionLevel.owner,
+};
+export const levelToRank: Record<UserPermissionLevel, AvailablePermissionRanks> = {
+	[UserPermissionLevel.unknown]: 'unknown',
+	[UserPermissionLevel.visitor]: 'visitor',
+	[UserPermissionLevel.editor]: 'editor',
+	[UserPermissionLevel.admin]: 'admin',
+	[UserPermissionLevel.owner]: 'owner',
+};

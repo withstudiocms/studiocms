@@ -97,10 +97,8 @@ export const getLevel = (userData: UserSessionData | CombinedUserData | null) =>
 		if ('permissionLevel' in userData) {
 			userPermissionLevel = userData.permissionLevel as AvailablePermissionRanks;
 		}
-		if ('permissionsData' in userData) {
-			userPermissionLevel = userData.permissionsData?.rank
-				? (userData.permissionsData.rank as AvailablePermissionRanks)
-				: 'unknown';
+		if ('permissionsData' in userData && userData.permissionsData?.rank) {
+			userPermissionLevel = userData.permissionsData.rank as AvailablePermissionRanks;
 		}
 		return userPermissionLevel;
 	});

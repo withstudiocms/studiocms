@@ -3,6 +3,7 @@ import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPerm
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
 import { User } from 'studiocms:ui/components/user';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 
 interface Props {
 	user: {
@@ -14,7 +15,7 @@ interface Props {
 		permissionsData:
 			| {
 					user: string;
-					rank: string;
+					rank: AvailablePermissionRanks;
 			  }
 			| undefined;
 	};

@@ -248,7 +248,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 
 			const { session: ses, user } = yield* Session.validateSessionToken(sessionToken);
 
-			if (!ses || !user || user === null) {
+			if (!ses || !user) {
 				yield* Session.deleteSessionTokenCookie(context);
 				return yield* getDefaultUserSession();
 			}
@@ -265,11 +265,12 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 				(result && rankToPermissionLevel[result.rank]) ||
 				('unknown' as UserSessionData['permissionLevel']);
 
-			return {
+			const out: UserSessionData = {
 				isLoggedIn: true,
 				user,
 				permissionLevel,
-			} as UserSessionData;
+			};
+			return out;
 		});
 
 		/**
