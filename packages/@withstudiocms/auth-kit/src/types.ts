@@ -43,16 +43,16 @@ export interface UserSession {
  */
 export interface UserData {
 	name: string;
-	id: string;
-	url: string | null;
-	email: string | null;
-	avatar: string | null;
 	username: string;
-	password: string | null;
-	updatedAt: Date | null;
-	createdAt: Date | null;
-	emailVerified: boolean;
-	notifications: string | null;
+	id?: string | undefined;
+	url?: string | null | undefined;
+	email?: string | null | undefined;
+	avatar?: string | null | undefined;
+	password?: string | null | undefined;
+	updatedAt?: Date | null | undefined;
+	createdAt?: Date | null | undefined;
+	emailVerified?: boolean | undefined;
+	notifications?: string | null | undefined;
 }
 
 /**
@@ -99,6 +99,8 @@ export interface PermissionsData {
 	rank: AvailablePermissionRanks;
 }
 
+type Present<T> = { [K in keyof T]-?: Exclude<T[K], undefined> };
+
 /**
  * Represents the session data for a user.
  *
@@ -108,7 +110,7 @@ export interface PermissionsData {
  */
 export type UserSessionData = {
 	isLoggedIn: boolean;
-	user: UserData | null;
+	user: Present<UserData> | null;
 	permissionLevel: AvailablePermissionRanks;
 };
 
@@ -120,8 +122,8 @@ export type UserSessionData = {
  * @property {PermissionsData | undefined} permissionsData - The permissions data for the user, or undefined if not available.
  */
 export interface CombinedUserData extends UserData {
-	oAuthData: OAuthData[] | undefined;
-	permissionsData: PermissionsData | undefined;
+	oAuthData?: OAuthData[];
+	permissionsData?: PermissionsData;
 }
 
 /**
@@ -132,7 +134,7 @@ export interface CombinedUserData extends UserData {
  */
 export interface SessionAndUserData {
 	session: UserSession;
-	user: UserData;
+	user: Present<UserData>;
 }
 
 /**
@@ -160,7 +162,7 @@ export interface SessionTools {
 	createSession(params: UserSession): Promise<UserSession>;
 	sessionAndUserData(sessionId: string): Promise<SessionAndUserData[]>;
 	deleteSession(sessionId: string): Promise<void>;
-	updateSession(sessionId: string, data: Partial<UserSession>): Promise<UserSession[]>;
+	updateSession(sessionId: string, data: UserSession): Promise<UserSession[]>;
 }
 
 /**
@@ -188,13 +190,13 @@ export interface UserTools {
 	notifier?: {
 		admin(type: 'new_user', message: string): Promise<void>;
 	};
-	createLocalUser(data: UserData): Promise<UserData>;
+	createLocalUser(data: UserData): Promise<Present<UserData>>;
 	createOAuthUser(data: { provider: string; providerUserId: string; userId: string }): Promise<{
 		userId: string;
 		provider: string;
 		providerUserId: string;
 	}>;
-	updateLocalUser(id: string, data: Partial<UserData>): Promise<UserData>;
+	updateLocalUser(id: string, data: Partial<UserData>): Promise<Present<UserData>>;
 	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
 	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;
 	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;
@@ -230,3 +232,18 @@ export enum UserPermissionLevel {
 	owner = 4,
 	unknown = 0,
 }
+
+export const rankToLevel: Record<AvailablePermissionRanks, UserPermissionLevel> = {
+	unknown: UserPermissionLevel.unknown,
+	visitor: UserPermissionLevel.visitor,
+	editor: UserPermissionLevel.editor,
+	admin: UserPermissionLevel.admin,
+	owner: UserPermissionLevel.owner,
+};
+export const levelToRank: Record<UserPermissionLevel, AvailablePermissionRanks> = {
+	[UserPermissionLevel.unknown]: 'unknown',
+	[UserPermissionLevel.visitor]: 'visitor',
+	[UserPermissionLevel.editor]: 'editor',
+	[UserPermissionLevel.admin]: 'admin',
+	[UserPermissionLevel.owner]: 'owner',
+};

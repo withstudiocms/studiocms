@@ -2,6 +2,7 @@
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Toaster } from 'studiocms:ui/components/toaster';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import BaseHead from '../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import LoginChecker from '../components/dashboard/LoginChecker.astro';
@@ -28,7 +29,7 @@ type Props = {
 	description?: string;
 	lang?: string;
 	sidebar?: false | 'single' | 'double';
-	requiredPermission?: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown' | 'none';
+	requiredPermission?: AvailablePermissionRanks | 'none';
 	currentUser: UserSessionData | null;
 };
 

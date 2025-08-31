@@ -4,7 +4,8 @@ import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPermissionsSelect } from 'studiocms:sdk/types';
-import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { type AvailablePermissionRanks, UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { ValidRanks } from '../../../consts.js';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -37,7 +38,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { id, rank, emailVerified } = yield* readAPIContextJson<{
 					id: string;
-					rank: string;
+					rank: AvailablePermissionRanks;
 					emailVerified: boolean;
 				}>(ctx);
 
@@ -46,14 +47,13 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Validate rank to prevent invalid updates
-				const validRanks = new Set(['owner', 'admin', 'editor', 'visitor']);
-				if (!validRanks.has(rank)) {
+				if (!ValidRanks.has(rank) || rank === 'unknown') {
 					return apiResponseLogger(400, 'Invalid rank supplied');
 				}
 
 				const insertData: tsPermissionsSelect = {
 					user: id,
-					rank,
+					rank: rank,
 				};
 
 				const user = yield* sdk.GET.users.byId(id);
@@ -64,7 +64,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const userPermissionLevel = yield* userHelper.getUserPermissionLevel(userData);
 
-				const toLevel = (r?: string) => {
+				const toLevel = (r?: AvailablePermissionRanks) => {
 					switch (r) {
 						case 'owner':
 							return UserPermissionLevel.owner;
@@ -79,12 +79,29 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				};
 
-				const targetCurrentLevel = toLevel(user.permissionsData?.rank);
+				const targetCurrentLevel = toLevel(
+					user.permissionsData?.rank as AvailablePermissionRanks | undefined
+				);
 				const targetNewLevel = toLevel(rank);
 
+				const weight = (lvl: UserPermissionLevel) => {
+					switch (lvl) {
+						case UserPermissionLevel.owner:
+							return 4;
+						case UserPermissionLevel.admin:
+							return 3;
+						case UserPermissionLevel.editor:
+							return 2;
+						case UserPermissionLevel.visitor:
+							return 1;
+						default:
+							return 0;
+					}
+				};
+
 				const isAllowedToUpdateRank =
-					userPermissionLevel > targetCurrentLevel &&
-					userPermissionLevel > targetNewLevel &&
+					weight(userPermissionLevel) > weight(targetCurrentLevel) &&
+					weight(userPermissionLevel) >= weight(targetNewLevel) &&
 					(rank !== 'owner' || userPermissionLevel === UserPermissionLevel.owner);
 
 				if (!isAllowedToUpdateRank) {

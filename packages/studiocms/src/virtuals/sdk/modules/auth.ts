@@ -1,4 +1,5 @@
 import { and, eq } from 'astro:db';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { GhostUserDefaults } from '../../../consts.js';
 import { Effect, genLogger } from '../../../effect.js';
 import { AstroDB, SDKCore_Generators } from '../effect/index.js';
@@ -379,7 +380,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					 * @returns A promise that resolves to the inserted user.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the user.
 					 */
-					create: (newUserData: tsUsersInsert, rank?: 'visitor' | 'editor' | 'admin' | 'owner') =>
+					create: (newUserData: tsUsersInsert, rank?: AvailablePermissionRanks) =>
 						Effect.gen(function* () {
 							const newUser = yield* dbService.execute((db) =>
 								db.insert(tsUsers).values(newUserData).returning().get()
