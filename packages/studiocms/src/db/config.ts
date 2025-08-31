@@ -63,7 +63,7 @@ const StudioCMSSessionTable = defineTable({
 const StudioCMSPermissions = defineTable({
 	columns: {
 		user: column.text({ references: () => StudioCMSUsers.columns.id }),
-		rank: column.text(),
+		rank: column.text({ enum: ['owner', 'admin', 'editor', 'visitor', 'unknown'] }),
 	},
 });
 

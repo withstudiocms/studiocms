@@ -22,6 +22,7 @@ import type {
 	tsPageDataTagsInsert,
 	tsPageFolderInsert,
 	tsPermissionsInsert,
+	tsPermissionsSelect,
 } from '../types/index.js';
 import {
 	_ClearUnknownError,
@@ -266,7 +267,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					 * @returns A promise that resolves to the inserted permission.
 					 * @throws {StudioCMS_SDK_Error} If an error occurs while inserting the permission.
 					 */
-					permissions: (userId: string, rank: string) =>
+					permissions: (userId: string, rank: tsPermissionsSelect['rank']) =>
 						Effect.gen(function* () {
 							const userExists = yield* dbService.execute((db) =>
 								db.select().from(tsPermissions).where(eq(tsPermissions.user, userId)).get()
@@ -284,7 +285,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 									.insert(tsPermissions)
 									.values({
 										user: userId,
-										rank,
+										rank: rank,
 									})
 									.returning({ user: tsPermissions.user, rank: tsPermissions.rank })
 							);

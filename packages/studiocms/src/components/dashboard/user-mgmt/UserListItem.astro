@@ -3,6 +3,7 @@ import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPerm
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
 import { User } from 'studiocms:ui/components/user';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 
 interface Props {
 	user: {
@@ -14,7 +15,7 @@ interface Props {
 		permissionsData:
 			| {
 					user: string;
-					rank: string;
+					rank: AvailablePermissionRanks;
 			  }
 			| undefined;
 	};
@@ -38,7 +39,7 @@ const userListItemHrefString = userListItemHref.toString();
     <User
         name={user.name}
         avatar={user.avatar ?? undefined}
-        description={getLabelForPermissionLevel(user.permissionsData?.rank!)}
+        description={getLabelForPermissionLevel(user.permissionsData?.rank ?? 'unknown')}
         loading="eager"
     />
     <Icon name="heroicons:chevron-right" width={24} height={24} />
@@ -96,7 +97,7 @@ const userListItemHrefString = userListItemHref.toString();
                 if (openInNewTab) {
                     // Preserve default middle-click behavior if this were a native link
                     e.preventDefault();
-                    window.open(url.href, '_blank');
+                    window.open(url.href, '_blank', 'noopener,noreferrer');
                     return;
                 }
 

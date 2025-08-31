@@ -143,12 +143,16 @@ export const Session = (config: SessionConfig) =>
 				return nullSession;
 			}
 
+			let sessionOut = session;
 			if (now >= expiresAtMs - expTimeHalf) {
 				const expiresAt = new Date(now + expTime);
-				yield* useSessionErrorPromise(() => sessionTools.updateSession(session.id, { expiresAt }));
+				yield* useSessionErrorPromise(() =>
+					sessionTools.updateSession(session.id, { ...session, expiresAt })
+				);
+				sessionOut = { ...session, expiresAt };
 			}
 
-			return { session, user } as SessionValidationResult;
+			return { session: sessionOut, user } as SessionValidationResult;
 		});
 
 		/**

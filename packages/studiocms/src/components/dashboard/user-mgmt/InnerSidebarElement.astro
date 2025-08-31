@@ -6,6 +6,7 @@ import { Divider } from 'studiocms:ui/components/divider';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
 import { Input } from 'studiocms:ui/components/input';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import UserListItem from './UserListItem.astro';
 
 interface Props {
@@ -25,7 +26,7 @@ const safeUsers: {
 	permissionsData:
 		| {
 				user: string;
-				rank: string;
+				rank: AvailablePermissionRanks;
 		  }
 		| undefined;
 }[] = Users.map(({ avatar, email, id, name, username, permissionsData }) => {

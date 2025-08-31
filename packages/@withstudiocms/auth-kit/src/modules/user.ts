@@ -265,11 +265,12 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 				(result && rankToPermissionLevel[result.rank]) ||
 				('unknown' as UserSessionData['permissionLevel']);
 
-			return {
+			const out: UserSessionData = {
 				isLoggedIn: true,
 				user,
 				permissionLevel,
 			};
+			return out;
 		});
 
 		/**

@@ -4,6 +4,7 @@ import { Mailer } from 'studiocms:mailer';
 import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import type { APIContext } from 'astro';
 import { z } from 'astro/zod';
 import {
@@ -22,7 +23,7 @@ type JSONData = {
 	username: string | undefined;
 	email: string | undefined;
 	displayname: string | undefined;
-	rank: 'owner' | 'admin' | 'editor' | 'visitor' | undefined;
+	rank: AvailablePermissionRanks | undefined;
 	originalUrl: string;
 };
 

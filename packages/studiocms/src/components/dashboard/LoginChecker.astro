@@ -1,10 +1,11 @@
 ---
 import { User, VerifyEmail } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { Effect } from '../../effect.js';
 
 interface Props {
-	requiredPermission: 'owner' | 'admin' | 'editor' | 'visitor' | 'unknown';
+	requiredPermission: AvailablePermissionRanks;
 	currentUser: UserSessionData | null;
 }
 
