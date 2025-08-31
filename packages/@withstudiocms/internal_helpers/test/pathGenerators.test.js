@@ -59,7 +59,7 @@ describe('pathGenerators', () => {
 
 	test('stripHtmlExtension removes .html extension', () => {
 		assert.equal(paths.stripHtmlExtension('/foo/bar.html'), '/foo/bar');
-		assert.equal(paths.stripHtmlExtension('/foo/bar/'), '/foo/bar/');
+		assert.equal(paths.stripHtmlExtension('/foo/bar/'), '/foo/bar');
 		assert.equal(paths.stripHtmlExtension('/foo/bar'), '/foo/bar');
 		assert.equal(paths.stripHtmlExtension('/foo/bar.html/'), '/foo/bar');
 	});

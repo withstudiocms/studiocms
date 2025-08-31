@@ -58,7 +58,9 @@ export function stripLeadingAndTrailingSlashes(href: string): string {
 /** Remove the extension from a path. */
 export function stripHtmlExtension(path: string) {
 	const pathWithoutTrailingSlash = stripTrailingSlash(path);
-	return pathWithoutTrailingSlash.endsWith('.html') ? pathWithoutTrailingSlash.slice(0, -5) : path;
+	return pathWithoutTrailingSlash.endsWith('.html')
+		? pathWithoutTrailingSlash.slice(0, -5)
+		: pathWithoutTrailingSlash;
 }
 
 /** Add '.html' extension to a path. */
