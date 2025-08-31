@@ -31,7 +31,7 @@ export function createURLGenFactory(defaultDashboardRoute: string) {
 		DashboardRouteOverride?: string
 	): string {
 		let url: string;
-		let dashboardRoute = defaultDashboardRoute;
+		let dashboardRoute = stripLeadingAndTrailingSlashes(defaultDashboardRoute);
 
 		if (DashboardRouteOverride) {
 			dashboardRoute = stripLeadingAndTrailingSlashes(DashboardRouteOverride);
@@ -48,7 +48,7 @@ export function createURLGenFactory(defaultDashboardRoute: string) {
 			if (isDashboardRoute) {
 				url = pathWithBase(dashboardRoute);
 			} else {
-				url = '/';
+				url = pathWithBase('');
 			}
 		}
 		return url;
