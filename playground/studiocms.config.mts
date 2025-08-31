@@ -4,7 +4,7 @@ import wysiwyg from '@studiocms/wysiwyg';
 import { defineStudioCMSConfig } from 'studiocms/config';
 
 export default defineStudioCMSConfig({
-	dbStartPage: true,
+	dbStartPage: false,
 	verbose: true,
 	plugins: [md(), blog(), wysiwyg()],
 	features: {
