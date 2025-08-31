@@ -1,3 +1,10 @@
+import { integrationLogger, pluginLogger } from '@withstudiocms/internal_helpers/astro-integration';
+import {
+	convertToSafeString,
+	pageContentComponentFilter,
+	readJson,
+	rendererComponentFilter,
+} from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration } from 'astro';
 import { AstroError } from 'astro/errors';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
@@ -20,10 +27,6 @@ import type {
 } from '../schemas/index.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Messages, Route } from '../types.js';
-import { integrationLogger, pluginLogger } from '../utils/integrationLogger.js';
-import { readJson } from '../utils/jsonUtils.js';
-import { pageContentComponentFilter, rendererComponentFilter } from '../utils/pageTypeFilter.js';
-import { convertToSafeString } from '../utils/safeString.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);

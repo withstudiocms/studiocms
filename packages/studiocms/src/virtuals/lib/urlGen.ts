@@ -1,4 +1,6 @@
-import { pathWithBase, stripLeadingAndTrailingSlashes } from './pathGenerators.js';
+import { createURLGenFactory } from '@withstudiocms/internal_helpers/urlGenFactory';
+
+const urlGenFactory = createURLGenFactory('dashboard');
 
 /**
  * # urlGenFactory Helper Function
@@ -10,31 +12,4 @@ import { pathWithBase, stripLeadingAndTrailingSlashes } from './pathGenerators.j
  * @param DashboardRouteOverride
  * @returns
  */
-export default function urlGenFactory(
-	isDashboardRoute: boolean,
-	path: string | undefined,
-	DashboardRouteOverride?: string
-): string {
-	let url: string;
-	let dashboardRoute = 'dashboard';
-
-	if (DashboardRouteOverride) {
-		dashboardRoute = stripLeadingAndTrailingSlashes(DashboardRouteOverride);
-	}
-
-	if (path) {
-		const cleanPath = stripLeadingAndTrailingSlashes(path);
-		if (isDashboardRoute) {
-			url = pathWithBase(`${dashboardRoute}/${cleanPath}`);
-		} else {
-			url = pathWithBase(cleanPath);
-		}
-	} else {
-		if (isDashboardRoute) {
-			url = pathWithBase(dashboardRoute);
-		} else {
-			url = '/';
-		}
-	}
-	return url;
-}
+export default urlGenFactory;

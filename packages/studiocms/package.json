@@ -153,6 +153,7 @@
 		"@nanostores/i18n": "^1.2.2",
 		"@nanostores/persistent": "^1.1.0",
 		"@studiocms/ui": "catalog:studiocms",
+		"@withstudiocms/internal_helpers": "workspace:*",
 		"@withstudiocms/auth-kit": "workspace:*",
 		"@withstudiocms/cli-kit": "catalog:studiocms",
 		"@withstudiocms/component-registry": "workspace:*",

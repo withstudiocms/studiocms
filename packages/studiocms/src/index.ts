@@ -14,6 +14,13 @@ import { runtimeLogger } from '@inox-tools/runtime-logger';
 import ui from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
+import {
+	addIntegrationArray,
+	getLatestVersion,
+	integrationLogger,
+	logMessages,
+} from '@withstudiocms/internal_helpers/astro-integration';
+import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
@@ -40,10 +47,6 @@ import {
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
 import type { Messages } from './types.js';
-import { addIntegrationArray } from './utils/addIntegrationArray.js';
-import { getLatestVersion } from './utils/getLatestVersion.js';
-import { integrationLogger, logMessages } from './utils/integrationLogger.js';
-import { readJson } from './utils/jsonUtils.js';
 import {
 	buildDefaultOnlyVirtual,
 	buildLoggerVirtual,
@@ -269,7 +272,6 @@ export const studiocms = defineIntegration({
 							'studiocms:lib': dynamicVirtual([
 								'./virtuals/lib/head.js',
 								'./virtuals/lib/headDefaults.js',
-								'./virtuals/lib/jsonUtils.js',
 								'./virtuals/lib/pathGenerators.js',
 								'./virtuals/lib/removeLeadingTrailingSlashes.js',
 								'./virtuals/lib/routeMap.js',

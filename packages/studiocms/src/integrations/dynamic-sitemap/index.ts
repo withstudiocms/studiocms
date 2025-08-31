@@ -1,6 +1,6 @@
+import { convertToSafeString } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { convertToSafeString } from '../../utils/safeString.js';
 
 /**
  * Options for configuring the dynamic sitemap.

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import type { AstroIntegrationLogger } from 'astro';
-import { jsonParse } from './jsonUtils.js';
+import { jsonParse } from '../utils/jsonUtils.js';
 
 /**
  * Fetches the latest version of a given npm package from the npm registry.
