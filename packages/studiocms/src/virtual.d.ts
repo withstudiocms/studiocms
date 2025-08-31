@@ -159,8 +159,6 @@ declare module 'studiocms:lib' {
 	export const HeadConfigSchema: typeof import('./virtuals/lib/head.js').HeadConfigSchema;
 	export const createHead: typeof import('./virtuals/lib/head.js').createHead;
 	export const headDefaults: typeof import('./virtuals/lib/headDefaults.js').headDefaults;
-	export const stringify: typeof import('./virtuals/lib/jsonUtils.js').stringify;
-	export const stringifyMap: typeof import('./virtuals/lib/jsonUtils.js').stringifyMap;
 	export const pathWithBase: typeof import('./virtuals/lib/pathGenerators.js').pathWithBase;
 	export const fileWithBase: typeof import('./virtuals/lib/pathGenerators.js').fileWithBase;
 	export const ensureLeadingSlash: typeof import('./virtuals/lib/pathGenerators.js').ensureLeadingSlash;
@@ -169,6 +167,15 @@ declare module 'studiocms:lib' {
 	export const stripTrailingSlash: typeof import('./virtuals/lib/pathGenerators.js').stripTrailingSlash;
 	export const stripHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').stripHtmlExtension;
 	export const ensureHtmlExtension: typeof import('./virtuals/lib/pathGenerators.js').ensureHtmlExtension;
+	export const stripLeadingAndTrailingSlashes: typeof import('./virtuals/lib/pathGenerators.js').stripLeadingAndTrailingSlashes;
+	/**
+	 * Removes leading and trailing slashes from a URL
+	 *
+	 * @param {string} path The URL to remove slashes from (e.g. '/example/blog/')
+	 * @returns {string} The URL with leading and trailing slashes removed (e.g. 'example/blog')
+	 *
+	 * @deprecated Use `stripLeadingAndTrailingSlashes` re-exported from 'studiocms:lib' instead.
+	 */
 	export const removeLeadingTrailingSlashes: typeof import('./virtuals/lib/removeLeadingTrailingSlashes.js').removeLeadingTrailingSlashes;
 	export const getSluggedRoute: typeof import('./virtuals/lib/routeMap.js').getSluggedRoute;
 	export const getEditRoute: typeof import('./virtuals/lib/routeMap.js').getEditRoute;

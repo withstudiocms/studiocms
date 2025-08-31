@@ -1,0 +1,77 @@
+{
+  "name": "@withstudiocms/internal_helpers",
+  "version": "0.1.0-beta.0",
+  "description": "Internal helper utilities for StudioCMS",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/internal_helpers"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro-studiocms",
+    "cms",
+    "studiocms"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "test": "buildkit test 'test/**/*.test.js'",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./astro-integration": {
+      "types": "./dist/astro-integration/index.d.ts",
+      "default": "./dist/astro-integration/index.js"
+    },
+    "./pathGenerators": {
+      "types": "./dist/pathGenerators.d.ts",
+      "default": "./dist/pathGenerators.js"
+    },
+    "./urlGenFactory": {
+      "types": "./dist/urlGenFactory.d.ts",
+      "default": "./dist/urlGenFactory.js"
+    },
+    "./headConfigSchema": {
+      "types": "./dist/headConfigSchema.d.ts",
+      "default": "./dist/headConfigSchema.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+		"astro-integration-kit": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min"
+  }
+}

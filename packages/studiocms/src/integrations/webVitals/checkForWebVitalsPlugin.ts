@@ -1,3 +1,4 @@
+import { integrationLogger } from '@withstudiocms/internal_helpers/astro-integration';
 import {
 	addVirtualImports,
 	createResolver,
@@ -5,7 +6,6 @@ import {
 	hasIntegration,
 } from 'astro-integration-kit';
 import type { StudioCMSPlugin } from '../../plugins.js';
-import { integrationLogger } from '../../utils/integrationLogger.js';
 
 export const webVitalsNameList = ['@studiocms/web-vitals'];
 

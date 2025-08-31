@@ -1,5 +1,5 @@
+import { jsonParse } from '@withstudiocms/internal_helpers/utils';
 import { Effect } from '../../../effect.js';
-import { jsonParse } from '../../../utils/jsonUtils.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import type { DiffReturnType, diffItem, diffReturn, tsPageDataSelect } from '../types/index.js';
 

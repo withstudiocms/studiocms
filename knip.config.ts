@@ -77,6 +77,7 @@ const atWithStudioCMSPackages = [
 	'effect',
 	'buildkit',
 	'component-registry',
+	'internal_helpers',
 ] as const;
 
 /**
