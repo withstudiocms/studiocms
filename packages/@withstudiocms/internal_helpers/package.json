@@ -58,6 +58,10 @@
     "./urlGenFactory": {
       "types": "./dist/urlGenFactory.d.ts",
       "default": "./dist/urlGenFactory.js"
+    },
+    "./headConfigSchema": {
+      "types": "./dist/headConfigSchema.d.ts",
+      "default": "./dist/headConfigSchema.js"
     }
   },
   "type": "module",
