@@ -32,10 +32,7 @@ export const uiTranslationsAvailable = ['en', 'de', 'es', 'fr'] as const;
  * This constant loads the default English translation JSON file asynchronously at runtime.
  * It is intended to be used as the base set of translations for the server.
  *
- * @see {@link https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html}
- *
- * @example
- * const translations = baseServerTranslations;
+ * - These translations are also converted to a client-friendly format.
  */
 export const baseServerTranslations = (
 	await import('./translations/en.json', {

@@ -1,23 +1,17 @@
 import type { AstroGlobal } from 'astro';
 import { defaultLang, serverUiTranslations, showDefaultLang } from './config.js';
 
+export { defaultLang };
+
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
 // https://crowdin.com/project/studiocms or PR them into the `translations` folder:
 // `packages/studiocms/src/lib/i18n/translations/` on https://github.com/withstudiocms/studiocms
 
-// --- i18n Config --- //
-
 /**
  * The UI translations available in the StudioCMS app.
  */
 const uiTranslations = serverUiTranslations;
-
-// Some options are stored in the `./config.ts` file.
-
-// --- i18n Utils --- //
-
-export { defaultLang };
 
 /**
  * Represents the type of UI translations.
