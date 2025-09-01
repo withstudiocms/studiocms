@@ -317,7 +317,7 @@ export function getEditorElmData(
 
 	const projectId = container.dataset.pageId || '';
 
-	const csrfToken = container.dataset.wysiwygCsrfToken || '';
+	const csrfToken = container.dataset.editorCsrfToken || '';
 
 	// Provide fallback data for project pages if the page content is empty
 	// This ensures that the inline storage options are always populated
