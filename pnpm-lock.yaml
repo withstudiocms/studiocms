@@ -820,6 +820,9 @@ importers:
       three:
         specifier: 0.170.0
         version: 0.170.0
+      tinyglobby:
+        specifier: 'catalog:'
+        version: 0.2.14
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0

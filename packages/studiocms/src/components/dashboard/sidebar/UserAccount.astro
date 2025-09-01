@@ -20,8 +20,9 @@ const userProps: UserProps = {
 	// loading: 'eager',
 };
 
-if (currentUser?.user?.avatar) {
-	userProps.avatar = currentUser.user.avatar;
-}
+// TODO: Libravatar is causing slowdown... find a new solution?
+// if (currentUser?.user?.avatar) {
+// 	userProps.avatar = currentUser.user.avatar;
+// }
 ---
 <User {...userProps} />
