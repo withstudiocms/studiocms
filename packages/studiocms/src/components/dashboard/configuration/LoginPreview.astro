@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import { useTranslations } from 'studiocms:i18n';
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
 
 const imageFilter = (filterName: string) =>
@@ -33,9 +33,11 @@ const curves = getLoginImage('studiocms-curves');
 interface Props {
 	light?: ImageMetadata;
 	dark?: ImageMetadata;
+
+	defaultLang?: UiLanguageKeys;
 }
 
-const { light, dark } = Astro.props as Props;
+const { light, dark, defaultLang } = Astro.props as Props;
 
 const lightSrc = light ? light : blobs.light;
 const darkSrc = dark ? dark : blobs.dark;
@@ -55,7 +57,7 @@ const stringifyable = {
 	},
 };
 
-const lang = Astro.locals.StudioCMS.defaultLang;
+const lang = defaultLang ?? Astro.locals?.StudioCMS?.defaultLang ?? 'en';
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 ---
 
