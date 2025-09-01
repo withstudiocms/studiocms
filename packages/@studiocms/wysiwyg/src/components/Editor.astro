@@ -20,7 +20,7 @@ const token = Astro.locals.StudioCMS.plugins?.editorCSRFToken;
     class="scms-grapesjs-container"
     data-page-id={id}
     data-component-registry={JSON.stringify(componentRegistry)}
-    data-wysiwyg-csrf-token={token}
+    data-editor-csrf-token={token}
 >
     <div class="editor">
         <div id="gjs"></div>
