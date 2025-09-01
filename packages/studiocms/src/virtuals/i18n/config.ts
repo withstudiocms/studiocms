@@ -32,7 +32,9 @@ export type StudioCMSTranslationRecord = typeof baseServerTranslations;
 const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTranslationRecord> => {
 	return (
 		await import(/* @vite-ignore */ `./translations/${lang}.json`, {
+			// @ts-ignore - assert is deprecated in newer versions of TypeScript
 			assert: { type: 'json' },
+			with: { type: 'json' },
 		})
 	).default;
 };
