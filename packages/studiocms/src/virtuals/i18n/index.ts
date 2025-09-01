@@ -1,5 +1,5 @@
 import type { AstroGlobal } from 'astro';
-import { defaultLang, showDefaultLang } from './config.js';
+import { defaultLang, serverUiTranslations, showDefaultLang } from './config.js';
 
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
@@ -11,12 +11,7 @@ import { defaultLang, showDefaultLang } from './config.js';
 /**
  * The UI translations available in the StudioCMS app.
  */
-const uiTranslations = {
-	en: await import('./translations/en.json'),
-	de: await import('./translations/de.json'),
-	es: await import('./translations/es.json'),
-	fr: await import('./translations/fr.json'),
-} as const;
+const uiTranslations = serverUiTranslations;
 
 // Some options are stored in the `./config.ts` file.
 
@@ -43,12 +38,31 @@ export type UiLanguageKeys = keyof UiTranslations;
  */
 export type UiComponentKeys = keyof UiTranslations['en']['translations'];
 
-// God please forgive me for what I am about to do
+/**
+ * Represents the translation type for a specific UI component key (`T`)
+ * within a given language key (`L`) from the `uiTranslations` object.
+ *
+ * @typeParam L - The language key, constrained to `UiLanguageKeys`.
+ * @typeParam T - The UI component key, constrained to `UiComponentKeys`.
+ *
+ * @example
+ * // Get the translation type for the 'button' component in 'en' language:
+ * type ButtonTranslation = UiTranslationComponent<'en', 'button'>;
+ */
 type UiTranslationComponent<
 	L extends UiLanguageKeys,
 	T extends UiComponentKeys,
 > = (typeof uiTranslations)[L]['translations'][T];
 
+/**
+ * Represents the set of valid translation keys for a specific UI component and language.
+ *
+ * @typeParam L - The type representing the available UI language keys.
+ * @typeParam T - The type representing the available UI component keys.
+ *
+ * This type resolves to the union of property names (keys) of the translation object
+ * for the given language (`L`) and component (`T`), as defined by `UiTranslationComponent`.
+ */
 type UiTranslationKey<
 	L extends UiLanguageKeys,
 	T extends UiComponentKeys,
