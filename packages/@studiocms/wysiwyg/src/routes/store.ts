@@ -1,9 +1,10 @@
 import { apiResponseLogger } from 'studiocms:logger';
-import type { APIContext, APIRoute } from 'astro';
+import type { APIContext } from 'astro';
 import {
 	AllResponse,
 	Cause,
-	defineAPIRoute,
+	createEffectAPIRoutes,
+	createJsonResponse,
 	Effect,
 	genLogger,
 	OptionsResponse,
@@ -123,103 +124,85 @@ const apiChecks = Effect.fn(function* (context: APIContext) {
 	return undefined;
 });
 
-/**
- * Handles GET requests for loading project data in the WYSIWYG store route.
- *
- * This API route performs the following actions:
- * - Retrieves the SDK instance.
- * - Checks if the user is logged in and has editor permissions.
- * - Extracts the `projectId` from the URL search parameters.
- * - Loads the project data using the SDK.
- * - Returns the project data as a JSON response if found.
- * - Returns appropriate error responses for unauthorized access or missing projects.
- *
- * @param context - The API context containing request and user session information.
- * @returns A `Response` object with the project data as JSON, or an error response.
- */
-export const GET: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('@studiocms/wysiwyg/routes/store:GET')(function* () {
-			const { load } = yield* UseSDK;
+export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
+	{
+		GET: (ctx) =>
+			genLogger('@studiocms/wysiwyg/routes/store:GET')(function* () {
+				const { load } = yield* UseSDK;
 
-			// Ensure the user is logged in and has the necessary permissions
-			// This is done to prevent unauthorized access to project data
-			// as well as CSRF validation
-			const securityCheck = yield* apiChecks(ctx);
-			if (securityCheck instanceof Response) {
-				return securityCheck; // Return the unauthorized response if security check fails
-			}
+				// Ensure the user is logged in and has the necessary permissions
+				// This is done to prevent unauthorized access to project data
+				// as well as CSRF validation
+				const securityCheck = yield* apiChecks(ctx);
+				if (securityCheck instanceof Response) {
+					return securityCheck; // Return the unauthorized response if security check fails
+				}
 
-			const searchParams = ctx.url.searchParams;
+				const searchParams = ctx.url.searchParams;
 
-			// If the request has a projectId in the search params, use it
-			const projectId = searchParams.get('projectId');
+				// If the request has a projectId in the search params, use it
+				const projectId = searchParams.get('projectId');
 
-			// If no projectId is provided, return an error response
-			if (!projectId) {
-				return apiResponseLogger(400, 'Project ID is required');
-			}
+				// If no projectId is provided, return an error response
+				if (!projectId) {
+					return apiResponseLogger(400, 'Project ID is required');
+				}
 
-			// Load the project data using the SDK
-			const projectData = yield* load(projectId);
+				// Load the project data using the SDK
+				const projectData = yield* load(projectId);
 
-			// If no project data is found, return a 404 error
-			if (!projectData) {
-				return apiResponseLogger(404, 'Project not found');
-			}
+				// If no project data is found, return a 404 error
+				if (!projectData) {
+					return apiResponseLogger(404, 'Project not found');
+				}
 
-			// Return the project data as a JSON response
-			return new Response(JSON.stringify(projectData), {
-				headers: {
-					'Content-Type': 'application/json',
-					'Cache-Control': 'no-store, private',
-				},
-			});
-		})
-	);
+				// Return the project data as a JSON response
+				return new Response(JSON.stringify(projectData), {
+					headers: {
+						'Content-Type': 'application/json',
+						'Cache-Control': 'no-store, private',
+					},
+				});
+			}),
+		POST: (ctx) =>
+			genLogger('@studiocms/wysiwyg/routes/store:POST')(function* () {
+				const { store, types } = yield* UseSDK;
 
-/**
- * Handles the POST request for storing project data in the WYSIWYG route.
- *
- * This API route performs the following steps:
- * - Retrieves the SDK instance.
- * - Checks if the user is logged in and has editor permissions.
- * - Parses the incoming JSON request for project data.
- * - Stores the project data using the SDK.
- * - Returns an appropriate API response based on the operation result.
- *
- * @param context - The API context containing request and user session information.
- * @returns An API response indicating success or failure of the store operation.
- */
-export const POST: APIRoute = async (c) =>
-	defineAPIRoute(c)((ctx) =>
-		genLogger('@studiocms/wysiwyg/routes/store:POST')(function* () {
-			const { store, types } = yield* UseSDK;
+				// Ensure the user is logged in and has the necessary permissions
+				// This is done to prevent unauthorized access to project data
+				// as well as CSRF validation
+				const securityCheck = yield* apiChecks(ctx);
+				if (securityCheck instanceof Response) {
+					return securityCheck; // Return the unauthorized response if security check fails
+				}
 
-			// Ensure the user is logged in and has the necessary permissions
-			// This is done to prevent unauthorized access to project data
-			// as well as CSRF validation
-			const securityCheck = yield* apiChecks(ctx);
-			if (securityCheck instanceof Response) {
-				return securityCheck; // Return the unauthorized response if security check fails
-			}
+				// Parse the request JSON
+				const { projectId, data } = yield* parsePOSTJsonRequest(ctx, types._Schema);
 
-			// Parse the request JSON
-			const { projectId, data } = yield* parsePOSTJsonRequest(ctx, types._Schema);
+				// Store the project data using the SDK
+				const result = yield* store(projectId, data);
 
-			// Store the project data using the SDK
-			const result = yield* store(projectId, data);
+				// If the result is null or undefined, return an error response
+				if (!result) {
+					return apiResponseLogger(500, 'Failed to store project data');
+				}
 
-			// If the result is null or undefined, return an error response
-			if (!result) {
-				return apiResponseLogger(500, 'Failed to store project data');
-			}
-
-			// Return a success response
-			return apiResponseLogger(200, 'Project data stored successfully');
-		})
-	);
-
-export const OPTIONS: APIRoute = async () => OptionsResponse({ allowedMethods: ['GET', 'POST'] });
-
-export const ALL: APIRoute = async () => AllResponse();
+				// Return a success response
+				return apiResponseLogger(200, 'Project data stored successfully');
+			}),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'POST'] })),
+		ALL: () => Effect.try(() => AllResponse()),
+	},
+	{
+		cors: { methods: ['GET', 'POST', 'OPTIONS'] },
+		onError: (error) => {
+			console.error('API Error:', error);
+			return createJsonResponse(
+				{ error: 'Internal Server Error' },
+				{
+					status: 500,
+				}
+			);
+		},
+	}
+);

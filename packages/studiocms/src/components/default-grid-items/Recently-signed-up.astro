@@ -18,9 +18,10 @@ const recentlyCreatedUsers = totalUsers
             <a href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
                 <Card class="user-card" fullWidth>
                     <div class="user-flex">
+                        {/* TODO: Libravatar is causing slowdown... find a new solution? */}
                         <User 
                             name={user.name}
-                            avatar={user.avatar ?? undefined} 
+                            avatar={/*user.avatar ??*/ undefined} 
                             description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}`} 
                             loading='eager'
                             />

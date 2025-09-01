@@ -40,7 +40,8 @@ const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
 };
 
 const KNOWN_API_ROUTES = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
-const DEFAULT_AVATAR = 'https://seccdn.libravatar.org/static/img/mm/80.png';
+const DEFAULT_AVATAR =
+	'data:image/webp;base64,UklGRlQBAABXRUJQVlA4IEgBAACwCACdASpAAEAAPhUIg0EhBv+rAAQAUS0gAnKtdW/gSoIZT5K7/RcC7hziKINwltjKlx8J+7QBjjUT9tq3fmUI0kzZ/Y7qkuL/iBUH3AAA/v8D8h4y7rTT8z2FDR2PY+uIqeZcFEDE0y4A9/p7VzrmUiI4wELcKrd/pNgxSeUoOsGR+q6dm0vWuoT1pLMsFqYsVz5/unL3AzbGar61ET9+oRu1aQX5cztEzYI45RSBtFnR7ch4QxJjflICch2Xmp+L//B5QoAP52OMBfOCQ2ivKsGwYwBpuI6SpOd8D66tr73kQZgWoAV17JQ0r/upPBGA114EhNGRQ94P1lqQjWKKiLUTS9XyzKlzfbHAdEAAc5QHayiiKL+acLkiIQurnyxS7XRLy87QrKXxM11LumvAEfGOUkYgogc1/NL/DjSnLmgMbZLzQAAA';
 
 // Enhanced CSS with click protection and visual feedback
 const COMPONENT_STYLES = `
@@ -471,7 +472,8 @@ class UserQuickTools extends HTMLElement {
 		const displayName = `${user.name} - ${this.capitalizeFirst(permissionLevel)}`;
 
 		Object.assign(avatar, {
-			src: user.avatar || DEFAULT_AVATAR,
+			// TODO: Libravatar is causing slowdown... find a new solution?
+			src: /*user.avatar ||*/ DEFAULT_AVATAR,
 			alt: displayName,
 			title: displayName,
 			width: '32',
