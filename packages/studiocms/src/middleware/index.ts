@@ -59,14 +59,6 @@ export const onRequest = defineMiddlewareRouter([
 				latestVersion,
 			});
 
-			// Set deprecated locals for backward compatibility
-			context.locals.SCMSGenerator = `StudioCMS v${SCMSVersion}`;
-			context.locals.SCMSUiGenerator = `StudioCMS UI v${SCMSUiVersion}`;
-			context.locals.latestVersion = latestVersion;
-			context.locals.siteConfig = siteConfig ?? makeFallbackSiteConfig();
-			context.locals.defaultLang = defaultLang;
-			context.locals.routeMap = StudioCMSRoutes;
-
 			return next();
 		}),
 	},
@@ -102,11 +94,6 @@ export const onRequest = defineMiddlewareRouter([
 				emailVerificationEnabled,
 				userPermissionLevel,
 			});
-
-			// Set deprecated locals for backward compatibility
-			context.locals.userSessionData = userSessionData;
-			context.locals.emailVerificationEnabled = emailVerificationEnabled;
-			context.locals.userPermissionLevel = userPermissionLevel;
 
 			// Continue to the next middleware
 			return next();
@@ -176,9 +163,6 @@ export const onRequest = defineMiddlewareRouter([
 			yield* setLocals(context, SetLocal.PLUGINS, {
 				editorCSRFToken: csrfToken,
 			});
-
-			// Set deprecated locals for backward compatibility
-			context.locals.wysiwygCsrfToken = csrfToken;
 
 			return next();
 		}),

@@ -606,52 +606,6 @@ interface StudioCMSLocals {
 
 declare namespace App {
 	interface Locals {
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		userSessionData: import('./virtuals/auth/types').UserSessionData;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		emailVerificationEnabled: boolean;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		SCMSGenerator: string;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		SCMSUiGenerator: string;
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		userPermissionLevel: {
-			isVisitor: boolean;
-			isEditor: boolean;
-			isAdmin: boolean;
-			isOwner: boolean;
-		};
-		/**
-		 * @deprecated - use the new value from locals.StudioCMS object instead
-		 */
-		wysiwygCsrfToken: string;
-
 		StudioCMS: StudioCMSLocals;
 	}
 }
