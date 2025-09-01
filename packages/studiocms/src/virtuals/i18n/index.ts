@@ -82,14 +82,13 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 	return function t(
 		key: UiTranslationKey<L, T>
 	): UiTranslationComponent<L, T>[UiTranslationKey<L, T>] {
-		const translation = uiTranslations[lang].translations[component][key];
-
-		// If the translation is not found, return the default language translation
-		if (translation === undefined || translation === '') {
-			return uiTranslations[defaultLang].translations[component][key];
-		}
-
-		return translation;
+		const maybe = uiTranslations[lang]?.translations?.[component]?.[key];
+		if (maybe !== undefined) return maybe;
+		// Fallback to default language; if still missing, return the key as a last resort.
+		return (
+			uiTranslations[defaultLang]?.translations?.[component]?.[key] ??
+			(key as unknown as UiTranslationComponent<L, T>[UiTranslationKey<L, T>])
+		);
 	};
 }
 
@@ -102,8 +101,10 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
  * If the language is the default language and `showDefaultLang` is false, the original path is returned.
  * Otherwise, the path is prefixed with the language key.
  */
-export function useTranslatedPath(lang: UiLanguageKeys): (path: string, l?: string) => string {
-	return function translatePath(path: string, l: string = lang) {
+export function useTranslatedPath(
+	lang: UiLanguageKeys
+): (path: string, l?: UiLanguageKeys) => string {
+	return function translatePath(path: string, l: UiLanguageKeys = lang) {
 		return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`;
 	};
 }

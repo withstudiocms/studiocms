@@ -22,6 +22,22 @@ export const baseServerTranslations = (
 ).default;
 
 /**
+ * Represents a translation record for StudioCMS.
+ *
+ * @property displayName - The human-readable name for the translation.
+ * @property translations - The translation data in the form of a ComponentsJSON object.
+ */
+export type StudioCMSTranslationRecord = typeof baseServerTranslations;
+
+const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTranslationRecord> => {
+	return (
+		await import(/* @vite-ignore */ `./translations/${lang}.json`, {
+			assert: { type: 'json' },
+		})
+	).default;
+};
+
+/**
  * An object containing server-side UI translations for supported languages.
  *
  * Each property corresponds to a language code (e.g., 'en', 'de', 'es', 'fr') and dynamically imports
@@ -35,21 +51,9 @@ export const baseServerTranslations = (
  */
 export const serverUiTranslations: ServerUiTranslations = {
 	en: baseServerTranslations,
-	de: (
-		await import('./translations/de.json', {
-			assert: { type: 'json' },
-		})
-	).default,
-	es: (
-		await import('./translations/es.json', {
-			assert: { type: 'json' },
-		})
-	).default,
-	fr: (
-		await import('./translations/fr.json', {
-			assert: { type: 'json' },
-		})
-	).default,
+	de: await importTranslation('de'),
+	es: await importTranslation('es'),
+	fr: await importTranslation('fr'),
 } as const;
 
 /**
@@ -126,15 +130,7 @@ export interface TranslationsJSON {
  * };
  * ```
  */
-export type ComponentsJSON = typeof baseServerTranslations.translations;
-
-/**
- * Represents a translation record for StudioCMS.
- *
- * @property displayName - The human-readable name for the translation.
- * @property translations - The translation data in the form of a ComponentsJSON object.
- */
-export type StudioCMSTranslationRecord = typeof baseServerTranslations;
+export type ComponentsJSON = StudioCMSTranslationRecord['translations'];
 
 /**
  * Represents the server-side UI translations.
