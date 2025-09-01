@@ -83,8 +83,8 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
                 description: formData.get('site-description') as string,
                 defaultOgImage: formData.get('default-og-image') as string,
                 siteIcon: formData.get('site-icon') as string,
-                enableDiffs: formData.get('diff-enabled') as string,
-                diffPerPage: formData.get('diff-per-page') as string,
+                enableDiffs: formData.get('diff-enabled') === 'true',
+                diffPerPage: Number(formData.get('diff-per-page')),
                 loginPageBackground: formData.get('login-page-background') as string,
                 loginPageBackgroundCustom: formData.get('login-page-background-custom') as string,
             }
