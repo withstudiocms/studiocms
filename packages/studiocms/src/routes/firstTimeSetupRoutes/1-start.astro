@@ -83,8 +83,12 @@ const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, va
                 description: formData.get('site-description') as string,
                 defaultOgImage: formData.get('default-og-image') as string,
                 siteIcon: formData.get('site-icon') as string,
-                enableDiffs: formData.get('diff-enabled') as string,
-                diffPerPage: formData.get('diff-per-page') as string,
+                enableDiffs: formData.get('diff-enabled') === 'true',
+                diffPerPage: (() => {
+                  const raw = formData.get('diff-per-page');
+                  const n = (typeof raw === 'string' && raw.trim() !== '') ? Number(raw) : NaN;
+                  return Number.isNaN(n) ? 10 : Math.max(1, Math.floor(n));
+                })(),
                 loginPageBackground: formData.get('login-page-background') as string,
                 loginPageBackgroundCustom: formData.get('login-page-background-custom') as string,
             }
