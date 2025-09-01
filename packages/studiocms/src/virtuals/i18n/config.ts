@@ -1,3 +1,5 @@
+import { availableTranslationFileKeys } from 'studiocms:i18n/virtual';
+
 /**
  * Dynamically imports a translation JSON file for the specified language.
  *
@@ -19,11 +21,6 @@ const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTrans
 		})
 	).default;
 };
-
-/**
- * The UI translations available in the StudioCMS app.
- */
-export const uiTranslationsAvailable = ['en', 'de', 'es', 'fr'] as const;
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.
@@ -62,9 +59,13 @@ export type StudioCMSTranslationRecord = typeof baseServerTranslations;
  */
 export const serverUiTranslations: ServerUiTranslations = {
 	en: baseServerTranslations,
-	de: await importTranslation('de'),
-	es: await importTranslation('es'),
-	fr: await importTranslation('fr'),
+	...Object.fromEntries(
+		await Promise.all(
+			availableTranslationFileKeys
+				.filter((lang) => lang !== 'en') // Exclude English from dynamic imports as it is already included
+				.map(async (lang) => [lang, await importTranslation(lang)])
+		)
+	),
 } as const;
 
 /**
@@ -87,7 +88,7 @@ export const clientUiTranslations: ClientUiTranslations = Object.entries(
 /**
  * The UI translations available in the StudioCMS app.
  */
-export type UiTranslationKey = (typeof uiTranslationsAvailable)[number];
+export type UiTranslationKey = string;
 
 /**
  * The default language for the StudioCMS app.
@@ -161,3 +162,8 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  * @typeParam ComponentsJSON - The shape of the translation data for each component.
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
+
+/**
+ * The UI translations available in the StudioCMS app.
+ */
+export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTranslationKey[];

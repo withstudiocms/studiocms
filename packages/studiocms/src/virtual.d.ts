@@ -120,6 +120,10 @@ declare module 'virtual:studiocms/components/Editors' {
 	export const editorKeys: string[];
 }
 
+declare module 'studiocms:i18n/virtual' {
+	export const availableTranslationFileKeys: string[];
+}
+
 declare module 'studiocms:i18n' {
 	export const staticPaths: typeof import('./virtuals/i18n/index.js').staticPaths;
 	export const getLangFromUrl: typeof import('./virtuals/i18n/index.js').getLangFromUrl;

@@ -43,6 +43,7 @@ export const $locale = localeFrom(
 	browser({
 		// or browser’s locale auto-detect
 		available: uiTranslationsAvailable,
+		fallback: defaultLang,
 	})
 );
 

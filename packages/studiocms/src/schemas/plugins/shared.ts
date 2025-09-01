@@ -2,7 +2,6 @@ import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
-import { type UiTranslationKey, uiTranslationsAvailable } from '../../virtuals/i18n/config.js';
 
 // https://github.com/withastro/astro/blob/910eb00fe0b70ca80bd09520ae100e8c78b675b5/packages/astro/src/core/config/schema.ts#L113
 export const astroIntegrationSchema = z.object({
@@ -214,29 +213,9 @@ export const SettingsFieldSchema = z.union([FieldSchema, RowFieldSchema]);
 export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 
 /**
- * Allowed keys for UI translations.
- */
-const allowedKeys = Object.keys(uiTranslationsAvailable);
-
-/**
  * A custom schema for i18n label translations.
  */
-export const i18nLabelSchema = z.custom<Record<UiTranslationKey, string>>(
-	(value: Record<UiTranslationKey, string>) => {
-		const keys = Object.keys(value);
-
-		for (const key of keys) {
-			if (!allowedKeys.includes(key)) {
-				return false;
-			}
-		}
-
-		return true;
-	},
-	{
-		message: `Invalid i18n label translations, currently support translations: ${allowedKeys.join(', ')}.`,
-	}
-);
+export const i18nLabelSchema = z.record(z.string());
 
 /**
  * Schema for a base dashboard page props.

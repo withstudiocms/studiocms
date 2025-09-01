@@ -73,16 +73,11 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 	lang: L,
 	component: T
 ) {
-	return function t(
-		key: UiTranslationKey<L, T>
-	): UiTranslationComponent<L, T>[UiTranslationKey<L, T>] {
-		const maybe = uiTranslations[lang]?.translations?.[component]?.[key];
-		if (maybe !== undefined) return maybe;
-		// Fallback to default language; if still missing, return the key as a last resort.
-		return (
-			uiTranslations[defaultLang]?.translations?.[component]?.[key] ??
-			(key as unknown as UiTranslationComponent<L, T>[UiTranslationKey<L, T>])
-		);
+	return function t(key: UiTranslationKey<L, T>): string {
+		const v = uiTranslations[lang]?.translations?.[component]?.[key];
+		if (typeof v === 'string') return v;
+		const fb = uiTranslations[defaultLang]?.translations?.[component]?.[key];
+		return typeof fb === 'string' ? fb : String(key);
 	};
 }
 
