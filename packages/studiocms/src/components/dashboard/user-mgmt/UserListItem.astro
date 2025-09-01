@@ -36,9 +36,10 @@ const userListItemHrefString = userListItemHref.toString();
 ---
 
 <user-list-item class="sidebar-user" href={userListItemHrefString}>
+    {/* TODO: Libravatar is causing slowdown... find a new solution? */}
     <User
         name={user.name}
-        avatar={user.avatar ?? undefined}
+        avatar={/*user.avatar ??*/ undefined}
         description={getLabelForPermissionLevel(user.permissionsData?.rank ?? 'unknown')}
         loading="eager"
     />
