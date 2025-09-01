@@ -9,7 +9,14 @@
  * friendly Vite virtual module.
  */
 
+import { posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { glob } from 'tinyglobby';
+
+/**
+ * The directory containing translation files.
+ */
+const translationsDir = fileURLToPath(new URL('./translations/', import.meta.url));
 
 /**
  * Asynchronously retrieves a list of available translation JSON files from the
@@ -26,9 +33,7 @@ import { glob } from 'tinyglobby';
  * @returns {Promise<string[]>} A promise that resolves to an array of relative file paths
  * of translation files.
  */
-const availableTranslationFiles = await glob('**/*.json', {
-	cwd: new URL('./translations/', import.meta.url).pathname,
-});
+const availableTranslationFiles = await glob('**/*.json', { cwd: translationsDir });
 
 /**
  * An array of translation file keys derived from `availableTranslationFiles`.
@@ -40,5 +45,5 @@ const availableTranslationFiles = await glob('**/*.json', {
  * // availableTranslationFileKeys = ['en', 'fr']
  */
 export const availableTranslationFileKeys = availableTranslationFiles
-	.map((file) => file.replace('.json', ''))
+	.map((file) => posix.normalize(file).replace(/\.json$/, ''))
 	.filter(Boolean);

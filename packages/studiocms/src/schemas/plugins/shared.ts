@@ -2,6 +2,7 @@ import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration } from 'astro';
 import { z } from 'astro/zod';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
+import { availableTranslationFileKeys } from '../../virtuals/i18n/v-files.js';
 
 // https://github.com/withastro/astro/blob/910eb00fe0b70ca80bd09520ae100e8c78b675b5/packages/astro/src/core/config/schema.ts#L113
 export const astroIntegrationSchema = z.object({
@@ -215,7 +216,15 @@ export type SettingsField = z.infer<typeof SettingsFieldSchema>;
 /**
  * A custom schema for i18n label translations.
  */
-export const i18nLabelSchema = z.record(z.string());
+export const i18nLabelSchema = z.record(z.string().min(1)).superRefine((val, ctx) => {
+	const unknown = Object.keys(val).filter((k) => !availableTranslationFileKeys.includes(k));
+	if (unknown.length) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: `Unsupported locale keys: ${unknown.join(', ')}. Allowed: ${availableTranslationFileKeys.join(', ')}.`,
+		});
+	}
+});
 
 /**
  * Schema for a base dashboard page props.

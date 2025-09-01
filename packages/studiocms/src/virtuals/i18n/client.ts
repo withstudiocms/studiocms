@@ -73,7 +73,7 @@ export const format = formatter($locale);
 export const $i18n = createI18n($locale, {
 	baseLocale: defaultLang,
 	get: async (code: UiTranslationKey) => {
-		return localeMap[code];
+		return localeMap[code] ?? localeMap[defaultLang];
 	},
 });
 

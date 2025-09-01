@@ -6,7 +6,7 @@ export { defaultLang };
 // If you still want to help translate our library while we
 // prepare to implement i18n, feel free to add the new translations on
 // https://crowdin.com/project/studiocms or PR them into the `translations` folder:
-// `packages/studiocms/src/lib/i18n/translations/` on https://github.com/withstudiocms/studiocms
+// `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
 
 /**
  * The UI translations available in the StudioCMS app.
