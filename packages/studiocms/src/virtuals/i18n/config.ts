@@ -1,4 +1,26 @@
 /**
+ * Dynamically imports a translation JSON file for the specified language.
+ *
+ * @param lang - The language key corresponding to the translation file to import.
+ * @returns A promise that resolves to the translation record for the specified language.
+ *
+ * @remarks
+ * This function uses dynamic import to load the translation file at runtime.
+ * The import path is constructed using the provided language key.
+ * The `@vite-ignore` comment is used to prevent Vite from processing the import path statically.
+ * The `assert` and `with` options are used for JSON module assertion, with a note about TypeScript compatibility.
+ */
+const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTranslationRecord> => {
+	return (
+		await import(/* @vite-ignore */ `./translations/${lang}.json`, {
+			// @ts-ignore - assert is deprecated in newer versions of TypeScript
+			assert: { type: 'json' },
+			with: { type: 'json' },
+		})
+	).default;
+};
+
+/**
  * The UI translations available in the StudioCMS app.
  */
 export const uiTranslationsAvailable = ['en', 'de', 'es', 'fr'] as const;
@@ -28,16 +50,6 @@ export const baseServerTranslations = (
  * @property translations - The translation data in the form of a ComponentsJSON object.
  */
 export type StudioCMSTranslationRecord = typeof baseServerTranslations;
-
-const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTranslationRecord> => {
-	return (
-		await import(/* @vite-ignore */ `./translations/${lang}.json`, {
-			// @ts-ignore - assert is deprecated in newer versions of TypeScript
-			assert: { type: 'json' },
-			with: { type: 'json' },
-		})
-	).default;
-};
 
 /**
  * An object containing server-side UI translations for supported languages.
