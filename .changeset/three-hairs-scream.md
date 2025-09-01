@@ -2,4 +2,4 @@
 "@studiocms/wysiwyg": patch
 ---
 
-Update store endpoint to use new createEffectAPIRoutes utility over deprecated defineAPIRoute util
+Migrate store endpoint to createEffectAPIRoutes (replacing deprecated defineAPIRoute). Add centralized onError and CORS config.
