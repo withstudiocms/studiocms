@@ -1,5 +1,5 @@
 import { VerifyEmail } from 'studiocms:auth/lib';
-import { removeLeadingTrailingSlashes } from 'studiocms:lib';
+import { stripLeadingAndTrailingSlashes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import {
@@ -48,8 +48,11 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					sdk.AUTH.verifyEmail.delete(userId),
 				]);
 
+				if (!ctx.site) {
+					return apiResponseLogger(400, 'Site URL is not configured');
+				}
 				return ctx.redirect(
-					removeLeadingTrailingSlashes(ctx.site?.toString() as string) +
+					stripLeadingAndTrailingSlashes(ctx.site.toString()) +
 						ctx.locals.StudioCMS.routeMap.mainLinks.dashboardIndex
 				);
 			}).pipe(VerifyEmail.Provide),
