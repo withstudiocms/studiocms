@@ -16,7 +16,7 @@ import type {
  * Represents a stripped-down version of the `tsSiteConfigSelect` type,
  * excluding the property 'id'.
  */
-export type SiteConfig = StudioCMSSiteConfig;
+export type SiteConfig = Omit<StudioCMSSiteConfig, '_config_version'>;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
