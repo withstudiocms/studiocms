@@ -13,8 +13,8 @@ import type {
 } from './tsAlias.js';
 
 /**
- * Represents a stripped-down version of the `tsSiteConfigSelect` type,
- * excluding the property 'id'.
+ * Represents a stripped-down version of the `StudioCMSSiteConfig` type,
+ * excluding the property '_config_version'.
  */
 export type SiteConfig = Omit<StudioCMSSiteConfig, '_config_version'>;
 

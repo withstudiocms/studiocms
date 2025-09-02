@@ -41,12 +41,14 @@ export type tsEmailVerificationTokensInsert = typeof tsEmailVerificationTokens.$
 /**
  * Represents the type used for inserting new notification settings into the database.
  * Derived from the insert-able fields of the `tsNotificationSettings` table schema.
+ * @deprecated
  */
 export type tsNotificationSettingsInsert = typeof tsNotificationSettings.$inferInsert;
 
 /**
  * Represents the selected fields of the `tsNotificationSettings` table.
  * This type is inferred from the select query on the `tsNotificationSettings` table.
+ * @deprecated
  */
 export type tsNotificationSettingsSelect = typeof tsNotificationSettings.$inferSelect;
 
@@ -191,6 +193,7 @@ export type tsPageContentSelect = typeof tsPageContent.$inferSelect;
  * Type representing the selection of site configuration data.
  *
  * This type is inferred from the `$inferSelect` property of the `tsSiteConfig` object.
+ * @deprecated
  */
 export type tsSiteConfigSelect = typeof tsSiteConfig.$inferSelect;
 
@@ -198,6 +201,7 @@ export type tsSiteConfigSelect = typeof tsSiteConfig.$inferSelect;
  * Type representing the insertion of site configuration data.
  *
  * This type is inferred from the `$inferInsert` property of the `tsSiteConfig` object.
+ * @deprecated
  */
 export type tsSiteConfigInsert = typeof tsSiteConfig.$inferInsert;
 

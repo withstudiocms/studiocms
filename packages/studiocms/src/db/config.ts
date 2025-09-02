@@ -149,6 +149,7 @@ const StudioCMSPageContent = defineTable({
 	},
 });
 
+// TODO: Deprecate this table in a future release
 /**
  * StudioCMS - Site Config Table for Astro DB
  *
@@ -171,6 +172,7 @@ const StudioCMSSiteConfig = defineTable({
 	},
 });
 
+// TODO: Deprecate this table in a future release
 /**
  * To be deprecated in favor of StudioCMSDynamicConfigSettings
  */
@@ -189,6 +191,7 @@ const StudioCMSMailerConfig = defineTable({
 	},
 });
 
+// TODO: Deprecate this table in a future release
 /**
  * To be deprecated in favor of StudioCMSDynamicConfigSettings
  */
@@ -285,8 +288,11 @@ export const tsPageDataCategories = asDrizzleTable(
 	StudioCMSPageDataCategories
 );
 export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPageContent);
+// TODO: Deprecate this table in a future release
 export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
+// TODO: Deprecate this table in a future release
 export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
+// TODO: Deprecate this table in a future release
 export const tsNotificationSettings = asDrizzleTable(
 	'StudioCMSNotificationSettings',
 	StudioCMSNotificationSettings
