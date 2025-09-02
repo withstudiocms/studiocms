@@ -11,6 +11,10 @@ import { Toggle } from 'studiocms:ui/components/toggle';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import { Effect, genLogger, runEffect } from '../../effect.js';
 import Layout from '../../layouts/DashboardLayout.astro';
+import type {
+	ConfigFinal,
+	StudioCMSNotificationSettings,
+} from '../../virtuals/sdk/modules/config.js';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
 
@@ -41,7 +45,7 @@ if (!mailerConfig) {
 
 const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 	(key) => key !== '_config_version'
-) as Array<keyof Omit<typeof notificationSettings.data, '_config_version'>>;
+) as Array<keyof ConfigFinal<StudioCMSNotificationSettings>>;
 ---
 
 <Layout

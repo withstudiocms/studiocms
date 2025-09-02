@@ -9,7 +9,10 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../effect.js';
-import type { StudioCMSNotificationSettings } from '../../../virtuals/sdk/modules/config.js';
+import type {
+	ConfigFinal,
+	StudioCMSNotificationSettings,
+} from '../../../virtuals/sdk/modules/config.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -34,23 +37,25 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 					yield* readAPIContextJson<unknown>(ctx).pipe(
 						Effect.map((raw) => {
-							const d = (raw ?? {}) as Record<string, unknown>;
+							const rawData = (raw ?? {}) as Record<string, unknown>;
 							const safe = {
 								emailVerification:
-									typeof d.emailVerification === 'boolean' ? d.emailVerification : undefined,
+									typeof rawData.emailVerification === 'boolean'
+										? rawData.emailVerification
+										: undefined,
 								requireAdminVerification:
-									typeof d.requireAdminVerification === 'boolean'
-										? d.requireAdminVerification
+									typeof rawData.requireAdminVerification === 'boolean'
+										? rawData.requireAdminVerification
 										: undefined,
 								requireEditorVerification:
-									typeof d.requireEditorVerification === 'boolean'
-										? d.requireEditorVerification
+									typeof rawData.requireEditorVerification === 'boolean'
+										? rawData.requireEditorVerification
 										: undefined,
 								oAuthBypassVerification:
-									typeof d.oAuthBypassVerification === 'boolean'
-										? d.oAuthBypassVerification
+									typeof rawData.oAuthBypassVerification === 'boolean'
+										? rawData.oAuthBypassVerification
 										: undefined,
-							} as Omit<StudioCMSNotificationSettings, '_config_version'>;
+							} as ConfigFinal<StudioCMSNotificationSettings>;
 							return safe;
 						}),
 						Effect.flatMap((data) => sdk.notificationSettings.site.update(data))

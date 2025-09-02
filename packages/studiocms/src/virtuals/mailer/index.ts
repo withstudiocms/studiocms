@@ -2,7 +2,7 @@ import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../../utils/effects/smtp.js';
-import type { StudioCMSMailerConfig } from '../sdk/modules/config.js';
+import type { ConfigFinal, StudioCMSMailerConfig } from '../sdk/modules/config.js';
 
 /**
  * Interface representing the options for sending an email.
@@ -94,7 +94,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * @param config - The new mailer configuration object.
 		 * @returns A promise that resolves when the mailer configuration has been updated.
 		 */
-		const updateMailerConfigTable = (config: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+		const updateMailerConfigTable = (config: ConfigFinal<StudioCMSMailerConfig>) =>
 			genLogger('studiocms/lib/mailer/Mailer.updateMailerConfigTable')(function* () {
 				yield* sdk.CONFIG.mailerConfig
 					.update(config)
@@ -108,7 +108,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				return mailerResponse({ message: 'Mailer configuration updated successfully' });
 			});
 
-		const createMailerConfigTable = (config: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+		const createMailerConfigTable = (config: ConfigFinal<StudioCMSMailerConfig>) =>
 			pipeLogger('studiocms/lib/mailer/Mailer.createMailerConfigTable')(
 				sdk.CONFIG.mailerConfig.init(config)
 			);

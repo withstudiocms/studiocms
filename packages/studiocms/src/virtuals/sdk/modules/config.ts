@@ -91,6 +91,8 @@ export interface StudioCMSDynamicConfigBase {
 	_config_version: string;
 }
 
+export type ConfigFinal<T extends StudioCMSDynamicConfigBase> = Omit<T, '_config_version'>;
+
 /**
  * Represents the configuration options for a StudioCMS site.
  *
@@ -500,7 +502,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new configuration data, excluding the internal version field.
 				 * @returns The updated site configuration.
 				 */
-				update: (data: Omit<StudioCMSSiteConfig, '_config_version'>) =>
+				update: (data: ConfigFinal<StudioCMSSiteConfig>) =>
 					dynamicUpdate<StudioCMSSiteConfig>(Next_SiteConfigId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -511,7 +513,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The initial configuration data, excluding the internal version field.
 				 * @returns The created site configuration.
 				 */
-				init: (data: Omit<StudioCMSSiteConfig, '_config_version'>) =>
+				init: (data: ConfigFinal<StudioCMSSiteConfig>) =>
 					create<StudioCMSSiteConfig>(Next_SiteConfigId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -538,7 +540,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new configuration data, excluding the internal version field.
 				 * @returns The updated mailer configuration.
 				 */
-				update: (data: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+				update: (data: ConfigFinal<StudioCMSMailerConfig>) =>
 					dynamicUpdate<StudioCMSMailerConfig>(Next_MailerConfigId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -549,7 +551,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The initial configuration data, excluding the internal version field.
 				 * @returns The created mailer configuration.
 				 */
-				init: (data: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+				init: (data: ConfigFinal<StudioCMSMailerConfig>) =>
 					create<StudioCMSMailerConfig>(Next_MailerConfigId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -576,7 +578,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new notification settings, excluding the `_config_version` property.
 				 * @returns A promise resolving to the updated `StudioCMSNotificationSettings`.
 				 */
-				update: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
+				update: (data: ConfigFinal<StudioCMSNotificationSettings>) =>
 					dynamicUpdate<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -587,7 +589,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The initial configuration data, excluding the internal version field.
 				 * @returns The created notification settings.
 				 */
-				init: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
+				init: (data: ConfigFinal<StudioCMSNotificationSettings>) =>
 					create<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,

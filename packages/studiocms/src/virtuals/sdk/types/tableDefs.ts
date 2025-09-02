@@ -1,4 +1,4 @@
-import type { StudioCMSSiteConfig } from '../modules/config.js';
+import type { ConfigFinal, StudioCMSSiteConfig } from '../modules/config.js';
 import type {
 	tsDiffTrackingSelect,
 	tsOAuthAccountsSelect,
@@ -16,7 +16,7 @@ import type {
  * Represents a stripped-down version of the `StudioCMSSiteConfig` type,
  * excluding the property '_config_version'.
  */
-export type SiteConfig = Omit<StudioCMSSiteConfig, '_config_version'>;
+export type SiteConfig = ConfigFinal<StudioCMSSiteConfig>;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
