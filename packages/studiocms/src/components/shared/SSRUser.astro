@@ -67,9 +67,9 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 		// Create URL object to validate format
 		const urlObj = new URL(src);
 
-		// Only allow http/https protocols
-		if (!['http:', 'https:'].includes(urlObj.protocol)) {
-			console.error(`Invalid URL protocol: ${urlObj.protocol}`);
+		// Only allow HTTPS (avoid mixed content + downgrade attacks)
+		if (urlObj.protocol !== 'https:') {
+			console.error(`Insecure avatar URL protocol: ${urlObj.protocol}`);
 			return undefined;
 		}
 
@@ -93,6 +93,11 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 		const contentType = response.headers.get('content-type');
 		if (!contentType || !contentType.startsWith('image/')) {
 			console.error(`Invalid image type: ${contentType}`);
+			return undefined;
+		}
+
+		if (contentType === 'image/svg+xml') {
+			console.error('Remote SVG avatars are disallowed for security.');
 			return undefined;
 		}
 

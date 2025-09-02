@@ -406,16 +406,15 @@ class UserQuickTools extends HTMLElement {
 		this.cornerMenu.className = 'cornerMenu';
 		this.cornerMenu.dataset.theme = document.documentElement.dataset.theme ?? 'dark';
 
+		const styleElm = document.createElement('style');
+		styleElm.textContent = COMPONENT_STYLES;
+
 		// Add menu items
 		this.addMenuItems();
-		await this.addUserAvatar();
-
-		// Append elements
-		this.shadowRoot.append(document.createElement('style'), this.menuOverlay, this.cornerMenu);
-
-		// Add styles
-		// biome-ignore lint/style/noNonNullAssertion: this is safe as we check for element existence
-		this.shadowRoot.querySelector('style')!.textContent = COMPONENT_STYLES;
+		// Append elements early for faster paint
+		this.shadowRoot.append(styleElm, this.menuOverlay, this.cornerMenu);
+		// Load avatar asynchronously; avoid unhandled rejections
+		void this.addUserAvatar().catch((e) => console.warn('Avatar load failed:', e));
 	}
 
 	private addMenuItems(): void {
@@ -477,39 +476,36 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	private async testAvatarURL(url: string) {
-		// Create URL object to validate format
-		const urlObj = new URL(url);
-
-		// Only allow http/https protocols
-		if (!['http:', 'https:'].includes(urlObj.protocol)) {
-			console.error(`Invalid URL protocol: ${urlObj.protocol}`);
+		let urlObj: URL;
+		try {
+			urlObj = new URL(url);
+		} catch {
+			console.warn('Invalid avatar URL:', url);
 			return undefined;
 		}
-
-		// Create AbortController for timeout
+		// Only allow HTTPS (avoid mixed content + downgrade attacks)
+		if (urlObj.protocol !== 'https:') {
+			console.error(`Insecure avatar URL protocol: ${urlObj.protocol}`);
+			return undefined;
+		}
 		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-		// Fetch the URL with timeout
-		const response = await fetch(url, {
-			method: 'HEAD', // Use HEAD to avoid downloading the entire image
-			signal: controller.signal,
-			cache: 'no-cache',
-		});
-
-		clearTimeout(timeoutId);
-
-		if (!response || !response.ok) {
-			console.error(`Failed to fetch image: ${response.statusText}`);
+		const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+		try {
+			const response = await fetch(url, {
+				method: 'HEAD',
+				signal: controller.signal,
+				cache: 'no-cache',
+			});
+			if (!response.ok) return undefined;
+			const contentType = (response.headers.get('content-type') || '').split(';')[0].trim();
+			if (!contentType.startsWith('image/')) return undefined;
+			return { type: contentType };
+		} catch (err) {
+			console.warn('Avatar HEAD check failed:', err);
 			return undefined;
+		} finally {
+			clearTimeout(timeoutId);
 		}
-		const contentType = response.headers.get('content-type');
-		if (!contentType || !contentType.startsWith('image/')) {
-			console.error(`Invalid image type: ${contentType}`);
-			return undefined;
-		}
-
-		return { type: contentType };
 	}
 
 	private async addUserAvatar(): Promise<void> {
