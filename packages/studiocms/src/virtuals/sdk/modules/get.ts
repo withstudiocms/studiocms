@@ -258,14 +258,6 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						return yield* collectPageData(page, folders);
 					});
 
-				const handlePageNotFound = () =>
-					Effect.fail(
-						new SDKCoreError({
-							type: 'UNKNOWN',
-							cause: new StudioCMS_SDK_Error('Page not found in Database'),
-						})
-					);
-
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
@@ -273,7 +265,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id);
 
 						if (!page) {
-							return yield* handlePageNotFound();
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
@@ -289,7 +281,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id, tree);
 
 						if (!page) {
-							return yield* handlePageNotFound();
+							return undefined;
 						}
 
 						const returnPage = pageDataReturn(page);
@@ -349,12 +341,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(slug);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
@@ -371,12 +358,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(slug, tree);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
