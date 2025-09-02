@@ -2,8 +2,8 @@
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
-import { User } from 'studiocms:ui/components/user';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import User from '../../shared/SSRUser.astro';
 
 interface Props {
 	user: {
@@ -36,12 +36,10 @@ const userListItemHrefString = userListItemHref.toString();
 ---
 
 <user-list-item class="sidebar-user" href={userListItemHrefString}>
-    {/* TODO: Libravatar is causing slowdown... find a new solution? */}
     <User
         name={user.name}
-        avatar={/*user.avatar ??*/ undefined}
+        avatar={user.avatar ?? undefined}
         description={getLabelForPermissionLevel(user.permissionsData?.rank ?? 'unknown')}
-        loading="eager"
     />
     <Icon name="heroicons:chevron-right" width={24} height={24} />
 </user-list-item>

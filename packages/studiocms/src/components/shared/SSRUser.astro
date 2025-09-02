@@ -1,0 +1,193 @@
+---
+import { extname } from 'node:path';
+import { Icon } from 'studiocms:ui/components/icon';
+import { lookup } from 'mrmime';
+
+const heroIconsUserDataUri =
+	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
+
+interface Props {
+	/**
+	 * The name of the user.
+	 */
+	name: string;
+	/**
+	 * The description of the user. Could be a role, a handle, etc.
+	 */
+	description: string;
+	/**
+	 * The avatar of the user. Either a URL to an image or an imported image.
+	 */
+	avatar?: string;
+	/**
+	 * Additional classes to apply to the user container.
+	 */
+	class?: string;
+	/**
+	 * The loading strategy for the image. Defaults to `lazy`.
+	 */
+	loading?: 'eager' | 'lazy';
+
+	/**
+	 * The timeout delay for loading the avatar image. Defaults to 5000ms.
+	 */
+	timeoutDelay?: number;
+}
+
+const {
+	name,
+	description,
+	avatar,
+	class: className,
+	loading = 'lazy',
+	timeoutDelay = 5000,
+} = Astro.props;
+
+async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
+	try {
+		const data = src;
+		const extension = extname(src).toLowerCase();
+
+		if (extension) {
+			const type = lookup(extension);
+
+			if (!type) {
+				console.error(`Could not determine MIME type for extension: ${extension}`);
+				return undefined;
+			}
+
+			if (!/^image\/.*$/.test(type)) {
+				console.error(`Unsupported image type: ${type}`);
+				return undefined;
+			}
+
+			return { data, type };
+		}
+
+		// Create URL object to validate format
+		const urlObj = new URL(src);
+
+		// Only allow http/https protocols
+		if (!['http:', 'https:'].includes(urlObj.protocol)) {
+			console.error(`Invalid URL protocol: ${urlObj.protocol}`);
+			return undefined;
+		}
+
+		// Create AbortController for timeout
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), timeoutDelay);
+
+		// Fetch the URL with timeout
+		const response = await fetch(src, {
+			method: 'HEAD', // Use HEAD to avoid downloading the entire image
+			signal: controller.signal,
+			cache: 'no-cache',
+		});
+
+		clearTimeout(timeoutId);
+
+		if (!response || !response.ok) {
+			console.error(`Failed to fetch image: ${response.statusText}`);
+			return undefined;
+		}
+		const contentType = response.headers.get('content-type');
+		if (!contentType || !contentType.startsWith('image/')) {
+			console.error(`Invalid image type: ${contentType}`);
+			return undefined;
+		}
+
+		return { data, type: contentType };
+	} catch (error) {
+		// Handle various error types
+		if (error instanceof Error) {
+			if (error.name === 'AbortError') {
+				console.log(`Avatar URL test timed out after ${timeoutDelay / 1000} seconds`);
+			} else if (error.name === 'TypeError') {
+				console.log('Invalid URL or network error:', error.message);
+			} else {
+				console.log('Error testing avatar URL:', error.message);
+			}
+		}
+		return undefined;
+	}
+}
+
+const validAvatar = avatar ? await getObjectData(avatar) : undefined;
+---
+
+<div class="sui-user-container" class:list={[className]}>
+    <div class="sui-avatar-container">
+        {
+            validAvatar ? (
+                <object 
+                    data={validAvatar.data} 
+                    type={validAvatar.type} 
+                    width={64} 
+                    height={64} 
+                    class="sui-avatar-img"
+                    >
+                    <img 
+                        src={heroIconsUserDataUri} 
+                        width={24}
+                        height={24}
+                        loading={loading}
+                        alt={name}
+                        />
+                </object>
+            ) : (
+                <Icon
+                    name="heroicons:user"
+                    width={24}
+                    height={24}
+                    role="img"
+                    aria-label={`Placeholder avatar for ${name}`}
+                />
+            )
+        }
+    </div>
+    <div class="sui-text-content">
+        <span class="sui-name">{name}</span>
+        <span class="sui-description">{description}</span>
+    </div>
+</div>
+
+<style>
+    .sui-user-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    .sui-avatar-container {
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: var(--default-base);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+    .sui-avatar-img {
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .sui-text-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+    .sui-name {
+        font-size: 1em;
+        font-weight: 600;
+    }
+    .sui-description {
+        font-size: 0.875em;
+        font-weight: 400;
+        color: var(--text-muted);
+    }
+</style>
