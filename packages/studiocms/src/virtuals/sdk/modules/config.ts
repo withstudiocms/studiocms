@@ -1,13 +1,20 @@
 import { eq } from 'astro:db';
 import {
 	CMSMailerConfigId,
+	CMSNotificationSettingsId,
 	CMSSiteConfigId,
 	Next_MailerConfigId,
+	Next_NotificationSettingsId,
 	Next_SiteConfigId,
 } from '../../../consts.js';
 import { Deepmerge, Effect } from '../../../effect.js';
 import { AstroDB } from '../effect/db.js';
-import { tsDynamicConfigSettings, tsMailerConfig, tsSiteConfig } from '../tables.js';
+import {
+	tsDynamicConfigSettings,
+	tsMailerConfig,
+	tsNotificationSettings,
+	tsSiteConfig,
+} from '../tables.js';
 
 export type RawDynamicConfigEntry = typeof tsDynamicConfigSettings.$inferSelect;
 
@@ -18,8 +25,9 @@ export type DynamicConfigEntry<T> = {
 
 type LegacySiteConfig = typeof tsSiteConfig;
 type LegacyMailerConfig = typeof tsMailerConfig;
+type LegacyNotificationSettings = typeof tsNotificationSettings;
 
-type LegacyTables = LegacySiteConfig | LegacyMailerConfig;
+type LegacyTables = LegacySiteConfig | LegacyMailerConfig | LegacyNotificationSettings;
 
 export interface StudioCMSDynamicConfigBase {
 	_config_version: string;
@@ -51,6 +59,13 @@ export interface StudioCMSMailerConfig extends StudioCMSDynamicConfigBase {
 	default_sender: string;
 }
 
+export interface StudioCMSNotificationSettings extends StudioCMSDynamicConfigBase {
+	emailVerification?: boolean | undefined;
+	requireAdminVerification?: boolean | undefined;
+	requireEditorVerification?: boolean | undefined;
+	oAuthBypassVerification?: boolean | undefined;
+}
+
 export const castType = <T>({ data, id }: RawDynamicConfigEntry): DynamicConfigEntry<T> => ({
 	id,
 	data: data as T,
@@ -70,6 +85,14 @@ const migrateLegacyMailerConfig = ({
 	id,
 	...legacyConfig
 }: typeof tsMailerConfig.$inferSelect): StudioCMSMailerConfig => ({
+	...legacyConfig,
+	_config_version: '1.0.0',
+});
+
+const migrateLegacyNotificationSettings = ({
+	id,
+	...legacyConfig
+}: typeof tsNotificationSettings.$inferSelect): StudioCMSNotificationSettings => ({
 	...legacyConfig,
 	_config_version: '1.0.0',
 });
@@ -126,8 +149,18 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				Table extends LegacyTables,
 				LegacyConfig extends Table extends LegacySiteConfig
 					? LegacySiteConfig['$inferSelect']
-					: LegacyMailerConfig['$inferSelect'],
-				Config extends Table extends LegacySiteConfig ? StudioCMSSiteConfig : StudioCMSMailerConfig,
+					: Table extends LegacyMailerConfig
+						? LegacyMailerConfig['$inferSelect']
+						: Table extends LegacyNotificationSettings
+							? LegacyNotificationSettings['$inferSelect']
+							: never,
+				Config extends Table extends LegacySiteConfig
+					? StudioCMSSiteConfig
+					: Table extends LegacyMailerConfig
+						? StudioCMSMailerConfig
+						: Table extends LegacyNotificationSettings
+							? StudioCMSNotificationSettings
+							: never,
 			>(opts: {
 				table: Table;
 				legacyId: string | number;
@@ -146,49 +179,70 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				return yield* create(newId, newConfig);
 			});
 
+			const dynamicGet = Effect.fn(function* <DataType extends StudioCMSDynamicConfigBase>(
+				id: string,
+				migrationOpts: {
+					table: LegacyTables;
+					legacyId: string | number;
+					// biome-ignore lint/suspicious/noExplicitAny: the actual type is too complex
+					migrate: (legacyConfig: any) => DataType;
+					newId: string;
+				}
+			) {
+				const entry = yield* get<DataType>(id);
+				if (!entry || entry.data._config_version !== '1.0.0') {
+					return yield* runMigration(migrationOpts);
+				}
+				return entry;
+			});
+
+			const dynamicUpdate = Effect.fn(function* <DataType extends StudioCMSDynamicConfigBase>(
+				id: string,
+				data: DataType
+			) {
+				const entry = yield* get<DataType>(id);
+				if (!entry) return undefined;
+				const updatedEntry = (yield* merge((m) => m(entry.data, data))) as DataType;
+				return yield* update<DataType>(id, updatedEntry);
+			});
+
 			const siteConfig = {
-				get: Effect.fn(function* () {
-					const entry = yield* get<StudioCMSSiteConfig>(Next_SiteConfigId);
-					if (!entry || entry.data._config_version !== '1.0.0') {
-						return yield* runMigration({
-							table: tsSiteConfig,
-							legacyId: CMSSiteConfigId,
-							migrate: migrateLegacySiteConfig,
-							newId: Next_SiteConfigId,
-						});
-					}
-					return entry;
-				}),
-				update: Effect.fn(function* (data: Omit<StudioCMSSiteConfig, ' _config_version'>) {
-					const entry = yield* get<StudioCMSSiteConfig>(Next_SiteConfigId);
-					if (!entry) return undefined;
-					const updatedEntry = yield* merge((m) => m(entry.data, data));
-					return yield* update<StudioCMSSiteConfig>(Next_SiteConfigId, updatedEntry);
-				}),
+				get: () =>
+					dynamicGet<StudioCMSSiteConfig>(Next_SiteConfigId, {
+						table: tsSiteConfig,
+						legacyId: CMSSiteConfigId,
+						migrate: migrateLegacySiteConfig,
+						newId: Next_SiteConfigId,
+					}),
+				update: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+					dynamicUpdate<StudioCMSSiteConfig>(Next_SiteConfigId, data),
 			};
 
 			const mailerConfig = {
-				get: Effect.fn(function* () {
-					const entry = yield* get<StudioCMSMailerConfig>(Next_MailerConfigId);
-					if (!entry || entry.data._config_version !== '1.0.0') {
-						return yield* runMigration({
-							table: tsMailerConfig,
-							legacyId: CMSMailerConfigId,
-							migrate: migrateLegacyMailerConfig,
-							newId: Next_MailerConfigId,
-						});
-					}
-					return entry;
-				}),
-				update: Effect.fn(function* (data: Omit<StudioCMSMailerConfig, ' _config_version'>) {
-					const entry = yield* get<StudioCMSMailerConfig>(Next_MailerConfigId);
-					if (!entry) return undefined;
-					const updatedEntry = yield* merge((m) => m(entry.data, data));
-					return yield* update<StudioCMSMailerConfig>(Next_MailerConfigId, updatedEntry);
-				}),
+				get: () =>
+					dynamicGet<StudioCMSMailerConfig>(Next_MailerConfigId, {
+						table: tsMailerConfig,
+						legacyId: CMSMailerConfigId,
+						migrate: migrateLegacyMailerConfig,
+						newId: Next_MailerConfigId,
+					}),
+				update: (data: Omit<StudioCMSMailerConfig, ' _config_version'>) =>
+					dynamicUpdate<StudioCMSMailerConfig>(Next_MailerConfigId, data),
 			};
 
-			return { siteConfig, mailerConfig } as const;
+			const notificationConfig = {
+				get: () =>
+					dynamicGet<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
+						table: tsNotificationSettings,
+						legacyId: CMSNotificationSettingsId,
+						migrate: migrateLegacyNotificationSettings,
+						newId: Next_NotificationSettingsId,
+					}),
+				update: (data: Omit<StudioCMSNotificationSettings, ' _config_version'>) =>
+					dynamicUpdate<StudioCMSNotificationSettings>(Next_NotificationSettingsId, data),
+			};
+
+			return { siteConfig, mailerConfig, notificationConfig } as const;
 		}),
 	}
 ) {}
