@@ -38,10 +38,16 @@ const { lang, config } = Astro.props as Props;
 
 const enableDiffs = config.data.enableDiffs;
 
-const [[{ data: pageData }, users], editors] = await Promise.all([
+const [[currentPageData, users], editors] = await Promise.all([
 	runSDK(Effect.all([SDKCoreJs.GET.page.byId(editId), SDKCoreJs.GET.users.all()])),
 	importEditorKeys(editorKeys),
 ]);
+
+if (!currentPageData) {
+	return new Response(null, { status: 404, statusText: 'Page Not Found' });
+}
+
+const pageData = currentPageData.data;
 
 function getParentFolderValue(value: string | null): string | undefined {
 	const options = parentFolderOptions;
