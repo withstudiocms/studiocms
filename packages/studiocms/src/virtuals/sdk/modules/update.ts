@@ -8,7 +8,6 @@ import {
 	VersionMapID,
 } from '../consts.js';
 import { AstroDB, GetVersionFromNPM, SDKCore_FolderTree } from '../effect/index.js';
-import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import {
 	tsPageContent,
 	tsPageData,
@@ -306,7 +305,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 					 * Updates a page by its ID, including content and data, and refreshes caches.
 					 * @param id - The ID of the page to update.
 					 * @param data - The new page data and content to update.
-					 * @returns An Effect that resolves to the updated page data.
+					 * @returns An Effect that resolves to the updated page data, or undefined if not found.
 					 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
 					 * @throws {UnknownException} If an unknown error occurs during the update.
 					 */
@@ -329,8 +328,13 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							yield* updatePage(data.pageData);
 							yield* UPDATE.pageContent(data.pageContent);
 
-							const { data: updatedData } = yield* GET.page.byId(id);
-							const returnData = pageDataReturn(updatedData);
+							const rawUpdated = yield* GET.page.byId(id);
+
+							if (!rawUpdated) {
+								return undefined;
+							}
+
+							const returnData = pageDataReturn(rawUpdated.data);
 
 							if (!status) {
 								return returnData;
@@ -353,7 +357,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 					 * Updates a page by its slug, including content and data, and refreshes caches.
 					 * @param slug - The slug of the page to update.
 					 * @param data - The new page data and content to update.
-					 * @returns An Effect that resolves to the updated page data.
+					 * @returns An Effect that resolves to the updated page data, or undefined if not found.
 					 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
 					 * @throws {UnknownException} If an unknown error occurs during the update.
 					 */
@@ -377,28 +381,31 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 								yield* updatePage(data.pageData);
 								yield* UPDATE.pageContent(data.pageContent);
 
-								const { data: updatedData } = yield* GET.page.bySlug(slug);
+								const rawUpdated = yield* GET.page.byId(data.pageData.id);
 
-								return pageDataReturn(updatedData);
+								if (!rawUpdated) {
+									return undefined;
+								}
+
+								return pageDataReturn(rawUpdated.data);
 							}
 
 							const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
 
 							if (!cachedPage) {
-								return yield* Effect.fail(
-									new SDKCoreError({
-										type: 'UNKNOWN',
-										cause: new StudioCMS_SDK_Error('Page not found in cache'),
-									})
-								);
+								return undefined;
 							}
 
 							yield* updatePage(data.pageData);
 							yield* UPDATE.pageContent(data.pageContent);
 
-							const { data: updatedData } = yield* GET.page.bySlug(slug);
+							const rawUpdated = yield* GET.page.byId(data.pageData.id);
 
-							const returnData = pageDataReturn(updatedData);
+							if (!rawUpdated) {
+								return undefined;
+							}
+
+							const returnData = pageDataReturn(rawUpdated.data);
 
 							yield* CLEAR.folderList();
 							yield* CLEAR.folderTree();
