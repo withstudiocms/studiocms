@@ -41,7 +41,7 @@ const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
 
 const KNOWN_API_ROUTES = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
 const DEFAULT_AVATAR =
-	'data:image/webp;base64,UklGRlQBAABXRUJQVlA4IEgBAACwCACdASpAAEAAPhUIg0EhBv+rAAQAUS0gAnKtdW/gSoIZT5K7/RcC7hziKINwltjKlx8J+7QBjjUT9tq3fmUI0kzZ/Y7qkuL/iBUH3AAA/v8D8h4y7rTT8z2FDR2PY+uIqeZcFEDE0y4A9/p7VzrmUiI4wELcKrd/pNgxSeUoOsGR+q6dm0vWuoT1pLMsFqYsVz5/unL3AzbGar61ET9+oRu1aQX5cztEzYI45RSBtFnR7ch4QxJjflICch2Xmp+L//B5QoAP52OMBfOCQ2ivKsGwYwBpuI6SpOd8D66tr73kQZgWoAV17JQ0r/upPBGA114EhNGRQ94P1lqQjWKKiLUTS9XyzKlzfbHAdEAAc5QHayiiKL+acLkiIQurnyxS7XRLy87QrKXxM11LumvAEfGOUkYgogc1/NL/DjSnLmgMbZLzQAAA';
+	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
 
 // Enhanced CSS with click protection and visual feedback
 const COMPONENT_STYLES = `
@@ -97,16 +97,28 @@ const COMPONENT_STYLES = `
     z-index: 600;
     cursor: pointer;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .avatar {
     width: 100%;
-    height: 100%;
+    height: auto;
     border-radius: 50%;
     border: 1px solid var(--border);
     object-fit: cover;
     z-index: 700;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cornerMenu.menuOpened .avatar {
@@ -382,7 +394,7 @@ class UserQuickTools extends HTMLElement {
 		this.removeInteractionListeners();
 	}
 
-	private render(): void {
+	private async render(): Promise<void> {
 		if (!this.shadowRoot || !this.sessionData) return;
 
 		// Create overlay
@@ -396,7 +408,7 @@ class UserQuickTools extends HTMLElement {
 
 		// Add menu items
 		this.addMenuItems();
-		this.addUserAvatar();
+		await this.addUserAvatar();
 
 		// Append elements
 		this.shadowRoot.append(document.createElement('style'), this.menuOverlay, this.cornerMenu);
@@ -464,26 +476,77 @@ class UserQuickTools extends HTMLElement {
 		return element;
 	}
 
-	private addUserAvatar(): void {
+	private async testAvatarURL(url: string) {
+		// Create URL object to validate format
+		const urlObj = new URL(url);
+
+		// Only allow http/https protocols
+		if (!['http:', 'https:'].includes(urlObj.protocol)) {
+			console.error(`Invalid URL protocol: ${urlObj.protocol}`);
+			return undefined;
+		}
+
+		// Create AbortController for timeout
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+		// Fetch the URL with timeout
+		const response = await fetch(url, {
+			method: 'HEAD', // Use HEAD to avoid downloading the entire image
+			signal: controller.signal,
+			cache: 'no-cache',
+		});
+
+		clearTimeout(timeoutId);
+
+		if (!response || !response.ok) {
+			console.error(`Failed to fetch image: ${response.statusText}`);
+			return undefined;
+		}
+		const contentType = response.headers.get('content-type');
+		if (!contentType || !contentType.startsWith('image/')) {
+			console.error(`Invalid image type: ${contentType}`);
+			return undefined;
+		}
+
+		return { type: contentType };
+	}
+
+	private async addUserAvatar(): Promise<void> {
 		if (!this.cornerMenu || !this.sessionData) return;
 
 		const { user, permissionLevel } = this.sessionData;
-		const avatar = document.createElement('img');
-		const displayName = `${user.name} - ${this.capitalizeFirst(permissionLevel)}`;
 
-		Object.assign(avatar, {
-			// TODO: Libravatar is causing slowdown... find a new solution?
-			src: /*user.avatar ||*/ DEFAULT_AVATAR,
-			alt: displayName,
-			title: displayName,
-			width: '32',
-			height: '32',
-			className: 'avatar',
-			loading: 'lazy',
-		});
+		const newAvatar = document.createElement('object');
 
-		avatar.setAttribute('aria-hidden', 'true');
-		this.cornerMenu.appendChild(avatar);
+		const { avatar, type } = await (async () => {
+			let avatar = DEFAULT_AVATAR;
+			let type = 'image/png';
+
+			if (user.avatar) {
+				const result = await this.testAvatarURL(user.avatar);
+				if (result) {
+					avatar = user.avatar;
+					type = result.type;
+				}
+			}
+
+			return { avatar, type };
+		})();
+
+		newAvatar.data = avatar || DEFAULT_AVATAR;
+		newAvatar.type = type || 'image/png';
+		newAvatar.className = 'avatar';
+
+		const fallbackAvatar = document.createElement('img');
+		fallbackAvatar.src = DEFAULT_AVATAR;
+		fallbackAvatar.alt = `${user.name} - ${this.capitalizeFirst(permissionLevel)}`;
+
+		newAvatar.setAttribute('aria-hidden', 'true');
+		newAvatar.appendChild(fallbackAvatar);
+
+		// Append the avatar to the corner menu
+		this.cornerMenu.appendChild(newAvatar);
 	}
 
 	private setupEventListeners(): void {
