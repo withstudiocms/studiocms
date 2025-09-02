@@ -23,11 +23,11 @@ export type DynamicConfigEntry<T> = {
 	data: T;
 };
 
-type LegacySiteConfig = typeof tsSiteConfig;
-type LegacyMailerConfig = typeof tsMailerConfig;
-type LegacyNotificationSettings = typeof tsNotificationSettings;
+export type LegacySiteConfig = typeof tsSiteConfig;
+export type LegacyMailerConfig = typeof tsMailerConfig;
+export type LegacyNotificationSettings = typeof tsNotificationSettings;
 
-type LegacyTables = LegacySiteConfig | LegacyMailerConfig | LegacyNotificationSettings;
+export type LegacyTables = LegacySiteConfig | LegacyMailerConfig | LegacyNotificationSettings;
 
 export interface StudioCMSDynamicConfigBase {
 	_config_version: string;
@@ -71,30 +71,32 @@ export const castType = <T>({ data, id }: RawDynamicConfigEntry): DynamicConfigE
 	data: data as T,
 });
 
-const migrateLegacySiteConfig = ({
+export const CURRENT_CONFIG_VERSION = '1.0.0';
+
+export const migrateLegacySiteConfig = ({
 	id,
 	gridItems,
 	...legacyConfig
 }: typeof tsSiteConfig.$inferSelect): StudioCMSSiteConfig => ({
 	...legacyConfig,
 	gridItems: (gridItems ?? []) as string[],
-	_config_version: '1.0.0',
+	_config_version: CURRENT_CONFIG_VERSION,
 });
 
-const migrateLegacyMailerConfig = ({
+export const migrateLegacyMailerConfig = ({
 	id,
 	...legacyConfig
 }: typeof tsMailerConfig.$inferSelect): StudioCMSMailerConfig => ({
 	...legacyConfig,
-	_config_version: '1.0.0',
+	_config_version: CURRENT_CONFIG_VERSION,
 });
 
-const migrateLegacyNotificationSettings = ({
+export const migrateLegacyNotificationSettings = ({
 	id,
 	...legacyConfig
 }: typeof tsNotificationSettings.$inferSelect): StudioCMSNotificationSettings => ({
 	...legacyConfig,
-	_config_version: '1.0.0',
+	_config_version: CURRENT_CONFIG_VERSION,
 });
 
 export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
@@ -190,7 +192,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				}
 			) {
 				const entry = yield* get<DataType>(id);
-				if (!entry || entry.data._config_version !== '1.0.0') {
+				if (!entry || entry.data._config_version !== CURRENT_CONFIG_VERSION) {
 					return yield* runMigration(migrationOpts);
 				}
 				return entry;
