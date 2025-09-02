@@ -534,6 +534,17 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
 					}),
+
+				/**
+				 * Initializes the mailer configuration with the provided data.
+				 * @param data The initial configuration data, excluding the internal version field.
+				 * @returns The created mailer configuration.
+				 */
+				init: (data: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+					create<StudioCMSMailerConfig>(Next_MailerConfigId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
 			};
 
 			/**
@@ -562,6 +573,11 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 						_config_version: CURRENT_CONFIG_VERSION,
 					}),
 
+				/**
+				 * Initializes the notification settings with the provided data.
+				 * @param data The initial configuration data, excluding the internal version field.
+				 * @returns The created notification settings.
+				 */
 				init: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
 					create<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
 						...data,

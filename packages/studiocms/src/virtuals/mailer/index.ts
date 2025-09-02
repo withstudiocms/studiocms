@@ -1,20 +1,8 @@
-import { eq } from 'astro:db';
 import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
-import { CMSMailerConfigId } from '../../consts.js';
-import { tsMailerConfig } from '../../db/config.js';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../../utils/effects/smtp.js';
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export type tsMailer = typeof tsMailerConfig.$inferSelect;
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
+import type { StudioCMSMailerConfig } from '../sdk/modules/config.js';
 
 /**
  * Interface representing the options for sending an email.
@@ -97,9 +85,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * @returns A promise that resolves with the mailer configuration object.
 		 */
 		const getMailerConfigTable = pipeLogger('studiocms/lib/mailer/Mailer.getMailerConfigTable')(
-			sdk.dbService.execute((db) =>
-				db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
-			)
+			sdk.CONFIG.mailerConfig.get()
 		);
 
 		/**
@@ -108,12 +94,10 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 * @param config - The new mailer configuration object.
 		 * @returns A promise that resolves when the mailer configuration has been updated.
 		 */
-		const updateMailerConfigTable = (config: tsMailerInsert) =>
+		const updateMailerConfigTable = (config: Omit<StudioCMSMailerConfig, '_config_version'>) =>
 			genLogger('studiocms/lib/mailer/Mailer.updateMailerConfigTable')(function* () {
-				yield* sdk.dbService
-					.execute((db) =>
-						db.update(tsMailerConfig).set(config).where(eq(tsMailerConfig.id, CMSMailerConfigId))
-					)
+				yield* sdk.CONFIG.mailerConfig
+					.update(config)
 					.pipe(
 						Effect.catchAll((e) =>
 							Effect.succeed(
@@ -124,20 +108,9 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 				return mailerResponse({ message: 'Mailer configuration updated successfully' });
 			});
 
-		const createMailerConfigTable = (config: tsMailerInsert) =>
+		const createMailerConfigTable = (config: Omit<StudioCMSMailerConfig, '_config_version'>) =>
 			pipeLogger('studiocms/lib/mailer/Mailer.createMailerConfigTable')(
-				sdk.dbService.execute((db) =>
-					db
-						.insert(tsMailerConfig)
-						.values({ ...config, id: CMSMailerConfigId })
-						.onConflictDoUpdate({
-							target: tsMailerConfig.id,
-							set: config,
-							where: eq(tsMailerConfig.id, CMSMailerConfigId),
-						})
-						.returning()
-						.get()
-				)
+				sdk.CONFIG.mailerConfig.init(config)
 			);
 
 		/**

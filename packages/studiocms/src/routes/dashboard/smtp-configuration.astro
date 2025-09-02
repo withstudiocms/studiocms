@@ -18,7 +18,7 @@ const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:smtp');
 
-const [mailerConfig, notificationSettings] = await runEffect(
+const [rawMailerConfig, notificationSettings] = await runEffect(
 	genLogger('studiocms/routes/dashboard/smtp-configuration')(function* () {
 		const mailer = yield* Mailer;
 		const sdk = yield* SDKCore;
@@ -32,6 +32,8 @@ const {
 } = config;
 
 let createConfig = false;
+
+const mailerConfig = rawMailerConfig?.data;
 
 if (!mailerConfig) {
 	createConfig = true;

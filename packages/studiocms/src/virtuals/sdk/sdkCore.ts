@@ -9,6 +9,7 @@ import {
 } from './effect/index.js';
 import { SDKCore_AUTH } from './modules/auth.js';
 import { SDKCore_CLEAR } from './modules/clear.js';
+import { SDKCore_CONFIG } from './modules/config.js';
 import { SDKCore_DELETE } from './modules/delete.js';
 import { SDKCore_DiffTracking } from './modules/diffTracking.js';
 import { SDKCore_GET } from './modules/get.js';
@@ -175,6 +176,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 		AstroDB.Default,
 		SDKCore_MIDDLEWARES.Default,
 		SDKCore_PLUGINS.Default,
+		SDKCore_CONFIG.Default,
 	],
 	effect: Effect.gen(function* () {
 		// Get Services
@@ -207,6 +209,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			INIT,
 			MIDDLEWARES,
 			PLUGINS,
+			CONFIG,
 		] = yield* Effect.all([
 			SDKCore_FolderTree,
 			SDKCore_Generators,
@@ -227,6 +230,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			SDKCore_INIT,
 			SDKCore_MIDDLEWARES,
 			SDKCore_PLUGINS,
+			SDKCore_CONFIG,
 		]);
 
 		// Breakout service functions that need to be returned in this.
@@ -269,6 +273,7 @@ export class SDKCore extends Effect.Service<SDKCore>()('studiocms/sdk/SDKCore', 
 			INIT,
 			MIDDLEWARES,
 			PLUGINS,
+			CONFIG,
 		};
 	}),
 }) {
