@@ -3,4 +3,4 @@
 "studiocms": patch
 ---
 
-Fixes SDK error when working with Chrome dev tools that kept presenting weird Astro Errors during development.
+Fix: Adjust SDK page lookup to return `undefined` when a page is not found, eliminating noisy Astro errors in development (notably when using Chrome DevTools).
