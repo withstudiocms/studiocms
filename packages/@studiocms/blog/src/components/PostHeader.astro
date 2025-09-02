@@ -1,6 +1,7 @@
 ---
 import { FormattedDate } from 'studiocms:components';
 import { CustomImage } from 'studiocms:imageHandler/components';
+import { getHeroImage } from './heroHelper.js';
 
 interface Props {
 	title: string;
@@ -11,11 +12,13 @@ interface Props {
 }
 
 const { title, description, heroImage, publishedAt, updatedAt } = Astro.props;
+
+const heroImageToUse = getHeroImage(heroImage, Astro);
 ---
 <h1 class="title">{title}</h1>
 
 <div style="text-align: center;">
-	<CustomImage src={heroImage} alt={title} width={720} height={360}/>
+	<CustomImage src={heroImageToUse} alt={title} width={720} height={360}/>
 	<div>
 		<p class="date">Published: <FormattedDate date={publishedAt}/></p>
 		{updatedAt && <p class="date"> | Last Updated: <FormattedDate date={updatedAt}/></p>}
