@@ -1,6 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsSiteConfigSelect } from 'studiocms:sdk/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -10,6 +9,7 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../effect.js';
+import type { StudioCMSSiteConfig } from '../../../virtuals/sdk/modules/config.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -32,7 +32,8 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Get Json Data
-				const siteConfig = yield* readAPIContextJson<Omit<tsSiteConfigSelect, 'id'>>(ctx);
+				const siteConfig =
+					yield* readAPIContextJson<Omit<StudioCMSSiteConfig, '_config_version'>>(ctx);
 
 				// Validate form data
 				if (!siteConfig.title) {

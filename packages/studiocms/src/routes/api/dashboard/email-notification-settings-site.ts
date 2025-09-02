@@ -1,6 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsNotificationSettingsSelect } from 'studiocms:sdk/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -10,6 +9,10 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../effect.js';
+import type {
+	ConfigFinal,
+	StudioCMSNotificationSettings,
+} from '../../../virtuals/sdk/modules/config.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -32,7 +35,29 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						return apiResponseLogger(403, 'Unauthorized');
 					}
 
-					yield* readAPIContextJson<Omit<tsNotificationSettingsSelect, 'id'>>(ctx).pipe(
+					yield* readAPIContextJson<unknown>(ctx).pipe(
+						Effect.map((raw) => {
+							const rawData = (raw ?? {}) as Record<string, unknown>;
+							const safe = {
+								emailVerification:
+									typeof rawData.emailVerification === 'boolean'
+										? rawData.emailVerification
+										: undefined,
+								requireAdminVerification:
+									typeof rawData.requireAdminVerification === 'boolean'
+										? rawData.requireAdminVerification
+										: undefined,
+								requireEditorVerification:
+									typeof rawData.requireEditorVerification === 'boolean'
+										? rawData.requireEditorVerification
+										: undefined,
+								oAuthBypassVerification:
+									typeof rawData.oAuthBypassVerification === 'boolean'
+										? rawData.oAuthBypassVerification
+										: undefined,
+							} as ConfigFinal<StudioCMSNotificationSettings>;
+							return safe;
+						}),
 						Effect.flatMap((data) => sdk.notificationSettings.site.update(data))
 					);
 

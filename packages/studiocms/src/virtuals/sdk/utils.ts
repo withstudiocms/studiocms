@@ -1,6 +1,7 @@
 import { sdk as sdkConfig } from 'studiocms:config';
 import { Context, Effect, Layer } from '../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from './errors.js';
+import type { StudioCMSSiteConfig } from './modules/config.js';
 import type {
 	BaseCacheObject,
 	CacheMap,
@@ -12,7 +13,6 @@ import type {
 	PageDataCacheObject,
 	PageDataCacheReturnType,
 	PluginDataCacheObject,
-	SiteConfig,
 	SiteConfigCacheObject,
 	tsPageDataSelect,
 	VersionCacheObject,
@@ -161,7 +161,7 @@ export function pageDataReturn(data: CombinedPageData): PageDataCacheObject {
  * @param siteConfig - The site configuration object to cache.
  * @returns An object containing the site configuration and the time of cache update.
  */
-export function siteConfigReturn(siteConfig: SiteConfig): SiteConfigCacheObject {
+export function siteConfigReturn(siteConfig: StudioCMSSiteConfig): SiteConfigCacheObject {
 	return {
 		data: siteConfig,
 		lastCacheUpdate: new Date(),

@@ -17,15 +17,21 @@ import { stripLeadingAndTrailingSlashes } from './virtuals/lib/pathGenerators.js
  */
 export const CMSSiteConfigId: number = 1;
 
+export const Next_SiteConfigId: string = 'SCMS_SITE_CONFIG_1';
+
 /**
  * StudioCMS Mailer Config Table Entry ID
  */
 export const CMSMailerConfigId: string = '1';
 
+export const Next_MailerConfigId: string = 'SCMS_MAILER_CONFIG_1';
+
 /**
  * StudioCMS Notification Settings Table Entry ID
  */
 export const CMSNotificationSettingsId: string = '1';
+
+export const Next_NotificationSettingsId: string = 'SCMS_NOTIFICATION_SETTINGS_1';
 
 /**
  * The default lifetime for cached items.
@@ -148,7 +154,6 @@ export const GhostUserDefaults = {
  * Default values for the site Notifications configuration.
  */
 export const NotificationSettingsDefaults = {
-	id: CMSNotificationSettingsId,
 	emailVerification: false,
 	oAuthBypassVerification: false,
 	requireEditorVerification: false,
