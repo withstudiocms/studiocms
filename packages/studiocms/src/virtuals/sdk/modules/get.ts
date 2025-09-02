@@ -228,18 +228,20 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				);
 			}
 
-			function _getPageById(id: string): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
+			function _getPageById(
+				id: string
+			): Effect.Effect<PageDataCacheObject | undefined, SDKCoreError, never>;
 			function _getPageById(
 				id: string,
 				metaOnly?: boolean
-			): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
+			): Effect.Effect<MetaOnlyPageDataCacheObject | undefined, SDKCoreError, never>;
 
 			/**
 			 * Retrieves a page by its ID, with an option to return only metadata.
 			 *
 			 * @param id - The ID of the page to retrieve.
 			 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
-			 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+			 * @returns An `Effect` that yields the page data or metadata, or `undefined` if no page is found.
 			 *
 			 * @throws UnknownException - If an unknown error occurs during retrieval.
 			 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
@@ -258,14 +260,6 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						return yield* collectPageData(page, folders);
 					});
 
-				const handlePageNotFound = () =>
-					Effect.fail(
-						new SDKCoreError({
-							type: 'UNKNOWN',
-							cause: new StudioCMS_SDK_Error('Page not found in Database'),
-						})
-					);
-
 				return Effect.gen(function* () {
 					const status = yield* isCacheEnabled;
 
@@ -273,7 +267,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id);
 
 						if (!page) {
-							return yield* handlePageNotFound();
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
@@ -289,7 +283,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(id, tree);
 
 						if (!page) {
-							return yield* handlePageNotFound();
+							return undefined;
 						}
 
 						const returnPage = pageDataReturn(page);
@@ -312,18 +306,18 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 
 			function _getPageBySlug(
 				slug: string
-			): Effect.Effect<PageDataCacheObject, SDKCoreError, never>;
+			): Effect.Effect<PageDataCacheObject | undefined, SDKCoreError, never>;
 			function _getPageBySlug(
 				slug: string,
 				metaOnly?: boolean
-			): Effect.Effect<MetaOnlyPageDataCacheObject, SDKCoreError, never>;
+			): Effect.Effect<MetaOnlyPageDataCacheObject | undefined, SDKCoreError, never>;
 
 			/**
 			 * Retrieves a page by its slug, with an option to return only metadata.
 			 *
 			 * @param slug - The slug of the page to retrieve.
 			 * @param metaOnly - If `true`, returns only metadata for the page. Defaults to `false`.
-			 * @returns An `Effect` that yields the page data or metadata, depending on `metaOnly`.
+			 * @returns An `Effect` that yields the page data or metadata, or `undefined` if no page is found.
 			 *
 			 * @throws UnknownException - If an unknown error occurs during retrieval.
 			 * @throws LibSQLDatabaseError - If a database error occurs during retrieval.
@@ -349,12 +343,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(slug);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
@@ -371,12 +360,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						const page = yield* getPage(slug, tree);
 
 						if (!page) {
-							return yield* Effect.fail(
-								new SDKCoreError({
-									type: 'UNKNOWN',
-									cause: new StudioCMS_SDK_Error('Page not found in Database'),
-								})
-							);
+							return undefined;
 						}
 
 						const pageData = pageDataReturn(page);
@@ -512,9 +496,12 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 
 					for (const item of cacheMap) {
 						if (isCacheExpired(item)) {
-							const { data: updatedData } = yield* GET.page.byId(item.data.id);
-
-							pages.set(updatedData.id, pageDataReturn(updatedData));
+							const updated = yield* GET.page.byId(item.data.id);
+							if (!updated) {
+								pages.delete(item.data.id);
+								continue;
+							}
+							pages.set(updated.data.id, updated);
 						}
 					}
 
@@ -692,9 +679,12 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 
 					for (const item of cacheMap) {
 						if (isCacheExpired(item)) {
-							const { data: updatedData } = yield* GET.page.byId(item.data.id);
-
-							pages.set(updatedData.id, pageDataReturn(updatedData));
+							const updated = yield* GET.page.byId(item.data.id);
+							if (!updated) {
+								pages.delete(item.data.id);
+								continue;
+							}
+							pages.set(updated.data.id, updated);
 						}
 					}
 

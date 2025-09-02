@@ -33,6 +33,10 @@ const editId = urlParams.get('edit') || '';
 if (editId) {
 	const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
 
+	if (!res) {
+		return new Response(null, { status: 404, statusText: 'Page Not Found' });
+	}
+
 	if (editPage) {
 		pageTitle = `${res.data.title}`;
 		pageSlug = res.data.slug;
