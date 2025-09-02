@@ -499,6 +499,10 @@ class UserQuickTools extends HTMLElement {
 			if (!response.ok) return undefined;
 			const contentType = (response.headers.get('content-type') || '').split(';')[0].trim();
 			if (!contentType.startsWith('image/')) return undefined;
+			if (contentType === 'image/svg+xml') {
+				console.error('Remote SVG avatars are disallowed for security.');
+				return undefined;
+			}
 			return { type: contentType };
 		} catch (err) {
 			console.warn('Avatar HEAD check failed:', err);
