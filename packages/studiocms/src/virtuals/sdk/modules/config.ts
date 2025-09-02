@@ -102,6 +102,7 @@ export const migrateLegacyNotificationSettings = ({
 export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 	'studiocms/sdk/modules/SDKCore_CONFIG',
 	{
+		dependencies: [AstroDB.Default, Deepmerge.Default],
 		effect: Effect.gen(function* () {
 			const [dbService, { merge }] = yield* Effect.all([AstroDB, Deepmerge]);
 
