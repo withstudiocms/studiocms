@@ -201,7 +201,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const currentPageData = yield* sdk.GET.page.byId(data.id);
 
-				if (!currentPageData.data) {
+				if (!currentPageData?.data) {
 					return apiResponseLogger(404, 'Page not found');
 				}
 
@@ -229,9 +229,15 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					(metaData) => metaData.id === data.id
 				);
 
+				const fetchedPageData = yield* sdk.GET.page.byId(data.id);
+
+				if (!fetchedPageData) {
+					return apiResponseLogger(404, 'Page not found');
+				}
+
 				const {
 					data: { defaultContent },
-				} = yield* sdk.GET.page.byId(data.id);
+				} = fetchedPageData;
 
 				// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 				const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
@@ -304,6 +310,10 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				const pageToDelete = yield* sdk.GET.page.byId(id);
+
+				if (!pageToDelete) {
+					return apiResponseLogger(404, 'Page not found');
+				}
 
 				const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
 

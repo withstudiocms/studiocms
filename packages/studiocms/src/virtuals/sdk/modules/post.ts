@@ -512,14 +512,26 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 						if (!status) {
 							const newPage = yield* POST.databaseEntry.pages(data.pageData, data.pageContent);
 
-							const { data: toReturn } = yield* GET.page.byId(newPage.pageData[0].id);
+							const fetchedPageData = yield* GET.page.byId(newPage.pageData[0].id);
+
+							if (!fetchedPageData) {
+								return undefined;
+							}
+
+							const { data: toReturn } = fetchedPageData;
 
 							return pageDataReturn(toReturn);
 						}
 
 						const newPage = yield* POST.databaseEntry.pages(data.pageData, data.pageContent);
 
-						const { data: toReturn } = yield* GET.page.byId(newPage.pageData[0].id);
+						const fetchedPageData = yield* GET.page.byId(newPage.pageData[0].id);
+
+						if (!fetchedPageData) {
+							return undefined;
+						}
+
+						const { data: toReturn } = fetchedPageData;
 
 						pages.set(toReturn.id, pageDataReturn(toReturn));
 						yield* CLEAR.folderList();

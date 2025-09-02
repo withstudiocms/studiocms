@@ -334,8 +334,13 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							yield* updatePage(data.pageData);
 							yield* UPDATE.pageContent(data.pageContent);
 
-							const { data: updatedData } = yield* GET.page.byId(id);
-							const returnData = pageDataReturn(updatedData);
+							const rawUpdated = yield* GET.page.byId(id);
+
+							if (!rawUpdated) {
+								return undefined;
+							}
+
+							const returnData = pageDataReturn(rawUpdated.data);
 
 							if (!status) {
 								return returnData;
@@ -382,9 +387,13 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 								yield* updatePage(data.pageData);
 								yield* UPDATE.pageContent(data.pageContent);
 
-								const { data: updatedData } = yield* GET.page.bySlug(slug);
+								const rawUpdated = yield* GET.page.bySlug(slug);
 
-								return pageDataReturn(updatedData);
+								if (!rawUpdated) {
+									return undefined;
+								}
+
+								return pageDataReturn(rawUpdated.data);
 							}
 
 							const cachedPage = Array.from(pages.values()).find((page) => page.data.slug === slug);
@@ -401,9 +410,13 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							yield* updatePage(data.pageData);
 							yield* UPDATE.pageContent(data.pageContent);
 
-							const { data: updatedData } = yield* GET.page.bySlug(slug);
+							const rawUpdated = yield* GET.page.bySlug(slug);
 
-							const returnData = pageDataReturn(updatedData);
+							if (!rawUpdated) {
+								return undefined;
+							}
+
+							const returnData = pageDataReturn(rawUpdated.data);
 
 							yield* CLEAR.folderList();
 							yield* CLEAR.folderTree();

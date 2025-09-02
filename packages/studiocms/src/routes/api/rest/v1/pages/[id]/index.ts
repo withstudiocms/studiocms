@@ -127,9 +127,15 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					(metaData) => metaData.id === data.id
 				);
 
+				const fetchedPageData = yield* sdk.GET.page.byId(data.id);
+
+				if (!fetchedPageData) {
+					return apiResponseLogger(404, 'Page not found');
+				}
+
 				const {
 					data: { defaultContent },
-				} = yield* sdk.GET.page.byId(data.id);
+				} = fetchedPageData;
 
 				const _updated = yield* sdk.UPDATE.page.byId(data.id, {
 					pageData: data as tsPageDataSelect,
@@ -201,12 +207,6 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				if (!slug) {
 					return apiResponseLogger(400, 'Invalid request');
-				}
-
-				const isHomePage = yield* sdk.GET.page.bySlug('index');
-
-				if (isHomePage.data && isHomePage.data.id === id) {
-					return apiResponseLogger(400, 'Cannot delete home page');
 				}
 
 				const page = yield* sdk.GET.page.byId(id);
