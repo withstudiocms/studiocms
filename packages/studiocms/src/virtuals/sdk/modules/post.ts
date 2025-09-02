@@ -509,7 +509,11 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
 						const newPage = yield* POST.databaseEntry.pages(data.pageData, data.pageContent);
-						const fetchedPageData = yield* GET.page.byId(newPage.pageData[0].id);
+						const pageId = newPage.pageData[0]?.id;
+						if (!pageId) {
+							return undefined;
+						}
+						const fetchedPageData = yield* GET.page.byId(pageId);
 						if (!fetchedPageData) {
 							return undefined;
 						}
