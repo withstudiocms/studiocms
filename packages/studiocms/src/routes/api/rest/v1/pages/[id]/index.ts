@@ -105,7 +105,7 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Page not found');
 				}
 
-				const { authorId, contributorIds } = currentPageData.data;
+				const { authorId, contributorIds, defaultContent } = currentPageData.data;
 
 				let AuthorId = authorId;
 
@@ -120,24 +120,14 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				data.authorId = AuthorId;
-				data.contributorIds = JSON.stringify(ContributorIds);
+				data.contributorIds = ContributorIds;
 				data.updatedAt = new Date();
 
 				const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
 					(metaData) => metaData.id === data.id
 				);
 
-				const fetchedPageData = yield* sdk.GET.page.byId(data.id);
-
-				if (!fetchedPageData) {
-					return apiResponseLogger(404, 'Page not found');
-				}
-
-				const {
-					data: { defaultContent },
-				} = fetchedPageData;
-
-				const _updated = yield* sdk.UPDATE.page.byId(data.id, {
+				yield* sdk.UPDATE.page.byId(data.id, {
 					pageData: data as tsPageDataSelect,
 					pageContent: content as tsPageContentSelect,
 				});

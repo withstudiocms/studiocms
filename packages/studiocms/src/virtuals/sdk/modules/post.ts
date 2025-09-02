@@ -508,35 +508,17 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 				page: (data: { pageData: tsPageDataInsert; pageContent: CombinedInsertContent }) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
-
-						if (!status) {
-							const newPage = yield* POST.databaseEntry.pages(data.pageData, data.pageContent);
-
-							const fetchedPageData = yield* GET.page.byId(newPage.pageData[0].id);
-
-							if (!fetchedPageData) {
-								return undefined;
-							}
-
-							const { data: toReturn } = fetchedPageData;
-
-							return pageDataReturn(toReturn);
-						}
-
 						const newPage = yield* POST.databaseEntry.pages(data.pageData, data.pageContent);
-
 						const fetchedPageData = yield* GET.page.byId(newPage.pageData[0].id);
-
 						if (!fetchedPageData) {
 							return undefined;
 						}
-
 						const { data: toReturn } = fetchedPageData;
-
-						pages.set(toReturn.id, pageDataReturn(toReturn));
-						yield* CLEAR.folderList();
-						yield* CLEAR.folderTree();
-
+						if (status) {
+							pages.set(toReturn.id, pageDataReturn(toReturn));
+							yield* CLEAR.folderList();
+							yield* CLEAR.folderTree();
+						}
 						return pageDataReturn(toReturn);
 					}).pipe(
 						Effect.catchTags({
