@@ -1,3 +1,4 @@
+import type { StudioCMSSiteConfig } from '../modules/config.js';
 import type {
 	tsDiffTrackingSelect,
 	tsOAuthAccountsSelect,
@@ -7,7 +8,6 @@ import type {
 	tsPageDataTagsSelect,
 	tsPermissionsSelect,
 	tsSessionTableSelect,
-	tsSiteConfigInsert,
 	tsSiteConfigSelect,
 	tsUsersSelect,
 } from './tsAlias.js';
@@ -16,7 +16,7 @@ import type {
  * Represents a stripped-down version of the `tsSiteConfigSelect` type,
  * excluding the property 'id'.
  */
-export type SiteConfig = Omit<tsSiteConfigInsert, 'id'>;
+export type SiteConfig = StudioCMSSiteConfig;
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
