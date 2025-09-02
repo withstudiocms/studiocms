@@ -149,7 +149,11 @@ const StudioCMSPageContent = defineTable({
 	},
 });
 
-/** StudioCMS - Site Config Table for Astro DB */
+/**
+ * StudioCMS - Site Config Table for Astro DB
+ *
+ * To be deprecated in favor of StudioCMSDynamicConfigSettings
+ */
 const StudioCMSSiteConfig = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),
@@ -167,6 +171,9 @@ const StudioCMSSiteConfig = defineTable({
 	},
 });
 
+/**
+ * To be deprecated in favor of StudioCMSDynamicConfigSettings
+ */
 const StudioCMSMailerConfig = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -182,6 +189,9 @@ const StudioCMSMailerConfig = defineTable({
 	},
 });
 
+/**
+ * To be deprecated in favor of StudioCMSDynamicConfigSettings
+ */
 const StudioCMSNotificationSettings = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -208,6 +218,26 @@ const StudioCMSPluginData = defineTable({
 	},
 });
 
+/**
+ * StudioCMS - Dynamic Config Settings Table
+ *
+ * This table stores dynamic configuration settings for the StudioCMS application.
+ *
+ * @remarks
+ * This table is designed to store dynamic configuration settings that can be updated at runtime.
+ *
+ * Replaces:
+ * - `StudioCMSSiteConfig`
+ * - `StudioCMSMailerConfig`
+ * - `StudioCMSNotificationSettings`
+ */
+const StudioCMSDynamicConfigSettings = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		data: column.json(),
+	},
+});
+
 // Export the Database Configuration for StudioCMS
 export default defineDb({
 	tables: {
@@ -228,6 +258,7 @@ export default defineDb({
 		StudioCMSNotificationSettings,
 		StudioCMSEmailVerificationTokens,
 		StudioCMSPluginData,
+		StudioCMSDynamicConfigSettings,
 	},
 });
 
@@ -265,3 +296,7 @@ export const tsEmailVerificationTokens = asDrizzleTable(
 	StudioCMSEmailVerificationTokens
 );
 export const tsPluginData = asDrizzleTable('StudioCMSPluginData', StudioCMSPluginData);
+export const tsDynamicConfigSettings = asDrizzleTable(
+	'StudioCMSDynamicConfigSettings',
+	StudioCMSDynamicConfigSettings
+);
