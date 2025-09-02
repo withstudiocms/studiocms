@@ -61,6 +61,11 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 				return undefined;
 			}
 
+			if (type === 'image/svg+xml' || type.startsWith('image/svg')) {
+				console.error('SVG avatars are disallowed for security.');
+				return undefined;
+			}
+
 			return { data, type };
 		}
 
@@ -73,18 +78,19 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 			return undefined;
 		}
 
-		// Create AbortController for timeout
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), timeoutDelay);
-
-		// Fetch the URL with timeout
-		const response = await fetch(src, {
-			method: 'HEAD', // Use HEAD to avoid downloading the entire image
-			signal: controller.signal,
-			cache: 'no-cache',
-		});
-
-		clearTimeout(timeoutId);
+		let response: Response;
+		try {
+			// Fetch the URL with timeout
+			response = await fetch(src, {
+				method: 'HEAD', // Use HEAD to avoid downloading the entire image
+				signal: controller.signal,
+				cache: 'no-cache',
+			});
+		} finally {
+			clearTimeout(timeoutId);
+		}
 
 		if (!response || !response.ok) {
 			console.error(`Failed to fetch image: ${response.statusText}`);
@@ -124,21 +130,17 @@ const validAvatar = avatar ? await getObjectData(avatar) : undefined;
     <div class="sui-avatar-container">
         {
             validAvatar ? (
-                <object 
-                    data={validAvatar.data} 
-                    type={validAvatar.type} 
-                    width={64} 
-                    height={64} 
-                    class="sui-avatar-img"
-                    >
-                    <img 
-                        src={heroIconsUserDataUri} 
-                        width={24}
-                        height={24}
-                        loading={loading}
-                        alt={name}
-                        />
-                </object>
+                <img
+                  src={validAvatar.data}
+                  width={64}
+                  height={64}
+                  class="sui-avatar-img"
+                  alt={name}
+                  loading={loading}
+                  decoding="async"
+                  referrerpolicy="no-referrer"
+                  onerror={`this.src='${heroIconsUserDataUri}'`}
+                />
             ) : (
                 <Icon
                     name="heroicons:user"

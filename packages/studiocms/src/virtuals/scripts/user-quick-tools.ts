@@ -102,10 +102,11 @@ const COMPONENT_STYLES = `
     justify-content: center;
 }
 
-.avatar {
+.avatar-container {
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 50%;
+    background: var(--background-step-1);
     border: 1px solid var(--border);
     object-fit: cover;
     z-index: 700;
@@ -115,13 +116,27 @@ const COMPONENT_STYLES = `
     justify-content: center;
 }
 
-.avatar img {
+.avatar {
+    width: 100%;
+    height: 100%;
+    background: var(--background-step-1);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.cornerMenu.menuOpened .avatar {
+.avatar-error {
+    width: 100%;
+	height: auto;
+	margin: 2.5rem;
+	border: none;
+}
+
+.cornerMenu.menuOpened .avatar-container {
     transform: scale(1.5);
     border: 1px solid var(--border);
 }
@@ -489,7 +504,7 @@ class UserQuickTools extends HTMLElement {
 			return undefined;
 		}
 		const controller = new AbortController();
-		const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+		const timeoutId = window.setTimeout(() => controller.abort(), 1000);
 		try {
 			const response = await fetch(url, {
 				method: 'HEAD',
@@ -517,36 +532,46 @@ class UserQuickTools extends HTMLElement {
 
 		const { user, permissionLevel } = this.sessionData;
 
-		const newAvatar = document.createElement('object');
+		const avatarContainer = document.createElement('div');
+		avatarContainer.className = 'avatar-container';
 
-		const { avatar, type } = await (async () => {
+		const newAvatar = document.createElement('img');
+
+		const avatar = await (async () => {
 			let avatar = DEFAULT_AVATAR;
-			let type = 'image/png';
 
 			if (user.avatar) {
 				const result = await this.testAvatarURL(user.avatar);
 				if (result) {
 					avatar = user.avatar;
-					type = result.type;
 				}
 			}
 
-			return { avatar, type };
+			return avatar;
 		})();
 
-		newAvatar.data = avatar || DEFAULT_AVATAR;
-		newAvatar.type = type || 'image/png';
+		newAvatar.src = avatar;
+		newAvatar.width = 64;
+		newAvatar.height = 64;
 		newAvatar.className = 'avatar';
+		newAvatar.alt = `${user.name} - ${this.capitalizeFirst(permissionLevel)}`;
+		newAvatar.loading = 'lazy';
+		newAvatar.decoding = 'async';
+		newAvatar.referrerPolicy = 'no-referrer';
 
-		const fallbackAvatar = document.createElement('img');
-		fallbackAvatar.src = DEFAULT_AVATAR;
-		fallbackAvatar.alt = `${user.name} - ${this.capitalizeFirst(permissionLevel)}`;
+		if (avatar === DEFAULT_AVATAR) {
+			newAvatar.classList.add('avatar-error');
+		}
 
+		newAvatar.onerror = function () {
+			this.src = DEFAULT_AVATAR;
+		};
 		newAvatar.setAttribute('aria-hidden', 'true');
-		newAvatar.appendChild(fallbackAvatar);
+
+		avatarContainer.appendChild(newAvatar);
 
 		// Append the avatar to the corner menu
-		this.cornerMenu.appendChild(newAvatar);
+		this.cornerMenu.appendChild(avatarContainer);
 	}
 
 	private setupEventListeners(): void {
