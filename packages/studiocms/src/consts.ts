@@ -154,7 +154,6 @@ export const GhostUserDefaults = {
  * Default values for the site Notifications configuration.
  */
 export const NotificationSettingsDefaults = {
-	id: CMSNotificationSettingsId,
 	emailVerification: false,
 	oAuthBypassVerification: false,
 	requireEditorVerification: false,

@@ -24,6 +24,7 @@ import {
  * as it would be selected from the database or configuration source.
  */
 export type RawDynamicConfigEntry = typeof tsDynamicConfigSettings.$inferSelect;
+export type RawDynamicConfigInsert = typeof tsDynamicConfigSettings.$inferInsert;
 
 /**
  * Represents a dynamic configuration entry with a unique identifier and associated data.
@@ -276,7 +277,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 			 * This function uses the `dbService.makeQuery` utility to perform the insertion
 			 * and returns the newly inserted record from the `tsDynamicConfigSettings` table.
 			 */
-			const _insert = dbService.makeQuery((ex, entry: RawDynamicConfigEntry) =>
+			const _insert = dbService.makeQuery((ex, entry: RawDynamicConfigInsert) =>
 				ex((db) => db.insert(tsDynamicConfigSettings).values(entry).returning().get())
 			);
 
@@ -436,13 +437,21 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				}
 			) {
 				const entry = yield* get<DataType>(id);
-				if (!entry || entry.data._config_version !== CURRENT_CONFIG_VERSION) {
+				// If missing, migrate from legacy (first-time population)
+				if (!entry) {
 					return yield* runMigration(migrationOpts) as Effect.Effect<
 						DynamicConfigEntry<DataType> | undefined,
 						LibSQLDatabaseError
 					>;
 				}
-				return entry as DynamicConfigEntry<DataType>;
+				// If present but outdated, bump in-place to avoid UNIQUE conflicts and preserve user data
+				if (entry.data._config_version !== CURRENT_CONFIG_VERSION) {
+					return yield* update<DataType>(id, {
+						...entry.data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					} as DataType);
+				}
+				return entry;
 			});
 
 			/**

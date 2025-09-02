@@ -32,9 +32,29 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						return apiResponseLogger(403, 'Unauthorized');
 					}
 
-					yield* readAPIContextJson<Omit<StudioCMSNotificationSettings, '_config_version'>>(
-						ctx
-					).pipe(Effect.flatMap((data) => sdk.notificationSettings.site.update(data)));
+					yield* readAPIContextJson<unknown>(ctx).pipe(
+						Effect.map((raw) => {
+							const d = (raw ?? {}) as Record<string, unknown>;
+							const safe = {
+								emailVerification:
+									typeof d.emailVerification === 'boolean' ? d.emailVerification : undefined,
+								requireAdminVerification:
+									typeof d.requireAdminVerification === 'boolean'
+										? d.requireAdminVerification
+										: undefined,
+								requireEditorVerification:
+									typeof d.requireEditorVerification === 'boolean'
+										? d.requireEditorVerification
+										: undefined,
+								oAuthBypassVerification:
+									typeof d.oAuthBypassVerification === 'boolean'
+										? d.oAuthBypassVerification
+										: undefined,
+							} as Omit<StudioCMSNotificationSettings, '_config_version'>;
+							return safe;
+						}),
+						Effect.flatMap((data) => sdk.notificationSettings.site.update(data))
+					);
 
 					return apiResponseLogger(200, 'Notification settings updated');
 				}
