@@ -281,7 +281,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
 				 * @throws {UnknownException} If an unknown error occurs during the update.
 				 */
-				siteConfig: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+				siteConfig: (data: Omit<StudioCMSSiteConfig, '_config_version'>) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
 						const newSiteConfig = yield* sdkSiteConfig.update(data);

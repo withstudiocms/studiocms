@@ -485,15 +485,18 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new configuration data, excluding the internal version field.
 				 * @returns The updated site configuration.
 				 */
-				update: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
-					dynamicUpdate<StudioCMSSiteConfig>(Next_SiteConfigId, data),
+				update: (data: Omit<StudioCMSSiteConfig, '_config_version'>) =>
+					dynamicUpdate<StudioCMSSiteConfig>(Next_SiteConfigId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
 
 				/**
 				 * Initializes the site configuration with the provided data.
 				 * @param data The initial configuration data, excluding the internal version field.
 				 * @returns The created site configuration.
 				 */
-				init: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+				init: (data: Omit<StudioCMSSiteConfig, '_config_version'>) =>
 					create<StudioCMSSiteConfig>(Next_SiteConfigId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
@@ -520,8 +523,11 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new configuration data, excluding the internal version field.
 				 * @returns The updated mailer configuration.
 				 */
-				update: (data: Omit<StudioCMSMailerConfig, ' _config_version'>) =>
-					dynamicUpdate<StudioCMSMailerConfig>(Next_MailerConfigId, data),
+				update: (data: Omit<StudioCMSMailerConfig, '_config_version'>) =>
+					dynamicUpdate<StudioCMSMailerConfig>(Next_MailerConfigId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
 			};
 
 			/**
@@ -544,8 +550,11 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 * @param data The new notification settings, excluding the `_config_version` property.
 				 * @returns A promise resolving to the updated `StudioCMSNotificationSettings`.
 				 */
-				update: (data: Omit<StudioCMSNotificationSettings, ' _config_version'>) =>
-					dynamicUpdate<StudioCMSNotificationSettings>(Next_NotificationSettingsId, data),
+				update: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
+					dynamicUpdate<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
 			};
 
 			return { siteConfig, mailerConfig, notificationConfig } as const;

@@ -4,6 +4,7 @@ import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import type { APIContext } from 'astro';
 import { deepmerge, Effect, genLogger } from '../effect.js';
+import { CURRENT_CONFIG_VERSION } from '../virtuals/sdk/modules/config.js';
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -50,6 +51,7 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 		loginPageCustomImage: null,
 		siteIcon: null,
 		title: 'StudioCMS-Setup',
+		_config_version: CURRENT_CONFIG_VERSION,
 	},
 });
 

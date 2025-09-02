@@ -41,7 +41,7 @@ export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 				 * @returns A promise that resolves to the inserted site configuration.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 				 */
-				siteConfig: (config: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+				siteConfig: (config: Omit<StudioCMSSiteConfig, '_config_version'>) =>
 					sdkSiteConfig.init(config).pipe(
 						Effect.catchTags({
 							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
