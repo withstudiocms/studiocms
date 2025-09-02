@@ -325,7 +325,10 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 			 */
 			const create = Effect.fn(function* <DataType>(id: string, data: DataType) {
 				const entry = castType<DataType>({ id, data });
-				return yield* _insert(entry);
+				return yield* _insert(entry) as Effect.Effect<
+					DynamicConfigEntry<DataType>,
+					LibSQLDatabaseError
+				>;
 			});
 
 			/**
@@ -351,7 +354,10 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 			 */
 			const update = Effect.fn(function* <DataType>(id: string, data: DataType) {
 				const entry = castType<DataType>({ id, data });
-				return yield* _update(entry);
+				return yield* _update(entry) as Effect.Effect<
+					DynamicConfigEntry<DataType>,
+					LibSQLDatabaseError
+				>;
 			});
 
 			/**
@@ -552,6 +558,12 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 */
 				update: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
 					dynamicUpdate<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
+
+				init: (data: Omit<StudioCMSNotificationSettings, '_config_version'>) =>
+					create<StudioCMSNotificationSettings>(Next_NotificationSettingsId, {
 						...data,
 						_config_version: CURRENT_CONFIG_VERSION,
 					}),

@@ -37,9 +37,9 @@ if (!mailerConfig) {
 	createConfig = true;
 }
 
-const notificationSettingKeys = Object.keys(notificationSettings).filter(
-	(key) => key !== 'id'
-) as Array<keyof Omit<typeof notificationSettings, 'id'>>;
+const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
+	(key) => key !== '_config_version'
+) as Array<keyof Omit<typeof notificationSettings.data, '_config_version'>>;
 ---
 
 <Layout
@@ -237,7 +237,7 @@ const notificationSettingKeys = Object.keys(notificationSettings).filter(
               <Toggle
                 name={key}
                 label={t(key)}
-                defaultChecked={notificationSettings[key] === true}
+                defaultChecked={notificationSettings.data[key] === true}
                 color="primary"
               />
             ))

@@ -1,6 +1,5 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsNotificationSettingsSelect } from 'studiocms:sdk/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -10,6 +9,7 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../effect.js';
+import type { StudioCMSNotificationSettings } from '../../../virtuals/sdk/modules/config.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -32,9 +32,9 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						return apiResponseLogger(403, 'Unauthorized');
 					}
 
-					yield* readAPIContextJson<Omit<tsNotificationSettingsSelect, 'id'>>(ctx).pipe(
-						Effect.flatMap((data) => sdk.notificationSettings.site.update(data))
-					);
+					yield* readAPIContextJson<Omit<StudioCMSNotificationSettings, '_config_version'>>(
+						ctx
+					).pipe(Effect.flatMap((data) => sdk.notificationSettings.site.update(data)));
 
 					return apiResponseLogger(200, 'Notification settings updated');
 				}
