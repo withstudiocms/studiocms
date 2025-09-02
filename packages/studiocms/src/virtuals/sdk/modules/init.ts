@@ -1,10 +1,7 @@
-import { CMSSiteConfigId } from '../../../consts.js';
 import { Effect, genLogger } from '../../../effect.js';
-import { AstroDB } from '../effect/index.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
-import { tsSiteConfig } from '../tables.js';
-import type { SiteConfig } from '../types/index.js';
 import { SDKCore_AUTH } from './auth.js';
+import { SDKCore_CONFIG, type StudioCMSSiteConfig } from './config.js';
 
 /**
  * Effectful service for initializing core StudioCMS modules.
@@ -29,9 +26,12 @@ import { SDKCore_AUTH } from './auth.js';
 export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 	'studiocms/sdk/SDKCore/modules/init',
 	{
-		dependencies: [AstroDB.Default, SDKCore_AUTH.Default],
+		dependencies: [SDKCore_AUTH.Default, SDKCore_CONFIG.Default],
 		effect: genLogger('studiocms/sdk/SDKCore/modules/init/effect')(function* () {
-			const [dbService, AUTH] = yield* Effect.all([AstroDB, SDKCore_AUTH]);
+			const [{ siteConfig: sdkSiteConfig }, AUTH] = yield* Effect.all([
+				SDKCore_CONFIG,
+				SDKCore_AUTH,
+			]);
 
 			const INIT = {
 				/**
@@ -41,26 +41,18 @@ export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 				 * @returns A promise that resolves to the inserted site configuration.
 				 * @throws {StudioCMS_SDK_Error} If an error occurs while creating the site configuration.
 				 */
-				siteConfig: (config: SiteConfig) =>
-					dbService
-						.execute((db) =>
-							db
-								.insert(tsSiteConfig)
-								.values({ ...config, id: CMSSiteConfigId })
-								.returning()
-								.get()
-						)
-						.pipe(
-							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									Effect.fail(
-										new SDKCoreError({
-											type: 'LibSQLDatabaseError',
-											cause: new StudioCMS_SDK_Error(`INIT.siteConfig Error: ${cause}`),
-										})
-									),
-							})
-						),
+				siteConfig: (config: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+					sdkSiteConfig.init(config).pipe(
+						Effect.catchTags({
+							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								Effect.fail(
+									new SDKCoreError({
+										type: 'LibSQLDatabaseError',
+										cause: new StudioCMS_SDK_Error(`INIT.siteConfig Error: ${cause}`),
+									})
+								),
+						})
+					),
 				/**
 				 * Initializes the StudioCMS Ghost User.
 				 *

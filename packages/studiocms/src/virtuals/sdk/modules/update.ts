@@ -1,5 +1,4 @@
 import { eq } from 'astro:db';
-import { CMSSiteConfigId } from '../../../consts.js';
 import { Effect, genLogger } from '../../../effect.js';
 import {
 	FolderListMapID,
@@ -17,10 +16,8 @@ import {
 	tsPageDataTags,
 	tsPageFolderStructure,
 	tsPermissions,
-	tsSiteConfig,
 } from '../tables.js';
 import type {
-	SiteConfig,
 	tsPageContentSelect,
 	tsPageDataCategoriesSelect,
 	tsPageDataSelect,
@@ -40,6 +37,7 @@ import {
 	versionReturn,
 } from '../utils.js';
 import { SDKCore_CLEAR } from './clear.js';
+import { SDKCore_CONFIG, type StudioCMSSiteConfig } from './config.js';
 import { SDKCore_GET } from './get.js';
 
 /**
@@ -81,12 +79,14 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 			SDKCore_FolderTree.Default,
 			SDKCore_GET.Default,
 			GetVersionFromNPM.Default,
+			SDKCore_CONFIG.Default,
 		],
 		effect: genLogger('studiocms/sdk/SDKCore/modules/update/effect')(function* () {
 			const [
 				dbService,
 				CLEAR,
 				GET,
+				{ siteConfig: sdkSiteConfig },
 				{ buildFolderTree, getAvailableFolders },
 				{ pages, FolderList, folderTree, version, siteConfig },
 				getVersionFromNPM,
@@ -94,6 +94,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 				AstroDB,
 				SDKCore_CLEAR,
 				SDKCore_GET,
+				SDKCore_CONFIG,
 				SDKCore_FolderTree,
 				CacheContext,
 				GetVersionFromNPM,
@@ -280,19 +281,14 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 				 * @throws {LibSQLDatabaseError} If a database error occurs during the update.
 				 * @throws {UnknownException} If an unknown error occurs during the update.
 				 */
-				siteConfig: (data: SiteConfig) =>
+				siteConfig: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
 					Effect.gen(function* () {
 						const status = yield* isCacheEnabled;
-						const newSiteConfig = yield* dbService.execute((db) =>
-							db
-								.update(tsSiteConfig)
-								.set(data)
-								.where(eq(tsSiteConfig.id, CMSSiteConfigId))
-								.returning()
-								.get()
-						);
+						const newSiteConfig = yield* sdkSiteConfig.update(data);
 
-						const returnConfig = siteConfigReturn(newSiteConfig);
+						if (!newSiteConfig) return;
+
+						const returnConfig = siteConfigReturn(newSiteConfig.data);
 
 						if (!status) return returnConfig;
 
@@ -303,7 +299,6 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 						Effect.catchTags({
 							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
 								_clearLibSQLError('UPDATE.siteConfig', cause),
-							UnknownException: (cause) => _ClearUnknownError('UPDATE.siteConfig', cause),
 						})
 					),
 				page: {

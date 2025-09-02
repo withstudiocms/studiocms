@@ -8,7 +8,7 @@ import {
 	Next_SiteConfigId,
 } from '../../../consts.js';
 import { Deepmerge, Effect } from '../../../effect.js';
-import { AstroDB } from '../effect/db.js';
+import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
 import {
 	tsDynamicConfigSettings,
 	tsMailerConfig,
@@ -431,9 +431,12 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 			) {
 				const entry = yield* get<DataType>(id);
 				if (!entry || entry.data._config_version !== CURRENT_CONFIG_VERSION) {
-					return yield* runMigration(migrationOpts);
+					return yield* runMigration(migrationOpts) as Effect.Effect<
+						DynamicConfigEntry<DataType> | undefined,
+						LibSQLDatabaseError
+					>;
 				}
-				return entry;
+				return entry as DynamicConfigEntry<DataType>;
 			});
 
 			/**
@@ -455,7 +458,11 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				const entry = yield* get<DataType>(id);
 				if (!entry) return undefined;
 				const updatedEntry = (yield* merge((m) => m(entry.data, data))) as DataType;
-				return yield* update<DataType>(id, updatedEntry);
+				return yield* update<DataType>(id, updatedEntry) as Effect.Effect<
+					DynamicConfigEntry<DataType>,
+					LibSQLDatabaseError,
+					never
+				>;
 			});
 
 			/**
@@ -480,6 +487,17 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				 */
 				update: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
 					dynamicUpdate<StudioCMSSiteConfig>(Next_SiteConfigId, data),
+
+				/**
+				 * Initializes the site configuration with the provided data.
+				 * @param data The initial configuration data, excluding the internal version field.
+				 * @returns The created site configuration.
+				 */
+				init: (data: Omit<StudioCMSSiteConfig, ' _config_version'>) =>
+					create<StudioCMSSiteConfig>(Next_SiteConfigId, {
+						...data,
+						_config_version: CURRENT_CONFIG_VERSION,
+					}),
 			};
 
 			/**

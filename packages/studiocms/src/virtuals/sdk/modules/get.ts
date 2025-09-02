@@ -2,7 +2,6 @@ import { asc, eq, or } from 'astro:db';
 import config from 'studiocms:config';
 import {
 	CMSNotificationSettingsId,
-	CMSSiteConfigId,
 	GhostUserDefaults,
 	versionCacheLifetime,
 } from '../../../consts.js';
@@ -35,7 +34,6 @@ import {
 	tsPageFolderStructure,
 	tsPermissions,
 	tsSessionTable,
-	tsSiteConfig,
 	tsUsers,
 } from '../tables.js';
 import type {
@@ -61,6 +59,7 @@ import {
 	siteConfigReturn,
 	versionReturn,
 } from '../utils.js';
+import { SDKCore_CONFIG } from './config.js';
 
 /**
  * The `SDKCore_GET` service provides a comprehensive set of data retrieval methods for the StudioCMS SDK.
@@ -107,6 +106,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 			GetVersionFromNPM.Default,
 			SDKCore_Users.Default,
 			SDKCore_Collectors.Default,
+			SDKCore_CONFIG.Default,
 		],
 		effect: genLogger('studiocms/sdk/SDKCore/modules/get/effect')(function* () {
 			const [
@@ -116,6 +116,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				getVersionFromNPM,
 				{ combineRanks, verifyRank },
 				{ collectUserData, collectPageData },
+				{ siteConfig: sdkSiteConfig },
 			] = yield* Effect.all([
 				AstroDB,
 				CacheContext,
@@ -123,6 +124,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				GetVersionFromNPM,
 				SDKCore_Users,
 				SDKCore_Collectors,
+				SDKCore_CONFIG,
 			]);
 
 			/**
@@ -756,10 +758,6 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					pageDataCategories: () =>
 						dbService.execute((db) => db.select().from(tsPageDataCategories)),
 					pageContent: () => dbService.execute((db) => db.select().from(tsPageContent)),
-					siteConfig: () =>
-						dbService.execute((db) =>
-							db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get()
-						),
 					diffTracking: () => dbService.execute((db) => db.select().from(tsDiffTracking)),
 					pageFolderStructure: () =>
 						dbService.execute((db) => db.select().from(tsPageFolderStructure)),
@@ -968,9 +966,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						}
 
 						if (!status) {
-							const newConfig = yield* dbService.execute((db) =>
-								db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get()
-							);
+							const newConfig = yield* sdkSiteConfig.get();
 
 							if (!newConfig) {
 								return yield* Effect.fail(
@@ -981,15 +977,13 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								);
 							}
 
-							return siteConfigReturn(newConfig);
+							return siteConfigReturn(newConfig.data);
 						}
 
 						const currentSiteConfig = siteConfig.get(SiteConfigMapID);
 
 						if (!currentSiteConfig || isCacheExpired(currentSiteConfig)) {
-							const newConfig = yield* dbService.execute((db) =>
-								db.select().from(tsSiteConfig).where(eq(tsSiteConfig.id, CMSSiteConfigId)).get()
-							);
+							const newConfig = yield* sdkSiteConfig.get();
 
 							if (!newConfig) {
 								return yield* Effect.fail(
@@ -1000,7 +994,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 								);
 							}
 
-							const returnConfig = siteConfigReturn(newConfig);
+							const returnConfig = siteConfigReturn(newConfig.data);
 
 							siteConfig.set(SiteConfigMapID, returnConfig);
 

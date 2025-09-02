@@ -5,12 +5,8 @@ import type {
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../../schemas/config/sdk.js';
-import type {
-	PageContentReturnId,
-	PageDataReturnId,
-	PageDataStripped,
-	SiteConfig,
-} from './tableDefs.js';
+import type { StudioCMSSiteConfig } from '../modules/config.js';
+import type { PageContentReturnId, PageDataReturnId, PageDataStripped } from './tableDefs.js';
 import type {
 	CombinedInsertContent,
 	tsOAuthAccountsSelect,
@@ -353,10 +349,10 @@ export interface MetaOnlyPageDataCacheObject extends BaseCacheObject {
  * @interface SiteConfigCacheObject
  * @extends {BaseCacheObject}
  *
- * @property {SiteConfig} data - The site configuration data.
+ * @property {StudioCMSSiteConfig} data - The site configuration data.
  */
 export interface SiteConfigCacheObject extends BaseCacheObject {
-	data: SiteConfig;
+	data: StudioCMSSiteConfig;
 }
 
 /**
