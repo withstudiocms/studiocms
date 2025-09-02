@@ -4,6 +4,7 @@ import { FormattedDate } from 'studiocms:components';
 import { CustomImage } from 'studiocms:imageHandler/components';
 import { pathWithBase } from 'studiocms:lib';
 import type { CombinedPageData } from 'studiocms:sdk/types';
+import { getHeroImage } from './heroHelper.js';
 
 const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
 
@@ -26,7 +27,7 @@ const { blogPageList } = Astro.props;
        blogPageList.length > 0 && blogPageList.map(({slug, heroImage, title, description, publishedAt}) => (
            <li>
                <a href={pathWithBase(getBlogRoute(slug))}>
-                   <CustomImage src={heroImage} alt={title} width={720} height={360}/>
+                   <CustomImage src={getHeroImage(heroImage, Astro)} alt={title} width={720} height={360}/>
                    <div>
                        <span class="title">{title}</span>
                        <span class="date"> <FormattedDate date={publishedAt} /> </span>
