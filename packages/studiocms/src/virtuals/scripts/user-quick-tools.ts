@@ -504,7 +504,7 @@ class UserQuickTools extends HTMLElement {
 			return undefined;
 		}
 		const controller = new AbortController();
-		const timeoutId = window.setTimeout(() => controller.abort(), 1000);
+		const timeoutId = window.setTimeout(() => controller.abort(), 5000);
 		try {
 			const response = await fetch(url, {
 				method: 'HEAD',
