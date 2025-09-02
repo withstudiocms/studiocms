@@ -97,7 +97,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 
 			const insert = yield* sdk.UPDATE.siteConfig(siteConfig);
 
-			if (insert.lastCacheUpdate) {
+			if (insert) {
 				yield* Console.log('Updated site settings');
 			} else {
 				yield* Console.error('Failed to update site settings');
