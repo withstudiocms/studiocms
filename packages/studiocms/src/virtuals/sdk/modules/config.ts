@@ -103,8 +103,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 	'studiocms/sdk/modules/SDKCore_CONFIG',
 	{
 		effect: Effect.gen(function* () {
-			const dbService = yield* AstroDB;
-			const { merge } = yield* Deepmerge;
+			const [dbService, { merge }] = yield* Effect.all([AstroDB, Deepmerge]);
 
 			const _insert = dbService.makeQuery((ex, entry: RawDynamicConfigEntry) =>
 				ex((db) => db.insert(tsDynamicConfigSettings).values(entry).returning().get())
@@ -129,22 +128,18 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 
 			const create = Effect.fn(function* <DataType>(id: string, data: DataType) {
 				const entry = castType<DataType>({ id, data });
-				yield* _insert(entry);
-				return entry;
+				return yield* _insert(entry);
 			});
 
 			const get = Effect.fn(function* <DataType>(id: string) {
 				const entry = yield* _select(id);
-
 				if (!entry) return undefined;
-
 				return castType<DataType>(entry);
 			});
 
 			const update = Effect.fn(function* <DataType>(id: string, data: DataType) {
 				const entry = castType<DataType>({ id, data });
-				yield* _update(entry);
-				return entry;
+				return yield* _update(entry);
 			});
 
 			const runMigration = Effect.fn(function* <
