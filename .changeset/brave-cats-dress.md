@@ -2,4 +2,5 @@
 "@studiocms/blog": patch
 ---
 
-Implements better processing for hero/og images to prevent errors.
+Implements improved processing for hero/OG images to prevent errors.
+

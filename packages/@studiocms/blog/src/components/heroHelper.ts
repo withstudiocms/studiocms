@@ -8,8 +8,9 @@ import { FALLBACK_OG_IMAGE } from './consts.js';
  * @returns The trimmed string, or `undefined` if the input is `null` or `undefined`.
  */
 export function trimInput(input: string | null | undefined): string | undefined {
-	if (!input) return undefined;
-	return input.trim();
+	if (input == null) return undefined;
+	const trimmed = input.trim();
+	return trimmed.length > 0 ? trimmed : undefined;
 }
 
 /**
@@ -27,7 +28,7 @@ export function trimInput(input: string | null | undefined): string | undefined 
  */
 export function getHeroImage(hero: string | undefined, Astro: AstroGlobal): string {
 	const primary = trimInput(hero);
-	const siteFallback = trimInput(Astro.locals.StudioCMS.siteConfig.data.defaultOgImage);
+	const siteFallback = trimInput(Astro.locals?.StudioCMS?.siteConfig?.data?.defaultOgImage);
 	if (primary) return primary;
 	if (siteFallback) return siteFallback;
 	return FALLBACK_OG_IMAGE;
