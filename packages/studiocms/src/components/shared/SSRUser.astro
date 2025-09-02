@@ -40,7 +40,7 @@ const {
 	avatar,
 	class: className,
 	loading = 'lazy',
-	timeoutDelay = 5000,
+	timeoutDelay = 3000,
 } = Astro.props;
 
 async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
