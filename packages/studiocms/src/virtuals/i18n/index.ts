@@ -1,3 +1,10 @@
+/**
+ * This module handles internationalization (i18n) for the StudioCMS application on the server side.
+ *
+ * It provides utilities for loading and managing translation files, as well as functions for
+ * retrieving translated strings based on the current language context.
+ */
+
 import type { AstroGlobal } from 'astro';
 import { defaultLang, serverUiTranslations, showDefaultLang } from './config.js';
 
@@ -57,7 +64,7 @@ type UiTranslationComponent<
  * This type resolves to the union of property names (keys) of the translation object
  * for the given language (`L`) and component (`T`), as defined by `UiTranslationComponent`.
  */
-type UiTranslationKey<
+type UiTranslationComponentKey<
 	L extends UiLanguageKeys,
 	T extends UiComponentKeys,
 > = keyof UiTranslationComponent<L, T>;
@@ -73,7 +80,7 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 	lang: L,
 	component: T
 ) {
-	return function t(key: UiTranslationKey<L, T>): string {
+	return function t(key: UiTranslationComponentKey<L, T>): string {
 		const v = uiTranslations[lang]?.translations?.[component]?.[key];
 		if (typeof v === 'string') return v;
 		const fb = uiTranslations[defaultLang]?.translations?.[component]?.[key];

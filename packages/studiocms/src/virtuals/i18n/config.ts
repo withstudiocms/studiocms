@@ -1,3 +1,7 @@
+/**
+ * This module handles the internationalization (i18n) config for the StudioCMS application for both the Client and Server sides.
+ */
+
 import { availableTranslationFileKeys } from 'studiocms:i18n/virtual';
 
 /**
