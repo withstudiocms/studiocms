@@ -46,6 +46,8 @@ function checkStrings(record: unknown): { count: number; emptyStrings: number } 
 	return { count, emptyStrings };
 }
 
+const MISSING_RATIO_THRESHOLD = 0.1 as const; // 10%
+
 /**
  * Checks whether the ratio of empty strings to total strings in a translation file
  * is within an acceptable threshold.
@@ -56,7 +58,7 @@ function checkStrings(record: unknown): { count: number; emptyStrings: number } 
  * @returns `true` if the ratio of empty strings is less than or equal to 10%, otherwise `false`.
  */
 function checkThreshold(opt: { count: number; emptyStrings: number }) {
-	const threshold = 0.1; // 10% empty strings allowed
+	const threshold = MISSING_RATIO_THRESHOLD;
 	if (opt.count === 0) return false;
 	return opt.emptyStrings / opt.count <= threshold;
 }
@@ -69,15 +71,15 @@ function checkThreshold(opt: { count: number; emptyStrings: number }) {
  * error is allowed to bubble to the caller.
  *
  * @param key - The key identifying the translation file to import.
- * @returns A promise that resolves to an object containing the translation record
- *          keyed by the provided key, or an empty object if the threshold check fails.
+ * @returns A promise that resolves to the translation record if it passes the threshold,
+ *          or `undefined` if it fails.
  * @throws {Error} If the translation file for the given key is not found.
  */
 const verifyAndImportTranslation = async (
 	key: UiTranslationKey
 ): Promise<StudioCMSTranslationRecord | undefined> => {
 	const translationRecord = await importTranslation(key);
-	const result = checkStrings(translationRecord);
+	const result = checkStrings(translationRecord.translations);
 
 	if (!checkThreshold(result)) {
 		return undefined;
@@ -97,9 +99,15 @@ const verifyAndImportTranslation = async (
  * @returns A promise that resolves to a tuple of `[key, translationRecord]` if found, or `undefined` if not.
  */
 async function translationMap(key: UiTranslationKey) {
-	const translationRecord = await verifyAndImportTranslation(key);
-	if (!translationRecord) return undefined;
-	return [key, translationRecord];
+	try {
+		const translationRecord = await verifyAndImportTranslation(key);
+		if (!translationRecord) return undefined;
+		return [key, translationRecord];
+	} catch (err) {
+		// optionally swap for your logger
+		console.warn(`[i18n] Skipping '${key}': import failed`, err);
+		return undefined;
+	}
 }
 
 /**
@@ -159,7 +167,10 @@ const translationsToFetch = availableTranslationFileKeys.filter((key) => key !==
  * @type {ServerUiTranslations}
  */
 const nonBaseTranslations: ServerUiTranslations = Object.fromEntries(
-	await Promise.all(translationsToFetch.map(translationMap)).then(filterCallback)
+	await (async () => {
+		const results = await Promise.all(translationsToFetch.map(translationMap));
+		return filterCallback(results);
+	})()
 );
 
 /**
