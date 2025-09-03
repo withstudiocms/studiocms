@@ -811,15 +811,9 @@ importers:
       magicast:
         specifier: ^0.3.5
         version: 0.3.5
-      mdast-util-from-markdown:
-        specifier: ^2.0.2
-        version: 2.0.2
       mdast-util-to-markdown:
         specifier: ^2.1.2
         version: 2.1.2
-      mdast-util-to-string:
-        specifier: ^4.0.0
-        version: 4.0.0
       micromark:
         specifier: ^4.0.2
         version: 4.0.2
@@ -850,9 +844,6 @@ importers:
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0
-      unist-util-visit:
-        specifier: ^5.0.0
-        version: 5.0.0
       vite:
         specifier: catalog:min
         version: 6.3.5(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0)
