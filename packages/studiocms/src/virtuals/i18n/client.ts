@@ -1,3 +1,10 @@
+/**
+ * This module handles internationalization (i18n) for the StudioCMS application on the client side.
+ *
+ * It provides utilities for loading and managing translation files, as well as functions for
+ * retrieving translated strings based on the current language context.
+ */
+
 import {
 	browser,
 	createI18n,
