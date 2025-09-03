@@ -15,9 +15,7 @@ import { availableTranslationFileKeys } from 'studiocms:i18n/virtual';
 const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTranslationRecord> => {
 	return (
 		await import(/* @vite-ignore */ `./translations/${lang}.json`, {
-			// @ts-ignore - assert is deprecated in newer versions of TypeScript
 			assert: { type: 'json' },
-			with: { type: 'json' },
 		})
 	).default;
 };
@@ -131,9 +129,7 @@ function filterCallback(results: ((string | StudioCMSTranslationRecord)[] | unde
  */
 export const baseServerTranslations = (
 	await import('./translations/en.json', {
-		// @ts-ignore - assert is deprecated in newer versions of TypeScript
 		assert: { type: 'json' },
-		with: { type: 'json' },
 	})
 ).default;
 
