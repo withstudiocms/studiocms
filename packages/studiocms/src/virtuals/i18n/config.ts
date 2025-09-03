@@ -29,24 +29,20 @@ const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTrans
  *   - `count`: The total number of string values found.
  *   - `emptyStrings`: The number of string values that are empty or contain only whitespace.
  */
-// biome-ignore lint/suspicious/noExplicitAny: allow any here so we can go through multiple children
-function checkStrings(record: Record<string, any>) {
+function checkStrings(record: unknown): { count: number; emptyStrings: number } {
+	if (typeof record !== 'object' || record === null) return { count: 0, emptyStrings: 0 };
 	let count = 0;
 	let emptyStrings = 0;
-
-	for (const key in record) {
-		if (typeof record[key] === 'string') {
+	for (const value of Object.values(record as Record<string, unknown>)) {
+		if (typeof value === 'string') {
 			count++;
-			if (record[key].trim() === '') {
-				emptyStrings++;
-			}
-		} else if (typeof record[key] === 'object') {
-			const { count: c, emptyStrings: e } = checkStrings(record[key]);
+			if (value.trim() === '') emptyStrings++;
+		} else if (typeof value === 'object' && value !== null) {
+			const { count: c, emptyStrings: e } = checkStrings(value);
 			count += c;
 			emptyStrings += e;
 		}
 	}
-
 	return { count, emptyStrings };
 }
 
@@ -61,25 +57,25 @@ function checkStrings(record: Record<string, any>) {
  */
 function checkThreshold(opt: { count: number; emptyStrings: number }) {
 	const threshold = 0.1; // 10% empty strings allowed
-
-	if (opt.emptyStrings / opt.count > threshold) {
-		return false;
-	}
-	return true;
+	if (opt.count === 0) return false;
+	return opt.emptyStrings / opt.count <= threshold;
 }
 
 /**
  * Verifies the existence of a translation file for the given key, imports it,
  * checks its string validity, and returns the translation record if it passes
- * the threshold check. If the translation file is not found or does not meet
- * the threshold, an error is thrown or an empty object is returned.
+ * the threshold check. If the translation file does not meet the threshold,
+ * the function returns `undefined`. If the file cannot be imported, the import
+ * error is allowed to bubble to the caller.
  *
  * @param key - The key identifying the translation file to import.
  * @returns A promise that resolves to an object containing the translation record
  *          keyed by the provided key, or an empty object if the threshold check fails.
  * @throws {Error} If the translation file for the given key is not found.
  */
-const verifyAndImportTranslation = async (key: UiTranslationKey) => {
+const verifyAndImportTranslation = async (
+	key: UiTranslationKey
+): Promise<StudioCMSTranslationRecord | undefined> => {
 	const translationRecord = await importTranslation(key);
 	const result = checkStrings(translationRecord);
 
@@ -100,7 +96,7 @@ const verifyAndImportTranslation = async (key: UiTranslationKey) => {
  * @param key - The translation key to look up.
  * @returns A promise that resolves to a tuple of `[key, translationRecord]` if found, or `undefined` if not.
  */
-async function translationMap(key: string) {
+async function translationMap(key: UiTranslationKey) {
 	const translationRecord = await verifyAndImportTranslation(key);
 	if (!translationRecord) return undefined;
 	return [key, translationRecord];
@@ -175,10 +171,10 @@ const nonBaseTranslations: ServerUiTranslations = Object.fromEntries(
  * @remarks
  * This constant is typed as `ServerUiTranslations` and marked as `const` for immutability.
  */
-export const serverUiTranslations: ServerUiTranslations = {
+export const serverUiTranslations = {
 	en: baseServerTranslations,
 	...nonBaseTranslations,
-} as const;
+} satisfies ServerUiTranslations;
 
 /**
  * Transforms the `serverUiTranslations` object into a `ClientUiTranslations` object
