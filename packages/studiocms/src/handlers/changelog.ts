@@ -5,7 +5,7 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 
 export const changelogHelper = defineUtility('astro:config:setup')(
 	(params, resolvedPath: string) => {
-		const changelog = loadChangelog(resolvedPath);
+		const changelog = loadChangelog({ path: resolvedPath });
 
 		// Generate markdown output
 		const output: string[] = [];

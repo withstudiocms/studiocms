@@ -43,24 +43,60 @@ export const semverCategories = ['major', 'minor', 'patch'] as const;
  */
 export type SemverCategory = (typeof semverCategories)[number];
 
+/**
+ * Represents the raw source of a changelog.
+ *
+ * @property raw - The raw changelog content as a string.
+ */
+type RawChangelogSrc = {
+	raw: string;
+};
+
+/**
+ * Represents a changelog to be loaded from a file.
+ *
+ * @property path - The file system path to the changelog file.
+ */
+type FromFileChangelog = {
+	path: string;
+};
+
+/**
+ * Represents the source of a changelog, which can either be a raw changelog source
+ * or a changelog loaded from a file.
+ *
+ * @see RawChangelogSrc
+ * @see FromFileChangelog
+ */
+export type ChangeLogSrc = RawChangelogSrc | FromFileChangelog;
+
 // TODO: Setup tests for loadChangelog
 /**
- * Loads and parses a changelog markdown file from the specified path.
+ * Loads and parses a changelog from either a file path or a raw markdown string.
  *
- * This function reads the changelog file, converts GitHub usernames in "Thanks ..." sentences
- * to markdown links, and parses the markdown into a structured `Changelog` object.
- * It expects the changelog to follow a specific heading and list structure:
- * - H1 for package name
- * - H2 for version
- * - H3 for semantic version category (major, minor, patch)
- * - Lists for changes, with special handling for package references and dependency updates
+ * - Reads the changelog markdown content from the provided source.
+ * - Converts GitHub usernames in "Thanks ..." sentences to markdown links.
+ * - Parses the markdown into an AST and extracts structured changelog information:
+ *   - The package name (from the first-level heading).
+ *   - Versions (from second-level headings).
+ *   - Semantic version categories (from third-level headings).
+ *   - Changes for each category, filtering out package references and dependency updates.
+ *   - Tracks included package references for each version.
  *
- * @param path - The file path to the changelog markdown file.
- * @returns The parsed `Changelog` object containing package name, versions, categorized changes, and included package references.
- * @throws If the markdown structure is unexpected or contains unknown semantic version categories.
+ * Throws errors if the markdown structure does not match the expected format.
+ *
+ * @param src - The source of the changelog, either a file path or raw markdown.
+ * @returns The parsed changelog object containing package name, versions, and categorized changes.
+ * @throws {Error} If the markdown structure is unexpected or invalid.
  */
-export function loadChangelog(path: string): Changelog {
-	let markdown = fs.readFileSync(path, 'utf8');
+export function loadChangelog(src: ChangeLogSrc): Changelog {
+	let markdown: string;
+
+	if ('path' in src) {
+		markdown = fs.readFileSync(src.path, 'utf8');
+	} else {
+		markdown = src.raw;
+	}
 
 	// Convert GitHub usernames in "Thanks ..." sentences to links
 	markdown = markdown.replace(
