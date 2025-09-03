@@ -59,9 +59,6 @@ catalogs:
     '@effect/cli':
       specifier: ^0.69.2
       version: 0.69.2
-    '@effect/language-service':
-      specifier: ^0.36.0
-      version: 0.36.0
     '@effect/platform':
       specifier: ^0.90.6
       version: 0.90.6
@@ -152,7 +149,7 @@ importers:
         specifier: ^1.46.0
         version: 1.46.0
       '@effect/language-service':
-        specifier: catalog:effect
+        specifier: ^0.36.0
         version: 0.36.0
       '@types/node':
         specifier: 'catalog:'
