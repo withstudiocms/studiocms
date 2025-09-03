@@ -9,14 +9,15 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
 
-import fs from 'node:fs';
+import { promises as fsP, writeFileSync } from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import ui from '@studiocms/ui';
+import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
 import {
 	addIntegrationArray,
 	getLatestVersion,
+	injectScripts,
 	integrationLogger,
 	logMessages,
 	type Messages,
@@ -39,7 +40,6 @@ import {
 	checkAstroConfig,
 	pluginHandler,
 	routeHandler,
-	scriptHandler,
 } from './handlers/index.js';
 import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import {
@@ -188,7 +188,7 @@ export const studiocms = defineIntegration({
 
 					const {
 						extraRoutes,
-						integrations: newIntegrations,
+						integrations: pluginIntegrations,
 						safePluginList,
 						messages: pluginMessages,
 						oAuthProvidersConfigured,
@@ -225,27 +225,26 @@ export const studiocms = defineIntegration({
 						shouldInject404Route,
 					});
 
-					// Setup Scripts
-					await scriptHandler(params, {
-						dbStartPage,
-						injectQuickActionsMenu,
-					});
+					injectScripts(params, [
+						{
+							stage: 'page',
+							content: await fsP.readFile(
+								resolve('./virtuals/scripts/user-quick-tools.js'),
+								'utf-8'
+							),
+							enabled: injectQuickActionsMenu && !dbStartPage,
+						},
+					]);
 
 					if (!dbStartPage)
 						addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
 
-					// Setup StudioCMS Integrations Array (Default Integrations)
-					const integrations = [
-						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: ui(getUiOpts()) },
-					];
-
-					if (newIntegrations.length > 0) {
-						integrations.push(...newIntegrations);
-					}
-
 					// Inject Integrations into Astro project
-					addIntegrationArray(params, integrations);
+					addIntegrationArray(params, [
+						{ integration: nodeNamespaceBuiltinsAstro() },
+						{ integration: studiocmsUi(getUiOpts()) },
+						...pluginIntegrations,
+					]);
 
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
@@ -350,7 +349,7 @@ export const studiocms = defineIntegration({
 					cacheJsonFile = new URL('cache.json', codegenDir);
 
 					if (!exists(cacheJsonFile.href)) {
-						fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
+						writeFileSync(cacheJsonFile, '{}', 'utf-8');
 					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state

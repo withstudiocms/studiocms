@@ -18,13 +18,10 @@ export type { StudioCMSOptions } from './schemas/index.js';
  * @example
  * ```js
  * // studiocms.config.mjs
- * import { defineStudioCMSConfig } from 'studiocms';
+ * import { defineStudioCMSConfig } from 'studiocms/config';
  *
  * export default defineStudioCMSConfig({
  *  dbStartPage: true,
- *  contentRenderer: 'marked',
- *  verbose: true,
- *  dateLocale: 'en-us',
  *  // ...Other Options
  * })
  * ```
