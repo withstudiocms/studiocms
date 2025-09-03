@@ -171,10 +171,10 @@ const nonBaseTranslations: ServerUiTranslations = Object.fromEntries(
  * @remarks
  * This constant is typed as `ServerUiTranslations` and marked as `const` for immutability.
  */
-export const serverUiTranslations = {
+export const serverUiTranslations: ServerUiTranslations = {
 	en: baseServerTranslations,
 	...nonBaseTranslations,
-} satisfies ServerUiTranslations;
+};
 
 /**
  * Transforms the `serverUiTranslations` object into a `ClientUiTranslations` object
