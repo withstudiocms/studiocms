@@ -1,7 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
-import { User } from 'studiocms:ui/components/user';
+import User from '../../shared/SSRUser.astro';
 
 interface Props {
 	currentUser: UserSessionData | null;
@@ -17,12 +17,10 @@ type UserProps = PropsOf<typeof User>;
 const userProps: UserProps = {
 	name: currentUser?.user?.name || 'Visitor',
 	description: getLabelForPermissionLevel(currentUser?.permissionLevel || 'Visitor'),
-	// loading: 'eager',
 };
 
-// TODO: Libravatar is causing slowdown... find a new solution?
-// if (currentUser?.user?.avatar) {
-// 	userProps.avatar = currentUser.user.avatar;
-// }
+if (currentUser?.user?.avatar) {
+	userProps.avatar = currentUser.user.avatar;
+}
 ---
 <User {...userProps} />
