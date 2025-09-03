@@ -4,20 +4,61 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toString as ToString } from 'mdast-util-to-string';
 import { visit } from 'unist-util-visit';
 
-export type Changelog = {
-	packageName: string;
-	versions: Version[];
-};
-
+/**
+ * Represents a changelog entry for a specific version.
+ *
+ * @property version - The semantic version string (e.g., "1.2.3").
+ * @property changes - An object mapping each semantic version category to a list of changes.
+ * @property includes - A set of strings indicating included features or modules for this version.
+ */
 export type Version = {
 	version: string;
 	changes: { [key in SemverCategory]: List };
 	includes: Set<string>;
 };
 
+/**
+ * Represents the changelog for a package, including its name and a list of versions.
+ *
+ * @property packageName - The name of the package.
+ * @property versions - An array of version objects associated with the package.
+ */
+export type Changelog = {
+	packageName: string;
+	versions: Version[];
+};
+
+/**
+ * Defines the semantic versioning categories used to classify changes.
+ * - `major`: Indicates breaking changes.
+ * - `minor`: Indicates backward-compatible feature additions.
+ * - `patch`: Indicates backward-compatible bug fixes.
+ */
 export const semverCategories = ['major', 'minor', 'patch'] as const;
+
+/**
+ * Represents a semantic versioning category, derived from the `semverCategories` array.
+ *
+ * This type is useful for constraining values to valid semantic version categories.
+ */
 export type SemverCategory = (typeof semverCategories)[number];
 
+// TODO: Setup tests for loadChangelog
+/**
+ * Loads and parses a changelog markdown file from the specified path.
+ *
+ * This function reads the changelog file, converts GitHub usernames in "Thanks ..." sentences
+ * to markdown links, and parses the markdown into a structured `Changelog` object.
+ * It expects the changelog to follow a specific heading and list structure:
+ * - H1 for package name
+ * - H2 for version
+ * - H3 for semantic version category (major, minor, patch)
+ * - Lists for changes, with special handling for package references and dependency updates
+ *
+ * @param path - The file path to the changelog markdown file.
+ * @returns The parsed `Changelog` object containing package name, versions, categorized changes, and included package references.
+ * @throws If the markdown structure is unexpected or contains unknown semantic version categories.
+ */
 export function loadChangelog(path: string): Changelog {
 	let markdown = fs.readFileSync(path, 'utf8');
 
@@ -130,6 +171,15 @@ export function loadChangelog(path: string): Changelog {
 	return changelog;
 }
 
+/**
+ * Parses a package reference string in the format `<packageName>@<version>`.
+ *
+ * The package name can include scoped names (e.g., `@scope/package`) and hyphens.
+ * The version must consist of digits and dots (e.g., `1.2.3`).
+ *
+ * @param str - The package reference string to parse.
+ * @returns An object containing `packageName` and `version` if parsing succeeds; otherwise, `undefined`.
+ */
 function parsePackageReference(str: string) {
 	const matches = str.match(/^([@/a-z0-9-]+)@([0-9.]+)$/);
 	if (!matches) return;

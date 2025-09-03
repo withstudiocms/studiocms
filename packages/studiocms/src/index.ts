@@ -48,13 +48,7 @@ import {
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
 import { availableTranslationFileKeys } from './virtuals/i18n/v-files.js';
-import {
-	buildDefaultOnlyVirtual,
-	buildLoggerVirtual,
-	buildNamedMultiExportVirtual,
-	buildVirtualConfig,
-	buildVirtualModules,
-} from './virtuals/utils.js';
+import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -184,7 +178,29 @@ export const studiocms = defineIntegration({
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
-					changelogHelper(params);
+					changelogHelper(params, resolve('../CHANGELOG.md'));
+
+					injectScripts(params, [
+						{
+							stage: 'page',
+							content: await fsP.readFile(
+								resolve('./virtuals/scripts/user-quick-tools.js'),
+								'utf-8'
+							),
+							enabled: injectQuickActionsMenu && !dbStartPage,
+						},
+					]);
+
+					// Setup Component Registry
+					await componentRegistryHandler(params, {
+						config: {
+							name,
+							verbose,
+							virtualId: 'studiocms:component-registry',
+						},
+						componentRegistry,
+						builtInComponents,
+					});
 
 					const {
 						extraRoutes,
@@ -202,17 +218,6 @@ export const studiocms = defineIntegration({
 						verbose,
 					});
 
-					// Setup Component Registry
-					await componentRegistryHandler(params, {
-						config: {
-							name,
-							verbose,
-							virtualId: 'studiocms:component-registry',
-						},
-						componentRegistry,
-						builtInComponents,
-					});
-
 					// Setup Routes
 					routeHandler(params, {
 						oAuthProvidersConfigured,
@@ -225,19 +230,11 @@ export const studiocms = defineIntegration({
 						shouldInject404Route,
 					});
 
-					injectScripts(params, [
-						{
-							stage: 'page',
-							content: await fsP.readFile(
-								resolve('./virtuals/scripts/user-quick-tools.js'),
-								'utf-8'
-							),
-							enabled: injectQuickActionsMenu && !dbStartPage,
-						},
-					]);
-
 					if (!dbStartPage)
-						addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
+						addMiddleware({
+							order: 'pre',
+							entrypoint: routesDir.middleware('index.ts'),
+						});
 
 					// Inject Integrations into Astro project
 					addIntegrationArray(params, [
@@ -255,7 +252,11 @@ export const studiocms = defineIntegration({
 						namedVirtual,
 						astroComponentVirtual,
 						dynamicWithAstroVirtual,
-					} = buildVirtualModules(resolve);
+						buildDefaultOnlyVirtual,
+						buildLoggerVirtual,
+						buildNamedMultiExportVirtual,
+						buildVirtualConfig,
+					} = VirtualModuleBuilder(resolve);
 
 					addVirtualImports(params, {
 						name,

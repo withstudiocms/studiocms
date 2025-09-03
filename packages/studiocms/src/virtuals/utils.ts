@@ -37,6 +37,30 @@ export const buildNamedMultiExportVirtual = (items: Record<string, string>) =>
 		.join('\n');
 
 /**
+ * Builds the virtual configuration file content by injecting the provided StudioCMS options
+ * into a configuration stub template.
+ *
+ * @param options - The configuration options to be injected into the stub template.
+ * @returns The resulting configuration file content as a string with the options embedded.
+ */
+export const buildVirtualConfig = (options: StudioCMSConfig): string =>
+	fs
+		.readFileSync(resolve('./stubs/config.stub.js'), 'utf-8')
+		.replace(/\$\$options\$\$/g, JSON.stringify(options));
+
+/**
+ * Builds the content for a logger virtual file by reading a logger stub file and replacing
+ * the `$$verbose$$` placeholder with the provided verbosity flag.
+ *
+ * @param verbose - Determines whether verbose logging should be enabled.
+ * @returns The logger file content with the verbosity setting applied.
+ */
+export const buildLoggerVirtual = (verbose: boolean): string =>
+	fs
+		.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8')
+		.replace(/\$\$verbose\$\$/g, verbose.toString());
+
+/**
  * Factory function to build utilities for generating virtual module code strings.
  *
  * @param resolve - A function that resolves a list of path segments into a string path.
@@ -47,7 +71,7 @@ export const buildNamedMultiExportVirtual = (items: Record<string, string>) =>
  * - `astroComponentVirtual`: Generates export statements for Astro components with custom names.
  * - `dynamicWithAstroVirtual`: Generates combined exports for dynamic modules and Astro components.
  */
-export const buildVirtualModules = (resolve: (...path: Array<string>) => string) => {
+export const VirtualModuleBuilder = (resolve: (...path: Array<string>) => string) => {
 	/**
 	 * Generates export statements for a list of module paths.
 	 */
@@ -102,29 +126,9 @@ ${exportDefault ? `export default ${namedExport};` : ''}
 		namedVirtual,
 		astroComponentVirtual,
 		dynamicWithAstroVirtual,
+		buildDefaultOnlyVirtual,
+		buildLoggerVirtual,
+		buildNamedMultiExportVirtual,
+		buildVirtualConfig,
 	};
 };
-
-/**
- * Builds the virtual configuration file content by injecting the provided StudioCMS options
- * into a configuration stub template.
- *
- * @param options - The configuration options to be injected into the stub template.
- * @returns The resulting configuration file content as a string with the options embedded.
- */
-export const buildVirtualConfig = (options: StudioCMSConfig): string =>
-	fs
-		.readFileSync(resolve('./stubs/config.stub.js'), 'utf-8')
-		.replace(/\$\$options\$\$/g, JSON.stringify(options));
-
-/**
- * Builds the content for a logger virtual file by reading a logger stub file and replacing
- * the `$$verbose$$` placeholder with the provided verbosity flag.
- *
- * @param verbose - Determines whether verbose logging should be enabled.
- * @returns The logger file content with the verbosity setting applied.
- */
-export const buildLoggerVirtual = (verbose: boolean): string =>
-	fs
-		.readFileSync(resolve('./stubs/logger.stub.js'), 'utf-8')
-		.replace(/\$\$verbose\$\$/g, verbose.toString());

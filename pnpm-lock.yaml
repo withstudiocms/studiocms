@@ -19,6 +19,9 @@ catalogs:
       specifier: ^5.13.5
       version: 5.13.5
   default:
+    '@types/mdast':
+      specifier: ^4.0.4
+      version: 4.0.4
     '@types/node':
       specifier: ^22.0.0
       version: 22.16.3
@@ -40,6 +43,12 @@ catalogs:
     esbuild:
       specifier: ^0.25.8
       version: 0.25.9
+    mdast-util-from-markdown:
+      specifier: ^2.0.2
+      version: 2.0.2
+    mdast-util-to-string:
+      specifier: ^4.0.0
+      version: 4.0.0
     nodemailer:
       specifier: ^7.0.6
       version: 7.0.6
@@ -52,6 +61,9 @@ catalogs:
     typescript:
       specifier: ^5.9.2
       version: 5.9.2
+    unist-util-visit:
+      specifier: ^5.0.0
+      version: 5.0.0
   effect:
     '@effect/cli':
       specifier: ^0.69.2
@@ -690,7 +702,19 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.0(astro@5.13.5(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
+      mdast-util-from-markdown:
+        specifier: 'catalog:'
+        version: 2.0.2
+      mdast-util-to-string:
+        specifier: 'catalog:'
+        version: 4.0.0
+      unist-util-visit:
+        specifier: 'catalog:'
+        version: 5.0.0
     devDependencies:
+      '@types/mdast':
+        specifier: 'catalog:'
+        version: 4.0.4
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
