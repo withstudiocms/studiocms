@@ -1,12 +1,16 @@
 import { db, eq } from 'astro:db';
-import { SMTPService, SMTPTransportConfig, TransportConfig } from '@withstudiocms/effect/smtp';
-import type Mail from 'nodemailer/lib/mailer';
-import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
+import {
+	type Mail,
+	SMTPService,
+	type SMTPTransport,
+	SMTPTransportConfig,
+	TransportConfig,
+} from '@withstudiocms/effect/smtp';
 import { CMSMailerConfigId } from '../../consts.js';
 import { tsMailerConfig } from '../../db/config.js';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 
-export type { Mail };
+export type { Mail, SMTPTransport };
 
 /**
  * Converts a null value to undefined.

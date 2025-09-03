@@ -25,9 +25,6 @@ catalogs:
     '@types/node':
       specifier: ^22.0.0
       version: 22.16.3
-    '@types/nodemailer':
-      specifier: ^7.0.1
-      version: 7.0.1
     arctic:
       specifier: ^3.7.0
       version: 3.7.0
@@ -43,9 +40,6 @@ catalogs:
     esbuild:
       specifier: ^0.25.8
       version: 0.25.9
-    nodemailer:
-      specifier: ^7.0.6
-      version: 7.0.6
     sharp:
       specifier: ^0.34.3
       version: 0.34.3
@@ -663,7 +657,7 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       nodemailer:
-        specifier: 'catalog:'
+        specifier: ^7.0.6
         version: 7.0.6
       socks:
         specifier: ^2.8.7
@@ -676,7 +670,7 @@ importers:
         specifier: 'catalog:'
         version: 22.16.3
       '@types/nodemailer':
-        specifier: 'catalog:'
+        specifier: ^7.0.1
         version: 7.0.1
       typescript:
         specifier: 'catalog:'
@@ -814,9 +808,6 @@ importers:
       nanostores:
         specifier: ^1.0.1
         version: 1.0.1
-      nodemailer:
-        specifier: 'catalog:'
-        version: 7.0.6
       package-manager-detector:
         specifier: ^1.3.0
         version: 1.3.0
@@ -842,9 +833,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
-      '@types/nodemailer':
-        specifier: 'catalog:'
-        version: 7.0.1
       '@types/semver':
         specifier: ^7.7.0
         version: 7.7.0
