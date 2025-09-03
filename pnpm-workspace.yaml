@@ -10,9 +10,6 @@ catalog:
   typescript: ^5.9.2
   nodemailer: ^7.0.6
   "@types/nodemailer": ^7.0.1
-  mdast-util-from-markdown: ^2.0.2
-  mdast-util-to-string: ^4.0.0
-  unist-util-visit: ^5.0.0
   "@types/mdast": ^4.0.4
 
 catalogs:
