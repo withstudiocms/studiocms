@@ -23,6 +23,104 @@ const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTrans
 };
 
 /**
+ * Recursively checks a record object for string values and counts the total number of strings
+ * and the number of empty strings (strings that are empty or contain only whitespace).
+ *
+ * @param record - The object to check, which may contain nested objects and string values.
+ * @returns An object containing:
+ *   - `count`: The total number of string values found.
+ *   - `emptyStrings`: The number of string values that are empty or contain only whitespace.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: allow any here so we can go through multiple children
+function checkStrings(record: Record<string, any>) {
+	let count = 0;
+	let emptyStrings = 0;
+
+	for (const key in record) {
+		if (typeof record[key] === 'string') {
+			count++;
+			if (record[key].trim() === '') {
+				emptyStrings++;
+			}
+		} else if (typeof record[key] === 'object') {
+			const { count: c, emptyStrings: e } = checkStrings(record[key]);
+			count += c;
+			emptyStrings += e;
+		}
+	}
+
+	return { count, emptyStrings };
+}
+
+/**
+ * Checks whether the ratio of empty strings to total strings in a translation file
+ * is within an acceptable threshold.
+ *
+ * @param opt - An object containing:
+ *   - `count`: The total number of strings in the translation file.
+ *   - `emptyStrings`: The number of empty strings in the translation file.
+ * @returns `true` if the ratio of empty strings is less than or equal to 10%, otherwise `false`.
+ */
+function checkThreshold(opt: { count: number; emptyStrings: number }) {
+	const threshold = 0.1; // 10% empty strings allowed
+
+	if (opt.emptyStrings / opt.count > threshold) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Verifies the existence of a translation file for the given key, imports it,
+ * checks its string validity, and returns the translation record if it passes
+ * the threshold check. If the translation file is not found or does not meet
+ * the threshold, an error is thrown or an empty object is returned.
+ *
+ * @param key - The key identifying the translation file to import.
+ * @returns A promise that resolves to an object containing the translation record
+ *          keyed by the provided key, or an empty object if the threshold check fails.
+ * @throws {Error} If the translation file for the given key is not found.
+ */
+const verifyAndImportTranslation = async (key: UiTranslationKey) => {
+	const translationRecord = await importTranslation(key);
+	const result = checkStrings(translationRecord);
+
+	if (!checkThreshold(result)) {
+		return undefined;
+	}
+
+	return translationRecord;
+};
+
+/**
+ * Asynchronously retrieves a translation record for the given key.
+ *
+ * This function attempts to verify and import a translation associated with the provided key.
+ * If a translation record is found, it returns a tuple containing the key and the translation record.
+ * If no translation record is found, it returns `undefined`.
+ *
+ * @param key - The translation key to look up.
+ * @returns A promise that resolves to a tuple of `[key, translationRecord]` if found, or `undefined` if not.
+ */
+async function translationMap(key: string) {
+	const translationRecord = await verifyAndImportTranslation(key);
+	if (!translationRecord) return undefined;
+	return [key, translationRecord];
+}
+
+/**
+ * Filters an array of results to remove any falsy values and entries where the key is 'undefined'.
+ *
+ * @param results - An array of arrays containing either strings or `StudioCMSTranslationRecord` objects, or `undefined`.
+ * @returns An array of `[string, StudioCMSTranslationRecord]` tuples where the key is not 'undefined'.
+ */
+function filterCallback(results: ((string | StudioCMSTranslationRecord)[] | undefined)[]) {
+	return results
+		.filter((res): res is [string, StudioCMSTranslationRecord] => !!res)
+		.filter(([key]) => key !== 'undefined');
+}
+
+/**
  * Dynamically imports the base English translations for server-side internationalization.
  *
  * @remarks
@@ -33,7 +131,9 @@ const importTranslation = async (lang: UiTranslationKey): Promise<StudioCMSTrans
  */
 export const baseServerTranslations = (
 	await import('./translations/en.json', {
+		// @ts-ignore - assert is deprecated in newer versions of TypeScript
 		assert: { type: 'json' },
+		with: { type: 'json' },
 	})
 ).default;
 
@@ -46,26 +146,42 @@ export const baseServerTranslations = (
 export type StudioCMSTranslationRecord = typeof baseServerTranslations;
 
 /**
- * An object containing server-side UI translations for supported languages.
+ * An array of translation file keys to fetch, excluding the default English ('en') translation.
+ * Filters out the 'en' key from the list of available translation file keys.
  *
- * Each property corresponds to a language code (e.g., 'en', 'de', 'es', 'fr') and dynamically imports
- * the respective translation JSON file at runtime.
+ * @example
+ * // If availableTranslationFileKeys = ['en', 'fr', 'de']
+ * // translationsToFetch = ['fr', 'de']
+ */
+const translationsToFetch = availableTranslationFileKeys.filter((key) => key !== 'en');
+
+/**
+ * An object containing translations for UI elements that are not part of the base language.
+ *
+ * The translations are fetched asynchronously using `translationsToFetch` and processed by `translationMap`.
+ * After fetching, the results are filtered using `filterCallback` to ensure only relevant translations are included.
  *
  * @remarks
- * The imported translation files are loaded asynchronously using `await import()`.
+ * This is typically used to provide localized strings for languages other than the default/base language.
  *
  * @type {ServerUiTranslations}
- * @readonly
+ */
+const nonBaseTranslations: ServerUiTranslations = Object.fromEntries(
+	await Promise.all(translationsToFetch.map(translationMap)).then(filterCallback)
+);
+
+/**
+ * An object containing server-side UI translations for supported locales.
+ *
+ * - The `en` property provides the base server translations for English.
+ * - Additional locale translations are spread from `nonBaseTranslations`.
+ *
+ * @remarks
+ * This constant is typed as `ServerUiTranslations` and marked as `const` for immutability.
  */
 export const serverUiTranslations: ServerUiTranslations = {
 	en: baseServerTranslations,
-	...Object.fromEntries(
-		await Promise.all(
-			availableTranslationFileKeys
-				.filter((lang) => lang !== 'en') // Exclude English from dynamic imports as it is already included
-				.map(async (lang) => [lang, await importTranslation(lang)])
-		)
-	),
+	...nonBaseTranslations,
 } as const;
 
 /**
