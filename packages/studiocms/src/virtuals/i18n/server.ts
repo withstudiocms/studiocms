@@ -106,21 +106,6 @@ export function useTranslatedPath(
 }
 
 /**
- * Generates an array of language selector options from the `uiTranslations` object.
- * Each option contains a `key` and a `value` where:
- * - `key` is a language key from `UiLanguageKeys`.
- * - `value` is the display name of the language.
- *
- * @returns An array of objects representing language selector options.
- */
-export const languageSelectorOptions = Object.keys(uiTranslations).map((key) => {
-	return {
-		key: key as UiLanguageKeys,
-		value: uiTranslations[key as UiLanguageKeys].displayName,
-	};
-});
-
-/**
  * Extracts the language key from the given URL's pathname.
  *
  * @param url - The URL object from which to extract the language key.

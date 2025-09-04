@@ -290,3 +290,17 @@ export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
  * The UI translations available in the StudioCMS app.
  */
 export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTranslationKey[];
+
+/**
+ * Generates an array of language selector options from the available server UI translations.
+ * Each option contains a `key` representing the language code and a `value` representing the display name of the language.
+ *
+ * @remarks
+ * This is typically used to populate language selection dropdowns in the UI.
+ *
+ * @returns An array of objects, each with `key` and `value` properties for language selection.
+ */
+export const languageSelectorOptions = Object.keys(serverUiTranslations).map((key) => ({
+	key,
+	value: serverUiTranslations[key].displayName,
+}));
