@@ -165,7 +165,7 @@
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.52",
 		"dompurify": "^3.2.6",
-		"dotenv": "^17.2.1",
+		"dotenv": "^17.2.2",
 		"fuse.js": "^7.1.0",
 		"jose": "^6.1.0",
 		"micromark": "^4.0.2",
@@ -183,7 +183,7 @@
 	"devDependencies": {
 		"@types/mdast": "^4.0.4",
 		"@types/node": "catalog:",
-		"@types/semver": "^7.7.0",
+		"@types/semver": "^7.7.1",
 		"@types/three": "0.169.0",
 		"typescript": "catalog:"
 	},
