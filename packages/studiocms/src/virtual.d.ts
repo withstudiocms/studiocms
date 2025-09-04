@@ -134,6 +134,7 @@ declare module 'studiocms:i18n' {
 	export const getCurrentURLPath: typeof import('./virtuals/i18n/server').getCurrentURLPath;
 	export const switchLanguage: typeof import('./virtuals/i18n/server').switchLanguage;
 	export const defaultLang: typeof import('./virtuals/i18n/server').defaultLang;
+	export const LanguageSelector: typeof import('./virtuals/i18n/LanguageSelector.astro').default;
 }
 
 declare module 'studiocms:i18n/client' {

@@ -292,6 +292,17 @@ export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
 export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTranslationKey[];
 
 /**
+ * Represents an option for selecting a language in the UI.
+ *
+ * @property key - The translation key associated with the language option.
+ * @property value - The display value for the language option.
+ */
+export interface LanguageSelectorOption {
+	key: UiTranslationKey;
+	value: string;
+}
+
+/**
  * Generates an array of language selector options from the available server UI translations.
  * Each option contains a `key` representing the language code and a `value` representing the display name of the language.
  *
@@ -300,7 +311,9 @@ export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTr
  *
  * @returns An array of objects, each with `key` and `value` properties for language selection.
  */
-export const languageSelectorOptions = Object.keys(serverUiTranslations).map((key) => ({
-	key,
-	value: serverUiTranslations[key].displayName,
-}));
+export const languageSelectorOptions: LanguageSelectorOption[] = Object.keys(serverUiTranslations)
+	.map((key) => ({
+		key: key as UiTranslationKey,
+		value: serverUiTranslations[key].displayName,
+	}))
+	.sort((a, b) => a.value.localeCompare(b.value));
