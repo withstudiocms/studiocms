@@ -28,57 +28,16 @@ export const baseServerTranslations = (
 export type StudioCMSTranslationRecord = typeof baseServerTranslations;
 
 /**
- * An object containing server-side UI translations for supported locales.
- *
- * - The `en` property provides the base server translations for English.
- * - Additional locale translations are spread from `nonBaseTranslations`.
- *
- * @remarks
- * This constant is typed as `ServerUiTranslations` and marked as `const` for immutability.
- */
-export const serverUiTranslations: ServerUiTranslations = {
-	en: baseServerTranslations,
-	...availableTranslations,
-};
-
-/**
- * Transforms the `serverUiTranslations` object into a `ClientUiTranslations` object
- * by extracting only the `translations` property for each UI translation key.
- *
- * @remarks
- * This reduces the server-side translation structure to a client-friendly format,
- * mapping each `UiTranslationKey` to its corresponding translations object.
- *
- * @type {ClientUiTranslations}
- */
-export const clientUiTranslations: ClientUiTranslations = Object.entries(
-	serverUiTranslations
-).reduce((acc, [key, value]) => {
-	acc[key as UiTranslationKey] = value.translations;
-	return acc;
-}, {} as ClientUiTranslations);
-
-/**
- * The UI translations available in the StudioCMS app.
- */
-export type UiTranslationKey = string;
-
-/**
- * The default language for the StudioCMS app.
- */
-export const defaultLang: UiTranslationKey = 'en';
-
-/**
- * Whether to show the default language in the url path.
- */
-export const showDefaultLang: boolean = false;
-
-/**
  * Represents a translation entry in JSON format.
  * Can be either a string (a translated value) or a nested object of translations.
  * This allows for both flat and hierarchical translation structures.
  */
 export type TranslationJSON = string | TranslationsJSON;
+
+/**
+ * The UI translations available in the StudioCMS app.
+ */
+export type UiTranslationKey = string;
 
 /**
  * Represents a collection of translation entries, where each key is a locale or identifier,
@@ -137,11 +96,6 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
 
 /**
- * The UI translations available in the StudioCMS app.
- */
-export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTranslationKey[];
-
-/**
  * Represents an option for selecting a language in the UI.
  *
  * @property key - The translation key associated with the language option.
@@ -151,6 +105,52 @@ export interface LanguageSelectorOption {
 	readonly key: UiTranslationKey;
 	readonly value: string;
 }
+
+/**
+ * An object containing server-side UI translations for supported locales.
+ *
+ * - The `en` property provides the base server translations for English.
+ * - Additional locale translations are spread from `nonBaseTranslations`.
+ *
+ * @remarks
+ * This constant is typed as `ServerUiTranslations` and marked as `const` for immutability.
+ */
+export const serverUiTranslations: ServerUiTranslations = {
+	en: baseServerTranslations,
+	...availableTranslations,
+};
+
+/**
+ * The UI translations available in the StudioCMS app.
+ */
+export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTranslationKey[];
+
+/**
+ * Transforms the `serverUiTranslations` object into a `ClientUiTranslations` object
+ * by extracting only the `translations` property for each UI translation key.
+ *
+ * @remarks
+ * This reduces the server-side translation structure to a client-friendly format,
+ * mapping each `UiTranslationKey` to its corresponding translations object.
+ *
+ * @type {ClientUiTranslations}
+ */
+export const clientUiTranslations: ClientUiTranslations = Object.entries(
+	serverUiTranslations
+).reduce((acc, [key, value]) => {
+	acc[key as UiTranslationKey] = value.translations;
+	return acc;
+}, {} as ClientUiTranslations);
+
+/**
+ * The default language for the StudioCMS app.
+ */
+export const defaultLang: UiTranslationKey = 'en';
+
+/**
+ * Whether to show the default language in the url path.
+ */
+export const showDefaultLang: boolean = false;
 
 /**
  * Generates an array of language selector options from the available server UI translations.
