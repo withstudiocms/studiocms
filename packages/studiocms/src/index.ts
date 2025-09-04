@@ -388,9 +388,7 @@ export const studiocms = defineIntegration({
 					}
 				},
 				// DEV SERVER: Check for updates on server start and log messages
-				'astro:server:start': async ({ logger: l }) => {
-					const logger = l.fork('studiocms:update-check');
-
+				'astro:server:start': async ({ logger }) => {
 					/**
 					 * Logs an update check message with the specified log level.
 					 *
@@ -407,7 +405,12 @@ export const studiocms = defineIntegration({
 
 					try {
 						// Fetch the latest version from the npm registry
-						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile, isDevMode);
+						const latestVersion = await getLatestVersion(
+							pkgName,
+							logger.fork('studiocms:update-check'),
+							cacheJsonFile,
+							isDevMode
+						);
 
 						// If the latest version is found, compare it with the current version and log messages accordingly
 						if (latestVersion) {
