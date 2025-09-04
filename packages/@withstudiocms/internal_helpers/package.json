@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/internal_helpers",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "description": "Internal helper utilities for StudioCMS",
   "author": {
     "name": "withstudiocms",
@@ -66,13 +66,13 @@
   },
   "type": "module",
   "dependencies": {
-		"astro-integration-kit": "catalog:",
-		"mdast-util-from-markdown": "^2.0.2",
-		"mdast-util-to-string": "^4.0.0",
-		"unist-util-visit": "^5.0.0"
+    "astro-integration-kit": "catalog:",
+    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-to-string": "^4.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
-		"@types/mdast": "catalog:",
+    "@types/mdast": "catalog:",
     "@types/node": "catalog:"
   },
   "peerDependencies": {
