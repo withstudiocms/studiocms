@@ -298,8 +298,8 @@ export const uiTranslationsAvailable = Object.keys(serverUiTranslations) as UiTr
  * @property value - The display value for the language option.
  */
 export interface LanguageSelectorOption {
-	key: UiTranslationKey;
-	value: string;
+	readonly key: UiTranslationKey;
+	readonly value: string;
 }
 
 /**
@@ -312,8 +312,9 @@ export interface LanguageSelectorOption {
  * @returns An array of objects, each with `key` and `value` properties for language selection.
  */
 export const languageSelectorOptions: LanguageSelectorOption[] = Object.keys(serverUiTranslations)
-	.map((key) => ({
-		key: key as UiTranslationKey,
-		value: serverUiTranslations[key].displayName,
-	}))
-	.sort((a, b) => a.value.localeCompare(b.value));
+	.map((key) => {
+		const displayName = serverUiTranslations[key]?.displayName;
+		const value = typeof displayName === 'string' && displayName.trim() ? displayName : String(key);
+		return { key: key as UiTranslationKey, value };
+	})
+	.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: 'base' }));

@@ -45,8 +45,7 @@
     },
     {
       "groupName": "Effect Dependencies",
-      "matchFileNames": ["packages/@withstudiocms/effect/**"],
-      "matchPackageNames": ["effect", "@effect/**"],
+      "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service"],
       "labels": ["effect-deps"]
     },
     {
