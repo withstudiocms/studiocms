@@ -9,14 +9,15 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
 
-import fs from 'node:fs';
+import { promises as fsP, writeFileSync } from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
-import ui from '@studiocms/ui';
+import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
 import {
 	addIntegrationArray,
 	getLatestVersion,
+	injectScripts,
 	integrationLogger,
 	logMessages,
 	type Messages,
@@ -39,7 +40,6 @@ import {
 	checkAstroConfig,
 	pluginHandler,
 	routeHandler,
-	scriptHandler,
 } from './handlers/index.js';
 import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import {
@@ -48,13 +48,7 @@ import {
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
 import { availableTranslationFileKeys } from './virtuals/i18n/v-files.js';
-import {
-	buildDefaultOnlyVirtual,
-	buildLoggerVirtual,
-	buildNamedMultiExportVirtual,
-	buildVirtualConfig,
-	buildVirtualModules,
-} from './virtuals/utils.js';
+import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -184,11 +178,33 @@ export const studiocms = defineIntegration({
 					// Setup Logger
 					integrationLogger(logInfo, 'Setting up StudioCMS internals...');
 
-					changelogHelper(params);
+					changelogHelper(params, resolve('../CHANGELOG.md'));
+
+					injectScripts(params, [
+						{
+							stage: 'page',
+							content: await fsP.readFile(
+								resolve('./virtuals/scripts/user-quick-tools.js'),
+								'utf-8'
+							),
+							enabled: injectQuickActionsMenu && !dbStartPage,
+						},
+					]);
+
+					// Setup Component Registry
+					await componentRegistryHandler(params, {
+						config: {
+							name,
+							verbose,
+							virtualId: 'studiocms:component-registry',
+						},
+						componentRegistry,
+						builtInComponents,
+					});
 
 					const {
 						extraRoutes,
-						integrations: newIntegrations,
+						integrations: pluginIntegrations,
 						safePluginList,
 						messages: pluginMessages,
 						oAuthProvidersConfigured,
@@ -200,17 +216,6 @@ export const studiocms = defineIntegration({
 						plugins,
 						robotsTXTConfig,
 						verbose,
-					});
-
-					// Setup Component Registry
-					await componentRegistryHandler(params, {
-						config: {
-							name,
-							verbose,
-							virtualId: 'studiocms:component-registry',
-						},
-						componentRegistry,
-						builtInComponents,
 					});
 
 					// Setup Routes
@@ -225,27 +230,18 @@ export const studiocms = defineIntegration({
 						shouldInject404Route,
 					});
 
-					// Setup Scripts
-					await scriptHandler(params, {
-						dbStartPage,
-						injectQuickActionsMenu,
-					});
-
 					if (!dbStartPage)
-						addMiddleware({ order: 'pre', entrypoint: routesDir.middleware('index.ts') });
-
-					// Setup StudioCMS Integrations Array (Default Integrations)
-					const integrations = [
-						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: ui(getUiOpts()) },
-					];
-
-					if (newIntegrations.length > 0) {
-						integrations.push(...newIntegrations);
-					}
+						addMiddleware({
+							order: 'pre',
+							entrypoint: routesDir.middleware('index.ts'),
+						});
 
 					// Inject Integrations into Astro project
-					addIntegrationArray(params, integrations);
+					addIntegrationArray(params, [
+						{ integration: nodeNamespaceBuiltinsAstro() },
+						{ integration: studiocmsUi(getUiOpts()) },
+						...pluginIntegrations,
+					]);
 
 					// Inject Virtual modules
 					integrationLogger(logInfo, 'Adding Virtual Imports...');
@@ -256,7 +252,11 @@ export const studiocms = defineIntegration({
 						namedVirtual,
 						astroComponentVirtual,
 						dynamicWithAstroVirtual,
-					} = buildVirtualModules(resolve);
+						buildDefaultOnlyVirtual,
+						buildLoggerVirtual,
+						buildNamedMultiExportVirtual,
+						buildVirtualConfig,
+					} = VirtualModuleBuilder(resolve);
 
 					addVirtualImports(params, {
 						name,
@@ -350,7 +350,7 @@ export const studiocms = defineIntegration({
 					cacheJsonFile = new URL('cache.json', codegenDir);
 
 					if (!exists(cacheJsonFile.href)) {
-						fs.writeFileSync(cacheJsonFile, '{}', 'utf-8');
+						writeFileSync(cacheJsonFile, '{}', 'utf-8');
 					}
 				},
 				// CONFIG DONE: Inject the Markdown configuration into the shared state

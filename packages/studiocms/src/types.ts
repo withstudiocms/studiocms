@@ -2,7 +2,7 @@
 /// <reference types="../astroenv.d.ts" />
 
 import type { Messages } from '@withstudiocms/internal_helpers/astro-integration';
-import type { InjectedRoute, InjectedScriptStage } from 'astro';
+import type { InjectedRoute } from 'astro';
 import type { StudioCMSOptions } from './schemas/index.js';
 import type { CombinedPageData } from './virtuals/sdk/types/index.js';
 
@@ -10,11 +10,6 @@ import type { CombinedPageData } from './virtuals/sdk/types/index.js';
  * Represents a route object that can be used for a Array of routes for the Astro integration injectRoute() function.
  */
 export type Route = InjectedRoute & { enabled: boolean };
-
-/**
- * Represents a script object that can be used for a Array of scripts for the Astro integration injectScript() function.
- */
-export type Script = { stage: InjectedScriptStage; content: string; enabled: boolean };
 
 /**
  * Options for starting the server.

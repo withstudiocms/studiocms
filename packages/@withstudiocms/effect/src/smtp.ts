@@ -4,6 +4,8 @@ import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
 import { Brand, Context, Effect, Layer } from './effect.js';
 
+export type { Mail, SMTPTransport };
+
 /**
  * Custom Transport interface for nodemailer that extends the SMTPTransport.Options to
  * include an optional proxy configuration.

@@ -8,8 +8,7 @@ catalog:
   sharp: ^0.34.3
   tinyglobby: ^0.2.14
   typescript: ^5.9.2
-  nodemailer: ^7.0.6
-  "@types/nodemailer": ^7.0.1
+  "@types/mdast": ^4.0.4
 
 catalogs:
   astrojs:
@@ -21,17 +20,8 @@ catalogs:
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.2
-    "@effect/cluster": ^0.48.2
-    "@effect/experimental": ^0.54.6
-    "@effect/language-service": ^0.36.0
     "@effect/platform": ^0.90.6
     "@effect/platform-node": ^0.96.0
-    "@effect/printer": ^0.45.0
-    "@effect/printer-ansi": ^0.45.0
-    "@effect/rpc": ^0.69.1
-    "@effect/sql": ^0.44.2
-    "@effect/typeclass": ^0.36.0
-    "@effect/workflow": ^0.9.2
     effect: ^3.17.9
   min:
     "@astrojs/db": ^0.17.1
