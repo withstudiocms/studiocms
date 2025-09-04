@@ -11,7 +11,9 @@
 
 import { posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { glob } from 'tinyglobby';
+import type { ServerUiTranslations, StudioCMSTranslationRecord } from './config.js';
 
 /**
  * The directory containing translation files.
@@ -47,3 +49,75 @@ const availableTranslationFiles = await glob('**/*.json', { cwd: translationsDir
 export const availableTranslationFileKeys = availableTranslationFiles
 	.map((file) => posix.normalize(file).replace(/\.json$/, ''))
 	.filter(Boolean);
+
+/**
+ * Recursively checks a record object for string values and counts the total number of strings
+ * and the number of empty strings (strings that are empty or contain only whitespace).
+ *
+ * @param record - The object to check, which may contain nested objects and string values.
+ * @returns An object containing:
+ *   - `count`: The total number of string values found.
+ *   - `emptyStrings`: The number of string values that are empty or contain only whitespace.
+ */
+function checkStrings(record: unknown): { count: number; emptyStrings: number } {
+	if (typeof record !== 'object' || record === null) return { count: 0, emptyStrings: 0 };
+	let count = 0;
+	let emptyStrings = 0;
+	for (const value of Object.values(record as Record<string, unknown>)) {
+		if (typeof value === 'string') {
+			count++;
+			if (value.trim() === '') emptyStrings++;
+		} else if (typeof value === 'object' && value !== null) {
+			const { count: c, emptyStrings: e } = checkStrings(value);
+			count += c;
+			emptyStrings += e;
+		}
+	}
+	return { count, emptyStrings };
+}
+
+const MISSING_RATIO_THRESHOLD = 0.1 as const; // 10%
+
+/**
+ * Checks whether the ratio of empty strings to total strings in a translation file
+ * is within an acceptable threshold.
+ *
+ * @param opt - An object containing:
+ *   - `count`: The total number of strings in the translation file.
+ *   - `emptyStrings`: The number of empty strings in the translation file.
+ * @returns `true` if the ratio of empty strings is less than or equal to 10%, otherwise `false`.
+ */
+function checkThreshold(opt: { count: number; emptyStrings: number }) {
+	const threshold = MISSING_RATIO_THRESHOLD;
+	if (opt.count === 0) return false;
+	return opt.emptyStrings / opt.count <= threshold;
+}
+
+/**
+ * Loads and returns the available server-side UI translations, excluding English ('en').
+ * For each translation file key, reads the corresponding JSON file, checks its string values,
+ * and includes it in the results only if it passes the threshold check.
+ * Skips translation files with too many empty strings and logs a warning.
+ *
+ * @returns {ServerUiTranslations} An object mapping language keys to their translation records.
+ */
+export const availableTranslations: ServerUiTranslations = (() => {
+	const results: ServerUiTranslations = {};
+
+	const translationKeys = availableTranslationFileKeys.filter((key) => key !== 'en');
+
+	for (const key of translationKeys) {
+		const translation = readJson<StudioCMSTranslationRecord>(`${translationsDir + key}.json`);
+
+		const result = checkStrings(translation);
+
+		if (!checkThreshold(result)) {
+			console.warn(`[i18n] Skipping '${key}': ${result.emptyStrings} empty strings found`);
+			continue;
+		}
+
+		results[key] = translation;
+	}
+
+	return results;
+})();

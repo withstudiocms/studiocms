@@ -47,7 +47,7 @@ import {
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import { availableTranslationFileKeys } from './virtuals/i18n/v-files.js';
+import { availableTranslationFileKeys, availableTranslations } from './virtuals/i18n/v-files.js';
 import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
@@ -308,7 +308,10 @@ export const studiocms = defineIntegration({
 								'./virtuals/auth/getLabelForPermissionLevel.js',
 							]),
 							'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
-							'studiocms:i18n/virtual': `export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};`,
+							'studiocms:i18n/virtual': `
+								export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
+								export const availableTranslations = ${JSON.stringify(availableTranslations)};
+							`,
 							'studiocms:i18n': dynamicWithAstroVirtual({
 								dynamicExports: ['./virtuals/i18n/server.js'],
 								astroComponents: {
