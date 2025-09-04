@@ -21,8 +21,8 @@ catalogs:
   effect:
     "@effect/cli": ^0.69.2
     "@effect/platform": ^0.90.6
-    "@effect/platform-node": ^0.96.0
-    effect: ^3.17.9
+    "@effect/platform-node": ^0.96.1
+    effect: ^3.17.13
   min:
     "@astrojs/db": ^0.17.1
     "@astrojs/markdown-remark": ^6.3.3
