@@ -310,7 +310,7 @@ export const studiocms = defineIntegration({
 							'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
 							'studiocms:i18n/virtual': `export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};`,
 							'studiocms:i18n': dynamicWithAstroVirtual({
-								dynamicExports: ['./virtuals/i18n/index.js'],
+								dynamicExports: ['./virtuals/i18n/server.js'],
 								astroComponents: {
 									LanguageSelector: './virtuals/i18n/LanguageSelector.astro',
 								},
