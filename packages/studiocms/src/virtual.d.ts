@@ -125,19 +125,20 @@ declare module 'studiocms:i18n/virtual' {
 }
 
 declare module 'studiocms:i18n' {
-	export const staticPaths: typeof import('./virtuals/i18n/index.js').staticPaths;
-	export const getLangFromUrl: typeof import('./virtuals/i18n/index.js').getLangFromUrl;
-	export const useTranslations: typeof import('./virtuals/i18n/index.js').useTranslations;
-	export const useTranslatedPath: typeof import('./virtuals/i18n/index.js').useTranslatedPath;
-	export const languageSelectorOptions: typeof import('./virtuals/i18n/index.js').languageSelectorOptions;
-	export const getCurrentURLPath: typeof import('./virtuals/i18n/index.js').getCurrentURLPath;
-	export const switchLanguage: typeof import('./virtuals/i18n/index.js').switchLanguage;
-	export type UiLanguageKeys = import('./virtuals/i18n/index.js').UiLanguageKeys;
-	export type UiTranslations = import('./virtuals/i18n/index.js').UiTranslations;
-	export const defaultLang: typeof import('./virtuals/i18n/index.js').defaultLang;
+	export type UiLanguageKeys = import('./virtuals/i18n/server').UiLanguageKeys;
+	export type UiTranslations = import('./virtuals/i18n/server').UiTranslations;
+	export const staticPaths: typeof import('./virtuals/i18n/server').staticPaths;
+	export const getLangFromUrl: typeof import('./virtuals/i18n/server').getLangFromUrl;
+	export const useTranslations: typeof import('./virtuals/i18n/server').useTranslations;
+	export const useTranslatedPath: typeof import('./virtuals/i18n/server').useTranslatedPath;
+	export const getCurrentURLPath: typeof import('./virtuals/i18n/server').getCurrentURLPath;
+	export const switchLanguage: typeof import('./virtuals/i18n/server').switchLanguage;
+	export const defaultLang: typeof import('./virtuals/i18n/server').defaultLang;
+	export const LanguageSelector: typeof import('./virtuals/i18n/LanguageSelector.astro').default;
 }
 
 declare module 'studiocms:i18n/client' {
+	export type UiTranslationKey = import('./virtuals/i18n/client').UiTranslationKey;
 	export const $localeSettings: typeof import('./virtuals/i18n/client').$localeSettings;
 	export const $locale: typeof import('./virtuals/i18n/client').$locale;
 	export const format: typeof import('./virtuals/i18n/client').format;
@@ -148,7 +149,6 @@ declare module 'studiocms:i18n/client' {
 	export const updateElmLabel: typeof import('./virtuals/i18n/client').updateElmLabel;
 	export const defaultLang: typeof import('./virtuals/i18n/client').defaultLang;
 	export const uiTranslationsAvailable: typeof import('./virtuals/i18n/client').uiTranslationsAvailable;
-	export type UiTranslationKey = import('./virtuals/i18n/client').UiTranslationKey;
 	export const pageHeaderUpdater: typeof import('./virtuals/i18n/client').pageHeaderUpdater;
 	export const updateSelectElmLabel: typeof import('./virtuals/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./virtuals/i18n/client').updateElmPlaceholder;

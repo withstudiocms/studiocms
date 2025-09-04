@@ -70,7 +70,6 @@ type FromFileChangelog = {
  */
 export type ChangeLogSrc = RawChangelogSrc | FromFileChangelog;
 
-// TODO: Setup tests for loadChangelog
 /**
  * Loads and parses a changelog from either a file path or a raw markdown string.
  *
