@@ -353,7 +353,7 @@ export const studiocms = defineIntegration({
 						writeFileSync(cacheJsonFile, '{}', 'utf-8');
 					}
 				},
-				'astro:config:done': () => {
+				'astro:config:done': ({ config }) => {
 					// Log Setup Complete
 					messages.push({
 						label: 'studiocms:setup',
@@ -366,15 +366,14 @@ export const studiocms = defineIntegration({
 							messages.push({
 								label: 'studiocms:start-page',
 								logLevel: 'warn',
-								message:
-									'Start Page is Enabled. This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.',
+								message: `Start Page is enabled. This will be the only page available until you initialize your database and disable the config option that forces this page to be displayed. To get started, visit http://localhost:${config.server.port}/start/ in your browser to initialize your database and set up your installation.`,
 							});
 						} else {
 							messages.push({
 								label: 'studiocms:start-page',
 								logLevel: 'error',
 								message:
-									'Start Page is Enabled. Please ensure you have setup your StudioCMS Database, and disabled the start page before trying to build for production!',
+									'Start Page is enabled. Please ensure you have set up your StudioCMS database and disabled the Start Page before building for production.',
 							});
 						}
 					}
@@ -398,7 +397,7 @@ export const studiocms = defineIntegration({
 					 * @param logLevel - The severity level of the log message. Can be 'info', 'warn', 'error', or 'debug'.
 					 * @param message - The message to log.
 					 */
-					function logUpdateCheck(logLevel: 'info' | 'warn' | 'error' | 'debug', message: string) {
+					function logUpdateCheck(logLevel: Messages[number]['logLevel'], message: string) {
 						messages.push({
 							label: 'studiocms:update-check',
 							logLevel,
@@ -429,7 +428,7 @@ export const studiocms = defineIntegration({
 									`You are using the latest version of '${name}' (${pkgVersion})`
 								);
 
-								// Log an info message if the versions are the same
+								// Log an info message if you are ahead of the latest (pre-release/canary)
 							} else {
 								logUpdateCheck(
 									'info',
@@ -439,17 +438,12 @@ export const studiocms = defineIntegration({
 						}
 						// If an error occurs while fetching the latest version, log an error message
 					} catch (error) {
-						if (error instanceof Error) {
-							logUpdateCheck(
-								'error',
-								`Error fetching latest version from npm registry: ${error.message}`
-							);
-						} else {
-							logUpdateCheck(
-								'error',
-								'An unknown error occurred while fetching the latest version from the npm registry.'
-							);
-						}
+						logUpdateCheck(
+							'error',
+							`Error fetching latest version from npm registry: ${
+								error instanceof Error ? error.message : String(error)
+							}`
+						);
 					}
 
 					// Log all messages

@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Cleanup and de-dupe code in main integration index.
+Clean up and deduplicate code in the main integration index.
