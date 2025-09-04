@@ -353,7 +353,6 @@ export const studiocms = defineIntegration({
 						writeFileSync(cacheJsonFile, '{}', 'utf-8');
 					}
 				},
-				// CONFIG DONE: Inject the Markdown configuration into the shared state
 				'astro:config:done': () => {
 					// Log Setup Complete
 					messages.push({
@@ -361,37 +360,93 @@ export const studiocms = defineIntegration({
 						logLevel: 'info',
 						message: 'Setup Complete. 🚀',
 					});
+
+					if (options.dbStartPage) {
+						if (isDevMode) {
+							messages.push({
+								label: 'studiocms:start-page',
+								logLevel: 'warn',
+								message:
+									'Start Page is Enabled. This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.',
+							});
+						} else {
+							messages.push({
+								label: 'studiocms:start-page',
+								logLevel: 'error',
+								message:
+									'Start Page is Enabled. Please ensure you have setup your StudioCMS Database, and disabled the start page before trying to build for production!',
+							});
+						}
+					}
+
+					if (options.features.developerConfig.demoMode !== false) {
+						messages.push({
+							label: 'studiocms:demo-mode',
+							logLevel: 'info',
+							message:
+								'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.',
+						});
+					}
 				},
 				// DEV SERVER: Check for updates on server start and log messages
 				'astro:server:start': async ({ logger: l }) => {
-					const logger = l.fork(`${name}:update-check`);
+					const logger = l.fork('studiocms:update-check');
+
+					/**
+					 * Logs an update check message with the specified log level.
+					 *
+					 * @param logLevel - The severity level of the log message. Can be 'info', 'warn', 'error', or 'debug'.
+					 * @param message - The message to log.
+					 */
+					function logUpdateCheck(logLevel: 'info' | 'warn' | 'error' | 'debug', message: string) {
+						messages.push({
+							label: 'studiocms:update-check',
+							logLevel,
+							message,
+						});
+					}
 
 					try {
+						// Fetch the latest version from the npm registry
 						const latestVersion = await getLatestVersion(pkgName, logger, cacheJsonFile, isDevMode);
 
-						if (!latestVersion) {
-							return;
-						}
+						// If the latest version is found, compare it with the current version and log messages accordingly
+						if (latestVersion) {
+							// Compare the current package version with the latest version
+							const comparison = semCompare(pkgVersion, latestVersion);
 
-						const comparison = semCompare(pkgVersion, latestVersion);
+							// Log a warning if the latest version is newer
+							if (comparison === -1) {
+								logUpdateCheck(
+									'warn',
+									`A new version of '${name}' is available. Please update to ${latestVersion} using your favorite package manager.`
+								);
 
-						if (comparison === -1) {
-							logger.warn(
-								`A new version of '${name}' is available. Please update to ${latestVersion} using your favorite package manager.`
-							);
-						} else if (comparison === 0) {
-							logger.info(`You are using the latest version of '${name}' (${pkgVersion})`);
-						} else {
-							logger.info(
-								`You are using a newer version (${pkgVersion}) of '${name}' than the latest release (${latestVersion})`
-							);
+								// Log an info message if the versions are the same
+							} else if (comparison === 0) {
+								logUpdateCheck(
+									'info',
+									`You are using the latest version of '${name}' (${pkgVersion})`
+								);
+
+								// Log an info message if the versions are the same
+							} else {
+								logUpdateCheck(
+									'info',
+									`You are using a newer version (${pkgVersion}) of '${name}' than the latest release (${latestVersion})`
+								);
+							}
 						}
+						// If an error occurs while fetching the latest version, log an error message
 					} catch (error) {
 						if (error instanceof Error) {
-							logger.error(`Error fetching latest version from npm registry: ${error.message}`);
+							logUpdateCheck(
+								'error',
+								`Error fetching latest version from npm registry: ${error.message}`
+							);
 						} else {
-							// Handle the case where error is not an Error object
-							logger.error(
+							logUpdateCheck(
+								'error',
 								'An unknown error occurred while fetching the latest version from the npm registry.'
 							);
 						}
@@ -399,32 +454,11 @@ export const studiocms = defineIntegration({
 
 					// Log all messages
 					await logMessages(messages, options, logger);
-
-					if (options.dbStartPage) {
-						integrationLogger(
-							{ logger, logLevel: 'warn', verbose: true },
-							'Start Page is Enabled.  This will be the only page available until you initialize your database and disable the config option forcing this page to be displayed. To get started, visit http://localhost:4321/start/ in your browser to initialize your database. And Setup your installation.'
-						);
-					}
-
-					if (options.features.developerConfig.demoMode !== false) {
-						integrationLogger(
-							{ logger, logLevel: 'info', verbose: true },
-							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'
-						);
-					}
 				},
 				// BUILD: Log messages at the end of the build
 				'astro:build:done': async ({ logger }) => {
 					// Log messages at the end of the build
 					await logMessages(messages, options, logger);
-
-					if (options.features.developerConfig.demoMode !== false) {
-						integrationLogger(
-							{ logger, logLevel: 'info', verbose: true },
-							'Demo Mode is Enabled. This means that the StudioCMS Dashboard will be available to the public using the provided credentials and the REST API has been disabled. To disable Demo Mode, set the `demoMode` option to `false` or remove the option in your StudioCMS configuration.'
-						);
-					}
 				},
 			},
 		};
