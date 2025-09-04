@@ -112,7 +112,6 @@ export const availableTranslations: ServerUiTranslations = (() => {
 		const result = checkStrings(translation);
 
 		if (!checkThreshold(result)) {
-			console.warn(`[i18n] Skipping '${key}': ${result.emptyStrings} empty strings found`);
 			continue;
 		}
 
