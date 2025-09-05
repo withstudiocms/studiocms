@@ -1,6 +1,6 @@
 {
 	"name": "studiocms",
-	"version": "0.1.0-beta.25",
+	"version": "0.1.0-beta.26",
 	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
 	"author": {
 		"name": "withstudiocms",
@@ -177,7 +177,7 @@
 		"package-manager-detector": "^1.3.0",
 		"semver": "^7.7.2",
 		"three": "0.170.0",
-        "tinyglobby": "catalog:",
+		"tinyglobby": "catalog:",
 		"ultrahtml": "^1.6.0"
 	},
 	"devDependencies": {

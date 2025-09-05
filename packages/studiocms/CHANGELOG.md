@@ -1,5 +1,96 @@
 # studiocms
 
+## 0.1.0-beta.26
+
+### Patch Changes
+
+- [#730](https://github.com/withstudiocms/studiocms/pull/730) [`cf0e866`](https://github.com/withstudiocms/studiocms/commit/cf0e866e1508d6fec7d59c765126c6bbfe09f068) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to StudioCMS UI 1.0 beta
+
+- [#754](https://github.com/withstudiocms/studiocms/pull/754) [`3daaf92`](https://github.com/withstudiocms/studiocms/commit/3daaf92efa7ba78de41927cc56cc3d166da48075) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Adjust SDK page lookup to return `undefined` when a page is not found, eliminating noisy Astro errors in development (notably when using Chrome DevTools).
+
+- [#759](https://github.com/withstudiocms/studiocms/pull/759) [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleanup internal integration code
+
+- [#740](https://github.com/withstudiocms/studiocms/pull/740) [`203852c`](https://github.com/withstudiocms/studiocms/commit/203852c2e102c668eed71e46b96f134899895327) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement new auth package into StudioCMS
+
+- [#761](https://github.com/withstudiocms/studiocms/pull/761) [`447843f`](https://github.com/withstudiocms/studiocms/commit/447843f8e565f7ea15131a1a02cf178c6269d5ef) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Renames internal i18n file to server.ts instead of index.ts
+
+- [#724](https://github.com/withstudiocms/studiocms/pull/724) [`0921bd3`](https://github.com/withstudiocms/studiocms/commit/0921bd330bcd69080aba0265db822b33327fbb9f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.49
+
+- [#734](https://github.com/withstudiocms/studiocms/pull/734) [`c613781`](https://github.com/withstudiocms/studiocms/commit/c613781d04003f1808a1632dcfcd2f2662d4ee8b) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#746](https://github.com/withstudiocms/studiocms/pull/746) [`d52873f`](https://github.com/withstudiocms/studiocms/commit/d52873f975fa7cbfe52a037bf84648b03c4773b4) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.50
+
+- [#766](https://github.com/withstudiocms/studiocms/pull/766) [`06444cb`](https://github.com/withstudiocms/studiocms/commit/06444cbaf17e63a12b08eb8a08c1b6d65eeaac82) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#749](https://github.com/withstudiocms/studiocms/pull/749) [`5780dd6`](https://github.com/withstudiocms/studiocms/commit/5780dd603ec6dc900d8f0f667374b4cf5eaf6a5a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - BREAKING: Remove deprecated locals from middleware in favor of a joined StudioCMS locals object.
+
+  Removed top-level Astro.Locals keys:
+
+  - SCMSGenerator, SCMSUiGenerator, latestVersion, siteConfig, defaultLang, routeMap
+  - userSessionData, emailVerificationEnabled, userPermissionLevel
+  - wysiwygCsrfToken (renamed)
+
+  New location:
+
+  - Access these under event.locals.StudioCMS.<key>
+
+  Renames:
+
+  - wysiwygCsrfToken → editorCSRFToken (under StudioCMS)
+
+  Migration examples:
+  Before:
+  const { siteConfig, defaultLang } = Astro.locals;
+  After:
+  const { siteConfig, defaultLang } = Astro.locals.StudioCMS;
+
+  Before:
+  const token = Astro.locals.wysiwygCsrfToken;
+  After:
+  const token = Astro.locals.StudioCMS.editorCSRFToken;
+
+- [#755](https://github.com/withstudiocms/studiocms/pull/755) [`85a9a99`](https://github.com/withstudiocms/studiocms/commit/85a9a99d3c4595ff7130ca753e4962da66ad2511) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new DB table for dynamic config storage in unified table
+
+  BREAKING:
+
+  Users will be required to run `astro db push --remote` to update their database table schemas.
+
+- [#759](https://github.com/withstudiocms/studiocms/pull/759) [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - cleanup and organize dependencies
+
+- [#741](https://github.com/withstudiocms/studiocms/pull/741) [`e685425`](https://github.com/withstudiocms/studiocms/commit/e6854250165650c7642a03e4f612aa0a9ea880d1) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweak auth-kit to conform types to table configs
+
+- [#742](https://github.com/withstudiocms/studiocms/pull/742) [`8e53f8f`](https://github.com/withstudiocms/studiocms/commit/8e53f8fc56adb8a8b110c9854053c779e07b3cb3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Init new package @withstudiocms/internal_helpers
+
+- [#744](https://github.com/withstudiocms/studiocms/pull/744) [`95b41f1`](https://github.com/withstudiocms/studiocms/commit/95b41f1a37b241dd3e1bfa90c8a85b858c107e6d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix missing variable during First time setup
+
+- [#741](https://github.com/withstudiocms/studiocms/pull/741) [`e685425`](https://github.com/withstudiocms/studiocms/commit/e6854250165650c7642a03e4f612aa0a9ea880d1) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - BREAKING CHANGE: Updated AstroDB table config to utilize enums for permissions.
+
+  Users will be required to run `astro db push --remote` to update their table schema.
+
+- [#751](https://github.com/withstudiocms/studiocms/pull/751) [`d5229f5`](https://github.com/withstudiocms/studiocms/commit/d5229f557b8035406582c9792e8a738dba18a1b5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fixes formdata conversion on first time setup
+
+- [#763](https://github.com/withstudiocms/studiocms/pull/763) [`2b280d8`](https://github.com/withstudiocms/studiocms/commit/2b280d84bcb40805bbd1ed44e45a9f7260eed081) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Clean up and deduplicate code in the main integration index.
+
+- [#756](https://github.com/withstudiocms/studiocms/pull/756) [`2f5403d`](https://github.com/withstudiocms/studiocms/commit/2f5403de6af5662a088bdcb764a43bf351249c44) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Restore avatar functionality with automatic fallback when remote avatars are unavailable to prevent server errors
+
+- [#750](https://github.com/withstudiocms/studiocms/pull/750) [`0fc4fd7`](https://github.com/withstudiocms/studiocms/commit/0fc4fd7c4567b36865c4dba617663a12ecf619f5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - NOTICE: Avatars disabled for now due to performance issues.
+
+- [#759](https://github.com/withstudiocms/studiocms/pull/759) [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Create and implement new injectScripts helper for Astro integrations
+
+- [#747](https://github.com/withstudiocms/studiocms/pull/747) [`57f2d80`](https://github.com/withstudiocms/studiocms/commit/57f2d800d929734dfaa9eb324e8d8171856e8f3f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Clean up and remove deprecated `removeLeadingTrailingSlashes` in favor of `stripLeadingAndTrailingSlashes`.
+
+- [#750](https://github.com/withstudiocms/studiocms/pull/750) [`0fc4fd7`](https://github.com/withstudiocms/studiocms/commit/0fc4fd7c4567b36865c4dba617663a12ecf619f5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Streamlines i18n setup to utilize centralized config.
+
+- [#764](https://github.com/withstudiocms/studiocms/pull/764) [`3b22102`](https://github.com/withstudiocms/studiocms/commit/3b2210274705cb534b03d02d6952bfcdbdb10478) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor: Handle i18n translations at build instead of bundling json files
+
+- [#758](https://github.com/withstudiocms/studiocms/pull/758) [`bfda1e4`](https://github.com/withstudiocms/studiocms/commit/bfda1e4922fe391d2b8ecc81e8a83f68990ab083) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks i18n loader to ignore translations with more than 10% of the translations missing
+
+- Updated dependencies [[`203852c`](https://github.com/withstudiocms/studiocms/commit/203852c2e102c668eed71e46b96f134899895327), [`2ad259e`](https://github.com/withstudiocms/studiocms/commit/2ad259e9662bd4c8b58e07629491cb322eb479fa), [`d77a8c1`](https://github.com/withstudiocms/studiocms/commit/d77a8c16c97b91343f1c03b2fd9dd2fca0252647), [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f), [`e685425`](https://github.com/withstudiocms/studiocms/commit/e6854250165650c7642a03e4f612aa0a9ea880d1), [`8e53f8f`](https://github.com/withstudiocms/studiocms/commit/8e53f8fc56adb8a8b110c9854053c779e07b3cb3), [`341b59e`](https://github.com/withstudiocms/studiocms/commit/341b59e3c775f619e9630c9044772ef0f16d1970), [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f), [`e70f380`](https://github.com/withstudiocms/studiocms/commit/e70f38001d9ef80e27f701d249fda23c670dfb5e)]:
+  - @withstudiocms/auth-kit@0.1.0-beta.1
+  - @withstudiocms/effect@0.1.0-beta.2
+  - @withstudiocms/internal_helpers@0.1.0-beta.1
+  - @withstudiocms/component-registry@0.1.0-beta.2
+
 ## 0.1.0-beta.25
 
 ### Patch Changes

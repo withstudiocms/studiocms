@@ -1,5 +1,19 @@
 # @studiocms/blog
 
+## 0.1.0-beta.26
+
+### Patch Changes
+
+- [#753](https://github.com/withstudiocms/studiocms/pull/753) [`b364605`](https://github.com/withstudiocms/studiocms/commit/b3646059fc492686daa5a6440c713930a86c2e58) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements improved processing for hero/OG images to prevent errors.
+
+- [#730](https://github.com/withstudiocms/studiocms/pull/730) [`cf0e866`](https://github.com/withstudiocms/studiocms/commit/cf0e866e1508d6fec7d59c765126c6bbfe09f068) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update to StudioCMS UI 1.0 beta
+
+- [#754](https://github.com/withstudiocms/studiocms/pull/754) [`3daaf92`](https://github.com/withstudiocms/studiocms/commit/3daaf92efa7ba78de41927cc56cc3d166da48075) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Adjust SDK page lookup to return `undefined` when a page is not found, eliminating noisy Astro errors in development (notably when using Chrome DevTools).
+
+- Updated dependencies [[`cf0e866`](https://github.com/withstudiocms/studiocms/commit/cf0e866e1508d6fec7d59c765126c6bbfe09f068), [`3daaf92`](https://github.com/withstudiocms/studiocms/commit/3daaf92efa7ba78de41927cc56cc3d166da48075), [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f), [`203852c`](https://github.com/withstudiocms/studiocms/commit/203852c2e102c668eed71e46b96f134899895327), [`447843f`](https://github.com/withstudiocms/studiocms/commit/447843f8e565f7ea15131a1a02cf178c6269d5ef), [`0921bd3`](https://github.com/withstudiocms/studiocms/commit/0921bd330bcd69080aba0265db822b33327fbb9f), [`c613781`](https://github.com/withstudiocms/studiocms/commit/c613781d04003f1808a1632dcfcd2f2662d4ee8b), [`d52873f`](https://github.com/withstudiocms/studiocms/commit/d52873f975fa7cbfe52a037bf84648b03c4773b4), [`06444cb`](https://github.com/withstudiocms/studiocms/commit/06444cbaf17e63a12b08eb8a08c1b6d65eeaac82), [`5780dd6`](https://github.com/withstudiocms/studiocms/commit/5780dd603ec6dc900d8f0f667374b4cf5eaf6a5a), [`85a9a99`](https://github.com/withstudiocms/studiocms/commit/85a9a99d3c4595ff7130ca753e4962da66ad2511), [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f), [`e685425`](https://github.com/withstudiocms/studiocms/commit/e6854250165650c7642a03e4f612aa0a9ea880d1), [`8e53f8f`](https://github.com/withstudiocms/studiocms/commit/8e53f8fc56adb8a8b110c9854053c779e07b3cb3), [`95b41f1`](https://github.com/withstudiocms/studiocms/commit/95b41f1a37b241dd3e1bfa90c8a85b858c107e6d), [`e685425`](https://github.com/withstudiocms/studiocms/commit/e6854250165650c7642a03e4f612aa0a9ea880d1), [`d5229f5`](https://github.com/withstudiocms/studiocms/commit/d5229f557b8035406582c9792e8a738dba18a1b5), [`2b280d8`](https://github.com/withstudiocms/studiocms/commit/2b280d84bcb40805bbd1ed44e45a9f7260eed081), [`2f5403d`](https://github.com/withstudiocms/studiocms/commit/2f5403de6af5662a088bdcb764a43bf351249c44), [`0fc4fd7`](https://github.com/withstudiocms/studiocms/commit/0fc4fd7c4567b36865c4dba617663a12ecf619f5), [`c14b94c`](https://github.com/withstudiocms/studiocms/commit/c14b94c855a750b5666fffc975bebf1a556cf80f), [`57f2d80`](https://github.com/withstudiocms/studiocms/commit/57f2d800d929734dfaa9eb324e8d8171856e8f3f), [`0fc4fd7`](https://github.com/withstudiocms/studiocms/commit/0fc4fd7c4567b36865c4dba617663a12ecf619f5), [`3b22102`](https://github.com/withstudiocms/studiocms/commit/3b2210274705cb534b03d02d6952bfcdbdb10478), [`bfda1e4`](https://github.com/withstudiocms/studiocms/commit/bfda1e4922fe391d2b8ecc81e8a83f68990ab083)]:
+  - studiocms@0.1.0-beta.26
+  - @studiocms/md@0.1.0-beta.26
+
 ## 0.1.0-beta.25
 
 ### Patch Changes
