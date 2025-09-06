@@ -1,35 +1,18 @@
-import {
-	type ClackSettings,
-	type ConfirmOptions,
-	cancel as clackCancel,
-	confirm as clackConfirm,
-	group as clackGroup,
-	groupMultiselect as clackGroupMultiselect,
-	intro as clackIntro,
-	isCancel as clackIsCancel,
-	log as clackLog,
-	multiselect as clackMultiSelect,
-	note as clackNote,
-	outro as clackOutro,
-	password as clackPassword,
-	select as clackSelect,
-	selectKey as clackSelectKey,
-	spinner as clackSpinner,
-	stream as clackStream,
-	tasks as clackTasks,
-	text as clackText,
-	updateSettings as clackUpdateSettings,
-	type GroupMultiSelectOptions,
-	type LogMessageOptions,
-	type MultiSelectOptions,
-	type PasswordOptions,
-	type PromptGroup,
-	type PromptGroupOptions,
-	type SelectOptions,
-	type SpinnerOptions,
-	type Task,
-	type TextOptions,
+import type {
+	ClackSettings,
+	ConfirmOptions,
+	GroupMultiSelectOptions,
+	LogMessageOptions,
+	MultiSelectOptions,
+	PasswordOptions,
+	PromptGroup,
+	PromptGroupOptions,
+	SelectOptions,
+	SpinnerOptions,
+	Task,
+	TextOptions,
 } from '@clack/prompts';
+import * as ClackPrompts from '@clack/prompts';
 import { deepmerge } from './deepmerge.js';
 import { Data, Effect } from './effect.js';
 
@@ -83,7 +66,9 @@ export const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
  * @param message - Optional error message to display when cancelling the operation.
  * @returns An Effect representing the cancellation operation.
  */
-export const cancel = Effect.fn((message?: string) => useClackError(() => clackCancel(message)));
+export const cancel = Effect.fn((message?: string) =>
+	useClackError(() => ClackPrompts.cancel(message))
+);
 
 /**
  * Prompts the user for confirmation using the Clack UI and handles errors with `useClackError`.
@@ -92,7 +77,7 @@ export const cancel = Effect.fn((message?: string) => useClackError(() => clackC
  * @returns An Effect that resolves to the user's confirmation response.
  */
 export const confirm = Effect.fn((options: ConfirmOptions) =>
-	useClackError(() => clackConfirm(options))
+	useClackError(() => ClackPrompts.confirm(options))
 );
 
 /**
@@ -105,7 +90,7 @@ export const confirm = Effect.fn((options: ConfirmOptions) =>
  * @returns The result of the grouped prompts, with error handling applied.
  */
 export const group = <T>(prompts: PromptGroup<T>, opts?: PromptGroupOptions<T>) =>
-	useClackError(() => clackGroup(prompts, opts));
+	useClackError(() => ClackPrompts.group(prompts, opts));
 
 /**
  * Wraps the `clackGroupMultiselect` function with error handling using `useClackError`.
@@ -115,7 +100,7 @@ export const group = <T>(prompts: PromptGroup<T>, opts?: PromptGroupOptions<T>) 
  * @returns The result of the group multi-select operation, with error handling applied.
  */
 export const groupMultiselect = <T>(options: GroupMultiSelectOptions<T>) =>
-	useClackError(() => clackGroupMultiselect(options));
+	useClackError(() => ClackPrompts.groupMultiselect(options));
 
 /**
  * Displays an introductory message using the Clack library within an Effect context.
@@ -123,7 +108,9 @@ export const groupMultiselect = <T>(options: GroupMultiSelectOptions<T>) =>
  * @param message - The message to display as an introduction.
  * @returns An Effect that, when executed, shows the intro message and handles any Clack-related errors.
  */
-export const intro = Effect.fn((message: string) => useClackError(() => clackIntro(message)));
+export const intro = Effect.fn((message: string) =>
+	useClackError(() => ClackPrompts.intro(message))
+);
 
 /**
  * Determines if the provided value represents a cancellation event.
@@ -134,7 +121,9 @@ export const intro = Effect.fn((message: string) => useClackError(() => clackInt
  * @param value - The value to check for cancellation.
  * @returns `true` if the value represents a cancellation, otherwise `false`.
  */
-export const isCancel = Effect.fn((value: unknown) => useClackError(() => clackIsCancel(value)));
+export const isCancel = Effect.fn((value: unknown) =>
+	useClackError(() => ClackPrompts.isCancel(value))
+);
 
 /**
  * Presents a multi-select prompt to the user with error handling.
@@ -144,7 +133,7 @@ export const isCancel = Effect.fn((value: unknown) => useClackError(() => clackI
  * @returns The result of the multi-select prompt, wrapped with error handling.
  */
 export const multiselect = <T>(options: MultiSelectOptions<T>) =>
-	useClackError(() => clackMultiSelect(options));
+	useClackError(() => ClackPrompts.multiselect(options));
 
 /**
  * Displays a note message using the Clack notification system.
@@ -154,7 +143,7 @@ export const multiselect = <T>(options: MultiSelectOptions<T>) =>
  * @returns An Effect that triggers the note display, handling any Clack errors.
  */
 export const note = Effect.fn((message?: string, title?: string) =>
-	useClackError(() => clackNote(message, title))
+	useClackError(() => ClackPrompts.note(message, title))
 );
 
 /**
@@ -163,7 +152,9 @@ export const note = Effect.fn((message?: string, title?: string) =>
  * @param message - Optional message to display as the outro.
  * @returns An Effect that executes the outro logic with error handling.
  */
-export const outro = Effect.fn((message?: string) => useClackError(() => clackOutro(message)));
+export const outro = Effect.fn((message?: string) =>
+	useClackError(() => ClackPrompts.outro(message))
+);
 
 /**
  * Prompts the user for a password input using the Clack library, with error handling.
@@ -174,7 +165,8 @@ export const outro = Effect.fn((message?: string) => useClackError(() => clackOu
  * @remarks
  * This function wraps the `clackPassword` prompt with `useClackError` to provide consistent error handling.
  */
-export const password = (options: PasswordOptions) => useClackError(() => clackPassword(options));
+export const password = (options: PasswordOptions) =>
+	useClackError(() => ClackPrompts.password(options));
 
 /**
  * Presents a selection prompt to the user using Clack, handling errors gracefully.
@@ -183,7 +175,8 @@ export const password = (options: PasswordOptions) => useClackError(() => clackP
  * @param options - The configuration options for the selection prompt.
  * @returns The selected option of type `T`.
  */
-export const select = <T>(options: SelectOptions<T>) => useClackError(() => clackSelect(options));
+export const select = <T>(options: SelectOptions<T>) =>
+	useClackError(() => ClackPrompts.select(options));
 
 /**
  * Prompts the user to select a key from the provided options and handles errors using `useClackError`.
@@ -193,7 +186,7 @@ export const select = <T>(options: SelectOptions<T>) => useClackError(() => clac
  * @returns The selected key of type `T`.
  */
 export const selectKey = <T extends string>(options: SelectOptions<T>) =>
-	useClackError(() => clackSelectKey(options));
+	useClackError(() => ClackPrompts.selectKey(options));
 
 /**
  * Executes a list of tasks using the `clackTasks` function and wraps the execution with error handling provided by `useClackError`.
@@ -201,7 +194,7 @@ export const selectKey = <T extends string>(options: SelectOptions<T>) =>
  * @param tasks - An array of `Task` objects to be executed.
  * @returns The result of the `clackTasks` execution, potentially wrapped or modified by `useClackError`.
  */
-export const tasks = (tasks: Task[]) => useClackError(() => clackTasks(tasks));
+export const tasks = (tasks: Task[]) => useClackError(() => ClackPrompts.tasks(tasks));
 
 /**
  * Displays a text prompt using Clack, handling any errors that may occur.
@@ -209,7 +202,7 @@ export const tasks = (tasks: Task[]) => useClackError(() => clackTasks(tasks));
  * @param options - The options to configure the text prompt.
  * @returns The result of the text prompt, or an error if one occurs.
  */
-export const text = (options: TextOptions) => useClackError(() => clackText(options));
+export const text = (options: TextOptions) => useClackError(() => ClackPrompts.text(options));
 
 /**
  * Updates the Clack settings by applying the provided updates.
@@ -219,7 +212,39 @@ export const text = (options: TextOptions) => useClackError(() => clackText(opti
  * @returns The result of the `clackUpdateSettings` function, wrapped with error handling.
  */
 export const updateSettings = (updates: ClackSettings) =>
-	useClackError(() => clackUpdateSettings(updates));
+	useClackError(() => ClackPrompts.updateSettings(updates));
+
+/**
+ * Creates a spinner utility with customizable indicator.
+ *
+ * @param {SpinnerOptions} [options] - Options for the spinner, including an optional `indicator` string.
+ *
+ * All methods are wrapped with `useClackError` for error handling.
+ */
+export const spinner = (options: SpinnerOptions = {}) => {
+	const s = ClackPrompts.spinner(options);
+	return {
+		start: (msg?: string) => useClackError(() => s.start(msg)),
+		stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
+		message: (msg?: string) => useClackError(() => s.message(msg)),
+	};
+};
+
+/**
+ * Prompts the user with a confirmation message and returns whether to continue.
+ *
+ * @param userOpts - Options for the confirmation prompt.
+ * @param userOpts.message - The message to display to the user. Defaults to "Continue?".
+ * @returns A boolean indicating whether the user chose to continue (`true`) or cancel (`false`).
+ */
+export const askToContinue = Effect.fn(function* (userOpts: { message: string }) {
+	const defaultOpts = { message: 'Continue?', initialValue: true };
+	const opts = yield* deepmerge((merge) => merge(defaultOpts, userOpts));
+	const response = yield* confirm(opts);
+	const shouldCancel = yield* isCancel(response);
+	if (shouldCancel) return false;
+	return true;
+});
 
 /**
  * Provides a set of logging utilities wrapped with effectful error handling.
@@ -236,30 +261,14 @@ export const updateSettings = (updates: ClackSettings) =>
  */
 export const log = {
 	message: Effect.fn((message?: string, options?: LogMessageOptions) =>
-		useClackError(() => clackLog.message(message, options))
+		useClackError(() => ClackPrompts.log.message(message, options))
 	),
-	success: Effect.fn((message: string) => useClackError(() => clackLog.success(message))),
-	step: Effect.fn((message: string) => useClackError(() => clackLog.step(message))),
-	warn: Effect.fn((message: string) => useClackError(() => clackLog.warn(message))),
-	warning: Effect.fn((message: string) => useClackError(() => clackLog.warning(message))),
-	error: Effect.fn((message: string) => useClackError(() => clackLog.error(message))),
-	info: Effect.fn((message: string) => useClackError(() => clackLog.info(message))),
-};
-
-/**
- * Creates a spinner utility with customizable indicator.
- *
- * @param {SpinnerOptions} [options] - Options for the spinner, including an optional `indicator` string.
- *
- * All methods are wrapped with `useClackError` for error handling.
- */
-export const spinner = (options: SpinnerOptions = {}) => {
-	const s = clackSpinner(options);
-	return {
-		start: (msg?: string) => useClackError(() => s.start(msg)),
-		stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
-		message: (msg?: string) => useClackError(() => s.message(msg)),
-	};
+	success: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.success(message))),
+	step: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.step(message))),
+	warn: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.warn(message))),
+	warning: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.warning(message))),
+	error: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.error(message))),
+	info: Effect.fn((message: string) => useClackError(() => ClackPrompts.log.info(message))),
 };
 
 /**
@@ -281,40 +290,24 @@ export const spinner = (options: SpinnerOptions = {}) => {
 export const stream = {
 	message: Effect.fn(
 		(iterable: Iterable<string> | AsyncIterable<string>, options?: LogMessageOptions) =>
-			useClackError(() => clackStream.message(iterable, options))
+			useClackError(() => ClackPrompts.stream.message(iterable, options))
 	),
 	info: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.info(iterable))
+		useClackError(() => ClackPrompts.stream.info(iterable))
 	),
 	success: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.success(iterable))
+		useClackError(() => ClackPrompts.stream.success(iterable))
 	),
 	step: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.step(iterable))
+		useClackError(() => ClackPrompts.stream.step(iterable))
 	),
 	warn: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.warn(iterable))
+		useClackError(() => ClackPrompts.stream.warn(iterable))
 	),
 	warning: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.warning(iterable))
+		useClackError(() => ClackPrompts.stream.warning(iterable))
 	),
 	error: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => clackStream.error(iterable))
+		useClackError(() => ClackPrompts.stream.error(iterable))
 	),
 };
-
-/**
- * Prompts the user with a confirmation message and returns whether to continue.
- *
- * @param userOpts - Options for the confirmation prompt.
- * @param userOpts.message - The message to display to the user. Defaults to "Continue?".
- * @returns A boolean indicating whether the user chose to continue (`true`) or cancel (`false`).
- */
-export const askToContinue = Effect.fn(function* (userOpts: { message: string }) {
-	const defaultOpts = { message: 'Continue?', initialValue: true };
-	const opts = yield* deepmerge((merge) => merge(defaultOpts, userOpts));
-	const response = yield* confirm(opts);
-	const shouldCancel = yield* isCancel(response);
-	if (shouldCancel) return false;
-	return true;
-});
