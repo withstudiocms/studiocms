@@ -52,7 +52,7 @@ export class ClackError extends Data.TaggedError('ClackError')<{ cause: unknown 
  * @param _try - A function to execute that may throw an error.
  * @returns An `Effect` that yields the result of the function or a `ClackError` if an error is thrown.
  */
-export const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
+const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
 	Effect.try({
 		try: _try,
 		catch: (cause) => new ClackError({ cause }),
