@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Dedupe CLI code
+Deduplicate CLI utilities and unify avatar URL generation (Libravatar)
