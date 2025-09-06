@@ -18,9 +18,7 @@ export const makeScrypt = Effect.fn((config: PasswordModConfigFinal) =>
 				const { run } = yield* _Scrypt;
 				return { run };
 			}).pipe(Effect.provide(_Scrypt.makeLive(config.scrypt))),
-		catch: (error) => {
-			throw new Error(`Failed to create Scrypt instance: ${(error as Error).message}`);
-		},
+		catch: (error) => new Error(`Failed to create Scrypt instance: ${(error as Error).message}`),
 	})
 );
 

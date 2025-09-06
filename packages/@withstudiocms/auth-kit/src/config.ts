@@ -97,20 +97,22 @@ function makePasswordModConfig({ CMS_ENCRYPTION_KEY }: PasswordModConfig): Passw
 	if (normalizedKey.length === 0) {
 		throw new Error('CMS_ENCRYPTION_KEY must be a non-empty base64 string');
 	}
+
+	let raw: Uint8Array;
 	try {
-		const raw =
+		raw =
 			typeof Buffer !== 'undefined'
-				? Buffer.from(CMS_ENCRYPTION_KEY, 'base64')
+				? Buffer.from(normalizedKey, 'base64')
 				: new Uint8Array(
-						atob(CMS_ENCRYPTION_KEY)
+						atob(normalizedKey)
 							.split('')
 							.map((c) => c.charCodeAt(0))
 					);
-		if (raw.byteLength !== 16) {
-			throw new Error(`CMS_ENCRYPTION_KEY must decode to 16 bytes, got ${raw.byteLength}`);
-		}
 	} catch {
 		throw new Error('CMS_ENCRYPTION_KEY is not valid base64');
+	}
+	if (raw.byteLength !== 16) {
+		throw new Error(`CMS_ENCRYPTION_KEY must decode to 16 bytes, got ${raw.byteLength}`);
 	}
 
 	// Scrypt parameters
