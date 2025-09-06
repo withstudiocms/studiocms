@@ -59,6 +59,19 @@ const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
 	});
 
 /**
+ * Wraps a promise-returning function in an Effect, mapping any thrown error to a `ClackError`.
+ *
+ * @template A The type of the resolved value of the promise.
+ * @param _try A function that returns a promise of type `A`.
+ * @returns An `Effect` that resolves with the value of type `A` or fails with a `ClackError`.
+ */
+const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, ClackError> =>
+	Effect.tryPromise({
+		try: _try,
+		catch: (cause) => new ClackError({ cause }),
+	});
+
+/**
  * Cancels the current Clack operation and optionally displays an error message.
  *
  * This function wraps the `clackCancel` operation with error handling using `useClackError`.
@@ -77,7 +90,7 @@ export const cancel = Effect.fn((message?: string) =>
  * @returns An Effect that resolves to the user's confirmation response.
  */
 export const confirm = Effect.fn((options: ConfirmOptions) =>
-	useClackError(() => ClackPrompts.confirm(options))
+	useClackErrorPromise(() => ClackPrompts.confirm(options))
 );
 
 /**
@@ -90,7 +103,7 @@ export const confirm = Effect.fn((options: ConfirmOptions) =>
  * @returns The result of the grouped prompts, with error handling applied.
  */
 export const group = <T>(prompts: PromptGroup<T>, opts?: PromptGroupOptions<T>) =>
-	useClackError(() => ClackPrompts.group(prompts, opts));
+	useClackErrorPromise(() => ClackPrompts.group(prompts, opts));
 
 /**
  * Wraps the `clackGroupMultiselect` function with error handling using `useClackError`.
@@ -100,7 +113,7 @@ export const group = <T>(prompts: PromptGroup<T>, opts?: PromptGroupOptions<T>) 
  * @returns The result of the group multi-select operation, with error handling applied.
  */
 export const groupMultiselect = <T>(options: GroupMultiSelectOptions<T>) =>
-	useClackError(() => ClackPrompts.groupMultiselect(options));
+	useClackErrorPromise(() => ClackPrompts.groupMultiselect(options));
 
 /**
  * Displays an introductory message using the Clack library within an Effect context.
@@ -133,7 +146,7 @@ export const isCancel = Effect.fn((value: unknown) =>
  * @returns The result of the multi-select prompt, wrapped with error handling.
  */
 export const multiselect = <T>(options: MultiSelectOptions<T>) =>
-	useClackError(() => ClackPrompts.multiselect(options));
+	useClackErrorPromise(() => ClackPrompts.multiselect(options));
 
 /**
  * Displays a note message using the Clack notification system.
@@ -166,7 +179,7 @@ export const outro = Effect.fn((message?: string) =>
  * This function wraps the `clackPassword` prompt with `useClackError` to provide consistent error handling.
  */
 export const password = (options: PasswordOptions) =>
-	useClackError(() => ClackPrompts.password(options));
+	useClackErrorPromise(() => ClackPrompts.password(options));
 
 /**
  * Presents a selection prompt to the user using Clack, handling errors gracefully.
@@ -176,7 +189,7 @@ export const password = (options: PasswordOptions) =>
  * @returns The selected option of type `T`.
  */
 export const select = <T>(options: SelectOptions<T>) =>
-	useClackError(() => ClackPrompts.select(options));
+	useClackErrorPromise(() => ClackPrompts.select(options));
 
 /**
  * Prompts the user to select a key from the provided options and handles errors using `useClackError`.
@@ -186,7 +199,7 @@ export const select = <T>(options: SelectOptions<T>) =>
  * @returns The selected key of type `T`.
  */
 export const selectKey = <T extends string>(options: SelectOptions<T>) =>
-	useClackError(() => ClackPrompts.selectKey(options));
+	useClackErrorPromise(() => ClackPrompts.selectKey(options));
 
 /**
  * Executes a list of tasks using the `clackTasks` function and wraps the execution with error handling provided by `useClackError`.
@@ -194,7 +207,7 @@ export const selectKey = <T extends string>(options: SelectOptions<T>) =>
  * @param tasks - An array of `Task` objects to be executed.
  * @returns The result of the `clackTasks` execution, potentially wrapped or modified by `useClackError`.
  */
-export const tasks = (tasks: Task[]) => useClackError(() => ClackPrompts.tasks(tasks));
+export const tasks = (tasks: Task[]) => useClackErrorPromise(() => ClackPrompts.tasks(tasks));
 
 /**
  * Displays a text prompt using Clack, handling any errors that may occur.
@@ -202,7 +215,8 @@ export const tasks = (tasks: Task[]) => useClackError(() => ClackPrompts.tasks(t
  * @param options - The options to configure the text prompt.
  * @returns The result of the text prompt, or an error if one occurs.
  */
-export const text = (options: TextOptions) => useClackError(() => ClackPrompts.text(options));
+export const text = (options: TextOptions) =>
+	useClackErrorPromise(() => ClackPrompts.text(options));
 
 /**
  * Updates the Clack settings by applying the provided updates.
@@ -241,9 +255,8 @@ export const askToContinue = Effect.fn(function* (userOpts: { message: string })
 	const defaultOpts = { message: 'Continue?', initialValue: true };
 	const opts = yield* deepmerge((merge) => merge(defaultOpts, userOpts));
 	const response = yield* confirm(opts);
-	const shouldCancel = yield* isCancel(response);
-	if (shouldCancel) return false;
-	return true;
+	if (yield* isCancel(response)) return false;
+	return response as boolean;
 });
 
 /**
@@ -290,24 +303,24 @@ export const log = {
 export const stream = {
 	message: Effect.fn(
 		(iterable: Iterable<string> | AsyncIterable<string>, options?: LogMessageOptions) =>
-			useClackError(() => ClackPrompts.stream.message(iterable, options))
+			useClackErrorPromise(() => ClackPrompts.stream.message(iterable, options))
 	),
 	info: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.info(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.info(iterable))
 	),
 	success: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.success(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.success(iterable))
 	),
 	step: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.step(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.step(iterable))
 	),
 	warn: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.warn(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.warn(iterable))
 	),
 	warning: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.warning(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.warning(iterable))
 	),
 	error: Effect.fn((iterable: Iterable<string> | AsyncIterable<string>) =>
-		useClackError(() => ClackPrompts.stream.error(iterable))
+		useClackErrorPromise(() => ClackPrompts.stream.error(iterable))
 	),
 };
