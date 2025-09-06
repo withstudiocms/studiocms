@@ -30,6 +30,7 @@ import {
 	type Task,
 	type TextOptions,
 } from '@clack/prompts';
+import { deepmerge } from './deepmerge.js';
 import { Data, Effect } from './effect.js';
 
 export type {
@@ -252,8 +253,8 @@ export const log = {
  *
  * All methods are wrapped with `useClackError` for error handling.
  */
-export const spinner = ({ indicator }: SpinnerOptions = {}) => {
-	const s = clackSpinner({ indicator });
+export const spinner = (options: SpinnerOptions = {}) => {
+	const s = clackSpinner(options);
 	return {
 		start: (msg?: string) => useClackError(() => s.start(msg)),
 		stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
@@ -301,3 +302,19 @@ export const stream = {
 		useClackError(() => clackStream.error(iterable))
 	),
 };
+
+/**
+ * Prompts the user with a confirmation message and returns whether to continue.
+ *
+ * @param userOpts - Options for the confirmation prompt.
+ * @param userOpts.message - The message to display to the user. Defaults to "Continue?".
+ * @returns A boolean indicating whether the user chose to continue (`true`) or cancel (`false`).
+ */
+export const askToContinue = Effect.fn(function* (userOpts: { message: string }) {
+	const defaultOpts = { message: 'Continue?', initialValue: true };
+	const opts = yield* deepmerge((merge) => merge(defaultOpts, userOpts));
+	const response = yield* confirm(opts);
+	const shouldCancel = yield* isCancel(response);
+	if (shouldCancel) return false;
+	return true;
+});
