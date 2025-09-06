@@ -1,7 +1,28 @@
 import { Effect } from '@withstudiocms/effect';
 import { Scrypt as _Scrypt } from '@withstudiocms/effect/scrypt';
-import { AuthKitOptions, type RawAuthKitConfig } from './config.js';
+import { AuthKitOptions, PasswordModConfigFinal, type RawAuthKitConfig } from './config.js';
 import { _Encryption, _Password, _Session, _User } from './modules/index.js';
+
+export { Password } from './modules/password.js';
+
+/**
+ * Creates a scrypt password hashing utility using the provided scrypt configuration.
+ *
+ * @param scrypt - The scrypt configuration object from `PasswordModConfigFinal`.
+ * @returns An Effect that provides an object with a `run` method for performing scrypt operations.
+ */
+export const makeScrypt = Effect.fn((config: PasswordModConfigFinal) =>
+	Effect.try({
+		try: () =>
+			Effect.gen(function* () {
+				const { run } = yield* _Scrypt;
+				return { run };
+			}).pipe(Effect.provide(_Scrypt.makeLive(config.scrypt))),
+		catch: (error) => {
+			throw new Error(`Failed to create Scrypt instance: ${(error as Error).message}`);
+		},
+	})
+);
 
 /**
  * The `AuthKit` service provides a collection of authentication utilities for use within the
@@ -44,11 +65,8 @@ export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit',
 		 * Scrypt Effect processor
 		 * @private
 		 */
-		const Scrypt = Effect.withSpan('@withstudiocms/AuthKit.Scrypt')(
-			Effect.gen(function* () {
-				const { run } = yield* _Scrypt;
-				return { run };
-			}).pipe(Effect.provide(_Scrypt.makeLive(scrypt)))
+		const Scrypt = yield* Effect.withSpan('@withstudiocms/AuthKit.Scrypt')(
+			makeScrypt(PasswordModConfigFinal({ scrypt }))
 		);
 
 		/**
