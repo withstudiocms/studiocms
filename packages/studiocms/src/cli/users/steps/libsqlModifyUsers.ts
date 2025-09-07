@@ -12,23 +12,17 @@ import { hashPassword } from '../../utils/user-utils.js';
 
 dotenv.config({ quiet: true });
 
-type Checker = Awaited<{
-	username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
-	password: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
-}> | null;
-
-let checker: Checker = null;
+type Validators = 'username' | 'password';
+type Validator = (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
+type Checker = { [Key in Validators]: Validator };
 
 const getChecker = async () => {
-	if (!checker) {
-		checker = await Effect.runPromise(
-			Effect.gen(function* () {
-				const { _tag, ...mod } = yield* CheckIfUnsafe;
-				return mod;
-			}).pipe(Effect.provide(CheckIfUnsafe.Default))
-		);
-	}
-	return checker;
+	return await Effect.runPromise(
+		Effect.gen(function* () {
+			const { _tag, ...mod } = yield* CheckIfUnsafe;
+			return mod;
+		}).pipe(Effect.provide(CheckIfUnsafe.Default))
+	);
 };
 
 export enum UserFieldOption {
