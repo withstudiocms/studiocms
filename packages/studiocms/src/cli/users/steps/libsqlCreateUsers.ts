@@ -74,7 +74,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 							message: 'E-Mail Address',
 							placeholder: 'john@doe.tld',
 							validate: (email) => {
-								const e = email.trim();
+								const e = email.trim().toLowerCase();
 								const emailSchema = z.string().email({ message: 'Email address is invalid' });
 								const response = emailSchema.safeParse(e);
 								if (!response.success) return response.error.message;
