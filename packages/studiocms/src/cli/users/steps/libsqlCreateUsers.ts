@@ -1,11 +1,11 @@
 import type { CheckIfUnsafeError } from '@withstudiocms/auth-kit/errors';
+import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../../effect.js';
 import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
-import { createUserAvatar } from '../../utils/createUserAvatar.js';
 import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';
 import { Permissions, Users, useLibSQLDb } from '../../utils/useLibSQLDb.js';
@@ -148,7 +148,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 		password,
 		createdAt: new Date(),
 		updatedAt: new Date(),
-		avatar: await createUserAvatar(email),
+		avatar: await getAvatarUrl({ email, https: true, size: 400, default: 'retro' }),
 	};
 
 	const newRank: typeof Permissions.$inferInsert = {

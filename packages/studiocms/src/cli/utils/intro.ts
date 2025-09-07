@@ -1,6 +1,6 @@
 import { StudioCMSColorway, StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label, say } from '@withstudiocms/cli-kit/messages';
-import { readJson } from '@withstudiocms/cli-kit/utils';
+import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { Effect, genLogger } from '../../effect.js';
 import { CliContext } from './context.js';
 import { logger } from './logger.js';

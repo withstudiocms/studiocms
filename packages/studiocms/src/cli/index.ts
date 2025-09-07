@@ -1,4 +1,4 @@
-import { readJson } from '@withstudiocms/cli-kit/utils';
+import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { Cli, Effect, Layer, PlatformNode } from '../effect.js';
 import { addPlugin } from './add/index.js';
 import { cryptoCMD } from './crypto/index.js';
