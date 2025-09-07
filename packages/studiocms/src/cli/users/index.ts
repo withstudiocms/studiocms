@@ -102,13 +102,14 @@ export const usersCMD = Cli.Command.make('users', { debug, dryRun }, ({ debug: _
 					default: {
 						yield* context.pCancel(libsqlAction);
 						yield* context.exit(0);
-						break;
+						return;
 					}
 				}
 				break;
 			}
 			default:
 				yield* context.pCancel(options);
+				return;
 		}
 
 		// No steps? Exit

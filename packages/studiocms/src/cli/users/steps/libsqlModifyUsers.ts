@@ -154,9 +154,10 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 					message: `Enter the user's new username`,
 					placeholder: 'johndoe',
 					validate: (user) => {
-						const isUser = currentUsers.find(({ username }) => username === user);
+						const u = user.trim();
+						const isUser = currentUsers.find(({ username }) => username === u);
 						if (isUser) return 'Username is already in use, please try another one';
-						if (Effect.runSync(checker.username(user))) {
+						if (Effect.runSync(checker.username(u))) {
 							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 						}
 						return undefined;
@@ -222,7 +223,7 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 						const hasUpperCase = /[A-Z]/.test(password);
 						const hasLowerCase = /[a-z]/.test(password);
 						const hasNumbers = /\d/.test(password);
-						const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+						const hasSpecialChars = /[^A-Za-z0-9]/.test(password);
 
 						if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
 							return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';

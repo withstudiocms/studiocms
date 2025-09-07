@@ -57,7 +57,8 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 							message: 'Username',
 							placeholder: 'johndoe',
 							validate: (user) => {
-								const isUser = currentUsers.find(({ username }) => username === user);
+								const u = user.trim();
+								const isUser = currentUsers.find(({ username }) => username === u);
 								if (isUser) return 'Username is already in use, please try another one';
 								if (Effect.runSync(checker.username(user))) {
 									return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
@@ -79,10 +80,11 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 							message: 'E-Mail Address',
 							placeholder: 'john@doe.tld',
 							validate: (email) => {
+								const e = email.trim();
 								const emailSchema = z.string().email({ message: 'Email address is invalid' });
-								const response = emailSchema.safeParse(email);
+								const response = emailSchema.safeParse(e);
 								if (!response.success) return response.error.message;
-								if (currentUsers.find((user) => user.email === email)) {
+								if (currentUsers.find((user) => user.email === e)) {
 									return 'There is already a user with that email.';
 								}
 								return undefined;
@@ -106,7 +108,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 								const hasUpperCase = /[A-Z]/.test(password);
 								const hasLowerCase = /[a-z]/.test(password);
 								const hasNumbers = /\d/.test(password);
-								const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+								const hasSpecialChars = /[^A-Za-z0-9]/.test(password);
 
 								if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
 									return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
