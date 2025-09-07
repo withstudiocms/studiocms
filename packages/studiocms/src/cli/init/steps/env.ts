@@ -382,7 +382,7 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 							),
 					},
 					{
-						onCancel: () => pOnCancel(),
+						onCancel: async () => await runEffect(pOnCancel()),
 					}
 				)
 			);

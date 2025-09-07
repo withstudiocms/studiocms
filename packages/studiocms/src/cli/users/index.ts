@@ -2,6 +2,7 @@ import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { intro, log, select, tasks } from '@withstudiocms/effect/clack';
 import { Cli, Console, Effect, genLogger } from '../../effect.js';
+import { checkRequiredEnvVars } from '../utils/checkRequiredEnvVars.js';
 import { type BaseContext, CliContext, genContext } from '../utils/context.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
@@ -65,6 +66,10 @@ export const usersCMD = Cli.Command.make('users', { debug, dryRun }, ({ debug: _
 		);
 
 		yield* SCMS_Intro(debug).pipe(CliContext.makeProvide(context));
+
+		yield* Effect.tryPromise(() =>
+			checkRequiredEnvVars(['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY'])
+		);
 
 		// Steps
 		const steps: StepFn[] = [];

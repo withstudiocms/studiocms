@@ -6,13 +6,12 @@ import { group, log, password, select, text } from '@withstudiocms/effect/clack'
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../../effect.js';
-import { checkRequiredEnvVars } from '../../utils/checkRequiredEnvVars.js';
 import { logger } from '../../utils/logger.js';
 import type { StepFn } from '../../utils/types.js';
 import { Permissions, Users, useLibSQLDb } from '../../utils/useLibSQLDb.js';
 import { hashPassword } from '../../utils/user-utils.js';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 type Checker = Awaited<{
 	username: (val: string) => Effect.Effect<boolean, CheckIfUnsafeError, never>;
@@ -43,8 +42,6 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 	debug && logger.debug('Checking for environment variables');
 
 	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN } = process.env;
-
-	checkRequiredEnvVars(['ASTRO_DB_REMOTE_URL', 'ASTRO_DB_APP_TOKEN', 'CMS_ENCRYPTION_KEY']);
 
 	// Environment variables are already checked by checkRequiredEnvVars
 	const db = useLibSQLDb(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string);
