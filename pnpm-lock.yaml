@@ -140,11 +140,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@crowdin/crowdin-api-client':
-        specifier: ^1.46.0
-        version: 1.46.0
+        specifier: ^1.46.1
+        version: 1.46.1
       '@effect/language-service':
-        specifier: ^0.37.0
-        version: 0.37.0
+        specifier: ^0.38.1
+        version: 0.38.1
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
@@ -1292,8 +1292,8 @@ packages:
     peerDependencies:
       commander: ~13.1.0
 
-  '@crowdin/crowdin-api-client@1.46.0':
-    resolution: {integrity: sha512-aCAKlr1Aw4T1Fss16lDNw/HRpU7HTrgQqTHUxTBBAYjx7KK6ghPYX89X4LU8DeLyXijrZN6ph9zF/gWAWBNtUA==}
+  '@crowdin/crowdin-api-client@1.46.1':
+    resolution: {integrity: sha512-JLVCXjnjksKpSBPTR7LRjF2GscZqkRP6JJDie/l/IiZfoN1MVIkCKn5fZPGK2sTnNmmc7EYxlqzQ6+IEGwQC0A==}
     engines: {node: '>=12.9.0'}
 
   '@effect/cli@0.69.2':
@@ -1326,8 +1326,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.37.0':
-    resolution: {integrity: sha512-SeDzOMr8/FZqsKI11B51MDBfo5h6dvS9e7NQgYJ6aA4MH+ERerEDjvCHZMZdPKr37HcJC73lG+IGoyLXZpcKug==}
+  '@effect/language-service@0.38.1':
+    resolution: {integrity: sha512-1VxXS4w+p1pWQHW8YPnOLVJccJe7AMkh6S30Hs1sejoWFLd0x/4jvlTAWHot2d6wyKFgvDo/FsyOq2DjDJIuAg==}
     hasBin: true
 
   '@effect/platform-node-shared@0.49.0':
@@ -6514,7 +6514,7 @@ snapshots:
     dependencies:
       commander: 13.1.0
 
-  '@crowdin/crowdin-api-client@1.46.0':
+  '@crowdin/crowdin-api-client@1.46.1':
     dependencies:
       axios: 1.11.0
     transitivePeerDependencies:
@@ -6544,7 +6544,7 @@ snapshots:
       effect: 3.17.13
       uuid: 11.1.0
 
-  '@effect/language-service@0.37.0': {}
+  '@effect/language-service@0.38.1': {}
 
   '@effect/platform-node-shared@0.49.0(@effect/cluster@0.48.2(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/workflow@0.9.2(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)':
     dependencies:
