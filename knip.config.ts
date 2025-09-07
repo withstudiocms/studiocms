@@ -111,7 +111,7 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: ['@changesets/config'],
+			ignoreDependencies: ['@changesets/config', 'studiocms'],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 		},
