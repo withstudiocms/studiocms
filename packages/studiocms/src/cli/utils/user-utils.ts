@@ -1,6 +1,21 @@
 import { makeScrypt, Password } from '@withstudiocms/auth-kit';
 import { PasswordModOptions } from '@withstudiocms/auth-kit/config';
+import chalk from 'chalk';
+import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../effect.js';
+
+dotenv.config({ quiet: true });
+
+let { CMS_ENCRYPTION_KEY } = process.env;
+
+if (!CMS_ENCRYPTION_KEY) {
+	console.warn(
+		`${chalk.yellow.bold('Warning:')} ${chalk.yellow(
+			'CMS_ENCRYPTION_KEY is not set... '
+		)}${chalk.gray('Some commands may be disabled.')}`
+	);
+	CMS_ENCRYPTION_KEY = '+URKVIiIM1kmG6g9Znb10g=='; // Fallback key for type safety, do not use in production
+}
 
 /**
  * Asynchronously initializes and retrieves the `hashPassword` function using the provided
@@ -23,11 +38,7 @@ const hashPassword = await runEffect(
 		const Scrypt = yield* makeScrypt(config);
 		const { hashPassword } = yield* Password(Scrypt);
 		return hashPassword;
-	}).pipe(
-		Effect.provide(
-			PasswordModOptions.Live({ CMS_ENCRYPTION_KEY: process.env.CMS_ENCRYPTION_KEY || '' })
-		)
-	)
+	}).pipe(Effect.provide(PasswordModOptions.Live({ CMS_ENCRYPTION_KEY })))
 );
 
 export { hashPassword };

@@ -16,7 +16,7 @@
     "test-build:studiocms": "pnpm --filter studiocms build",
     "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* -r --parallel dev",
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
-    "cli:test": "pnpm studiocms",
+    "cli:test": "pnpm --filter node-playground studiocms",
     "changeset": "changeset",
     "knip": "knip",
     "lint": "biome check .",

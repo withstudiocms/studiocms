@@ -15,6 +15,16 @@ import {
 	runInteractiveCommand,
 	runShellCommand,
 } from '@withstudiocms/cli-kit/utils';
+import { runEffect } from '@withstudiocms/effect';
+import {
+	confirm,
+	group,
+	log,
+	multiselect,
+	select,
+	spinner,
+	text,
+} from '@withstudiocms/effect/clack';
 import { logger } from '../../utils/logger.js';
 import { buildEnvFile, type EnvBuilderOptions, ExampleEnv } from '../../utils/studiocmsEnv.js';
 import type { StepFn } from '../../utils/types.js';
@@ -26,7 +36,7 @@ export enum EnvBuilderAction {
 }
 
 export const env: StepFn = async (context, debug, dryRun = false) => {
-	const { prompts, chalk, cwd, pCancel, pOnCancel } = context;
+	const { chalk, cwd, pCancel, pOnCancel } = context;
 
 	debug && logger.debug('Running env...');
 
@@ -38,16 +48,20 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 	debug && logger.debug(`Environment file exists: ${envExists}`);
 
 	if (envExists) {
-		prompts.log.warn(
-			`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} An environment file already exists. Would you like to overwrite it?`
+		await runEffect(
+			log.warn(
+				`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} An environment file already exists. Would you like to overwrite it?`
+			)
 		);
 
-		const check = await prompts.confirm({
-			message: 'Confirm Overwrite',
-		});
+		const check = await runEffect(
+			confirm({
+				message: 'Confirm Overwrite',
+			})
+		);
 
 		if (typeof check === 'symbol') {
-			pCancel(check);
+			await runEffect(pCancel(check));
 		} else {
 			debug && logger.debug(`Environment file overwrite selected: ${check}`);
 			if (!check) {
@@ -56,17 +70,19 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		}
 	}
 
-	const EnvPrompt = await prompts.select({
-		message: 'What kind of environment file would you like to create?',
-		options: [
-			{ value: EnvBuilderAction.builder, label: 'Use Interactive .env Builder' },
-			{ value: EnvBuilderAction.example, label: 'Use the Example .env file' },
-			{ value: EnvBuilderAction.none, label: 'Skip Environment File Creation', hint: 'Cancel' },
-		],
-	});
+	const EnvPrompt = await runEffect(
+		select({
+			message: 'What kind of environment file would you like to create?',
+			options: [
+				{ value: EnvBuilderAction.builder, label: 'Use Interactive .env Builder' },
+				{ value: EnvBuilderAction.example, label: 'Use the Example .env file' },
+				{ value: EnvBuilderAction.none, label: 'Skip Environment File Creation', hint: 'Cancel' },
+			],
+		})
+	);
 
 	if (typeof EnvPrompt === 'symbol') {
-		pCancel(EnvPrompt);
+		await runEffect(pCancel(EnvPrompt));
 	} else {
 		debug && logger.debug(`Environment file type selected: ${EnvPrompt}`);
 
@@ -81,38 +97,44 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		const isWindows = os.platform() === 'win32';
 
 		if (isWindows) {
-			prompts.log.warn(
-				`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+			runEffect(
+				log.warn(
+					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+				)
 			);
 		}
 
 		let tursoDB: symbol | 'yes' | 'no' = 'no';
 
 		if (!isWindows) {
-			tursoDB = await prompts.select({
-				message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
-				options: [
-					{ value: 'yes', label: 'Yes' },
-					{ value: 'no', label: 'No' },
-				],
-			});
+			tursoDB = await runEffect(
+				select({
+					message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
+					options: [
+						{ value: 'yes', label: 'Yes' },
+						{ value: 'no', label: 'No' },
+					],
+				})
+			);
 		}
 
 		if (typeof tursoDB === 'symbol') {
-			pCancel(tursoDB);
+			await runEffect(pCancel(tursoDB));
 		} else {
 			debug && logger.debug(`AstroDB setup selected: ${tursoDB}`);
 
 			if (tursoDB === 'yes') {
 				if (!commandExists('turso')) {
-					prompts.log.error(StudioCMSColorwayError('Turso CLI is not installed.'));
+					await runEffect(log.error(StudioCMSColorwayError('Turso CLI is not installed.')));
 
-					const installTurso = await prompts.confirm({
-						message: 'Would you like to install Turso CLI now?',
-					});
+					const installTurso = await runEffect(
+						confirm({
+							message: 'Would you like to install Turso CLI now?',
+						})
+					);
 
 					if (typeof installTurso === 'symbol') {
-						pCancel(installTurso);
+						await runEffect(pCancel(installTurso));
 					} else {
 						if (installTurso) {
 							try {
@@ -122,8 +144,10 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 								console.error(`Failed to run Turso install: ${(error as Error).message}`);
 							}
 						} else {
-							prompts.log.warn(
-								`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+							await runEffect(
+								log.warn(
+									`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+								)
 							);
 						}
 					}
@@ -136,63 +160,75 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 						!res.includes('Already signed in as') &&
 						!res.includes('Success! Existing JWT still valid')
 					) {
-						prompts.log.message(`Please sign in to Turso to continue.\n${res}`);
+						await runEffect(log.message(`Please sign in to Turso to continue.\n${res}`));
 
-						const loginToken = await prompts.text({
-							message: 'Enter the login token ( the code within the " " )',
-							placeholder: 'eyJhb...tnPnw',
-						});
+						const loginToken = await runEffect(
+							text({
+								message: 'Enter the login token ( the code within the " " )',
+								placeholder: 'eyJhb...tnPnw',
+							})
+						);
 
 						if (typeof loginToken === 'symbol') {
-							pCancel(loginToken);
+							await runEffect(pCancel(loginToken));
 						} else {
 							const loginRes = await runShellCommand(`turso config set token "${loginToken}"`);
 
 							if (loginRes.includes('Token set successfully.')) {
-								prompts.log.success('Successfully logged in to Turso.');
+								await runEffect(log.success('Successfully logged in to Turso.'));
 							} else {
-								prompts.log.error(StudioCMSColorwayError('Unable to login to Turso.'));
+								await runEffect(log.error(StudioCMSColorwayError('Unable to login to Turso.')));
 								process.exit(1);
 							}
 						}
 					}
 				} catch (error) {
 					if (error instanceof Error) {
-						prompts.log.error(StudioCMSColorwayError(`Error: ${error.message}`));
+						await runEffect(log.error(StudioCMSColorwayError(`Error: ${error.message}`)));
 						process.exit(1);
 					} else {
-						prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to login to Turso.'));
+						await runEffect(
+							log.error(StudioCMSColorwayError('Unknown Error: Unable to login to Turso.'))
+						);
 						process.exit(1);
 					}
 				}
 
-				const customName = await prompts.confirm({
-					message: 'Would you like to provide a custom name for the database?',
-					initialValue: false,
-				});
+				const customName = await runEffect(
+					confirm({
+						message: 'Would you like to provide a custom name for the database?',
+						initialValue: false,
+					})
+				);
 
 				if (typeof customName === 'symbol') {
-					pCancel(customName);
+					await runEffect(pCancel(customName));
 				} else {
 					const dbName = customName
-						? await prompts.text({
-								message: 'Enter a custom name for the database',
-								initialValue: 'your-database-name',
-							})
+						? await runEffect(
+								text({
+									message: 'Enter a custom name for the database',
+									initialValue: 'your-database-name',
+								})
+							)
 						: undefined;
 
 					if (typeof dbName === 'symbol') {
-						pCancel(dbName);
+						await runEffect(pCancel(dbName));
 					} else {
 						debug && logger.debug(`Custom database name: ${dbName}`);
 
-						const tursoSetup = prompts.spinner();
-						tursoSetup.start(
-							`${label('Turso', TursoColorway, chalk.black)} Setting up Turso DB...`
+						const tursoSetup = await runEffect(spinner());
+						await runEffect(
+							tursoSetup.start(
+								`${label('Turso', TursoColorway, chalk.black)} Setting up Turso DB...`
+							)
 						);
 						try {
-							tursoSetup.message(
-								`${label('Turso', TursoColorway, chalk.black)} Creating Database...`
+							await runEffect(
+								tursoSetup.message(
+									`${label('Turso', TursoColorway, chalk.black)} Creating Database...`
+								)
 							);
 							const createRes = await runShellCommand(`turso db create ${dbName ? dbName : ''}`);
 
@@ -200,8 +236,10 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 
 							const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
 
-							tursoSetup.message(
-								`${label('Turso', TursoColorway, chalk.black)} Retrieving database information...`
+							await runEffect(
+								tursoSetup.message(
+									`${label('Turso', TursoColorway, chalk.black)} Retrieving database information...`
+								)
 							);
 							debug && logger.debug(`Database name: ${dbFinalName}`);
 
@@ -225,18 +263,20 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 							envBuilderOpts.astroDbRemoteUrl = dbURL;
 							envBuilderOpts.astroDbToken = dbToken;
 
-							tursoSetup.stop(
-								`${label('Turso', TursoColorway, chalk.black)} Database setup complete. New Database: ${dbFinalName}`
+							await runEffect(
+								tursoSetup.stop(
+									`${label('Turso', TursoColorway, chalk.black)} Database setup complete. New Database: ${dbFinalName}`
+								)
 							);
-							prompts.log.message('Database Token and Url saved to environment file.');
+							await runEffect(log.message('Database Token and Url saved to environment file.'));
 						} catch (e) {
-							tursoSetup.stop();
+							await runEffect(tursoSetup.stop());
 							if (e instanceof Error) {
-								prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+								await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
 								process.exit(1);
 							} else {
-								prompts.log.error(
-									StudioCMSColorwayError('Unknown Error: Unable to create database.')
+								await runEffect(
+									log.error(StudioCMSColorwayError('Unknown Error: Unable to create database.'))
 								);
 								process.exit(1);
 							}
@@ -244,25 +284,33 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					}
 				}
 			} else {
-				prompts.log.warn(
-					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+				await runEffect(
+					log.warn(
+						`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+					)
 				);
-				const envBuilderStep_AstroDB = await prompts.group(
-					{
-						astroDbRemoteUrl: () =>
-							prompts.text({
-								message: 'Remote URL for AstroDB',
-								initialValue: 'libsql://your-database.turso.io',
-							}),
-						astroDbToken: () =>
-							prompts.text({
-								message: 'AstroDB Token',
-								initialValue: 'your-astrodb-token',
-							}),
-					},
-					{
-						onCancel: () => pOnCancel(),
-					}
+				const envBuilderStep_AstroDB = await runEffect(
+					group(
+						{
+							astroDbRemoteUrl: async () =>
+								await runEffect(
+									text({
+										message: 'Remote URL for AstroDB',
+										initialValue: 'libsql://your-database.turso.io',
+									})
+								),
+							astroDbToken: async () =>
+								await runEffect(
+									text({
+										message: 'AstroDB Token',
+										initialValue: 'your-astrodb-token',
+									})
+								),
+						},
+						{
+							onCancel: async () => await runEffect(pOnCancel()),
+						}
+					)
 				);
 
 				debug && logger.debug(`AstroDB setup: ${envBuilderStep_AstroDB}`);
@@ -271,30 +319,36 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 			}
 		}
 
-		const envBuilderStep1 = await prompts.group(
-			{
-				encryptionKey: () =>
-					prompts.text({
-						message: 'StudioCMS Auth Encryption Key',
-						initialValue: crypto.randomBytes(16).toString('base64'),
-					}),
-				oAuthOptions: () =>
-					prompts.multiselect({
-						message: 'Setup OAuth Providers',
-						options: [
-							{ value: 'github', label: 'GitHub' },
-							{ value: 'discord', label: 'Discord' },
-							{ value: 'google', label: 'Google' },
-							{ value: 'auth0', label: 'Auth0' },
-						],
-						required: false,
-					}),
-			},
-			{
-				// On Cancel callback that wraps the group
-				// So if the user cancels one of the prompts in the group this function will be called
-				onCancel: () => pOnCancel(),
-			}
+		const envBuilderStep1 = await runEffect(
+			group(
+				{
+					encryptionKey: async () =>
+						await runEffect(
+							text({
+								message: 'StudioCMS Auth Encryption Key',
+								initialValue: crypto.randomBytes(16).toString('base64'),
+							})
+						),
+					oAuthOptions: async () =>
+						await runEffect(
+							multiselect({
+								message: 'Setup OAuth Providers',
+								options: [
+									{ value: 'github', label: 'GitHub' },
+									{ value: 'discord', label: 'Discord' },
+									{ value: 'google', label: 'Google' },
+									{ value: 'auth0', label: 'Auth0' },
+								],
+								required: false,
+							})
+						),
+				},
+				{
+					// On Cancel callback that wraps the group
+					// So if the user cancels one of the prompts in the group this function will be called
+					onCancel: async () => await runEffect(pOnCancel()),
+				}
+			)
 		);
 
 		debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
@@ -302,27 +356,35 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		envBuilderOpts = { ...envBuilderStep1 };
 
 		if (envBuilderStep1.oAuthOptions.includes('github')) {
-			const githubOAuth = await prompts.group(
-				{
-					clientId: () =>
-						prompts.text({
-							message: 'GitHub Client ID',
-							initialValue: 'your-github-client-id',
-						}),
-					clientSecret: () =>
-						prompts.text({
-							message: 'GitHub Client Secret',
-							initialValue: 'your-github-client-secret',
-						}),
-					redirectUri: () =>
-						prompts.text({
-							message: 'GitHub Redirect URI Domain',
-							initialValue: 'http://localhost:4321',
-						}),
-				},
-				{
-					onCancel: () => pOnCancel(),
-				}
+			const githubOAuth = await runEffect(
+				group(
+					{
+						clientId: async () =>
+							await runEffect(
+								text({
+									message: 'GitHub Client ID',
+									initialValue: 'your-github-client-id',
+								})
+							),
+						clientSecret: async () =>
+							await runEffect(
+								text({
+									message: 'GitHub Client Secret',
+									initialValue: 'your-github-client-secret',
+								})
+							),
+						redirectUri: async () =>
+							await runEffect(
+								text({
+									message: 'GitHub Redirect URI Domain',
+									initialValue: 'http://localhost:4321',
+								})
+							),
+					},
+					{
+						onCancel: async () => await runEffect(pOnCancel()),
+					}
+				)
 			);
 
 			debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
@@ -331,27 +393,35 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		}
 
 		if (envBuilderStep1.oAuthOptions.includes('discord')) {
-			const discordOAuth = await prompts.group(
-				{
-					clientId: () =>
-						prompts.text({
-							message: 'Discord Client ID',
-							initialValue: 'your-discord-client-id',
-						}),
-					clientSecret: () =>
-						prompts.text({
-							message: 'Discord Client Secret',
-							initialValue: 'your-discord-client-secret',
-						}),
-					redirectUri: () =>
-						prompts.text({
-							message: 'Discord Redirect URI Domain',
-							initialValue: 'http://localhost:4321',
-						}),
-				},
-				{
-					onCancel: () => pOnCancel(),
-				}
+			const discordOAuth = await runEffect(
+				group(
+					{
+						clientId: async () =>
+							await runEffect(
+								text({
+									message: 'Discord Client ID',
+									initialValue: 'your-discord-client-id',
+								})
+							),
+						clientSecret: async () =>
+							await runEffect(
+								text({
+									message: 'Discord Client Secret',
+									initialValue: 'your-discord-client-secret',
+								})
+							),
+						redirectUri: async () =>
+							await runEffect(
+								text({
+									message: 'Discord Redirect URI Domain',
+									initialValue: 'http://localhost:4321',
+								})
+							),
+					},
+					{
+						onCancel: async () => await runEffect(pOnCancel()),
+					}
+				)
 			);
 
 			debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
@@ -360,27 +430,35 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		}
 
 		if (envBuilderStep1.oAuthOptions.includes('google')) {
-			const googleOAuth = await prompts.group(
-				{
-					clientId: () =>
-						prompts.text({
-							message: 'Google Client ID',
-							initialValue: 'your-google-client-id',
-						}),
-					clientSecret: () =>
-						prompts.text({
-							message: 'Google Client Secret',
-							initialValue: 'your-google-client-secret',
-						}),
-					redirectUri: () =>
-						prompts.text({
-							message: 'Google Redirect URI Domain',
-							initialValue: 'http://localhost:4321',
-						}),
-				},
-				{
-					onCancel: () => pOnCancel(),
-				}
+			const googleOAuth = await runEffect(
+				group(
+					{
+						clientId: async () =>
+							await runEffect(
+								text({
+									message: 'Google Client ID',
+									initialValue: 'your-google-client-id',
+								})
+							),
+						clientSecret: async () =>
+							await runEffect(
+								text({
+									message: 'Google Client Secret',
+									initialValue: 'your-google-client-secret',
+								})
+							),
+						redirectUri: async () =>
+							await runEffect(
+								text({
+									message: 'Google Redirect URI Domain',
+									initialValue: 'http://localhost:4321',
+								})
+							),
+					},
+					{
+						onCancel: async () => await runEffect(pOnCancel()),
+					}
+				)
 			);
 
 			debug && logger.debug(`Google OAuth: ${googleOAuth}`);
@@ -389,32 +467,42 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 		}
 
 		if (envBuilderStep1.oAuthOptions.includes('auth0')) {
-			const auth0OAuth = await prompts.group(
-				{
-					clientId: () =>
-						prompts.text({
-							message: 'Auth0 Client ID',
-							initialValue: 'your-auth0-client-id',
-						}),
-					clientSecret: () =>
-						prompts.text({
-							message: 'Auth0 Client Secret',
-							initialValue: 'your-auth0-client-secret',
-						}),
-					domain: () =>
-						prompts.text({
-							message: 'Auth0 Domain',
-							initialValue: 'your-auth0-domain',
-						}),
-					redirectUri: () =>
-						prompts.text({
-							message: 'Auth0 Redirect URI Domain',
-							initialValue: 'http://localhost:4321',
-						}),
-				},
-				{
-					onCancel: () => pOnCancel(),
-				}
+			const auth0OAuth = await runEffect(
+				group(
+					{
+						clientId: async () =>
+							await runEffect(
+								text({
+									message: 'Auth0 Client ID',
+									initialValue: 'your-auth0-client-id',
+								})
+							),
+						clientSecret: async () =>
+							await runEffect(
+								text({
+									message: 'Auth0 Client Secret',
+									initialValue: 'your-auth0-client-secret',
+								})
+							),
+						domain: async () =>
+							await runEffect(
+								text({
+									message: 'Auth0 Domain',
+									initialValue: 'your-auth0-domain',
+								})
+							),
+						redirectUri: async () =>
+							await runEffect(
+								text({
+									message: 'Auth0 Redirect URI Domain',
+									initialValue: 'http://localhost:4321',
+								})
+							),
+					},
+					{
+						onCancel: async () => await runEffect(pOnCancel()),
+					}
+				)
 			);
 
 			debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
@@ -443,11 +531,11 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					message('Environment file created');
 				} catch (e) {
 					if (e instanceof Error) {
-						prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
+						await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
 						process.exit(1);
 					} else {
-						prompts.log.error(
-							StudioCMSColorwayError('Unknown Error: Unable to create environment file.')
+						await runEffect(
+							log.error(StudioCMSColorwayError('Unknown Error: Unable to create environment file.'))
 						);
 						process.exit(1);
 					}

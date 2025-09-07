@@ -111,13 +111,13 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: ['@changesets/config'],
+			ignoreDependencies: ['@changesets/config', 'studiocms'],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: ['@clack/core', 'studiocms-dashboard', '@it-astro'],
+			ignoreDependencies: ['studiocms-dashboard', '@it-astro'],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {

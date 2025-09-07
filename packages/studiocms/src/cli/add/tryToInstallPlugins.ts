@@ -1,5 +1,6 @@
-import { askToContinue } from '@withstudiocms/cli-kit/messages';
+// import { askToContinue } from '@withstudiocms/cli-kit/messages';
 import { exec } from '@withstudiocms/cli-kit/utils';
+import { askToContinue, note, spinner } from '@withstudiocms/effect/clack';
 import { detect, resolveCommand } from 'package-manager-detector';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
@@ -13,7 +14,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 		effect: genLogger('studiocms/cli/add/validatePlugins/TryToInstallPlugins.effect')(function* () {
 			const run = (plugins: PluginInfo[]) =>
 				genLogger('studiocms/cli/add/validatePlugins/TryToInstallPlugins.effect.run')(function* () {
-					const { prompts, chalk, cwd } = yield* CliContext;
+					const { chalk, cwd } = yield* CliContext;
 
 					const packageManager = yield* Effect.tryPromise(() =>
 						detect({
@@ -59,13 +60,13 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 
 					const message = `\n${boxenMessage}\n`;
 
-					prompts.note(
+					yield* note(
 						`${chalk.magenta('StudioCMS will run the following command:')}\n ${chalk.dim('If you skip this step, you can always run it yourself later')}\n${message}`
 					);
 
-					if (yield* Effect.tryPromise(() => askToContinue(prompts))) {
-						const spinner = prompts.spinner();
-						spinner.start('Installing dependencies...');
+					if (yield* askToContinue()) {
+						const spin = yield* spinner();
+						yield* spin.start('Installing dependencies...');
 
 						const response = yield* Effect.tryPromise({
 							try: async () => {
@@ -75,17 +76,21 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 										env: { NODE_ENV: undefined },
 									},
 								});
-								spinner.stop('Dependencies installed.');
 								return UpdateResult.updated;
 							},
 							catch: (err) => err,
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
+						if (response === UpdateResult.updated) {
+							yield* spin.stop('Dependencies installed!');
+							return response;
+						}
+
 						if (
 							response instanceof Error ||
 							(response && typeof response === 'object' && 'message' in response)
 						) {
-							spinner.stop('Error installing dependencies');
+							yield* spin.stop('Error installing dependencies');
 							yield* Console.debug(`[add]: Error installing dependencies ${response}`);
 							// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
 							// @ts-ignore

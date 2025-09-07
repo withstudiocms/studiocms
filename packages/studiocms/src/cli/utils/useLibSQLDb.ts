@@ -21,7 +21,7 @@ export const Permissions = s.sqliteTable('StudioCMSPermissions', {
 		.text('user')
 		.references(() => Users.id)
 		.notNull(),
-	rank: s.text('rank').notNull(),
+	rank: s.text('rank', { enum: ['owner', 'admin', 'editor', 'visitor', 'unknown'] }).notNull(),
 });
 
 /**

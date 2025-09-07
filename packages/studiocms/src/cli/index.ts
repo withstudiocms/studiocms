@@ -1,10 +1,13 @@
 import { readJson } from '@withstudiocms/internal_helpers/utils';
+import dotenv from 'dotenv';
 import { Cli, Effect, Layer, PlatformNode } from '../effect.js';
 import { addPlugin } from './add/index.js';
 import { cryptoCMD } from './crypto/index.js';
 import { getTurso } from './getTurso/index.js';
 import { initCMD } from './init/index.js';
 import { usersCMD } from './users/index.js';
+
+dotenv.config({ quiet: true });
 
 const pkgJson = readJson<{ version: string }>(new URL('../../package.json', import.meta.url));
 

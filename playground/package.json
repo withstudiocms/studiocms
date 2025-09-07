@@ -11,7 +11,8 @@
     "start": "astro dev --remote",
     "build": "astro build --remote",
     "astro": "astro",
-    "preview": "astro preview --remote"
+    "preview": "astro preview --remote",
+    "studiocms": "studiocms"
   },
   "devDependencies": {
     "@types/node": "catalog:",
