@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { askToContinue } from '@withstudiocms/cli-kit/messages';
+import { askToContinue, note } from '@withstudiocms/effect/clack';
 import { diffWords } from 'diff';
 import { generateCode, type ProxifiedModule } from 'magicast';
 import { Console, Effect, genLogger } from '../../effect.js';
@@ -18,7 +18,7 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 					genLogger('studiocms/cli/add/updateStudioCMSConfig/UpdateStudioCMSConfig.effect.run')(
 						function* () {
 							const context = yield* CliContext;
-							const { prompts, chalk } = context;
+							const { chalk } = context;
 
 							const input = yield* Effect.tryPromise(() =>
 								fs.readFile(fileURLToPath(configURL), { encoding: 'utf-8' })
@@ -53,11 +53,11 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 
 							const message = `\n${boxenMessage}\n`;
 
-							prompts.note(
+							yield* note(
 								`\n ${chalk.magenta('StudioCMS will make the following changes to your config file:')}\n${message}`
 							);
 
-							if (yield* Effect.tryPromise(() => askToContinue(prompts))) {
+							if (yield* askToContinue()) {
 								yield* Effect.tryPromise(() =>
 									fs.writeFile(fileURLToPath(configURL), output, { encoding: 'utf-8' })
 								);

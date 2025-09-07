@@ -4,6 +4,7 @@ import {
 	StudioCMSColorwayInfoBg,
 } from '@withstudiocms/cli-kit/colors';
 import { boxen, label } from '@withstudiocms/cli-kit/messages';
+import { log, outro } from '@withstudiocms/effect/clack';
 import { genLogger } from '../../../effect.js';
 import { CliContext } from '../../utils/context.js';
 import { logger } from '../../utils/logger.js';
@@ -11,7 +12,7 @@ import { logger } from '../../utils/logger.js';
 export const next = (debug: boolean) =>
 	genLogger('studiocms/cli/init/steps/next')(function* () {
 		const context = yield* CliContext;
-		const { prompts, chalk } = context;
+		const { chalk } = context;
 
 		const commandMap: { [key: string]: string } = {
 			npm: 'npm run dev',
@@ -26,7 +27,7 @@ export const next = (debug: boolean) =>
 
 		debug && logger.debug('Running next steps fn...');
 
-		prompts.log.success(
+		yield* log.success(
 			boxen(
 				chalk.bold(
 					`${label('Init Complete!', StudioCMSColorwayInfoBg, chalk.bold)} Get started with StudioCMS:`
@@ -39,7 +40,7 @@ export const next = (debug: boolean) =>
 			)
 		);
 
-		prompts.outro(
+		yield* outro(
 			`${label('Enjoy your new CMS!', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 		);
 

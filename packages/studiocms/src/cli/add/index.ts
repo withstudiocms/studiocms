@@ -2,6 +2,7 @@ import { existsSync, promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { cancelled, success } from '@withstudiocms/cli-kit/messages';
 import { exists, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils';
+import { intro, note, outro } from '@withstudiocms/effect/clack';
 import { type ASTNode, builders, loadFile, type ProxifiedModule } from 'magicast';
 import { getDefaultExportOptions } from 'magicast/helpers';
 import { Cli, Console, Effect, genLogger, Layer } from '../../effect.js';
@@ -189,9 +190,9 @@ export const addPlugin = Cli.Command.make(
 
 			const context = yield* genContext;
 
-			const { cwd, prompts, chalk } = context;
+			const { cwd, chalk } = context;
 
-			prompts.intro('StudioCMS CLI Utilities (add)');
+			yield* intro('StudioCMS CLI Utilities (add)');
 
 			const pluginNames = plugin.map((name) => {
 				const aliasName = ALIASES.get(name);
@@ -217,7 +218,7 @@ export const addPlugin = Cli.Command.make(
 					break;
 				}
 				case UpdateResult.cancelled: {
-					prompts.note(
+					yield* note(
 						cancelled(
 							`Dependencies ${chalk.bold('NOT')} installed.`,
 							'Be sure to install them manually before continuing!'
@@ -252,7 +253,7 @@ export const addPlugin = Cli.Command.make(
 
 			switch (configResult) {
 				case UpdateResult.cancelled: {
-					prompts.outro(cancelled(`Your configuration has ${chalk.bold('NOT')} been updated.`));
+					yield* outro(cancelled(`Your configuration has ${chalk.bold('NOT')} been updated.`));
 					break;
 				}
 				case UpdateResult.none: {
@@ -266,12 +267,12 @@ export const addPlugin = Cli.Command.make(
 							(plugin) => !deps.includes(plugin.packageName)
 						);
 						if (missingDeps.length === 0) {
-							prompts.outro('Configuration up-to-date.');
+							yield* outro('Configuration up-to-date.');
 							break;
 						}
 					}
 
-					prompts.outro('Configuration up-to-date.');
+					yield* outro('Configuration up-to-date.');
 					break;
 				}
 				// NOTE: failure shouldn't happen in practice because `updateAstroConfig` doesn't return that.
@@ -281,7 +282,7 @@ export const addPlugin = Cli.Command.make(
 				case undefined: {
 					const list = validatedPlugins.map((plugin) => `  - ${plugin.pluginName}`).join('\n');
 
-					prompts.outro(
+					yield* outro(
 						success(
 							`Added the following plugin${validatedPlugins.length === 1 ? '' : 's'} to your project:\n ${list}`
 						)

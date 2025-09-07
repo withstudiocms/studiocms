@@ -5,6 +5,7 @@ import {
 	StudioCMSColorwayInfoBg,
 } from '@withstudiocms/cli-kit/colors';
 import { boxen, label } from '@withstudiocms/cli-kit/messages';
+import { intro, log, outro, spinner } from '@withstudiocms/effect/clack';
 import { SignJWT } from 'jose';
 import { importPKCS8 } from 'jose/key/import';
 import { Cli, Effect, genLogger } from '../../../effect.js';
@@ -83,16 +84,16 @@ export const genJWT = Cli.Command.make(
 
 			const context = yield* genContext;
 
-			const { prompts, chalk } = context;
+			const { chalk } = context;
 
 			if (debug) logger.debug('Init complete, starting...');
 
-			prompts.intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
+			yield* intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
 
-			const spinner = prompts.spinner();
+			const spin = yield* spinner();
 
 			try {
-				spinner.start('Getting Key from keyFile');
+				yield* spin.start('Getting Key from keyFile');
 
 				if (debug) logger.debug(`Key file path: ${keyFile}`);
 				if (debug) logger.debug(`Key file exists: ${fs.existsSync(keyFile)}`);
@@ -104,7 +105,7 @@ export const genJWT = Cli.Command.make(
 				if (debug) logger.debug(`Key string: ${keyString}`);
 
 				if (!keyString) {
-					spinner.stop('Key not found, or invalid');
+					yield* spin.stop('Key not found, or invalid');
 					return yield* Effect.fail(new Error('Key not found, or invalid'));
 				}
 
@@ -114,7 +115,7 @@ export const genJWT = Cli.Command.make(
 				try {
 					privateKey = yield* Effect.tryPromise(() => importPKCS8(keyString, alg));
 				} catch (_e) {
-					spinner.stop('Invalid or unsupported private key');
+					yield* spin.stop('Invalid or unsupported private key');
 					return yield* Effect.fail(new Error('Invalid or unsupported private key'));
 				}
 
@@ -132,9 +133,9 @@ export const genJWT = Cli.Command.make(
 
 				const base64UrlJwt = yield* convertJwtToBase64Url(jwt);
 
-				spinner.stop('Token Generated.');
+				yield* spin.stop('Token Generated.');
 
-				prompts.log.success(
+				yield* log.success(
 					boxen(chalk.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, chalk.bold)}`), {
 						ln1: 'Your new Token has been generated successfully:',
 						ln3: `Token: ${chalk.magenta(jwt)}`,
@@ -142,20 +143,20 @@ export const genJWT = Cli.Command.make(
 					})
 				);
 
-				prompts.outro(
+				yield* outro(
 					`${label('You can now use this token where needed.', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 				);
 			} catch (err) {
 				if (err instanceof Error) {
 					if (err.message.includes('ENOENT')) {
-						prompts.log.error('Key file not found: Please check the file path and try again.');
+						yield* log.error('Key file not found: Please check the file path and try again.');
 					} else if (err.message.includes('permission')) {
-						prompts.log.error('Permission denied: Cannot read the key file.');
+						yield* log.error('Permission denied: Cannot read the key file.');
 					} else {
-						prompts.log.error(`Error generating JWT: ${err.message}`);
+						yield* log.error(`Error generating JWT: ${err.message}`);
 					}
 				} else {
-					prompts.log.error(`Unexpected error generating JWT: ${err}`);
+					yield* log.error(`Unexpected error generating JWT: ${err}`);
 				}
 				return yield* Effect.fail(new Error('JWT ERROR: Unknown'));
 			}

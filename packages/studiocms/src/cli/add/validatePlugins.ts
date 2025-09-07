@@ -1,4 +1,4 @@
-import { askToContinue } from '@withstudiocms/cli-kit/messages';
+import { askToContinue, spinner } from '@withstudiocms/effect/clack';
 import { Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
 import { type PluginInfo, StudioCMSScopes } from './index.js';
@@ -8,10 +8,10 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 	effect: genLogger('studiocms/cli/add/validatePlugins/ValidatePlugins.effect')(function* () {
 		const run = (names: string[]) =>
 			genLogger('studiocms/cli/add/validatePlugins/ValidatePlugins.effect.run')(function* () {
-				const { prompts, chalk } = yield* CliContext;
-				const spinner = yield* Effect.try(() => prompts.spinner());
+				const { chalk } = yield* CliContext;
+				const spin = yield* spinner();
 
-				spinner.start('Resolving packages...');
+				yield* spin.start('Resolving packages...');
 
 				const entries: PluginInfo[] = [];
 
@@ -33,17 +33,17 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 						const firstPartyPkgCheck = yield* fetchPackageJson(scope, name, tag);
 						if (firstPartyPkgCheck instanceof Error) {
 							if (firstPartyPkgCheck.message) {
-								spinner.message(chalk.yellow(firstPartyPkgCheck.message));
+								yield* spin.message(chalk.yellow(firstPartyPkgCheck.message));
 							}
-							spinner.message(
+							yield* spin.message(
 								chalk.yellow(`${chalk.bold(plugin)} is not an official StudioCMS package.`)
 							);
-							if (!(yield* Effect.tryPromise(() => askToContinue(prompts)))) {
+							if (!(yield* askToContinue())) {
 								throw new Error(
 									`No problem! Find our official plugins at ${chalk.magenta('https://docs.studiocms.dev')}`
 								);
 							}
-							spinner.start('Resolving with third party packages...');
+							yield* spin.start('Resolving with third party packages...');
 							pkgType = 'third-party';
 						} else {
 							pkgType = 'first-party';
@@ -56,7 +56,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 						const thirdPartyPkgCheck = yield* fetchPackageJson(scope, name, tag);
 						if (thirdPartyPkgCheck instanceof Error) {
 							if (thirdPartyPkgCheck.message) {
-								spinner.message(chalk.yellow(thirdPartyPkgCheck.message));
+								yield* spin.message(chalk.yellow(thirdPartyPkgCheck.message));
 							}
 							throw new Error(`Unable to fetch ${chalk.bold(plugin)}. Does the package exist?`);
 						}
@@ -95,7 +95,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 					});
 				}
 
-				spinner.stop('Packages Resolved.');
+				yield* spin.stop('Packages Resolved.');
 				return entries;
 			});
 

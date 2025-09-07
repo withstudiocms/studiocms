@@ -235,14 +235,16 @@ export const updateSettings = (updates: ClackSettings) =>
  *
  * All methods are wrapped with `useClackError` for error handling.
  */
-export const spinner = (options: SpinnerOptions = {}) => {
-	const s = ClackPrompts.spinner(options);
-	return {
-		start: (msg?: string) => useClackError(() => s.start(msg)),
-		stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
-		message: (msg?: string) => useClackError(() => s.message(msg)),
-	};
-};
+export const spinner = Effect.fn((options: SpinnerOptions = {}) =>
+	useClackError(() => {
+		const s = ClackPrompts.spinner(options);
+		return {
+			start: (msg?: string) => useClackError(() => s.start(msg)),
+			stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
+			message: (msg?: string) => useClackError(() => s.message(msg)),
+		};
+	})
+);
 
 /**
  * Prompts the user with a confirmation message and returns whether to continue.
@@ -251,7 +253,7 @@ export const spinner = (options: SpinnerOptions = {}) => {
  * @param userOpts.message - The message to display to the user. Defaults to "Continue?".
  * @returns A boolean indicating whether the user chose to continue (`true`) or cancel (`false`).
  */
-export const askToContinue = Effect.fn(function* (userOpts: { message: string }) {
+export const askToContinue = Effect.fn(function* (userOpts?: { message: string }) {
 	const defaultOpts = { message: 'Continue?', initialValue: true };
 	const opts = yield* deepmerge((merge) => merge(defaultOpts, userOpts));
 	const response = yield* confirm(opts);

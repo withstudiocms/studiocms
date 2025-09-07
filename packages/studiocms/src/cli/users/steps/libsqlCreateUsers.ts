@@ -2,6 +2,7 @@ import type { CheckIfUnsafeError } from '@withstudiocms/auth-kit/errors';
 import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
+import { group, log, password, select, text } from '@withstudiocms/effect/clack';
 import { z } from 'astro/zod';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../../effect.js';
@@ -33,7 +34,7 @@ const getChecker = async () => {
 };
 
 export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) => {
-	const { chalk, prompts } = context;
+	const { chalk } = context;
 
 	const checker: Checker = await getChecker();
 
@@ -50,93 +51,107 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 
 	const currentUsers = await db.select().from(Users);
 
-	const inputData = await prompts.group(
-		{
-			username: () =>
-				prompts.text({
-					message: 'Username',
-					placeholder: 'johndoe',
-					validate: (user) => {
-						const isUser = currentUsers.find(({ username }) => username === user);
-						if (isUser) return 'Username is already in use, please try another one';
-						if (Effect.runSync(checker.username(user))) {
-							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-						}
-						return undefined;
-					},
-				}),
-			name: () =>
-				prompts.text({
-					message: 'Display Name',
-					placeholder: 'John Doe',
-				}),
-			email: () =>
-				prompts.text({
-					message: 'E-Mail Address',
-					placeholder: 'john@doe.tld',
-					validate: (email) => {
-						const emailSchema = z.string().email({ message: 'Email address is invalid' });
-						const response = emailSchema.safeParse(email);
-						if (!response.success) return response.error.message;
-						if (currentUsers.find((user) => user.email === email)) {
-							return 'There is already a user with that email.';
-						}
-						return undefined;
-					},
-				}),
-			newPassword: () =>
-				prompts.password({
-					message: 'Password',
-					validate: (password) => {
-						if (password.length < 6 || password.length > 255) {
-							return 'Password must be between 6 and 255 characters';
-						}
-						// Check if password is known unsafe password
-						if (Effect.runSync(checker.password(password))) {
-							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
-						}
+	const inputData = await runEffect(
+		group(
+			{
+				username: async () =>
+					await runEffect(
+						text({
+							message: 'Username',
+							placeholder: 'johndoe',
+							validate: (user) => {
+								const isUser = currentUsers.find(({ username }) => username === user);
+								if (isUser) return 'Username is already in use, please try another one';
+								if (Effect.runSync(checker.username(user))) {
+									return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+								}
+								return undefined;
+							},
+						})
+					),
+				name: async () =>
+					await runEffect(
+						text({
+							message: 'Display Name',
+							placeholder: 'John Doe',
+						})
+					),
+				email: async () =>
+					await runEffect(
+						text({
+							message: 'E-Mail Address',
+							placeholder: 'john@doe.tld',
+							validate: (email) => {
+								const emailSchema = z.string().email({ message: 'Email address is invalid' });
+								const response = emailSchema.safeParse(email);
+								if (!response.success) return response.error.message;
+								if (currentUsers.find((user) => user.email === email)) {
+									return 'There is already a user with that email.';
+								}
+								return undefined;
+							},
+						})
+					),
+				newPassword: async () =>
+					await runEffect(
+						password({
+							message: 'Password',
+							validate: (password) => {
+								if (password.length < 6 || password.length > 255) {
+									return 'Password must be between 6 and 255 characters';
+								}
+								// Check if password is known unsafe password
+								if (Effect.runSync(checker.password(password))) {
+									return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+								}
 
-						// Check for complexity requirements
-						const hasUpperCase = /[A-Z]/.test(password);
-						const hasLowerCase = /[a-z]/.test(password);
-						const hasNumbers = /\d/.test(password);
-						const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+								// Check for complexity requirements
+								const hasUpperCase = /[A-Z]/.test(password);
+								const hasLowerCase = /[a-z]/.test(password);
+								const hasNumbers = /\d/.test(password);
+								const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-						if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
-							return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
-						}
-						return undefined;
-					},
-				}),
-			confirmPassword: () =>
-				prompts.password({
-					message: 'Confirm Password',
-				}),
-			rank: () =>
-				prompts.select({
-					message: 'What Role should this user have?',
-					options: [
-						{ value: 'visitor', label: 'Visitor' },
-						{ value: 'editor', label: 'Editor' },
-						{ value: 'admin', label: 'Admin' },
-						{ value: 'owner', label: 'Owner' },
-					],
-				}),
-		},
-		{
-			onCancel: () => context.pOnCancel(),
-		}
+								if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
+									return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
+								}
+								return undefined;
+							},
+						})
+					),
+				confirmPassword: async () =>
+					await runEffect(
+						password({
+							message: 'Confirm Password',
+						})
+					),
+				rank: async () =>
+					await runEffect(
+						select<'owner' | 'admin' | 'editor' | 'visitor'>({
+							message: 'What Role should this user have?',
+							options: [
+								{ value: 'visitor', label: 'Visitor' },
+								{ value: 'editor', label: 'Editor' },
+								{ value: 'admin', label: 'Admin' },
+								{ value: 'owner', label: 'Owner' },
+							],
+						})
+					),
+			},
+			{
+				onCancel: async () => await runEffect(context.pOnCancel()),
+			}
+		)
 	);
 
 	const { confirmPassword, email, name, newPassword, rank, username } = inputData;
 
 	if (newPassword !== confirmPassword) {
-		prompts.log.error('Passwords do not match!');
-		context.exit(1);
+		await runEffect(log.error('Passwords do not match!'));
+		await runEffect(context.exit(1));
 	}
 
 	// Environment variables are already checked by checkRequiredEnvVars
-	const password = await runEffect(hashPassword(newPassword));
+	const resolvedPassword = await runEffect(hashPassword(newPassword));
 
 	const newUserId = crypto.randomUUID();
 
@@ -145,7 +160,7 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 		name,
 		username,
 		email,
-		password,
+		password: resolvedPassword,
 		createdAt: new Date(),
 		updatedAt: new Date(),
 		avatar: await getAvatarUrl({ email, https: true, size: 400, default: 'retro' }),
@@ -181,17 +196,19 @@ export const libsqlCreateUsers: StepFn = async (context, debug, dryRun = false) 
 								permissionsInserted: insertedRank.length > 0,
 							})}`
 						);
-						context.exit(1);
+						await runEffect(context.exit(1));
 					}
 
 					message('User created Successfully');
 				} catch (e) {
 					if (e instanceof Error) {
-						prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-						context.exit(1);
+						await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
+						await runEffect(context.exit(1));
 					} else {
-						prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'));
-						context.exit(1);
+						await runEffect(
+							log.error(StudioCMSColorwayError('Unknown Error: Unable to create user.'))
+						);
+						await runEffect(context.exit(1));
 					}
 				}
 			},

@@ -1,6 +1,7 @@
 import type { CheckIfUnsafeError } from '@withstudiocms/auth-kit/errors';
 import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
+import { log, note, password, select, text } from '@withstudiocms/effect/clack';
 import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import { Effect, runEffect } from '../../../effect.js';
@@ -38,7 +39,7 @@ export enum UserFieldOption {
 }
 
 export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) => {
-	const { prompts, chalk } = context;
+	const { chalk } = context;
 
 	const checker: Checker = await getChecker();
 
@@ -63,8 +64,8 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 	]);
 
 	if (currentUsers.length === 0) {
-		prompts.note('There are no users in the database.', 'No Users Available');
-		context.exit(0);
+		await runEffect(note('There are no users in the database.', 'No Users Available'));
+		await runEffect(context.exit(0));
 	}
 
 	for (const user of currentUsers) {
@@ -75,38 +76,44 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 		});
 	}
 
-	const userSelection = await prompts.select({
-		message: 'Which user would you like to update?',
-		options: allUsers,
-	});
+	const userSelection = await runEffect(
+		select({
+			message: 'Which user would you like to update?',
+			options: allUsers,
+		})
+	);
 
 	if (typeof userSelection === 'symbol') {
-		context.pCancel(userSelection);
-		context.exit(0);
+		await runEffect(context.pCancel(userSelection));
+		await runEffect(context.exit(0));
 		return;
 	}
 
-	prompts.note(`User ID Selected: ${userSelection}`);
+	await runEffect(note(`User ID Selected: ${userSelection}`));
 
-	const action = await prompts.select({
-		message: 'Which user field would you like to update?',
-		options: [
-			{ value: UserFieldOption.password, label: 'Password' },
-			{ value: UserFieldOption.username, label: 'Username' },
-			{ value: UserFieldOption.name, label: 'Display Name' },
-		],
-	});
+	const action = await runEffect(
+		select({
+			message: 'Which user field would you like to update?',
+			options: [
+				{ value: UserFieldOption.password, label: 'Password' },
+				{ value: UserFieldOption.username, label: 'Username' },
+				{ value: UserFieldOption.name, label: 'Display Name' },
+			],
+		})
+	);
 
 	switch (action) {
 		case UserFieldOption.name: {
-			const newDisplayName = await prompts.text({
-				message: `Enter the user's new Display name`,
-				placeholder: 'John Doe',
-			});
+			const newDisplayName = await runEffect(
+				text({
+					message: `Enter the user's new Display name`,
+					placeholder: 'John Doe',
+				})
+			);
 
 			if (typeof newDisplayName === 'symbol') {
-				context.pCancel(newDisplayName);
-				context.exit(0);
+				await runEffect(context.pCancel(newDisplayName));
+				await runEffect(context.exit(0));
 				return;
 			}
 
@@ -130,11 +137,13 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								context.exit(1);
+								await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
+								await runEffect(context.exit(1));
 							} else {
-								prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								context.exit(1);
+								await runEffect(
+									log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'))
+								);
+								await runEffect(context.exit(1));
 							}
 						}
 					},
@@ -143,22 +152,24 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 			break;
 		}
 		case UserFieldOption.username: {
-			const newUserName = await prompts.text({
-				message: `Enter the user's new username`,
-				placeholder: 'johndoe',
-				validate: (user) => {
-					const isUser = currentUsers.find(({ username }) => username === user);
-					if (isUser) return 'Username is already in use, please try another one';
-					if (Effect.runSync(checker.username(user))) {
-						return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-					}
-					return undefined;
-				},
-			});
+			const newUserName = await runEffect(
+				text({
+					message: `Enter the user's new username`,
+					placeholder: 'johndoe',
+					validate: (user) => {
+						const isUser = currentUsers.find(({ username }) => username === user);
+						if (isUser) return 'Username is already in use, please try another one';
+						if (Effect.runSync(checker.username(user))) {
+							return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
+						}
+						return undefined;
+					},
+				})
+			);
 
 			if (typeof newUserName === 'symbol') {
-				context.pCancel(newUserName);
-				context.exit(0);
+				await runEffect(context.pCancel(newUserName));
+				await runEffect(context.exit(0));
 				return;
 			}
 
@@ -182,11 +193,13 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								context.exit(1);
+								await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
+								await runEffect(context.exit(1));
 							} else {
-								prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								context.exit(1);
+								await runEffect(
+									log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'))
+								);
+								await runEffect(context.exit(1));
 							}
 						}
 					},
@@ -195,35 +208,37 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 			break;
 		}
 		case UserFieldOption.password: {
-			const newPassword = await prompts.password({
-				message: `Enter the user's new password`,
-				validate: (password) => {
-					if (password.length < 6 || password.length > 255) {
-						return 'Password must be between 6 and 255 characters';
-					}
+			const newPassword = await runEffect(
+				password({
+					message: `Enter the user's new password`,
+					validate: (password) => {
+						if (password.length < 6 || password.length > 255) {
+							return 'Password must be between 6 and 255 characters';
+						}
 
-					// Check if password is known unsafe password
-					if (Effect.runSync(checker.password(password))) {
-						return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
-					}
+						// Check if password is known unsafe password
+						if (Effect.runSync(checker.password(password))) {
+							return 'Password must not be a commonly known unsafe password (admin, root, etc.)';
+						}
 
-					// Check for complexity requirements
-					const hasUpperCase = /[A-Z]/.test(password);
-					const hasLowerCase = /[a-z]/.test(password);
-					const hasNumbers = /\d/.test(password);
-					const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+						// Check for complexity requirements
+						const hasUpperCase = /[A-Z]/.test(password);
+						const hasLowerCase = /[a-z]/.test(password);
+						const hasNumbers = /\d/.test(password);
+						const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-					if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
-						return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
-					}
+						if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars)) {
+							return 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character';
+						}
 
-					return undefined;
-				},
-			});
+						return undefined;
+					},
+				})
+			);
 
 			if (typeof newPassword === 'symbol') {
-				context.pCancel(newPassword);
-				context.exit(0);
+				await runEffect(context.pCancel(newPassword));
+				await runEffect(context.exit(0));
 				return;
 			}
 
@@ -250,11 +265,13 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 							message('User modified successfully');
 						} catch (e) {
 							if (e instanceof Error) {
-								prompts.log.error(StudioCMSColorwayError(`Error: ${e.message}`));
-								context.exit(1);
+								await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
+								await runEffect(context.exit(1));
 							} else {
-								prompts.log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'));
-								context.exit(1);
+								await runEffect(
+									log.error(StudioCMSColorwayError('Unknown Error: Unable to modify user.'))
+								);
+								await runEffect(context.exit(1));
 							}
 						}
 					},
@@ -263,8 +280,8 @@ export const libsqlModifyUsers: StepFn = async (context, debug, dryRun = false) 
 			break;
 		}
 		default: {
-			context.pCancel(action);
-			context.exit(0);
+			await runEffect(context.pCancel(action));
+			await runEffect(context.exit(0));
 			break;
 		}
 	}
