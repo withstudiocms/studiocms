@@ -44,8 +44,8 @@ catalogs:
       specifier: ^0.34.3
       version: 0.34.3
     tinyglobby:
-      specifier: ^0.2.14
-      version: 0.2.14
+      specifier: ^0.2.15
+      version: 0.2.15
     typescript:
       specifier: ^5.9.2
       version: 5.9.2
@@ -140,11 +140,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@crowdin/crowdin-api-client':
-        specifier: ^1.46.0
-        version: 1.46.0
+        specifier: ^1.46.1
+        version: 1.46.1
       '@effect/language-service':
-        specifier: ^0.37.0
-        version: 0.37.0
+        specifier: ^0.38.1
+        version: 0.38.1
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
@@ -583,7 +583,7 @@ importers:
         version: 0.25.9
       tinyglobby:
         specifier: 'catalog:'
-        version: 0.2.14
+        version: 0.2.15
     devDependencies:
       strip-ansi:
         specifier: ^7.1.0
@@ -816,7 +816,7 @@ importers:
         version: 0.170.0
       tinyglobby:
         specifier: 'catalog:'
-        version: 0.2.14
+        version: 0.2.15
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0
@@ -1286,8 +1286,8 @@ packages:
     peerDependencies:
       commander: ~13.1.0
 
-  '@crowdin/crowdin-api-client@1.46.0':
-    resolution: {integrity: sha512-aCAKlr1Aw4T1Fss16lDNw/HRpU7HTrgQqTHUxTBBAYjx7KK6ghPYX89X4LU8DeLyXijrZN6ph9zF/gWAWBNtUA==}
+  '@crowdin/crowdin-api-client@1.46.1':
+    resolution: {integrity: sha512-JLVCXjnjksKpSBPTR7LRjF2GscZqkRP6JJDie/l/IiZfoN1MVIkCKn5fZPGK2sTnNmmc7EYxlqzQ6+IEGwQC0A==}
     engines: {node: '>=12.9.0'}
 
   '@effect/cli@0.69.2':
@@ -1320,8 +1320,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.37.0':
-    resolution: {integrity: sha512-SeDzOMr8/FZqsKI11B51MDBfo5h6dvS9e7NQgYJ6aA4MH+ERerEDjvCHZMZdPKr37HcJC73lG+IGoyLXZpcKug==}
+  '@effect/language-service@0.38.1':
+    resolution: {integrity: sha512-1VxXS4w+p1pWQHW8YPnOLVJccJe7AMkh6S30Hs1sejoWFLd0x/4jvlTAWHot2d6wyKFgvDo/FsyOq2DjDJIuAg==}
     hasBin: true
 
   '@effect/platform-node-shared@0.49.0':
@@ -3563,8 +3563,9 @@ packages:
   fd-package-json@2.0.0:
     resolution: {integrity: sha512-jKmm9YtsNXN789RS/0mSzOC1NUq9mkVd65vbSSVsKdjGvYXBuE4oWe2QOEoFeRmJg+lPuZxpmrfFclNhoRMneQ==}
 
-  fdir@6.4.6:
-    resolution: {integrity: sha512-hiFoqpyZcfNm1yc4u8oWCf9A2c4D3QjCrks3zmoVKVxpQRzmPNar1hUJcBG2RQHvEVGDN+Jm81ZheVLAQMK6+w==}
+  fdir@6.5.0:
+    resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
+    engines: {node: '>=12.0.0'}
     peerDependencies:
       picomatch: ^3 || ^4
     peerDependenciesMeta:
@@ -4637,8 +4638,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.2:
-    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
+  picomatch@4.0.3:
+    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
 
   pify@4.0.1:
@@ -5121,8 +5122,8 @@ packages:
   tinyexec@1.0.1:
     resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
 
-  tinyglobby@0.2.14:
-    resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
+  tinyglobby@0.2.15:
+    resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
   to-regex-range@5.0.1:
@@ -6507,7 +6508,7 @@ snapshots:
     dependencies:
       commander: 13.1.0
 
-  '@crowdin/crowdin-api-client@1.46.0':
+  '@crowdin/crowdin-api-client@1.46.1':
     dependencies:
       axios: 1.11.0
     transitivePeerDependencies:
@@ -6537,7 +6538,7 @@ snapshots:
       effect: 3.17.13
       uuid: 11.1.0
 
-  '@effect/language-service@0.37.0': {}
+  '@effect/language-service@0.38.1': {}
 
   '@effect/platform-node-shared@0.49.0(@effect/cluster@0.48.2(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/workflow@0.9.2(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(@effect/platform@0.90.6(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)':
     dependencies:
@@ -7332,7 +7333,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     optionalDependencies:
       rollup: 4.45.0
 
@@ -8131,14 +8132,14 @@ snapshots:
       p-limit: 6.2.0
       p-queue: 8.1.0
       package-manager-detector: 1.3.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       prompts: 2.4.2
       rehype: 13.0.2
       semver: 7.7.2
       shiki: 3.7.0
       smol-toml: 1.4.1
       tinyexec: 0.3.2
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
       tsconfck: 3.1.6(typescript@5.9.2)
       ultrahtml: 1.6.0
       unifont: 0.5.2
@@ -8232,14 +8233,14 @@ snapshots:
       p-limit: 6.2.0
       p-queue: 8.1.0
       package-manager-detector: 1.3.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       prompts: 2.4.2
       rehype: 13.0.2
       semver: 7.7.2
       shiki: 3.7.0
       smol-toml: 1.4.1
       tinyexec: 0.3.2
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
       tsconfck: 3.1.6(typescript@5.9.2)
       ultrahtml: 1.6.0
       unifont: 0.5.2
@@ -8935,9 +8936,9 @@ snapshots:
     dependencies:
       walk-up-path: 4.0.0
 
-  fdir@6.4.6(picomatch@4.0.2):
+  fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
-      picomatch: 4.0.2
+      picomatch: 4.0.3
 
   fetch-blob@3.2.0:
     dependencies:
@@ -9573,7 +9574,7 @@ snapshots:
       minimist: 1.2.8
       oxc-resolver: 11.6.2
       picocolors: 1.1.1
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       smol-toml: 1.4.1
       strip-json-comments: 5.0.2
       typescript: 5.9.2
@@ -10432,7 +10433,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  picomatch@4.0.2: {}
+  picomatch@4.0.3: {}
 
   pify@4.0.1: {}
 
@@ -10445,7 +10446,7 @@ snapshots:
       isbinaryfile: 5.0.4
       pkg-types: 1.3.1
       query-registry: 3.0.1
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
 
   pkg-types@1.3.1:
     dependencies:
@@ -11096,10 +11097,10 @@ snapshots:
 
   tinyexec@1.0.1: {}
 
-  tinyglobby@0.2.14:
+  tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
 
   to-regex-range@5.0.1:
     dependencies:
@@ -11360,11 +11361,11 @@ snapshots:
   vite@6.3.5(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.9
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.45.0
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 22.16.3
       fsevents: 2.3.3
@@ -11375,11 +11376,11 @@ snapshots:
   vite@6.3.5(@types/node@24.3.0)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.9
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.45.0
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 24.3.0
       fsevents: 2.3.3
