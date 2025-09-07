@@ -145,8 +145,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@clack/core": "0.4.1",
-		"@clack/prompts": "0.9.1",
+		"@clack/core": "^0.5.0",
+		"@clack/prompts": "^0.11.0",
 		"@iconify-json/flat-color-icons": "^1.2.3",
 		"@iconify-json/simple-icons": "^1.2.50",
 		"@inox-tools/runtime-logger": "^0.7.0",
