@@ -117,7 +117,7 @@ const config: KnipConfig = {
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: ['@clack/core', 'studiocms-dashboard', '@it-astro'],
+			ignoreDependencies: ['studiocms-dashboard', '@it-astro'],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {
