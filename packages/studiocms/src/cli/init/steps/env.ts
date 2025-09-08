@@ -95,10 +95,8 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 			const isWindows = os.platform() === 'win32';
 
 			if (isWindows) {
-				runEffect(
-					log.warn(
-						`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
-					)
+				yield* log.warn(
+					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
 				);
 			}
 
@@ -324,8 +322,6 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 						),
 				},
 				{
-					// On Cancel callback that wraps the group
-					// So if the user cancels one of the prompts in the group this function will be called
 					onCancel: async () => await runEffect(pOnCancel()),
 				}
 			);
