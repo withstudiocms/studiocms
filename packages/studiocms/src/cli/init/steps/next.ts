@@ -9,19 +9,18 @@ import { genLogger } from '../../../effect.js';
 import { CliContext } from '../../utils/context.js';
 import { logger } from '../../utils/logger.js';
 
+const commandMap: { [key: string]: string } = {
+	npm: 'npm run dev',
+	bun: 'bun run dev',
+	yarn: 'yarn dev',
+	pnpm: 'pnpm dev',
+};
+
 export const next = (debug: boolean) =>
 	genLogger('studiocms/cli/init/steps/next')(function* () {
-		const context = yield* CliContext;
-		const { chalk } = context;
+		const { chalk, packageManager } = yield* CliContext;
 
-		const commandMap: { [key: string]: string } = {
-			npm: 'npm run dev',
-			bun: 'bun run dev',
-			yarn: 'yarn dev',
-			pnpm: 'pnpm dev',
-		};
-
-		const devCmd = commandMap[context.packageManager as keyof typeof commandMap] || 'npm run dev';
+		const devCmd = commandMap[packageManager as keyof typeof commandMap] || 'npm run dev';
 
 		debug && logger.debug(`Dev command: ${devCmd}`);
 

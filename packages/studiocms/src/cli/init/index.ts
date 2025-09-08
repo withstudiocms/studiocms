@@ -5,7 +5,7 @@ import { Cli, Console, Effect, genLogger } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { logger } from '../utils/logger.js';
-import type { StepFn } from '../utils/types.js';
+import type { EffectStepFn } from '../utils/types.js';
 import { env } from './steps/env.js';
 import { next } from './steps/next.js';
 
@@ -21,6 +21,10 @@ export const dryRun = Cli.Options.boolean('dry-run').pipe(
 	Cli.Options.withDescription('Dry run mode')
 );
 
+const OptionToStepMap: Record<string, EffectStepFn> = {
+	env,
+};
+
 export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
 	genLogger('studiocms/cli/init')(function* () {
 		let debug: boolean;
@@ -31,9 +35,8 @@ export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _de
 			debug = _debug;
 		}
 
-		const dry = yield* dryRun;
+		const [dry, context] = yield* Effect.all([dryRun, genContext]);
 
-		const context = yield* genContext;
 		const { chalk } = context;
 
 		yield* Console.log('Starting interactive CLI...');
@@ -50,8 +53,8 @@ export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _de
 
 		yield* SCMS_Intro(debug).pipe(CliContext.makeProvide(context));
 
-		// Steps
-		const steps: StepFn[] = [];
+		// Steps to run
+		const steps: EffectStepFn[] = [];
 
 		debug && logger.debug('Running Option selection...');
 
@@ -64,7 +67,14 @@ export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _de
 		if (typeof options === 'symbol') {
 			yield* context.pCancel(options);
 		} else {
-			options.includes('env') && steps.push(env);
+			options.forEach((opt) => {
+				const step = OptionToStepMap[opt];
+				if (step) {
+					steps.push(step);
+				} else {
+					debug && logger.debug(`No step found for option: ${opt}`);
+				}
+			});
 		}
 
 		// No steps? Exit
@@ -75,16 +85,7 @@ export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _de
 
 		debug && logger.debug('Running steps...');
 
-		// Run steps
-		for (const step of steps) {
-			yield* Effect.tryPromise({
-				try: () => step(context, debug, dry),
-				catch: (error) =>
-					new Error(
-						`Step execution failed: ${error instanceof Error ? error.message : String(error)}`
-					),
-			});
-		}
+		yield* Effect.forEach(steps, (step) => step(context, debug, dry));
 
 		debug && logger.debug('Running tasks...');
 

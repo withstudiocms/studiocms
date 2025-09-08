@@ -184,11 +184,12 @@ export const addPlugin = Cli.Command.make(
 	},
 	({ plugin }) =>
 		Effect.gen(function* () {
-			const validator = yield* ValidatePlugins;
-			const installer = yield* TryToInstallPlugins;
-			const updater = yield* UpdateStudioCMSConfig;
-
-			const context = yield* genContext;
+			const [validator, installer, updater, context] = yield* Effect.all([
+				ValidatePlugins,
+				TryToInstallPlugins,
+				UpdateStudioCMSConfig,
+				genContext,
+			]);
 
 			const { cwd, chalk } = context;
 

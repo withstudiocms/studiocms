@@ -15,8 +15,8 @@ import {
 	runInteractiveCommand,
 	runShellCommand,
 } from '@withstudiocms/cli-kit/utils';
-import { runEffect } from '@withstudiocms/effect';
 import {
+	askToContinue,
 	confirm,
 	group,
 	log,
@@ -25,9 +25,10 @@ import {
 	spinner,
 	text,
 } from '@withstudiocms/effect/clack';
+import { Effect, runEffect } from '../../../effect.js';
 import { logger } from '../../utils/logger.js';
 import { buildEnvFile, type EnvBuilderOptions, ExampleEnv } from '../../utils/studiocmsEnv.js';
-import type { StepFn } from '../../utils/types.js';
+import type { EffectStepFn } from '../../utils/types.js';
 
 export enum EnvBuilderAction {
 	builder = 'builder',
@@ -35,7 +36,7 @@ export enum EnvBuilderAction {
 	none = 'none',
 }
 
-export const env: StepFn = async (context, debug, dryRun = false) => {
+export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 	const { chalk, cwd, pCancel, pOnCancel } = context;
 
 	debug && logger.debug('Running env...');
@@ -48,279 +49,256 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 	debug && logger.debug(`Environment file exists: ${envExists}`);
 
 	if (envExists) {
-		await runEffect(
-			log.warn(
-				`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} An environment file already exists. Would you like to overwrite it?`
-			)
+		yield* log.warn(
+			`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} An environment file already exists. Would you like to overwrite it?`
 		);
 
-		const check = await runEffect(
-			confirm({
-				message: 'Confirm Overwrite',
-			})
-		);
+		const confirm = yield* askToContinue();
 
-		if (typeof check === 'symbol') {
-			await runEffect(pCancel(check));
-		} else {
-			debug && logger.debug(`Environment file overwrite selected: ${check}`);
-			if (!check) {
-				return;
+		if (!confirm) {
+			return yield* context.exit(0);
+		}
+
+		debug && logger.debug('User opted to overwrite existing .env file');
+	}
+
+	const envPrompt = yield* select({
+		message: 'What kind of environment file would you like to create?',
+		options: [
+			{ value: EnvBuilderAction.builder, label: 'Use Interactive .env Builder' },
+			{ value: EnvBuilderAction.example, label: 'Use the Example .env file' },
+			{ value: EnvBuilderAction.none, label: 'Skip Environment File Creation', hint: 'Cancel' },
+		],
+	});
+
+	if (typeof envPrompt === 'symbol') {
+		return yield* pCancel(envPrompt);
+	}
+
+	debug && logger.debug(`Environment file type selected: ${envPrompt}`);
+
+	_env = envPrompt !== 'none';
+
+	switch (envPrompt) {
+		case EnvBuilderAction.none: {
+			break;
+		}
+		case EnvBuilderAction.example: {
+			envFileContent = ExampleEnv;
+			break;
+		}
+		case EnvBuilderAction.builder: {
+			let envBuilderOpts: EnvBuilderOptions = {};
+
+			const isWindows = os.platform() === 'win32';
+
+			if (isWindows) {
+				runEffect(
+					log.warn(
+						`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
+					)
+				);
 			}
-		}
-	}
 
-	const EnvPrompt = await runEffect(
-		select({
-			message: 'What kind of environment file would you like to create?',
-			options: [
-				{ value: EnvBuilderAction.builder, label: 'Use Interactive .env Builder' },
-				{ value: EnvBuilderAction.example, label: 'Use the Example .env file' },
-				{ value: EnvBuilderAction.none, label: 'Skip Environment File Creation', hint: 'Cancel' },
-			],
-		})
-	);
+			let tursoDB: symbol | 'yes' | 'no' = 'no';
 
-	if (typeof EnvPrompt === 'symbol') {
-		await runEffect(pCancel(EnvPrompt));
-	} else {
-		debug && logger.debug(`Environment file type selected: ${EnvPrompt}`);
-
-		_env = EnvPrompt !== 'none';
-	}
-
-	if (EnvPrompt === EnvBuilderAction.example) {
-		envFileContent = ExampleEnv;
-	} else if (EnvPrompt === EnvBuilderAction.builder) {
-		let envBuilderOpts: EnvBuilderOptions = {};
-
-		const isWindows = os.platform() === 'win32';
-
-		if (isWindows) {
-			runEffect(
-				log.warn(
-					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
-				)
-			);
-		}
-
-		let tursoDB: symbol | 'yes' | 'no' = 'no';
-
-		if (!isWindows) {
-			tursoDB = await runEffect(
-				select({
+			if (!isWindows) {
+				tursoDB = yield* select({
 					message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
 					options: [
 						{ value: 'yes', label: 'Yes' },
 						{ value: 'no', label: 'No' },
 					],
-				})
-			);
-		}
+				});
+			}
 
-		if (typeof tursoDB === 'symbol') {
-			await runEffect(pCancel(tursoDB));
-		} else {
-			debug && logger.debug(`AstroDB setup selected: ${tursoDB}`);
+			if (typeof tursoDB === 'symbol') {
+				return yield* pCancel(tursoDB);
+			}
 
 			if (tursoDB === 'yes') {
 				if (!commandExists('turso')) {
-					await runEffect(log.error(StudioCMSColorwayError('Turso CLI is not installed.')));
+					yield* log.error(StudioCMSColorwayError('Turso CLI is not installed.'));
 
-					const installTurso = await runEffect(
-						confirm({
-							message: 'Would you like to install Turso CLI now?',
-						})
-					);
+					const installTurso = yield* confirm({
+						message: 'Would you like to install Turso CLI now?',
+					});
 
 					if (typeof installTurso === 'symbol') {
-						await runEffect(pCancel(installTurso));
-					} else {
-						if (installTurso) {
-							try {
-								await runInteractiveCommand('curl -sSfL https://get.tur.so/install.sh | bash');
-								console.log('Command completed successfully.');
-							} catch (error) {
-								console.error(`Failed to run Turso install: ${(error as Error).message}`);
-							}
-						} else {
-							await runEffect(
-								log.warn(
-									`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
+						return yield* pCancel(installTurso);
+					}
+
+					if (installTurso) {
+						if (isWindows) {
+							yield* log.error(
+								StudioCMSColorwayError(
+									'Automatic installation is not supported on Windows. Please install Turso CLI manually from https://turso.tech/docs/getting-started/installation'
 								)
 							);
+							return yield* context.exit(1);
 						}
-					}
-				}
-
-				try {
-					const res = await runShellCommand('turso auth login --headless');
-
-					if (
-						!res.includes('Already signed in as') &&
-						!res.includes('Success! Existing JWT still valid')
-					) {
-						await runEffect(log.message(`Please sign in to Turso to continue.\n${res}`));
-
-						const loginToken = await runEffect(
-							text({
-								message: 'Enter the login token ( the code within the " " )',
-								placeholder: 'eyJhb...tnPnw',
-							})
-						);
-
-						if (typeof loginToken === 'symbol') {
-							await runEffect(pCancel(loginToken));
-						} else {
-							const loginRes = await runShellCommand(`turso config set token "${loginToken}"`);
-
-							if (loginRes.includes('Token set successfully.')) {
-								await runEffect(log.success('Successfully logged in to Turso.'));
-							} else {
-								await runEffect(log.error(StudioCMSColorwayError('Unable to login to Turso.')));
-								process.exit(1);
-							}
-						}
-					}
-				} catch (error) {
-					if (error instanceof Error) {
-						await runEffect(log.error(StudioCMSColorwayError(`Error: ${error.message}`)));
-						process.exit(1);
+						yield* Effect.try({
+							try: () =>
+								runInteractiveCommand('curl -fsSL https://get.turso.tech/cli.sh | sh', {
+									cwd,
+									shell: true,
+									env: process.env,
+								}),
+							catch: (cause) => new Error(`Failed to install Turso CLI: ${String(cause)}`),
+						});
+						yield* log.success('Turso CLI installed successfully.');
 					} else {
-						await runEffect(
-							log.error(StudioCMSColorwayError('Unknown Error: Unable to login to Turso.'))
+						yield* log.warn(
+							`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
 						);
-						process.exit(1);
 					}
 				}
 
-				const customName = await runEffect(
-					confirm({
-						message: 'Would you like to provide a custom name for the database?',
-						initialValue: false,
-					})
+				const checkLogin = yield* Effect.tryPromise({
+					try: () => runShellCommand('turso auth login --headless'),
+					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
+				});
+
+				if (
+					!checkLogin.includes('Already signed in as') &&
+					!checkLogin.includes('Success! Existing JWT still valid')
+				) {
+					yield* log.message(`Please sign in to Turso to continue.\n${checkLogin}`);
+
+					const loginToken = yield* text({
+						message: 'Enter the login token ( the code within the " " )',
+						placeholder: 'eyJhb...tnPnw',
+					});
+
+					if (typeof loginToken === 'symbol') {
+						return yield* pCancel(loginToken);
+					}
+
+					const loginResult = yield* Effect.tryPromise({
+						try: () => runShellCommand(`turso config set token "${loginToken}"`),
+						catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
+					});
+
+					if (loginResult.includes('Token set successfully.')) {
+						yield* log.success('Successfully logged in to Turso.');
+					} else {
+						yield* log.error(StudioCMSColorwayError('Unable to login to Turso.'));
+						yield* context.exit(1);
+					}
+				}
+
+				const setCustomDbName = yield* confirm({
+					message: 'Would you like to provide a custom name for the database?',
+					initialValue: false,
+				});
+
+				if (typeof setCustomDbName === 'symbol') {
+					return yield* pCancel(setCustomDbName);
+				}
+
+				let dbName = `scms_db_${crypto.randomBytes(4).toString('hex')}`;
+
+				if (setCustomDbName) {
+					const customDbName = yield* text({
+						message: 'Enter a custom name for the database',
+						placeholder: 'my_custom_db_name',
+					});
+
+					if (typeof customDbName === 'symbol') {
+						return yield* pCancel(customDbName);
+					}
+
+					dbName = customDbName;
+				}
+
+				debug && logger.debug(`New database name: ${dbName}`);
+
+				const tursoSetup = yield* spinner();
+
+				yield* tursoSetup.start(
+					`${label('Turso', TursoColorway, chalk.black)} Setting up Turso DB...`
 				);
 
-				if (typeof customName === 'symbol') {
-					await runEffect(pCancel(customName));
-				} else {
-					const dbName = customName
-						? await runEffect(
-								text({
-									message: 'Enter a custom name for the database',
-									initialValue: 'your-database-name',
-								})
-							)
-						: undefined;
+				yield* tursoSetup.message(
+					`${label('Turso', TursoColorway, chalk.black)} Creating Database...`
+				);
 
-					if (typeof dbName === 'symbol') {
-						await runEffect(pCancel(dbName));
-					} else {
-						debug && logger.debug(`Custom database name: ${dbName}`);
+				const createResponse = yield* Effect.tryPromise({
+					try: () => runShellCommand(`turso db create ${dbName}`),
+					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
+				});
 
-						const tursoSetup = await runEffect(spinner());
-						await runEffect(
-							tursoSetup.start(
-								`${label('Turso', TursoColorway, chalk.black)} Setting up Turso DB...`
-							)
-						);
-						try {
-							await runEffect(
-								tursoSetup.message(
-									`${label('Turso', TursoColorway, chalk.black)} Creating Database...`
-								)
-							);
-							const createRes = await runShellCommand(`turso db create ${dbName ? dbName : ''}`);
+				const dbNameMatch = createResponse.match(/^Created database (\S+) at group/m);
 
-							const dbNameMatch = createRes.match(/^Created database (\S+) at group/m);
+				const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
 
-							const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
+				yield* tursoSetup.message(
+					`${label('Turso', TursoColorway, chalk.black)} Retrieving database information...`
+				);
 
-							await runEffect(
-								tursoSetup.message(
-									`${label('Turso', TursoColorway, chalk.black)} Retrieving database information...`
-								)
-							);
-							debug && logger.debug(`Database name: ${dbFinalName}`);
+				const showCMD = `turso db show ${dbName}`;
+				const tokenCMD = `turso db tokens create ${dbName}`;
 
-							const showCMD = `turso db show ${dbFinalName}`;
-							const tokenCMD = `turso db tokens create ${dbFinalName}`;
+				const showResponse = yield* Effect.tryPromise({
+					try: () => runShellCommand(showCMD),
+					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
+				});
 
-							const showRes = await runShellCommand(showCMD);
+				const urlMatch = showResponse.match(/^URL:\s+(\S+)/m);
 
-							const urlMatch = showRes.match(/^URL:\s+(\S+)/m);
+				const dbURL = urlMatch ? urlMatch[1] : undefined;
 
-							const dbURL = urlMatch ? urlMatch[1] : undefined;
+				debug && logger.debug(`Database URL: ${dbURL}`);
 
-							debug && logger.debug(`Database URL: ${dbURL}`);
+				const tokenResponse = yield* Effect.tryPromise({
+					try: () => runShellCommand(tokenCMD),
+					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
+				});
 
-							const tokenRes = await runShellCommand(tokenCMD);
+				const dbToken = tokenResponse.trim();
 
-							const dbToken = tokenRes.trim();
+				debug && logger.debug(`Database Token: ${dbToken}`);
 
-							debug && logger.debug(`Database Token: ${dbToken}`);
+				envBuilderOpts.astroDbRemoteUrl = dbURL;
+				envBuilderOpts.astroDbToken = dbToken;
 
-							envBuilderOpts.astroDbRemoteUrl = dbURL;
-							envBuilderOpts.astroDbToken = dbToken;
+				yield* tursoSetup.stop(
+					`${label('Turso', TursoColorway, chalk.black)} Database setup complete. New Database: ${dbFinalName}`
+				);
 
-							await runEffect(
-								tursoSetup.stop(
-									`${label('Turso', TursoColorway, chalk.black)} Database setup complete. New Database: ${dbFinalName}`
-								)
-							);
-							await runEffect(log.message('Database Token and Url saved to environment file.'));
-						} catch (e) {
-							await runEffect(tursoSetup.stop());
-							if (e instanceof Error) {
-								await runEffect(log.error(StudioCMSColorwayError(`Error: ${e.message}`)));
-								process.exit(1);
-							} else {
-								await runEffect(
-									log.error(StudioCMSColorwayError('Unknown Error: Unable to create database.'))
-								);
-								process.exit(1);
-							}
-						}
-					}
-				}
+				yield* log.message('Database Token and Url saved to environment file.');
 			} else {
-				await runEffect(
-					log.warn(
-						`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
-					)
+				yield* log.warn(
+					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
 				);
-				const envBuilderStep_AstroDB = await runEffect(
-					group(
-						{
-							astroDbRemoteUrl: async () =>
-								await runEffect(
-									text({
-										message: 'Remote URL for AstroDB',
-										initialValue: 'libsql://your-database.turso.io',
-									})
-								),
-							astroDbToken: async () =>
-								await runEffect(
-									text({
-										message: 'AstroDB Token',
-										initialValue: 'your-astrodb-token',
-									})
-								),
-						},
-						{
-							onCancel: async () => await runEffect(pOnCancel()),
-						}
-					)
+				const envBuilderStep_AstroDB = yield* group(
+					{
+						astroDbRemoteUrl: async () =>
+							await runEffect(
+								text({
+									message: 'Remote URL for AstroDB',
+									initialValue: 'libsql://your-database.turso.io',
+								})
+							),
+						astroDbToken: async () =>
+							await runEffect(
+								text({
+									message: 'AstroDB Token',
+									initialValue: 'your-astrodb-token',
+								})
+							),
+					},
+					{
+						onCancel: async () => await runEffect(pOnCancel()),
+					}
 				);
 
 				debug && logger.debug(`AstroDB setup: ${envBuilderStep_AstroDB}`);
 
 				envBuilderOpts = { ...envBuilderStep_AstroDB };
 			}
-		}
 
-		const envBuilderStep1 = await runEffect(
-			group(
+			const envBuilderStep1 = yield* group(
 				{
 					encryptionKey: async () =>
 						await runEffect(
@@ -348,16 +326,14 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					// So if the user cancels one of the prompts in the group this function will be called
 					onCancel: async () => await runEffect(pOnCancel()),
 				}
-			)
-		);
+			);
 
-		debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
+			debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
 
-		envBuilderOpts = { ...envBuilderStep1 };
+			envBuilderOpts = { ...envBuilderStep1 };
 
-		if (envBuilderStep1.oAuthOptions.includes('github')) {
-			const githubOAuth = await runEffect(
-				group(
+			if (envBuilderStep1.oAuthOptions.includes('github')) {
+				const githubOAuth = yield* group(
 					{
 						clientId: async () =>
 							await runEffect(
@@ -384,17 +360,15 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					{
 						onCancel: async () => await runEffect(pOnCancel()),
 					}
-				)
-			);
+				);
 
-			debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
+				debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
 
-			envBuilderOpts.githubOAuth = githubOAuth;
-		}
+				envBuilderOpts.githubOAuth = githubOAuth;
+			}
 
-		if (envBuilderStep1.oAuthOptions.includes('discord')) {
-			const discordOAuth = await runEffect(
-				group(
+			if (envBuilderStep1.oAuthOptions.includes('discord')) {
+				const discordOAuth = yield* group(
 					{
 						clientId: async () =>
 							await runEffect(
@@ -421,17 +395,15 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					{
 						onCancel: async () => await runEffect(pOnCancel()),
 					}
-				)
-			);
+				);
 
-			debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
+				debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
 
-			envBuilderOpts.discordOAuth = discordOAuth;
-		}
+				envBuilderOpts.discordOAuth = discordOAuth;
+			}
 
-		if (envBuilderStep1.oAuthOptions.includes('google')) {
-			const googleOAuth = await runEffect(
-				group(
+			if (envBuilderStep1.oAuthOptions.includes('google')) {
+				const googleOAuth = yield* group(
 					{
 						clientId: async () =>
 							await runEffect(
@@ -458,17 +430,15 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					{
 						onCancel: async () => await runEffect(pOnCancel()),
 					}
-				)
-			);
+				);
 
-			debug && logger.debug(`Google OAuth: ${googleOAuth}`);
+				debug && logger.debug(`Google OAuth: ${googleOAuth}`);
 
-			envBuilderOpts.googleOAuth = googleOAuth;
-		}
+				envBuilderOpts.googleOAuth = googleOAuth;
+			}
 
-		if (envBuilderStep1.oAuthOptions.includes('auth0')) {
-			const auth0OAuth = await runEffect(
-				group(
+			if (envBuilderStep1.oAuthOptions.includes('auth0')) {
+				const auth0OAuth = yield* group(
 					{
 						clientId: async () =>
 							await runEffect(
@@ -502,15 +472,17 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 					{
 						onCancel: async () => await runEffect(pOnCancel()),
 					}
-				)
-			);
+				);
 
-			debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
+				debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
 
-			envBuilderOpts.auth0OAuth = auth0OAuth;
+				envBuilderOpts.auth0OAuth = auth0OAuth;
+			}
+
+			envFileContent = buildEnvFile(envBuilderOpts);
+
+			break;
 		}
-
-		envFileContent = buildEnvFile(envBuilderOpts);
 	}
 
 	if (dryRun) {
@@ -545,4 +517,4 @@ export const env: StepFn = async (context, debug, dryRun = false) => {
 	}
 
 	debug && logger.debug('Environment complete');
-};
+});
