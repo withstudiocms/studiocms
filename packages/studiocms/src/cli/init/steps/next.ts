@@ -7,7 +7,7 @@ import { boxen, label } from '@withstudiocms/cli-kit/messages';
 import { log, outro } from '@withstudiocms/effect/clack';
 import { genLogger } from '../../../effect.js';
 import { CliContext } from '../../utils/context.js';
-import { logger } from '../../utils/logger.js';
+import { buildDebugLogger } from '../../utils/logger.js';
 
 const commandMap: { [key: string]: string } = {
 	npm: 'npm run dev',
@@ -20,11 +20,13 @@ export const next = (debug: boolean) =>
 	genLogger('studiocms/cli/init/steps/next')(function* () {
 		const { chalk, packageManager } = yield* CliContext;
 
+		const debugLogger = yield* buildDebugLogger(debug);
+
 		const devCmd = commandMap[packageManager as keyof typeof commandMap] || 'npm run dev';
 
-		debug && logger.debug(`Dev command: ${devCmd}`);
+		yield* debugLogger(`Dev command: ${devCmd}`);
 
-		debug && logger.debug('Running next steps fn...');
+		yield* debugLogger('Running next steps fn...');
 
 		yield* log.success(
 			boxen(
@@ -43,5 +45,5 @@ export const next = (debug: boolean) =>
 			`${label('Enjoy your new CMS!', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
 		);
 
-		debug && logger.debug('Next steps complete');
+		yield* debugLogger('Next steps complete');
 	});

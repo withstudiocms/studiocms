@@ -26,7 +26,7 @@ import {
 	text,
 } from '@withstudiocms/effect/clack';
 import { Effect, runEffect } from '../../../effect.js';
-import { logger } from '../../utils/logger.js';
+import { buildDebugLogger } from '../../utils/logger.js';
 import { buildEnvFile, type EnvBuilderOptions, ExampleEnv } from '../../utils/studiocmsEnv.js';
 import type { EffectStepFn } from '../../utils/types.js';
 
@@ -39,14 +39,16 @@ export enum EnvBuilderAction {
 export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 	const { chalk, cwd, pCancel, pOnCancel } = context;
 
-	debug && logger.debug('Running env...');
+	const debugLogger = yield* buildDebugLogger(debug);
+
+	yield* debugLogger('Running env...');
 
 	let _env = false;
 	let envFileContent: string;
 
 	const envExists = exists(path.join(cwd, '.env'));
 
-	debug && logger.debug(`Environment file exists: ${envExists}`);
+	yield* debugLogger(`Environment file exists: ${envExists}`);
 
 	if (envExists) {
 		yield* log.warn(
@@ -59,7 +61,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 			return yield* context.exit(0);
 		}
 
-		debug && logger.debug('User opted to overwrite existing .env file');
+		yield* debugLogger('User opted to overwrite existing .env file');
 	}
 
 	const envPrompt = yield* select({
@@ -75,7 +77,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 		return yield* pCancel(envPrompt);
 	}
 
-	debug && logger.debug(`Environment file type selected: ${envPrompt}`);
+	yield* debugLogger(`Environment file type selected: ${envPrompt}`);
 
 	_env = envPrompt !== 'none';
 
@@ -211,7 +213,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					dbName = customDbName;
 				}
 
-				debug && logger.debug(`New database name: ${dbName}`);
+				yield* debugLogger(`New database name: ${dbName}`);
 
 				const tursoSetup = yield* spinner();
 
@@ -248,7 +250,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 
 				const dbURL = urlMatch ? urlMatch[1] : undefined;
 
-				debug && logger.debug(`Database URL: ${dbURL}`);
+				yield* debugLogger(`Database URL: ${dbURL}`);
 
 				const tokenResponse = yield* Effect.tryPromise({
 					try: () => runShellCommand(tokenCMD),
@@ -257,7 +259,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 
 				const dbToken = tokenResponse.trim();
 
-				debug && logger.debug(`Database Token: ${dbToken}`);
+				yield* debugLogger(`Database Token: ${dbToken}`);
 
 				envBuilderOpts.astroDbRemoteUrl = dbURL;
 				envBuilderOpts.astroDbToken = dbToken;
@@ -293,7 +295,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				debug && logger.debug(`AstroDB setup: ${envBuilderStep_AstroDB}`);
+				yield* debugLogger(`AstroDB setup: ${envBuilderStep_AstroDB}`);
 
 				envBuilderOpts = { ...envBuilderStep_AstroDB };
 			}
@@ -328,7 +330,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				}
 			);
 
-			debug && logger.debug(`Environment Builder Step 1: ${envBuilderStep1}`);
+			yield* debugLogger(`Environment Builder Step 1: ${envBuilderStep1}`);
 
 			envBuilderOpts = { ...envBuilderStep1 };
 
@@ -362,7 +364,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				debug && logger.debug(`GitHub OAuth: ${githubOAuth}`);
+				yield* debugLogger(`GitHub OAuth: ${githubOAuth}`);
 
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
@@ -397,7 +399,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				debug && logger.debug(`Discord OAuth: ${discordOAuth}`);
+				yield* debugLogger(`Discord OAuth: ${discordOAuth}`);
 
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
@@ -432,7 +434,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				debug && logger.debug(`Google OAuth: ${googleOAuth}`);
+				yield* debugLogger(`Google OAuth: ${googleOAuth}`);
 
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
@@ -474,7 +476,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				debug && logger.debug(`Auth0 OAuth: ${auth0OAuth}`);
+				yield* debugLogger(`Auth0 OAuth: ${auth0OAuth}`);
 
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
@@ -516,5 +518,5 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 		});
 	}
 
-	debug && logger.debug('Environment complete');
+	yield* debugLogger('Environment complete');
 });
