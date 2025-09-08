@@ -2,7 +2,7 @@ import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { intro, log, multiselect, tasks } from '@withstudiocms/effect/clack';
 import { Cli, Effect, genLogger } from '../../effect.js';
-import { CliContext, genContext, parseDebug } from '../utils/context.js';
+import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
 import { appendOptionsToSteps, type EffectStepFn, type StepMap } from '../utils/types.js';
@@ -20,6 +20,14 @@ export const dryRun = Cli.Options.boolean('dry-run').pipe(
 	Cli.Options.withAlias('d'),
 	Cli.Options.withDescription('Dry run mode')
 );
+
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
+const exitIfEmpty = Effect.fn(function* (context: BaseContext, items: any[], itemType: string) {
+	if (items.length === 0) {
+		yield* log.error(`No ${itemType} selected, exiting...`);
+		yield* context.exit(0);
+	}
+});
 
 const OptionToStepMap: StepMap = {
 	env,
@@ -70,9 +78,7 @@ export const initCMD = Cli.Command.make(
 			appendOptionsToSteps(options, steps, OptionToStepMap);
 
 			// No steps? Exit
-			if (steps.length === 0) {
-				yield* Effect.all([log.error('No steps selected, exiting...'), context.exit(1)]);
-			}
+			yield* exitIfEmpty(context, steps, 'steps');
 
 			yield* Effect.all([
 				debugLogger('Running steps...'),
@@ -80,9 +86,7 @@ export const initCMD = Cli.Command.make(
 			]);
 
 			// No tasks? Exit
-			if (context.tasks.length === 0) {
-				yield* Effect.all([log.error('No tasks selected, exiting...'), context.exit(0)]);
-			}
+			yield* exitIfEmpty(context, context.tasks, 'tasks');
 
 			yield* Effect.all([
 				debugLogger(`Tasks to run: ${context.tasks.length}`),

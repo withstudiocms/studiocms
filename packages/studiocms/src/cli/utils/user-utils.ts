@@ -1,5 +1,6 @@
 import { makeScrypt, Password } from '@withstudiocms/auth-kit';
 import { PasswordModOptions } from '@withstudiocms/auth-kit/config';
+import { CheckIfUnsafe } from '@withstudiocms/auth-kit/utils/unsafeCheck';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
 import { Effect, runEffect } from '../../effect.js';
@@ -32,13 +33,18 @@ if (!CMS_ENCRYPTION_KEY) {
  *
  * @throws If the password module options or Scrypt configuration fail to initialize.
  */
-const hashPassword = await runEffect(
+const { hashPassword, verifyPasswordStrength } = await runEffect(
 	Effect.gen(function* () {
 		const config = yield* PasswordModOptions;
 		const Scrypt = yield* makeScrypt(config);
-		const { hashPassword } = yield* Password(Scrypt);
-		return hashPassword;
+		const { hashPassword, verifyPasswordStrength } = yield* Password(Scrypt);
+		return { hashPassword, verifyPasswordStrength };
 	}).pipe(Effect.provide(PasswordModOptions.Live({ CMS_ENCRYPTION_KEY })))
 );
 
-export { hashPassword };
+const getCheckers = Effect.gen(function* () {
+	const { _tag, ...mod } = yield* CheckIfUnsafe;
+	return mod;
+}).pipe(Effect.provide(CheckIfUnsafe.Default));
+
+export { hashPassword, verifyPasswordStrength, getCheckers };
