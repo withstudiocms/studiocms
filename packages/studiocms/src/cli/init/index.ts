@@ -25,69 +25,76 @@ const OptionToStepMap: StepMap = {
 	env,
 };
 
-export const initCMD = Cli.Command.make('init', { debug, dryRun }, ({ debug: _debug, dryRun }) =>
-	genLogger('studiocms/cli/init')(function* () {
-		const [dry, context, debug] = yield* Effect.all([dryRun, genContext, parseDebug(_debug)]);
+export const initCMD = Cli.Command.make(
+	'init',
+	{ debug, dryRun },
+	({ debug: rawDebug, dryRun: rawDryRun }) =>
+		genLogger('studiocms/cli/init')(function* () {
+			const [dry, context, debug] = yield* Effect.all([
+				rawDryRun,
+				genContext,
+				parseDebug(rawDebug),
+			]);
 
-		const debugLogger = yield* buildDebugLogger(debug);
+			const debugLogger = yield* buildDebugLogger(debug);
 
-		const cliContext = CliContext.makeProvide(context);
+			const cliContext = CliContext.makeProvide(context);
 
-		yield* Effect.all([
-			debugLogger('Starting interactive CLI...'),
-			debugLogger(`Options: ${JSON.stringify({ debug, dry }, null, 2)}`),
-			debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
-			intro(
-				`${label('StudioCMS', StudioCMSColorwayBg, context.chalk.black)} Interactive CLI - initializing...`
-			),
-		]);
+			yield* Effect.all([
+				debugLogger('Starting interactive CLI...'),
+				debugLogger(`Options: ${JSON.stringify({ debug, dry }, null, 2)}`),
+				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
+				intro(
+					`${label('StudioCMS', StudioCMSColorwayBg, context.chalk.black)} Interactive CLI - initializing...`
+				),
+			]);
 
-		yield* SCMS_Intro(debug).pipe(cliContext);
+			yield* SCMS_Intro(debug).pipe(cliContext);
 
-		// Steps to run
-		const steps: EffectStepFn[] = [];
+			// Steps to run
+			const steps: EffectStepFn[] = [];
 
-		const [_dropOptionLog, options] = yield* Effect.all([
-			debugLogger('Running Option selection...'),
-			multiselect({
-				message: 'What would you like to do? (Select all that apply)',
-				options: [{ value: 'env', label: 'Setup Environment File', hint: 'Create a .env file' }],
-			}),
-		]);
+			const [_dropOptionLog, options] = yield* Effect.all([
+				debugLogger('Running Option selection...'),
+				multiselect({
+					message: 'What would you like to do? (Select all that apply)',
+					options: [{ value: 'env', label: 'Setup Environment File', hint: 'Create a .env file' }],
+				}),
+			]);
 
-		// Cancel or add steps based on options
-		if (typeof options === 'symbol') {
-			return yield* context.pCancel(options);
-		}
+			// Cancel or add steps based on options
+			if (typeof options === 'symbol') {
+				return yield* context.pCancel(options);
+			}
 
-		appendOptionsToSteps(options, steps, OptionToStepMap);
+			appendOptionsToSteps(options, steps, OptionToStepMap);
 
-		// No steps? Exit
-		if (steps.length === 0) {
-			yield* Effect.all([log.error('No steps selected, exiting...'), context.exit(1)]);
-		}
+			// No steps? Exit
+			if (steps.length === 0) {
+				yield* Effect.all([log.error('No steps selected, exiting...'), context.exit(1)]);
+			}
 
-		yield* Effect.all([
-			debugLogger('Running steps...'),
-			Effect.forEach(steps, (step) => step(context, debug, dry)),
-		]);
+			yield* Effect.all([
+				debugLogger('Running steps...'),
+				Effect.forEach(steps, (step) => step(context, debug, dry)),
+			]);
 
-		// No tasks? Exit
-		if (context.tasks.length === 0) {
-			yield* Effect.all([log.error('No tasks selected, exiting...'), context.exit(0)]);
-		}
+			// No tasks? Exit
+			if (context.tasks.length === 0) {
+				yield* Effect.all([log.error('No tasks selected, exiting...'), context.exit(0)]);
+			}
 
-		yield* Effect.all([
-			debugLogger(`Tasks to run: ${context.tasks.length}`),
-			debugLogger('Running tasks...'),
-			tasks(context.tasks),
-		]);
+			yield* Effect.all([
+				debugLogger(`Tasks to run: ${context.tasks.length}`),
+				debugLogger('Running tasks...'),
+				tasks(context.tasks),
+			]);
 
-		yield* Effect.all([
-			debugLogger('Tasks complete, running next steps...'),
-			next(debug).pipe(cliContext),
-		]);
+			yield* Effect.all([
+				debugLogger('Tasks complete, running next steps...'),
+				next(debug).pipe(cliContext),
+			]);
 
-		yield* Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)]);
-	})
+			yield* Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)]);
+		})
 ).pipe(Cli.Command.withDescription('Initialize the StudioCMS project after new installation.'));
