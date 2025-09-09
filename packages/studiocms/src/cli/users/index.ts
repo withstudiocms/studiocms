@@ -8,6 +8,7 @@ import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
 import type { EffectStepFn } from '../utils/types.js';
 import { libsqlCreateUsers } from './steps/libsql/createUsers.js';
+import { libsqlModifyUsers } from './steps/libsql/modifyUsers.js';
 import { next } from './steps/next.js';
 
 export const debug = Cli.Options.boolean('debug').pipe(
@@ -50,7 +51,7 @@ const SelectToStepMap: Record<DBOptionsType, SelectStepMap> = {
 			return yield* context.pCancel(val);
 		}),
 		[DBEditOptions.create]: libsqlCreateUsers,
-		[DBEditOptions.modify]: Effect.fn(function* (context, debug, dry) {}),
+		[DBEditOptions.modify]: libsqlModifyUsers,
 	},
 };
 
