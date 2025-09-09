@@ -1,5 +1,5 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
-import { log, note, select, text } from '@withstudiocms/effect/clack';
+import { log, note, password, select, text } from '@withstudiocms/effect/clack';
 import { eq } from 'drizzle-orm';
 import { Effect, runEffect } from '../../../../effect.js';
 import { buildDebugLogger } from '../../../utils/logger.js';
@@ -50,8 +50,7 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 	});
 
 	if (typeof userSelection === 'symbol') {
-		yield* context.pCancel(userSelection);
-		return yield* context.exit(0);
+		return yield* context.pCancel(userSelection);
 	}
 
 	yield* note(`User ID Selected: ${userSelection}`);
@@ -70,11 +69,11 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			const newDisplayName = yield* text({
 				message: 'Enter new display name',
 				placeholder: currentUsers.find((u) => u.id === userSelection)?.name || 'John Doe',
+				validate: (v) => (v.trim().length === 0 ? 'Display name cannot be empty' : undefined),
 			});
 
 			if (typeof newDisplayName === 'symbol') {
-				yield* context.pCancel(newDisplayName);
-				return yield* context.exit(0);
+				return yield* context.pCancel(newDisplayName);
 			}
 
 			if (dryRun) {
@@ -129,8 +128,7 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			});
 
 			if (typeof newUsername === 'symbol') {
-				yield* context.pCancel(newUsername);
-				return yield* context.exit(0);
+				return yield* context.pCancel(newUsername);
 			}
 
 			if (dryRun) {
@@ -169,10 +167,10 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			break;
 		}
 		case UserFieldOption.password: {
-			const newPassword = yield* text({
+			const newPassword = yield* password({
 				message: `Enter the user's new password`,
-				validate: (password) => {
-					const passCheck = Effect.runSync(verifyPasswordStrength(password));
+				validate: (pass) => {
+					const passCheck = Effect.runSync(verifyPasswordStrength(pass));
 					if (passCheck !== true) {
 						return passCheck;
 					}
@@ -181,8 +179,7 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			});
 
 			if (typeof newPassword === 'symbol') {
-				yield* context.pCancel(newPassword);
-				return yield* context.exit(0);
+				return yield* context.pCancel(newPassword);
 			}
 
 			if (dryRun) {
@@ -226,8 +223,7 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			break;
 		}
 		default: {
-			yield* context.pCancel(action);
-			return yield* context.exit(0);
+			return yield* context.pCancel(action);
 		}
 	}
 });
