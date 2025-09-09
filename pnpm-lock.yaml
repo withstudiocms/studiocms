@@ -114,9 +114,6 @@ catalogs:
       specifier: ^0.1.0
       version: 0.1.0
 
-overrides:
-  '@crowdin/crowdin-api-client>axios': ^1.11.0
-
 importers:
 
   .:
