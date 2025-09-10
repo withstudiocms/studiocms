@@ -35,10 +35,8 @@
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
 
     "ci:test:coverage": "vitest run --coverage",
-    "ci:test:all": "vitest",
-    "ci:test:studiocms": "vitest --project=studiocms",
-    "ci:test:@studiocms": "vitest --project=@studiocms/*",
-    "ci:test:@withstudiocms": "vitest --project=@withstudiocms/*",
+    "ci:test:all": "pnpm --filter @withstudiocms/* build && vitest",
+    "ci:test:@withstudiocms": "pnpm --filter @withstudiocms/* build && vitest --project=@withstudiocms/*",
 
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
