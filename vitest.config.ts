@@ -35,6 +35,7 @@ export default defineConfig({
 				'knip.config.ts',
 				'.github/**',
 				'vitest.config.ts',
+				'**/**/vitest.config.ts',
 			],
 		},
 	},
