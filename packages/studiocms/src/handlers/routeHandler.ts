@@ -269,7 +269,7 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 		{
 			enabled: dashboardEnabled && !dbStartPage && authEnabled,
 			pattern: dashboardAPIRoute('mailer/test-email'),
-			entrypoint: routesDir.mailer('test-email.ts'),
+			entrypoint: routesDir.mailer('check-email.ts'),
 		},
 		{
 			enabled: dashboardEnabled && !dbStartPage && authEnabled,
