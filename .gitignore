@@ -6,3 +6,7 @@ node_modules
 
 # typedoc
 www/docs/src/content/docs/typedoc/*
+
+#coverage
+
+coverage/*

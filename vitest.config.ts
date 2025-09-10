@@ -1,8 +1,26 @@
 import { defineConfig } from 'vitest/config';
 
+const projectsWithTests = [
+	{
+		scope: 'withstudiocms',
+		names: [
+			'auth-kit',
+			'buildkit',
+			'component-registry',
+			'config-utils',
+			'effect',
+			'internal_helpers',
+		],
+	},
+];
+
+const projects = projectsWithTests.flatMap(({ scope, names }) =>
+	names.map((name) => `packages/@${scope}/${name}`)
+);
+
 export default defineConfig({
 	test: {
-		projects: ['packages/*', 'packages/@withstudiocms/*', 'packages/@studiocms/*'],
+		projects,
 		// reporters: ['default', 'junit'],
 		// outputFile: {
 		// 	junit: './junit-report.xml',
@@ -10,6 +28,7 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json'],
+			exclude: ['scripts/**', 'playground/**', 'archive/**', 'knip.config.ts'],
 		},
 	},
 });
