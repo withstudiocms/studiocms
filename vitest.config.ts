@@ -28,7 +28,14 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json'],
-			exclude: ['scripts/**', 'playground/**', 'archive/**', 'knip.config.ts'],
+			exclude: [
+				'scripts/**',
+				'playground/**',
+				'archive/**',
+				'knip.config.ts',
+				'.github/**',
+				'vitest.config.ts',
+			],
 		},
 	},
 });
