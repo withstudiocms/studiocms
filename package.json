@@ -31,6 +31,7 @@
     "ci:typecheck:studiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
     "ci:test:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* test",
+    "ci:coverage": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=./coverage/lcov.txt",
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
   },

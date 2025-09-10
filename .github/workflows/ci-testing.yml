@@ -111,3 +111,26 @@ jobs:
 
       - name: Build packages and playground
         run: pnpm build
+
+  codecov:
+    name: Run Code Coverage
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+  
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
+
+      - name: Run Code Coverage
+        run: pnpm ci:coverage
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
