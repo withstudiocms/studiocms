@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { AuthKitConfig, AuthKitOptions } from '../src/config.js';
 
 describe('Config Helper', () => {
-	it('AuthKitOptions.Live returns a Layer with correct config', async () => {
+	it('AuthKitConfig object matches expected shape', async () => {
 		const CMS_ENCRYPTION_KEY = 'test-key';
 
 		const Services = Context.make(

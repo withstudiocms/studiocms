@@ -7,9 +7,42 @@ coverage:
       default:
         informational: true
   comment: #this is a top-level key
-    layout: " diff, flags, files"
+    layout: "diff, flags, files, components" # show component info in the PR comment
     behavior: default
     require_changes: false # if true: only post the comment if coverage changes
     require_base: false # [true :: must have a base report to post]
     require_head: true # [true :: must have a head report to post]
     hide_project_coverage: false
+
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        branches:
+          - "!main"
+  individual_components:
+    - component_id: withstudiocms_auth-kit
+      name: "@withstudiocms/auth-kit"
+      paths:
+        - packages/@withstudiocms/auth-kit/**
+    - component_id: withstudiocms_buildkit
+      name: "@withstudiocms/buildkit"
+      paths:
+        - packages/@withstudiocms/buildkit/**
+    - component_id: withstudiocms_component-registry
+      name: "@withstudiocms/component-registry"
+      paths:
+        - packages/@withstudiocms/component-registry/**
+    - component_id: withstudiocms_config-utils
+      name: "@withstudiocms/config-utils"
+      paths:
+        - packages/@withstudiocms/config-utils/**
+    - component_id: withstudiocms_effect
+      name: "@withstudiocms/effect"
+      paths:
+        - packages/@withstudiocms/effect/**
+    - component_id: withstudiocms_internal_helpers
+      name: "@withstudiocms/internal_helpers"
+      paths:
+        - packages/@withstudiocms/internal_helpers/**
