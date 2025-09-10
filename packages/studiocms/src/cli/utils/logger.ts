@@ -1,6 +1,7 @@
 import { supportsColor } from '@withstudiocms/cli-kit/colors';
 import { date } from '@withstudiocms/cli-kit/messages';
 import chalk from 'chalk';
+import { Effect } from 'effect';
 
 let stdout = process.stdout;
 
@@ -20,3 +21,23 @@ export const logger = {
 		send(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
 	},
 };
+
+/**
+ * Builds a debug logger function that logs debug messages conditionally based on the `debug` flag.
+ * The returned logger function attempts to log the provided message, formatting it with color if supported.
+ *
+ * @param debug - A boolean flag indicating whether debug logging is enabled.
+ * @returns An Effect-wrapped function that logs a debug message if debugging is enabled.
+ */
+export const buildDebugLogger = Effect.fn(function* (debug: boolean) {
+	return Effect.fn((message: string) =>
+		Effect.try(() => {
+			if (!debug) return;
+			if (!supportsColor) {
+				send(`DEBUG [${date}]: ${message}`);
+				return;
+			}
+			send(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
+		})
+	);
+});

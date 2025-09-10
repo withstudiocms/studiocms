@@ -1,4 +1,3 @@
-import { AstroError } from 'astro/errors';
 import _boxen from 'boxen';
 import { Effect } from '../../effect.js';
 
@@ -43,9 +42,8 @@ export const effectBoxen = Effect.fn(<T>(fn: (boxen: typeof _boxen) => T) =>
 	Effect.try({
 		try: () => fn(_boxen),
 		catch: (cause) =>
-			new AstroError(
-				'Boxen Error',
-				`Failed to run boxen: ${cause instanceof Error ? cause.message : String(cause)}`
+			new Error(
+				`Boxen Error: Failed to run boxen: ${cause instanceof Error ? cause.message : String(cause)}`
 			),
 	})
 );

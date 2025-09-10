@@ -2,7 +2,7 @@ import { detectPackageManager } from '@withstudiocms/cli-kit/context';
 import { cancelMessage, getName } from '@withstudiocms/cli-kit/messages';
 import { type ClackError, cancel, isCancel, type Task } from '@withstudiocms/effect/clack';
 import chalk from 'chalk';
-import { Context, Effect, genLogger, Layer } from '../../effect.js';
+import { Context, Effect, genLogger, Layer, Option } from '../../effect.js';
 
 export interface BaseContext {
 	chalk: typeof chalk;
@@ -58,4 +58,12 @@ export const genContext = genLogger('studiocms/cli/utils/context.genContext')(fu
 	};
 
 	return context;
+});
+
+export const parseDebug = Effect.fn(function* (debugOpt: false | Option.Option<boolean>) {
+	if (typeof debugOpt === 'boolean') return debugOpt;
+	return Option.match(debugOpt, {
+		onNone: () => false,
+		onSome: (v) => v,
+	});
 });

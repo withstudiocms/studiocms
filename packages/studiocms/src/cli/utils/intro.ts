@@ -16,8 +16,7 @@ export const random = (...arr: any[]) => {
 
 export const intro = (debug: boolean) =>
 	genLogger('studiocms/cli/utils/intro')(function* () {
-		const context = yield* CliContext;
-		const { chalk, username } = context;
+		const { chalk, username } = yield* CliContext;
 
 		const { messages } = getSeasonalMessages();
 

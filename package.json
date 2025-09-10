@@ -51,10 +51,5 @@
     "studiocms": "workspace:*",
     "typescript": "catalog:",
 		"ts-patch": "^3.3.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@crowdin/crowdin-api-client>axios": "^1.11.0"
-    }
   }
 }
