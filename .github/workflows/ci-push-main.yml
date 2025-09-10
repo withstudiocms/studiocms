@@ -147,10 +147,18 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test:coverage
 
-      - name: Upload results to Codecov
+      - name: Upload coverage results to Codecov
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
           slug: withstudiocms/studiocms
           directory: ./coverage/
           files: ./coverage-final.json
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
+        with:
+          slug: withstudiocms/studiocms
+          files: ./junit-report.xml
           token: ${{ secrets.CODECOV_TOKEN }}
