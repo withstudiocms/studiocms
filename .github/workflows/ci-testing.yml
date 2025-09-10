@@ -126,6 +126,9 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
 
+      - name: Build packages
+        run: pnpm build:studiocms
+
       - name: Run Code Coverage
         run: pnpm ci:coverage
 
