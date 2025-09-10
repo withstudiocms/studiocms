@@ -27,16 +27,14 @@
     "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm changeset publish",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
-    "___ci:test:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* test",
-    "___ci:coverage": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage.txt --test-coverage-exclude=**/tmp/** --test-coverage-exclude=**/test/**",
     
     "ci:typecheck:studiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
 
-    "ci:test:coverage": "vitest run --coverage",
-    "ci:test:all": "pnpm --filter @withstudiocms/* build && vitest",
-    "ci:test:@withstudiocms": "pnpm --filter @withstudiocms/* build && vitest --project=@withstudiocms/*",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ci:test": "vitest run --coverage",
 
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
