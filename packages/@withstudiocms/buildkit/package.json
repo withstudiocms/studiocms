@@ -13,22 +13,22 @@
   },
   "license": "MIT",
   "files": [
-    "src",
+    "lib",
     "CHANGELOG.md",
     "README.md",
     "LICENSE"
   ],
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./lib/index.js",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "bin": {
-    "buildkit": "./src/index.js"
+    "buildkit": "./lib/index.js"
   },
   "scripts": {
-    "test": "buildkit test 'test/**/*.test.js'"
+    "test": "vitest"
   },
   "dependencies": {
     "esbuild": "catalog:",

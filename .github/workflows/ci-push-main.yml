@@ -145,11 +145,10 @@ jobs:
         run: pnpm build:studiocms
 
       - name: Run Code Coverage
-        run: pnpm ci:coverage
+        run: pnpm ci:test:coverage
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
-          files: ./coverage.txt
           name: studiocms-monorepo
           token: ${{ secrets.CODECOV_TOKEN }}
