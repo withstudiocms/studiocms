@@ -34,7 +34,7 @@
     "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
 
-    "ci:test:coverage": "vitest --coverage",
+    "ci:test:coverage": "vitest run --coverage",
     "ci:test:all": "pnpm --filter @withstudiocms/* build && vitest",
     "ci:test:@withstudiocms": "pnpm --filter @withstudiocms/* build && vitest --project=@withstudiocms/*",
 
