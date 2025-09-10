@@ -136,5 +136,5 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
-          name: studiocms-monorepo
+          slug: withstudiocms/studiocms
           token: ${{ secrets.CODECOV_TOKEN }}
