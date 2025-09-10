@@ -43,7 +43,7 @@
     "@changesets/config": "^3.1.1",
     "@changesets/write": "^0.4.0",
     "@crowdin/crowdin-api-client": "^1.46.2",
-		"@effect/language-service": "^0.38.4",
+		"@effect/language-service": "^0.39.0",
     "@types/node": "catalog:",
     "@withstudiocms/buildkit": "workspace:*",
     "execa": "^9.6.0",
