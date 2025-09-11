@@ -128,7 +128,7 @@ jobs:
 
 
   codecov:
-    name: Run Code Coverage
+    name: Run Tests & Code Coverage
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -144,12 +144,21 @@ jobs:
       - name: Build packages
         run: pnpm build:studiocms
 
-      - name: Run Code Coverage
-        run: pnpm ci:coverage
+      - name: Run Tests & Code Coverage
+        run: pnpm ci:test
 
-      - name: Upload results to Codecov
+      - name: Upload coverage results to Codecov
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
-          files: ./coverage.txt
-          name: studiocms-monorepo
+          slug: withstudiocms/studiocms
+          directory: ./coverage/
+          files: ./coverage-final.json
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
+        with:
+          slug: withstudiocms/studiocms
+          files: ./junit-report.xml
           token: ${{ secrets.CODECOV_TOKEN }}

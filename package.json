@@ -27,11 +27,15 @@
     "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm changeset publish",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
-    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
+    
     "ci:typecheck:studiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
-    "ci:test:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* test",
-    "ci:coverage": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage.txt --test-coverage-exclude=**/tmp/** --test-coverage-exclude=**/test/**",
+    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
+
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ci:test": "vitest run --coverage",
+
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
   },
@@ -45,12 +49,15 @@
     "@crowdin/crowdin-api-client": "^1.46.2",
 		"@effect/language-service": "^0.39.0",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:*",
     "execa": "^9.6.0",
     "knip": "^5.63.1",
     "pkg-pr-new": "^0.0.59",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-		"ts-patch": "^3.3.0"
+		"ts-patch": "^3.3.0",
+    "vitest": "^3.2.4"
   }
 }
