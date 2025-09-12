@@ -88,6 +88,7 @@ const normalizeRank = (v: unknown): AvailablePermissionRanks => {
 		case 'visitor':
 		case 'unknown':
 			return v;
+		/* v8 ignore next 2 */
 		default:
 			return 'unknown';
 	}

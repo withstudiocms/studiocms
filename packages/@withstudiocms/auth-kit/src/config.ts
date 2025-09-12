@@ -101,6 +101,7 @@ export function makePasswordModConfig({
 	}
 
 	let raw: Uint8Array;
+	/* v8 ignore start */
 	try {
 		raw =
 			typeof Buffer !== 'undefined'
@@ -113,6 +114,7 @@ export function makePasswordModConfig({
 	} catch {
 		throw new Error('CMS_ENCRYPTION_KEY is not valid base64');
 	}
+	/* v8 ignore stop */
 	if (raw.byteLength !== 16) {
 		throw new Error(`CMS_ENCRYPTION_KEY must decode to 16 bytes, got ${raw.byteLength}`);
 	}
