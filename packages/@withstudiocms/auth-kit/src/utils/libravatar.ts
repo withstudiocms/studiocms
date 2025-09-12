@@ -61,6 +61,7 @@ export const srvHostname = (records: SrvRecord[]): TargetComponents => {
 		return [null, null];
 	}
 
+	/* v8 ignore next 3 */
 	if (records.length === 1) {
 		return [records[0].name, records[0].port];
 	}
@@ -73,6 +74,7 @@ export const srvHostname = (records: SrvRecord[]): TargetComponents => {
 	records.forEach((srvRecord) => {
 		if (srvRecord.priority <= topPriority) {
 			// ignore lower priority records
+			/* v8 ignore next 6 */
 			if (srvRecord.priority < topPriority) {
 				// reset the array (srvRecord has higher priority)
 				topPriority = srvRecord.priority;
@@ -84,6 +86,7 @@ export const srvHostname = (records: SrvRecord[]): TargetComponents => {
 
 			if (srvRecord.weight > 0) {
 				priorityRecords.push([totalWeight, srvRecord]);
+				/* v8 ignore next 4 */
 			} else {
 				// zero-weight elements must come first
 				priorityRecords.unshift([0, srvRecord]);

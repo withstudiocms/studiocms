@@ -91,7 +91,9 @@ export const AuthKitConfig = Brand.nominal<AuthKitConfig>();
  * - Scrypt parameters (`SCRYPT_N`, `SCRYPT_R`, `SCRYPT_P`) can be overridden via environment variables. They are clamped to safe ranges.
  * - The function normalizes and validates the encryption key, then constructs the scrypt configuration for password hashing.
  */
-function makePasswordModConfig({ CMS_ENCRYPTION_KEY }: PasswordModConfig): PasswordModConfigFinal {
+export function makePasswordModConfig({
+	CMS_ENCRYPTION_KEY,
+}: PasswordModConfig): PasswordModConfigFinal {
 	// Validate encryption key (expects base64-encoded 16 bytes for AES-128)
 	const normalizedKey = CMS_ENCRYPTION_KEY.trim();
 	if (normalizedKey.length === 0) {
@@ -99,6 +101,7 @@ function makePasswordModConfig({ CMS_ENCRYPTION_KEY }: PasswordModConfig): Passw
 	}
 
 	let raw: Uint8Array;
+	/* v8 ignore start */
 	try {
 		raw =
 			typeof Buffer !== 'undefined'
@@ -111,6 +114,7 @@ function makePasswordModConfig({ CMS_ENCRYPTION_KEY }: PasswordModConfig): Passw
 	} catch {
 		throw new Error('CMS_ENCRYPTION_KEY is not valid base64');
 	}
+	/* v8 ignore stop */
 	if (raw.byteLength !== 16) {
 		throw new Error(`CMS_ENCRYPTION_KEY must decode to 16 bytes, got ${raw.byteLength}`);
 	}

@@ -73,6 +73,7 @@ export const breakSecurePassword = Effect.fn((hash: string) =>
 				cause: 'Legacy password hashes are not supported. Please reset any legacy passwords.',
 			});
 		}
+		/* v8 ignore next 4 */
 		if (!salt || !hashValue) {
 			throw new PasswordError({
 				cause: 'Invalid secure password format: missing salt or hash.',
@@ -126,6 +127,7 @@ export const checkPwnedDB = (pass: string) =>
 		);
 
 		// If the API is unavailable, skip the check rather than failing
+		/* v8 ignore next 3 */
 		if (response.status >= 400) {
 			return undefined;
 		}

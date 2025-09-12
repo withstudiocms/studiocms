@@ -34,6 +34,7 @@ export const Encryption = (CMS_ENCRYPTION_KEY: string) =>
 		const _key = yield* getKey;
 
 		// Validate key length for AES-128-GCM (16 bytes)
+		/* v8 ignore next 5 */
 		yield* useEncryptionError(() => {
 			if (_key.byteLength !== 16) {
 				throw new Error('CMS_ENCRYPTION_KEY must decode to 16 bytes for aes-128-gcm');

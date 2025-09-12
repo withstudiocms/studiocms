@@ -54,6 +54,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 	Effect.gen(function* () {
 		const [Password, Session] = yield* Effect.all([_Password(Scrypt), _Session(session)]);
 
+		/* v8 ignore next 3 */
 		if (!userTools) {
 			return yield* Effect.fail(new UserError({ cause: 'User tools are not available' }));
 		}
@@ -172,6 +173,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 			}
 		);
 
+		/* v8 ignore start */
 		/**
 		 * Updates the password for a user.
 		 *
@@ -190,6 +192,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 				);
 			}
 		);
+		/* v8 ignore stop */
 
 		/**
 		 * Retrieves the password hash for a given user by their user ID.

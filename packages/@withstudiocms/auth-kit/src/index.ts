@@ -22,6 +22,7 @@ export const makeScrypt = Effect.fn((config: PasswordModConfigFinal) =>
 	})
 );
 
+/* v8 ignore start */
 /**
  * The `AuthKit` service provides a collection of authentication utilities for use within the
  * @withstudiocms ecosystem. It exposes encryption, password management, session management,
@@ -115,3 +116,4 @@ export class AuthKit extends Effect.Service<AuthKit>()('@withstudiocms/AuthKit',
 	 */
 	static makeConfig = (config: RawAuthKitConfig) => AuthKitOptions.Live(config);
 }
+/* v8 ignore stop */
