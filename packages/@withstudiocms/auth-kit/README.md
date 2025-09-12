@@ -1,5 +1,7 @@
 # @withstudiocms/auth-kit
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_auth_kit)](https://codecov.io/github/withstudiocms/studiocms)
+
 Authentication Management utilities for StudioCMS
 
 ## Example Astro DB Tables

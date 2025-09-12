@@ -36,6 +36,7 @@ export default defineConfig({
 				'.github/**',
 				'vitest.config.ts',
 				'**/**/vitest.config.ts',
+				'**/@withstudiocms/auth-kit/scripts/**',
 			],
 		},
 	},
