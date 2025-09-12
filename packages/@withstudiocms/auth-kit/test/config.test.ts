@@ -46,7 +46,7 @@ describe('Config Helper', () => {
 		});
 	});
 
-	describe('makePasswordModConfig', async () => {
+	describe('makePasswordModConfig', () => {
 		const validKeyBytes = new Uint8Array(16).fill(1);
 		const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
 
@@ -88,7 +88,11 @@ describe('Config Helper', () => {
 		});
 
 		it('respects SCRYPT_N, SCRYPT_R, SCRYPT_P env vars and clamps them', () => {
-			const oldEnv = { ...process.env };
+			const prev = {
+				N: process.env.SCRYPT_N,
+				R: process.env.SCRYPT_R,
+				P: process.env.SCRYPT_P,
+			};
 			process.env.SCRYPT_N = '65536';
 			process.env.SCRYPT_R = '16';
 			process.env.SCRYPT_P = '4';
@@ -99,7 +103,9 @@ describe('Config Helper', () => {
 			process.env.SCRYPT_P = '99'; // above max
 			const config2 = makePasswordModConfig({ CMS_ENCRYPTION_KEY: validBase64Key });
 			expect(config2.scrypt.options).toMatchObject({ N: 1048576, r: 32, p: 16 });
-			process.env = oldEnv;
+			process.env.SCRYPT_N = prev.N;
+			process.env.SCRYPT_R = prev.R;
+			process.env.SCRYPT_P = prev.P;
 		});
 
 		it('clamps SCRYPT_N to nearest lower power of two', () => {
@@ -196,21 +202,17 @@ describe('Config Helper', () => {
 				userTools,
 			});
 
-			const test = Layer.build(layer);
+			const resolvedContext = Effect.runSync(Effect.scoped(Layer.build(layer)));
 
-			const resolvedContext = Effect.runSync(
-				Effect.scoped(Effect.provideService(test, AuthKitOptions, {} as any))
-			);
+			const testContext = Context.get(resolvedContext, AuthKitOptions);
 
-			expect(Context.get(resolvedContext, AuthKitOptions).session).toEqual({
+			expectTypeOf(layer).toEqualTypeOf<Layer.Layer<AuthKitOptions, never, never>>();
+			expect(testContext.session).toEqual({
 				...defaultSessionConfig,
 				...customSession,
 			});
-
-			expect(Context.get(resolvedContext, AuthKitOptions).session.cookieName).toBe('custom_cookie');
-			expect(Context.get(resolvedContext, AuthKitOptions).session.expTime).toBe(123456);
-
-			expectTypeOf(layer).toEqualTypeOf<Layer.Layer<AuthKitOptions, never, never>>();
+			expect(testContext.session.cookieName).toBe('custom_cookie');
+			expect(testContext.session.expTime).toBe(123456);
 		});
 	});
 });

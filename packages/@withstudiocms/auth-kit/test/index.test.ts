@@ -28,8 +28,6 @@ describe('makeScrypt', () => {
 
 		const testhash = (await Effect.runPromise(result.run('testpassword'))).toString('hex');
 
-		console.log(testhash);
-
 		expect(typeof testhash).toBe('string');
 		expect(testhash).toMatch(/[a-f0-9]+$/);
 	});
@@ -43,5 +41,6 @@ describe('makeScrypt', () => {
 		await expect(Effect.runPromise(effect)).rejects.toThrow(
 			/Failed to create Scrypt instance: scrypt config error/
 		);
+		vi.restoreAllMocks();
 	});
 });

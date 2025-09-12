@@ -2,4 +2,5 @@
 "@withstudiocms/auth-kit": patch
 ---
 
-Improve tests
+Improve test coverage for config and scrypt; export makePasswordModConfig; update coverage excludes.
+
