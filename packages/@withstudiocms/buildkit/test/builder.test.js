@@ -22,7 +22,7 @@ vi.mock('chalk', async (importOriginal) => {
 	};
 });
 vi.mock('tinyglobby', () => ({
-	glob: vi.fn(async (patterns, opts) => {
+	glob: vi.fn(async (patterns, _opts) => {
 		if (Array.isArray(patterns)) {
 			// Simulate globbing for entry points and cleaning
 			return patterns
@@ -107,6 +107,8 @@ describe('builder', () => {
 
 		expect(logs.some((l) => l.includes('Build Complete'))).toBe(true);
 	});
+
+	// Both of the following need to be investigated... as they SHOULD work but dont...
 
 	it.todo('uses cjs format if --force-cjs is passed', async () => {
 		const { glob } = await import('tinyglobby');
