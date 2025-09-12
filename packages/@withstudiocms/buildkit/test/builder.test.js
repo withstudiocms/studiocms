@@ -46,6 +46,7 @@ describe('builder', () => {
 
 	afterAll(() => {
 		rmSync('src', { recursive: true, force: true });
+		rmSync('dist', { recursive: true, force: true });
 	});
 
 	beforeEach(() => {

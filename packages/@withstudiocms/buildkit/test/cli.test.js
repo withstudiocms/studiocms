@@ -42,6 +42,7 @@ describe('buildkit CLI', () => {
 
 	afterAll(() => {
 		rmSync('src', { recursive: true, force: true });
+		rmSync('dist', { recursive: true, force: true });
 	});
 	it('help command: should show help when no command is provided', async () => {
 		process.argv = ['node', 'buildkit'];
