@@ -262,9 +262,13 @@ export default async function builder(cmd, args) {
 			});
 
 			if (testReport) {
-				const message = `\n\nBundle: ${bundle}\nExternal: ${JSON.stringify(Object.keys(dependencies))}\nFormat: ${format}\nOutExtension: ${JSON.stringify(
-					forceCJS ? { '.js': '.cjs' } : {}
-				)}\n\n`;
+				const externals = bundle ? Object.keys(dependencies).sort() : null;
+				const outExt = forceCJS ? { '.js': '.cjs' } : {};
+				const message =
+					`\n\nBundle: ${bundle}` +
+					`\nExternal: ${externals ? JSON.stringify(externals) : 'n/a'}` +
+					`\nFormat: ${format}` +
+					`\nOutExtension: ${JSON.stringify(outExt)}\n\n`;
 				console.log(chalk.dim(`[${date}] `) + chalk.gray(message));
 			}
 

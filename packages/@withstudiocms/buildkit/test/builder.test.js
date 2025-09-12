@@ -136,6 +136,6 @@ describe('builder', () => {
 		await builder('build', ['src/index.ts', '--bundle', '--test-report']);
 
 		expect(logs.some((l) => l.includes('Bundle: true'))).toBe(true);
-		expect(logs.some((l) => l.includes('External: ["foo","bar"]\n'))).toBe(true);
+		expect(logs.some((l) => l.includes('External: ["bar","foo"]\n'))).toBe(true);
 	});
 });
