@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import builder from './cmds/builder.js';
 import showHelp from './cmds/help.js';
-import test from './cmds/test.js';
 
 /**
  * Main function to handle command line arguments and execute the appropriate command.
@@ -12,9 +11,6 @@ export default async function main() {
 		case 'dev':
 		case 'build':
 			await builder(cmd, args);
-			break;
-		case 'test':
-			await test(args);
 			break;
 		default: {
 			showHelp();
