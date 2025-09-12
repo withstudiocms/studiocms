@@ -234,7 +234,7 @@ export const addPlugin = Cli.Command.make(
 					break;
 			}
 
-			const configURL = yield* resolveOrCreateConfig(new URL(rootPath));
+			const configURL = yield* resolveOrCreateConfig(root);
 
 			yield* Console.debug(`found config at ${configURL}`);
 
