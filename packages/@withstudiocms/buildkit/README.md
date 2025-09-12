@@ -1,5 +1,7 @@
 # `@withstudiocms/buildkit`
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_buildkit)](https://codecov.io/github/withstudiocms/studiocms)
+
 This is an esbuild based CLI kit for building Astro Integrations
 
 ## Usage
@@ -65,5 +67,4 @@ For other content types and how to use them see [The esBuild Docs](https://esbui
 
 ## Licensing
 
--[MIT Licensed](https://github.com/withstudiocms/cachedfetch/blob/main/LICENSE).
-+[MIT Licensed](https://github.com/withstudiocms/studiocms/blob/main/LICENSE).
+[MIT Licensed](https://github.com/withstudiocms/studiocms/blob/main/LICENSE).

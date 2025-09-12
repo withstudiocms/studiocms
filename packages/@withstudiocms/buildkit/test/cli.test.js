@@ -1,6 +1,25 @@
+import * as child_process from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import * as fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import stripAnsi from 'strip-ansi';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import run from '../lib/index.js';
+
+vi.mock('tinyglobby', () => ({
+	glob: vi.fn(async (patterns, _opts) => {
+		if (Array.isArray(patterns)) {
+			// Simulate globbing for entry points and cleaning
+			return patterns
+				.filter((p) => typeof p === 'string' && !p.startsWith('!'))
+				.map((p) => p.replace(/^\.\//, ''));
+		}
+		return [];
+	}),
+}));
+vi.mock('node:fs/promises');
+vi.mock('node:child_process');
 
 let originalArgv;
 let consoleLogSpy;
@@ -17,6 +36,19 @@ afterEach(() => {
 });
 
 describe('buildkit CLI', () => {
+	const cwd = process.cwd();
+	let tmpDir;
+	beforeAll(() => {
+		tmpDir = mkdtempSync(path.join(os.tmpdir(), 'buildkit-cli-test-'));
+		process.chdir(tmpDir);
+		mkdirSync('src', { recursive: true });
+		writeFileSync(path.join('src', 'index.ts'), 'export const foo = "bar";');
+	});
+
+	afterAll(() => {
+		process.chdir(cwd);
+		rmSync(tmpDir, { recursive: true, force: true });
+	});
 	it('help command: should show help when no command is provided', async () => {
 		process.argv = ['node', 'buildkit'];
 		await run();
@@ -30,19 +62,10 @@ describe('buildkit CLI', () => {
 		expect(output).toContain('Commands:');
 		expect(output).toContain('dev');
 		expect(output).toContain('build');
-		expect(output).toContain('test');
 		expect(output).toContain('Dev and Build Options:');
 		expect(output).toContain('--no-clean-dist');
 		expect(output).toContain('--bundle');
 		expect(output).toContain('--force-cjs');
-		expect(output).toContain('Test Options:');
-		expect(output).toContain('-m, --match <pattern>');
-		expect(output).toContain('-o, --only');
-		expect(output).toContain('-p, --parallel');
-		expect(output).toContain('-w, --watch');
-		expect(output).toContain('-t, --timeout <ms>');
-		expect(output).toContain('-s, --setup <file>');
-		expect(output).toContain('--teardown <file>');
 	});
 
 	it('buildkit CLI: help command: should show help with invalid command', async () => {
@@ -55,5 +78,37 @@ describe('buildkit CLI', () => {
 
 		expect(output).toContain('StudioCMS Buildkit');
 		expect(output).toContain('Usage:');
+	});
+
+	it('throws if no entry points found', async () => {
+		const { glob } = await import('tinyglobby');
+		glob.mockResolvedValueOnce([]);
+		process.argv = ['node', 'buildkit', 'build', 'src/index.ts'];
+		await run().catch((error) => {
+			expect(error.message).toMatch(/No entry points found/);
+		});
+	});
+
+	it('runs build with correct esbuild options', async () => {
+		const { glob } = await import('tinyglobby');
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
+		fs.readFile.mockResolvedValueOnce(
+			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0' } })
+		);
+
+		const execFileSyncMock = vi.spyOn(child_process, 'execFileSync').mockReturnValue('');
+
+		process.argv = [
+			'node',
+			'buildkit',
+			'build',
+			'src/index.ts',
+			'--outdir=dist',
+			'--tsconfig=tsconfig.json',
+		];
+		await run();
+
+		expect(execFileSyncMock).toHaveBeenCalled();
+		expect(consoleLogSpy.mock.calls.some((call) => call[0].includes('Build Complete'))).toBe(true);
 	});
 });

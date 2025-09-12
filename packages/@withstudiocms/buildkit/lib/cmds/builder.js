@@ -168,6 +168,7 @@ export default async function builder(cmd, args) {
 
 	const noClean = args.includes('--no-clean-dist');
 	const bundle = args.includes('--bundle');
+	const testReport = args.includes('--test-report');
 	const forceCJS = args.includes('--force-cjs');
 	const buildTsConfig =
 		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || 'tsconfig.json';
@@ -259,6 +260,18 @@ export default async function builder(cmd, args) {
 				format,
 				plugins: [dtsGen(buildTsConfig, outdir), ...copyPlugins],
 			});
+
+			if (testReport) {
+				const externals = bundle ? Object.keys(dependencies).sort() : null;
+				const outExt = forceCJS ? { '.js': '.cjs' } : {};
+				const message =
+					`\n\nBundle: ${bundle}` +
+					`\nExternal: ${externals ? JSON.stringify(externals) : 'n/a'}` +
+					`\nFormat: ${format}` +
+					`\nOutExtension: ${JSON.stringify(outExt)}\n\n`;
+				console.log(chalk.dim(`[${date}] `) + chalk.gray(message));
+			}
+
 			console.log(chalk.dim(`[${date}] `) + chalk.green('√ Build Complete'));
 			break;
 		}
