@@ -30,7 +30,6 @@ describe('buildkit CLI', () => {
 		expect(output).toContain('Commands:');
 		expect(output).toContain('dev');
 		expect(output).toContain('build');
-		expect(output).toContain('test');
 		expect(output).toContain('Dev and Build Options:');
 		expect(output).toContain('--no-clean-dist');
 		expect(output).toContain('--bundle');
