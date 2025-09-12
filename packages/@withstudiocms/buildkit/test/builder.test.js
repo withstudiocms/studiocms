@@ -46,12 +46,13 @@ describe('builder', () => {
 		tmpDir = mkdtempSync(path.join(os.tmpdir(), 'buildkit-cli-test-'));
 		process.chdir(tmpDir);
 		mkdirSync('src', { recursive: true });
-		writeFileSync(path.join('src', 'index.ts'), 'export const foo = "bar";');
+		writeFileSync(path.join('src', 'index.ts'), 'export const foo: string = "bar";');
 	});
 
 	afterAll(() => {
 		process.chdir(cwd);
 		rmSync(tmpDir, { recursive: true, force: true });
+		rmSync(path.join(cwd, 'dist'), { recursive: true, force: true });
 	});
 
 	beforeEach(() => {
@@ -61,7 +62,7 @@ describe('builder', () => {
 		console.error = (msg) => errors.push(msg);
 		vi.clearAllMocks();
 
-		esbuild.build = vi.fn().mockResolvedValue(undefined);
+		esbuild.build = vi.fn().mockResolvedValue();
 		esbuild.context = vi.fn().mockResolvedValue({
 			watch: vi.fn(),
 			stop: vi.fn(),
@@ -114,33 +115,27 @@ describe('builder', () => {
 		expect(logs.some((l) => l.includes('Build Complete'))).toBe(true);
 	});
 
-	// Both of the following need to be investigated... as they SHOULD work but dont...
-
-	it.todo('uses cjs format if --force-cjs is passed', async () => {
+	it('uses cjs format if --force-cjs is passed', async () => {
 		const { glob } = await import('tinyglobby');
 		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(JSON.stringify({ type: 'module', dependencies: {} }));
 
-		await builder('build', ['src/index.ts', '--force-cjs']);
+		await builder('build', ['src/index.ts', '--force-cjs', '--test-report']);
 
-		origConsoleError(`--- TEST INFO ${JSON.stringify(esbuild.build.mock.calls[0])} ---`);
-
-		const call = esbuild.build.mock.calls[0][0];
-		expect(call.format).toBe('cjs');
-		expect(call.outExtension).toEqual({ '.js': '.cjs' });
+		expect(logs.some((l) => l.includes('OutExtension: {".js":".cjs"}'))).toBe(true);
+		expect(logs.some((l) => l.includes('Format: cjs'))).toBe(true);
 	});
 
-	it.todo('passes bundle and external dependencies if --bundle is passed', async () => {
+	it('passes bundle and external dependencies if --bundle is passed', async () => {
 		const { glob } = await import('tinyglobby');
 		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(
 			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0', bar: '^2.0.0' } })
 		);
 
-		await builder('build', ['src/index.ts', '--bundle']);
+		await builder('build', ['src/index.ts', '--bundle', '--test-report']);
 
-		const call = esbuild.build.mock.calls[0][0];
-		expect(call.bundle).toBe(true);
-		expect(call.external).toEqual(['foo', 'bar']);
+		expect(logs.some((l) => l.includes('Bundle: true'))).toBe(true);
+		expect(logs.some((l) => l.includes('External: ["foo","bar"]\n'))).toBe(true);
 	});
 });
