@@ -1,5 +1,7 @@
 # `@withstudiocms/buildkit`
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_buildkit)](https://codecov.io/github/withstudiocms/studiocms)
+
 This is an esbuild based CLI kit for building Astro Integrations
 
 ## Usage
