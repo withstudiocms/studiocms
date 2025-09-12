@@ -2,4 +2,5 @@
 "@withstudiocms/buildkit": patch
 ---
 
-Improve tests, and remove old tests scripts (migrated to vitest)
+Improve tests and remove old test scripts (migrated to Vitest)
+

@@ -1,6 +1,7 @@
 import * as child_process from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import chalk from 'chalk';
 import * as esbuild from 'esbuild';
@@ -38,15 +39,19 @@ describe('builder', () => {
 	const origConsoleError = console.error;
 	let logs = [];
 	let errors = [];
+	const cwd = process.cwd();
+	let tmpDir;
 
 	beforeAll(() => {
+		tmpDir = mkdtempSync(path.join(os.tmpdir(), 'buildkit-cli-test-'));
+		process.chdir(tmpDir);
 		mkdirSync('src', { recursive: true });
 		writeFileSync(path.join('src', 'index.ts'), 'export const foo = "bar";');
 	});
 
 	afterAll(() => {
-		rmSync('src', { recursive: true, force: true });
-		rmSync('dist', { recursive: true, force: true });
+		process.chdir(cwd);
+		rmSync(tmpDir, { recursive: true, force: true });
 	});
 
 	beforeEach(() => {
@@ -76,7 +81,7 @@ describe('builder', () => {
 
 	it('runs build with correct esbuild options', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(
 			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0' } })
 		);
@@ -91,7 +96,7 @@ describe('builder', () => {
 
 	it('runs dev and sets up watch', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(JSON.stringify({ type: 'module', dependencies: {} }));
 
 		await builder('dev', ['src/index.ts', '--outdir=dist']);
@@ -101,7 +106,7 @@ describe('builder', () => {
 
 	it('skips cleaning if --no-clean-dist is passed', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(JSON.stringify({ type: 'module', dependencies: {} }));
 
 		await builder('build', ['src/index.ts', '--no-clean-dist']);
@@ -113,7 +118,7 @@ describe('builder', () => {
 
 	it.todo('uses cjs format if --force-cjs is passed', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(JSON.stringify({ type: 'module', dependencies: {} }));
 
 		await builder('build', ['src/index.ts', '--force-cjs']);
@@ -127,7 +132,7 @@ describe('builder', () => {
 
 	it.todo('passes bundle and external dependencies if --bundle is passed', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(
 			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0', bar: '^2.0.0' } })
 		);

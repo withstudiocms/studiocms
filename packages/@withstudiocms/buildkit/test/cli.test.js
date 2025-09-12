@@ -1,6 +1,7 @@
 import * as child_process from 'node:child_process';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import stripAnsi from 'strip-ansi';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -35,14 +36,18 @@ afterEach(() => {
 });
 
 describe('buildkit CLI', () => {
+	const cwd = process.cwd();
+	let tmpDir;
 	beforeAll(() => {
+		tmpDir = mkdtempSync(path.join(os.tmpdir(), 'buildkit-cli-test-'));
+		process.chdir(tmpDir);
 		mkdirSync('src', { recursive: true });
 		writeFileSync(path.join('src', 'index.ts'), 'export const foo = "bar";');
 	});
 
 	afterAll(() => {
-		rmSync('src', { recursive: true, force: true });
-		rmSync('dist', { recursive: true, force: true });
+		process.chdir(cwd);
+		rmSync(tmpDir, { recursive: true, force: true });
 	});
 	it('help command: should show help when no command is provided', async () => {
 		process.argv = ['node', 'buildkit'];
@@ -86,7 +91,7 @@ describe('buildkit CLI', () => {
 
 	it('runs build with correct esbuild options', async () => {
 		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce(['src/index.ts']);
+		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
 		fs.readFile.mockResolvedValueOnce(
 			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0' } })
 		);
