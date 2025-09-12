@@ -10,4 +10,7 @@ www/docs/src/content/docs/typedoc/*
 #coverage
 
 coverage/*
+coverage
 junit-report.xml
+
+dist
