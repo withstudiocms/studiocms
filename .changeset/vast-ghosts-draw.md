@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Correct paramter in cli add command
+Correct parameter in CLI add command.
