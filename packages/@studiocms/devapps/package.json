@@ -53,9 +53,10 @@
     }
   },
   "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}' --exclude 'src/**/__tests__/**' --exclude 'src/**/*.test.*'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
-    "typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "test": "vitest"
   },
   "type": "module",
   "dependencies": {
