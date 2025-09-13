@@ -38,7 +38,7 @@ coverage:
           - tools-utils
 
 comment:
-  layout: "header, diff, flags, components"
+  layout: "header, diff, files, flags, components"
 
 flags:
   integrations:
