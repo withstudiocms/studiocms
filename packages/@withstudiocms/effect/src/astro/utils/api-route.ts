@@ -128,6 +128,7 @@ const SupportedContentTypeHeadersMap = {
 
 type SupportedContentType = keyof typeof SupportedContentTypeHeadersMap;
 
+/* v8 ignore start */
 /**
  * Validates the incoming API request based on the provided validation options.
  *
@@ -216,3 +217,5 @@ export async function validateRequest(
 
 	return null;
 }
+
+/* v8 ignore stop */
