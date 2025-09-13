@@ -5,6 +5,8 @@ import type { ConfigResolverBuilderOpts, WatchConfigFileOptions } from './types.
 import { findConfig } from './watcher.js';
 import { parseAndMerge, parseConfig } from './zod-utils.js';
 
+/* v8 ignore start */
+// This function is tested indirectly via the integration tests in this package
 /**
  * Builds a config resolver utility for Astro integrations.
  *
@@ -72,7 +74,10 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 			return mergedConfig;
 		}
 	);
+/* v8 ignore stop */
 
+/* v8 ignore start */
+// This function is tested indirectly via the integration tests in this package
 /**
  * Creates an Astro integration utility that watches for changes in the first existing configuration file
  * found in the provided `configPaths`. When a configuration file is detected, it is registered for watching
@@ -98,3 +103,4 @@ export const watchConfigFileBuilder = ({ configPaths }: WatchConfigFileOptions) 
 			return;
 		}
 	);
+/* v8 ignore stop */

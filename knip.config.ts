@@ -29,7 +29,11 @@ const baseAstroWorkspaceConfig = {
 const baseWithStudioCMSConfig = {
 	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}', 'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
-	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**'],
+	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/example.config.mjs'],
+};
+const buildKitWithStudioCMSConfig = {
+	...baseWithStudioCMSConfig,
+	entry: ['lib/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}', 'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 };
 
 /**
@@ -75,7 +79,6 @@ const atWithStudioCMSPackages = [
 	'auth-kit',
 	'config-utils',
 	'effect',
-	'buildkit',
 	'component-registry',
 	'internal_helpers',
 ] as const;
@@ -141,6 +144,7 @@ const config: KnipConfig = {
 			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic object construction
 			{} as Record<string, any>
 		),
+		'packages/@withstudiocms/build-kit': buildKitWithStudioCMSConfig,
 		playground: {
 			ignoreDependencies: ['sharp'],
 			astro: {

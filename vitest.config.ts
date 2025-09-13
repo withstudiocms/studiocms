@@ -38,6 +38,8 @@ export default defineConfig({
 				'**/**/vitest.config.ts',
 				'**/**/@withstudiocms/auth-kit/scripts/**',
 				'**/**/scratchpad/**',
+				'**/**/test/fixtures/**',
+				'**/**/test/test-utils.ts',
 			],
 		},
 	},

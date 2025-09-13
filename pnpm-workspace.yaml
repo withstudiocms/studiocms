@@ -46,5 +46,6 @@ catalogs:
 packages:
   - "packages/@studiocms/*"
   - "packages/@withstudiocms/*"
+  - "packages/@withstudiocms/*/test/fixtures/*"
   - "packages/*"
   - "playground"

@@ -4,5 +4,6 @@ export default defineProject({
 	test: {
 		environment: 'node',
 		include: ['**/*.test.ts'],
+		exclude: ['**/fixtures/**', '**/test-utils.ts'],
 	},
 });
