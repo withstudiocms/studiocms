@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertToSafeString } from '../../src/utils/safeString.js';
+import { convertToSafeString } from '../../src/utils/index.js';
 
 describe('utils/safeString', () => {
 	it('convertToSafeString replaces non-alphanumeric with underscores', () => {

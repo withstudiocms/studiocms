@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jsonParse, readJson } from '../../src/utils/jsonUtils.js';
+import { jsonParse, readJson } from '../../src/utils/index.js';
 
 describe('jsonParse', () => {
 	it('parses valid JSON string to object', () => {
@@ -19,7 +19,7 @@ describe('readJson', () => {
 	const mockJson = '{"hello":"world","num":123}';
 
 	it('reads and parses JSON file content', () => {
-		const mockReadFileSync = (path: string, encoding: BufferEncoding) => {
+		const mockReadFileSync = (path: string | URL, encoding: BufferEncoding) => {
 			expect(path).toBe(mockPath);
 			expect(encoding).toBe('utf-8');
 			return mockJson;

@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 import { describe, expect, it } from 'vitest';
-import { loadChangelog, semverCategories } from '../../src/utils/loadChangelog.js';
+import { loadChangelog, semverCategories } from '../../src/utils/index.js';
 
 // Example changelog markdown for testing
 const exampleMarkdown = `
