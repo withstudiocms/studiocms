@@ -42,15 +42,18 @@ comment:
 
 flags:
   integrations:
+    carryforward: false
     paths:
       - packages/studiocms/**
       - packages/@studiocms/devapps/**
   plugins:
+    carryforward: false
     paths:
       - packages/@studiocms/**
     ignore:
       - packages/@studiocms/devapps/**
   tools-utils:
+    carryforward: false
     paths:
       - packages/@withstudiocms/**
 
