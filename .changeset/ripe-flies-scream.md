@@ -2,4 +2,4 @@
 "@withstudiocms/config-utils": patch
 ---
 
-Add integration tests
+Add integration tests for @withstudiocms/config-utils.
