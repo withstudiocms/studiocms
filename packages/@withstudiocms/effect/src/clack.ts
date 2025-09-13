@@ -52,7 +52,7 @@ export class ClackError extends Data.TaggedError('ClackError')<{ cause: unknown 
  * @param _try - A function to execute that may throw an error.
  * @returns An `Effect` that yields the result of the function or a `ClackError` if an error is thrown.
  */
-const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
+export const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
 	Effect.try({
 		try: _try,
 		catch: (cause) => new ClackError({ cause }),
@@ -65,11 +65,15 @@ const useClackError = <A>(_try: () => A): Effect.Effect<A, ClackError> =>
  * @param _try A function that returns a promise of type `A`.
  * @returns An `Effect` that resolves with the value of type `A` or fails with a `ClackError`.
  */
-const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, ClackError> =>
+export const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, ClackError> =>
 	Effect.tryPromise({
 		try: _try,
 		catch: (cause) => new ClackError({ cause }),
 	});
+
+/* v8 ignore start */
+
+// Current version of @clack/prompts has some issues with testing
 
 /**
  * Cancels the current Clack operation and optionally displays an error message.
@@ -326,3 +330,5 @@ export const stream = {
 		useClackErrorPromise(() => ClackPrompts.stream.error(iterable))
 	),
 };
+
+/* v8 ignore stop */

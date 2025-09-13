@@ -20,6 +20,7 @@ import { Effect } from './effect.js';
 export const deepmergeCustom = Effect.fn(<T>(fn: (deepmerge: typeof _deepmergeCustomSrc) => T) =>
 	Effect.try({
 		try: () => fn(_deepmergeCustomSrc),
+		/* v8 ignore next 4 */
 		catch: (cause) =>
 			new Error(
 				`Failed to run deepmerge callback: ${cause instanceof Error ? cause.message : String(cause)}`

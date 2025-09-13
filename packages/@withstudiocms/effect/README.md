@@ -1,5 +1,7 @@
 # @withstudiocms/effect
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_effect)](https://codecov.io/github/withstudiocms/studiocms)
+
 This package contains various Effect utilities for StudioCMS/Astro projects
 
 ## Install

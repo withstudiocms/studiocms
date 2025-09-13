@@ -4,6 +4,7 @@ import { runEffect } from '../index.js';
 import type { EffectMiddlewareHandler, EffectMiddlewareRouterEntry } from './types.js';
 import { buildMiddlewareSequence } from './utils/middleware.js';
 
+/* v8 ignore next 10 */
 /**
  * Defines an effect middleware by wrapping the provided handler function.
  * The middleware handler is executed within the `runEffect` context, allowing
@@ -15,6 +16,7 @@ import { buildMiddlewareSequence } from './utils/middleware.js';
 export const defineMiddleware = (fn: EffectMiddlewareHandler): MiddlewareHandler =>
 	_defineMiddleware(async (context, next) => await runEffect(fn(context, next)));
 
+/* v8 ignore next 12 */
 /**
  * Defines a middleware router that filters and applies middleware handlers based on path matching.
  *

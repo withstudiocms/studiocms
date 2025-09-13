@@ -46,7 +46,7 @@
     {
       "groupName": "Effect Dependencies",
       "matchManagers": ["npm"],
-      "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service"],
+      "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service", "!@effect/vitest"],
       "labels": ["effect-deps"]
     },
     {

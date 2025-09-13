@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { appendSearchParamsToUrl, Effect, runEffect } from '../src/effect.js';
+import { describe, expect, it } from '@effect/vitest';
+import { appendSearchParamsToUrl, Effect, HTTPClient, runEffect } from '../src/effect.js';
 
 describe('Effect Utilities', () => {
 	it('runEffect resolves Effect with value', async () => {
@@ -27,4 +27,13 @@ describe('Effect Utilities', () => {
 		expect(resultUrl.searchParams.get('baz')).toBe('qux');
 		expect(resultUrl.toString()).toBe('https://example.com/?baz=qux');
 	});
+
+	it.effect('HTTPClient provides a retrying HttpClient instance', () =>
+		Effect.gen(function* () {
+			const client = yield* HTTPClient;
+			const response = yield* client.get('https://example.com');
+			const result = yield* response.text;
+			expect(result).toContain('<title>Example Domain</title>');
+		}).pipe(Effect.provide(HTTPClient.Default))
+	);
 });

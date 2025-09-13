@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { handlerFilter, matchFilterCheck } from '../../../src/astro/utils/middleware.js';
+import {
+	handlerFilter,
+	matchFilterCheck,
+	sortByPriority,
+} from '../../../src/astro/utils/middleware.js';
 
 describe('Middleware Utils', () => {
 	describe('matchFilterCheck', () => {
@@ -70,6 +74,37 @@ describe('Middleware Utils', () => {
 			expect(handlerFilter([], [], '/foo')).toBe(true);
 			expect(handlerFilter('', '/foo', '/foo')).toBe(false);
 			expect(handlerFilter([], ['/foo'], '/foo')).toBe(false);
+		});
+
+		describe('sortByPriority', () => {
+			it('sorts lower numbers before higher numbers', () => {
+				expect(sortByPriority(1, 2)).toBeLessThan(0);
+				expect(sortByPriority(10, 5)).toBeGreaterThan(0);
+				expect(sortByPriority(3, 3)).toBe(0);
+			});
+
+			it('treats undefined as lowest priority (sorted last)', () => {
+				expect(sortByPriority(1, undefined)).toBeLessThan(0);
+				expect(sortByPriority(undefined, 1)).toBeGreaterThan(0);
+			});
+
+			it('treats null as lowest priority (sorted last)', () => {
+				expect(sortByPriority(1, null)).toBeLessThan(0);
+				expect(sortByPriority(null, 1)).toBeGreaterThan(0);
+			});
+
+			it('treats both undefined as equal', () => {
+				expect(sortByPriority(undefined, undefined)).toBe(0);
+			});
+
+			it('treats both null as equal', () => {
+				expect(sortByPriority(null, null)).toBe(0);
+			});
+
+			it('treats undefined and null as equal', () => {
+				expect(sortByPriority(undefined, null)).toBe(0);
+				expect(sortByPriority(null, undefined)).toBe(0);
+			});
 		});
 	});
 });

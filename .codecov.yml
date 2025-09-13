@@ -3,18 +3,121 @@ coverage:
     project:
       default:
         informational: true
+      # integrations:
+      #   informational: true
+      #   target: 80%
+      #   flags:
+      #     - integrations
+      # plugins:
+      #   informational: true
+      #   target: 80%
+      #   flags:
+      #     - plugins
+      tools-utils:
+        informational: true
+        target: 80%
+        flags:
+          - tools-utils
     patch:
       default:
         informational: true
-comment: #this is a top-level key
-  layout: "header, diff, flags, components" # show component info in the PR comment
+      # integrations:
+      #   informational: true
+      #   target: 80%
+      #   flags:
+      #     - integrations
+      # plugins:
+      #   informational: true
+      #   target: 80%
+      #   flags:
+      #     - plugins
+      tools-utils:
+        informational: true
+        target: 80%
+        flags:
+          - tools-utils
+
+comment:
+  layout: "header, diff, flags, components"
   behavior: default
-  require_changes: false # if true: only post the comment if coverage changes
-  require_base: false # [true :: must have a base report to post]
-  require_head: true # [true :: must have a head report to post]
+  require_changes: false
+  require_base: false
+  require_head: true
   hide_project_coverage: false
+
+flags:
+  integrations:
+    paths:
+      - packages/studiocms/**
+      - packages/@studiocms/devapps/**
+  plugins:
+    paths:
+      - packages/@studiocms/**
+    ignore:
+      - packages/@studiocms/devapps/**
+  tools-utils:
+    paths:
+      - packages/@withstudiocms/**
+
 component_management:
   individual_components:
+    # StudioCMS Integrations
+    - component_id: studiocms
+      name: "studiocms"
+      paths:
+        - packages/studiocms/**
+    - component_id: studiocms_devapps
+      name: "@studiocms/devapps"
+      paths:
+        - packages/@studiocms/devapps/**
+
+    # StudioCMS Plugins
+    - component_id: studiocms_auth0
+      name: "@studiocms/auth0"
+      paths:
+        - packages/@studiocms/auth0/**
+    - component_id: studiocms_blog
+      name: "@studiocms/blog"
+      paths:
+        - packages/@studiocms/blog/**
+    - component_id: studiocms_cloudinary-image-service
+      name: "@studiocms/cloudinary-image-service"
+      paths:
+        - packages/@studiocms/cloudinary-image-service/**
+    - component_id: studiocms_discord
+      name: "@studiocms/discord"
+      paths:
+        - packages/@studiocms/discord/**
+    - component_id: studiocms_github
+      name: "@studiocms/github"
+      paths:
+        - packages/@studiocms/github/**
+    - component_id: studiocms_google
+      name: "@studiocms/google"
+      paths:
+        - packages/@studiocms/google/**
+    - component_id: studiocms_html
+      name: "@studiocms/html"
+      paths:
+        - packages/@studiocms/html/**
+    - component_id: studiocms_markdoc
+      name: "@studiocms/markdoc"
+      paths:
+        - packages/@studiocms/markdoc/**
+    - component_id: studiocms_md
+      name: "@studiocms/md"
+      paths:
+        - packages/@studiocms/md/**
+    - component_id: studiocms_mdx
+      name: "@studiocms/mdx"
+      paths:
+        - packages/@studiocms/mdx/**
+    - component_id: studiocms_wysiwyg
+      name: "@studiocms/wysiwyg"
+      paths:
+        - packages/@studiocms/wysiwyg/**
+
+    # withstudiocms Tools and Utils
     - component_id: withstudiocms_auth_kit
       name: "@withstudiocms/auth-kit"
       paths:
