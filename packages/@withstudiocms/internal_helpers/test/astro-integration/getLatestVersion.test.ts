@@ -8,6 +8,7 @@ vi.mock('../utils/jsonUtils.js', () => ({
 // Mocks
 const mockLogger = {
 	error: vi.fn(),
+	warn: vi.fn(),
 	// biome-ignore lint/suspicious/noExplicitAny: allowed in tests
 } as any;
 
@@ -107,17 +108,49 @@ describe('getLatestVersion', () => {
 		);
 	});
 
-	it('returns null and logs error if response is not ok', async () => {
+	it('returns null and logs error if unable to write to disk', async () => {
+		mockFs.readFileSync.mockReturnValueOnce('{}');
 		mockFetch.mockResolvedValueOnce({
-			ok: false,
-			statusText: 'Not Found',
+			ok: true,
+			json: async () => ({ version: '4.4.4' }),
+		});
+		mockFs.writeFileSync.mockImplementationOnce(() => {
+			throw new Error('disk write error');
 		});
 
-		const version = await getLatestVersion('test-package', mockLogger, undefined, false, mockFs);
+		const version = await getLatestVersion('test-package', mockLogger, FAKE_URL, true, mockFs);
 
-		expect(version).toBeNull();
+		expect(version).toBe(null);
 		expect(mockLogger.error).toHaveBeenCalledWith(
-			expect.stringContaining('Error fetching latest version of test-package:')
+			expect.stringContaining('Error: disk write error')
 		);
+	});
+
+	it('warns if cache read error is not ENOENT', async () => {
+		const error = new Error('Some parse error');
+		// @ts-expect-error
+		error.code = 'EACCES';
+		mockFs.readFileSync.mockImplementationOnce(() => {
+			throw error;
+		});
+
+		await getLatestVersion('test-package', mockLogger, FAKE_URL, true, mockFs);
+
+		expect(mockLogger.warn).toHaveBeenCalledWith(
+			expect.stringContaining('Ignoring cache read error for')
+		);
+	});
+
+	it('does not warn if cache read error is ENOENT', async () => {
+		const error = new Error('File not found');
+		// @ts-expect-error
+		error.code = 'ENOENT';
+		mockFs.readFileSync.mockImplementationOnce(() => {
+			throw error;
+		});
+
+		await getLatestVersion('test-package', mockLogger, FAKE_URL, true, mockFs);
+
+		expect(mockLogger.warn).not.toHaveBeenCalled();
 	});
 });
