@@ -44,18 +44,18 @@ flags:
   integrations:
     carryforward: false
     paths:
-      - packages/studiocms/**
-      - packages/@studiocms/devapps/**
+      - packages/studiocms/
+      - packages/@studiocms/devapps/
   plugins:
     carryforward: false
     paths:
-      - packages/@studiocms/**
+      - packages/@studiocms/
     ignore:
-      - packages/@studiocms/devapps/**
+      - packages/@studiocms/devapps/
   tools-utils:
     carryforward: false
     paths:
-      - packages/@withstudiocms/**
+      - packages/@withstudiocms/
 
 component_management:
   individual_components:
