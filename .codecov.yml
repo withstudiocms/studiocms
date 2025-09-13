@@ -58,6 +58,14 @@ comment:
 #       - packages/@withstudiocms/**
 
 flag_management:
+  default_rules:
+    carryforward: false
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+      - type: patch
+        target: 90%
   individual_flags:
     # - name: integrations
     #   paths:
