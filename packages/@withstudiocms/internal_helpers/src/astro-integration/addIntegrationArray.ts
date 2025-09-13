@@ -1,6 +1,7 @@
 import type { AstroIntegration } from 'astro';
 import { addIntegration, defineUtility } from 'astro-integration-kit';
 
+/* v8 ignore start */
 /**
  * Easily add a list of integrations from within an integration.
  *
@@ -33,3 +34,4 @@ export const addIntegrationArray = defineUtility('astro:config:setup')(
 		}
 	}
 );
+/* v8 ignore stop */

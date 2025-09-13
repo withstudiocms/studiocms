@@ -86,7 +86,7 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
  * @param configPaths - An array of possible configuration file paths to check for existence.
  * @returns An Astro integration utility function for the `astro:config:setup` hook.
  */
-export const watchConfigFileBuilder = ({ configPaths }: WatchConfigFileOptions) =>
+export const watchConfigFileBuilder = ({ configPaths, _test_report }: WatchConfigFileOptions) =>
 	defineUtility('astro:config:setup')(
 		({
 			addWatchFile,
@@ -98,7 +98,12 @@ export const watchConfigFileBuilder = ({ configPaths }: WatchConfigFileOptions) 
 			// If a configuration file is found, register it for watching
 			const configFileUrl = findConfig(pathname, configPaths);
 			if (configFileUrl) {
-				addWatchFile(configFileUrl);
+				try {
+					addWatchFile(configFileUrl);
+					_test_report?.logs.push(configFileUrl);
+				} catch (error) {
+					_test_report?.errors.push(`Error watching config file: ${error}`);
+				}
 			}
 			return;
 		}

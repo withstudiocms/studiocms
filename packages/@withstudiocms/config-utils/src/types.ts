@@ -56,4 +56,12 @@ export interface ConfigResolverBuilderOpts<Schema> {
  */
 export interface WatchConfigFileOptions {
 	configPaths: string[];
+
+	/**
+	 * For testing purposes only: collects logs and errors encountered during the watch process.
+	 */
+	_test_report?: {
+		logs: string[];
+		errors: string[];
+	};
 }

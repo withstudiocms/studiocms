@@ -14,6 +14,7 @@ export interface ScriptEntry {
 	enabled: boolean;
 }
 
+/* v8 ignore start */
 /**
  * Injects scripts into the Astro configuration setup stage.
  *
@@ -34,3 +35,4 @@ export const injectScripts = defineUtility('astro:config:setup')(
 		}
 	}
 );
+/* v8 ignore stop */

@@ -3,16 +3,16 @@ coverage:
     project:
       default:
         informational: true
-      # integrations:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - integrations
-      # plugins:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - plugins
+      integrations:
+        informational: true
+        target: 80%
+        flags:
+          - integrations
+      plugins:
+        informational: true
+        target: 80%
+        flags:
+          - plugins
       tools-utils:
         informational: true
         target: 80%
@@ -21,16 +21,16 @@ coverage:
     patch:
       default:
         informational: true
-      # integrations:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - integrations
-      # plugins:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - plugins
+      integrations:
+        informational: true
+        target: 80%
+        flags:
+          - integrations
+      plugins:
+        informational: true
+        target: 80%
+        flags:
+          - plugins
       tools-utils:
         informational: true
         target: 80%
@@ -38,24 +38,22 @@ coverage:
           - tools-utils
 
 comment:
-  layout: "header, diff, flags, components"
-  behavior: default
-  require_changes: false
-  require_base: false
-  require_head: true
-  hide_project_coverage: false
+  layout: "header, diff, files, flags, components"
 
 flags:
   integrations:
+    carryforward: false
     paths:
       - packages/studiocms/**
       - packages/@studiocms/devapps/**
   plugins:
+    carryforward: false
     paths:
       - packages/@studiocms/**
     ignore:
       - packages/@studiocms/devapps/**
   tools-utils:
+    carryforward: false
     paths:
       - packages/@withstudiocms/**
 

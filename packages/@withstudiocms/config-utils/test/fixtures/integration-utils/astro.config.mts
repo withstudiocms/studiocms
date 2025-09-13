@@ -17,7 +17,9 @@ const testIntegration: AstroIntegration = {
 	name: label,
 	hooks: {
 		'astro:config:setup': async (params) => {
-			const watchConfigFile = watchConfigFileBuilder({ configPaths });
+			const testReports = { logs: [] as string[], errors: [] as string[] };
+
+			const watchConfigFile = watchConfigFileBuilder({ configPaths, _test_report: testReports });
 			const configResolver = configResolverBuilder({
 				configPaths,
 				label,
@@ -32,6 +34,7 @@ const testIntegration: AstroIntegration = {
 				name: label,
 				imports: {
 					'virtual:test-config': `export const config = ${JSON.stringify(resolvedConfig)}`,
+					'virtual:test-reports': `export const reports = ${JSON.stringify(testReports)}`,
 				},
 			});
 		},
