@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pageContentComponentFilter, rendererComponentFilter } from '../../src/utils/index.js';
+import { pageContentComponentFilter, rendererComponentFilter } from '../../src/index.js';
 
 describe('rendererComponentFilter', () => {
 	it('returns correct export statement for valid input', () => {

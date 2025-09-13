@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jsonParse, readJson } from '../../src/utils/index.js';
+import { jsonParse, readJson } from '../../src/index.js';
 
 describe('jsonParse', () => {
 	it('parses valid JSON string to object', () => {
