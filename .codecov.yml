@@ -57,47 +57,6 @@ flags:
     paths:
       - packages/@withstudiocms/**
 
-flag_management:
-  default_rules:
-    carryforward: false
-    statuses:
-      - type: project
-        target: auto
-        threshold: 1%
-      - type: patch
-        target: 80%
-  individual_flags:
-    # - name: integrations
-    #   paths:
-    #     - packages/studiocms/**
-    #     - packages/@studiocms/devapps/**
-    #   carryforward: false
-    #   statuses:
-    #     - type: project
-    #       target: 20%
-    #     - type: patch
-    #       target: 80%
-    # - name: plugins
-    #   paths:
-    #     - packages/@studiocms/**
-    #   ignore:
-    #     - packages/@studiocms/devapps/**
-    #   carryforward: false
-    #   statuses:
-    #     - type: project
-    #       target: 20%
-    #     - type: patch
-    #       target: 80%
-    - name: tools-utils
-      paths:
-        - packages/@withstudiocms/**
-      carryforward: false
-      statuses:
-        - type: project
-          target: 20%
-        - type: patch
-          target: 80%
-
 component_management:
   individual_components:
     # StudioCMS Integrations
