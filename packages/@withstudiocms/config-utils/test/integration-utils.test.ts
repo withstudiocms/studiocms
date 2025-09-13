@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { type DevServer, type Fixture, loadFixture, MockFunction } from './test-utils.js';
 
-describe('Web Vitals integration basics', () => {
+describe('Config Utils Integration Utility tests', () => {
 	let fixture: Fixture;
 	let devServer: DevServer;
 	let consoleErrorMock: MockFunction<Console, 'error'>;
