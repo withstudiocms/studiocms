@@ -39,11 +39,11 @@ coverage:
 
 comment:
   layout: "header, diff, flags, components"
-  behavior: default
-  require_changes: false
-  require_base: false
-  require_head: true
-  hide_project_coverage: false
+  # behavior: default
+  # require_changes: false
+  # require_base: false
+  # require_head: true
+  # hide_project_coverage: false
 
 flags:
   integrations:
