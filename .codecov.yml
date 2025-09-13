@@ -13,11 +13,11 @@ coverage:
       #   target: 80%
       #   flags:
       #     - plugins
-      # tools-utils:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - tools-utils
+      tools-utils:
+        informational: true
+        target: 80%
+        flags:
+          - tools-utils
     patch:
       default:
         informational: true
@@ -31,31 +31,31 @@ coverage:
       #   target: 80%
       #   flags:
       #     - plugins
-      # tools-utils:
-      #   informational: true
-      #   target: 80%
-      #   flags:
-      #     - tools-utils
+      tools-utils:
+        informational: true
+        target: 80%
+        flags:
+          - tools-utils
 
 comment:
   layout: "header, diff, files, flags, components"
 
-# flags:
-#   integrations:
-#     carryforward: false
-#     paths:
-#       - packages/studiocms/**
-#       - packages/@studiocms/devapps/**
-#   plugins:
-#     carryforward: false
-#     paths:
-#       - packages/@studiocms/**
-#     ignore:
-#       - packages/@studiocms/devapps/**
-#   tools-utils:
-#     carryforward: false
-#     paths:
-#       - packages/@withstudiocms/**
+flags:
+  #   integrations:
+  #     carryforward: false
+  #     paths:
+  #       - packages/studiocms/**
+  #       - packages/@studiocms/devapps/**
+  #   plugins:
+  #     carryforward: false
+  #     paths:
+  #       - packages/@studiocms/**
+  #     ignore:
+  #       - packages/@studiocms/devapps/**
+  tools-utils:
+    carryforward: false
+    paths:
+      - packages/@withstudiocms/**
 
 flag_management:
   default_rules:
