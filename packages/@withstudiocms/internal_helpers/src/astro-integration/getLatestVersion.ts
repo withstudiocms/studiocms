@@ -16,7 +16,11 @@ export async function getLatestVersion(
 	packageName: string,
 	logger: AstroIntegrationLogger,
 	cacheJsonFile: URL | undefined,
-	isDevMode: boolean
+	isDevMode: boolean,
+	{
+		readFileSync,
+		writeFileSync,
+	}: { readFileSync: typeof fs.readFileSync; writeFileSync: typeof fs.writeFileSync } = fs
 ): Promise<string | null> {
 	let cacheData: {
 		latestVersionCheck?: {
@@ -26,7 +30,7 @@ export async function getLatestVersion(
 	} = {};
 
 	if (isDevMode && cacheJsonFile) {
-		const file = fs.readFileSync(cacheJsonFile, { encoding: 'utf-8' });
+		const file = readFileSync(cacheJsonFile, { encoding: 'utf-8' });
 
 		cacheData = jsonParse<{ latestVersionCheck: { lastChecked: Date; version: 'string' } }>(file);
 
@@ -56,7 +60,7 @@ export async function getLatestVersion(
 					version: data.version,
 				},
 			};
-			fs.writeFileSync(cacheJsonFile, JSON.stringify(updatedCacheData, null, 2), 'utf-8');
+			writeFileSync(cacheJsonFile, JSON.stringify(updatedCacheData, null, 2), 'utf-8');
 		}
 
 		return data.version;
