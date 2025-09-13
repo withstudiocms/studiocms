@@ -1,5 +1,13 @@
 # @withstudiocms/config-utils
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#788](https://github.com/withstudiocms/studiocms/pull/788) [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Convert tests to vitest
+
+- [#794](https://github.com/withstudiocms/studiocms/pull/794) [`c478f2d`](https://github.com/withstudiocms/studiocms/commit/c478f2dba7fb5cc923e0dbf0367fa2a050fcdc2d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add integration tests for @withstudiocms/config-utils.
+
 ## 0.1.0-beta.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @studiocms/google
 
+## 0.1.0-beta.27
+
+### Patch Changes
+
+- Updated dependencies [[`ecc664c`](https://github.com/withstudiocms/studiocms/commit/ecc664cbb560f03db2078dc8d23135f9e966a7d4), [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa), [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548), [`1848b0c`](https://github.com/withstudiocms/studiocms/commit/1848b0ce4d8bbb908a3207079fbbeeda446e3cb7), [`c86f4f4`](https://github.com/withstudiocms/studiocms/commit/c86f4f4ab0873c29246582a8dbcab645057d146c), [`5713f15`](https://github.com/withstudiocms/studiocms/commit/5713f154eb15aad8d2c2c8a5a5c13611ff03dee8)]:
+  - studiocms@0.1.0-beta.27
+
 ## 0.1.0-beta.26
 
 ### Patch Changes
