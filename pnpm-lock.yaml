@@ -166,9 +166,6 @@ importers:
       knip:
         specifier: ^5.63.1
         version: 5.63.1(@types/node@22.16.3)(typescript@5.9.2)
-      linkedom:
-        specifier: ^0.18.12
-        version: 0.18.12(canvas@2.11.2)
       pkg-pr-new:
         specifier: ^0.0.59
         version: 0.0.59
@@ -3152,9 +3149,6 @@ packages:
   cssom@0.4.4:
     resolution: {integrity: sha512-p3pvU7r1MyyqbTk+WbNJIgJjG2VmTIaB10rI93LzVPrmDJKkzKYMtxxyAvQXR/NS6otuzveI7+7BBq3SjBS2mw==}
 
-  cssom@0.5.0:
-    resolution: {integrity: sha512-iKuQcq+NdHqlAcwUY0o/HL69XQrUaQdMjmStJ8JFmUaiiQErlhrmuigkg/CU4E2J0IyUKUrMAgl36TvN67MqTw==}
-
   cssstyle@2.3.0:
     resolution: {integrity: sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==}
     engines: {node: '>=8'}
@@ -4163,15 +4157,6 @@ packages:
     resolution: {integrity: sha512-NscWthMQt7fpU8lqd7LXMvT9pi+KhhmTHAJWUB/Lj6MWa0MKFv0F2V4C6WKKpjCVZl0VwcDz4nOI3CyaT1DDiA==}
     cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
-
-  linkedom@0.18.12:
-    resolution: {integrity: sha512-jalJsOwIKuQJSeTvsgzPe9iJzyfVaEJiEXl+25EkKevsULHvMJzpNqwvj1jOESWdmgKDiXObyjOYwlUqG7wo1Q==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      canvas: '>= 2'
-    peerDependenciesMeta:
-      canvas:
-        optional: true
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -5376,9 +5361,6 @@ packages:
 
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
-
-  uhyphen@0.2.0:
-    resolution: {integrity: sha512-qz3o9CHXmJJPGBdqzab7qAYuW8kQGKNEuoHFYrBwV6hWIMcpAmxDLXojcHfFr9US1Pe6zUswEIJIbLI610fuqA==}
 
   ultrahtml@1.6.0:
     resolution: {integrity: sha512-R9fBn90VTJrqqLDwyMph+HGne8eqY1iPfYhPzZrvKpIfwkWZbcYlfpsb8B9dTvBfpy1/hqAD7Wi8EKfP9e8zdw==}
@@ -8847,8 +8829,6 @@ snapshots:
   cssom@0.4.4:
     optional: true
 
-  cssom@0.5.0: {}
-
   cssstyle@2.3.0:
     dependencies:
       cssom: 0.3.8
@@ -9941,16 +9921,6 @@ snapshots:
       '@libsql/linux-x64-gnu': 0.5.22
       '@libsql/linux-x64-musl': 0.5.22
       '@libsql/win32-x64-msvc': 0.5.22
-
-  linkedom@0.18.12(canvas@2.11.2):
-    dependencies:
-      css-select: 5.2.2
-      cssom: 0.5.0
-      html-escaper: 3.0.3
-      htmlparser2: 10.0.0
-      uhyphen: 0.2.0
-    optionalDependencies:
-      canvas: 2.11.2
 
   locate-path@5.0.0:
     dependencies:
@@ -11585,8 +11555,6 @@ snapshots:
   typescript@5.9.2: {}
 
   ufo@1.6.1: {}
-
-  uhyphen@0.2.0: {}
 
   ultrahtml@1.6.0: {}
 

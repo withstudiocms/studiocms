@@ -61,7 +61,6 @@
     "studiocms": "workspace:*",
     "typescript": "catalog:",
 		"ts-patch": "^3.3.0",
-    "vitest": "^3.2.4",
-    "linkedom": "^0.18.12"
+    "vitest": "^3.2.4"
   }
 }
