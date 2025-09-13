@@ -96,6 +96,7 @@ jobs:
           slug: withstudiocms/studiocms
           directory: ./coverage/
           files: ./coverage-final.json
+          flags: tools-utils
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results to Codecov
@@ -104,6 +105,7 @@ jobs:
         with:
           slug: withstudiocms/studiocms
           files: ./junit-report.xml
+          flags: tools-utils
           token: ${{ secrets.CODECOV_TOKEN }}
 
   studiocms-playground-test-build:
