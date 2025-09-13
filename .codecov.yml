@@ -37,13 +37,13 @@ coverage:
         flags:
           - tools-utils
 
-comment:
-  layout: "header, diff, flags, components"
-  hide_project_coverage: false
-  # behavior: default
-  # require_changes: false
-  # require_base: false
-  # require_head: true
+# comment:
+#   layout: "header, diff, flags, components"
+#   hide_project_coverage: false
+#   # behavior: default
+#   # require_changes: false
+#   # require_base: false
+#   # require_head: true
 
 flags:
   integrations:
