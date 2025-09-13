@@ -153,4 +153,19 @@ describe('getLatestVersion', () => {
 
 		expect(mockLogger.warn).not.toHaveBeenCalled();
 	});
+
+	it('returns null and warns if fetch response is not ok', async () => {
+		mockFetch.mockResolvedValueOnce({
+			ok: false,
+			statusText: 'Not Found',
+			json: vi.fn(),
+		});
+
+		const version = await getLatestVersion('test-package', mockLogger, undefined, false, mockFs);
+
+		expect(version).toBeNull();
+		expect(mockLogger.warn).toHaveBeenCalledWith(
+			expect.stringContaining('Failed to fetch package info from registry.npmjs.org: Not Found')
+		);
+	});
 });
