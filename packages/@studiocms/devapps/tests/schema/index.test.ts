@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@effect/vitest';
-import { AppsConfigSchema, StudioCMSDevAppsSchema } from '../../src/schema/index.js';
+import { AppsConfigSchema, StudioCMSDevAppsSchema } from '../../src/schema/index';
 
 describe('schema', () => {
 	describe('AppsConfigSchema', () => {

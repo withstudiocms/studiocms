@@ -1,393 +1,190 @@
-import { beforeEach, describe, expect, it } from '@effect/vitest';
-import { vi } from 'vitest';
-
-// Mock studiocms/effect
-vi.mock('studiocms/effect', () => ({
-	Schema: {
-		Union: vi.fn((...schemas) => ({ type: 'union', schemas })),
-		Literal: vi.fn((value) => ({ type: 'literal', value })),
-		Array: vi.fn((schema) => ({ type: 'array', schema })),
-		Struct: vi.fn((fields) => ({ type: 'struct', fields })),
-		Class: vi.fn((name) => (fields: any) => ({ type: 'class', name, fields })),
-		String: { type: 'string' },
-		Number: { type: 'number' },
-		Boolean: { type: 'boolean' },
-		Date: { type: 'date' },
-		Any: { type: 'any' },
-		Record: vi.fn((keySchema, valueSchema) => ({ type: 'record', keySchema, valueSchema })),
-		optional: vi.fn((schema) => ({ type: 'optional', schema })),
-	},
-}));
+import { describe, expect, it } from '@effect/vitest';
+import { Schema } from 'studiocms/effect';
+import {
+	Category,
+	MetaDataSchema,
+	NumberArray,
+	OpenClosedSchema,
+	Page,
+	Post,
+	PostFormatSchema,
+	RenderedData,
+	RenderedProtectData,
+	SiteSettings,
+	StatusSchema,
+	Tag,
+} from '../src/effects/WordPressAPI/schema';
 
 describe('WordPress API Schema', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
 	describe('OpenClosedSchema', () => {
-		it('should create union schema with open, closed, and empty string', () => {
-			const schema = {
-				type: 'union',
-				schemas: [
-					{ type: 'literal', value: 'open' },
-					{ type: 'literal', value: 'closed' },
-					{ type: 'literal', value: '' },
-				],
-			};
-
-			expect(schema.type).toBe('union');
-			expect(schema.schemas).toHaveLength(3);
-			expect(schema.schemas[0].value).toBe('open');
-			expect(schema.schemas[1].value).toBe('closed');
-			expect(schema.schemas[2].value).toBe('');
-		});
-
 		it('should validate open status', () => {
 			const validValues = ['open', 'closed', ''];
+			
 			validValues.forEach(value => {
-				expect(validValues.includes(value)).toBe(true);
+				const result = Schema.decodeUnknownSync(OpenClosedSchema)(value);
+				expect(result).toBe(value);
+			});
+		});
+
+		it('should reject invalid status values', () => {
+			const invalidValues = ['invalid', 'active', 'inactive', null, undefined];
+			
+			invalidValues.forEach(value => {
+				expect(() => {
+					Schema.decodeUnknownSync(OpenClosedSchema)(value);
+				}).toThrow();
 			});
 		});
 	});
 
 	describe('StatusSchema', () => {
-		it('should create union schema with all status values', () => {
-			const schema = {
-				type: 'union',
-				schemas: [
-					{ type: 'literal', value: 'publish' },
-					{ type: 'literal', value: 'future' },
-					{ type: 'literal', value: 'draft' },
-					{ type: 'literal', value: 'pending' },
-					{ type: 'literal', value: 'private' },
-				],
-			};
-
-			expect(schema.type).toBe('union');
-			expect(schema.schemas).toHaveLength(5);
-			expect(schema.schemas[0].value).toBe('publish');
-			expect(schema.schemas[1].value).toBe('future');
-			expect(schema.schemas[2].value).toBe('draft');
-			expect(schema.schemas[3].value).toBe('pending');
-			expect(schema.schemas[4].value).toBe('private');
-		});
-
 		it('should validate status values', () => {
 			const validStatuses = ['publish', 'future', 'draft', 'pending', 'private'];
+			
 			validStatuses.forEach(status => {
-				expect(validStatuses.includes(status)).toBe(true);
+				const result = Schema.decodeUnknownSync(StatusSchema)(status);
+				expect(result).toBe(status);
+			});
+		});
+
+		it('should reject invalid status values', () => {
+			const invalidStatuses = ['invalid', 'active', 'inactive', 'archived', null, undefined];
+			
+			invalidStatuses.forEach(status => {
+				expect(() => {
+					Schema.decodeUnknownSync(StatusSchema)(status);
+				}).toThrow();
 			});
 		});
 	});
 
 	describe('PostFormatSchema', () => {
-		it('should create union schema with all post format values', () => {
-			const schema = {
-				type: 'union',
-				schemas: [
-					{ type: 'literal', value: 'standard' },
-					{ type: 'literal', value: 'aside' },
-					{ type: 'literal', value: 'chat' },
-					{ type: 'literal', value: 'gallery' },
-					{ type: 'literal', value: 'link' },
-					{ type: 'literal', value: 'image' },
-					{ type: 'literal', value: 'quote' },
-					{ type: 'literal', value: 'status' },
-					{ type: 'literal', value: 'video' },
-					{ type: 'literal', value: 'audio' },
-					{ type: 'literal', value: '' },
-				],
-			};
-
-			expect(schema.type).toBe('union');
-			expect(schema.schemas).toHaveLength(11);
+		it('should validate post format values', () => {
+			const validFormats = ['standard', 'aside', 'chat', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', ''];
+			
+			validFormats.forEach(format => {
+				const result = Schema.decodeUnknownSync(PostFormatSchema)(format);
+				expect(result).toBe(format);
+			});
 		});
 
-		it('should validate post format values', () => {
-			const validFormats = [
-				'standard', 'aside', 'chat', 'gallery', 'link',
-				'image', 'quote', 'status', 'video', 'audio', ''
-			];
-			validFormats.forEach(format => {
-				expect(validFormats.includes(format)).toBe(true);
+		it('should reject invalid post format values', () => {
+			const invalidFormats = ['invalid', 'custom', 'blog', null, undefined];
+			
+			invalidFormats.forEach(format => {
+				expect(() => {
+					Schema.decodeUnknownSync(PostFormatSchema)(format);
+				}).toThrow();
 			});
 		});
 	});
 
 	describe('MetaDataSchema', () => {
-		it('should create array schema with union of any or record', () => {
-			const schema = {
-				type: 'array',
-				schema: {
-					type: 'union',
-					schemas: [
-						{ type: 'any' },
-						{ type: 'record', keySchema: { type: 'string' }, valueSchema: { type: 'any' } },
-					],
-				},
-			};
+		it('should validate array of metadata', () => {
+			const validMetadata = [
+				{ key: 'test', value: 'value' },
+				{ key: 'number', value: 123 },
+				{ key: 'boolean', value: true },
+			];
+			
+			const result = Schema.decodeUnknownSync(MetaDataSchema)(validMetadata);
+			expect(result).toEqual(validMetadata);
+		});
 
-			expect(schema.type).toBe('array');
-			expect(schema.schema.type).toBe('union');
-			expect(schema.schema.schemas).toHaveLength(2);
+		it('should validate empty metadata array', () => {
+			const result = Schema.decodeUnknownSync(MetaDataSchema)([]);
+			expect(result).toEqual([]);
+		});
+
+		it('should reject invalid metadata structure', () => {
+			const invalidMetadata = [
+				{ invalid: 'structure' },
+				'not an object',
+				{ key: 'missing value' },
+			];
+			
+			invalidMetadata.forEach(metadata => {
+				expect(() => {
+					Schema.decodeUnknownSync(MetaDataSchema)(metadata);
+				}).toThrow();
+			});
 		});
 	});
 
 	describe('RenderedData', () => {
-		it('should create struct schema with rendered field', () => {
-			const schema = {
-				type: 'struct',
-				fields: {
-					rendered: { type: 'string' },
-				},
-			};
+		it('should validate rendered data structure', () => {
+			const validData = { rendered: 'Some HTML content' };
+			
+			const result = Schema.decodeUnknownSync(RenderedData)(validData);
+			expect(result).toEqual(validData);
+		});
 
-			expect(schema.type).toBe('struct');
-			expect(schema.fields.rendered.type).toBe('string');
+		it('should reject data without rendered field', () => {
+			const invalidData = { content: 'Some content' };
+			
+			expect(() => {
+				Schema.decodeUnknownSync(RenderedData)(invalidData);
+			}).toThrow();
 		});
 	});
 
 	describe('RenderedProtectData', () => {
-		it('should create struct schema with rendered and protected fields', () => {
-			const schema = {
-				type: 'struct',
-				fields: {
-					rendered: { type: 'string' },
-					protected: { type: 'boolean' },
-				},
+		it('should validate rendered protected data structure', () => {
+			const validData = { 
+				rendered: 'Some HTML content',
+				protected: true 
 			};
+			
+			const result = Schema.decodeUnknownSync(RenderedProtectData)(validData);
+			expect(result).toEqual(validData);
+		});
 
-			expect(schema.type).toBe('struct');
-			expect(schema.fields.rendered.type).toBe('string');
-			expect(schema.fields.protected.type).toBe('boolean');
+		it('should reject data without required fields', () => {
+			const invalidData = { rendered: 'Some content' }; // missing protected field
+			
+			expect(() => {
+				Schema.decodeUnknownSync(RenderedProtectData)(invalidData);
+			}).toThrow();
 		});
 	});
 
 	describe('NumberArray', () => {
-		it('should create array schema with number elements', () => {
-			const schema = {
-				type: 'array',
-				schema: { type: 'number' },
-			};
+		it('should validate array of numbers', () => {
+			const validNumbers = [1, 2, 3, 4, 5];
+			
+			const result = Schema.decodeUnknownSync(NumberArray)(validNumbers);
+			expect(result).toEqual(validNumbers);
+		});
 
-			expect(schema.type).toBe('array');
-			expect(schema.schema.type).toBe('number');
+		it('should validate empty number array', () => {
+			const result = Schema.decodeUnknownSync(NumberArray)([]);
+			expect(result).toEqual([]);
+		});
+
+		it('should reject array with non-numbers', () => {
+			const invalidNumbers = [1, '2', 3, true, 5];
+			
+			expect(() => {
+				Schema.decodeUnknownSync(NumberArray)(invalidNumbers);
+			}).toThrow();
 		});
 	});
 
-	describe('Page Schema', () => {
-		it('should create class schema with all required fields', () => {
-			const schema = {
-				type: 'class',
-				name: 'Page',
-				fields: {
-					id: { type: 'number' },
-					date: { type: 'date' },
-					date_gmt: { type: 'date' },
-					guid: { type: 'struct', fields: { rendered: { type: 'string' } } },
-					modified: { type: 'date' },
-					modified_gmt: { type: 'date' },
-					slug: { type: 'string' },
-					status: { type: 'union', schemas: [] },
-					type: { type: 'string' },
-					title: { type: 'struct', fields: { rendered: { type: 'string' } } },
-					content: { type: 'struct', fields: { rendered: { type: 'string' }, protected: { type: 'boolean' } } },
-					excerpt: { type: 'struct', fields: { rendered: { type: 'string' }, protected: { type: 'boolean' } } },
-					author: { type: 'number' },
-					featured_media: { type: 'number' },
-					parent: { type: 'number' },
-					menu_order: { type: 'number' },
-					comment_status: { type: 'union', schemas: [] },
-					ping_status: { type: 'union', schemas: [] },
-					template: { type: 'string' },
-					meta: { type: 'array', schema: { type: 'union', schemas: [] } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('Page');
-			expect(schema.fields.id.type).toBe('number');
-			expect(schema.fields.title.type).toBe('struct');
-			expect(schema.fields.content.type).toBe('struct');
-		});
-	});
-
-	describe('PagesSchema', () => {
-		it('should create class schema with pages array', () => {
-			const schema = {
-				type: 'class',
-				name: 'PagesSchema',
-				fields: {
-					pages: { type: 'array', schema: { type: 'class', name: 'Page' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('PagesSchema');
-			expect(schema.fields.pages.type).toBe('array');
-		});
-	});
-
-	describe('Post Schema', () => {
-		it('should extend Page schema with additional fields', () => {
-			const schema = {
-				type: 'class',
-				name: 'Post',
-				fields: {
-					// Page fields
-					id: { type: 'number' },
-					title: { type: 'struct', fields: { rendered: { type: 'string' } } },
-					// Post-specific fields
-					format: { type: 'union', schemas: [] },
-					categories: { type: 'array', schema: { type: 'number' } },
-					tags: { type: 'array', schema: { type: 'number' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('Post');
-			expect(schema.fields.format.type).toBe('union');
-			expect(schema.fields.categories.type).toBe('array');
-			expect(schema.fields.tags.type).toBe('array');
-		});
-	});
-
-	describe('PostsSchema', () => {
-		it('should create class schema with posts array', () => {
-			const schema = {
-				type: 'class',
-				name: 'PostsSchema',
-				fields: {
-					posts: { type: 'array', schema: { type: 'class', name: 'Post' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('PostsSchema');
-			expect(schema.fields.posts.type).toBe('array');
-		});
-	});
-
-	describe('Tag Schema', () => {
-		it('should create class schema with tag fields', () => {
-			const schema = {
-				type: 'class',
-				name: 'Tag',
-				fields: {
-					id: { type: 'number' },
-					count: { type: 'number' },
-					description: { type: 'string' },
-					link: { type: 'string' },
-					name: { type: 'string' },
-					slug: { type: 'string' },
-					taxonomy: { type: 'string' },
-					meta: { type: 'array', schema: { type: 'union', schemas: [] } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('Tag');
-			expect(schema.fields.id.type).toBe('number');
-			expect(schema.fields.name.type).toBe('string');
-			expect(schema.fields.slug.type).toBe('string');
-		});
-	});
-
-	describe('TagsSchema', () => {
-		it('should create class schema with tags array', () => {
-			const schema = {
-				type: 'class',
-				name: 'TagsSchema',
-				fields: {
-					tags: { type: 'array', schema: { type: 'class', name: 'Tag' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('TagsSchema');
-			expect(schema.fields.tags.type).toBe('array');
-		});
-	});
-
-	describe('Category Schema', () => {
-		it('should extend Tag schema with parent field', () => {
-			const schema = {
-				type: 'class',
-				name: 'Category',
-				fields: {
-					// Tag fields
-					id: { type: 'number' },
-					name: { type: 'string' },
-					slug: { type: 'string' },
-					// Category-specific field
-					parent: { type: 'number' },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('Category');
-			expect(schema.fields.id.type).toBe('number');
-			expect(schema.fields.parent.type).toBe('number');
-		});
-	});
-
-	describe('CategoriesSchema', () => {
-		it('should create class schema with categories array', () => {
-			const schema = {
-				type: 'class',
-				name: 'CategoriesSchema',
-				fields: {
-					categories: { type: 'array', schema: { type: 'class', name: 'Category' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('CategoriesSchema');
-			expect(schema.fields.categories.type).toBe('array');
-		});
-	});
-
-	describe('SiteSettings Schema', () => {
-		it('should create class schema with site settings fields', () => {
-			const schema = {
-				type: 'class',
-				name: 'SiteSettings',
-				fields: {
-					name: { type: 'string' },
-					description: { type: 'string' },
-					url: { type: 'string' },
-					home: { type: 'string' },
-					gmt_offset: { type: 'number' },
-					timezone_string: { type: 'string' },
-					site_logo: { type: 'optional', schema: { type: 'number' } },
-					site_icon: { type: 'optional', schema: { type: 'number' } },
-					site_icon_url: { type: 'optional', schema: { type: 'string' } },
-				},
-			};
-
-			expect(schema.type).toBe('class');
-			expect(schema.name).toBe('SiteSettings');
-			expect(schema.fields.name.type).toBe('string');
-			expect(schema.fields.gmt_offset.type).toBe('number');
-			expect(schema.fields.site_logo.type).toBe('optional');
-		});
-	});
-
-	describe('Schema Validation', () => {
-		it('should validate WordPress page data structure', () => {
-			const pageData = {
+	describe('Page', () => {
+		it('should validate complete page data', () => {
+			const validPage = {
 				id: 1,
-				date: new Date(),
-				date_gmt: new Date(),
-				guid: { rendered: 'https://example.com/page/1' },
-				modified: new Date(),
-				modified_gmt: new Date(),
+				date: '2023-01-01T00:00:00',
+				date_gmt: '2023-01-01T00:00:00',
+				guid: { rendered: 'http://example.com/page-1' },
+				modified: '2023-01-01T00:00:00',
+				modified_gmt: '2023-01-01T00:00:00',
 				slug: 'test-page',
 				status: 'publish',
 				type: 'page',
 				title: { rendered: 'Test Page' },
-				content: { rendered: 'Test content', protected: false },
-				excerpt: { rendered: 'Test excerpt', protected: false },
+				content: { rendered: 'Page content', protected: false },
+				excerpt: { rendered: 'Page excerpt', protected: false },
 				author: 1,
 				featured_media: 0,
 				parent: 0,
@@ -397,27 +194,154 @@ describe('WordPress API Schema', () => {
 				template: '',
 				meta: [],
 			};
-
-			expect(pageData.id).toBeTypeOf('number');
-			expect(pageData.title.rendered).toBeTypeOf('string');
-			expect(pageData.content.rendered).toBeTypeOf('string');
-			expect(pageData.content.protected).toBeTypeOf('boolean');
+			
+			const result = Schema.decodeUnknownSync(Page)(validPage);
+			// Check that the result is a Page instance with correct data
+			expect(result).toBeInstanceOf(Page);
+			expect(result.id).toBe(1);
+			expect(result.slug).toBe('test-page');
+			expect(result.status).toBe('publish');
 		});
 
-		it('should validate WordPress post data structure', () => {
-			const postData = {
+		it('should reject page data with missing required fields', () => {
+			const invalidPage = {
 				id: 1,
+				// missing required fields
+			};
+			
+			expect(() => {
+				Schema.decodeUnknownSync(Page)(invalidPage);
+			}).toThrow();
+		});
+	});
+
+	describe('Post', () => {
+		it('should validate complete post data', () => {
+			const validPost = {
+				id: 1,
+				date: '2023-01-01T00:00:00',
+				date_gmt: '2023-01-01T00:00:00',
+				guid: { rendered: 'http://example.com/post-1' },
+				modified: '2023-01-01T00:00:00',
+				modified_gmt: '2023-01-01T00:00:00',
+				slug: 'test-post',
+				status: 'publish',
+				type: 'post',
 				title: { rendered: 'Test Post' },
-				content: { rendered: 'Test content', protected: false },
+				content: { rendered: 'Post content', protected: false },
+				excerpt: { rendered: 'Post excerpt', protected: false },
+				author: 1,
+				featured_media: 0,
+				parent: 0, // Required field from Page
+				menu_order: 0,
+				comment_status: 'open',
+				ping_status: 'open',
+				template: '',
 				format: 'standard',
+				meta: [],
 				categories: [1, 2],
 				tags: [3, 4],
 			};
+			
+			const result = Schema.decodeUnknownSync(Post)(validPost);
+			expect(result).toBeInstanceOf(Post);
+			expect(result.id).toBe(1);
+			expect(result.slug).toBe('test-post');
+			expect(result.format).toBe('standard');
+		});
 
-			expect(postData.id).toBeTypeOf('number');
-			expect(postData.title.rendered).toBeTypeOf('string');
-			expect(Array.isArray(postData.categories)).toBe(true);
-			expect(Array.isArray(postData.tags)).toBe(true);
+		it('should reject post data with invalid format', () => {
+			const invalidPost = {
+				id: 1,
+				date: '2023-01-01T00:00:00',
+				date_gmt: '2023-01-01T00:00:00',
+				guid: { rendered: 'http://example.com/post-1' },
+				modified: '2023-01-01T00:00:00',
+				modified_gmt: '2023-01-01T00:00:00',
+				slug: 'test-post',
+				status: 'publish',
+				type: 'post',
+				title: { rendered: 'Test Post' },
+				content: { rendered: 'Post content', protected: false },
+				excerpt: { rendered: 'Post excerpt', protected: false },
+				author: 1,
+				featured_media: 0,
+				sticky: false,
+				template: '',
+				format: 'invalid-format', // invalid format
+				meta: [],
+				categories: [1, 2],
+				tags: [3, 4],
+			};
+			
+			expect(() => {
+				Schema.decodeUnknownSync(Post)(invalidPost);
+			}).toThrow();
+		});
+	});
+
+	describe('Category', () => {
+		it('should validate complete category data', () => {
+			const validCategory = {
+				id: 1,
+				count: 5,
+				description: 'Test category description',
+				link: 'http://example.com/category/test',
+				name: 'Test Category',
+				slug: 'test-category',
+				taxonomy: 'category',
+				parent: 0,
+				meta: [],
+			};
+			
+			const result = Schema.decodeUnknownSync(Category)(validCategory);
+			expect(result).toBeInstanceOf(Category);
+			expect(result.id).toBe(1);
+			expect(result.name).toBe('Test Category');
+			expect(result.parent).toBe(0);
+		});
+	});
+
+	describe('Tag', () => {
+		it('should validate complete tag data', () => {
+			const validTag = {
+				id: 1,
+				count: 3,
+				description: 'Test tag description',
+				link: 'http://example.com/tag/test',
+				name: 'Test Tag',
+				slug: 'test-tag',
+				taxonomy: 'post_tag',
+				meta: [],
+			};
+			
+			const result = Schema.decodeUnknownSync(Tag)(validTag);
+			expect(result).toBeInstanceOf(Tag);
+			expect(result.id).toBe(1);
+			expect(result.name).toBe('Test Tag');
+			expect(result.taxonomy).toBe('post_tag');
+		});
+	});
+
+	describe('SiteSettings', () => {
+		it('should validate complete settings data', () => {
+			const validSettings = {
+				name: 'Test Site',
+				description: 'A test WordPress site',
+				url: 'http://example.com',
+				home: 'http://example.com',
+				gmt_offset: 0,
+				timezone_string: 'UTC',
+				site_logo: 1,
+				site_icon: 2,
+				site_icon_url: 'http://example.com/icon.png',
+			};
+			
+			const result = Schema.decodeUnknownSync(SiteSettings)(validSettings);
+			expect(result).toBeInstanceOf(SiteSettings);
+			expect(result.name).toBe('Test Site');
+			expect(result.description).toBe('A test WordPress site');
+			expect(result.url).toBe('http://example.com');
 		});
 	});
 });

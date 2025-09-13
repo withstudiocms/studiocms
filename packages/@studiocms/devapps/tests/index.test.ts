@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@effect/vitest';
-import { studioCMSDevApps } from '../src/index.js';
+import { studioCMSDevApps } from '../src/index';
 
 describe('StudioCMS DevApps Integration', () => {
 	describe('studioCMSDevApps', () => {

@@ -1,19 +1,38 @@
 import { beforeEach, describe, expect, it } from '@effect/vitest';
-import { Context, Effect, Layer } from 'studiocms/effect';
+import type { APIContext } from 'astro';
+import { Effect, Layer } from 'studiocms/effect';
 import { vi } from 'vitest';
+import {
+	APIEndpointConfig,
+	AstroAPIContextProvider,
+	CategoryOrTagConfig,
+	DownloadImageConfig,
+	DownloadPostImageConfig,
+	FullPageData,
+	ImportEndpointConfig,
+	ImportPostsEndpointConfig,
+	RawPageData,
+	StringConfig,
+	UseBlogPkgConfig,
+} from '../src/effects/WordPressAPI/configs';
+import type { PageData } from '../src/effects/WordPressAPI/importers';
 
 // Mock studiocms/effect
 vi.mock('studiocms/effect', () => ({
 	Effect: {
-		provide: vi.fn((layer) => vi.fn((effect) => effect)),
+		provide: vi.fn(),
 	},
 	Context: {
-		Tag: vi.fn((name) => ({
-			of: vi.fn((data) => data),
-		})),
+		Tag: vi.fn().mockImplementation(() => {
+			return () => {
+				const MockTag = () => {};
+				MockTag.of = (data: unknown) => data;
+				return MockTag;
+			};
+		}),
 	},
 	Layer: {
-		succeed: vi.fn((tag, data) => ({ tag, data })),
+		succeed: vi.fn(),
 	},
 }));
 
@@ -25,73 +44,74 @@ describe('WordPress API Configs', () => {
 	describe('StringConfig', () => {
 		it('should create StringConfig with correct structure', () => {
 			const str = 'test-string';
-			const config = { str };
-			
+			const config = StringConfig.of({ str });
+
 			expect(config.str).toBe(str);
+			expect(config).toHaveProperty('str', str);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const str = 'test-string';
 			const mockLayer = { tag: 'StringConfig', data: { str } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('StringConfig', { str });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = StringConfig.makeLayer(str);
 			expect(result).toEqual(mockLayer);
 		});
 
 		it('should provide effect with makeProvide', () => {
 			const str = 'test-string';
 			const mockEffect = vi.fn();
-			
-			Effect.provide.mockReturnValue(mockEffect);
-			
-			const result = Effect.provide({ tag: 'StringConfig', data: { str } });
+
+			vi.mocked(Effect.provide).mockReturnValue(mockEffect as never);
+
+			const result = StringConfig.makeProvide(str);
 			expect(result).toBe(mockEffect);
 		});
 	});
 
 	describe('APIEndpointConfig', () => {
-		const SUPPORTED_TYPES = ['posts', 'pages', 'media', 'categories', 'tags', 'settings'];
+		const SUPPORTED_TYPES = ['posts', 'pages', 'media', 'categories', 'tags', 'settings'] as const;
 
 		it('should create APIEndpointConfig with valid type', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'posts';
+			const type = 'posts' as const;
 			const path = '/posts';
-			const config = { endpoint, type, path };
-			
+			const config = APIEndpointConfig.of({ endpoint, type, path });
+
 			expect(config.endpoint).toBe(endpoint);
 			expect(config.type).toBe(type);
 			expect(config.path).toBe(path);
 		});
 
 		it('should validate supported types', () => {
-			SUPPORTED_TYPES.forEach(type => {
+			SUPPORTED_TYPES.forEach((type) => {
 				expect(SUPPORTED_TYPES.includes(type)).toBe(true);
 			});
 		});
 
 		it('should reject invalid types', () => {
 			const invalidType = 'invalid';
-			expect(SUPPORTED_TYPES.includes(invalidType)).toBe(false);
+			expect(SUPPORTED_TYPES.includes(invalidType as (typeof SUPPORTED_TYPES)[number])).toBe(false);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'pages';
+			const type = 'pages' as const;
 			const mockLayer = { tag: 'APIEndpointConfig', data: { endpoint, type } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('APIEndpointConfig', { endpoint, type });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = APIEndpointConfig.makeLayer(endpoint, type);
 			expect(result).toEqual(mockLayer);
 		});
 
 		it('should handle optional path parameter', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'posts';
-			const config = { endpoint, type };
-			
+			const type = 'posts' as const;
+			const config = APIEndpointConfig.of({ endpoint, type });
+
 			expect(config.endpoint).toBe(endpoint);
 			expect(config.type).toBe(type);
 			expect(config.path).toBeUndefined();
@@ -102,8 +122,8 @@ describe('WordPress API Configs', () => {
 		it('should create DownloadImageConfig with string URLs', () => {
 			const imageUrl = 'https://example.com/image.jpg';
 			const destination = '/public/images/image.jpg';
-			const config = { imageUrl, destination };
-			
+			const config = DownloadImageConfig.of({ imageUrl, destination });
+
 			expect(config.imageUrl).toBe(imageUrl);
 			expect(config.destination).toBe(destination);
 		});
@@ -111,8 +131,8 @@ describe('WordPress API Configs', () => {
 		it('should create DownloadImageConfig with URL objects', () => {
 			const imageUrl = new URL('https://example.com/image.jpg');
 			const destination = new URL('file:///public/images/image.jpg');
-			const config = { imageUrl, destination };
-			
+			const config = DownloadImageConfig.of({ imageUrl, destination });
+
 			expect(config.imageUrl).toBe(imageUrl);
 			expect(config.destination).toBe(destination);
 		});
@@ -121,10 +141,10 @@ describe('WordPress API Configs', () => {
 			const imageUrl = 'https://example.com/image.jpg';
 			const destination = '/public/images/image.jpg';
 			const mockLayer = { tag: 'DownloadImageConfig', data: { imageUrl, destination } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('DownloadImageConfig', { imageUrl, destination });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = DownloadImageConfig.makeLayer(imageUrl, destination);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -133,8 +153,8 @@ describe('WordPress API Configs', () => {
 		it('should create DownloadPostImageConfig', () => {
 			const str = 'image-content';
 			const pathToFolder = '/public/images';
-			const config = { str, pathToFolder };
-			
+			const config = DownloadPostImageConfig.of({ str, pathToFolder });
+
 			expect(config.str).toBe(str);
 			expect(config.pathToFolder).toBe(pathToFolder);
 		});
@@ -143,10 +163,10 @@ describe('WordPress API Configs', () => {
 			const str = 'image-content';
 			const pathToFolder = '/public/images';
 			const mockLayer = { tag: 'DownloadPostImageConfig', data: { str, pathToFolder } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('DownloadPostImageConfig', { str, pathToFolder });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = DownloadPostImageConfig.makeLayer(str, pathToFolder);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -154,18 +174,18 @@ describe('WordPress API Configs', () => {
 	describe('ImportEndpointConfig', () => {
 		it('should create ImportEndpointConfig', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const config = { endpoint };
-			
+			const config = ImportEndpointConfig.of({ endpoint });
+
 			expect(config.endpoint).toBe(endpoint);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
 			const mockLayer = { tag: 'ImportEndpointConfig', data: { endpoint } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('ImportEndpointConfig', { endpoint });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = ImportEndpointConfig.makeLayer(endpoint);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -174,8 +194,8 @@ describe('WordPress API Configs', () => {
 		it('should create ImportPostsEndpointConfig with default useBlogPkg', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
 			const useBlogPkg = false;
-			const config = { endpoint, useBlogPkg };
-			
+			const config = ImportPostsEndpointConfig.of({ endpoint, useBlogPkg });
+
 			expect(config.endpoint).toBe(endpoint);
 			expect(config.useBlogPkg).toBe(useBlogPkg);
 		});
@@ -183,8 +203,8 @@ describe('WordPress API Configs', () => {
 		it('should create ImportPostsEndpointConfig with useBlogPkg true', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
 			const useBlogPkg = true;
-			const config = { endpoint, useBlogPkg };
-			
+			const config = ImportPostsEndpointConfig.of({ endpoint, useBlogPkg });
+
 			expect(config.endpoint).toBe(endpoint);
 			expect(config.useBlogPkg).toBe(useBlogPkg);
 		});
@@ -193,10 +213,10 @@ describe('WordPress API Configs', () => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
 			const useBlogPkg = true;
 			const mockLayer = { tag: 'ImportPostsEndpointConfig', data: { endpoint, useBlogPkg } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('ImportPostsEndpointConfig', { endpoint, useBlogPkg });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = ImportPostsEndpointConfig.makeLayer(endpoint, useBlogPkg);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -207,9 +227,9 @@ describe('WordPress API Configs', () => {
 				request: new Request('https://example.com'),
 				params: {},
 				props: {},
-			};
-			const provider = { context };
-			
+			} as APIContext;
+			const provider = AstroAPIContextProvider.of({ context });
+
 			expect(provider.context).toBe(context);
 		});
 
@@ -218,12 +238,12 @@ describe('WordPress API Configs', () => {
 				request: new Request('https://example.com'),
 				params: {},
 				props: {},
-			};
+			} as APIContext;
 			const mockLayer = { tag: 'AstroAPIContextProvider', data: { context } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('AstroAPIContextProvider', { context });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = AstroAPIContextProvider.makeLayer(context);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -231,18 +251,18 @@ describe('WordPress API Configs', () => {
 	describe('RawPageData', () => {
 		it('should create RawPageData with page data', () => {
 			const page = { id: 1, title: 'Test Page' };
-			const rawData = { page };
-			
+			const rawData = RawPageData.of({ page });
+
 			expect(rawData.page).toBe(page);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const page = { id: 1, title: 'Test Page' };
 			const mockLayer = { tag: 'RawPageData', data: { page } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('RawPageData', { page });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = RawPageData.makeLayer(page);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -254,9 +274,9 @@ describe('WordPress API Configs', () => {
 				title: 'Test Page',
 				content: 'Test content',
 				slug: 'test-page',
-			};
-			const fullData = { pageData };
-			
+			} as PageData;
+			const fullData = FullPageData.of({ pageData });
+
 			expect(fullData.pageData).toBe(pageData);
 		});
 
@@ -266,12 +286,12 @@ describe('WordPress API Configs', () => {
 				title: 'Test Page',
 				content: 'Test content',
 				slug: 'test-page',
-			};
+			} as PageData;
 			const mockLayer = { tag: 'FullPageData', data: { pageData } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('FullPageData', { pageData });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = FullPageData.makeLayer(pageData);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -279,25 +299,25 @@ describe('WordPress API Configs', () => {
 	describe('UseBlogPkgConfig', () => {
 		it('should create UseBlogPkgConfig with useBlogPkg false', () => {
 			const useBlogPkg = false;
-			const config = { useBlogPkg };
-			
+			const config = UseBlogPkgConfig.of({ useBlogPkg });
+
 			expect(config.useBlogPkg).toBe(useBlogPkg);
 		});
 
 		it('should create UseBlogPkgConfig with useBlogPkg true', () => {
 			const useBlogPkg = true;
-			const config = { useBlogPkg };
-			
+			const config = UseBlogPkgConfig.of({ useBlogPkg });
+
 			expect(config.useBlogPkg).toBe(useBlogPkg);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const useBlogPkg = true;
 			const mockLayer = { tag: 'UseBlogPkgConfig', data: { useBlogPkg } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('UseBlogPkgConfig', { useBlogPkg });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = UseBlogPkgConfig.makeLayer(useBlogPkg);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -305,25 +325,25 @@ describe('WordPress API Configs', () => {
 	describe('CategoryOrTagConfig', () => {
 		it('should create CategoryOrTagConfig with number array', () => {
 			const value = [1, 2, 3] as const;
-			const config = { value };
-			
+			const config = CategoryOrTagConfig.of({ value });
+
 			expect(config.value).toBe(value);
 		});
 
 		it('should create CategoryOrTagConfig with empty array', () => {
 			const value = [] as const;
-			const config = { value };
-			
+			const config = CategoryOrTagConfig.of({ value });
+
 			expect(config.value).toBe(value);
 		});
 
 		it('should create layer with makeLayer', () => {
 			const value = [1, 2, 3] as const;
 			const mockLayer = { tag: 'CategoryOrTagConfig', data: { value } };
-			
-			Layer.succeed.mockReturnValue(mockLayer);
-			
-			const result = Layer.succeed('CategoryOrTagConfig', { value });
+
+			vi.mocked(Layer.succeed).mockReturnValue(mockLayer as never);
+
+			const result = CategoryOrTagConfig.makeLayer(value);
 			expect(result).toEqual(mockLayer);
 		});
 	});
@@ -331,20 +351,23 @@ describe('WordPress API Configs', () => {
 	describe('Configuration Validation', () => {
 		it('should validate all required fields are present', () => {
 			const configs = [
-				{ str: 'test' }, // StringConfig
-				{ endpoint: 'https://example.com', type: 'posts' }, // APIEndpointConfig
-				{ imageUrl: 'https://example.com/image.jpg', destination: '/public/images' }, // DownloadImageConfig
-				{ str: 'content', pathToFolder: '/public' }, // DownloadPostImageConfig
-				{ endpoint: 'https://example.com' }, // ImportEndpointConfig
-				{ endpoint: 'https://example.com', useBlogPkg: false }, // ImportPostsEndpointConfig
-				{ context: {} }, // AstroAPIContextProvider
-				{ page: {} }, // RawPageData
-				{ pageData: {} }, // FullPageData
-				{ useBlogPkg: false }, // UseBlogPkgConfig
-				{ value: [] }, // CategoryOrTagConfig
+				StringConfig.of({ str: 'test' }),
+				APIEndpointConfig.of({ endpoint: 'https://example.com', type: 'posts' as const }),
+				DownloadImageConfig.of({
+					imageUrl: 'https://example.com/image.jpg',
+					destination: '/public/images',
+				}),
+				DownloadPostImageConfig.of({ str: 'content', pathToFolder: '/public' }),
+				ImportEndpointConfig.of({ endpoint: 'https://example.com' }),
+				ImportPostsEndpointConfig.of({ endpoint: 'https://example.com', useBlogPkg: false }),
+				AstroAPIContextProvider.of({ context: {} as APIContext }),
+				RawPageData.of({ page: {} }),
+				FullPageData.of({ pageData: {} as PageData }),
+				UseBlogPkgConfig.of({ useBlogPkg: false }),
+				CategoryOrTagConfig.of({ value: [] as const }),
 			];
 
-			configs.forEach(config => {
+			configs.forEach((config) => {
 				expect(config).toBeDefined();
 				expect(typeof config).toBe('object');
 			});

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
-import { closeOnOutsideClick, createWindowElement } from '../../src/utils/app-utils.js';
+import { closeOnOutsideClick, createWindowElement } from '../../src/utils/app-utils';
 
 // Mock DOM environment
 const mockDocument = {

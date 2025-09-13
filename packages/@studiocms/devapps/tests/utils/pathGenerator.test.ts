@@ -5,7 +5,7 @@ import {
 	pathWithBase,
 	stripLeadingSlash,
 	stripTrailingSlash,
-} from '../../src/utils/pathGenerator.js';
+} from '../../src/utils/pathGenerator';
 
 describe('pathGenerator utilities', () => {
 	describe('stripLeadingSlash', () => {
@@ -94,8 +94,8 @@ describe('pathGenerator utilities', () => {
 		it('should handle empty endpoint path', () => {
 			const builder = pathGenerator('', 'https://example.com');
 
-			expect(builder('test')).toBe('https://example.com//test');
-			expect(builder('/test')).toBe('https://example.com//test');
+			expect(builder('test')).toBe('https://example.com/test');
+			expect(builder('/test')).toBe('https://example.com/test');
 		});
 	});
 });
