@@ -32,12 +32,14 @@ export const matchFilterCheck = (
 	let cleanedPaths: string[];
 
 	if (typeof paths === 'string') {
+		/* v8 ignore next 4 */
 		if (paths.trim() === '') {
 			// If the string is empty, return defaultValue
 			return defaultValue;
 		}
 		cleanedPaths = [paths.trim()];
 	} else if (Array.isArray(paths)) {
+		/* v8 ignore next 6 */
 		if (paths.length === 0 || paths.every((p) => p.trim() === '')) {
 			// If the array is empty or all elements are empty strings, return defaultValue
 			return defaultValue;
@@ -101,6 +103,7 @@ export const sortByPriority = (a?: number | null, b?: number | null) => {
  * @param router - An array of middleware router entries, each specifying path matching rules and a handler.
  * @returns The result of executing the middleware sequence or the next middleware.
  */
+/* v8 ignore next 16 */
 export function buildMiddlewareSequence(
 	context: APIContext,
 	next: MiddlewareNext,

@@ -33,6 +33,7 @@
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
 
     "test": "vitest run",
+    "test:ui": "vitest --ui",
     "test:watch": "vitest",
     "ci:test": "vitest run --coverage",
 
@@ -48,6 +49,7 @@
     "@changesets/write": "^0.4.0",
     "@crowdin/crowdin-api-client": "^1.46.2",
 		"@effect/language-service": "^0.39.0",
+    "@effect/vitest": "^0.25.1",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",

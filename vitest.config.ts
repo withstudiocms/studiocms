@@ -37,6 +37,7 @@ export default defineConfig({
 				'vitest.config.ts',
 				'**/**/vitest.config.ts',
 				'**/**/@withstudiocms/auth-kit/scripts/**',
+				'**/**/scratchpad/**',
 			],
 		},
 	},

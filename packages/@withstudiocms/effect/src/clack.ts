@@ -71,6 +71,10 @@ const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A, Clack
 		catch: (cause) => new ClackError({ cause }),
 	});
 
+/* v8 ignore start */
+
+// Current version of @clack/prompts has some issues with testing
+
 /**
  * Cancels the current Clack operation and optionally displays an error message.
  *
@@ -326,3 +330,5 @@ export const stream = {
 		useClackErrorPromise(() => ClackPrompts.stream.error(iterable))
 	),
 };
+
+/* v8 ignore stop */

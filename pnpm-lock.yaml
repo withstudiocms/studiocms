@@ -142,6 +142,9 @@ importers:
       '@effect/language-service':
         specifier: ^0.39.0
         version: 0.39.0
+      '@effect/vitest':
+        specifier: ^0.25.1
+        version: 0.25.1(effect@3.17.13)(vitest@3.2.4)
       '@types/node':
         specifier: 'catalog:'
         version: 22.16.3
@@ -1386,6 +1389,12 @@ packages:
     resolution: {integrity: sha512-+8xYvX4tjD7gKwGYzOyFh90I+ptdXzoNHLQTSa8kGh/xOVZMIGYb0VgLoNHE02UsuVrB+JJJuBmKLdd5TeDTPg==}
     peerDependencies:
       effect: ^3.17.0
+
+  '@effect/vitest@0.25.1':
+    resolution: {integrity: sha512-OMYvOU8iGed8GZXxgVBXlYtjG+jwWj5cJxFk0hOHOfTbCHXtdCMEWlXNba5zxbE7dBnW4srbnSYrP/NGGTC3qQ==}
+    peerDependencies:
+      effect: ^3.17.7
+      vitest: ^3.2.0
 
   '@effect/workflow@0.9.2':
     resolution: {integrity: sha512-BQw2wVCCdhC0FgSQXL62sefa8TV3sVP0ECRZS9CGnUtiCZiVkRDEeQlXErZkKVuVhtAqJLfngqtp8UkArLPYiw==}
@@ -6762,6 +6771,11 @@ snapshots:
   '@effect/typeclass@0.36.0(effect@3.17.13)':
     dependencies:
       effect: 3.17.13
+
+  '@effect/vitest@0.25.1(effect@3.17.13)(vitest@3.2.4)':
+    dependencies:
+      effect: 3.17.13
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.16.3)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@15.2.1(canvas@2.11.2))(tsx@4.20.3)(yaml@2.8.0)
 
   '@effect/workflow@0.9.2(@effect/platform@0.90.8(effect@3.17.13))(@effect/rpc@0.69.1(@effect/platform@0.90.8(effect@3.17.13))(effect@3.17.13))(effect@3.17.13)':
     dependencies:
