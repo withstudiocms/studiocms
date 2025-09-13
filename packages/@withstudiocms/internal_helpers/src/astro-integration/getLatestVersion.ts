@@ -2,6 +2,15 @@ import fs from 'node:fs';
 import type { AstroIntegrationLogger } from 'astro';
 import { jsonParse } from '../utils/jsonUtils.js';
 
+type LatestVersionCheck = {
+	lastChecked: Date;
+	version: string;
+};
+
+type CachedData = {
+	latestVersionCheck?: LatestVersionCheck;
+};
+
 /**
  * Fetches the latest version of a given npm package from the npm registry.
  *
@@ -22,17 +31,12 @@ export async function getLatestVersion(
 		writeFileSync,
 	}: { readFileSync: typeof fs.readFileSync; writeFileSync: typeof fs.writeFileSync } = fs
 ): Promise<string | null> {
-	let cacheData: {
-		latestVersionCheck?: {
-			lastChecked: Date;
-			version: 'string';
-		};
-	} = {};
+	let cacheData: CachedData = {};
 
 	if (isDevMode && cacheJsonFile) {
 		const file = readFileSync(cacheJsonFile, { encoding: 'utf-8' });
 
-		cacheData = jsonParse<{ latestVersionCheck: { lastChecked: Date; version: 'string' } }>(file);
+		cacheData = jsonParse<CachedData>(file);
 
 		if (
 			cacheData.latestVersionCheck?.lastChecked &&
@@ -53,7 +57,7 @@ export async function getLatestVersion(
 		const data = await response.json();
 
 		if (isDevMode && cacheJsonFile) {
-			const updatedCacheData: { latestVersionCheck: { lastChecked: Date; version: 'string' } } = {
+			const updatedCacheData: CachedData = {
 				...cacheData,
 				latestVersionCheck: {
 					lastChecked: new Date(),
