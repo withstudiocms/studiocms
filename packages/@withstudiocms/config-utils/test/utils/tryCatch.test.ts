@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { tryCatch } from '../../src/utils/tryCatch.js';
+import { tryCatch } from '../../src/utils/index.js';
 
 describe('tryCatch', () => {
 	describe('with synchronous functions', () => {
