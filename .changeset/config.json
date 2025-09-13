@@ -23,6 +23,6 @@
   "access": "public",
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch",
-  "ignore": ["node-playground"],
+  "ignore": ["node-playground", "@test-config-utils/integration-utils"],
   "privatePackages": false
 }
