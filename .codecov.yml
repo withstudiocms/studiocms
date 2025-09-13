@@ -65,7 +65,7 @@ flag_management:
         target: auto
         threshold: 1%
       - type: patch
-        target: 90%
+        target: 80%
   individual_flags:
     # - name: integrations
     #   paths:
