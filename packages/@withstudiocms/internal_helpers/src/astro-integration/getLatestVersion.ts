@@ -54,7 +54,12 @@ export async function getLatestVersion(
 	}
 
 	try {
-		const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`);
+		const ac = new AbortController();
+		const t = setTimeout(() => ac.abort(), 5_000);
+		const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`, {
+			signal: ac.signal,
+		});
+		clearTimeout(t);
 
 		if (!response.ok) {
 			throw new Error(`Failed to fetch package info: ${response.statusText}`);
