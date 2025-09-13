@@ -1,5 +1,16 @@
 # @withstudiocms/component-registry
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- [#788](https://github.com/withstudiocms/studiocms/pull/788) [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Convert tests to vitest
+
+- [#780](https://github.com/withstudiocms/studiocms/pull/780) [`627119b`](https://github.com/withstudiocms/studiocms/commit/627119bfde88e9c2ea74a29817d91fb6afbab33d) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency ts-morph to v27
+
+- Updated dependencies [[`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b), [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa), [`3d3612d`](https://github.com/withstudiocms/studiocms/commit/3d3612d510f4827acfb4de364d39e835a693818f), [`c2c2b73`](https://github.com/withstudiocms/studiocms/commit/c2c2b73a71009769e38ea4b30ae4010f6f0fdd14), [`fbb9ad1`](https://github.com/withstudiocms/studiocms/commit/fbb9ad10555f26c8e6261cd71a7650ab4aeb64f9), [`faf2a70`](https://github.com/withstudiocms/studiocms/commit/faf2a70ae57d136a9ccbbdebad70897e42c14c64)]:
+  - @withstudiocms/effect@0.1.0-beta.3
+
 ## 0.1.0-beta.2
 
 ### Patch Changes

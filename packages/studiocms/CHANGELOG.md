@@ -1,5 +1,28 @@
 # studiocms
 
+## 0.1.0-beta.27
+
+### Patch Changes
+
+- [#772](https://github.com/withstudiocms/studiocms/pull/772) [`ecc664c`](https://github.com/withstudiocms/studiocms/commit/ecc664cbb560f03db2078dc8d23135f9e966a7d4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deduplicate CLI utilities and unify avatar URL generation (Libravatar)
+
+- [#774](https://github.com/withstudiocms/studiocms/pull/774) [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor CLI to utilize new Effect-ful clack module from `@withstudiocms/effect`
+
+- [#770](https://github.com/withstudiocms/studiocms/pull/770) [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate CLI to new authkit package
+
+- [#781](https://github.com/withstudiocms/studiocms/pull/781) [`1848b0c`](https://github.com/withstudiocms/studiocms/commit/1848b0ce4d8bbb908a3207079fbbeeda446e3cb7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans CLI to utilize fully Effect-TS based code instead of raw JS/TS, allowing better error handling and code maintainability.
+
+- [#785](https://github.com/withstudiocms/studiocms/pull/785) [`c86f4f4`](https://github.com/withstudiocms/studiocms/commit/c86f4f4ab0873c29246582a8dbcab645057d146c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - rename internal file to avoid confusion with tests during dev
+
+- [#789](https://github.com/withstudiocms/studiocms/pull/789) [`5713f15`](https://github.com/withstudiocms/studiocms/commit/5713f154eb15aad8d2c2c8a5a5c13611ff03dee8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Correct parameter in CLI add command.
+
+- Updated dependencies [[`71d8948`](https://github.com/withstudiocms/studiocms/commit/71d894899a417e3a249c5f47e527223ade38b4fc), [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b), [`627119b`](https://github.com/withstudiocms/studiocms/commit/627119bfde88e9c2ea74a29817d91fb6afbab33d), [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa), [`3d3612d`](https://github.com/withstudiocms/studiocms/commit/3d3612d510f4827acfb4de364d39e835a693818f), [`c2c2b73`](https://github.com/withstudiocms/studiocms/commit/c2c2b73a71009769e38ea4b30ae4010f6f0fdd14), [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548), [`c478f2d`](https://github.com/withstudiocms/studiocms/commit/c478f2dba7fb5cc923e0dbf0367fa2a050fcdc2d), [`fbb9ad1`](https://github.com/withstudiocms/studiocms/commit/fbb9ad10555f26c8e6261cd71a7650ab4aeb64f9), [`faf2a70`](https://github.com/withstudiocms/studiocms/commit/faf2a70ae57d136a9ccbbdebad70897e42c14c64)]:
+  - @withstudiocms/auth-kit@0.1.0-beta.2
+  - @withstudiocms/component-registry@0.1.0-beta.3
+  - @withstudiocms/internal_helpers@0.1.0-beta.2
+  - @withstudiocms/config-utils@0.1.0-beta.4
+  - @withstudiocms/effect@0.1.0-beta.3
+
 ## 0.1.0-beta.26
 
 ### Patch Changes
