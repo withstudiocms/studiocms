@@ -62,7 +62,8 @@ export async function getLatestVersion(
 		clearTimeout(t);
 
 		if (!response.ok) {
-			throw new Error(`Failed to fetch package info: ${response.statusText}`);
+			logger.warn(`Failed to fetch package info from registry.npmjs.org: ${response.statusText}`);
+			return null;
 		}
 
 		const data = await response.json();
