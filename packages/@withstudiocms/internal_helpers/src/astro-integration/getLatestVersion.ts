@@ -2,14 +2,14 @@ import fs from 'node:fs';
 import type { AstroIntegrationLogger } from 'astro';
 import { jsonParse } from '../utils/jsonUtils.js';
 
-type LatestVersionCheck = {
-	lastChecked: Date;
+interface LatestVersionCheck {
+	lastChecked: string; // ISO 8601
 	version: string;
-};
+}
 
-type CachedData = {
+interface CachedData {
 	latestVersionCheck?: LatestVersionCheck;
-};
+}
 
 /**
  * Fetches the latest version of a given npm package from the npm registry.
@@ -34,9 +34,15 @@ export async function getLatestVersion(
 	let cacheData: CachedData = {};
 
 	if (isDevMode && cacheJsonFile) {
-		const file = readFileSync(cacheJsonFile, { encoding: 'utf-8' });
-
-		cacheData = jsonParse<CachedData>(file);
+		try {
+			const file = readFileSync(cacheJsonFile, { encoding: 'utf-8' });
+			cacheData = jsonParse<CachedData>(file) ?? {};
+		} catch (err) {
+			// Ignore missing cache; warn on other parse/read errors
+			if (!(err as NodeJS.ErrnoException)?.code?.includes('ENOENT')) {
+				logger?.warn?.(`Ignoring cache read error for ${cacheJsonFile}: ${(err as Error).message}`);
+			}
+		}
 
 		if (
 			cacheData.latestVersionCheck?.lastChecked &&
@@ -60,7 +66,7 @@ export async function getLatestVersion(
 			const updatedCacheData: CachedData = {
 				...cacheData,
 				latestVersionCheck: {
-					lastChecked: new Date(),
+					lastChecked: new Date().toISOString(),
 					version: data.version,
 				},
 			};
