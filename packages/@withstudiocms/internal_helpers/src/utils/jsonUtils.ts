@@ -15,6 +15,10 @@ export function jsonParse<T extends object>(text: string): T {
 /**
  * Reads a JSON file and parses it into an object of type T.
  */
-export function readJson<T extends object>(path: string | URL): T {
-	return jsonParse<T>(fs.readFileSync(path, 'utf-8'));
+export function readJson<T extends object>(
+	path: string | URL,
+	readFileSync: (path: string | URL, encoding: BufferEncoding) => string = fs.readFileSync
+): T {
+	const content = readFileSync(path, 'utf-8');
+	return jsonParse<T>(content);
 }
