@@ -42,6 +42,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
+    "test": "vitest",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
@@ -68,8 +69,10 @@
     "suneditor": "^2.47.7"
   },
   "devDependencies": {
+    "@inox-tools/astro-tests": "catalog:",
     "@types/codemirror": "5.60.16",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min",
