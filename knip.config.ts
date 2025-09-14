@@ -108,9 +108,6 @@ const extras = (pkg: string) => {
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},
-		'component-registry': {
-			ignoreDependencies: ['test'],
-		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
 	return supportsExtras ? extrasMap[pkg] : {};
@@ -151,6 +148,15 @@ const config: KnipConfig = {
 			{} as Record<string, any>
 		),
 		'packages/@withstudiocms/build-kit': buildKitWithStudioCMSConfig,
+		'packages/@withstudiocms/*/test/fixtures/*': {
+			ignore: ['**/*'],
+		},
+		'packages/@studiocms/*/test/fixtures/*': {
+			ignore: ['**/*'],
+		},
+		'packages/@studiocms/*/tests/fixtures/*': {
+			ignore: ['**/*'],
+		},
 		playground: {
 			ignoreDependencies: ['sharp'],
 			astro: {
