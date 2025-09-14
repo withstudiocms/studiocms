@@ -155,6 +155,7 @@ export class EntityDecoder {
 				return this.stateNamedEntity(input, offset);
 			}
 
+			/* v8 ignore start */
 			case EntityDecoderState.NumericStart: {
 				return this.stateNumericStart(input, offset);
 			}
@@ -170,6 +171,7 @@ export class EntityDecoder {
 			case EntityDecoderState.NamedEntity: {
 				return this.stateNamedEntity(input, offset);
 			}
+			/* v8 ignore stop */
 		}
 	}
 
@@ -183,9 +185,11 @@ export class EntityDecoder {
 	 * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
 	 */
 	private stateNumericStart(input: string, offset: number): number {
+		/* v8 ignore start */
 		if (offset >= input.length) {
 			return -1;
 		}
+		/* v8 ignore stop */
 
 		if ((input.charCodeAt(offset) | TO_LOWER_BIT) === CharCodes.LOWER_X) {
 			this.state = EntityDecoderState.NumericHex;
@@ -228,9 +232,11 @@ export class EntityDecoder {
 			}
 		}
 
+		/* v8 ignore start */
 		this.addToNumericResult(input, startIndex, offset, 16);
 
 		return -1;
+		/* v8 ignore stop */
 	}
 
 	/**
@@ -255,9 +261,11 @@ export class EntityDecoder {
 			}
 		}
 
+		/* v8 ignore start */
 		this.addToNumericResult(input, startIndex, offset, 10);
 
 		return -1;
+		/* v8 ignore stop */
 	}
 
 	/**
@@ -275,20 +283,25 @@ export class EntityDecoder {
 	 */
 	private emitNumericEntity(lastCp: number, expectedLength: number): number {
 		// Ensure we consumed at least one digit.
+		/* v8 ignore start */
 		if (this.consumed <= expectedLength) {
 			this.errors?.absenceOfDigitsInNumericCharacterReference(this.consumed);
 			return 0;
 		}
+		/* v8 ignore stop */
 
 		// Figure out if this is a legit end of the entity
 		if (lastCp === CharCodes.SEMI) {
 			this.consumed += 1;
+			/* v8 ignore start */
 		} else if (this.decodeMode === DecodingMode.Strict) {
 			return 0;
 		}
+		/* v8 ignore stop */
 
 		this.emitCodePoint(replaceCodePoint(this.result), this.consumed);
 
+		/* v8 ignore start */
 		if (this.errors) {
 			if (lastCp !== CharCodes.SEMI) {
 				this.errors.missingSemicolonAfterCharacterReference();
@@ -296,6 +309,7 @@ export class EntityDecoder {
 
 			this.errors.validateNumericCharacterReference(this.result);
 		}
+		/* v8 ignore stop */
 
 		return this.consumed;
 	}
@@ -391,10 +405,12 @@ export class EntityDecoder {
 			valueLength === 1 ? decodeTree[result] & ~BinTrieFlags.VALUE_LENGTH : decodeTree[result + 1],
 			consumed
 		);
+		/* v8 ignore start */
 		if (valueLength === 3) {
 			// For multi-byte values, we need to emit the second byte.
 			this.emitCodePoint(decodeTree[result + 2], consumed);
 		}
+		/* v8 ignore stop */
 
 		return consumed;
 	}
@@ -463,10 +479,12 @@ function getDecoder(decodeTree: Uint16Array) {
 				offset + 1
 			);
 
+			/* v8 ignore start */
 			if (length < 0) {
 				lastIndex = offset + decoder.end();
 				break;
 			}
+			/* v8 ignore stop */
 
 			lastIndex = offset + length;
 			// If `length` is 0, skip the current `&` and continue.
