@@ -82,11 +82,10 @@ describe('determineBranch', () => {
 	it('returns -1 for invalid branch', () => {
 		expect(determineBranch(htmlDecodeTree, 0, 0, 9999)).toBe(-1);
 	});
-	it('returns a valid index for a valid branch', () => {
-		// This is a low-level test; we check that for '&' (38) in the root, we get a valid index
-		const idx = determineBranch(htmlDecodeTree, htmlDecodeTree[0], 1, 38);
+	it('returns a non -1 index for a valid branch (example: "a" -> 0x61) in the root', () => {
+		const idx = determineBranch(htmlDecodeTree, htmlDecodeTree[0], 1, 0x61);
 		expect(typeof idx).toBe('number');
-		expect(idx).toBe(-1);
+		expect(idx).not.toBe(-1);
 	});
 });
 
