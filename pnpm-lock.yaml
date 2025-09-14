@@ -758,8 +758,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.50
-        version: 1.2.50
+        specifier: ^1.2.51
+        version: 1.2.51
       '@inox-tools/runtime-logger':
         specifier: ^0.7.0
         version: 0.7.0(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -1614,8 +1614,8 @@ packages:
   '@iconify-json/heroicons@1.2.2':
     resolution: {integrity: sha512-qoW4pXr5kTTL6juEjgTs83OJIwpePu7q1tdtKVEdj+i0zyyVHgg/dd9grsXJQnpTpBt6/VwNjrXBvFjRsKPENg==}
 
-  '@iconify-json/simple-icons@1.2.50':
-    resolution: {integrity: sha512-Z2ggRwKYEBB9eYAEi4NqEgIzyLhu0Buh4+KGzMPD6+xG7mk52wZJwLT/glDPtfslV503VtJbqzWqBUGkCMKOFA==}
+  '@iconify-json/simple-icons@1.2.51':
+    resolution: {integrity: sha512-vFH0QEHFG3rt9hZOR3oE/ZfAKFA7cS11UXttD/IphClEbiSTsPbpeeJ4kRYGDBUDmAKhBzk6jxHNG8VipwA69Q==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -6928,7 +6928,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.50':
+  '@iconify-json/simple-icons@1.2.51':
     dependencies:
       '@iconify/types': 2.0.0
 
