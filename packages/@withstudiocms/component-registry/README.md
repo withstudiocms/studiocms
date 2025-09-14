@@ -1,5 +1,7 @@
 # @withstudiocms/component-registry
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_component_registry)](https://codecov.io/github/withstudiocms/studiocms)
+
 Create a virtual Astro Component registry with ease.
 
 ## Install
