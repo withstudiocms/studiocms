@@ -127,7 +127,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
         
                 <div class="form-row">
                     <Select label={t('select-page-parent-folder')}  name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
-                    <Select label={t('select-page-draft')} name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} disabled={pageData.slug === 'index'} />
+                    <Select label={t('select-page-draft')} name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} />
                 </div>
         
                 <div class="form-row">
