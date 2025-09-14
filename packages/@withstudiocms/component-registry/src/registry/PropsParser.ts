@@ -160,12 +160,12 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 								}
 								/* v8 ignore start */
 								results.push({ name: typeName, props });
-								/* v8 ignore stop */
 							} else {
 								console.log(
 									`Type alias ${typeName} is not a type literal, kind: ${typeNode?.getKindName()}`
 								);
 							}
+							/* v8 ignore stop */
 						}
 
 						return results;
