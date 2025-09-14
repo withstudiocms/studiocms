@@ -1,5 +1,7 @@
 import type { StudioCMSPlugin } from 'studiocms/plugins';
 import { vi } from 'vitest';
+import { symbol as htmlSymbol } from '../src/lib/shared.js';
+import type { HTMLSchemaOptions } from '../src/types.js';
 
 /**
  * Mock StudioCMS plugin hooks for testing
@@ -27,7 +29,7 @@ export const createMockAstroIntegration = () => ({
 /**
  * Mock HTML schema options for testing
  */
-export const createMockHTMLOptions = (overrides = {}) => ({
+export const createMockHTMLOptions = (overrides: Partial<HTMLSchemaOptions> = {}): HTMLSchemaOptions => ({
 	sanitize: {
 		allowElements: [],
 		allowAttributes: {},
@@ -40,18 +42,18 @@ export const createMockHTMLOptions = (overrides = {}) => ({
  */
 export const mockGlobalThis = () => {
 	const mockGlobal = {
-		'@studiocms/html': {
+		[htmlSymbol]: {
 			htmlConfig: undefined,
 		},
 	};
-	
+
 	// Mock globalThis
-	Object.defineProperty(globalThis, '@studiocms/html', {
-		value: mockGlobal['@studiocms/html'],
+	Object.defineProperty(globalThis, htmlSymbol, {
+		value: mockGlobal[htmlSymbol],
 		writable: true,
 		configurable: true,
 	});
-	
+
 	return mockGlobal;
 };
 
@@ -59,5 +61,11 @@ export const mockGlobalThis = () => {
  * Clean up globalThis after tests
  */
 export const cleanupGlobalThis = () => {
-	delete (globalThis as Record<string, unknown>)['@studiocms/html'];
+	// symbol-keyed property
+	const syms = Object.getOwnPropertySymbols(globalThis);
+	for (const s of syms) {
+		if (String(s) === 'Symbol(@studiocms/html)') {
+			delete (globalThis as Record<symbol, unknown>)[s];
+		}
+	}
 };

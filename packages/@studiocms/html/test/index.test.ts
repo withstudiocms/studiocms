@@ -56,16 +56,26 @@ describe('studiocmsHTML', () => {
 			expect(plugin.name).toBe('StudioCMS HTML');
 		});
 
-		it('should handle invalid options gracefully', () => {
+		it('should throw error for invalid options', () => {
 			const invalidOptions = {
-				sanitize: {
-					invalidProperty: 'test',
-				},
+				sanitize: 'not-an-object', // This should cause schema validation to fail
 			};
 
-			// The function should handle invalid options without throwing
-			// since the schema validation happens internally
-			expect(() => studiocmsHTML(invalidOptions as never)).not.toThrow();
+			// The function should throw an error when schema validation fails
+			expect(() => studiocmsHTML(invalidOptions as never)).toThrow(/Invalid HTML options/);
+		});
+
+		it('should handle unknown properties gracefully', () => {
+			const optionsWithUnknownProperties = {
+				sanitize: {
+					allowElements: ['p', 'br'],
+				},
+				unknownProperty: 'should be ignored',
+			};
+
+			// The function should handle unknown properties without throwing
+			// since the schema validation strips unknown properties and uses defaults
+			expect(() => studiocmsHTML(optionsWithUnknownProperties as never)).not.toThrow();
 		});
 	});
 

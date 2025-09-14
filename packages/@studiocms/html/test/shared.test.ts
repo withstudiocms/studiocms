@@ -29,7 +29,7 @@ describe('shared module', () => {
 
 		it('should retrieve existing object from globalThis', async () => {
 			const existingConfig = { sanitize: { allowElements: ['p'] } };
-			(globalThis as Record<string, unknown>)['@studiocms/html'] = { htmlConfig: existingConfig };
+			(globalThis as Record<symbol, unknown>)[symbol] = { htmlConfig: existingConfig };
 
 			// Re-import to get the shared object
 			const { shared: newShared } = await import('../src/lib/shared.js');
@@ -42,7 +42,7 @@ describe('shared module', () => {
 
 		it('should create new object when globalThis is empty', async () => {
 			// Clear the globalThis
-			delete (globalThis as Record<string, unknown>)['@studiocms/html'];
+			delete (globalThis as Record<symbol, unknown>)[symbol];
 			
 			// Re-import to get the shared object
 			const { shared: newShared } = await import('../src/lib/shared.js');
@@ -127,7 +127,7 @@ describe('shared module', () => {
 			mockGlobalThis();
 			
 			// The shared object should use the same key as the symbol
-			expect((globalThis as Record<string, unknown>)['@studiocms/html']).toBeDefined();
+			expect((globalThis as Record<symbol, unknown>)[symbol]).toBeDefined();
 		});
 
 		it('should handle multiple imports consistently', async () => {
