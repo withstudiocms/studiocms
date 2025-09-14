@@ -1,5 +1,5 @@
 import type { SSRResult } from 'astro';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createComponentProxy } from '../../src/component-proxy/index.js';
 
 describe('createComponentProxy', () => {
@@ -17,5 +17,16 @@ describe('createComponentProxy', () => {
 	it('proxies string components directly', () => {
 		const proxy = createComponentProxy(result, { Foo: 'bar' });
 		expect(proxy.foo).toBe('bar');
+	});
+
+	it('proxies function components correctly', async () => {
+		const proxy = createComponentProxy(result, {
+			MyComponent: (props: any, children: any) => {
+				return `<div>${props.text} - ${children?.value || ''}</div>`;
+			},
+		});
+
+		expect(proxy.mycomponent).toBeDefined();
+		expect(typeof proxy.mycomponent).toBe('function');
 	});
 });
