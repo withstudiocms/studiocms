@@ -69,10 +69,8 @@
     "suneditor": "^2.47.7"
   },
   "devDependencies": {
-    "@inox-tools/astro-tests": "catalog:",
     "@types/codemirror": "5.60.16",
-    "@types/node": "catalog:",
-    "vitest": "catalog:"
+    "@types/node": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min",
