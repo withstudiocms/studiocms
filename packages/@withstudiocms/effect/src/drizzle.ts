@@ -43,12 +43,8 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
  * @typeParam Record<string, never> - The schema type for the transaction (empty object in this case).
  * @typeParam ExtractTablesWithRelations<Record<string, never>> - Extracted table relations from the schema.
  */
-export type TransactionClient = SQLiteTransaction<
-	'async',
-	ResultSet,
-	Record<string, never>,
-	ExtractTablesWithRelations<Record<string, never>>
->;
+export type TransactionClient<Schema extends Record<string, unknown> = Record<string, never>> =
+	SQLiteTransaction<'async', ResultSet, Schema, ExtractTablesWithRelations<Schema>>;
 
 /**
  * Represents a function that executes a provided asynchronous operation using a database client.
@@ -60,7 +56,7 @@ export type TransactionClient = SQLiteTransaction<
  * @returns An `Effect` that resolves to the result of type `T` or fails with a `LibSQLClientError`.
  */
 export type ExecuteFn<Schema extends Record<string, unknown> = Record<string, never>> = <T>(
-	fn: (client: LibSQLDatabase<Schema> | TransactionClient) => Promise<T>
+	fn: (client: LibSQLDatabase<Schema> | TransactionClient<Schema>) => Promise<T>
 ) => Effect.Effect<T, LibSQLClientError>;
 
 /**
@@ -70,8 +66,10 @@ export type ExecuteFn<Schema extends Record<string, unknown> = Record<string, ne
  * @param fn - A function that receives a `TransactionClient` and returns a `Promise` of type `U`.
  * @returns An `Effect` that resolves to the result of type `U` or fails with a `LibSQLClientError`.
  */
-export type TransactionContextShape = <U>(
-	fn: (client: TransactionClient) => Promise<U>
+export type TransactionContextShape<
+	Schema extends Record<string, unknown> = Record<string, never>,
+> = <U>(
+	fn: (client: TransactionClient<Schema>) => Promise<U>
 ) => Effect.Effect<U, LibSQLClientError>;
 
 /**
