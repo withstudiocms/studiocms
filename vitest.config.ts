@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-const projectsWithTests = [
+const projectsWithTests: { scope?: string; names: string[] }[] = [
 	{
 		scope: 'withstudiocms',
 		names: [
@@ -21,7 +21,9 @@ const projectsWithTests = [
 ];
 
 const projects = projectsWithTests.flatMap(({ scope, names }) =>
-	names.map((name) => `packages/@${scope}/${name}`)
+	scope
+		? names.map((name) => `packages/@${scope}/${name}`)
+		: names.map((name) => `packages/${name}`)
 );
 
 export default defineConfig({
@@ -44,6 +46,8 @@ export default defineConfig({
 				'**/**/vitest.config.ts',
 				'**/**/@withstudiocms/auth-kit/scripts/**',
 				'**/**/scratchpad/**',
+				'**/**/test/fixtures/**',
+				'**/**/test/test-utils.ts',
 			],
 		},
 	},
