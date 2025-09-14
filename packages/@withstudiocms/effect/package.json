@@ -70,6 +70,10 @@
 		"./clack": {
 			"types": "./dist/clack.d.ts",
 			"default": "./dist/clack.js"
+		},
+		"./drizzle": {
+			"types": "./dist/drizzle.d.ts",
+			"default": "./dist/drizzle.js"
 		}
 	},
 	"type": "module",
@@ -87,10 +91,24 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
+		"@astrojs/db": "catalog:min",
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
+		"@libsql/client": "catalog:min",
 		"astro": "catalog:min",
+		"drizzle-orm": "catalog:min",
 		"effect": "catalog:effect"
+	},
+	"peerDependenciesMeta": {
+		"@astrojs/db": {
+			"optional": true
+		},
+		"@libsql/client": {
+			"optional": true
+		},
+		"drizzle-orm": {
+			"optional": true
+		}
 	}
 }
