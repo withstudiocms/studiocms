@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { studiocmsHTML } from '../src/index.js';
-import { createMockHTMLOptions } from './test-utils.js';
+import { cleanupGlobalThis, createMockHTMLOptions } from './test-utils.js';
 
 // Mock the dependencies
 vi.mock('astro-integration-kit', () => ({
@@ -13,15 +13,11 @@ vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
 }));
 
-vi.mock('../src/lib/shared.js', () => ({
-	shared: {
-		htmlConfig: undefined,
-	},
-}));
 
 describe('studiocmsHTML', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		cleanupGlobalThis();
 	});
 
 	afterEach(() => {
@@ -94,12 +90,25 @@ describe('studiocmsHTML', () => {
 			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
 		});
 
-		it('should call studiocms:astro:config hook with addIntegrations', () => {
-			const plugin = studiocmsHTML();
+		it('should call studiocms:astro:config hook with addIntegrations and set shared.htmlConfig', async () => {
+			const plugin: ReturnType<typeof studiocmsHTML> = studiocmsHTML();
 			const mockAddIntegrations = vi.fn();
+			const mockLogger = {
+				options: {
+					dest: 'stderr',
+					level: 'info',
+				},
+				label: vi.fn(),
+				fork: vi.fn(),
+				info: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn(),
+				debug: vi.fn(),
+			} as any;
 
-			const hook = plugin.hooks['studiocms:astro:config'] as (...args: unknown[]) => unknown;
-			hook({ addIntegrations: mockAddIntegrations });
+			const hook = plugin.hooks['studiocms:astro:config'];
+			if (!hook) throw new Error('Hook not found');
+			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 
 			expect(mockAddIntegrations).toHaveBeenCalledWith({
 				name: '@studiocms/html',
@@ -107,6 +116,56 @@ describe('studiocmsHTML', () => {
 					'astro:config:done': expect.any(Function),
 				},
 			});
+
+			// Verify the side effect executed by astro:config:done
+			const integrationArg = mockAddIntegrations.mock.calls[0][0];
+			const { shared } = await import('../src/lib/shared.js');
+			expect(shared.htmlConfig).toBeUndefined();
+			integrationArg.hooks['astro:config:done']();
+			expect(shared.htmlConfig).toBeDefined();
+			expect(shared.htmlConfig).toEqual({});
+		});
+
+		it('should persist custom options to shared.htmlConfig', async () => {
+			const customOptions = {
+				sanitize: {
+					allowElements: ['p', 'br', 'strong'],
+					allowAttributes: { '*': ['class'] },
+				},
+			};
+			const plugin: ReturnType<typeof studiocmsHTML> = studiocmsHTML(customOptions);
+			const mockAddIntegrations = vi.fn();
+			const mockLogger = {
+				options: {
+					dest: 'stderr',
+					level: 'info',
+				},
+				label: vi.fn(),
+				fork: vi.fn(),
+				info: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn(),
+				debug: vi.fn(),
+			} as any;
+
+			const hook = plugin.hooks['studiocms:astro:config'];
+			if (!hook) throw new Error('Hook not found');
+			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
+
+			// Verify the side effect executed by astro:config:done
+			const integrationArg = mockAddIntegrations.mock.calls[0][0];
+			const { shared } = await import('../src/lib/shared.js');
+			
+			// Store the initial value
+			const initialValue = shared.htmlConfig;
+			
+			// Execute the hook
+			integrationArg.hooks['astro:config:done']();
+			
+			// Verify the value changed to our custom options
+			expect(shared.htmlConfig).toBeDefined();
+			expect(shared.htmlConfig).toEqual(customOptions);
+			expect(shared.htmlConfig).not.toEqual(initialValue);
 		});
 
 		it('should call studiocms:config:setup hook with setRendering', () => {
