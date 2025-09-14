@@ -1,10 +1,61 @@
-import { describe, expect, it } from 'vitest';
+import type { AstroIntegrationLogger } from 'astro';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	convertHyphensToUnderscores,
 	convertUnderscoresToHyphens,
 	dedent,
 	getIndent,
+	integrationLogger,
 } from '../src/utils.js';
+
+function createMockLogger() {
+	// biome-ignore lint/suspicious/noExplicitAny: this is fine
+	const logger: Record<string, any> = {
+		info: vi.fn(),
+		warn: vi.fn(),
+		error: vi.fn(),
+		debug: vi.fn(),
+		fork: vi.fn((label: string) => {
+			// Each fork returns a new mock logger with the label attached for testing
+			const forked = createMockLogger();
+			forked.label = label;
+			return forked;
+		}),
+	};
+	return logger as unknown as AstroIntegrationLogger;
+}
+
+describe('integrationLogger', () => {
+	let logger: AstroIntegrationLogger;
+
+	beforeEach(() => {
+		logger = createMockLogger();
+	});
+
+	it('logs message at specified logLevel when verbose is true', async () => {
+		await integrationLogger({ logLevel: 'info', logger, verbose: true }, 'Test message');
+		expect(logger.info).toHaveBeenCalledWith('Test message');
+	});
+
+	it('logs message at specified logLevel when verbose is undefined', async () => {
+		await integrationLogger({ logLevel: 'warn', logger }, 'Warn message');
+		expect(logger.warn).toHaveBeenCalledWith('Warn message');
+	});
+
+	it('does not log info/debug when verbose is false', async () => {
+		await integrationLogger({ logLevel: 'info', logger, verbose: false }, 'Should not log');
+		await integrationLogger({ logLevel: 'debug', logger, verbose: false }, 'Should not log');
+		expect(logger.info).not.toHaveBeenCalled();
+		expect(logger.debug).not.toHaveBeenCalled();
+	});
+
+	it('logs warn/error when verbose is false', async () => {
+		await integrationLogger({ logLevel: 'warn', logger, verbose: false }, 'Warn');
+		await integrationLogger({ logLevel: 'error', logger, verbose: false }, 'Error');
+		expect(logger.warn).toHaveBeenCalledWith('Warn');
+		expect(logger.error).toHaveBeenCalledWith('Error');
+	});
+});
 
 describe('String Utilities', () => {
 	describe('convertHyphensToUnderscores', () => {
