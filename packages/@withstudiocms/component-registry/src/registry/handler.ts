@@ -72,6 +72,8 @@ export const resolver = Effect.fn(function* (base: string) {
 	);
 });
 
+/* v8 ignore start */
+// Tests are handled indirectly via the integration in `test/registry-test.test.ts`
 /**
  * Handles the setup and registration of components in the component registry during the Astro config setup phase.
  *
@@ -249,3 +251,4 @@ export const componentRegistryHandler = defineUtility('astro:config:setup')(
 			}).pipe(Effect.provide(ComponentRegistry.Default))
 		)
 );
+/* v8 ignore stop */
