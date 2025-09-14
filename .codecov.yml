@@ -48,10 +48,20 @@ flags:
       - packages/@studiocms/devapps/**
   plugins:
     carryforward: false
+    # These have to be listed individually due to 
+    # the integrations flag containing a scoped package. (@studiocms/devapps)
     paths:
-      - packages/@studiocms/**
-    ignore:
-      - packages/@studiocms/devapps/**
+      - packages/@studiocms/auth0/**
+      - packages/@studiocms/blog/**
+      - packages/@studiocms/cloudinary-image-service/**
+      - packages/@studiocms/discord/**
+      - packages/@studiocms/github/**
+      - packages/@studiocms/google/**
+      - packages/@studiocms/html/**
+      - packages/@studiocms/markdoc/**
+      - packages/@studiocms/md/**
+      - packages/@studiocms/mdx/**
+      - packages/@studiocms/wysiwyg/**
   tools-utils:
     carryforward: false
     paths:
