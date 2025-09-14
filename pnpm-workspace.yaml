@@ -20,7 +20,7 @@ catalogs:
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.2
-    "@effect/platform": ^0.90.8
+    "@effect/platform": ^0.90.9
     "@effect/platform-node": ^0.96.1
     effect: ^3.17.13
   min:
@@ -33,7 +33,7 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.3.1
-    "@types/react": ^19.1.12
+    "@types/react": ^19.1.13
     "@types/react-dom": ^19.1.9
     react: ^19.1.1
     "react-dom": ^19.1.1
