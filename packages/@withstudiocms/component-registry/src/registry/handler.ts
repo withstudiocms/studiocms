@@ -59,7 +59,7 @@ export type ComponentRegistryHandlerOptions = z.infer<typeof ComponentRegistryHa
  * const resolveEffect = resolver('/components');
  * const result = yield* resolveEffect((resolve) => resolve('Button'));
  */
-const resolver = Effect.fn(function* (base: string) {
+export const resolver = Effect.fn(function* (base: string) {
 	const { resolve: _resolve } = createResolver(base);
 	return Effect.fn((fn: (resolve: (...path: Array<string>) => string) => string) =>
 		Effect.try({
