@@ -27,8 +27,11 @@ const baseAstroWorkspaceConfig = {
  * @property ignore - Glob patterns specifying files or directories to ignore in the workspace.
  */
 const baseWithStudioCMSConfig = {
-	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}', 'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
-	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	entry: [
+		'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+		'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}',
+	],
+	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
 	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/example.config.mjs'],
 };
 const buildKitWithStudioCMSConfig = {
@@ -145,6 +148,15 @@ const config: KnipConfig = {
 			{} as Record<string, any>
 		),
 		'packages/@withstudiocms/build-kit': buildKitWithStudioCMSConfig,
+		'packages/@withstudiocms/*/test/fixtures/*': {
+			ignore: ['**/*'],
+		},
+		'packages/@studiocms/*/test/fixtures/*': {
+			ignore: ['**/*'],
+		},
+		'packages/@studiocms/*/tests/fixtures/*': {
+			ignore: ['**/*'],
+		},
 		playground: {
 			ignoreDependencies: ['sharp'],
 			astro: {

@@ -61,10 +61,12 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 					const parsed = yield* parser.parseComponentProps(propsDefinition).pipe(
 						Effect.mapError(
 							(error) =>
+								/* v8 ignore start */
 								new ComponentRegistryError({
 									message: `Failed to register component ${name}`,
 									cause: error,
 								})
+							/* v8 ignore stop */
 						)
 					);
 

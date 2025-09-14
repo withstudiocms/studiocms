@@ -7,6 +7,12 @@ import { decode } from './decoder/index.js';
 
 export * from './decoder/index.js';
 
+interface TestProps {
+	renderJSX: typeof renderJSX;
+	jsx: typeof jsx;
+	__unsafeHTML: typeof __unsafeHTML;
+}
+
 /**
  * Creates a proxy for components that can either be strings or functions.
  * If the component is a string, it is directly assigned to the proxy.
@@ -17,7 +23,11 @@ export * from './decoder/index.js';
  * @param _components - An optional record of components to be proxied. Defaults to an empty object.
  * @returns A record of proxied components.
  */
-export function createComponentProxy(result: SSRResult, _components: ComponentType = {}) {
+export function createComponentProxy(
+	result: SSRResult,
+	_components: ComponentType = {},
+	_testProps: TestProps = { jsx, __unsafeHTML, renderJSX }
+): ComponentType {
 	// Avoid prototype pollution on special keys like __proto__/constructor
 	const components: ComponentType = Object.create(null);
 	for (const [rawKey, value] of Object.entries(_components)) {
@@ -30,6 +40,7 @@ export function createComponentProxy(result: SSRResult, _components: ComponentTy
 					try {
 						const normalized = JSON.parse(JSON.stringify(props.code ?? ''));
 						props = { ...props, code: decode(String(normalized)) };
+						/* v8 ignore start */
 					} catch (err) {
 						console.warn(
 							`Failed to decode code prop for component "${lowerKey}". Falling back to raw string.`,
@@ -38,12 +49,13 @@ export function createComponentProxy(result: SSRResult, _components: ComponentTy
 						const safe = typeof props.code === 'string' ? props.code : String(props.code ?? '');
 						props = { ...props, code: decode(safe) };
 					}
+					/* v8 ignore end */
 				}
-				const output = await renderJSX(
+				const output = await _testProps.renderJSX(
 					result,
-					jsx(value, { ...props, 'set:html': children?.value })
+					_testProps.jsx(value, { ...props, 'set:html': children?.value })
 				);
-				return __unsafeHTML(output);
+				return _testProps.__unsafeHTML(output);
 			};
 		}
 	}

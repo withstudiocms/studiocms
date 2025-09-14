@@ -19,9 +19,11 @@ export function prefixError(err: Error, prefix: string): Error {
 		try {
 			err.message = `${prefix}:\n${err.message}`;
 			return err;
+			/* v8 ignore start */
 		} catch {
 			// Any errors here are ok, there's fallback code below
 		}
+		/* v8 ignore stop */
 	}
 
 	// If that failed, create a new error with the desired message and attempt to keep the stack
