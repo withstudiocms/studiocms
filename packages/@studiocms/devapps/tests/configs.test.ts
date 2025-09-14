@@ -17,7 +17,6 @@ import {
 import type { PageData } from '../src/effects/WordPressAPI/importers';
 
 describe('WordPress API Configs', () => {
-
 	describe('StringConfig', () => {
 		it('should create StringConfig with correct structure', () => {
 			const str = 'test-string';
@@ -31,7 +30,7 @@ describe('WordPress API Configs', () => {
 			Effect.gen(function* () {
 				const str = 'test-string';
 				const layer = StringConfig.makeLayer(str);
-				
+
 				// Test that the layer can be used to provide the config
 				const config = yield* StringConfig;
 				expect(config.str).toBe(str);

@@ -59,7 +59,9 @@ describe('pathGenerator utilities', () => {
 	describe('pathWithBase', () => {
 		it('should combine base and path correctly', () => {
 			expect(pathWithBase('hello', 'https://example.com')).toBe('https://example.com/hello');
-			expect(pathWithBase('hello/world', 'https://example.com')).toBe('https://example.com/hello/world');
+			expect(pathWithBase('hello/world', 'https://example.com')).toBe(
+				'https://example.com/hello/world'
+			);
 		});
 
 		it('should handle empty path', () => {

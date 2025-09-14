@@ -19,8 +19,8 @@ describe('WordPress API Schema', () => {
 	describe('OpenClosedSchema', () => {
 		it('should validate open status', () => {
 			const validValues = ['open', 'closed', ''];
-			
-			validValues.forEach(value => {
+
+			validValues.forEach((value) => {
 				const result = Schema.decodeUnknownSync(OpenClosedSchema)(value);
 				expect(result).toBe(value);
 			});
@@ -28,8 +28,8 @@ describe('WordPress API Schema', () => {
 
 		it('should reject invalid status values', () => {
 			const invalidValues = ['invalid', 'active', 'inactive', null, undefined];
-			
-			invalidValues.forEach(value => {
+
+			invalidValues.forEach((value) => {
 				expect(() => {
 					Schema.decodeUnknownSync(OpenClosedSchema)(value);
 				}).toThrow();
@@ -40,8 +40,8 @@ describe('WordPress API Schema', () => {
 	describe('StatusSchema', () => {
 		it('should validate status values', () => {
 			const validStatuses = ['publish', 'future', 'draft', 'pending', 'private'];
-			
-			validStatuses.forEach(status => {
+
+			validStatuses.forEach((status) => {
 				const result = Schema.decodeUnknownSync(StatusSchema)(status);
 				expect(result).toBe(status);
 			});
@@ -49,8 +49,8 @@ describe('WordPress API Schema', () => {
 
 		it('should reject invalid status values', () => {
 			const invalidStatuses = ['invalid', 'active', 'inactive', 'archived', null, undefined];
-			
-			invalidStatuses.forEach(status => {
+
+			invalidStatuses.forEach((status) => {
 				expect(() => {
 					Schema.decodeUnknownSync(StatusSchema)(status);
 				}).toThrow();
@@ -60,9 +60,21 @@ describe('WordPress API Schema', () => {
 
 	describe('PostFormatSchema', () => {
 		it('should validate post format values', () => {
-			const validFormats = ['standard', 'aside', 'chat', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', ''];
-			
-			validFormats.forEach(format => {
+			const validFormats = [
+				'standard',
+				'aside',
+				'chat',
+				'gallery',
+				'link',
+				'image',
+				'quote',
+				'status',
+				'video',
+				'audio',
+				'',
+			];
+
+			validFormats.forEach((format) => {
 				const result = Schema.decodeUnknownSync(PostFormatSchema)(format);
 				expect(result).toBe(format);
 			});
@@ -70,8 +82,8 @@ describe('WordPress API Schema', () => {
 
 		it('should reject invalid post format values', () => {
 			const invalidFormats = ['invalid', 'custom', 'blog', null, undefined];
-			
-			invalidFormats.forEach(format => {
+
+			invalidFormats.forEach((format) => {
 				expect(() => {
 					Schema.decodeUnknownSync(PostFormatSchema)(format);
 				}).toThrow();
@@ -86,7 +98,7 @@ describe('WordPress API Schema', () => {
 				{ key: 'number', value: 123 },
 				{ key: 'boolean', value: true },
 			];
-			
+
 			const result = Schema.decodeUnknownSync(MetaDataSchema)(validMetadata);
 			expect(result).toEqual(validMetadata);
 		});
@@ -97,13 +109,9 @@ describe('WordPress API Schema', () => {
 		});
 
 		it('should reject invalid metadata structure', () => {
-			const invalidMetadata = [
-				{ invalid: 'structure' },
-				'not an object',
-				{ key: 'missing value' },
-			];
-			
-			invalidMetadata.forEach(metadata => {
+			const invalidMetadata = [{ invalid: 'structure' }, 'not an object', { key: 'missing value' }];
+
+			invalidMetadata.forEach((metadata) => {
 				expect(() => {
 					Schema.decodeUnknownSync(MetaDataSchema)(metadata);
 				}).toThrow();
@@ -114,14 +122,14 @@ describe('WordPress API Schema', () => {
 	describe('RenderedData', () => {
 		it('should validate rendered data structure', () => {
 			const validData = { rendered: 'Some HTML content' };
-			
+
 			const result = Schema.decodeUnknownSync(RenderedData)(validData);
 			expect(result).toEqual(validData);
 		});
 
 		it('should reject data without rendered field', () => {
 			const invalidData = { content: 'Some content' };
-			
+
 			expect(() => {
 				Schema.decodeUnknownSync(RenderedData)(invalidData);
 			}).toThrow();
@@ -130,18 +138,18 @@ describe('WordPress API Schema', () => {
 
 	describe('RenderedProtectData', () => {
 		it('should validate rendered protected data structure', () => {
-			const validData = { 
+			const validData = {
 				rendered: 'Some HTML content',
-				protected: true 
+				protected: true,
 			};
-			
+
 			const result = Schema.decodeUnknownSync(RenderedProtectData)(validData);
 			expect(result).toEqual(validData);
 		});
 
 		it('should reject data without required fields', () => {
 			const invalidData = { rendered: 'Some content' }; // missing protected field
-			
+
 			expect(() => {
 				Schema.decodeUnknownSync(RenderedProtectData)(invalidData);
 			}).toThrow();
@@ -151,7 +159,7 @@ describe('WordPress API Schema', () => {
 	describe('NumberArray', () => {
 		it('should validate array of numbers', () => {
 			const validNumbers = [1, 2, 3, 4, 5];
-			
+
 			const result = Schema.decodeUnknownSync(NumberArray)(validNumbers);
 			expect(result).toEqual(validNumbers);
 		});
@@ -163,7 +171,7 @@ describe('WordPress API Schema', () => {
 
 		it('should reject array with non-numbers', () => {
 			const invalidNumbers = [1, '2', 3, true, 5];
-			
+
 			expect(() => {
 				Schema.decodeUnknownSync(NumberArray)(invalidNumbers);
 			}).toThrow();
@@ -194,7 +202,7 @@ describe('WordPress API Schema', () => {
 				template: '',
 				meta: [],
 			};
-			
+
 			const result = Schema.decodeUnknownSync(Page)(validPage);
 			// Check that the result is a Page instance with correct data
 			expect(result).toBeInstanceOf(Page);
@@ -208,7 +216,7 @@ describe('WordPress API Schema', () => {
 				id: 1,
 				// missing required fields
 			};
-			
+
 			expect(() => {
 				Schema.decodeUnknownSync(Page)(invalidPage);
 			}).toThrow();
@@ -242,7 +250,7 @@ describe('WordPress API Schema', () => {
 				categories: [1, 2],
 				tags: [3, 4],
 			};
-			
+
 			const result = Schema.decodeUnknownSync(Post)(validPost);
 			expect(result).toBeInstanceOf(Post);
 			expect(result.id).toBe(1);
@@ -273,7 +281,7 @@ describe('WordPress API Schema', () => {
 				categories: [1, 2],
 				tags: [3, 4],
 			};
-			
+
 			expect(() => {
 				Schema.decodeUnknownSync(Post)(invalidPost);
 			}).toThrow();
@@ -293,7 +301,7 @@ describe('WordPress API Schema', () => {
 				parent: 0,
 				meta: [],
 			};
-			
+
 			const result = Schema.decodeUnknownSync(Category)(validCategory);
 			expect(result).toBeInstanceOf(Category);
 			expect(result.id).toBe(1);
@@ -314,7 +322,7 @@ describe('WordPress API Schema', () => {
 				taxonomy: 'post_tag',
 				meta: [],
 			};
-			
+
 			const result = Schema.decodeUnknownSync(Tag)(validTag);
 			expect(result).toBeInstanceOf(Tag);
 			expect(result.id).toBe(1);
@@ -336,7 +344,7 @@ describe('WordPress API Schema', () => {
 				site_icon: 2,
 				site_icon_url: 'http://example.com/icon.png',
 			};
-			
+
 			const result = Schema.decodeUnknownSync(SiteSettings)(validSettings);
 			expect(result).toBeInstanceOf(SiteSettings);
 			expect(result.name).toBe('Test Site');
