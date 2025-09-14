@@ -55,8 +55,7 @@
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "vitest": "catalog:"
+    "@types/node": "catalog:"
   },
   "peerDependencies": {
     "astro": "catalog:min",
