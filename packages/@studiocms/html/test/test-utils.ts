@@ -1,30 +1,5 @@
-import type { StudioCMSPlugin } from 'studiocms/plugins';
-import { vi } from 'vitest';
 import { symbol as htmlSymbol } from '../src/lib/shared.js';
 import type { HTMLSchemaOptions } from '../src/types.js';
-
-/**
- * Mock StudioCMS plugin hooks for testing
- */
-export const createMockStudioCMSPlugin = (): StudioCMSPlugin => ({
-	identifier: '@studiocms/html',
-	name: 'StudioCMS HTML',
-	studiocmsMinimumVersion: '0.1.0-beta.21',
-	hooks: {
-		'studiocms:astro:config': vi.fn(),
-		'studiocms:config:setup': vi.fn(),
-	},
-});
-
-/**
- * Mock Astro integration hooks
- */
-export const createMockAstroIntegration = () => ({
-	name: '@studiocms/html',
-	hooks: {
-		'astro:config:done': vi.fn(),
-	},
-});
 
 /**
  * Mock HTML schema options for testing
