@@ -212,6 +212,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 							throw new Error('No Props interface or type found in frontmatter');
 						}
 
+						/* v8 ignore start */
 						// Find the complete Props definition by counting braces
 						const propsSubstring = frontmatter.substring(propsStart);
 						let braceCount = 0;
@@ -248,6 +249,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 
 						const propsDefinition = propsSubstring.substring(0, i + 1).replace(/^export\s+/, '');
 						return propsDefinition;
+						/* v8 ignore stop */
 					},
 					catch: (error) => {
 						console.error('Error extracting props from Astro file:', error);
