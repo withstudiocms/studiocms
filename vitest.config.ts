@@ -46,6 +46,7 @@ export default defineConfig({
 				'**/**/scratchpad/**',
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',
+				'**/**/runtime.ts',
 			],
 		},
 	},
