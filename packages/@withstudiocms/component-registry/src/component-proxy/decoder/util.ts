@@ -370,7 +370,9 @@ export class EntityDecoder {
 			}
 		}
 
+		/* v8 ignore start */
 		return -1;
+		/* v8 ignore stop */
 	}
 
 	/**
@@ -415,6 +417,7 @@ export class EntityDecoder {
 		return consumed;
 	}
 
+	/* v8 ignore start */
 	/**
 	 * Signal to the parser that the end of the input was reached.
 	 *
@@ -423,7 +426,6 @@ export class EntityDecoder {
 	 * @returns The number of characters consumed.
 	 */
 	end(): number {
-		/* v8 ignore start */
 		switch (this.state) {
 			case EntityDecoderState.NamedEntity: {
 				// Emit a named entity if we have one.
@@ -448,8 +450,8 @@ export class EntityDecoder {
 				return 0;
 			}
 		}
-		/* v8 ignore stop */
 	}
+	/* v8 ignore stop */
 }
 
 /**
