@@ -285,9 +285,9 @@ describe('Cloudinary Image Service Plugin', () => {
 					error: vi.fn(),
 					debug: vi.fn(),
 					options: {
-					dest: mockLogWritable,
-					level: 'info',
-				},
+						dest: mockLogWritable,
+						level: 'info',
+					},
 					label: '',
 					fork: vi.fn(),
 				};
