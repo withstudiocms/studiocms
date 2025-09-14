@@ -51,7 +51,7 @@ export const fromCodePoint: (...codePoints: number[]) => string =
 		output += String.fromCharCode(codePoint);
 		return output;
 	});
-	/* v8 ignore stop */
+/* v8 ignore stop */
 
 /**
  * Replace the given code point with a replacement character if it is a
