@@ -27,8 +27,11 @@ const baseAstroWorkspaceConfig = {
  * @property ignore - Glob patterns specifying files or directories to ignore in the workspace.
  */
 const baseWithStudioCMSConfig = {
-	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}', 'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
-	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	entry: [
+		'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}',
+		'test/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}',
+	],
+	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
 	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/example.config.mjs'],
 };
 const buildKitWithStudioCMSConfig = {
@@ -104,6 +107,9 @@ const extras = (pkg: string) => {
 		},
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
+		},
+		'component-registry': {
+			ignoreDependencies: ['test'],
 		},
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);

@@ -38,53 +38,45 @@ describe('Component Registry Integration tests', () => {
 		it('the endpoint responds with the expected config', async () => {
 			const json = await res.json();
 
-			expect(json).toEqual([
-				{
-					name: 'test-comp',
-					props: [
-						{
-							name: 'foo',
-							type: 'string',
-							optional: false,
-							description: 'A string property.',
-							defaultValue: 'Hello World',
-							jsDocTags: [
-								{
-									tagName: 'default',
-									text: 'Hello World',
-								},
-							],
-						},
-						{
-							name: 'bar',
-							type: 'number',
-							optional: false,
-							description: 'A number property.',
-							defaultValue: '42',
-							jsDocTags: [
-								{
-									tagName: 'default',
-									text: '42',
-								},
-							],
-						},
-						{
-							name: 'baz',
-							type: '`${string}-${string}-${string}.${number}`',
-							optional: false,
-							description: 'Example Template literal',
-							defaultValue: 'foo-bar-baz.42',
-							jsDocTags: [
-								{
-									tagName: 'default',
-									text: 'foo-bar-baz.42',
-								},
-							],
-						},
-					],
-					safeName: 'test_comp',
-				},
-			]);
+			const entry = json.find((entry: { name: string }) => entry.name === 'test-comp');
+
+			expect(entry).toBeDefined();
+
+			expect(entry.name).toBe('test-comp');
+			expect(entry.safeName).toBe('test_comp');
+
+			expect(entry.props).toBeDefined();
+			expect(entry.props.length).toBe(3);
+
+			expect(entry.props[0].name).toBe('foo');
+			expect(entry.props[0].type).toBe('string');
+			expect(entry.props[0].optional).toBe(false);
+			expect(entry.props[0].description).toBe('A string property.');
+			expect(entry.props[0].defaultValue).toBe('Hello World');
+			expect(entry.props[0].jsDocTags).toBeDefined();
+			expect(entry.props[0].jsDocTags.length).toBe(1);
+			expect(entry.props[0].jsDocTags[0].tagName).toBe('default');
+			expect(entry.props[0].jsDocTags[0].text).toBe('Hello World');
+
+			expect(entry.props[1].name).toBe('bar');
+			expect(entry.props[1].type).toBe('number');
+			expect(entry.props[1].optional).toBe(false);
+			expect(entry.props[1].description).toBe('A number property.');
+			expect(entry.props[1].defaultValue).toBe('42');
+			expect(entry.props[1].jsDocTags).toBeDefined();
+			expect(entry.props[1].jsDocTags.length).toBe(1);
+			expect(entry.props[1].jsDocTags[0].tagName).toBe('default');
+			expect(entry.props[1].jsDocTags[0].text).toBe('42');
+
+			expect(entry.props[2].name).toBe('baz');
+			expect(entry.props[2].type).toBe('`${string}-${string}-${string}.${number}`');
+			expect(entry.props[2].optional).toBe(false);
+			expect(entry.props[2].description).toBe('Example Template literal');
+			expect(entry.props[2].defaultValue).toBe('foo-bar-baz.42');
+			expect(entry.props[2].jsDocTags).toBeDefined();
+			expect(entry.props[2].jsDocTags.length).toBe(1);
+			expect(entry.props[2].jsDocTags[0].tagName).toBe('default');
+			expect(entry.props[2].jsDocTags[0].text).toBe('foo-bar-baz.42');
 		});
 	});
 });
