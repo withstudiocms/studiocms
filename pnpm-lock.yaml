@@ -396,8 +396,8 @@ importers:
         specifier: workspace:*
         version: link:../../studiocms
       suneditor:
-        specifier: ^2.47.7
-        version: 2.47.7
+        specifier: ^2.47.8
+        version: 2.47.8
       vite:
         specifier: catalog:min
         version: 6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0)
@@ -5221,8 +5221,8 @@ packages:
   style-to-object@1.0.9:
     resolution: {integrity: sha512-G4qppLgKu/k6FwRpHiGiKPaPTFcG3g4wNVX/Qsfu+RqQM30E7Tyu/TEgxcL9PNLF5pdRLwQdE3YKKf+KF2Dzlw==}
 
-  suneditor@2.47.7:
-    resolution: {integrity: sha512-26KkkTZp5s5DjPfr+TdqFLxjN4BEqVHAYOqJOooD51s+mVunGOwcpZfuz1IkcxOvj7D0y45gyocttIp8HsM08Q==}
+  suneditor@2.47.8:
+    resolution: {integrity: sha512-GGzaN1m+rFIR/zHdRxSH5JvzzJIF4UoaX2bWmcvk6NIcq2qgvdkR0iO+yFyjIL6zTVMeBI/GWkJMvOh8Qe5ehw==}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -11411,7 +11411,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.4
 
-  suneditor@2.47.7: {}
+  suneditor@2.47.8: {}
 
   supports-color@7.2.0:
     dependencies:
