@@ -40,6 +40,7 @@ export function createComponentProxy(
 					try {
 						const normalized = JSON.parse(JSON.stringify(props.code ?? ''));
 						props = { ...props, code: decode(String(normalized)) };
+						/* v8 ignore start */
 					} catch (err) {
 						console.warn(
 							`Failed to decode code prop for component "${lowerKey}". Falling back to raw string.`,
@@ -48,6 +49,7 @@ export function createComponentProxy(
 						const safe = typeof props.code === 'string' ? props.code : String(props.code ?? '');
 						props = { ...props, code: decode(safe) };
 					}
+					/* v8 ignore end */
 				}
 				const output = await _testProps.renderJSX(
 					result,
