@@ -14,7 +14,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 	},
 	{
 		scope: 'studiocms',
-		names: ['devapps', 'html'],
+		names: ['devapps', 'html', 'cloudinary-image-service'],
 	},
 ];
 
