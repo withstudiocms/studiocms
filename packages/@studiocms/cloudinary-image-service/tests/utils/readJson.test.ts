@@ -3,11 +3,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readJson } from '../../src/utils/readJson.js';
 
 // Mock fs module
-vi.mock('node:fs', () => ({
-	default: {
-		readFileSync: vi.fn(),
-	},
-}));
+vi.mock('node:fs', () => {
+	const readFileSync = vi.fn();
+	return {
+		readFileSync,
+		default: { readFileSync },
+	};
+});
 
 describe('readJson', () => {
 	afterEach(() => {
