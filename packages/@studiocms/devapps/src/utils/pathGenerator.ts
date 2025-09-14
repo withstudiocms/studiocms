@@ -41,6 +41,8 @@ export const pathGenerator = (endpointPath: string, _base: string) => {
 	const newEndpointPath = stripTrailingSlash(endpointPath);
 	return function pathBuilder(path: string): string {
 		const newPath = stripLeadingSlash(path);
-		return `${pathWithBase(newEndpointPath, _base)}${ensureLeadingSlash(newPath)}`;
+		const base = pathWithBase(newEndpointPath, _base);
+		const sep = base.endsWith('/') ? '' : '/';
+		return `${base}${sep}${newPath}`;
 	};
 };

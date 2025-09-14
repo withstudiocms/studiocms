@@ -12,6 +12,12 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 			'internal_helpers',
 		],
 	},
+	{
+		scope: 'studiocms',
+		names: [
+			'devapps',
+		],
+	},
 ];
 
 const projects = projectsWithTests.flatMap(({ scope, names }) =>
