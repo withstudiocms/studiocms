@@ -13,7 +13,6 @@ vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
 }));
 
-
 describe('studiocmsHTML', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -155,13 +154,13 @@ describe('studiocmsHTML', () => {
 			// Verify the side effect executed by astro:config:done
 			const integrationArg = mockAddIntegrations.mock.calls[0][0];
 			const { shared } = await import('../src/lib/shared.js');
-			
+
 			// Store the initial value
 			const initialValue = shared.htmlConfig;
-			
+
 			// Execute the hook
 			integrationArg.hooks['astro:config:done']();
-			
+
 			// Verify the value changed to our custom options
 			expect(shared.htmlConfig).toBeDefined();
 			expect(shared.htmlConfig).toEqual(customOptions);

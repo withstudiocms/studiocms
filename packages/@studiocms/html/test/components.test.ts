@@ -27,9 +27,9 @@ describe('Astro Components', () => {
 			const fs = require('fs');
 			const path = require('path');
 			const editorPath = path.join(__dirname, '../src/components/editor.astro');
-			
+
 			expect(fs.existsSync(editorPath)).toBe(true);
-			
+
 			const content = fs.readFileSync(editorPath, 'utf8');
 			expect(content).toContain('editor-container');
 			expect(content).toContain('page-content');
@@ -41,7 +41,7 @@ describe('Astro Components', () => {
 			const path = require('path');
 			const editorPath = path.join(__dirname, '../src/components/editor.astro');
 			const content = fs.readFileSync(editorPath, 'utf8');
-			
+
 			expect(content).toContain('suneditor/dist/css/suneditor.min.css');
 			expect(content).toContain('codemirror/lib/codemirror.css');
 			expect(content).toContain('katex/dist/katex.min.css');
@@ -52,7 +52,7 @@ describe('Astro Components', () => {
 			const path = require('path');
 			const editorPath = path.join(__dirname, '../src/components/editor.astro');
 			const content = fs.readFileSync(editorPath, 'utf8');
-			
+
 			expect(content).toContain('sunEditor.create');
 			expect(content).toContain('buttonList');
 			expect(content).toContain('onChange');
@@ -64,9 +64,9 @@ describe('Astro Components', () => {
 			const fs = require('fs');
 			const path = require('path');
 			const rendererPath = path.join(__dirname, '../src/components/renderer.astro');
-			
+
 			expect(fs.existsSync(rendererPath)).toBe(true);
-			
+
 			const content = fs.readFileSync(rendererPath, 'utf8');
 			expect(content).toContain('createRenderer');
 			expect(content).toContain('defaultContent');
@@ -78,7 +78,7 @@ describe('Astro Components', () => {
 			const path = require('path');
 			const rendererPath = path.join(__dirname, '../src/components/renderer.astro');
 			const content = fs.readFileSync(rendererPath, 'utf8');
-			
+
 			expect(content).toContain('Error: No content found');
 			expect(content).toContain('defaultContent?.content');
 		});
@@ -88,7 +88,7 @@ describe('Astro Components', () => {
 			const path = require('path');
 			const rendererPath = path.join(__dirname, '../src/components/renderer.astro');
 			const content = fs.readFileSync(rendererPath, 'utf8');
-			
+
 			expect(content).toContain('shared.htmlConfig?.sanitize');
 		});
 	});

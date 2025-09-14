@@ -4,7 +4,9 @@ import type { HTMLSchemaOptions } from '../src/types.js';
 /**
  * Mock HTML schema options for testing
  */
-export const createMockHTMLOptions = (overrides: Partial<HTMLSchemaOptions> = {}): HTMLSchemaOptions => ({
+export const createMockHTMLOptions = (
+	overrides: Partial<HTMLSchemaOptions> = {}
+): HTMLSchemaOptions => ({
 	sanitize: {
 		allowElements: [],
 		allowAttributes: {},

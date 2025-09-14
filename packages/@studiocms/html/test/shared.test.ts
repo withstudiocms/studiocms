@@ -33,7 +33,7 @@ describe('shared module', () => {
 
 			// Re-import to get the shared object
 			const { shared: newShared } = await import('../src/lib/shared.js');
-			
+
 			expect(newShared).toBeDefined();
 			// The shared object should be defined, even if the config isn't retrieved as expected
 			// due to the symbol-based approach
@@ -43,13 +43,13 @@ describe('shared module', () => {
 		it('should create new object when globalThis is empty', async () => {
 			// Clear the globalThis
 			delete (globalThis as Record<symbol, unknown>)[symbol];
-			
+
 			// Re-import to get the shared object
 			const { shared: newShared } = await import('../src/lib/shared.js');
-			
+
 			expect(newShared).toBeDefined();
 			expect(newShared.htmlConfig).toBeUndefined();
-			
+
 			// The shared object should be created and accessible
 			expect(newShared).toHaveProperty('htmlConfig');
 		});
@@ -113,10 +113,10 @@ describe('shared module', () => {
 			};
 
 			shared.htmlConfig = config;
-			
+
 			// Re-import to get a new reference
 			const { shared: newShared } = await import('../src/lib/shared.js');
-			
+
 			expect(newShared.htmlConfig).toEqual(config);
 			expect(newShared.htmlConfig).toBe(shared.htmlConfig);
 		});
@@ -125,7 +125,7 @@ describe('shared module', () => {
 	describe('globalThis integration', () => {
 		it('should use the same globalThis key as the symbol', () => {
 			mockGlobalThis();
-			
+
 			// The shared object should use the same key as the symbol
 			expect((globalThis as Record<symbol, unknown>)[symbol]).toBeDefined();
 		});
@@ -133,7 +133,7 @@ describe('shared module', () => {
 		it('should handle multiple imports consistently', async () => {
 			const { shared: shared1 } = await import('../src/lib/shared.js');
 			const { shared: shared2 } = await import('../src/lib/shared.js');
-			
+
 			expect(shared1).toBe(shared2);
 			expect(shared1.htmlConfig).toBe(shared2.htmlConfig);
 		});
