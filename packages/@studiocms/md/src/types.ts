@@ -79,5 +79,6 @@ export const MarkdownSchema = z
 	.optional()
 	.default({ flavor: 'studiocms' });
 
+export type AstroMarkdownOptions = z.infer<typeof AstroMarkdownSchema>;
 export type StudioCMSMarkdownOptions = z.infer<typeof StudioCMSMarkdownSchema>;
 export type MarkdownSchemaOptions = z.infer<typeof MarkdownSchema>;
