@@ -13,11 +13,9 @@ describe('Editor component', () => {
 		});
 
 		expect(result).toContain('<div class="editor-container"');
-		expect(result).toContain('<textarea id="page-content" name="page-content"');
-		expect(result).toContain('Editor content');
-		expect(result).toContain('</textarea>');
-		expect(result).toContain('</div>');
-		expect(result).toContain('<script type="module" src=');
-		expect(result).toContain('</script>');
+		expect(result).toMatch(
+			/<textarea[^>]*id="page-content"[^>]*name="page-content"[^>]*>[\s\S]*Editor content[\s\S]*<\/textarea>/
+		);
+		expect(result).toMatch(/<script\s+type="module"\s+src=.*?><\/script>/);
 	});
 });

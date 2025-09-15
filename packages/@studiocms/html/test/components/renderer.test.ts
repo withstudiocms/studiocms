@@ -19,31 +19,18 @@ describe('Renderer component', () => {
 		expect(result).toBe('<p>Renderer content</p>');
 	});
 
-	test('Renderer with empty content', async () => {
+	test.each([
+		[{ data: { defaultContent: { content: '' } } }, '<h1>Error: No content found</h1>'],
+		[{ data: { defaultContent: {} } }, '<h1>Error: No content found</h1>'],
+		[{ data: {} }, '<h1>Error: No content found</h1>'],
+	])('Renderer negative cases %#', async (props, expected) => {
 		const container = await AstroContainer.create();
-		const result = await container.renderToString(Renderer, {
-			props: {
-				data: {
-					defaultContent: {
-						content: '',
-					},
-				},
-			},
-		});
-
-		expect(result).toBe('<h1>Error: No content found</h1>');
+		const result = await container.renderToString(Renderer, { props });
+		expect(result.trim()).toBe(expected);
 	});
 
-	test('Renderer with no content', async () => {
+	test('Renderer throws with no props', async () => {
 		const container = await AstroContainer.create();
-		const result = await container.renderToString(Renderer, {
-			props: {
-				data: {
-					defaultContent: {},
-				},
-			},
-		});
-
-		expect(result).toBe('<h1>Error: No content found</h1>');
+		await expect(container.renderToString(Renderer)).rejects.toThrow();
 	});
 });
