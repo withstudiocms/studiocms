@@ -9,6 +9,7 @@ catalog:
   tinyglobby: ^0.2.15
   typescript: ^5.9.2
   "@types/mdast": ^4.0.4
+  "@codecov/astro-plugin": ^1.9.1
 
 catalogs:
   astrojs:
@@ -48,4 +49,5 @@ packages:
   - "packages/@withstudiocms/*"
   - "packages/@withstudiocms/*/test/fixtures/*"
   - "packages/*"
+  - "bundle-tests/*"
   - "playground"

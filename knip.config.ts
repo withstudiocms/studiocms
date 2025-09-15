@@ -86,6 +86,8 @@ const atWithStudioCMSPackages = [
 	'internal_helpers',
 ] as const;
 
+const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
+
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
  *
@@ -141,6 +143,29 @@ const config: KnipConfig = {
 				acc[`packages/@withstudiocms/${pkg}`] = {
 					...baseWithStudioCMSConfig,
 					...extras(pkg),
+				};
+				return acc;
+			},
+			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic object construction
+			{} as Record<string, any>
+		),
+		...bundleTestPackages.reduce(
+			(acc, pkg) => {
+				acc[`bundle-tests/${pkg}`] = {
+					ignoreDependencies: ['sharp'],
+					astro: {
+						entry: [
+							'studiocms.config.{js,cjs,mjs,ts,mts}',
+							'astro.config.{js,cjs,mjs,ts,mts}',
+							'src/content/config.ts',
+							'src/content.config.ts',
+							'src/components/**/*.{astro,js,ts}',
+							'src/pages/**/*.{astro,mdx,js,ts}',
+							'src/content/**/*.mdx',
+							'src/middleware.{js,ts}',
+							'src/actions/index.{js,ts}',
+						],
+					},
 				};
 				return acc;
 			},

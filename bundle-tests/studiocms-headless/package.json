@@ -1,0 +1,27 @@
+{
+	"name": "@bundletests/studiocms-headless",
+	"type": "module",
+	"private": true,
+	"version": "0.0.1",
+	"scripts": {
+		"astro": "astro",
+		"studiocms": "studiocms",
+		"db:push": "astro db push --remote",
+		"dev": "astro dev --remote",
+		"build": "astro build --remote",
+		"preview": "astro preview --remote"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"dependencies": {
+		"@astrojs/db": "catalog:astrojs",
+		"@astrojs/node": "catalog:astrojs",
+		"@codecov/astro-plugin": "catalog:",
+		"@studiocms/md": "workspace:*",
+    	"astro": "catalog:astrojs",
+		"sharp": "catalog:",
+		"studiocms": "workspace:*"
+	}
+}
