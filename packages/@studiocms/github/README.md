@@ -1,5 +1,7 @@
 # @studiocms/github Plugin
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_github)](https://codecov.io/github/withstudiocms/studiocms) 
+
 This plugin integrates GitHub as an OAuth authentication provider for StudioCMS. It sets up the necessary authentication service, including the provider's name, endpoint paths and required environment variables.
 
 ## Usage
