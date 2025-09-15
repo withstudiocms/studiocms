@@ -78,9 +78,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		 * @returns A promise that resolves to an array of collected categories.
 		 * @throws {StudioCMS_SDK_Error} If there is an error while collecting categories.
 		 */
-		const collectCategories = (
-			categoryIds: number[]
-		): Effect.Effect<CombinedPageData['categories'], SDKCoreError, never> =>
+		const collectCategories = (categoryIds: number[]) =>
 			Effect.gen(function* () {
 				const categories: CombinedPageData['categories'] = [];
 
@@ -96,17 +94,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				}
 
 				return categories as CombinedPageData['categories'];
-			}).pipe(
-				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						Effect.fail(
-							new SDKCoreError({
-								type: 'LibSQLDatabaseError',
-								cause: new StudioCMS_SDK_Error(`Error getting categories: ${cause}`),
-							})
-						),
-				})
-			);
+			});
 
 		/**
 		 * Collects tags based on the provided tag IDs.
@@ -115,9 +103,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 		 * @returns A promise that resolves to an array of tags.
 		 * @throws {StudioCMS_SDK_Error} If an error occurs while fetching the tags.
 		 */
-		const collectTags = (
-			tagIds: number[]
-		): Effect.Effect<CombinedPageData['tags'], SDKCoreError, never> =>
+		const collectTags = (tagIds: number[]) =>
 			Effect.gen(function* () {
 				const tags: CombinedPageData['tags'] = [];
 
@@ -130,17 +116,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				}
 
 				return tags as CombinedPageData['tags'];
-			}).pipe(
-				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-						Effect.fail(
-							new SDKCoreError({
-								type: 'LibSQLDatabaseError',
-								cause: new StudioCMS_SDK_Error(`Error getting tags: ${cause}`),
-							})
-						),
-				})
-			);
+			});
 
 		/**
 		 * Transforms the collected page data to include only metadata.
@@ -258,7 +234,7 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				return returnData;
 			}).pipe(
 				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+					LibSQLClientError: (cause) =>
 						Effect.fail(
 							new SDKCoreError({
 								type: 'LibSQLDatabaseError',
@@ -301,11 +277,11 @@ export class SDKCore_Collectors extends Effect.Service<SDKCore_Collectors>()('SD
 				} as CombinedUserData;
 			}).pipe(
 				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+					LibSQLClientError: (cause) =>
 						Effect.fail(
 							new SDKCoreError({
 								type: 'LibSQLDatabaseError',
-								cause: new StudioCMS_SDK_Error(`Error collecting user data: ${cause}`),
+								cause: new StudioCMS_SDK_Error(`Error collecting page data: ${cause}`),
 							})
 						),
 				})

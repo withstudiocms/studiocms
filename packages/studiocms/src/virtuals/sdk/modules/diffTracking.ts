@@ -82,7 +82,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 					}
 				}).pipe(
 					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+						LibSQLClientError: (cause) =>
 							Effect.fail(
 								new SDKCoreError({
 									type: 'LibSQLDatabaseError',
@@ -154,7 +154,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 						return yield* fixDiff(inputted);
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							LibSQLClientError: (cause) =>
 								Effect.fail(
 									new SDKCoreError({
 										type: 'LibSQLDatabaseError',
@@ -176,7 +176,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 						.execute((db) => db.delete(tsDiffTracking).where(eq(tsDiffTracking.pageId, pageId)))
 						.pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -207,7 +207,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								return yield* fixDiff(items);
 							}).pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -242,7 +242,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								return yield* fixDiff(split);
 							}).pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -275,7 +275,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								return yield* fixDiff(items);
 							}).pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -310,7 +310,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 								return yield* fixDiff(split);
 							}).pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -339,7 +339,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 							return yield* fixDiff(data);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -438,7 +438,7 @@ export class SDKCore_DiffTracking extends Effect.Service<SDKCore_DiffTracking>()
 						return yield* fixDiff(diffEntry);
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							LibSQLClientError: (cause) =>
 								Effect.fail(
 									new SDKCoreError({
 										type: 'LibSQLDatabaseError',

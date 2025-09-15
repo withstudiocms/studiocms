@@ -44,7 +44,7 @@ export class SDKCore_INIT extends Effect.Service<SDKCore_INIT>()(
 				siteConfig: (config: Omit<StudioCMSSiteConfig, '_config_version'>) =>
 					sdkSiteConfig.init(config).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							LibSQLClientError: (cause) =>
 								Effect.fail(
 									new SDKCoreError({
 										type: 'LibSQLDatabaseError',

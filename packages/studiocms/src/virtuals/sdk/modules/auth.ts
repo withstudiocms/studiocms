@@ -73,7 +73,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								.get()
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -114,7 +114,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -137,7 +137,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								.where(eq(tsEmailVerificationTokens.userId, userId))
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -159,7 +159,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 					create: dbService.makeQuery((ex, data: tsOAuthAccountsInsert) =>
 						ex((db) => db.insert(tsOAuthAccounts).values(data).returning().get()).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -193,7 +193,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							};
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -226,7 +226,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							)
 							.pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -247,7 +247,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							db.select().from(tsPermissions).where(eq(tsPermissions.user, userId)).get()
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -281,7 +281,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								.get()
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -307,7 +307,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								.where(eq(tsSessionTable.id, sessionId))
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -333,7 +333,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								message: 'Session deleted',
 							})),
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -362,7 +362,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							)
 							.pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -391,7 +391,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							return newUser;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -415,7 +415,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							)
 							.pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -452,7 +452,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 							return { usernameSearch, emailSearch };
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -479,7 +479,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								return true;
 							}).pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+									LibSQLClientError: (cause) =>
 										Effect.fail(
 											new SDKCoreError({
 												type: 'LibSQLDatabaseError',
@@ -501,7 +501,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								.execute((db) => db.insert(tsUsers).values(GhostUserDefaults).returning().get())
 								.pipe(
 									Effect.catchTags({
-										'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+										LibSQLClientError: (cause) =>
 											Effect.fail(
 												new SDKCoreError({
 													type: 'LibSQLDatabaseError',
@@ -523,7 +523,7 @@ export class SDKCore_AUTH extends Effect.Service<SDKCore_AUTH>()(
 								)
 								.pipe(
 									Effect.catchTags({
-										'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+										LibSQLClientError: (cause) =>
 											Effect.fail(
 												new SDKCoreError({
 													type: 'LibSQLDatabaseError',
