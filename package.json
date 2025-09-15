@@ -37,6 +37,10 @@
     "test:watch": "vitest",
     "ci:test": "vitest run --coverage",
 
+    "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
+    "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build",
+    "bundle-test:all": "pnpm --filter @bundletests/* build",
+
     "clean:node": "node ./scripts/clean-node-modules.mjs",
     "postinstall": "ts-patch install"
   },
