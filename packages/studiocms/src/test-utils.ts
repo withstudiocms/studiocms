@@ -1,5 +1,4 @@
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
-import type { StudioCMSPlugin } from './plugins.js';
 import type {
 	SCMSAuthServiceFnOpts,
 	SCMSDashboardFnOpts,
@@ -7,6 +6,7 @@ import type {
 	SCMSImageServiceFnOpts,
 	SCMSRenderingFnOpts,
 	SCMSSiteMapFnOpts,
+	StudioCMSPlugin,
 } from './schemas/index.js';
 
 type HookRun<T> = { hasHook: boolean; hookResults: T };
@@ -41,7 +41,7 @@ export interface PluginHookResults {
  * ```
  */
 export class StudioCMSPluginTester {
-	private plugin: StudioCMSPlugin;
+	private readonly plugin: StudioCMSPlugin;
 	private readonly injectedLogger?: AstroIntegrationLogger;
 
 	constructor(plugin: StudioCMSPlugin, logger?: AstroIntegrationLogger) {
@@ -217,11 +217,11 @@ export class StudioCMSPluginTester {
 	public async getHookResults(): Promise<PluginHookResults> {
 		return {
 			astroConfig: {
-				hasHook: !!this.plugin.hooks['studiocms:astro:config'],
+				hasHook: typeof this.plugin.hooks['studiocms:astro:config'] === 'function',
 				hookResults: await this.runAstroConfigHook(),
 			},
 			studiocmsConfig: {
-				hasHook: !!this.plugin.hooks['studiocms:config:setup'],
+				hasHook: typeof this.plugin.hooks['studiocms:config:setup'] === 'function',
 				hookResults: await this.runStudioCMSConfigHook(),
 			},
 		};
