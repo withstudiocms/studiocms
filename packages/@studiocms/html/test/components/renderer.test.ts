@@ -4,26 +4,15 @@ import { describe, expect, test } from 'vitest';
 import Renderer from '../../src/components/renderer.astro';
 
 describe('Renderer component', () => {
-	test('Renderer with props', async () => {
-		const container = await AstroContainer.create();
-		const result = await container.renderToString(Renderer, {
-			props: {
-				data: {
-					defaultContent: {
-						content: '<p>Renderer content</p>',
-					},
-				},
-			},
-		});
-
-		expect(result).toBe('<p>Renderer content</p>');
-	});
-
 	test.each([
+		[
+			{ data: { defaultContent: { content: '<p>Renderer content</p>' } } },
+			'<p>Renderer content</p>',
+		],
 		[{ data: { defaultContent: { content: '' } } }, '<h1>Error: No content found</h1>'],
 		[{ data: { defaultContent: {} } }, '<h1>Error: No content found</h1>'],
 		[{ data: {} }, '<h1>Error: No content found</h1>'],
-	])('Renderer negative cases %#', async (props, expected) => {
+	])('Renderer with props %#', async (props, expected) => {
 		const container = await AstroContainer.create();
 		const result = await container.renderToString(Renderer, { props });
 		expect(result.trim()).toBe(expected);
