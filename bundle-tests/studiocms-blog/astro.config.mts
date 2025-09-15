@@ -16,7 +16,7 @@ export default defineConfig({
 		db(),
 		studioCMS(),
 		codecovAstroPlugin({
-			enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+			enableBundleAnalysis: true,
 			bundleName: 'studiocms-blog-astro-bundle',
 			uploadToken: process.env.CODECOV_TOKEN,
 			telemetry: false,
