@@ -1,6 +1,7 @@
 {
 	"name": "@bundletests/studiocms-headless",
 	"type": "module",
+	"private": true,
 	"version": "0.0.1",
 	"scripts": {
 		"astro": "astro",
