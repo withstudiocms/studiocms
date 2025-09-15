@@ -1,5 +1,7 @@
 # @StudioCMS/MDX Plugin
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_mdx)](https://codecov.io/github/withstudiocms/studiocms)
+
 Add MDX support to StudioCMS
 
 ## Usage

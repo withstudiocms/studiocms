@@ -1,5 +1,7 @@
 # @studiocms/wysiwyg
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_wysiwyg)](https://codecov.io/github/withstudiocms/studiocms)
+
 Add a WYSIWYG editor to your StudioCMS dashboard.
 
 ## Overview

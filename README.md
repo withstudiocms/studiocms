@@ -24,24 +24,24 @@ To see how to get started with StudioCMS, check out the [StudioCMS Docs](https:/
 
 | Package | Test Coverage |
 | ------- | ------------- |
-| [studiocms](./packages/studiocms/) | Not Yet Available |
-| [@studiocms/devapps](./packages/@studiocms/devapps/) | Not Yet Available |
+| [studiocms](./packages/studiocms/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/devapps](./packages/@studiocms/devapps/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_devapps)](https://codecov.io/github/withstudiocms/studiocms) |
 
 ### StudioCMS Plugins
 
 | Package | Category | Test Coverage |
 | ------- | -------- | ------------- |
-| [@studiocms/auth0](./packages/@studiocms/auth0/) | Authentication | Not Yet Available |
-| [@studiocms/discord](./packages/@studiocms/discord/) | Authentication | Not Yet Available |
-| [@studiocms/github](./packages/@studiocms/github/) | Authentication | Not Yet Available |
-| [@studiocms/google](./packages/@studiocms/google/) | Authentication | Not Yet Available |
-| [@studiocms/html](./packages/@studiocms/html/) | Renderer | Not Yet Available |
-| [@studiocms/markdoc](./packages/@studiocms/markdoc/) | Renderer | Not Yet Available |
-| [@studiocms/md](./packages/@studiocms/md/) | Renderer | Not Yet Available |
-| [@studiocms/mdx](./packages/@studiocms/mdx/) | Renderer | Not Yet Available |
-| [@studiocms/wysiwyg](./packages/@studiocms/wysiwyg/) | Renderer | Not Yet Available |
-| [@studiocms/cloudinary-image-service](./packages/@studiocms/cloudinary-image-service/) | Image Service | Not Yet Available |
-| [@studiocms/blog](./packages/@studiocms/blog/) | Front-End | Not Yet Available |
+| [@studiocms/auth0](./packages/@studiocms/auth0/) | Authentication | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_auth0)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/discord](./packages/@studiocms/discord/) | Authentication | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_discord)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/github](./packages/@studiocms/github/) | Authentication | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_github)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/google](./packages/@studiocms/google/) | Authentication | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_google)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/html](./packages/@studiocms/html/) | Renderer | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_html)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/markdoc](./packages/@studiocms/markdoc/) | Renderer | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_markdoc)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/md](./packages/@studiocms/md/) | Renderer | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_md)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/mdx](./packages/@studiocms/mdx/) | Renderer | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_mdx)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/wysiwyg](./packages/@studiocms/wysiwyg/) | Renderer | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_wysiwyg)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/cloudinary-image-service](./packages/@studiocms/cloudinary-image-service/) | Image Service | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_cloudinary-image-service)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@studiocms/blog](./packages/@studiocms/blog/) | Front-End | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_blog)](https://codecov.io/github/withstudiocms/studiocms) |
 
 ### Tools and Utilities
 

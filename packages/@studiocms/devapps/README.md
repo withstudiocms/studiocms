@@ -1,5 +1,7 @@
 # StudioCMS - Development Apps
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_devapps)](https://codecov.io/github/withstudiocms/studiocms)
+
 Collection* of useful tools available during dev mode in Astro
 
 ## Installation

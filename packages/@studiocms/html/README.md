@@ -1,5 +1,7 @@
 # @studiocms/html Plugin
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=studiocms_html)](https://codecov.io/github/withstudiocms/studiocms)
+
 Add HTML support to StudioCMS
 
 ## Usage
