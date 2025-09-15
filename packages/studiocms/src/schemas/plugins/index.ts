@@ -249,6 +249,13 @@ const setRenderingFn = z.function(z.tuple([RenderingConfigSchema]), z.void());
 const setImageServiceFn = z.function(z.tuple([ImageServiceConfigSchema]), z.void());
 const setAuthServiceFn = z.function(z.tuple([AuthServiceConfigSchema]), z.void());
 
+export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
+export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
+export type SCMSFrontendFnOpts = z.infer<typeof FrontendConfigSchema>;
+export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
+export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
+export type SCMSAuthServiceFnOpts = z.infer<typeof AuthServiceConfigSchema>;
+
 type StudioCMSConfigHookSchema = BaseHookSchema & {
 	setSitemap: typeof setSitemapFn;
 	setDashboard: typeof setDashboardFn;
