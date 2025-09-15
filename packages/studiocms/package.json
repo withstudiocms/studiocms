@@ -150,7 +150,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.51",
+		"@iconify-json/simple-icons": "^1.2.52",
 		"@inox-tools/runtime-logger": "^0.7.0",
 		"@nanostores/i18n": "^1.2.2",
 		"@nanostores/persistent": "^1.1.0",
