@@ -89,7 +89,7 @@ export class StudioCMSPluginTester {
 	 * which accumulates integrations into an array. The collected integrations are then
 	 * returned in an object.
 	 */
-	private async runAstroConfigHook() {
+	private async runAstroConfigHook(): Promise<{ integrations: AstroIntegration[] }> {
 		const integrations: AstroIntegration[] = [];
 		if (
 			this.plugin.hooks['studiocms:astro:config'] &&
@@ -123,7 +123,14 @@ export class StudioCMSPluginTester {
 	 * This utility is primarily intended for testing purposes, allowing inspection of
 	 * configuration values set by a plugin's `studiocms:config:setup` hook.
 	 */
-	private async runStudioCMSConfigHook() {
+	private async runStudioCMSConfigHook(): Promise<{
+		authService: Partial<SCMSAuthServiceFnOpts>;
+		dashboard: Partial<SCMSDashboardFnOpts>;
+		frontend: Partial<SCMSFrontendFnOpts>;
+		imageService: Partial<SCMSImageServiceFnOpts>;
+		rendering: Partial<SCMSRenderingFnOpts>;
+		sitemap: Partial<SCMSSiteMapFnOpts>;
+	}> {
 		const authService: Partial<SCMSAuthServiceFnOpts> = {};
 		const dashboard: Partial<SCMSDashboardFnOpts> = {};
 		const frontend: Partial<SCMSFrontendFnOpts> = {};
@@ -138,38 +145,40 @@ export class StudioCMSPluginTester {
 			await this.plugin.hooks['studiocms:config:setup']({
 				logger: this.createMockLogger(),
 				setAuthService: ({ oAuthProvider }) => {
-					if (oAuthProvider) {
+					if (oAuthProvider !== undefined) {
 						authService.oAuthProvider = oAuthProvider;
 					}
 				},
 				setDashboard: ({ dashboardGridItems, dashboardPages }) => {
-					if (dashboardGridItems) {
+					if (dashboardGridItems !== undefined) {
 						dashboard.dashboardGridItems = dashboardGridItems;
 					}
-					if (dashboardPages) {
+					if (dashboardPages !== undefined) {
 						dashboard.dashboardPages = dashboardPages;
 					}
 				},
 				setFrontend: ({ frontendNavigationLinks }) => {
-					if (frontendNavigationLinks) {
+					if (frontendNavigationLinks !== undefined) {
 						frontend.frontendNavigationLinks = frontendNavigationLinks;
 					}
 				},
 				setImageService: ({ imageService: imgService }) => {
-					if (imgService) {
+					if (imgService !== undefined) {
 						imageService.imageService = imgService;
 					}
 				},
 				setRendering: ({ pageTypes }) => {
-					if (pageTypes) {
+					if (pageTypes !== undefined) {
 						rendering.pageTypes = pageTypes;
 					}
 				},
 				setSitemap: ({ sitemaps, triggerSitemap }) => {
-					if (sitemaps) {
+					if (sitemaps !== undefined) {
 						sitemap.sitemaps = sitemaps;
 					}
-					sitemap.triggerSitemap = triggerSitemap;
+					if (triggerSitemap !== undefined) {
+						sitemap.triggerSitemap = triggerSitemap;
+					}
 				},
 			});
 		}
