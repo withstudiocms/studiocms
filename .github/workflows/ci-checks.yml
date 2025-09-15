@@ -35,7 +35,7 @@ jobs:
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main Jul 17th, 2025
 
-      - name: Run Knip Linter
+      - name: Run Knip Linter and Report
         uses: codex-/knip-reporter@398e656c485dd1649f06631a4cd2e602c6ccc4f1 # v2.6.0
 
   zizmor:
