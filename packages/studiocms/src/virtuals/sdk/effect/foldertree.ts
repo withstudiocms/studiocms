@@ -2,7 +2,7 @@ import { Effect } from '../../../effect.js';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../errors.js';
 import { tsPageFolderStructure } from '../tables.js';
 import type { FolderListItem, FolderNode, tsPageFolderSelect } from '../types/index.js';
-import { AstroDB, type LibSQLDatabaseError } from './db.js';
+import { AstroDB } from './db.js';
 
 /**
  * Service class for managing and manipulating folder trees in the StudioCMS SDK.
@@ -294,11 +294,7 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 			 *
 			 * @returns A promise that resolves to an array of folder nodes representing the folder structure.
 			 */
-			const buildFolderTree: Effect.Effect<
-				FolderNode[],
-				LibSQLDatabaseError | SDKCoreError,
-				never
-			> = Effect.gen(function* () {
+			const buildFolderTree = Effect.gen(function* () {
 				const currentFolders = yield* dbService.execute((db) =>
 					db.select().from(tsPageFolderStructure)
 				);
@@ -310,19 +306,18 @@ export class SDKCore_FolderTree extends Effect.Service<SDKCore_FolderTree>()(
 			 *
 			 * @returns A promise that resolves to an array of folder list items.
 			 */
-			const getAvailableFolders: Effect.Effect<FolderListItem[], LibSQLDatabaseError, never> =
-				Effect.gen(function* () {
-					const folders: FolderListItem[] = [];
+			const getAvailableFolders = Effect.gen(function* () {
+				const folders: FolderListItem[] = [];
 
-					const currentFolders = yield* dbService.execute((db) =>
-						db.select().from(tsPageFolderStructure)
-					);
+				const currentFolders = yield* dbService.execute((db) =>
+					db.select().from(tsPageFolderStructure)
+				);
 
-					for (const current of currentFolders) {
-						folders.push(current);
-					}
-					return folders;
-				});
+				for (const current of currentFolders) {
+					folders.push(current);
+				}
+				return folders;
+			});
 
 			return {
 				generateFolderTree,

@@ -148,11 +148,11 @@ export class SDKCore_Users extends Effect.Service<SDKCore_Users>()('studiocms/sd
 				return true;
 			}).pipe(
 				Effect.catchTags({
-					'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+					LibSQLClientError: (cause) =>
 						Effect.fail(
 							new SDKCoreError({
 								type: 'LibSQLDatabaseError',
-								cause: new StudioCMS_SDK_Error(`Error clearing user references: ${cause}`),
+								cause: new StudioCMS_SDK_Error(`Error collecting page data: ${cause}`),
 							})
 						),
 				})

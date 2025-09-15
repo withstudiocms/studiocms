@@ -52,7 +52,7 @@ export class SDKCore_NotificationSettings extends Effect.Service<SDKCore_Notific
 							return data;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
