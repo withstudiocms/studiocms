@@ -76,8 +76,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.page', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.page', cause),
 						})
 					),
 				/**
@@ -98,8 +97,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.pageContent', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.pageContent', cause),
 						})
 					),
 				/**
@@ -123,8 +121,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.pageContentLang', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.pageContentLang', cause),
 						})
 					),
 				/**
@@ -145,8 +142,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.tags', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.tags', cause),
 						})
 					),
 				/**
@@ -167,8 +163,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.categories', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.categories', cause),
 						})
 					),
 				/**
@@ -189,8 +184,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.permissions', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.permissions', cause),
 						})
 					),
 				/**
@@ -211,8 +205,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.diffTracking', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.diffTracking', cause),
 						})
 					),
 				/**
@@ -240,8 +233,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.folder', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.folder', cause),
 						})
 					),
 				/**
@@ -277,8 +269,7 @@ export class SDKCore_DELETE extends Effect.Service<SDKCore_DELETE>()(
 						};
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('DELETE.user', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('DELETE.user', cause),
 						})
 					),
 			};

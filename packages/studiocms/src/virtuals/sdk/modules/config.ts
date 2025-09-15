@@ -8,7 +8,7 @@ import {
 	Next_SiteConfigId,
 } from '../../../consts.js';
 import { Deepmerge, Effect } from '../../../effect.js';
-import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
+import { AstroDB, type LibSQLClientError } from '../effect/db.js';
 import {
 	tsDynamicConfigSettings,
 	tsMailerConfig,
@@ -330,7 +330,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				const entry = castType<DataType>({ id, data });
 				return yield* _insert(entry) as Effect.Effect<
 					DynamicConfigEntry<DataType>,
-					LibSQLDatabaseError
+					LibSQLClientError
 				>;
 			});
 
@@ -359,7 +359,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				const entry = castType<DataType>({ id, data });
 				return yield* _update(entry) as Effect.Effect<
 					DynamicConfigEntry<DataType>,
-					LibSQLDatabaseError
+					LibSQLClientError
 				>;
 			});
 
@@ -443,7 +443,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				if (!entry) {
 					return yield* runMigration(migrationOpts) as Effect.Effect<
 						DynamicConfigEntry<DataType> | undefined,
-						LibSQLDatabaseError
+						LibSQLClientError
 					>;
 				}
 				// If present but outdated, bump in-place to avoid UNIQUE conflicts and preserve user data
@@ -477,7 +477,7 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 				const updatedEntry = (yield* merge((m) => m(entry.data, data))) as DataType;
 				return yield* update<DataType>(id, updatedEntry) as Effect.Effect<
 					DynamicConfigEntry<DataType>,
-					LibSQLDatabaseError,
+					LibSQLClientError,
 					never
 				>;
 			});
