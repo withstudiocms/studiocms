@@ -54,7 +54,7 @@ export function preRender(): (content: string) => Promise<string> {
 		if (!studioCMSMDPromise) {
 			// Recompute options at first use to reflect shared state
 			studioCMSMDPromise = createStudioCMSMD({
-				...shared.astroMDRemark,
+				...(shared.astroMDRemark ?? {}),
 				studiocms: parseStudioCMSMDOpts(),
 			});
 		}
