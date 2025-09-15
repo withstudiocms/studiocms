@@ -15,15 +15,15 @@ export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' |
 }
 
 const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] => {
+	/* v8 ignore start */
 	if (shared.mdConfig?.flavor === 'studiocms') {
-		/* v8 ignore start */
 		return {
 			autolink: shared.mdConfig?.autoLinkHeadings,
 			discordSubtext: shared.mdConfig?.discordSubtext,
 			callouts: parseCallouts(shared.mdConfig?.callouts),
 		};
-		/* v8 ignore stop */
 	}
+	/* v8 ignore stop */
 
 	return {
 		autolink: false,
