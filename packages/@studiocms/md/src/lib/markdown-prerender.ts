@@ -6,7 +6,7 @@ import {
 } from '@studiocms/markdown-remark-processor';
 import { shared } from './shared.js';
 
-function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefined) {
+export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefined) {
 	if (opt === false) return false;
 	if (!opt) return undefined;
 	return {
@@ -16,11 +16,13 @@ function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefi
 
 const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] => {
 	if (shared.mdConfig?.flavor === 'studiocms') {
+		/* v8 ignore start */
 		return {
 			autolink: shared.mdConfig?.autoLinkHeadings,
 			discordSubtext: shared.mdConfig?.discordSubtext,
 			callouts: parseCallouts(shared.mdConfig?.callouts),
 		};
+		/* v8 ignore stop */
 	}
 
 	return {

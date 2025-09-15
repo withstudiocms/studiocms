@@ -65,4 +65,31 @@ describe('preRender', () => {
 		const result = await render('Hello **unknown**');
 		expect(result).toBe('<studiocms>Hello **unknown**</studiocms>');
 	});
+
+	describe('parseCallouts', () => {
+		it('returns false when opt is false', () => {
+			expect(markdownPrerender.parseCallouts(false)).toBe(false);
+		});
+
+		it('returns undefined when opt is undefined', () => {
+			expect(markdownPrerender.parseCallouts(undefined)).toBeUndefined();
+		});
+
+		it('returns undefined when opt is null', () => {
+			// @ts-expect-error: null is not a valid type but test robustness
+			expect(markdownPrerender.parseCallouts(null)).toBeUndefined();
+		});
+
+		it('returns { theme: "obsidian" } when opt is "obsidian"', () => {
+			expect(markdownPrerender.parseCallouts('obsidian')).toEqual({ theme: 'obsidian' });
+		});
+
+		it('returns { theme: "github" } when opt is "github"', () => {
+			expect(markdownPrerender.parseCallouts('github')).toEqual({ theme: 'github' });
+		});
+
+		it('returns { theme: "vitepress" } when opt is "vitepress"', () => {
+			expect(markdownPrerender.parseCallouts('vitepress')).toEqual({ theme: 'vitepress' });
+		});
+	});
 });

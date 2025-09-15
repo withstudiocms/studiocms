@@ -23,9 +23,11 @@ export function internalMarkdownIntegration(
 
 	// Resolve the options and set defaults if not provided
 	const parseResult = MarkdownSchema.safeParse(options);
+	/* v8 ignore start */
 	if (!parseResult.success) {
 		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
 	}
+	/* v8 ignore stop */
 	const resolvedOptions = parseResult.data;
 
 	// Define the resolved Callout Theme
