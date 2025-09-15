@@ -9,6 +9,18 @@ import type {
 	SCMSSiteMapFnOpts,
 } from './schemas/index.js';
 
+type HookRun<T> = { hasHook: boolean; hookResults: T };
+export interface PluginHookResults {
+	astroConfig: HookRun<{ integrations: AstroIntegration[] }>;
+	studiocmsConfig: HookRun<{
+		authService: Partial<SCMSAuthServiceFnOpts>;
+		dashboard: Partial<SCMSDashboardFnOpts>;
+		frontend: Partial<SCMSFrontendFnOpts>;
+		imageService: Partial<SCMSImageServiceFnOpts>;
+		rendering: Partial<SCMSRenderingFnOpts>;
+		sitemap: Partial<SCMSSiteMapFnOpts>;
+	}>;
+}
 /**
  * Utility class for testing StudioCMS plugins by simulating hook execution and collecting results.
  *
@@ -30,9 +42,11 @@ import type {
  */
 export class StudioCMSPluginTester {
 	private plugin: StudioCMSPlugin;
+	private readonly injectedLogger?: AstroIntegrationLogger;
 
-	constructor(plugin: StudioCMSPlugin) {
+	constructor(plugin: StudioCMSPlugin, logger?: AstroIntegrationLogger) {
 		this.plugin = plugin;
+		this.injectedLogger = logger;
 	}
 
 	/**
@@ -46,6 +60,7 @@ export class StudioCMSPluginTester {
 	 * @returns {AstroIntegrationLogger} A mock logger instance suitable for use in tests.
 	 */
 	private createMockLogger(): AstroIntegrationLogger {
+		if (this.injectedLogger) return this.injectedLogger;
 		// biome-ignore lint/suspicious/noExplicitAny: this is fine
 		const logger: Record<string, any> = {
 			info: console.log,
@@ -109,12 +124,12 @@ export class StudioCMSPluginTester {
 	 * configuration values set by a plugin's `studiocms:config:setup` hook.
 	 */
 	private async runStudioCMSConfigHook() {
-		const setAuthService: Partial<SCMSAuthServiceFnOpts> = {};
-		const setDashboard: Partial<SCMSDashboardFnOpts> = {};
-		const setFrontend: Partial<SCMSFrontendFnOpts> = {};
-		const setImageService: Partial<SCMSImageServiceFnOpts> = {};
-		const setRendering: Partial<SCMSRenderingFnOpts> = {};
-		const setSitemap: Partial<SCMSSiteMapFnOpts> = {};
+		const authService: Partial<SCMSAuthServiceFnOpts> = {};
+		const dashboard: Partial<SCMSDashboardFnOpts> = {};
+		const frontend: Partial<SCMSFrontendFnOpts> = {};
+		const imageService: Partial<SCMSImageServiceFnOpts> = {};
+		const rendering: Partial<SCMSRenderingFnOpts> = {};
+		const sitemap: Partial<SCMSSiteMapFnOpts> = {};
 
 		if (
 			this.plugin.hooks['studiocms:config:setup'] &&
@@ -124,50 +139,48 @@ export class StudioCMSPluginTester {
 				logger: this.createMockLogger(),
 				setAuthService: ({ oAuthProvider }) => {
 					if (oAuthProvider) {
-						setAuthService.oAuthProvider = oAuthProvider;
+						authService.oAuthProvider = oAuthProvider;
 					}
 				},
 				setDashboard: ({ dashboardGridItems, dashboardPages }) => {
 					if (dashboardGridItems) {
-						setDashboard.dashboardGridItems = dashboardGridItems;
+						dashboard.dashboardGridItems = dashboardGridItems;
 					}
 					if (dashboardPages) {
-						setDashboard.dashboardPages = dashboardPages;
+						dashboard.dashboardPages = dashboardPages;
 					}
 				},
 				setFrontend: ({ frontendNavigationLinks }) => {
 					if (frontendNavigationLinks) {
-						setFrontend.frontendNavigationLinks = frontendNavigationLinks;
+						frontend.frontendNavigationLinks = frontendNavigationLinks;
 					}
 				},
-				setImageService: ({ imageService }) => {
-					if (imageService) {
-						setImageService.imageService = imageService;
+				setImageService: ({ imageService: imgService }) => {
+					if (imgService) {
+						imageService.imageService = imgService;
 					}
 				},
 				setRendering: ({ pageTypes }) => {
 					if (pageTypes) {
-						setRendering.pageTypes = pageTypes;
+						rendering.pageTypes = pageTypes;
 					}
 				},
 				setSitemap: ({ sitemaps, triggerSitemap }) => {
 					if (sitemaps) {
-						setSitemap.sitemaps = sitemaps;
+						sitemap.sitemaps = sitemaps;
 					}
-					if (triggerSitemap) {
-						setSitemap.triggerSitemap = triggerSitemap;
-					}
+					sitemap.triggerSitemap = triggerSitemap;
 				},
 			});
 		}
 
 		return {
-			setAuthService,
-			setDashboard,
-			setFrontend,
-			setImageService,
-			setRendering,
-			setSitemap,
+			authService,
+			dashboard,
+			frontend,
+			imageService,
+			rendering,
+			sitemap,
 		};
 	}
 
@@ -192,7 +205,7 @@ export class StudioCMSPluginTester {
 	 * - `astroConfig`: Indicates if the 'studiocms:astro:config' hook exists and provides its execution results.
 	 * - `studiocmsConfig`: Indicates if the 'studiocms:config:setup' hook exists and provides its execution results.
 	 */
-	public async getHookResults() {
+	public async getHookResults(): Promise<PluginHookResults> {
 		return {
 			astroConfig: {
 				hasHook: !!this.plugin.hooks['studiocms:astro:config'],
