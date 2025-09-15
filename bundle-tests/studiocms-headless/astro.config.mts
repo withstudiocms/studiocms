@@ -20,9 +20,6 @@ export default defineConfig({
 			bundleName: 'studiocms-headless-astro-bundle',
 			uploadToken: process.env.CODECOV_TOKEN,
 			telemetry: false,
-			uploadOverrides: {
-				sha: process.env.GH_COMMIT_SHA,
-			},
 		}),
 	],
 });

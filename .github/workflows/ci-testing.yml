@@ -121,7 +121,6 @@ jobs:
       - codecov
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
-      GH_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
       ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
@@ -130,6 +129,7 @@ jobs:
       - name: Check out code using Git
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
+          fetch-depth: 2
           persist-credentials: false
 
       - name: Install Tools & Dependencies
